@@ -54,14 +54,17 @@ void affliction( player_t* p )
   precombat->add_action( "variable,name=cleave_apl,default=0,op=reset" );
   precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff" );
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff" );
+  # The Follow Up Variables handle the automatic use of Trinkets based on their function (buff trinkets or not), cooldown and duration
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.soul_rot.duration=0|cooldown.soul_rot.duration%%trinket.1.cooldown.duration=0)" );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.soul_rot.duration=0|cooldown.soul_rot.duration%%trinket.2.cooldown.duration=0)" );
-  precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.belorrelos_the_suncaller|trinket.1.is.timethiefs_gambit|trinket.1.is.spymasters_web|trinket.1.is.aberrant_spellforge" );
-  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.belorrelos_the_suncaller|trinket.2.is.timethiefs_gambit|trinket.2.is.spymasters_web|trinket.2.is.aberrant_spellforge" );
-  precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon" );
-  precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon" );
-  precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.mirror_of_fractured_tomorrows*20)+(trinket.1.is.nymues_unraveling_spindle*2)" );
-  precombat->add_action( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration+(trinket.2.is.mirror_of_fractured_tomorrows*20)+(trinket.2.is.nymues_unraveling_spindle*2)" );
+  # The Manual Variables are to be used on Trinkets who you plan to use without automagic
+  precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.spymasters_web|trinket.1.is.aberrant_spellforge" );
+  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.spymasters_web|trinket.2.is.aberrant_spellforge" );
+  # The Exclude Lines are to be used for Trinkets with On Use effect you dont want to use in the simulation either manually or automatically.
+  precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell" );
+  precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell" );
+  precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.mirror_of_fractured_tomorrows*20)" );
+  precombat->add_action( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration+(trinket.2.is.mirror_of_fractured_tomorrows*20)" );
   precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_buff_duration)*(1+0.5*trinket.2.has_buff.intellect)*(variable.trinket_2_sync)*(1-0.5*(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.is.ashes_of_the_embersoul)))>((trinket.1.cooldown.duration%variable.trinket_1_buff_duration)*(1+0.5*trinket.1.has_buff.intellect)*(variable.trinket_1_sync)*(1-0.5*(trinket.1.is.mirror_of_fractured_tomorrows|trinket.1.is.ashes_of_the_embersoul)))" );
   precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
   precombat->add_action( "snapshot_stats" );
@@ -175,7 +178,7 @@ void affliction( player_t* p )
   ogcd->add_action( "potion,if=variable.cds_active|fight_remains<32|dot.soul_rot.ticking&time<20" );
   ogcd->add_action( "berserking,if=variable.cds_active|fight_remains<14|dot.soul_rot.ticking&time<20" );
   ogcd->add_action( "blood_fury,if=variable.cds_active|fight_remains<17|dot.soul_rot.ticking&time<20" );
-  ogcd->add_action( "invoke_external_buff,name=power_infusion,if=variable.cds_active&(trinket.1.is.nymues_unraveling_spindle&trinket.1.cooldown.remains|trinket.2.is.nymues_unraveling_spindle&trinket.2.cooldown.remains|!equipped.nymues_unraveling_spindle)" );
+  ogcd->add_action( "invoke_external_buff,name=power_infusion,if=variable.cds_active" );
   ogcd->add_action( "fireblood,if=variable.cds_active|fight_remains<10|dot.soul_rot.ticking&time<20" );
   ogcd->add_action( "ancestral_call,if=variable.cds_active|fight_remains<17|dot.soul_rot.ticking&time<20" );
 
@@ -211,6 +214,7 @@ void demonology( player_t* p )
   precombat->add_action( "augmentation" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
+  # Variable used for the Tyrant setup on the pull in regards to its length and necessary time
   precombat->add_action( "variable,name=first_tyrant_time,op=set,value=12" );
   precombat->add_action( "variable,name=first_tyrant_time,op=add,value=action.grimoire_felguard.execute_time,if=talent.grimoire_felguard.enabled" );
   precombat->add_action( "variable,name=first_tyrant_time,op=add,value=action.summon_vilefiend.execute_time,if=talent.summon_vilefiend.enabled" );
@@ -218,10 +222,13 @@ void demonology( player_t* p )
   precombat->add_action( "variable,name=first_tyrant_time,op=sub,value=action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time" );
   precombat->add_action( "variable,name=first_tyrant_time,op=min,value=10" );
   precombat->add_action( "variable,name=in_opener,op=set,value=1" );
+  # The Follow Up Variables handle the automatic use of Trinkets based on their function (buff trinkets or not), cooldown and duration
   precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff" );
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff" );
+  # The Manual Variables are to be used on Trinkets who you plan to use without automagic
   precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell" );
   precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell" );
+  # The Exclude Lines are to be used for Trinkets with On Use effect you dont want to use in the simulation either manually or automatically.
   precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.spymasters_web|trinket.1.is.imperfect_ascendancy_serum" );
   precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.spymasters_web|trinket.2.is.imperfect_ascendancy_serum" );
   precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.mirror_of_fractured_tomorrows*20)" );
@@ -328,27 +335,25 @@ void demonology( player_t* p )
   tyrant->add_action( "shadow_bolt" );
   tyrant->add_action( "infernal_bolt" );
 
+  
   variables->add_action( "variable,name=next_tyrant_cd,op=set,value=cooldown.summon_demonic_tyrant.remains_expected" );
   variables->add_action( "variable,name=in_opener,op=set,value=0,if=pet.demonic_tyrant.active" );
+  # Sets an expected duration of valid Wild Imps on a tyrant Setup for the sake of casting Tyrant before expiration of Imps
   variables->add_action( "variable,name=imp_despawn,op=set,value=2*spell_haste*6+0.58+time,if=prev_gcd.1.hand_of_guldan&buff.dreadstalkers.up&cooldown.summon_demonic_tyrant.remains<13&variable.imp_despawn=0" );
+  # Checks the Wild Imps in a Tyrant Setup alongside Dreadstalkers for the sake of casting Tyrant before Expiration Dreadstalkers or Imps
   variables->add_action( "variable,name=imp_despawn,op=set,value=(variable.imp_despawn>?buff.dreadstalkers.remains+time),if=variable.imp_despawn" );
+  # Checks The Wild Imps in a Tyrant Setup alongside Grimoire Felguard for the sake of casting Tyrant before Expiration of Grimoire Felguard or Imps
   variables->add_action( "variable,name=imp_despawn,op=set,value=variable.imp_despawn>?buff.grimoire_felguard.remains+time,if=variable.imp_despawn&buff.grimoire_felguard.up" );
   variables->add_action( "variable,name=imp_despawn,op=set,value=0,if=buff.tyrant.up" );
-  variables->add_action( "variable,name=buff_sync_cd,op=set,value=variable.next_tyrant_cd,if=!variable.in_opener" );
-  variables->add_action( "variable,name=buff_sync_cd,op=set,value=12,if=!pet.dreadstalker.active" );
-  variables->add_action( "variable,name=buff_sync_cd,op=set,value=0,if=variable.in_opener&pet.dreadstalker.active&buff.wild_imps.stack>0&!talent.summon_vilefiend.enabled" );
-  variables->add_action( "variable,name=buff_sync_cd,op=set,value=0,if=variable.in_opener&pet.dreadstalker.active&prev_gcd.1.hand_of_guldan&talent.summon_vilefiend.enabled" );
+  # Defines the viability of Implosion in AOE scenario based around Tyrant being Active, Target Count and Sacrificed Souls
   variables->add_action( "variable,name=impl,op=set,value=buff.tyrant.down,if=active_enemies>1+(talent.sacrificed_souls.enabled)" );
   variables->add_action( "variable,name=impl,op=set,value=buff.tyrant.remains<6,if=active_enemies>2+(talent.sacrificed_souls.enabled)&active_enemies<5+(talent.sacrificed_souls.enabled)" );
   variables->add_action( "variable,name=impl,op=set,value=buff.tyrant.remains<8,if=active_enemies>4+(talent.sacrificed_souls.enabled)" );
+  #Restricts Demonic Core usage for the sake of having 2 or more Demonic Cores on Tyrant Setup
   variables->add_action( "variable,name=pool_cores_for_tyrant,op=set,value=cooldown.summon_demonic_tyrant.remains<20&variable.next_tyrant_cd<20&(buff.demonic_core.stack<=2|!buff.demonic_core.up)&cooldown.summon_vilefiend.remains<gcd.max*8&cooldown.call_dreadstalkers.remains<gcd.max*8" );
-  variables->add_action( "variable,name=hogshard,value=3,if=soul_shard>=3" );
-  variables->add_action( "variable,name=hogshard,value=soul_shard,if=soul_shard<3" );
-  variables->add_action( "variable,name=all_pets,op=set,value=buff.wild_imps.stack>10&prev_gcd.1.hand_of_guldan&buff.vilefiend.up&buff.dreadstalkers.up" );
   variables->add_action( "variable,name=diabolic_ritual_remains,value=buff.diabolic_ritual_mother_of_chaos.remains,if=buff.diabolic_ritual_mother_of_chaos.up" );
   variables->add_action( "variable,name=diabolic_ritual_remains,value=buff.diabolic_ritual_overlord.remains,if=buff.diabolic_ritual_overlord.up" );
   variables->add_action( "variable,name=diabolic_ritual_remains,value=buff.diabolic_ritual_pit_lord.remains,if=buff.diabolic_ritual_pit_lord.up" );
-  variables->add_action( "variable,name=demonic_art_up,value=buff.demonic_art_pit_lord.up|buff.demonic_art_overlord.up|buff.demonic_art_mother_of_chaos.up,if=talent.diabolic_ritual,default=0,op=set" );
 }
 //demonology_apl_end
 
@@ -369,16 +374,19 @@ void destruction( player_t* p )
   precombat->add_action( "augmentation" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "variable,name=cleave_apl,default=0,op=reset" );
+  # The Follow Up Variables handle the automatic use of Trinkets based on their function (buff trinkets or not), cooldown and duration
   precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff" );
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff" );
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.summon_infernal.duration=0|cooldown.summon_infernal.duration%%trinket.1.cooldown.duration=0)" );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.summon_infernal.duration=0|cooldown.summon_infernal.duration%%trinket.2.cooldown.duration=0)" );
-  precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.belorrelos_the_suncaller|trinket.1.is.nymues_unraveling_spindle|trinket.1.is.timethiefs_gambit|trinket.1.is.spymasters_web" );
-  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.belorrelos_the_suncaller|trinket.2.is.nymues_unraveling_spindle|trinket.2.is.timethiefs_gambit|trinket.2.is.spymasters_web" );
-  precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell|trinket.1.is.whispering_incarnate_icon" );
-  precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell|trinket.2.is.whispering_incarnate_icon" );
-  precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.mirror_of_fractured_tomorrows*20)+(trinket.1.is.nymues_unraveling_spindle*2)" );
-  precombat->add_action( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration+(trinket.2.is.mirror_of_fractured_tomorrows*20)+(trinket.2.is.nymues_unraveling_spindle*2)" );
+  # The Manual Variables are to be used on Trinkets who you plan to use without automagic
+  precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.spymasters_web" );
+  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.spymasters_web" );
+  # The Exclude Lines are to be used for Trinkets with On Use effect you dont want to use in the simulation either manually or automatically.
+  precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell" );
+  precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell" );
+  precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.mirror_of_fractured_tomorrows*20)" );
+  precombat->add_action( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration+(trinket.2.is.mirror_of_fractured_tomorrows*20)" );
   precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_buff_duration)*(1+0.5*trinket.2.has_buff.intellect)*(variable.trinket_2_sync)*(1-0.5*trinket.2.is.mirror_of_fractured_tomorrows))>((trinket.1.cooldown.duration%variable.trinket_1_buff_duration)*(1+0.5*trinket.1.has_buff.intellect)*(variable.trinket_1_sync)*(1-0.5*trinket.1.is.mirror_of_fractured_tomorrows))" );
   precombat->add_action( "variable,name=allow_rof_2t_spender,default=2,op=reset" );
   precombat->add_action( "variable,name=do_rof_2t,value=variable.allow_rof_2t_spender>1.99&!(talent.cataclysm&talent.improved_chaos_bolt),op=set" );
@@ -497,11 +505,9 @@ void destruction( player_t* p )
   havoc->add_action( "dimensional_rift,if=soul_shard<4.7&(charges>2|fight_remains<cooldown.dimensional_rift.duration)" );
   havoc->add_action( "incinerate,if=cast_time<havoc_remains" );
 
-  items->add_action( "use_item,use_off_gcd=1,name=belorrelos_the_suncaller,if=((time>20&cooldown.summon_infernal.remains>20)|(trinket.1.is.belorrelos_the_suncaller&(trinket.2.cooldown.remains|!variable.trinket_2_buffs|trinket.1.is.time_thiefs_gambit))|(trinket.2.is.belorrelos_the_suncaller&(trinket.1.cooldown.remains|!variable.trinket_1_buffs|trinket.2.is.time_thiefs_gambit)))&(!raid_event.adds.exists|raid_event.adds.up|spell_targets.belorrelos_the_suncaller>=5)|fight_remains<20" );
   items->add_action( "use_item,name=spymasters_web,if=pet.infernal.remains>=10&pet.infernal.remains<=20&(fight_remains>240|fight_remains<=140)|fight_remains<=30" );
   items->add_action( "use_item,slot=trinket1,if=(variable.infernal_active|!talent.summon_infernal|variable.trinket_1_will_lose_cast)&(variable.trinket_priority=1|variable.trinket_2_exclude|!trinket.2.has_cooldown|(trinket.2.cooldown.remains|variable.trinket_priority=2&cooldown.summon_infernal.remains>20&!variable.infernal_active&trinket.2.cooldown.remains<cooldown.summon_infernal.remains))&variable.trinket_1_buffs&!variable.trinket_1_manual|(variable.trinket_1_buff_duration+1>=fight_remains)" );
   items->add_action( "use_item,slot=trinket2,if=(variable.infernal_active|!talent.summon_infernal|variable.trinket_2_will_lose_cast)&(variable.trinket_priority=2|variable.trinket_1_exclude|!trinket.1.has_cooldown|(trinket.1.cooldown.remains|variable.trinket_priority=1&cooldown.summon_infernal.remains>20&!variable.infernal_active&trinket.1.cooldown.remains<cooldown.summon_infernal.remains))&variable.trinket_2_buffs&!variable.trinket_2_manual|(variable.trinket_2_buff_duration+1>=fight_remains)" );
-  items->add_action( "use_item,name=time_thiefs_gambit,if=variable.infernal_active|!talent.summon_infernal|fight_remains<15|((trinket.1.cooldown.duration<cooldown.summon_infernal.remains_expected+5)&active_enemies=1)|(active_enemies>1&havoc_active)" );
   items->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)|talent.summon_infernal&cooldown.summon_infernal.remains_expected>20&!prev_gcd.1.summon_infernal|!talent.summon_infernal)" );
   items->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|talent.summon_infernal&cooldown.summon_infernal.remains_expected>20&!prev_gcd.1.summon_infernal|!talent.summon_infernal)" );
   items->add_action( "use_item,use_off_gcd=1,slot=main_hand" );
