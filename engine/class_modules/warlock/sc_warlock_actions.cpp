@@ -915,10 +915,7 @@ using namespace helpers;
       }
 
       if ( p->talents.cunning_cruelty.ok() )
-      {
         volley = new shadow_bolt_volley_t( p );
-        add_child( volley );
-      }
     }
 
     bool ready() override
@@ -1961,10 +1958,7 @@ using namespace helpers;
       base_td_multiplier *= 1.0 + p->talents.dark_virtuosity->effectN( 2 ).percent();
 
       if ( p->talents.cunning_cruelty.ok() )
-      {
         volley = new shadow_bolt_volley_t( p );
-        add_child( volley );
-      }
     }
 
     action_state_t* new_state() override
