@@ -3051,6 +3051,10 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
         period( e.trigger()->effectN( 1 ).trigger()->effectN( 1 ).period() )
     {
       self_damage = create_proc_action<generic_proc_t>( "symbiosis_self", e, 455537 );
+
+      // We don't want this counted towards our dps
+      self_damage->stats->type = stats_e::STATS_NEUTRAL;
+
       // TODO: determine if self damage procs anything
       self_damage->callbacks = false;
       self_damage->target    = player;
