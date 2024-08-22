@@ -198,6 +198,7 @@ jobs:
         run: echo "SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
 
       - name: Commit Spell Data
+        continue-on-error: true
         uses: EndBug/add-and-commit@v9
         with:
           message: 'Update Spell Data Dump ${{ env.SHORT_SHA }}'
