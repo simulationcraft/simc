@@ -1909,13 +1909,12 @@ public:
     track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
     energize_type = action_energize::NONE;
 
-    // TODO: the spec check is missing ingame
     const auto& ea = p->talents.elemental_affinity;
-    if ( p->bugs || p->specialization() == MAGE_FIRE )
+    if ( p->specialization() == MAGE_FIRE )
       for ( int ix : { 1, 2, 5 } )
         apply_affecting_effect( ea->effectN( ix ) );
 
-    if ( p->bugs || p->specialization() == MAGE_FROST )
+    if ( p->specialization() == MAGE_FROST )
       apply_affecting_effect( ea->effectN( 3 ) );
   }
 
@@ -4539,6 +4538,9 @@ struct fireball_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, frostfire_ ? p->talents.frostfire_bolt : p->find_specialization_spell( "Fireball" ) ),
     frostfire( frostfire_ )
   {
+    // TODO Frostfire
+    // see frostbolt_t
+
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = TT_ALL_TARGETS;
     triggers.calefaction = triggers.unleashed_inferno = TT_MAIN_TARGET;
@@ -4996,6 +4998,23 @@ struct frostbolt_t final : public frost_mage_spell_t
     bf_chance(),
     fractured_frost_mul()
   {
+    // TODO Frostfire
+    // This spell is now extremely buggy, not sure if it's worth implementing at this point
+    // * doesn't trigger on-hit effects like Overflowing Energy, Frostfire Infusion, Frostfire Empowerment, presumably trinkets as well
+    // * doesn't trigger Pyrotechnics and Firefall (but does trigger Cold Front for some reason)
+    // * doesn't trigger Death's Chill
+    // * doesn't cleave with Fractured Frost (extra projectile appears but deals no damage)
+    // * consumes Frostfire Empowerment on cast and on hit (which completely breaks it because it snapshots on hit)
+    // * triggers an additional Fire Mastery stack on hit
+    // * triggers an additional Bone Chilling stack on cast
+    // * never expires severe temperatures, making it basically a permanent 50% buff
+    // * doesn't work with Deep Shatter
+
+    // TOCHECK when implementing
+    // * rolling DoT
+    // * hasted ticks
+    // * snapshot on hit
+
     parse_options( options_str );
     // TODO: this is most likely a bug since it breaks some core Frost mechanics
     if ( !frostfire )
@@ -5376,11 +5395,6 @@ struct glacial_spike_t final : public frost_mage_spell_t
     if ( p()->executing != this && !p()->buffs.icicles->at_max_stacks() )
       return false;
 
-    // TODO: Glacial Spike actually relies on a different buff that allows it to be
-    // cast (id 199844). Normally, this is no different from checking that Icicles are
-    // at max stacks since that's when the buff is active. However, if you queue an instant
-    // Frostfire Bolt after a Glacial Spike, this buff will reapply (even though the player has
-    // a single Icicle and no Icicles buff), allowing Glacial Spike to be cast again.
     return frost_mage_spell_t::ready();
   }
 
