@@ -15010,6 +15010,7 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
 template <class T_PET, class Base>
 void pets::pet_action_t<T_PET, Base>::apply_pet_target_effects()
 {
+  using namespace pets;
   /* NOTE NOTE NOTE NOTE NOTE
   As of 2024 Aug 18th, while testing for TWW we observed that if the pet applies the debuff, like DRW does for blood plague
   they are considered the caster, and as such, they get the benefit of the casters amps (aura 271).  If the player applies the debuff
@@ -15020,7 +15021,7 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_target_effects()
   Below we should only have debuffs that are cast by pets and guardians, that apply aura 271.
   */
   // Shared
-  parse_target_effects( pets::d_fn( &pets::death_knight_pet_td_t::dots_t::blood_plague ), dk()->spell.blood_plague,
+  parse_target_effects( d_fn( &death_knight_pet_td_t::dots_t::blood_plague ), dk()->spell.blood_plague,
                         dk()->talent.unholy.morbidity, dk()->talent.blood.coagulopathy );
 
   // Blood
