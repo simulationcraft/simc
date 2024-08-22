@@ -4507,8 +4507,9 @@ Attributes       : ....x... ........ x.x..x.. .....x..   ........ ........ ..x..
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), No Immunities (29), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Allow Dead Target (64), Initiate Combat Post-Cast (Enables Auto-Attack) (84), No Jump Pathing (208), Taps immediately (215), Aura Points On Client (268), Face unit target upon completion of jump charge (300), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=271178)   : Unknown(41)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 4 | PvP Coefficient: 1.00000 | Misc Value: 4 | Misc Value 2: 0x4 | Target: Enemy (6)
+#1 (id=271178)   : Unknown(41) | Attributes: Jump Charge Unit Melee Range (2)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2 | PvP Coefficient: 1.00000 | Misc Value: 20 | Misc Value 2: 0x14 | Target: Enemy (6)
+Hotfixed         : Misc Value (4 -> 20), Misc Value 2 (4 -> 20), Value Multiplier (4 -> 2), Attribute (0 -> 4)
 Description      : $@spelldesc190925
 Tooltip          : Stunned.
 
