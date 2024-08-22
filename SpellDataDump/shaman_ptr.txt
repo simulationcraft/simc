@@ -14988,6 +14988,8 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
+                 : 1678: Improved Flametongue Weapon (382028 effect#3)
+                 : 1679: Nature's Fury (381655 effect#2)
                  : 2938: Enhancement Shaman (137041 effect#21)
                  : 3924: Elemental Fury (60188 effect#2)
 Affecting spells : Mastery: Enhanced Elements (77223 effects: #1, #5), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Fire Elemental (188592 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Molten Weapon (224125 effects: #1, #2), Icy Edge (224126 effects: #1, #2), Crackling Surge (224127 effects: #1, #2), Legacy of the Frost Witch (384451 effects: #1, #2), Volcanic Strength (409833 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Fire Elemental (462992 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
@@ -15839,7 +15841,7 @@ Effects          :
                    Family Flags: 0, 1, 7, 8, 10, 13, 20, 25, 28, 33, 45, 51, 63, 64, 68, 70, 80, 85, 87, 94, 96, 97, 98, 106, 107, 108, 110
 #2 (id=1015761)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Critical Chance (7)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 7 | Misc Value 2: 1679 (Label) | Target: Self (1)
-                   Affected Spells (Label): Unleash Life (73685), Lightning Lasso (305484), Lightning Lasso (305485), Ascendance (344548), Earth Shock Overload (381725), Earthliving Weapon (382024), Tidewaters (409354), Tempest Strikes (428078), Awakening Storms (455130), Surging Bolt (458267), Tidewaters (462425)
+                   Affected Spells (Label): Unleash Life (73685), Lightning Lasso (305484), Lightning Lasso (305485), Ascendance (344548), Primordial Wave (375984), Earth Shock Overload (381725), Earthliving Weapon (382024), Tidewaters (409354), Tempest Strikes (428078), Awakening Storms (455130), Surging Bolt (458267), Tidewaters (462425)
 Description      : Increases the critical strike chance of your Nature spells and abilities by $s1%.
 
 Name             : Brimming with Life (id=381684) [Spell Family (11)] 
@@ -16563,7 +16565,7 @@ Effects          :
                    Family Flags: 28
 #3 (id=1014665)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 1678 (Label) | Target: Self (1)
-                   Affected Spells (Label): Echoing Shock (320125)
+                   Affected Spells (Label): Echoing Shock (320125), Primordial Wave (375984)
 Description      : $@spelldesc382027
 Tooltip          : Fire damage dealt increased by $w1%.
 
@@ -17125,6 +17127,9 @@ Effects          :
 #6 (id=1177669)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 4014 (Label) | Target: Self (1)
                    Affected Spells (Label): Searing Bolt (3606), Tremor (455622), Searing Volley (458147)
+#7 (id=1182953)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value 2: 1175 (Label) | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Increases all Fire and Frost damage you deal by $s1%.
 
 Name             : Flurry (id=382888) [Spell Family (11), Passive, Hidden] 
