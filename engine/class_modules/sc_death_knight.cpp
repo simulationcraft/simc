@@ -6360,49 +6360,6 @@ struct virulent_plague_t final : public death_knight_disease_t
   }
 };
 
-struct outbreak_aoe_t final : public death_knight_spell_t
-{
-  outbreak_aoe_t( util::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.outbreak_aoe ),
-    vp( get_action<virulent_plague_t>( "virulent_plague", p ) ),
-    ff( get_action<frost_fever_t>( "frost_fever", p ) ),
-    bp( get_action<blood_plague_t>( "blood_plague", p, true ) ),
-    diseases()
-  {
-    aoe = -1;
-    radius = data().effectN( 1 ).radius_max();
-    background = true;
-    diseases.push_back( vp );
-    diseases.push_back( ff );
-    diseases.push_back( bp );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    death_knight_spell_t::impact( s );
-    if ( p()->talent.unholy.superstrain.ok() )
-    {
-      // Randomize the order the diseases are applied to emulate the random tick order in game.
-      // Only really matters for RPPM effects.
-      rng().shuffle( diseases.begin(), diseases.end() );
-      for ( auto& d : diseases )
-      {
-        d->execute_on_target( s->target );
-      }
-    }
-    else
-    {
-      vp->execute_on_target( s->target );
-    }
-  }
-
-private:
-  propagate_const<action_t*> vp;
-  propagate_const<action_t*> ff;
-  propagate_const<action_t*> bp;
-  std::vector<action_t*> diseases;
-};
-
 // Unholy Blight DoT ====================================================
 struct unholy_blight_dot_t final : public death_knight_disease_t
 {
@@ -6418,30 +6375,51 @@ struct unholy_blight_t final : public death_knight_spell_t
   unholy_blight_t( util::string_view n, death_knight_t* p )
     : death_knight_spell_t( n, p, p->spell.unholy_blight ),
       dot( get_action<unholy_blight_dot_t>( "unholy_blight_dot", p ) ),
-      vp( get_action<outbreak_aoe_t>( "outbreak_aoe", p ) )
+      vp( get_action<virulent_plague_t>( "virulent_plague", p ) ),
+      ff( get_action<frost_fever_t>( "frost_fever", p ) ),
+      bp( get_action<blood_plague_t>( "blood_plague", p, true ) ),
+      diseases()
   {
     may_dodge = may_parry = harmful = false;
     tick_zero = background = true;
     target                 = p;
     radius                 = p->spell.unholy_blight_dot->effectN( 1 ).radius_max();
     aoe                    = -1;
+    if ( p->talent.unholy.superstrain.ok() )
+    {
+      diseases.push_back( vp );
+      diseases.push_back( ff );
+      diseases.push_back( bp );
+    }
   }
 
   void tick( dot_t* d ) override
   {
     death_knight_spell_t::tick( d );
     dot->execute_on_target( d->state->target );
-    // While in game this triggers on every enemy hit, doing so in sims creates a ton of unnecessary events.
-    // Triggering only once per tick creates the same result.
-    if( d->state->target == p()->target )
+
+    if ( p()->talent.unholy.superstrain.ok() )
     {
-      vp->execute();
+      // Randomize the order the diseases are applied to emulate the random tick order in game.
+      // Only really matters for RPPM effects.
+      rng().shuffle( diseases.begin(), diseases.end() );
+      for ( auto& dis : diseases )
+      {
+        dis->execute_on_target( d->state->target );
+      }
+    }
+    else
+    {
+      vp->execute_on_target( d->state->target );
     }
   }
 
 private:
   propagate_const<action_t*> dot;
   propagate_const<action_t*> vp;
+  propagate_const<action_t*> ff;
+  propagate_const<action_t*> bp;
+  std::vector<action_t*> diseases;
 };
 
 // ==========================================================================
@@ -10079,6 +10057,52 @@ private:
 };
 
 // Outbreak ================================================================
+struct outbreak_aoe_t final : public death_knight_spell_t
+{
+  outbreak_aoe_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->spell.outbreak_aoe ),
+      vp( get_action<virulent_plague_t>( "virulent_plague", p ) ),
+      ff( get_action<frost_fever_t>( "frost_fever", p ) ),
+      bp( get_action<blood_plague_t>( "blood_plague", p, true ) ),
+      diseases()
+  {
+    aoe        = -1;
+    radius     = data().effectN( 1 ).radius_max();
+    background = true;
+    if ( p->talent.unholy.superstrain.ok() )
+    {
+      diseases.push_back( vp );
+      diseases.push_back( ff );
+      diseases.push_back( bp );
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+    if ( p()->talent.unholy.superstrain.ok() )
+    {
+      // Randomize the order the diseases are applied to emulate the random tick order in game.
+      // Only really matters for RPPM effects.
+      rng().shuffle( diseases.begin(), diseases.end() );
+      for ( auto& d : diseases )
+      {
+        d->execute_on_target( s->target );
+      }
+    }
+    else
+    {
+      vp->execute_on_target( s->target );
+    }
+  }
+
+private:
+  propagate_const<action_t*> vp;
+  propagate_const<action_t*> ff;
+  propagate_const<action_t*> bp;
+  std::vector<action_t*> diseases;
+};
+
 struct outbreak_t final : public death_knight_spell_t
 {
   outbreak_t( death_knight_t* p, util::string_view options_str )
