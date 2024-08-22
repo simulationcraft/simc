@@ -36,12 +36,7 @@ actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 
 
 #PL
-#revisit fote in ST for mdt/ds sim purposes once we lose S4 set. (DPET dif will be dramatically higher)
-#revisit the need for tipping KS once we lose S4
-#revisit High prio SS refresh if/when Outland Venom is fixed.
 #revisit sending tipless bombardier ES after bombardier fix for both ST and AOE.
-#revisit for AOE AS IT might outperform with either of the AoE PL nodes. - actions.cleave+=/butchery,if=charges_fractional>2.8&cooldown.wildfire_bomb.charges_fractional<1.5
-#revisit KS priority for AoE with Cull the Herd. standard performance does well, but not better than low prio KS, heavy falloff beyond 3t.
 #ST is currently optimised for KCspam, if the playstyle ends up fixed it is likely better to entirely redo and take the sentactionlist as a baseline.
 
 #PACK LEADER SINGLE TARGET ACTIONLIST. 
@@ -52,7 +47,7 @@ actions.plst+=/raptor_bite,target_if=max:dot.serpent_sting.remains,if=talent.con
 actions.plst+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd
 actions.plst+=/coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1
 actions.plst+=/kill_shot,if=(buff.tip_of_the_spear.stack>0|talent.sic_em)
-actions.plst+=/flanking_strike,if=buff.tip_of_the_spear.stack<2
+actions.plst+=/flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1
 actions.plst+=/explosive_shot,if=(talent.spearhead&(!talent.symbiotic_adrenaline&(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.spearhead.remains>20|cooldown.spearhead.remains<2))|((talent.symbiotic_adrenaline|!talent.spearhead)&(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.coordinated_assault.remains>20|cooldown.coordinated_assault.remains<2)
 actions.plst+=/raptor_bite,if=(buff.furious_assault.up&buff.tip_of_the_spear.stack>0)&(!talent.mongoose_bite|buff.mongoose_fury.stack>4)
 actions.plst+=/kill_command,target_if=min:bloodseeker.remains
@@ -68,39 +63,36 @@ actions.plcleave+=/kill_command,target_if=min:bloodseeker.remains,if=buff.relent
 actions.plcleave+=/explosive_shot,if=buff.bombardier.remains
 actions.plcleave+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd
 actions.plcleave+=/coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1
-actions.plcleave+=/flanking_strike,if=buff.tip_of_the_spear.stack<2
-actions.plcleave+=/explosive_shot,if=(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.coordinated_assault.remains>20|cooldown.coordinated_assault.remains<2
+actions.plcleave+=/flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1
+actions.sentcleave+=/explosive_shot,if=(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&((cooldown.coordinated_assault.remains>20&(cooldown.coordinated_assault.remains<80|buff.coordinated_assault.remains))|(cooldown.coordinated_assault.remains>12&cooldown.coordinated_assault.remains<20))|cooldown.coordinated_assault.remains<2
 actions.plcleave+=/fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0
-actions.plcleave+=/kill_shot,if=buff.sic_em.remains&active_enemies<4
-actions.plcleave+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max
+actions.plcleave+=/kill_shot,if=buff.sic_em.remains
+actions.plcleave+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max|buff.exposed_flank.remains&buff.tip_of_the_spear.stack<2
 actions.plcleave+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0
+actions.plcleave+=/butchery,if=charges_fractional>2.8&cooldown.wildfire_bomb.charges_fractional<1.5
 actions.plcleave+=/raptor_bite,if=buff.merciless_blows.up
 actions.plcleave+=/butchery
 actions.plcleave+=/kill_shot
+actions.plcleave+=/kill_command,target_if=min:bloodseeker.remains
 actions.plcleave+=/raptor_bite
 
 
 #SENT
-#revisit fote in ST for mdt/ds sim purposes once we lose S4 set. (DPET dif will be dramatically higher)
-#revisit the need for tipping KS once we lose S4.
-#revisit High prio SS refresh if/when Outland Venom is fixed.
 #revisit sending tipless bombardier ES after bombardier fix for both ST and AoE.
-#T31 line currently exists since level 70 characters follow the sent/default actionlist.
-#sentinel is currently nyi.
 
 #SENTINEL | DEFAULT SINGLE TARGET ACTIONLIST.
 actions.sentst=kill_command,target_if=min:bloodseeker.remains,if=(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1)
 actions.sentst+=/spearhead,if=cooldown.coordinated_assault.remains
 actions.sentst+=/raptor_bite,target_if=min:dot.serpent_sting.remains,if=!dot.serpent_sting.ticking&target.time_to_die>12&(!talent.contagious_reagents|active_dot.serpent_sting=0)
 actions.sentst+=/raptor_bite,target_if=max:dot.serpent_sting.remains,if=talent.contagious_reagents&active_dot.serpent_sting<active_enemies&dot.serpent_sting.remains
-actions.sentst+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd
+actions.sentst+=/flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1
+actions.sentst+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd|!cooldown.lunar_storm.remains
 actions.sentst+=/coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1
-actions.sentst+=/fury_of_the_eagle,interrupt=1,if=set_bonus.tier31_2pc
-actions.sentst+=/flanking_strike,if=buff.tip_of_the_spear.stack<2
 actions.sentst+=/explosive_shot,if=(talent.spearhead&(!talent.symbiotic_adrenaline&(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.spearhead.remains>20|cooldown.spearhead.remains<2))|((talent.symbiotic_adrenaline|!talent.spearhead)&(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.coordinated_assault.remains>20|cooldown.coordinated_assault.remains<2)
 actions.sentst+=/kill_shot,if=buff.tip_of_the_spear.stack>0|talent.sic_em
 actions.sentst+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(!buff.relentless_primal_ferocity.up||(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<2))
-actions.sentst+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>15)
+#actions.sentst+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>15)
+actions.sentst+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.lunar_storm.remains>full_recharge_time-gcd
 actions.sentst+=/fury_of_the_eagle,interrupt=1,if=(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>40)
 actions.sentst+=/butchery,if=active_enemies>1&(talent.merciless_blows&buff.merciless_blows.down|!talent.merciless_blows)
 actions.sentst+=/raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents
@@ -112,8 +104,8 @@ actions.sentcleave+=/kill_command,target_if=min:bloodseeker.remains,if=buff.rele
 actions.sentcleave+=/explosive_shot,if=buff.bombardier.remains
 actions.sentcleave+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd
 actions.sentcleave+=/coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1
-actions.sentcleave+=/flanking_strike,if=buff.tip_of_the_spear.stack<2
-actions.sentcleave+=/explosive_shot,if=(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.coordinated_assault.remains>20|cooldown.coordinated_assault.remains<2
+actions.sentcleave+=/flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1
+actions.sentcleave+=/explosive_shot,if=(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&((cooldown.coordinated_assault.remains>20&(cooldown.coordinated_assault.remains<80|buff.coordinated_assault.remains))|(cooldown.coordinated_assault.remains>12&cooldown.coordinated_assault.remains<20))|cooldown.coordinated_assault.remains<2
 actions.sentcleave+=/fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0
 actions.sentcleave+=/kill_shot,if=buff.sic_em.remains&active_enemies<4
 actions.sentcleave+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max
