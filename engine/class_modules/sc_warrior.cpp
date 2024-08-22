@@ -4477,6 +4477,7 @@ struct execute_arms_t : public warrior_attack_t
     weapon        = &( p->main_hand_weapon );
 
     trigger_attack = new execute_damage_t( p, options_str );
+    add_child( trigger_attack );
 
     if ( p->talents.arms.massacre->ok() )
     {
