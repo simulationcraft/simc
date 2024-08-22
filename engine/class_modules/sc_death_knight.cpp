@@ -2261,6 +2261,59 @@ inline void rune_t::adjust_regen_event( timespan_t adjustment )
 
 namespace pets
 {
+// ==========================================================================
+// Death Knight Pet Target Data
+// ==========================================================================
+struct death_knight_pet_td_t : public actor_target_data_t
+{
+  struct debuffs_t
+  {
+    buff_t* frostbolt_debuff;
+  } debuff;
+
+  struct dots_t
+  {
+    dot_t* blood_plague;
+  } dot;
+
+  death_knight_pet_td_t( player_t& target, death_knight_pet_t& p );
+
+  template <typename Buff = buff_t, typename... Args>
+  inline buff_t* make_debuff( bool b, Args&&... args );
+};
+
+// utility to create target_effect_t compatible functions from death_knight_td_t member references
+template <typename T>
+static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
+{
+  if constexpr ( std::is_invocable_v<T, death_knight_pet_td_t::debuffs_t> )
+  {
+    if ( stack )
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<death_knight_pet_td_t*>( t )->debuff )->check();
+      };
+    else
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<death_knight_pet_td_t*>( t )->debuff )->check() > 0;
+      };
+  }
+  else if constexpr ( std::is_invocable_v<T, death_knight_pet_td_t::dots_t> )
+  {
+    if ( stack )
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<death_knight_pet_td_t*>( t )->dot )->current_stack();
+      };
+    else
+      return [ d ]( actor_target_data_t* t ) {
+        return std::invoke( d, static_cast<death_knight_pet_td_t*>( t )->dot )->is_ticking();
+      };
+  }
+  else
+  {
+    static_assert( static_false<T>, "Not a valid member of death_knight_pet_td_t" );
+    return nullptr;
+  }
+}
 
 // ==========================================================================
 // Generic DK pet
@@ -2311,9 +2364,16 @@ struct death_knight_pet_t : public pet_t
     }
   }
 
-  death_knight_td_t* get_target_data( player_t* target ) const override
+  target_specific_t<death_knight_pet_td_t> target_data;
+
+  death_knight_pet_td_t* get_target_data( player_t* target ) const override
   {
-    return dk()->get_target_data( target );
+    assert( target );
+    death_knight_pet_td_t*& td = target_data[ target ];
+    if ( !td )
+      td = new death_knight_pet_td_t( *target, const_cast<death_knight_pet_t&>( *this ) );
+
+    return td;
   }
 
   void init_finished() override
@@ -2477,6 +2537,9 @@ struct death_knight_pet_t : public pet_t
   }
 };
 
+// ==========================================================================
+// Death Knight Pet parent action function
+// ==========================================================================
 std::function<void( death_knight_pet_t* )> parent_pet_action_fn( action_t* parent )
 {
   return [ parent ]( death_knight_pet_t* p ) {
@@ -2492,6 +2555,22 @@ std::function<void( death_knight_pet_t* )> parent_pet_action_fn( action_t* paren
       }
     }
   };
+}
+
+// ==========================================================================
+// Death Knight Pet Target Data DoT & Debuff Creation
+// ==========================================================================
+template <typename Buff, typename... Args>
+inline buff_t* death_knight_pet_td_t::make_debuff( bool b, Args&&... args )
+{
+  return buff_t::make_buff_fallback<Buff>( target->is_enemy() && b, std::forward<Args>( args )... );
+}
+inline death_knight_pet_td_t::death_knight_pet_td_t( player_t& target, death_knight_pet_t& p )
+  : actor_target_data_t( &target, &p )
+{
+  dot.blood_plague = target.get_dot( "blood_plague", &p );
+
+  debuff.frostbolt_debuff = make_debuff( p.npc_id == 163366, *this, "frostbolt_magus_of_the_dead", p.dk()->pet_spell.frostbolt );
 }
 
 // ==========================================================================
@@ -3375,18 +3454,6 @@ private:
 
 struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 {
-  target_specific_t<dot_t> blood_plague_dot;
-
-  dot_t* get_blood_plague( player_t* target )
-  {
-    dot_t*& bp = blood_plague_dot[ target ];
-    if ( !bp )
-    {
-      bp = target->get_dot( "blood_plague", this );
-    }
-    return bp;
-  }
-
   template <typename T_ACTION>
   struct drw_action_t : public pet_action_t<dancing_rune_weapon_pet_t, T_ACTION>
   {
@@ -3641,7 +3708,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   } ability;
 
   dancing_rune_weapon_pet_t( death_knight_t* owner, util::string_view drw_name = "dancing_rune_weapon" )
-    : death_knight_pet_t( owner, drw_name, true, true ), blood_plague_dot( false ), ability()
+    : death_knight_pet_t( owner, drw_name, true, true ), ability()
   {
     // The pet wields the same weapon type as its owner for spells with weapon requirements
     main_hand_weapon.type       = owner->main_hand_weapon.type;
@@ -3741,28 +3808,6 @@ struct bloodworm_pet_t : public death_knight_pet_t
 
 struct magus_pet_t : public death_knight_pet_t
 {
-  struct magus_td_t : public actor_target_data_t
-  {
-    buff_t* frostbolt_debuff;
-
-    magus_td_t( player_t* target, magus_pet_t* p ) : actor_target_data_t( target, p )
-    {
-      frostbolt_debuff = make_buff( *this, "frostbolt_magus_of_the_dead", p->dk()->pet_spell.frostbolt );
-    }
-  };
-
-  target_specific_t<magus_td_t> target_data;
-
-  magus_td_t* get_magus_target_data( player_t* target ) const
-  {
-    magus_td_t*& td = target_data[ target ];
-    if ( !td )
-    {
-      td = new magus_td_t( target, const_cast<magus_pet_t*>( this ) );
-    }
-    return td;
-  }
-
   struct magus_spell_t : public pet_spell_t<magus_pet_t>
   {
     magus_spell_t( magus_pet_t* p, util::string_view name, const spell_data_t* spell, util::string_view options_str )
@@ -3802,7 +3847,7 @@ struct magus_pet_t : public death_knight_pet_t
 
       if ( result_is_hit( state->result ) && state->target->type == ENEMY_ADD )
       {
-        pet()->get_magus_target_data( state->target )->frostbolt_debuff->trigger();
+        pet()->get_target_data( state->target )->debuff.frostbolt_debuff->trigger();
       }
     }
   };
@@ -3839,6 +3884,7 @@ struct magus_pet_t : public death_knight_pet_t
     decomposition_can_extend          = true;
     tww1_4pc_proc                     = true;
     is_magus                          = true;
+    npc_id                            = 163366;
   }
 
   void init_spells() override
@@ -14974,7 +15020,7 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_target_effects()
   Below we should only have debuffs that are cast by pets and guardians, that apply aura 271.
   */
   // Shared
-  parse_target_effects( d_fn( &death_knight_td_t::dots_t::blood_plague ), dk()->spell.blood_plague,
+  parse_target_effects( pets::d_fn( &pets::death_knight_pet_td_t::dots_t::blood_plague ), dk()->spell.blood_plague,
                         dk()->talent.unholy.morbidity, dk()->talent.blood.coagulopathy );
 
   // Blood
