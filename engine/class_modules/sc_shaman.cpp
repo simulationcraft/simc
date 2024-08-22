@@ -12455,6 +12455,7 @@ void shaman_t::create_buffs()
 
   buff.feral_spirit_maelstrom = make_buff( this, "feral_spirit", find_spell( 333957 ) )
                                     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                                    ->set_tick_behavior( buff_tick_behavior::REFRESH )
                                     ->set_tick_zero( true )
                                     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                                       generate_maelstrom_weapon( action.feral_spirits,
