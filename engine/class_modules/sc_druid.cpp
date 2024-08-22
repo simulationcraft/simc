@@ -6583,14 +6583,16 @@ protected:
 public:
   double smolder_mul;
   double smolder_pct;
-  bool dreamstate = false;
+  lockable_t<bool> dreamstate;
 
   ap_generator_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
     : druid_spell_t( n, p, s, f ),
       smolder_mul( p->talent.astral_smolder->effectN( 1 ).percent() ),
       smolder_pct( p->talent.astral_smolder->proc_chance() )
   {
-    parse_effects( &p->buff.dreamstate->data(), [ this ] { return dreamstate; } );
+    // damage bonus is applied at end of cast, but cast speed bonuses apply before
+    parse_effects( &p->buff.dreamstate->data(), effect_mask_t( false ).enable( 3 ) );
+    parse_effects( &p->buff.dreamstate->data(), effect_mask_t( true ).disable( 3 ), [ this ] { return dreamstate; } );
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -6608,6 +6610,10 @@ public:
       p()->buff.dreamstate->decrement();
 
     dreamstate = false;
+
+    // Dreamstate is triggered after the first harmful cast.
+    if ( is_precombat && p()->talent.natures_grace.ok() && !p()->buff.dreamstate->check() )
+      p()->buff.dreamstate->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -8132,16 +8138,6 @@ struct starfire_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
 
   void execute() override
   {
-    // Piggy back the start combat cast onto the last precombat cast to work around the difference of when you enter
-    // real and raid combat. You gain this buff when you finish your first harmful cast onto an enemy from out of
-    // combat.
-    if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER && p()->talent.natures_grace.ok() )
-    {
-      p()->buff.dreamstate->trigger();
-      p()->buff.dreamstate->decrement();
-      dreamstate = true;
-    }
-
     base_t::execute();
 
     if ( p()->buff.owlkin_frenzy->up() )
@@ -10223,14 +10219,23 @@ void druid_t::init_finished()
 {
   player_t::init_finished();
 
-  // PRECOMBAT WRATH SHENANIGANS
+  // PRECOMBAT SHENANIGANS
   // we do this here so all precombat actions have gone throught init() and init_finished() so if-expr are properly
   // parsed and we can adjust wrath travel times accordingly based on subsequent precombat actions that will sucessfully
-  // cast
+  // cast. we also set and lock dreamstate after determining which casts will benefit from the cast time reduction.
+  auto first_wrath_itr = precombat_action_list.end();
+
   for ( auto pre = precombat_action_list.begin(); pre != precombat_action_list.end(); pre++ )
   {
     if ( auto wr = dynamic_cast<spells::wrath_t*>( *pre ) )
     {
+      if ( first_wrath_itr == precombat_action_list.end() )
+        first_wrath_itr = pre;
+      else if ( first_wrath_itr != pre - 1 )
+        wr->dreamstate = true;
+
+      wr->dreamstate.locked = true;
+
       std::for_each( pre + 1, precombat_action_list.end(), [ wr ]( action_t* a ) {
         // unnecessary offspec resources are disabled by default, so evaluate any if-expr on the candidate action first
         // so we don't call action_ready() on possible offspec actions that will require off-spec resources to be
@@ -10246,6 +10251,13 @@ void druid_t::init_finished()
       // then be accounted for in wrath_t::execute()
       if ( wr->harmful )
         wr->energize_type = action_energize::NONE;
+    }
+    else if ( auto sf = dynamic_cast<spells::starfire_t*>( *pre ) )
+    {
+      if ( first_wrath_itr != precombat_action_list.end() && first_wrath_itr != pre - 1 )
+        sf->dreamstate = true;
+
+      sf->dreamstate.locked = true;
     }
   }
 }
