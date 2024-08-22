@@ -12847,7 +12847,7 @@ std::string shaman_t::default_flask() const
                                 ( true_level >= 45 ) ? "greater_flask_of_endless_fathoms" :
                                 "disabled";
 
-  std::string enhancement_flask = ( true_level >= 71 ) ? "alchemical_chaos_3" :
+  std::string enhancement_flask = ( true_level >= 71 ) ? "flask_of_tempered_swiftness_3" :
                                   ( true_level >= 61 ) ? "iced_phial_of_corrupting_rage_3" :
                                   ( true_level >= 51 ) ? "spectral_flask_of_power" :
                                   ( true_level >= 45 ) ? "greater_flask_of_the_currents" :
