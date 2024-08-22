@@ -14989,12 +14989,14 @@ template <class T_PET, class Base>
 void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
 {
   // Blood
+  parse_effects( dk()->buffs.consumption );
+  parse_effects( dk()->buffs.crimson_scourge );
+  parse_effects( dk()->buffs.ossified_vitriol );
   parse_effects( dk()->buffs.sanguine_ground );
   parse_effects( dk()->buffs.heartrend, dk()->talent.blood.heartrend );
   parse_effects( dk()->buffs.hemostasis );
-  parse_effects( dk()->buffs.crimson_scourge );
   parse_effects( dk()->buffs.ossuary );
-  parse_effects( dk()->buffs.ossified_vitriol );
+
   // Don't auto parse coag, since there is some snapshot behavior when the weapon dies
   // parse_effects( dk()->buffs.coagulopathy );
 
