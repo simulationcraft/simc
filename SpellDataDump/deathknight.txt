@@ -19472,8 +19472,9 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 37 | Misc Value 2: 3134 (Label) | Target: Self (1)
                    Affected Spells (Label): Essence of the Blood Queen (433925)
 #2 (id=1123820)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3134 (Label) | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3134 (Label) | Target: Self (1)
                    Affected Spells (Label): Essence of the Blood Queen (433925)
+Hotfixed         : Base Value (3 -> 4)
 Description      : Essence of the Blood Queen stacks $s1 additional times and increases the damage of your Death Coil and Death Strike by $s2% per stack.
 
 Name             : Vampiric Aura (id=434100) [Spell Family (15), Passive] 
