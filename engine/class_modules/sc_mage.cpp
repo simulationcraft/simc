@@ -5011,6 +5011,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     // * rolling DoT
     // * hasted ticks
     // * snapshot on hit
+    // * consuming FFE on hit triggers frostfire mastery
 
     parse_options( options_str );
     // 468655 is the new on-impact spell for FFB
