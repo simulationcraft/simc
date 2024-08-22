@@ -2434,9 +2434,9 @@ struct arcane_mage_spell_t : public mage_spell_t
         if ( cr == p()->buffs.clearcasting )
         {
           p()->buffs.nether_precision->trigger();
-          // Technically, the buff disappears immediately when it reaches 4 stacks
+          // Technically, the buff disappears immediately when it reaches max stacks
           // and the Attunement buff is applied with a delay. Here, we just use
-          // 4 stacks of the buff to track the delay.
+          // max stacks of the buff to track the delay.
           p()->buffs.aether_attunement_counter->trigger();
         }
         break;
@@ -8343,7 +8343,6 @@ void mage_t::create_buffs()
   buffs.aether_attunement         = make_buff( this, "aether_attunement", find_spell( 453601 ) )
                                       ->set_default_value_from_effect( 1 );
   buffs.aether_attunement_counter = make_buff( this, "aether_attunement_counter", find_spell( 458388 ) )
-                                      ->modify_max_stack( 1 ) // AA happens every 4 CCs rather than the claimed 3.
                                       ->set_chance( talents.aether_attunement.ok() );
   buffs.arcane_charge             = make_buff( this, "arcane_charge", find_spell( 36032 ) )
                                       ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
