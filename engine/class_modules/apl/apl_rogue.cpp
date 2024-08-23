@@ -84,9 +84,9 @@ void assassination( player_t* p )
   default_->add_action( "variable,name=regen_saturated,value=energy.regen_combined>35", "Combined Energy Regen needed to saturate" );
   default_->add_action( "variable,name=not_pooling,value=(dot.deathmark.ticking|dot.kingsbane.ticking|debuff.shiv.up)|(buff.envenom.up&buff.envenom.remains<=1)|energy.pct>=(40+30*talent.hand_of_fate-15*talent.vicious_venoms)|fight_remains<=20", "Check if we should be using our energy" );
   default_->add_action( "call_action_list,name=stealthed,if=stealthed.rogue|stealthed.improved_garrote|master_assassin_remains>0" );
-  default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "slice_and_dice,if=!buff.slice_and_dice.up&dot.rupture.ticking&combo_points>=1&(!buff.indiscriminate_carnage.up|variable.single_target)", "Put SnD up initially for Cut to the Chase, refresh with Envenom if at low duration" );
   default_->add_action( "envenom,if=buff.slice_and_dice.up&buff.slice_and_dice.remains<5&combo_points>=5" );
+  default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "call_action_list,name=core_dot" );
   default_->add_action( "call_action_list,name=aoe_dot,if=!variable.single_target" );
   default_->add_action( "call_action_list,name=direct" );
@@ -97,7 +97,7 @@ void assassination( player_t* p )
 
   cds->add_action( "variable,name=deathmark_ma_condition,value=!talent.master_assassin.enabled|dot.garrote.ticking", "Cooldowns Wait on Deathmark for Garrote with MA and check for Kingsbane" );
   cds->add_action( "variable,name=deathmark_kingsbane_condition,value=!talent.kingsbane|cooldown.kingsbane.remains<=2" );
-  cds->add_action( "variable,name=deathmark_condition,value=!stealthed.rogue&dot.rupture.ticking&buff.envenom.up&!debuff.deathmark.up&variable.deathmark_ma_condition&variable.deathmark_kingsbane_condition", "Deathmark to be used if not stealthed, Rupture is up, and all other talent conditions are satisfied" );
+  cds->add_action( "variable,name=deathmark_condition,value=!stealthed.rogue&buff.slice_and_dice.remains>5&dot.rupture.ticking&buff.envenom.up&!debuff.deathmark.up&variable.deathmark_ma_condition&variable.deathmark_kingsbane_condition", "Deathmark to be used if not stealthed, Rupture is up, and all other talent conditions are satisfied" );
   cds->add_action( "call_action_list,name=items", "Usages for various special-case Trinkets and other Cantrips if applicable" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=dot.deathmark.ticking", "Invoke Externals to Deathmark" );
   cds->add_action( "deathmark,if=(variable.deathmark_condition&target.time_to_die>=10)|fight_remains<=20", "Cast Deathmark if the target will survive long enough" );
@@ -106,7 +106,7 @@ void assassination( player_t* p )
   cds->add_action( "thistle_tea,if=!buff.thistle_tea.up&(((energy.deficit>=100+energy.regen_combined|charges>=3)&debuff.shiv.remains>=4)|spell_targets.fan_of_knives>=4&debuff.shiv.remains>=6)|fight_remains<charges*6", "Avoid overcapped energy, use with shiv, or dump charges at the end of a fight" );
   cds->add_action( "call_action_list,name=misc_cds", "Potion/Racials/Other misc cooldowns" );
   cds->add_action( "call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0" );
-  cds->add_action( "cold_blood,if=combo_points>=5&!dot.rupture.refreshable&!buff.edge_case.up&cooldown.deathmark.remains>10", "Cold Blood as an Envenom buff, avoiding potential waste through edge case" );
+  cds->add_action( "cold_blood,if=effective_combo_points>=variable.effective_spend_cp&!dot.rupture.refreshable&!buff.edge_case.up&!buff.darkest_night.up&cooldown.deathmark.remains>10", "Cold Blood as an Envenom buff, avoiding potential waste through edge case" );
 
   direct->add_action( "envenom,if=!buff.darkest_night.up&effective_combo_points>=variable.effective_spend_cp&(variable.not_pooling|debuff.amplifying_poison.stack>=20|effective_combo_points>cp_max_spend|!variable.single_target)&!buff.vanish.up", "Direct Damage Abilities Envenom at applicable cp if not pooling, capped on amplifying poison stacks, on an animacharged CP, or in aoe." );
   direct->add_action( "envenom,if=buff.darkest_night.up&effective_combo_points>=cp_max_spend", "Special Envenom handling for Darkest Night" );
@@ -115,7 +115,7 @@ void assassination( player_t* p )
   direct->add_action( "mutilate,if=variable.use_caustic_filler" );
   direct->add_action( "ambush,if=variable.use_caustic_filler" );
   direct->add_action( "echoing_reprimand,if=variable.use_filler|fight_remains<20", "Use Echoing Reprimand on cooldown" );
-  direct->add_action( "fan_of_knives,if=variable.use_filler&!priority_rotation&(spell_targets.fan_of_knives>=3|buff.clear_the_witnesses.up)", "Fan of Knives at 3+ targets or with clear the witnesses active" );
+  direct->add_action( "fan_of_knives,if=variable.use_filler&!priority_rotation&(spell_targets.fan_of_knives>=3|buff.clear_the_witnesses.up&!talent.vicious_venoms)", "Fan of Knives at 3+ targets or with clear the witnesses active without vicious venoms" );
   direct->add_action( "fan_of_knives,target_if=!dot.deadly_poison_dot.ticking&(!priority_rotation|dot.garrote.ticking|dot.rupture.ticking),if=variable.use_filler&spell_targets.fan_of_knives>=3", "Fan of Knives to apply poisons if inactive on any target (or any bleeding targets with priority rotation) at 3T" );
   direct->add_action( "ambush,if=variable.use_filler&(buff.blindside.up|stealthed.rogue)&(!dot.kingsbane.ticking|debuff.deathmark.down|buff.blindside.up)", "Ambush on Blindside/Subterfuge. Do not use Ambush from stealth during Kingsbane & Deathmark." );
   direct->add_action( "mutilate,target_if=!dot.deadly_poison_dot.ticking&!debuff.amplifying_poison.up,if=variable.use_filler&spell_targets.fan_of_knives=2", "Tab-Mutilate to apply Deadly Poison at 2 targets" );
@@ -126,9 +126,11 @@ void assassination( player_t* p )
 
   aoe_dot->add_action( "variable,name=scent_effective_max_stacks,value=(spell_targets.fan_of_knives*talent.scent_of_blood.rank*2)>?20", "AoE Damage over time abilities Check what the maximum Scent of Blood stacks is currently" );
   aoe_dot->add_action( "variable,name=scent_saturation,value=buff.scent_of_blood.stack>=variable.scent_effective_max_stacks", "We are Scent Saturated when our stack count is hitting the maximum" );
-  aoe_dot->add_action( "crimson_tempest,target_if=min:remains,if=spell_targets>=3&refreshable&pmultiplier<=1&effective_combo_points>=variable.effective_spend_cp&energy.regen_combined>25&target.time_to_die-remains>6", "Crimson Tempest on 3+ Targets if we have enough energy regen" );
-  aoe_dot->add_action( "garrote,cycle_targets=1,if=combo_points.deficit>=1&(pmultiplier<=1)&refreshable&!variable.regen_saturated&spell_targets.fan_of_knives>=2&target.time_to_die-remains>12", "Garrote upkeep, also uses it in AoE to reach energy saturation" );
-  aoe_dot->add_action( "rupture,cycle_targets=1,if=effective_combo_points>=variable.effective_spend_cp&(pmultiplier<=1)&refreshable&(!variable.regen_saturated&(talent.scent_of_blood.rank=2|talent.scent_of_blood.rank<=1&(buff.indiscriminate_carnage.up|target.time_to_die-remains>15)))&target.time_to_die-remains>(4+(talent.dashing_scoundrel*5)+(variable.regen_saturated*6))&!buff.darkest_night.up", "Rupture upkeep, also uses it in AoE to reach energy saturation" );
+  aoe_dot->add_action( "variable,name=dot_finisher_condition,value=effective_combo_points>=variable.effective_spend_cp&(pmultiplier<=1)", "Helper Variable to check basic finisher conditions" );
+  aoe_dot->add_action( "crimson_tempest,target_if=min:remains,if=spell_targets>=3&variable.dot_finisher_condition&refreshable&energy.regen_combined>25&!cooldown.deathmark.ready&target.time_to_die-remains>6", "Crimson Tempest on 3+ Targets if we have enough energy regen" );
+  aoe_dot->add_action( "garrote,cycle_targets=1,if=combo_points.deficit>=1&(pmultiplier<=1)&refreshable&!variable.regen_saturated&target.time_to_die-remains>12", "Garrote upkeep, also uses it in AoE to reach energy saturation" );
+  aoe_dot->add_action( "rupture,cycle_targets=1,if=variable.dot_finisher_condition&refreshable&(!variable.regen_saturated&(talent.scent_of_blood.rank=2|talent.scent_of_blood.rank<=1&(buff.indiscriminate_carnage.up|target.time_to_die-remains>15)))&target.time_to_die-remains>(4+(talent.dashing_scoundrel*5)+(variable.regen_saturated*6))&!buff.darkest_night.up", "Rupture upkeep, also uses it in AoE to reach energy or scent of blood saturation" );
+  aoe_dot->add_action( "rupture,cycle_targets=1,if=variable.dot_finisher_condition&refreshable&variable.regen_saturated&!variable.scent_saturation&target.time_to_die-remains>15&!buff.darkest_night.up" );
   aoe_dot->add_action( "garrote,if=refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>4&master_assassin_remains=0", "Garrote as a special generator for the last CP before a finisher for edge case handling" );
 
   items->add_action( "variable,name=base_trinket_condition,value=dot.rupture.ticking&cooldown.deathmark.remains<2|fight_remains<=22", "Special Case Trinkets" );
