@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56263
-static const std::array<spelltext_data_t, 26320> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 26321> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -25912,11 +25912,12 @@ static const std::array<spelltext_data_t, 26320> __ptr_spelltext_data { {
   { 459136, "$@spelldesc459138", 0, 0 },
   { 459137, "$@spelldesc459138", "$@spelldesc459138", 0 },
   { 459138, "Randomly while in combat a bloodbeast will attach itself to Brann, periodically launching morsels of itself near players, granting $@spellname459133 upon walking through them.\r\n\r\n$@spellicon459133 $@spellname459133\r\n$@spelldesc459133", 0, "Rank 2/4" },
+  { 459139, "Increases damage and healing done by $s1%, and reduces maximum health by $s3% for $d.", "Increases damage and healing done by $w1%, and reduces maximum health by $w3%.", 0 },
   { 459140, "$@spelldesc459144", 0, 0 },
   { 459141, "$@spelldesc459144", 0, 0 },
   { 459142, "$@spelldesc459144", 0, 0 },
   { 459143, "$@spelldesc459144", "$@spelldesc459144", 0 },
-  { 459144, "Randomly while in combat a bloodbeast will attach itself to Brann, periodically launching morsels of itself near players, granting $@spellname459133 upon walking through them.\r\n\r\n$@spellicon459133 $@spellname459133\r\n$@spelldesc459133", 0, "Rank 3/4" },
+  { 459144, "Randomly while in combat a bloodbeast will attach itself to Brann, periodically launching morsels of itself near players, granting $@spellname459139 upon walking through them.\r\n\r\n$@spellicon459139 $@spellname459139\r\n$@spelldesc459139", 0, "Rank 3/4" },
   { 459145, "Increases damage and healing done by $s1%, and reduces maximum health by $s3% for $d.", "Increases damage and healing done by $w1%, and reduces maximum health by $w3%.", 0 },
   { 459146, "$@spelldesc459150", 0, 0 },
   { 459147, "$@spelldesc459150", 0, 0 },
@@ -26323,9 +26324,10 @@ static const std::array<spelltext_data_t, 26320> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56263
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __ptr_spelltext_hotfix_data { {
   {  444282,  0, "Feed the Coagulum, redirecting $444271s4% of all healing done until ${$444271s1*$444271s3/100} healing has been consumed. Once sated, the Coagulum bursts to heal $444271s5 allies for ${($444271s1+($444271s1*$444271s3*.01*(1+$444271s6*.01)))/$444271s5}.\r\n\r\nLingering effluvia causes affected allies' next attacks to deal an additional ${444271s2/$444271s5} Shadow damage, increased based on overhealing done by the Coagulum.", "Feed the Coagulum, redirecting $444271s4% of all healing done until ${$444271s1*$444271s3/100} healing has been consumed. Once sated, the Coagulum bursts to heal $444271s5 allies for ${($444271s1+($444271s1*$444271s3*.01*(1+$444271s6*.01)))/$444271s5}.\r\n\r\nLingering effluvia causes affected allies' next attacks to deal an additional $444271s2 Shadow damage, increased based on overhealing done by the Coagulum." },
   {  449619,  0, "While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Addiction.\r\n\r\nWhen your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.\r\n\r\n$?c1[$@spellicon451038$@spellname451038:\r\n$@spellaura451038][$@spellicon383874 $@spellname383874:\r\n$@spellaura383874]", "While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Cascade.\r\n\r\nWhen your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.\r\n\r\n$?c1[$@spellicon451038$@spellname451038:\r\n$@spellaura451038][$@spellicon383874 $@spellname383874:\r\n$@spellaura383874]" },
+  {  459144,  0, "Randomly while in combat a bloodbeast will attach itself to Brann, periodically launching morsels of itself near players, granting $@spellname459133 upon walking through them.\r\n\r\n$@spellicon459133 $@spellname459133\r\n$@spelldesc459133", "Randomly while in combat a bloodbeast will attach itself to Brann, periodically launching morsels of itself near players, granting $@spellname459139 upon walking through them.\r\n\r\n$@spellicon459139 $@spellname459139\r\n$@spelldesc459139" },
 } };
 
 // Spell description variables, wow build 11.0.2.56263
