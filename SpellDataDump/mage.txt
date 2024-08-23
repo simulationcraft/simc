@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56263 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56288 thewarwithin-BETA
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -6434,7 +6434,6 @@ Description      : $@spelldesc44614
 Tooltip          : Movement slowed by $w1%.
 
 Name             : Winter's Chill (id=228358) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -7023,7 +7022,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=356242)   : Apply Aura (6) | Proc Trigger Spell (42): Chrono Shift
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Trigger Spell: 236298 | Target: Self (1)
-Hotfixed         : Base Value (50 -> 25)
 #2 (id=357239)   : Apply Aura (6) | Proc Trigger Spell (42): Chrono Shift
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 236299 | Target: Self (1)
 Description      : Arcane Barrage slows enemies by $236298s% and increases your movement speed by $236299s% for $236299d.
@@ -12359,7 +12357,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Frostbolt (116), Frostfire Bolt (431044), Frostfire Bolt (468655)
                    Family Flags: 57, 108
-Hotfixed         : Affects Spells
 #2 (id=1007173)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1171370)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -12748,7 +12745,6 @@ Description      : $@spelldesc382103
 Tooltip          : Gaining Fingers of Frost every $t1 sec.
 
 Name             : Cold Front (id=382110) [Spell Family (3), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Frost [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Mage
 School           : Frost
@@ -15042,7 +15038,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7044 | Target: At Self (18)
 #3 (id=1182946)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 35183 | Target: At Self (18)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc389713
 Tooltip          : Able to teleport back to where last Blinked from.
 
@@ -17111,7 +17106,6 @@ Description      : $@spelldesc431038
 Tooltip          : Haste increased by $w1%.
 
 Name             : Frostfire Bolt (id=431044) [Spell Family (3)] 
-Hotfixed         : Attributes
 Talent Entry     : Frostfire (Fire, Frost) [tree=hero, row=2, col=2, max_rank=1, req_points=1, replace="Frostbolt" (id=116)]
 Class            : Mage
 School           : Frostfire
@@ -17145,7 +17139,6 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 #4 (id=1182511)  : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 468655 | Target: Enemy (6)
-Hotfixed         : NEW EFFECT
 Description      : Launches a bolt of frostfire at the enemy, causing $s1 Frostfire damage, slowing movement speed by $s3%, and causing an additional $o2 Frostfire damage over $d.
 
 Frostfire Bolt generates stacks for both Fire Mastery and Frost Mastery.
@@ -17429,7 +17422,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Frostfire Bolt (431044), Frostfire Bolt (468655)
                    Family Flags: 108
-Hotfixed         : Attribute (0 -> 64)
 Description      : $@spelldesc431176
 Tooltip          : Your next Frostfire Bolt always critically strikes, deals $s3% additional damage, explodes for $431176s2% of its damage to nearby enemies, and is instant cast.
 
@@ -17461,7 +17453,6 @@ Description      : Frostfire Empowerment grants you maximum benefit of Frostfire
 Activating Combustion or Icy Veins grants you Frostfire Empowerment.
 
 Name             : Frostfire Empowerment (id=431186) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frostfire
 Spell Type       : Magic
@@ -17512,7 +17503,6 @@ Effects          :
 Description      : Casting damaging Frost or Fire spells has a high chance to increase the damage of your next Frostfire Bolt by $431190s1%, stacking up to $431190u times.
 
 Name             : Severe Temperatures (id=431190) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -19269,7 +19259,6 @@ Effects          :
 Description      : Spellfire Spheres can now stack up to $s2 times.
 
 Name             : Memory of Al'ar (id=449619) [Spell Family (3), Passive, Hidden] 
-Hotfixed         : Description
 Talent Entry     : Sunfury (Arcane, Fire) [tree=hero, row=5, col=1, max_rank=1, req_points=1]
 Class            : Mage
 School           : Physical
@@ -22316,7 +22305,6 @@ Effects          :
 Description      : $@spelldesc44457
 
 Name             : Frostfire Bolt (id=468655) [Spell Family (3)] 
-Hotfixed         : NEW SPELL
 Class            : Mage
 School           : Frostfire
 Spell Type       : Magic
@@ -22341,13 +22329,10 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1182508)  : School Damage (2): frostfire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.10000 | PvP Coefficient: 1.75000 | Target: Enemy (6)
-Hotfixed         : NEW EFFECT
 #2 (id=1182509)  : Apply Aura (6) | Periodic Damage (3): frostfire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : NEW EFFECT
 #3 (id=1182510)  : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
-Hotfixed         : NEW EFFECT
 Description      : Launches a bolt of frostfire at the enemy, causing $s1 Frostfire damage, slowing movement speed by $s3%, and causing an additional $o2 Frostfire damage over $d.
 
 Frostfire Bolt generates stacks for both Fire Mastery and Frost Mastery.

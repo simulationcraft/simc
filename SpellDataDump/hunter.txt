@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56263 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56288 thewarwithin-BETA
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -4509,7 +4509,6 @@ Attributes       : ....x... ........ x.x..x.. .....x..   ........ ........ ..x..
 Effects          :
 #1 (id=271178)   : Unknown(41) | Attributes: Jump Charge Unit Melee Range (2)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2 | PvP Coefficient: 1.00000 | Misc Value: 20 | Misc Value 2: 0x14 | Target: Enemy (6)
-Hotfixed         : Misc Value (4 -> 20), Misc Value 2 (4 -> 20), Value Multiplier (4 -> 2), Attribute (0 -> 4)
 Description      : $@spelldesc190925
 Tooltip          : Stunned.
 
@@ -5257,7 +5256,6 @@ Effects          :
 Description      : $@spelldesc257891
 
 Name             : Lock and Load (id=194594) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -23218,7 +23216,6 @@ Tooltip          : Kill Shot usable on any target and it hits up to ${$s2-1} add
 Variables        : $duration= ${$s1/1000}.1
 
 Name             : Withering Fire (id=461490) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Shadow
 Spell Type       : Ranged
@@ -23274,7 +23271,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Bloodshed (346396), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Killer Companion (378955), Spearhead (378957), Murloc Stampede (388719), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Greater Mrgrglhjorn (396968), Wailing Arrow (398388), Black Arrow (430703), Shadow Surge (444269), Vicious Hunt (445431), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Lunar Storm (453398), Lunar Storm (457978), Spearhead (459690), Rapid Fire (460496), Withering Fire (461490)
                    Family Flags: 0, 106
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc430715
 Tooltip          : Damage dealt by you and your pets increased by $s1%.
 
