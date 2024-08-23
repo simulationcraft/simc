@@ -6624,6 +6624,14 @@ struct lava_burst_t : public shaman_spell_t
     {
       p()->summon_ancestor( p()->talent.routine_communication->effectN( 2 ).percent() );
     }
+
+    // [BUG] 2024-08-23 Supercharge works on Lava Burst in-game
+    if ( p()->bugs && exec_type == spell_variant::NORMAL &&
+         p()->specialization() == SHAMAN_ENHANCEMENT &&
+         rng().roll( p()->talent.supercharge->effectN( 2 ).percent() ) )
+    {
+      p()->generate_maelstrom_weapon( this, as<int>( p()->talent.supercharge->effectN( 3 ).base_value() ) );
+    }
   }
 
   timespan_t execute_time() const override
@@ -7173,6 +7181,14 @@ struct elemental_blast_t : public shaman_spell_t
       {
         p()->buff.surge_of_power->trigger();
       }
+    }
+
+    // [BUG] 2024-08-23 Supercharge works on Elemental Blast in-game
+    if ( p()->bugs && exec_type == spell_variant::NORMAL &&
+         p()->specialization() == SHAMAN_ENHANCEMENT &&
+         rng().roll( p()->talent.supercharge->effectN( 2 ).percent() ) )
+    {
+      p()->generate_maelstrom_weapon( this, as<int>( p()->talent.supercharge->effectN( 3 ).base_value() ) );
     }
   }
 
