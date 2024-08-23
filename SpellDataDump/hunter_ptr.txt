@@ -10014,6 +10014,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3876: Exposed Flank (459861 effect#2), Exposed Flank (459861 effect#3)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#2), Mastery: Spirit Bond (263135 effects: #1, #2), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Tactical Advantage (378951 effect#1), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Cornered Prey (452101 effect#1), Outland Venom (459941 effect#1), Withering Fire (461762 effects: #1, #4)
+Triggered by     : Flanking Strike (269754)
 Family Flags     : 62, 106
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : .......x ........ ........ ........   ........ ..x..... ........ ......x. 
@@ -10050,7 +10051,8 @@ Attributes       : ....x... ........ x.x..x.. .....x..   ........ ........ ..x..
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), No Immunities (29), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Taps immediately (215), Aura Points On Client (268), Face unit target upon completion of jump charge (300), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=718236)   : Charge (96)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 269752 | Target: Enemy (6)
+Hotfixed         : Trigger Spell (0 -> 269752)
 Description      : $@spelldesc269751
 
 Name             : Explosive Shot (id=269850) [Spell Family (9)] 
