@@ -1337,6 +1337,8 @@ using namespace helpers;
       background = dual = true;
 
       affected_by.chaotic_energies = destruction();
+
+      triggers.decimation = false;
     }
 
     double composite_target_multiplier( player_t* target ) const override
