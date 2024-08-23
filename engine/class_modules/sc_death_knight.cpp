@@ -10213,6 +10213,11 @@ struct wrath_of_the_frostwyrm_damage_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
     p()->buffs.wrath_of_the_frostwyrm->expire();
+
+    if ( p()->talent.rider.apocalypse_now.ok() )
+    {
+      p()->summon_rider( p()->spell.apocalypse_now_data->duration(), false );
+    }
   }
 
   void impact( action_state_t* s ) override
