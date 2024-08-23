@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56196 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56263 thewarwithin-BETA
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -5018,7 +5018,7 @@ Name             : Mind Flay (id=193473) [Spell Family (6)]
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
-Range            : 45 yards
+Range            : 55 yards
 Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
@@ -16659,7 +16659,7 @@ Class            : Priest
 School           : Shadow
 Spell Type       : Magic
 Spell Level      : 26
-Range            : 45 yards
+Range            : 55 yards
 Duration         : 15 seconds
 Cooldown         : 1 seconds
 Labels           : 16: Class Spells

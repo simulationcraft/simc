@@ -2022,7 +2022,7 @@
       { "data_type": "h", "field": "override_width" },
       { "data_type": "h", "field": "override_height" },
       { "data_type": "b", "field": "flags" },
-      { "data_type": "b", "field": "id_ui_canvas" }
+      { "data_type": "B", "field": "id_ui_canvas" }
     ]
   }
 }

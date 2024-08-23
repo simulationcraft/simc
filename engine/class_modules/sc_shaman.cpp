@@ -448,6 +448,9 @@ public:
   /// Tempest stack count
   unsigned tempest_counter;
 
+  /// Rolling Thunder last trigger
+  timespan_t rt_last_trigger;
+
   // Cached actions
   struct actions_t
   {
@@ -621,7 +624,6 @@ public:
     buff_t* tempest;
     buff_t* unlimited_power;
     buff_t* arc_discharge;
-    buff_t* rolling_thunder;
     buff_t* amplification_core;
 
     buff_t* whirling_air;
@@ -1490,7 +1492,8 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
   dot.flame_shock = target->get_dot( "flame_shock", p );
 
   // Elemental
-  debuff.lightning_rod      = make_buff( *this, "lightning_rod", p->find_spell( 197209 ) );
+  debuff.lightning_rod      = make_buff( *this, "lightning_rod", p->find_spell( 197209 ) )
+    ->set_default_value( p->constant.mul_lightning_rod );
 
   // Enhancement
   debuff.lashing_flames = make_buff( *this, "lashing_flames", p->find_spell( 334168 ) )
@@ -6767,13 +6770,9 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( p()->buff.primordial_wave->check() &&
-         p()->specialization() == SHAMAN_ENHANCEMENT )
+    if ( p()->buff.primordial_wave->check() && p()->specialization() == SHAMAN_ENHANCEMENT )
     {
-      if ( p()->talent.primordial_wave.ok() )
-      {
-        m *= p()->talent.primordial_wave->effectN( 4 ).percent();
-      }
+      m *= p()->buff.primordial_wave->value();
     }
 
     return m;
@@ -6995,7 +6994,7 @@ void trigger_all_elemental_blast_buffs( shaman_t* p )
   if ( p->specialization() != SHAMAN_ELEMENTAL ||
        !p->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B2 ) )
   {
-    return trigger_elemental_blast_proc( p );
+    return ::trigger_elemental_blast_proc( p );
   }
 
   p->buff.elemental_blast_haste->trigger( p->spell.t31_2pc_ele->effectN( 2 ).time_value() );
@@ -7043,7 +7042,7 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
   {
     // Trigger buff before executing the spell, because apparently the buffs affect the cast result
     // itself.
-    trigger_elemental_blast_proc( p() );
+    ::trigger_elemental_blast_proc( p() );
     elemental_overload_spell_t::execute();
   }
 };
@@ -7134,11 +7133,11 @@ struct elemental_blast_t : public shaman_spell_t
     if ( exec_type == spell_variant::PRIMORDIAL_WAVE )
     {
       // T31 2pc Elemental special effect
-      trigger_all_elemental_blast_buffs( p() );
+      ::trigger_all_elemental_blast_buffs( p() );
     }
     else
     {
-      trigger_elemental_blast_proc( p() );
+      ::trigger_elemental_blast_proc( p() );
     }
 
     // these are effects which ONLY trigger when the player cast the spell directly
@@ -12311,6 +12310,7 @@ void shaman_t::create_buffs()
     ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, TWW1, B4 ) );
 
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
+    ->set_default_value( talent.primordial_wave->effectN( specialization() == SHAMAN_ELEMENTAL ? 3 : 4 ).percent() )
     ->set_trigger_spell( talent.primordial_wave );
 
   buff.tempest = make_buff( this, "tempest", find_spell( 454015 ) );
@@ -12320,14 +12320,6 @@ void shaman_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   buff.arc_discharge = make_buff( this, "arc_discharge", find_spell( 455097 ) )
     ->set_default_value_from_effect( 2 );
-  // TODO: Tier30 shenanigans re-implemented here
-  buff.rolling_thunder = make_buff( this, "rolling_thunder", talent.rolling_thunder )
-    ->set_period( talent.rolling_thunder->effectN( 2 ).period() )
-    ->set_tick_time_callback( [ this ]( const buff_t* b, unsigned tick_nr ) {
-      return tick_nr == 0
-             ? timespan_t::from_seconds( rng().range( 0.0, b->buff_period.total_seconds() ) )
-             : b->buff_period;
-    } );
   buff.amplification_core = make_buff( this, "amplification_core", find_spell( 456369 ) )
     ->set_default_value_from_effect( 1 )
     ->set_trigger_spell( talent.amplification_core );
@@ -12455,6 +12447,7 @@ void shaman_t::create_buffs()
 
   buff.feral_spirit_maelstrom = make_buff( this, "feral_spirit", find_spell( 333957 ) )
                                     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                                    ->set_tick_behavior( buff_tick_behavior::REFRESH )
                                     ->set_tick_zero( true )
                                     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
                                       generate_maelstrom_weapon( action.feral_spirits,
@@ -12847,7 +12840,7 @@ std::string shaman_t::default_flask() const
                                 ( true_level >= 45 ) ? "greater_flask_of_endless_fathoms" :
                                 "disabled";
 
-  std::string enhancement_flask = ( true_level >= 71 ) ? "alchemical_chaos_3" :
+  std::string enhancement_flask = ( true_level >= 71 ) ? "flask_of_tempered_swiftness_3" :
                                   ( true_level >= 61 ) ? "iced_phial_of_corrupting_rage_3" :
                                   ( true_level >= 51 ) ? "spectral_flask_of_power" :
                                   ( true_level >= 45 ) ? "greater_flask_of_the_currents" :
@@ -13671,12 +13664,50 @@ void shaman_t::invalidate_cache( cache_e c )
 
 // shaman_t::combat_begin ====================================================
 
+struct rt_event_t : public event_t
+{
+  shaman_t* player;
+  rt_event_t( shaman_t* p, timespan_t delay = timespan_t::min() ) :
+    event_t( *p, delay > 0_ms ? delay : p->talent.rolling_thunder->effectN( 2 ).period() ), player( p )
+  { }
+
+  const char* name() const override
+  { return "rolling_thunder_event"; }
+
+  void trigger_stormkeeper()
+  {
+    if ( sim().current_time() - player->rt_last_trigger <
+         timespan_t::from_seconds( player->talent.rolling_thunder->effectN( 1 ).base_value() ) )
+    {
+      return;
+    }
+
+    if ( player->buff.stormkeeper->check() )
+    {
+      return;
+    }
+
+    player->buff.stormkeeper->trigger( 1 );
+    player->rt_last_trigger = sim().current_time();
+  }
+
+  void execute() override
+  {
+    trigger_stormkeeper();
+    make_event<rt_event_t>( sim(), player );
+  }
+};
+
 void shaman_t::combat_begin()
 {
   player_t::combat_begin();
 
   buff.witch_doctors_ancestry->trigger();
-  buff.rolling_thunder->trigger();
+
+  if ( specialization() == SHAMAN_ELEMENTAL && talent.rolling_thunder.ok() )
+  {
+    make_event<rt_event_t>( *sim, this, rng().range( 1_ms, talent.rolling_thunder->effectN( 2 ).period() ) );
+  }
 }
 
 // shaman_t::reset ==========================================================
@@ -13702,6 +13733,11 @@ void shaman_t::reset()
 
   earthen_rage_target = nullptr;
   earthen_rage_event = nullptr;
+
+  if ( specialization() == SHAMAN_ELEMENTAL && talent.rolling_thunder.ok() )
+  {
+    rt_last_trigger = -timespan_t::from_seconds( talent.rolling_thunder->effectN( 1 ).base_value() );
+  }
 
   assert( active_flame_shock.empty() );
 }

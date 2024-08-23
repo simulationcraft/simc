@@ -660,9 +660,6 @@ struct halo_t final : public priest_spell_t
     if ( power_surge )
     {
       background = dual = true;
-      energize_type     = action_energize::NONE;
-      energize_amount   = 0;
-      energize_resource = RESOURCE_NONE;
     }
   }
 

@@ -2197,10 +2197,6 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     // It costs 5 for Ret, 3 for Prot
     double c = p()->specialization() == PALADIN_RETRIBUTION ? ret_cost : prot_cost;
 
-    // 2024-08-04 Hammer of Light always costs 3 Holy Power. It's never free D:
-    if ( p()->bugs && p()->specialization() == PALADIN_PROTECTION )
-      return c;
-
     if ( p()->buffs.templar.hammer_of_light_free->up() )
       c *= 1.0 + p()->buffs.templar.hammer_of_light_free->value();
     if ( affected_by.divine_purpose_cost && p()->buffs.divine_purpose->check() )

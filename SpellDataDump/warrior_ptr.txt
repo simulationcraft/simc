@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56196 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56263 thewarwithin-BETA
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -3719,7 +3719,6 @@ Effects          :
                    Base Value: 117 | Scaled Value: 117 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Thunder Blast (435222)
                    Family Flags: 7
-Hotfixed         : Base Value (50 -> 117)
 #11 (id=1155238)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Bladestorm (446035)
@@ -3734,11 +3733,9 @@ Hotfixed         : Base Value (50 -> 117)
 #14 (id=1181948)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value 2: 3164 (Label) | Target: Self (1)
                    Affected Spells (Label): Lightning Strike (435791)
-Hotfixed         : NEW EFFECT
 #15 (id=1181949)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value 2: 3927 (Label) | Target: Self (1)
                    Affected Spells (Label): Lightning Strike Ground Current (460670)
-Hotfixed         : NEW EFFECT
 
 Name             : Glyph of the Weaponmaster (id=146974) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -9943,7 +9940,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=831435)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.32875 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (1.5525 -> 2.32875)
 #2 (id=831436)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 Description      : Assault the target in a bloodthirsty craze, dealing $s1 Physical damage and restoring $117313s1% of your health.
@@ -10014,7 +10010,6 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
 Effects          :
 #1 (id=831441)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.79685 | PvP Coefficient: 1.30000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (1.1979 -> 1.79685)
 Description      : $@spelldesc335097
 
 Name             : Crushing Blow (id=335100) [Spell Family (4)] 
@@ -10042,7 +10037,6 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
 Effects          :
 #1 (id=831443)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.79685 | PvP Coefficient: 1.30000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (1.1979 -> 1.79685)
 Description      : $@spelldesc335097
 
 Name             : Safeguard (id=335196) [Spell Family (4), Passive, Hidden] 
@@ -14606,7 +14600,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1018044)  : Apply Aura (6) | Periodic Health Leech (53): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 0.40500 | PvP Coefficient: 1.00000 | Mechanic: Bleed | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.27 -> 0.405)
 #2 (id=1018045)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 383959
 Description      : $@spelldesc288080
@@ -14758,7 +14751,6 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
 Effects          :
 #1 (id=1018337)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22499 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.157333 -> 0.224986)
 Description      : $@spelldesc1680
 
 Name             : Whirlwind (id=385233) [Spell Family (4)] 
@@ -14785,7 +14777,6 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
 Effects          :
 #1 (id=1018344)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.12450 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.083 -> 0.1245)
 Description      : $@spelldesc190411
 
 Name             : Whirlwind Off-Hand (id=385234) [Spell Family (4)] 
@@ -14812,7 +14803,6 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
 Effects          :
 #1 (id=1018345)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.13350 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.089 -> 0.1335)
 Description      : $@spelldesc190411
 
 Name             : Spell Reflection (id=385391) [Spell Family (4)] 
@@ -21865,7 +21855,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=1164474)  : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.43442 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone to Enemy (104)
-Hotfixed         : AP Coefficient (1.00309 -> 1.43442)
 Description      : $@spelldesc845
 
 Name             : Boneshaker (id=458480) [Spell Family (4)] 
