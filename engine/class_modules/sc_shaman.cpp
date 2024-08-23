@@ -1490,7 +1490,8 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
   dot.flame_shock = target->get_dot( "flame_shock", p );
 
   // Elemental
-  debuff.lightning_rod      = make_buff( *this, "lightning_rod", p->find_spell( 197209 ) );
+  debuff.lightning_rod      = make_buff( *this, "lightning_rod", p->find_spell( 197209 ) )
+    ->set_default_value( p->constant.mul_lightning_rod );
 
   // Enhancement
   debuff.lashing_flames = make_buff( *this, "lashing_flames", p->find_spell( 334168 ) )
@@ -6767,13 +6768,9 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( p()->buff.primordial_wave->check() &&
-         p()->specialization() == SHAMAN_ENHANCEMENT )
+    if ( p()->buff.primordial_wave->check() && p()->specialization() == SHAMAN_ENHANCEMENT )
     {
-      if ( p()->talent.primordial_wave.ok() )
-      {
-        m *= p()->talent.primordial_wave->effectN( 4 ).percent();
-      }
+      m *= p()->buff.primordial_wave->value();
     }
 
     return m;
@@ -6995,7 +6992,7 @@ void trigger_all_elemental_blast_buffs( shaman_t* p )
   if ( p->specialization() != SHAMAN_ELEMENTAL ||
        !p->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B2 ) )
   {
-    return trigger_elemental_blast_proc( p );
+    return ::trigger_elemental_blast_proc( p );
   }
 
   p->buff.elemental_blast_haste->trigger( p->spell.t31_2pc_ele->effectN( 2 ).time_value() );
@@ -7043,7 +7040,7 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
   {
     // Trigger buff before executing the spell, because apparently the buffs affect the cast result
     // itself.
-    trigger_elemental_blast_proc( p() );
+    ::trigger_elemental_blast_proc( p() );
     elemental_overload_spell_t::execute();
   }
 };
@@ -7134,11 +7131,11 @@ struct elemental_blast_t : public shaman_spell_t
     if ( exec_type == spell_variant::PRIMORDIAL_WAVE )
     {
       // T31 2pc Elemental special effect
-      trigger_all_elemental_blast_buffs( p() );
+      ::trigger_all_elemental_blast_buffs( p() );
     }
     else
     {
-      trigger_elemental_blast_proc( p() );
+      ::trigger_elemental_blast_proc( p() );
     }
 
     // these are effects which ONLY trigger when the player cast the spell directly
@@ -12311,6 +12308,7 @@ void shaman_t::create_buffs()
     ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, TWW1, B4 ) );
 
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
+    ->set_default_value( talent.primordial_wave->effectN( specialization() == SHAMAN_ELEMENTAL ? 3 : 4 ).percent() )
     ->set_trigger_spell( talent.primordial_wave );
 
   buff.tempest = make_buff( this, "tempest", find_spell( 454015 ) );
