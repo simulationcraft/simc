@@ -1,4 +1,4 @@
-// Spell text, wow build 11.0.2.56263
+// Spell text, wow build 11.0.2.56288
 static const std::array<spelltext_data_t, 26320> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -26322,13 +26322,11 @@ static const std::array<spelltext_data_t, 26320> __spelltext_data { {
   { 468655, "Launches a bolt of frostfire at the enemy, causing $s1 Frostfire damage, slowing movement speed by $s3%, and causing an additional $o2 Frostfire damage over $d.\r\n\r\nFrostfire Bolt generates stacks for both Fire Mastery and Frost Mastery.", "Movement speed reduced by $w3% and receiving $w2 damage every $t2 sec.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.0.2.56263
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
-  {  444282,  0, "Feed the Coagulum, redirecting $444271s4% of all healing done until ${$444271s1*$444271s3/100} healing has been consumed. Once sated, the Coagulum bursts to heal $444271s5 allies for ${($444271s1+($444271s1*$444271s3*.01*(1+$444271s6*.01)))/$444271s5}.\r\n\r\nLingering effluvia causes affected allies' next attacks to deal an additional ${444271s2/$444271s5} Shadow damage, increased based on overhealing done by the Coagulum.", "Feed the Coagulum, redirecting $444271s4% of all healing done until ${$444271s1*$444271s3/100} healing has been consumed. Once sated, the Coagulum bursts to heal $444271s5 allies for ${($444271s1+($444271s1*$444271s3*.01*(1+$444271s6*.01)))/$444271s5}.\r\n\r\nLingering effluvia causes affected allies' next attacks to deal an additional $444271s2 Shadow damage, increased based on overhealing done by the Coagulum." },
-  {  449619,  0, "While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Addiction.\r\n\r\nWhen your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.\r\n\r\n$?c1[$@spellicon451038$@spellname451038:\r\n$@spellaura451038][$@spellicon383874 $@spellname383874:\r\n$@spellaura383874]", "While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Cascade.\r\n\r\nWhen your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.\r\n\r\n$?c1[$@spellicon451038$@spellname451038:\r\n$@spellaura451038][$@spellicon383874 $@spellname383874:\r\n$@spellaura383874]" },
+// spelltext hotfix entries, wow build 11.0.2.56288
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.0.2.56263
+// Spell description variables, wow build 11.0.2.56288
 static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26916,7 +26914,7 @@ static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {  462620, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.2.56263
+// spelldesc_vars hotfix entries, wow build 11.0.2.56288
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
