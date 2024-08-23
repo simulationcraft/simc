@@ -448,6 +448,9 @@ public:
   /// Tempest stack count
   unsigned tempest_counter;
 
+  /// Rolling Thunder last trigger
+  timespan_t rt_last_trigger;
+
   // Cached actions
   struct actions_t
   {
@@ -621,7 +624,6 @@ public:
     buff_t* tempest;
     buff_t* unlimited_power;
     buff_t* arc_discharge;
-    buff_t* rolling_thunder;
     buff_t* amplification_core;
 
     buff_t* whirling_air;
@@ -12318,14 +12320,6 @@ void shaman_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   buff.arc_discharge = make_buff( this, "arc_discharge", find_spell( 455097 ) )
     ->set_default_value_from_effect( 2 );
-  // TODO: Tier30 shenanigans re-implemented here
-  buff.rolling_thunder = make_buff( this, "rolling_thunder", talent.rolling_thunder )
-    ->set_period( talent.rolling_thunder->effectN( 2 ).period() )
-    ->set_tick_time_callback( [ this ]( const buff_t* b, unsigned tick_nr ) {
-      return tick_nr == 0
-             ? timespan_t::from_seconds( rng().range( 0.0, b->buff_period.total_seconds() ) )
-             : b->buff_period;
-    } );
   buff.amplification_core = make_buff( this, "amplification_core", find_spell( 456369 ) )
     ->set_default_value_from_effect( 1 )
     ->set_trigger_spell( talent.amplification_core );
@@ -13669,12 +13663,50 @@ void shaman_t::invalidate_cache( cache_e c )
 
 // shaman_t::combat_begin ====================================================
 
+struct rt_event_t : public event_t
+{
+  shaman_t* player;
+  rt_event_t( shaman_t* p, timespan_t delay = timespan_t::min() ) :
+    event_t( *p, delay > 0_ms ? delay : p->talent.rolling_thunder->effectN( 2 ).period() ), player( p )
+  { }
+
+  const char* name() const override
+  { return "rolling_thunder_event"; }
+
+  void trigger_stormkeeper()
+  {
+    if ( sim().current_time() - player->rt_last_trigger <
+         timespan_t::from_seconds( player->talent.rolling_thunder->effectN( 1 ).base_value() ) )
+    {
+      return;
+    }
+
+    if ( player->buff.stormkeeper->check() )
+    {
+      return;
+    }
+
+    player->buff.stormkeeper->trigger( 1 );
+    player->rt_last_trigger = sim().current_time();
+  }
+
+  void execute() override
+  {
+    trigger_stormkeeper();
+    make_event<rt_event_t>( sim(), player );
+  }
+};
+
 void shaman_t::combat_begin()
 {
   player_t::combat_begin();
 
   buff.witch_doctors_ancestry->trigger();
-  buff.rolling_thunder->trigger();
+
+  if ( specialization() == SHAMAN_ELEMENTAL && talent.rolling_thunder.ok() )
+  {
+    make_event<rt_event_t>( *sim, this, rng().range( 1_ms, talent.rolling_thunder->effectN( 2 ).period() ) );
+  }
 }
 
 // shaman_t::reset ==========================================================
@@ -13700,6 +13732,11 @@ void shaman_t::reset()
 
   earthen_rage_target = nullptr;
   earthen_rage_event = nullptr;
+
+  if ( specialization() == SHAMAN_ELEMENTAL && talent.rolling_thunder.ok() )
+  {
+    rt_last_trigger = -timespan_t::from_seconds( talent.rolling_thunder->effectN( 1 ).base_value() );
+  }
 
   assert( active_flame_shock.empty() );
 }
