@@ -6780,7 +6780,7 @@ void monk_t::parse_player_effects()
 
   // brewmaster talent auras
   parse_effects( buff.pretense_of_instability );
-  parse_effects( buff.weapons_of_order, 0b11111110U );
+  parse_effects( buff.weapons_of_order, effect_mask_t( false ).enable( 1 ) );
 
   // mistweaver talent auras
   // windwalker talent auras
@@ -6796,6 +6796,19 @@ void monk_t::parse_player_effects()
     parse_target_effects( td_fn( &monk_td_t::debuff_t::jadefire_brand ), talent.windwalker.jadefire_brand_dmg, 0b001U );
 
   // Shadopan
+  if ( auto &b = buff.wisdom_of_the_wall_dodge; !b->is_fallback )
+  {
+    auto add_and_invalidate = [ & ]( std::vector<player_effect_t> &effect_vector, int effect_index,
+                                     cache_e invalidate ) {
+      add_parse_entry( effect_vector )
+          .set_type( USE_CURRENT )
+          .set_buff( b )
+          .set_eff( &b->data().effectN( effect_index ) );
+      b->add_invalidate( invalidate );
+    };
+    add_and_invalidate( dodge_effects, 1, CACHE_DODGE );
+    add_and_invalidate( crit_chance_effects, 2, CACHE_CRIT_CHANCE );
+  }
   parse_effects( buff.wisdom_of_the_wall_mastery );
   parse_effects( buff.against_all_odds );
   parse_effects( buff.veterans_eye );
@@ -8513,17 +8526,11 @@ void monk_t::create_buffs()
   buff.wisdom_of_the_wall_dodge = make_buff_fallback( talent.shado_pan.wisdom_of_the_wall->ok(), this,
                                                       "wisdom_of_the_wall_dodge", find_spell( 451242 ) )
                                       ->set_trigger_spell( talent.shado_pan.wisdom_of_the_wall )
-                                      ->set_tick_callback( [ this ]( buff_t *self, int, timespan_t ) {
-                                        self->current_value = self->default_value * composite_damage_versatility();
+                                      ->set_stack_change_callback( [ & ]( buff_t *self, int, int ) {
+                                        self->current_value =
+                                            self->data().effectN( 3 ).percent() * composite_damage_versatility();
                                       } )
-                                      ->set_default_value_from_effect( 3 )
-                                      ->set_period( timespan_t::from_seconds( 1 ) )
-                                      ->set_tick_behavior( buff_tick_behavior::CLIP )
-                                      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                                      ->add_invalidate( CACHE_CRIT_CHANCE )
-                                      ->add_invalidate( CACHE_SPELL_CRIT_CHANCE )
-                                      ->add_invalidate( CACHE_ATTACK_CRIT_CHANCE )
-                                      ->add_invalidate( CACHE_DODGE );
+                                      ->set_tick_behavior( buff_tick_behavior::CLIP );
 
   buff.wisdom_of_the_wall_flurry = make_buff_fallback( talent.shado_pan.wisdom_of_the_wall->ok(), this,
                                                        "wisdom_of_the_wall_flurry", find_spell( 452688 ) )
