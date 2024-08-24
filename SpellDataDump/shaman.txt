@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56263 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56311 thewarwithin-BETA
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -17129,7 +17129,6 @@ Effects          :
                    Affected Spells (Label): Searing Bolt (3606), Tremor (455622), Searing Volley (458147)
 #7 (id=1182953)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value 2: 1175 (Label) | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : Increases all Fire and Frost damage you deal by $s1%.
 
 Name             : Flurry (id=382888) [Spell Family (11), Passive, Hidden] 
