@@ -3365,8 +3365,11 @@ struct sigil_of_flame_base_t : public demon_hunter_spell_t
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
-    if ( auto e = sigil->create_sigil_expression( name ) )
-      return e;
+    if ( sigil )
+    {
+      if ( auto e = sigil->create_sigil_expression( name ) )
+        return e;
+    }
 
     return demon_hunter_spell_t::create_expression( name );
   }
@@ -5033,7 +5036,7 @@ struct death_sweep_t : public blade_dance_base_t
   death_sweep_t( demon_hunter_t* p, util::string_view options_str )
     : blade_dance_base_t( "death_sweep", p, p->spec.death_sweep, options_str, nullptr )
   {
-    thrill_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1);
+    thrill_delay = timespan_t::from_millis( data().effectN( 5 ).misc_value1() + 1 );
 
     if ( attacks.empty() )
     {
