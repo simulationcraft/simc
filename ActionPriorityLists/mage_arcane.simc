@@ -95,7 +95,7 @@ actions.sunfury+=/cancel_buff,name=presence_of_mind,use_off_gcd=1,if=((debuff.ma
 actions.sunfury+=/presence_of_mind,if=debuff.touch_of_the_magi.remains<=gcd.max&buff.nether_precision.up&active_enemies<4
 actions.sunfury+=/wait,sec=0.05,if=buff.presence_of_mind.up&prev_gcd.1.arcane_blast,line_cd=15
 # AOE Barrage is optimized for funnel at the cost of some overall AOE, tries to make sure you have Clearcasting if you have High Voltage or an Orb charge ready
-actions.sunfury+=/arcane_barrage,if=(buff.arcane_charge.stack=4&((time-action.arcane_blast.last_used<0.015&buff.nether_precision.stack=1)|buff.nether_precision.stack=2)&active_enemies>=4&talent.orb_barrage&buff.burden_of_power.down&((talent.high_voltage&buff.clearcasting.react)|(cooldown.arcane_orb.remains<gcd.max|action.arcane_orb.charges>0)))&buff.arcane_soul.down
+actions.sunfury+=/arcane_barrage,if=(buff.arcane_charge.stack=4&(time-action.arcane_blast.last_used<0.015&buff.nether_precision.stack=1)&active_enemies>=(5-(2*(talent.arcane_bombardment&target.health.pct<35)))&talent.arcing_cleave&buff.burden_of_power.down&((talent.high_voltage&buff.clearcasting.react)|(cooldown.arcane_orb.remains<gcd.max|action.arcane_orb.charges>0)))&buff.arcane_soul.down
 # Orb if you don't have High Voltage and a Clearcasting in AOE
 actions.sunfury+=/arcane_orb,if=buff.arcane_charge.stack<2&buff.arcane_soul.down&((!talent.high_voltage|buff.clearcasting.react=0)|active_enemies<4)
 # Barrage whenever Burden or Intuition+NP is active and you're already casting Blast, or during Arcane Soul as long as you don't cap on Clearcasting procs, or if Touch is ready
