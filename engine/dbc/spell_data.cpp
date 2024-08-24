@@ -315,7 +315,7 @@ double spelleffect_data_t::default_multiplier() const
               return 0.001;  // time_value
 
             case P_CRIT:
-            case P_CRIT_DAMAGE:
+            case P_CRIT_BONUS:
             case P_PROC_CHANCE:
               return 0.01;  // percent
 
