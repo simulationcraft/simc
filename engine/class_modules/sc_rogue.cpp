@@ -7727,8 +7727,6 @@ struct coup_de_grace_t : public rogue_attack_t
   coup_de_grace_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->spell.coup_de_grace, options_str )
   {
-    affected_by.danse_macabre = false; // Stacks gained from impact spells
-
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_secondary_trigger_action<coup_de_grace_damage_t>(
@@ -9729,10 +9727,8 @@ void actions::rogue_action_t<Base>::trigger_danse_macabre( const action_state_t*
     return;
 
   // 2023-10-19 -- Shuriken Tornado can now trigger DM stacks as a Shuriken Storm
-  // 2024-07-19 -- All Coup de Grace impacts can trigger DM stacks
   if ( ( ab::background || ab::trigger_gcd == 0_ms || !affected_by.danse_macabre ) &&
-       secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO &&
-       secondary_trigger_type != secondary_trigger::COUP_DE_GRACE )
+       secondary_trigger_type != secondary_trigger::SHURIKEN_TORNADO )
     return;
 
   if ( !p()->stealthed( STEALTH_SHADOW_DANCE ) )
