@@ -2828,6 +2828,12 @@ public:
           trigger_combo_point_gain( as<int>( p()->talent.rogue.improved_ambush->effectN( 1 ).base_value() ), p()->gains.improved_ambush );
         }
 
+        if ( p()->buffs.premeditation->up() )
+        {
+          trigger_combo_point_gain( as<int>( p()->talent.subtlety.premeditation->effectN( 1 ).base_value() ), p()->gains.premeditation );
+          p()->buffs.premeditation->expire();
+        }
+
         // Shadow Techniques gains are the last thing to be evaluated in order to reduce buff stack consume waste
         if ( p()->spec.shadow_techniques->ok() && p()->buffs.shadow_techniques->up() && ab::energize_amount > 0 )
         {
@@ -2838,12 +2844,6 @@ public:
             trigger_combo_point_gain( consume_stacks, p()->gains.shadow_techniques );
             p()->buffs.shadow_techniques->decrement( consume_stacks );
           }
-        }
-
-        if ( p()->buffs.premeditation->up() )
-        {
-          trigger_combo_point_gain( as<int>( p()->talent.subtlety.premeditation->effectN( 1 ).base_value() ), p()->gains.premeditation );
-          p()->buffs.premeditation->expire();
         }
       }
 
