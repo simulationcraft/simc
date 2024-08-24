@@ -478,6 +478,8 @@ enum item_socket_color
   // Dragonflight
   SOCKET_COLOR_TINKER               = 0x1000000,
   SOCKET_COLOR_PRIMORDIAL           = 0x2000000,
+  // The War Within
+  SOCKET_COLOR_FRAGRANCE            = 0x4000000,
   SOCKET_COLOR_MAX,
   SOCKET_COLOR_RELIC                = SOCKET_COLOR_IRON | SOCKET_COLOR_BLOOD  | SOCKET_COLOR_SHADOW |
                                       SOCKET_COLOR_FEL  | SOCKET_COLOR_ARCANE | SOCKET_COLOR_FROST |
