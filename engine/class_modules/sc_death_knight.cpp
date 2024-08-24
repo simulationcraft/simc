@@ -1824,7 +1824,7 @@ public:
   void trigger_sanlayn_execute_talents( bool is_vampiric );
   // Deathbringer
   void trigger_reapers_mark_death( player_t* target );
-  void reapers_mark_explosion_wrapper( player_t* target, int stacks );
+  void reapers_mark_explosion_wrapper( player_t* target, player_t* source, int stacks );
   // Blood
   void bone_shield_handler( const action_state_t* ) const;
   // Frost
@@ -3748,7 +3748,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       ability.soul_reaper = get_action<soul_reaper_t>( "soul_reaper", this );
     }
-    if ( dk()->talent.deathbringer.grim_reaper->ok() )
+    if ( dk()->talent.deathbringer.grim_reaper.ok() )
     {
       ability.grim_reaper_soul_reaper = get_action<soul_reaper_grim_reaper_t>( "soul_reaper_grim_reaper", this );
     }
@@ -6774,28 +6774,31 @@ struct reapers_mark_explosion_t final : public death_knight_spell_t
     this->stacks = stacks;
     execute_on_target( target );
 
-    if ( p()->talent.deathbringer.grim_reaper->ok() &&
-         target->health_percentage() < p()->talent.deathbringer.grim_reaper->effectN( 2 ).base_value() )
+    if ( target != nullptr )
     {
-      p()->active_spells.grim_reaper_soul_reaper->execute_on_target( target );
-
-      if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
+      if ( p()->talent.deathbringer.grim_reaper->ok() &&
+           target->health_percentage() < p()->talent.deathbringer.grim_reaper->effectN( 2 ).base_value() )
       {
-        p()->pets.dancing_rune_weapon_pet.active_pet()->ability.grim_reaper_soul_reaper->execute_on_target( target );
-      }
+        p()->active_spells.grim_reaper_soul_reaper->execute_on_target( target );
 
-      if ( p()->talent.blood.everlasting_bond.ok() )
-      {
-        if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
+        if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
         {
-          p()->pets.everlasting_bond_pet.active_pet()->ability.grim_reaper_soul_reaper->execute_on_target( target );
+          p()->pets.dancing_rune_weapon_pet.active_pet()->ability.grim_reaper_soul_reaper->execute_on_target( target );
+        }
+
+        if ( p()->talent.blood.everlasting_bond.ok() )
+        {
+          if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
+          {
+            p()->pets.everlasting_bond_pet.active_pet()->ability.grim_reaper_soul_reaper->execute_on_target( target );
+          }
         }
       }
-    }
 
-    if ( p()->talent.deathbringer.exterminate->ok() )
-    {
-      p()->buffs.exterminate->trigger();
+      if ( p()->talent.deathbringer.exterminate->ok() )
+      {
+        p()->buffs.exterminate->trigger();
+      }
     }
   }
 
@@ -10790,26 +10793,6 @@ struct soul_reaper_t : public death_knight_melee_attack_t
       soul_reaper_execute->execute_on_target( dot->target );
   }
 
-  void execute() override
-  {
-    death_knight_melee_attack_t::execute();
-    if ( p()->specialization() == DEATH_KNIGHT_BLOOD )
-    {
-      if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
-      {
-        p()->pets.dancing_rune_weapon_pet.active_pet()->ability.soul_reaper->execute_on_target( target );
-      }
-
-      if ( p()->talent.blood.everlasting_bond.ok() )
-      {
-        if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
-        {
-          p()->pets.everlasting_bond_pet.active_pet()->ability.soul_reaper->execute_on_target( target );
-        }
-      }
-    }
-  }
-
   void impact( action_state_t* s ) override
   {
     death_knight_melee_attack_t::impact( s );
@@ -10839,6 +10822,26 @@ struct soul_reaper_action_t final : public soul_reaper_t
     : soul_reaper_t( n, p, p->talent.soul_reaper )
   {
     parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    soul_reaper_t::execute();
+    if ( p()->specialization() == DEATH_KNIGHT_BLOOD )
+    {
+      if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
+      {
+        p()->pets.dancing_rune_weapon_pet.active_pet()->ability.soul_reaper->execute_on_target( execute_state->target );
+      }
+
+      if ( p()->talent.blood.everlasting_bond.ok() )
+      {
+        if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
+        {
+          p()->pets.everlasting_bond_pet.active_pet()->ability.soul_reaper->execute_on_target( execute_state->target );
+        }
+      }
+    }
   }
 };
 
@@ -12368,9 +12371,9 @@ void death_knight_t::trigger_reapers_mark_death( player_t* target )
   }
 }
 
-void death_knight_t::reapers_mark_explosion_wrapper( player_t* target, int stacks )
+void death_knight_t::reapers_mark_explosion_wrapper( player_t* target, player_t* source, int stacks )
 {
-  if ( target != nullptr && !target->is_sleeping() && stacks > 0 )
+  if ( target != nullptr && !target->is_sleeping() && stacks > 0 && !sim->event_mgr.canceled && source != nullptr )
   {
     debug_cast<reapers_mark_explosion_t*>( active_spells.reapers_mark_explosion )->execute_wrapper( target, stacks );
   }
@@ -13873,7 +13876,8 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
           ->set_can_cancel( true )
           ->set_freeze_stacks( true )
           ->set_expire_callback( [ & ]( buff_t* buff, int stacks, timespan_t ) {
-            p.reapers_mark_explosion_wrapper( buff->player, stacks );
+            if( !p.sim->event_mgr.canceled )
+              p.reapers_mark_explosion_wrapper( buff->player, buff->source, stacks );
           } )
           ->set_tick_callback( [ & ]( buff_t* buff, int, timespan_t ) {
             // 5/7/24 the 35% appears to be in a server script
