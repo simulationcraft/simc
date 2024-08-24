@@ -6780,19 +6780,6 @@ struct reapers_mark_explosion_t final : public death_knight_spell_t
            target->health_percentage() < p()->talent.deathbringer.grim_reaper->effectN( 2 ).base_value() )
       {
         p()->active_spells.grim_reaper_soul_reaper->execute_on_target( target );
-
-        if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
-        {
-          p()->pets.dancing_rune_weapon_pet.active_pet()->ability.grim_reaper_soul_reaper->execute_on_target( target );
-        }
-
-        if ( p()->talent.blood.everlasting_bond.ok() )
-        {
-          if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
-          {
-            p()->pets.everlasting_bond_pet.active_pet()->ability.grim_reaper_soul_reaper->execute_on_target( target );
-          }
-        }
       }
 
       if ( p()->talent.deathbringer.exterminate->ok() )
@@ -10856,6 +10843,26 @@ struct grim_reaper_soul_reaper_t final : public soul_reaper_t
     trigger_gcd                        = 0_ms;
     cooldown->duration                 = 0_ms;
     energize_amount                    = 0;
+  }
+
+  void execute() override
+  {
+    soul_reaper_t::execute();
+    if ( p()->specialization() == DEATH_KNIGHT_BLOOD )
+    {
+      if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
+      {
+        p()->pets.dancing_rune_weapon_pet.active_pet()->ability.grim_reaper_soul_reaper->execute_on_target( execute_state->target );
+      }
+
+      if ( p()->talent.blood.everlasting_bond.ok() )
+      {
+        if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
+        {
+          p()->pets.everlasting_bond_pet.active_pet()->ability.grim_reaper_soul_reaper->execute_on_target( execute_state->target );
+        }
+      }
+    }
   }
 };
 
