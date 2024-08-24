@@ -11512,16 +11512,8 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
 
   if ( specialization() == DRUID_BALANCE )
   {
-    switch ( style )
-    {
-      case FIGHT_STYLE_PATCHWERK:
-      case FIGHT_STYLE_CASTING_PATCHWERK:
-      case FIGHT_STYLE_DUNGEON_ROUTE:
-      case FIGHT_STYLE_CLEAVE_ADD:
-        return true;
-      default:
-        return false;
-    }
+    sim->error( "Balance Druid does not yet have an Action Priority List (APL)." );
+    return false;
   }
 
   return true;
