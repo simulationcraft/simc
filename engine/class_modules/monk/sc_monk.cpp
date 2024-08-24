@@ -202,8 +202,8 @@ void monk_action_t<Base>::apply_buff_effects()
   // TODO: parse_effects implementation for A_MOD_HEALING_RECEIVED (283)
   parse_effects( p()->talent.master_of_harmony.aspect_of_harmony_heal, p()->talent.master_of_harmony.coalescence,
                  [ & ] { return p()->buff.aspect_of_harmony.heal_ticking(); } );
-  parse_effects( p()->buff.balanced_stratagem_physical );
-  parse_effects( p()->buff.balanced_stratagem_magic );
+  parse_effects( p()->buff.balanced_stratagem_physical, CONSUME_BUFF );
+  parse_effects( p()->buff.balanced_stratagem_magic, CONSUME_BUFF );
 
   // Shado-Pan
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
@@ -586,11 +586,6 @@ void monk_action_t<Base>::impact( action_state_t *s )
     trigger_mystic_touch( s );
 
   base_t::impact( s );
-
-  if ( base_t::data().affected_by( p()->buff.balanced_stratagem_physical->data().effectN( 1 ) ) )
-    p()->buff.balanced_stratagem_physical->expire();
-  if ( base_t::data().affected_by( p()->buff.balanced_stratagem_magic->data().effectN( 1 ) ) )
-    p()->buff.balanced_stratagem_magic->expire();
 
   if ( s->result_type == result_amount_type::DMG_DIRECT || s->result_type == result_amount_type::DMG_OVER_TIME )
   {
@@ -6331,7 +6326,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
@@ -7728,12 +7723,16 @@ void monk_t::init_spells()
   {
     active_actions.flight_of_the_red_crane_damage = new actions::flight_of_the_red_crane_dmg_t( this );
     active_actions.flight_of_the_red_crane_heal   = new actions::flight_of_the_red_crane_heal_t( this );
+  }
+  if ( talent.conduit_of_the_celestials.unity_within->ok() )
+  {
     active_actions.flight_of_the_red_crane_celestial_damage =
         new actions::flight_of_the_red_crane_celestial_dmg_t( this );
     active_actions.flight_of_the_red_crane_celestial_heal =
         new actions::flight_of_the_red_crane_celestial_heal_t( this );
   }
-  if ( talent.conduit_of_the_celestials.strength_of_the_black_ox->ok() )
+  if ( talent.conduit_of_the_celestials.strength_of_the_black_ox->ok() ||
+       talent.conduit_of_the_celestials.unity_within->ok() )
   {
     active_actions.strength_of_the_black_ox_dmg    = new actions::strength_of_the_black_ox_t( this );
     active_actions.strength_of_the_black_ox_absorb = new actions::strength_of_the_black_ox_absorb_t( this );
