@@ -854,7 +854,7 @@ static constexpr auto _property_type_strings = util::make_static_map<int, util::
   { 12, "Spell Effect 2"            },
   { 13, "Spell Target Resistance"   },
   { 14, "Spell Resource Cost"       },
-  { 15, "Spell Critical Damage"     },
+  { 15, "Spell Critical Multiplier" },
   { 16, "Spell Penetration"         },
   { 17, "Spell Targets"             },
   { 18, "Spell Proc Chance"         },
