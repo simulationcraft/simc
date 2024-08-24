@@ -1328,7 +1328,7 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
       case P_TICK_TIME:     str = "tick time";              return &tick_time_effects;
       case P_RESOURCE_COST: str = "cost percent";           return &cost_effects;
       case P_CRIT:          str = "crit chance multiplier"; return &crit_chance_multiplier_effects;
-      case P_CRIT_DAMAGE:   str = "crit damage";            return &crit_damage_effects;
+      case P_CRIT_DAMAGE:   str = "crit bonus multiplier";  return &crit_damage_effects;
       case P_COOLDOWN:      str = "cooldown";               return &recharge_multiplier_effects;
       default:              return nullptr;
     }
