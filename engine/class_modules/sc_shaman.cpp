@@ -12424,7 +12424,7 @@ void shaman_t::create_buffs()
   buff.fusion_of_elements_fire = make_buff( this, "fusion_of_elements_fire",
                                          talent.fusion_of_elements->effectN( 2 ).trigger() )
                                 ->set_trigger_spell( talent.fusion_of_elements );
-  buff.storm_frenzy = make_buff( this, "storm_frenzy", talent.storm_frenzy->effectN( 1 ).trigger() )
+  buff.storm_frenzy = make_buff( this, "storm_frenzy", find_spell(462725) )
                                 ->set_default_value_from_effect( 1 )
                                 ->set_trigger_spell( talent.storm_frenzy );
   buff.fury_of_the_storms = make_buff( this, "fury_of_storms", find_spell( 191716 ) )
@@ -12733,6 +12733,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.thundershock );
   action.apply_affecting_aura( talent.totemic_surge );
   action.apply_affecting_aura( talent.unrelenting_calamity );
+  action.apply_affecting_aura( talent.swelling_maelstrom );
   action.apply_affecting_aura( talent.crashing_storms );
   action.apply_affecting_aura( talent.healing_stream_totem );
   action.apply_affecting_aura( talent.stormkeeper );
