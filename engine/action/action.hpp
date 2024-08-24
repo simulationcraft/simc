@@ -437,7 +437,7 @@ public:
   double base_hit;
   double base_crit;
   double crit_chance_multiplier;
-  double crit_bonus_multiplier;   // action scoped Add Percent Modifier (108): Spell Critical Multiplier (15)
+  double crit_bonus_multiplier;   // action scoped Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
   double crit_bonus;
   double base_dd_adder;
   double base_ta_adder;
