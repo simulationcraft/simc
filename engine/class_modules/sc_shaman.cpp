@@ -11065,7 +11065,7 @@ void shaman_t::init_base_stats()
   if ( specialization() == SHAMAN_ELEMENTAL )
   {
     resources.base[ RESOURCE_MAELSTROM ] = 100;
-    //resources.base[ RESOURCE_MAELSTROM ]+= talent.swelling_maelstrom->effectN( 1 ).base_value();
+    resources.base[ RESOURCE_MAELSTROM ]+= talent.swelling_maelstrom->effectN( 1 ).base_value();
     resources.base[ RESOURCE_MAELSTROM ]+= talent.primordial_capacity->effectN( 1 ).base_value();
   }
 
