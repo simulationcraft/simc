@@ -472,7 +472,7 @@ jobs:
       - name: Run
         env:
           UBSAN_OPTIONS: print_stacktrace=1
-        run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null json3=/dev/null ${{ matrix.simc_flags }}
+        run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null ${{ matrix.simc_flags }}
 
   simc-profiles:
     name: Regenerate profiles

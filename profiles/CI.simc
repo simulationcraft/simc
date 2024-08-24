@@ -84,7 +84,7 @@ load_default_talents=1
 monk=brewmaster
 spec=brewmaster
 load_default_gear=1
-Pload_default_talents=1
+load_default_talents=1
 
 monk=windwalker
 spec=windwalker
