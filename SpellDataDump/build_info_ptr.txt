@@ -1,1 +1,1 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56263 thewarwithin-BETA (hotfix 2024-08-23/56263, git build data-update-beta-56263 99d689c)
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56311 thewarwithin-BETA (hotfix 2024-08-24/56311, git build data-update-beta-56263 9b0a98b)
