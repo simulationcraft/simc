@@ -3628,6 +3628,90 @@ void nerubian_phearomone_secreter( special_effect_t& effect )
   new nerubian_phearomones_cb_t( effect );
 }
 
+// Shadowed Essence
+// 455640 Driver
+// 455643 Periodic Trigger Buff
+// 455653 Damage missile
+// 455654 Damage
+// 455656 Crit Buff
+// 455966 Primary Stat Buff
+void shadowed_essence( special_effect_t& effect )
+{
+  struct shadowed_essence_buff_t : public buff_t
+  {
+    unsigned tick_n = 0;
+
+    shadowed_essence_buff_t( const special_effect_t& e )
+      : buff_t( e.player, "shadowed_essence_periodic", e.trigger() ), tick_n( 0 )
+    {
+      auto shadowed_essence = create_buff<stat_buff_t>( e.player, e.player->find_spell( 455966 ) )
+                                  ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 2 ).average( e.item ) );
+
+      auto dark_embrace = create_buff<stat_buff_t>( e.player, e.player->find_spell( 455656 ) )
+                              ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 3 ).average( e.item ) );
+
+      auto damage         = create_proc_action<generic_proc_t>( "shadowed_essence_damage", e, 455654 );
+      damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+
+      auto missile           = create_proc_action<generic_proc_t>( "shadowed_essence", e, 455653 );
+      missile->add_child( damage );
+      missile->impact_action = damage;
+
+      set_quiet( true );
+      set_tick_on_application( true );
+      set_tick_callback( [ &, dark_embrace, shadowed_essence, missile ]( buff_t*, int, timespan_t ) {
+        if ( tick_n == 0 )
+        {
+          dark_embrace->trigger();
+        }
+        else if ( tick_n % 3 == 0 )
+        {
+          if ( dark_embrace->check() )
+            shadowed_essence->trigger();
+          else
+            dark_embrace->trigger();
+        }
+        else
+        {
+          missile->execute_on_target( e.player->target );
+        }
+        tick_n++;
+      } );
+    }
+
+    void start( int stacks, double value, timespan_t duration ) override
+    {
+      buff_t::start( stacks, value, duration );
+      tick_n = 0;
+    }
+
+    void expire_override( int stacks, timespan_t duration ) override
+    {
+      buff_t::expire_override( stacks, duration );
+      tick_n = 0;
+    }
+
+    void reset() override
+    {
+      buff_t::reset();
+      tick_n = 0;
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "shadowed_essence_periodic" );
+  if ( !buff )
+  {
+    buff = make_buff<shadowed_essence_buff_t>( effect );
+  }
+
+  effect.player->register_on_combat_state_callback( [ buff ]( player_t*, bool c ) {
+    if ( c )
+      buff->trigger();
+    else
+      buff->expire();
+  } );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -4189,7 +4273,7 @@ void register_special_effects()
   // NOTE: use unique_gear:: namespace for static consumables so we don't activate them with enable_all_item_effects
   // Food
   unique_gear::register_special_effect( 457302, consumables::selector_food( 461957, true ) );  // the sushi special
-  unique_gear::register_special_effect( 455960, consumables::selector_food( 454137 /*Maybe Wrong Spell id, had to guess*/, false));  // everything stew
+  unique_gear::register_special_effect( 455960, consumables::selector_food( 454137 /*Maybe Wrong Spell id, had to guess*/, false ) );  // everything stew
   unique_gear::register_special_effect( 454149, consumables::selector_food( 461957, true ) );  // beledar's bounty, empress' farewell, jester's board, outsider's provisions
   unique_gear::register_special_effect( 457282, consumables::selector_food( 461939, false, false ) );  // pan seared mycobloom, hallowfall chili, coreway kabob, flash fire fillet
   unique_gear::register_special_effect( 454087, consumables::selector_food( 461943, false, false ) );  // unseasoned field steak, roasted mycobloom, spongey scramble, skewered fillet, simple stew
@@ -4295,6 +4379,7 @@ void register_special_effects()
   register_special_effect( { 458573, 463095 }, items::darkmoon_deck_ascension );
   register_special_effect( { 454558, 463108 }, items::darkmoon_deck_radiance );
   register_special_effect( 441023, items::nerubian_phearomone_secreter );
+  register_special_effect( 455640, items::shadowed_essence );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
