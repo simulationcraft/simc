@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56263
-static const std::array<spelltext_data_t, 26321> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 26323> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -25434,6 +25434,7 @@ static const std::array<spelltext_data_t, 26321> __ptr_spelltext_data { {
   { 456584, "Smack your enemy with the Hammerfish and stun it for $456585d. Only usable outdoors in Khaz Algar.", 0, 0 },
   { 456585, 0, "Hammerfished.", 0 },
   { 456586, "Throw the fish back into the water to gain $s2 Perception for $d.\r\n\r\nThrowing multiple fish can extend this buff up to $M1 min.", "Khaz Algar Perception increased by $w2.", 0 },
+  { 456587, "Throw this fish back into the water for and gain a stack of Royal Chum, protecting the waters around you from Corrupted Ghoulfish and increasing the likelihood to catch Queen's Lurefish for $d.\r\n\r\nThrowing multiple Regal Dottyback can extend this buff up to $M1 min.", "The Regal Dottyback wards Corrupted Ghoulfish from the water around you and increases your chance to find Queen's Lurefish by $s3%.", 0 },
   { 456592, "Open the contents of the Huskfish's stomach.", 0, 0 },
   { 456596, 0, "Perception increased by $s1.", 0 },
   { 456620, "$@spelldesc446835", "$@spelldesc446835", 0 },
@@ -26320,6 +26321,7 @@ static const std::array<spelltext_data_t, 26321> __ptr_spelltext_data { {
   { 466876, "Add the Xal'atath's Bargain: Devour affix to a Mythic Keystone.", 0, 0 },
   { 466877, "Add the Xal'atath's Guile affix to a Mythic Keystone.", 0, 0 },
   { 466879, "Add the Challenger's Peril affix to a Mythic Keystone.", 0, 0 },
+  { 467059, "Finishing move that dispatches the enemy, dealing damage per combo point:\r\n   1 point  : ${$m1*1} damage\r\n   2 points: ${$m1*2} damage\r\n   3 points: ${$m1*3} damage\r\n   4 points: ${$m1*4} damage\r\n   5 points: ${$m1*5} damage$?s193531|((s394320|s394321)&!s193531)[\r\n   6 points: ${$m1*6} damage][]$?s193531&(s394320|s394321)[\r\n   7 points: ${$m1*7} damage][]", 0, 0 },
   { 468655, "Launches a bolt of frostfire at the enemy, causing $s1 Frostfire damage, slowing movement speed by $s3%, and causing an additional $o2 Frostfire damage over $d.\r\n\r\nFrostfire Bolt generates stacks for both Fire Mastery and Frost Mastery.", "Movement speed reduced by $w3% and receiving $w2 damage every $t2 sec.", 0 },
 } };
 
