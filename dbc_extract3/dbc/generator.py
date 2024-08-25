@@ -1515,6 +1515,7 @@ class SpellDataGenerator(DataGenerator):
          457630, 455523, 457628, # Woven Dusk Tailoring Set
          463059, # Darkmoon Deck: Ascension
          463232, # Darkmoon Sigil: Symbiosis
+         441508, 441507, 441430, # Nerubian Phearomone Secreter
         ),
 
         # Warrior:

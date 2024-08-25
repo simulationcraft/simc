@@ -849,6 +849,8 @@ struct player_t : public actor_t
     timespan_t embrace_of_the_cinderbee_timing = 0_ms;
     // Embrace of the Cinderbee miss chance
     double embrace_of_the_cinderbee_miss_chance = 0;
+    // Nerubian Phearomone Secreter number of phearomones
+    int nerubian_phearomone_secreter_phearomones = 1;
   } thewarwithin_opts;
 
 private:
