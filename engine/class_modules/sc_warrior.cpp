@@ -2300,6 +2300,7 @@ struct bloodthirst_t : public warrior_attack_t
   double rage_from_merciless_assault;
   double rage_from_burst_of_power;
   action_t* reap_the_storm;
+  bool unhinged;
   bloodthirst_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodthirst", p, p->talents.fury.bloodthirst ),
       bloodthirst_heal( nullptr ),
@@ -2309,7 +2310,8 @@ struct bloodthirst_t : public warrior_attack_t
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_merciless_assault( p->find_spell( 409983 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_burst_of_power( 0 ),
-      reap_the_storm( nullptr )
+      reap_the_storm( nullptr ),
+      unhinged( false )
   {
     parse_options( options_str );
 
@@ -2356,7 +2358,8 @@ struct bloodthirst_t : public warrior_attack_t
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
-      rage_from_burst_of_power( 0 )
+      rage_from_burst_of_power( 0 ),
+      unhinged( false )
   {
     background = true;
 
@@ -2397,9 +2400,16 @@ struct bloodthirst_t : public warrior_attack_t
     }
   }
 
+  // Constructor for unhinged specfic version, so we can disable sweeping strikes, as well as have a bool to check
+  bloodthirst_t( util::string_view name, warrior_t* p, bool unhinged )
+    : bloodthirst_t( name, p )
+  {
+    this->unhinged = unhinged;
+  }
+
   int n_targets() const override
   {
-    if ( p()->buff.meat_cleaver->check() )
+    if ( !unhinged && p()->buff.meat_cleaver->check() )
     {
       return aoe_targets + 1;
     }
@@ -2500,7 +2510,8 @@ struct bloodthirst_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    p()->buff.meat_cleaver->decrement();
+    if ( !unhinged )
+      p()->buff.meat_cleaver->decrement();
 
     if ( result_is_hit( execute_state->result ) )
     {
@@ -2563,6 +2574,7 @@ struct bloodbath_t : public warrior_attack_t
   double rage_from_merciless_assault;
   double rage_from_burst_of_power;
   action_t* reap_the_storm;
+  bool unhinged;
   bloodbath_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodbath", p, p->spec.bloodbath ),
       bloodthirst_heal( nullptr ),
@@ -2572,7 +2584,8 @@ struct bloodbath_t : public warrior_attack_t
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_merciless_assault( p->find_spell( 409983 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_burst_of_power( 0 ),
-      reap_the_storm( nullptr )
+      reap_the_storm( nullptr ),
+      unhinged( false )
   {
     parse_options( options_str );
 
@@ -2626,7 +2639,8 @@ struct bloodbath_t : public warrior_attack_t
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
-      rage_from_burst_of_power( 0 )
+      rage_from_burst_of_power( 0 ),
+      unhinged( false )
   {
     background = true;
 
@@ -2672,9 +2686,16 @@ struct bloodbath_t : public warrior_attack_t
     }
   }
 
+  // Constructor for unhinged specfic version, so we can disable sweeping strikes, as well as have a bool to check
+  bloodbath_t( util::string_view name, warrior_t* p, bool unhinged )
+    : bloodbath_t( name, p )
+  {
+    this->unhinged = unhinged;
+  }
+
   int n_targets() const override
   {
-    if ( p()->buff.meat_cleaver->check() )
+    if ( !unhinged && p()->buff.meat_cleaver->check() )
     {
       return aoe_targets + 1;
     }
@@ -2776,7 +2797,8 @@ struct bloodbath_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     p()->buff.bloodbath->decrement();
-    p()->buff.meat_cleaver->decrement();
+    if ( !unhinged )
+      p()->buff.meat_cleaver->decrement();
 
     if ( result_is_hit( execute_state->result ) )
     {
@@ -2852,6 +2874,7 @@ struct mortal_strike_t : public warrior_attack_t
   warrior_attack_t* rend_dot;
   warrior_attack_t* crushing_advance;
   action_t* reap_the_storm;
+  bool unhinged;
   mortal_strike_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "mortal_strike", p, p->talents.arms.mortal_strike ),
       exhilarating_blows_chance( p->talents.arms.exhilarating_blows->proc_chance() ),
@@ -2859,7 +2882,8 @@ struct mortal_strike_t : public warrior_attack_t
       rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() ),
       rend_dot( nullptr ),
       crushing_advance( nullptr ),
-      reap_the_storm( nullptr )
+      reap_the_storm( nullptr ),
+      unhinged( false )
   {
     parse_options( options_str );
 
@@ -2885,7 +2909,8 @@ struct mortal_strike_t : public warrior_attack_t
       exhilarating_blows_chance( p->talents.arms.exhilarating_blows->proc_chance() ),
       frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
       rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() ),
-      rend_dot( nullptr )
+      rend_dot( nullptr ),
+      unhinged( true )
   {
     background = true;
     impact_action = p->active.deep_wounds_ARMS;
@@ -2901,6 +2926,22 @@ struct mortal_strike_t : public warrior_attack_t
     if ( p->tier_set.t30_arms_4pc->ok() )
     {
       crushing_advance = new crushing_advance_t( "crushing_advance_unhinged", p );
+    }
+  }
+
+  // This version is used for unhinged, to set the variable, as unhinged does not cleave
+  mortal_strike_t( util::string_view name, warrior_t* p, bool unhinged )
+    : mortal_strike_t( name, p )
+  {
+    this->unhinged = unhinged;
+  }
+
+  void init() override
+  {
+    warrior_attack_t::init();
+    if ( unhinged )
+    {
+      affected_by.sweeping_strikes = false;
     }
   }
 
@@ -3128,18 +3169,18 @@ struct bladestorm_t : public warrior_attack_t
     // Unhinged DOES work w/ Torment and Signet
     if ( p->talents.arms.unhinged->ok() )
     {
-      mortal_strike = new mortal_strike_t( "mortal_strike_bladestorm_unhinged", p );
+      mortal_strike = new mortal_strike_t( "mortal_strike_bladestorm_unhinged", p, true );
       add_child( mortal_strike );
     }
 
     if ( p->talents.fury.unhinged->ok() )
     {
-      bloodthirst = new bloodthirst_t( "bloodthirst_bladestorm_unhinged", p );
+      bloodthirst = new bloodthirst_t( "bloodthirst_bladestorm_unhinged", p, true );
       add_child( bloodthirst );
 
       if ( p->talents.fury.reckless_abandon->ok() )
       {
-        bloodbath = new bloodbath_t( "bloodbath_bladestorm_unhinged", p );
+        bloodbath = new bloodbath_t( "bloodbath_bladestorm_unhinged", p, true );
         add_child( bloodbath );
       }
     }
@@ -6080,18 +6121,18 @@ struct ravager_t : public warrior_attack_t
 
     if ( p->talents.arms.unhinged->ok() )
     {
-      mortal_strike = new mortal_strike_t( "mortal_strike_ravager_unhinged", p );
+      mortal_strike = new mortal_strike_t( "mortal_strike_ravager_unhinged", p, true );
       add_child( mortal_strike );
     }
 
     if ( p->talents.fury.unhinged->ok() )
     {
-      bloodthirst = new bloodthirst_t( "bloodthirst_ravager_unhinged", p );
+      bloodthirst = new bloodthirst_t( "bloodthirst_ravager_unhinged", p, true );
       add_child( bloodthirst );
 
       if ( p->talents.fury.reckless_abandon->ok() )
       {
-        bloodbath = new bloodbath_t( "bloodbath_ravager_unhinged", p );
+        bloodbath = new bloodbath_t( "bloodbath_ravager_unhinged", p, true );
         add_child( bloodbath );
       }
     }
