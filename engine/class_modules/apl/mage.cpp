@@ -312,8 +312,6 @@ void frost( player_t* p )
   aoe->add_action( "ice_nova,if=freezable&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike)" );
   aoe->add_action( "frost_nova,if=freezable&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike&!remaining_winters_chill)" );
   aoe->add_action( "shifting_power,if=cooldown.comet_storm.remains>10" );
-  aoe->add_action( "flurry,if=cooldown_react&!debuff.winters_chill.remains&buff.icicles.react=4&talent.glacial_spike&!freezable" );
-  aoe->add_action( "glacial_spike,if=buff.icicles.react=5&cooldown.blizzard.remains>gcd.max" );
   aoe->add_action( "flurry,if=(freezable|!talent.glacial_spike)&cooldown_react&!debuff.winters_chill.remains&(buff.brain_freeze.react|!buff.fingers_of_frost.react)" );
   aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time|remaining_winters_chill" );
   aoe->add_action( "ice_nova,if=active_enemies>=4&(!talent.glacial_spike|!freezable)" );
