@@ -182,10 +182,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 {
   using base_t = monk_action_t<melee_attack_t>;
   monk_melee_attack_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
-  double composite_target_crit_chance( player_t *target ) const override;
-  double action_multiplier() const override;
   result_amount_type amount_type( const action_state_t *state, bool periodic ) const override;
-  void impact( action_state_t *state ) override;
 };
 
 struct monk_buff_t : public buff_t
