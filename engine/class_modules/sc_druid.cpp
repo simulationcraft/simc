@@ -11101,9 +11101,9 @@ void druid_t::create_actions()
   active.shift_to_cat = get_secondary_action<cat_form_t>( "cat_form_shift" );
   active.shift_to_cat->dual = true;
 
-  if ( talent.incarnation_moonkin.ok() )
+  if ( spec.moonkin_form->ok() )
   {
-    active.shift_to_moonkin = get_secondary_action<moonkin_form_t>( "moonkin_form_shift", find_spell( 24858 ) );
+    active.shift_to_moonkin = get_secondary_action<moonkin_form_t>( "moonkin_form_shift" );
     active.shift_to_moonkin->dual = true;
   }
 
