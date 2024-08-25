@@ -77,7 +77,7 @@ trinket2=arakara_sacbrood,id=219314,bonus_id=3131/10299
 main_hand=void_reapers_warp_blade,id=219877,bonus_id=1540/10299,enchant=authority_of_the_depths_3
 off_hand=bloodkissed_kukri,id=212395,bonus_id=1540/10299,enchant=authority_of_the_depths_3
 
-save=TWW1_Rogue_Outlaw_KIR.simc
+save=TWW1_Rogue_Outlaw.simc
 
 
 # rogue="TWW1_Rogue_Subtlety"
