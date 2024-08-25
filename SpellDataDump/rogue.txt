@@ -6331,7 +6331,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
-#1 (id=355887)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
+#1 (id=355887)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.75000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Between the Eyes (315341)
                    Family Flags: 111
@@ -13476,11 +13476,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1013522)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1013523)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
+#2 (id=1013523)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Gouge (1776), Mutilate (5374), Shiv (5938), Ambush (8676), Mutilate (27576), Fan of Knives (51723), Quaking Palm (107079), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Sinister Strike (341541), Dreadblades (343142), Shadowstrike (345121), Echoing Reprimand (354835), Echoing Reprimand (354838), Garrote (360830), Sepsis (375936), Sepsis (375938), Sepsis (385408), Serrated Bone Spike (385424), Echoing Reprimand (385616), Kingsbane (385627), Ambush (385897), Sepsis (394026), Serrated Bone Spike (394036), Echoing Reprimand (394136), Echoing Reprimand (394138), Echoing Reprimand (394140), Goremaw's Bite (426591), Goremaw's Bite (426592), Ambush (430023)
                    Family Flags: 1, 2, 3, 8, 9, 23, 26, 29, 33, 34, 50, 53, 67, 75, 82, 85, 98, 101, 104, 109, 115, 118, 119, 127
-#3 (id=1114575)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Damage (15)
+#3 (id=1114575)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Bonus Multiplier (15)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 15 | Misc Value 2: 3052 (Label) | Target: Self (1)
                    Affected Spells (Label): Blade Flurry (429951)
 Description      : Critical strike chance increased by $s1%. Critical strike damage bonus of your attacks that generate combo points increased by $s2%.
@@ -16916,7 +16916,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display Range (126), Do Not Display Duration (170), Aura Points On Client (268)
 Effects          :
-#1 (id=1075254)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
+#1 (id=1075254)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Eviscerate (196819), Eviscerate (245691), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Coup de Grace (441776), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248)
                    Family Flags: 17, 44
@@ -20691,7 +20691,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Fan of Knives (51723), Crimson Tempest (121411), Shuriken Storm (197835), Eviscerate (245691), Black Powder (319175), Black Powder (319190)
                    Family Flags: 44, 50, 81, 127
-#2 (id=1177252)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
+#2 (id=1177252)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 32 | Scaled Value: 32 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Fan of Knives (51723), Crimson Tempest (121411), Shuriken Storm (197835), Eviscerate (245691), Black Powder (319175), Black Powder (319190)
                    Family Flags: 44, 50, 81, 127

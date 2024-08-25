@@ -6569,7 +6569,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=223081)   : Apply Aura (6) | Proc Trigger Spell (42): Primal Fury
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 16953 | Target: Self (1)
-#2 (id=1148106)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
+#2 (id=1148106)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Mangle (33917)
                    Family Flags: 38
@@ -26197,7 +26197,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Shred (5221), Mangle (33917), Swipe (106785), Brutal Slash (202028), Swipe (213771)
                    Family Flags: 15, 38, 52, 74, 99
-#2 (id=1136586)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
+#2 (id=1136586)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Shred (5221), Mangle (33917), Swipe (106785), Brutal Slash (202028), Swipe (213771)
                    Family Flags: 15, 38, 52, 74, 99
