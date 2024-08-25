@@ -7131,14 +7131,20 @@ struct embedded_splinter_t final : public mage_spell_t
     sim->print_debug( "Embedded Splinters: {} (removed {})", p()->state.embedded_splinters, stack );
     assert( p()->state.embedded_splinters >= 0 );
 
-    auto vm = p()->action.volatile_magic;
-    if ( vm && !sim->event_mgr.canceled )
+    if ( sim->event_mgr.canceled )
+      return;
+
+    if ( auto vm = p()->action.volatile_magic )
     {
       double old_mult = vm->base_multiplier;
       vm->base_multiplier *= stack;
       vm->execute_on_target( d->target );
       vm->base_multiplier = old_mult;
     }
+
+    // If the dot ended due to the target dying, transfer the splinters to a nearby target.
+    if ( d->target->is_sleeping() )
+      make_event( *sim, [ this, stack ] { p()->trigger_splinter( nullptr, stack ); } );
   }
 };
 
