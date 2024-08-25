@@ -3591,7 +3591,7 @@ void nerubian_phearomone_secreter( special_effect_t& effect )
         orb = create_buff<buff_t>( e.player, e.player->find_spell( 441430 ) )
                   ->set_max_stack( e.player->thewarwithin_opts.nerubian_phearomone_secreter_phearomones )
                   ->set_duration( e.player->find_spell( 441430 )->duration() )
-                  ->set_initial_stack( orb->max_stack() )
+                  ->set_initial_stack( e.player->thewarwithin_opts.nerubian_phearomone_secreter_phearomones )
                   ->set_quiet( true )
                   ->set_expire_callback( [ & ]( buff_t*, int, timespan_t d ) {
                     if ( d > 0_ms )
@@ -3619,7 +3619,7 @@ void nerubian_phearomone_secreter( special_effect_t& effect )
         for ( int i = 0; i < listener->thewarwithin_opts.nerubian_phearomone_secreter_phearomones; i++ )
         {
           make_event( *listener->sim, rng().range( 200_ms, listener->find_spell( 441430 )->duration() ),
-                      [ this ] { stat_buff->trigger(); } );
+                      [ & ] { stat_buff->trigger(); } );
         }
       }
     }
