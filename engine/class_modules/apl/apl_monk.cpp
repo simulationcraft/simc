@@ -500,6 +500,8 @@ void windwalker( player_t *p )
         def->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
       else if ( racial_action == "azerite_surge" )
         def->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
+      else if ( racial_action == "arcane_pulse" )
+        def->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
       else
         def->add_action( racial_action );
     }
