@@ -617,7 +617,7 @@ enum property_type_t {
   P_EFFECT_2            = 12,
   P_RESISTANCE          = 13,
   P_RESOURCE_COST       = 14,
-  P_CRIT_DAMAGE         = 15,
+  P_CRIT_BONUS          = 15,
   P_PENETRATION         = 16,
   P_TARGET              = 17, // Chain Targets
   P_PROC_CHANCE         = 18,

@@ -5554,9 +5554,9 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         value_ = effect.percent();
         break;
 
-      case P_CRIT_DAMAGE:
+      case P_CRIT_BONUS:
         crit_bonus_multiplier *= 1.0 + effect.percent();
-        sim->print_debug( "{} critical damage bonus multiplier modified by {}%", *this, effect.base_value() );
+        sim->print_debug( "{} critical bonus multiplier modified by {}%", *this, effect.base_value() );
         value_ = effect.percent();
         break;
 
