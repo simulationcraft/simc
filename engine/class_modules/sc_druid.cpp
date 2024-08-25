@@ -12996,7 +12996,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
       ->set_trigger_spell( source.talent.atmospheric_exposure );
 
   debuff.bloodseeker_vines =
-    make_debuff( source.talent.thriving_growth.ok(), *this, "bloodseeker_vines_debuff", source.spec.bloodseeker_vines )
+    make_debuff( source.talent.thriving_growth.ok(), *this, "bloodseeker_vines", source.spec.bloodseeker_vines )
       ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
       ->apply_affecting_aura( source.talent.resilient_flourishing )
       ->set_quiet( true );
@@ -13017,18 +13017,18 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     } );
   }
 
-  debuff.pulverize = make_debuff( source.talent.pulverize.ok(), *this, "pulverize_debuff", source.talent.pulverize )
+  debuff.pulverize = make_debuff( source.talent.pulverize.ok(), *this, "pulverize", source.talent.pulverize )
     ->set_cooldown( 0_ms )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
     ->apply_affecting_aura( source.talent.circle_of_life_and_death_bear );
 
-  debuff.sabertooth = make_debuff( source.talent.sabertooth.ok(), *this, "sabertooth_debuff", source.spec.sabertooth )
+  debuff.sabertooth = make_debuff( source.talent.sabertooth.ok(), *this, "sabertooth", source.spec.sabertooth )
     ->set_trigger_spell( source.talent.sabertooth )
     ->set_max_stack( as<int>( source.resources.base[ RESOURCE_COMBO_POINT ] ) );
 
   debuff.stellar_amplification = make_debuff( source.talent.stellar_amplification.ok(),
-    *this, "stellar_amplification_debuff", source.spec.stellar_amplification )
+    *this, "stellar_amplification", source.spec.stellar_amplification )
       ->set_trigger_spell( source.talent.stellar_amplification )
       ->set_refresh_duration_callback(
         [ dur = source.talent.stellar_amplification->effectN( 1 ).time_value() ]( const buff_t* b, timespan_t d ) {
@@ -13036,7 +13036,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
         } );
 
   debuff.tooth_and_claw =
-    make_debuff( source.talent.tooth_and_claw.ok(), *this, "tooth_and_claw_debuff", source.spec.tooth_and_claw_debuff )
+    make_debuff( source.talent.tooth_and_claw.ok(), *this, "tooth_and_claw", source.spec.tooth_and_claw_debuff )
       ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
       ->set_stack_change_callback( [ & ]( buff_t* b, int, int new_ ) {
         source.uptime.tooth_and_claw_debuff->update( new_, b->sim->current_time() );
