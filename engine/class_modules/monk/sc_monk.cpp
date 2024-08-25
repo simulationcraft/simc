@@ -1300,10 +1300,7 @@ struct overwhelming_force_t : base_action_t
     if ( !base_action_t::p()->talent.master_of_harmony.overwhelming_force->ok() || state->chain_target > 0 )
       return;
 
-    double amount = state->result_amount;
-    if ( state->result == RESULT_CRIT )
-      amount /= 1.0 + state->result_crit_bonus;
-    overwhelming_force_damage->base_dd_min = overwhelming_force_damage->base_dd_max = amount;
+    overwhelming_force_damage->base_dd_min = overwhelming_force_damage->base_dd_max = state->result_amount;
     overwhelming_force_damage->execute();
   }
 };
