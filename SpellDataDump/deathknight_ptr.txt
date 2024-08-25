@@ -4091,7 +4091,7 @@ Effects          :
                    Affected Spells (Category): Blood Boil (50842)
 #4 (id=191179)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1642 | Target: Self (1)
-#5 (id=191180)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
+#5 (id=191180)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Frostscythe (207230), Death Knight Frost Class Set 2pc (393623)
                    Family Flags: 15
@@ -18028,7 +18028,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
-#1 (id=1032708)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
+#1 (id=1032708)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Obliterate Off-Hand (66198), Frostscythe (207230), Obliterate (222024), Obliterate (325461), Death Knight Frost Class Set 2pc (393623)
                    Family Flags: 7, 15, 111
