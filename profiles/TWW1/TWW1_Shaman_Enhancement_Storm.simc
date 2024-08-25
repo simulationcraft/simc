@@ -178,7 +178,6 @@ actions.single+=/ice_strike
 actions.single+=/windstrike
 actions.single+=/stormstrike
 actions.single+=/sundering,if=raid_event.adds.in>=action.sundering.cooldown
-actions.single+=/bag_of_tricks
 actions.single+=/tempest,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/lightning_bolt,if=talent.hailstorm.enabled&buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down
 actions.single+=/frost_shock

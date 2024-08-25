@@ -13248,7 +13248,6 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "windstrike" );
     single->add_action( "stormstrike" );
     single->add_action( "sundering,if=raid_event.adds.in>=action.sundering.cooldown" );
-    single->add_action( "bag_of_tricks" );
     single->add_action( "tempest,if=buff.maelstrom_weapon.stack>=5" );
     single->add_action( "lightning_bolt,if=talent.hailstorm.enabled&buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down" );
     single->add_action( "frost_shock" );
