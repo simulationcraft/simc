@@ -3125,7 +3125,7 @@ struct frost_mage_spell_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    if ( consumes_winters_chill )
+    if ( !background && consumes_winters_chill )
       p()->expression_support.remaining_winters_chill = std::max( p()->expression_support.remaining_winters_chill - 1, 0 );
   }
 
@@ -5714,6 +5714,7 @@ struct ice_nova_t final : public frost_mage_spell_t
     excess( excess_ )
   {
     parse_options( options_str );
+    consumes_winters_chill = true;
     aoe = -1;
     // TODO: currently deals full damage to all targets, probably a bug
     if ( !p->bugs )
@@ -5730,7 +5731,7 @@ struct ice_nova_t final : public frost_mage_spell_t
     }
     else
     {
-      consumes_winters_chill = affected_by.time_manipulation = true;
+      affected_by.time_manipulation = true;
     }
   }
 
@@ -5753,7 +5754,9 @@ struct ice_nova_t final : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
-    p()->trigger_crowd_control( s, MECHANIC_FREEZE );
+
+    if ( !excess )
+      p()->trigger_crowd_control( s, MECHANIC_FREEZE );
   }
 
   double action_multiplier() const override
