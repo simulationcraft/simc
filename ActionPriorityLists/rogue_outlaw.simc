@@ -71,8 +71,8 @@ actions.cds=adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condit
 actions.cds+=/blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd
 # With Deft Maneuvers, use Blade Flurry on cooldown at 5+ targets, or at 3-4 targets if missing combo points equal to the amount given
 actions.cds+=/blade_flurry,if=talent.deft_maneuvers&!variable.finish_condition&(spell_targets>=3&combo_points.deficit=spell_targets+buff.broadside.up|spell_targets>=5)
-# Use Roll the Bones if reroll conditions are met, or with no buffs, or seven seconds early if about to enter a Vanish window with Crackshot
-actions.cds+=/roll_the_bones,if=variable.rtb_reroll|rtb_buffs=0|rtb_buffs.max_remains<=7&cooldown.vanish.ready&talent.crackshot
+# Use Roll the Bones if reroll conditions are met, or with no buffs
+actions.cds+=/roll_the_bones,if=variable.rtb_reroll|rtb_buffs=0
 # Use Keep it Rolling with any 4 buffs. If Broadside is not active, then wait until just before the lowest buff expires in an attempt to obtain it from Count the Odds.
 actions.cds+=/keep_it_rolling,if=rtb_buffs>=4&(rtb_buffs.min_remains<2|buff.broadside.up)
 actions.cds+=/ghostly_strike,if=combo_points<cp_max_spend
