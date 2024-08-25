@@ -1956,10 +1956,10 @@ public:
   {
     if ( !check_form_restriction() )
     {
-      if ( !has_flag( flag_e::NOUNSHIFT ) && form_mask & NO_FORM )
-        p()->active.shift_to_caster->execute();
-      else if ( autoshift )
+      if ( autoshift )
         autoshift->execute();
+      else if ( !has_flag( flag_e::NOUNSHIFT ) && form_mask & NO_FORM )
+        p()->active.shift_to_caster->execute();
       else
         assert( false && "Action executed in wrong form with no valid form to shift to!" );
     }
