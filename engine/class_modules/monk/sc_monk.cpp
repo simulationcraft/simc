@@ -1300,9 +1300,21 @@ struct overwhelming_force_t : base_action_t
     if ( !base_action_t::p()->talent.master_of_harmony.overwhelming_force->ok() || state->chain_target > 0 )
       return;
 
+    /*
+     * If the triggering hit is a crit, the damage is divided by the crit bonus
+     * multiplier, and then multiplied by 2.0 (or the context base crit bonus?)
+     *
+     * E.g.
+     * Base Damage (Crit) 64286, Crit Bonus Multiplier 2.02
+     * Base Damage (Pre-Crit) 64286 / 2.02 ~ 31825
+     * Overwhelming Force Damage 31825 * 0.15 * 2 = ~9547
+     */
     double amount = state->result_amount;
-    if ( state->result == RESULT_CRIT )
+    if ( state->result == RESULT_CRIT && base_action_t::p()->bugs )
+    {
       amount /= 1.0 + state->result_crit_bonus;
+      amount *= 2.0;
+    }
     overwhelming_force_damage->base_dd_min = overwhelming_force_damage->base_dd_max = amount;
     overwhelming_force_damage->execute();
   }
@@ -1430,7 +1442,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     p()->baseline.brewmaster.brews.adjust(
         timespan_t::from_seconds( p()->baseline.monk.tiger_palm->effectN( 3 ).base_value() ) );
 
-    if ( face_palm )
+    if ( face_palm && !p()->bugs )
       p()->baseline.brewmaster.brews.adjust( p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
 
     if ( p()->buff.combat_wisdom->up() )
@@ -1561,7 +1573,8 @@ struct press_the_advantage_t : base_action_t
       base_action_t::p()->buff.press_the_advantage->expire();
 
       if ( ( face_palm = base_action_t::rng().roll(
-                 base_action_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) )
+                 base_action_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) &&
+           !base_action_t::p()->bugs )
       {
         base_action_t::p()->proc.face_palm->occur();
         base_action_t::p()->baseline.brewmaster.brews.adjust(
