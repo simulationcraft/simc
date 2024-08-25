@@ -1756,6 +1756,7 @@ class SpellDataGenerator(DataGenerator):
             ( 452562, 0 ),          # Lucky Coin buff
             ( 457236, 0 ),          # Singular Focus damage spell
             ( 459002, 0 ),          # Outlaw 11.0 Set Bonus damage spell
+            ( 467059, 0 ),          # Outlaw Crackshot Dispatch clone damage spell
         ),
 
         # Priest:
