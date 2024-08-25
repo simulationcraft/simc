@@ -3595,15 +3595,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     }
   };
 
-  struct vampiric_strike_unholy_t : public drw_action_t<melee_attack_t>
-  {
-    vampiric_strike_unholy_t( util::string_view n, dancing_rune_weapon_pet_t* p )
-      : drw_action_t<melee_attack_t>( p, n, p->dk()->spell.vampiric_strike )
-    {
-      attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
-    }
-  };
-
   struct marrowrend_t : public drw_action_t<melee_attack_t>
   {
     int stack_gain;
@@ -3704,7 +3695,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     action_t* grim_reaper_soul_reaper;
     action_t* consumption;
     action_t* vampiric_strike;
-    action_t* vampiric_strike_unholy;
   } ability;
 
   dancing_rune_weapon_pet_t( death_knight_t* owner, util::string_view drw_name = "dancing_rune_weapon" )
@@ -3759,7 +3749,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     if ( dk()->talent.sanlayn.vampiric_strike.ok() )
     {
       ability.vampiric_strike = get_action<vampiric_strike_t>( "vampiric_strike", this );
-      ability.vampiric_strike_unholy = get_action<vampiric_strike_unholy_t>( "vampiric_strike_unholy", this );
     }
   }
 
@@ -9459,8 +9448,6 @@ struct vampiric_strike_blood_t : public heart_strike_base_t
 
     if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
     {
-      if ( p()->bugs )
-        p()->pets.dancing_rune_weapon_pet.active_pet()->ability.vampiric_strike_unholy->execute_on_target( target );
       p()->pets.dancing_rune_weapon_pet.active_pet()->ability.vampiric_strike->execute_on_target( target );
     }
 
@@ -9468,8 +9455,6 @@ struct vampiric_strike_blood_t : public heart_strike_base_t
     {
       if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
       {
-        if ( p()->bugs )
-          p()->pets.everlasting_bond_pet.active_pet()->ability.vampiric_strike_unholy->execute_on_target( target );
         p()->pets.everlasting_bond_pet.active_pet()->ability.vampiric_strike->execute_on_target( target );
       }
     }
