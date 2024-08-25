@@ -5565,7 +5565,8 @@ struct raze_t final : public trigger_aggravate_wounds_t<DRUID_GUARDIAN,
     base_t::execute();
 
     // raze triggers vicious cycle once per target hit
-    p()->buff.vicious_cycle_mangle->trigger( this, num_targets_hit );
+    if ( hit_any_target )
+      p()->buff.vicious_cycle_mangle->trigger( this, num_targets_hit );
   }
 };
 
