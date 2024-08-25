@@ -13,6 +13,7 @@
 #include "dbc/item_database.hpp"
 #include "fmt/format.h"
 #include "item/item.hpp"
+#include "item/special_effect.hpp"
 #include "player/player.hpp"
 #include "util/generic.hpp"
 #include "util/util.hpp"
@@ -100,10 +101,9 @@ double spelleffect_data_t::delta( const player_t* p, unsigned level ) const
 
 double spelleffect_data_t::delta( const item_t* item ) const
 {
-  double m_scale = 0;
+  assert( item && "spelleffect_data_t::delta( item ) called without a valid item." );
 
-  if ( !item )
-    return 0;
+  double m_scale = 0;
 
   // Spells that do not have Scales with Casting Item's Level (354) attribute will instead return player-scaled value.
   // If the scaling is -7, despite being tied to an item it seems to get a combat rating multiplier of 1.5. It remains
@@ -112,8 +112,13 @@ double spelleffect_data_t::delta( const item_t* item ) const
   if ( !_spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
     return delta( item->player );
 
+  // If the spell_data_t::_max_scaling_level is set, it will be used as the maximum level for scaling.
+  auto item_level = item->item_level();
+  if ( _spell->max_scaling_level() > 0 )
+    item_level = std::min( item_level, _spell->max_scaling_level() );
+
   if ( _m_delta != 0 )
-    m_scale = item_database::item_budget( item, _spell->max_scaling_level() );
+    m_scale = item_database::item_budget( item, item_level);
 
   if ( scaling_class() == PLAYER_SPECIAL_SCALE7 )
   {
@@ -121,11 +126,58 @@ double spelleffect_data_t::delta( const item_t* item ) const
   }
   else if ( scaling_class() == PLAYER_SPECIAL_SCALE8 )
   {
-    const auto& props = item->player->dbc->random_property( item->item_level() );
+    const auto& props = item->player->dbc->random_property( item_level );
     m_scale = props.damage_replace_stat;
+  }
+  else if ( scaling_class() == PLAYER_SPECIAL_SCALE9 )
+  {
+    const auto& props = item->player->dbc->random_property( item_level );
+    m_scale = props.damage_secondary;
   }
 
   return scaled_delta( m_scale );
+}
+
+double spelleffect_data_t::delta( const special_effect_t& effect ) const
+{
+  // Use player scaling if spell does not have the scale with item level flag
+  if ( !_spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
+    return delta( effect.player );
+
+  // Use item scaling if a valid item exists
+  if ( effect.item )
+    return delta( effect.item );
+
+  // If we need item scaling but there is no item, max scaling level seems to be used as the item level
+  if ( _spell->max_scaling_level() > 0 )
+  {
+    auto level = _spell->max_scaling_level();
+
+    double m_scale = 0;
+    if ( _m_delta != 0 )
+      m_scale = item_database::item_budget( effect.player, level );
+
+    if ( scaling_class() == PLAYER_SPECIAL_SCALE7 )
+    {
+      // TODO: confirm which combat rating multiplier is used
+      m_scale = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_TRINKET, level, m_scale );
+    }
+    else if ( scaling_class() == PLAYER_SPECIAL_SCALE8 )
+    {
+      const auto& props = effect.player->dbc->random_property( level );
+      m_scale = props.damage_replace_stat;
+    }
+    else if ( scaling_class() == PLAYER_SPECIAL_SCALE9 )
+    {
+      const auto& props = effect.player->dbc->random_property( level );
+      m_scale = props.damage_secondary;
+    }
+
+    return scaled_delta( m_scale );
+  }
+
+  assert( false && "spelleffect_data_t::delta( special_effect_t ) unable to calculate scaling." );
+  return 0;
 }
 
 double spelleffect_data_t::bonus( const player_t* p, unsigned level ) const
@@ -146,6 +198,11 @@ double spelleffect_data_t::min( const item_t* item ) const
   return scaled_min( average( item ), delta( item ) );
 }
 
+double spelleffect_data_t::min( const special_effect_t& effect ) const
+{
+  return scaled_min( average( effect ), delta( effect ) );
+}
+
 double spelleffect_data_t::max( const player_t* p, unsigned level ) const
 {
   assert( level <= MAX_SCALING_LEVEL );
@@ -156,6 +213,11 @@ double spelleffect_data_t::max( const player_t* p, unsigned level ) const
 double spelleffect_data_t::max( const item_t* item ) const
 {
   return scaled_max( average( item ), delta( item ) );
+}
+
+double spelleffect_data_t::max( const special_effect_t& effect ) const
+{
+  return scaled_max( average( effect ), delta( effect ) );
 }
 
 double spelleffect_data_t::average( const player_t* p, unsigned level ) const
@@ -199,8 +261,7 @@ double spelleffect_data_t::average( const player_t* p, unsigned level ) const
 
 double spelleffect_data_t::average( const item_t* item ) const
 {
-  if ( !item )
-    return 0;
+  assert( item && "spelleffect_data_t::average( item ) called without a valid item." );
 
   // Spells that do not have Scales with Casting Item's Level (354) attribute will instead return player-scaled value.
   // If the scaling is -7, despite being tied to an item it seems to get a combat rating multiplier of 1.5. It remains
@@ -209,24 +270,69 @@ double spelleffect_data_t::average( const item_t* item ) const
   if ( !_spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
     return average( item->player );
 
-  auto budget = item_database::item_budget( item, _spell->max_scaling_level() );
+  // If the spell_data_t::_max_scaling_level is set, it will be used as the maximum level for scaling.
+  auto item_level = item->item_level();
+  if ( _spell->max_scaling_level() > 0 )
+    item_level = std::min( item_level, _spell->max_scaling_level() );
+
+  auto budget = item_database::item_budget( item, item_level );
+
   if ( scaling_class() == PLAYER_SPECIAL_SCALE7 )
   {
-    budget = item_database::apply_combat_rating_multiplier( *item, budget, _spell->max_scaling_level() );
+    budget = item_database::apply_combat_rating_multiplier( *item, budget, item_level );
   }
   else if ( scaling_class() == PLAYER_SPECIAL_SCALE8 )
   {
-    const auto& props = item->player->dbc->random_property( item->item_level() );
+    const auto& props = item->player->dbc->random_property( item_level );
     budget = props.damage_replace_stat;
   }
-  else if ( ( scaling_class() == PLAYER_NONE || scaling_class() == PLAYER_SPECIAL_SCALE9 ) &&
-            _spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
+  else if ( scaling_class() == PLAYER_NONE || scaling_class() == PLAYER_SPECIAL_SCALE9 )
   {
-    const auto& props = item->player->dbc->random_property( item->item_level() );
+    const auto& props = item->player->dbc->random_property( item_level );
     budget = props.damage_secondary;
   }
 
   return _m_coeff * budget;
+}
+
+double spelleffect_data_t::average( const special_effect_t& effect ) const
+{
+  // Use player scaling if spell does not have the scale with item level flag
+  if ( !_spell->flags( spell_attribute::SX_SCALE_ILEVEL ) )
+    return average( effect.player );
+
+  // Use item scaling if a valid item exists
+  if ( effect.item )
+    return average( effect.item );
+
+  // If we need item scaling but there is no item, max scaling level seems to be used as the item level
+  if ( _spell->max_scaling_level() > 0 )
+  {
+    auto level = _spell->max_scaling_level();
+
+    auto budget = item_database::item_budget( effect.player, level );
+
+    if ( scaling_class() == PLAYER_SPECIAL_SCALE7 )
+    {
+      // TODO: confirm which combat rating multiplier is used
+      budget = item_database::apply_combat_rating_multiplier( effect.player, CR_MULTIPLIER_TRINKET, level, budget );
+    }
+    else if ( scaling_class() == PLAYER_SPECIAL_SCALE8 )
+    {
+      const auto& props = effect.player->dbc->random_property( level );
+      budget = props.damage_replace_stat;
+    }
+    else if ( scaling_class() == PLAYER_SPECIAL_SCALE9 )
+    {
+      const auto& props = effect.player->dbc->random_property( level );
+      budget = props.damage_secondary;
+    }
+
+    return _m_coeff * budget;
+  }
+
+  assert( false && "spelleffect_data_t::average( special_effect_t ) unable to calculate scaling." );
+  return 0;
 }
 
 double spelleffect_data_t::scaled_delta( double budget ) const
