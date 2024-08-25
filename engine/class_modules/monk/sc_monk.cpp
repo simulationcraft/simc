@@ -8478,8 +8478,10 @@ void monk_t::create_buffs()
             if ( specialization() == MONK_WINDWALKER )
             {
               active_actions.strength_of_the_black_ox_dmg->execute();
-              buff.teachings_of_the_monastery->trigger(
-                  as<int>( talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 3 ).base_value() ) );
+              if ( const int count =
+                       as<int>( talent.conduit_of_the_celestials.strength_of_the_black_ox->effectN( 3 ).base_value() );
+                   count > 0 )
+                buff.teachings_of_the_monastery->trigger( count );
 
               active_actions.flight_of_the_red_crane_celestial_damage->execute();
             }
