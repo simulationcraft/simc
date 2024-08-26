@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56311
-static const std::array<spelltext_data_t, 26322> __spelltext_data { {
+static const std::array<spelltext_data_t, 26323> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -25434,6 +25434,7 @@ static const std::array<spelltext_data_t, 26322> __spelltext_data { {
   { 456584, "Smack your enemy with the Hammerfish and stun it for $456585d. Only usable outdoors in Khaz Algar.", 0, 0 },
   { 456585, 0, "Hammerfished.", 0 },
   { 456586, "Throw the fish back into the water to gain $s2 Perception for $d.\r\n\r\nThrowing multiple fish can extend this buff up to $M1 min.", "Khaz Algar Perception increased by $w2.", 0 },
+  { 456587, "Throw this fish back into the water for and gain a stack of Royal Chum, protecting the waters around you from Corrupted Ghoulfish and increasing the likelihood to catch Queen's Lurefish for $d.\r\n\r\nThrowing multiple Regal Dottyback can extend this buff up to $M1 min.", "The Regal Dottyback wards Corrupted Ghoulfish from the water around you and increases your chance to find Queen's Lurefish by $s3%.", 0 },
   { 456592, "Open the contents of the Huskfish's stomach.", 0, 0 },
   { 456596, 0, "Perception increased by $s1.", 0 },
   { 456620, "$@spelldesc446835", "$@spelldesc446835", 0 },
