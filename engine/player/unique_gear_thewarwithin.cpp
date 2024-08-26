@@ -371,7 +371,6 @@ void tempered_potion( special_effect_t& effect )
   effect.custom_buff = buff;
 }
 
-// TODO: confirm debuff is 3%-5% (1% per rank), not 2%-5% as tooltip says
 void potion_of_unwavering_focus( special_effect_t& effect )
 {
   struct unwavering_focus_t : public generic_proc_t
@@ -385,8 +384,7 @@ void potion_of_unwavering_focus( special_effect_t& effect )
       auto rank = e.item->parsed.data.crafting_quality;
       auto base = e.driver()->effectN( 2 ).base_value();
 
-      // TODO: confirm debuff is 3%-5% (1% per rank), not 2%-5% as tooltip says
-      mul = ( rank + base ) * 0.01;
+      mul = ( base + rank - 1 ) * 0.01;
     }
 
     buff_t* create_debuff( player_t* t ) override
