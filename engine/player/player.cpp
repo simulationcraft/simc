@@ -459,14 +459,6 @@ struct execute_pet_action_t : public action_t
   }
 };
 
-struct override_talent_action_t : action_t
-{
-  override_talent_action_t( player_t* player ) : action_t( ACTION_OTHER, "override_talent", player )
-  {
-    background = true;
-  }
-};
-
 struct leech_t : public heal_t
 {
   leech_t( player_t* player ) : heal_t( "leech", player, player->find_spell( 143924 ) )
@@ -580,19 +572,6 @@ bool parse_talent_string( sim_t* sim, std::string_view name, std::string_view st
   player_t* p = sim->active_player;
 
   p->talents_str = std::string( string );
-
-  return true;
-}
-
-// parse_talent_override ====================================================
-
-bool parse_talent_override( sim_t* sim, util::string_view name, util::string_view override_str )
-{
-  player_t* p = sim->active_player;
-
-  if ( !p->talent_overrides_str.empty() )
-    p->talent_overrides_str += "/";
-  p->talent_overrides_str += std::string( override_str );
 
   return true;
 }
@@ -2384,81 +2363,6 @@ void player_t::activate_action_list( action_priority_list_t* a, execute_type typ
   a->used = true;
 }
 
-void player_t::override_talent( util::string_view override_str )
-{
-  auto cut_pt = override_str.find( ',' );
-
-  if ( cut_pt != override_str.npos && override_str.substr( cut_pt + 1, 3 ) == "if=" )
-  {
-    override_talent_action_t* dummy_action = new override_talent_action_t( this );
-    auto expr = expr_t::parse( dummy_action, override_str.substr( cut_pt + 4 ) );
-    if ( !expr )
-      return;
-    bool success = expr->success();
-    if ( !success )
-      return;
-    override_str = override_str.substr( 0, cut_pt );
-  }
-
-  // Support disable_row:<row> syntax
-  std::string::size_type pos = override_str.find( "disable_row" );
-  if ( pos != std::string::npos )
-  {
-    auto row_str = override_str.substr( 11 );
-    if ( !row_str.empty() )
-    {
-      unsigned row = util::to_unsigned( override_str.substr( 11 ) );
-      if ( row == 0 || row > MAX_TALENT_ROWS )
-      {
-        throw std::invalid_argument(fmt::format("talent_override: Invalid talent row {} in '{}'.", row, override_str ));
-      }
-
-      talent_points->clear( row - 1 );
-      if ( sim->num_players == 1 )
-      {
-        sim->error( "talent_override: Talent row {} for {} disabled.\n", row, *this );
-      }
-      return;
-    }
-  }
-
-  unsigned spell_id = dbc->talent_ability_id( type, specialization(), override_str, true );
-
-  if ( !spell_id || dbc->spell( spell_id )->id() != spell_id )
-  {
-    throw std::invalid_argument(fmt::format("talent_override: Override talent '{}' not found.\n", override_str ));
-  }
-
-  for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
-  {
-    for ( int i = 0; i < MAX_TALENT_COLS; i++ )
-    {
-      const talent_data_t* t = talent_data_t::find( type, j, i, specialization(), dbc->ptr );
-      if ( t && ( t->spell_id() == spell_id ) )
-      {
-        if ( true_level < 20 + ( j == 0 ? -1 : j ) * 5 )
-        {
-          throw std::invalid_argument(fmt::format("talent_override: Override talent '{}' is too high level.\n",
-              override_str ));
-        }
-
-        if ( talent_points->has_row_col( j, i ) )
-        {
-          sim->print_debug( "talent_override: talent {} for {} is already enabled\n",
-                                 override_str, *this );
-        }
-
-        if ( sim->num_players == 1 )
-        {  // To prevent spamming up raid reports, only do this with 1 player sims.
-          sim->error( "talent_override: talent '{}' for {}s replaced talent {} in tier {}.\n", override_str,
-                       *this, talent_points->choice( j ) + 1, j + 1 );
-        }
-        talent_points->select_row_col( j, i );
-      }
-    }
-  }
-}
-
 static void parse_traits( talent_tree tree, const std::string& opt_str, player_t* player )
 {
   auto talents = util::string_split<std::string_view>( opt_str, "/" );
@@ -3017,14 +2921,6 @@ void player_t::init_talents()
   else
   {
     parse_traits_hash( talents_str, this );
-
-    if ( !talent_overrides_str.empty() )
-    {
-      for ( auto& split : util::string_split<util::string_view>( talent_overrides_str, "/" ) )
-      {
-        override_talent( split );
-      }
-    }
   }
 
   auto parsed_sub_trees = player_sub_trees;
@@ -12099,15 +11995,6 @@ std::string player_t::create_profile( save_e stype )
       profile_str += "hero_talents=" + hero_talents_str + term;
     }
 
-    if ( !talent_overrides_str.empty() )
-    {
-      auto splits = util::string_split<util::string_view>( talent_overrides_str, "/" );
-      for ( const auto& split : splits )
-      {
-        profile_str += fmt::format( "talent_override={}{}", split, term );
-      }
-    }
-
     if ( azerite )
     {
       std::string azerite_overrides = azerite -> overrides_str();
@@ -12433,7 +12320,6 @@ void player_t::copy_from( player_t* source )
     dbc_override = dbc_override_.get();
   }
 
-  talent_overrides_str = source->talent_overrides_str;
   action_list_str      = source->action_list_str;
   alist_map            = source->alist_map;
   use_apl              = source->use_apl;
@@ -12480,7 +12366,6 @@ void player_t::create_options()
   add_option( opt_string( "thumbnail", report_information.thumbnail_url ) );
   add_option( opt_string( "id", id_str ) );
   add_option( opt_func( "talents", parse_talent_string ) );
-  add_option( opt_func( "talent_override", parse_talent_override ) );
   add_option( opt_string( "race", race_str ) );
   add_option( opt_func( "timeofday", parse_timeofday ) );
   add_option( opt_func( "zandalari_loa", parse_loa ) );
