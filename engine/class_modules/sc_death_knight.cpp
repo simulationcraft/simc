@@ -6709,14 +6709,30 @@ struct exterminate_t final : public death_knight_spell_t
     double chance = p()->talent.deathbringer.painful_death->ok()
                         ? p()->talent.deathbringer.painful_death->effectN( 2 ).percent()
                         : p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
+    double chance = p()->talent.deathbringer.painful_death->ok()
+                        ? p()->talent.deathbringer.painful_death->effectN( 2 ).percent()
+                        : p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
 
+      double chance = p()->talent.deathbringer.painful_death->ok()
+                          ? p()->talent.deathbringer.painful_death->effectN( 2 ).percent()
+                          : p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
+      double chance = p()->talent.deathbringer.painful_death->ok()
+                          ? p()->talent.deathbringer.painful_death->effectN( 2 ).percent()
+                          : p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
     buff_t* rm = get_td( execute_state->target )->debuff.reapers_mark;
     if ( !rm->up() && p()->rng().roll( chance ) )
     {
       rm->trigger();
       p()->procs.exterminate_reapers_mark->occur();
     }
+    buff_t* rm = get_td( p()->target )->debuff.reapers_mark;
+    if ( !rm->up() && p()->rng().roll( chance ) )
+    {
+      rm->trigger();
+      p()->procs.exterminate_reapers_mark->occur();
+    }
 
+    death_knight_spell_t::execute();
     make_event<delayed_execute_event_t>( *sim, p(), second_hit, execute_state->target, 500_ms );
   }
 
@@ -8493,7 +8509,7 @@ struct death_strike_t final : public death_knight_melee_attack_t
     p()->buffs.coagulopathy->trigger();
 
     if ( oh_attack )
-      oh_attack->execute();
+      oh_attack->execute_on_target( execute_state->target );
 
     if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
     {
@@ -9165,18 +9181,18 @@ struct frost_strike_t final : public death_knight_melee_attack_t
     {
       if ( !sb )
       {
-        make_event<delayed_execute_event_t>( *sim, p(), mh, p()->target, mh_delay );
+        make_event<delayed_execute_event_t>( *sim, p(), mh, execute_state->target, mh_delay );
         if ( oh )
         {
-          make_event<delayed_execute_event_t>( *sim, p(), oh, p()->target, oh_delay );
+          make_event<delayed_execute_event_t>( *sim, p(), oh, execute_state->target, oh_delay );
         }
       }
       if ( sb )
       {
-        make_event<delayed_execute_event_t>( *sim, p(), mh_sb, p()->target, mh_delay );
+        make_event<delayed_execute_event_t>( *sim, p(), mh_sb, execute_state->target, mh_delay );
         if ( oh_sb )
         {
-          make_event<delayed_execute_event_t>( *sim, p(), oh_sb, p()->target, oh_delay );
+          make_event<delayed_execute_event_t>( *sim, p(), oh_sb, execute_state->target, oh_delay );
         }
         sb = false;
       }
@@ -9478,7 +9494,7 @@ struct heart_strike_t : public heart_strike_base_t
   {
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
-      vampiric_strike->execute();
+      vampiric_strike->execute_on_target( target );
       stats->add_execute( 0_ms, target );
       return;
     }
@@ -9569,7 +9585,7 @@ struct heart_strike_bloodied_blade_t : public death_knight_melee_attack_t
       // If we don't have any runes available, we don't want to execute vampiric strike, and we basically just bail out.
       if ( p()->_runes.runes_full() == 0 )
         return;
-      vampiric_strike->execute();
+      vampiric_strike->execute_on_target( target );
       stats->add_execute( 0_ms, target );
       return;
     }
@@ -10033,15 +10049,15 @@ struct obliterate_t final : public death_knight_melee_attack_t
       }
       if ( km_mh && p()->buffs.killing_machine->up() )
       {
-        make_event<delayed_execute_event_t>( *sim, p(), km_mh, p()->target, mh_delay );
+        make_event<delayed_execute_event_t>( *sim, p(), km_mh, execute_state->target, mh_delay );
         if ( oh && km_oh )
-          make_event<delayed_execute_event_t>( *sim, p(), km_oh, p()->target, oh_delay );
+          make_event<delayed_execute_event_t>( *sim, p(), km_oh, execute_state->target, oh_delay );
       }
       else
       {
-        make_event<delayed_execute_event_t>( *sim, p(), mh, p()->target, mh_delay );
+        make_event<delayed_execute_event_t>( *sim, p(), mh, execute_state->target, mh_delay );
         if ( oh )
-          make_event<delayed_execute_event_t>( *sim, p(), oh, p()->target, oh_delay );
+          make_event<delayed_execute_event_t>( *sim, p(), oh, execute_state->target, oh_delay );
       }
 
       p()->buffs.rime->trigger();
@@ -10457,7 +10473,7 @@ struct sacrificial_pact_t final : public death_knight_heal_t
   {
     death_knight_heal_t::execute();
 
-    damage->execute_on_target( player->target );
+    damage->execute_on_target( p()->target );
     p()->pets.ghoul_pet.active_pet()->dismiss();
   }
 
@@ -10624,7 +10640,7 @@ struct clawing_shadows_t final : public wound_spender_base_t
   {
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
-      vampiric_strike->execute();
+      vampiric_strike->execute_on_target( target );
       stats->add_execute( 0_ms, target );
       return;
     }
@@ -10698,7 +10714,7 @@ struct scourge_strike_t final : public wound_spender_base_t
   {
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
-      vampiric_strike->execute();
+      vampiric_strike->execute_on_target( target );
       stats->add_execute( 0_ms, target );
       return;
     }
