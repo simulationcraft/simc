@@ -3251,7 +3251,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
   }
   else
   {
-    buff_name += util::encode_html( b.name_str );
+    buff_name += util::encode_html( b.name_reporting() );
   }
 
   std::string toggle_name = highchart::build_id( b, "_toggle" );

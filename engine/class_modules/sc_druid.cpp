@@ -10893,7 +10893,8 @@ void druid_t::create_buffs()
 
   buff.blooming_infusion_damage_counter =
     make_fallback( talent.blooming_infusion.ok(), this, "blooming_infusion_damage_counter" )
-      ->set_quiet( true )
+      //->set_quiet( true )
+      ->set_name_reporting( "Blooming Infusion Damage Counter" )
       ->set_max_stack( as<int>( talent.blooming_infusion->effectN( 1 ).base_value() ) )
       ->set_expire_at_max_stack( true )
       ->set_trigger_spell( talent.blooming_infusion )
@@ -10907,7 +10908,8 @@ void druid_t::create_buffs()
 
   buff.blooming_infusion_heal_counter =
     make_fallback( talent.blooming_infusion.ok(), this, "blooming_infusion_heal_counter" )
-      ->set_quiet( true )
+      //->set_quiet( true )
+      ->set_name_reporting( "Blooming Infusion Heal Counter" )
       ->set_max_stack( as<int>( talent.blooming_infusion->effectN( 1 ).base_value() ) )
       ->set_expire_at_max_stack( true )
       ->set_trigger_spell( talent.blooming_infusion )
