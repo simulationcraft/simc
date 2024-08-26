@@ -6718,7 +6718,6 @@ struct exterminate_t final : public death_knight_spell_t
       p()->procs.exterminate_reapers_mark->occur();
     }
 
-    death_knight_spell_t::execute();
     make_event<delayed_execute_event_t>( *sim, p(), second_hit, execute_state->target, 500_ms );
   }
 
