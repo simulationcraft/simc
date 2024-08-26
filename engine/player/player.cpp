@@ -588,9 +588,6 @@ bool parse_talent_string( sim_t* sim, std::string_view name, std::string_view st
 
 bool parse_talent_override( sim_t* sim, util::string_view name, util::string_view override_str )
 {
-  assert( name == "talent_override" );
-  (void)name;
-
   player_t* p = sim->active_player;
 
   if ( !p->talent_overrides_str.empty() )
@@ -604,9 +601,6 @@ bool parse_talent_override( sim_t* sim, util::string_view name, util::string_vie
 
 bool parse_timeofday( sim_t* sim, util::string_view name, util::string_view override_str )
 {
-  assert( name == "timeofday" );
-  (void)name;
-
   player_t* p = sim->active_player;
 
   if ( util::str_compare_ci( override_str, "night" ) || util::str_compare_ci( override_str, "nighttime" ) )
@@ -671,9 +665,6 @@ bool parse_loa( sim_t* sim, util::string_view name, util::string_view override_s
 // parse_tricks
 bool parse_tricks( sim_t* sim, util::string_view name, util::string_view override_str )
 {
-  assert( name == "vulpera_tricks" );
-  (void)name;
-
   player_t* p = sim->active_player;
   if ( util::str_compare_ci( override_str, "corrosive" ) || util::str_compare_ci( override_str, "corrosive_vial" ) )
   {
@@ -709,9 +700,6 @@ bool parse_tricks( sim_t* sim, util::string_view name, util::string_view overrid
 
 bool parse_role_string( sim_t* sim, util::string_view name, util::string_view value )
 {
-  assert( name == "role" );
-  (void)name;
-
   sim->active_player->role = util::parse_role_type( value );
 
   return true;
@@ -721,9 +709,6 @@ bool parse_role_string( sim_t* sim, util::string_view name, util::string_view va
 
 bool parse_world_lag( sim_t* sim, util::string_view name, util::string_view value )
 {
-  assert( name == "world_lag" );
-  (void)name;
-
   sim->active_player->world_lag.mean = timespan_t::from_seconds( util::to_double( value ) );
 
   if ( sim->active_player->world_lag.mean < 0_ms )
@@ -738,9 +723,6 @@ bool parse_world_lag( sim_t* sim, util::string_view name, util::string_view valu
 
 bool parse_world_lag_stddev( sim_t* sim, util::string_view name, util::string_view value )
 {
-  assert( name == "world_lag_stddev" );
-  (void)name;
-
   sim->active_player->world_lag.stddev = timespan_t::from_seconds( util::to_double( value ) );
 
   if ( sim->active_player->world_lag.stddev < 0_ms )
@@ -755,9 +737,6 @@ bool parse_world_lag_stddev( sim_t* sim, util::string_view name, util::string_vi
 
 bool parse_brain_lag( sim_t* sim, util::string_view name, util::string_view value )
 {
-  assert( name == "brain_lag" );
-  (void)name;
-
   sim->active_player->brain_lag.mean = timespan_t::from_seconds( util::to_double( value ) );
 
   if ( sim->active_player->brain_lag.mean < 0_ms )
@@ -772,9 +751,6 @@ bool parse_brain_lag( sim_t* sim, util::string_view name, util::string_view valu
 
 bool parse_brain_lag_stddev( sim_t* sim, util::string_view name, util::string_view value )
 {
-  assert( name == "brain_lag_stddev" );
-  (void)name;
-
   sim->active_player->brain_lag.stddev = timespan_t::from_seconds( util::to_double( value ) );
 
   if ( sim->active_player->brain_lag.stddev < 0_ms )
@@ -804,9 +780,6 @@ bool parse_specialization( sim_t* sim, util::string_view, util::string_view valu
 
 bool parse_stat_timelines( sim_t* sim, util::string_view name, util::string_view value )
 {
-  assert( name == "stat_timelines" );
-  (void)name;
-
   auto stats = util::string_split<util::string_view>( value, "," );
 
   for ( auto& stat_type : stats )
@@ -5927,7 +5900,7 @@ void prepare( player_t& p )
 #endif
 }
 
-void report_unmatched( const buff_t& b )
+void report_unmatched( [[maybe_unused]] const buff_t& b )
 {
 #ifndef NDEBUG
   /* Don't complain about targetdata buffs, since it is perfectly viable that the buff
@@ -5937,21 +5910,14 @@ void report_unmatched( const buff_t& b )
   {
     b.sim->error( "{} can't merge buff '{}' with source '{}'.", *b.player, b.name(), b.source_name() );
   }
-#else
-  // "Use" the parameters to silence compiler warnings.
-  (void)b;
 #endif
 }
 
-void check_tail( player_t& p, size_t first )
+void check_tail( [[maybe_unused]] player_t& p, [[maybe_unused]] size_t first )
 {
 #ifndef NDEBUG
   for ( size_t last = p.buff_list.size(); first < last; ++first )
     report_unmatched( *p.buff_list[ first ] );
-#else
-  // "Use" the parameters to silence compiler warnings.
-  (void)p;
-  (void)first;
 #endif
 }
 
@@ -13341,14 +13307,13 @@ void player_t::update_movement( timespan_t duration )
 /**
  * Instant teleport. No overshooting support for now.
  */
-void player_t::teleport( double yards, timespan_t duration )
+void player_t::teleport( double yards, timespan_t )
 {
   do_update_movement( yards );
 
   if ( sim->debug )
     sim->out_debug.printf( "Player %s warp, direction=%s speed=LIGHTSPEED! distance_covered=%f to_go=%f", name(),
                            util::movement_direction_string( movement_direction() ), yards, current.distance_to_move );
-  (void)duration;
 }
 
 /**
