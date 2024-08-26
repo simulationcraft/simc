@@ -6718,7 +6718,7 @@ struct exterminate_t final : public death_knight_spell_t
       }
     
     death_knight_spell_t::execute();
-    make_event( *sim, 500_ms, [ & ]() { second_hit->execute_on_target( execute_state->target ); } );
+    make_event<delayed_execute_event_t>( *sim, p(), second_hit, p()->target, 500_ms );
   }
 
 private:
@@ -9778,6 +9778,7 @@ struct marrowrend_t final : public death_knight_melee_attack_t
     if ( p()->buffs.exterminate->up() )
     {
       p()->buffs.exterminate->expire();
+      make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, p()->target, 500_ms );
       if ( p()->talent.deathbringer.painful_death->ok() )
       {
         p()->buffs.painful_death->trigger();
@@ -9786,6 +9787,7 @@ struct marrowrend_t final : public death_knight_melee_attack_t
     else if ( p()->buffs.painful_death->up() )
     {
       p()->buffs.painful_death->expire();
+      make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, p()->target, 500_ms );
     }
 
     if ( p()->buffs.ossified_vitriol->up() )
@@ -10049,6 +10051,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
     if ( p()->buffs.exterminate->up() )
     {
       p()->buffs.exterminate->expire();
+      make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, p()->target, 500_ms );
       if ( p()->talent.deathbringer.painful_death->ok() )
       {
         p()->buffs.painful_death->trigger();
@@ -10057,6 +10060,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
     else if ( p()->buffs.painful_death->up() )
     {
       p()->buffs.painful_death->expire();
+      make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, p()->target, 500_ms );
     }
 
     if ( p()->buffs.killing_machine->up() )
@@ -14030,20 +14034,10 @@ void death_knight_t::create_buffs()
             }
           } );
 
-  buffs.exterminate = make_fallback( talent.deathbringer.exterminate.ok(), this, "exterminate", spell.exterminate_buff )
-                          ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
-                            make_event( *sim, 500_ms, [ this ]() {
-                              get_action<exterminate_t>( "exterminate", this )->execute_on_target( this->target );
-                            } );
-                          } );
+  buffs.exterminate = make_fallback( talent.deathbringer.exterminate.ok(), this, "exterminate", spell.exterminate_buff );
 
   buffs.painful_death = make_fallback( talent.deathbringer.painful_death.ok(), this, "painful_death",
-                                       spell.exterminate_buff_painful_death )
-                            ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
-                              make_event( *sim, 500_ms, [ this ]() {
-                                get_action<exterminate_t>( "exterminate", this )->execute_on_target( this->target );
-                              } );
-                            } );
+                                       spell.exterminate_buff_painful_death );
 
   // San'layn
   buffs.essence_of_the_blood_queen = make_fallback<essence_of_the_blood_queen_haste_buff_t>(
