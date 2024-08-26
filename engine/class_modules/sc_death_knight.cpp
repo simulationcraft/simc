@@ -9480,7 +9480,7 @@ struct heart_strike_t : public heart_strike_base_t
   {
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
-      vampiric_strike->execute_on_target();
+      vampiric_strike->execute_on_target( target );
       stats->add_execute( 0_ms, target );
       return;
     }
