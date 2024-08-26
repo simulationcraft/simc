@@ -275,7 +275,7 @@ void protection( player_t* p )
   default_->add_action( "demolish,if=buff.colossal_might.stack>=3" );
   default_->add_action( "thunderous_roar" );
   default_->add_action( "shield_charge" );
-  default_->add_action( "shield_block,if=buff.shield_block.duration<=10" );
+  default_->add_action( "shield_block,if=buff.shield_block.remains<=10" );
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
   default_->add_action( "call_action_list,name=generic" );
 
