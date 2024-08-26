@@ -182,9 +182,8 @@ struct player_t : public actor_t
   // Stat Timelines to Display
   std::vector<stat_e> stat_timelines;
 
-  // Talent Parsing
+  // Obsolete grid/number based talent system
   std::unique_ptr<player_talent_points_t> talent_points;
-  std::string talent_overrides_str;
 
   // Player selected (trait entry id, rank) tuples
   std::vector<std::tuple<talent_tree, unsigned, unsigned>> player_traits;
@@ -1052,7 +1051,6 @@ public:
   virtual void validate_sim_options() {}
   virtual bool validate_fight_style( fight_style_e ) const
   { return true; }
-  virtual void override_talent( util::string_view override_str );
   virtual void init_meta_gem();
   virtual void init_resources( bool force = false );
   virtual std::vector<std::string> get_item_actions();
