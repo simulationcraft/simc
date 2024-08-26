@@ -6718,7 +6718,7 @@ struct exterminate_t final : public death_knight_spell_t
       }
     
     death_knight_spell_t::execute();
-    make_event<delayed_execute_event_t>( *sim, p(), second_hit, p()->target, 500_ms );
+    make_event<delayed_execute_event_t>( *sim, p(), second_hit, execute_state->target, 500_ms );
   }
 
 private:
@@ -9778,7 +9778,7 @@ struct marrowrend_t final : public death_knight_melee_attack_t
     if ( p()->buffs.exterminate->up() )
     {
       p()->buffs.exterminate->expire();
-      make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, p()->target, 500_ms );
+      make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, execute_state->target, 500_ms );
       if ( p()->talent.deathbringer.painful_death->ok() )
       {
         p()->buffs.painful_death->trigger();
@@ -9787,7 +9787,7 @@ struct marrowrend_t final : public death_knight_melee_attack_t
     else if ( p()->buffs.painful_death->up() )
     {
       p()->buffs.painful_death->expire();
-      make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, p()->target, 500_ms );
+      make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, execute_state->target, 500_ms );
     }
 
     if ( p()->buffs.ossified_vitriol->up() )
@@ -10051,7 +10051,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
     if ( p()->buffs.exterminate->up() )
     {
       p()->buffs.exterminate->expire();
-      make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, p()->target, 500_ms );
+      make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, execute_state->target, 500_ms );
       if ( p()->talent.deathbringer.painful_death->ok() )
       {
         p()->buffs.painful_death->trigger();
@@ -10060,7 +10060,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
     else if ( p()->buffs.painful_death->up() )
     {
       p()->buffs.painful_death->expire();
-      make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, p()->target, 500_ms );
+      make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, execute_state->target, 500_ms );
     }
 
     if ( p()->buffs.killing_machine->up() )
