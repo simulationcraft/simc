@@ -3082,13 +3082,14 @@ using namespace helpers;
       for ( auto& pet : p()->pet_list )
       {
         auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
-        pet_e pet_type = lock_pet->pet_type;
 
         if ( lock_pet == nullptr )
           continue;
 
         if ( lock_pet->is_sleeping() )
           continue;
+
+        pet_e pet_type = lock_pet->pet_type;
 
         if ( pet_type == PET_DEMONIC_TYRANT )
           continue;
