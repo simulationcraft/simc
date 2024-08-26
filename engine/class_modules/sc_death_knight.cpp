@@ -6706,25 +6706,11 @@ struct exterminate_t final : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
-    double chance = p()->talent.deathbringer.painful_death->ok()
-                        ? p()->talent.deathbringer.painful_death->effectN( 2 ).percent()
-                        : p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
+
     double chance = p()->talent.deathbringer.painful_death->ok()
                         ? p()->talent.deathbringer.painful_death->effectN( 2 ).percent()
                         : p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
 
-      double chance = p()->talent.deathbringer.painful_death->ok()
-                          ? p()->talent.deathbringer.painful_death->effectN( 2 ).percent()
-                          : p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
-      double chance = p()->talent.deathbringer.painful_death->ok()
-                          ? p()->talent.deathbringer.painful_death->effectN( 2 ).percent()
-                          : p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
-    buff_t* rm = get_td( execute_state->target )->debuff.reapers_mark;
-    if ( !rm->up() && p()->rng().roll( chance ) )
-    {
-      rm->trigger();
-      p()->procs.exterminate_reapers_mark->occur();
-    }
     buff_t* rm = get_td( p()->target )->debuff.reapers_mark;
     if ( !rm->up() && p()->rng().roll( chance ) )
     {
@@ -9494,7 +9480,7 @@ struct heart_strike_t : public heart_strike_base_t
   {
     if ( p()->talent.sanlayn.vampiric_strike.ok() && p()->buffs.vampiric_strike->check() )
     {
-      vampiric_strike->execute_on_target( target );
+      vampiric_strike->execute_on_target();
       stats->add_execute( 0_ms, target );
       return;
     }
