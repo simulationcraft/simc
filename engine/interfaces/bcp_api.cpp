@@ -487,15 +487,10 @@ void parse_talents( player_t* p, const player_spec_t& spec_info, const std::stri
       }
 
       p->talents_str = loadout[ "talent_loadout_code" ].GetString();
-
       p->player_traits.clear();
-
-      parse_subtree( p, loadout[ "selected_class_talents" ] );
-      parse_subtree( p, loadout[ "selected_spec_talents" ] );
+      p->sim->talent_input_format = talent_format::BLIZZARD;
     }
   }
-
-  p->recreate_talent_str(talent_format::ARMORY );
 }
 
 // parse_items ==============================================================
