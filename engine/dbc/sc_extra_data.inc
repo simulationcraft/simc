@@ -1622,7 +1622,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Evoker TODO: 71-79
+  { // Evoker
     // Str = 0.44 of Primary
     // Agi = 0.68 of Primary
     //    Str     Agi     Sta     Int     Spi
