@@ -134,7 +134,6 @@ struct sim_t : private sc_thread_t
   stat_e      normalized_stat;
   std::string current_name, default_region_str, default_server_str, save_prefix_str, save_suffix_str;
   bool         save_talent_str;
-  talent_format talent_input_format;
   auto_dispose< std::vector<player_t*> > actor_list;
   std::string main_target_str;
   int         stat_cache;

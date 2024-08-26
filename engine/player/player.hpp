@@ -890,8 +890,6 @@ public:
   void stat_gain( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
   void stat_loss( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
   void create_talents_numbers();
-  void create_talents_armory();
-  void create_talents_blizzard();
   void clear_action_priority_lists() const;
   void copy_action_priority_list( util::string_view old_list, util::string_view new_list );
   void change_position( position_e );
@@ -901,8 +899,6 @@ public:
   bool add_action( const spell_data_t* s, util::string_view options = {}, util::string_view alist = "default" );
   void add_option( std::unique_ptr<option_t> o );
   void parse_talents_numbers( util::string_view talent_string );
-  bool parse_talents_armory( util::string_view talent_string );
-  bool parse_talents_armory2( util::string_view talent_url );
   void parse_temporary_enchants();
 
   bool is_moving() const;
@@ -1301,7 +1297,6 @@ public:
   virtual std::unique_ptr<expr_t> create_resource_expression( util::string_view expression_str );
 
   virtual void create_options();
-  void recreate_talent_str( talent_format format = talent_format::BLIZZARD );
   virtual std::string create_profile( save_e = SAVE_ALL );
 
   virtual void copy_from( player_t* source );

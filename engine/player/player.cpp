@@ -573,45 +573,15 @@ bool has_foreground_actions( const player_t& p )
   return ( p.active_action_list && !p.active_action_list->foreground_action_list.empty() );
 }
 
-// parse_talent_url =========================================================
+// parse_talent_string ======================================================
 
-bool parse_talent_url( sim_t* sim, util::string_view name, util::string_view url )
+bool parse_talent_string( sim_t* sim, std::string_view name, std::string_view string )
 {
-  assert( name == "talents" );
-  (void)name;
-
   player_t* p = sim->active_player;
 
-  p->talents_str = std::string( url );
+  p->talents_str = std::string( string );
 
-  auto cut_pt = url.find( '#' );
-
-  if ( cut_pt != url.npos )
-  {
-    ++cut_pt;
-    if ( url.find( ".battle.net" ) != url.npos || url.find( ".battlenet.com" ) != url.npos )
-    {
-      if ( sim->talent_input_format == talent_format::UNCHANGED )
-        sim->talent_input_format = talent_format::ARMORY;
-      return p->parse_talents_armory( url.substr( cut_pt ) );
-    }
-    else if ( url.find( "worldofwarcraft.com" ) != url.npos || url.find( "www.wowchina.com" ) != url.npos )
-    {
-      if ( sim->talent_input_format == talent_format::UNCHANGED )
-        sim->talent_input_format = talent_format::ARMORY;
-      return p->parse_talents_armory2( url );
-    }
-  }
-  else
-  {
-    if ( sim->talent_input_format == talent_format::UNCHANGED )
-        sim->talent_input_format = talent_format::BLIZZARD;
-    return true;
-  }
-
-  sim->error( "Unable to decode talent string '{}' for player '{}'.\n", url, p->name() );
-
-  return false;
+  return true;
 }
 
 // parse_talent_override ====================================================
@@ -3073,10 +3043,7 @@ void player_t::init_talents()
   }
   else
   {
-    if ( !talents_str.empty() && sim->talent_input_format == talent_format::BLIZZARD )
-    {
-      parse_traits_hash( talents_str, this );
-    }
+    parse_traits_hash( talents_str, this );
 
     if ( !talent_overrides_str.empty() )
     {
@@ -10431,147 +10398,6 @@ pet_t* player_t::create_pet( util::string_view, util::string_view )
   return nullptr;
 }
 
-/**
- * Old-style armory format for xx.battle.net / xx.battlenet.com
- */
-bool player_t::parse_talents_armory( util::string_view talent_string )
-{
-  talent_points->clear();
-
-  if ( talent_string.size() < 2 )
-  {
-    sim->errorf( "Player %s has malformed MoP battle.net talent string. Empty or too short string.\n", name() );
-    return false;
-  }
-
-  // Verify class
-  {
-    player_e w_class = PLAYER_NONE;
-    switch ( talent_string[ 0 ] )
-    {
-      case 'd':
-        w_class = DEATH_KNIGHT;
-        break;
-      case 'g':
-        w_class = DEMON_HUNTER;
-        break;
-      case 'U':
-        w_class = DRUID;
-        break;
-      case 'Y':
-        w_class = HUNTER;
-        break;
-      case 'e':
-        w_class = MAGE;
-        break;
-      case 'f':
-        w_class = MONK;
-        break;
-      case 'b':
-        w_class = PALADIN;
-        break;
-      case 'X':
-        w_class = PRIEST;
-        break;
-      case 'c':
-        w_class = ROGUE;
-        break;
-      case 'W':
-        w_class = SHAMAN;
-        break;
-      case 'V':
-        w_class = WARLOCK;
-        break;
-      case 'Z':
-        w_class = WARRIOR;
-        break;
-      default:
-        sim->error( "Player {} has malformed talent string '{}': invalid class character '{}'.\n", name(),
-                     talent_string, talent_string[ 0 ] );
-        return false;
-    }
-
-    if ( w_class != type )
-    {
-      sim->error( "Player {} has malformed talent string '{}': specified class {} does not match player class {}.\n",
-                   name(), talent_string, util::player_type_string( w_class ),
-                   util::player_type_string( type ) );
-      return false;
-    }
-  }
-
-  auto cut_pt = talent_string.find( '!' );
-  if ( cut_pt == talent_string.npos )
-  {
-    sim->error( "Player {} has malformed talent string '{}'.\n", name(), talent_string );
-    return false;
-  }
-
-  auto spec_string = talent_string.substr( 1, cut_pt - 1 );
-  if ( !spec_string.empty() )
-  {
-    unsigned specidx = 0;
-    // A spec was specified
-    switch ( spec_string[ 0 ] )
-    {
-      case 'a':
-        specidx = 0;
-        break;
-      case 'Z':
-        specidx = 1;
-        break;
-      case 'b':
-        specidx = 2;
-        break;
-      case 'Y':
-        specidx = 3;
-        break;
-      default:
-        sim->error( "Player {} has malformed talent string '{}': invalid spec character '{}'.\n", name(),
-                     talent_string, spec_string[ 0 ] );
-        return false;
-    }
-
-    _spec = dbc->spec_by_idx( type, specidx );
-  }
-
-  auto t_str = talent_string.substr( cut_pt + 1 );
-  if ( t_str.empty() )
-  {
-    // No talents picked.
-    return true;
-  }
-
-  //  if ( t_str.size() < MAX_TALENT_ROWS )
-  //  {
-  //    sim -> errorf( "Player %s has malformed talent string '%s': talent list too short.\n",
-  //                   name(), talent_string.c_str() );
-  //    return false;
-  //  }
-
-  for ( size_t i = 0; i < std::min( t_str.size(), (size_t)MAX_TALENT_ROWS ); ++i )
-  {
-    switch ( t_str[ i ] )
-    {
-      case '.':
-        break;
-      case '0':
-      case '1':
-      case '2':
-        talent_points->select_row_col( static_cast<int>( i ), t_str[ i ] - '0' );
-        break;
-      default:
-        sim->error( "Player {} has malformed talent string '{}': talent list has invalid character '{}'.\n", name(),
-                     talent_string, t_str[ i ] );
-        return false;
-    }
-  }
-
-  create_talents_armory();
-
-  return true;
-}
-
 namespace
 {
 std::string armory2_class_name( util::string_view tokenized_class, util::string_view tokenized_spec )
@@ -10602,77 +10428,6 @@ player_e armory2_parse_player_type( util::string_view class_name )
 }  // namespace
 
 /**
- * New armory format used in worldofwarcraft.com / www.wowchina.com
- */
-bool player_t::parse_talents_armory2( util::string_view talent_url )
-{
-  auto split = util::string_split<util::string_view>( talent_url, "#/=" );
-  if ( split.size() < 5 )
-  {
-    sim->error( "Player {} has malformed talent url '{}'", name(), talent_url );
-    return false;
-  }
-
-  // Sanity check that second to last split is "talents"
-  if ( !util::str_compare_ci( split[ split.size() - 2 ], "talents" ) )
-  {
-    sim->error( "Player {} has malformed talent url '{}'", name(), talent_url );
-    return false;
-  }
-
-  const size_t OFFSET_CLASS   = split.size() - 4;
-  const size_t OFFSET_SPEC    = split.size() - 3;
-  const size_t OFFSET_TALENTS = split.size() - 1;
-
-  auto spec_name_str = armory2_class_name( split[ OFFSET_CLASS ], split[ OFFSET_SPEC ] );
-  auto player_type   = armory2_parse_player_type( split[ OFFSET_CLASS ] );
-  auto spec_type     = util::parse_specialization_type( spec_name_str );
-
-  if ( player_type == PLAYER_NONE || type != player_type )
-  {
-    sim->error( "Player {} has malformed talent url '{}': expected class '{}', got '{}'", name(), talent_url,
-                util::player_type_string( type ), split[ OFFSET_CLASS ] );
-    return false;
-  }
-
-  if ( spec_type == SPEC_NONE || specialization() != spec_type )
-  {
-    sim->error( "Player {} has malformed talent url '{}': expected specialization '{}', got '{}'", name(), talent_url,
-                dbc::specialization_string( specialization() ), split[ OFFSET_SPEC ] );
-    return false;
-  }
-
-  talent_points->clear();
-
-  auto idx_max = std::min( as<int>( split[ OFFSET_TALENTS ].size() ), MAX_TALENT_ROWS );
-
-  for ( auto talent_idx = 0; talent_idx < idx_max; ++talent_idx )
-  {
-    auto c = split[ OFFSET_TALENTS ][ talent_idx ];
-    if ( c < '0' || c > ( '0' + MAX_TALENT_COLS ) )
-    {
-      sim->errorf( "Player %s has illegal character '%c' in talent encoding.\n", name(), c );
-      return false;
-    }
-
-    if ( c > '0' )
-    {
-      talent_points->select_row_col( talent_idx, c - '1' );
-    }
-  }
-
-  create_talents_armory();
-
-  return true;
-}
-
-void player_t::create_talents_blizzard()
-{
-  talents_str.clear();
-  talents_str = generate_traits_hash( this );
-}
-
-/**
  * Get average item level the player is wearing
  */
 double player_t::avg_item_level() const
@@ -10697,14 +10452,6 @@ double player_t::avg_item_level() const
 double player_t::get_attribute( attribute_e a ) const
 {
   return util::floor( composite_attribute( a ) * composite_attribute_multiplier( a ) );
-}
-
-void player_t::create_talents_armory()
-{
-  if ( is_enemy() )
-    return;
-
-  talents_str = util::create_blizzard_talent_url( *this );
 }
 
 void player_t::create_talents_numbers()
@@ -12305,21 +12052,6 @@ double player_t::calculate_time_to_bloodlust() const
   return 3 * sim->expected_iteration_time.total_seconds();
 }
 
-void player_t::recreate_talent_str( talent_format format )
-{
-  switch ( format )
-  {
-    case talent_format::ARMORY:
-      create_talents_armory();
-      break;
-    case talent_format::WOWHEAD:
-      break;
-    default:
-      create_talents_blizzard();
-      break;
-  }
-}
-
 std::string player_t::create_profile( save_e stype )
 {
   std::string profile_str;
@@ -12383,7 +12115,6 @@ std::string player_t::create_profile( save_e stype )
   {
     if ( !talents_str.empty() )
     {
-      recreate_talent_str( sim->talent_input_format );
       profile_str += "talents=" + talents_str + term;
     }
 
@@ -12704,8 +12435,7 @@ void player_t::copy_from( player_t* source )
   base.distance         = source->base.distance;
   position_str          = source->position_str;
   professions_str       = source->professions_str;
-  this->recreate_talent_str( talent_format::UNCHANGED );
-  parse_talent_url( sim, "talents", source->talents_str );
+  talents_str           = source->talents_str;
   class_talents_str     = source->class_talents_str;
   spec_talents_str      = source->spec_talents_str;
   hero_talents_str      = source->hero_talents_str;
@@ -12783,7 +12513,7 @@ void player_t::create_options()
   add_option( opt_string( "server", server_str ) );
   add_option( opt_string( "thumbnail", report_information.thumbnail_url ) );
   add_option( opt_string( "id", id_str ) );
-  add_option( opt_func( "talents", parse_talent_url ) );
+  add_option( opt_func( "talents", parse_talent_string ) );
   add_option( opt_func( "talent_override", parse_talent_override ) );
   add_option( opt_string( "race", race_str ) );
   add_option( opt_func( "timeofday", parse_timeofday ) );
@@ -13365,8 +13095,6 @@ void player_t::analyze( sim_t& s )
       collected_data.timeline_dmg.adjust( collected_data.fight_length );
     }
   }
-
-  recreate_talent_str( s.talent_input_format );
 }
 
 /**

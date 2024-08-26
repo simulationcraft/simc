@@ -488,7 +488,6 @@ void parse_talents( player_t* p, const player_spec_t& spec_info, const std::stri
 
       p->talents_str = loadout[ "talent_loadout_code" ].GetString();
       p->player_traits.clear();
-      p->sim->talent_input_format = talent_format::BLIZZARD;
     }
   }
 }
