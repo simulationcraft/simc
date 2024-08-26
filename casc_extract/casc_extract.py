@@ -149,7 +149,7 @@ if __name__ == '__main__':
 
 				result = blte.extract_buffer_to_file(data, os.path.join(output_path, file_name.replace('\\', '/')))
 				if not result:
-					print('Failed to extract data')
+					print(f"Unable to extract {os.path.basename(fname)} (from {file_keys[0]})...", file=sys.stderr)
 					sys.exit(1)
 
 	elif opts.mode == 'unpack':
