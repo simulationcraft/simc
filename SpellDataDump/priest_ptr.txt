@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56263 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56313 thewarwithin-BETA
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -15689,7 +15689,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Mind Flay (15407), Shadow Word: Death (32379), Mind Spike (73510), Painbreaker Psalm (336167), Mind Flay: Insanity (391403), Mind Spike: Insanity (407466), Void Blast (450983)
                    Family Flags: 13, 33, 70, 80
-#2 (id=1028468)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
+#2 (id=1028468)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Mind Flay (15407), Shadow Word: Death (32379), Mind Spike (73510), Painbreaker Psalm (336167), Mind Flay: Insanity (391403), Mind Spike: Insanity (407466), Void Blast (450983)
                    Family Flags: 13, 33, 70, 80

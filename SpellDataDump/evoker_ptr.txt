@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56263 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56313 thewarwithin-BETA
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -4397,7 +4397,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ..x..... ........ ........ ........   
                  : Passive (6), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=982398)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
+#1 (id=982398)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.66700 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), FX Poison Wave Test - SK [DNT] (439253), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657)
                    Family Flags: 0
