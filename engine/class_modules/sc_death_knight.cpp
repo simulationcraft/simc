@@ -1646,9 +1646,11 @@ public:
     // Chill Streak related procs
     propagate_const<proc_t*> enduring_chill;  // Extra bounces given by Enduring Chill
 
+    // Decomposition 
+    propagate_const<proc_t*> decomposition;
+
     // San'layn procs
     propagate_const<proc_t*> blood_beast;
-
     propagate_const<proc_t*> vampiric_strike;
     propagate_const<proc_t*> vampiric_strike_waste;
 
@@ -5265,15 +5267,13 @@ struct breath_of_sindragosa_buff_t : public death_knight_buff_t
       }
     }
 
-    set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
-      death_knight_t* p = debug_cast<death_knight_t*>( this->player );
-
+    set_tick_callback( [ &, p ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
       // TODO: Target the last enemy targeted by the player's foreground abilities
       // Currently use the player's target which is the first non invulnerable, active enemy found.
       player_t* bos_target = p->target;
 
       // On cast execute damage for no cost, and generate runes
-      if ( this->current_tick == 0 )
+      if ( current_tick == 0 )
       {
         bos_damage->execute_on_target( bos_target );
         p->replenish_rune( rune_gen, p->gains.breath_of_sindragosa );
@@ -5282,32 +5282,32 @@ struct breath_of_sindragosa_buff_t : public death_knight_buff_t
 
       // If the player doesn't have enough RP to fuel this tick, BoS is cancelled and no RP is consumed
       // This can happen if the player uses another RP spender between two ticks and is left with < 15 RP
-      if ( !p->resource_available( RESOURCE_RUNIC_POWER, this->ticking_cost ) )
+      if ( !p->resource_available( RESOURCE_RUNIC_POWER, ticking_cost ) )
       {
         sim->print_log(
             "Player {} doesn't have the {} Runic Power required for current tick. Breath of Sindragosa was cancelled.",
-            p->name_str, this->ticking_cost );
+            p->name_str, ticking_cost );
 
         // Separate the expiration event to happen immediately after tick processing
-        make_event( *sim, 0_ms, [ this ]() { this->expire(); } );
+        make_event( *sim, 0_ms, [ & ]() { expire(); } );
         return;
       }
 
       // Else, consume the resource and update the damage tick's resource stats
-      p->resource_loss( RESOURCE_RUNIC_POWER, this->ticking_cost, nullptr, bos_damage );
-      bos_damage->stats->consume_resource( RESOURCE_RUNIC_POWER, this->ticking_cost );
+      p->resource_loss( RESOURCE_RUNIC_POWER, ticking_cost, nullptr, bos_damage );
+      bos_damage->stats->consume_resource( RESOURCE_RUNIC_POWER, ticking_cost );
 
       // If the player doesn't have enough RP to fuel the next tick, BoS is cancelled
       // after the RP consumption and before the damage event
       // This is the normal BoS expiration scenario
-      if ( !p->resource_available( RESOURCE_RUNIC_POWER, this->ticking_cost ) )
+      if ( !p->resource_available( RESOURCE_RUNIC_POWER, ticking_cost ) )
       {
         sim->print_log(
             "Player {} doesn't have the {} Runic Power required for next tick. Breath of Sindragosa was cancelled.",
-            p->name_str, this->ticking_cost );
+            p->name_str, ticking_cost );
 
         // Separate the expiration event to happen immediately after tick processing
-        make_event( *sim, 0_ms, [ this ]() { this->expire(); } );
+        make_event( *sim, 0_ms, [ & ]() { expire(); } );
         return;
       }
 
@@ -5384,7 +5384,7 @@ struct pillar_of_frost_buff_t final : public death_knight_buff_t
       return;
     }
 
-    int added_duration = as<unsigned>(p()->talent.frost.the_long_winter->effectN( 1 ).base_value());
+    int added_duration = as<unsigned>( p()->talent.frost.the_long_winter->effectN( 1 ).base_value() );
     pillar_extension += added_duration;
     extend_duration( p(), timespan_t::from_seconds( added_duration ) );
   }
@@ -5642,7 +5642,7 @@ struct death_and_decay_buff_t : public death_knight_buff_t
   {
     set_duration( 0_ms );  // Handled by things that trigger this buff.
     // Specifically use a stack change callback here due to when its called in buff_t::expire
-    set_stack_change_callback( [ this, p ]( buff_t*, int, int new_ ) {
+    set_stack_change_callback( [ &, p ]( buff_t*, int, int new_ ) {
       if ( new_ == 0 && p->in_death_and_decay() )
       {
         trigger();
@@ -5720,7 +5720,7 @@ struct ams_parent_buff_t : public death_knight_absorb_buff_t
     {
       set_period( 1_s );
       set_tick_time_behavior( buff_tick_time_behavior::HASTED );
-      set_tick_callback( [ this, p ]( buff_t*, int, timespan_t ) {
+      set_tick_callback( [ &, p ]( buff_t*, int, timespan_t ) {
         if ( p->specialization() == DEATH_KNIGHT_UNHOLY || p->specialization() == DEATH_KNIGHT_FROST )
         {
           consume( damage );
@@ -5852,11 +5852,12 @@ struct decomposition_debuff_t final : public death_knight_debuff_t
     damage = p()->active_spells.decomposition_damage;
     decomposition_extend_duration =
         timespan_t::from_millis( p()->talent.unholy.decomposition->effectN( 2 ).base_value() );
-    set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+    set_tick_callback( [ & ]( buff_t*, int, timespan_t ) {
       last_period   = stored_damage;
       stored_damage = 0;
       if ( rng().roll( 0.25 ) )
       {
+        p()->procs.decomposition->occur();
         execute_damage();
         // Cant use the main `active_pets` vector here, breaks non dk pets.
         for ( auto& pet : p()->dk_active_pets )
@@ -14497,6 +14498,8 @@ void death_knight_t::init_procs()
   procs.fw_sudden_doom   = get_proc( "Festering Wound Burst by Sudden Doom" );
 
   procs.enduring_chill = get_proc( "Enduring Chill extra bounces" );
+
+  procs.decomposition = get_proc( "Decomposition" );
 
   procs.blood_beast           = get_proc( "Blood Beast" );
   procs.vampiric_strike       = get_proc( "Vampiric Strike Proc" );
