@@ -6705,17 +6705,17 @@ struct exterminate_t final : public death_knight_spell_t
 
   void execute() override
   {
-      death_knight_spell_t::execute();
-      double chance = p()->talent.deathbringer.painful_death->ok()
-                          ? p()->talent.deathbringer.painful_death->effectN( 2 ).percent()
-                          : p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
+    death_knight_spell_t::execute();
+    double chance = p()->talent.deathbringer.painful_death->ok()
+                        ? p()->talent.deathbringer.painful_death->effectN( 2 ).percent()
+                        : p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
 
-      buff_t* rm = get_td( execute_state->target )->debuff.reapers_mark;
-      if ( !rm->up() && p()->rng().roll( chance ) )
-      {
-        rm->trigger();
-        p()->procs.exterminate_reapers_mark->occur();
-      }
+    buff_t* rm = get_td( execute_state->target )->debuff.reapers_mark;
+    if ( !rm->up() && p()->rng().roll( chance ) )
+    {
+      rm->trigger();
+      p()->procs.exterminate_reapers_mark->occur();
+    }
 
     make_event<delayed_execute_event_t>( *sim, p(), second_hit, execute_state->target, 500_ms );
   }
