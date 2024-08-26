@@ -9250,20 +9250,16 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
-
-    if ( p()->talent.frost.glacial_advance.ok() || p()->talent.frost.avalanche.ok() ||
-         p()->runeforge.rune_of_razorice_mh || p()->runeforge.rune_of_razorice_oh )
+  
+    get_td( state->target )->debuff.razorice->trigger();
+    if ( is_arctic_assault )
     {
-      get_td( state->target )->debuff.razorice->trigger();
-      if ( is_arctic_assault )
-      {
-        p()->procs.razorice_from_arctic_assault->occur();
-      }
-      else
-      {
-        p()->procs.razorice_from_glacial_advance->occur();
-      }
+      p()->procs.razorice_from_arctic_assault->occur();
     }
+    else
+    {
+      p()->procs.razorice_from_glacial_advance->occur();
+    }   
 
     if ( p()->talent.frost.hyperpyrexia->ok() && state->result_amount > 0 &&
          p()->rng().roll( p()->talent.frost.hyperpyrexia->proc_chance() ) )
