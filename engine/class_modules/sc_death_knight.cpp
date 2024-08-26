@@ -6693,7 +6693,7 @@ struct exterminate_t final : public death_knight_spell_t
 {
   exterminate_t( util::string_view name, death_knight_t* p )
     : death_knight_spell_t( name, p, p->spell.exterminate_damage ),
-      second_hit( new exterminate_aoe_t( name_str + "_second_hit", p ) )
+      second_hit( get_action<exterminate_aoe_t>( name_str + "_second_hit", p ) )
   {
     background         = true;
     cooldown->duration = 0_ms;
@@ -6711,18 +6711,18 @@ struct exterminate_t final : public death_knight_spell_t
                           : p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
 
       buff_t* rm = get_td( p()->target )->debuff.reapers_mark;
-      if ( ! rm->up() && p()->rng().roll( chance ) )
+      if ( !rm->up() && p()->rng().roll( chance ) )
       {
         rm->trigger();
         p()->procs.exterminate_reapers_mark->occur();
       }
     
     death_knight_spell_t::execute();
-    make_event( *sim, 500_ms, [ this ]() { second_hit->execute_on_target( this->target ); } );
+    make_event( *sim, 500_ms, [ & ]() { second_hit->execute_on_target( execute_state->target ); } );
   }
 
 private:
-  exterminate_aoe_t* second_hit;
+  action_t* second_hit;
 };
 
 struct reapers_mark_explosion_t final : public death_knight_spell_t
