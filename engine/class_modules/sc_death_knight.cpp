@@ -6711,7 +6711,7 @@ struct exterminate_t final : public death_knight_spell_t
                         ? p()->talent.deathbringer.painful_death->effectN( 2 ).percent()
                         : p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
 
-    buff_t* rm = get_td( p()->target )->debuff.reapers_mark;
+    buff_t* rm = get_td( execute_state->target )->debuff.reapers_mark;
     if ( !rm->up() && p()->rng().roll( chance ) )
     {
       rm->trigger();
@@ -10458,7 +10458,7 @@ struct sacrificial_pact_t final : public death_knight_heal_t
   {
     death_knight_heal_t::execute();
 
-    damage->execute_on_target( p()->target );
+    damage->execute_on_target( execute_state->target );
     p()->pets.ghoul_pet.active_pet()->dismiss();
   }
 
