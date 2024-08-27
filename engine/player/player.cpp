@@ -2942,6 +2942,11 @@ void player_t::init_talents()
         player_traits.emplace_back( talent_tree::SELECTION, trait.id_trait_node_entry, 1 );
   }
 
+  if ( talents_str.empty() || !class_talents_str.empty() || !spec_talents_str.empty() || !hero_talents_str.empty() )
+  {
+    talents_str = generate_traits_hash( this );
+  }
+
   // Generate talent effect overrides based on parsed trait information
   for ( const auto& player_trait : player_traits )
   {
