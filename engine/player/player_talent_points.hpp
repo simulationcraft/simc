@@ -6,28 +6,34 @@
 #pragma once
 
 #include "config.hpp"
+
+#include "dbc/specialization.hpp"
+#include "sc_enums.hpp"
 #include "util/generic.hpp"
 #include "util/span.hpp"
-#include "sc_enums.hpp"
+
 #include <array>
-#include <vector>
 #include <functional>
 #include <string>
+#include <vector>
 
+struct player_t;
 struct spell_data_t;
-
-// Talent Translation =======================================================
-
-constexpr int MAX_TALENT_ROWS = 7;
-constexpr int MAX_TALENT_COLS = 3;
-constexpr int MAX_TALENT_SLOTS = MAX_TALENT_ROWS * MAX_TALENT_COLS;
 
 struct player_talent_points_t
 {
-public:
+  static constexpr int MAX_TALENT_ROWS = 7;
+  static constexpr int MAX_TALENT_COLS = 3;
+  static constexpr int MAX_TALENT_SLOTS = MAX_TALENT_ROWS * MAX_TALENT_COLS;
+
   using validity_fn_t = std::function<bool(const spell_data_t*)>;
 
-  player_talent_points_t() { clear(); }
+  const player_t* player;
+
+  player_talent_points_t( player_t* p ) : player( p )
+  {
+    clear();
+  }
 
   int choice( int row ) const
   {
@@ -60,6 +66,13 @@ public:
   void register_validity_fn( const validity_fn_t& fn )
   { _validity_fns.push_back( fn ); }
 
+  void parse_talents_numbers( std::string_view );
+
+  void replace_spells();
+
+  const spell_data_t* find_spell( std::string_view name, specialization_e s = SPEC_NONE, bool name_tokenized = false,
+                                  bool check_validity = true ) const;
+
 private:
   std::array<int, MAX_TALENT_ROWS> _choices;
   std::vector<validity_fn_t> _validity_fns;
@@ -72,5 +85,4 @@ private:
 
   static void row_col_check( int row, int col )
   { row_check( row ); column_check( col ); }
-
 };
