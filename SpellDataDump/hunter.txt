@@ -22573,6 +22573,7 @@ Effects          :
 Tooltip          : Your next Arcane Shot is replaced with an Explosive Shot.
 
 Name             : Grenade Juggler (id=459843) [Spell Family (9), Passive, Hidden] 
+Hotfixed         : Proc Flags 1 (69888 -> 256)
 Talent Entry     : Survival [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Nature
@@ -22582,8 +22583,8 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 0.7 seconds
 Proc Chance      : 100%
-Proc Flags       : ........ x...x... x....... ........   ........ ........ ........ ........   
-                 : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Proc Flags       : ........ x....... ........ ........   ........ ........ ........ ........   
+                 : Yellow Ranged
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
