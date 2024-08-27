@@ -2493,10 +2493,12 @@ struct arcane_mage_spell_t : public mage_spell_t
       }
 
       // Special handling for AM's 2 sec grace period
+      // TODO: Currently bugged and only applies to the first AM hit (again).
+      // Blizz also doesn't seem to be using the Magi's Spark debuff for this.
       if ( id == 7268 && td->debuffs.magis_spark->check() )
       {
         trigger_echo = true;
-        td->debuffs.magis_spark->expire( 2.0_s );
+        td->debuffs.magis_spark->expire( p()->bugs ? 1_ms : 2.0_s );
       }
 
       if ( trigger_echo )
