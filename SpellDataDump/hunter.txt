@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56311 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56313 thewarwithin-BETA
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -10050,7 +10050,6 @@ Attributes       : ....x... ........ x.x..x.. .....x..   ........ ........ ..x..
 Effects          :
 #1 (id=718236)   : Charge (96)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 269752 | Target: Enemy (6)
-Hotfixed         : Trigger Spell (0 -> 269752)
 Description      : $@spelldesc269751
 
 Name             : Explosive Shot (id=269850) [Spell Family (9)] 
@@ -21408,11 +21407,9 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900), Steel Trap (162488), Barbed Shot (217200), Frenzy (217207), Serpent Sting (259491), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260243), Volley (260247), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049), Serpent Sting (271788), Frenzy (272790), Frenzy (272795), Black Arrow (430703)
                    Family Flags: 14, 22, 34, 68, 78, 91, 99
-Hotfixed         : Sub Type (218 -> 108), Misc Value (22 -> 0), Misc Value 2 (3831 -> 0), Affects Spells
 #5 (id=1166411)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3993 (Label) | Target: Self (1)
                    Affected Spells (Label): Spearhead (378957), Razor Fragments (385638), Cull the Herd (449233), Laceration (459560), Ravenous Leap (459753)
-Hotfixed         : Sub Type (108 -> 218), Misc Value (0 -> 22), Misc Value 2 (0 -> 3993), Affects Spells
 Description      : Your damage over time effects deal $s1% increased damage.
 
 This effect is increased by $s2% on targets below $s3% health.
