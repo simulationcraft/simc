@@ -8420,7 +8420,7 @@ struct ascendance_t : public shaman_spell_t
   lava_burst_t* lvb;
 
   ascendance_t( shaman_t* player, util::string_view name_str, util::string_view options_str = {} ) :
-    shaman_spell_t( name_str, player, player->find_talent_spell( "Ascendance", player->specialization(), false, false ) ),
+    shaman_spell_t( name_str, player, player->talent.ascendance ),
     ascendance_damage( nullptr ), lvb( nullptr )
   {
     parse_options( options_str );

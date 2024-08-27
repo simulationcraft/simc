@@ -183,6 +183,7 @@ struct player_t : public actor_t
   std::vector<stat_e> stat_timelines;
 
   // Obsolete grid/number based talent system
+  // Currently not created and will return nullptr
   std::unique_ptr<player_talent_points_t> talent_points;
 
   // Player selected (trait entry id, rank) tuples
@@ -888,7 +889,6 @@ public:
   double get_stat_value(stat_e);
   void stat_gain( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
   void stat_loss( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
-  void create_talents_numbers();
   void clear_action_priority_lists() const;
   void copy_action_priority_list( util::string_view old_list, util::string_view new_list );
   void change_position( position_e );
@@ -897,7 +897,6 @@ public:
   bool add_action( util::string_view action, util::string_view options = {}, util::string_view alist = "default" );
   bool add_action( const spell_data_t* s, util::string_view options = {}, util::string_view alist = "default" );
   void add_option( std::unique_ptr<option_t> o );
-  void parse_talents_numbers( util::string_view talent_string );
   void parse_temporary_enchants();
 
   bool is_moving() const;
@@ -966,7 +965,6 @@ public:
   const spell_data_t* find_rank_spell( util::string_view name, util::string_view rank,
                                        specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( util::string_view name ) const;
-  const spell_data_t* find_talent_spell( util::string_view name, specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
   player_talent_t find_talent_spell( talent_tree tree, util::string_view name, specialization_e s = SPEC_NONE, bool name_tokenized = false ) const;
   player_talent_t find_talent_spell( talent_tree tree, unsigned spell_id, specialization_e s = SPEC_NONE  ) const;
   player_talent_t find_talent_spell( unsigned talent_entry_id ) const;

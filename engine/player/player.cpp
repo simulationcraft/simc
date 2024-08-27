@@ -1030,7 +1030,8 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     cooldown_tolerance_( timespan_t::min() ),
     dbc( new dbc_t(*(s->dbc)) ),
     dbc_override( sim->dbc_override.get() ),
-    talent_points( new player_talent_points_t()),
+    // talent_points( new player_talent_points_t()),
+    talent_points( nullptr ),
     profession(),
     azerite( nullptr ),
     base(),
@@ -10235,26 +10236,6 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
   return consumable::create_action( this, name, options_str );
 }
 
-void player_t::parse_talents_numbers( util::string_view talent_string )
-{
-  talent_points->clear();
-
-  int i_max = std::min( static_cast<int>( talent_string.size() ), MAX_TALENT_ROWS );
-
-  for ( int i = 0; i < i_max; ++i )
-  {
-    char c = talent_string[ i ];
-    if ( c < '0' || c > ( '0' + MAX_TALENT_COLS ) )
-    {
-      throw std::runtime_error(fmt::format("Illegal character '{}' in talent encoding.", c ));
-    }
-    if ( c > '0' )
-      talent_points->select_row_col( i, c - '1' );
-  }
-
-  create_talents_numbers();
-}
-
 pet_t* player_t::create_pet( util::string_view, util::string_view )
 {
   return nullptr;
@@ -10316,16 +10297,6 @@ double player_t::get_attribute( attribute_e a ) const
   return util::floor( composite_attribute( a ) * composite_attribute_multiplier( a ) );
 }
 
-void player_t::create_talents_numbers()
-{
-  talents_str.clear();
-
-  for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
-  {
-    talents_str += util::to_string( talent_points->choice( j ) + 1 );
-  }
-}
-
 static bool parse_min_gcd( sim_t* sim, util::string_view name, util::string_view value )
 {
   if ( name != "min_gcd" )
@@ -10372,23 +10343,6 @@ void player_t::replace_spells()
           dbc->replace_id( entry.override_spell_id, entry.spell_id );
         }
     } );
-  }
-
-  // Search talents for spells to replace.
-  for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
-  {
-    for ( int i = 0; i < MAX_TALENT_COLS; i++ )
-    {
-      if ( talent_points->has_row_col( j, i ) && true_level < 20 + ( j == 0 ? -1 : j ) * 5 )
-      {
-        const talent_data_t* td = talent_data_t::find( type, j, i, specialization(), dbc->ptr );
-        if ( td && td->replace_id() )
-        {
-          dbc->replace_id( td->replace_id(), td->spell_id() );
-          break;
-        }
-      }
-    }
   }
 
   // Search general spells for spells to replace (a spell you learn earlier might be
@@ -10463,58 +10417,6 @@ void player_t::replace_spells()
           talent_obj.trait()->id_spell );
     }
   }
-}
-
-/**
- * Retrieves the Spell Data Associated with a given talent.
- *
- * If the player does not have have the talent activated, or the talent is not found,
- * spell_data_t::not_found() is returned.
- * The talent search by name is case sensitive, including all special characters!
- */
-const spell_data_t* player_t::find_talent_spell( util::string_view n, specialization_e s, bool name_tokenized,
-                                                 bool check_validity ) const
-{
-  if ( s == SPEC_NONE )
-  {
-    s = specialization();
-  }
-
-  // Get a talent's spell id for a given talent name
-  unsigned spell_id = dbc->talent_ability_id( type, s, n, name_tokenized );
-
-  if ( !spell_id )
-  {
-    sim->print_debug( "Player {}: Can't find talent with name '{}'.", name(), n );
-    return spell_data_t::not_found();
-  }
-
-  for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
-  {
-    for ( int i = 0; i < MAX_TALENT_COLS; i++ )
-    {
-      auto td = talent_data_t::find( type, j, i, s, dbc->ptr );
-      if ( !td )
-        continue;
-      auto spell = dbc::find_spell( this, td->spell_id() );
-
-      // Loop through all our classes talents, and check if their spell's id match the one we maped to the given
-      // talent name
-      if ( td && ( td->spell_id() == spell_id ) )
-      {
-        // check if we have the talent enabled or not
-        // Level tiers are hardcoded here which means they will need to changed when levels change
-        if ( check_validity &&
-          ( !talent_points->validate( spell, j, i ) || true_level < 20 + ( j == 0 ? -1 : j ) * 5 ) )
-          return spell_data_t::not_found();
-
-        return spell;
-      }
-    }
-  }
-
-  /* Talent not enabled */
-  return spell_data_t::not_found();
 }
 
 static player_talent_t create_talent_obj( const player_t* player, const trait_data_t* trait )
@@ -10809,40 +10711,42 @@ void player_t::vision_of_perfection_proc()
  * Tries to find spell data by name.
  *
  * It does this by going through various spell lists in following order:
- * class spell, specialization spell, mastery spell, talent spell, racial spell, pet_spell
+ * class spell, specialization spell, mastery spell, class/spec/hero talent spell, racial spell, pet_spell
  */
 const spell_data_t* player_t::find_spell( util::string_view name, specialization_e s ) const
 {
   const spell_data_t* sp = find_class_spell( name, s );
-  assert( sp );
   if ( sp->ok() )
     return sp;
 
   sp = find_specialization_spell( name );
-  assert( sp );
   if ( sp->ok() )
     return sp;
 
   if ( s != SPEC_NONE )
   {
     sp = find_mastery_spell( s );
-    assert( sp );
     if ( sp->ok() )
       return sp;
   }
 
-  sp = find_talent_spell( name );
-  assert( sp );
+  sp = find_talent_spell( talent_tree::CLASS, name );
+  if ( sp->ok() )
+    return sp;
+
+  sp = find_talent_spell( talent_tree::SPECIALIZATION, name );
+  if ( sp->ok() )
+    return sp;
+
+  sp = find_talent_spell( talent_tree::HERO, name );
   if ( sp->ok() )
     return sp;
 
   sp = find_racial_spell( name );
-  assert( sp );
   if ( sp->ok() )
     return sp;
 
   sp = find_pet_spell( name );
-  assert( sp );
   if ( sp->ok() )
     return sp;
 

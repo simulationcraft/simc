@@ -893,7 +893,7 @@ struct lay_on_hands_t : public paladin_heal_t
 struct blinding_light_t : public paladin_spell_t
 {
   blinding_light_t( paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( "blinding_light", p, p->find_talent_spell( "Blinding Light" ) )
+    : paladin_spell_t( "blinding_light", p, p->talents.blinding_light )
   {
     parse_options( options_str );
 
