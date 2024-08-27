@@ -3995,6 +3995,10 @@ struct dispatch_t: public rogue_attack_t
       trigger_hand_of_fate( execute_state, true, inevitable );
       trigger_cut_to_the_chase( execute_state );
     }
+    else if ( secondary_trigger_type == secondary_trigger::CRACKSHOT )
+    {
+      trigger_cut_to_the_chase( execute_state );
+    }
 
     trigger_count_the_odds( execute_state, p()->procs.count_the_odds_dispatch );
   }
