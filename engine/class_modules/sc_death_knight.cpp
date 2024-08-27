@@ -14739,8 +14739,6 @@ void death_knight_action_t<Base>::apply_action_effects()
   parse_effects( p()->buffs.sudden_doom, p()->talent.unholy.harbinger_of_doom );
   parse_effects( p()->buffs.plaguebringer, p()->talent.unholy.plaguebringer );
   parse_effects( p()->mastery.dreadblade );
-  parse_effects( p()->buffs.amplify_damage );
-  parse_effects( p()->buffs.ghoulish_infusion );
 
   // Rider of the Apocalypse
   parse_effects( p()->buffs.mograines_might );
@@ -14780,7 +14778,6 @@ void death_knight_action_t<Base>::apply_target_effects()
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::everfrost ),
                         p()->talent.frost.everfrost->effectN( 1 ).trigger(), p()->talent.frost.everfrost );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::piercing_chill ), p()->spell.piercing_chill_debuff );
-  parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::lingering_chill ), p()->spell.lingering_chill );
 
   // Unholy
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::death_rot ), p()->spell.death_rot_debuff );
