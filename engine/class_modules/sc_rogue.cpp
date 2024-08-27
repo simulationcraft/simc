@@ -8338,9 +8338,13 @@ struct stealth_like_buff_t : public BuffBase
         rogue->buffs.silent_storm->trigger();
     }
 
-    if ( rogue->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) && rogue->talent.outlaw.underhanded_upper_hand->ok() )
+    if ( rogue->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
     {
-      rogue->buffs.adrenaline_rush->pause();
+      if ( rogue->talent.outlaw.underhanded_upper_hand->ok() )
+        rogue->buffs.adrenaline_rush->pause();
+
+      if ( rogue->talent.fatebound.double_jeopardy->ok() )
+        rogue->buffs.double_jeopardy->trigger();
     }
   }
 
@@ -8366,24 +8370,6 @@ struct stealth_like_buff_t : public BuffBase
     if ( rogue->talent.outlaw.underhanded_upper_hand->ok() && !rogue->stealthed( STEALTH_BASIC | STEALTH_ROGUE ) )
     {
       rogue->buffs.adrenaline_rush->unpause();
-    }
-
-    if ( rogue->talent.fatebound.double_jeopardy->ok() ) {
-      // double jeopardy has to trigger *after* the stealth buffs fade, since it can only be consumed by a finisher *after* stealth
-      // is broken, and not by the finisher that actually breaks stealth
-
-      // Unless we're at the sim start, and thus precombat - instantly apply the DJ buff in that case, since all precombat actions happen at 0s
-      if ( rogue->sim->current_time() == 0_s )
-      {
-        rogue->buffs.double_jeopardy->trigger();
-      }
-      else
-      {
-        make_event( rogue->sim, 1_ms, [ this ] {
-          if ( !rogue->stealthed( STEALTH_BASIC ) )
-            rogue->buffs.double_jeopardy->trigger();
-        } );
-      }
     }
   }
 
@@ -9419,17 +9405,21 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
 
   fatebound_t::coinflip_e result;
 
-  // Edge case - coin lands on edge
-  if ( p()->talent.fatebound.edge_case->ok() && p()->buffs.edge_case->check() )
+  // Edge case - coin lands on edge - inevitable coins override this and match the previous coin instead
+  if ( p()->talent.fatebound.edge_case->ok() && p()->buffs.edge_case->check() && !trigger_inevitable )
   {
-    p()->buffs.edge_case->expire();
     result = fatebound_t::coinflip_e::EDGE;
   }
   // No stacks of either buff or equal stacks of both buffs (thanks to only using edge case)
   // Nothing to bias, just flip the coin fairly
-  else if ( p()->buffs.fatebound_coin_tails->total_stack() == p()->buffs.fatebound_coin_heads->total_stack() )
+  else if ( p()->buffs.fatebound_coin_tails->total_stack() == p()->buffs.fatebound_coin_heads->total_stack() && !trigger_inevitable )
   {
     result = p()->rng().roll( 0.5 ) ? fatebound_t::coinflip_e::HEADS : fatebound_t::coinflip_e::TAILS;
+  }
+  else if ( p()->buffs.fatebound_coin_heads->check() && p()->buffs.fatebound_coin_tails->check() && trigger_inevitable && p()->talent.fatebound.inevitability->ok() )
+  {
+    // Inevitable flip matching a previous edge case
+    result = fatebound_t::coinflip_e::EDGE;
   }
   // Flip the coin, potentially with a bias toward matching the last face flipped
   else
@@ -9437,9 +9427,6 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
     double matching_odds = 0.5;
     if ( trigger_inevitable && p()->talent.fatebound.inevitability->ok() )
     {
-      // TODO: Inevitable flips when you have both coins don't always produce a flip
-      // for the coin with the higher coin count. There may be an underlying "order" to an
-      // edge result that is respected; but it's probably just a bug because it makes no sense.
       matching_odds = 1.0;
     }
     else if ( biased )
@@ -9463,6 +9450,7 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
       current_is_heads ? fatebound_t::coinflip_e::HEADS : fatebound_t::coinflip_e::TAILS :
       current_is_heads ? fatebound_t::coinflip_e::TAILS : fatebound_t::coinflip_e::HEADS;
   }
+  p()->buffs.edge_case->expire(); // Always expires on next coinflip even if not used because an inevitable flip munched it
 
   execute_fatebound_coinflip( state, result );
   if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
