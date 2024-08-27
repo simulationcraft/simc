@@ -338,6 +338,7 @@ void windwalker( player_t *p )
     //-------------------------------------------
     const static std::unordered_map<std::string, std::string> sef_trinkets{
         // name_str -> APL
+          // DF Trinkets
         { "algethar_puzzle_box",
           ",if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&!buff.storm_earth_"
           "and_fire.up|fight_remains<25" },
@@ -355,14 +356,15 @@ void windwalker( player_t *p )
         { "dragonfire_bomb_dispenser",
           ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|trinket.2.has_use_buff)&"
           "cooldown.invoke_xuen_the_white_tiger.remains>10|fight_remains<10" },
+          // TWW Trinkets
+        { "imperfect_ascendancy_serum",
+          ",use_off_gcd=1,if=pet.xuen_the_white_tiger.active" },
 
         // Defaults:
         { "ITEM_STAT_BUFF",
-          ",if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&buff.storm_earth_and_fire.up|"
-          "fight_remains<25" },
+          ",if=pet.xuen_the_white_tiger.active" },
         { "ITEM_DMG_BUFF",
-          ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|trinket.2.has_use_buff)&"
-          "cooldown.invoke_xuen_the_white_tiger.remains>30" },
+          ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>30" },
     };
 
     // -----------------------------------------
@@ -418,6 +420,9 @@ void windwalker( player_t *p )
 
   // Snapshot stats
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+  // Add Precombattrinkets
+  pre->add_action( "use_item,name=imperfect_ascendancy_serum" );
 
   std::vector<std::string> racial_actions = p->get_racial_actions();
   action_priority_list_t *def             = p->get_action_priority_list( "default" );
