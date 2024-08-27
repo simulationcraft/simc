@@ -862,6 +862,7 @@ public:
     player_talent_t elemental_blast;
     player_talent_t primordial_wave;
     player_talent_t ascendance;
+    player_talent_t deeply_rooted_elements;
     player_talent_t splintered_elements;
 
     // Enhancement
@@ -962,7 +963,6 @@ public:
     player_talent_t magma_chamber;
     // Row 10
     player_talent_t echoes_of_great_sundering;
-    player_talent_t deeply_rooted_elements;
     player_talent_t lightning_rod;
     player_talent_t primal_elementalist;
     player_talent_t liquid_magma_totem;
@@ -1043,6 +1043,7 @@ public:
   // Misc Spells
   struct
   {
+    const spell_data_t* ascendance;  // proxy spell data for normal & dre ascendance
     const spell_data_t* resurgence;
     const spell_data_t* maelstrom_weapon;
     const spell_data_t* feral_spirit;
@@ -1389,9 +1390,7 @@ struct ascendance_buff_t : public buff_t
   action_t* lava_burst;
 
   ascendance_buff_t( shaman_t* p )
-    : buff_t( p, "ascendance",
-              p->specialization() == SHAMAN_ENHANCEMENT ? p->find_spell( 114051 )
-                                                        : p->find_spell( 114050 ) ),  // No resto for now
+    : buff_t( p, "ascendance", p->spell.ascendance ),
       lava_burst( nullptr )
   {
     set_cooldown( timespan_t::zero() );  // Cooldown is handled by the action
@@ -8420,7 +8419,7 @@ struct ascendance_t : public shaman_spell_t
   lava_burst_t* lvb;
 
   ascendance_t( shaman_t* player, util::string_view name_str, util::string_view options_str = {} ) :
-    shaman_spell_t( name_str, player, player->talent.ascendance ),
+    shaman_spell_t( name_str, player, player->spell.ascendance ),
     ascendance_damage( nullptr ), lvb( nullptr )
   {
     parse_options( options_str );
@@ -10859,6 +10858,7 @@ void shaman_t::init_spells()
   talent.elemental_blast         = _ST( "Elemental Blast" );
   talent.primordial_wave         = _ST( "Primordial Wave" );
   talent.ascendance              = _ST( "Ascendance" );
+  talent.deeply_rooted_elements  = _ST( "Deeply Rooted Elements" );
   talent.splintered_elements     = _ST( "Splintered Elements" );
 
   // Enhancement
@@ -10961,7 +10961,6 @@ void shaman_t::init_spells()
   talent.magma_chamber          = _ST( "Magma Chamber" );
   // Row 10
   talent.echoes_of_great_sundering = _ST( "Echoes of Great Sundering" );
-  talent.deeply_rooted_elements = _ST( "Deeply Rooted Elements" );
   talent.lightning_rod          = _ST( "Lightning Rod" );
   talent.primal_elementalist    = _ST( "Primal Elementalist" );
   talent.liquid_magma_totem     = _ST( "Liquid Magma Totem" );
@@ -11025,6 +11024,18 @@ void shaman_t::init_spells()
   //
   // Misc spells
   //
+  spell.ascendance          = talent.ascendance.spell();
+  if ( !spell.ascendance->ok() && talent.deeply_rooted_elements.ok() )
+  {
+    switch ( specialization() )
+    {
+      case SHAMAN_ELEMENTAL:   spell.ascendance = find_spell( 114050 ); break;
+      case SHAMAN_ENHANCEMENT: spell.ascendance = find_spell( 114051 ); break;
+      case SHAMAN_RESTORATION: spell.ascendance = find_spell( 114052 ); break;
+      default:                 break;
+    }
+  }
+
   spell.resurgence          = find_spell( 101033 );
   spell.maelstrom_weapon    = find_spell( 187881 );
   spell.feral_spirit        = find_spell( 228562 );
