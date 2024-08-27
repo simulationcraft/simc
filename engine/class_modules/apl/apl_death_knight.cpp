@@ -336,7 +336,7 @@ void frost( player_t* p )
 
   single_target->add_action( "frost_strike,if=talent.a_feast_of_souls&debuff.razorice.stack=5&talent.shattering_blade&buff.a_feast_of_souls.up", "Single Target Rotation" );
   single_target->add_action( "obliterate,if=buff.killing_machine.react=2|buff.exterminate.up|buff.painful_death.up" );
-  single_target->add_action( "horn_of_winter,if=(!talent.breath_of_sindragosa|variable.true_breath_cooldown>cooldown.horn_of_winter.duration-15)&cooldown.pillar_of_frost.remains<5" );
+  single_target->add_action( "horn_of_winter,if=(!talent.breath_of_sindragosa|variable.true_breath_cooldown>cooldown.horn_of_winter.duration-15)&cooldown.pillar_of_frost.remains<variable.oblit_pooling_time" );
   single_target->add_action( "frost_strike,if=(debuff.razorice.stack=5&talent.shattering_blade)|(rune<2&!talent.icebreaker)" );
   single_target->add_action( "howling_blast,if=variable.rime_buffs" );
   single_target->add_action( "obliterate,if=buff.killing_machine.react&!variable.pooling_runes" );
