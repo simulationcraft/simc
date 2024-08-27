@@ -10241,35 +10241,6 @@ pet_t* player_t::create_pet( util::string_view, util::string_view )
   return nullptr;
 }
 
-namespace
-{
-std::string armory2_class_name( util::string_view tokenized_class, util::string_view tokenized_spec )
-{
-  auto class_str = std::string( tokenized_class );
-  auto spec_str  = std::string( tokenized_spec );
-
-  util::replace_all( class_str, "-", " " );
-  util::replace_all( spec_str, "-", " " );
-  return util::inverse_tokenize( spec_str ) + " " + util::inverse_tokenize( class_str );
-}
-
-player_e armory2_parse_player_type( util::string_view class_name )
-{
-  if ( util::str_compare_ci( class_name, "death-knight" ) )
-  {
-    return DEATH_KNIGHT;
-  }
-  else if ( util::str_compare_ci( class_name, "demon-hunter" ) )
-  {
-    return DEMON_HUNTER;
-  }
-  else
-  {
-    return util::parse_player_type( class_name );
-  }
-}
-}  // namespace
-
 /**
  * Get average item level the player is wearing
  */
