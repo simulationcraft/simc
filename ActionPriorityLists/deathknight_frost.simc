@@ -148,7 +148,7 @@ actions.racials+=/bag_of_tricks,if=!talent.obliteration&buff.pillar_of_frost.up&
 # Single Target Rotation
 actions.single_target=frost_strike,if=talent.a_feast_of_souls&debuff.razorice.stack=5&talent.shattering_blade&buff.a_feast_of_souls.up
 actions.single_target+=/obliterate,if=buff.killing_machine.react=2|buff.exterminate.up|buff.painful_death.up
-actions.single_target+=/horn_of_winter,if=(!talent.breath_of_sindragosa|variable.true_breath_cooldown>cooldown.horn_of_winter.duration-15)&cooldown.pillar_of_frost.remains<5
+actions.single_target+=/horn_of_winter,if=(!talent.breath_of_sindragosa|variable.true_breath_cooldown>cooldown.horn_of_winter.duration-15)&cooldown.pillar_of_frost.remains<variable.oblit_pooling_time
 actions.single_target+=/frost_strike,if=(debuff.razorice.stack=5&talent.shattering_blade)|(rune<2&!talent.icebreaker)
 actions.single_target+=/howling_blast,if=variable.rime_buffs
 actions.single_target+=/obliterate,if=buff.killing_machine.react&!variable.pooling_runes
