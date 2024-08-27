@@ -2149,6 +2149,8 @@ struct hammer_of_light_damage_t : public holy_power_consumer_t<paladin_melee_att
       else
         p()->buffs.templar.shake_the_heavens->execute();
     }
+    // Since Hammer of Light's damage component is a background action, we need to call reset AA ourselves
+    p()->reset_auto_attacks( 0_ms, player->procs.reset_aa_cast );
   }
   void impact( action_state_t* s ) override
   {
