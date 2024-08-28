@@ -602,8 +602,6 @@ void monk_action_t<Base>::impact( action_state_t *s )
   {
     p()->trigger_empowered_tiger_lightning( s );
 
-    p()->trigger_spirit_of_forged_vermillion( s );
-
     if ( !base_t::result_is_miss( s->result ) && s->result_amount > 0 )
     {
       if ( p()->talent.shado_pan.flurry_strikes->ok() )
@@ -8445,10 +8443,7 @@ void monk_t::init_procs()
   proc.tranquil_spirit_expel_harm     = get_proc( "Tranquil Spirit - Expel Harm" );
   proc.tranquil_spirit_goto           = get_proc( "Tranquil Spirit - Gift of the Ox" );
   proc.xuens_battlegear_reduction     = get_proc( "Xuen's Battlegear CD Reduction" );
-
-  // Tier 30
-  proc.spirit_of_forged_vermillion_spawn = get_proc( "Shadow Flame Monk Summon" );
-  proc.elusive_brawler_preserved         = get_proc( "Elusive Brawler Stacks Preserved" );
+  proc.elusive_brawler_preserved      = get_proc( "Elusive Brawler Stacks Preserved" );
 }
 
 // monk_t::init_assessors ===================================================

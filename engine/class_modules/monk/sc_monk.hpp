@@ -42,7 +42,6 @@ struct chiji_pet_t;
 struct yulon_pet_t;
 struct white_tiger_statue_t;
 struct fury_of_xuen_pet_t;
-struct spirit_of_forged_vermillion_t;
 
 enum class sef_pet_e
 {
@@ -1455,7 +1454,6 @@ public:
   void retarget_storm_earth_and_fire_pets() const;
 
   void trigger_storm_earth_and_fire( const action_t *a, actions::sef_ability_e sef_ability, bool combo_strike );
-  void trigger_spirit_of_forged_vermillion( action_state_t *s );
   void storm_earth_and_fire_fixate( player_t *target );
   bool storm_earth_and_fire_fixate_ready( player_t *target );
   player_t *storm_earth_and_fire_fixate_target( pets::sef_pet_e sef_pet );
