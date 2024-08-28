@@ -7728,22 +7728,27 @@ void monk_t::init_spells()
   windwalking_aura        = new actions::windwalking_aura_t( this );
 
   // Conduit of the Celestials
-  if ( talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok() )
+  bool uw  = talent.conduit_of_the_celestials.unity_within->ok();
+  bool cwt = talent.conduit_of_the_celestials.courage_of_the_white_tiger->ok() || uw;
+  bool frc = talent.conduit_of_the_celestials.flight_of_the_red_crane->ok() || uw;
+  bool sbt = talent.conduit_of_the_celestials.strength_of_the_black_ox->ok() || uw;
+
+  if ( cwt )
+  {
     active_actions.courage_of_the_white_tiger = new actions::courage_of_the_white_tiger_t( this );
-  if ( talent.conduit_of_the_celestials.flight_of_the_red_crane->ok() )
+  }
+
+  if ( frc )
   {
     active_actions.flight_of_the_red_crane_damage = new actions::flight_of_the_red_crane_dmg_t( this );
     active_actions.flight_of_the_red_crane_heal   = new actions::flight_of_the_red_crane_heal_t( this );
-  }
-  if ( talent.conduit_of_the_celestials.unity_within->ok() )
-  {
     active_actions.flight_of_the_red_crane_celestial_damage =
         new actions::flight_of_the_red_crane_celestial_dmg_t( this );
     active_actions.flight_of_the_red_crane_celestial_heal =
         new actions::flight_of_the_red_crane_celestial_heal_t( this );
   }
-  if ( talent.conduit_of_the_celestials.strength_of_the_black_ox->ok() ||
-       talent.conduit_of_the_celestials.unity_within->ok() )
+
+  if ( sbt )
   {
     active_actions.strength_of_the_black_ox_dmg    = new actions::strength_of_the_black_ox_t( this );
     active_actions.strength_of_the_black_ox_absorb = new actions::strength_of_the_black_ox_absorb_t( this );
