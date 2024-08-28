@@ -1637,8 +1637,6 @@ struct rising_sun_kick_dmg_t : public overwhelming_force_t<monk_melee_attack_t>
     if ( p()->talent.brewmaster.black_ox_adept->ok() )
       p()->buff.ox_stance->trigger();
 
-    p()->buff.leverage->expire();
-
     // Brewmaster RSK also applies the WoO debuff.
     if ( p()->buff.weapons_of_order->up() )
       for ( const auto &target : target_list() )
@@ -2274,20 +2272,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
   void execute() override
   {
-    //===========
-    // Pre-Execute
-    //===========
-
-    int leverage_stacks = p()->buff.leverage->check();
-
-    p()->buff.leverage_helper->expire();
-
-    if ( leverage_stacks > 0 )
-    {
-      p()->buff.leverage->expire();
-      p()->buff.leverage_helper->trigger( leverage_stacks );
-    }
-
     if ( p()->specialization() == MONK_WINDWALKER )
     {
       if ( p()->buff.dance_of_chiji->up() )
@@ -2311,10 +2295,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     }
 
     monk_melee_attack_t::execute();
-
-    //===========
-    // Post-Execute
-    //===========
 
     timespan_t buff_duration = composite_dot_duration( execute_state );
 
@@ -6196,23 +6176,6 @@ struct kicks_of_flowing_momentum_t : public monk_buff_t
 };
 
 // ===============================================================================
-// Tier 30 Leverage SCK Helper
-// ===============================================================================
-
-struct leverage_helper_t : public monk_buff_t
-{
-  leverage_helper_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
-  {
-    set_trigger_spell( p->sets->set( MONK_BREWMASTER, T30, B4 ) );
-    set_can_cancel( true );
-    set_quiet( true );
-    set_cooldown( timespan_t::zero() );
-    set_duration( p->baseline.brewmaster.spinning_crane_kick->duration() );
-    set_max_stack( 5 );
-  }
-};
-
-// ===============================================================================
 // Tier 31 Blackout Reinforcement
 // ===============================================================================
 
@@ -7624,7 +7587,6 @@ void monk_t::init_spells()
     tier.t29.kicks_of_flowing_momentum = find_spell( 394944 );
     tier.t29.fists_of_flowing_momentum = find_spell( 394949 );
 
-    tier.t30.leverage                  = find_spell( 408503 );
     tier.t30.shadowflame_nova          = find_spell( 410139 );
     tier.t30.shadowflame_spirit        = find_spell( 410159 );
     tier.t30.shadowflame_spirit_summon = find_spell( 410153 );
@@ -8146,12 +8108,6 @@ void monk_t::create_buffs()
 
   buff.recent_purifies = make_buff_fallback<buffs::purifying_buff_t>(
       talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok(), this, "recent_purifies" );
-
-  buff.leverage = make_buff( this, "leverage", tier.t30.leverage )
-                      ->set_trigger_spell( sets->set( MONK_BREWMASTER, T30, B4 ) )
-                      ->add_invalidate( CACHE_CRIT_CHANCE )
-                      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buff.leverage_helper = new buffs::leverage_helper_t( this, "leverage_helper", spell_data_t::nil() );
 
   buff.brewmaster_t31_4p_accumulator =
       make_buff( this, "brewmaster_t31_4p_accumulator", spell_data_t::nil() )->set_default_value( 0.0 );
