@@ -750,9 +750,6 @@ public:
     propagate_const<proc_t *> blackout_combo_rising_sun_kick;
     propagate_const<proc_t *> blackout_kick_cdr_oe;
     propagate_const<proc_t *> blackout_kick_cdr;
-    propagate_const<proc_t *> blackout_reinforcement_melee;
-    propagate_const<proc_t *> blackout_reinforcement_sck;
-    propagate_const<proc_t *> blackout_reinforcement_waste;
     propagate_const<proc_t *> bountiful_brew_proc;
     propagate_const<proc_t *> charred_passions;
     propagate_const<proc_t *> chi_surge;

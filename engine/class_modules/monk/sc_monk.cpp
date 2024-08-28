@@ -200,7 +200,6 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.pressure_point );
   parse_effects( p()->buff.storm_earth_and_fire, IGNORE_STACKS, effect_mask_t( false ).enable( 1, 2, 3, 7, 8 ),
                  affect_list_t( 1, 2 ).add_spell( p()->passives.chi_explosion->id() ) );
-  parse_effects( p()->buff.blackout_reinforcement );
   parse_effects( p()->buff.bok_proc, p()->talent.windwalker.courageous_impulse );
 
   // Conduit of the Celestials
@@ -1972,9 +1971,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
         p()->buff.inner_compass_ox_stance->trigger();
       }
 
-      if ( p()->buff.blackout_reinforcement->up() )
-        p()->buff.blackout_reinforcement->decrement();
-
       p()->buff.vigilant_watch->trigger();
 
       p()->buff.tigers_ferocity->trigger();
@@ -2274,16 +2270,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         if ( p()->rng().roll( p()->talent.windwalker.sequenced_strikes->effectN( 1 ).percent() ) )
           p()->buff.bok_proc->increment();  // increment is used to not incur the rppm cooldown
       }
-    }
-
-    // Is a free cast for WW
-    if ( current_resource() == RESOURCE_CHI && cost() == 0 )
-    {
-      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) )
-        // This effect does not proc from free spinning crane kicks while the buff is already up.
-        if ( !p()->buff.blackout_reinforcement->at_max_stacks() )
-          if ( p()->buff.blackout_reinforcement->trigger() )
-            p()->proc.blackout_reinforcement_sck->occur();
     }
 
     monk_melee_attack_t::execute();
@@ -6127,53 +6113,6 @@ struct windwalking_driver_t : public monk_buff_t
 };
 
 // ===============================================================================
-// Tier 31 Blackout Reinforcement
-// ===============================================================================
-
-struct blackout_reinforcement_t : public monk_buff_t
-{
-  blackout_reinforcement_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
-  {
-    set_default_value_from_effect( 1 );
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
-
-  void refresh( int stacks, double value, timespan_t duration ) override
-  {
-    p().proc.blackout_reinforcement_waste->occur();
-
-    if ( p().bugs )
-    {
-      // Blackout Reinforcement is also causing the CDR effect on refreshes from the RPPM "melee attack" procs.
-      // I am assuming this behavior is unintended so it's under the bugs flag for now
-
-      timespan_t cooldown_reduction =
-          -1 * timespan_t::from_seconds( p().sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 1 ).base_value() );
-
-      p().cooldown.fists_of_fury->adjust( cooldown_reduction );
-      p().cooldown.rising_sun_kick->adjust( cooldown_reduction );
-      p().cooldown.strike_of_the_windlord->adjust( cooldown_reduction );
-      p().cooldown.whirling_dragon_punch->adjust( cooldown_reduction );
-    }
-
-    buff_t::refresh( stacks, value, duration );
-  }
-
-  void decrement( int stacks, double value = DEFAULT_VALUE() ) override
-  {
-    timespan_t cooldown_reduction =
-        -1 * timespan_t::from_seconds( p().sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 1 ).base_value() );
-
-    p().cooldown.fists_of_fury->adjust( cooldown_reduction );
-    p().cooldown.rising_sun_kick->adjust( cooldown_reduction );
-    p().cooldown.strike_of_the_windlord->adjust( cooldown_reduction );
-    p().cooldown.whirling_dragon_punch->adjust( cooldown_reduction );
-
-    buff_t::decrement( stacks, value );
-  }
-};
-
-// ===============================================================================
 // Aspect of Harmony (Master of Harmony)
 // ===============================================================================
 aspect_of_harmony_t::aspect_of_harmony_t()
@@ -8432,13 +8371,6 @@ void monk_t::create_buffs()
   buff.fists_of_flowing_momentum_fof = make_buff_fallback( sets->set( MONK_WINDWALKER, T29, B4 )->ok(), this,
                                                            "fists_of_flowing_momentum_fof", find_spell( 394951 ) )
                                            ->set_trigger_spell( sets->set( MONK_WINDWALKER, T29, B4 ) );
-
-  // Tier 31 Set Bonus
-  buff.blackout_reinforcement = make_buff_fallback<buffs::blackout_reinforcement_t>(
-      sets->set( MONK_WINDWALKER, T31, B4 )->ok(), this, "blackout_reinforcement", find_spell( 424454 ) );
-
-  // stagger = new stagger_t( this );
-
   // ------------------------------
   // Movement
   // ------------------------------
@@ -8498,9 +8430,6 @@ void monk_t::init_procs()
   proc.blackout_combo_rising_sun_kick = get_proc( "Blackout Combo - Rising Sun Kick (Press the Advantage)" );
   proc.blackout_kick_cdr_oe           = get_proc( "Blackout Kick CDR During SEF" );
   proc.blackout_kick_cdr              = get_proc( "Blackout Kick CDR" );
-  proc.blackout_reinforcement_melee   = get_proc( "Blackout Reinforcement" );
-  proc.blackout_reinforcement_sck     = get_proc( "Blackout Reinforcement (Free SCKs)" );
-  proc.blackout_reinforcement_waste   = get_proc( "Blackout Reinforcement Waste" );
   proc.bountiful_brew_proc            = get_proc( "Bountiful Brew Trigger" );
   proc.charred_passions               = get_proc( "Charred Passions" );
   proc.chi_surge                      = get_proc( "Chi Surge CDR" );
