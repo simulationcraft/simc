@@ -4176,9 +4176,7 @@ void excavation( special_effect_t& effect )
       for ( const auto& [ id, n ] : buff_entries )
       {
         auto s_data  = e.player->find_spell( id );
-        double value = 0;
-
-        value = e.driver()->effectN( 1 ).average( e ) * ( 1.0 + ( 0.05 * n ) );
+        double value =  e.driver()->effectN( 1 ).average( e ) * ( 1.0 + ( 0.05 * n ) );
 
         auto buff = create_buff<stat_buff_t>( e.player, s_data )->add_stat_from_effect_type( A_MOD_STAT, value );
 
