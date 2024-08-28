@@ -220,8 +220,8 @@ void arms( player_t* p )
   single_target->add_action( "mortal_strike" );
   single_target->add_action( "skullsplitter" );
   single_target->add_action( "execute" );
-  single_target->add_action( "overpower" );
   single_target->add_action( "bladestorm" );
+  single_target->add_action( "overpower" );
   single_target->add_action( "rend,if=dot.rend.remains<=8" );
   single_target->add_action( "cleave,if=active_enemies>=2&talent.fervor_of_battle" );
   single_target->add_action( "slam" );
