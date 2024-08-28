@@ -3983,6 +3983,7 @@ Description      : Icy Veins' duration is increased by ${$s2/1000} sec.
 Your Ice Lances against frozen targets extend your Icy Veins by an additional ${$s1/1000}.1 sec$?s199786[ and Glacial Spike extends it an addtional ${$s3/1000}.1 sec][].
 
 Name             : Meteor Burn (id=155158) [Spell Family (3)] 
+Hotfixed         : Max stacks (3 -> 1)
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -3992,7 +3993,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 52
                  : 292
-Stacks           : 3 maximum
+Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Deep Impact (416719 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3, 122
