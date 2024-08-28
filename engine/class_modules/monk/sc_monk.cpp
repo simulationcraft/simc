@@ -2283,10 +2283,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     p()->buff.chi_energy->trigger();
-
     p()->buff.momentum_boost_damage->trigger();
-
-    get_td( s->target )->debuff.shadowflame_vulnerability->trigger();
   }
 };
 
@@ -6356,10 +6353,6 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
                                     ->set_trigger_spell( p->talent.windwalker.storm_earth_and_fire )
                                     ->set_cooldown( timespan_t::zero() );
 
-  debuff.shadowflame_vulnerability = make_buff( *this, "shadowflame_vulnerability", p->find_spell( 411376 ) )
-                                         ->set_trigger_spell( p->sets->set( MONK_WINDWALKER, T30, B4 ) )
-                                         ->set_default_value_from_effect( 1 );
-
   dot.breath_of_fire                   = target->get_dot( "breath_of_fire_dot", p );
   dot.crackling_jade_lightning_aoe     = target->get_dot( "crackling_jade_lightning_aoe", p );
   dot.crackling_jade_lightning_sef     = target->get_dot( "crackling_jade_lightning_sef", p );
@@ -7343,10 +7336,6 @@ void monk_t::init_spells()
 
   // monk_t::talent::tier
   {
-    tier.t30.shadowflame_nova          = find_spell( 410139 );
-    tier.t30.shadowflame_spirit        = find_spell( 410159 );
-    tier.t30.shadowflame_spirit_summon = find_spell( 410153 );
-
     tier.tww1.ww_4pc                      = find_spell( 454505 );
     tier.tww1.ww_4pc_dmg                  = find_spell( 454508 );
     tier.tww1.brm_4pc_damage_buff         = find_spell( 457257 );

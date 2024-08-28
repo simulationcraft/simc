@@ -393,9 +393,6 @@ public:
 
     // Shadowland Legendaries
     propagate_const<buff_t *> jadefire_brand;
-
-    // Tier 30
-    propagate_const<buff_t *> shadowflame_vulnerability;
   } debuff;
 
   monk_t &monk;
