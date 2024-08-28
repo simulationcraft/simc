@@ -78,6 +78,8 @@ monk_action_t<Base>::monk_action_t( Args &&...args )
 
   apply_buff_effects();
   apply_debuff_effects();
+
+  track_cd_waste = base_t::data().cooldown() > 0_ms || base_t::data().charge_cooldown() > 0_ms;
 }
 
 template <class Base>
@@ -291,13 +293,13 @@ template <class Base>
 bool monk_action_t<Base>::ready()
 {
   // Spell data nil or not_found
-  if ( this->data().id() == 0 )
+  if ( base_t::data().id() == 0 )
     return false;
 
   // These abilities are able to be used during Spinning Crane Kick
-  if ( this->cast_during_sck )
-    this->usable_while_casting = p()->channeling && p()->baseline.monk.spinning_crane_kick &&
-                                 ( p()->channeling->id == p()->baseline.monk.spinning_crane_kick->id() );
+  if ( cast_during_sck )
+    base_t::usable_while_casting = p()->channeling && p()->baseline.monk.spinning_crane_kick &&
+                                   ( p()->channeling->id == p()->baseline.monk.spinning_crane_kick->id() );
 
   return base_t::ready();
 }
@@ -307,8 +309,7 @@ void monk_action_t<Base>::init()
 {
   base_t::init();
 
-  /* Iterate through power entries, and find if there are resources linked to one of our stances
-   */
+  // Iterate through power entries, and find if there are resources linked to one of our stances
   for ( const spellpower_data_t &pd : base_t::data().powers() )
   {
     switch ( pd.aura_id() )
@@ -334,17 +335,17 @@ void monk_action_t<Base>::init()
   }
 
   // Allow this ability to be cast during SCK
-  if ( this->cast_during_sck && !this->background && !this->dual )
+  if ( cast_during_sck && !base_t::background && !base_t::dual )
   {
-    if ( this->usable_while_casting )
+    if ( base_t::usable_while_casting )
     {
-      this->cast_during_sck = false;
-      p()->sim->print_debug( "{}: cast_during_sck ignored because usable_while_casting = true", this->full_name() );
+      cast_during_sck = false;
+      p()->sim->print_debug( "{}: cast_during_sck ignored because usable_while_casting = true", full_name() );
     }
     else
     {
-      this->usable_while_casting = true;
-      this->use_while_casting    = true;
+      base_t::usable_while_casting = true;
+      base_t::use_while_casting    = true;
     }
   }
 }
@@ -353,12 +354,12 @@ template <class Base>
 void monk_action_t<Base>::init_finished()
 {
   // 2H Weapon Scaling
-  if ( this->attack_power_mod.direct > 0 )
+  if ( base_t::attack_power_mod.direct > 0 )
   {
-    if ( this->ap_type == attack_power_type::WEAPON_BOTH && p()->main_hand_weapon.group() == WEAPON_2H )
+    if ( base_t::ap_type == attack_power_type::WEAPON_BOTH && p()->main_hand_weapon.group() == WEAPON_2H )
     {
-      this->ap_type = attack_power_type::WEAPON_MAINHAND;
-      this->base_multiplier *= 0.98;  // This value is not included in spelldata but is included in the tooltip label
+      base_t::ap_type = attack_power_type::WEAPON_MAINHAND;
+      base_t::base_multiplier *= 0.98;  // This value is not included in spelldata but is included in the tooltip label
     }
   }
   base_t::init_finished();
@@ -408,7 +409,7 @@ bool monk_action_t<Base>::is_combo_strike()
   if ( p()->combo_strike_actions.empty() )
     return true;
 
-  if ( p()->combo_strike_actions.back()->id != this->id )
+  if ( p()->combo_strike_actions.back()->id != base_t::id )
     return true;
 
   return false;
@@ -649,62 +650,6 @@ void monk_action_t<Base>::tick( dot_t *dot )
 }
 
 template <class Base>
-void monk_action_t<Base>::last_tick( dot_t *dot )
-{
-  base_t::last_tick( dot );
-}
-
-template <class Base>
-double monk_action_t<Base>::cost() const
-{
-  double c = base_t::cost();
-
-  return c;
-}
-
-template <class Base>
-double monk_action_t<Base>::cost_pct_multiplier() const
-{
-  double c = base_t::cost_pct_multiplier();
-
-  c *= 1.0 + cost_reduction();
-
-  return c;
-}
-
-template <class Base>
-double monk_action_t<Base>::cost_reduction() const
-{
-  double c = 0.0;
-
-  return c;
-}
-
-template <class Base>
-double monk_action_t<Base>::composite_crit_damage_bonus_multiplier() const
-{
-  double m = base_t::composite_crit_damage_bonus_multiplier();
-
-  return m;
-}
-
-template <class Base>
-double monk_action_t<Base>::composite_ta_multiplier( const action_state_t *s ) const
-{
-  double ta = base_t::composite_ta_multiplier( s );
-
-  return ta;
-}
-
-template <class Base>
-double monk_action_t<Base>::composite_da_multiplier( const action_state_t *s ) const
-{
-  double da = base_t::composite_da_multiplier( s );
-
-  return da;
-}
-
-template <class Base>
 void monk_action_t<Base>::trigger_storm_earth_and_fire( const action_t *a )
 {
   p()->trigger_storm_earth_and_fire( a, sef_ability, ( may_combo_strike && p()->buff.combo_strikes->check() ) );
@@ -727,15 +672,6 @@ monk_spell_t::monk_spell_t( monk_t *player, std::string_view name, const spell_d
   : monk_action_t<spell_t>( name, player, spell_data )
 {
   ap_type = attack_power_type::WEAPON_MAINHAND;
-
-  track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
-}
-
-double monk_spell_t::composite_target_crit_chance( player_t *target ) const
-{
-  double c = base_t::composite_target_crit_chance( target );
-
-  return c;
 }
 
 monk_heal_t::monk_heal_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
@@ -743,8 +679,6 @@ monk_heal_t::monk_heal_t( monk_t *player, std::string_view name, const spell_dat
 {
   harmful = false;
   ap_type = attack_power_type::WEAPON_MAINHAND;
-
-  track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
 }
 
 double monk_heal_t::action_multiplier() const
@@ -793,7 +727,6 @@ double monk_heal_t::action_multiplier() const
 monk_absorb_t::monk_absorb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
   : monk_action_t<absorb_t>( name, player, spell_data )
 {
-  track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
 }
 
 monk_melee_attack_t::monk_melee_attack_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
@@ -801,8 +734,6 @@ monk_melee_attack_t::monk_melee_attack_t( monk_t *player, std::string_view name,
 {
   special    = true;
   may_glance = false;
-
-  track_cd_waste = data().cooldown() > 0_ms || data().charge_cooldown() > 0_ms;
 }
 
 // Physical tick_action abilities need amount_type() override, so the
