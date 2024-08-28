@@ -7715,9 +7715,6 @@ void monk_t::init_spells()
 
   shared.rushing_jade_wind = _priority( talent.windwalker.rushing_jade_wind, talent.brewmaster.rushing_jade_wind );
 
-  shared.shadowboxing_treads =
-      _priority( talent.windwalker.shadowboxing_treads, talent.brewmaster.shadowboxing_treads );
-
   shared.teachings_of_the_monastery =
       _priority( talent.windwalker.teachings_of_the_monastery, talent.mistweaver.teachings_of_the_monastery );
 
