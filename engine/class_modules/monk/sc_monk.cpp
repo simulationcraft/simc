@@ -732,14 +732,6 @@ void monk_action_t<Base>::last_tick( dot_t *dot )
 }
 
 template <class Base>
-double monk_action_t<Base>::composite_persistent_multiplier( const action_state_t *action_state ) const
-{
-  double pm = base_t::composite_persistent_multiplier( action_state );
-
-  return pm;
-}
-
-template <class Base>
 double monk_action_t<Base>::cost() const
 {
   double c = base_t::cost();
@@ -821,17 +813,6 @@ double monk_spell_t::composite_target_crit_chance( player_t *target ) const
   double c = base_t::composite_target_crit_chance( target );
 
   return c;
-}
-
-double monk_spell_t::composite_persistent_multiplier( const action_state_t *state ) const
-{
-  double pm = base_t::composite_persistent_multiplier( state );
-
-  // Brewmaster Tier Set
-  if ( base_t::data().affected_by( p()->buff.brewmasters_rhythm->data().effectN( 1 ) ) )
-    pm *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
-
-  return pm;
 }
 
 monk_heal_t::monk_heal_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
@@ -1466,8 +1447,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 
     // Apply Mark of the Crane
     p()->trigger_mark_of_the_crane( s );
-
-    p()->buff.brewmasters_rhythm->trigger();
 
     if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
     {
@@ -6718,9 +6697,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   cooldown.weapons_of_order       = get_cooldown( "weapons_of_order" );
   cooldown.whirling_dragon_punch  = get_cooldown( "whirling_dragon_punch" );
 
-  // T29 Set Bonus
-  cooldown.brewmasters_rhythm = get_cooldown( "brewmasters_rhythm" );
-
   resource_regeneration = regen_type::DYNAMIC;
   if ( specialization() != MONK_MISTWEAVER )
   {
@@ -8556,14 +8532,6 @@ void monk_t::create_buffs()
                                                            "fists_of_flowing_momentum_fof", find_spell( 394951 ) )
                                            ->set_trigger_spell( sets->set( MONK_WINDWALKER, T29, B4 ) );
 
-  buff.brewmasters_rhythm =
-      make_buff_fallback( sets->set( MONK_BREWMASTER, T29, B2 )->ok(), this, "brewmasters_rhythm",
-                          find_spell( 394797 ) )
-          // ICD on the set bonus is set to 0.1 seconds but in-game testing shows to be a 1 second ICD
-          ->set_cooldown( timespan_t::from_seconds( 1 ) )
-          ->set_default_value_from_effect( 1 )
-          ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
   // Tier 31 Set Bonus
   buff.blackout_reinforcement = make_buff_fallback<buffs::blackout_reinforcement_t>(
       sets->set( MONK_WINDWALKER, T31, B4 )->ok(), this, "blackout_reinforcement", find_spell( 424454 ) );
@@ -9530,9 +9498,6 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
   // Damage Reduction Cooldowns
   if ( buff.fortifying_brew->up() )
     s->result_amount *= ( 1.0 + talent.monk.fortifying_brew->effectN( 2 ).percent() );  // Saved as -20%
-
-  s->result_amount *= 1 + ( buff.brewmasters_rhythm->stack() *
-                            buff.brewmasters_rhythm->data().effectN( 2 ).percent() );  // Saved as -1;
 
   // Touch of Karma Absorbtion
   if ( buff.touch_of_karma->up() )

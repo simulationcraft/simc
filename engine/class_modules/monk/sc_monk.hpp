@@ -146,7 +146,6 @@ public:
   void impact( action_state_t *state ) override;
   void tick( dot_t *dot ) override;
   void last_tick( dot_t *dot ) override;
-  double composite_persistent_multiplier( const action_state_t *state ) const override;
   double cost() const override;
   double cost_pct_multiplier() const override;
   double cost_reduction() const;
@@ -162,7 +161,6 @@ struct monk_spell_t : public monk_action_t<spell_t>
   using base_t = monk_action_t<spell_t>;
   monk_spell_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
   double composite_target_crit_chance( player_t *target ) const override;
-  double composite_persistent_multiplier( const action_state_t *state ) const override;
 };
 
 struct monk_heal_t : public monk_action_t<heal_t>
