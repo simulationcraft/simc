@@ -2117,14 +2117,32 @@ void void_pactstone( special_effect_t& e )
 
 // Ravenous Honey Buzzer
 // 448904 Driver
+// 448903 Trigger, forced movement
 // 448909 Damage
+// TODO: implement possible lost uptime from forced movement
 void ravenous_honey_buzzer( special_effect_t& e )
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "ravenous_honey_buzzer", e, 448909 );
-  damage->split_aoe_damage = true;
-  damage->base_multiplier *= role_mult( e );
+  struct ravenous_honey_buzzer_t : public generic_aoe_proc_t
+  {
+    timespan_t movement_dur;
 
-  e.execute_action = damage;
+    ravenous_honey_buzzer_t( const special_effect_t& e )
+      : generic_aoe_proc_t( e, "ravenous_honey_buzzer", e.player->find_spell( 448909 ), true ),
+        movement_dur( timespan_t::from_seconds( e.trigger()->missile_speed() ) )
+    {
+      base_multiplier *= role_mult( e );
+    }
+
+    void execute() override
+    {
+      generic_aoe_proc_t::execute();
+
+      // TODO: implement possible lost uptime from forced movement
+      player->buffs.movement->trigger( movement_dur );
+    }
+  };
+
+  e.execute_action = create_proc_action<ravenous_honey_buzzer_t>( "ravenous_honey_buzzer", e );
 }
 
 // Overlocked Gear-a-rang Launcher
