@@ -609,15 +609,15 @@ constexpr auto get(span<E, S> s) -> decltype(s[N])
 namespace std {
 
 template <typename ElementType, size_t Extent>
-class tuple_size<TCB_SPAN_NAMESPACE_NAME::span<ElementType, Extent>>
+struct tuple_size<TCB_SPAN_NAMESPACE_NAME::span<ElementType, Extent>>
     : public integral_constant<size_t, Extent> {};
 
 template <typename ElementType>
-class tuple_size<TCB_SPAN_NAMESPACE_NAME::span<
+struct tuple_size<TCB_SPAN_NAMESPACE_NAME::span<
     ElementType, TCB_SPAN_NAMESPACE_NAME::dynamic_extent>>; // not defined
 
 template <size_t I, typename ElementType, size_t Extent>
-class tuple_element<I, TCB_SPAN_NAMESPACE_NAME::span<ElementType, Extent>> {
+struct tuple_element<I, TCB_SPAN_NAMESPACE_NAME::span<ElementType, Extent>> {
 public:
     static_assert(Extent != TCB_SPAN_NAMESPACE_NAME::dynamic_extent &&
                       I < Extent,
