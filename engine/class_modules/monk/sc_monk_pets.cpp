@@ -734,7 +734,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_blackout_kick_t( storm_earth_and_fire_pet_t *player )
       : sef_melee_attack_t( "blackout_kick", player, player->o()->baseline.monk.blackout_kick )
     {
-      aoe = 1 + (int)o()->shared.shadowboxing_treads->effectN( 1 ).base_value();
+      aoe = 1 + (int)o()->talent.windwalker.shadowboxing_treads->effectN( 1 ).base_value();
 
       if ( player->o()->talent.windwalker.teachings_of_the_monastery->ok() )
       {
