@@ -128,12 +128,6 @@ struct avengers_shield_base_t : public paladin_spell_t
       tyrs_enforcer( nullptr )
   {
     parse_options( options_str );
-    {
-      if ( p->tier_sets.heartfire_sentinels_authority_2pc->ok() )
-      {
-        heartfire = new heartfire_t( p );
-      }
-    }
     if ( !p->has_shield_equipped() )
     {
       sim->errorf( "%s: %s only usable with shield equipped in offhand\n", p->name(), name() );
@@ -160,13 +154,6 @@ struct avengers_shield_base_t : public paladin_spell_t
     if ( p()->talents.tyrs_enforcer->ok() )
     {
       tyrs_enforcer->execute_on_target( s->target );
-    }
-    if (p()->tier_sets.heartfire_sentinels_authority_2pc->ok())
-    {
-      residual_action::trigger(
-          heartfire, s->target,
-          s->result_amount * p()->tier_sets.heartfire_sentinels_authority_2pc->effectN( 2 ).percent() );
-        td( s->target )->debuff.heartfire->trigger( 1, p()->tier_sets.heartfire_sentinels_authority_2pc->duration() );
     }
 
     //Bulwark of Order absorb shield. Amount is additive per hit.
@@ -230,10 +217,6 @@ double recharge_multiplier( const cooldown_t& cd ) const override
   {
     paladin_spell_t::execute();
 
-    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B2 ) )
-    {
-      p()->buffs.ally_of_the_light->trigger();
-    }
     if ( p()->talents.strength_in_adversity->ok() )
     {
       // Buff overwrites previous buff, even if it was stronger
@@ -428,10 +411,6 @@ struct blessed_hammer_t : public paladin_spell_t
     paladin_spell_t::execute();
     // Grand Crusader can proc on cast, but not on impact
     p()->trigger_grand_crusader();
-    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
-    {
-      p()->t29_4p_prot();
-    }
   }
   void impact( action_state_t* s ) override
   {
@@ -613,11 +592,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
       if ( hotr_aoe->target != execute_state->target )
         hotr_aoe->target_cache.is_valid = false;
-
-      if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
-      {
-        p()->t29_4p_prot();
-      }
     }
   }
 
@@ -744,10 +718,6 @@ struct judgment_prot_t : public judgment_t
       hammer_and_anvil( nullptr )
   {
     parse_options( options_str );
-    if ( p->sets->has_set_bonus( PALADIN_PROTECTION, T30, B4 ) )
-    {
-      heartfire = new heartfire_t( p );
-    }
     cooldown->charges += as<int>( p->talents.crusaders_judgment->effectN( 1 ).base_value() );
     triggers_higher_calling = true;
     if (p->talents.lightsmith.hammer_and_anvil->ok())
@@ -780,22 +750,6 @@ struct judgment_prot_t : public judgment_t
   void impact( action_state_t* s ) override
   {
     judgment_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-      if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T30, B4 ) && s->result == RESULT_CRIT )
-      {
-        residual_action::trigger(
-            heartfire, s->target,
-            s->result_amount * p()->tier_sets.heartfire_sentinels_authority_2pc->effectN( 2 ).percent() );
-        td( s->target )->debuff.heartfire->trigger( 1, p()->tier_sets.heartfire_sentinels_authority_2pc->duration() );
-        p()->trigger_grand_crusader( GC_JUDGMENT );
-      }
-      if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T31, B2 ) && !p()->buffs.sanctification_empower->up() )
-      {
-        p()->buffs.sanctification->trigger();
-      }
-    }
 
     if ( p()->talents.lightsmith.hammer_and_anvil->ok() && s->result == RESULT_CRIT )
     {
@@ -913,25 +867,6 @@ void buffs::sentinel_decay_buff_t::expire_override( int expiration_stacks, times
     p->adjust_health_percent();
   }
 }
-
-struct cleansing_flame_damage_t : public paladin_spell_t
-{
-  cleansing_flame_damage_t( paladin_t* p ) : paladin_spell_t( "cleansing_flame_damage", p, p->spells.cleansing_flame_damage )
-  {
-    background = true;
-  }
-};
-
-struct cleansing_flame_heal_t : public paladin_heal_t
-{
-  cleansing_flame_heal_t( paladin_t* p )
-    : paladin_heal_t( "cleansing_flame_heal", p, p->spells.cleansing_flame_heal )
-  {
-    background = true;
-    may_crit   = false;
-    harmful    = false;
-  }
-};
 
 // paladin_t::target_mitigation ===============================================
 
@@ -1160,46 +1095,6 @@ void paladin_t::trigger_holy_shield( action_state_t* s )
   active.holy_shield_damage->schedule_execute();
 }
 
-void paladin_t::t29_4p_prot()
-{
-  buffs.deflecting_light->trigger();
-  if ( buffs.ally_of_the_light->up() )
-    buffs.ally_of_the_light->extend_duration( this, tier_sets.ally_of_the_light_4pc->effectN( 1 ).time_value() );
-}
-
-void paladin_t::t31_4p_prot( action_state_t* s )
-{
-  auto actionId = s->action->id;
-  if ( actionId == 425261 ) // Cleansing Flame
-    return;
-
-  double damage = s->result_total * tier_sets.t31_4pc->effectN( 1 ).percent();
-  if ( buffs.sanctification_empower->up() && damage > 0 && rng().roll( buffs.sanctification_empower->default_chance ) )
-  {
-    active.cleansing_flame->base_dd_min = active.cleansing_flame->base_dd_max = damage;
-    active.cleansing_flame->target = s->target;
-    active.cleansing_flame->schedule_execute();
-    sim->print_debug( "{} procced Cleansing Flame for {} damage.", s->action->name(), damage );
-  }
-}
-
-void paladin_t::t31_4p_prot_heal(action_state_t* s)
-{
-  auto actionId = s->action->id;
-  if ( actionId == 425262 || actionId == 633 )  // Cleansing Flame, Lay on Hands
-    return;
-
-  double healing = s->result_total * tier_sets.t31_4pc->effectN( 1 ).percent();
-  if ( buffs.sanctification_empower->up() && healing > 0 && rng().roll( buffs.sanctification_empower->default_chance ) )
-  {
-    active.cleansing_flame_heal->base_dd_min = active.cleansing_flame_heal->base_dd_max = healing;
-    active.cleansing_flame_heal->target                                                 = s->target;
-    active.cleansing_flame_heal->schedule_execute();
-    sim->print_debug( "{} procced Cleansing Flame for {} healing.", s->action->name(), healing );
-  }
-}
-
-
 void paladin_t::adjust_health_percent( )
 {
   double oh             = resources.current[ RESOURCE_HEALTH ];
@@ -1214,12 +1109,6 @@ void paladin_t::create_prot_actions()
 {
   active.divine_toll = new avengers_shield_dt_t( this );
   active.divine_resonance = new avengers_shield_dr_t( this );
-
-  if ( sets->has_set_bonus( PALADIN_PROTECTION, T31, B4 ) )
-  {
-    active.cleansing_flame = new cleansing_flame_damage_t( this );
-    active.cleansing_flame_heal = new cleansing_flame_heal_t( this );
-  }
 }
 
 action_t* paladin_t::create_action_protection( util::string_view name, util::string_view options_str )
@@ -1403,14 +1292,7 @@ void paladin_t::init_spells_protection()
   passives.aegis_of_light      = find_specialization_spell( "Aegis of Light" );
   passives.aegis_of_light_2    = find_rank_spell( "Aegis of Light", "Rank 2" );
 
-  tier_sets.ally_of_the_light_2pc = find_spell( 394714 );
-  tier_sets.ally_of_the_light_4pc = find_spell( 394727 );
-
-  tier_sets.heartfire_sentinels_authority_2pc = find_spell( 408399 );
-  tier_sets.heartfire_sentinels_authority_4pc = find_spell( 405548 );
   spells.sentinel = find_spell( 389539 );
-  spells.cleansing_flame_damage               = find_spell( 425261 );
-  spells.cleansing_flame_heal                 = find_spell( 425262 );
 }
 
 // Action Priority List Generation

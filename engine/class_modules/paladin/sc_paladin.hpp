@@ -429,10 +429,6 @@ public:
     const spell_data_t* seraphim_buff;
     const spell_data_t* crusade;
     const spell_data_t* sentinel;
-    const spell_data_t* cleansing_flame_damage;
-    const spell_data_t* cleansing_flame_heal;
-    const spell_data_t* wrathful_sanction;
-
 
     struct
     {
@@ -736,16 +732,6 @@ public:
 
   } talents;
 
-  struct tier_sets_t
-  {
-    const spell_data_t* ally_of_the_light_2pc;
-    const spell_data_t* ally_of_the_light_4pc;
-    const spell_data_t* heartfire_sentinels_authority_2pc;
-    const spell_data_t* heartfire_sentinels_authority_4pc;
-    const spell_data_t* t31_2pc;
-    const spell_data_t* t31_4pc;
-  } tier_sets;
-
   // Paladin options
   struct options_t
   {
@@ -784,7 +770,6 @@ public:
   virtual void init_rng() override;
   virtual void init_spells() override;
   virtual void init_action_list() override;
-  virtual void init_items() override;
   virtual bool validate_fight_style( fight_style_e style ) const override;
   virtual void reset() override;
   virtual std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
@@ -1370,13 +1355,6 @@ public:
         if ( td->debuff.judgment->up() )
           td->debuff.judgment->decrement();
       }
-      if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T31, B4 ) )
-      {
-        if ( s->action->harmful )
-          p()->t31_4p_prot( s );
-        else
-          p()->t31_4p_prot_heal( s );
-      }
     }
   }
 
@@ -1402,20 +1380,9 @@ public:
         am *= 1.0 + mastery_amount;
       }
 
-
       if ( affected_by.crusade && p()->buffs.crusade->up() )
       {
         am *= 1.0 + p()->buffs.crusade->get_damage_mod();
-      }
-
-      if ( affected_by.ret_t29_2p && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T29, B2 ) )
-      {
-        am *= 1.0 + p()->sets->set( PALADIN_RETRIBUTION, T29, B2 )->effectN( 1 ).percent();
-      }
-
-      if ( affected_by.ret_t29_4p && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T29, B4 ) )
-      {
-        am *= 1.0 + p()->sets->set( PALADIN_RETRIBUTION, T29, B4 )->effectN( 1 ).percent();
       }
     }
 
@@ -1484,9 +1451,6 @@ public:
     if ( affected_by.judgment && td->debuff.judgment->up() )
     {
       double judg_mul = 1.0 + td->debuff.judgment->default_value;
-      if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B4 ) )
-        judg_mul += p()->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 1 ).percent();
-
       ctm *= judg_mul;
     }
 

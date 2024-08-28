@@ -1372,11 +1372,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
     }
 
     p()->trigger_grand_crusader();
-
-    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
-    {
-      p()->t29_4p_prot();
-    }
     p()->buffs.lightsmith.blessed_assurance->expire();
   }
 
@@ -1838,17 +1833,6 @@ struct divine_toll_t : public paladin_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      // T31 only procs on the first valid target, others are not affected, even if valid
-      if ( !t31HasProcced && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B2 ) &&
-           td( s->target )->dots.expurgation->is_ticking() )
-      {
-        t31HasProcced = true;
-        p()->active.wrathful_sanction->set_target( s->target );
-        p()->active.wrathful_sanction->execute();
-        if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B4 ) )
-          p()->buffs.echoes_of_wrath->trigger();
-      }
-
       p()->active.divine_toll->set_target( s->target );
       p()->active.divine_toll->schedule_execute();
     }
@@ -2697,18 +2681,6 @@ public:
     {
       add_child( p->active.background_blessed_hammer );
     }
-
-    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
-    {
-      crit_bonus_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 2 ).percent();
-      base_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 1 ).percent();
-    }
-
-    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B4 ) )
-    {
-      aoe = as<int>( p->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 2 ).base_value() );
-      base_aoe_multiplier *= p->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 4 ).percent();
-    }
     triggers_higher_calling = true;
 
     if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
@@ -2840,11 +2812,6 @@ public:
         echo->target = s->target;
         echo->start_action_execute_event( 200_ms );
       }
-    }
-
-    if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
-    {
-      td( s->target )->debuff.judgment->trigger();
     }
   }
 
@@ -4330,41 +4297,6 @@ void paladin_t::init_spells()
 
   spells.herald_of_the_sun.gleaming_rays = find_spell( 431481 );
   spells.herald_of_the_sun.dawnlight_aoe_metadata = find_spell( 431581 );
-
-  // Dragonflight Tier Sets
-  tier_sets.ally_of_the_light_2pc = sets->set( PALADIN_PROTECTION, T29, B2 );
-  tier_sets.ally_of_the_light_4pc = sets->set( PALADIN_PROTECTION, T29, B4 );
-  tier_sets.heartfire_sentinels_authority_2pc = sets->set( PALADIN_PROTECTION, T30, B2 );
-  tier_sets.heartfire_sentinels_authority_4pc = sets->set( PALADIN_PROTECTION, T30, B4 );
-  tier_sets.t31_2pc = sets->set( PALADIN_PROTECTION, T31, B2 );
-  tier_sets.t31_4pc = sets->set( PALADIN_PROTECTION, T31, B4 );
-}
-
-void paladin_t::init_items()
-{
-  player_t::init_items();
-
-  set_bonus_type_e tier_to_enable;
-  switch ( specialization() )
-  {
-    case PALADIN_PROTECTION:
-      tier_to_enable = T29;
-      break;
-    case PALADIN_HOLY:
-      tier_to_enable = T30;
-      break;
-    case PALADIN_RETRIBUTION:
-      tier_to_enable = T31;
-      break;
-    default:
-      return;
-  }
-
-  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
-    sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
-
-  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
-    sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
 }
 
 // paladin_t::primary_role ==================================================
