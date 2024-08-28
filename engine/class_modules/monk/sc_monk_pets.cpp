@@ -121,39 +121,6 @@ struct pet_action_base_t : public BASE
       o()->active_actions.gale_force->base_dd_min = o()->active_actions.gale_force->base_dd_max = amount;
       o()->active_actions.gale_force->execute_on_target( s->target );
     }
-
-    if ( !o()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
-      return;
-
-    if ( s->action->school == SCHOOL_SHADOWFLAME )
-    {
-      double current_value = o()->buff.brewmaster_t31_4p_accumulator->check_value();
-      double result        = s->result_amount * o()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
-      double increase      = std::fmin( current_value + result,
-                                        o()->max_health() );  // accumulator is capped at the player's current max hp
-      o()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
-      o()->sim->print_debug( "t31 4p accumulator increased by {} to {}", result, increase );
-    }
-
-    switch ( s->action->id )
-    {
-      // Blacklist
-      case 425299:  // charred dreams
-      case 325217:  // bonedust brew
-        break;
-      default:
-        // This value is not presented in any spell data and was found via logs.
-        if ( o()->rng().roll( 0.5 ) )
-        {
-          double amt = s->result_amount * o()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).percent();
-          o()->active_actions.charred_dreams_dmg_4p->target = s->target;
-          o()->active_actions.charred_dreams_dmg_4p->base_dd_min =
-              o()->active_actions.charred_dreams_dmg_4p->base_dd_max = amt;
-          o()->active_actions.charred_dreams_dmg_4p->execute();
-          o()->sim->print_debug( "triggering charred dreams 4p from id {}, base damage: {}, charred dreams damage: {}",
-                                 s->action->id, s->result_amount, amt );
-        }
-    }
   }
 
   void tick( dot_t *dot ) override
