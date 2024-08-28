@@ -1373,7 +1373,6 @@ public:
   void init_spells() override;
   void init_base_stats() override;
   void init_scaling() override;
-  void init_items() override;
   void create_buffs() override;
   void create_actions() override;
   void init_gains() override;

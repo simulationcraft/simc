@@ -2188,8 +2188,6 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
     if ( target != p()->target )
       m *= p()->talent.windwalker.fists_of_fury->effectN( 6 ).percent();
-    else
-      m *= 1 + p()->sets->set( MONK_WINDWALKER, T30, B4 )->effectN( 1 ).percent();
 
     return m;
   }
@@ -2199,8 +2197,6 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     double am = monk_melee_attack_t::action_multiplier();
 
     am *= 1 + p()->buff.transfer_the_power->check_stack_value();
-
-    am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
     if ( p()->talent.windwalker.momentum_boost.ok() )
       am *= 1 + ( ( ( 1.0 / p()->composite_melee_haste() ) - 1.0 ) *
@@ -2305,8 +2301,6 @@ struct whirling_dragon_punch_aoe_tick_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
-
     am *= 1 + p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 2 ).percent();
 
     return am;
@@ -2328,8 +2322,6 @@ struct whirling_dragon_punch_st_tick_t : public monk_melee_attack_t
   double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
-
-    am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
     am *= 1 + p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 2 ).percent();
 
@@ -2479,8 +2471,6 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
-
     am *= 1 + p()->talent.windwalker.communion_with_wind->effectN( 2 ).percent();
 
     return am;
@@ -2515,8 +2505,6 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
   double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
-
-    am *= 1 + p()->sets->set( MONK_WINDWALKER, T31, B4 )->effectN( 2 ).percent();
 
     am *= 1 + p()->talent.windwalker.communion_with_wind->effectN( 2 ).percent();
 
@@ -7493,33 +7481,6 @@ void monk_t::init_scaling()
     scaling->enable( STAT_WEAPON_OFFHAND_DPS );
 }
 
-// monk_t::init_items =====================================================
-
-void monk_t::init_items()
-{
-  base_t::init_items();
-
-  set_bonus_type_e tier_to_enable;
-  switch ( specialization() )
-  {
-    case MONK_WINDWALKER:
-      tier_to_enable = T29;
-      break;
-    case MONK_BREWMASTER:
-    case MONK_MISTWEAVER:
-      tier_to_enable = T31;
-      break;
-    default:
-      return;
-  }
-
-  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
-    sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
-
-  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
-    sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
-}
-
 // monk_t::create_buffs =====================================================
 
 struct self_damage_override : stagger_impl::self_damage_t<monk_t>
@@ -8398,14 +8359,6 @@ void monk_t::init_special_effects()
       p->active_actions.exploding_keg->set_target( state->target );
       return true;
     } );
-
-  // ======================================
-  // Blackout Reinforcement ( Windwalker T31 Set Bonus )
-  // ======================================
-
-  if ( sets->has_set_bonus( MONK_WINDWALKER, T31, B2 ) )
-    create_proc_callback( sets->set( MONK_WINDWALKER, T31, B2 ),
-                          []( monk_t * /*p*/, action_state_t * /*state*/ ) { return true; } );
 
   // ======================================
   // Flurry of Xuen ( Windwalker Talent )
