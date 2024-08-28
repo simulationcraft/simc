@@ -9902,8 +9902,7 @@ bool actions::rogue_action_t<Base>::trigger_deathstalkers_mark_debuff( const act
   if ( debuff && debuff->check() )
   {
     // 2024-06-25 -- Can no longer be re-applied if the target has a Deathstalker's Mark
-    // 2024-07-05 -- Exception being that Darkest Night can refresh the stack
-    if ( debuff->player == state->target && !from_darkest_night )
+    if ( debuff->player == state->target )
       return false;
 
     debuff->expire();
