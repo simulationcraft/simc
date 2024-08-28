@@ -3544,7 +3544,7 @@ void darkmoon_deck_radiance( special_effect_t& effect )
   new radiant_focus_cb_t( effect, embelish );
 }
 
-// Nerubian Phearomone Secreter
+// Nerubian Pheromone Secreter
 // 441023 Driver
 // 441428 Buff
 // 441508, 441507, 441430 Area Triggers for Phearomone
@@ -3553,17 +3553,17 @@ void darkmoon_deck_radiance( special_effect_t& effect )
 // 227447 - Haste, Bonus id 11315
 // 227448 - Crit, Bonus id 11316
 // 227449 - Versatility, Bonus id 11317
-struct pickup_nerubian_phearomone_t : public action_t
+struct pickup_nerubian_pheromone_t : public action_t
 {
   buff_t* orb = nullptr;
 
-  pickup_nerubian_phearomone_t( player_t* p, std::string_view opt )
-    : action_t( ACTION_OTHER, "pickup_nerubian_phearomone", p, spell_data_t::nil() )
+  pickup_nerubian_pheromone_t( player_t* p, std::string_view opt )
+    : action_t( ACTION_OTHER, "pickup_nerubian_pheromone", p, spell_data_t::nil() )
   {
     parse_options( opt );
 
     s_data_reporting   = p->find_spell( 441023 );
-    name_str_reporting = "Picked up Nerubian Phearomone";
+    name_str_reporting = "Picked up Nerubian Pheromone";
 
     callbacks = harmful = false;
     trigger_gcd         = 0_ms;
@@ -3580,15 +3580,15 @@ struct pickup_nerubian_phearomone_t : public action_t
   }
 };
 
-void nerubian_phearomone_secreter( special_effect_t& effect )
+void nerubian_pheromone_secreter( special_effect_t& effect )
 {
-  struct nerubian_phearomones_cb_t : public dbc_proc_callback_t
+  struct nerubian_pheromones_cb_t : public dbc_proc_callback_t
   {
     buff_t* stat_buff;
     buff_t* orb;
     std::vector<action_t*> apl_actions;
 
-    nerubian_phearomones_cb_t( const special_effect_t& e )
+    nerubian_pheromones_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ), stat_buff( nullptr ), orb( nullptr ), apl_actions()
     {
       stat_buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 441428 ) )
@@ -3596,7 +3596,7 @@ void nerubian_phearomone_secreter( special_effect_t& effect )
 
       for ( auto& a : e.player->action_list )
       {
-        if ( a->name_str == "pickup_nerubian_phearomone" )
+        if ( a->name_str == "pickup_nerubian_pheromone" )
         {
           apl_actions.push_back( a );
         }
@@ -3605,9 +3605,9 @@ void nerubian_phearomone_secreter( special_effect_t& effect )
       if ( apl_actions.size() > 0 )
       {
         orb = create_buff<buff_t>( e.player, e.player->find_spell( 441430 ) )
-                  ->set_max_stack( e.player->thewarwithin_opts.nerubian_phearomone_secreter_phearomones )
+                  ->set_max_stack( e.player->thewarwithin_opts.nerubian_pheromone_secreter_pheromones )
                   ->set_duration( e.player->find_spell( 441430 )->duration() )
-                  ->set_initial_stack( e.player->thewarwithin_opts.nerubian_phearomone_secreter_phearomones )
+                  ->set_initial_stack( e.player->thewarwithin_opts.nerubian_pheromone_secreter_pheromones )
                   ->set_quiet( true )
                   ->set_expire_callback( [ & ]( buff_t*, int, timespan_t d ) {
                     if ( d > 0_ms )
@@ -3620,7 +3620,7 @@ void nerubian_phearomone_secreter( special_effect_t& effect )
       // Set a default task for the actions ready() function, will be overwritten later
       for ( auto& a : apl_actions )
       {
-        debug_cast<pickup_nerubian_phearomone_t*>( a )->orb = orb;
+        debug_cast<pickup_nerubian_pheromone_t*>( a )->orb = orb;
       }
     }
 
@@ -3632,7 +3632,7 @@ void nerubian_phearomone_secreter( special_effect_t& effect )
       }
       else
       {
-        for ( int i = 0; i < listener->thewarwithin_opts.nerubian_phearomone_secreter_phearomones; i++ )
+        for ( int i = 0; i < listener->thewarwithin_opts.nerubian_pheromone_secreter_pheromones; i++ )
         {
           make_event( *listener->sim, rng().range( 200_ms, listener->find_spell( 441430 )->duration() ),
                       [ & ] { stat_buff->trigger(); } );
@@ -3641,7 +3641,7 @@ void nerubian_phearomone_secreter( special_effect_t& effect )
     }
   };
 
-  new nerubian_phearomones_cb_t( effect );
+  new nerubian_pheromones_cb_t( effect );
 }
 
 // Shadowed Essence
@@ -4433,7 +4433,7 @@ void register_special_effects()
   register_special_effect( 432421, items::algari_alchemist_stone );
   register_special_effect( { 458573, 463095 }, items::darkmoon_deck_ascension );
   register_special_effect( { 454558, 463108 }, items::darkmoon_deck_radiance );
-  register_special_effect( 441023, items::nerubian_phearomone_secreter );
+  register_special_effect( 441023, items::nerubian_pheromone_secreter );
   register_special_effect( 455640, items::shadowed_essence );
 
   // Weapons
@@ -4467,7 +4467,7 @@ action_t* create_action( player_t* p, util::string_view n, util::string_view opt
   // Trinket Actions
   if ( n == "pickup_entropic_skardyn_core" ) return new items::pickup_entropic_skardyn_core_t( p, options );
   if ( n == "do_treacherous_transmitter_task" ) return new items::do_treacherous_transmitter_task_t( p, options );
-  if ( n == "pickup_nerubian_phearomone" ) return new items::pickup_nerubian_phearomone_t( p, options );
+  if ( n == "pickup_nerubian_pheromone" ) return new items::pickup_nerubian_pheromone_t( p, options );
 
   // Set Actions
   if ( n == "pickup_cinderbee_orb" ) return new sets::pickup_cinderbee_orb_t( p, options );

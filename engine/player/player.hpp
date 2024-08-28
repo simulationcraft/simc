@@ -850,7 +850,7 @@ struct player_t : public actor_t
     // Embrace of the Cinderbee miss chance
     double embrace_of_the_cinderbee_miss_chance = 0;
     // Nerubian Phearomone Secreter number of phearomones
-    int nerubian_phearomone_secreter_phearomones = 1;
+    int nerubian_pheromone_secreter_pheromones = 1;
   } thewarwithin_opts;
 
 private:
