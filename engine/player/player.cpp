@@ -2919,7 +2919,7 @@ void player_t::init_talents()
   {
     enable_default_talents( this );
   }
-  else
+  else if ( !talents_str.empty() )
   {
     parse_traits_hash( talents_str, this );
   }
