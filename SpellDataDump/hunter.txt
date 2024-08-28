@@ -17289,6 +17289,7 @@ Name             : Hunter Beast Mastery Class Set 2pc (id=393646) [Spell Family 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17315,6 +17316,7 @@ Name             : Hunter Beast Mastery Class Set 4pc (id=393647) [Spell Family 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17347,6 +17349,7 @@ Name             : Hunter Marksmanship Class Set 2pc (id=393648) [Spell Family (
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17371,6 +17374,7 @@ Name             : Hunter Marksmanship Class Set 4pc (id=393649) [Passive, Hidde
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17395,6 +17399,7 @@ Name             : Hunter Survival Class Set 2pc (id=393650) [Spell Family (9), 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17418,6 +17423,7 @@ Name             : Hunter Survival Class Set 4pc (id=393652) [Spell Family (9), 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17929,6 +17935,7 @@ Name             : Hunter Beast Mastery 10.1 Class Set 2pc (id=405524) [Spell Fa
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -17957,6 +17964,7 @@ Name             : Hunter Beast Mastery 10.1 Class Set 4pc (id=405525) [Spell Fa
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -17982,6 +17990,7 @@ Name             : Hunter Marksmanship 10.1 Class Set 2pc (id=405526) [Spell Fam
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -18011,6 +18020,7 @@ Name             : Hunter Marksmanship 10.1 Class Set 4pc (id=405527) [Spell Fam
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -18040,6 +18050,7 @@ Name             : Hunter Survival 10.1 Class Set 2pc (id=405528) [Spell Family 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -18073,6 +18084,7 @@ Name             : Hunter Survival 10.1 Class Set 4pc (id=405530) [Spell Family 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -18415,6 +18427,7 @@ Name             : Hunter Beast Mastery 10.2 Class Set 2pc (id=422874) [Spell Fa
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -18441,6 +18454,7 @@ Name             : Hunter Beast Mastery 10.2 Class Set 4pc (id=422875) [Passive,
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -18463,6 +18477,7 @@ Name             : Hunter Survival 10.2 Class Set 2pc (id=422878) [Spell Family 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -18488,6 +18503,7 @@ Name             : Hunter Survival 10.2 Class Set 4pc (id=422879) [Spell Family 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -19120,6 +19136,7 @@ Name             : Hunter Marksmanship 10.2 Class Set 2pc (id=431168) [Spell Fam
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -19148,6 +19165,7 @@ Name             : Hunter Marksmanship 10.2 Class Set 4pc (id=431172) [Spell Fam
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292

@@ -13252,6 +13252,7 @@ Name             : Demon Hunter Havoc Class Set 2pc (id=393628) [Spell Family (1
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -13282,6 +13283,7 @@ Name             : Demon Hunter Havoc Class Set 4pc (id=393629) [Spell Family (1
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -13308,6 +13310,7 @@ Name             : Demon Hunter Vengeance Class Set 2pc (id=393630) [Spell Famil
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 66: Demon Hunter Spells
                  : 292
                  : 295
@@ -13343,6 +13346,7 @@ Name             : Demon Hunter Vengeance Class Set 4pc (id=393631) [Passive, Hi
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -13729,6 +13733,7 @@ Name             : Demon Hunter Havoc 10.1 Class Set 2pc (id=405505) [Spell Fami
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -13754,6 +13759,7 @@ Name             : Demon Hunter Havoc 10.1 Class Set 4pc (id=405507) [Spell Fami
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -13776,6 +13782,7 @@ Name             : Demon Hunter Vengeance 10.1 Class Set 2pc (id=405508) [Spell 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -13800,6 +13807,7 @@ Name             : Demon Hunter Vengeance 10.1 Class Set 4pc (id=405509) [Spell 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -14046,6 +14054,7 @@ Name             : Demon Hunter Havoc 10.2 Class Set 2pc (id=422857) [Passive, H
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -14072,6 +14081,7 @@ Name             : Demon Hunter Havoc 10.2 Class Set 4pc (id=422859) [Spell Fami
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -14098,6 +14108,7 @@ Name             : Demon Hunter Vengeance 10.2 Class Set 2pc (id=422860) [Spell 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -14124,6 +14135,7 @@ Name             : Demon Hunter Vengeance 10.2 Class Set 4pc (id=422861) [Spell 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
