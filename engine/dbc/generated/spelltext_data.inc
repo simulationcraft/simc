@@ -24263,9 +24263,9 @@ static const std::array<spelltext_data_t, 26323> __spelltext_data { {
   { 449018, "$@spelldesc445336", 0, 0 },
   { 449019, "$@spelldesc445336", 0, 0 },
   { 449020, "$@spelldesc445336", 0, 0 },
-  { 449022, "$@spelldesc445339", 0, 0 },
-  { 449023, "$@spelldesc445339", "The storm surges, ready to be let loose upon your foes.", 0 },
-  { 449024, "$@spelldesc445339", 0, 0 },
+  { 449022, "$@spelldesc445336", 0, 0 },
+  { 449023, "$@spelldesc445336", "The storm surges, ready to be let loose upon your foes.", 0 },
+  { 449024, "$@spelldesc445336", 0, 0 },
   { 449055, "$@spelldesc445379", 0, 0 },
   { 449056, "$@spelldesc445379", 0, 0 },
   { 449059, "$@spelldesc445379", 0, 0 },
@@ -26326,7 +26326,10 @@ static const std::array<spelltext_data_t, 26323> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56313
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+  {  449022,  0, "$@spelldesc445339", "$@spelldesc445336" },
+  {  449023,  0, "$@spelldesc445339", "$@spelldesc445336" },
+  {  449024,  0, "$@spelldesc445339", "$@spelldesc445336" },
 } };
 
 // Spell description variables, wow build 11.0.2.56313

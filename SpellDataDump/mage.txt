@@ -3983,6 +3983,7 @@ Description      : Icy Veins' duration is increased by ${$s2/1000} sec.
 Your Ice Lances against frozen targets extend your Icy Veins by an additional ${$s1/1000}.1 sec$?s199786[ and Glacial Spike extends it an addtional ${$s3/1000}.1 sec][].
 
 Name             : Meteor Burn (id=155158) [Spell Family (3)] 
+Hotfixed         : Max stacks (3 -> 1)
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -3992,7 +3993,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 52
                  : 292
-Stacks           : 3 maximum
+Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Deep Impact (416719 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3, 122
@@ -15129,6 +15130,7 @@ Name             : Mage Arcane Class Set 2pc (id=393653) [Spell Family (3), Pass
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 17: Mage Spells
                  : 292
                  : 295
@@ -15153,6 +15155,7 @@ Name             : Mage Arcane Class Set 4pc (id=393654) [Spell Family (3), Pass
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 17: Mage Spells
                  : 292
                  : 295
@@ -15178,6 +15181,7 @@ Name             : Mage Fire Class Set 2pc (id=393655) [Spell Family (3), Passiv
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 17: Mage Spells
                  : 292
                  : 295
@@ -15200,6 +15204,7 @@ Name             : Mage Fire Class Set 4pc (id=393656) [Spell Family (3), Passiv
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 17: Mage Spells
                  : 292
                  : 295
@@ -15232,6 +15237,7 @@ Name             : Mage Frost Class Set 2pc (id=393657) [Spell Family (3), Passi
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -15255,6 +15261,7 @@ Name             : Mage Frost Class Set 4pc (id=393658) [Spell Family (3), Passi
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -15418,6 +15425,7 @@ Name             : Mage Arcane 10.1 Class Set 2pc (id=405532) [Spell Family (3),
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -15447,6 +15455,7 @@ Name             : Mage Arcane 10.1 Class Set 4pc (id=405533) [Spell Family (3),
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -15474,6 +15483,7 @@ Name             : Mage Fire 10.1 Class Set 2pc (id=405534) [Spell Family (3), P
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -15496,6 +15506,7 @@ Name             : Mage Fire 10.1 Class Set 4pc (id=405535) [Spell Family (3), P
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -15521,6 +15532,7 @@ Name             : Mage Frost 10.1 Class Set 2pc (id=405536) [Spell Family (3), 
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -15552,6 +15564,7 @@ Name             : Mage Frost 10.1 Class Set 4pc (id=405538) [Spell Family (3), 
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -16706,6 +16719,7 @@ Name             : Mage Arcane 10.2 Class Set 2pc (id=422880) [Spell Family (3),
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -16729,6 +16743,7 @@ Name             : Mage Arcane 10.2 Class Set 4pc (id=422881) [Spell Family (3),
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -16751,6 +16766,7 @@ Name             : Mage Fire 10.2 Class Set 2pc (id=422882) [Spell Family (3), P
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -16778,6 +16794,7 @@ Name             : Mage Fire 10.2 Class Set 4pc (id=422883) [Spell Family (3), P
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -16803,6 +16820,7 @@ Name             : Mage Frost 10.2 Class Set 2pc (id=422884) [Spell Family (3), 
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -16834,6 +16852,7 @@ Name             : Mage Frost 10.2 Class Set 4pc (id=422885) [Spell Family (3), 
 Class            : Mage
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -16914,6 +16933,7 @@ Name             : Mage Fire 10.2 Class Set 4pc (id=424289) [Spell Family (3), H
 Class            : Mage
 School           : Fire
 Spell Type       : None
+Req. Max Level   : 79
 Duration         : 12 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
@@ -19322,6 +19342,7 @@ Class            : Mage
 School           : Physical
 Spell Type       : Magic
 Range            : 40 yards
+Max Targets      : 5
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 30 seconds
@@ -19342,7 +19363,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1149131)  : Apply Aura (6) | Unknown(297)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : Chain Targets (3 -> 0), Target 1 (6 -> 53), Target 2 (0 -> 16)
 #2 (id=1163829)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : The snap of your fingers warps the gravity around your target and $s2 other nearby enemies, suspending them in the air for $449700d.

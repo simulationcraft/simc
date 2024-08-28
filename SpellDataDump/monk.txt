@@ -17644,6 +17644,7 @@ Name             : Monk Brewmaster Class Set 2pc (id=393659) [Spell Family (53),
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17668,6 +17669,7 @@ Name             : Monk Brewmaster Class Set 4pc (id=393660) [Spell Family (53),
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17689,6 +17691,7 @@ Name             : Monk Mistweaver Class Set 2pc (id=393661) [Spell Family (53),
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17710,6 +17713,7 @@ Name             : Monk Mistweaver Class Set 4pc (id=393663) [Spell Family (53),
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17739,6 +17743,7 @@ Name             : Monk Windwalker Class Set 2pc (id=393666) [Spell Family (53),
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17760,6 +17765,7 @@ Name             : Monk Windwalker Class Set 4pc (id=393668) [Spell Family (53),
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -18852,6 +18858,7 @@ Name             : Monk Brewmaster 10.1 Class Set 2pc (id=405539) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -18878,6 +18885,7 @@ Name             : Monk Brewmaster 10.1 Class Set 4pc (id=405540) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -18903,6 +18911,7 @@ Name             : Monk Mistweaver 10.1 Class Set 2pc (id=405541) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -18931,6 +18940,7 @@ Name             : Monk Mistweaver 10.1 Class Set 4pc (id=405542) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -18957,6 +18967,7 @@ Name             : Monk Windwalker 10.1 Class Set 2pc (id=405543) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -19343,6 +19354,7 @@ Name             : Monk Windwalker 10.1 Class Set 4pc (id=411375) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -19621,6 +19633,7 @@ Name             : Monk Brewmaster 10.2 Class Set 2pc (id=422886) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -19648,6 +19661,7 @@ Name             : Monk Brewmaster 10.2 Class Set 4pc (id=422887) [Passive, Hidd
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -19672,6 +19686,7 @@ Name             : Monk Mistweaver 10.2 Class Set 2pc (id=422889) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -19694,6 +19709,7 @@ Name             : Monk Mistweaver 10.2 Class Set 4pc (id=422890) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -19716,6 +19732,7 @@ Name             : Monk Windwalker 10.2 Class Set 2pc (id=422891) [Passive, Hidd
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -19743,6 +19760,7 @@ Name             : Monk Windwalker 10.2 Class Set 4pc (id=422892) [Spell Family 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
