@@ -1332,7 +1332,7 @@ public:
       if ( ab::rng().roll( p()->talents.searing_light->proc_chance() ) && p()->cooldowns.searing_light_icd->up() )
       {
         p()->cooldowns.searing_light_icd->start();
-        p()->active.searing_light->set_target( ab::execute_state->target );
+        p()->active.searing_light->set_target( ab::target );
         p()->active.searing_light->schedule_execute();
       }
     }
