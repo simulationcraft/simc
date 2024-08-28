@@ -1733,10 +1733,10 @@ void judgment_t::execute()
     }
   }
 
-  // ToDo (Ret): Check if this doesn't trigger on Ret's Divine Toll, but Ret's Divine Resonance
-  p()->buffs.templar.for_whom_the_bell_tolls->decrement();
+  // Decrement only if active Judgment, Divine Toll handling on judgment_ret_t
+  if ( !background )
+    p()->buffs.templar.for_whom_the_bell_tolls->decrement();
 
-  // ToDo (Ret): Check if this correctly gives Ret 5 Stacks on Divine Toll and 1 Stack on Divine Resonance
   if ( p()->talents.templar.sanctification->ok() )
   {
     p()->buffs.templar.sanctification->trigger();
@@ -1750,8 +1750,8 @@ double judgment_t::action_multiplier() const
   if ( p()->talents.justification->ok() )
     am *= 1.0 + p()->talents.justification->effectN( 1 ).percent();
 
-  // ToDo (Ret): Check if this doesn't benefit for Ret's Divine Toll, but Ret's Divine Resonance
-  if ( p()->buffs.templar.for_whom_the_bell_tolls->up() )
+  // Increase only if active Judgment, Divine Toll handling on judgment_ret_t
+  if ( p()->buffs.templar.for_whom_the_bell_tolls->up() && !background )
     am *= 1.0 + p()->buffs.templar.for_whom_the_bell_tolls->current_value;
 
   return am;

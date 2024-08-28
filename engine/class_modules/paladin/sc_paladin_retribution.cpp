@@ -899,6 +899,7 @@ struct judgment_ret_t : public judgment_t
 {
   int holy_power_generation;
   bool procsT31;
+  bool local_is_divine_toll;
 
   judgment_ret_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
     judgment_t( p, name ),
@@ -928,7 +929,8 @@ struct judgment_ret_t : public judgment_t
   judgment_ret_t( paladin_t* p, util::string_view name, bool is_divine_toll ) :
     judgment_t( p, name ),
       holy_power_generation( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
-      procsT31( false ) // Divine Toll proc in divine_toll_t
+      procsT31( false ), // Divine Toll proc in divine_toll_t
+      local_is_divine_toll( is_divine_toll )
   {
     // This is for Divine Toll's background judgments
     background = true;
@@ -971,6 +973,9 @@ struct judgment_ret_t : public judgment_t
         p()->buffs.empyrean_legacy_cooldown->trigger();
       }
     }
+    // Decrement For Whom The Bell Tolls Stacks only on Divine Resonance Judgments
+    if ( !local_is_divine_toll )
+      p()->buffs.templar.for_whom_the_bell_tolls->decrement();
   }
 
   void impact(action_state_t* s) override
@@ -1001,6 +1006,19 @@ struct judgment_ret_t : public judgment_t
       p()->active.highlords_judgment->execute();
     }
   }
+
+  double action_multiplier() const
+  {
+    double am = judgment_t::action_multiplier();
+
+    // Increase Judgments damage only if it is Divine Resonance
+    if ( p()->buffs.templar.for_whom_the_bell_tolls->up() && !local_is_divine_toll )
+    {
+      am *= 1.0 + p()->buffs.templar.for_whom_the_bell_tolls->current_value;
+    }
+    return am;
+  }
+  
 };
 
 // Justicar's Vengeance
