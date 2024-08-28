@@ -30,7 +30,7 @@
 
 shaman="PR_Shaman_Enhancement_Storm²"
 level=80
-race=troll
+race=goblin
 spec=enhancement
 role=attack
 position=back
@@ -57,7 +57,7 @@ save=PR_Shaman_Enhancement_Storm.simc
 
 shaman="PR_Shaman_Enhancement"
 level=80
-race=troll
+race=goblin
 spec=enhancement
 role=attack
 position=back
