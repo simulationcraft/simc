@@ -4158,6 +4158,47 @@ void imperfect_ascendancy_serum( special_effect_t& effect )
   effect.disable_buff();
 }
 
+// 455799 Driver
+// 455820 First Dig
+// 455826 Second Dig
+// 455827 Third Dig
+void excavation( special_effect_t& effect )
+{
+  struct excavation_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<buff_t*> buff_list;
+    unsigned dig_count;
+
+    excavation_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), buff_list(), dig_count( 0 )
+    {
+      static constexpr std::pair<unsigned, unsigned> buff_entries[] = { { 455820, 0 }, { 455826, 1 }, { 455827, 2 } };
+
+      for ( const auto& [ id, n ] : buff_entries )
+      {
+        auto s_data  = e.player->find_spell( id );
+        double value = 0;
+
+        value = e.driver()->effectN( 1 ).average( e ) * ( 1.0 + ( 0.05 * n ) );
+
+        auto buff = create_buff<stat_buff_t>( e.player, s_data )->add_stat_from_effect_type( A_MOD_STAT, value );
+
+        buff_list.push_back( buff );
+      }
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      buff_list[ dig_count ]->trigger();
+      if ( dig_count < buff_list.size() - 1 )
+        dig_count++;
+      else
+        dig_count = 0;
+    }
+  };
+
+  new excavation_cb_t( effect );
+}
+
 }  // namespace items
 
 namespace sets
@@ -4407,6 +4448,7 @@ void register_special_effects()
   // Armor
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );
   register_special_effect( 457918, DISABLED_EFFECT );  // seal of the poisoned pact
+  register_special_effect( 455799, items::excavation );
 
   // Sets
   register_special_effect( 444166, DISABLED_EFFECT );  // kye'veza's cruel implements
