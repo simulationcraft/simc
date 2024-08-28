@@ -2320,7 +2320,6 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     dot_duration               = timespan_t::zero();
     trigger_gcd                = timespan_t::zero();
 
-    parse_effects( p->buff.fists_of_flowing_momentum_fof, USE_CURRENT );
     parse_effects( p->buff.momentum_boost_damage );
   }
 
@@ -2398,13 +2397,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
   void execute() override
   {
-    if ( p()->buff.fists_of_flowing_momentum->up() )
-    {
-      p()->buff.fists_of_flowing_momentum_fof->trigger( 1, p()->buff.fists_of_flowing_momentum->stack_value(), -1,
-                                                        data().duration() );
-      p()->buff.fists_of_flowing_momentum->expire();
-    }
-
     monk_melee_attack_t::execute();
 
     if ( p()->buff.fury_of_xuen_stacks->up() && rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
@@ -2426,7 +2418,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
     // Delay the expiration of the buffs until after the tick action happens.
     // Otherwise things trigger before the tick action happens; which is not intended.
     make_event( p()->sim, timespan_t::from_millis( 1 ), [ & ] {
-      p()->buff.fists_of_flowing_momentum_fof->expire();
       p()->buff.transfer_the_power->expire();
       p()->buff.pressure_point->trigger();
       p()->buff.momentum_boost_damage->expire();
@@ -7472,8 +7463,6 @@ void monk_t::init_spells()
 
   // monk_t::talent::tier
   {
-    tier.t29.fists_of_flowing_momentum = find_spell( 394949 );
-
     tier.t30.shadowflame_nova          = find_spell( 410139 );
     tier.t30.shadowflame_spirit        = find_spell( 410159 );
     tier.t30.shadowflame_spirit_summon = find_spell( 410153 );
@@ -8361,14 +8350,6 @@ void monk_t::create_buffs()
                                                         "wisdom_of_the_wall_mastery", find_spell( 452685 ) )
                                         ->set_trigger_spell( talent.shado_pan.wisdom_of_the_wall )
                                         ->set_default_value_from_effect( 1 );
-
-  buff.fists_of_flowing_momentum = make_buff_fallback( sets->set( MONK_WINDWALKER, T29, B4 )->ok(), this,
-                                                       "fists_of_flowing_momentum", tier.t29.fists_of_flowing_momentum )
-                                       ->set_default_value_from_effect( 1 );
-
-  buff.fists_of_flowing_momentum_fof = make_buff_fallback( sets->set( MONK_WINDWALKER, T29, B4 )->ok(), this,
-                                                           "fists_of_flowing_momentum_fof", find_spell( 394951 ) )
-                                           ->set_trigger_spell( sets->set( MONK_WINDWALKER, T29, B4 ) );
   // ------------------------------
   // Movement
   // ------------------------------
