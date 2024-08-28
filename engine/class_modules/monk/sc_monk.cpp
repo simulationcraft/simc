@@ -198,8 +198,6 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.hit_combo );
   parse_effects( p()->buff.press_the_advantage );
   parse_effects( p()->buff.pressure_point );
-  parse_effects( p()->buff.kicks_of_flowing_momentum,
-                 affect_list_t( 1 ).add_spell( p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id() ) );
   parse_effects( p()->buff.storm_earth_and_fire, IGNORE_STACKS, effect_mask_t( false ).enable( 1, 2, 3, 7, 8 ),
                  affect_list_t( 1, 2 ).add_spell( p()->passives.chi_explosion->id() ) );
   parse_effects( p()->buff.blackout_reinforcement );
@@ -1662,12 +1660,6 @@ struct rising_sun_kick_dmg_t : public overwhelming_force_t<monk_melee_attack_t>
     // Apply Mark of the Crane
     p()->trigger_mark_of_the_crane( s );
 
-    // T29 Set Bonus
-    if ( p()->buff.kicks_of_flowing_momentum->up() )
-    {
-      p()->buff.kicks_of_flowing_momentum->decrement();
-    }
-
     if ( p()->talent.windwalker.acclamation.ok() )
       get_td( s->target )->debuff.acclamation->trigger();
   }
@@ -2320,8 +2312,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     p()->buff.chi_energy->expire();
 
-    p()->buff.kicks_of_flowing_momentum->decrement();
-
     if ( p()->buff.counterstrike->up() )
       p()->proc.counterstrike_sck->occur();
   }
@@ -2424,8 +2414,6 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
   void execute() override
   {
-    p()->buff.kicks_of_flowing_momentum->trigger();
-
     if ( p()->buff.fists_of_flowing_momentum->up() )
     {
       p()->buff.fists_of_flowing_momentum_fof->trigger( 1, p()->buff.fists_of_flowing_momentum->stack_value(), -1,
@@ -6139,43 +6127,6 @@ struct windwalking_driver_t : public monk_buff_t
 };
 
 // ===============================================================================
-// Tier 29 Kicks of Flowing Momentum
-// ===============================================================================
-
-struct kicks_of_flowing_momentum_t : public monk_buff_t
-{
-  kicks_of_flowing_momentum_t( monk_t *p, util::string_view n, const spell_data_t *s ) : monk_buff_t( p, n, s )
-  {
-    set_trigger_spell( p->sets->set( MONK_WINDWALKER, T29, B2 ) );
-    set_default_value_from_effect( 1 );
-    set_reverse( true );
-    set_max_stack( s->max_stacks() + ( p->sets->has_set_bonus( MONK_WINDWALKER, T29, B4 )
-                                           ? (int)p->sets->set( MONK_WINDWALKER, T29, B4 )->effectN( 2 ).base_value()
-                                           : 0 ) );
-    set_reverse_stack_count( s->max_stacks() +
-                             ( p->sets->has_set_bonus( MONK_WINDWALKER, T29, B4 )
-                                   ? (int)p->sets->set( MONK_WINDWALKER, T29, B4 )->effectN( 2 ).base_value()
-                                   : 0 ) );
-  }
-
-  void decrement( int stacks, double value = DEFAULT_VALUE() ) override
-  {
-    if ( p().buff.kicks_of_flowing_momentum->up() )
-      p().buff.fists_of_flowing_momentum->trigger();
-
-    buff_t::decrement( stacks, value );
-  }
-
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    if ( p().buff.kicks_of_flowing_momentum->up() )
-      p().buff.kicks_of_flowing_momentum->expire();
-
-    return buff_t::trigger( stacks, value, chance, duration );
-  }
-};
-
-// ===============================================================================
 // Tier 31 Blackout Reinforcement
 // ===============================================================================
 
@@ -7584,7 +7535,6 @@ void monk_t::init_spells()
 
   // monk_t::talent::tier
   {
-    tier.t29.kicks_of_flowing_momentum = find_spell( 394944 );
     tier.t29.fists_of_flowing_momentum = find_spell( 394949 );
 
     tier.t30.shadowflame_nova          = find_spell( 410139 );
@@ -8474,11 +8424,6 @@ void monk_t::create_buffs()
                                                         "wisdom_of_the_wall_mastery", find_spell( 452685 ) )
                                         ->set_trigger_spell( talent.shado_pan.wisdom_of_the_wall )
                                         ->set_default_value_from_effect( 1 );
-
-  // Tier 29 Set Bonus
-  buff.kicks_of_flowing_momentum = make_buff_fallback<buffs::kicks_of_flowing_momentum_t>(
-      sets->set( MONK_WINDWALKER, T29, B2 )->ok(), this, "kicks_of_flowing_momentum",
-      tier.t29.kicks_of_flowing_momentum );
 
   buff.fists_of_flowing_momentum = make_buff_fallback( sets->set( MONK_WINDWALKER, T29, B4 )->ok(), this,
                                                        "fists_of_flowing_momentum", tier.t29.fists_of_flowing_momentum )
