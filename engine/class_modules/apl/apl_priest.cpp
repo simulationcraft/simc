@@ -28,7 +28,7 @@ std::string food( const player_t* p )
 
 std::string rune( const player_t* p )
 {
-  return ( p->true_level > 70 ) ? "crystallized_augment_rune" : "draconic_augment_rune";
+  return ( p->true_level > 70 ) ? "crystallized" : "draconic";
 }
 
 std::string temporary_enchant( const player_t* p )
