@@ -3755,7 +3755,7 @@ struct mana_tea_t : public monk_spell_t
 struct thunder_focus_tea_t : public monk_spell_t
 {
   thunder_focus_tea_t( monk_t *p, util::string_view options_str )
-    : monk_spell_t( p, "Thunder_focus_tea", p->talent.mistweaver.thunder_focus_tea )
+      : monk_spell_t( p, "thunder_focus_tea", p->talent.mistweaver.thunder_focus_tea )
   {
     parse_options( options_str );
 
@@ -6511,8 +6511,6 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
     return new revival_t( this, options_str );
   if ( name == "thunder_focus_tea" )
     return new thunder_focus_tea_t( this, options_str );
-  // if ( name == "zen_pulse" )
-  //   return new zen_pulse_t( this, options_str );
 
   // Windwalker
   if ( name == "fists_of_fury" )
@@ -6835,6 +6833,7 @@ void monk_t::init_spells()
     baseline.mistweaver.aura_2            = find_specialization_spell( 428200 );
     baseline.mistweaver.aura_3            = find_specialization_spell( 462090 );
     baseline.mistweaver.expel_harm_rank_2 = find_rank_spell( "Expel Harm", "Rank 2", MONK_MISTWEAVER );
+    baseline.mistweaver.teachings_of_the_monastery = find_spell( 116645 );
   }
 
   // monk_t::baseline::windwalker
@@ -7019,13 +7018,12 @@ void monk_t::init_spells()
     // Row 3
     talent.mistweaver.life_cocoon    = _ST( "Life Cocoon" );
     talent.mistweaver.mana_tea       = _ST( "Mana Tea" );
-    talent.mistweaver.healing_elixir = _ST( "Healing Elixir" );
+    talent.mistweaver.invigorating_mists         = _ST( "Invigorating Mists" );
     // Row 4
-    talent.mistweaver.teachings_of_the_monastery = _ST( "Teachings of the Monastery" );
     talent.mistweaver.crane_style                = _ST( "Crane Style" );
     talent.mistweaver.revival                    = _ST( "Revival" );
     talent.mistweaver.restoral                   = _ST( "Restoral" );
-    talent.mistweaver.invigorating_mists         = _ST( "Invigorating Mists" );
+    talent.mistweaver.healing_elixir = _ST( "Healing Elixir" );
     // Row 5
     talent.mistweaver.nourishing_chi      = _ST( "Nourishing Chi" );
     talent.mistweaver.calming_coalescence = _ST( "Calming Coalescence" );
@@ -7312,8 +7310,15 @@ void monk_t::init_spells()
 
   shared.rushing_jade_wind = _priority( talent.windwalker.rushing_jade_wind, talent.brewmaster.rushing_jade_wind );
 
-  shared.teachings_of_the_monastery =
-      _priority( talent.windwalker.teachings_of_the_monastery, talent.mistweaver.teachings_of_the_monastery );
+  shared.shadowboxing_treads =
+      _priority( talent.windwalker.shadowboxing_treads, talent.brewmaster.shadowboxing_treads );
+
+  if ( talent.windwalker.teachings_of_the_monastery->ok() )
+    shared.teachings_of_the_monastery = talent.windwalker.teachings_of_the_monastery;
+  else if (baseline.mistweaver.teachings_of_the_monastery->ok())
+    shared.teachings_of_the_monastery = baseline.mistweaver.teachings_of_the_monastery;
+  else
+    shared.teachings_of_the_monastery = spell_data_t::not_found();
 
   // Active Action Spells
 
@@ -8007,10 +8012,6 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.conduit_of_the_celestials.strength_of_the_black_ox->ok(), this,
                           "strength_of_the_black_ox", find_spell( 443112 ) )
           ->set_expire_callback( [ this ]( buff_t *, double, timespan_t ) {
-            if ( specialization() == MONK_MISTWEAVER )
-            {
-              active_actions.strength_of_the_black_ox_absorb->execute();
-            }
             if ( specialization() == MONK_WINDWALKER )
             {
               active_actions.strength_of_the_black_ox_dmg->execute();

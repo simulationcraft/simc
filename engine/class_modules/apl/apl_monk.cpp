@@ -254,22 +254,11 @@ void mistweaver( player_t *p )
 {
   action_priority_list_t *pre = p->get_action_priority_list( "precombat" );
 
-  // Flask
   pre->add_action( "flask" );
-
-  // Food
   pre->add_action( "food" );
-
-  // Rune
   pre->add_action( "augmentation" );
-
-  // Snapshot stats
   pre->add_action( "snapshot_stats" );
-
   pre->add_action( "potion" );
-
-  pre->add_action( p, "chi_burst" );
-  pre->add_action( p, "chi_wave" );
 
   std::vector<std::string> racial_actions = p->get_racial_actions();
   action_priority_list_t *def             = p->get_action_priority_list( "default" );
@@ -277,52 +266,30 @@ void mistweaver( player_t *p )
   action_priority_list_t *aoe             = p->get_action_priority_list( "aoe" );
 
   def->add_action( "auto_attack" );
-  def->add_action( "roll,if=movement.distance>5", "Move to target" );
-  def->add_action( "chi_torpedo,if=movement.distance>5" );
   def->add_action( "spear_hand_strike,if=target.debuff.casting.react" );
-
-  if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
-    def->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str );
 
   for ( const auto &item : p->items )
   {
-    std::string name_str;
     if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-    {
-      if ( item.name_str == "scars_of_fraternal_strife" )
-        def->add_action( "use_item,name=" + item.name_str + ",if=!buff.scars_of_fraternal_strife_4.up&time>1" );
-      else if ( item.name_str == "jotungeirr_destinys_call" )
-        continue;
-      else
-        def->add_action( "use_item,name=" + item.name_str );
-    }
+      def->add_action( "use_item,name=" + item.name_str );
   }
 
   for ( const auto &racial_action : racial_actions )
-  {
-    def->add_action( racial_action + ",if=target.time_to_die<18" );
-  }
+    def->add_action( racial_action );
 
   def->add_action( "potion" );
+  def->add_action( "celestial_conduit" );
+                          
+  def->add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
+  def->add_action( "call_action_list,name=st" );
 
-  def->add_action( "jadefire_stomp" );
-  def->add_action( "bonedust_brew" );
+  st->add_action( "thunder_focus_tea" );
+  st->add_action( "rising_sun_kick" );
+  st->add_action( "blackout_kick,if=buff.teachings_of_the_monastery.stack>=4&cooldown.rising_sun_kick.remains>gcd" );
+  st->add_action( "tiger_palm" );
 
-  def->add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
-  def->add_action( "call_action_list,name=st,if=active_enemies<3" );
-
-  st->add_action( p, "Thunder Focus Tea" );
-  st->add_action( p, "Rising Sun Kick" );
-  st->add_action( p, "Blackout Kick",
-                  "if=buff.teachings_of_the_monastery.stack=1&cooldown.rising_sun_kick.remains<12" );
-  st->add_action( p, "chi_wave" );
-  st->add_action( p, "chi_burst" );
-  st->add_action( p, "Tiger Palm",
-                  "if=buff.teachings_of_the_monastery.stack<3|buff.teachings_of_the_monastery.remains<2" );
-
-  aoe->add_action( p, "Spinning Crane Kick" );
-  aoe->add_action( p, "chi_wave" );
-  aoe->add_action( p, "chi_burst" );
+  aoe->add_action( "chi_burst" );
+  aoe->add_action( "spinning_crane_kick" );
 }
 
 void windwalker( player_t *p )
