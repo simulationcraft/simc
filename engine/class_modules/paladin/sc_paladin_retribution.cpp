@@ -1369,6 +1369,12 @@ struct templar_slash_dot_t : public paladin_spell_t
     background = true;
     hasted_ticks = false;
   }
+
+  void init() override
+  {
+    paladin_spell_t::init();
+    snapshot_flags = update_flags = 0;
+  }
 };
 
 struct templar_slash_t : public base_templar_strike_t
