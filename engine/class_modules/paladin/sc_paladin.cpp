@@ -90,9 +90,6 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.searing_light_icd = get_cooldown( "searing_light_icd" );
   cooldowns.searing_light_icd->duration = timespan_t::from_seconds( 15 );
 
-  cooldowns.higher_calling_icd           = get_cooldown( "higher_calling_icd" );
-  cooldowns.higher_calling_icd->duration = find_spell( 431687 )->internal_cooldown();
-
   cooldowns.endless_wrath_icd           = get_cooldown( "endless_wrath_icd" );
   cooldowns.endless_wrath_icd->duration = find_spell( 432615 )->internal_cooldown();
 
@@ -1372,11 +1369,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
     }
 
     p()->trigger_grand_crusader();
-
-    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
-    {
-      p()->t29_4p_prot();
-    }
     p()->buffs.lightsmith.blessed_assurance->expire();
   }
 
@@ -1733,10 +1725,10 @@ void judgment_t::execute()
     }
   }
 
-  // ToDo (Ret): Check if this doesn't trigger on Ret's Divine Toll, but Ret's Divine Resonance
-  p()->buffs.templar.for_whom_the_bell_tolls->decrement();
+  // Decrement only if active Judgment, Divine Toll handling on judgment_ret_t
+  if ( !background )
+    p()->buffs.templar.for_whom_the_bell_tolls->decrement();
 
-  // ToDo (Ret): Check if this correctly gives Ret 5 Stacks on Divine Toll and 1 Stack on Divine Resonance
   if ( p()->talents.templar.sanctification->ok() )
   {
     p()->buffs.templar.sanctification->trigger();
@@ -1750,8 +1742,8 @@ double judgment_t::action_multiplier() const
   if ( p()->talents.justification->ok() )
     am *= 1.0 + p()->talents.justification->effectN( 1 ).percent();
 
-  // ToDo (Ret): Check if this doesn't benefit for Ret's Divine Toll, but Ret's Divine Resonance
-  if ( p()->buffs.templar.for_whom_the_bell_tolls->up() )
+  // Increase only if active Judgment, Divine Toll handling on judgment_ret_t
+  if ( p()->buffs.templar.for_whom_the_bell_tolls->up() && !background )
     am *= 1.0 + p()->buffs.templar.for_whom_the_bell_tolls->current_value;
 
   return am;
@@ -1838,17 +1830,6 @@ struct divine_toll_t : public paladin_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      // T31 only procs on the first valid target, others are not affected, even if valid
-      if ( !t31HasProcced && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B2 ) &&
-           td( s->target )->dots.expurgation->is_ticking() )
-      {
-        t31HasProcced = true;
-        p()->active.wrathful_sanction->set_target( s->target );
-        p()->active.wrathful_sanction->execute();
-        if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B4 ) )
-          p()->buffs.echoes_of_wrath->trigger();
-      }
-
       p()->active.divine_toll->set_target( s->target );
       p()->active.divine_toll->schedule_execute();
     }
@@ -2149,6 +2130,8 @@ struct hammer_of_light_damage_t : public holy_power_consumer_t<paladin_melee_att
       else
         p()->buffs.templar.shake_the_heavens->execute();
     }
+    // Since Hammer of Light's damage component is a background action, we need to call reset AA ourselves
+    p()->reset_auto_attacks( 0_ms, player->procs.reset_aa_cast );
   }
   void impact( action_state_t* s ) override
   {
@@ -2235,7 +2218,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     }
     if (p()->talents.templar.zealous_vindication->ok())
     {
-      p()->trigger_empyrean_hammer( target, 2, 0_ms );
+      p()->trigger_empyrean_hammer( target, 2, 0_ms, false );
     }
     if ( p()->talents.templar.sacrosanct_crusade->ok() )
     {
@@ -2695,18 +2678,6 @@ public:
     {
       add_child( p->active.background_blessed_hammer );
     }
-
-    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
-    {
-      crit_bonus_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 2 ).percent();
-      base_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 1 ).percent();
-    }
-
-    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B4 ) )
-    {
-      aoe = as<int>( p->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 2 ).base_value() );
-      base_aoe_multiplier *= p->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 4 ).percent();
-    }
     triggers_higher_calling = true;
 
     if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
@@ -2838,11 +2809,6 @@ public:
         echo->target = s->target;
         echo->start_action_execute_event( 200_ms );
       }
-    }
-
-    if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
-    {
-      td( s->target )->debuff.judgment->trigger();
     }
   }
 
@@ -4328,41 +4294,6 @@ void paladin_t::init_spells()
 
   spells.herald_of_the_sun.gleaming_rays = find_spell( 431481 );
   spells.herald_of_the_sun.dawnlight_aoe_metadata = find_spell( 431581 );
-
-  // Dragonflight Tier Sets
-  tier_sets.ally_of_the_light_2pc = sets->set( PALADIN_PROTECTION, T29, B2 );
-  tier_sets.ally_of_the_light_4pc = sets->set( PALADIN_PROTECTION, T29, B4 );
-  tier_sets.heartfire_sentinels_authority_2pc = sets->set( PALADIN_PROTECTION, T30, B2 );
-  tier_sets.heartfire_sentinels_authority_4pc = sets->set( PALADIN_PROTECTION, T30, B4 );
-  tier_sets.t31_2pc = sets->set( PALADIN_PROTECTION, T31, B2 );
-  tier_sets.t31_4pc = sets->set( PALADIN_PROTECTION, T31, B4 );
-}
-
-void paladin_t::init_items()
-{
-  player_t::init_items();
-
-  set_bonus_type_e tier_to_enable;
-  switch ( specialization() )
-  {
-    case PALADIN_PROTECTION:
-      tier_to_enable = T29;
-      break;
-    case PALADIN_HOLY:
-      tier_to_enable = T30;
-      break;
-    case PALADIN_RETRIBUTION:
-      tier_to_enable = T31;
-      break;
-    default:
-      return;
-  }
-
-  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
-    sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
-
-  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
-    sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
 }
 
 // paladin_t::primary_role ==================================================

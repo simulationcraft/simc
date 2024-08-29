@@ -8,22 +8,28 @@ namespace evoker_apl
 
 std::string potion( const player_t* p )
 {
-  return ( p->true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "potion_of_spectral_intellect" ;
+  return ( p->true_level > 79 ) ? "tempered_potion_3" : "elemental_potion_of_ultimate_power_3";
 }
 
 std::string flask( const player_t* p )
 {
-  return ( p->true_level > 60 ) ? "iced_phial_of_corrupting_rage_3" : "greater_flask_of_endless_fathoms";
+  switch ( p->specialization() )
+  {
+    case EVOKER_AUGMENTATION:
+      return ( p->true_level > 79 ) ? "flask_of_tempered_mastery_3" : "iced_phial_of_corrupting_rage_3";
+    default:
+      return ( p->true_level > 79 ) ? "flask_of_alchemical_chaos_3" : "iced_phial_of_corrupting_rage_3";
+  }
 }
 
 std::string food( const player_t* p )
 {
-  return ( p->true_level > 60 ) ? "fated_fortune_cookie" : "feast_of_gluttonous_hedonism";
+  return ( p->true_level > 79 ) ? "feast_of_the_divine_day" : "fated_fortune_cookie";
 }
 
 std::string rune( const player_t* p )
 {
-  return ( p->true_level > 60 ) ? "draconic_augment_rune" : "veiled_augment_rune";
+  return ( p->true_level > 79 ) ? "crystallized_augment_rune" : "draconic_augment_rune";
 }
 
 std::string temporary_enchant( const player_t* p )
@@ -31,9 +37,9 @@ std::string temporary_enchant( const player_t* p )
   switch ( p->specialization() )
   {
     case EVOKER_AUGMENTATION:
-      return ( p->true_level > 60 ) ? "main_hand:hissing_rune_3" : "main_hand:shadowcore_oil";
+      return ( p->true_level > 79 ) ? "main_hand:algari_mana_oil_3" : "main_hand:hissing_rune_3";
     default:
-      return ( p->true_level > 60 ) ? "main_hand:buzzing_rune_3" : "main_hand:shadowcore_oil";
+      return ( p->true_level > 79 ) ? "main_hand:algari_mana_oil_3" : "main_hand:buzzing_rune_3";
   }
 }
 

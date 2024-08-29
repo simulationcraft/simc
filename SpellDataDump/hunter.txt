@@ -8188,6 +8188,7 @@ Description      : Rain a volley of arrows down over $d, dealing up to ${$260247
 Tooltip          : Raining arrows down in the target area.
 
 Name             : Volley (id=260247) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -8196,7 +8197,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2, #5), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #2, #4), Bullseye (204090 effect#1), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Outland Venom (459941 effect#1), Withering Fire (461762 effects: #1, #4)
 Family Flags     : 34, 106
-Attributes       : .x...... ........ .......x ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8204,7 +8205,7 @@ Attributes       : .x...... ........ .......x ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Uses Ranged Slot (1), Allow Cast While Dead (23), Ignore Line of Sight (66), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
+                 : Allow Cast While Dead (23), Ignore Line of Sight (66), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=485317)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.29400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
@@ -17289,6 +17290,7 @@ Name             : Hunter Beast Mastery Class Set 2pc (id=393646) [Spell Family 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17315,6 +17317,7 @@ Name             : Hunter Beast Mastery Class Set 4pc (id=393647) [Spell Family 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17347,6 +17350,7 @@ Name             : Hunter Marksmanship Class Set 2pc (id=393648) [Spell Family (
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17371,6 +17375,7 @@ Name             : Hunter Marksmanship Class Set 4pc (id=393649) [Passive, Hidde
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17395,6 +17400,7 @@ Name             : Hunter Survival Class Set 2pc (id=393650) [Spell Family (9), 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17418,6 +17424,7 @@ Name             : Hunter Survival Class Set 4pc (id=393652) [Spell Family (9), 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17929,6 +17936,7 @@ Name             : Hunter Beast Mastery 10.1 Class Set 2pc (id=405524) [Spell Fa
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -17957,6 +17965,7 @@ Name             : Hunter Beast Mastery 10.1 Class Set 4pc (id=405525) [Spell Fa
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -17982,6 +17991,7 @@ Name             : Hunter Marksmanship 10.1 Class Set 2pc (id=405526) [Spell Fam
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -18011,6 +18021,7 @@ Name             : Hunter Marksmanship 10.1 Class Set 4pc (id=405527) [Spell Fam
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -18040,6 +18051,7 @@ Name             : Hunter Survival 10.1 Class Set 2pc (id=405528) [Spell Family 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -18073,6 +18085,7 @@ Name             : Hunter Survival 10.1 Class Set 4pc (id=405530) [Spell Family 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -18415,6 +18428,7 @@ Name             : Hunter Beast Mastery 10.2 Class Set 2pc (id=422874) [Spell Fa
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -18441,6 +18455,7 @@ Name             : Hunter Beast Mastery 10.2 Class Set 4pc (id=422875) [Passive,
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -18463,6 +18478,7 @@ Name             : Hunter Survival 10.2 Class Set 2pc (id=422878) [Spell Family 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -18488,6 +18504,7 @@ Name             : Hunter Survival 10.2 Class Set 4pc (id=422879) [Spell Family 
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -19120,6 +19137,7 @@ Name             : Hunter Marksmanship 10.2 Class Set 2pc (id=431168) [Spell Fam
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -19148,6 +19166,7 @@ Name             : Hunter Marksmanship 10.2 Class Set 4pc (id=431172) [Spell Fam
 Class            : Hunter
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292

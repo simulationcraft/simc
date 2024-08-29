@@ -783,7 +783,7 @@ public:
     propagate_const<buff_t*> dark_talons_shadowfrost;
     propagate_const<buff_t*> dark_talons_icy_talons;
     propagate_const<buff_t*> exterminate;
-    propagate_const<buff_t*> painful_death;
+    propagate_const<buff_t*> exterminate_painful_death;
 
   } buffs;
 
@@ -9572,6 +9572,20 @@ struct marrowrend_t final : public death_knight_melee_attack_t
     weapon = &( p->main_hand_weapon );
   }
 
+  double cost() const override
+  {
+    double c = death_knight_melee_attack_t::cost();
+    if ( p()->buffs.exterminate->up() )
+    {
+      double m = p()->talent.deathbringer.painful_death.ok()
+                     ? p()->buffs.exterminate_painful_death->data().effectN( 2 ).percent()
+                     : p()->buffs.exterminate->data().effectN( 2 ).percent();
+      c += c * m;
+    }
+
+    return c;
+  }
+
   void execute() override
   {
     death_knight_melee_attack_t::execute();
@@ -9601,12 +9615,12 @@ struct marrowrend_t final : public death_knight_melee_attack_t
       make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, execute_state->target, 500_ms );
       if ( p()->talent.deathbringer.painful_death->ok() )
       {
-        p()->buffs.painful_death->trigger();
+        p()->buffs.exterminate_painful_death->trigger();
       }
     }
-    else if ( p()->buffs.painful_death->up() )
+    else if ( p()->buffs.exterminate_painful_death->up() )
     {
-      p()->buffs.painful_death->expire();
+      p()->buffs.exterminate_painful_death->expire();
       make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, execute_state->target, 500_ms );
     }
 
@@ -9834,6 +9848,20 @@ struct obliterate_t final : public death_knight_melee_attack_t
     }
   }
 
+  double cost() const override
+  {
+    double c = death_knight_melee_attack_t::cost();
+    if ( p()->buffs.exterminate->up() )
+    {
+      double m = p()->talent.deathbringer.painful_death.ok()
+                     ? p()->buffs.exterminate_painful_death->data().effectN( 2 ).percent()
+                     : p()->buffs.exterminate->data().effectN( 2 ).percent();
+      c += c * m;
+    }
+
+    return c;
+  }
+
   void execute() override
   {
     death_knight_melee_attack_t::execute();
@@ -9874,12 +9902,12 @@ struct obliterate_t final : public death_knight_melee_attack_t
       make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, execute_state->target, 500_ms );
       if ( p()->talent.deathbringer.painful_death->ok() )
       {
-        p()->buffs.painful_death->trigger();
+        p()->buffs.exterminate_painful_death->trigger();
       }
     }
-    else if ( p()->buffs.painful_death->up() )
+    else if ( p()->buffs.exterminate_painful_death->up() )
     {
-      p()->buffs.painful_death->expire();
+      p()->buffs.exterminate_painful_death->expire();
       make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, execute_state->target, 500_ms );
     }
 
@@ -13721,7 +13749,7 @@ void death_knight_t::create_buffs()
 
   buffs.exterminate = make_fallback( talent.deathbringer.exterminate.ok(), this, "exterminate", spell.exterminate_buff );
 
-  buffs.painful_death = make_fallback( talent.deathbringer.painful_death.ok(), this, "painful_death",
+  buffs.exterminate_painful_death = make_fallback( talent.deathbringer.painful_death.ok(), this, "exterminate_painful_death",
                                        spell.exterminate_buff_painful_death );
 
   // San'layn
@@ -14743,8 +14771,8 @@ void death_knight_action_t<Base>::apply_action_effects()
   // Deathbringer
   parse_effects( p()->buffs.dark_talons_shadowfrost, p()->talent.deathbringer.dark_talons );
   parse_effects( p()->buffs.bind_in_darkness, p()->talent.deathbringer.bind_in_darkness );
-  parse_effects( p()->buffs.exterminate );
-  parse_effects( p()->buffs.painful_death );
+  parse_effects( p()->buffs.exterminate, effect_mask_t( true ).disable( 2 ) );
+  parse_effects( p()->buffs.exterminate_painful_death, effect_mask_t( true ).disable( 2 ) );
 
   // San'layn
   parse_effects( p()->buffs.essence_of_the_blood_queen_damage, USE_CURRENT, p()->talent.sanlayn.frenzied_bloodthirst );

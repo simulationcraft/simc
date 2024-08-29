@@ -328,7 +328,7 @@ struct simplified_player_t : public player_t
   // Options
   struct options_t
   {
-    int item_level = 639;
+    int item_level = 593;
     std::string variant = "default";
   } option;
 
@@ -7273,10 +7273,20 @@ void evoker_t::create_pets()
     for ( auto& pair : bobs )
     {
       simplified_player_t* p = dynamic_cast<simplified_player_t*>( module->create_player( sim, pair.first ) );
+      
+      p->true_level          = level();
       p->option.variant      = pair.second;
+
       if ( option.simplified_actor_ilevel >= 0 )
       {
         p->option.item_level = option.simplified_actor_ilevel;
+      }
+      else
+      {
+        if ( p->level() < 80 )
+        {
+          p->option.item_level = 562;
+        }
       }
     }
   }

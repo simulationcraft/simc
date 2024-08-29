@@ -1718,7 +1718,8 @@ public:
     bool broadside_cp = false;
     bool cold_blood = false;
     bool danse_macabre = false;         // Trigger
-    bool darkest_night = false;
+    bool darkest_night = false;         // Damage
+    bool darkest_night_crit = false;    // Crit%
     bool dashing_scoundrel = false;
     bool deathmark = false;             // Tuning Aura
     bool destiny_defined = false;       // Proc Increase
@@ -2687,7 +2688,7 @@ public:
       c += p()->spec.dashing_scoundrel->effectN( 1 ).percent();
     }
 
-    if ( affected_by.darkest_night )
+    if ( affected_by.darkest_night_crit )
     {
       // No CP state available this early as crit chance is calculated during state creation
       if ( p()->buffs.darkest_night->up() && p()->current_effective_cp( true ) >= p()->consume_cp_max() )
@@ -3993,9 +3994,9 @@ struct dispatch_t: public rogue_attack_t
     {
       trigger_restless_blades( execute_state );
       trigger_hand_of_fate( execute_state, true, inevitable );
-      trigger_cut_to_the_chase( execute_state );
     }
 
+    trigger_cut_to_the_chase( execute_state );
     trigger_count_the_odds( execute_state, p()->procs.count_the_odds_dispatch );
   }
 
@@ -4598,7 +4599,7 @@ struct envenom_t : public rogue_attack_t
   {
     dot_duration = timespan_t::zero();
     affected_by.lethal_dose = false;
-    affected_by.darkest_night = true;
+    affected_by.darkest_night = affected_by.darkest_night_crit = true;
 
     if ( p->set_bonuses.t31_assassination_4pc->ok() )
     {
@@ -4713,6 +4714,7 @@ struct eviscerate_t : public rogue_attack_t
       last_eviscerate_cp( 1 )
     {
       affected_by.darkest_night = !p->bugs; // 2024-08-12 -- Currently does not work
+      affected_by.darkest_night_crit = true;
 
       if ( p->talent.subtlety.shadowed_finishers->ok() )
       {
@@ -4772,7 +4774,7 @@ struct eviscerate_t : public rogue_attack_t
     bonus_attack( nullptr ), shadow_eviscerate_attack( nullptr )
   {
     affected_by.t31_subtlety_4pc = true;
-    affected_by.darkest_night = true;
+    affected_by.darkest_night = affected_by.darkest_night_crit = true;
 
     if ( p->talent.subtlety.shadowed_finishers->ok() )
     {
@@ -9879,7 +9881,7 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
   }
 
   // 2024-08-16 -- Currently when triggerd by an ER cast, only uses base combo points
-  if ( affected_by.darkest_night && p()->buffs.darkest_night->check() &&
+  if ( ( affected_by.darkest_night || affected_by.darkest_night_crit ) && p()->buffs.darkest_night->check() &&
        cast_state( state )->get_combo_points( p()->bugs ) >= p()->consume_cp_max() )
   {
     trigger_deathstalkers_mark_debuff( state, true );
@@ -9900,8 +9902,7 @@ bool actions::rogue_action_t<Base>::trigger_deathstalkers_mark_debuff( const act
   if ( debuff && debuff->check() )
   {
     // 2024-06-25 -- Can no longer be re-applied if the target has a Deathstalker's Mark
-    // 2024-07-05 -- Exception being that Darkest Night can refresh the stack
-    if ( debuff->player == state->target && !from_darkest_night )
+    if ( debuff->player == state->target )
       return false;
 
     debuff->expire();

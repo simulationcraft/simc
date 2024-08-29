@@ -2919,7 +2919,7 @@ void player_t::init_talents()
   {
     enable_default_talents( this );
   }
-  else
+  else if ( !talents_str.empty() )
   {
     parse_traits_hash( talents_str, this );
   }
@@ -12651,7 +12651,7 @@ void player_t::create_options()
   add_option( opt_timespan( "thewarwithin.dawn_dusk_thread_lining_update_interval_stddev", thewarwithin_opts.dawn_dusk_thread_lining_update_interval_stddev, 1_s, timespan_t::max() ) );
   add_option( opt_timespan( "thewarwithin.embrace_of_the_cinderbee_timing", thewarwithin_opts.embrace_of_the_cinderbee_timing, 100_ms, 10_s ) );
   add_option( opt_float( "thewarwithin.embrace_of_the_cinderbee_miss_chance", thewarwithin_opts.embrace_of_the_cinderbee_miss_chance, 0, 1 ) );
-  add_option( opt_int( "thewarwithin.nerubian_phearomone_secreter_phearomones", thewarwithin_opts.nerubian_phearomone_secreter_phearomones, 0, 3 ) );
+  add_option( opt_int( "thewarwithin.nerubian_pheromone_secreter_pheromones", thewarwithin_opts.nerubian_pheromone_secreter_pheromones, 0, 3 ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

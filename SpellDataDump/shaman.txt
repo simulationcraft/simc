@@ -18347,6 +18347,7 @@ Name             : Shaman Elemental Class Set 2pc (id=393688) [Spell Family (11)
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -18371,6 +18372,7 @@ Name             : Shaman Elemental Class Set 4pc (id=393690) [Spell Family (11)
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -18395,6 +18397,7 @@ Name             : Shaman Enhancement Class Set 2pc (id=393691) [Spell Family (1
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -18419,6 +18422,7 @@ Name             : Shaman Enhancement Class Set 4pc (id=393693) [Spell Family (1
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -18440,6 +18444,7 @@ Name             : Shaman Restoration Class Set 2pc (id=393695) [Spell Family (1
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -18464,6 +18469,7 @@ Name             : Shaman Restoration Class Set 4pc (id=393697) [Spell Family (1
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -18984,6 +18990,7 @@ Name             : Shaman Elemental 10.1 Class Set 2pc (id=405565) [Spell Family
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -19010,6 +19017,7 @@ Name             : Shaman Elemental 10.1 Class Set 4pc (id=405566) [Spell Family
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -19032,6 +19040,7 @@ Name             : Shaman Enhancement 10.1 Class Set 2pc (id=405567) [Spell Fami
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -19054,6 +19063,7 @@ Name             : Shaman Enhancement 10.1 Class Set 4pc (id=405568) [Spell Fami
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -19076,6 +19086,7 @@ Name             : Shaman Restoration 10.1 Class Set 2pc (id=405569) [Spell Fami
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -19101,6 +19112,7 @@ Name             : Shaman Restoration 10.1 Class Set 4pc (id=405570) [Spell Fami
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -19746,6 +19758,7 @@ Name             : Shaman Elemental 10.2 Class Set 2pc (id=422911) [Passive, Hid
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -19770,6 +19783,7 @@ Name             : Shaman Elemental 10.2 Class Set 4pc (id=422912) [Spell Family
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -19795,6 +19809,7 @@ Name             : Shaman Enhancement 10.2 Class Set 2pc (id=422913) [Spell Fami
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -19820,6 +19835,7 @@ Name             : Shaman Enhancement 10.2 Class Set 4pc (id=422914) [Passive, H
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -19842,6 +19858,7 @@ Name             : Shaman Restoration 10.2 Class Set 2pc (id=422915) [Spell Fami
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -19867,6 +19884,7 @@ Name             : Shaman Restoration 10.2 Class Set 4pc (id=422916) [Spell Fami
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292

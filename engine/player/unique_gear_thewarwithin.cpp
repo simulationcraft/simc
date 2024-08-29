@@ -758,7 +758,7 @@ void adrenal_surge( special_effect_t& effect )
   // create primary stat buff
   auto primary_stat_trigger = effect.driver()->effectN( 1 ).trigger();
   auto primary_value = primary_stat_trigger->effectN( 1 ).average( effect ) * writhing_mul( effect.player );
-  auto primary_stat_buff = create_buff<stat_buff_t>( effect.player, "adrenal_surge_primary", primary_stat_trigger )
+  auto primary_stat_buff = create_buff<stat_buff_t>( effect.player, "adrenal_surge", primary_stat_trigger )
     ->set_stat_from_effect_type( A_MOD_STAT, primary_value );
 
 
@@ -766,8 +766,9 @@ void adrenal_surge( special_effect_t& effect )
   // TODO: currently this does not scale with item level
   auto mastery_loss_trigger = primary_stat_trigger->effectN( 3 ).trigger();
   auto mastery_value = mastery_loss_trigger->effectN( 1 ).average( effect ) * writhing_mul( effect.player );
-  auto mastery_loss_buff = create_buff<stat_buff_t>( effect.player, "adrenal_surge_mastery", mastery_loss_trigger )
-    ->set_stat_from_effect_type( A_MOD_RATING, mastery_value );
+  auto mastery_loss_buff = create_buff<stat_buff_t>( effect.player, "adrenal_surge_debuff", mastery_loss_trigger )
+    ->set_stat_from_effect_type( A_MOD_RATING, mastery_value )
+    ->set_name_reporting( "Debuff" );
 
   effect.player->callbacks.register_callback_execute_function(
       effect.spell_id,
@@ -2117,14 +2118,32 @@ void void_pactstone( special_effect_t& e )
 
 // Ravenous Honey Buzzer
 // 448904 Driver
+// 448903 Trigger, forced movement
 // 448909 Damage
+// TODO: implement possible lost uptime from forced movement
 void ravenous_honey_buzzer( special_effect_t& e )
 {
-  auto damage = create_proc_action<generic_aoe_proc_t>( "ravenous_honey_buzzer", e, 448909 );
-  damage->split_aoe_damage = true;
-  damage->base_multiplier *= role_mult( e );
+  struct ravenous_honey_buzzer_t : public generic_aoe_proc_t
+  {
+    timespan_t movement_dur;
 
-  e.execute_action = damage;
+    ravenous_honey_buzzer_t( const special_effect_t& e )
+      : generic_aoe_proc_t( e, "ravenous_honey_buzzer", e.player->find_spell( 448909 ), true ),
+        movement_dur( timespan_t::from_seconds( e.trigger()->missile_speed() ) )
+    {
+      base_multiplier *= role_mult( e );
+    }
+
+    void execute() override
+    {
+      generic_aoe_proc_t::execute();
+
+      // TODO: implement possible lost uptime from forced movement
+      player->buffs.movement->trigger( movement_dur );
+    }
+  };
+
+  e.execute_action = create_proc_action<ravenous_honey_buzzer_t>( "ravenous_honey_buzzer", e );
 }
 
 // Overlocked Gear-a-rang Launcher
@@ -3526,7 +3545,7 @@ void darkmoon_deck_radiance( special_effect_t& effect )
   new radiant_focus_cb_t( effect, embelish );
 }
 
-// Nerubian Phearomone Secreter
+// Nerubian Pheromone Secreter
 // 441023 Driver
 // 441428 Buff
 // 441508, 441507, 441430 Area Triggers for Phearomone
@@ -3535,17 +3554,17 @@ void darkmoon_deck_radiance( special_effect_t& effect )
 // 227447 - Haste, Bonus id 11315
 // 227448 - Crit, Bonus id 11316
 // 227449 - Versatility, Bonus id 11317
-struct pickup_nerubian_phearomone_t : public action_t
+struct pickup_nerubian_pheromone_t : public action_t
 {
   buff_t* orb = nullptr;
 
-  pickup_nerubian_phearomone_t( player_t* p, std::string_view opt )
-    : action_t( ACTION_OTHER, "pickup_nerubian_phearomone", p, spell_data_t::nil() )
+  pickup_nerubian_pheromone_t( player_t* p, std::string_view opt )
+    : action_t( ACTION_OTHER, "pickup_nerubian_pheromone", p, spell_data_t::nil() )
   {
     parse_options( opt );
 
     s_data_reporting   = p->find_spell( 441023 );
-    name_str_reporting = "Picked up Nerubian Phearomone";
+    name_str_reporting = "Picked up Nerubian Pheromone";
 
     callbacks = harmful = false;
     trigger_gcd         = 0_ms;
@@ -3562,15 +3581,15 @@ struct pickup_nerubian_phearomone_t : public action_t
   }
 };
 
-void nerubian_phearomone_secreter( special_effect_t& effect )
+void nerubian_pheromone_secreter( special_effect_t& effect )
 {
-  struct nerubian_phearomones_cb_t : public dbc_proc_callback_t
+  struct nerubian_pheromones_cb_t : public dbc_proc_callback_t
   {
     buff_t* stat_buff;
     buff_t* orb;
     std::vector<action_t*> apl_actions;
 
-    nerubian_phearomones_cb_t( const special_effect_t& e )
+    nerubian_pheromones_cb_t( const special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ), stat_buff( nullptr ), orb( nullptr ), apl_actions()
     {
       stat_buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 441428 ) )
@@ -3578,7 +3597,7 @@ void nerubian_phearomone_secreter( special_effect_t& effect )
 
       for ( auto& a : e.player->action_list )
       {
-        if ( a->name_str == "pickup_nerubian_phearomone" )
+        if ( a->name_str == "pickup_nerubian_pheromone" )
         {
           apl_actions.push_back( a );
         }
@@ -3587,9 +3606,9 @@ void nerubian_phearomone_secreter( special_effect_t& effect )
       if ( apl_actions.size() > 0 )
       {
         orb = create_buff<buff_t>( e.player, e.player->find_spell( 441430 ) )
-                  ->set_max_stack( e.player->thewarwithin_opts.nerubian_phearomone_secreter_phearomones )
+                  ->set_max_stack( e.player->thewarwithin_opts.nerubian_pheromone_secreter_pheromones )
                   ->set_duration( e.player->find_spell( 441430 )->duration() )
-                  ->set_initial_stack( e.player->thewarwithin_opts.nerubian_phearomone_secreter_phearomones )
+                  ->set_initial_stack( e.player->thewarwithin_opts.nerubian_pheromone_secreter_pheromones )
                   ->set_quiet( true )
                   ->set_expire_callback( [ & ]( buff_t*, int, timespan_t d ) {
                     if ( d > 0_ms )
@@ -3602,7 +3621,7 @@ void nerubian_phearomone_secreter( special_effect_t& effect )
       // Set a default task for the actions ready() function, will be overwritten later
       for ( auto& a : apl_actions )
       {
-        debug_cast<pickup_nerubian_phearomone_t*>( a )->orb = orb;
+        debug_cast<pickup_nerubian_pheromone_t*>( a )->orb = orb;
       }
     }
 
@@ -3614,7 +3633,7 @@ void nerubian_phearomone_secreter( special_effect_t& effect )
       }
       else
       {
-        for ( int i = 0; i < listener->thewarwithin_opts.nerubian_phearomone_secreter_phearomones; i++ )
+        for ( int i = 0; i < listener->thewarwithin_opts.nerubian_pheromone_secreter_pheromones; i++ )
         {
           make_event( *listener->sim, rng().range( 200_ms, listener->find_spell( 441430 )->duration() ),
                       [ & ] { stat_buff->trigger(); } );
@@ -3623,7 +3642,7 @@ void nerubian_phearomone_secreter( special_effect_t& effect )
     }
   };
 
-  new nerubian_phearomones_cb_t( effect );
+  new nerubian_pheromones_cb_t( effect );
 }
 
 // Shadowed Essence
@@ -3931,6 +3950,54 @@ void harvesters_interdiction( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Siphoning Stilleto 
+// 453573 Driver
+// Effect 1: Self Damage
+// Effect 2: Damage
+// Effect 3: Duration
+// Effect 4: Range
+// 458630 Self Damage
+// 458624 Damage
+void siphoning_stilleto( special_effect_t& effect )
+{
+  struct siphoning_stilleto_cb_t : public dbc_proc_callback_t
+  {
+    action_t* self;
+    action_t* damage;
+    timespan_t duration;
+    siphoning_stilleto_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        self( nullptr ),
+        damage( nullptr ),
+        duration( timespan_t::from_seconds( e.driver()->effectN( 3 ).base_value() ) )
+    {
+      self              = create_proc_action<generic_proc_t>( "siphoning_stilleto_self", e, 458630 );
+      // TODO: Check if self damage is affected by the role multiplier
+      self->base_dd_min = self->base_dd_max = e.driver()->effectN( 1 ).average( e ) * writhing_mul( e.player );
+      self->stats->type = STATS_NEUTRAL;
+      // TODO: Check if self damage can trigger other effects
+      self->callbacks   = false;
+      self->target      = e.player;
+
+      damage              = create_proc_action<generic_proc_t>( "siphoning_stilleto", e, 458624 );
+      damage->base_dd_min = damage->base_dd_max =
+          e.driver()->effectN( 2 ).average( e ) * role_mult( e ) * writhing_mul( e.player );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      self->execute_on_target( listener );
+      // TODO: implement range check if it ever matters for specilizations that can use this.
+      make_event( *listener->sim, duration, [ & ] {
+        auto target = listener->sim->target_non_sleeping_list[ rng().range( 0, listener->sim->target_non_sleeping_list.size() ) ];
+        damage->execute_on_target( target );
+      } );
+    }
+  };
+
+  new siphoning_stilleto_cb_t( effect );
+}
+
 // Armor
 // 457815 driver
 // 457918 nature damage driver
@@ -4138,6 +4205,45 @@ void imperfect_ascendancy_serum( special_effect_t& effect )
   auto action           = new ascension_channel_t( effect, buff );
   effect.execute_action = action;
   effect.disable_buff();
+}
+
+// 455799 Driver
+// 455820 First Dig
+// 455826 Second Dig
+// 455827 Third Dig
+void excavation( special_effect_t& effect )
+{
+  struct excavation_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<buff_t*> buff_list;
+    unsigned dig_count;
+
+    excavation_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), buff_list(), dig_count( 0 )
+    {
+      static constexpr std::pair<unsigned, unsigned> buff_entries[] = { { 455820, 0 }, { 455826, 1 }, { 455827, 2 } };
+
+      for ( const auto& [ id, n ] : buff_entries )
+      {
+        auto s_data  = e.player->find_spell( id );
+        double value =  e.driver()->effectN( 1 ).average( e ) * ( 1.0 + ( 0.05 * n ) );
+
+        auto buff = create_buff<stat_buff_t>( e.player, s_data )->add_stat_from_effect_type( A_MOD_STAT, value );
+
+        buff_list.push_back( buff );
+      }
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      buff_list[ dig_count ]->trigger();
+      if ( dig_count < buff_list.size() - 1 )
+        dig_count++;
+      else
+        dig_count = 0;
+    }
+  };
+
+  new excavation_cb_t( effect );
 }
 
 }  // namespace items
@@ -4376,7 +4482,7 @@ void register_special_effects()
   register_special_effect( 432421, items::algari_alchemist_stone );
   register_special_effect( { 458573, 463095 }, items::darkmoon_deck_ascension );
   register_special_effect( { 454558, 463108 }, items::darkmoon_deck_radiance );
-  register_special_effect( 441023, items::nerubian_phearomone_secreter );
+  register_special_effect( 441023, items::nerubian_pheromone_secreter );
   register_special_effect( 455640, items::shadowed_essence );
 
   // Weapons
@@ -4385,10 +4491,12 @@ void register_special_effects()
   register_special_effect( 442205, items::befoulers_syringe );
   register_special_effect( 455887, items::voltaic_stormcaller );
   register_special_effect( 455819, items::harvesters_interdiction );
+  register_special_effect( 453573, items::siphoning_stilleto );
 
   // Armor
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );
   register_special_effect( 457918, DISABLED_EFFECT );  // seal of the poisoned pact
+  register_special_effect( 455799, items::excavation );
 
   // Sets
   register_special_effect( 444166, DISABLED_EFFECT );  // kye'veza's cruel implements
@@ -4409,7 +4517,7 @@ action_t* create_action( player_t* p, util::string_view n, util::string_view opt
   // Trinket Actions
   if ( n == "pickup_entropic_skardyn_core" ) return new items::pickup_entropic_skardyn_core_t( p, options );
   if ( n == "do_treacherous_transmitter_task" ) return new items::do_treacherous_transmitter_task_t( p, options );
-  if ( n == "pickup_nerubian_phearomone" ) return new items::pickup_nerubian_phearomone_t( p, options );
+  if ( n == "pickup_nerubian_pheromone" ) return new items::pickup_nerubian_pheromone_t( p, options );
 
   // Set Actions
   if ( n == "pickup_cinderbee_orb" ) return new sets::pickup_cinderbee_orb_t( p, options );

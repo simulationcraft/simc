@@ -17251,6 +17251,7 @@ Name             : Paladin Holy Class Set 2pc (id=393670) [Spell Family (10), Pa
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17275,6 +17276,7 @@ Name             : Paladin Holy Class Set 4pc (id=393672) [Spell Family (10), Pa
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17307,6 +17309,7 @@ Name             : Paladin Protection Class Set 2pc (id=393673) [Spell Family (1
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17332,6 +17335,7 @@ Name             : Paladin Protection Class Set 4pc (id=393674) [Spell Family (1
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17356,6 +17360,7 @@ Name             : Paladin Retribution Class Set 2pc (id=393675) [Spell Family (
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -17383,6 +17388,7 @@ Name             : Paladin Retribution Class Set 4pc (id=393677) [Spell Family (
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -18977,6 +18983,7 @@ Name             : Paladin Holy 10.1 Class Set 2pc (id=405545) [Spell Family (10
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -19009,6 +19016,7 @@ Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -19042,6 +19050,7 @@ Name             : Paladin Protection 10.1 Class Set 2pc (id=405547) [Spell Fami
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -19072,6 +19081,7 @@ Name             : Paladin Protection 10.1 Class Set 4pc (id=405548) [Spell Fami
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -19094,6 +19104,7 @@ Name             : Paladin Retribution 10.1 Class Set 2pc (id=405549) [Spell Fam
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -19127,6 +19138,7 @@ Name             : Paladin Retribution 10.1 Class Set 4pc (id=405550) [Spell Fam
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -21569,6 +21581,7 @@ Name             : Paladin Holy 10.2 Class Set 2pc (id=422893) [Spell Family (10
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -21591,6 +21604,7 @@ Name             : Paladin Holy 10.2 Class Set 4pc (id=422894) [Spell Family (10
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -21619,6 +21633,7 @@ Name             : Paladin Protection 10.2 Class Set 2pc (id=422895) [Spell Fami
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -21645,6 +21660,7 @@ Name             : Paladin Protection 10.2 Class Set 4pc (id=422896) [Passive, H
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -21780,6 +21796,7 @@ Name             : Paladin Retribution 10.2 Class Set 2pc (id=424513) [Spell Fam
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -21811,6 +21828,7 @@ Name             : Paladin Retribution 10.2 Class Set 4pc (id=424572) [Spell Fam
 Class            : Paladin
 School           : Holy
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -23095,6 +23113,7 @@ Effects          :
 Description      : $@spelldesc431377
 
 Name             : Empyrean Hammer (id=431625) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -23106,13 +23125,13 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : x....... ........ ........ .....x..   ........ ........ ........ ......x. 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Is Debuff (26), Allow Dead Target (64), Can't Crit (93), Do Not Display Range (126), Not In Spellbook (143), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Aura Is Debuff (26), Allow Dead Target (64), Can't Crit (93), Do Not Display Range (126), Not In Spellbook (143), Always Line of Sight (185), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1119523)  : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)

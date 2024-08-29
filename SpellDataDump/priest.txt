@@ -16283,6 +16283,7 @@ Name             : Priest Discipline Class Set 2pc (id=393679) [Spell Family (6)
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -16307,6 +16308,7 @@ Name             : Priest Discipline Class Set 4pc (id=393681) [Spell Family (6)
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -16333,6 +16335,7 @@ Name             : Priest Holy Class Set 2pc (id=393682) [Spell Family (6), Pass
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -16359,6 +16362,7 @@ Name             : Priest Holy Class Set 4pc (id=393683) [Passive, Hidden]
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -16380,6 +16384,7 @@ Name             : Priest Shadow Class Set 2pc (id=393684) [Spell Family (6), Pa
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -16404,6 +16409,7 @@ Name             : Priest Shadow Class Set 4pc (id=393685) [Spell Family (6), Pa
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -16910,6 +16916,7 @@ Name             : Priest Discipline 10.1 Class Set 2pc (id=405551) [Spell Famil
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -16942,6 +16949,7 @@ Name             : Priest Discipline 10.1 Class Set 4pc (id=405553) [Spell Famil
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -16967,6 +16975,7 @@ Name             : Priest Holy 10.1 Class Set 2pc (id=405554) [Spell Family (6),
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -16992,6 +17001,7 @@ Name             : Priest Holy 10.1 Class Set 4pc (id=405556) [Spell Family (6),
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -17014,6 +17024,7 @@ Name             : Priest Shadow 10.1 Class Set 2pc (id=405557) [Spell Family (6
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -17042,6 +17053,7 @@ Name             : Priest Shadow 10.1 Class Set 4pc (id=405558) [Spell Family (6
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -17579,6 +17591,7 @@ Name             : Priest Holy 10.1 Class Set 2pc (id=411097) [Spell Family (6),
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -18040,6 +18053,7 @@ Name             : Priest Discipline 10.2 Class Set 2pc (id=422899) [Spell Famil
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -18069,6 +18083,7 @@ Name             : Priest Discipline 10.2 Class Set 4pc (id=422900) [Spell Famil
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -18096,6 +18111,7 @@ Name             : Priest Holy 10.2 Class Set 2pc (id=422901) [Spell Family (6),
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -18122,6 +18138,7 @@ Name             : Priest Holy 10.2 Class Set 4pc (id=422902) [Spell Family (6),
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -18147,6 +18164,7 @@ Name             : Priest Shadow 10.2 Class Set 2pc (id=422903) [Spell Family (6
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -18176,6 +18194,7 @@ Name             : Priest Shadow 10.2 Class Set 4pc (id=422904) [Spell Family (6
 Class            : Priest
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -19336,8 +19355,9 @@ Effects          :
 Description      : $?c3[Void Torrent][Mind Blast] tears open an Entropic Rift that follows the enemy for $450193d. Enemies caught in its path suffer $447448s1 Shadow damage every $459314t1 sec while within its reach.
 
 Name             : Entropic Rift (id=447445) [Spell Family (6)] 
+Hotfixed         : School (1 -> 32)
 Class            : Priest
-School           : Physical
+School           : Shadow
 Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
@@ -19359,7 +19379,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Client Targeting (133), No Jump Pathing (208), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1145409)  : Create Area Trigger (179)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 33200 | Radius: 0 - 12 yards | Target: At Enemy (53) -> Unknown(148)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 33200 | Radius: 15 yards | Target: Unknown(148)
+Hotfixed         : Target 1 (53 -> 148), Target 2 (148 -> 0)
 Description      : $@spelldesc447444
 
 Name             : Entropic Rift (id=447448) [Spell Family (6)] 

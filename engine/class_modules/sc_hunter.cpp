@@ -989,7 +989,6 @@ public:
   void      invalidate_cache( cache_e ) override;
   void      regen( timespan_t periodicity ) override;
   double    resource_gain( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr ) override;
-  void      reset_auto_attacks( timespan_t delay, proc_t* proc ) override;
   void      create_options() override;
   std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override;
   std::unique_ptr<expr_t> create_action_expression( action_t&, util::string_view expression_str ) override;
@@ -6846,8 +6845,6 @@ struct volley_base_t : public hunter_spell_t
             }
         } )
       );
-
-    p() -> player_t::reset_auto_attacks( tick_duration, player -> procs.reset_aa_channel );
   }
 };
 
@@ -8787,15 +8784,6 @@ double hunter_t::resource_gain( resource_e type, double amount, gain_t* g, actio
   }
 
   return actual_amount;
-}
-
-void hunter_t::reset_auto_attacks( timespan_t delay, proc_t* proc )
-{
-  // Keep Auto Shot suppressed while Volley is "channeled"
-  if ( !buffs.volley -> check() || delay > buffs.volley -> remains() )
-  {
-    player_t::reset_auto_attacks( delay, proc );
-  }
 }
 
 double hunter_t::matching_gear_multiplier( attribute_e attr ) const
