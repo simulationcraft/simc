@@ -758,7 +758,7 @@ void adrenal_surge( special_effect_t& effect )
   // create primary stat buff
   auto primary_stat_trigger = effect.driver()->effectN( 1 ).trigger();
   auto primary_value = primary_stat_trigger->effectN( 1 ).average( effect ) * writhing_mul( effect.player );
-  auto primary_stat_buff = create_buff<stat_buff_t>( effect.player, "adrenal_surge_primary", primary_stat_trigger )
+  auto primary_stat_buff = create_buff<stat_buff_t>( effect.player, "adrenal_surge", primary_stat_trigger )
     ->set_stat_from_effect_type( A_MOD_STAT, primary_value );
 
 
@@ -766,8 +766,9 @@ void adrenal_surge( special_effect_t& effect )
   // TODO: currently this does not scale with item level
   auto mastery_loss_trigger = primary_stat_trigger->effectN( 3 ).trigger();
   auto mastery_value = mastery_loss_trigger->effectN( 1 ).average( effect ) * writhing_mul( effect.player );
-  auto mastery_loss_buff = create_buff<stat_buff_t>( effect.player, "adrenal_surge_mastery", mastery_loss_trigger )
-    ->set_stat_from_effect_type( A_MOD_RATING, mastery_value );
+  auto mastery_loss_buff = create_buff<stat_buff_t>( effect.player, "adrenal_surge_debuff", mastery_loss_trigger )
+    ->set_stat_from_effect_type( A_MOD_RATING, mastery_value )
+    ->set_name_reporting( "Debuff" );
 
   effect.player->callbacks.register_callback_execute_function(
       effect.spell_id,
