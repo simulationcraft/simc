@@ -3950,6 +3950,54 @@ void harvesters_interdiction( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Siphoning Stilleto 
+// 453573 Driver
+// Effect 1: Self Damage
+// Effect 2: Damage
+// Effect 3: Duration
+// Effect 4: Range
+// 458630 Self Damage
+// 458624 Damage
+void siphoning_stilleto( special_effect_t& effect )
+{
+  struct siphoning_stilleto_cb_t : public dbc_proc_callback_t
+  {
+    action_t* self;
+    action_t* damage;
+    timespan_t duration;
+    siphoning_stilleto_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        self( nullptr ),
+        damage( nullptr ),
+        duration( timespan_t::from_seconds( e.driver()->effectN( 3 ).base_value() ) )
+    {
+      self              = create_proc_action<generic_proc_t>( "siphoning_stilleto_self", e, 458630 );
+      // TODO: Check if self damage is affected by the role multiplier
+      self->base_dd_min = self->base_dd_max = e.driver()->effectN( 1 ).average( e ) * writhing_mul( e.player );
+      self->stats->type = STATS_NEUTRAL;
+      // TODO: Check if self damage can trigger other effects
+      self->callbacks   = false;
+      self->target      = e.player;
+
+      damage              = create_proc_action<generic_proc_t>( "siphoning_stilleto", e, 458624 );
+      damage->base_dd_min = damage->base_dd_max =
+          e.driver()->effectN( 2 ).average( e ) * role_mult( e ) * writhing_mul( e.player );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      self->execute_on_target( listener );
+      // TODO: implement range check if it ever matters for specilizations that can use this.
+      make_event( *listener->sim, duration, [ & ] {
+        auto target = listener->sim->target_non_sleeping_list[ rng().range( 0, listener->sim->target_non_sleeping_list.size() ) ];
+        damage->execute_on_target( target );
+      } );
+    }
+  };
+
+  new siphoning_stilleto_cb_t( effect );
+}
+
 // Armor
 // 457815 driver
 // 457918 nature damage driver
@@ -4443,6 +4491,7 @@ void register_special_effects()
   register_special_effect( 442205, items::befoulers_syringe );
   register_special_effect( 455887, items::voltaic_stormcaller );
   register_special_effect( 455819, items::harvesters_interdiction );
+  register_special_effect( 453573, items::siphoning_stilleto );
 
   // Armor
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );
