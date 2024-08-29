@@ -247,13 +247,14 @@ public:
   // Events
   struct events_t
   {
+    event_t* burden_of_power;
     event_t* enlightened;
     event_t* flame_accelerant;
     event_t* icicle;
     event_t* merged_buff_execute;
+    event_t* meteor_burn;
     event_t* splinterstorm;
     event_t* time_anomaly;
-    event_t* burden_of_power;
   } events;
 
   // Ground AoE tracking
@@ -1018,6 +1019,7 @@ public:
   void trigger_lit_fuse();
   void trigger_mana_cascade();
   void trigger_merged_buff( buff_t* buff, bool trigger );
+  void trigger_meteor_burn( action_t* action, player_t* target, timespan_t pulse_time, timespan_t duration );
   void trigger_flash_freezeburn( bool ffb = false );
   void trigger_spellfire_spheres();
   void consume_burden_of_power();
@@ -5911,11 +5913,7 @@ struct meteor_impact_t final : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     p()->ground_aoe_expiration[ AOE_METEOR_BURN ] = sim->current_time() + meteor_burn_duration;
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-      .pulse_time( meteor_burn_pulse_time )
-      .target( target )
-      .duration( meteor_burn_duration )
-      .action( meteor_burn ) );
+    p()->trigger_meteor_burn( meteor_burn, target, meteor_burn_pulse_time, meteor_burn_duration );
 
     if ( type == meteor_type::ISOTHERMIC )
       trigger_frostfire_mastery();
@@ -7402,6 +7400,35 @@ struct splinterstorm_event_t final : public mage_event_t
 
     mage->events.splinterstorm = make_event<splinterstorm_event_t>(
       sim(), *mage, mage->talents.splinterstorm->effectN( 2 ).period() );
+  }
+};
+
+struct meteor_burn_event_t final : public mage_event_t
+{
+  action_t* action;
+  player_t* target;
+  timespan_t pulse_time;
+  timespan_t expiration;
+
+  meteor_burn_event_t( mage_t& m, action_t* action_, player_t* target_, timespan_t pulse_time_, timespan_t expiration_ ) :
+    mage_event_t( m, pulse_time_ ),
+    action( action_ ),
+    target( target_ ),
+    pulse_time( pulse_time_ ),
+    expiration( expiration_ )
+  { }
+
+  const char* name() const override
+  { return "meteor_burn_event"; }
+
+  void execute()
+  {
+    mage->events.meteor_burn = nullptr;
+
+    action->execute_on_target( target );
+
+    if ( sim().current_time() + pulse_time <= expiration )
+      mage->events.meteor_burn = make_event<meteor_burn_event_t>( sim(), *mage, action, target, pulse_time, expiration );
   }
 };
 
@@ -9277,6 +9304,23 @@ void mage_t::trigger_merged_buff( buff_t* buff, bool trigger )
     it->expire = true;
     it->stacks = 0;
   }
+}
+
+void mage_t::trigger_meteor_burn( action_t* action, player_t* target, timespan_t pulse_time, timespan_t duration )
+{
+  timespan_t expiration = sim->current_time() + duration;
+
+  if ( !events.meteor_burn )
+  {
+    events.meteor_burn = make_event<events::meteor_burn_event_t>( *sim, *this, action, target, pulse_time, expiration );
+    return;
+  }
+
+  auto e = debug_cast<events::meteor_burn_event_t*>( events.meteor_burn );
+  e->action = action;
+  e->target = target;
+  e->pulse_time = pulse_time;
+  e->expiration = expiration;
 }
 
 void mage_t::trigger_flash_freezeburn( bool ffb )
