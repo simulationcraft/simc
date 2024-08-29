@@ -23,7 +23,7 @@ std::string flask( const player_t* p )
 
 std::string food( const player_t* p )
 {
-  return ( p -> true_level > 70 ) ? "the_sushi_feast" : 
+  return ( p -> true_level > 70 ) ? "the_sushi_special" : 
          ( p -> true_level > 60 ) ? "fated_fortune_cookie" : 
          ( p -> true_level > 50 ) ? "feast_of_gluttonous_hedonism" :
          ( p -> true_level >= 45 ) ? "bountiful_captains_feast" :
@@ -41,10 +41,12 @@ std::string rune( const player_t* p )
 
 std::string temporary_enchant( const player_t* p )
 {
-  std::string lvl70_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:ironclaw_whetstone_3" : "main_hand:algari_mana_oil_3";
+  std::string lvl80_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:ironclaw_whetstone_3" : "main_hand:algari_mana_oil_3";
+  std::string lvl70_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:howling_rune_3" : "main_hand:completely_safe_rockets_3";
   std::string lvl60_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:shaded_sharpening_stone" : "main_hand:shadowcore_oil";
 
-  return ( p -> true_level >= 70 ) ? lvl70_temp_enchant :
+  return ( p -> true_level >= 80 ) ? lvl80_temp_enchant :
+         ( p -> true_level >= 70 ) ? lvl70_temp_enchant :
          ( p -> true_level >= 60 ) ? lvl60_temp_enchant :
          "disabled";
 }
