@@ -42,7 +42,6 @@ struct chiji_pet_t;
 struct yulon_pet_t;
 struct white_tiger_statue_t;
 struct fury_of_xuen_pet_t;
-struct spirit_of_forged_vermillion_t;
 
 enum class sef_pet_e
 {
@@ -145,14 +144,6 @@ public:
   void execute() override;
   void impact( action_state_t *state ) override;
   void tick( dot_t *dot ) override;
-  void last_tick( dot_t *dot ) override;
-  double composite_persistent_multiplier( const action_state_t *state ) const override;
-  double cost() const override;
-  double cost_pct_multiplier() const override;
-  double cost_reduction() const;
-  double composite_crit_damage_bonus_multiplier() const override;
-  double composite_ta_multiplier( const action_state_t *state ) const override;
-  double composite_da_multiplier( const action_state_t *state ) const override;
   void trigger_storm_earth_and_fire( const action_t *action );
   void trigger_mystic_touch( action_state_t *state );
 };
@@ -161,8 +152,6 @@ struct monk_spell_t : public monk_action_t<spell_t>
 {
   using base_t = monk_action_t<spell_t>;
   monk_spell_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
-  double composite_target_crit_chance( player_t *target ) const override;
-  double composite_persistent_multiplier( const action_state_t *state ) const override;
 };
 
 struct monk_heal_t : public monk_action_t<heal_t>
@@ -396,9 +385,6 @@ public:
 
     // Shadowland Legendaries
     propagate_const<buff_t *> jadefire_brand;
-
-    // Tier 30
-    propagate_const<buff_t *> shadowflame_vulnerability;
   } debuff;
 
   monk_t &monk;
@@ -479,7 +465,6 @@ public:
     propagate_const<heal_t *> celestial_fortune;
     propagate_const<action_t *> exploding_keg;
     propagate_const<action_t *> niuzao_call_to_arms_summon;
-
     propagate_const<action_t *> chi_surge;
 
     // Windwalker
@@ -488,11 +473,6 @@ public:
     propagate_const<action_t *> fury_of_xuen_summon;
     propagate_const<action_t *> fury_of_xuen_empowered_tiger_lightning;
     propagate_const<action_t *> gale_force;
-
-    // Tier 31
-    propagate_const<action_t *> charred_dreams_dmg_2p;
-    propagate_const<action_t *> charred_dreams_dmg_4p;
-    propagate_const<action_t *> charred_dreams_heal;
   } active_actions;
 
   struct passive_actions_t
@@ -715,22 +695,7 @@ public:
     propagate_const<buff_t *> wisdom_of_the_wall_flurry;
     propagate_const<buff_t *> wisdom_of_the_wall_mastery;
 
-    // T29 Set Bonus
-    propagate_const<buff_t *> kicks_of_flowing_momentum;
-    propagate_const<buff_t *> fists_of_flowing_momentum;
-    propagate_const<buff_t *> fists_of_flowing_momentum_fof;
-    propagate_const<buff_t *> brewmasters_rhythm;
-
-    // T30 Set Bonus
-    propagate_const<buff_t *> leverage;
-    propagate_const<buff_t *> leverage_helper;
-
-    // T31 Set Bonus
-    propagate_const<buff_t *> brewmaster_t31_4p_accumulator;
-    propagate_const<buff_t *> brewmaster_t31_4p_fake_absorb;
-    propagate_const<buff_t *> blackout_reinforcement;
-
-    // T32 Set Bonus
+    // TWW1 Set Bonus
     propagate_const<buff_t *> tiger_strikes;
     propagate_const<buff_t *> tigers_ferocity;
     propagate_const<buff_t *> flow_of_battle_damage;
@@ -760,7 +725,6 @@ public:
     propagate_const<gain_t *> tiger_palm;
     propagate_const<gain_t *> touch_of_death_ww;
     propagate_const<gain_t *> weapons_of_order;
-
   } gain;
 
   struct procs_t
@@ -774,9 +738,6 @@ public:
     propagate_const<proc_t *> blackout_combo_rising_sun_kick;
     propagate_const<proc_t *> blackout_kick_cdr_oe;
     propagate_const<proc_t *> blackout_kick_cdr;
-    propagate_const<proc_t *> blackout_reinforcement_melee;
-    propagate_const<proc_t *> blackout_reinforcement_sck;
-    propagate_const<proc_t *> blackout_reinforcement_waste;
     propagate_const<proc_t *> bountiful_brew_proc;
     propagate_const<proc_t *> charred_passions;
     propagate_const<proc_t *> chi_surge;
@@ -792,11 +753,7 @@ public:
     propagate_const<proc_t *> tranquil_spirit_expel_harm;
     propagate_const<proc_t *> tranquil_spirit_goto;
     propagate_const<proc_t *> xuens_battlegear_reduction;
-
-    // Tier 30
-    propagate_const<proc_t *> spirit_of_forged_vermillion_spawn;
     propagate_const<proc_t *> elusive_brawler_preserved;
-
   } proc;
 
   struct cooldowns_t
@@ -824,9 +781,6 @@ public:
     propagate_const<cooldown_t *> touch_of_death;
     propagate_const<cooldown_t *> weapons_of_order;
     propagate_const<cooldown_t *> whirling_dragon_punch;
-
-    // T29
-    propagate_const<cooldown_t *> brewmasters_rhythm;
   } cooldown;
 
   struct
@@ -1319,27 +1273,6 @@ public:
   {
     struct
     {
-      const spell_data_t *kicks_of_flowing_momentum;
-      const spell_data_t *fists_of_flowing_momentum;
-    } t29;
-
-    struct
-    {
-      const spell_data_t *leverage;
-      const spell_data_t *shadowflame_nova;
-      const spell_data_t *shadowflame_spirit;
-      const spell_data_t *shadowflame_spirit_summon;
-    } t30;
-
-    struct
-    {
-      const spell_data_t *charred_dreams_dmg;
-      const spell_data_t *charred_dreams_heal;
-      const spell_data_t *t31_celestial_brew;
-    } t31;
-
-    struct
-    {
       const spell_data_t *ww_4pc;
       const spell_data_t *ww_4pc_dmg;
       const spell_data_t *brm_4pc_damage_buff;
@@ -1357,7 +1290,6 @@ public:
     spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
     spawner::pet_spawner_t<pet_t, monk_t> fury_of_xuen_tiger;
     spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_niuzao;
-    spawner::pet_spawner_t<pet_t, monk_t> spirit_of_forged_vermillion;
 
     pet_t *bron;
 
@@ -1382,7 +1314,6 @@ public:
     const spell_data_t *healing_elixir;
     const spell_data_t *invokers_delight;
     const spell_data_t *rushing_jade_wind;
-    const spell_data_t *shadowboxing_treads;
     const spell_data_t *teachings_of_the_monastery;
   } shared;
 
@@ -1442,7 +1373,6 @@ public:
   void init_spells() override;
   void init_base_stats() override;
   void init_scaling() override;
-  void init_items() override;
   void create_buffs() override;
   void create_actions() override;
   void init_gains() override;
@@ -1512,7 +1442,6 @@ public:
   void retarget_storm_earth_and_fire_pets() const;
 
   void trigger_storm_earth_and_fire( const action_t *a, actions::sef_ability_e sef_ability, bool combo_strike );
-  void trigger_spirit_of_forged_vermillion( action_state_t *s );
   void storm_earth_and_fire_fixate( player_t *target );
   bool storm_earth_and_fire_fixate_ready( player_t *target );
   player_t *storm_earth_and_fire_fixate_target( pets::sef_pet_e sef_pet );
