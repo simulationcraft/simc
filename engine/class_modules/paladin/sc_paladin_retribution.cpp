@@ -1367,6 +1367,7 @@ struct templar_slash_dot_t : public paladin_spell_t
     : paladin_spell_t( "templar_slash_dot", p, p->find_spell( 447142 ) )
   {
     background = true;
+    hasted_ticks = false;
   }
 };
 
@@ -1392,6 +1393,9 @@ struct templar_slash_t : public base_templar_strike_t
     base_templar_strike_t::impact( s );
 
     dot->target = s->target;
+    // TODO: figure out where this formula comes from
+    double mult = p()->bugs ? 1.0 : 0.5;
+    dot->base_td = ( s->result_total * mult ) / 4;
     dot->execute();
   }
 
