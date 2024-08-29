@@ -15979,9 +15979,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 377243 | Target: Self (1)
 #2 (id=1004950)  : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000
-#3 (id=1005663)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Misc Value: 3 | Misc Value 2: 1624 (Label) | Target: Self (1)
-                   Affected Spells (Label): Frostwhelp's Aid (377253)
+#3 (id=1005663)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : Sub Type (219 -> 4), Base Value (0 -> 4), Misc Value (3 -> 0), Misc Value 2 (1624 -> 0)
 Description      : Pillar of Frost summons a Frostwhelp who breathes on all enemies within $s2 yards in front of you for $377245s1 Frost damage. Each unique enemy hit by Frostwhelp's Aid grants you ${$377253s1*2}% Mastery for $287338d, up to ${$s3*2*$377253u}%.
 
 
@@ -16047,7 +16047,7 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-                 : 1624: Frostwhelp's Aid (377226 effect#3)
+                 : 1624
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered by     : Frostwhelp's Aid (377245)
@@ -17966,6 +17966,7 @@ Name             : Death Knight Blood Class Set 2pc (id=393621) [Spell Family (1
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -17990,6 +17991,7 @@ Name             : Death Knight Blood Class Set 4pc (id=393622) [Passive, Hidden
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -18013,6 +18015,7 @@ Name             : Death Knight Frost Class Set 2pc (id=393623) [Spell Family (1
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 27: Death Knight Spells
                  : 292
                  : 2317
@@ -18038,6 +18041,7 @@ Name             : Death Knight Frost Class Set 4pc (id=393624) [Spell Family (1
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -18063,6 +18067,7 @@ Name             : Death Knight Unholy Class Set 2pc (id=393626) [Spell Family (
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -18090,6 +18095,7 @@ Name             : Death Knight Unholy Class Set 4pc (id=393627) [Passive, Hidde
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -18252,9 +18258,11 @@ Description      : $@spelldesc393626
 Tooltip          : Damage increased by $s1% and Haste increased by $s2%.
 
 Name             : Death Knight Unholy Class Set 4pc (id=394896) [Spell Family (15), Passive, Hidden] 
+Hotfixed         : Required Max Level (0 -> 79)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -18340,6 +18348,7 @@ Name             : Death Knight Blood 10.1 Class Set 2pc (id=405499) [Spell Fami
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -18371,6 +18380,7 @@ Name             : Death Knight Blood 10.1 Class Set 4pc (id=405500) [Spell Fami
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -18396,6 +18406,7 @@ Name             : Death Knight Frost 10.1 Class Set 2pc (id=405501) [Spell Fami
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -18425,6 +18436,7 @@ Name             : Death Knight Frost 10.1 Class Set 4pc (id=405502) [Spell Fami
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -18447,6 +18459,7 @@ Name             : Death Knight Unholy 10.1 Class Set 2pc (id=405503) [Spell Fam
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -18474,6 +18487,7 @@ Name             : Death Knight Unholy 10.1 Class Set 4pc (id=405504) [Spell Fam
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -18826,6 +18840,7 @@ Name             : Death Knight Blood 10.2 Class Set 2pc (id=422850) [Passive, H
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -18851,6 +18866,7 @@ Name             : Death Knight Blood 10.2 Class Set 4pc (id=422851) [Spell Fami
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -18878,6 +18894,7 @@ Name             : Death Knight Frost 10.2 Class Set 2pc (id=422852) [Spell Fami
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -18904,6 +18921,7 @@ Name             : Death Knight Frost 10.2 Class Set 4pc (id=422853) [Spell Fami
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -18936,6 +18954,7 @@ Name             : Death Knight Unholy 10.2 Class Set 2pc (id=422854) [Passive, 
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -18961,6 +18980,7 @@ Name             : Death Knight Unholy 10.2 Class Set 4pc (id=422855) [Spell Fam
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -19018,6 +19038,7 @@ Name             : Death Knight Frost 10.2 Class Set 4pc (id=424350) [Spell Fami
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
+Req. Max Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -19793,6 +19814,7 @@ Effects          :
 Description      : Raises a Blood Beast to fight by your side. You can have a maximum of one Blood Beast at a time. Lasts $d.
 
 Name             : The Blood is Life (id=434246) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -19802,13 +19824,13 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .xx..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Can't Crit (93), Do Not Display Range (126), Aura Points On Client (268)
+                 : Can't Crit (93), Do Not Display Range (126), Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
 #1 (id=1124142)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
@@ -19966,6 +19988,7 @@ Description      : $@spelldesc433934
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Corrupted Blood (id=434574) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
@@ -19976,13 +19999,13 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .xx..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268)
+                 : Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
 #1 (id=1124639)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.70000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
@@ -22318,6 +22341,7 @@ Description      : $@spelldesc373931
 Tooltip          : Damage taken from $@auracaster increased by $s1%.
 
 Name             : Trollbane's Icy Fury (id=444834) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
@@ -22332,13 +22356,13 @@ Affecting spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Fro
 Family Flags     : 43, 78, 120
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .xx..... 
                  : ........ ........ .....x.x ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Show Mechanic as Combat Text (213), Taps immediately (215), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Always Line of Sight (185), Always AOE Line of Sight (186), Show Mechanic as Combat Text (213), Taps immediately (215), Aura Points On Client (268), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1141462)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Mechanic: Snare | Target: At Enemy (53) -> At Enemy in Area (16)
@@ -23639,6 +23663,7 @@ Effects          :
 Description      : When Frost Strike consumes $51714u Razorice stacks, it deals $s1% of the damage dealt to nearby enemies. Deals reduced damage beyond $455996s2 targets.
 
 Name             : Shattered Frost (id=455996) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Frost
 Spell Type       : Melee
@@ -23649,13 +23674,13 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .xx..... 
                  : ........ ........ .......x .....x..   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Can't Crit (93), Taps immediately (215), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Can't Crit (93), Always Line of Sight (185), Always AOE Line of Sight (186), Taps immediately (215), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1159888)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
