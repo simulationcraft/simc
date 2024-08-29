@@ -908,8 +908,92 @@ struct storm_earth_and_fire_fixate_t : public monk_spell_t
 template <class base_t>
 struct sef_action_t : base_t
 {
-  base_t *sef_fire_action;
-  base_t *sef_earth_action;
+  struct child_action_t : base_t
+  {
+    template <class Args>
+    child_action_t( Args &&...args ) : base_t( std::forward<Args>( args )... )
+    {
+      base_t::background = true;
+    }
+
+    bool from_caster_spells( const spelleffect_data_t *eff )
+    {
+      switch ( eff->subtype() )
+      {
+        case A_MOD_DAMAGE_FROM_CASTER:
+        case A_MOD_DAMAGE_FROM_CASTER_SPELLS:
+        case A_MOD_CRIT_CHANCE_FROM_CASTER:
+        case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS:
+        case A_MOD_AUTO_ATTACK_FROM_CASTER:
+        case A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS:
+        case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:
+          return true;
+      }
+      return false;
+    }
+
+    // TODO: How do I bypass `parse_effect` overrides?
+    double composite_player_multiplier( const action_state_t * ) const override
+    {
+      // Composite Player Multiplier is strictly school mods, which get skipped.
+      return 1.0;
+    }
+
+    double composite_crit_chance() const override
+    {
+      auto cc = PLACEHOLDER_T::composite_crit_chance();
+
+      for ( const auto &i : base_t::crit_chance_effects )
+        if ( !from_caster_spells( i.eff ) )
+          cc += base_t::get_effect_value( i );
+
+      return cc;
+    }
+
+    double composite_crit_damage_bonus_multiplier() const override
+    {
+      // Crit Damage Bonus Multipliers double dip.
+      auto cd = PLACEHOLDER_T::composite_crit_damage_bonus_multiplier() * *2 / 2.0;
+
+      return cd;
+    }
+
+    double composite_target_crit_damage_bonus_multiplier( player_t *target ) const override
+    {
+      auto cd = PLACEHOLDER_T::composite_target_crit_damage_bonus_multiplier( target );
+      auto td = base_t::p()->get_target_data( target );
+
+      for ( const auto &i : base_t::target_crit_bonus_effects )
+        if ( !from_caster_spells( i.eff ) )
+          cd *= 1.0 + base_t::get_effect_value( i, td );
+
+      return cd;
+    }
+
+    double composite_da_multiplier( const action_state_t *state ) const override
+    {
+      auto da = PLACEHOLDER_T::composite_da_multiplier( state );
+
+      for ( const auto &i : base_t::da_multiplier_effects )
+        if ( !from_caster_spells( i.eff ) )
+          da *= 1.0 + base_t::get_effect_value( i, false );
+
+      return da;
+    }
+
+    double composite_ta_multiplier( const action_state_t *state ) const override
+    {
+      auto ta = PLACEHOLDER_T::composite_ta_multiplier( state );
+
+      for ( const auto &i : base_t::ta_multiplier_effects )
+        if ( !from_caster_spells( i.eff ) )
+          ta *= 1.0 + base_t::get_effect_value( i, false );
+
+      return ta;
+    }
+  };
+  action_t *sef_fire_action;
+  action_t *sef_earth_action;
 
   // TODO: Target Fire/Earth actions
   /*
@@ -929,8 +1013,10 @@ struct sef_action_t : base_t
     if ( !player->talent.windwalker.storm_earth_and_fire->ok() )
       return;
 
-    sef_fire_action  = new base_t( player, name, std::forward<Args>( args )... );
-    sef_earth_action = new base_t( player, name, std::forward<Args>( args )... );
+    sef_fire_action  = new child_action_t( player, name, std::forward<Args>( args )... );
+    sef_earth_action = new child_action_t( player, name, std::forward<Args>( args )... );
+
+    // TODO: Set SEF actions as children of the parent SEF action for each elemental.
   }
 
   void execute() override
@@ -940,727 +1026,968 @@ struct sef_action_t : base_t
     sef_fire_action->execute_on_target( base_t::p()->target );
     sef_earth_action->execute_on_target( base_t::p()->target );
   }
-}
+};
 
 namespace attacks
 {
-  // ==========================================================================
-  // Windwalking Aura Toggle
-  // ==========================================================================
+// ==========================================================================
+// Windwalking Aura Toggle
+// ==========================================================================
 
-  struct windwalking_aura_t : public monk_spell_t
+struct windwalking_aura_t : public monk_spell_t
+{
+  windwalking_aura_t( monk_t *player ) : monk_spell_t( player, "windwalking_aura_toggle" )
   {
-    windwalking_aura_t( monk_t *player ) : monk_spell_t( player, "windwalking_aura_toggle" )
+    harmful     = false;
+    background  = true;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  size_t available_targets( std::vector<player_t *> &tl ) const override
+  {
+    tl.clear();
+
+    for ( auto t : sim->player_non_sleeping_list )
     {
-      harmful     = false;
-      background  = true;
-      trigger_gcd = timespan_t::zero();
+      tl.push_back( t );
     }
 
-    size_t available_targets( std::vector<player_t *> &tl ) const override
+    return tl.size();
+  }
+
+  std::vector<player_t *> &check_distance_targeting( std::vector<player_t *> &tl ) const override
+  {
+    size_t i = tl.size();
+    while ( i > 0 )
     {
-      tl.clear();
+      i--;
+      player_t *target_to_buff = tl[ i ];
 
-      for ( auto t : sim->player_non_sleeping_list )
-      {
-        tl.push_back( t );
-      }
-
-      return tl.size();
+      if ( p()->get_player_distance( *target_to_buff ) > 10.0 )
+        tl.erase( tl.begin() + i );
     }
 
-    std::vector<player_t *> &check_distance_targeting( std::vector<player_t *> &tl ) const override
+    return tl;
+  }
+};
+
+// ==========================================================================
+// Flurry Strikes
+// ==========================================================================
+struct flurry_strikes_t : public monk_melee_attack_t
+{
+  struct high_impact_t : public monk_spell_t
+  {
+    high_impact_t( monk_t *p )
+      : monk_spell_t( p, "high_impact", p->talent.shado_pan.high_impact_debuff->effectN( 1 ).trigger() )  // 451039
     {
-      size_t i = tl.size();
-      while ( i > 0 )
-      {
-        i--;
-        player_t *target_to_buff = tl[ i ];
-
-        if ( p()->get_player_distance( *target_to_buff ) > 10.0 )
-          tl.erase( tl.begin() + i );
-      }
-
-      return tl;
+      aoe        = -1;
+      background = dual = true;
     }
   };
 
-  // ==========================================================================
-  // Flurry Strikes
-  // ==========================================================================
-  struct flurry_strikes_t : public monk_melee_attack_t
+  struct flurry_strike_wisdom_t : public monk_spell_t
   {
-    struct high_impact_t : public monk_spell_t
+    flurry_strike_wisdom_t( monk_t *p )
+      : monk_spell_t( p, "flurry_strike_wisdom", p->talent.shado_pan.wisdom_of_the_wall_flurry )
     {
-      high_impact_t( monk_t *p )
-        : monk_spell_t( p, "high_impact", p->talent.shado_pan.high_impact_debuff->effectN( 1 ).trigger() )  // 451039
-      {
-        aoe        = -1;
-        background = dual = true;
-      }
+      aoe        = -1;
+      background = dual = true;
+
+      name_str_reporting = "flurry_strike_wisdom_of_the_wall";
+    }
+  };
+
+  struct flurry_strike_t : public monk_melee_attack_t
+  {
+    enum wisdom_buff_e
+    {
+      WISDOM_OF_THE_WALL_CRIT,
+      WISDOM_OF_THE_WALL_DODGE,
+      WISDOM_OF_THE_WALL_FLURRY,
+      WISDOM_OF_THE_WALL_MASTERY
     };
 
-    struct flurry_strike_wisdom_t : public monk_spell_t
+    int flurry_strikes_counter;
+    int flurry_strikes_threshold;
+    shuffled_rng_t *deck;
+    flurry_strike_wisdom_t *wisdom_flurry;
+
+    flurry_strike_t( monk_t *p )
+      : monk_melee_attack_t( p, "flurry_strike", p->talent.shado_pan.flurry_strikes_hit ),
+        flurry_strikes_counter( 0 ),
+        flurry_strikes_threshold( as<int>( p->talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value() ) ),
+        deck( p->get_shuffled_rng( "wisdom_of_the_wall", { { WISDOM_OF_THE_WALL_CRIT, 1 },
+                                                           { WISDOM_OF_THE_WALL_DODGE, 1 },
+                                                           { WISDOM_OF_THE_WALL_FLURRY, 1 },
+                                                           { WISDOM_OF_THE_WALL_MASTERY, 1 } } ) )
     {
-      flurry_strike_wisdom_t( monk_t *p )
-        : monk_spell_t( p, "flurry_strike_wisdom", p->talent.shado_pan.wisdom_of_the_wall_flurry )
-      {
-        aoe        = -1;
-        background = dual = true;
+      background = dual = true;
 
-        name_str_reporting = "flurry_strike_wisdom_of_the_wall";
-      }
-    };
+      apply_affecting_aura( p->talent.shado_pan.pride_of_pandaria );
 
-    struct flurry_strike_t : public monk_melee_attack_t
+      wisdom_flurry = new flurry_strike_wisdom_t( p );
+      add_child( wisdom_flurry );
+    }
+
+    void impact( action_state_t *s ) override
     {
-      enum wisdom_buff_e
+      monk_melee_attack_t::impact( s );
+
+      if ( p()->talent.shado_pan.wisdom_of_the_wall->ok() )
       {
-        WISDOM_OF_THE_WALL_CRIT,
-        WISDOM_OF_THE_WALL_DODGE,
-        WISDOM_OF_THE_WALL_FLURRY,
-        WISDOM_OF_THE_WALL_MASTERY
-      };
+        flurry_strikes_counter++;
 
-      int flurry_strikes_counter;
-      int flurry_strikes_threshold;
-      shuffled_rng_t *deck;
-      flurry_strike_wisdom_t *wisdom_flurry;
-
-      flurry_strike_t( monk_t *p )
-        : monk_melee_attack_t( p, "flurry_strike", p->talent.shado_pan.flurry_strikes_hit ),
-          flurry_strikes_counter( 0 ),
-          flurry_strikes_threshold( as<int>( p->talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value() ) ),
-          deck( p->get_shuffled_rng( "wisdom_of_the_wall", { { WISDOM_OF_THE_WALL_CRIT, 1 },
-                                                             { WISDOM_OF_THE_WALL_DODGE, 1 },
-                                                             { WISDOM_OF_THE_WALL_FLURRY, 1 },
-                                                             { WISDOM_OF_THE_WALL_MASTERY, 1 } } ) )
-      {
-        background = dual = true;
-
-        apply_affecting_aura( p->talent.shado_pan.pride_of_pandaria );
-
-        wisdom_flurry = new flurry_strike_wisdom_t( p );
-        add_child( wisdom_flurry );
-      }
-
-      void impact( action_state_t *s ) override
-      {
-        monk_melee_attack_t::impact( s );
-
-        if ( p()->talent.shado_pan.wisdom_of_the_wall->ok() )
+        if ( flurry_strikes_counter >= flurry_strikes_threshold )
         {
-          flurry_strikes_counter++;
+          flurry_strikes_counter -= flurry_strikes_threshold;
 
-          if ( flurry_strikes_counter >= flurry_strikes_threshold )
+          // Draw new card
+          const auto card = wisdom_buff_e( deck->trigger() );
+          switch ( card )
           {
-            flurry_strikes_counter -= flurry_strikes_threshold;
-
-            // Draw new card
-            const auto card = wisdom_buff_e( deck->trigger() );
-            switch ( card )
-            {
-              case WISDOM_OF_THE_WALL_CRIT:
-                p()->buff.wisdom_of_the_wall_crit->trigger();
-                break;
-              case WISDOM_OF_THE_WALL_DODGE:
-                p()->buff.wisdom_of_the_wall_dodge->trigger();
-                break;
-              case WISDOM_OF_THE_WALL_FLURRY:
-                p()->buff.wisdom_of_the_wall_flurry->trigger();
-                break;
-              case WISDOM_OF_THE_WALL_MASTERY:
-                p()->buff.wisdom_of_the_wall_mastery->trigger();
-                break;
-              default:
-                break;
-            }
+            case WISDOM_OF_THE_WALL_CRIT:
+              p()->buff.wisdom_of_the_wall_crit->trigger();
+              break;
+            case WISDOM_OF_THE_WALL_DODGE:
+              p()->buff.wisdom_of_the_wall_dodge->trigger();
+              break;
+            case WISDOM_OF_THE_WALL_FLURRY:
+              p()->buff.wisdom_of_the_wall_flurry->trigger();
+              break;
+            case WISDOM_OF_THE_WALL_MASTERY:
+              p()->buff.wisdom_of_the_wall_mastery->trigger();
+              break;
+            default:
+              break;
           }
         }
-
-        p()->buff.against_all_odds->trigger();
-
-        if ( auto target_data = p()->get_target_data( s->target ); target_data )
-          target_data->debuff.high_impact->trigger();
-
-        if ( p()->buff.wisdom_of_the_wall_flurry->up() )
-        {
-          wisdom_flurry->set_target( s->target );
-          wisdom_flurry->execute();
-        }
       }
-    };
 
-    flurry_strike_t *strike;
-    high_impact_t *high_impact;
+      p()->buff.against_all_odds->trigger();
 
-    flurry_strikes_t( monk_t *p ) : monk_melee_attack_t( p, "flurry_strikes", p->talent.shado_pan.flurry_strikes )
-    {
-      strike = new flurry_strike_t( p );
-      add_child( strike );
+      if ( auto target_data = p()->get_target_data( s->target ); target_data )
+        target_data->debuff.high_impact->trigger();
 
-      if ( !p->talent.shado_pan.high_impact->ok() )
-        return;
-
-      high_impact = new high_impact_t( p );
-      add_child( high_impact );
-      p->register_on_kill_callback( [ this, p ]( player_t *target ) {
-        if ( p->sim->event_mgr.canceled )
-          return;
-
-        if ( auto target_data = p->get_target_data( target ); target_data && target_data->debuff.high_impact->up() )
-          high_impact->execute_on_target( target );
-      } );
-    }
-
-    void execute() override
-    {
-      // 150ms of delay between executes has been observed, with some small amount of jitter
-      if ( p()->buff.flurry_charge->up() )
-        for ( int charge = 1; charge <= p()->buff.flurry_charge->stack(); charge++ )
-          make_event<events::delayed_execute_event_t>( *sim, p(), strike, p()->target, charge * 150_ms );
-
-      p()->buff.flurry_charge->expire();
-      p()->buff.vigilant_watch->expire();
+      if ( p()->buff.wisdom_of_the_wall_flurry->up() )
+      {
+        wisdom_flurry->set_target( s->target );
+        wisdom_flurry->execute();
+      }
     }
   };
 
-  // ==========================================================================
-  // Overwhelming Force
-  // ==========================================================================
+  flurry_strike_t *strike;
+  high_impact_t *high_impact;
 
-  template <class base_action_t>
-  struct overwhelming_force_t : base_action_t
+  flurry_strikes_t( monk_t *p ) : monk_melee_attack_t( p, "flurry_strikes", p->talent.shado_pan.flurry_strikes )
   {
-    using base_t = overwhelming_force_t<base_action_t>;
-    struct damage_t : monk_spell_t
-    {
-      damage_t( monk_t *player, std::string_view name )
-        : monk_spell_t( player, fmt::format( "overwhelming_force_{}", name ),
-                        player->talent.master_of_harmony.overwhelming_force_damage )
-      {
-        background = dual = proc = true;
-        base_multiplier          = player->talent.master_of_harmony.overwhelming_force->effectN( 1 ).percent();
-        reduced_aoe_targets      = player->talent.master_of_harmony.overwhelming_force->effectN( 2 ).base_value();
-      }
+    strike = new flurry_strike_t( p );
+    add_child( strike );
 
-      void init() override
-      {
-        monk_spell_t::init();
-        update_flags = snapshot_flags &= STATE_NO_MULTIPLIER | STATE_MUL_SPELL_DA;
-      }
-    };
+    if ( !p->talent.shado_pan.high_impact->ok() )
+      return;
 
-    damage_t *overwhelming_force_damage;
-
-    template <typename... Args>
-    overwhelming_force_t( monk_t *player, Args &&...args )
-      : base_action_t( player, std::forward<Args>( args )... ), overwhelming_force_damage( nullptr )
-    {
-      if ( !player->talent.master_of_harmony.overwhelming_force->ok() )
+    high_impact = new high_impact_t( p );
+    add_child( high_impact );
+    p->register_on_kill_callback( [ this, p ]( player_t *target ) {
+      if ( p->sim->event_mgr.canceled )
         return;
 
-      overwhelming_force_damage = new damage_t( player, base_action_t::name_str );
-      base_action_t::add_child( overwhelming_force_damage );
+      if ( auto target_data = p->get_target_data( target ); target_data && target_data->debuff.high_impact->up() )
+        high_impact->execute_on_target( target );
+    } );
+  }
+
+  void execute() override
+  {
+    // 150ms of delay between executes has been observed, with some small amount of jitter
+    if ( p()->buff.flurry_charge->up() )
+      for ( int charge = 1; charge <= p()->buff.flurry_charge->stack(); charge++ )
+        make_event<events::delayed_execute_event_t>( *sim, p(), strike, p()->target, charge * 150_ms );
+
+    p()->buff.flurry_charge->expire();
+    p()->buff.vigilant_watch->expire();
+  }
+};
+
+// ==========================================================================
+// Overwhelming Force
+// ==========================================================================
+
+template <class base_action_t>
+struct overwhelming_force_t : base_action_t
+{
+  using base_t = overwhelming_force_t<base_action_t>;
+  struct damage_t : monk_spell_t
+  {
+    damage_t( monk_t *player, std::string_view name )
+      : monk_spell_t( player, fmt::format( "overwhelming_force_{}", name ),
+                      player->talent.master_of_harmony.overwhelming_force_damage )
+    {
+      background = dual = proc = true;
+      base_multiplier          = player->talent.master_of_harmony.overwhelming_force->effectN( 1 ).percent();
+      reduced_aoe_targets      = player->talent.master_of_harmony.overwhelming_force->effectN( 2 ).base_value();
     }
 
-    void impact( action_state_t *state ) override
+    void init() override
     {
-      base_action_t::impact( state );
-
-      if ( !base_action_t::p()->talent.master_of_harmony.overwhelming_force->ok() || state->chain_target > 0 )
-        return;
-
-      /*
-       * If the triggering hit is a crit, the damage is divided by the crit bonus
-       * multiplier, and then multiplied by 2.0 (or the context base crit bonus?)
-       *
-       * E.g.
-       * Base Damage (Crit) 64286, Crit Bonus Multiplier 2.02
-       * Base Damage (Pre-Crit) 64286 / 2.02 ~ 31825
-       * Overwhelming Force Damage 31825 * 0.15 * 2 = ~9547
-       */
-      double amount = state->result_amount;
-      if ( state->result == RESULT_CRIT && base_action_t::p()->bugs )
-      {
-        amount /= 1.0 + state->result_crit_bonus;
-        amount *= 2.0;
-      }
-      overwhelming_force_damage->base_dd_min = overwhelming_force_damage->base_dd_max = amount;
-      overwhelming_force_damage->execute();
+      monk_spell_t::init();
+      update_flags = snapshot_flags &= STATE_NO_MULTIPLIER | STATE_MUL_SPELL_DA;
     }
   };
 
-  // ==========================================================================
-  // Tiger Palm
-  // ==========================================================================
+  damage_t *overwhelming_force_damage;
 
-  // Tiger's Ferocity ( Windwalker TWW1 4PC )
-  struct tigers_ferocity_t : public monk_melee_attack_t
+  template <typename... Args>
+  overwhelming_force_t( monk_t *player, Args &&...args )
+    : base_action_t( player, std::forward<Args>( args )... ), overwhelming_force_damage( nullptr )
   {
-    std::vector<player_t *> &t_list;
+    if ( !player->talent.master_of_harmony.overwhelming_force->ok() )
+      return;
 
-    tigers_ferocity_t( monk_t *p )
-      : monk_melee_attack_t( p, "tigers_ferocity", p->tier.tww1.ww_4pc_dmg ), t_list( target_cache.list )
+    overwhelming_force_damage = new damage_t( player, base_action_t::name_str );
+    base_action_t::add_child( overwhelming_force_damage );
+  }
+
+  void impact( action_state_t *state ) override
+  {
+    base_action_t::impact( state );
+
+    if ( !base_action_t::p()->talent.master_of_harmony.overwhelming_force->ok() || state->chain_target > 0 )
+      return;
+
+    /*
+     * If the triggering hit is a crit, the damage is divided by the crit bonus
+     * multiplier, and then multiplied by 2.0 (or the context base crit bonus?)
+     *
+     * E.g.
+     * Base Damage (Crit) 64286, Crit Bonus Multiplier 2.02
+     * Base Damage (Pre-Crit) 64286 / 2.02 ~ 31825
+     * Overwhelming Force Damage 31825 * 0.15 * 2 = ~9547
+     */
+    double amount = state->result_amount;
+    if ( state->result == RESULT_CRIT && base_action_t::p()->bugs )
     {
-      background = dual   = true;
-      aoe                 = -1;
-      reduced_aoe_targets = p->tier.tww1.ww_4pc->effectN( 2 ).base_value();
+      amount /= 1.0 + state->result_crit_bonus;
+      amount *= 2.0;
+    }
+    overwhelming_force_damage->base_dd_min = overwhelming_force_damage->base_dd_max = amount;
+    overwhelming_force_damage->execute();
+  }
+};
+
+// ==========================================================================
+// Tiger Palm
+// ==========================================================================
+
+// Tiger's Ferocity ( Windwalker TWW1 4PC )
+struct tigers_ferocity_t : public monk_melee_attack_t
+{
+  std::vector<player_t *> &t_list;
+
+  tigers_ferocity_t( monk_t *p )
+    : monk_melee_attack_t( p, "tigers_ferocity", p->tier.tww1.ww_4pc_dmg ), t_list( target_cache.list )
+  {
+    background = dual   = true;
+    aoe                 = -1;
+    reduced_aoe_targets = p->tier.tww1.ww_4pc->effectN( 2 ).base_value();
+  }
+
+  std::vector<player_t *> &target_list() const override
+  {
+    // The player's target is not hit by this ability so we need to modify the target list.
+    t_list = base_t::target_list();
+    t_list.erase( std::remove( t_list.begin(), t_list.end(), player->target ), t_list.end() );
+    return t_list;
+  }
+};
+
+// Tiger Palm base ability ===================================================
+struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
+{
+  bool face_palm;
+  action_t *tigers_ferocity;
+
+  tiger_palm_t( monk_t *p, util::string_view options_str )
+    : base_t( p, "tiger_palm", p->baseline.monk.tiger_palm ), face_palm( false )
+  {
+    parse_options( options_str );
+
+    // allow Darting Hurricane to reduce GCD all the way down to 500ms
+    min_gcd          = 500_ms;
+    ww_mastery       = true;
+    may_combo_strike = true;
+    trigger_chiji    = true;
+    sef_ability      = actions::sef_ability_e::SEF_TIGER_PALM;
+    cast_during_sck  = player->specialization() != MONK_WINDWALKER;
+
+    if ( p->specialization() == MONK_WINDWALKER )
+      energize_amount = p->baseline.windwalker.aura->effectN( 4 ).base_value();
+    else
+      energize_type = action_energize::NONE;
+
+    spell_power_mod.direct = 0.0;
+
+    apply_affecting_aura( p->talent.windwalker.touch_of_the_tiger );
+    apply_affecting_aura( p->talent.windwalker.inner_peace );
+
+    if ( const auto &effect = p->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ & ] { return face_palm; } )
+          .set_value( effect.percent() - 1.0 )
+          .set_eff( &effect );
+    parse_effects( p->buff.combat_wisdom );
+    parse_effects( p->buff.martial_mixture );
+    parse_effects( p->buff.darting_hurricane );
+
+    if ( p->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
+    {
+      tigers_ferocity = new tigers_ferocity_t( p );
+      add_child( tigers_ferocity );
+    }
+  }
+
+  bool ready() override
+  {
+    if ( p()->talent.brewmaster.press_the_advantage->ok() )
+      return false;
+    return monk_melee_attack_t::ready();
+  }
+
+  void execute() override
+  {
+    //============
+    // Pre-Execute
+    //============
+
+    if ( ( face_palm = rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) )
+      p()->proc.face_palm->occur();
+
+    if ( p()->buff.blackout_combo->up() )
+      p()->proc.blackout_combo_tiger_palm->occur();
+
+    if ( p()->buff.counterstrike->up() )
+      p()->proc.counterstrike_tp->occur();
+
+    //------------
+
+    monk_melee_attack_t::execute();
+
+    p()->buff.blackout_combo->expire();
+
+    if ( result_is_miss( execute_state->result ) )
+      return;
+
+    //-----------
+
+    //============
+    // Post-hit
+    //============
+
+    p()->buff.teachings_of_the_monastery->trigger();
+
+    // Combo Breaker calculation
+    if ( p()->baseline.windwalker.combo_breaker->ok() && p()->buff.bok_proc->trigger() &&
+         p()->buff.storm_earth_and_fire->up() )
+    {
+      p()->trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e::SEF_FIRE );
+      p()->trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e::SEF_EARTH );
     }
 
-    std::vector<player_t *> &target_list() const override
-    {
-      // The player's target is not hit by this ability so we need to modify the target list.
-      t_list = base_t::target_list();
-      t_list.erase( std::remove( t_list.begin(), t_list.end(), player->target ), t_list.end() );
-      return t_list;
-    }
-  };
+    // Reduces the remaining cooldown on your Brews by 1 sec
+    p()->baseline.brewmaster.brews.adjust(
+        timespan_t::from_seconds( p()->baseline.monk.tiger_palm->effectN( 3 ).base_value() ) );
 
-  // Tiger Palm base ability ===================================================
-  struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
+    if ( face_palm && !p()->bugs )
+      p()->baseline.brewmaster.brews.adjust( p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
+
+    if ( p()->buff.combat_wisdom->up() )
+    {
+      p()->passive_actions.combat_wisdom_eh->execute();
+      p()->buff.combat_wisdom->expire();
+    }
+
+    p()->buff.darting_hurricane->decrement();
+
+    // T33 Windwalker Set Bonus
+    p()->buff.tiger_strikes->trigger();
+    p()->buff.tigers_ferocity->expire();
+
+    p()->buff.martial_mixture->expire();
+  }
+
+  void impact( action_state_t *s ) override
   {
+    monk_melee_attack_t::impact( s );
+
+    // Apply Mark of the Crane
+    p()->trigger_mark_of_the_crane( s );
+
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
+    {
+      double damage = s->result_amount;
+
+      if ( p()->buff.storm_earth_and_fire->up() )
+      {
+        // Damage during SEF is based on the actor's damage before the SEF modifier.
+        damage /= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() );
+
+        // Tested 09/08/2024. Tiger's Ferocity deals additional damage during SEF.
+        damage *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
+      }
+
+      damage *= p()->tier.tww1.ww_4pc->effectN( 1 ).percent();
+
+      tigers_ferocity->base_dd_min = tigers_ferocity->base_dd_max = damage;
+      tigers_ferocity->execute_on_target( s->target );
+    }
+  }
+};
+
+// ==========================================================================
+// Rising Sun Kick
+// ==========================================================================
+
+// Glory of the Dawn =================================================
+struct glory_of_the_dawn_t : public monk_melee_attack_t
+{
+  glory_of_the_dawn_t( monk_t *p, const std::string &name )
+    : monk_melee_attack_t( p, name, p->passives.glory_of_the_dawn_damage )
+  {
+    background  = true;
+    ww_mastery  = true;
+    sef_ability = actions::sef_ability_e::SEF_GLORY_OF_THE_DAWN;
+
+    apply_affecting_aura( p->talent.windwalker.rising_star );
+  }
+
+  void impact( action_state_t *s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( p()->talent.windwalker.acclamation.ok() )
+      get_td( s->target )->debuff.acclamation->trigger();
+
+    if ( p()->talent.windwalker.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
+    {
+      p()->cooldown.fists_of_fury->adjust( -1 * p()->talent.windwalker.xuens_battlegear->effectN( 2 ).time_value(),
+                                           true );
+      p()->proc.xuens_battlegear_reduction->occur();
+    }
+  }
+};
+
+// Rising Sun Kick Damage Trigger ===========================================
+
+template <class base_action_t>
+struct press_the_advantage_t : base_action_t
+{
+  using base_t = press_the_advantage_t<base_action_t>;
+  struct damage_t : base_action_t
+  {
+    const double mod;
     bool face_palm;
-    action_t *tigers_ferocity;
 
-    tiger_palm_t( monk_t *p, util::string_view options_str )
-      : base_t( p, "tiger_palm", p->baseline.monk.tiger_palm ), face_palm( false )
+    damage_t( monk_t *player, std::string_view name )
+      : base_action_t( player, {}, name ),
+        mod( 1.0 - player->talent.brewmaster.press_the_advantage->effectN( 3 ).percent() ),
+        face_palm( false )
     {
-      parse_options( options_str );
+      base_action_t::proc        = true;
+      base_action_t::trigger_gcd = 0_s;
+      base_action_t::background  = true;
+      base_action_t::dual        = true;
 
-      // allow Darting Hurricane to reduce GCD all the way down to 500ms
-      min_gcd          = 500_ms;
-      ww_mastery       = true;
-      may_combo_strike = true;
-      trigger_chiji    = true;
-      sef_ability      = actions::sef_ability_e::SEF_TIGER_PALM;
-      cast_during_sck  = player->specialization() != MONK_WINDWALKER;
+      base_action_t::parse_effects( player->buff.counterstrike,
+                                    affect_list_t( 1 ).add_spell( base_action_t::data().id() ),
+                                    player->buff.counterstrike->data().effectN( 1 ).percent() * mod );
+      base_action_t::parse_effects( player->buff.blackout_combo,
+                                    affect_list_t( 1 ).add_spell( base_action_t::data().id() ),
+                                    player->buff.blackout_combo->data().effectN( 1 ).percent() * mod );
 
-      if ( p->specialization() == MONK_WINDWALKER )
-        energize_amount = p->baseline.windwalker.aura->effectN( 4 ).base_value();
-      else
-        energize_type = action_energize::NONE;
-
-      spell_power_mod.direct = 0.0;
-
-      apply_affecting_aura( p->talent.windwalker.touch_of_the_tiger );
-      apply_affecting_aura( p->talent.windwalker.inner_peace );
-
-      if ( const auto &effect = p->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() )
-        add_parse_entry( da_multiplier_effects )
+      // effect must still be rolled in execute so it triggers brew cdr
+      if ( const auto &effect = player->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() )
+        add_parse_entry( base_action_t::da_multiplier_effects )
             .set_func( [ & ] { return face_palm; } )
-            .set_value( effect.percent() - 1.0 )
+            .set_value( ( effect.percent() - 1.0 ) * mod )
             .set_eff( &effect );
-      parse_effects( p->buff.combat_wisdom );
-      parse_effects( p->buff.martial_mixture );
-      parse_effects( p->buff.darting_hurricane );
-
-      if ( p->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-      {
-        tigers_ferocity = new tigers_ferocity_t( p );
-        add_child( tigers_ferocity );
-      }
-    }
-
-    bool ready() override
-    {
-      if ( p()->talent.brewmaster.press_the_advantage->ok() )
-        return false;
-      return monk_melee_attack_t::ready();
-    }
-
-    void execute() override
-    {
-      //============
-      // Pre-Execute
-      //============
-
-      if ( ( face_palm = rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) )
-        p()->proc.face_palm->occur();
-
-      if ( p()->buff.blackout_combo->up() )
-        p()->proc.blackout_combo_tiger_palm->occur();
-
-      if ( p()->buff.counterstrike->up() )
-        p()->proc.counterstrike_tp->occur();
-
-      //------------
-
-      monk_melee_attack_t::execute();
-
-      p()->buff.blackout_combo->expire();
-
-      if ( result_is_miss( execute_state->result ) )
-        return;
-
-      //-----------
-
-      //============
-      // Post-hit
-      //============
-
-      p()->buff.teachings_of_the_monastery->trigger();
-
-      // Combo Breaker calculation
-      if ( p()->baseline.windwalker.combo_breaker->ok() && p()->buff.bok_proc->trigger() &&
-           p()->buff.storm_earth_and_fire->up() )
-      {
-        p()->trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e::SEF_FIRE );
-        p()->trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e::SEF_EARTH );
-      }
-
-      // Reduces the remaining cooldown on your Brews by 1 sec
-      p()->baseline.brewmaster.brews.adjust(
-          timespan_t::from_seconds( p()->baseline.monk.tiger_palm->effectN( 3 ).base_value() ) );
-
-      if ( face_palm && !p()->bugs )
-        p()->baseline.brewmaster.brews.adjust( p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
-
-      if ( p()->buff.combat_wisdom->up() )
-      {
-        p()->passive_actions.combat_wisdom_eh->execute();
-        p()->buff.combat_wisdom->expire();
-      }
-
-      p()->buff.darting_hurricane->decrement();
-
-      // T33 Windwalker Set Bonus
-      p()->buff.tiger_strikes->trigger();
-      p()->buff.tigers_ferocity->expire();
-
-      p()->buff.martial_mixture->expire();
-    }
-
-    void impact( action_state_t *s ) override
-    {
-      monk_melee_attack_t::impact( s );
-
-      // Apply Mark of the Crane
-      p()->trigger_mark_of_the_crane( s );
-
-      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
-      {
-        double damage = s->result_amount;
-
-        if ( p()->buff.storm_earth_and_fire->up() )
-        {
-          // Damage during SEF is based on the actor's damage before the SEF modifier.
-          damage /= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() );
-
-          // Tested 09/08/2024. Tiger's Ferocity deals additional damage during SEF.
-          damage *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
-        }
-
-        damage *= p()->tier.tww1.ww_4pc->effectN( 1 ).percent();
-
-        tigers_ferocity->base_dd_min = tigers_ferocity->base_dd_max = damage;
-        tigers_ferocity->execute_on_target( s->target );
-      }
-    }
-  };
-
-  // ==========================================================================
-  // Rising Sun Kick
-  // ==========================================================================
-
-  // Glory of the Dawn =================================================
-  struct glory_of_the_dawn_t : public monk_melee_attack_t
-  {
-    glory_of_the_dawn_t( monk_t *p, const std::string &name )
-      : monk_melee_attack_t( p, name, p->passives.glory_of_the_dawn_damage )
-    {
-      background  = true;
-      ww_mastery  = true;
-      sef_ability = actions::sef_ability_e::SEF_GLORY_OF_THE_DAWN;
-
-      apply_affecting_aura( p->talent.windwalker.rising_star );
-    }
-
-    void impact( action_state_t *s ) override
-    {
-      monk_melee_attack_t::impact( s );
-
-      if ( p()->talent.windwalker.acclamation.ok() )
-        get_td( s->target )->debuff.acclamation->trigger();
-
-      if ( p()->talent.windwalker.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
-      {
-        p()->cooldown.fists_of_fury->adjust( -1 * p()->talent.windwalker.xuens_battlegear->effectN( 2 ).time_value(),
-                                             true );
-        p()->proc.xuens_battlegear_reduction->occur();
-      }
-    }
-  };
-
-  // Rising Sun Kick Damage Trigger ===========================================
-
-  template <class base_action_t>
-  struct press_the_advantage_t : base_action_t
-  {
-    using base_t = press_the_advantage_t<base_action_t>;
-    struct damage_t : base_action_t
-    {
-      const double mod;
-      bool face_palm;
-
-      damage_t( monk_t *player, std::string_view name )
-        : base_action_t( player, {}, name ),
-          mod( 1.0 - player->talent.brewmaster.press_the_advantage->effectN( 3 ).percent() ),
-          face_palm( false )
-      {
-        base_action_t::proc        = true;
-        base_action_t::trigger_gcd = 0_s;
-        base_action_t::background  = true;
-        base_action_t::dual        = true;
-
-        base_action_t::parse_effects( player->buff.counterstrike,
-                                      affect_list_t( 1 ).add_spell( base_action_t::data().id() ),
-                                      player->buff.counterstrike->data().effectN( 1 ).percent() * mod );
-        base_action_t::parse_effects( player->buff.blackout_combo,
-                                      affect_list_t( 1 ).add_spell( base_action_t::data().id() ),
-                                      player->buff.blackout_combo->data().effectN( 1 ).percent() * mod );
-
-        // effect must still be rolled in execute so it triggers brew cdr
-        if ( const auto &effect = player->talent.brewmaster.face_palm->effectN( 2 ); effect.ok() )
-          add_parse_entry( base_action_t::da_multiplier_effects )
-              .set_func( [ & ] { return face_palm; } )
-              .set_value( ( effect.percent() - 1.0 ) * mod )
-              .set_eff( &effect );
-      }
-
-      void init_finished() override
-      {
-        base_action_t::init_finished();
-
-        if ( action_t *pta = base_action_t::p()->find_action( "press_the_advantage" );
-             pta && base_action_t::p()->talent.brewmaster.press_the_advantage->ok() )
-          pta->add_child( this );
-      }
-
-      void execute() override
-      {
-        base_action_t::p()->buff.press_the_advantage->expire();
-
-        if ( ( face_palm = base_action_t::rng().roll(
-                   base_action_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) &&
-             !base_action_t::p()->bugs )
-        {
-          base_action_t::p()->proc.face_palm->occur();
-          base_action_t::p()->baseline.brewmaster.brews.adjust(
-              base_action_t::p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
-        }
-
-        base_action_t::execute();
-
-        base_action_t::p()->buff.blackout_combo->expire();
-
-        if ( base_action_t::p()->talent.brewmaster.chi_surge->ok() )
-          base_action_t::p()->active_actions.chi_surge->execute();
-
-        if ( base_action_t::p()->talent.brewmaster.call_to_arms->ok() && base_action_t::rng().roll( 0.3 ) )
-          base_action_t::p()->active_actions.niuzao_call_to_arms_summon->execute();
-      }
-    };
-
-    propagate_const<damage_t *> press_the_advantage_action;
-    propagate_const<proc_t *> press_the_advantage_proc;
-
-    template <typename... Args>
-    press_the_advantage_t( monk_t *player, Args &&...args )
-      : base_action_t( player, std::forward<Args>( args )... ), press_the_advantage_action( nullptr )
-    {
-      if ( !player->talent.brewmaster.press_the_advantage->ok() )
-        return;
-
-      press_the_advantage_action =
-          new damage_t( player, fmt::format( "{}_press_the_advantage", base_action_t::name_str ) );
-      press_the_advantage_proc = player->get_proc( fmt::format( "{} - Press The Advantage", base_action_t::name_str ) );
-    }
-
-    void impact( action_state_t *state ) override
-    {
-      base_action_t::impact( state );
-
-      if ( base_action_t::p()->buff.press_the_advantage->stack() != 10 )
-        return;
-
-      // TODO: Schedule execute with the appropriate delay.
-      base_action_t::p()->buff.press_the_advantage->expire();
-      press_the_advantage_proc->occur();
-      press_the_advantage_action->execute();
-    }
-  };
-
-  struct rising_sun_kick_dmg_t : public overwhelming_force_t<monk_melee_attack_t>
-  {
-    rising_sun_kick_dmg_t( monk_t *p, std::string_view /* options_str */,
-                           std::string_view name = "rising_sun_kick_damage" )
-      : base_t( p, name, p->talent.monk.rising_sun_kick->effectN( 1 ).trigger() )
-    {
-      ww_mastery = true;
-
-      if ( p->specialization() == MONK_WINDWALKER )
-        ap_type = attack_power_type::WEAPON_BOTH;
-
-      background = dual = true;
-      may_crit          = true;
-      trigger_chiji     = true;
-
-      apply_affecting_aura( p->talent.windwalker.rising_star );
-    }
-
-    void execute() override
-    {
-      base_t::execute();
-
-      if ( p()->buff.thunder_focus_tea->up() )
-      {
-        p()->cooldown.rising_sun_kick->adjust( p()->talent.mistweaver.thunder_focus_tea->effectN( 1 ).time_value(),
-                                               true );
-
-        p()->buff.thunder_focus_tea->decrement();
-      }
-
-      if ( p()->talent.brewmaster.strike_at_dawn->ok() )
-        p()->buff.elusive_brawler->trigger();
-
-      if ( p()->talent.brewmaster.black_ox_adept->ok() )
-        p()->buff.ox_stance->trigger();
-
-      // Brewmaster RSK also applies the WoO debuff.
-      if ( p()->buff.weapons_of_order->up() )
-        for ( const auto &target : target_list() )
-          get_td( target )->debuff.weapons_of_order->trigger();
-    }
-
-    void impact( action_state_t *s ) override
-    {
-      base_t::impact( s );
-
-      p()->buff.transfer_the_power->trigger();
-
-      if ( p()->talent.windwalker.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
-      {
-        p()->cooldown.fists_of_fury->adjust( -1 * p()->talent.windwalker.xuens_battlegear->effectN( 2 ).time_value(),
-                                             true );
-        p()->proc.xuens_battlegear_reduction->occur();
-      }
-
-      if ( p()->baseline.windwalker.combat_conditioning->ok() )
-        s->target->debuffs.mortal_wounds->trigger();
-
-      // Apply Mark of the Crane
-      p()->trigger_mark_of_the_crane( s );
-
-      if ( p()->talent.windwalker.acclamation.ok() )
-        get_td( s->target )->debuff.acclamation->trigger();
-    }
-  };
-
-  struct rising_sun_kick_t : public monk_melee_attack_t
-  {
-    glory_of_the_dawn_t *gotd;
-
-    rising_sun_kick_t( monk_t *p, util::string_view options_str )
-      : monk_melee_attack_t( p, "rising_sun_kick", p->talent.monk.rising_sun_kick )
-    {
-      parse_options( options_str );
-
-      may_combo_strike = true;
-      sef_ability      = actions::sef_ability_e::SEF_RISING_SUN_KICK;
-      ap_type          = attack_power_type::NONE;
-      cast_during_sck  = player->specialization() != MONK_WINDWALKER;
-
-      attack_power_mod.direct = 0;
-
-      execute_action        = new press_the_advantage_t<rising_sun_kick_dmg_t>( p, options_str );
-      execute_action->stats = stats;
-
-      if ( p->talent.windwalker.glory_of_the_dawn->ok() )
-      {
-        gotd = new glory_of_the_dawn_t( p, "glory_of_the_dawn" );
-        add_child( gotd );
-      }
-    }
-
-    void execute() override
-    {
-      monk_melee_attack_t::execute();
-
-      // TODO: Is this the correct way to get character sheet haste %?
-      auto gotd_chance = p()->talent.windwalker.glory_of_the_dawn->effectN( 2 ).percent() *
-                         ( ( 1.0 / p()->composite_spell_haste() ) - 1.0 );
-
-      if ( rng().roll( gotd_chance ) )
-        gotd->execute_on_target( this->target );
-
-      p()->buff.whirling_dragon_punch->trigger();
-
-      p()->active_actions.chi_wave->execute();
-
-      if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
-        p()->buff.ordered_elements->trigger();
-
-      p()->buff.tigers_ferocity->trigger();
-
-      p()->buff.august_dynasty->expire();
-    }
-  };
-
-  // ==========================================================================
-  // Blackout Kick
-  // ==========================================================================
-
-  // Blackout Kick Proc from Teachings of the Monastery =======================
-  struct blackout_kick_totm_proc_t : public monk_melee_attack_t
-  {
-    blackout_kick_totm_proc_t( monk_t *p )
-      : monk_melee_attack_t( p, "blackout_kick_totm_proc",
-                             p->talent.windwalker.teachings_of_the_monastery_blackout_kick )
-    {
-      sef_ability        = actions::sef_ability_e::SEF_BLACKOUT_KICK_TOTM;
-      ww_mastery         = false;
-      cooldown->duration = timespan_t::zero();
-      background = dual = true;
-      trigger_chiji     = true;
-      trigger_gcd       = timespan_t::zero();
     }
 
     void init_finished() override
     {
-      monk_melee_attack_t::init_finished();
-      action_t *bok = player->find_action( "blackout_kick" );
-      if ( bok )
+      base_action_t::init_finished();
+
+      if ( action_t *pta = base_action_t::p()->find_action( "press_the_advantage" );
+           pta && base_action_t::p()->talent.brewmaster.press_the_advantage->ok() )
+        pta->add_child( this );
+    }
+
+    void execute() override
+    {
+      base_action_t::p()->buff.press_the_advantage->expire();
+
+      if ( ( face_palm = base_action_t::rng().roll(
+                 base_action_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) &&
+           !base_action_t::p()->bugs )
       {
-        attack_power_mod = bok->attack_power_mod;
-        bok->add_child( this );
+        base_action_t::p()->proc.face_palm->occur();
+        base_action_t::p()->baseline.brewmaster.brews.adjust(
+            base_action_t::p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
       }
+
+      base_action_t::execute();
+
+      base_action_t::p()->buff.blackout_combo->expire();
+
+      if ( base_action_t::p()->talent.brewmaster.chi_surge->ok() )
+        base_action_t::p()->active_actions.chi_surge->execute();
+
+      if ( base_action_t::p()->talent.brewmaster.call_to_arms->ok() && base_action_t::rng().roll( 0.3 ) )
+        base_action_t::p()->active_actions.niuzao_call_to_arms_summon->execute();
+    }
+  };
+
+  propagate_const<damage_t *> press_the_advantage_action;
+  propagate_const<proc_t *> press_the_advantage_proc;
+
+  template <typename... Args>
+  press_the_advantage_t( monk_t *player, Args &&...args )
+    : base_action_t( player, std::forward<Args>( args )... ), press_the_advantage_action( nullptr )
+  {
+    if ( !player->talent.brewmaster.press_the_advantage->ok() )
+      return;
+
+    press_the_advantage_action =
+        new damage_t( player, fmt::format( "{}_press_the_advantage", base_action_t::name_str ) );
+    press_the_advantage_proc = player->get_proc( fmt::format( "{} - Press The Advantage", base_action_t::name_str ) );
+  }
+
+  void impact( action_state_t *state ) override
+  {
+    base_action_t::impact( state );
+
+    if ( base_action_t::p()->buff.press_the_advantage->stack() != 10 )
+      return;
+
+    // TODO: Schedule execute with the appropriate delay.
+    base_action_t::p()->buff.press_the_advantage->expire();
+    press_the_advantage_proc->occur();
+    press_the_advantage_action->execute();
+  }
+};
+
+struct rising_sun_kick_dmg_t : public overwhelming_force_t<monk_melee_attack_t>
+{
+  rising_sun_kick_dmg_t( monk_t *p, std::string_view /* options_str */,
+                         std::string_view name = "rising_sun_kick_damage" )
+    : base_t( p, name, p->talent.monk.rising_sun_kick->effectN( 1 ).trigger() )
+  {
+    ww_mastery = true;
+
+    if ( p->specialization() == MONK_WINDWALKER )
+      ap_type = attack_power_type::WEAPON_BOTH;
+
+    background = dual = true;
+    may_crit          = true;
+    trigger_chiji     = true;
+
+    apply_affecting_aura( p->talent.windwalker.rising_star );
+  }
+
+  void execute() override
+  {
+    base_t::execute();
+
+    if ( p()->buff.thunder_focus_tea->up() )
+    {
+      p()->cooldown.rising_sun_kick->adjust( p()->talent.mistweaver.thunder_focus_tea->effectN( 1 ).time_value(),
+                                             true );
+
+      p()->buff.thunder_focus_tea->decrement();
     }
 
-    double composite_target_multiplier( player_t *target ) const override
+    if ( p()->talent.brewmaster.strike_at_dawn->ok() )
+      p()->buff.elusive_brawler->trigger();
+
+    if ( p()->talent.brewmaster.black_ox_adept->ok() )
+      p()->buff.ox_stance->trigger();
+
+    // Brewmaster RSK also applies the WoO debuff.
+    if ( p()->buff.weapons_of_order->up() )
+      for ( const auto &target : target_list() )
+        get_td( target )->debuff.weapons_of_order->trigger();
+  }
+
+  void impact( action_state_t *s ) override
+  {
+    base_t::impact( s );
+
+    p()->buff.transfer_the_power->trigger();
+
+    if ( p()->talent.windwalker.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
     {
-      double m = base_t::composite_target_multiplier( target );
-
-      if ( target != p()->target && p()->talent.windwalker.shadowboxing_treads->ok() )
-        m *= p()->talent.windwalker.shadowboxing_treads->effectN( 3 ).percent();
-
-      return m;
+      p()->cooldown.fists_of_fury->adjust( -1 * p()->talent.windwalker.xuens_battlegear->effectN( 2 ).time_value(),
+                                           true );
+      p()->proc.xuens_battlegear_reduction->occur();
     }
 
-    // Force 100 milliseconds for the animation, but not delay the overall GCD
-    timespan_t execute_time() const override
+    if ( p()->baseline.windwalker.combat_conditioning->ok() )
+      s->target->debuffs.mortal_wounds->trigger();
+
+    // Apply Mark of the Crane
+    p()->trigger_mark_of_the_crane( s );
+
+    if ( p()->talent.windwalker.acclamation.ok() )
+      get_td( s->target )->debuff.acclamation->trigger();
+  }
+};
+
+struct rising_sun_kick_t : public monk_melee_attack_t
+{
+  glory_of_the_dawn_t *gotd;
+
+  rising_sun_kick_t( monk_t *p, util::string_view options_str )
+    : monk_melee_attack_t( p, "rising_sun_kick", p->talent.monk.rising_sun_kick )
+  {
+    parse_options( options_str );
+
+    may_combo_strike = true;
+    sef_ability      = actions::sef_ability_e::SEF_RISING_SUN_KICK;
+    ap_type          = attack_power_type::NONE;
+    cast_during_sck  = player->specialization() != MONK_WINDWALKER;
+
+    attack_power_mod.direct = 0;
+
+    execute_action        = new press_the_advantage_t<rising_sun_kick_dmg_t>( p, options_str );
+    execute_action->stats = stats;
+
+    if ( p->talent.windwalker.glory_of_the_dawn->ok() )
     {
-      return timespan_t::from_millis( 100 );
+      gotd = new glory_of_the_dawn_t( p, "glory_of_the_dawn" );
+      add_child( gotd );
+    }
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    // TODO: Is this the correct way to get character sheet haste %?
+    auto gotd_chance = p()->talent.windwalker.glory_of_the_dawn->effectN( 2 ).percent() *
+                       ( ( 1.0 / p()->composite_spell_haste() ) - 1.0 );
+
+    if ( rng().roll( gotd_chance ) )
+      gotd->execute_on_target( this->target );
+
+    p()->buff.whirling_dragon_punch->trigger();
+
+    p()->active_actions.chi_wave->execute();
+
+    if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
+      p()->buff.ordered_elements->trigger();
+
+    p()->buff.tigers_ferocity->trigger();
+
+    p()->buff.august_dynasty->expire();
+  }
+};
+
+// ==========================================================================
+// Blackout Kick
+// ==========================================================================
+
+// Blackout Kick Proc from Teachings of the Monastery =======================
+struct blackout_kick_totm_proc_t : public monk_melee_attack_t
+{
+  blackout_kick_totm_proc_t( monk_t *p )
+    : monk_melee_attack_t( p, "blackout_kick_totm_proc", p->talent.windwalker.teachings_of_the_monastery_blackout_kick )
+  {
+    sef_ability        = actions::sef_ability_e::SEF_BLACKOUT_KICK_TOTM;
+    ww_mastery         = false;
+    cooldown->duration = timespan_t::zero();
+    background = dual = true;
+    trigger_chiji     = true;
+    trigger_gcd       = timespan_t::zero();
+  }
+
+  void init_finished() override
+  {
+    monk_melee_attack_t::init_finished();
+    action_t *bok = player->find_action( "blackout_kick" );
+    if ( bok )
+    {
+      attack_power_mod = bok->attack_power_mod;
+      bok->add_child( this );
+    }
+  }
+
+  double composite_target_multiplier( player_t *target ) const override
+  {
+    double m = base_t::composite_target_multiplier( target );
+
+    if ( target != p()->target && p()->talent.windwalker.shadowboxing_treads->ok() )
+      m *= p()->talent.windwalker.shadowboxing_treads->effectN( 3 ).percent();
+
+    return m;
+  }
+
+  // Force 100 milliseconds for the animation, but not delay the overall GCD
+  timespan_t execute_time() const override
+  {
+    return timespan_t::from_millis( 100 );
+  }
+
+  double cost() const override
+  {
+    return 0;
+  }
+
+  void impact( action_state_t *s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    // The initial hit along with each individual TotM hits has a chance to reset the cooldown
+    auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
+
+    if ( p()->specialization() == MONK_MISTWEAVER )
+      totmResetChance += p()->baseline.mistweaver.aura->effectN( 21 ).percent();
+
+    if ( rng().roll( totmResetChance ) )
+    {
+      p()->cooldown.rising_sun_kick->reset( true );
+      p()->proc.rsk_reset_totm->occur();
     }
 
-    double cost() const override
+    // Mark of the Crane is only triggered on the initial target
+    if ( s->chain_target == 0 )
+      p()->trigger_mark_of_the_crane( s );
+
+    // Martial Mixture triggers from each ToTM impact
+    p()->buff.martial_mixture->trigger();
+  }
+};
+
+// Charred Passions ============================================================
+template <class base_action_t>
+struct charred_passions_t : base_action_t
+{
+  using base_t = charred_passions_t<base_action_t>;
+  struct damage_t : monk_spell_t
+  {
+    damage_t( monk_t *player, std::string_view name )
+      : monk_spell_t( player, fmt::format( "charred_passions_{}", name ), player->talent.brewmaster.charred_passions )
     {
-      return 0;
+      background = dual = proc = true;
+      may_crit                 = false;
+      base_multiplier          = data().effectN( 1 ).percent();
     }
 
-    void impact( action_state_t *s ) override
+    void init() override
     {
-      monk_melee_attack_t::impact( s );
+      monk_spell_t::init();
+      update_flags = snapshot_flags = STATE_NO_MULTIPLIER | STATE_MUL_SPELL_DA;
+    }
+  };
+
+  damage_t *chp_damage;
+  cooldown_t *chp_cooldown;
+
+  template <typename... Args>
+  charred_passions_t( monk_t *player, Args &&...args ) : base_action_t( player, std::forward<Args>( args )... )
+  {
+    if ( !player->talent.brewmaster.charred_passions->ok() )
+      return;
+
+    chp_cooldown = player->get_cooldown( "charred_passions" );
+    chp_damage   = new damage_t( player, base_action_t::name_str );
+    // TODO: Have a more resilient way to re-map stats objects.
+    // Issue: When SCK tick stats replace the action stats of SCK channel, adding
+    // a child of SCK tick breaks reporting.
+    // base_action_t::add_child( damage );
+  }
+
+  void impact( action_state_t *state ) override
+  {
+    base_action_t::impact( state );
+
+    if ( !base_action_t::p()->buff.charred_passions->up() )
+      return;
+
+    base_action_t::p()->proc.charred_passions->occur();
+    chp_damage->base_dd_min = chp_damage->base_dd_max = state->result_amount;
+    chp_damage->execute();
+
+    if ( monk_td_t *target_data = base_action_t::get_td( state->target );
+         target_data && target_data->dot.breath_of_fire->is_ticking() && chp_cooldown->up() )
+    {
+      target_data->dot.breath_of_fire->refresh_duration();
+      chp_cooldown->start( chp_damage->data().effectN( 1 ).trigger()->internal_cooldown() );
+    }
+  }
+};
+
+// Blackout Kick Baseline ability =======================================
+struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_attack_t>>
+{
+  blackout_kick_totm_proc_t *bok_totm_proc;
+  cooldown_t *keg_smash_cooldown;
+
+  blackout_kick_t( monk_t *p, util::string_view options_str )
+    : base_t( p, "blackout_kick",
+              ( p->specialization() == MONK_BREWMASTER ? p->baseline.brewmaster.blackout_kick
+                                                       : p->baseline.monk.blackout_kick ) ),
+      keg_smash_cooldown( nullptr )
+  {
+    parse_options( options_str );
+    if ( p->specialization() == MONK_WINDWALKER )
+      ap_type = attack_power_type::WEAPON_BOTH;
+
+    sef_ability      = actions::sef_ability_e::SEF_BLACKOUT_KICK;
+    ww_mastery       = true;
+    may_combo_strike = true;
+    trigger_chiji    = true;
+    cast_during_sck  = p->specialization() != MONK_WINDWALKER;
+
+    apply_affecting_aura( p->talent.brewmaster.fluidity_of_motion );
+    apply_affecting_aura( p->talent.brewmaster.shadowboxing_treads );
+    apply_affecting_aura( p->talent.brewmaster.elusive_footwork );
+
+    if ( player->sets->set( MONK_BREWMASTER, TWW1, B4 )->ok() )
+      keg_smash_cooldown = player->get_cooldown( "keg_smash" );
+
+    if ( p->talent.brewmaster.charred_passions->ok() )
+      add_child( base_t::chp_damage );
+
+    if ( p->shared.teachings_of_the_monastery->ok() )
+    {
+      bok_totm_proc = new blackout_kick_totm_proc_t( p );
+      add_child( bok_totm_proc );
+    }
+
+    if ( p->baseline.windwalker.blackout_kick_rank_2->ok() )
+      base_costs[ RESOURCE_CHI ].base +=
+          p->baseline.windwalker.blackout_kick_rank_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
+  }
+
+  double composite_target_multiplier( player_t *target ) const override
+  {
+    double m = base_t::composite_target_multiplier( target );
+
+    if ( target != p()->target && p()->talent.windwalker.shadowboxing_treads->ok() )
+      m *= p()->talent.windwalker.shadowboxing_treads->effectN( 3 ).percent();
+
+    return m;
+  }
+
+  void consume_resource() override
+  {
+    base_t::consume_resource();
+
+    // Register how much chi is saved without actually refunding the chi
+    if ( p()->buff.bok_proc->up() )
+      p()->gain.bok_proc->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
+  }
+
+  void execute() override
+  {
+    base_t::execute();
+
+    p()->buff.shuffle->trigger( timespan_t::from_seconds( p()->talent.brewmaster.shuffle->effectN( 1 ).base_value() ) );
+
+    p()->buff.flow_of_battle_damage->trigger();
+    // 08-18-2024: Sampling of a large number of logs strongly suggests a proc rate of 0.33.
+    // Reproducible via running https://github.com/renanthera/crunch/tree/ec850f8b37b922f177d88b0c1626271a382ce771
+    if ( keg_smash_cooldown && p()->sets->set( MONK_BREWMASTER, TWW1, B4 )->ok() && p()->rng().roll( 0.33 ) )
+    {
+      keg_smash_cooldown->reset( false );
+      p()->buff.flow_of_battle_free_keg_smash->trigger();
+    }
+
+    if ( result_is_hit( execute_state->result ) )
+    {
+      if ( p()->buff.bok_proc->up() )
+      {
+        if ( p()->rng().roll( p()->talent.windwalker.energy_burst->effectN( 1 ).percent() ) )
+          p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.energy_burst->effectN( 2 ).base_value(),
+                              p()->gain.energy_burst );
+
+        p()->buff.bok_proc->decrement();
+      }
+
+      p()->buff.blackout_combo->trigger();
+
+      if ( p()->baseline.windwalker.blackout_kick_rank_3->ok() )
+      {
+        // Reduce the cooldown of Rising Sun Kick and Fists of Fury
+        timespan_t cd_reduction = -1 * p()->baseline.monk.blackout_kick->effectN( 3 ).time_value();
+
+        if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
+        {
+          cd_reduction += ( -1 * p()->talent.windwalker.ordered_elements->effectN( 1 ).time_value() );
+          p()->proc.blackout_kick_cdr_oe->occur();
+        }
+        else
+          p()->proc.blackout_kick_cdr->occur();
+
+        p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
+        p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
+      }
+
+      p()->buff.transfer_the_power->trigger();
+
+      if ( p()->buff.teachings_of_the_monastery->up() )
+      {
+        p()->buff.teachings_of_the_monastery->expire();
+
+        if ( p()->rng().roll( p()->talent.conduit_of_the_celestials.xuens_guidance->effectN( 1 ).percent() ) )
+          p()->buff.teachings_of_the_monastery->trigger();
+      }
+
+      if ( p()->specialization() == MONK_WINDWALKER )
+      {
+        p()->buff.strength_of_the_black_ox->expire();
+        p()->buff.inner_compass_ox_stance->trigger();
+      }
+
+      p()->buff.vigilant_watch->trigger();
+
+      p()->buff.tigers_ferocity->trigger();
+    }
+  }
+
+  void impact( action_state_t *s ) override
+  {
+    base_t::impact( s );
+
+    p()->buff.hit_scheme->trigger();
+
+    // Teachings of the Monastery
+    // Used by both Windwalker and Mistweaver
+    if ( p()->buff.teachings_of_the_monastery->up() )
+    {
+      int stacks = p()->buff.teachings_of_the_monastery->current_stack;
+
+      if ( p()->talent.windwalker.memory_of_the_monastery.enabled() && p()->bugs )
+      {
+        // TODO: Confirm proper mechanics for this. Tested 17/06/2024 and behaviour has it expire previous stacks
+        // before triggering new which feels like a bug.
+        p()->buff.memory_of_the_monastery->expire();
+      }
+
+      for ( int i = 0; i < stacks; i++ )
+      {
+        // Transfer the power and Memory of the Monastery triggers from ToTM hits but only on the primary target
+        if ( s->chain_target == 0 )
+        {
+          p()->buff.transfer_the_power->trigger();
+
+          if ( p()->talent.windwalker.memory_of_the_monastery.enabled() )
+            p()->buff.memory_of_the_monastery->trigger();
+        }
+
+        bok_totm_proc->execute_on_target( s->target );
+      }
 
       // The initial hit along with each individual TotM hits has a chance to reset the cooldown
       auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
@@ -1673,1593 +2000,1347 @@ namespace attacks
         p()->cooldown.rising_sun_kick->reset( true );
         p()->proc.rsk_reset_totm->occur();
       }
+    }
 
-      // Mark of the Crane is only triggered on the initial target
-      if ( s->chain_target == 0 )
-        p()->trigger_mark_of_the_crane( s );
+    p()->trigger_mark_of_the_crane( s );
 
-      // Martial Mixture triggers from each ToTM impact
-      p()->buff.martial_mixture->trigger();
+    if ( p()->talent.brewmaster.elusive_footwork->ok() && s->result == RESULT_CRIT )
+    {
+      p()->buff.elusive_brawler->trigger(
+          as<int>( p()->talent.brewmaster.elusive_footwork->effectN( 2 ).base_value() ) );
+      p()->proc.elusive_footwork_proc->occur();
+    }
+
+    if ( p()->talent.brewmaster.staggering_strikes->ok() )
+      p()->find_stagger( "Stagger" )
+          ->purify_flat(
+              s->composite_attack_power() * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent(),
+              "staggering_strikes" );
+
+    // Martial Mixture triggers from each BoK impact
+    p()->buff.martial_mixture->trigger();
+  }
+};
+
+// ==========================================================================
+// Rushing Jade Wind
+// ==========================================================================
+
+struct flight_of_the_red_crane_dmg_t : public monk_spell_t
+{
+  flight_of_the_red_crane_dmg_t( monk_t *p )
+    : monk_spell_t( p, "flight_of_the_red_crane_dmg", p->talent.conduit_of_the_celestials.flight_of_the_red_crane_dmg )
+  {
+    background = true;
+    aoe        = as<int>( p->talent.conduit_of_the_celestials.flight_of_the_red_crane->effectN( 1 ).base_value() );
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->buff.flight_of_the_red_crane->trigger();
+  }
+};
+
+struct flight_of_the_red_crane_heal_t : public monk_heal_t
+{
+  flight_of_the_red_crane_heal_t( monk_t *p )
+    : monk_heal_t( p, "flight_of_the_red_crane_heal", p->talent.conduit_of_the_celestials.flight_of_the_red_crane_heal )
+  {
+    background = true;
+    aoe        = as<int>( p->talent.conduit_of_the_celestials.flight_of_the_red_crane->effectN( 1 ).base_value() );
+    target     = p;
+  }
+};
+
+struct rushing_jade_wind_t : public monk_melee_attack_t
+{
+  buff_t *buff;
+
+  rushing_jade_wind_t( monk_t *player, util::string_view options_str )
+    : monk_melee_attack_t( player, "rushing_jade_wind", player->shared.rushing_jade_wind ),
+      buff( player->buff.rushing_jade_wind )
+  {
+    parse_options( options_str );
+    may_combo_strike = true;
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    buff->trigger();
+  }
+};
+
+// ==========================================================================
+// Spinning Crane Kick
+// ==========================================================================
+
+// Jade Ignition Legendary
+struct chi_explosion_t : public monk_spell_t
+{
+  chi_explosion_t( monk_t *player ) : monk_spell_t( player, "chi_explosion", player->passives.chi_explosion )
+  {
+    dual = background = true;
+    aoe               = -1;
+    school            = SCHOOL_NATURE;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    am *= 1 + p()->buff.chi_energy->check_stack_value();
+
+    return am;
+  }
+};
+
+struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
+{
+  sck_tick_action_t( monk_t *p, std::string_view name, const spell_data_t *data )
+    : charred_passions_t<monk_melee_attack_t>( p, name, data )
+  {
+    ww_mastery    = true;
+    trigger_chiji = true;
+
+    dual = background   = true;
+    aoe                 = -1;
+    reduced_aoe_targets = p->baseline.monk.spinning_crane_kick->effectN( 1 ).base_value();
+
+    ap_type = attack_power_type::WEAPON_BOTH;
+
+    parse_effects( p->talent.windwalker.crane_vortex );
+
+    // dance of chiji is scripted
+    if ( const auto &effect = p->talent.windwalker.dance_of_chiji->effectN( 1 ); effect.ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_func( [ &b = p->buff.dance_of_chiji_hidden ]() { return b->check(); } )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
+
+    parse_effects( p->buff.cyclone_strikes, USE_CURRENT );
+  }
+
+  result_amount_type report_amount_type( const action_state_t * ) const override
+  {
+    return result_amount_type::DMG_DIRECT;
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    p()->buff.shuffle->trigger(
+        timespan_t::from_seconds( p()->baseline.brewmaster.spinning_crane_kick_rank_2->effectN( 1 ).base_value() ) );
+  }
+};
+
+struct spinning_crane_kick_t : public monk_melee_attack_t
+{
+  struct spinning_crane_kick_state_t : public action_state_t
+  {
+    spinning_crane_kick_state_t( action_t *a, player_t *target ) : action_state_t( a, target )
+    {
+    }
+
+    proc_types2 cast_proc_type2() const override
+    {
+      // Spinning Crane Kick seems to trigger Bron's Call to Action (and possibly other
+      // effects that care about casts).
+      return PROC2_CAST_GENERIC;
     }
   };
 
-  // Charred Passions ============================================================
-  template <class base_action_t>
-  struct charred_passions_t : base_action_t
+  chi_explosion_t *chi_x;
+
+  spinning_crane_kick_t( monk_t *p, util::string_view options_str )
+    : monk_melee_attack_t( p, "spinning_crane_kick",
+                           ( p->specialization() == MONK_BREWMASTER ? p->baseline.brewmaster.spinning_crane_kick
+                                                                    : p->baseline.monk.spinning_crane_kick ) ),
+      chi_x( nullptr )
   {
-    using base_t = charred_passions_t<base_action_t>;
-    struct damage_t : monk_spell_t
-    {
-      damage_t( monk_t *player, std::string_view name )
-        : monk_spell_t( player, fmt::format( "charred_passions_{}", name ), player->talent.brewmaster.charred_passions )
-      {
-        background = dual = proc = true;
-        may_crit                 = false;
-        base_multiplier          = data().effectN( 1 ).percent();
-      }
-
-      void init() override
-      {
-        monk_spell_t::init();
-        update_flags = snapshot_flags = STATE_NO_MULTIPLIER | STATE_MUL_SPELL_DA;
-      }
-    };
-
-    damage_t *chp_damage;
-    cooldown_t *chp_cooldown;
-
-    template <typename... Args>
-    charred_passions_t( monk_t *player, Args &&...args ) : base_action_t( player, std::forward<Args>( args )... )
-    {
-      if ( !player->talent.brewmaster.charred_passions->ok() )
-        return;
-
-      chp_cooldown = player->get_cooldown( "charred_passions" );
-      chp_damage   = new damage_t( player, base_action_t::name_str );
-      // TODO: Have a more resilient way to re-map stats objects.
-      // Issue: When SCK tick stats replace the action stats of SCK channel, adding
-      // a child of SCK tick breaks reporting.
-      // base_action_t::add_child( damage );
-    }
-
-    void impact( action_state_t *state ) override
-    {
-      base_action_t::impact( state );
-
-      if ( !base_action_t::p()->buff.charred_passions->up() )
-        return;
-
-      base_action_t::p()->proc.charred_passions->occur();
-      chp_damage->base_dd_min = chp_damage->base_dd_max = state->result_amount;
-      chp_damage->execute();
-
-      if ( monk_td_t *target_data = base_action_t::get_td( state->target );
-           target_data && target_data->dot.breath_of_fire->is_ticking() && chp_cooldown->up() )
-      {
-        target_data->dot.breath_of_fire->refresh_duration();
-        chp_cooldown->start( chp_damage->data().effectN( 1 ).trigger()->internal_cooldown() );
-      }
-    }
-  };
-
-  // Blackout Kick Baseline ability =======================================
-  struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_attack_t>>
-  {
-    blackout_kick_totm_proc_t *bok_totm_proc;
-    cooldown_t *keg_smash_cooldown;
-
-    blackout_kick_t( monk_t *p, util::string_view options_str )
-      : base_t( p, "blackout_kick",
-                ( p->specialization() == MONK_BREWMASTER ? p->baseline.brewmaster.blackout_kick
-                                                         : p->baseline.monk.blackout_kick ) ),
-        keg_smash_cooldown( nullptr )
-    {
-      parse_options( options_str );
-      if ( p->specialization() == MONK_WINDWALKER )
-        ap_type = attack_power_type::WEAPON_BOTH;
-
-      sef_ability      = actions::sef_ability_e::SEF_BLACKOUT_KICK;
-      ww_mastery       = true;
-      may_combo_strike = true;
-      trigger_chiji    = true;
-      cast_during_sck  = p->specialization() != MONK_WINDWALKER;
-
-      apply_affecting_aura( p->talent.brewmaster.fluidity_of_motion );
-      apply_affecting_aura( p->talent.brewmaster.shadowboxing_treads );
-      apply_affecting_aura( p->talent.brewmaster.elusive_footwork );
-
-      if ( player->sets->set( MONK_BREWMASTER, TWW1, B4 )->ok() )
-        keg_smash_cooldown = player->get_cooldown( "keg_smash" );
-
-      if ( p->talent.brewmaster.charred_passions->ok() )
-        add_child( base_t::chp_damage );
-
-      if ( p->shared.teachings_of_the_monastery->ok() )
-      {
-        bok_totm_proc = new blackout_kick_totm_proc_t( p );
-        add_child( bok_totm_proc );
-      }
-
-      if ( p->baseline.windwalker.blackout_kick_rank_2->ok() )
-        base_costs[ RESOURCE_CHI ].base +=
-            p->baseline.windwalker.blackout_kick_rank_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
-    }
-
-    double composite_target_multiplier( player_t *target ) const override
-    {
-      double m = base_t::composite_target_multiplier( target );
-
-      if ( target != p()->target && p()->talent.windwalker.shadowboxing_treads->ok() )
-        m *= p()->talent.windwalker.shadowboxing_treads->effectN( 3 ).percent();
-
-      return m;
-    }
-
-    void consume_resource() override
-    {
-      base_t::consume_resource();
-
-      // Register how much chi is saved without actually refunding the chi
-      if ( p()->buff.bok_proc->up() )
-        p()->gain.bok_proc->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
-    }
-
-    void execute() override
-    {
-      base_t::execute();
-
-      p()->buff.shuffle->trigger(
-          timespan_t::from_seconds( p()->talent.brewmaster.shuffle->effectN( 1 ).base_value() ) );
-
-      p()->buff.flow_of_battle_damage->trigger();
-      // 08-18-2024: Sampling of a large number of logs strongly suggests a proc rate of 0.33.
-      // Reproducible via running https://github.com/renanthera/crunch/tree/ec850f8b37b922f177d88b0c1626271a382ce771
-      if ( keg_smash_cooldown && p()->sets->set( MONK_BREWMASTER, TWW1, B4 )->ok() && p()->rng().roll( 0.33 ) )
-      {
-        keg_smash_cooldown->reset( false );
-        p()->buff.flow_of_battle_free_keg_smash->trigger();
-      }
-
-      if ( result_is_hit( execute_state->result ) )
-      {
-        if ( p()->buff.bok_proc->up() )
-        {
-          if ( p()->rng().roll( p()->talent.windwalker.energy_burst->effectN( 1 ).percent() ) )
-            p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.energy_burst->effectN( 2 ).base_value(),
-                                p()->gain.energy_burst );
-
-          p()->buff.bok_proc->decrement();
-        }
-
-        p()->buff.blackout_combo->trigger();
-
-        if ( p()->baseline.windwalker.blackout_kick_rank_3->ok() )
-        {
-          // Reduce the cooldown of Rising Sun Kick and Fists of Fury
-          timespan_t cd_reduction = -1 * p()->baseline.monk.blackout_kick->effectN( 3 ).time_value();
-
-          if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
-          {
-            cd_reduction += ( -1 * p()->talent.windwalker.ordered_elements->effectN( 1 ).time_value() );
-            p()->proc.blackout_kick_cdr_oe->occur();
-          }
-          else
-            p()->proc.blackout_kick_cdr->occur();
-
-          p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
-          p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
-        }
-
-        p()->buff.transfer_the_power->trigger();
-
-        if ( p()->buff.teachings_of_the_monastery->up() )
-        {
-          p()->buff.teachings_of_the_monastery->expire();
-
-          if ( p()->rng().roll( p()->talent.conduit_of_the_celestials.xuens_guidance->effectN( 1 ).percent() ) )
-            p()->buff.teachings_of_the_monastery->trigger();
-        }
-
-        if ( p()->specialization() == MONK_WINDWALKER )
-        {
-          p()->buff.strength_of_the_black_ox->expire();
-          p()->buff.inner_compass_ox_stance->trigger();
-        }
-
-        p()->buff.vigilant_watch->trigger();
-
-        p()->buff.tigers_ferocity->trigger();
-      }
-    }
-
-    void impact( action_state_t *s ) override
-    {
-      base_t::impact( s );
-
-      p()->buff.hit_scheme->trigger();
-
-      // Teachings of the Monastery
-      // Used by both Windwalker and Mistweaver
-      if ( p()->buff.teachings_of_the_monastery->up() )
-      {
-        int stacks = p()->buff.teachings_of_the_monastery->current_stack;
-
-        if ( p()->talent.windwalker.memory_of_the_monastery.enabled() && p()->bugs )
-        {
-          // TODO: Confirm proper mechanics for this. Tested 17/06/2024 and behaviour has it expire previous stacks
-          // before triggering new which feels like a bug.
-          p()->buff.memory_of_the_monastery->expire();
-        }
-
-        for ( int i = 0; i < stacks; i++ )
-        {
-          // Transfer the power and Memory of the Monastery triggers from ToTM hits but only on the primary target
-          if ( s->chain_target == 0 )
-          {
-            p()->buff.transfer_the_power->trigger();
-
-            if ( p()->talent.windwalker.memory_of_the_monastery.enabled() )
-              p()->buff.memory_of_the_monastery->trigger();
-          }
-
-          bok_totm_proc->execute_on_target( s->target );
-        }
-
-        // The initial hit along with each individual TotM hits has a chance to reset the cooldown
-        auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
-
-        if ( p()->specialization() == MONK_MISTWEAVER )
-          totmResetChance += p()->baseline.mistweaver.aura->effectN( 21 ).percent();
-
-        if ( rng().roll( totmResetChance ) )
-        {
-          p()->cooldown.rising_sun_kick->reset( true );
-          p()->proc.rsk_reset_totm->occur();
-        }
-      }
-
-      p()->trigger_mark_of_the_crane( s );
-
-      if ( p()->talent.brewmaster.elusive_footwork->ok() && s->result == RESULT_CRIT )
-      {
-        p()->buff.elusive_brawler->trigger(
-            as<int>( p()->talent.brewmaster.elusive_footwork->effectN( 2 ).base_value() ) );
-        p()->proc.elusive_footwork_proc->occur();
-      }
-
-      if ( p()->talent.brewmaster.staggering_strikes->ok() )
-        p()->find_stagger( "Stagger" )
-            ->purify_flat(
-                s->composite_attack_power() * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent(),
-                "staggering_strikes" );
-
-      // Martial Mixture triggers from each BoK impact
-      p()->buff.martial_mixture->trigger();
-    }
-  };
-
-  // ==========================================================================
-  // Rushing Jade Wind
-  // ==========================================================================
-
-  struct flight_of_the_red_crane_dmg_t : public monk_spell_t
-  {
-    flight_of_the_red_crane_dmg_t( monk_t *p )
-      : monk_spell_t( p, "flight_of_the_red_crane_dmg",
-                      p->talent.conduit_of_the_celestials.flight_of_the_red_crane_dmg )
-    {
-      background = true;
-      aoe        = as<int>( p->talent.conduit_of_the_celestials.flight_of_the_red_crane->effectN( 1 ).base_value() );
-    }
-
-    void execute() override
-    {
-      monk_spell_t::execute();
-
-      p()->buff.flight_of_the_red_crane->trigger();
-    }
-  };
-
-  struct flight_of_the_red_crane_heal_t : public monk_heal_t
-  {
-    flight_of_the_red_crane_heal_t( monk_t *p )
-      : monk_heal_t( p, "flight_of_the_red_crane_heal",
-                     p->talent.conduit_of_the_celestials.flight_of_the_red_crane_heal )
-    {
-      background = true;
-      aoe        = as<int>( p->talent.conduit_of_the_celestials.flight_of_the_red_crane->effectN( 1 ).base_value() );
-      target     = p;
-    }
-  };
-
-  struct rushing_jade_wind_t : public monk_melee_attack_t
-  {
-    buff_t *buff;
-
-    rushing_jade_wind_t( monk_t *player, util::string_view options_str )
-      : monk_melee_attack_t( player, "rushing_jade_wind", player->shared.rushing_jade_wind ),
-        buff( player->buff.rushing_jade_wind )
-    {
-      parse_options( options_str );
-      may_combo_strike = true;
-    }
-
-    void execute() override
-    {
-      monk_melee_attack_t::execute();
-
-      buff->trigger();
-    }
-  };
-
-  // ==========================================================================
-  // Spinning Crane Kick
-  // ==========================================================================
-
-  // Jade Ignition Legendary
-  struct chi_explosion_t : public monk_spell_t
-  {
-    chi_explosion_t( monk_t *player ) : monk_spell_t( player, "chi_explosion", player->passives.chi_explosion )
-    {
-      dual = background = true;
-      aoe               = -1;
-      school            = SCHOOL_NATURE;
-    }
-
-    double action_multiplier() const override
-    {
-      double am = monk_spell_t::action_multiplier();
-
-      am *= 1 + p()->buff.chi_energy->check_stack_value();
-
-      return am;
-    }
-  };
-
-  struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
-  {
-    sck_tick_action_t( monk_t *p, std::string_view name, const spell_data_t *data )
-      : charred_passions_t<monk_melee_attack_t>( p, name, data )
-    {
-      ww_mastery    = true;
-      trigger_chiji = true;
-
-      dual = background   = true;
-      aoe                 = -1;
-      reduced_aoe_targets = p->baseline.monk.spinning_crane_kick->effectN( 1 ).base_value();
-
-      ap_type = attack_power_type::WEAPON_BOTH;
-
-      parse_effects( p->talent.windwalker.crane_vortex );
-
-      // dance of chiji is scripted
-      if ( const auto &effect = p->talent.windwalker.dance_of_chiji->effectN( 1 ); effect.ok() )
-        add_parse_entry( da_multiplier_effects )
-            .set_func( [ &b = p->buff.dance_of_chiji_hidden ]() { return b->check(); } )
-            .set_value( effect.percent() )
-            .set_eff( &effect );
-
-      parse_effects( p->buff.cyclone_strikes, USE_CURRENT );
-    }
-
-    result_amount_type report_amount_type( const action_state_t * ) const override
-    {
-      return result_amount_type::DMG_DIRECT;
-    }
-
-    void execute() override
-    {
-      monk_melee_attack_t::execute();
-
-      p()->buff.shuffle->trigger(
-          timespan_t::from_seconds( p()->baseline.brewmaster.spinning_crane_kick_rank_2->effectN( 1 ).base_value() ) );
-    }
-  };
-
-  struct spinning_crane_kick_t : public monk_melee_attack_t
-  {
-    struct spinning_crane_kick_state_t : public action_state_t
-    {
-      spinning_crane_kick_state_t( action_t *a, player_t *target ) : action_state_t( a, target )
-      {
-      }
-
-      proc_types2 cast_proc_type2() const override
-      {
-        // Spinning Crane Kick seems to trigger Bron's Call to Action (and possibly other
-        // effects that care about casts).
-        return PROC2_CAST_GENERIC;
-      }
-    };
-
-    chi_explosion_t *chi_x;
-
-    spinning_crane_kick_t( monk_t *p, util::string_view options_str )
-      : monk_melee_attack_t( p, "spinning_crane_kick",
-                             ( p->specialization() == MONK_BREWMASTER ? p->baseline.brewmaster.spinning_crane_kick
-                                                                      : p->baseline.monk.spinning_crane_kick ) ),
-        chi_x( nullptr )
-    {
-      parse_options( options_str );
-
-      sef_ability      = actions::sef_ability_e::SEF_SPINNING_CRANE_KICK;
-      may_combo_strike = true;
-      tick_zero        = true;
-      tick_action      = new sck_tick_action_t( p, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
-
-      interrupt_auto_attack = p->specialization() != MONK_WINDWALKER;
-      if ( p->specialization() == MONK_BREWMASTER )
-      {
-        dot_behavior    = DOT_EXTEND;
-        cast_during_sck = true;
-
-        if ( p->talent.brewmaster.charred_passions->ok() )
-          add_child( debug_cast<sck_tick_action_t *>( tick_action )->chp_damage );
-      }
-
-      if ( p->specialization() == MONK_WINDWALKER )
-      {
-        channeled    = true;
-        dot_behavior = DOT_CLIP;
-      }
-
-      if ( p->talent.windwalker.jade_ignition->ok() )
-      {
-        chi_x = new chi_explosion_t( p );
-        add_child( chi_x );
-      }
-
-      if ( p->baseline.windwalker.mark_of_the_crane->ok() && p->user_options.motc_override == 0 )
-      {
-        p->register_on_kill_callback( [ p ]( player_t *target ) {
-          if ( p->sim->event_mgr.canceled )
-            return;
-
-          if ( auto target_data = p->get_target_data( target );
-               target_data && target_data->debuff.mark_of_the_crane->up() )
-          {
-            make_event( p->sim, target_data->debuff.mark_of_the_crane->remains(), [ p, target_data ]() {
-              p->sim->print_debug( "mark of the crane fell off dead target: {} ", target_data->target->name_str );
-              p->buff.cyclone_strikes->decrement();
-            } );
-            target_data->debuff.mark_of_the_crane->expire();
-          }
-        } );
-      }
-    }
-
-    bool ready() override
-    {
-      if ( p()->channeling && p()->channeling->id == id )
-        return false;
-
-      return monk_melee_attack_t::ready();
-    }
-
-    bool usable_moving() const override
-    {
-      return true;
-    }
-
-    action_state_t *new_state() override
-    {
-      return new spinning_crane_kick_state_t( this, p()->target );
-    }
-
-    double cost_flat_modifier() const override
-    {
-      double c = monk_melee_attack_t::cost_flat_modifier();
-
-      c += p()->buff.dance_of_chiji_hidden->check_value();  // saved as -2
-
-      return c;
-    }
-
-    void execute() override
-    {
-      if ( p()->specialization() == MONK_WINDWALKER )
-      {
-        if ( p()->buff.dance_of_chiji->up() )
-        {
-          p()->buff.dance_of_chiji->decrement();
-          p()->buff.dance_of_chiji_hidden->trigger();
-
-          if ( p()->rng().roll( p()->talent.windwalker.sequenced_strikes->effectN( 1 ).percent() ) )
-            p()->buff.bok_proc->increment();  // increment is used to not incur the rppm cooldown
-        }
-      }
-
-      monk_melee_attack_t::execute();
-
-      timespan_t buff_duration = composite_dot_duration( execute_state );
-
-      p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
-
-      if ( chi_x && p()->buff.chi_energy->up() )
-        chi_x->execute();
-
-      if ( p()->buff.celestial_flames->up() )
-        p()->active_actions.breath_of_fire->execute_on_target( execute_state->target );
-
-      if ( p()->talent.windwalker.transfer_the_power->ok() )
-        p()->buff.transfer_the_power->trigger();
-
-      p()->buff.tigers_ferocity->trigger();
-    }
-
-    void last_tick( dot_t *dot ) override
-    {
-      monk_melee_attack_t::last_tick( dot );
-
-      p()->buff.dance_of_chiji_hidden->expire();
-
-      p()->buff.chi_energy->expire();
-
-      if ( p()->buff.counterstrike->up() )
-        p()->proc.counterstrike_sck->occur();
-    }
-  };
-
-  // ==========================================================================
-  // Fists of Fury
-  // ==========================================================================
-
-  struct fists_of_fury_tick_t : public monk_melee_attack_t
-  {
-    fists_of_fury_tick_t( monk_t *p, util::string_view name )
-      : monk_melee_attack_t( p, name, p->passives.fists_of_fury_tick )
-    {
-      background          = true;
-      aoe                 = -1;
-      reduced_aoe_targets = p->talent.windwalker.fists_of_fury->effectN( 1 ).base_value();
-      full_amount_targets = 1;
-      ww_mastery          = true;
-
-      base_costs[ RESOURCE_CHI ] = 0;
-      dot_duration               = timespan_t::zero();
-      trigger_gcd                = timespan_t::zero();
-
-      parse_effects( p->buff.momentum_boost_damage );
-    }
-
-    double composite_target_multiplier( player_t *target ) const override
-    {
-      double m = monk_melee_attack_t::composite_target_multiplier( target );
-
-      if ( target != p()->target )
-        m *= p()->talent.windwalker.fists_of_fury->effectN( 6 ).percent();
-
-      return m;
-    }
-
-    double action_multiplier() const override
-    {
-      double am = monk_melee_attack_t::action_multiplier();
-
-      am *= 1 + p()->buff.transfer_the_power->check_stack_value();
-
-      if ( p()->talent.windwalker.momentum_boost.ok() )
-        am *= 1 + ( ( ( 1.0 / p()->composite_melee_haste() ) - 1.0 ) *
-                    p()->talent.windwalker.momentum_boost->effectN( 1 ).percent() );
-
-      return am;
-    }
-
-    void impact( action_state_t *s ) override
-    {
-      monk_melee_attack_t::impact( s );
-
-      p()->buff.chi_energy->trigger();
-      p()->buff.momentum_boost_damage->trigger();
-    }
-  };
-
-  struct fists_of_fury_t : public monk_melee_attack_t
-  {
-    fists_of_fury_t( monk_t *p, util::string_view options_str )
-      : monk_melee_attack_t( p, "fists_of_fury", p->talent.windwalker.fists_of_fury )
-    {
-      parse_options( options_str );
-
-      cooldown         = p->cooldown.fists_of_fury;
-      sef_ability      = actions::sef_ability_e::SEF_FISTS_OF_FURY;
-      may_combo_strike = true;
-
-      channeled = tick_zero = true;
-      interrupt_auto_attack = true;
-
-      attack_power_mod.direct = 0;
-      weapon_power_mod        = 0;
-
-      may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
-
-      // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
-      base_tick_time = dot_duration / 4;
-
-      ability_lag = p->world_lag;
-
-      tick_action        = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
-      tick_action->stats = stats;
-    }
-
-    bool usable_moving() const override
-    {
-      return true;
-    }
-
-    void execute() override
-    {
-      monk_melee_attack_t::execute();
-
-      if ( p()->buff.fury_of_xuen_stacks->up() && rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
-      {
-        p()->buff.fury_of_xuen_stacks->expire();
-        p()->buff.fury_of_xuen->trigger();
-        p()->active_actions.fury_of_xuen_summon->execute();
-      }
-
-      p()->buff.whirling_dragon_punch->trigger();
-
-      p()->buff.tigers_ferocity->trigger();
-    }
-
-    void last_tick( dot_t *dot ) override
-    {
-      monk_melee_attack_t::last_tick( dot );
-
-      // Delay the expiration of the buffs until after the tick action happens.
-      // Otherwise things trigger before the tick action happens; which is not intended.
-      make_event( p()->sim, timespan_t::from_millis( 1 ), [ & ] {
-        p()->buff.transfer_the_power->expire();
-        p()->buff.pressure_point->trigger();
-        p()->buff.momentum_boost_damage->expire();
-        p()->buff.momentum_boost_speed->trigger();
-      } );
-    }
-  };
-
-  // ==========================================================================
-  // Whirling Dragon Punch
-  // ==========================================================================
-
-  struct whirling_dragon_punch_aoe_tick_t : public monk_melee_attack_t
-  {
-    timespan_t delay;
-    whirling_dragon_punch_aoe_tick_t( util::string_view name, monk_t *p, const spell_data_t *s, timespan_t delay )
-      : monk_melee_attack_t( p, name, s ), delay( delay )
-    {
-      ww_mastery = true;
-
-      background          = true;
-      aoe                 = -1;
-      reduced_aoe_targets = p->talent.windwalker.whirling_dragon_punch->effectN( 1 ).base_value();
-
-      name_str_reporting = "wdp_aoe";
-    }
-
-    double action_multiplier() const override
-    {
-      double am = monk_melee_attack_t::action_multiplier();
-
-      am *= 1 + p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 2 ).percent();
-
-      return am;
-    }
-  };
-
-  struct whirling_dragon_punch_st_tick_t : public monk_melee_attack_t
-  {
-    whirling_dragon_punch_st_tick_t( util::string_view name, monk_t *p, const spell_data_t *s )
-      : monk_melee_attack_t( p, name, s )
-    {
-      ww_mastery = true;
-
-      background = true;
-
-      name_str_reporting = "wdp_st";
-    }
-
-    double action_multiplier() const override
-    {
-      double am = monk_melee_attack_t::action_multiplier();
-
-      am *= 1 + p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 2 ).percent();
-
-      return am;
-    }
-  };
-
-  struct whirling_dragon_punch_t : public monk_melee_attack_t
-  {
-    struct whirling_dragon_punch_state_t : public action_state_t
-    {
-      whirling_dragon_punch_state_t( action_t *a, player_t *target ) : action_state_t( a, target )
-      {
-      }
-
-      proc_types2 cast_proc_type2() const override
-      {
-        // Whirling Dragon Punch seems to trigger Bron's Call to Action (and possibly other
-        // effects that care about casts).
-        return PROC2_CAST_GENERIC;
-      }
-    };
-
-    std::array<whirling_dragon_punch_aoe_tick_t *, 3> aoe_ticks;
-    whirling_dragon_punch_st_tick_t *st_tick;
-
-    struct whirling_dragon_punch_tick_event_t : public event_t
-    {
-      whirling_dragon_punch_aoe_tick_t *tick;
-
-      whirling_dragon_punch_tick_event_t( whirling_dragon_punch_aoe_tick_t *tick, timespan_t delay )
-        : event_t( *tick->player, delay ), tick( tick )
-      {
-      }
-
-      void execute() override
-      {
-        tick->execute();
-      }
-    };
-
-    whirling_dragon_punch_t( monk_t *p, util::string_view options_str )
-      : monk_melee_attack_t( p, "whirling_dragon_punch", p->talent.windwalker.whirling_dragon_punch )
-    {
-      sef_ability = actions::sef_ability_e::SEF_WHIRLING_DRAGON_PUNCH;
-
-      parse_options( options_str );
-      interrupt_auto_attack = false;
-      channeled             = false;
-      may_combo_strike      = true;
-      cast_during_sck       = false;
-
-      spell_power_mod.direct = 0.0;
-
-      // 3 server-side hardcoded ticks
-      for ( size_t i = 0; i < aoe_ticks.size(); ++i )
-      {
-        auto delay     = base_tick_time * i;
-        aoe_ticks[ i ] = new whirling_dragon_punch_aoe_tick_t( "whirling_dragon_punch_aoe_tick", p,
-                                                               p->passives.whirling_dragon_punch_aoe_tick, delay );
-
-        add_child( aoe_ticks[ i ] );
-      }
-
-      st_tick = new whirling_dragon_punch_st_tick_t( "whirling_dragon_punch_st_tick", p,
-                                                     p->passives.whirling_dragon_punch_st_tick );
-      add_child( st_tick );
-
-      apply_affecting_aura( p->talent.windwalker.revolving_whirl );
-    }
-
-    action_state_t *new_state() override
-    {
-      return new whirling_dragon_punch_state_t( this, p()->target );
-    }
-
-    void execute() override
-    {
-      monk_melee_attack_t::execute();
-
-      p()->movement.whirling_dragon_punch->trigger();
-
-      for ( auto &tick : aoe_ticks )
-        make_event<whirling_dragon_punch_tick_event_t>( *sim, tick, tick->delay );
-
-      st_tick->execute();
-
-      if ( p()->talent.windwalker.knowledge_of_the_broken_temple->ok() &&
-           p()->talent.windwalker.teachings_of_the_monastery->ok() )
-      {
-        int stacks = as<int>( p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 1 ).base_value() );
-        p()->buff.teachings_of_the_monastery->trigger( stacks );
-      }
-
-      // TODO: Check if this can proc without being talented into DoCJ
-      if ( p()->talent.windwalker.dance_of_chiji->ok() &&
-           p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
-        p()->buff.dance_of_chiji->increment();  // increment is used to not incur the rppm cooldown
-
-      p()->buff.tigers_ferocity->trigger();
-    }
-
-    bool ready() override
-    {
-      // Only usable while Fists of Fury and Rising Sun Kick are on cooldown.
-      if ( p()->buff.whirling_dragon_punch->up() )
-        return monk_melee_attack_t::ready();
-
-      return false;
-    }
-  };
-
-  // ==========================================================================
-  // Strike of the Windlord
-  // ==========================================================================
-  // Off hand hits first followed by main hand
-  // The ability does NOT require an off-hand weapon to be executed.
-  // The ability uses the main-hand weapon damage for both attacks
-
-  struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
-  {
-    strike_of_the_windlord_main_hand_t( monk_t *p, const char *name, const spell_data_t *s )
-      : monk_melee_attack_t( p, name, s )
-    {
-      sef_ability = actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD;
-
-      ww_mastery = true;
-      ap_type    = attack_power_type::WEAPON_MAINHAND;
-
-      aoe       = -1;
-      may_dodge = may_parry = may_block = may_miss = true;
-      dual = background = true;
-    }
-
-    // Damage must be divided on non-main target by the number of targets
-    double composite_aoe_multiplier( const action_state_t *state ) const override
-    {
-      if ( state->target != target )
-      {
-        return 1.0 / state->n_targets;
-      }
-
-      return 1.0;
-    }
-
-    double action_multiplier() const override
-    {
-      double am = monk_melee_attack_t::action_multiplier();
-
-      am *= 1 + p()->talent.windwalker.communion_with_wind->effectN( 2 ).percent();
-
-      return am;
-    }
-  };
-
-  struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
-  {
-    strike_of_the_windlord_off_hand_t( monk_t *p, const char *name, const spell_data_t *s )
-      : monk_melee_attack_t( p, name, s )
-    {
-      sef_ability = actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH;
-      ww_mastery  = true;
-      ap_type     = attack_power_type::WEAPON_OFFHAND;
-
-      aoe       = -1;
-      may_dodge = may_parry = may_block = may_miss = true;
-      dual = background = true;
-    }
-
-    // Damage must be divided on non-main target by the number of targets
-    double composite_aoe_multiplier( const action_state_t *state ) const override
-    {
-      if ( state->target != target )
-      {
-        return 1.0 / state->n_targets;
-      }
-
-      return 1.0;
-    }
-
-    double action_multiplier() const override
-    {
-      double am = monk_melee_attack_t::action_multiplier();
-
-      am *= 1 + p()->talent.windwalker.communion_with_wind->effectN( 2 ).percent();
-
-      return am;
-    }
-
-    void impact( action_state_t *s ) override
-    {
-      monk_melee_attack_t::impact( s );
-
-      if ( p()->talent.windwalker.thunderfist.ok() )
-      {
-        int thunderfist_stacks = 1;
-
-        if ( s->chain_target == 0 )
-          thunderfist_stacks += as<int>( p()->talent.windwalker.thunderfist->effectN( 1 ).base_value() );
-
-        p()->buff.thunderfist->trigger( thunderfist_stacks );
-      }
-
-      if ( p()->talent.windwalker.rushing_jade_wind.ok() )
-        p()->trigger_mark_of_the_crane( s );
-
-      if ( p()->talent.windwalker.gale_force.ok() )
-        get_td( s->target )->debuff.gale_force->trigger();
-    }
-  };
-
-  struct strike_of_the_windlord_t : public monk_melee_attack_t
-  {
-    strike_of_the_windlord_main_hand_t *mh_attack;
-    strike_of_the_windlord_off_hand_t *oh_attack;
-
-    strike_of_the_windlord_t( monk_t *p, util::string_view options_str )
-      : monk_melee_attack_t( p, "strike_of_the_windlord", p->talent.windwalker.strike_of_the_windlord ),
-        mh_attack( nullptr ),
-        oh_attack( nullptr )
-    {
-      apply_affecting_effect( p->talent.windwalker.communion_with_wind->effectN( 1 ) );
-
-      may_combo_strike = true;
-      cast_during_sck  = false;
-      cooldown->hasted = false;
-      trigger_gcd      = data().gcd();
-
-      parse_options( options_str );
-
-      oh_attack =
-          new strike_of_the_windlord_off_hand_t( p, "strike_of_the_windlord_offhand", data().effectN( 4 ).trigger() );
-      mh_attack =
-          new strike_of_the_windlord_main_hand_t( p, "strike_of_the_windlord_mainhand", data().effectN( 3 ).trigger() );
-
-      add_child( oh_attack );
-      add_child( mh_attack );
-
-      if ( p->talent.windwalker.thunderfist.ok() )
-        add_child( p->passive_actions.thunderfist );
-    }
-
-    void execute() override
-    {
-      monk_melee_attack_t::execute();
-
-      // Off-hand attack hits first
-      oh_attack->execute();
-
-      if ( result_is_hit( oh_attack->execute_state->result ) )
-        mh_attack->execute();
-
-      if ( p()->talent.windwalker.rushing_jade_wind.ok() )
-      {
-        p()->buff.rushing_jade_wind->trigger();
-        if ( p()->bugs )
-          combo_strikes_trigger();
-      }
-
-      p()->buff.tigers_ferocity->trigger();
-
-      if ( p()->talent.windwalker.darting_hurricane.ok() )
-        p()->buff.darting_hurricane->increment(
-            as<int>( p()->talent.windwalker.darting_hurricane->effectN( 2 )
-                         .base_value() ) );  // increment is used to not incur the rppm cooldown
-
-      if ( p()->buff.heart_of_the_jade_serpent->up() )
-      {
-        p()->buff.heart_of_the_jade_serpent_cdr->trigger();
-        p()->buff.inner_compass_serpent_stance->trigger();
-        p()->buff.heart_of_the_jade_serpent->decrement();
-      }
-    }
-  };
-
-  // ==========================================================================
-  // Thunderfist
-  // ==========================================================================
-
-  struct thunderfist_t : public monk_spell_t
-  {
-    thunderfist_t( monk_t *player )
-      : monk_spell_t( player, "thunderfist", player->passives.thunderfist->effectN( 1 ).trigger() )
-    {
-      background = true;
-      may_crit   = true;
-    }
-
-    virtual void execute() override
-    {
-      monk_spell_t::execute();
-
-      p()->buff.thunderfist->decrement( 1 );
-    }
-  };
-
-  // ==========================================================================
-  // Melee
-  // ==========================================================================
-
-  struct press_the_advantage_melee_t : public monk_spell_t
-  {
-    press_the_advantage_melee_t( monk_t *player )
-      : monk_spell_t( player, "press_the_advantage", player->find_spell( 418360 ) )
-    {
-      background = true;
-
-      if ( p()->talent.brewmaster.press_the_advantage->ok() && p()->talent.brewmaster.chi_surge->ok() )
-        add_child( p()->active_actions.chi_surge );
-    }
-  };
-
-  struct melee_t : public monk_melee_attack_t
-  {
-    int sync_weapons;
-    bool dual_threat_enabled = true;  // Dual Threat requires one succesful melee inbetween casts
-    bool first;
-    bool oh;
-
-    melee_t( util::string_view name, monk_t *player, int sw, bool is_oh = false )
-      : monk_melee_attack_t( player, name ), sync_weapons( sw ), first( true ), oh( is_oh )
-    {
-      background = repeating = may_glance = true;
-      may_crit                            = true;
-      trigger_gcd                         = timespan_t::zero();
-      special                             = false;
-      school                              = SCHOOL_PHYSICAL;
-      weapon_multiplier                   = 1.0;
-      allow_class_ability_procs           = true;
-      not_a_proc                          = true;
-
-      monk_melee_attack_t::apply_buff_effects();
-      monk_melee_attack_t::apply_debuff_effects();
-
-      if ( player->main_hand_weapon.group() == WEAPON_1H )
-      {
-        if ( player->specialization() != MONK_MISTWEAVER )
-          base_hit -= 0.19;
-      }
-    }
-
-    void reset() override
-    {
-      monk_melee_attack_t::reset();
-      first = true;
-    }
-
-    timespan_t execute_time() const override
-    {
-      timespan_t t = monk_melee_attack_t::execute_time();
-
-      if ( first )
-        return ( weapon->slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 )
-                                                 : timespan_t::zero();
-      else
-        return t;
-    }
-
-    void execute() override
-    {
-      first = false;
-      monk_melee_attack_t::execute();
-    }
-
-    void impact( action_state_t *s ) override
-    {
-      if ( dual_threat_enabled && p()->rng().roll( p()->talent.windwalker.dual_threat->effectN( 1 ).percent() ) )
-      {
-        s->result_total = 0;
-        p()->dual_threat_kick->execute();
-        dual_threat_enabled = false;
-      }
-      else
-      {
-        monk_melee_attack_t::impact( s );
-
-        if ( p()->talent.brewmaster.press_the_advantage->ok() && weapon->slot == SLOT_MAIN_HAND )
-          p()->buff.press_the_advantage->trigger();
-
-        if ( result_is_hit( s->result ) )
-        {
-          if ( p()->talent.brewmaster.press_the_advantage->ok() && weapon->slot == SLOT_MAIN_HAND )
-          {
-            // Reduce Brew cooldown by 0.5 seconds
-            p()->baseline.brewmaster.brews.adjust(
-                p()->talent.brewmaster.press_the_advantage->effectN( 1 ).time_value() );
-
-            // Trigger the Press the Advantage damage proc
-            p()->passive_actions.press_the_advantage->target = s->target;
-            p()->passive_actions.press_the_advantage->schedule_execute();
-          }
-
-          if ( p()->buff.thunderfist->up() )
-            p()->passive_actions.thunderfist->execute_on_target( s->target );
-
-          dual_threat_enabled = true;
-        }
-      }
-    }
-  };
-
-  // ==========================================================================
-  // Auto Attack
-  // ==========================================================================
-
-  // Dual Threat WW Talent
-
-  struct dual_threat_t : public monk_melee_attack_t
-  {
-    dual_threat_t( monk_t *p ) : monk_melee_attack_t( p, "dual_threat_kick", p->passives.dual_threat_kick )
-    {
-      background = true;
-      may_glance = true;
-      may_crit   = true;  // I assume so? This ability doesn't appear in the combat log yet on alpha
-
-      allow_class_ability_procs = false;  // Is not proccing Thunderfist or other class ability procs
-
-      school            = SCHOOL_PHYSICAL;
-      weapon_multiplier = 1.0;
-      weapon            = &( player->main_hand_weapon );
-
-      cooldown->duration = base_execute_time = trigger_gcd = timespan_t::zero();
-    }
-
-    void execute() override
-    {
-      monk_melee_attack_t::execute();
-
-      p()->buff.dual_threat->trigger();
-    }
-  };
-
-  struct auto_attack_t : public monk_melee_attack_t
-  {
-    int sync_weapons;
-
-    dual_threat_t *dual_threat_kick;
-
-    auto_attack_t( monk_t *player, util::string_view options_str )
-      : monk_melee_attack_t( player, "auto_attack" ), sync_weapons( 0 )
-    {
-      add_option( opt_bool( "sync_weapons", sync_weapons ) );
-      parse_options( options_str );
-
-      ignore_false_positive = true;
-      trigger_gcd           = timespan_t::zero();
-      //    background            = true;
-
-      p()->main_hand_attack                    = new melee_t( "melee_main_hand", player, sync_weapons );
-      p()->main_hand_attack->weapon            = &( player->main_hand_weapon );
-      p()->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
-
-      add_child( p()->main_hand_attack );
-
-      if ( player->off_hand_weapon.type != WEAPON_NONE )
-      {
-        if ( !player->dual_wield() )
-          return;
-
-        p()->off_hand_attack                    = new melee_t( "melee_off_hand", player, sync_weapons, true );
-        p()->off_hand_attack->weapon            = &( player->off_hand_weapon );
-        p()->off_hand_attack->base_execute_time = player->off_hand_weapon.swing_time;
-        p()->off_hand_attack->id                = 1;
-
-        add_child( p()->off_hand_attack );
-      }
-
-      if ( p()->talent.windwalker.dual_threat.ok() )
-      {
-        p()->dual_threat_kick = new dual_threat_t( player );
-
-        add_child( p()->dual_threat_kick );
-      }
-    }
-
-    bool ready() override
-    {
-      if ( p()->current.distance_to_move > 5 )
-        return false;
-
-      return ( p()->main_hand_attack->execute_event == nullptr ||
-               ( p()->off_hand_attack && p()->off_hand_attack->execute_event == nullptr ) );  // not swinging
-    }
-
-    void execute() override
-    {
-      if ( player->main_hand_attack )
-        p()->main_hand_attack->schedule_execute();
+    parse_options( options_str );
 
-      if ( player->off_hand_attack )
-        p()->off_hand_attack->schedule_execute();
-    }
-  };
+    sef_ability      = actions::sef_ability_e::SEF_SPINNING_CRANE_KICK;
+    may_combo_strike = true;
+    tick_zero        = true;
+    tick_action      = new sck_tick_action_t( p, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
 
-  // ==========================================================================
-  // Keg Smash
-  // ==========================================================================
-  struct keg_smash_t : monk_melee_attack_t
-  {
-    keg_smash_t( monk_t *player, std::string_view options_str, std::string_view name = "keg_smash" )
-      : monk_melee_attack_t( player, name, player->talent.brewmaster.keg_smash )
+    interrupt_auto_attack = p->specialization() != MONK_WINDWALKER;
+    if ( p->specialization() == MONK_BREWMASTER )
     {
-      parse_options( options_str );
-      // TODO: can cast_during_sck be automated?
+      dot_behavior    = DOT_EXTEND;
       cast_during_sck = true;
 
-      // No auto-parsing is presently possible.
-      reduced_aoe_targets = data().effectN( 7 ).base_value();
-      aoe                 = -1;
-
-      apply_affecting_aura( player->talent.brewmaster.stormstouts_last_keg );
-      parse_effects( player->buff.hit_scheme );
-      // we have to set this up by hand, as scalding brew is scripted
-      if ( const auto &effect = player->talent.brewmaster.scalding_brew->effectN( 1 ); effect.ok() )
-        add_parse_entry( target_multiplier_effects )
-            .set_func( td_fn( &monk_td_t::dots_t::breath_of_fire ) )
-            .set_value( effect.percent() )
-            .set_eff( &effect );
-      parse_effects( player->buff.flow_of_battle_free_keg_smash );
+      if ( p->talent.brewmaster.charred_passions->ok() )
+        add_child( debug_cast<sck_tick_action_t *>( tick_action )->chp_damage );
     }
 
-    void execute() override
+    if ( p->specialization() == MONK_WINDWALKER )
     {
-      monk_melee_attack_t::execute();
-
-      p()->buff.hit_scheme->expire();
-      p()->buff.flow_of_battle_free_keg_smash->expire();
-
-      if ( p()->talent.brewmaster.salsalabims_strength->ok() )
-      {
-        p()->cooldown.breath_of_fire->reset( true );
-        p()->proc.salsalabims_strength->occur();
-      }
-
-      p()->buff.shuffle->trigger( timespan_t::from_seconds( data().effectN( 6 ).base_value() ) );
-
-      timespan_t reduction = timespan_t::from_seconds( data().effectN( 4 ).base_value() );
-      if ( p()->buff.blackout_combo->up() )
-      {
-        reduction += timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 3 ).base_value() );
-        p()->proc.blackout_combo_keg_smash->occur();
-      }
-      p()->buff.blackout_combo->expire();
-
-      p()->baseline.brewmaster.brews.adjust( reduction );
+      channeled    = true;
+      dot_behavior = DOT_CLIP;
     }
 
-    void impact( action_state_t *state ) override
+    if ( p->talent.windwalker.jade_ignition->ok() )
     {
-      monk_melee_attack_t::impact( state );
-      get_td( state->target )->debuff.keg_smash->trigger();
-      if ( p()->buff.weapons_of_order->up() )
-        get_td( state->target )->debuff.weapons_of_order->trigger();
+      chi_x = new chi_explosion_t( p );
+      add_child( chi_x );
     }
-  };
 
-  // ==========================================================================
-  // Touch of Death
-  // ==========================================================================
-  struct touch_of_death_t : public monk_melee_attack_t
+    if ( p->baseline.windwalker.mark_of_the_crane->ok() && p->user_options.motc_override == 0 )
+    {
+      p->register_on_kill_callback( [ p ]( player_t *target ) {
+        if ( p->sim->event_mgr.canceled )
+          return;
+
+        if ( auto target_data = p->get_target_data( target );
+             target_data && target_data->debuff.mark_of_the_crane->up() )
+        {
+          make_event( p->sim, target_data->debuff.mark_of_the_crane->remains(), [ p, target_data ]() {
+            p->sim->print_debug( "mark of the crane fell off dead target: {} ", target_data->target->name_str );
+            p->buff.cyclone_strikes->decrement();
+          } );
+          target_data->debuff.mark_of_the_crane->expire();
+        }
+      } );
+    }
+  }
+
+  bool ready() override
   {
-    touch_of_death_t( monk_t *p, util::string_view options_str )
-      : monk_melee_attack_t( p, "touch_of_death", p->baseline.monk.touch_of_death )
-    {
-      ww_mastery = true;
-      may_crit = hasted_ticks = false;
-      may_combo_strike        = true;
-      cast_during_sck         = true;
-      parse_options( options_str );
-
-      cooldown->duration = data().cooldown();
-
-      apply_affecting_aura( p->talent.monk.fatal_touch );
-    }
-
-    void init() override
-    {
-      monk_melee_attack_t::init();
-
-      snapshot_flags = update_flags = 0;
-    }
-
-    double composite_target_armor( player_t * ) const override
-    {
-      return 0;
-    }
-
-    bool target_ready( player_t *target ) override
-    {
-      // Deals damage equal to 35% of your maximum health against players and stronger creatures under 15% health
-      // 2023-10-19 Tooltip lies and the 15% health works on all non-player targets.
-      if ( p()->talent.monk.improved_touch_of_death->ok() &&
-           ( target->health_percentage() < p()->talent.monk.improved_touch_of_death->effectN( 1 ).base_value() ) )
-        return monk_melee_attack_t::target_ready( target );
-
-      // You exploit the enemy target's weakest point, instantly killing creatures if they have less health than you
-      // Only applicable in health based sims
-      if ( target->current_health() > 0 && target->current_health() <= p()->max_health() )
-        return monk_melee_attack_t::target_ready( target );
-
+    if ( p()->channeling && p()->channeling->id == id )
       return false;
+
+    return monk_melee_attack_t::ready();
+  }
+
+  bool usable_moving() const override
+  {
+    return true;
+  }
+
+  action_state_t *new_state() override
+  {
+    return new spinning_crane_kick_state_t( this, p()->target );
+  }
+
+  double cost_flat_modifier() const override
+  {
+    double c = monk_melee_attack_t::cost_flat_modifier();
+
+    c += p()->buff.dance_of_chiji_hidden->check_value();  // saved as -2
+
+    return c;
+  }
+
+  void execute() override
+  {
+    if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      if ( p()->buff.dance_of_chiji->up() )
+      {
+        p()->buff.dance_of_chiji->decrement();
+        p()->buff.dance_of_chiji_hidden->trigger();
+
+        if ( p()->rng().roll( p()->talent.windwalker.sequenced_strikes->effectN( 1 ).percent() ) )
+          p()->buff.bok_proc->increment();  // increment is used to not incur the rppm cooldown
+      }
+    }
+
+    monk_melee_attack_t::execute();
+
+    timespan_t buff_duration = composite_dot_duration( execute_state );
+
+    p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
+
+    if ( chi_x && p()->buff.chi_energy->up() )
+      chi_x->execute();
+
+    if ( p()->buff.celestial_flames->up() )
+      p()->active_actions.breath_of_fire->execute_on_target( execute_state->target );
+
+    if ( p()->talent.windwalker.transfer_the_power->ok() )
+      p()->buff.transfer_the_power->trigger();
+
+    p()->buff.tigers_ferocity->trigger();
+  }
+
+  void last_tick( dot_t *dot ) override
+  {
+    monk_melee_attack_t::last_tick( dot );
+
+    p()->buff.dance_of_chiji_hidden->expire();
+
+    p()->buff.chi_energy->expire();
+
+    if ( p()->buff.counterstrike->up() )
+      p()->proc.counterstrike_sck->occur();
+  }
+};
+
+// ==========================================================================
+// Fists of Fury
+// ==========================================================================
+
+struct fists_of_fury_tick_t : public monk_melee_attack_t
+{
+  fists_of_fury_tick_t( monk_t *p, util::string_view name )
+    : monk_melee_attack_t( p, name, p->passives.fists_of_fury_tick )
+  {
+    background          = true;
+    aoe                 = -1;
+    reduced_aoe_targets = p->talent.windwalker.fists_of_fury->effectN( 1 ).base_value();
+    full_amount_targets = 1;
+    ww_mastery          = true;
+
+    base_costs[ RESOURCE_CHI ] = 0;
+    dot_duration               = timespan_t::zero();
+    trigger_gcd                = timespan_t::zero();
+
+    parse_effects( p->buff.momentum_boost_damage );
+  }
+
+  double composite_target_multiplier( player_t *target ) const override
+  {
+    double m = monk_melee_attack_t::composite_target_multiplier( target );
+
+    if ( target != p()->target )
+      m *= p()->talent.windwalker.fists_of_fury->effectN( 6 ).percent();
+
+    return m;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    am *= 1 + p()->buff.transfer_the_power->check_stack_value();
+
+    if ( p()->talent.windwalker.momentum_boost.ok() )
+      am *= 1 + ( ( ( 1.0 / p()->composite_melee_haste() ) - 1.0 ) *
+                  p()->talent.windwalker.momentum_boost->effectN( 1 ).percent() );
+
+    return am;
+  }
+
+  void impact( action_state_t *s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    p()->buff.chi_energy->trigger();
+    p()->buff.momentum_boost_damage->trigger();
+  }
+};
+
+struct fists_of_fury_t : public monk_melee_attack_t
+{
+  fists_of_fury_t( monk_t *p, util::string_view options_str )
+    : monk_melee_attack_t( p, "fists_of_fury", p->talent.windwalker.fists_of_fury )
+  {
+    parse_options( options_str );
+
+    cooldown         = p->cooldown.fists_of_fury;
+    sef_ability      = actions::sef_ability_e::SEF_FISTS_OF_FURY;
+    may_combo_strike = true;
+
+    channeled = tick_zero = true;
+    interrupt_auto_attack = true;
+
+    attack_power_mod.direct = 0;
+    weapon_power_mod        = 0;
+
+    may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
+
+    // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
+    base_tick_time = dot_duration / 4;
+
+    ability_lag = p->world_lag;
+
+    tick_action        = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
+    tick_action->stats = stats;
+  }
+
+  bool usable_moving() const override
+  {
+    return true;
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    if ( p()->buff.fury_of_xuen_stacks->up() && rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
+    {
+      p()->buff.fury_of_xuen_stacks->expire();
+      p()->buff.fury_of_xuen->trigger();
+      p()->active_actions.fury_of_xuen_summon->execute();
+    }
+
+    p()->buff.whirling_dragon_punch->trigger();
+
+    p()->buff.tigers_ferocity->trigger();
+  }
+
+  void last_tick( dot_t *dot ) override
+  {
+    monk_melee_attack_t::last_tick( dot );
+
+    // Delay the expiration of the buffs until after the tick action happens.
+    // Otherwise things trigger before the tick action happens; which is not intended.
+    make_event( p()->sim, timespan_t::from_millis( 1 ), [ & ] {
+      p()->buff.transfer_the_power->expire();
+      p()->buff.pressure_point->trigger();
+      p()->buff.momentum_boost_damage->expire();
+      p()->buff.momentum_boost_speed->trigger();
+    } );
+  }
+};
+
+// ==========================================================================
+// Whirling Dragon Punch
+// ==========================================================================
+
+struct whirling_dragon_punch_aoe_tick_t : public monk_melee_attack_t
+{
+  timespan_t delay;
+  whirling_dragon_punch_aoe_tick_t( util::string_view name, monk_t *p, const spell_data_t *s, timespan_t delay )
+    : monk_melee_attack_t( p, name, s ), delay( delay )
+  {
+    ww_mastery = true;
+
+    background          = true;
+    aoe                 = -1;
+    reduced_aoe_targets = p->talent.windwalker.whirling_dragon_punch->effectN( 1 ).base_value();
+
+    name_str_reporting = "wdp_aoe";
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    am *= 1 + p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 2 ).percent();
+
+    return am;
+  }
+};
+
+struct whirling_dragon_punch_st_tick_t : public monk_melee_attack_t
+{
+  whirling_dragon_punch_st_tick_t( util::string_view name, monk_t *p, const spell_data_t *s )
+    : monk_melee_attack_t( p, name, s )
+  {
+    ww_mastery = true;
+
+    background = true;
+
+    name_str_reporting = "wdp_st";
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    am *= 1 + p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 2 ).percent();
+
+    return am;
+  }
+};
+
+struct whirling_dragon_punch_t : public monk_melee_attack_t
+{
+  struct whirling_dragon_punch_state_t : public action_state_t
+  {
+    whirling_dragon_punch_state_t( action_t *a, player_t *target ) : action_state_t( a, target )
+    {
+    }
+
+    proc_types2 cast_proc_type2() const override
+    {
+      // Whirling Dragon Punch seems to trigger Bron's Call to Action (and possibly other
+      // effects that care about casts).
+      return PROC2_CAST_GENERIC;
+    }
+  };
+
+  std::array<whirling_dragon_punch_aoe_tick_t *, 3> aoe_ticks;
+  whirling_dragon_punch_st_tick_t *st_tick;
+
+  struct whirling_dragon_punch_tick_event_t : public event_t
+  {
+    whirling_dragon_punch_aoe_tick_t *tick;
+
+    whirling_dragon_punch_tick_event_t( whirling_dragon_punch_aoe_tick_t *tick, timespan_t delay )
+      : event_t( *tick->player, delay ), tick( tick )
+    {
     }
 
     void execute() override
     {
-      monk_melee_attack_t::execute();
-
-      p()->buff.touch_of_death_ww->trigger();
-      p()->buff.fatal_touch->trigger();
-    }
-
-    void impact( action_state_t *s ) override
-    {
-      double max_hp, amount;
-
-      // In execute range ToD deals player's max HP
-      amount = max_hp = p()->max_health();
-
-      // Not in execute range
-      // or not a health-based fight style
-      // or a secondary target... these always get hit for the 35% from Improved Touch of Death regardless if you're
-      // talented into it or not
-      if ( s->chain_target > 0 || target->current_health() == 0 || target->current_health() > max_hp )
-      {
-        amount *= p()->passives.improved_touch_of_death->effectN( 2 ).percent();  // 0.35
-
-        amount *= 1 + p()->talent.windwalker.meridian_strikes->effectN( 1 ).percent();
-
-        // Damage is only affected by Windwalker's Mastery
-        // Versatility does not affect the damage of Touch of Death.
-        if ( p()->buff.combo_strikes->up() )
-          amount *= 1 + p()->cache.mastery_value();
-      }
-
-      s->result_total = s->result_raw = amount;
-
-      monk_melee_attack_t::impact( s );
-
-      if ( p()->baseline.brewmaster.stagger->ok() )
-      {
-        p()->find_stagger( "Stagger" )
-            ->purify_flat( amount * p()->baseline.brewmaster.touch_of_death_rank_3->effectN( 1 ).percent(),
-                           "touch_of_death" );
-      }
+      tick->execute();
     }
   };
 
-  // ==========================================================================
-  // Touch of Karma
-  // ==========================================================================
-  // When Touch of Karma (ToK) is activated, two spells are placed. A buff on the player (id: 125174), and a
-  // debuff on the target (id: 122470). Whenever the player takes damage, a dot (id: 124280) is placed on
-  // the target that increases as the player takes damage. Each time the player takes damage, the dot is refreshed
-  // and recalculates the dot size based on the current dot size. Just to make it easier to code, I'll wait until
-  // the Touch of Karma buff expires before placing a dot on the target. Net result should be the same.
-
-  // 8.1 Good Karma - If the player still has the ToK buff on them, each time the target hits the player, the amount
-  // absorbed is immediatly healed by the Good Karma spell (id: 285594)
-
-  struct touch_of_karma_dot_t : public residual_action::residual_periodic_action_t<spell_t>
+  whirling_dragon_punch_t( monk_t *p, util::string_view options_str )
+    : monk_melee_attack_t( p, "whirling_dragon_punch", p->talent.windwalker.whirling_dragon_punch )
   {
-    using base_t = residual_action::residual_periodic_action_t<spell_t>;
-    touch_of_karma_dot_t( monk_t *p ) : base_t( "touch_of_karma", p, p->passives.touch_of_karma_tick )
+    sef_ability = actions::sef_ability_e::SEF_WHIRLING_DRAGON_PUNCH;
+
+    parse_options( options_str );
+    interrupt_auto_attack = false;
+    channeled             = false;
+    may_combo_strike      = true;
+    cast_during_sck       = false;
+
+    spell_power_mod.direct = 0.0;
+
+    // 3 server-side hardcoded ticks
+    for ( size_t i = 0; i < aoe_ticks.size(); ++i )
     {
-      may_miss = may_crit = false;
-      dual                = true;
-      proc                = true;
-      ap_type             = attack_power_type::NO_WEAPON;
+      auto delay     = base_tick_time * i;
+      aoe_ticks[ i ] = new whirling_dragon_punch_aoe_tick_t( "whirling_dragon_punch_aoe_tick", p,
+                                                             p->passives.whirling_dragon_punch_aoe_tick, delay );
+
+      add_child( aoe_ticks[ i ] );
     }
 
-    // Need to disable multipliers in init() so that it doesn't double-dip on anything
-    void init() override
-    {
-      base_t::init();
-      // disable the snapshot_flags for all multipliers
-      snapshot_flags = update_flags = 0;
-      snapshot_flags |= STATE_VERSATILITY;
-    }
-  };
+    st_tick = new whirling_dragon_punch_st_tick_t( "whirling_dragon_punch_st_tick", p,
+                                                   p->passives.whirling_dragon_punch_st_tick );
+    add_child( st_tick );
 
-  struct touch_of_karma_t : public monk_melee_attack_t
+    apply_affecting_aura( p->talent.windwalker.revolving_whirl );
+  }
+
+  action_state_t *new_state() override
   {
-    double interval;
-    double interval_stddev;
-    double interval_stddev_opt;
-    double pct_health;
-    touch_of_karma_dot_t *touch_of_karma_dot;
-    touch_of_karma_t( monk_t *p, util::string_view options_str )
-      : monk_melee_attack_t( p, "touch_of_karma", p->baseline.windwalker.touch_of_karma ),
-        interval( 100 ),
-        interval_stddev( 0.05 ),
-        interval_stddev_opt( 0 ),
-        pct_health( 0.5 ),
-        touch_of_karma_dot( new touch_of_karma_dot_t( p ) )
-    {
-      add_option( opt_float( "interval", interval ) );
-      add_option( opt_float( "interval_stddev", interval_stddev_opt ) );
-      add_option( opt_float( "pct_health", pct_health ) );
-      parse_options( options_str );
+    return new whirling_dragon_punch_state_t( this, p()->target );
+  }
 
-      cooldown->duration = data().cooldown();
-      base_dd_min = base_dd_max = 0;
-      ap_type                   = attack_power_type::NO_WEAPON;
-      cast_during_sck           = true;
-
-      double max_pct = data().effectN( 3 ).percent();
-
-      if ( pct_health > max_pct )  // Does a maximum of 50% of the monk's HP.
-        pct_health = max_pct;
-
-      if ( interval < cooldown->duration.total_seconds() )
-      {
-        sim->error( "{} minimum interval for Touch of Karma is 90 seconds.", *player );
-        interval = cooldown->duration.total_seconds();
-      }
-
-      if ( interval_stddev_opt < 1 )
-        interval_stddev = interval * interval_stddev_opt;
-      // >= 1 seconds is used as a standard deviation normally
-      else
-        interval_stddev = interval_stddev_opt;
-
-      trigger_gcd = timespan_t::zero();
-      may_crit = may_miss = may_dodge = may_parry = false;
-    }
-
-    // Need to disable multipliers in init() so that it doesn't double-dip on anything
-    void init() override
-    {
-      monk_melee_attack_t::init();
-      // disable the snapshot_flags for all multipliers
-      snapshot_flags = update_flags = 0;
-    }
-
-    bool target_ready( player_t *target ) override
-    {
-      if ( target->name_str == "Target Dummy" )
-        return false;
-
-      return monk_melee_attack_t::target_ready( target );
-    }
-
-    void execute() override
-    {
-      timespan_t new_cd        = timespan_t::from_seconds( rng().gauss( interval, interval_stddev ) );
-      timespan_t data_cooldown = data().cooldown();
-      if ( new_cd < data_cooldown )
-        new_cd = data_cooldown;
-
-      cooldown->duration = new_cd;
-
-      monk_melee_attack_t::execute();
-
-      if ( pct_health > 0 )
-      {
-        double damage_amount = pct_health * player->max_health();
-
-        // Redirects 70% of the damage absorbed
-        damage_amount *= data().effectN( 4 ).percent();
-
-        residual_action::trigger( touch_of_karma_dot, execute_state->target, damage_amount );
-      }
-    }
-  };
-
-  // ==========================================================================
-  // Provoke
-  // ==========================================================================
-
-  struct provoke_t : public monk_melee_attack_t
+  void execute() override
   {
-    provoke_t( monk_t *p, util::string_view options_str )
-      : monk_melee_attack_t( p, "provoke", p->baseline.monk.provoke )
+    monk_melee_attack_t::execute();
+
+    p()->movement.whirling_dragon_punch->trigger();
+
+    for ( auto &tick : aoe_ticks )
+      make_event<whirling_dragon_punch_tick_event_t>( *sim, tick, tick->delay );
+
+    st_tick->execute();
+
+    if ( p()->talent.windwalker.knowledge_of_the_broken_temple->ok() &&
+         p()->talent.windwalker.teachings_of_the_monastery->ok() )
     {
-      parse_options( options_str );
-      use_off_gcd           = true;
-      ignore_false_positive = true;
+      int stacks = as<int>( p()->talent.windwalker.knowledge_of_the_broken_temple->effectN( 1 ).base_value() );
+      p()->buff.teachings_of_the_monastery->trigger( stacks );
     }
 
-    void impact( action_state_t *s ) override
-    {
-      if ( s->target->is_enemy() )
-        target->taunt( player );
+    // TODO: Check if this can proc without being talented into DoCJ
+    if ( p()->talent.windwalker.dance_of_chiji->ok() &&
+         p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
+      p()->buff.dance_of_chiji->increment();  // increment is used to not incur the rppm cooldown
 
-      monk_melee_attack_t::impact( s );
-    }
-  };
+    p()->buff.tigers_ferocity->trigger();
+  }
 
-  // ==========================================================================
-  // Spear Hand Strike
-  // ==========================================================================
-
-  struct spear_hand_strike_t : public monk_melee_attack_t
+  bool ready() override
   {
-    spear_hand_strike_t( monk_t *p, util::string_view options_str )
-      : monk_melee_attack_t( p, "spear_hand_strike", p->talent.monk.spear_hand_strike )
-    {
-      parse_options( options_str );
-      ignore_false_positive = true;
-      is_interrupt          = true;
-      cast_during_sck       = player->specialization() != MONK_WINDWALKER;
-      may_miss = may_block = may_dodge = may_parry = false;
-    }
-  };
-
-  // ==========================================================================
-  // Leg Sweep
-  // ==========================================================================
-
-  struct leg_sweep_t : public monk_melee_attack_t
-  {
-    leg_sweep_t( monk_t *p, util::string_view options_str )
-      : monk_melee_attack_t( p, "leg_sweep", p->baseline.monk.leg_sweep )
-    {
-      parse_options( options_str );
-      ignore_false_positive = true;
-      may_miss = may_block = may_dodge = may_parry = false;
-      cast_during_sck                              = player->specialization() != MONK_WINDWALKER;
-
-      radius += p->talent.monk.tiger_tail_sweep->effectN( 1 ).base_value();
-    }
-  };
-
-  // ==========================================================================
-  // Paralysis
-  // ==========================================================================
-
-  struct paralysis_t : public monk_melee_attack_t
-  {
-    paralysis_t( monk_t *p, util::string_view options_str )
-      : monk_melee_attack_t( p, "paralysis", p->talent.monk.paralysis )
-    {
-      parse_options( options_str );
-      ignore_false_positive = true;
-      may_miss = may_block = may_dodge = may_parry = false;
-    }
-  };
-
-  // ==========================================================================
-  // Flying Serpent Kick
-  // ==========================================================================
-
-  struct flying_serpent_kick_t : public monk_melee_attack_t
-  {
-    bool first_charge;
-    double movement_speed_increase;
-    flying_serpent_kick_t( monk_t *p, util::string_view options_str )
-      : monk_melee_attack_t( p, "flying_serpent_kick", p->baseline.windwalker.flying_serpent_kick ),
-        first_charge( true ),
-        movement_speed_increase( p->baseline.windwalker.flying_serpent_kick->effectN( 1 ).percent() )
-    {
-      parse_options( options_str );
-      may_crit                        = true;
-      ww_mastery                      = true;
-      may_combo_strike                = true;
-      ignore_false_positive           = true;
-      movement_directionality         = movement_direction_type::OMNI;
-      aoe                             = -1;
-      p->cooldown.flying_serpent_kick = cooldown;
-    }
-
-    void reset() override
-    {
-      monk_melee_attack_t::reset();
-      first_charge = true;
-    }
-
-    bool ready() override
-    {
-      if ( first_charge )  // Assumes that we fsk into combat, instead of setting initial distance to 20 yards.
-        return monk_melee_attack_t::ready();
-
+    // Only usable while Fists of Fury and Rising Sun Kick are on cooldown.
+    if ( p()->buff.whirling_dragon_punch->up() )
       return monk_melee_attack_t::ready();
-    }
 
-    void execute() override
+    return false;
+  }
+};
+
+// ==========================================================================
+// Strike of the Windlord
+// ==========================================================================
+// Off hand hits first followed by main hand
+// The ability does NOT require an off-hand weapon to be executed.
+// The ability uses the main-hand weapon damage for both attacks
+
+struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
+{
+  strike_of_the_windlord_main_hand_t( monk_t *p, const char *name, const spell_data_t *s )
+    : monk_melee_attack_t( p, name, s )
+  {
+    sef_ability = actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD;
+
+    ww_mastery = true;
+    ap_type    = attack_power_type::WEAPON_MAINHAND;
+
+    aoe       = -1;
+    may_dodge = may_parry = may_block = may_miss = true;
+    dual = background = true;
+  }
+
+  // Damage must be divided on non-main target by the number of targets
+  double composite_aoe_multiplier( const action_state_t *state ) const override
+  {
+    if ( state->target != target )
     {
-      if ( p()->current.distance_to_move >= 0 )
+      return 1.0 / state->n_targets;
+    }
+
+    return 1.0;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    am *= 1 + p()->talent.windwalker.communion_with_wind->effectN( 2 ).percent();
+
+    return am;
+  }
+};
+
+struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
+{
+  strike_of_the_windlord_off_hand_t( monk_t *p, const char *name, const spell_data_t *s )
+    : monk_melee_attack_t( p, name, s )
+  {
+    sef_ability = actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH;
+    ww_mastery  = true;
+    ap_type     = attack_power_type::WEAPON_OFFHAND;
+
+    aoe       = -1;
+    may_dodge = may_parry = may_block = may_miss = true;
+    dual = background = true;
+  }
+
+  // Damage must be divided on non-main target by the number of targets
+  double composite_aoe_multiplier( const action_state_t *state ) const override
+  {
+    if ( state->target != target )
+    {
+      return 1.0 / state->n_targets;
+    }
+
+    return 1.0;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    am *= 1 + p()->talent.windwalker.communion_with_wind->effectN( 2 ).percent();
+
+    return am;
+  }
+
+  void impact( action_state_t *s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( p()->talent.windwalker.thunderfist.ok() )
+    {
+      int thunderfist_stacks = 1;
+
+      if ( s->chain_target == 0 )
+        thunderfist_stacks += as<int>( p()->talent.windwalker.thunderfist->effectN( 1 ).base_value() );
+
+      p()->buff.thunderfist->trigger( thunderfist_stacks );
+    }
+
+    if ( p()->talent.windwalker.rushing_jade_wind.ok() )
+      p()->trigger_mark_of_the_crane( s );
+
+    if ( p()->talent.windwalker.gale_force.ok() )
+      get_td( s->target )->debuff.gale_force->trigger();
+  }
+};
+
+struct strike_of_the_windlord_t : public monk_melee_attack_t
+{
+  strike_of_the_windlord_main_hand_t *mh_attack;
+  strike_of_the_windlord_off_hand_t *oh_attack;
+
+  strike_of_the_windlord_t( monk_t *p, util::string_view options_str )
+    : monk_melee_attack_t( p, "strike_of_the_windlord", p->talent.windwalker.strike_of_the_windlord ),
+      mh_attack( nullptr ),
+      oh_attack( nullptr )
+  {
+    apply_affecting_effect( p->talent.windwalker.communion_with_wind->effectN( 1 ) );
+
+    may_combo_strike = true;
+    cast_during_sck  = false;
+    cooldown->hasted = false;
+    trigger_gcd      = data().gcd();
+
+    parse_options( options_str );
+
+    oh_attack =
+        new strike_of_the_windlord_off_hand_t( p, "strike_of_the_windlord_offhand", data().effectN( 4 ).trigger() );
+    mh_attack =
+        new strike_of_the_windlord_main_hand_t( p, "strike_of_the_windlord_mainhand", data().effectN( 3 ).trigger() );
+
+    add_child( oh_attack );
+    add_child( mh_attack );
+
+    if ( p->talent.windwalker.thunderfist.ok() )
+      add_child( p->passive_actions.thunderfist );
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    // Off-hand attack hits first
+    oh_attack->execute();
+
+    if ( result_is_hit( oh_attack->execute_state->result ) )
+      mh_attack->execute();
+
+    if ( p()->talent.windwalker.rushing_jade_wind.ok() )
+    {
+      p()->buff.rushing_jade_wind->trigger();
+      if ( p()->bugs )
+        combo_strikes_trigger();
+    }
+
+    p()->buff.tigers_ferocity->trigger();
+
+    if ( p()->talent.windwalker.darting_hurricane.ok() )
+      p()->buff.darting_hurricane->increment(
+          as<int>( p()->talent.windwalker.darting_hurricane->effectN( 2 )
+                       .base_value() ) );  // increment is used to not incur the rppm cooldown
+
+    if ( p()->buff.heart_of_the_jade_serpent->up() )
+    {
+      p()->buff.heart_of_the_jade_serpent_cdr->trigger();
+      p()->buff.inner_compass_serpent_stance->trigger();
+      p()->buff.heart_of_the_jade_serpent->decrement();
+    }
+  }
+};
+
+// ==========================================================================
+// Thunderfist
+// ==========================================================================
+
+struct thunderfist_t : public monk_spell_t
+{
+  thunderfist_t( monk_t *player )
+    : monk_spell_t( player, "thunderfist", player->passives.thunderfist->effectN( 1 ).trigger() )
+  {
+    background = true;
+    may_crit   = true;
+  }
+
+  virtual void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->buff.thunderfist->decrement( 1 );
+  }
+};
+
+// ==========================================================================
+// Melee
+// ==========================================================================
+
+struct press_the_advantage_melee_t : public monk_spell_t
+{
+  press_the_advantage_melee_t( monk_t *player )
+    : monk_spell_t( player, "press_the_advantage", player->find_spell( 418360 ) )
+  {
+    background = true;
+
+    if ( p()->talent.brewmaster.press_the_advantage->ok() && p()->talent.brewmaster.chi_surge->ok() )
+      add_child( p()->active_actions.chi_surge );
+  }
+};
+
+struct melee_t : public monk_melee_attack_t
+{
+  int sync_weapons;
+  bool dual_threat_enabled = true;  // Dual Threat requires one succesful melee inbetween casts
+  bool first;
+  bool oh;
+
+  melee_t( util::string_view name, monk_t *player, int sw, bool is_oh = false )
+    : monk_melee_attack_t( player, name ), sync_weapons( sw ), first( true ), oh( is_oh )
+  {
+    background = repeating = may_glance = true;
+    may_crit                            = true;
+    trigger_gcd                         = timespan_t::zero();
+    special                             = false;
+    school                              = SCHOOL_PHYSICAL;
+    weapon_multiplier                   = 1.0;
+    allow_class_ability_procs           = true;
+    not_a_proc                          = true;
+
+    monk_melee_attack_t::apply_buff_effects();
+    monk_melee_attack_t::apply_debuff_effects();
+
+    if ( player->main_hand_weapon.group() == WEAPON_1H )
+    {
+      if ( player->specialization() != MONK_MISTWEAVER )
+        base_hit -= 0.19;
+    }
+  }
+
+  void reset() override
+  {
+    monk_melee_attack_t::reset();
+    first = true;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t t = monk_melee_attack_t::execute_time();
+
+    if ( first )
+      return ( weapon->slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 )
+                                               : timespan_t::zero();
+    else
+      return t;
+  }
+
+  void execute() override
+  {
+    first = false;
+    monk_melee_attack_t::execute();
+  }
+
+  void impact( action_state_t *s ) override
+  {
+    if ( dual_threat_enabled && p()->rng().roll( p()->talent.windwalker.dual_threat->effectN( 1 ).percent() ) )
+    {
+      s->result_total = 0;
+      p()->dual_threat_kick->execute();
+      dual_threat_enabled = false;
+    }
+    else
+    {
+      monk_melee_attack_t::impact( s );
+
+      if ( p()->talent.brewmaster.press_the_advantage->ok() && weapon->slot == SLOT_MAIN_HAND )
+        p()->buff.press_the_advantage->trigger();
+
+      if ( result_is_hit( s->result ) )
       {
-        p()->buff.flying_serpent_kick_movement->trigger(
-            1, movement_speed_increase, 1,
-            timespan_t::from_seconds(
-                std::min( 1.5, p()->current.distance_to_move /
-                                   ( p()->base_movement_speed *
-                                     ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) ) ) );
-        p()->current.moving_away = 0;
-      }
+        if ( p()->talent.brewmaster.press_the_advantage->ok() && weapon->slot == SLOT_MAIN_HAND )
+        {
+          // Reduce Brew cooldown by 0.5 seconds
+          p()->baseline.brewmaster.brews.adjust(
+              p()->talent.brewmaster.press_the_advantage->effectN( 1 ).time_value() );
 
-      monk_melee_attack_t::execute();
+          // Trigger the Press the Advantage damage proc
+          p()->passive_actions.press_the_advantage->target = s->target;
+          p()->passive_actions.press_the_advantage->schedule_execute();
+        }
 
-      if ( first_charge )
-      {
-        p()->movement.flying_serpent_kick->trigger();
+        if ( p()->buff.thunderfist->up() )
+          p()->passive_actions.thunderfist->execute_on_target( s->target );
 
-        first_charge = !first_charge;
+        dual_threat_enabled = true;
       }
     }
-  };
+  }
+};
+
+// ==========================================================================
+// Auto Attack
+// ==========================================================================
+
+// Dual Threat WW Talent
+
+struct dual_threat_t : public monk_melee_attack_t
+{
+  dual_threat_t( monk_t *p ) : monk_melee_attack_t( p, "dual_threat_kick", p->passives.dual_threat_kick )
+  {
+    background = true;
+    may_glance = true;
+    may_crit   = true;  // I assume so? This ability doesn't appear in the combat log yet on alpha
+
+    allow_class_ability_procs = false;  // Is not proccing Thunderfist or other class ability procs
+
+    school            = SCHOOL_PHYSICAL;
+    weapon_multiplier = 1.0;
+    weapon            = &( player->main_hand_weapon );
+
+    cooldown->duration = base_execute_time = trigger_gcd = timespan_t::zero();
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    p()->buff.dual_threat->trigger();
+  }
+};
+
+struct auto_attack_t : public monk_melee_attack_t
+{
+  int sync_weapons;
+
+  dual_threat_t *dual_threat_kick;
+
+  auto_attack_t( monk_t *player, util::string_view options_str )
+    : monk_melee_attack_t( player, "auto_attack" ), sync_weapons( 0 )
+  {
+    add_option( opt_bool( "sync_weapons", sync_weapons ) );
+    parse_options( options_str );
+
+    ignore_false_positive = true;
+    trigger_gcd           = timespan_t::zero();
+    //    background            = true;
+
+    p()->main_hand_attack                    = new melee_t( "melee_main_hand", player, sync_weapons );
+    p()->main_hand_attack->weapon            = &( player->main_hand_weapon );
+    p()->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
+
+    add_child( p()->main_hand_attack );
+
+    if ( player->off_hand_weapon.type != WEAPON_NONE )
+    {
+      if ( !player->dual_wield() )
+        return;
+
+      p()->off_hand_attack                    = new melee_t( "melee_off_hand", player, sync_weapons, true );
+      p()->off_hand_attack->weapon            = &( player->off_hand_weapon );
+      p()->off_hand_attack->base_execute_time = player->off_hand_weapon.swing_time;
+      p()->off_hand_attack->id                = 1;
+
+      add_child( p()->off_hand_attack );
+    }
+
+    if ( p()->talent.windwalker.dual_threat.ok() )
+    {
+      p()->dual_threat_kick = new dual_threat_t( player );
+
+      add_child( p()->dual_threat_kick );
+    }
+  }
+
+  bool ready() override
+  {
+    if ( p()->current.distance_to_move > 5 )
+      return false;
+
+    return ( p()->main_hand_attack->execute_event == nullptr ||
+             ( p()->off_hand_attack && p()->off_hand_attack->execute_event == nullptr ) );  // not swinging
+  }
+
+  void execute() override
+  {
+    if ( player->main_hand_attack )
+      p()->main_hand_attack->schedule_execute();
+
+    if ( player->off_hand_attack )
+      p()->off_hand_attack->schedule_execute();
+  }
+};
+
+// ==========================================================================
+// Keg Smash
+// ==========================================================================
+struct keg_smash_t : monk_melee_attack_t
+{
+  keg_smash_t( monk_t *player, std::string_view options_str, std::string_view name = "keg_smash" )
+    : monk_melee_attack_t( player, name, player->talent.brewmaster.keg_smash )
+  {
+    parse_options( options_str );
+    // TODO: can cast_during_sck be automated?
+    cast_during_sck = true;
+
+    // No auto-parsing is presently possible.
+    reduced_aoe_targets = data().effectN( 7 ).base_value();
+    aoe                 = -1;
+
+    apply_affecting_aura( player->talent.brewmaster.stormstouts_last_keg );
+    parse_effects( player->buff.hit_scheme );
+    // we have to set this up by hand, as scalding brew is scripted
+    if ( const auto &effect = player->talent.brewmaster.scalding_brew->effectN( 1 ); effect.ok() )
+      add_parse_entry( target_multiplier_effects )
+          .set_func( td_fn( &monk_td_t::dots_t::breath_of_fire ) )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
+    parse_effects( player->buff.flow_of_battle_free_keg_smash );
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    p()->buff.hit_scheme->expire();
+    p()->buff.flow_of_battle_free_keg_smash->expire();
+
+    if ( p()->talent.brewmaster.salsalabims_strength->ok() )
+    {
+      p()->cooldown.breath_of_fire->reset( true );
+      p()->proc.salsalabims_strength->occur();
+    }
+
+    p()->buff.shuffle->trigger( timespan_t::from_seconds( data().effectN( 6 ).base_value() ) );
+
+    timespan_t reduction = timespan_t::from_seconds( data().effectN( 4 ).base_value() );
+    if ( p()->buff.blackout_combo->up() )
+    {
+      reduction += timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 3 ).base_value() );
+      p()->proc.blackout_combo_keg_smash->occur();
+    }
+    p()->buff.blackout_combo->expire();
+
+    p()->baseline.brewmaster.brews.adjust( reduction );
+  }
+
+  void impact( action_state_t *state ) override
+  {
+    monk_melee_attack_t::impact( state );
+    get_td( state->target )->debuff.keg_smash->trigger();
+    if ( p()->buff.weapons_of_order->up() )
+      get_td( state->target )->debuff.weapons_of_order->trigger();
+  }
+};
+
+// ==========================================================================
+// Touch of Death
+// ==========================================================================
+struct touch_of_death_t : public monk_melee_attack_t
+{
+  touch_of_death_t( monk_t *p, util::string_view options_str )
+    : monk_melee_attack_t( p, "touch_of_death", p->baseline.monk.touch_of_death )
+  {
+    ww_mastery = true;
+    may_crit = hasted_ticks = false;
+    may_combo_strike        = true;
+    cast_during_sck         = true;
+    parse_options( options_str );
+
+    cooldown->duration = data().cooldown();
+
+    apply_affecting_aura( p->talent.monk.fatal_touch );
+  }
+
+  void init() override
+  {
+    monk_melee_attack_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+
+  double composite_target_armor( player_t * ) const override
+  {
+    return 0;
+  }
+
+  bool target_ready( player_t *target ) override
+  {
+    // Deals damage equal to 35% of your maximum health against players and stronger creatures under 15% health
+    // 2023-10-19 Tooltip lies and the 15% health works on all non-player targets.
+    if ( p()->talent.monk.improved_touch_of_death->ok() &&
+         ( target->health_percentage() < p()->talent.monk.improved_touch_of_death->effectN( 1 ).base_value() ) )
+      return monk_melee_attack_t::target_ready( target );
+
+    // You exploit the enemy target's weakest point, instantly killing creatures if they have less health than you
+    // Only applicable in health based sims
+    if ( target->current_health() > 0 && target->current_health() <= p()->max_health() )
+      return monk_melee_attack_t::target_ready( target );
+
+    return false;
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    p()->buff.touch_of_death_ww->trigger();
+    p()->buff.fatal_touch->trigger();
+  }
+
+  void impact( action_state_t *s ) override
+  {
+    double max_hp, amount;
+
+    // In execute range ToD deals player's max HP
+    amount = max_hp = p()->max_health();
+
+    // Not in execute range
+    // or not a health-based fight style
+    // or a secondary target... these always get hit for the 35% from Improved Touch of Death regardless if you're
+    // talented into it or not
+    if ( s->chain_target > 0 || target->current_health() == 0 || target->current_health() > max_hp )
+    {
+      amount *= p()->passives.improved_touch_of_death->effectN( 2 ).percent();  // 0.35
+
+      amount *= 1 + p()->talent.windwalker.meridian_strikes->effectN( 1 ).percent();
+
+      // Damage is only affected by Windwalker's Mastery
+      // Versatility does not affect the damage of Touch of Death.
+      if ( p()->buff.combo_strikes->up() )
+        amount *= 1 + p()->cache.mastery_value();
+    }
+
+    s->result_total = s->result_raw = amount;
+
+    monk_melee_attack_t::impact( s );
+
+    if ( p()->baseline.brewmaster.stagger->ok() )
+    {
+      p()->find_stagger( "Stagger" )
+          ->purify_flat( amount * p()->baseline.brewmaster.touch_of_death_rank_3->effectN( 1 ).percent(),
+                         "touch_of_death" );
+    }
+  }
+};
+
+// ==========================================================================
+// Touch of Karma
+// ==========================================================================
+// When Touch of Karma (ToK) is activated, two spells are placed. A buff on the player (id: 125174), and a
+// debuff on the target (id: 122470). Whenever the player takes damage, a dot (id: 124280) is placed on
+// the target that increases as the player takes damage. Each time the player takes damage, the dot is refreshed
+// and recalculates the dot size based on the current dot size. Just to make it easier to code, I'll wait until
+// the Touch of Karma buff expires before placing a dot on the target. Net result should be the same.
+
+// 8.1 Good Karma - If the player still has the ToK buff on them, each time the target hits the player, the amount
+// absorbed is immediatly healed by the Good Karma spell (id: 285594)
+
+struct touch_of_karma_dot_t : public residual_action::residual_periodic_action_t<spell_t>
+{
+  using base_t = residual_action::residual_periodic_action_t<spell_t>;
+  touch_of_karma_dot_t( monk_t *p ) : base_t( "touch_of_karma", p, p->passives.touch_of_karma_tick )
+  {
+    may_miss = may_crit = false;
+    dual                = true;
+    proc                = true;
+    ap_type             = attack_power_type::NO_WEAPON;
+  }
+
+  // Need to disable multipliers in init() so that it doesn't double-dip on anything
+  void init() override
+  {
+    base_t::init();
+    // disable the snapshot_flags for all multipliers
+    snapshot_flags = update_flags = 0;
+    snapshot_flags |= STATE_VERSATILITY;
+  }
+};
+
+struct touch_of_karma_t : public monk_melee_attack_t
+{
+  double interval;
+  double interval_stddev;
+  double interval_stddev_opt;
+  double pct_health;
+  touch_of_karma_dot_t *touch_of_karma_dot;
+  touch_of_karma_t( monk_t *p, util::string_view options_str )
+    : monk_melee_attack_t( p, "touch_of_karma", p->baseline.windwalker.touch_of_karma ),
+      interval( 100 ),
+      interval_stddev( 0.05 ),
+      interval_stddev_opt( 0 ),
+      pct_health( 0.5 ),
+      touch_of_karma_dot( new touch_of_karma_dot_t( p ) )
+  {
+    add_option( opt_float( "interval", interval ) );
+    add_option( opt_float( "interval_stddev", interval_stddev_opt ) );
+    add_option( opt_float( "pct_health", pct_health ) );
+    parse_options( options_str );
+
+    cooldown->duration = data().cooldown();
+    base_dd_min = base_dd_max = 0;
+    ap_type                   = attack_power_type::NO_WEAPON;
+    cast_during_sck           = true;
+
+    double max_pct = data().effectN( 3 ).percent();
+
+    if ( pct_health > max_pct )  // Does a maximum of 50% of the monk's HP.
+      pct_health = max_pct;
+
+    if ( interval < cooldown->duration.total_seconds() )
+    {
+      sim->error( "{} minimum interval for Touch of Karma is 90 seconds.", *player );
+      interval = cooldown->duration.total_seconds();
+    }
+
+    if ( interval_stddev_opt < 1 )
+      interval_stddev = interval * interval_stddev_opt;
+    // >= 1 seconds is used as a standard deviation normally
+    else
+      interval_stddev = interval_stddev_opt;
+
+    trigger_gcd = timespan_t::zero();
+    may_crit = may_miss = may_dodge = may_parry = false;
+  }
+
+  // Need to disable multipliers in init() so that it doesn't double-dip on anything
+  void init() override
+  {
+    monk_melee_attack_t::init();
+    // disable the snapshot_flags for all multipliers
+    snapshot_flags = update_flags = 0;
+  }
+
+  bool target_ready( player_t *target ) override
+  {
+    if ( target->name_str == "Target Dummy" )
+      return false;
+
+    return monk_melee_attack_t::target_ready( target );
+  }
+
+  void execute() override
+  {
+    timespan_t new_cd        = timespan_t::from_seconds( rng().gauss( interval, interval_stddev ) );
+    timespan_t data_cooldown = data().cooldown();
+    if ( new_cd < data_cooldown )
+      new_cd = data_cooldown;
+
+    cooldown->duration = new_cd;
+
+    monk_melee_attack_t::execute();
+
+    if ( pct_health > 0 )
+    {
+      double damage_amount = pct_health * player->max_health();
+
+      // Redirects 70% of the damage absorbed
+      damage_amount *= data().effectN( 4 ).percent();
+
+      residual_action::trigger( touch_of_karma_dot, execute_state->target, damage_amount );
+    }
+  }
+};
+
+// ==========================================================================
+// Provoke
+// ==========================================================================
+
+struct provoke_t : public monk_melee_attack_t
+{
+  provoke_t( monk_t *p, util::string_view options_str ) : monk_melee_attack_t( p, "provoke", p->baseline.monk.provoke )
+  {
+    parse_options( options_str );
+    use_off_gcd           = true;
+    ignore_false_positive = true;
+  }
+
+  void impact( action_state_t *s ) override
+  {
+    if ( s->target->is_enemy() )
+      target->taunt( player );
+
+    monk_melee_attack_t::impact( s );
+  }
+};
+
+// ==========================================================================
+// Spear Hand Strike
+// ==========================================================================
+
+struct spear_hand_strike_t : public monk_melee_attack_t
+{
+  spear_hand_strike_t( monk_t *p, util::string_view options_str )
+    : monk_melee_attack_t( p, "spear_hand_strike", p->talent.monk.spear_hand_strike )
+  {
+    parse_options( options_str );
+    ignore_false_positive = true;
+    is_interrupt          = true;
+    cast_during_sck       = player->specialization() != MONK_WINDWALKER;
+    may_miss = may_block = may_dodge = may_parry = false;
+  }
+};
+
+// ==========================================================================
+// Leg Sweep
+// ==========================================================================
+
+struct leg_sweep_t : public monk_melee_attack_t
+{
+  leg_sweep_t( monk_t *p, util::string_view options_str )
+    : monk_melee_attack_t( p, "leg_sweep", p->baseline.monk.leg_sweep )
+  {
+    parse_options( options_str );
+    ignore_false_positive = true;
+    may_miss = may_block = may_dodge = may_parry = false;
+    cast_during_sck                              = player->specialization() != MONK_WINDWALKER;
+
+    radius += p->talent.monk.tiger_tail_sweep->effectN( 1 ).base_value();
+  }
+};
+
+// ==========================================================================
+// Paralysis
+// ==========================================================================
+
+struct paralysis_t : public monk_melee_attack_t
+{
+  paralysis_t( monk_t *p, util::string_view options_str )
+    : monk_melee_attack_t( p, "paralysis", p->talent.monk.paralysis )
+  {
+    parse_options( options_str );
+    ignore_false_positive = true;
+    may_miss = may_block = may_dodge = may_parry = false;
+  }
+};
+
+// ==========================================================================
+// Flying Serpent Kick
+// ==========================================================================
+
+struct flying_serpent_kick_t : public monk_melee_attack_t
+{
+  bool first_charge;
+  double movement_speed_increase;
+  flying_serpent_kick_t( monk_t *p, util::string_view options_str )
+    : monk_melee_attack_t( p, "flying_serpent_kick", p->baseline.windwalker.flying_serpent_kick ),
+      first_charge( true ),
+      movement_speed_increase( p->baseline.windwalker.flying_serpent_kick->effectN( 1 ).percent() )
+  {
+    parse_options( options_str );
+    may_crit                        = true;
+    ww_mastery                      = true;
+    may_combo_strike                = true;
+    ignore_false_positive           = true;
+    movement_directionality         = movement_direction_type::OMNI;
+    aoe                             = -1;
+    p->cooldown.flying_serpent_kick = cooldown;
+  }
+
+  void reset() override
+  {
+    monk_melee_attack_t::reset();
+    first_charge = true;
+  }
+
+  bool ready() override
+  {
+    if ( first_charge )  // Assumes that we fsk into combat, instead of setting initial distance to 20 yards.
+      return monk_melee_attack_t::ready();
+
+    return monk_melee_attack_t::ready();
+  }
+
+  void execute() override
+  {
+    if ( p()->current.distance_to_move >= 0 )
+    {
+      p()->buff.flying_serpent_kick_movement->trigger(
+          1, movement_speed_increase, 1,
+          timespan_t::from_seconds(
+              std::min( 1.5, p()->current.distance_to_move /
+                                 ( p()->base_movement_speed *
+                                   ( 1 + p()->stacking_movement_modifier() + movement_speed_increase ) ) ) ) );
+      p()->current.moving_away = 0;
+    }
+
+    monk_melee_attack_t::execute();
+
+    if ( first_charge )
+    {
+      p()->movement.flying_serpent_kick->trigger();
+
+      first_charge = !first_charge;
+    }
+  }
+};
 }  // namespace attacks
 
 namespace spells
