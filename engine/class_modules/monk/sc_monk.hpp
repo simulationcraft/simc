@@ -835,6 +835,7 @@ public:
       const spell_data_t *aura_2;
       const spell_data_t *aura_3;
       const spell_data_t *expel_harm_rank_2;
+      const spell_data_t *teachings_of_the_monastery;
     } mistweaver;
 
     struct
@@ -1031,13 +1032,12 @@ public:
       // Row 3
       player_talent_t life_cocoon;
       player_talent_t mana_tea;
-      player_talent_t healing_elixir;
+      player_talent_t invigorating_mists;
       // Row 4
-      player_talent_t teachings_of_the_monastery;
       player_talent_t crane_style;
       player_talent_t revival;
       player_talent_t restoral;
-      player_talent_t invigorating_mists;
+      player_talent_t healing_elixir;
       // 8 Required
       // Row 5
       player_talent_t nourishing_chi;
