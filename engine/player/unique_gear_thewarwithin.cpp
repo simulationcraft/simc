@@ -1887,6 +1887,8 @@ void sigil_of_algari_concordance( special_effect_t& e )
       : algari_concodance_pet_spell_t( name, p, p->find_spell( 452334 ), a )
     {
       aoe = -1;
+      split_aoe_damage = true;
+      scale_aoe_damage = true;
       base_dd_min = base_dd_max = e.driver()->effectN( 3 ).average( e );
     }
   };
