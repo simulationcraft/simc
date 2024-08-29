@@ -4247,6 +4247,7 @@ struct thunderstrike_ward_damage_t : public shaman_spell_t
   thunderstrike_ward_damage_t( shaman_t* player )
     : shaman_spell_t( "thunderstrike", player, player->find_spell( 462763 ) )
   {
+
     background = true;
   }
 
@@ -5252,12 +5253,14 @@ struct thunderstrike_ward_t : public weapon_imbue_t
     weapon_imbue_t( "thunderstrike_ward", player, SLOT_OFF_HAND,
                     player->talent.thunderstrike_ward, options_str )
   {
-    imbue = THUNDERSTRIKE_WARD;
-    imbue_buff = player->buff.thunderstrike_ward;
-
-    if ( slot == SLOT_MAIN_HAND )
+    if ( !player->has_shield_equipped() )
     {
-      sim->error( "{} invalid Thunderstrike Ward slot '{}'", player->name(), slot_str );
+      sim->errorf( "%s: %s only usable with shield equipped in offhand\n", player->name(), name() );
+    }
+    else
+    {
+      imbue      = THUNDERSTRIKE_WARD;
+      imbue_buff = player->buff.thunderstrike_ward;
     }
   }
 };
@@ -12162,7 +12165,7 @@ void shaman_t::trigger_fusion_of_elements( const action_state_t* state )
 
 void shaman_t::trigger_thunderstrike_ward( const action_state_t* state )
 {
-  if ( !talent.thunderstrike_ward.ok() )
+  if ( !buff.thunderstrike_ward->up() )
   {
     return;
   }
