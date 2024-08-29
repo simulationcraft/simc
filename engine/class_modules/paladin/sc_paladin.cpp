@@ -2221,7 +2221,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     }
     if (p()->talents.templar.zealous_vindication->ok())
     {
-      p()->trigger_empyrean_hammer( target, 2, 0_ms );
+      p()->trigger_empyrean_hammer( target, 2, 0_ms, false );
     }
     if ( p()->talents.templar.sacrosanct_crusade->ok() )
     {
