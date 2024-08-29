@@ -90,9 +90,6 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.searing_light_icd = get_cooldown( "searing_light_icd" );
   cooldowns.searing_light_icd->duration = timespan_t::from_seconds( 15 );
 
-  cooldowns.higher_calling_icd           = get_cooldown( "higher_calling_icd" );
-  cooldowns.higher_calling_icd->duration = find_spell( 431687 )->internal_cooldown();
-
   cooldowns.endless_wrath_icd           = get_cooldown( "endless_wrath_icd" );
   cooldowns.endless_wrath_icd->duration = find_spell( 432615 )->internal_cooldown();
 

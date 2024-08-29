@@ -352,7 +352,6 @@ public:
     cooldown_t* second_sunrise_icd;
 
     cooldown_t* eye_of_tyr;          // Light's Deliverance
-    cooldown_t* higher_calling_icd;  // Needed for Crusading Strikes
     cooldown_t* endless_wrath_icd;   // Needed for many random hammer procs
     cooldown_t* hammerfall_icd;
     cooldown_t* art_of_war;
@@ -1321,14 +1320,13 @@ public:
         p()->active.searing_light->schedule_execute();
       }
     }
-    if ( triggers_higher_calling && p()->talents.templar.higher_calling->ok() && p()->buffs.templar.shake_the_heavens->up() && p()->cooldowns.higher_calling_icd->up() )
+    if ( triggers_higher_calling && p()->talents.templar.higher_calling->ok() && p()->buffs.templar.shake_the_heavens->up() )
     {
       timespan_t extension = timespan_t::from_seconds( p()->talents.templar.higher_calling->effectN( 1 ).base_value() );
       // If Crusading Strikes is triggering, extension is only 500ms
       if ( ab::id == 408385 )
         extension = 500_ms;
       p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
-      p()->cooldowns.higher_calling_icd->start();
     }
 
     if ( affected_by.divine_hammer && p()->buffs.divine_hammer->up() )
