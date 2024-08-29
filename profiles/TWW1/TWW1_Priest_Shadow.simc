@@ -11,7 +11,7 @@ talents=CIQAAAAAAAAAAAAAAAAAAAAAAAMmZAAAAAAAAAAAAAGmFPwYmZ2GjZmZGzMzygZjZmZGzGDM
 potion=tempered_potion_3
 flask=flask_of_alchemical_chaos_3
 food=feast_of_the_divine_day
-augmentation=crystallized_augment_rune
+augmentation=crystallized
 temporary_enchant=main_hand:algari_mana_oil_3
 
 # This default action priority list is automatically created based on your character.
