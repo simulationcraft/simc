@@ -80,9 +80,7 @@ enum class spell_variant : unsigned
   NORMAL = 0,
   ASCENDANCE,
   DEEPLY_ROOTED_ELEMENTS,
-  SHAKE_THE_FOUNDATIONS,
   PRIMORDIAL_WAVE,
-  MOLTEN_CHARGE,
   THORIMS_INVOCATION,
   FUSION_OF_ELEMENTS
 };
@@ -320,9 +318,7 @@ static std::string action_name( util::string_view name, spell_variant t )
   {
     case spell_variant::ASCENDANCE: return fmt::format( "{}_asc", name );
     case spell_variant::DEEPLY_ROOTED_ELEMENTS: return fmt::format( "{}_dre", name );
-    case spell_variant::SHAKE_THE_FOUNDATIONS: return fmt::format( "{}_stf", name );
     case spell_variant::PRIMORDIAL_WAVE: return fmt::format( "{}_pw", name );
-    case spell_variant::MOLTEN_CHARGE: return fmt::format("{}_mc", name);
     case spell_variant::THORIMS_INVOCATION: return fmt::format( "{}_ti", name );
     case spell_variant::FUSION_OF_ELEMENTS: return fmt::format( "{}_foe", name );
     default: return std::string( name );
@@ -335,9 +331,7 @@ static util::string_view exec_type_str( spell_variant t )
   {
     case spell_variant::ASCENDANCE: return "ascendance";
     case spell_variant::DEEPLY_ROOTED_ELEMENTS: return "deeply_rooted_elements";
-    case spell_variant::SHAKE_THE_FOUNDATIONS: return "shake_the_foundations";
     case spell_variant::PRIMORDIAL_WAVE: return "primordial_wave";
-    case spell_variant::MOLTEN_CHARGE: return "molten_charge";
     case spell_variant::THORIMS_INVOCATION: return "thorims_invocation";
     case spell_variant::FUSION_OF_ELEMENTS: return "fusion_of_elements";
     default: return "normal";
@@ -462,10 +456,8 @@ public:
     action_t* chain_lightning_ti;
     action_t* ti_trigger;
     action_t* lava_burst_pw;
-    action_t* lava_burst_mc;
     action_t* flame_shock;
     action_t* elemental_blast;
-    action_t* molten_slag;
 
     action_t* lightning_rod;
     action_t* tempest_strikes;
@@ -586,14 +578,7 @@ public:
     buff_t* ancestral_swiftness;
     buff_t* thunderstrike_ward;
 
-    buff_t* t29_2pc_ele;
-    buff_t* t29_4pc_ele;
-    buff_t* t30_2pc_ele_driver;
-    buff_t* t30_4pc_ele;
-    buff_t* t31_4pc_ele;
     buff_t* tww1_4pc_ele;
-
-    // buff_t* t31_4pc_ele;
 
     // Enhancement
     buff_t* maelstrom_weapon;
@@ -732,8 +717,6 @@ public:
     proc_t* searing_flames;
 
     std::array<proc_t*, 21> magma_chamber;
-
-    std::array<proc_t*, 6> t29_2pc_ele;
 
     proc_t* surge_of_power_lightning_bolt;
     proc_t* surge_of_power_sk_lightning_bolt;
@@ -1036,7 +1019,7 @@ public:
     player_talent_t final_calling; // NEW Partial implementation (rest are bugs?)
 
     // Row 5
-    player_talent_t ancestral_swiftness; // NEW NYI
+    player_talent_t ancestral_swiftness;
 
   } talent;
 
@@ -1054,13 +1037,6 @@ public:
     const spell_data_t* windfury_weapon;
     const spell_data_t* t28_2pc_enh;
     const spell_data_t* t28_4pc_enh;
-    const spell_data_t* t29_2pc_ele;
-    const spell_data_t* t29_4pc_ele;
-    const spell_data_t* t30_2pc_ele;
-    const spell_data_t* t30_4pc_ele;
-    const spell_data_t* t31_2pc_ele;
-    const spell_data_t* t31_4pc_ele_molten_slag;
-    const spell_data_t* t31_4pc_ele;
     const spell_data_t* inundate;
     const spell_data_t* storm_swell;
     const spell_data_t* lightning_rod;
@@ -1167,8 +1143,6 @@ public:
   void summon_ancestor( double proc_chance = 1.0 );
   void trigger_elemental_blast_proc();
   void summon_lesser_elemental( elemental type, timespan_t override_duration = 0_ms );
-  timespan_t last_t30_proc;
-  bool t30_proc_possible;
 
   mw_proc_state set_mw_proc_state( action_t* action, mw_proc_state state )
   {
@@ -1204,7 +1178,6 @@ public:
 
   // trackers, big code blocks that shall not be doublicated
   void track_magma_chamber();
-  void track_t29_2pc_ele();
 
   double windfury_proc_chance();
 
@@ -1314,7 +1287,6 @@ public:
   stat_e convert_hybrid_stat( stat_e s ) const override;
   void combat_begin() override;
   void reset() override;
-  void arise() override;
   void merge( player_t& other ) override;
   void copy_from( player_t* ) override;
 
@@ -1577,7 +1549,6 @@ public:
 
   bool affected_by_stormkeeper_cast_time;
   bool affected_by_stormkeeper_damage;
-  bool affected_by_ele_t31_4pc;
   bool affected_by_arc_discharge;
 
   bool affected_by_amplification_core_da;
@@ -1628,7 +1599,6 @@ public:
       affected_by_enh_t30_4pc_ta( false ),
       affected_by_stormkeeper_cast_time( false ),
       affected_by_stormkeeper_damage( false ),
-      affected_by_ele_t31_4pc( false ),
       affected_by_arc_discharge( false ),
       affected_by_amplification_core_da( false ),
       affected_by_amplification_core_ta( false ),
@@ -5527,18 +5497,6 @@ struct chained_overload_base_t : public elemental_overload_spell_t
   {
     return __check_distance_targeting( this, tl );
   }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double cm = elemental_overload_spell_t::composite_crit_damage_bonus_multiplier();
-
-    if ( p()->buff.t30_4pc_ele->up() )
-    {
-      cm *= (1.0 + p()->spell.t30_4pc_ele->effectN( 2 ).percent());
-    }
-
-    return cm;
-  }
 };
 
 struct chain_lightning_overload_t : public chained_overload_base_t
@@ -5560,13 +5518,6 @@ struct chain_lightning_overload_t : public chained_overload_base_t
     }
 
     return t;
-  }
-
-  void execute() override
-  {
-    chained_overload_base_t::execute();
-
-    p()->buff.t29_2pc_ele->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -5596,13 +5547,6 @@ struct lava_beam_overload_t : public chained_overload_base_t
     }
 
     return t;
-  }
-
-  void execute() override
-  {
-    chained_overload_base_t::execute();
-
-    p()->buff.t29_2pc_ele->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -5648,10 +5592,6 @@ struct chained_base_t : public shaman_spell_t
 
     if ( exec_type == spell_variant::NORMAL )
     {
-      if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T30, B4 ) && p()->buff.stormkeeper->stack() == 1 )
-      {
-        p()->buff.t30_4pc_ele->trigger();
-      }
       if ( !p()->sk_during_cast )
       {
         p()->buff.stormkeeper->decrement();
@@ -5660,18 +5600,6 @@ struct chained_base_t : public shaman_spell_t
     }
 
     p()->trigger_static_accumulation_refund( execute_state, mw_consumed_stacks );
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double cm = shaman_spell_t::composite_crit_damage_bonus_multiplier();
-
-    if ( p()->buff.t30_4pc_ele->up() )
-    {
-      cm *= ( 1.0 + p()->spell.t30_4pc_ele->effectN( 2 ).percent() );
-    }
-
-    return cm;
   }
 
   std::vector<player_t*>& check_distance_targeting( std::vector<player_t*>& tl ) const override
@@ -5878,8 +5806,6 @@ struct chain_lightning_t : public chained_base_t
       }
     }
 
-    p()->buff.t29_2pc_ele->trigger();
-
     if ( exec_type == spell_variant::NORMAL &&
          p()->specialization() == SHAMAN_ENHANCEMENT &&
          rng().roll( p()->talent.supercharge->effectN( 2 ).percent() ) )
@@ -5977,8 +5903,6 @@ struct lava_beam_t : public chained_base_t
     chained_base_t::execute();
 
     p()->buff.surge_of_power->decrement();
-
-    p()->buff.t29_2pc_ele->trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -6064,14 +5988,6 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     s->result_amount = elemental_overload_spell_t::calculate_direct_amount( s );
 
     elemental_overload_spell_t::impact( s );
-
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B4 ) ) {
-      double amount = s->result_amount * p()->spell.t31_4pc_ele_molten_slag->effectN( 1 ).percent();
-      if ( amount > 0 )
-      {
-        residual_action::trigger( p()->action.molten_slag, s->target, amount );
-      }
-    }
   }
 
   double action_multiplier() const override
@@ -6083,14 +5999,6 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       if ( p()->talent.primordial_wave->ok() )
       {
         m *= p()->talent.primordial_wave->effectN( 3 ).percent();
-      }
-    }
-
-    if ( exec_type == spell_variant::MOLTEN_CHARGE )
-    {
-      if ( p()->talent.primordial_wave->ok() )
-      {
-        m *= p()->spell.t31_4pc_ele->effectN( 2 ).default_value();
       }
     }
 
@@ -6119,24 +6027,6 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     return m;
   }
 
-  void execute() override
-  {
-    shaman_spell_t::execute();
-
-    p()->buff.t29_2pc_ele->trigger();
-  }
-
-  double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
-  {
-    double m = shaman_spell_t::composite_maelstrom_gain_coefficient( state);
-
-    if ( p()->buff.t30_4pc_ele->up() )
-    {
-      m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 5 ).percent();
-    }
-
-    return m;
-  }
 };
 
 struct flame_shock_spreader_t : public shaman_spell_t
@@ -6390,13 +6280,6 @@ struct lava_burst_t : public shaman_spell_t
       cooldown->duration = 0_s;
       switch ( exec_type )
       {
-        case spell_variant::MOLTEN_CHARGE:
-          if ( auto pw_action = p()->find_action( "primordial_wave" ) )
-          {
-            aoe   = as<int>( p()->spell.t31_4pc_ele->effectN( 1 ).base_value() );
-            pw_action->add_child( this );
-          }
-          break;
         case spell_variant::PRIMORDIAL_WAVE:
           if ( auto pw_action = p()->find_action( "primordial_wave" ) )
           {
@@ -6479,14 +6362,6 @@ struct lava_burst_t : public shaman_spell_t
     s->result_amount = shaman_spell_t::calculate_direct_amount( s );
 
     shaman_spell_t::impact( s );
-
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B4 ) ) {
-      double amount = s->result_amount * p()->spell.t31_4pc_ele_molten_slag->effectN( 1 ).percent();
-      if ( amount > 0 )
-      {
-        residual_action::trigger( p()->action.molten_slag, s->target, amount );
-      }
-    }
   }
 
   double action_multiplier() const override
@@ -6501,11 +6376,6 @@ struct lava_burst_t : public shaman_spell_t
       {
         m *= p()->talent.primordial_wave->effectN( 3 ).percent();
       }
-    }
-
-    if (exec_type == spell_variant::MOLTEN_CHARGE)
-    {
-        m *= p()->spell.t31_4pc_ele->effectN( 2 ).default_value();
     }
 
     if ( p()->buff.ascendance->up() )
@@ -6580,16 +6450,6 @@ struct lava_burst_t : public shaman_spell_t
 
     p()->lava_surge_during_lvb = false;
 
-    if ( exec_type == spell_variant::NORMAL && p()->buff.t31_4pc_ele->up() && p()->action.lava_burst_mc )
-    {
-      p()->buff.t31_4pc_ele->decrement();
-      p()->action.lava_burst_mc->set_target( execute_state->target );
-      if ( !p()->action.lava_burst_mc->target_list().empty() )
-      {
-        p()->action.lava_burst_mc->schedule_execute();
-      }
-    }
-
     // Trigger primordial wave if there's targets to trigger it on
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
@@ -6612,7 +6472,6 @@ struct lava_burst_t : public shaman_spell_t
       p()->buff.flux_melting->decrement();
     }
 
-    p()->buff.t29_2pc_ele->trigger();
     if ( exec_type == spell_variant::NORMAL && p()->rng_obj.icefury->trigger() )
     {
       p()->buff.icefury_cast->trigger();
@@ -6653,18 +6512,6 @@ struct lava_burst_t : public shaman_spell_t
 
     return shaman_spell_t::ready();
   }
-
-  double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
-  {
-    double m = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
-
-    if ( p()->buff.t30_4pc_ele->up() )
-    {
-      m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 4 ).percent();
-    }
-
-    return m;
-  }
 };
 
 // Lightning Bolt Spell =====================================================
@@ -6682,30 +6529,11 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     affected_by_stormkeeper_damage = p->talent.stormkeeper.ok() && p->specialization() == SHAMAN_ELEMENTAL;
   }
 
-  void execute() override
-  {
-    elemental_overload_spell_t::execute();
-
-    p()->buff.t29_2pc_ele->trigger();
-  }
-
   void impact( action_state_t* state ) override
   {
     elemental_overload_spell_t::impact( state );
 
     p()->trigger_lightning_rod_damage( state );
-  }
-
-  double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
-  {
-    double m = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
-
-    if ( p()->buff.t30_4pc_ele->up() )
-    {
-      m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 3 ).percent();
-    }
-
-    return m;
   }
 };
 
@@ -6830,10 +6658,6 @@ struct lightning_bolt_t : public shaman_spell_t
 
       if ( !p()->sk_during_cast )
       {
-        if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T30, B4 ) && p()->buff.stormkeeper->stack() == 1 )
-        {
-          p()->buff.t30_4pc_ele->trigger();
-        }
         p()->buff.stormkeeper->decrement();
       }
       p()->sk_during_cast = false;
@@ -6853,8 +6677,6 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       p()->action.ti_trigger = p()->action.lightning_bolt_ti;
     }
-
-    p()->buff.t29_2pc_ele->trigger();
 
     if ( exec_type == spell_variant::NORMAL &&
          p()->specialization() == SHAMAN_ENHANCEMENT &&
@@ -6936,18 +6758,6 @@ struct lightning_bolt_t : public shaman_spell_t
     }
   }
 
-  double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
-  {
-    double m = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
-
-    if ( p()->buff.t30_4pc_ele->up() )
-    {
-      m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 1 ).percent();
-    }
-
-    return m;
-  }
-
   bool ready() override
   {
     if ( exec_type == spell_variant::NORMAL && p()->buff.tempest->check() )
@@ -6996,24 +6806,6 @@ void trigger_elemental_blast_proc( shaman_t* p )
   }
 }
 
-void trigger_all_elemental_blast_buffs( shaman_t* p )
-{
-  if ( p->specialization() != SHAMAN_ELEMENTAL ||
-       !p->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B2 ) )
-  {
-    return ::trigger_elemental_blast_proc( p );
-  }
-
-  p->buff.elemental_blast_haste->trigger( p->spell.t31_2pc_ele->effectN( 2 ).time_value() );
-  p->proc.elemental_blast_haste->occur();
-
-  p->buff.elemental_blast_mastery->trigger( p->spell.t31_2pc_ele->effectN( 2 ).time_value() );
-  p->proc.elemental_blast_mastery->occur();
-
-  p->buff.elemental_blast_crit->trigger( p->spell.t31_2pc_ele->effectN( 2 ).time_value() );
-  p->proc.elemental_blast_crit->occur();
-}
-
 struct elemental_blast_overload_t : public elemental_overload_spell_t
 {
   elemental_blast_overload_t( shaman_t* p, spell_variant type, shaman_spell_t* parent_ )
@@ -7027,15 +6819,7 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    m *= 1.0 + p()->buff.t29_2pc_ele->check_stack_value();
     m *= 1.0 + p()->buff.magma_chamber->check_stack_value();
-
-    // Note, only Elemental Shaman with T31-2p gets the primordial_wave state set, so don't need
-    // separate specialization checks here
-    if ( exec_type == spell_variant::PRIMORDIAL_WAVE )
-    {
-      m *= p()->spell.t31_2pc_ele->effectN( 1 ).percent();
-    }
 
     if ( exec_type == spell_variant::FUSION_OF_ELEMENTS )
     {
@@ -7105,15 +6889,7 @@ struct elemental_blast_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    m *= 1.0 + p()->buff.t29_2pc_ele->stack_value();
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
-
-    // Note, only Elemental Shaman with T31-2p gets the primordial_wave state set, so don't need
-    // separate specialization checks here
-    if ( exec_type == spell_variant::PRIMORDIAL_WAVE )
-    {
-      m *= p()->spell.t31_2pc_ele->effectN( 1 ).percent();
-    }
 
     if ( exec_type == spell_variant::FUSION_OF_ELEMENTS )
     {
@@ -7137,15 +6913,7 @@ struct elemental_blast_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( exec_type == spell_variant::PRIMORDIAL_WAVE )
-    {
-      // T31 2pc Elemental special effect
-      ::trigger_all_elemental_blast_buffs( p() );
-    }
-    else
-    {
-      ::trigger_elemental_blast_proc( p() );
-    }
+    ::trigger_elemental_blast_proc( p() );
 
     // these are effects which ONLY trigger when the player cast the spell directly
     if ( exec_type == spell_variant::NORMAL )
@@ -7163,16 +6931,6 @@ struct elemental_blast_t : public shaman_spell_t
         p()->buff.whirling_earth->decrement();
         cooldown->adjust( -p()->buff.whirling_earth->data().effectN( 1 ).time_value() );
       }
-
-      // set bonuses and other external systems
-      p()->track_t29_2pc_ele();
-      p()->buff.t29_2pc_ele->expire();
-      p()->buff.t29_4pc_ele->trigger();
-    }
-
-    // Magma Chamber is consumed and SoP triggered by PWave and Normal, but not FoE
-    if ( exec_type == spell_variant::NORMAL || exec_type == spell_variant::PRIMORDIAL_WAVE )
-    {
       p()->track_magma_chamber();
       p()->buff.magma_chamber->expire();
 
@@ -7212,18 +6970,6 @@ struct icefury_overload_t : public elemental_overload_spell_t
     affected_by_master_of_the_elements = true;
     maelstrom_gain = p->spec.maelstrom->effectN( 9 ).resource( RESOURCE_MAELSTROM );
   }
-
-  double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
-  {
-    double m = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
-
-    if ( p()->buff.t30_4pc_ele->up() )
-    {
-      m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 7 ).percent();
-    }
-
-    return m;
-  }
 };
 
 struct icefury_t : public shaman_spell_t
@@ -7253,18 +6999,6 @@ struct icefury_t : public shaman_spell_t
     p()->buff.fusion_of_elements_fire->trigger();
 
     p()->buff.icefury_cast->decrement();
-  }
-
-  double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
-  {
-    double m = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
-
-    if ( p()->buff.t30_4pc_ele->up() )
-    {
-      m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 6 ).percent();
-    }
-
-    return m;
   }
 
   bool ready() override
@@ -7479,21 +7213,8 @@ struct earthquake_damage_base_t : public shaman_spell_t
     m *= 1.0 + p()->buff.echoes_of_great_sundering_es->value();
     m *= 1.0 + p()->buff.echoes_of_great_sundering_eb->value();
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
-    m *= 1.0 + p()->buff.t29_2pc_ele->stack_value();
 
     return m;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double cm = shaman_spell_t::composite_crit_damage_bonus_multiplier();
-
-    if ( p()->buff.t30_4pc_ele->up() )
-    {
-      cm *= ( 1.0 + p()->spell.t30_4pc_ele->effectN( 2 ).percent() );
-    }
-
-    return cm;
   }
 
   double get_spell_power_coefficient_from_options() {
@@ -7564,7 +7285,6 @@ struct earthquake_base_t : public shaman_spell_t
     m *= 1.0 + p()->buff.echoes_of_great_sundering_es->value();
     m *= 1.0 + p()->buff.echoes_of_great_sundering_eb->value();
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
-    m *= 1.0 + p()->buff.t29_2pc_ele->stack_value();
 
     return m;
   }
@@ -7711,11 +7431,6 @@ struct earthquake_t : public earthquake_base_t
     p()->buff.master_of_the_elements->decrement();
     p()->buff.echoes_of_great_sundering_es->decrement();
     p()->buff.echoes_of_great_sundering_eb->decrement();
-
-    p()->track_t29_2pc_ele();
-    p()->buff.t29_2pc_ele->expire();
-
-    p()->buff.t29_4pc_ele->trigger();
 
     if ( exec_type == spell_variant::NORMAL )
     {
@@ -7901,7 +7616,6 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    m *= 1.0 + p()->buff.t29_2pc_ele->check_stack_value();
     m *= 1.0 + p()->buff.magma_chamber->check_stack_value();
 
     return m;
@@ -7929,7 +7643,6 @@ struct earth_shock_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    m *= 1.0 + p()->buff.t29_2pc_ele->stack_value();
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
 
     return m;
@@ -7957,10 +7670,6 @@ struct earth_shock_t : public shaman_spell_t
 
     p()->track_magma_chamber();
     p()->buff.magma_chamber->expire();
-    p()->track_t29_2pc_ele();
-    p()->buff.t29_2pc_ele->expire();
-
-    p()->buff.t29_4pc_ele->trigger();
     p()->buff.storm_frenzy->trigger();
   }
 
@@ -8303,19 +8012,6 @@ struct frost_shock_t : public shaman_spell_t
     }
 
     return t;
-  }
-
-  double composite_maelstrom_gain_coefficient( const action_state_t* state = nullptr ) const override
-  {
-    double m = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
-
-    if ( p()->buff.t30_4pc_ele->up() )
-    {
-      // not exactly labeled to match, but only effect left and very likely to be for FrS ms generation
-      m *= 1.0 + p()->spell.t30_4pc_ele->effectN( 8 ).percent();
-    }
-
-    return m;
   }
 
   void execute() override
@@ -9763,12 +9459,6 @@ struct primordial_wave_t : public shaman_spell_t
       p()->buff.primordial_wave->trigger();
 
       p()->trigger_secondary_flame_shock( s );
-
-      if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B2 ) )
-      {
-        p()->action.elemental_blast->set_target( target );
-        p()->action.elemental_blast->execute();
-      }
     }
   };
 
@@ -9810,18 +9500,6 @@ struct primordial_wave_t : public shaman_spell_t
       p()->action.feral_spirit_t31->set_target( execute_state->target );
       p()->action.feral_spirit_t31->execute();
     }
-  }
-};
-
-struct molten_slag_t : public residual_action::residual_periodic_action_t<spell_t>
-{
-  molten_slag_t( shaman_t* p ) : base_t( "molten_slag", p, p->find_spell( 427729 ) )
-  {
-  }
-
-  double composite_versatility( const action_state_t* ) const override
-  {
-    return 1.0;
   }
 };
 
@@ -10276,10 +9954,10 @@ void shaman_t::create_pets()
 
 std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 {
-  if ( util::str_compare_ci( name, "t30_2pc_timer.next_tick" ) )
+  if ( util::str_compare_ci( name, "rolling_thunder.next_tick" ) )
   {
     return make_fn_expr( name, [ this ]() {
-      return (last_t30_proc + spell.t30_2pc_ele->effectN( 1 ).time_value() * 1000 - sim->current_time());
+      return rt_last_trigger + timespan_t::from_seconds( talent.rolling_thunder->effectN( 1 ).base_value()) - sim->current_time();
     } );
   }
 
@@ -10451,11 +10129,6 @@ void shaman_t::create_actions()
     action.lava_burst_pw = new lava_burst_t( this, spell_variant::PRIMORDIAL_WAVE );
   }
 
-  if (sets->has_set_bonus(SHAMAN_ELEMENTAL, T31, B4))
-  {
-    action.lava_burst_mc = new lava_burst_t( this, spell_variant::MOLTEN_CHARGE );
-  }
-
   if ( talent.thorims_invocation.ok() )
   {
     action.lightning_bolt_ti = new lightning_bolt_t( this, spell_variant::THORIMS_INVOCATION );
@@ -10530,16 +10203,6 @@ void shaman_t::create_actions()
   action.flame_shock->background = true;
   action.flame_shock->cooldown = get_cooldown( "flame_shock_secondary" );
   action.flame_shock->base_costs[ RESOURCE_MANA ] = 0;
-
-  if ( sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B2 ) )
-  {
-    action.elemental_blast = new elemental_blast_t( this, spell_variant::PRIMORDIAL_WAVE );
-  }
-
-  if ( sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B4 ) )
-  {
-    action.molten_slag = new molten_slag_t( this );
-  }
 }
 
 // shaman_t::create_options =================================================
@@ -11053,18 +10716,6 @@ void shaman_t::init_spells()
   spell.t28_2pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B2 );
   spell.t28_4pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B4 );
 
-  spell.t29_2pc_ele        = find_spell( 394651 );
-  spell.t29_4pc_ele        = find_spell( 394670 );
-
-  spell.t30_2pc_ele        = find_spell( 405565 );
-  spell.t30_4pc_ele        = find_spell( 410018 ); // 405566 otherwise empty T30 base spell
-
-  spell.t31_2pc_ele          = find_spell( 422911 );
-  spell.t31_4pc_ele_molten_slag = find_spell( 422912 );
-  // 4pc bonus: 422912, but that's currently empty. values are in:
-  // spell.t31_4pc_ele_can_proc = find_spell( 426577 );
-  spell.t31_4pc_ele          = find_spell( 426578 );
-
   // Misc spell-related init
   max_active_flame_shock   = as<unsigned>( find_class_spell( "Flame Shock" )->max_targets() );
 
@@ -11317,19 +10968,6 @@ void shaman_t::track_magma_chamber()
   if ( d >= 0 && d < as<int>( proc.magma_chamber.size() ) )
   {
     proc.magma_chamber[ d ]->occur();
-  }
-}
-
-void shaman_t::track_t29_2pc_ele()
-{
-  if ( !sets->has_set_bonus( SHAMAN_ELEMENTAL, T29, B2 ))
-      return;
-
-  int d = buff.t29_2pc_ele->check();
-  assert( d < as<int>( proc.t29_2pc_ele.size() ) && "The procs.t29_2pc_ele array needs to be expanded." );
-  if ( d >= 0 && d < as<int>( proc.t29_2pc_ele.size() ) )
-  {
-    proc.t29_2pc_ele[ d ]->occur();
   }
 }
 
@@ -12004,12 +11642,6 @@ void shaman_t::trigger_primordial_wave_damage( shaman_spell_t* spell )
   else if ( specialization() == SHAMAN_ELEMENTAL )
   {
     damage_spell = debug_cast<shaman_spell_t*>( action.lava_burst_pw );
-
-    if ( sets->has_set_bonus( SHAMAN_ELEMENTAL, T31, B4 ) )
-    {
-      auto max_stacks = buff.t31_4pc_ele->max_stack();
-      buff.t31_4pc_ele->trigger( max_stacks );
-    }
   }
 
   damage_spell->set_target( spell->target );
@@ -12299,42 +11931,6 @@ void shaman_t::create_buffs()
   buff.stormkeeper = make_buff( this, "stormkeeper", find_spell( 191634 ) )
     ->set_cooldown( timespan_t::zero() )  // Handled by the action
     ->set_default_value_from_effect( 2 ); // Damage bonus as default value
-
-  buff.t29_2pc_ele = make_buff( this, "seismic_accumulation", spell.t29_2pc_ele )
-                      ->set_default_value_from_effect(1)
-                      ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, T29, B2 ) );
-  buff.t29_4pc_ele = make_buff<buff_t>( this, "elemental_mastery", spell.t29_4pc_ele )
-                      ->set_default_value_from_effect(1)
-                      ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-                      ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, T29, B4 ) );
-  buff.t30_2pc_ele_driver = make_buff( this, "t30_2pc_ele_driver", spell.t30_2pc_ele )
-      ->set_tick_callback( [ this ]( buff_t* /* b */, int, timespan_t ) {
-        // spell data says "40", but means 40s
-        timespan_t next_proc = last_t30_proc + spell.t30_2pc_ele->effectN( 1 ).time_value() * 1000;
-        if ( next_proc <= sim->current_time() && !t30_proc_possible )
-        {
-          t30_proc_possible = true;
-        }
-        if ( t30_proc_possible && !buff.stormkeeper->up() )
-        {
-          if ( executing && ( executing->id == 188196 || executing->id == 188443 || executing->id == 114074 ) )
-          {
-            sk_during_cast = true;
-          }
-          buff.stormkeeper->trigger( 1 );
-          last_t30_proc = sim->current_time();
-          t30_proc_possible = false;
-        }
-      } )
-      ->set_tick_zero(true);
-  buff.t30_4pc_ele = make_buff( this, "primal_fracture", spell.t30_4pc_ele );
-
-  buff.t31_4pc_ele = make_buff( this, "molten_charge", spell.t31_4pc_ele );
-
-  buff.tww1_4pc_ele = make_buff( this, "maelstrom_surge",
-                                 sets->set( SHAMAN_ELEMENTAL, TWW1, B4 )->effectN( 1 ).trigger() )
-    ->set_default_value_from_effect( 1 )
-    ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, TWW1, B4 ) );
 
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
     ->set_default_value( talent.primordial_wave->effectN( specialization() == SHAMAN_ELEMENTAL ? 3 : 4 ).percent() )
@@ -12638,11 +12234,6 @@ void shaman_t::init_procs()
   proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );
 
   proc.reset_swing_mw            = get_proc( "Maelstrom Weapon Swing Reset" );
-
-  for ( size_t i = 0; i < proc.t29_2pc_ele.size(); i++ )
-  {
-    proc.t29_2pc_ele[ i ] = get_proc( fmt::format( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack {}", i ) );
-  }
 
   proc.tempest_awakening_storms = get_proc( "Awakened Storms w/ Tempest");
 }
@@ -12969,8 +12560,6 @@ double shaman_t::resource_loss( resource_e resource_type, double amount, gain_t*
     {
       buff.unlimited_power->trigger();
     }
-
-    buff.tww1_4pc_ele->trigger();
   }
 
   return loss;
@@ -13768,21 +13357,6 @@ void shaman_t::reset()
   assert( active_flame_shock.empty() );
 }
 
-
-// shaman_t::arise ==========================================================
-
-void shaman_t::arise()
-{
-  player_t::arise();
-
-  if ( sets->has_set_bonus( SHAMAN_ELEMENTAL, T30, B2 ) )
-  {
-    last_t30_proc = timespan_t::min();
-    t30_proc_possible = false;
-    make_event( sim, timespan_t::from_seconds( rng().range( 0, 5 ) ),
-                [ this ]() { buff.t30_2pc_ele_driver->trigger(); } );
-  }
-}
 
 // shaman_t::merge ==========================================================
 
