@@ -11932,6 +11932,11 @@ void shaman_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )  // Handled by the action
     ->set_default_value_from_effect( 2 ); // Damage bonus as default value
 
+  buff.tww1_4pc_ele =
+    make_buff( this, "maelstrom_surge", sets->set( SHAMAN_ELEMENTAL, TWW1, B4 )->effectN( 1 ).trigger() )
+        ->set_default_value_from_effect( 1 )
+        ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, TWW1, B4 ) );
+
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
     ->set_default_value( talent.primordial_wave->effectN( specialization() == SHAMAN_ELEMENTAL ? 3 : 4 ).percent() )
     ->set_trigger_spell( talent.primordial_wave );
