@@ -1798,6 +1798,14 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
       p()->gain.bok_proc->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
   }
 
+  int n_targets() const override
+  {
+    if ( p()->talent.mistweaver.ancient_concordance && p()->buff.jadefire_stomp )
+      return 1 + p()->talent.mistweaver.ancient_concordance->effectN( 2 ).base_value();
+
+    return base_t::n_targets();
+  }
+
   void execute() override
   {
     base_t::execute();
