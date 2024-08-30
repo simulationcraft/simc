@@ -8,8 +8,8 @@
 
 // Hotfix data versioning information
 
-#define PTR_CLIENT_DATA_HOTFIX_DATE "2024-08-29"
+#define PTR_CLIENT_DATA_HOTFIX_DATE "2024-08-30"
 #define PTR_CLIENT_DATA_HOTFIX_BUILD (56313)
-#define PTR_CLIENT_DATA_HOTFIX_HASH "a079bbe5ddec7422cafe0e2f919d872ad3bdc24d0a3ccbccb2baeffd71e3306d"
+#define PTR_CLIENT_DATA_HOTFIX_HASH "ffdbd949b9907b626c0fc0d88a365bcfeb6a68afe6700acbc839ce394cb597e2"
 
 #endif /* PTR_CLIENT_DATA_VERSION_INC*/
