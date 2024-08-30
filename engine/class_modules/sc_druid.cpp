@@ -1659,30 +1659,28 @@ public:
       return false;
     }
 
-    bool ret = true;
-
     if ( a->proc )
     {
       // allow if the driver can proc from procs
       if ( Base::get_trigger_data()->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
       {
-        ret = true;
+        return true;
       }
+
       // allow if the action is from convoke and the driver procs from cast successful
-      else if ( auto tmp = dynamic_cast<druid_action_data_t*>( a ) )
+      if ( Base::get_trigger_data()->proc_flags() & PF_CAST_SUCCESSFUL )
       {
-        if ( tmp->has_flag( flag_e::CONVOKE ) && Base::get_trigger_data()->proc_flags() & PF_CAST_SUCCESSFUL )
+        if ( auto tmp = dynamic_cast<druid_action_data_t*>( a ); tmp && tmp->has_flag( flag_e::CONVOKE ) )
         {
-          ret = true;
+          return true;
         }
       }
-      else
-      {
-        ret = false;
-      }
+
+      // by default procs cannot proc other procs
+      return false;
     }
 
-    return ret;
+    return true;
   }
 
   bool can_expire( action_t* a ) const override
