@@ -24,6 +24,8 @@ actions.precombat+=/stellar_flare
 # Executed every time the actor is available.
 actions=variable,name=is_aoe,value=spell_targets.starfall>(1+(!talent.aetherial_kindling&!talent.starweaver))&talent.starfall
 actions+=/variable,name=passive_asp,value=6%spell_haste+talent.natures_balance+talent.orbit_breaker*dot.moonfire.ticking*(buff.orbit_breaker.stack>(27-2*buff.solstice.up))*40
+actions+=/use_items,if=eclipse.in_both|fight_remains<20
+actions+=/potion,if=eclipse.in_both|fight_remains<30
 actions+=/run_action_list,name=aoe,if=variable.is_aoe
 actions+=/run_action_list,name=st
 
@@ -35,8 +37,6 @@ actions.aoe+=/force_of_nature
 actions.aoe+=/fury_of_elune
 actions.aoe+=/incarnation
 actions.aoe+=/celestial_alignment
-actions.aoe+=/potion,if=eclipse.in_both
-actions.aoe+=/use_items,if=eclipse.in_both
 actions.aoe+=/warrior_of_elune,if=!talent.lunar_calling&buff.eclipse_solar.remains<7|talent.lunar_calling
 actions.aoe+=/starfire,if=(!talent.lunar_calling&spell_targets.starfire=1)&(buff.eclipse_solar.up&buff.eclipse_solar.remains<action.starfire.cast_time|eclipse.in_none)
 actions.aoe+=/wrath,if=(talent.lunar_calling|spell_targets.starfire>1)&(buff.eclipse_lunar.up&(buff.eclipse_lunar.remains<action.wrath.cast_time)|eclipse.in_none)
@@ -59,8 +59,6 @@ actions.st+=/force_of_nature,if=eclipse.in_solar&buff.eclipse_solar.remains>4&co
 actions.st+=/fury_of_elune
 actions.st+=/incarnation
 actions.st+=/celestial_alignment
-actions.st+=/potion,if=eclipse.in_both|fight_remains<30
-actions.st+=/use_items,if=eclipse.in_both|fight_remains<20
 actions.st+=/warrior_of_elune,if=!talent.lunar_calling&buff.eclipse_solar.remains<7|talent.lunar_calling
 actions.st+=/starfire,if=(!talent.lunar_calling&spell_targets.starfire=1)&(buff.eclipse_solar.up&buff.eclipse_solar.remains<action.starfire.cast_time|eclipse.in_none)
 actions.st+=/wrath,if=(talent.lunar_calling|spell_targets.starfire>1)&(buff.eclipse_lunar.up&(buff.eclipse_lunar.remains<action.wrath.cast_time)|eclipse.in_none)
