@@ -3275,6 +3275,19 @@ void darkmoon_deck_ascension( special_effect_t& effect )
     ascension_tick_t( const special_effect_t& e, util::string_view n, const spell_data_t* s, bool embellish )
       : buff_t( e.player, n, s ), buff_list(), last_buff( nullptr ), stack( 0 ), in_combat( false )
     {
+      add_stats( e, embellish );
+      last_buff = buff_list[ 0 ];
+      set_tick_callback( [ & ]( buff_t*, int, timespan_t ) {
+        // Checks on tick if player is in combat, if not, expire the buff
+        if ( !in_combat )
+          make_event( *e.player->sim, 0_ms, [ & ] { expire(); } );
+        else
+          trigger_ascension();
+      } );
+    }
+
+    void add_stats( const special_effect_t& e, bool embellish )
+    {
       static constexpr std::pair<unsigned, const char*> buff_entries[] = {
         { 458502, "Crit"    },
         { 458503, "Haste"   },
@@ -3298,18 +3311,6 @@ void darkmoon_deck_ascension( special_effect_t& effect )
 
         buff_list.push_back( buff );
       }
-
-      last_buff = buff_list[ 0 ];
-
-      set_tick_callback( [ & ]( buff_t*, int, timespan_t ) {
-        // Checks on tick if player is in combat, if not, expire the buff
-        if ( !in_combat )
-          make_event( *e.player->sim, 0_ms, [ & ] { expire(); } );
-        else
-          trigger_ascension();
-      } );
-
-      // set_quiet( true );
     }
 
     void trigger_ascension()
@@ -3362,15 +3363,16 @@ void darkmoon_deck_ascension( special_effect_t& effect )
     }
   };
 
-  auto buff_name = fmt::format( "ascendance_{}", is_embellishment ? "embellishment" : "trinket" );
+  auto buff_name = "ascendance_darkmoon";
   auto buff = buff_t::find( effect.player, buff_name );
-  if ( !buff )
+  if ( buff )
   {
-    buff = make_buff<ascension_tick_t>( effect, buff_name, effect.player->find_spell( 457594 ), is_embellishment );
+    debug_cast<ascension_tick_t*>( buff )->add_stats( effect, is_embellishment );
+    return;
   }
 
+  buff = make_buff<ascension_tick_t>( effect, buff_name, effect.player->find_spell( 457594 ), is_embellishment );
   effect.name_str = "ascendance_darkmoon";
-
   effect.player->register_on_combat_state_callback( [ buff ]( player_t*, bool c ) {
     if ( c )
     {
