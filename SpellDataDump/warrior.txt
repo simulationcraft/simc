@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56313 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56382 thewarwithin-BETA
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -20204,7 +20204,6 @@ Effects          :
 Description      : $@spelldesc376079
 
 Name             : Demolish (id=440884) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -20229,7 +20228,6 @@ Effects          :
 Description      : $@spelldesc436358
 
 Name             : Demolish (id=440886) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee

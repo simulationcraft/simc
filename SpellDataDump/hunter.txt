@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56313 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56382 thewarwithin-BETA
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -22592,7 +22592,6 @@ Effects          :
 Tooltip          : Your next Arcane Shot is replaced with an Explosive Shot.
 
 Name             : Grenade Juggler (id=459843) [Spell Family (9), Passive, Hidden] 
-Hotfixed         : Proc Flags 1 (69888 -> 256)
 Talent Entry     : Survival [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Nature

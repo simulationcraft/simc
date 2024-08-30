@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56313 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56382 thewarwithin-BETA
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -13446,11 +13446,9 @@ Effects          :
 #5 (id=1183438)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3936 (Label) | Target: Self (1)
                    Affected Spells (Label): Corrupt the Blood (457133), Deathstalker's Mark (457157), Clear the Witnesses (457179), Hunt Them Down (457193), Singular Focus (457236), Fatal Intent (461984)
-Hotfixed         : NEW EFFECT
 #6 (id=1183439)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 3936 (Label) | Target: Self (1)
                    Affected Spells (Label): Corrupt the Blood (457133), Deathstalker's Mark (457157), Clear the Witnesses (457179), Hunt Them Down (457193), Singular Focus (457236), Fatal Intent (461984)
-Hotfixed         : NEW EFFECT
 Description      : Your abilities deal $s1% increased magic damage.
 
 Name             : Lethality (id=382238) [Spell Family (8), Passive] 
@@ -14068,11 +14066,9 @@ Effects          :
 #5 (id=1183440)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value 2: 3936 (Label) | Target: Self (1)
                    Affected Spells (Label): Corrupt the Blood (457133), Deathstalker's Mark (457157), Clear the Witnesses (457179), Hunt Them Down (457193), Singular Focus (457236), Fatal Intent (461984)
-Hotfixed         : NEW EFFECT
 #6 (id=1183441)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3936 (Label) | Target: Self (1)
                    Affected Spells (Label): Corrupt the Blood (457133), Deathstalker's Mark (457157), Clear the Witnesses (457179), Hunt Them Down (457193), Singular Focus (457236), Fatal Intent (461984)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc341549
 Tooltip          : Shadow damage dealt increased by $w1%.
 
@@ -20744,7 +20740,6 @@ Description      : $@spelldesc457052
 Tooltip          : Marked by $@auracaster, suffering additional Plague damage from their abilities.
 
 Name             : Corrupt the Blood (id=457133) [Spell Family (8)] 
-Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Melee
@@ -20778,7 +20773,6 @@ Description      : $@spelldesc457066
 Tooltip          : $@auracaster's Rupture corrupts your blood, dealing $s2 Plague damage.
 
 Name             : Deathstalker's Mark (id=457157) [Spell Family (8)] 
-Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Melee
@@ -20892,7 +20886,6 @@ Description      : $@spelldesc457053
 Tooltip          : Your next $?c1[Fan of Knives][Shuriken Storm] deals additional damage and generates $w1 additional combo point.
 
 Name             : Clear the Witnesses (id=457179) [Spell Family (8)] 
-Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Melee
@@ -20917,7 +20910,6 @@ Effects          :
 Description      : $@spelldesc457053
 
 Name             : Hunt Them Down (id=457193) [Spell Family (8)] 
-Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Melee
@@ -20946,7 +20938,6 @@ Effects          :
 Description      : $@spelldesc457054
 
 Name             : Singular Focus (id=457236) [Spell Family (8)] 
-Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Melee
@@ -21408,7 +21399,6 @@ Effects          :
 Description      : $@spelldesc461980
 
 Name             : Fatal Intent (id=461984) [Spell Family (8)] 
-Hotfixed         : Affecting Spells
 Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Magic
