@@ -284,6 +284,7 @@ void mistweaver( player_t *p )
   def->add_action( "call_action_list,name=st" );
 
   st->add_action( "thunder_focus_tea" );
+  st->add_action( "jadefire_stomp,if=buff.jadefire_stomp.down" );
   st->add_action( "rising_sun_kick" );
   st->add_action( "blackout_kick,if=buff.teachings_of_the_monastery.stack>=4&cooldown.rising_sun_kick.remains>gcd" );
   st->add_action( "tiger_palm" );
