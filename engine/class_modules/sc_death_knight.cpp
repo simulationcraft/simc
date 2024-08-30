@@ -15114,46 +15114,59 @@ struct death_knight_module_t : public module_t
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
     unique_gear::register_special_effect( 326913, runeforge::hysteria );
   }
-
-  /*
+  
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Unholy Direct Damage Buffed by 4%", 179690,
-  hotfix::HOTFIX_FLAG_LIVE ) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier( -1 )
-      .verification_value( -5 );
+    hotfix::register_effect( "Death Knight", "2024-09-30", "Obliterate Main-Hand nerfed 6%", 331344, hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0.83818 )
+        .verification_value( 0.89168 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Unholy Periodic Damage Buffed by 4%", 191170,
-  hotfix::HOTFIX_FLAG_LIVE ) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier( -1 )
-      .verification_value( -5 );
+    hotfix::register_effect( "Death Knight", "2024-09-30", "Obliterate Off-Hand nerfed 6%", 60372, hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0.83818 )
+        .verification_value( 0.89168 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Unholy Pet Damage Buffed by 4%", 191171,
-  hotfix::HOTFIX_FLAG_LIVE ) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier( -1 )
-      .verification_value( -5 );
+    hotfix::register_effect( "Death Knight", "2024-09-30", "Obliterate Two-Hand nerfed 6%", 815754, hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1.2408 )
+        .verification_value( 1.32 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Unholy Guardian Damage Buffed by 4%", 1032341,
-  hotfix::HOTFIX_FLAG_LIVE ) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier( -1 )
-      .verification_value( -5 );
+    hotfix::register_effect( "Death Knight", "2024-09-30", "Frost Strike Main-Hand nerfed 6%", 331347, hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0.69447 )
+        .verification_value( 0.74114 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Frost Direct Damage Buffed by 4%", 179689,
-  hotfix::HOTFIX_FLAG_LIVE ) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier( 4 ) .verification_value(
-  0 );
+    hotfix::register_effect( "Death Knight", "2024-09-30", "Frost Strike Off-Hand nerfed 6%", 60368, hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0.69447 )
+        .verification_value( 0.74114 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Frost Periodic Damage Buffed by 4%", 191174,
-  hotfix::HOTFIX_FLAG_LIVE ) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier( 4 ) .verification_value(
-  0 );
+    hotfix::register_effect( "Death Knight", "2024-09-30", "Frost Strike Two-Hand nerfed 6%", 815761, hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( .99046 )
+        .verification_value( 1.05386 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Frost Pet Damage Buffed by 4%", 844541,
-  hotfix::HOTFIX_FLAG_LIVE ) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier( 4 ) .verification_value(
-  0 );
+    hotfix::register_effect( "Death Knight", "2024-09-30", "Glacial Advance nerfed 10%", 287633,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0.50742 )
+        .verification_value( 0.5638 );
 
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Frost Guardian Damage Buffed by 4%", 1032340,
-  hotfix::HOTFIX_FLAG_LIVE ) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier( 4 ) .verification_value(
-  0 );
-
-    hotfix::register_effect( "Death Knight", "2023-11-27", "Bone Shield Strength Increased", 286506,
-  hotfix::HOTFIX_FLAG_LIVE ) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier( 80 )
-      .verification_value( 70 );
-  }*/
+    hotfix::register_effect( "Death Knight", "2024-09-30", "Icy Death Torrent nerfed 10%", 1132889,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "ap_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1.224 )
+        .verification_value( 1.36 );    
+  }
 
   void init( player_t* ) const override
   {
