@@ -11514,8 +11514,10 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
 
   if ( specialization() == DRUID_BALANCE )
   {
-    sim->error( "Balance Druid does not yet have an Action Priority List (APL)." );
-    return false;
+    sim->error( "Balance Druid default Action Priority List (APL) is preliminary and has not be optimized." );
+
+    if ( style != FIGHT_STYLE_PATCHWERK )
+      return false;
   }
 
   return true;
