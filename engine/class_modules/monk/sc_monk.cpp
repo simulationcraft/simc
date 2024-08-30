@@ -1769,8 +1769,8 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
 
   int n_targets() const override
   {
-    if ( p()->talent.mistweaver.ancient_concordance && p()->buff.jadefire_stomp )
-      return 1 + p()->talent.mistweaver.ancient_concordance->effectN( 2 ).base_value();
+    if ( p()->buff.ancient_concordance->check() )
+      return 3;
 
     return base_t::n_targets();
   }
@@ -7033,7 +7033,7 @@ void monk_t::init_spells()
     talent.mistweaver.crane_style                = _ST( "Crane Style" );
     talent.mistweaver.revival                    = _ST( "Revival" );
     talent.mistweaver.restoral                   = _ST( "Restoral" );
-    talent.mistweaver.healing_elixir = _ST( "Healing Elixir" );
+    talent.mistweaver.healing_elixir             = _ST( "Healing Elixir" );
     // Row 5
     talent.mistweaver.nourishing_chi      = _ST( "Nourishing Chi" );
     talent.mistweaver.calming_coalescence = _ST( "Calming Coalescence" );
@@ -7066,14 +7066,15 @@ void monk_t::init_spells()
     talent.mistweaver.focused_thunder        = _ST( "Focused Thunder" );
     talent.mistweaver.sheiluns_gift          = _ST( "Sheilun's Gift" );
     // Row 9
-    talent.mistweaver.ancient_concordance = _ST( "Ancient Concordance" );
-    talent.mistweaver.ancient_teachings   = _ST( "Ancient Teachings" );
-    talent.mistweaver.resplendent_mist    = _ST( "Resplendent Mist" );
-    talent.mistweaver.secret_infusion     = _ST( "Secret Infusion" );
-    talent.mistweaver.misty_peaks         = _ST( "Misty Peaks" );
-    talent.mistweaver.peaceful_mending    = _ST( "Peaceful Mending" );
-    talent.mistweaver.veil_of_pride       = _ST( "Veil of Pride" );
-    talent.mistweaver.shaohaos_lessons    = _ST( "Shaohao's Lessons" );
+    talent.mistweaver.ancient_concordance      = _ST( "Ancient Concordance" );
+    talent.mistweaver.ancient_concordance_buff = find_spell( 389391 );
+    talent.mistweaver.ancient_teachings        = _ST( "Ancient Teachings" );
+    talent.mistweaver.resplendent_mist         = _ST( "Resplendent Mist" );
+    talent.mistweaver.secret_infusion          = _ST( "Secret Infusion" );
+    talent.mistweaver.misty_peaks              = _ST( "Misty Peaks" );
+    talent.mistweaver.peaceful_mending         = _ST( "Peaceful Mending" );
+    talent.mistweaver.veil_of_pride            = _ST( "Veil of Pride" );
+    talent.mistweaver.shaohaos_lessons         = _ST( "Shaohao's Lessons" );
     // Row 10
     talent.mistweaver.awakened_jadefire     = _ST( "Awakened Jadefire" );
     talent.mistweaver.dance_of_chiji        = _ST( "Dance of Chi-Ji" );
@@ -7630,7 +7631,13 @@ void monk_t::create_buffs()
 
   buff.jadefire_stomp = make_buff_fallback( shared.jadefire_stomp->ok(), this, "jadefire_stomp", find_spell( 388193 ) )
                             ->set_trigger_spell( shared.jadefire_stomp )
-                            ->set_default_value_from_effect( 2 );
+                            ->set_default_value_from_effect( 2 )
+                            ->set_stack_change_callback( [ this ]( buff_t *, int old_, int new_ ) {
+                              if ( old_ == 0 )
+                                buff.ancient_concordance->trigger();
+                              else if ( new_ == 0 )
+                                buff.ancient_concordance->expire();
+                            } );
 
   buff.rushing_jade_wind = make_buff_fallback<buffs::rushing_jade_wind_buff_t>(
       talent.brewmaster.rushing_jade_wind->ok() || talent.windwalker.rushing_jade_wind->ok() ||
@@ -7751,6 +7758,9 @@ void monk_t::create_buffs()
       talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok(), this, "recent_purifies" );
 
   // Mistweaver
+  buff.ancient_concordance = make_buff_fallback( talent.mistweaver.ancient_concordance->ok(), this,
+                                                 "ancient_concordance", talent.mistweaver.ancient_concordance_buff );
+
   buff.invoke_chiji = make_buff( this, "invoke_chiji", find_spell( 343818 ) )
                           ->set_trigger_spell( talent.mistweaver.invoke_chi_ji_the_red_crane );
 

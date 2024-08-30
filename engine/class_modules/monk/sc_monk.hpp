@@ -575,6 +575,7 @@ public:
   struct buffs_t
   {
     // General
+    propagate_const<buff_t *> ancient_concordance;
     propagate_const<buff_t *> chi_torpedo;
     propagate_const<buff_t *> chi_wave;
     propagate_const<buff_t *> dampen_harm;
@@ -1073,6 +1074,7 @@ public:
       player_talent_t sheiluns_gift;
       // Row 9
       player_talent_t ancient_concordance;
+      const spell_data_t *ancient_concordance_buff;
       player_talent_t ancient_teachings;
       player_talent_t resplendent_mist;
       player_talent_t secret_infusion;
