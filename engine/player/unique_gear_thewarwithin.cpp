@@ -73,40 +73,6 @@ const spell_data_t* spell_from_spell_text( const special_effect_t& e )
   return spell_data_t::nil();
 }
 
-double role_mult( const special_effect_t& effect )
-{
-  double mult = 1.0;
-
-  if ( auto vars = effect.player->dbc->spell_desc_vars( effect.driver()->id() ).desc_vars() )
-  {
-    std::cmatch m;
-    std::regex get_var( R"(\$rolemult=\$(.*))" );  // find the $rolemult= variable
-    if ( std::regex_search( vars, m, get_var ) )
-    {
-      const auto var = m.str( 1 );
-      std::regex get_role( R"(\??((?:a\d+\|?)*)\[\$\{([\d\.]+)\}[\d\.]*\])" );  // find each role group
-      std::sregex_iterator role_it( var.begin(), var.end(), get_role );
-      for ( std::sregex_iterator i = role_it; i != std::sregex_iterator(); i++ )
-      {
-        mult = util::to_double( i->str( 2 ) );
-        const auto role = i->str( 1 );
-        std::regex get_spec( R"(a(\d+))" );  // find each spec spell id
-        std::sregex_iterator spec_it( role.begin(), role.end(), get_spec );
-        for ( std::sregex_iterator j = spec_it; j != std::sregex_iterator(); j++ )
-        {
-          if ( util::to_unsigned_ignore_error( j->str( 1 ), 0u ) == effect.player->spec_spell->id() )
-          {
-            effect.player->sim->print_debug( "parsed role multiplier for effect '{}': {}", effect.name(), mult );
-            return mult;
-          }
-        }
-      }
-    }
-  }
-
-  return mult;
-}
-
 void create_all_stat_buffs( const special_effect_t& effect, const spell_data_t* buff_data, double amount,
                             std::function<void( stat_e, buff_t* )> add_fn )
 {
@@ -435,6 +401,8 @@ void authority_of_radiant_power( special_effect_t& effect )
   if ( found )
     return;
 
+  damage->base_multiplier *= role_mult( effect.player, effect.player->find_spell( 445339 ) );
+
   effect.spell_id = effect.trigger()->id();  // rppm driver is the effect trigger
 
   effect.player->callbacks.register_callback_execute_function(
@@ -456,6 +424,29 @@ void authority_of_the_depths( special_effect_t& effect )
 
   if ( found )
     return;
+
+  damage->base_multiplier *= role_mult( effect.player, effect.player->find_spell( 445341 ) );
+
+  effect.spell_id = effect.trigger()->id();  // rppm driver is the effect trigger
+
+  effect.execute_action = damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void authority_of_storms( special_effect_t& effect )
+{
+  auto found = effect.player->find_action( "authority_of_storms" ) ;
+
+  auto damage_id = as<unsigned>( effect.trigger()->effectN( 1 ).misc_value1() );
+  auto damage = create_proc_action<generic_proc_t>( "authority_of_storms", effect, damage_id );
+  damage->base_dd_min += effect.driver()->effectN( 1 ).average( effect );
+  damage->base_dd_max += effect.driver()->effectN( 1 ).average( effect );
+
+  if ( found )
+    return;
+
+  damage->base_multiplier *= role_mult( effect.player, effect.player->find_spell( 445336 ) );
 
   effect.spell_id = effect.trigger()->id();  // rppm driver is the effect trigger
 
@@ -4412,6 +4403,7 @@ void register_special_effects()
   // Enchants & gems
   register_special_effect( { 448710, 448714, 448716 }, enchants::authority_of_radiant_power );
   register_special_effect( { 449221, 449223, 449222 }, enchants::authority_of_the_depths );
+  register_special_effect( { 449018, 449019, 449020 }, enchants::authority_of_storms );
   register_special_effect( { 449055, 449056, 449059,                                          // council's guile (crit)
                              449095, 449096, 449097,                                          // stormrider's fury (haste)
                              449112, 449113, 449114,                                          // stonebound artistry (mastery)
@@ -4520,6 +4512,45 @@ action_t* create_action( player_t* p, util::string_view n, util::string_view opt
   if ( n == "pickup_cinderbee_orb" ) return new sets::pickup_cinderbee_orb_t( p, options );
 
   return nullptr;
+}
+
+double role_mult( player_t* player, const spell_data_t* s_data )
+{
+  double mult = 1.0;
+
+  if ( auto vars = player->dbc->spell_desc_vars( s_data->id() ).desc_vars() )
+  {
+    std::cmatch m;
+    std::regex get_var( R"(\$rolemult=\$(.*))" );  // find the $rolemult= variable
+    if ( std::regex_search( vars, m, get_var ) )
+    {
+      const auto var = m.str( 1 );
+      std::regex get_role( R"(\??((?:a\d+\|?)*)\[\$\{([\d\.]+)\}[\d\.]*\])" );  // find each role group
+      std::sregex_iterator role_it( var.begin(), var.end(), get_role );
+      for ( std::sregex_iterator i = role_it; i != std::sregex_iterator(); i++ )
+      {
+        mult = util::to_double( i->str( 2 ) );
+        const auto role = i->str( 1 );
+        std::regex get_spec( R"(a(\d+))" );  // find each spec spell id
+        std::sregex_iterator spec_it( role.begin(), role.end(), get_spec );
+        for ( std::sregex_iterator j = spec_it; j != std::sregex_iterator(); j++ )
+        {
+          if ( util::to_unsigned_ignore_error( j->str( 1 ), 0u ) == player->spec_spell->id() )
+          {
+            player->sim->print_debug( "parsed role multiplier for spell '{}': {}", s_data->name_cstr(), mult );
+            return mult;
+          }
+        }
+      }
+    }
+  }
+
+  return mult;
+}
+
+double role_mult( const special_effect_t& effect )
+{
+  return role_mult( effect.player, effect.driver() );
 }
 
 // writhing armor banding embellishment, doubles nerubian embellishment values
