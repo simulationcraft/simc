@@ -8166,7 +8166,8 @@ struct starfire_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
     }
 
     // eclipse is handled after cast but before impact
-    p()->eclipse_handler.cast_starfire();
+    if ( s->chain_target == 0 )
+      p()->eclipse_handler.cast_starfire();
 
     base_t::schedule_travel( s );
   }
