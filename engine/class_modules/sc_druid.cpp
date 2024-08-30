@@ -1650,6 +1650,8 @@ public:
 
   bool can_trigger( action_t* a ) const override
   {
+    assert( dynamic_cast<druid_action_data_t*>( a ) && "Non Druid action passed to Druid buff can_trigger." );
+
     if ( Base::is_fallback || !a->data().ok() || !Base::get_trigger_data()->ok() )
       return false;
 
@@ -1668,15 +1670,13 @@ public:
       }
 
       // allow if the action is from convoke and the driver procs from cast successful
-      if ( Base::get_trigger_data()->proc_flags() & PF_CAST_SUCCESSFUL )
+      if ( ( Base::get_trigger_data()->proc_flags() & PF_CAST_SUCCESSFUL ) &&
+           dynamic_cast<druid_action_data_t*>( a )->has_flag( flag_e::CONVOKE ) )
       {
-        if ( auto tmp = dynamic_cast<druid_action_data_t*>( a ); tmp && tmp->has_flag( flag_e::CONVOKE ) )
-        {
-          return true;
-        }
+        return true;
       }
 
-      // by default procs cannot proc other procs
+      // by default procs cannot trigger
       return false;
     }
 
@@ -1685,13 +1685,13 @@ public:
 
   bool can_expire( action_t* a ) const override
   {
+    assert( dynamic_cast<druid_action_data_t*>( a ) && "Non Druid action passed to Druid buff can_expire." );
+
     if ( Base::is_fallback || !a->data().ok() || !Base::data().ok() )
       return false;
 
     if ( Base::data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) && !a->allow_class_ability_procs )
       return false;
-
-    bool ret = true;
 
     if ( a->proc )
     {
@@ -1699,21 +1699,21 @@ public:
       if ( Base::data().flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) ||
            Base::get_trigger_data()->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
       {
-        ret = true;
+        return true;
       }
+
       // allow if the action is from convoke and the buff procs from cast successful
-      else if ( auto tmp = dynamic_cast<druid_action_data_t*>( a );
-                tmp && tmp->has_flag( flag_e::CONVOKE ) && Base::data().proc_flags() & PF_CAST_SUCCESSFUL )
+      if ( ( Base::data().proc_flags() & PF_CAST_SUCCESSFUL ) &&
+           dynamic_cast<druid_action_data_t*>( a )->has_flag( flag_e::CONVOKE ) )
       {
-        ret = true;
+        return true;
       }
-      else
-      {
-        ret = false;
-      }
+
+      // by default procs cannot expire
+      return false;
     }
 
-    return ret;
+    return true;
   }
 };
 
