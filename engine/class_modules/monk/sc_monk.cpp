@@ -1184,29 +1184,6 @@ struct tigers_ferocity_t : public monk_melee_attack_t
   }
 };
 
-// Tiger Palm Proc from Awakened Jadefire
-struct tiger_palm_jadefire_proc_t : public monk_melee_attack_t
-{
-  tiger_palm_jadefire_proc_t( monk_t *p )
-    : monk_melee_attack_t( p, "tiger_palm_jadefire_proc", p->talent.mistweaver.awakened_jadefire_tiger_palm )
-  {
-    trigger_chiji = true;
-  }
-
-  // Force 50 milliseconds for the animation, but not delay the overall GCD
-  timespan_t execute_time() const override
-  {
-    return timespan_t::from_millis( 50 );
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-    p()->buff.teachings_of_the_monastery->trigger();
-  }
-};
-
 // Tiger Palm base ability ===================================================
 struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 {
@@ -1251,12 +1228,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
       tigers_ferocity = new tigers_ferocity_t( p );
       add_child( tigers_ferocity );
     }
-
-    if ( p->talent.mistweaver.awakened_jadefire->ok() )
-    {
-      tiger_palm_jadefire_proc = new tiger_palm_jadefire_proc_t( p );
-      add_child( tiger_palm_jadefire_proc );
-    }
   }
 
   bool ready() override
@@ -1285,8 +1256,8 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 
     monk_melee_attack_t::execute();
 
-    if ( p()->buff.jadefire_stomp )
-      tiger_palm_jadefire_proc->execute_on_target( p()->target );
+    if ( p()->talent.mistweaver.awakened_jadefire->ok() && p()->buff.jadefire_stomp->up() )
+      monk_melee_attack_t::execute();
 
     p()->buff.blackout_combo->expire();
 
@@ -1298,8 +1269,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     //============
     // Post-hit
     //============
-
-    p()->buff.teachings_of_the_monastery->trigger();
 
     // Combo Breaker calculation
     if ( p()->baseline.windwalker.combo_breaker->ok() && p()->buff.bok_proc->trigger() &&
@@ -7107,7 +7076,6 @@ void monk_t::init_spells()
     talent.mistweaver.shaohaos_lessons    = _ST( "Shaohao's Lessons" );
     // Row 10
     talent.mistweaver.awakened_jadefire     = _ST( "Awakened Jadefire" );
-    talent.mistweaver.awakened_jadefire_tiger_palm = find_spell( 100780 );
     talent.mistweaver.dance_of_chiji        = _ST( "Dance of Chi-Ji" );
     talent.mistweaver.tea_of_serenity       = _ST( "Tea of Serenity" );
     talent.mistweaver.tea_of_plenty         = _ST( "Tea of Plenty" );

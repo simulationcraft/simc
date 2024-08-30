@@ -1082,7 +1082,6 @@ public:
       player_talent_t shaohaos_lessons;
       // Row 10
       player_talent_t awakened_jadefire;
-      const spell_data_t *awakened_jadefire_tiger_palm;
       player_talent_t dance_of_chiji;
       player_talent_t tea_of_serenity;
       player_talent_t tea_of_plenty;
