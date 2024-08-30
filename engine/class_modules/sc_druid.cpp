@@ -6590,7 +6590,7 @@ public:
       smolder_pct( p->talent.astral_smolder->proc_chance() )
   {
     // damage bonus is applied at end of cast, but cast speed bonuses apply before
-    parse_effects( &p->buff.dreamstate->data(), effect_mask_t( false ).enable( 3 ) );
+    parse_effects( p->buff.dreamstate, effect_mask_t( false ).enable( 3 ) );
     parse_effects( &p->buff.dreamstate->data(), effect_mask_t( true ).disable( 3 ), [ this ] { return dreamstate; } );
   }
 
