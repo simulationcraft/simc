@@ -932,7 +932,6 @@ struct sef_action_t : base_t
       return false;
     }
 
-    // TODO: How do I bypass `parse_effect` overrides?
     double composite_player_multiplier( const action_state_t * ) const override
     {
       // Composite Player Multiplier is strictly school mods, which get skipped.
@@ -941,7 +940,7 @@ struct sef_action_t : base_t
 
     double composite_crit_chance() const override
     {
-      auto cc = PLACEHOLDER_T::composite_crit_chance();
+      auto cc = derived_t::composite_crit_chance();
 
       for ( const auto &i : base_t::crit_chance_effects )
         if ( !from_caster_spells( i.eff ) )
@@ -953,14 +952,19 @@ struct sef_action_t : base_t
     double composite_crit_damage_bonus_multiplier() const override
     {
       // Crit Damage Bonus Multipliers double dip.
-      auto cd = PLACEHOLDER_T::composite_crit_damage_bonus_multiplier() * *2 / 2.0;
+      auto cd = derived_t::composite_crit_damage_bonus_multiplier() * *2 / 2.0;
+
+      for ( const auto &i : crit_bonus_effects )
+      {
+        cd *= 1.0 + get_effect_value( i, false );
+      }
 
       return cd;
     }
 
     double composite_target_crit_damage_bonus_multiplier( player_t *target ) const override
     {
-      auto cd = PLACEHOLDER_T::composite_target_crit_damage_bonus_multiplier( target );
+      auto cd = derived_t::composite_target_crit_damage_bonus_multiplier( target );
       auto td = base_t::p()->get_target_data( target );
 
       for ( const auto &i : base_t::target_crit_bonus_effects )
@@ -972,7 +976,7 @@ struct sef_action_t : base_t
 
     double composite_da_multiplier( const action_state_t *state ) const override
     {
-      auto da = PLACEHOLDER_T::composite_da_multiplier( state );
+      auto da = derived_t::composite_da_multiplier( state );
 
       for ( const auto &i : base_t::da_multiplier_effects )
         if ( !from_caster_spells( i.eff ) )
@@ -983,7 +987,7 @@ struct sef_action_t : base_t
 
     double composite_ta_multiplier( const action_state_t *state ) const override
     {
-      auto ta = PLACEHOLDER_T::composite_ta_multiplier( state );
+      auto ta = derived_t::composite_ta_multiplier( state );
 
       for ( const auto &i : base_t::ta_multiplier_effects )
         if ( !from_caster_spells( i.eff ) )

@@ -97,7 +97,8 @@ private:
   std::array<resource_e, MONK_MISTWEAVER + 1> _resource_by_stance;
 
 public:
-  using base_t = parse_action_effects_t<Base>;
+  using derived_t = Base;
+  using base_t    = parse_action_effects_t<Base>;
 
   template <typename... Args>
   monk_action_t( Args &&...args );
