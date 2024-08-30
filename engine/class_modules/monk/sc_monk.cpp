@@ -3765,7 +3765,7 @@ struct mana_tea_t : public monk_spell_t
 struct thunder_focus_tea_t : public monk_spell_t
 {
   thunder_focus_tea_t( monk_t *p, util::string_view options_str )
-      : monk_spell_t( p, "thunder_focus_tea", p->talent.mistweaver.thunder_focus_tea )
+    : monk_spell_t( p, "thunder_focus_tea", p->talent.mistweaver.thunder_focus_tea )
   {
     parse_options( options_str );
 
@@ -6837,12 +6837,12 @@ void monk_t::init_spells()
 
   // monk_t::baseline::mistweaver
   {
-    current_spec                          = MONK_MISTWEAVER;
-    baseline.mistweaver.mastery           = find_mastery_spell( MONK_MISTWEAVER );
-    baseline.mistweaver.aura              = find_specialization_spell( "Mistweaver Monk" );
-    baseline.mistweaver.aura_2            = find_specialization_spell( 428200 );
-    baseline.mistweaver.aura_3            = find_specialization_spell( 462090 );
-    baseline.mistweaver.expel_harm_rank_2 = find_rank_spell( "Expel Harm", "Rank 2", MONK_MISTWEAVER );
+    current_spec                                   = MONK_MISTWEAVER;
+    baseline.mistweaver.mastery                    = find_mastery_spell( MONK_MISTWEAVER );
+    baseline.mistweaver.aura                       = find_specialization_spell( "Mistweaver Monk" );
+    baseline.mistweaver.aura_2                     = find_specialization_spell( 428200 );
+    baseline.mistweaver.aura_3                     = find_specialization_spell( 462090 );
+    baseline.mistweaver.expel_harm_rank_2          = find_rank_spell( "Expel Harm", "Rank 2", MONK_MISTWEAVER );
     baseline.mistweaver.teachings_of_the_monastery = find_spell( 116645 );
   }
 
@@ -7026,14 +7026,14 @@ void monk_t::init_spells()
     talent.mistweaver.thunder_focus_tea = _ST( "Thunder Focus Tea" );
     talent.mistweaver.renewing_mist     = _ST( "Renewing Mist" );
     // Row 3
-    talent.mistweaver.life_cocoon    = _ST( "Life Cocoon" );
-    talent.mistweaver.mana_tea       = _ST( "Mana Tea" );
-    talent.mistweaver.invigorating_mists         = _ST( "Invigorating Mists" );
+    talent.mistweaver.life_cocoon        = _ST( "Life Cocoon" );
+    talent.mistweaver.mana_tea           = _ST( "Mana Tea" );
+    talent.mistweaver.invigorating_mists = _ST( "Invigorating Mists" );
     // Row 4
-    talent.mistweaver.crane_style                = _ST( "Crane Style" );
-    talent.mistweaver.revival                    = _ST( "Revival" );
-    talent.mistweaver.restoral                   = _ST( "Restoral" );
-    talent.mistweaver.healing_elixir             = _ST( "Healing Elixir" );
+    talent.mistweaver.crane_style    = _ST( "Crane Style" );
+    talent.mistweaver.revival        = _ST( "Revival" );
+    talent.mistweaver.restoral       = _ST( "Restoral" );
+    talent.mistweaver.healing_elixir = _ST( "Healing Elixir" );
     // Row 5
     talent.mistweaver.nourishing_chi      = _ST( "Nourishing Chi" );
     talent.mistweaver.calming_coalescence = _ST( "Calming Coalescence" );
@@ -7326,7 +7326,7 @@ void monk_t::init_spells()
 
   if ( talent.windwalker.teachings_of_the_monastery->ok() )
     shared.teachings_of_the_monastery = talent.windwalker.teachings_of_the_monastery;
-  else if (baseline.mistweaver.teachings_of_the_monastery->ok())
+  else if ( baseline.mistweaver.teachings_of_the_monastery->ok() )
     shared.teachings_of_the_monastery = baseline.mistweaver.teachings_of_the_monastery;
   else
     shared.teachings_of_the_monastery = spell_data_t::not_found();
