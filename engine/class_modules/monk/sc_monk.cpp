@@ -1189,7 +1189,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 {
   bool face_palm;
   action_t *tigers_ferocity;
-  action_t *tiger_palm_jadefire_proc;
 
   tiger_palm_t( monk_t *p, util::string_view options_str )
     : base_t( p, "tiger_palm", p->baseline.monk.tiger_palm ), face_palm( false )
