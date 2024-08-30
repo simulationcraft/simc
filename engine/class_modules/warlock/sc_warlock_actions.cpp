@@ -4011,6 +4011,8 @@ using namespace helpers;
 
       add_child( channel_demonfire_tick );
 
+      int num_ticks = as<int>( dot_duration / base_tick_time );
+
       if ( p->talents.demonfire_mastery.ok() )
       {
         base_tick_time *= 1.0 + p->talents.demonfire_mastery->effectN( 2 ).percent();
@@ -4019,7 +4021,7 @@ using namespace helpers;
 
       if ( p->talents.raging_demonfire.ok() )
       {
-        int num_ticks = as<int>( dot_duration / base_tick_time + p->talents.raging_demonfire->effectN( 1 ).base_value() );
+        num_ticks += as<int>( p->talents.raging_demonfire->effectN( 1 ).base_value() );
         base_tick_time *= 1.0 + p->talents.raging_demonfire->effectN( 3 ).percent();
         dot_duration = num_ticks * base_tick_time;
       }
