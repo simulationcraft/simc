@@ -2883,17 +2883,9 @@ void signet_of_the_priory( special_effect_t& effect )
   std::vector<buff_t*> party_buffs;
   auto option = effect.player->thewarwithin_opts.signet_of_the_priory_party_stats;
 
-  if ( option.is_default() )
-  {
-    for ( auto stat : secondary_ratings )
+  for ( auto s : util::string_split<std::string_view>( option, "/" ) )
+    if ( auto stat = util::parse_stat_type( s ); stat != STAT_NONE )
       party_buffs.push_back( signet->party_buffs.at( stat ) );
-  }
-  else
-  {
-    for ( auto s : util::string_split<std::string_view>( option, "/" ) )
-      if ( auto stat = util::parse_stat_type( s ); stat != STAT_NONE )
-        party_buffs.push_back( signet->party_buffs.at( stat ) );
-  }
 
   for ( auto b : party_buffs )
   {
@@ -3991,7 +3983,8 @@ void siphoning_stilleto( special_effect_t& effect )
       self->execute_on_target( listener );
       // TODO: implement range check if it ever matters for specilizations that can use this.
       make_event( *listener->sim, duration, [ & ] {
-        auto target = listener->sim->target_non_sleeping_list[ rng().range( 0, listener->sim->target_non_sleeping_list.size() ) ];
+        auto target = listener->sim
+          ->target_non_sleeping_list[ rng().range( 0, as<int>( listener->sim->target_non_sleeping_list.size() ) ) ];
         damage->execute_on_target( target );
       } );
     }
