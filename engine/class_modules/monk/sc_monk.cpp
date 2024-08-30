@@ -1769,6 +1769,8 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
 
   int n_targets() const override
   {
+    // The Ancient Concordance buff's spell data modified number of targets hit, but the value is 1 instead of 3, so it
+    // is useless. We set the value manually to 3.
     if ( p()->buff.ancient_concordance->check() )
       return 3;
 
