@@ -9378,12 +9378,13 @@ void mage_t::trigger_spellfire_spheres()
 
 void mage_t::consume_burden_of_power()
 {
+  // TODO: Revisit this whole function once the delay is removed in game
   if ( !buffs.burden_of_power->check() || events.burden_of_power )
     return;
 
   // Buff is consumed after a short delay, allowing multiple spells to benefit.
   // TODO: Double check this later
-  events.burden_of_power = make_event( *sim, 15_ms, [ this ]
+  events.burden_of_power = make_event( *sim, 0_ms, [ this ]
   {
     buffs.burden_of_power->decrement();
     events.burden_of_power = nullptr;
