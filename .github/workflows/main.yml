@@ -226,6 +226,7 @@ jobs:
             paladin_protection,
             priest_shadow,
             rogue_assassination, rogue_outlaw, rogue_subtlety,
+            warlock_affliction, warlock_demonology, warlock_destruction,
             shaman_elemental
           ]
         fightstyle: [singletarget, multitarget, dungeonslice]
