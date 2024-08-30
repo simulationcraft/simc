@@ -11,6 +11,8 @@ precombat->add_action( "stellar_flare" );
 
 def->add_action( "variable,name=is_aoe,value=spell_targets.starfall>(1+(!talent.aetherial_kindling&!talent.starweaver))&talent.starfall","Executed every time the actor is available." );
 def->add_action( "variable,name=passive_asp,value=6%spell_haste+talent.natures_balance+talent.orbit_breaker*dot.moonfire.ticking*(buff.orbit_breaker.stack>(27-2*buff.solstice.up))*40" );
+def->add_action( "use_items,if=eclipse.in_both|fight_remains<20" );
+def->add_action( "potion,if=eclipse.in_both|fight_remains<30" );
 def->add_action( "run_action_list,name=aoe,if=variable.is_aoe" );
 def->add_action( "run_action_list,name=st" );
 
@@ -22,8 +24,6 @@ aoe->add_action( "force_of_nature" );
 aoe->add_action( "fury_of_elune" );
 aoe->add_action( "incarnation" );
 aoe->add_action( "celestial_alignment" );
-aoe->add_action( "potion,if=eclipse.in_both" );
-aoe->add_action( "use_items,if=eclipse.in_both" );
 aoe->add_action( "warrior_of_elune,if=!talent.lunar_calling&buff.eclipse_solar.remains<7|talent.lunar_calling" );
 aoe->add_action( "starfire,if=(!talent.lunar_calling&spell_targets.starfire=1)&(buff.eclipse_solar.up&buff.eclipse_solar.remains<action.starfire.cast_time|eclipse.in_none)" );
 aoe->add_action( "wrath,if=(talent.lunar_calling|spell_targets.starfire>1)&(buff.eclipse_lunar.up&(buff.eclipse_lunar.remains<action.wrath.cast_time)|eclipse.in_none)" );
@@ -46,8 +46,6 @@ st->add_action( "force_of_nature,if=eclipse.in_solar&buff.eclipse_solar.remains>
 st->add_action( "fury_of_elune" );
 st->add_action( "incarnation" );
 st->add_action( "celestial_alignment" );
-st->add_action( "potion,if=eclipse.in_both|fight_remains<30" );
-st->add_action( "use_items,if=eclipse.in_both|fight_remains<20" );
 st->add_action( "warrior_of_elune,if=!talent.lunar_calling&buff.eclipse_solar.remains<7|talent.lunar_calling" );
 st->add_action( "starfire,if=(!talent.lunar_calling&spell_targets.starfire=1)&(buff.eclipse_solar.up&buff.eclipse_solar.remains<action.starfire.cast_time|eclipse.in_none)" );
 st->add_action( "wrath,if=(talent.lunar_calling|spell_targets.starfire>1)&(buff.eclipse_lunar.up&(buff.eclipse_lunar.remains<action.wrath.cast_time)|eclipse.in_none)" );
