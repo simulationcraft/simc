@@ -619,6 +619,7 @@ public:
     // Mistweaver
     propagate_const<absorb_buff_t *> life_cocoon;
     propagate_const<buff_t *> channeling_soothing_mist;
+    propagate_const<buff_t *> dance_of_chiji_mw;
     propagate_const<buff_t *> invoke_chiji;
     propagate_const<buff_t *> invoke_chiji_evm;
     propagate_const<buff_t *> lifecycles_enveloping_mist;
@@ -638,7 +639,7 @@ public:
     propagate_const<buff_t *> combat_wisdom;
     propagate_const<buff_t *> combo_strikes;
     propagate_const<buff_t *> cyclone_strikes;
-    propagate_const<buff_t *> dance_of_chiji;
+    propagate_const<buff_t *> dance_of_chiji_ww;
     propagate_const<buff_t *> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
     propagate_const<buff_t *> darting_hurricane;
     propagate_const<buff_t *> dizzying_kicks;
@@ -748,6 +749,7 @@ public:
     propagate_const<proc_t *> chi_surge;
     propagate_const<proc_t *> counterstrike_tp;
     propagate_const<proc_t *> counterstrike_sck;
+    propagate_const<proc_t *> dance_of_chiji;
     propagate_const<proc_t *> elusive_footwork_proc;
     propagate_const<proc_t *> face_palm;
     propagate_const<proc_t *> glory_of_the_dawn;
@@ -1341,7 +1343,6 @@ public:
     const spell_data_t *combat_wisdom_expel_harm;
     const spell_data_t *cyclone_strikes;
     const spell_data_t *dance_of_chiji;
-    const spell_data_t *dance_of_chiji_bug;
     const spell_data_t *dual_threat_kick;
     const spell_data_t *dizzying_kicks;
     const spell_data_t *empowered_tiger_lightning;

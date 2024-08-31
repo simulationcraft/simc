@@ -517,7 +517,7 @@ void monk_action_t<Base>::consume_resource()
   if ( current_resource() == RESOURCE_CHI )
   {
     // Dance of Chi-Ji talent triggers from spending chi
-    p()->buff.dance_of_chiji->trigger();
+    p()->buff.dance_of_chiji_ww->trigger();
 
     auto base_cost = base_t::base_cost();
 
@@ -2004,11 +2004,18 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     parse_effects( p->talent.windwalker.crane_vortex );
 
     // dance of chiji is scripted
-    if ( const auto &effect = p->talent.windwalker.dance_of_chiji->effectN( 1 ); effect.ok() )
-      add_parse_entry( da_multiplier_effects )
-          .set_func( [ &b = p->buff.dance_of_chiji_hidden ]() { return b->check(); } )
-          .set_value( effect.percent() )
-          .set_eff( &effect );
+    const auto add_docj_parse_entry = [ this, &p ]( auto talent ) {
+      if ( const auto &effect = talent->effectN( 1 ); effect.ok() )
+        add_parse_entry( da_multiplier_effects )
+            .set_func( [ &b = p->buff.dance_of_chiji_hidden ]() { return b->check(); } )
+            .set_value( effect.percent() )
+            .set_eff( &effect );
+    };
+
+    if ( p->specialization() == MONK_MISTWEAVER )
+      add_docj_parse_entry( p->talent.mistweaver.dance_of_chiji );
+    else if ( p->specialization() == MONK_WINDWALKER )
+      add_docj_parse_entry( p->talent.windwalker.dance_of_chiji );
 
     parse_effects( p->buff.cyclone_strikes, USE_CURRENT );
   }
@@ -2130,14 +2137,20 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     if ( p()->specialization() == MONK_WINDWALKER )
     {
-      if ( p()->buff.dance_of_chiji->up() )
+      if ( p()->buff.dance_of_chiji_ww->up() )
       {
-        p()->buff.dance_of_chiji->decrement();
+        p()->buff.dance_of_chiji_ww->decrement();
         p()->buff.dance_of_chiji_hidden->trigger();
 
         if ( p()->rng().roll( p()->talent.windwalker.sequenced_strikes->effectN( 1 ).percent() ) )
           p()->buff.bok_proc->increment();  // increment is used to not incur the rppm cooldown
       }
+    }
+
+    if ( p()->buff.dance_of_chiji_mw->up() )
+    {
+      p()->buff.dance_of_chiji_mw->decrement();
+      p()->buff.dance_of_chiji_hidden->trigger();
     }
 
     monk_melee_attack_t::execute();
@@ -2430,7 +2443,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     // TODO: Check if this can proc without being talented into DoCJ
     if ( p()->talent.windwalker.dance_of_chiji->ok() &&
          p()->rng().roll( p()->talent.windwalker.revolving_whirl->effectN( 1 ).percent() ) )
-      p()->buff.dance_of_chiji->increment();  // increment is used to not incur the rppm cooldown
+      p()->buff.dance_of_chiji_ww->increment();  // increment is used to not incur the rppm cooldown
 
     p()->buff.tigers_ferocity->trigger();
   }
@@ -7313,7 +7326,6 @@ void monk_t::init_spells()
   passives.crackling_tiger_lightning_driver = find_spell( 123999 );
   passives.cyclone_strikes                  = find_spell( 220358 );
   passives.dance_of_chiji                   = find_spell( 325202 );
-  passives.dance_of_chiji_bug               = find_spell( 286585 );
   passives.dual_threat_kick                 = find_spell( 451839 );
   passives.dizzying_kicks                   = find_spell( 196723 );
   passives.empowered_tiger_lightning        = find_spell( 335913 );
@@ -7856,9 +7868,15 @@ void monk_t::create_buffs()
           ->set_duration( timespan_t::from_minutes( 60 ) )
           ->set_quiet( true );  // In-game does not show this buff but I would like to use it for background stuff
 
-  // Do not use a fallback buff - it is possible to get a dance of chiji proc without the talent from other sources.
-  buff.dance_of_chiji = make_buff( this, "dance_of_chiji", passives.dance_of_chiji )
-                            ->set_trigger_spell( talent.windwalker.dance_of_chiji );
+  // Create the buff even if untalented - it is possible to get a dance of chiji proc without the talent from other
+  // sources.
+  buff.dance_of_chiji_ww =
+      make_buff_fallback( specialization() == MONK_WINDWALKER, this, "dance_of_chiji", passives.dance_of_chiji )
+          ->set_trigger_spell( talent.windwalker.dance_of_chiji );
+
+  buff.dance_of_chiji_mw = make_buff_fallback( talent.mistweaver.dance_of_chiji->ok(), this, "dance_of_chiji",
+                                               talent.mistweaver.dance_of_chiji->effectN( 1 ).trigger() )
+                               ->set_trigger_spell( talent.mistweaver.dance_of_chiji );
 
   buff.dance_of_chiji_hidden = make_buff( this, "dance_of_chiji_hidden" )
                                    ->set_default_value( passives.dance_of_chiji->effectN( 1 ).base_value() )
@@ -8228,6 +8246,7 @@ void monk_t::init_procs()
   proc.chi_surge                      = get_proc( "Chi Surge CDR" );
   proc.counterstrike_tp               = get_proc( "Counterstrike - Tiger Palm" );
   proc.counterstrike_sck              = get_proc( "Counterstrike - Spinning Crane Kick" );
+  proc.dance_of_chiji                 = get_proc( "Dance of Chi-Ji" );
   proc.elusive_footwork_proc          = get_proc( "Elusive Footwork" );
   proc.face_palm                      = get_proc( "Face Palm" );
   proc.glory_of_the_dawn              = get_proc( "Glory of the Dawn" );
@@ -8592,6 +8611,21 @@ void monk_t::init_special_effects()
             active_actions.flight_of_the_red_crane_damage->execute_on_target( state->target );
           }
           buff.inner_compass_crane_stance->trigger();
+        } );
+  }
+
+  // ======================================
+  // Dance of Chi-Ji (mistweaver talent)
+  // ======================================
+  if ( talent.mistweaver.dance_of_chiji.ok() )
+  {
+    create_proc_callback( talent.mistweaver.dance_of_chiji.spell(), []( monk_t *, action_state_t * ) { return true; } );
+
+    callbacks.register_callback_execute_function(
+        talent.mistweaver.dance_of_chiji.spell()->id(),
+        [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t * ) {
+          buff.dance_of_chiji_mw->increment();  // increment is used to not incur the rppm cooldown
+          proc.dance_of_chiji->occur();
         } );
   }
 
