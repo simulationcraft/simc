@@ -6654,14 +6654,13 @@ struct reapers_mark_explosion_t final : public death_knight_spell_t
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = death_knight_spell_t::composite_target_multiplier( target );
-    // TODO-TWW: Grim reaper is not working on alpha. This implementation is copied from rune of sanguination
-    /* if ( p()->talent.deathbringer.grim_reaper->ok() )
+    if ( p()->talent.deathbringer.grim_reaper->ok() )
     {
-      auto increase    = 1 + ( 0.25 );
-      auto buff_amount = ( 1.0 - target->health_percentage() / 100 ) * increase;
-      buff_amount      = std::max( buff_amount, p()->talent.deathbringer.grim_reaper->effectN( 1 ).percent() );
+      double possible_increase = p()->talent.deathbringer.grim_reaper->effectN( 1 ).percent();
+      double missing_hp        = ( 1.0 - target->health_percentage() / 100 );
+      double buff_amount       = missing_hp * possible_increase;
       m *= 1.0 + buff_amount;
-    }*/
+    }
 
     return m;
   }
