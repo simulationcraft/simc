@@ -1605,6 +1605,16 @@ struct hunter_pet_t: public pet_t
     return m;
   }
 
+  double composite_player_critical_damage_multiplier( const action_state_t* s ) const override
+  {
+    double m = pet_t::composite_player_critical_damage_multiplier( s );
+
+    if( o() -> buffs.howl_of_the_pack -> check() )
+      m *= 1 + o() -> buffs.howl_of_the_pack -> check_value();
+
+    return m;
+  }
+
   double composite_player_target_multiplier( player_t* target, school_e school ) const override
   {
     double m = pet_t::composite_player_target_multiplier( target, school );
@@ -2018,9 +2028,6 @@ struct hunter_main_pet_base_t : public stable_pet_t
 
     if ( buffs.piercing_fangs -> data().effectN( 1 ).has_common_school( s -> action -> school ) )
       m *= 1 + buffs.piercing_fangs -> check_value();
-
-    if( o() -> buffs.howl_of_the_pack -> check() )
-      m *= 1 + o() -> buffs.howl_of_the_pack -> check_value();
 
     return m;
   }
