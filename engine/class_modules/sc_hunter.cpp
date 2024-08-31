@@ -1928,6 +1928,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
 
     buff_t* pack_coordination = nullptr;
     buff_t* wild_attacks = nullptr;
+    buff_t* wild_attacks_dmg_amp = nullptr;
   } buffs;
 
   struct {
@@ -2127,6 +2128,10 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     buffs.wild_attacks = 
       make_buff( this, "wild_attacks", o() -> talents.wild_attacks )
         -> set_max_stack( 3 ); 
+
+    buffs.wild_attacks_dmg_amp = 
+      make_buff( this, "wild_attacks_dmg_amp", o() -> talents.wild_attacks )
+        -> set_default_value_from_effect( 1 );
   }
 
   void init_action_list() override
@@ -2828,6 +2833,7 @@ struct basic_attack_base_t : public hunter_main_pet_attack_t
     if ( p()->buffs.wild_attacks->at_max_stacks() )
     {
       p()->buffs.wild_attacks->expire();
+      p()->buffs.wild_attacks_dmg_amp->trigger();
     }
   }
 
@@ -2841,18 +2847,18 @@ struct basic_attack_base_t : public hunter_main_pet_attack_t
     return cc;
   }
 
-  double composite_crit_damage_bonus_multiplier() const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double cm = hunter_main_pet_attack_t::composite_crit_damage_bonus_multiplier();
+    double am = hunter_main_pet_attack_t::composite_da_multiplier( s );
 
-    //2024-08-03: Wild Attacks seems to amp the damage of the basic attack after the guaranteed crit, regardless of it being a crit or not.  
-    //TODO: Check if this bug is still happening closer to launch of TWW and adjust implementation for it if necessary
-    if ( p()->buffs.wild_attacks->at_max_stacks() )
+    //2024-08-31: Wild Attacks seems to amp the damage of the basic attack after the guaranteed crit, regardless of it being a crit or not.  
+    if ( p()->buffs.wild_attacks_dmg_amp->up() )
     {
-      cm *= 1 + o()->cache.attack_crit_chance()*2;
+      am *= 1 + o()->cache.attack_crit_chance();
+      p()->buffs.wild_attacks_dmg_amp->expire();
     }
 
-    return cm;
+    return am;
   }
 };
 
