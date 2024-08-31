@@ -436,10 +436,13 @@ void authority_of_the_depths( special_effect_t& effect )
 
 void authority_of_storms( special_effect_t& effect )
 {
+  // has data to suggest proc is supposed to be (or once was) a 12s buff that triggers damage at 6rppm, but currently in
+  // game is a simple damage proc.
+
   auto found = effect.player->find_action( "authority_of_storms" ) ;
 
   auto damage_id = as<unsigned>( effect.trigger()->effectN( 1 ).misc_value1() );
-  auto damage = create_proc_action<generic_proc_t>( "authority_of_storms", effect, damage_id );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "authority_of_storms", effect, damage_id );
   damage->base_dd_min += effect.driver()->effectN( 1 ).average( effect );
   damage->base_dd_max += effect.driver()->effectN( 1 ).average( effect );
 
