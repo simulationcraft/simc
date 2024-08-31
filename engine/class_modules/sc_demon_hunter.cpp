@@ -1545,6 +1545,7 @@ public:
   {
     // Havoc
     affect_flags any_means_necessary;
+    affect_flags any_means_necessary_full;
     affect_flags demonic_presence;
     bool chaos_theory = false;
   } affected_by;
@@ -1804,6 +1805,12 @@ public:
       m *= 1.0 + p()->cache.mastery_value() * ( 1.0 + p()->mastery.any_means_necessary_tuning->effectN( 1 ).percent() );
     }
 
+    // 2024-08-30 -- Some spells have full 100% mastery value from AMN.
+    if ( affected_by.any_means_necessary_full.direct )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
+
     return m;
   }
 
@@ -1819,6 +1826,12 @@ public:
     if ( affected_by.any_means_necessary.periodic )
     {
       m *= 1.0 + p()->cache.mastery_value() * ( 1.0 + p()->mastery.any_means_necessary_tuning->effectN( 2 ).percent() );
+    }
+
+    // 2024-08-30 -- Some spells have full 100% mastery value from AMN.
+    if ( affected_by.any_means_necessary_full.periodic )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
     }
 
     return m;
@@ -2239,6 +2252,28 @@ struct cycle_of_hatred_trigger_t : public BASE
 
     timespan_t adjust_seconds = BASE::p()->talent.havoc.cycle_of_hatred->effectN( 1 ).time_value();
     BASE::p()->cooldown.eye_beam->adjust( -adjust_seconds );
+  }
+};
+
+template <typename BASE>
+struct amn_full_mastery_bug_t : public BASE
+{
+  using base_t = amn_full_mastery_bug_t<BASE>;
+
+  amn_full_mastery_bug_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s )
+    : BASE( n, p, s )
+  {
+    // 2024-08-30 -- Demonsurge / Burning Blades gets a full 100% mastery buff from AMN instead of 80%
+    if (p->bugs) {
+      if (BASE::affected_by.any_means_necessary.direct) {
+        BASE::affected_by.any_means_necessary.direct = false;
+        BASE::affected_by.any_means_necessary_full.direct = true;
+      }
+      if (BASE::affected_by.any_means_necessary.periodic) {
+        BASE::affected_by.any_means_necessary.periodic = false;
+        BASE::affected_by.any_means_necessary_full.periodic = true;
+      }
+    }
   }
 };
 
@@ -4480,10 +4515,10 @@ struct sigil_of_chains_t : public demon_hunter_spell_t
   }
 };
 
-struct demonsurge_t : public demon_hunter_spell_t
+struct demonsurge_t : public amn_full_mastery_bug_t<demon_hunter_spell_t>
 {
   demonsurge_t( util::string_view name, demon_hunter_t* p )
-    : demon_hunter_spell_t( name, p, p->hero_spec.demonsurge_damage )
+    : amn_full_mastery_bug_t( name, p, p->hero_spec.demonsurge_damage )
   {
     background = dual = true;
     aoe               = -1;
@@ -6173,7 +6208,7 @@ struct soulscar_t : public residual_action::residual_periodic_action_t<demon_hun
 };
 
 // Burning Blades ===========================================================
-struct burning_blades_t : public residual_action::residual_periodic_action_t<demon_hunter_attack_t>
+struct burning_blades_t : public residual_action::residual_periodic_action_t<amn_full_mastery_bug_t<demon_hunter_spell_t>>
 {
   burning_blades_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->hero_spec.burning_blades_debuff )
   {
