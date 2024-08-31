@@ -14191,7 +14191,7 @@ struct druid_module_t final : public module_t
       .modifier( 15 )
       .verification_value( 25 );
 
-    hotfix::register_effect( "Druid", "2024-09-03", "Starsurge damage increased by 12%.", 290376 )
+    hotfix::register_effect( "Druid", "2024-09-03", "Starsurge damage increased by 12%.", 68268 )
       .field( "sp_coefficient" )
       .operation( hotfix::HOTFIX_MUL )
       .modifier( 1.12 )
