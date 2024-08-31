@@ -122,6 +122,9 @@ void protection( player_t* p )
   standard->add_action( "holy_armaments,if=next_armament=holy_bulwark&charges=2" );
   standard->add_action( "divine_toll,if=(!raid_event.adds.exists|raid_event.adds.in>10)" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains" );
+  standard->add_action( "blessed_hammer,if=buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<3" );
+  standard->add_action( "hammer_of_the_righteous,if=buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<3" );
+  standard->add_action( "crusader_strike,if=buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<2" );
   standard->add_action( "avengers_shield,if=!talent.lights_guidance.enabled", "In single target, Templar should prioritize maintaining Shake the Heavens by casting spells listed in Higher Calling." );
   standard->add_action( "consecration,if=!consecration.up" );
   standard->add_action( "eye_of_tyr,if=(talent.inmost_light.enabled&raid_event.adds.in>=45|spell_targets.shield_of_the_righteous>=3)&!talent.lights_deliverance.enabled" );
