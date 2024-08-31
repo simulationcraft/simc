@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56313 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56421 thewarwithin-BETA
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -8188,7 +8188,6 @@ Description      : Rain a volley of arrows down over $d, dealing up to ${$260247
 Tooltip          : Raining arrows down in the target area.
 
 Name             : Volley (id=260247) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -20386,6 +20385,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 3557
+                 : 3993: Unnatural Causes (459527 effect#5)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Withering Fire (461762 effects: #1, #4)
 Family Flags     : 74, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -21420,15 +21420,16 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1166404)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=1166405)  : Apply Aura (6) | Proc Trigger Spell (42): Unnatural Causes
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Trigger Spell: 459529 | Target: Self (1)
+#3 (id=1166405)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Sub Type (42 -> 4), Trigger Spell (459529 -> 0)
 #4 (id=1166406)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900), Steel Trap (162488), Barbed Shot (217200), Frenzy (217207), Serpent Sting (259491), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260243), Volley (260247), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049), Serpent Sting (271788), Frenzy (272790), Frenzy (272795), Black Arrow (430703)
                    Family Flags: 14, 22, 34, 68, 78, 91, 99
 #5 (id=1166411)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3993 (Label) | Target: Self (1)
-                   Affected Spells (Label): Spearhead (378957), Razor Fragments (385638), Cull the Herd (449233), Laceration (459560), Ravenous Leap (459753)
+                   Affected Spells (Label): Spearhead (378957), Razor Fragments (385638), Cull the Herd (449233), Sentinel (450412), Laceration (459560), Ravenous Leap (459753)
 Description      : Your damage over time effects deal $s1% increased damage.
 
 This effect is increased by $s2% on targets below $s3% health.
@@ -21442,7 +21443,6 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Triggered by     : Unnatural Causes (459527)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -21459,7 +21459,7 @@ Effects          :
                    Family Flags: 14, 22, 34, 68, 78, 91, 99
 #2 (id=1166409)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3993 (Label) | Target: Enemy (6)
-                   Affected Spells (Label): Spearhead (378957), Razor Fragments (385638), Cull the Herd (449233), Laceration (459560), Ravenous Leap (459753)
+                   Affected Spells (Label): Spearhead (378957), Razor Fragments (385638), Cull the Herd (449233), Sentinel (450412), Laceration (459560), Ravenous Leap (459753)
 #3 (id=1166413)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc459527
@@ -22592,7 +22592,6 @@ Effects          :
 Tooltip          : Your next Arcane Shot is replaced with an Explosive Shot.
 
 Name             : Grenade Juggler (id=459843) [Spell Family (9), Passive, Hidden] 
-Hotfixed         : Proc Flags 1 (69888 -> 256)
 Talent Entry     : Survival [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Nature

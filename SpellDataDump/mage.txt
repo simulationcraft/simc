@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56313 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56421 thewarwithin-BETA
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -3854,7 +3854,6 @@ Description      : Launches an Arcane Orb forward from your position, traveling 
 |cFFFFFFFFGrants 1 Arcane Charge when cast and every time it deals damage.|r
 
 Name             : Arcane Orb (id=153640) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -3983,7 +3982,6 @@ Description      : Icy Veins' duration is increased by ${$s2/1000} sec.
 Your Ice Lances against frozen targets extend your Icy Veins by an additional ${$s1/1000}.1 sec$?s199786[ and Glacial Spike extends it an addtional ${$s3/1000}.1 sec][].
 
 Name             : Meteor Burn (id=155158) [Spell Family (3)] 
-Hotfixed         : Max stacks (3 -> 1)
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -18180,7 +18178,6 @@ Effects          :
 Description      : $?c1[For 8 seconds after being struck by an Arcane Orb][While a target is under the effects of Blizzard], $?c1[$s1%][$s4%] of the direct damage dealt by $?c1[an Arcane Splinter][a Frost Splinter] is also dealt to nearby enemies. Damage reduced beyond $s5 targets.
 
 Name             : Controlled Instincts (id=444487) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -18280,7 +18277,6 @@ Description      : Gain 2% increased critical strike chance.
 Gain 5% increased critical strike damage.
 
 Name             : Controlled Instincts (id=444720) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -19338,7 +19334,6 @@ Effects          :
 Description      : Your Arcane Phoenix will Spellsteal when it is summoned and when it expires.
 
 Name             : Gravity Lapse (id=449700) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Physical
 Spell Type       : Magic
@@ -19365,7 +19360,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=1149131)  : Apply Aura (6) | Unknown(297)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : Chain Targets (3 -> 0), Target 1 (6 -> 53), Target 2 (0 -> 16)
 #2 (id=1163829)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : The snap of your fingers warps the gravity around your target and $s2 other nearby enemies, suspending them in the air for $449700d.
@@ -19373,7 +19367,6 @@ Upon landing, nearby enemies take $449715s1 Arcane damage.
 Tooltip          : Suspended in the air.
 
 Name             : Gravity Lapse (id=449715) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -20889,7 +20882,6 @@ Effects          :
 Description      : $@spelldesc450004
 
 Name             : Magi's Spark (id=453912) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -22247,7 +22239,6 @@ Description      : $@spelldesc444483
 Tooltip          : $@auracaster's Splinters will deal additional damage to nearby enemies.
 
 Name             : Arcane Orb (id=463357) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic

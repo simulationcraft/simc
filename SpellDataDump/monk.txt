@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56313 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56421 thewarwithin-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -646,7 +646,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2835: Spatial Paradox (406789 effect#13)
                  : 3567: Balanced Stratagem (451514 effect#1)
-Affecting spells : Combat Wisdom (129914 effect#2), Brewmaster Monk (137023 effects: #1, #2, #7, #14, #17), Mistweaver Monk (137024 effects: #6, #7, #13, #16), Windwalker Monk (137025 effects: #1, #2, #4, #7, #12, #14, #28), Storm, Earth, and Fire (137639 effects: #1, #2), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (337334 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Counterstrike (383800 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Touch of the Tiger (388856 effect#1), Skyreach (392991 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Inner Peace (397768 effect#2), Press the Advantage (418361 effect#1), Xuen's Guidance (442687 effect#2), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Efficient Training (450989 effects: #1, #2), Martial Mixture (451457 effect#1), Wisdom of the Wall (452684 effect#1), Tiger's Ferocity (454502 effect#1), Flow of Battle (457257 effect#1), Darting Hurricane (459841 effect#1)
+Affecting spells : Combat Wisdom (129914 effect#2), Brewmaster Monk (137023 effects: #1, #2, #7, #14, #17), Mistweaver Monk (137024 effects: #6, #7, #13, #16), Windwalker Monk (137025 effects: #1, #2, #4, #7, #12, #14, #28), Storm, Earth, and Fire (137639 effects: #1, #2), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (337334 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Counterstrike (383800 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Touch of the Tiger (388856 effect#1), Skyreach (392991 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Inner Peace (397768 effect#2), Press the Advantage (418361 effect#1), Xuen's Guidance (442687 effect#2), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Efficient Training (450989 effects: #1, #2), Martial Mixture (451457 effect#1), Wisdom of the Wall (452684 effect#1), Tiger's Ferocity (454502 effect#1), Flow of Battle (457257 effect#1), Darting Hurricane (459841 effects: #1, #2)
 Triggered by     : Counterstrike (383800)
 Family Flags     : 10, 103
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -10618,7 +10618,7 @@ Range            : 5 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Affecting spells : Combat Wisdom (129914 effect#2), Brewmaster Monk (137023 effects: #1, #2, #7, #14, #17), Mistweaver Monk (137024 effects: #6, #7, #13, #16), Windwalker Monk (137025 effects: #1, #2, #4, #7, #12, #14, #28), Storm, Earth, and Fire (137639 effects: #1, #2), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (337334 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Counterstrike (383800 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Touch of the Tiger (388856 effect#1), Skyreach (392991 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Inner Peace (397768 effect#2), Press the Advantage (418361 effect#1), Xuen's Guidance (442687 effect#2), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Efficient Training (450989 effects: #1, #2), Martial Mixture (451457 effect#1), Wisdom of the Wall (452684 effect#1), Tiger's Ferocity (454502 effect#1), Flow of Battle (457257 effect#1), Darting Hurricane (459841 effect#1)
+Affecting spells : Combat Wisdom (129914 effect#2), Brewmaster Monk (137023 effects: #1, #2, #7, #14, #17), Mistweaver Monk (137024 effects: #6, #7, #13, #16), Windwalker Monk (137025 effects: #1, #2, #4, #7, #12, #14, #28), Storm, Earth, and Fire (137639 effects: #1, #2), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#1), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (337334 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Counterstrike (383800 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Touch of the Tiger (388856 effect#1), Skyreach (392991 effect#1), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Inner Peace (397768 effect#2), Press the Advantage (418361 effect#1), Xuen's Guidance (442687 effect#2), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Efficient Training (450989 effects: #1, #2), Martial Mixture (451457 effect#1), Wisdom of the Wall (452684 effect#1), Tiger's Ferocity (454502 effect#1), Flow of Battle (457257 effect#1), Darting Hurricane (459841 effects: #1, #2)
 Family Flags     : 10, 103
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
@@ -17624,6 +17624,8 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Range            : 8 yards
+Labels           : 16: Class Spells
+                 : 22: Monk Spells
 Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Press the Advantage (418361 effect#1), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Wisdom of the Wall (452684 effect#1), Flow of Battle (457257 effect#1)
 Triggered by     : Thunderfist (393565)
 Family Flags     : 103
@@ -26376,6 +26378,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1166946)  : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
+                   Affected Spells: Tiger Palm (100780), Tiger Palm (331433)
+                   Family Flags: 10
+#2 (id=1183510)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Tiger Palm (331433)
                    Family Flags: 10
 Description      : $@spelldesc459839
