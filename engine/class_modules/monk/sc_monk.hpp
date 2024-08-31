@@ -625,6 +625,10 @@ public:
     propagate_const<buff_t *> lifecycles_vivify;
     propagate_const<buff_t *> mana_tea;
     propagate_const<buff_t *> refreshing_jade_wind;
+    propagate_const<buff_t *> secret_infusion_haste;
+    propagate_const<buff_t *> secret_infusion_crit;
+    propagate_const<buff_t *> secret_infusion_mastery;
+    propagate_const<buff_t *> secret_infusion_versatility;
     propagate_const<buff_t *> teachings_of_the_monastery;
     propagate_const<buff_t *> thunder_focus_tea;
 
@@ -1078,6 +1082,10 @@ public:
       player_talent_t ancient_teachings;
       player_talent_t resplendent_mist;
       player_talent_t secret_infusion;
+      const spell_data_t *secret_infusion_haste_buff;
+      const spell_data_t *secret_infusion_crit_buff;
+      const spell_data_t *secret_infusion_mastery_buff;
+      const spell_data_t *secret_infusion_vers_buff;
       player_talent_t misty_peaks;
       player_talent_t peaceful_mending;
       player_talent_t veil_of_pride;
