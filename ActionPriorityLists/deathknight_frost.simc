@@ -51,7 +51,7 @@ actions+=/call_action_list,name=aoe,if=active_enemies>=2
 actions+=/call_action_list,name=single_target,if=active_enemies=1
 
 # AoE Action List
-actions.aoe=obliterate,if=buff.killing_machine.react&talent.cleaving_strikes&buff.death_and_decay.up
+actions.aoe=obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice+((hero_tree.deathbringer&debuff.reapers_mark_debuff.down)*5),if=buff.killing_machine.react&talent.cleaving_strikes&buff.death_and_decay.up
 actions.aoe+=/howling_blast,target_if=!dot.frost_fever.ticking
 actions.aoe+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!variable.pooling_runic_power&debuff.razorice.stack=5&talent.shattering_blade&(talent.shattered_frost|active_enemies<4)
 actions.aoe+=/howling_blast,if=buff.rime.react
@@ -64,7 +64,7 @@ actions.aoe+=/arcane_torrent,if=runic_power.deficit>25
 # Breath Active Rotation
 actions.breath=howling_blast,if=variable.rime_buffs&runic_power>(variable.breath_rime_rp_threshold-(talent.rage_of_the_frozen_champion*(dbc.effect.842306.base_value%10)))
 actions.breath+=/horn_of_winter,if=rune<2&runic_power.deficit>30&(!buff.empower_rune_weapon.up|variable.breath_dying)
-actions.breath+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react|runic_power.deficit>20
+actions.breath+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice+((hero_tree.deathbringer&debuff.reapers_mark_debuff.down)*5),if=buff.killing_machine.react|runic_power.deficit>20
 actions.breath+=/remorseless_winter,if=variable.breath_dying
 actions.breath+=/death_and_decay,if=!death_and_decay.ticking&variable.st_planning&talent.unholy_ground&runic_power.deficit>=10&!talent.obliteration|variable.breath_dying
 actions.breath+=/howling_blast,if=variable.breath_dying
@@ -116,7 +116,7 @@ actions.high_prio_actions+=/frost_strike,target_if=max:((talent.shattering_blade
 actions.high_prio_actions+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=active_enemies=1&variable.rp_buffs&!talent.breath_of_sindragosa&talent.obliteration&!buff.pillar_of_frost.up
 
 # Obliteration Active Rotation
-actions.obliteration=obliterate,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&(buff.exterminate.up|buff.exterminate_painful_death.up|fight_remains<gcd*2)
+actions.obliteration=obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice+((hero_tree.deathbringer&debuff.reapers_mark_debuff.down)*5),if=buff.killing_machine.react&(buff.exterminate.up|buff.exterminate_painful_death.up|fight_remains<gcd*2)
 actions.obliteration+=/howling_blast,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&variable.rime_buffs
 actions.obliteration+=/glacial_advance,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!buff.death_and_decay.up&variable.ga_priority
 actions.obliteration+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!buff.death_and_decay.up
