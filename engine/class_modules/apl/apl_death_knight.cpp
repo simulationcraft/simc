@@ -246,7 +246,7 @@ void frost( player_t* p )
   default_->add_action( "call_action_list,name=aoe,if=active_enemies>=2" );
   default_->add_action( "call_action_list,name=single_target,if=active_enemies=1" );
 
-  aoe->add_action( "obliterate,if=buff.killing_machine.react&talent.cleaving_strikes&buff.death_and_decay.up", "AoE Action List" );
+  aoe->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice+((hero_tree.deathbringer&debuff.reapers_mark_debuff.down)*5),if=buff.killing_machine.react&talent.cleaving_strikes&buff.death_and_decay.up", "AoE Action List" );
   aoe->add_action( "howling_blast,target_if=!dot.frost_fever.ticking" );
   aoe->add_action( "frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!variable.pooling_runic_power&debuff.razorice.stack=5&talent.shattering_blade&(talent.shattered_frost|active_enemies<4)" );
   aoe->add_action( "howling_blast,if=buff.rime.react" );
@@ -258,7 +258,7 @@ void frost( player_t* p )
 
   breath->add_action( "howling_blast,if=variable.rime_buffs&runic_power>(variable.breath_rime_rp_threshold-(talent.rage_of_the_frozen_champion*(dbc.effect.842306.base_value%10)))", "Breath Active Rotation" );
   breath->add_action( "horn_of_winter,if=rune<2&runic_power.deficit>30&(!buff.empower_rune_weapon.up|variable.breath_dying)" );
-  breath->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react|runic_power.deficit>20" );
+  breath->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice+((hero_tree.deathbringer&debuff.reapers_mark_debuff.down)*5),if=buff.killing_machine.react|runic_power.deficit>20" );
   breath->add_action( "remorseless_winter,if=variable.breath_dying" );
   breath->add_action( "death_and_decay,if=!death_and_decay.ticking&variable.st_planning&talent.unholy_ground&runic_power.deficit>=10&!talent.obliteration|variable.breath_dying" );
   breath->add_action( "howling_blast,if=variable.breath_dying" );
@@ -304,7 +304,7 @@ void frost( player_t* p )
   high_prio_actions->add_action( "frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=active_enemies=1&variable.rp_buffs&talent.breath_of_sindragosa&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time" );
   high_prio_actions->add_action( "frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=active_enemies=1&variable.rp_buffs&!talent.breath_of_sindragosa&talent.obliteration&!buff.pillar_of_frost.up" );
 
-  obliteration->add_action( "obliterate,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react&(buff.exterminate.up|buff.exterminate_painful_death.up|fight_remains<gcd*2)", "Obliteration Active Rotation" );
+  obliteration->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice+((hero_tree.deathbringer&debuff.reapers_mark_debuff.down)*5),if=buff.killing_machine.react&(buff.exterminate.up|buff.exterminate_painful_death.up|fight_remains<gcd*2)", "Obliteration Active Rotation" );
   obliteration->add_action( "howling_blast,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&variable.rime_buffs" );
   obliteration->add_action( "glacial_advance,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!buff.death_and_decay.up&variable.ga_priority" );
   obliteration->add_action( "frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!buff.death_and_decay.up" );
