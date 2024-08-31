@@ -3768,6 +3768,18 @@ void shadowed_essence( special_effect_t& effect )
   } );
 }
 
+// Spelunker's Waning Candle
+// 445419 driver
+// 445420 buff
+// 8-31-24 ally sharing is not functioning in game
+void spelunkers_waning_candle( special_effect_t& effect )
+{
+  effect.custom_buff = create_buff<stat_buff_t>( effect.player, effect.trigger() )
+                           ->add_stat_from_effect( 1, effect.driver()->effectN( 2 ).average( effect.item ) );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -4527,6 +4539,7 @@ void register_special_effects()
   register_special_effect( { 454558, 463108 }, items::darkmoon_deck_radiance );
   register_special_effect( 441023, items::nerubian_pheromone_secreter );
   register_special_effect( 455640, items::shadowed_essence );
+  register_special_effect( 455419, items::spelunkers_waning_candle );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
