@@ -3727,6 +3727,8 @@ struct immolation_aura_t : public demon_hunter_spell_t
     dot_duration = timespan_t::zero();
     set_target( p );  // Does not require a hostile target
 
+    internal_cooldown->duration = data().internal_cooldown();
+
     apply_affecting_aura( p->spec.immolation_aura_cdr );
     apply_affecting_aura( p->talent.havoc.a_fire_inside );
 
