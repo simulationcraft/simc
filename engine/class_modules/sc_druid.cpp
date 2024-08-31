@@ -10496,7 +10496,8 @@ void druid_t::create_buffs()
   buff.harmony_of_the_heavens_lunar = make_fallback( talent.harmony_of_the_heavens.ok(),
     this, "harmony_of_the_heavens_lunar", talent.harmony_of_the_heavens )
       ->set_default_value_from_effect( 1 )
-      ->set_max_stack( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() ) )
+      ->set_max_stack( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() /
+                                talent.harmony_of_the_heavens->effectN( 1 ).base_value() ) )
       ->set_name_reporting( "Lunar" )
       ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
         eclipse_handler.update_eclipse<eclipse_e::LUNAR>();
@@ -10505,7 +10506,8 @@ void druid_t::create_buffs()
   buff.harmony_of_the_heavens_solar = make_fallback( talent.harmony_of_the_heavens.ok(),
     this, "harmony_of_the_heavens_solar", talent.harmony_of_the_heavens )
       ->set_default_value_from_effect( 1 )
-      ->set_max_stack( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() ) )
+      ->set_max_stack( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() /
+                                talent.harmony_of_the_heavens->effectN( 1 ).base_value() ) )
       ->set_name_reporting( "Solar" )
       ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
         eclipse_handler.update_eclipse<eclipse_e::SOLAR>();
@@ -14165,7 +14167,49 @@ struct druid_module_t final : public module_t
 
   void static_init() const override {}
 
-  void register_hotfixes() const override {}
+  void register_hotfixes() const override
+  {
+    hotfix::register_spell( "Druid", "2024-09-03", "Bloodtalons and Lion's Strength now also increase the damage of Rampant Ferocity.", 391710 )
+      .field( "class_flags" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 108 );
+
+    hotfix::register_effect( "Druid", "2024-09-03", "Umbral Intensity increases the damage of Wrath by 20/40% (was 25/50%).", 1014956 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 20 )
+      .verification_value( 25 );
+
+    hotfix::register_effect( "Druid", "2024-09-03", "Umbral Intensity increases the damage of Starfire by 15/30% (was 50%).", 1150828 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 15 )
+      .verification_value( 25 );
+
+    hotfix::register_effect( "Druid", "2024-09-03", "Starsurge damage increased by 12%.", 290376 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.12 )
+      .verification_value( 1.876 );
+
+    hotfix::register_effect( "Druid", "2024-09-03", "Starfall damage increased by 20%.", 280158 )
+      .field( "sp_coefficient" )
+      .operation( hotfix::HOTFIX_MUL )
+      .modifier( 1.2 )
+      .verification_value( 0.1484 );
+
+    hotfix::register_effect( "Druid", "2024-09-03", "Harmony of the Heavens increases Eclipse power by 2% per proc (was 1% per proc).", 1150545 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 2 )
+      .verification_value( 1 );
+
+    hotfix::register_effect( "Druid", "2024-09-03", "Harmony of the Heavens increases Eclipse power max 6% (was max 5%).", 1150546 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 6 )
+      .verification_value( 5 );
+  }
 
   void combat_begin( sim_t* ) const override {}
   void combat_end( sim_t* ) const override {}
