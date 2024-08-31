@@ -3749,23 +3749,62 @@ void paladin_t::create_buffs()
 
   if ( talents.seal_of_order->ok() )
   {
-    buffs.blessing_of_dusk->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      double recharge_mult = 1.0 / ( 1.0 + talents.seal_of_order->effectN( 1 ).percent() );
-      for ( size_t i = 3; i < 13; i++ )
+    buffs.blessing_of_dusk->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+      for ( auto a : action_list )
       {
-        // Effects 6 (Blessed Hammer) and 7 (Crusader Strike) are already in Effect 3
-        // Effect 4: Hammer of the Righteous, Effect 5: Judgment, Effect 8: Hammer of Wrath
-        if ( i == 6 )
-          i = 8;
-        spelleffect_data_t label = find_spell( 385126 )->effectN( i );
-        for ( auto a : action_list )
-        {
-          // per bolas (Aug 19 2024) Wake is unaffected on beta in spite of being in the spelldata
-          if ( a->data().id() == 255937 )
-           continue;
+        if ( a->cooldown->duration == 0_ms )
+          continue;
 
-          if ( a->cooldown->duration != 0_ms &&
-               ( a->data().affected_by( label ) || a->data().affected_by_category( label ) ) )
+        // per bolas (Aug 19 2024) Wake is unaffected in spite of being in the spelldata
+        if ( a->data().id() == 255937 )
+         continue;
+
+        bool already_done = false;
+        for ( size_t i = 3; i < 14; i++ )
+        {
+          spelleffect_data_t label = b->data().effectN( i );
+          if ( label.subtype() != A_MOD_RECHARGE_TIME_PCT_CATEGORY )
+            continue;
+          if ( a->data().affected_by( label ) || a->data().affected_by_category( label ) )
+          {
+            if ( new_ == 1 )
+              a->dynamic_recharge_multiplier *= 1.0 + label.percent();
+            else
+              a->dynamic_recharge_multiplier /= 1.0 + label.percent();
+
+            if ( a->cooldown->action == a )
+              a->cooldown->adjust_recharge_multiplier();
+            if ( a->internal_cooldown->action == a )
+              a->internal_cooldown->adjust_recharge_multiplier();
+
+            already_done = true;
+
+            // empirically no spell seems to be affected by multiple of these
+            break;
+          }
+        }
+
+        // For some reason some spells are in both lists. Empirically it seems like the
+        // "displayed" CDR takes precedence
+        if ( already_done )
+          continue;
+
+        for ( size_t i = 3; i < 14; i++ )
+        {
+          // Spell effect 9, for ES/FR, only applies if we have divine auxiliary talented
+          if ( i == 9 && !talents.divine_auxiliary->ok() )
+            continue;
+
+          // Similarly spell effect 13, for Eye of Tyr, only applies if we have undisputed ruling
+          if ( i == 13 && !talents.templar.undisputed_ruling->ok() )
+            continue;
+
+          spelleffect_data_t label = b->data().effectN( i );
+          if ( label.subtype() == A_MOD_RECHARGE_TIME_PCT_CATEGORY )
+            continue;
+
+          double recharge_mult = 1.0 / ( 1.0 + label.percent() );
+          if ( a->data().affected_by( label ) || a->data().affected_by_category( label ) )
           {
             if ( new_ == 1 )
               a->dynamic_recharge_rate_multiplier *= recharge_mult;
@@ -3774,7 +3813,6 @@ void paladin_t::create_buffs()
 
             if ( a->cooldown->action == a )
               a->cooldown->adjust_recharge_multiplier();
-
             if ( a->internal_cooldown->action == a )
               a->internal_cooldown->adjust_recharge_multiplier();
           }
