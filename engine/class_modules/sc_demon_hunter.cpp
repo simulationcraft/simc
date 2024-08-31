@@ -3883,7 +3883,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
       if ( p()->talent.felscarred.violent_transformation->ok() )
       {
         p()->cooldown.immolation_aura->reset( false, -1 );
-        p()->cooldown.sigil_of_flame->reset( false, -1 );
+        p()->cooldown.sigil_of_flame->reset( false );
       }
 
       // Cancel all previous movement events, as Metamorphosis is ground-targeted
@@ -3909,7 +3909,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
       if ( p()->talent.felscarred.violent_transformation->ok() )
       {
         p()->cooldown.fel_devastation->reset( false );
-        p()->cooldown.sigil_of_flame->reset( false );
+        p()->cooldown.sigil_of_flame->reset( false, -1 );
       }
     }
   }
