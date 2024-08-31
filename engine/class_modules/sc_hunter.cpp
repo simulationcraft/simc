@@ -2018,6 +2018,9 @@ struct hunter_main_pet_base_t : public stable_pet_t
     if ( buffs.piercing_fangs -> data().effectN( 1 ).has_common_school( s -> action -> school ) )
       m *= 1 + buffs.piercing_fangs -> check_value();
 
+    if( o() -> buffs.howl_of_the_pack -> check() )
+      m *= 1 + o() -> buffs.howl_of_the_pack -> check_value();
+
     return m;
   }
 
