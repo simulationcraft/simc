@@ -1304,7 +1304,6 @@ struct time_skip_t : public buff_t
   {
     set_cooldown( 0_ms );
     set_default_value_from_effect( 1 );
-    set_reverse( true );
 
     apply_affecting_aura( p->talent.tomorrow_today );
 
@@ -7514,7 +7513,6 @@ void evoker_t::init_finished()
     register_on_combat_state_callback( [ this ]( player_t*, bool in_combat ) {
       if ( in_combat )
       {
-        buff.unrelenting_siege->set_reverse( false );
         if ( !buff.unrelenting_siege->check() )
         {
           buff.unrelenting_siege->trigger();
@@ -8219,7 +8217,8 @@ void evoker_t::create_buffs()
       MBF( talent.chronowarden.temporal_burst.ok(), this, "temporal_burst", talent.chronowarden.temporal_burst_buff )
           ->set_cooldown( 0_ms )
           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-          ->set_default_value_from_effect( 2 );
+          ->set_default_value_from_effect( 2 )
+          ->set_reverse( true );
 
   buff.time_convergence_intellect = MBF( talent.chronowarden.time_convergence.ok(), this, "time_convergence_intellect",
                                          talent.chronowarden.time_convergence_intellect_buff )
