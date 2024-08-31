@@ -851,6 +851,8 @@ struct player_t : public actor_t
     double embrace_of_the_cinderbee_miss_chance = 0;
     // Nerubian Phearomone Secreter number of phearomones
     int nerubian_pheromone_secreter_pheromones = 1;
+    // Allied Binding of Binding on you
+    int binding_of_binding_on_you = 0;
   } thewarwithin_opts;
 
 private:

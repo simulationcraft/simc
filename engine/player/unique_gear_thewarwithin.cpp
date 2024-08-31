@@ -602,6 +602,55 @@ void elemental_focusing_lens( special_effect_t& effect )
 
 }
 
+// 436085 on use
+// 436132 Binding of Binding Driver
+// 436159 Boon of Binding Buff
+void binding_of_binding( special_effect_t& effect )
+{
+  auto gems = unique_gem_list( effect );
+
+  if ( !gems.size() )
+    return;
+
+  if ( effect.player->thewarwithin_opts.binding_of_binding_on_you <= 0 )
+    return;
+
+   static constexpr std::array<std::tuple<gem_color_e, unsigned, const char*>, 5> effect_index = {
+      { { GEM_RUBY, 2, "ruby" },
+        { GEM_AMBER, -1, "amber" },
+        { GEM_EMERALD, 3, "emerald" },
+        { GEM_SAPPHIRE, 4, "sapphire" },
+        { GEM_ONYX, 5, "onyx" } } };
+
+   auto buff_spell = effect.player->find_spell( 436159 );
+
+   auto buff = create_buff<stat_buff_t>( effect.player, "boon_of_binding", buff_spell );
+
+   for ( gem_color_e gem_color : gems )
+   {
+     switch ( gem_color )
+     {
+       case GEM_RUBY:
+         buff->add_stat_from_effect( 2, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
+         break;
+       case GEM_EMERALD:
+         buff->add_stat_from_effect( 3, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
+         break;
+       case GEM_SAPPHIRE:
+         buff->add_stat_from_effect( 4, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
+         break;
+       case GEM_ONYX:
+         buff->add_stat_from_effect( 5, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
+         break;
+       default:
+         break;
+     }
+   }
+
+   effect.custom_buff = buff;
+   new dbc_proc_callback_t( effect.player, effect );
+}
+
 // 457665 dawnthread driver
 // 457666 dawnthread buff
 // 457677 duskthread driver
@@ -4424,6 +4473,8 @@ void register_special_effects()
   register_special_effect( 443736, embellishments::spark_of_beledar );
   register_special_effect( 443762, embellishments::adrenal_surge );
   register_special_effect( 443902, DISABLED_EFFECT );  // writhing armor banding
+  register_special_effect( 436132, embellishments::binding_of_binding );
+  register_special_effect( 436085, DISABLED_EFFECT ); // Binding of Binding on use
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
