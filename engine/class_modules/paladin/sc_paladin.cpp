@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 /*
-  TODO: Update Holy for BfA
+  TODO: reimplement Holy if anyone ever becomes interested in maintaining it
 */
 #include "sc_paladin.hpp"
 
@@ -2963,7 +2963,6 @@ struct incandescence_t : public paladin_spell_t
 };
 
 // TODO: friendly dawnlights
-// TODO(mserrano): dawnlight cleave
 struct dawnlight_aoe_t : public paladin_spell_t
 {
   dawnlight_aoe_t( paladin_t* p ) : paladin_spell_t( "dawnlight_aoe", p, p->find_spell( 431399 ) )
@@ -5438,14 +5437,13 @@ struct paladin_module_t : public module_t
     // 9.0 Paladin Night Fae
 
     // Only create these if the player sets the option to get the buff.
-    if (!p->external_buffs.blessing_of_summer.empty())
+    if ( !p->external_buffs.blessing_of_summer.empty() )
     {
       action_t* summer_proc = new blessing_of_summer_proc_t(p);
       const spell_data_t* summer_data = p->find_spell(328620);
 
       // This effect can proc on almost any damage, including many actions in simc that have callbacks = false.
       // Using an assessor here will cause this to have the chance to proc on damage from any action.
-      // TODO: Ensure there is no incorrect looping that can happen with other similar effects.
       p->assessor_out_damage.add(
         assessor::CALLBACKS, [p, summer_proc, summer_data](result_amount_type, action_state_t* s) {
           if (!(p->buffs.blessing_of_summer->up()))

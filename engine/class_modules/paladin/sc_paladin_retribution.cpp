@@ -797,7 +797,6 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
       p()->buffs.judge_jury_and_executioner->expire();
     }
 
-    // TODO(mserrano): figure out the actionbar override thing instead of this hack.
     if ( is_fv )
     {
       double proc_chance = data().effectN( 2 ).percent();
@@ -1430,7 +1429,6 @@ struct divine_arbiter_t : public paladin_spell_t
   }
 };
 
-// TODO: drop the Consecrate
 struct searing_light_t : public paladin_spell_t
 {
   searing_light_t( paladin_t* p )
