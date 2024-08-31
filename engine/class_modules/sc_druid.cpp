@@ -11513,13 +11513,16 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
     sim->error( "Restoration Druid does not yet have an Action Priority List (APL)." );
     return false;
   }
-
-  if ( specialization() == DRUID_BALANCE )
+  else if ( specialization() == DRUID_BALANCE )
   {
-    sim->error( "Balance Druid default Action Priority List (APL) is preliminary and has not been optimized." );
+    sim->error( "Upcoming 2024-09-03 hotfixes are included." );
 
     if ( style != FIGHT_STYLE_PATCHWERK )
       return false;
+  }
+  else if ( specialization() == DRUID_FERAL )
+  {
+    sim->error( "Upcoming 2024-09-03 hotfixes are included." );
   }
 
   return true;
