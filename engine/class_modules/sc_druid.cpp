@@ -10493,11 +10493,14 @@ void druid_t::create_buffs()
       active.sundered_firmament->execute_on_target( target );
     } );
 
+  int harmony_of_the_heavens_max_stacks =
+    !talent.harmony_of_the_heavens.ok() ? 1 : ( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() /
+                                                         talent.harmony_of_the_heavens->effectN( 1 ).base_value() ) );
+
   buff.harmony_of_the_heavens_lunar = make_fallback( talent.harmony_of_the_heavens.ok(),
     this, "harmony_of_the_heavens_lunar", talent.harmony_of_the_heavens )
       ->set_default_value_from_effect( 1 )
-      ->set_max_stack( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() /
-                                talent.harmony_of_the_heavens->effectN( 1 ).base_value() ) )
+      ->set_max_stack( harmony_of_the_heavens_max_stacks )
       ->set_name_reporting( "Lunar" )
       ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
         eclipse_handler.update_eclipse<eclipse_e::LUNAR>();
@@ -10506,8 +10509,7 @@ void druid_t::create_buffs()
   buff.harmony_of_the_heavens_solar = make_fallback( talent.harmony_of_the_heavens.ok(),
     this, "harmony_of_the_heavens_solar", talent.harmony_of_the_heavens )
       ->set_default_value_from_effect( 1 )
-      ->set_max_stack( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() /
-                                talent.harmony_of_the_heavens->effectN( 1 ).base_value() ) )
+      ->set_max_stack( harmony_of_the_heavens_max_stacks )
       ->set_name_reporting( "Solar" )
       ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
         eclipse_handler.update_eclipse<eclipse_e::SOLAR>();
