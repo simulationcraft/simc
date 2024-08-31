@@ -1481,6 +1481,8 @@ struct rising_sun_kick_dmg_t : public overwhelming_force_t<monk_melee_attack_t>
       p()->cooldown.rising_sun_kick->adjust( p()->talent.mistweaver.thunder_focus_tea->effectN( 1 ).time_value(),
                                              true );
 
+      p()->buff.secret_infusion_versatility->trigger();
+
       p()->buff.thunder_focus_tea->decrement();
     }
 
@@ -4688,7 +4690,12 @@ struct enveloping_mist_t : public monk_heal_t
       p()->buff.lifecycles_vivify->trigger();
     }
 
-    p()->buff.thunder_focus_tea->decrement();
+    if ( p()->buff.thunder_focus_tea->up() )
+    {
+      p()->buff.secret_infusion_crit->trigger();
+
+      p()->buff.thunder_focus_tea->decrement();
+    }
 
     mastery->execute();
   }
@@ -4697,8 +4704,6 @@ struct enveloping_mist_t : public monk_heal_t
 // ==========================================================================
 // Renewing Mist
 // ==========================================================================
-/*
-Bouncing only happens when overhealing, so not going to bother with bouncing
 
 struct renewing_mist_t : public monk_heal_t
 {
@@ -4709,7 +4714,6 @@ struct renewing_mist_t : public monk_heal_t
   {
     parse_options( options_str );
     may_crit = may_miss = false;
-    dot_duration        = p->passives.renewing_mist_heal->duration();
 
     mastery = new gust_of_mists_t( p );
   }
@@ -4730,9 +4734,14 @@ struct renewing_mist_t : public monk_heal_t
 
     mastery->execute();
 
-    p()->buff.thunder_focus_tea->decrement();
+    if ( p()->buff.thunder_focus_tea->up() )
+    {
+      p()->buff.secret_infusion_haste->trigger();
+
+      p()->buff.thunder_focus_tea->decrement();
+    }
   }
-}; */
+};
 
 // ==========================================================================
 // Vivify
@@ -4767,7 +4776,12 @@ struct vivify_t : public monk_heal_t
   {
     monk_heal_t::execute();
 
-    p()->buff.thunder_focus_tea->decrement();
+    if ( p()->buff.thunder_focus_tea->up() )
+    {
+      p()->buff.secret_infusion_mastery->trigger();
+
+      p()->buff.thunder_focus_tea->decrement();
+    }
 
     if ( p()->talent.mistweaver.lifecycles )
     {
@@ -4850,11 +4864,19 @@ struct expel_harm_t : monk_heal_t
 
     monk_heal_t::execute();
 
-    if ( !p()->talent.brewmaster.tranquil_spirit->ok() )
-      return;
-    double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
-    p()->find_stagger( "Stagger" )->purify_percent( percent, "tranquil_spirit_eh" );
-    p()->proc.tranquil_spirit_expel_harm->occur();
+    if ( p()->talent.brewmaster.tranquil_spirit->ok() )
+    {
+      double percent = p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent();
+      p()->find_stagger( "Stagger" )->purify_percent( percent, "tranquil_spirit_eh" );
+      p()->proc.tranquil_spirit_expel_harm->occur();
+    }
+
+    if ( p()->buff.thunder_focus_tea->up() )
+    {
+      p()->buff.secret_infusion_versatility->trigger();
+
+      p()->buff.thunder_focus_tea->decrement();
+    }
   }
 
   void impact( action_state_t *s ) override
@@ -6401,6 +6423,11 @@ void monk_t::parse_player_effects()
   parse_effects( buff.weapons_of_order, effect_mask_t( false ).enable( 1 ) );
 
   // mistweaver talent auras
+  parse_effects( buff.secret_infusion_haste, USE_DEFAULT );
+  parse_effects( buff.secret_infusion_crit, USE_DEFAULT );
+  parse_effects( buff.secret_infusion_mastery, USE_DEFAULT );
+  parse_effects( buff.secret_infusion_versatility, USE_DEFAULT );
+
   // windwalker talent auras
   parse_target_effects( td_fn( &monk_td_t::debuff_t::acclamation ),
                         talent.windwalker.acclamation->effectN( 1 ).trigger() );
@@ -6516,8 +6543,8 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
     return new life_cocoon_t( this, options_str );
   if ( name == "mana_tea" )
     return new mana_tea_t( this, options_str );
-  // if ( name == "renewing_mist" )
-  //   return new renewing_mist_t( this, options_str );
+  if ( name == "renewing_mist" )
+    return new renewing_mist_t( this, options_str );
   if ( name == "revival" )
     return new revival_t( this, options_str );
   if ( name == "thunder_focus_tea" )
@@ -7067,15 +7094,19 @@ void monk_t::init_spells()
     talent.mistweaver.focused_thunder        = _ST( "Focused Thunder" );
     talent.mistweaver.sheiluns_gift          = _ST( "Sheilun's Gift" );
     // Row 9
-    talent.mistweaver.ancient_concordance      = _ST( "Ancient Concordance" );
-    talent.mistweaver.ancient_concordance_buff = find_spell( 389391 );
-    talent.mistweaver.ancient_teachings        = _ST( "Ancient Teachings" );
-    talent.mistweaver.resplendent_mist         = _ST( "Resplendent Mist" );
-    talent.mistweaver.secret_infusion          = _ST( "Secret Infusion" );
-    talent.mistweaver.misty_peaks              = _ST( "Misty Peaks" );
-    talent.mistweaver.peaceful_mending         = _ST( "Peaceful Mending" );
-    talent.mistweaver.veil_of_pride            = _ST( "Veil of Pride" );
-    talent.mistweaver.shaohaos_lessons         = _ST( "Shaohao's Lessons" );
+    talent.mistweaver.ancient_concordance          = _ST( "Ancient Concordance" );
+    talent.mistweaver.ancient_concordance_buff     = find_spell( 389391 );
+    talent.mistweaver.ancient_teachings            = _ST( "Ancient Teachings" );
+    talent.mistweaver.resplendent_mist             = _ST( "Resplendent Mist" );
+    talent.mistweaver.secret_infusion              = _ST( "Secret Infusion" );
+    talent.mistweaver.secret_infusion_haste_buff   = find_spell( 388497 );
+    talent.mistweaver.secret_infusion_crit_buff    = find_spell( 388498 );
+    talent.mistweaver.secret_infusion_mastery_buff = find_spell( 388499 );
+    talent.mistweaver.secret_infusion_vers_buff    = find_spell( 388500 );
+    talent.mistweaver.misty_peaks                  = _ST( "Misty Peaks" );
+    talent.mistweaver.peaceful_mending             = _ST( "Peaceful Mending" );
+    talent.mistweaver.veil_of_pride                = _ST( "Veil of Pride" );
+    talent.mistweaver.shaohaos_lessons             = _ST( "Shaohao's Lessons" );
     // Row 10
     talent.mistweaver.awakened_jadefire     = _ST( "Awakened Jadefire" );
     talent.mistweaver.dance_of_chiji        = _ST( "Dance of Chi-Ji" );
@@ -7786,6 +7817,24 @@ void monk_t::create_buffs()
 
   buff.refreshing_jade_wind = make_buff( this, "refreshing_jade_wind", talent.mistweaver.refreshing_jade_wind )
                                   ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+
+  const auto make_secret_infusion_buff = [ this ]( std::string_view name, const spell_data_t *spell_data ) {
+    return make_buff_fallback( talent.mistweaver.secret_infusion->ok(), this, name, spell_data )
+        ->set_trigger_spell( talent.mistweaver.secret_infusion )
+        ->set_default_value( talent.mistweaver.secret_infusion->effectN( 1 ).base_value() / 100, 1 );
+  };
+
+  buff.secret_infusion_haste =
+      make_secret_infusion_buff( "secret_infusion_haste", talent.mistweaver.secret_infusion_haste_buff );
+
+  buff.secret_infusion_crit =
+      make_secret_infusion_buff( "secret_infusion_crit", talent.mistweaver.secret_infusion_crit_buff );
+
+  buff.secret_infusion_mastery =
+      make_secret_infusion_buff( "secret_infusion_mastery", talent.mistweaver.secret_infusion_mastery_buff );
+
+  buff.secret_infusion_versatility =
+      make_secret_infusion_buff( "secret_infusion_versatility", talent.mistweaver.secret_infusion_vers_buff );
 
   buff.thunder_focus_tea =
       make_buff( this, "thunder_focus_tea", talent.mistweaver.thunder_focus_tea )

@@ -267,6 +267,7 @@ void mistweaver( player_t *p )
 
   def->add_action( "auto_attack" );
   def->add_action( "spear_hand_strike,if=target.debuff.casting.react" );
+  def->add_action( "potion" );
 
   for ( const auto &item : p->items )
   {
@@ -277,18 +278,22 @@ void mistweaver( player_t *p )
   for ( const auto &racial_action : racial_actions )
     def->add_action( racial_action );
 
-  def->add_action( "potion" );
+  def->add_action( "invoke_chiji_the_red_crane,if=talent.invokers_delight" );
   def->add_action( "celestial_conduit" );
-                          
+
   def->add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   def->add_action( "call_action_list,name=st" );
 
   st->add_action( "thunder_focus_tea" );
   st->add_action( "jadefire_stomp,if=buff.jadefire_stomp.down" );
-  st->add_action( "rising_sun_kick" );
-  st->add_action( "blackout_kick,if=buff.teachings_of_the_monastery.stack>=4&cooldown.rising_sun_kick.remains>gcd" );
+  st->add_action( "rising_sun_kick,if=active_enemies<=2|talent.secret_infusion&buff.thunder_focus_tea.up" );
+  st->add_action(
+      "blackout_kick,if=buff.teachings_of_the_monastery.stack>=4"
+      "&(active_enemies>=2|cooldown.rising_sun_kick.remains>gcd)" );
   st->add_action( "tiger_palm" );
 
+  aoe->add_action( "thunder_focus_tea,if=talent.secret_infusion" );
+  aoe->add_action( "rising_sun_kick,if=talent.secret_infusion&buff.thunder_focus_tea.up" );
   aoe->add_action( "chi_burst" );
   aoe->add_action( "spinning_crane_kick" );
 }
