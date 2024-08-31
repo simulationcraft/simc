@@ -3907,7 +3907,7 @@ std::string paladin_t::default_potion() const
 {
   std::string retribution_pot = ( true_level > 70 ) ? "tempered_potion_3" : "disabled";
 
-  std::string protection_pot = ( true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "disabled";
+  std::string protection_pot = ( true_level > 70 ) ? "tempered_potion_3" : "disabled";
 
   std::string holy_dps_pot = ( true_level > 50 ) ? "spectral_intellect" : "disabled";
 
@@ -3930,7 +3930,7 @@ std::string paladin_t::default_food() const
 {
   std::string retribution_food = ( true_level > 70 ) ? "the_sushi_special" : "disabled";
 
-  std::string protection_food = ( true_level > 50 ) ? "fated_fortune_cookie" : "disabled";
+  std::string protection_food = ( true_level > 70 ) ? "feast_of_the_divine_day" : "disabled";
 
   std::string holy_dps_food = ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "disabled";
 
@@ -3953,7 +3953,7 @@ std::string paladin_t::default_flask() const
 {
   std::string retribution_flask = ( true_level > 70 ) ? "flask_of_alchemical_chaos_3" : "disabled";
 
-  std::string protection_flask = ( true_level > 60 ) ? "phial_of_tepid_versatility_3" : "disabled";
+  std::string protection_flask = ( true_level > 70 ) ? "flask_of_alchemical_chaos_3" : "disabled";
 
   std::string holy_dps_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
 
@@ -3974,7 +3974,7 @@ std::string paladin_t::default_flask() const
 
 std::string paladin_t::default_rune() const
 {
-  return ( true_level > 70 ) ? "crystallized_augment_rune" : "disabled";
+  return ( true_level > 70 ) ? "crystallized" : "disabled";
 }
 
 // paladin_t::default_temporary_enchant ================================
@@ -3984,7 +3984,7 @@ std::string paladin_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
-      return "main_hand:howling_rune_3,if=!(talent.rite_of_adjuration.enabled|talent.rite_of_sanctification.enabled)";
+      return "main_hand:algari_mana_oil_3,if=!(talent.rite_of_adjuration.enabled|talent.rite_of_sanctification.enabled)";
     case PALADIN_RETRIBUTION:
       return "main_hand:ironclaw_whetstone_3";
 
