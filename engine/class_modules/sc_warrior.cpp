@@ -9586,13 +9586,13 @@ std::string warrior_t::default_flask() const
 std::string warrior_t::default_food() const
 {
   std::string fury_food = ( true_level > 70 )
-                              ? "feast_of_the_midnight_masquerade"
+                              ? "the_sushi_special"
                               : ( true_level > 60 )
                                     ? "thousandbone_tongueslicer"
                                     : "disabled";
 
   std::string arms_food = ( true_level > 70 )
-                              ? "feast_of_the_midnight_masquerade"
+                              ? "the_sushi_special"
                               : ( true_level > 60 )
                                     ? "feisty_fish_sticks"
                                     : "disabled";
