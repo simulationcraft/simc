@@ -4826,14 +4826,14 @@ struct execute_fury_t : public warrior_attack_t
     return c;
   }
 
-  double cost() const override
-  {
-    double c = warrior_attack_t::cost();
+//  double cost() const override
+//  {
+//    double c = warrior_attack_t::cost();
 
-    c = std::min( max_rage, std::max( p()->resources.current[ RESOURCE_RAGE ], c ) );
+//    c = std::min( max_rage, std::max( p()->resources.current[ RESOURCE_RAGE ], c ) );
 
-    return c;
-  }
+//    return c;
+//  }
 
   void execute() override
   {
