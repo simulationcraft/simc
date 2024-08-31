@@ -1553,10 +1553,11 @@ public:
   {
     for ( const spelleffect_data_t& effect : spell->effects() )
     {
-      if ( !effect.ok() || effect.type() != E_APPLY_AURA || effect.subtype() != A_ADD_PCT_MODIFIER )
+      if ( !effect.ok() || effect.type() != E_APPLY_AURA ||
+           ( effect.subtype() != A_ADD_PCT_MODIFIER && effect.subtype() != A_ADD_PCT_LABEL_MODIFIER ) )
         continue;
 
-      if ( ab::data().affected_by( effect ) )
+      if ( ab::data().affected_by( effect ) || ab::data().affected_by_label( effect ) )
       {
         switch ( effect.misc_value1() )
         {
@@ -5184,7 +5185,8 @@ struct chaos_strike_base_t
         td( s->target )->debuffs.serrated_glaive->trigger();
       }
 
-      if ( p()->talent.aldrachi_reaver.warblades_hunger && p()->buff.warblades_hunger->up() && parent->can_proc_warblades_hunger )
+      if ( p()->talent.aldrachi_reaver.warblades_hunger && p()->buff.warblades_hunger->up() &&
+           parent->can_proc_warblades_hunger )
       {
         p()->active.warblades_hunger->execute_on_target( target );
         p()->buff.warblades_hunger->expire();
@@ -5199,7 +5201,10 @@ struct chaos_strike_base_t
 
   chaos_strike_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s,
                        util::string_view options_str = {} )
-    : base_t( n, p, s, options_str ), from_onslaught( false ), tww1_reset_proc_chance( 0.0 ), can_proc_warblades_hunger( true )
+    : base_t( n, p, s, options_str ),
+      from_onslaught( false ),
+      tww1_reset_proc_chance( 0.0 ),
+      can_proc_warblades_hunger( true )
   {
     if ( p->set_bonuses.tww1_havoc_4pc->ok() )
     {
