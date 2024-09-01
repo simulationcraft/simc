@@ -4325,13 +4325,16 @@ struct cold_blood_t : public rogue_spell_t
   void execute() override
   {
     rogue_spell_t::execute();
-
-    if ( precombat_seconds && !p()->in_combat )
-    {
-      p()->cooldowns.cold_blood->adjust( -timespan_t::from_seconds( precombat_seconds ), false );
-    }
-
     p()->buffs.cold_blood->trigger();
+  }
+
+  bool ready() override
+  {
+    // Cooldown does not start in-game until the buff is entirely consumed
+    if ( p()->buffs.cold_blood->check() )
+      return false;
+
+    return rogue_spell_t::ready();
   }
 };
 
@@ -12258,7 +12261,11 @@ void rogue_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 )
-    ->set_initial_stack( buffs.cold_blood->max_stack() );
+    ->set_initial_stack( buffs.cold_blood->max_stack() )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( new_ == 0 )
+        cooldowns.cold_blood->start();
+    } );
 
   buffs.subterfuge = new buffs::subterfuge_t( this );
 
