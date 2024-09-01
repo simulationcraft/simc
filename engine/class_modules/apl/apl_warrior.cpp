@@ -216,12 +216,12 @@ void arms( player_t* p )
   default_->add_action( "ancestral_call,if=debuff.colossus_smash.up" );
   default_->add_action( "invoke_external_buff,name=power_infusion,if=debuff.colossus_smash.up&fight_remains>=135|variable.execute_phase&buff.avatar.up|fight_remains<=25" );
   default_->add_action( "run_action_list,name=colossus_aoe,if=talent.demolish&active_enemies>2" );
-  default_->add_action( "run_action_list,name=colossus_sweep,if=talent.demolish&active_enemies=2" );
   default_->add_action( "run_action_list,name=colossus_execute,target_if=min:target.health.pct,if=talent.demolish&variable.execute_phase" );
+  default_->add_action( "run_action_list,name=colossus_sweep,if=talent.demolish&active_enemies=2&!variable.execute_phase" );
   default_->add_action( "run_action_list,name=colossus_st,if=talent.demolish" );
   default_->add_action( "run_action_list,name=slayer_aoe,if=talent.slayers_dominance&active_enemies>2" );
-  default_->add_action( "run_action_list,name=slayer_sweep,if=talent.slayers_dominance&active_enemies=2" );
   default_->add_action( "run_action_list,name=slayer_execute,target_if=min:target.health.pct,if=talent.slayers_dominance&variable.execute_phase" );
+  default_->add_action( "run_action_list,name=slayer_sweep,if=talent.slayers_dominance&active_enemies=2&!variable.execute_phase" );
   default_->add_action( "run_action_list,name=slayer_st,if=talent.slayers_dominance" );
 
   colossus_st->add_action( "rend,if=dot.rend.remains<=gcd" );
@@ -240,6 +240,7 @@ void arms( player_t* p )
   colossus_st->add_action( "rend,if=dot.rend.remains<=gcd*5" );
   colossus_st->add_action( "slam" );
 
+  colossus_execute->add_action( "sweeping_strikes,if=active_enemies=2" );
   colossus_execute->add_action( "rend,if=dot.rend.remains<=gcd&!talent.bloodletting" );
   colossus_execute->add_action( "thunderous_roar" );
   colossus_execute->add_action( "champions_spear" );
@@ -321,6 +322,7 @@ void arms( player_t* p )
   slayer_st->add_action( "slam" );
   slayer_st->add_action( "storm_bolt,if=buff.bladestorm.up" );
 
+  slayer_execute->add_action( "sweeping_strikes,if=active_enemies=2" );
   slayer_execute->add_action( "rend,if=dot.rend.remains<=gcd&!talent.bloodletting" );
   slayer_execute->add_action( "thunderous_roar" );
   slayer_execute->add_action( "champions_spear" );
