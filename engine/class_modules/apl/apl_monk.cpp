@@ -252,7 +252,9 @@ void brewmaster( player_t *p )
 
 void mistweaver( player_t *p )
 {
-  action_priority_list_t *pre = p->get_action_priority_list( "precombat" );
+  action_priority_list_t *pre     = p->get_action_priority_list( "precombat" );
+  action_priority_list_t *def     = p->get_action_priority_list( "default" );
+  action_priority_list_t *racials = p->get_action_priority_list( "race_actions" );
 
   pre->add_action( "flask" );
   pre->add_action( "food" );
@@ -260,42 +262,29 @@ void mistweaver( player_t *p )
   pre->add_action( "snapshot_stats" );
   pre->add_action( "potion" );
 
-  std::vector<std::string> racial_actions = p->get_racial_actions();
-  action_priority_list_t *def             = p->get_action_priority_list( "default" );
-  action_priority_list_t *st              = p->get_action_priority_list( "st" );
-  action_priority_list_t *aoe             = p->get_action_priority_list( "aoe" );
+  for ( const auto &racial_action : p->get_racial_actions() )
+    racials->add_action( racial_action );
 
   def->add_action( "auto_attack" );
-  def->add_action( "spear_hand_strike,if=target.debuff.casting.react" );
   def->add_action( "potion" );
+  def->add_action( "use_item,slot=trinket1" );
+  def->add_action( "use_item,slot=trinket2" );
+  def->add_action( "call_action_list,name=race_actions" );
 
-  for ( const auto &item : p->items )
-  {
-    if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
-      def->add_action( "use_item,name=" + item.name_str );
-  }
-
-  for ( const auto &racial_action : racial_actions )
-    def->add_action( racial_action );
-
+  def->add_action( "touch_of_death" );
   def->add_action( "thunder_focus_tea" );
   def->add_action( "invoke_chiji_the_red_crane,if=talent.invokers_delight" );
   def->add_action( "celestial_conduit" );
-
-  def->add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
-  def->add_action( "call_action_list,name=st" );
-
-  st->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.up" );
-  st->add_action( "jadefire_stomp,if=buff.jadefire_stomp.down" );
-  st->add_action( "rising_sun_kick,if=active_enemies<=2|talent.secret_infusion&buff.thunder_focus_tea.up" );
-  st->add_action(
-      "blackout_kick,if=buff.teachings_of_the_monastery.stack>=4"
+  def->add_action( "rising_sun_kick,if=talent.secret_infusion&buff.thunder_focus_tea.up" );
+  def->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.up" );
+  def->add_action( "chi_burst,if=active_enemies>=2" );
+  def->add_action( "spinning_crane_kick,if=active_enemies>=4" );
+  def->add_action( "jadefire_stomp,if=buff.jadefire_stomp.down" );
+  def->add_action( "rising_sun_kick,if=active_enemies<=2" );
+  def->add_action(
+      "blackout_kick,if=buff.teachings_of_the_monastery.stack>=3"
       "&(active_enemies>=2|cooldown.rising_sun_kick.remains>gcd)" );
-  st->add_action( "tiger_palm" );
-
-  aoe->add_action( "rising_sun_kick,if=talent.secret_infusion&buff.thunder_focus_tea.up" );
-  aoe->add_action( "chi_burst" );
-  aoe->add_action( "spinning_crane_kick" );
+  def->add_action( "tiger_palm" );
 }
 
 void windwalker( player_t *p )
