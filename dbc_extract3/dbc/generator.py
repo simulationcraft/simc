@@ -1516,6 +1516,7 @@ class SpellDataGenerator(DataGenerator):
          463059, # Darkmoon Deck: Ascension
          463232, # Darkmoon Sigil: Symbiosis
          441508, 441507, 441430, # Nerubian Phearomone Secreter
+         455441, 455454, 455455, 455456, #Unstable Power Core Mastery Crit Haste Vers
         ),
 
         # Warrior:

@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56421
-static const std::array<spelltext_data_t, 26324> __spelltext_data { {
+static const std::array<spelltext_data_t, 26329> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -22022,6 +22022,7 @@ static const std::array<spelltext_data_t, 26324> __spelltext_data { {
   { 417712, "Increases your damage and healing by $417714s1% during the day.\r\n\r\nIncreases your Versatility by $417715s1% during the night.", 0, 0 },
   { 417714, "Increases your damage and healing by $s1% during the day.", "Damage and healing increased by $s1%.", 0 },
   { 417715, "Increases your Versatility by $s1% during the night.", "Versatility increased by $s1%.", 0 },
+  { 417775, "Add a Downy Liner and Crystal Ocular Lenses to the Thought Calculating Apparatus.", 0, 0 },
   { 417792, "$@spelldesc417534", 0, 0 },
   { 417855, "Holy Shock, Holy Light, and Flash of Light critical healing increased by $s1%.", 0, 0 },
   { 417875, "$@spelldesc324536", 0, 0 },
@@ -25259,6 +25260,7 @@ static const std::array<spelltext_data_t, 26324> __spelltext_data { {
   { 455434, "$@spelldesc455432", 0, 0 },
   { 455435, "Your spells have a chance to bring the candle to life, summoning a waxen ally to light up your enemies.", 0, 0 },
   { 455436, "The Core's unstable energies will randomly buff one of your secondary stats for $s1. This lasts between 10 and 30 sec before randomly changing to another stat.", 0, 0 },
+  { 455441, 0, "Increases Mastery Rating by $w1.", 0 },
   { 455443, "$@spelldesc455435", 0, 0 },
   { 455444, "$@spelldesc455419", "Critical Strike increased by $w1.", 0 },
   { 455445, "$@spelldesc455435", 0, 0 },
@@ -25270,6 +25272,9 @@ static const std::array<spelltext_data_t, 26324> __spelltext_data { {
   { 455451, "$@class be nimble, $@class be quick. $@class invoke the power of the candlestick to increase movement speed by $s1% and Haste by $s2 for $d.", "Increased movement speed and haste.", 0 },
   { 455452, "Your harmful spells have a high chance to resonate with a dark ritual, storing magic within the emblem.", 0, 0 },
   { 455453, "$@spelldesc455435", 0, 0 },
+  { 455454, 0, "Increases Critical Strike Rating by $w1.", 0 },
+  { 455455, 0, "Increases Haste Rating by $w1.", 0 },
+  { 455456, 0, "Increases Versatility Rating by $w1.", 0 },
   { 455461, "When you remove an effect with Soothe or $?s88423[Nature's Cure][Remove Corruption], gain a combo point and heal for $s1% of your maximum health. If you are at full health an injured party or raid member will be healed instead.", 0, 0 },
   { 455464, "$@spelldesc455467", "A dark ritual is storing energy, ready to be unleashed.", 0 },
   { 455465, "Summon a Gloomhound to fight for you for the next $d.", 0, 0 },
