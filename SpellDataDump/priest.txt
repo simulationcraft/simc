@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56313 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56421 thewarwithin-BETA
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -19355,7 +19355,6 @@ Effects          :
 Description      : $?c3[Void Torrent][Mind Blast] tears open an Entropic Rift that follows the enemy for $450193d. Enemies caught in its path suffer $447448s1 Shadow damage every $459314t1 sec while within its reach.
 
 Name             : Entropic Rift (id=447445) [Spell Family (6)] 
-Hotfixed         : School (1 -> 32)
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -19380,7 +19379,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1145409)  : Create Area Trigger (179)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 33200 | Radius: 15 yards | Target: Unknown(148)
-Hotfixed         : Target 1 (53 -> 148), Target 2 (148 -> 0)
 Description      : $@spelldesc447444
 
 Name             : Entropic Rift (id=447448) [Spell Family (6)] 
