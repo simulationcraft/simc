@@ -2688,10 +2688,14 @@ public:
       c += p()->spec.dashing_scoundrel->effectN( 1 ).percent();
     }
 
-    if ( affected_by.darkest_night_crit )
+    if ( affected_by.darkest_night_crit && p()->buffs.darkest_night->up() )
     {
+      if ( ab::pre_execute_state && cast_state( ab::pre_execute_state )->get_combo_points() >= p()->consume_cp_max() )
+      {
+        c += 1.0 + p()->spell.darkest_night_buff->effectN( 4 ).percent();
+      }
       // No CP state available this early as crit chance is calculated during state creation
-      if ( p()->buffs.darkest_night->up() && p()->current_effective_cp( true ) >= p()->consume_cp_max() )
+      else if ( p()->current_effective_cp( true ) >= p()->consume_cp_max() )
       {
         c += 1.0 + p()->spell.darkest_night_buff->effectN( 4 ).percent();
       }
@@ -4716,8 +4720,10 @@ struct eviscerate_t : public rogue_attack_t
       rogue_attack_t( name, p, p->spec.eviscerate_shadow_attack ),
       last_eviscerate_cp( 1 )
     {
-      affected_by.darkest_night = !p->bugs; // 2024-08-12 -- Currently does not work
-      affected_by.darkest_night_crit = true;
+      // 2024-08-12 -- Currently is not affected by the Darkest Night damage bonus
+      affected_by.darkest_night = !p->bugs;
+      // 2024-09-01 -- Note: This works but needs custom composite_crit_chance() handling below
+      affected_by.darkest_night_crit = false;
 
       if ( p->talent.subtlety.shadowed_finishers->ok() )
       {
@@ -4735,6 +4741,19 @@ struct eviscerate_t : public rogue_attack_t
     double combo_point_da_multiplier( const action_state_t* ) const override
     {
       return as<double>( last_eviscerate_cp );
+    }
+
+    double composite_crit_chance() const override
+    {
+      double c = rogue_attack_t::composite_crit_chance();
+
+      // Custom handling using last_eviscerate_cp snapshot CP value from the initial cast
+      if ( p()->buffs.darkest_night->up() && last_eviscerate_cp >= p()->consume_cp_max() )
+      {
+        c += 1.0 + p()->spell.darkest_night_buff->effectN( 4 ).percent();
+      }
+
+      return c;
     }
 
     bool procs_nimble_flurry() const override
@@ -9878,7 +9897,10 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
     if ( p()->talent.deathstalker.darkest_night->ok() && !p()->deathstalkers_mark_debuff->check() )
     {
       p()->resource_gain( RESOURCE_ENERGY, p()->spell.darkest_night_buff->effectN( 1 ).resource(), p()->gains.darkest_night );
-      p()->buffs.darkest_night->trigger();
+      // Needs to be delayed so that Shadowed Finishers casts don't immediately benefit
+      make_event( *p()->sim, 1_ms, [ this ] {
+        p()->buffs.darkest_night->trigger();
+      } );
       return; // Note: Cannot immediately trigger and consume Darkest Night
     }
   }
