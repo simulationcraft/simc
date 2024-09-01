@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56313 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.2.56421 thewarwithin-BETA
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1343,7 +1343,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=293648)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.99200 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.1 -> 1)
 Description      : $@spelldesc162794
 
 Name             : Blade Dance (id=199552) [Spell Family (107)] 
@@ -1509,7 +1508,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=296759)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.28935 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.1 -> 1)
 Description      : $@spelldesc201427
 
 Name             : Metamorphosis (id=201453) [Spell Family (107), Hidden] 
@@ -2864,12 +2862,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=302487)   : Apply Aura (6) | Modify Leech% (443)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.83333 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.6 -> 0.833333)
 #2 (id=483201)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.83333 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Metamorphosis (162264), Metamorphosis (187827), Metamorphosis (191427)
                    Family Flags: 15, 28
-Hotfixed         : PvP Coefficient (1 -> 0.833333)
 Description      : Leech increased by $s1%.
 
 Gain an additional $s2% leech while Metamorphosis is active.
@@ -5037,7 +5033,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=331359)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.63120 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.1 -> 1)
 Description      : $@spelldesc162794
 
 Name             : Fel Barrage (desc=Passive) (id=222703) [Spell Family (107), Passive, Hidden] 
@@ -5287,7 +5282,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=342015)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.82048 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.1 -> 1)
 Description      : $@spelldesc201427
 
 Name             : Soul Cleave (id=228477) [Spell Family (107)] 
@@ -5990,7 +5984,6 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=483076)   : School Damage (2): chaos | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.82500 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Cone to Enemy (104)
-Hotfixed         : PvP Coefficient (0.9 -> 1)
 #2 (id=1028999)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : Slash all enemies in front of you for $s1 Chaos damage, and increase the damage your Chaos Strike and Blade Dance deal to them by $320338s1% for $320338d. Deals reduced damage beyond $s2 targets.
@@ -6270,7 +6263,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=483180)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.34903 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (0.8 -> 1)
 #2 (id=819793)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc258925
@@ -8540,7 +8532,6 @@ Attributes       : ........ ........ ..x..x.. ........   ........ .x...... .....
 Effects          :
 #1 (id=836037)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.49235 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.9 -> 1)
 Description      : Throw a demonic glaive at the target, dealing $s1 Physical damage. The glaive can ricochet to $?$s320386[${$x1-1} additional enemies][an additional enemy] within 10 yards. 
 
 Name             : Fel Bombardment (id=337849) [Spell Family (107)] 
@@ -10824,7 +10815,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1023596)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.916667 -> 1)
 Description      : Throw Glaive causes targets to take an additional $s1% of damage dealt as Chaos over $390181d.
 
 Name             : Ragefire (id=388107) [Spell Family (107), Passive] 
@@ -11948,7 +11938,6 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=1026374)  : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 4.27140 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (0.8 -> 1)
 #2 (id=1026375)  : Trigger Spell (64): Elysian Decree
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 339893 | Target: Unknown(87)
 Description      : $@spelldesc306830
@@ -13191,7 +13180,6 @@ Attributes       : ........ ........ ..x..x.. ........   ........ .x...... .....
 Effects          :
 #1 (id=1031693)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.49235 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.9 -> 1)
 Description      : $@spelldesc337819
 
 Name             : Death Sweep (id=393054) [Spell Family (107)] 
@@ -16013,7 +16001,6 @@ Effects          :
 Description      : $@spelldesc442290
 
 Name             : Art of the Glaive (id=444806) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
@@ -16037,7 +16024,6 @@ Effects          :
 Description      : $@spelldesc442290
 
 Name             : Art of the Glaive (id=444810) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
@@ -16149,7 +16135,6 @@ Effects          :
 Description      : Vengeful Retreat resets the cooldown of Felblade.
 
 Name             : Preemptive Strike (id=444979) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -16630,7 +16615,6 @@ Description      : Activating Metamorphosis greatly empowers $?a212612[Eye Beam]
 Demonsurge damage is increased by $?a452416[${$452416s2/$452416u}][$452416s2]% for each time it previously triggered while your demon form is active.
 
 Name             : Demonsurge (id=452416) [Spell Family (107)] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Fire
 Spell Type       : Melee
