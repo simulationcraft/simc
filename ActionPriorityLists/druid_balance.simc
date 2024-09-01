@@ -47,7 +47,7 @@ actions+=/incarnation,use_off_gcd=0,if=fight_remains<20|(dot.sunfire.ticking&(do
 actions+=/moonfire,target_if=refreshable&!(talent.treants_of_the_moon&(cooldown.force_of_nature.remains<2|buff.harmony_of_the_grove.up))
 actions+=/sunfire,target_if=refreshable
 actions+=/stellar_flare,target_if=refreshable&(target.time_to_die-remains-target>7+spell_targets),if=(1+(0.65*talent.lunar_calling))*spell_targets<(11-talent.umbral_intensity.rank-(2*talent.astral_smolder))
-actions+=/force_of_nature,if=(talent.power_of_the_dream&talent.early_spring&talent.orbital_strike)|variable.eclipse_remains>=3
+actions+=/force_of_nature,if=(talent.power_of_the_dream&(variable.eclipse_remains>=3|cooldown.ca_inc.ready))|(talent.control_of_the_dream&cooldown.ca_inc.remains>20|talent.control_of_the_dream&cooldown.ca_inc.ready)
 actions+=/wrath,if=variable.enter_lunar
 actions+=/starfire,if=variable.enter_solar
 actions+=/call_action_list,name=aoe,if=spell_targets>1
@@ -84,7 +84,7 @@ actions.aoe+=/wrath
 actions.st=fury_of_elune,if=energize_amount+variable.passive_asp>astral_power.deficit-(20*talent.astral_communion)
 actions.st+=/starsurge,if=(buff.starlord.stack>0&buff.starlord.stack<3)|!buff.starlord.up&((2*variable.passive_asp)>astral_power.deficit-(20*talent.astral_communion))
 actions.st+=/starsurge,if=cooldown.convoke_the_spirits.ready&astral_power.deficit>energize_amount
-actions.st+=/convoke_the_spirits,if=fight_remains<5|(buff.ca_inc.up|cooldown.ca_inc.remains>40)
+actions.st+=/convoke_the_spirits,if=fight_remains<5|(buff.ca_inc.up|cooldown.ca_inc.remains>40)|(buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>15)
 actions.st+=/starsurge,if=fight_remains<4
 actions.st+=/starsurge,if=buff.starlord.remains>4&variable.boat_stacks>=2
 actions.st+=/new_moon,if=astral_power.deficit>variable.passive_asp+energize_amount|fight_remains<20|cooldown.ca_inc.remains>15
