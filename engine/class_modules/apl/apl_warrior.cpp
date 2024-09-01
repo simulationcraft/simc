@@ -311,7 +311,7 @@ void arms( player_t* p )
   slayer_st->add_action( "colossus_smash" );
   slayer_st->add_action( "warbreaker" );
   slayer_st->add_action( "execute,if=debuff.marked_for_execution.stack=3" );
-  slayer_st->add_action( "bladestorm,if=debuff.colossus_smash.duration>=4" );
+  slayer_st->add_action( "bladestorm" );
   slayer_st->add_action( "overpower,if=buff.opportunist.up" );
   slayer_st->add_action( "mortal_strike" );
   slayer_st->add_action( "skullsplitter" );
@@ -348,7 +348,7 @@ void arms( player_t* p )
   slayer_sweep->add_action( "warbreaker" );
   slayer_sweep->add_action( "skullsplitter,if=buff.sweeping_strikes.up" );
   slayer_sweep->add_action( "execute,if=debuff.marked_for_execution.stack=3" );
-  slayer_sweep->add_action( "bladestorm,if=debuff.colossus_smash.duration>=4" );
+  slayer_sweep->add_action( "bladestorm" );
   slayer_sweep->add_action( "overpower,if=talent.dreadnaught|buff.opportunist.up" );
   slayer_sweep->add_action( "mortal_strike" );
   slayer_sweep->add_action( "cleave,if=talent.fervor_of_battle" );
