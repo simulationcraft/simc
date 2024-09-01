@@ -4687,7 +4687,7 @@ struct enveloping_mist_t : public monk_heal_t
   {
     auto mul = monk_heal_t::execute_time_pct_multiplier();
 
-    mul *= 1 + p()->talent.mistweaver.thunder_focus_tea->effectN( 3 ).percent();  // saved as -100
+    mul *= 1 + p()->talent.mistweaver.thunder_focus_tea->effectN( 6 ).percent();  // saved as -100
 
     return mul;
   }
