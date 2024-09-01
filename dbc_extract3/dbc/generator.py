@@ -1517,6 +1517,7 @@ class SpellDataGenerator(DataGenerator):
          463232, # Darkmoon Sigil: Symbiosis
          441508, 441507, 441430, # Nerubian Phearomone Secreter
          455441, 455454, 455455, 455456, #Unstable Power Core Mastery Crit Haste Vers
+         455521, 455522, 457627, # Woven Dawn Tailoring Set
         ),
 
         # Warrior:
@@ -4031,7 +4032,12 @@ class SetBonusListGenerator(DataGenerator):
         {
             'name'   : 'woven_dusk',
             'bonuses': [ 1697 ],
-            'tier'   : 'TWW_WD'
+            'tier'   : 'TWW_WDusk'
+        },
+        {
+            'name'   : 'woven_dawn',
+            'bonuses': [ 1683 ],
+            'tier'   : 'TWW_WDawn'
         },
     ]
 

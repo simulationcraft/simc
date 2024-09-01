@@ -4370,10 +4370,40 @@ void woven_dusk( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 457630 ) )
                   ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
 
+  // Something *VERY* weird is going on here. It appears to work properly for Discipline Priest, but not Shadow.  
+  if ( effect.player->specialization() == PRIEST_DISCIPLINE )
+  {
+    buff->set_chance( 1.0 )->set_rppm( RPPM_DISABLE );
+  }
+
   effect.custom_buff = buff;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Woven Dawn
+// 455521 Driver
+// 457627 Buff
+void woven_dawn( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs( effect, { "woven_dawn" } ) )
+    return;
+
+  // Need to force player sccaling for equipment set
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 457627 ) )
+                  ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
+
+  buff->set_chance( 1.0 )->set_rppm( RPPM_DISABLE );
+
+  effect.custom_buff = buff;
+
+  // Driver procs off druid hostile abilities (Probably) as well as shadow hostile abilities (confirmed) as they always historically do
+  if ( effect.player->type == player_e::DRUID || effect.player->specialization() == PRIEST_SHADOW )
+    effect.proc_flags_ |= PF_MAGIC_SPELL | PF_MELEE_ABILITY;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 
 // Embrace of the Cinderbee
 // 443764 Driver
@@ -4617,6 +4647,7 @@ void register_special_effects()
   // Sets
   register_special_effect( 444166, DISABLED_EFFECT );  // kye'veza's cruel implements
   register_special_effect( 457655, sets::woven_dusk, true );
+  register_special_effect( 455521, sets::woven_dawn );
   register_special_effect( 443764, sets::embrace_of_the_cinderbee, true );
 }
 
