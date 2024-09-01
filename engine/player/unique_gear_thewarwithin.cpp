@@ -3780,6 +3780,63 @@ void spelunkers_waning_candle( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 455436 driver
+// 455441 mastery
+// 455454 crit
+// 455455 haste
+// 455456 vers
+void unstable_power_core( special_effect_t& effect )
+{
+  static constexpr std::array<std::pair<unsigned, const char*>, 4> buff_ids = {
+      { { 455441, "mastery" }, { 455454, "crit" }, { 455455, "haste" }, { 455456, "vers" } } };
+
+  std::vector<buff_t*> buffs = {};
+
+  auto buff_name = util::tokenize_fn( effect.driver()->name_cstr() );
+
+  for ( const auto& [ id, stat_name ] : buff_ids )
+  {
+    auto spell = effect.player->find_spell( id );
+    auto buff  = make_buff<stat_buff_t>( effect.player, fmt::format( "{}_{}", buff_name, stat_name ),
+                                        effect.player->find_spell( id ) );
+
+    buff->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect.item ) );
+
+    buffs.push_back( buff );
+  }
+
+  for ( auto& buff : buffs )
+  {
+    buff->set_expire_callback( [ effect, buffs ]( buff_t*, int, timespan_t remains ) {
+      if ( remains > 0_ms )
+        return;
+
+      auto buff_idx = effect.player->sim->rng().range( buffs.size() );
+      buffs[ buff_idx ]->trigger( effect.player->rng().range( 10_s, 30_s ) );
+    } );
+  }
+
+  effect.player->register_combat_begin( [ effect, buffs ]( player_t* p ) {
+    auto buff_idx = effect.player->sim->rng().range( buffs.size() );
+    buffs[ buff_idx ]->trigger( effect.player->rng().range( 10_s, 30_s ) );
+  } );
+}
+
+// 451742 driver
+// 451750 buff scaling driver?
+// 451748 buff
+void stormrider_flight_badge( special_effect_t& effect )
+{
+  auto buff_spell = effect.player->find_spell( 451748 );
+  auto buff =
+      create_buff<stat_buff_t>( effect.player, "stormrider_flight_badge", effect.driver()->effectN( 2 ).trigger() );
+  buff->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).trigger()->effectN( 1 ).average( effect.item ) );
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -4540,6 +4597,10 @@ void register_special_effects()
   register_special_effect( 441023, items::nerubian_pheromone_secreter );
   register_special_effect( 455640, items::shadowed_essence );
   register_special_effect( 455419, items::spelunkers_waning_candle );
+  register_special_effect( 455436, items::unstable_power_core );
+  register_special_effect( 451742, items::stormrider_flight_badge );
+  register_special_effect( 451750, DISABLED_EFFECT );  // stormrider flight badge special effect 2
+  
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
