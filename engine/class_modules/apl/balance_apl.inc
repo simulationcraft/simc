@@ -1,7 +1,7 @@
 action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 action_priority_list_t* def = get_action_priority_list( "default" );
-action_priority_list_t* st = get_action_priority_list( "st" );
 action_priority_list_t* aoe = get_action_priority_list( "aoe" );
+action_priority_list_t* st = get_action_priority_list( "st" );
 
 precombat->add_action( "variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune|druid.no_cds","Executed before combat begins. Accepts non-harmful actions only." );
 precombat->add_action( "variable,name=on_use_trinket,value=0" );
@@ -34,7 +34,7 @@ def->add_action( "incarnation,use_off_gcd=0,if=fight_remains<20|(dot.sunfire.tic
 def->add_action( "moonfire,target_if=refreshable&!(talent.treants_of_the_moon&(cooldown.force_of_nature.remains<2|buff.harmony_of_the_grove.up))" );
 def->add_action( "sunfire,target_if=refreshable" );
 def->add_action( "stellar_flare,target_if=refreshable&(target.time_to_die-remains-target>7+spell_targets),if=(1+(0.65*talent.lunar_calling))*spell_targets<(11-talent.umbral_intensity.rank-(2*talent.astral_smolder))" );
-def->add_action( "force_of_nature,if=(talent.power_of_the_dream&talent.early_spring&talent.orbital_strike)|variable.eclipse_remains>=3" );
+def->add_action( "force_of_nature,if=(talent.power_of_the_dream&(variable.eclipse_remains<=3|cooldown.ca_inc.ready))|(talent.control_of_the_dream&cooldown.ca_inc.remains>20|talent.control_of_the_dream&cooldown.ca_inc.ready)" );
 def->add_action( "wrath,if=variable.enter_lunar" );
 def->add_action( "starfire,if=variable.enter_solar" );
 def->add_action( "call_action_list,name=aoe,if=spell_targets>1" );
@@ -42,22 +42,6 @@ def->add_action( "call_action_list,name=st,if=spell_targets=1" );
 def->add_action( "use_items,slots=trinket1,if=variable.on_use_trinket!=1&!trinket.2.ready_cooldown|(variable.on_use_trinket=1|variable.on_use_trinket=3)&buff.ca_inc.up&buff.ca_inc.remains>15|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0" );
 def->add_action( "use_items,slots=trinket2,if=variable.on_use_trinket!=2&!trinket.1.ready_cooldown|variable.on_use_trinket=2&buff.ca_inc.up&buff.ca_inc.remains>15|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0" );
 def->add_action( "use_items" );
-
-st->add_action( "fury_of_elune,if=energize_amount+variable.passive_asp>astral_power.deficit-(20*talent.astral_communion)" );
-st->add_action( "starsurge,if=(buff.starlord.stack>0&buff.starlord.stack<3)|!buff.starlord.up&((2*variable.passive_asp)>astral_power.deficit-(20*talent.astral_communion))" );
-st->add_action( "starsurge,if=cooldown.convoke_the_spirits.ready&astral_power.deficit>energize_amount" );
-st->add_action( "convoke_the_spirits,if=fight_remains<5|(buff.ca_inc.up|cooldown.ca_inc.remains>40)" );
-st->add_action( "starsurge,if=fight_remains<4" );
-st->add_action( "starsurge,if=buff.starlord.remains>4&variable.boat_stacks>=2" );
-st->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+energize_amount|fight_remains<20|cooldown.ca_inc.remains>15" );
-st->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+energize_amount&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)|fight_remains<20|cooldown.ca_inc.remains>15" );
-st->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+energize_amount&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)|fight_remains<20|cooldown.ca_inc.remains>15" );
-st->add_action( "starsurge,if=buff.starweavers_weft.up|buff.touch_the_cosmos_starsurge.up" );
-st->add_action( "starfall,if=buff.starweavers_warp.up|buff.touch_the_cosmos_starfall.up" );
-st->add_action( "starsurge,if=astral_power.deficit<variable.passive_asp+action.wrath.energize_amount+(action.starfire.energize_amount+variable.passive_asp)*(buff.eclipse_solar.remains<(gcd.max*3))|fight_remains<5" );
-st->add_action( "force_of_nature,if=!hero_tree.keeper_of_the_grove" );
-st->add_action( "starfire,if=talent.lunar_calling" );
-st->add_action( "wrath,if=!talent.lunar_calling" );
 
 aoe->add_action( "moonfire,target_if=refreshable&(target.time_to_die-remains)>6&astral_power.deficit>variable.passive_asp+energize_amount,if=fight_style.dungeonroute" );
 aoe->add_action( "sunfire,target_if=refreshable&(target.time_to_die-remains)>6-(spell_targets%2)&astral_power.deficit>variable.passive_asp+energize_amount" );
@@ -83,3 +67,19 @@ aoe->add_action( "warrior_of_elune" );
 aoe->add_action( "wild_mushroom" );
 aoe->add_action( "starfire,if=talent.lunar_calling|buff.eclipse_lunar.up&spell_targets.starfire>1" );
 aoe->add_action( "wrath" );
+
+st->add_action( "fury_of_elune,if=energize_amount+variable.passive_asp>astral_power.deficit-(20*talent.astral_communion)" );
+st->add_action( "starsurge,if=(buff.starlord.stack>0&buff.starlord.stack<3)|!buff.starlord.up&((2*variable.passive_asp)>astral_power.deficit-(20*talent.astral_communion))" );
+st->add_action( "starsurge,if=cooldown.convoke_the_spirits.ready&astral_power.deficit>energize_amount" );
+st->add_action( "convoke_the_spirits,if=fight_remains<5|(buff.ca_inc.up|cooldown.ca_inc.remains>40)|(buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>15)" );
+st->add_action( "starsurge,if=fight_remains<4" );
+st->add_action( "starsurge,if=buff.starlord.remains>4&variable.boat_stacks>=2" );
+st->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+energize_amount|fight_remains<20|cooldown.ca_inc.remains>15" );
+st->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+energize_amount&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)|fight_remains<20|cooldown.ca_inc.remains>15" );
+st->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+energize_amount&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)|fight_remains<20|cooldown.ca_inc.remains>15" );
+st->add_action( "starsurge,if=buff.starweavers_weft.up|buff.touch_the_cosmos_starsurge.up" );
+st->add_action( "starfall,if=buff.starweavers_warp.up|buff.touch_the_cosmos_starfall.up" );
+st->add_action( "starsurge,if=astral_power.deficit<variable.passive_asp+action.wrath.energize_amount+(action.starfire.energize_amount+variable.passive_asp)*(buff.eclipse_solar.remains<(gcd.max*3))|fight_remains<5" );
+st->add_action( "force_of_nature,if=!hero_tree.keeper_of_the_grove" );
+st->add_action( "starfire,if=talent.lunar_calling" );
+st->add_action( "wrath,if=!talent.lunar_calling" );
