@@ -3827,10 +3827,9 @@ void unstable_power_core( special_effect_t& effect )
 // 451748 buff
 void stormrider_flight_badge( special_effect_t& effect )
 {
-  auto buff_spell = effect.player->find_spell( 451748 );
   auto buff =
       create_buff<stat_buff_t>( effect.player, "stormrider_flight_badge", effect.driver()->effectN( 2 ).trigger() );
-  buff->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).trigger()->effectN( 1 ).average( effect.item ) );
+  buff->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).trigger()->effectN( 1 ).average( effect.item ) );
 
   effect.custom_buff = buff;
 
