@@ -9626,8 +9626,7 @@ struct tempest_t : public shaman_spell_t
     // TODO: Is Tempest applying Lightning Rod to targets before or after for Tempest lightning rod
     // damage?
     if ( ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->talent.conductive_energy.ok() ) ||
-         ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.conductive_energy.ok() &&
-           p()->talent.lightning_rod.ok() ) )
+         ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.conductive_energy.ok() && !p()->bugs ) )
     {
       p()->trigger_lightning_rod_damage( state );
     }
@@ -12569,6 +12568,8 @@ double shaman_t::resource_loss( resource_e resource_type, double amount, gain_t*
       buff.unlimited_power->trigger();
     }
   }
+
+  buff.tww1_4pc_ele->trigger();
 
   return loss;
 }
