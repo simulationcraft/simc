@@ -4397,8 +4397,8 @@ void woven_dawn( special_effect_t& effect )
 
   effect.custom_buff = buff;
 
-  // Driver procs off druid hostile abilities (Probably) as well as shadow hostile abilities (confirmed) as they always historically do
-  if ( effect.player->type == player_e::DRUID || effect.player->specialization() == PRIEST_SHADOW )
+  // Driver procs off Druid hostile abilities (Probably) as well as Priest hostile abilities (confirmed) as they always historically do
+  if ( effect.player->type == player_e::DRUID || effect.player->type == player_e::PRIEST )
     effect.proc_flags_ |= PF_MAGIC_SPELL | PF_MELEE_ABILITY;
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -4647,7 +4647,7 @@ void register_special_effects()
   // Sets
   register_special_effect( 444166, DISABLED_EFFECT );  // kye'veza's cruel implements
   register_special_effect( 457655, sets::woven_dusk, true );
-  register_special_effect( 455521, sets::woven_dawn );
+  register_special_effect( 455521, sets::woven_dawn, true );
   register_special_effect( 443764, sets::embrace_of_the_cinderbee, true );
 }
 
