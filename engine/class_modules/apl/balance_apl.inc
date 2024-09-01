@@ -34,7 +34,7 @@ def->add_action( "incarnation,use_off_gcd=0,if=fight_remains<20|(dot.sunfire.tic
 def->add_action( "moonfire,target_if=refreshable&!(talent.treants_of_the_moon&(cooldown.force_of_nature.remains<2|buff.harmony_of_the_grove.up))" );
 def->add_action( "sunfire,target_if=refreshable" );
 def->add_action( "stellar_flare,target_if=refreshable&(target.time_to_die-remains-target>7+spell_targets),if=(1+(0.65*talent.lunar_calling))*spell_targets<(11-talent.umbral_intensity.rank-(2*talent.astral_smolder))" );
-def->add_action( "force_of_nature,if=(talent.power_of_the_dream&(variable.eclipse_remains<=3|cooldown.ca_inc.ready))|(talent.control_of_the_dream&cooldown.ca_inc.remains>20|talent.control_of_the_dream&cooldown.ca_inc.ready)" );
+def->add_action( "force_of_nature,if=(talent.power_of_the_dream&(variable.eclipse_remains>=3|cooldown.ca_inc.ready))|(talent.control_of_the_dream&cooldown.ca_inc.remains>20|talent.control_of_the_dream&cooldown.ca_inc.ready)" );
 def->add_action( "wrath,if=variable.enter_lunar" );
 def->add_action( "starfire,if=variable.enter_solar" );
 def->add_action( "call_action_list,name=aoe,if=spell_targets>1" );
