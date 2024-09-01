@@ -31,8 +31,6 @@ actions.aoe+=/freeze,if=freezable&debuff.frozen.down&(!talent.glacial_spike|prev
 actions.aoe+=/ice_nova,if=freezable&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike)
 actions.aoe+=/frost_nova,if=freezable&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike&!remaining_winters_chill)
 actions.aoe+=/shifting_power,if=cooldown.comet_storm.remains>10
-actions.aoe+=/flurry,if=cooldown_react&!debuff.winters_chill.remains&buff.icicles.react=4&talent.glacial_spike&!freezable
-actions.aoe+=/glacial_spike,if=buff.icicles.react=5&cooldown.blizzard.remains>gcd.max
 actions.aoe+=/flurry,if=(freezable|!talent.glacial_spike)&cooldown_react&!debuff.winters_chill.remains&(buff.brain_freeze.react|!buff.fingers_of_frost.react)
 actions.aoe+=/ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time|remaining_winters_chill
 actions.aoe+=/ice_nova,if=active_enemies>=4&(!talent.glacial_spike|!freezable)
