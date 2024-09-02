@@ -468,4 +468,3 @@ void protection( player_t* p )
 }
 //protection_apl_end
 }  // namespace warrior_apl
-// plz push this time
