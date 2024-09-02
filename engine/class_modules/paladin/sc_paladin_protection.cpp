@@ -640,6 +640,7 @@ struct eye_of_tyr_t : public paladin_spell_t
       cooldown->duration *= ( 1 + p->talents.inmost_light->effectN( 2 ).percent() );
     }
   }
+
   void impact(action_state_t* s) override
   {
     paladin_spell_t::impact( s );
@@ -650,7 +651,7 @@ struct eye_of_tyr_t : public paladin_spell_t
     }
   }
 
-   bool target_ready( player_t* candidate_target ) override
+  bool target_ready( player_t* candidate_target ) override
   {
     if ( p()->buffs.templar.hammer_of_light_ready->up() || p()->buffs.templar.hammer_of_light_free->up() )
     {
@@ -668,7 +669,7 @@ struct eye_of_tyr_t : public paladin_spell_t
     }
     return m;
   }
-  
+
   void execute() override
   {
     paladin_spell_t::execute();

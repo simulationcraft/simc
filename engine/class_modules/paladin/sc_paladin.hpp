@@ -988,16 +988,6 @@ struct execution_sentence_debuff_t : public buff_t
     return accumulated_damage * accum_percent;
   }
 
-  void do_will_extension()
-  {
-    if ( extended_count >= 8 )
-      return;
-
-    extended_count += 1;
-    // TODO(mserrano): pull this out of spelldata
-    extend_duration( player, timespan_t::from_seconds( 1 ) );
-  }
-
 private:
   double accumulated_damage;
   double accum_percent;
