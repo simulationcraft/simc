@@ -296,6 +296,9 @@ struct simplified_player_t : public player_t
   action_t* snapshot_stats;
   std::vector<buff_t*> damage_buffs;
 
+  bool has_hasted_gcds;
+  double haste_modifier;
+
   struct bob_settings_t
   {
     struct bob_buff_t
@@ -317,6 +320,8 @@ struct simplified_player_t : public player_t
     int aoe;
     int reduced_aoe_targets;
     int full_amount_targets;
+        
+    double haste_modifier;
 
     double flat_damage_per_hit;
 
@@ -334,31 +339,31 @@ struct simplified_player_t : public player_t
 
   
   std::map<std::string, bob_settings_t> bob_settings = {
-      { "default", { ROLE_SPELL,  11,  true, 1.5_s, 0.40, -1, 8, 1, 20000.0, 0.0011, {} } }, // 250.9k
-      { "tank",    { ROLE_TANK,  6.1,  true, 1.5_s, 0.45, -1, 8, 1, 20000.0, 0.0011, {} } },      // 157.4k
-      { "healer",  { ROLE_HEAL,  1.8,  true, 1.5_s, 0.25, -1, 5, 1, 20000.0, 0.0011, {} } },      // 78k
-      { "shadow",  { ROLE_SPELL, 6.3,  true, 1.5_s, 0.45, -1, 8, 1, 20000.0, 0.0011, {       // 244.8k
+      { "default", { ROLE_SPELL, 10.3 , true, 1.5_s, 0.40, -1, 8, 1, 0.0, 20000.0, 0.0011, {} } }, // 250.9k
+      { "tank",    { ROLE_TANK,   6.1 , true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, {} } },      // 157.4k
+      { "healer",  { ROLE_HEAL,   1.8 , true, 1.5_s, 0.25, -1, 5, 1, 0.0, 20000.0, 0.0011, {} } },      // 78k
+      { "shadow",  { ROLE_SPELL,  6.45, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, {       // 244.8k
           { "two_mins_cds",      0.4, 15_s, 120_s, 3_s },
           { "one_mins_cds",      0.4, 15_s,  60_s, 3_s },
           { "two_mins_cds_two",  0.4, 45_s, 120_s, 3_s } } } },
-      { "bm",      { ROLE_SPELL, 8,    true, 1.5_s, 0.4,  -1, 8, 1, 14000.0, 0.0011, {              // 243.5k
-          { "two_mins_cds", 0.5,  20_s, 120_s, 3_s },
-          { "30s_cds",      0.25, 15_s,  30_s, 3_s } } } },
-      { "assa",    { ROLE_SPELL, 3.3, false, 1_s,   0.5,  -1, 8, 1, 11100.0, 0.0011, {              // 234.6k
-          { "ten_mins_cds", 0.2,  40_s, 600_s, 0_s },
-          { "two_mins_cds", 1.25, 20_s, 120_s, 6_s },
-          { "one_mins_cds", 1.1,  14_s,  60_s, 7_s } } } },
-      { "unh",     { ROLE_SPELL, 5.5,    true, 1.5_s, 0.4,  -1, 8, 1, 18000.0, 0.0011, {             // 251.4k
-          { "90s_cds",        1.1, 20_s,  90_s, 7_s },
-          { "45s_cds",        0.6, 20_s,  45_s ,8_s } } } },
+      { "bm",      { ROLE_SPELL,  6.7,  true, 1.5_s, 0.4,  -1, 8, 1, 0.5, 14000.0, 0.0011, {              // 243.5k
+          { "two_mins_cds",           0.3,   20_s, 120_s, 3_s },
+          { "two_mins_cds_lingering", 0.15,  30_s, 120_s, 3_s },
+          { "30s_cds",                0.35, 15_s,  30_s, 3_s } } } },
+      { "assa",    { ROLE_SPELL,  4.65, false,   1_s, 0.5,  -1, 8, 1, 0.8, 11100.0, 0.0011, {              // 234.6k
+          { "two_mins_cds", 0.9 , 20_s, 120_s, 6_s },
+          { "one_mins_cds", 0.65, 14_s,  60_s, 8_s } } } },
+      { "unh",     { ROLE_SPELL,  5.7,  true, 1.5_s, 0.4,  -1, 8, 1, 0.0, 18000.0, 0.0011, {             // 251.4k
+          { "90s_cds",      1.1, 20_s,  90_s, 7_s },
+          { "45s_cds",      0.6, 20_s,  45_s, 8_s } } } },
       // Could probably use some RNG in the 40s cds to better emulate the 30-40s variance in use timing
-      { "dk_frost",{ ROLE_SPELL, 9.1, true, 1.5_s, 0.4,  -1, 8, 1, 13900.0, 0.0011, {             // 262.4k
+      { "dk_frost",{ ROLE_SPELL,  8.4,  true, 1.5_s, 0.4,  -1, 8, 1, 0.0, 13900.0, 0.0011, {             // 262.4k
           { "two_mins_cds", 0.2,  20_s, 120_s, 3_s },
           { "40s_cds", 0.25, 12_s, 34_s, 3_s } } } },
   };
 
   simplified_player_t( sim_t* sim, std::string_view name, race_e r = RACE_HUMAN )
-    : player_t( sim, PLAYER_SIMPLIFIED, name, r ), damage_buffs()
+    : player_t( sim, PLAYER_SIMPLIFIED, name, r ), damage_buffs(), has_hasted_gcds( true ), haste_modifier( 0.0 )
   {
     resource_regeneration = regen_type::DISABLED;
 
@@ -414,6 +419,8 @@ struct simplified_player_t : public player_t
     player_t::init();
 
     role = get_variant_settings().role;
+    has_hasted_gcds = get_variant_settings().hasted_gcds;
+    haste_modifier  = get_variant_settings().haste_modifier;
   }
 
   void init_defence()
@@ -453,10 +460,16 @@ struct simplified_player_t : public player_t
       }
     };
 
+    simplified_player_t* p()
+    {
+      return debug_cast<simplified_player_t*>( player );
+    }
+
     action_t* damage_proc;
+    double haste_modifier;
 
     simple_ability_t( simplified_player_t* p, bob_settings_t settings )
-      : spell_t( "simple_spell", p ), damage_proc( nullptr )
+      : spell_t( "simple_spell", p ), damage_proc( nullptr ), haste_modifier( 0.0 )
     {
       background = repeating = true;
 
@@ -473,8 +486,8 @@ struct simplified_player_t : public player_t
       spell_power_mod.direct = settings.sp_coeff * scaling_factor;
       gcd_type               = settings.hasted_gcds ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
       base_execute_time      = settings.gcd_time;
-      
-      school                 = SCHOOL_MAGIC;
+
+      school = SCHOOL_MAGIC;
 
       aoe                 = settings.aoe;
       reduced_aoe_targets = settings.reduced_aoe_targets;
@@ -486,6 +499,16 @@ struct simplified_player_t : public player_t
         damage_proc = new simple_proc_t( p, settings );
         add_child( damage_proc );
       }
+
+      haste_modifier = settings.haste_modifier;
+    }
+
+    double execute_time_pct_multiplier() const override
+    {
+      if ( gcd_type == gcd_haste_type::SPELL_HASTE )
+        return spell_t::execute_time_pct_multiplier();
+
+      return 1.0;
     }
 
     bool usable_moving() const override
@@ -548,18 +571,18 @@ struct simplified_player_t : public player_t
     int item_level = option.item_level;
 
     std::map<slot_e, std::string> default_items = {
-        { SLOT_HEAD,      fmt::format( ",id=195476,ilevel={},gem_id=192919", item_level ) },
-        { SLOT_NECK,      fmt::format( ",id=207163,ilevel={},gem_id=192988/192919/192919", item_level ) },
+        { SLOT_HEAD,      fmt::format( ",id=195476,ilevel={},gem_id=213743", item_level ) },
+        { SLOT_NECK,      fmt::format( ",id=207163,ilevel={},gem_id=213482/213458", item_level ) },
         { SLOT_SHOULDERS, fmt::format( ",id=193637,ilevel={}", item_level ) },
         { SLOT_BACK,      fmt::format( ",id=195482,ilevel={}", item_level ) },
-        { SLOT_CHEST,     fmt::format( ",id=193801,ilevel={},enchant=waking_stats_3", item_level ) },
-        { SLOT_WRISTS,    fmt::format( ",id=193812,ilevel={},gem_id=192919", item_level ) },
+        { SLOT_CHEST,     fmt::format( ",id=193801,ilevel={},enchant=crystalline_radiance_3", item_level ) },
+        { SLOT_WRISTS,    fmt::format( ",id=193812,ilevel={},gem_id=213491", item_level ) },
         { SLOT_HANDS,     fmt::format( ",id=193818,ilevel={}", item_level ) },
-        { SLOT_WAIST,     fmt::format( ",id=207144,ilevel={},gem_id=192919", item_level ) },
-        { SLOT_LEGS,      fmt::format( ",id=193759,ilevel={},enchant=frozen_spellthread_3", item_level ) },
+        { SLOT_WAIST,     fmt::format( ",id=207144,ilevel={},gem_id=213473", item_level ) },
+        { SLOT_LEGS,      fmt::format( ",id=193759,ilevel={},enchant=sunset_spellthread_3", item_level ) },
         { SLOT_FEET,      fmt::format( ",id=207139,ilevel={}", item_level ) },
-        { SLOT_FINGER_1,  fmt::format( ",id=207159,ilevel={},gem_id=192919,enchant=devotion_of_mastery_3", item_level ) },
-        { SLOT_FINGER_2,  fmt::format( ",id=204398,ilevel={},gem_id=192919,enchant=devotion_of_mastery_3", item_level ) },
+        { SLOT_FINGER_1,  fmt::format( ",id=207159,ilevel={},gem_id=213494/213494,enchant=radiant_mastery_3", item_level ) },
+        { SLOT_FINGER_2,  fmt::format( ",id=204398,ilevel={},gem_id=213494/213494,enchant=radiant_mastery_3", item_level ) },
         { SLOT_TRINKET_1, fmt::format( ",id=153816,ilevel={}", item_level ) },
         { SLOT_TRINKET_2, fmt::format( ",id=153819,ilevel={}", item_level ) },
         { SLOT_MAIN_HAND, fmt::format( ",id=202565,ilevel={}", item_level ) },
@@ -606,6 +629,9 @@ struct simplified_player_t : public player_t
       }
     }
 
+    if ( haste_modifier > 0 )
+      m *= 1.0 - haste_modifier + haste_modifier / cache.spell_cast_speed();
+
     return m;
   }
 
@@ -636,6 +662,10 @@ struct simplified_player_t : public player_t
     {
       case CACHE_MASTERY:
         player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        break;
+      case CACHE_HASTE:
+        if ( haste_modifier > 0 )
+          player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
         break;
       default:
         break;
