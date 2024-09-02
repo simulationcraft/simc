@@ -3761,6 +3761,10 @@ void paladin_t::create_buffs()
         bool already_done = false;
         for ( size_t i = 3; i < 14; i++ )
         {
+          // spell effect 13, for Eye of Tyr, only applies if we have undisputed ruling
+          if ( i == 13 && !talents.templar.undisputed_ruling->ok() )
+            continue;
+
           spelleffect_data_t label = b->data().effectN( i );
           if ( label.subtype() != A_MOD_RECHARGE_TIME_PCT_CATEGORY )
             continue;
@@ -3792,10 +3796,6 @@ void paladin_t::create_buffs()
         {
           // Spell effect 9, for ES/FR, only applies if we have divine auxiliary talented
           if ( i == 9 && !talents.divine_auxiliary->ok() )
-            continue;
-
-          // Similarly spell effect 13, for Eye of Tyr, only applies if we have undisputed ruling
-          if ( i == 13 && !talents.templar.undisputed_ruling->ok() )
             continue;
 
           spelleffect_data_t label = b->data().effectN( i );
