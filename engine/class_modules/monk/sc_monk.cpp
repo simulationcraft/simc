@@ -761,6 +761,30 @@ monk_buff_t::monk_buff_t( monk_td_t *target_data, std::string_view name, const s
 {
 }
 
+void monk_buff_t::expire( timespan_t delay )
+{
+  if ( !p().freeze_expiration )
+    base_t::expire( delay );
+}
+
+void monk_buff_t::expire( action_t *action, timespan_t delay )
+{
+  if ( !p().freeze_expiration )
+    base_t::expire( action, delay );
+}
+
+void monk_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
+{
+  if ( !p().freeze_expiration )
+    base_t::expire_override( expiration_stacks, remaining_duration );
+}
+
+void monk_buff_t::decrement( int stacks, double value )
+{
+  if ( !p().freeze_expiration )
+    base_t::decrement( stacks, value );
+}
+
 monk_td_t &monk_buff_t::get_td( player_t *t )
 {
   return *( p().get_target_data( t ) );
@@ -839,6 +863,9 @@ namespace pet_summon
 
 struct storm_earth_and_fire_t : public monk_spell_t
 {
+  action_t *fire_sef;
+  action_t *earth_sef;
+
   storm_earth_and_fire_t( monk_t *p, util::string_view options_str )
     : monk_spell_t( p, "storm_earth_and_fire", p->talent.windwalker.storm_earth_and_fire )
   {
@@ -848,6 +875,12 @@ struct storm_earth_and_fire_t : public monk_spell_t
     trigger_gcd      = timespan_t::zero();
     may_combo_strike = true;
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
+
+    if ( p->user_options.sef_beta )
+    {
+      fire_sef  = new monk_spell_t( p, "fire_elemental", spell_data_t::nil() );
+      earth_sef = new monk_spell_t( p, "earth_elemental", spell_data_t::nil() );
+    }
   }
 
   bool ready() override
@@ -862,13 +895,20 @@ struct storm_earth_and_fire_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    p()->summon_storm_earth_and_fire( data().duration() );
-
-    if ( p()->talent.windwalker.ordered_elements.ok() )
+    if ( p()->user_options.sef_beta )
     {
-      p()->cooldown.rising_sun_kick->reset( true );
-      p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.ordered_elements->effectN( 2 ).base_value(),
-                          p()->gain.ordered_elements );
+      p()->buff.storm_earth_and_fire->trigger( 1, buff_t::DEFAULT_VALUE(), 1, data().duration() );
+    }
+    else
+    {
+      p()->summon_storm_earth_and_fire( data().duration() );
+
+      if ( p()->talent.windwalker.ordered_elements.ok() )
+      {
+        p()->cooldown.rising_sun_kick->reset( true );
+        p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.ordered_elements->effectN( 2 ).base_value(),
+                            p()->gain.ordered_elements );
+      }
     }
   }
 };
@@ -910,13 +950,13 @@ struct sef_action_t : base_t
 {
   struct child_action_t : base_t
   {
-    template <class Args>
+    template <class... Args>
     child_action_t( Args &&...args ) : base_t( std::forward<Args>( args )... )
     {
       base_t::background = true;
     }
 
-    bool from_caster_spells( const spelleffect_data_t *eff )
+    bool from_caster_spells( const spelleffect_data_t *eff ) const
     {
       switch ( eff->subtype() )
       {
@@ -928,6 +968,23 @@ struct sef_action_t : base_t
         case A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS:
         case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:
           return true;
+        default:
+          return false;
+      }
+      return false;
+    }
+
+    bool add_mod( const spelleffect_data_t *eff ) const
+    {
+      switch ( eff->subtype() )
+      {
+        case A_ADD_FLAT_MODIFIER:
+        case A_ADD_PCT_MODIFIER:
+        case A_ADD_PCT_LABEL_MODIFIER:
+        case A_ADD_FLAT_LABEL_MODIFIER:
+          return true;
+        default:
+          return false;
       }
       return false;
     }
@@ -940,7 +997,7 @@ struct sef_action_t : base_t
 
     double composite_crit_chance() const override
     {
-      auto cc = derived_t::composite_crit_chance();
+      auto cc = base_t::derived_t::composite_crit_chance();
 
       for ( const auto &i : base_t::crit_chance_effects )
         if ( !from_caster_spells( i.eff ) )
@@ -952,19 +1009,19 @@ struct sef_action_t : base_t
     double composite_crit_damage_bonus_multiplier() const override
     {
       // Crit Damage Bonus Multipliers double dip.
-      auto cd = derived_t::composite_crit_damage_bonus_multiplier() * *2 / 2.0;
+      auto cd = std::pow( base_t::derived_t::composite_crit_damage_bonus_multiplier(), 2 );
 
-      for ( const auto &i : crit_bonus_effects )
-      {
-        cd *= 1.0 + get_effect_value( i, false );
-      }
+      // If non-A_ADD, apply again.
+      for ( const auto &i : base_t::crit_bonus_effects )
+        if ( !add_mod( i.eff ) )
+          cd *= 1.0 + base_t::get_effect_value( i, false );
 
       return cd;
     }
 
     double composite_target_crit_damage_bonus_multiplier( player_t *target ) const override
     {
-      auto cd = derived_t::composite_target_crit_damage_bonus_multiplier( target );
+      auto cd = base_t::derived_t::composite_target_crit_damage_bonus_multiplier( target );
       auto td = base_t::p()->get_target_data( target );
 
       for ( const auto &i : base_t::target_crit_bonus_effects )
@@ -976,7 +1033,7 @@ struct sef_action_t : base_t
 
     double composite_da_multiplier( const action_state_t *state ) const override
     {
-      auto da = derived_t::composite_da_multiplier( state );
+      auto da = base_t::derived_t::composite_da_multiplier( state );
 
       for ( const auto &i : base_t::da_multiplier_effects )
         if ( !from_caster_spells( i.eff ) )
@@ -987,7 +1044,7 @@ struct sef_action_t : base_t
 
     double composite_ta_multiplier( const action_state_t *state ) const override
     {
-      auto ta = derived_t::composite_ta_multiplier( state );
+      auto ta = base_t::derived_t::composite_ta_multiplier( state );
 
       for ( const auto &i : base_t::ta_multiplier_effects )
         if ( !from_caster_spells( i.eff ) )
@@ -1010,25 +1067,36 @@ struct sef_action_t : base_t
   player_t *sef_fire_target;
   player_t *sef_earth_target;
 
-  template <class Args>
+  template <class... Args>
   sef_action_t( monk_t *player, std::string_view name, Args &&...args )
     : base_t( player, name, std::forward<Args>( args )... )
   {
     if ( !player->talent.windwalker.storm_earth_and_fire->ok() )
       return;
 
-    sef_fire_action  = new child_action_t( player, name, std::forward<Args>( args )... );
-    sef_earth_action = new child_action_t( player, name, std::forward<Args>( args )... );
+    sef_fire_action = new child_action_t( player, fmt::format( "{}_{}", name, "fire" ), std::forward<Args>( args )... );
+    sef_earth_action =
+        new child_action_t( player, fmt::format( "{}_{}", name, "earth" ), std::forward<Args>( args )... );
 
     // TODO: Set SEF actions as children of the parent SEF action for each elemental.
   }
 
+  void init_finished() override
+  {
+    base_t::init_finished();
+
+    base_t::p()->find_action( "fire_elemental" )->add_child( sef_fire_action );
+    base_t::p()->find_action( "earth_elemental" )->add_child( sef_earth_action );
+  }
+
   void execute() override
   {
-    base_t::execute();
-
+    base_t::p()->freeze_expiration = true;
     sef_fire_action->execute_on_target( base_t::p()->target );
     sef_earth_action->execute_on_target( base_t::p()->target );
+
+    base_t::p()->freeze_expiration = false;
+    base_t::execute();
   }
 };
 
@@ -1834,11 +1902,11 @@ struct charred_passions_t : base_action_t
 // Blackout Kick Baseline ability =======================================
 struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_attack_t>>
 {
-  blackout_kick_totm_proc_t *bok_totm_proc;
+  action_t *bok_totm_proc;
   cooldown_t *keg_smash_cooldown;
 
-  blackout_kick_t( monk_t *p, util::string_view options_str )
-    : base_t( p, "blackout_kick",
+  blackout_kick_t( monk_t *p, std::string_view name, util::string_view options_str )
+    : base_t( p, name,
               ( p->specialization() == MONK_BREWMASTER ? p->baseline.brewmaster.blackout_kick
                                                        : p->baseline.monk.blackout_kick ) ),
       keg_smash_cooldown( nullptr )
@@ -1865,8 +1933,13 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
 
     if ( p->shared.teachings_of_the_monastery->ok() )
     {
-      bok_totm_proc = new blackout_kick_totm_proc_t( p );
-      add_child( bok_totm_proc );
+      if ( action_t *totm = p->find_action( "blackout_kick_totm_proc" ); totm )
+        bok_totm_proc = totm;
+      else
+      {
+        bok_totm_proc = new blackout_kick_totm_proc_t( p );
+        add_child( bok_totm_proc );
+      }
     }
 
     if ( p->baseline.windwalker.blackout_kick_rank_2->ok() )
@@ -6418,6 +6491,7 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     efficient_training_energy( 0 ),
     flurry_strikes_energy( 0 ),
     flurry_strikes_damage( 0 ),
+    freeze_expiration( false ),
     buff(),
     gain(),
     proc(),
@@ -6465,9 +6539,9 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   }
   user_options.initial_chi =
       talent.windwalker.combat_wisdom.ok() ? (int)talent.windwalker.combat_wisdom->effectN( 1 ).base_value() : 0;
-  user_options.chi_burst_healing_targets = 8;
-  user_options.motc_override             = 0;
-  user_options.squirm_frequency          = 15;
+  user_options.motc_override    = 0;
+  user_options.squirm_frequency = 15;
+  user_options.sef_beta         = false;
 }
 
 void monk_t::parse_player_effects()
@@ -6579,7 +6653,7 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
   if ( name == "tiger_palm" )
     return new tiger_palm_t( this, options_str );
   if ( name == "blackout_kick" )
-    return new blackout_kick_t( this, options_str );
+    return new sef_action_t<blackout_kick_t>( this, "blackout_kick", options_str );
   if ( name == "expel_harm" )
     return new expel_harm_t( this, options_str );
   if ( name == "leg_sweep" )
@@ -8917,9 +8991,9 @@ void monk_t::create_options()
   base_t::create_options();
 
   add_option( opt_int( "monk.initial_chi", user_options.initial_chi, 0, 6 ) );
-  add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
   add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
   add_option( opt_float( "monk.squirm_frequency", user_options.squirm_frequency, 0, 30 ) );
+  add_option( opt_bool( "monk.sef_beta", user_options.sef_beta ) );
 }
 
 // monk_t::copy_from =========================================================
