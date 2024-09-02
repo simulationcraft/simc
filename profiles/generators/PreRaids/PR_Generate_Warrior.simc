@@ -33,20 +33,20 @@
 # talents=2122322
 
 # head=waxsteel_greathelm,id=221100,bonus_id=10388/10290/1628
-# neck=emergency-stop-keychain,id=221077,bonus_id=10388/10290/1628
-# shoulders=swarm-monarchs-spaulders,id=221155,bonus_id=10388/10290/1628
-# back=anvilhide_cape,id=173242,bonus_id=10388/10290/1628
-# chest=experimental-goresilk-chestguard,id=221161,bonus_id=10388/10290/1628,enchant=crystalline_radiance_2
-# hands=devourers-gauntlets,id=221151,bonus_id=10388/10290/1628
+# neck=emergency_stop_keychain,id=221077,bonus_id=10388/10290/1628
+# shoulders=swarm_monarchs_spaulders,id=221155,bonus_id=10388/10290/1628
+# back=anvilhide_cape,id=221088,bonus_id=10388/10290/1628
+# chest=experimental_goresilk_chestguard,id=221161,bonus_id=10388/10290/1628,enchant=crystalline_radiance_2
+# hands=devourers_gauntlets,id=221151,bonus_id=10388/10290/1628
 # waist=girdle_of_somber_ploys,id=221133,bonus_id=10388/10290/1628
-# legs=legplates-of-duality,id=221173,bonus_id=10388/10290/1628,enchant=defenders-armor-kit_2
-# feet=devoted-plate-walkers,id=221123,bonus_id=10388/10290/1628
-# finger1=85-year-tenure-ring,id=221198,bonus_id=10388/10290/1628,enchant=radiant_mastery_2
+# legs=legplates_of_duality,id=221173,bonus_id=10388/10290/1628,enchant=defenders-armor-kit_2
+# feet=devoted_plate_walkers,id=221123,bonus_id=10388/10290/1628
+# finger1=85_year_tenure_ring,id=221198,bonus_id=10388/10290/1628,enchant=radiant_mastery_2
 # finger2=wicks_golden_loop,id=221099,bonus_id=10388/10290/1628,enchant=radiant_mastery_2
 # trinket1=skarmorak_shard,id=219300,bonus_id=110388/10290/1628
 # trinket2=ara_kara_sacbrood,id=219314,bonus_id=110388/10290/1628
-# main_hand=poleaxe-of-somber-fate,id=221111,bonus_id=10388/10290/1628,enchant=authority_of_radiant_power_2
-# off_hand=poleaxe-of-somber-fate,id=221111,bonus_id=10388/10290/1628,enchant=authority_of_radiant_power_2
+# main_hand=poleaxe_of_somber_fate,id=221111,bonus_id=10388/10290/1628,enchant=authority_of_radiant_power_2
+# off_hand=poleaxe_of_somber_fate,id=221111,bonus_id=10388/10290/1628,enchant=authority_of_radiant_power_2
 
 # save=PR_Warrior_Fury.simc
 
