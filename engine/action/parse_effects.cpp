@@ -1354,11 +1354,21 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
     str = "cooldown";
     return &recharge_multiplier_effects;
   }
-  else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY ||
-            eff.subtype() == A_MOD_RECHARGE_RATE )
+  else if ( eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY )
   {
-    str = "recharge rate";
-    return &recharge_rate_effects;
+    if ( !_action->data().charges() )
+    {
+      str = "recharge rate";
+      return &recharge_rate_effects;
+    }
+  }
+  else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE )
+  {
+    if ( _action->data().charges() )
+    {
+      str = "recharge rate";
+      return &recharge_rate_effects;
+    }
   }
   else if ( eff.subtype() == A_MODIFY_SCHOOL )
   {
