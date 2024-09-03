@@ -11510,21 +11510,25 @@ void druid_t::init()
 
 bool druid_t::validate_fight_style( fight_style_e style ) const
 {
-  if ( specialization() == DRUID_RESTORATION )
+  switch ( specialization() )
   {
-    sim->error( "Restoration Druid does not yet have an Action Priority List (APL)." );
-    return false;
-  }
-  else if ( specialization() == DRUID_BALANCE )
-  {
-    sim->error( "Upcoming 2024-09-03 hotfixes are included." );
+    case DRUID_BALANCE:
+      if ( style != FIGHT_STYLE_PATCHWERK )
+        return false;
 
-    if ( style != FIGHT_STYLE_PATCHWERK )
+      break;
+    case DRUID_FERAL:
+      break;
+
+    case DRUID_GUARDIAN:
+      break;
+
+    case DRUID_RESTORATION:
+      sim->error( "Restoration Druid does not yet have an Action Priority List (APL)." );
       return false;
-  }
-  else if ( specialization() == DRUID_FERAL )
-  {
-    sim->error( "Upcoming 2024-09-03 hotfixes are included." );
+
+    default:
+      break;
   }
 
   return true;
@@ -14178,46 +14182,6 @@ struct druid_module_t final : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_spell( "Druid", "2024-09-03", "Bloodtalons and Lion's Strength now also increase the damage of Rampant Ferocity.", 391710 )
-      .field( "class_flags" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 108 );
-
-    hotfix::register_effect( "Druid", "2024-09-03", "Umbral Intensity increases the damage of Wrath by 20/40% (was 25/50%).", 1014956 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 20 )
-      .verification_value( 25 );
-
-    hotfix::register_effect( "Druid", "2024-09-03", "Umbral Intensity increases the damage of Starfire by 15/30% (was 50%).", 1150828 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 15 )
-      .verification_value( 25 );
-
-    hotfix::register_effect( "Druid", "2024-09-03", "Starsurge damage increased by 12%.", 68268 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.12 )
-      .verification_value( 1.876 );
-
-    hotfix::register_effect( "Druid", "2024-09-03", "Starfall damage increased by 20%.", 280158 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.2 )
-      .verification_value( 0.1484 );
-
-    hotfix::register_effect( "Druid", "2024-09-03", "Harmony of the Heavens increases Eclipse power by 2% per proc (was 1% per proc).", 1150545 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 2 )
-      .verification_value( 1 );
-
-    hotfix::register_effect( "Druid", "2024-09-03", "Harmony of the Heavens increases Eclipse power max 6% (was max 5%).", 1150546 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 6 )
-      .verification_value( 5 );
   }
 
   void combat_begin( sim_t* ) const override {}
