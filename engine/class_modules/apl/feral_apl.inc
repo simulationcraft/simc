@@ -106,7 +106,7 @@ cooldown->add_action( "convoke_the_spirits,if=fight_remains<5|(buff.bs_inc.up|!t
 finisher->add_action( "primal_wrath,target_if=max:dot.bloodseeker_vines.ticking,if=spell_targets.primal_wrath>1&((dot.primal_wrath.remains<6.5&!buff.bs_inc.up|dot.primal_wrath.refreshable)|(!talent.rampant_ferocity.enabled&(spell_targets.primal_wrath>1&!dot.bloodseeker_vines.ticking&!buff.ravage.up|spell_targets.primal_wrath>6+talent.ravage)))","maintain/upgrade pws, if we have 6.5+s left on pw, we will instead bite if we have rampant ferocity talented. Without rampant, we will bite a vined target with 6 or fewer targets. If we have Ravage, we use specifically Ravage at 7 or fewer targets." );
 finisher->add_action( "rip,target_if=refreshable,if=(!talent.primal_wrath|spell_targets=1)&(buff.bloodtalons.up|!talent.bloodtalons)&(buff.tigers_fury.up|dot.rip.remains<cooldown.tigers_fury.remains)","rip if single target or pw isnt up. Rip with bloodtalons if talented. If tigers fury will be up before rip falls off, then delay refresh" );
 finisher->add_action( "pool_resource,for_next=1" );
-finisher->add_action( "ferocious_bite,max_energy=1,target_if=max:dot.bloodseeker_vines.ticking,if=spell_targets=1&(!buff.bs_inc.up|!talent.soul_of_the_forest.enabled)" );
+finisher->add_action( "ferocious_bite,max_energy=1,target_if=max:dot.bloodseeker_vines.ticking,if=!buff.bs_inc.up|!talent.soul_of_the_forest.enabled" );
 finisher->add_action( "ferocious_bite,target_if=max:dot.bloodseeker_vines.ticking" );
 
 variable->add_action( "variable,name=effective_energy,op=set,value=energy+(40*buff.clearcasting.stack)+(3*energy.regen)+(50*(cooldown.tigers_fury.remains<3.5))","most expensive bt cycle is Shred + Thrash + Rake, 40+40+35 for 115 energy. During incarn it is 32+32+28 for 92energy" );
