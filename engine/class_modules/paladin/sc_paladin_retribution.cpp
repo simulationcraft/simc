@@ -1705,6 +1705,7 @@ void paladin_t::init_spells_retribution()
   talents.vengeful_wrath = find_talent_spell( talent_tree::CLASS, "Vengeful Wrath" );
   // Spec passives and useful spells
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
+  spec.retribution_paladin_2 = find_spell( 412314 );
   mastery.highlords_judgment = find_mastery_spell( PALADIN_RETRIBUTION );
 
   if ( specialization() == PALADIN_RETRIBUTION )

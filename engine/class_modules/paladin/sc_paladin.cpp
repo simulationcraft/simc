@@ -5362,6 +5362,7 @@ void paladin_t::apply_affecting_auras( action_t& action )
   player_t::apply_affecting_auras( action );
 
   action.apply_affecting_aura( spec.retribution_paladin );
+  action.apply_affecting_aura( spec.retribution_paladin_2 );
   action.apply_affecting_aura( spec.holy_paladin );
   action.apply_affecting_aura( spec.protection_paladin );
   action.apply_affecting_aura( passives.paladin );

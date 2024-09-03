@@ -303,6 +303,7 @@ public:
     const spell_data_t* holy_paladin;
     const spell_data_t* protection_paladin;
     const spell_data_t* retribution_paladin;
+    const spell_data_t* retribution_paladin_2;
     const spell_data_t* word_of_glory_2;
     const spell_data_t* holy_shock_2;
     const spell_data_t* improved_crusader_strike;
