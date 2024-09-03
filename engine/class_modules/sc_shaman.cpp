@@ -12567,9 +12567,9 @@ double shaman_t::resource_loss( resource_e resource_type, double amount, gain_t*
     {
       buff.unlimited_power->trigger();
     }
+  
+    buff.tww1_4pc_ele->trigger();
   }
-
-  buff.tww1_4pc_ele->trigger();
 
   return loss;
 }
