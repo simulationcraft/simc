@@ -4224,9 +4224,10 @@ Effects          :
                    Affected Spells: Renew (139)
                    Family Flags: 6
 #15 (id=1040387)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
+Hotfixed         : Base Value (33 -> 120)
 #16 (id=1040388)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
@@ -4271,9 +4272,10 @@ Effects          :
                    Base Value: 57 | Scaled Value: 57 | PvP Coefficient: 1.00000 | Misc Value 2: 4004 (Label) | Target: Self (1)
                    Affected Spells (Label): Divine Star (122128), Divine Star (390845)
 #29 (id=1125911)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Base Value: -42 | Scaled Value: -42 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
+Hotfixed         : Base Value (-4 -> -42)
 #30 (id=1176319)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3985 (Label) | Target: Self (1)
                    Affected Spells (Label): Preemptive Care (440671)
@@ -18908,9 +18910,10 @@ Effects          :
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
 #2 (id=1134693)  : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 24 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.62500 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
+Hotfixed         : Base Value (25 -> 40), PvP Coefficient (1 -> 0.625)
 #3 (id=1170141)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Smite (585), Penance (47666), Holy Nova (132157), Penance (186724), Dark Reprimand (373130), Ultimate Penitence (421543), Smite (425529), Void Blast (450215)
@@ -19916,7 +19919,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1151263)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.68000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (1.4 -> 1.68)
 #2 (id=1151264)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : Sends a blast of cosmic void energy at the enemy, causing $s1 Shadow damage.$?c3[
