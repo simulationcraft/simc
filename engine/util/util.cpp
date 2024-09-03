@@ -508,6 +508,7 @@ race_e util::parse_race_type( util::string_view name )
   if ( name == "forsaken" ) return RACE_UNDEAD;
   if ( name == "dracthyr" ) return RACE_DRACTHYR_HORDE;
   if ( name == "earthen" )  return RACE_EARTHEN_HORDE;
+  if ( name == "earthen_dwarf" ) return RACE_EARTHEN_HORDE;
 
   return parse_enum_with_default<race_e, RACE_NONE, RACE_MAX, RACE_UNKNOWN, race_type_string>( name );
 }
