@@ -1356,7 +1356,7 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
   }
   else if ( eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY )
   {
-    if ( !BASE::data().charges() )
+    if ( !_action->data().charges() )
     {
       str = "recharge rate";
       return &recharge_rate_effects;
@@ -1364,7 +1364,7 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
   }
   else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE )
   {
-    if ( BASE::data().charges() )
+    if ( _action->data().charges() )
     {
       str = "recharge rate";
       return &recharge_rate_effects;
