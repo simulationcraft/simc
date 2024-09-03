@@ -7385,6 +7385,14 @@ struct bonestorm_t final : public death_knight_spell_t
       p()->buffs.icy_talons->trigger();
     }
   }
+
+  bool ready() override
+  {
+    if ( !p()->buffs.bone_shield->check() )
+      return false;
+
+    return death_knight_spell_t::ready();
+  }
 };
 
 // Breath of Sindragosa =====================================================
