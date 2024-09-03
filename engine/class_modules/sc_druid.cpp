@@ -13431,6 +13431,8 @@ buff_t* eclipse_handler_t::get_eclipse() const
 template <eclipse_e E>
 void eclipse_handler_t::advance_eclipse( bool active )
 {
+  if ( !enabled() ) return;
+
   auto old_state = state;
 
   reset_stacks();
@@ -13471,6 +13473,8 @@ void eclipse_handler_t::advance_eclipse( bool active )
 template <eclipse_e E>
 void eclipse_handler_t::update_eclipse()
 {
+  if ( !enabled() ) return;
+
   auto buff = get_eclipse<E>();
   if ( !buff->check() )
     return;
