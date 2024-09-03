@@ -615,12 +615,14 @@ void binding_of_binding( special_effect_t& effect )
   if ( effect.player->thewarwithin_opts.binding_of_binding_on_you <= 0 )
     return;
 
-   static constexpr std::array<std::tuple<gem_color_e, unsigned, const char*>, 5> effect_index = {
-      { { GEM_RUBY, 2, "ruby" },
-        { GEM_AMBER, -1, "amber" },
-        { GEM_EMERALD, 3, "emerald" },
-        { GEM_SAPPHIRE, 4, "sapphire" },
-        { GEM_ONYX, 5, "onyx" } } };
+  /* for reference, currently unused
+  static constexpr std::array<std::tuple<gem_color_e, unsigned, const char*>, 5> effect_index = { {
+    { GEM_RUBY, 2, "ruby" },
+    { GEM_AMBER, -1, "amber" },
+    { GEM_EMERALD, 3, "emerald" },
+    { GEM_SAPPHIRE, 4, "sapphire" },
+    { GEM_ONYX, 5, "onyx" } } };
+  */
 
    auto buff_spell = effect.player->find_spell( 436159 );
 
@@ -3796,7 +3798,6 @@ void unstable_power_core( special_effect_t& effect )
 
   for ( const auto& [ id, stat_name ] : buff_ids )
   {
-    auto spell = effect.player->find_spell( id );
     auto buff  = make_buff<stat_buff_t>( effect.player, fmt::format( "{}_{}", buff_name, stat_name ),
                                         effect.player->find_spell( id ) );
 
@@ -3816,9 +3817,9 @@ void unstable_power_core( special_effect_t& effect )
     } );
   }
 
-  effect.player->register_combat_begin( [ effect, buffs ]( player_t* p ) {
-    auto buff_idx = effect.player->sim->rng().range( buffs.size() );
-    buffs[ buff_idx ]->trigger( effect.player->rng().range( 10_s, 30_s ) );
+  effect.player->register_combat_begin( [ buffs ]( player_t* p ) {
+    auto buff_idx = p->sim->rng().range( buffs.size() );
+    buffs[ buff_idx ]->trigger( p->rng().range( 10_s, 30_s ) );
   } );
 }
 
