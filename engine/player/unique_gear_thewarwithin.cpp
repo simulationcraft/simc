@@ -1708,7 +1708,7 @@ void treacherous_transmitter( special_effect_t& effect )
 // 443128 coeffs
 //  e1: damage
 //  e2: heal
-//  e3: unknown, missing hp multiplier?
+//  e3: unknown
 //  e4: cdr on kill
 // 446067 heal
 // 455162 heal return
@@ -1736,7 +1736,7 @@ void mad_queens_mandate( special_effect_t& effect )
         item_cd( e.player->get_cooldown( e.cooldown_name() ) ),
         cdr( timespan_t::from_seconds( data->effectN( 4 ).base_value() ) ),
         heal_speed( e.trigger()->missile_speed() ),
-        hp_mul( data->effectN( 3 ).percent() )
+        hp_mul( 0.5 ) // not present in spell data
     {
       base_dd_min = base_dd_max = data->effectN( 1 ).average( e ) * role_mult( e );
       base_multiplier *= role_mult( e );
