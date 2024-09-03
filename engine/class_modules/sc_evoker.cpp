@@ -4160,7 +4160,7 @@ struct disintegrate_t : public essence_spell_t
   {
     essence_spell_t::impact( s );
 
-    if ( p()->talent.scalecommander.bombardments.ok() && p()->buff.mass_disintegrate_stacks->check() )
+    if ( p()->talent.scalecommander.bombardments.ok() && p()->buff.mass_disintegrate_stacks->check() && s->chain_target == 0 )
     {
       auto td = p()->get_target_data( s->target );
       td->debuffs.bombardments->trigger();
