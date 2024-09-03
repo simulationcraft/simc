@@ -15114,7 +15114,7 @@ struct death_knight_module_t : public module_t
     unique_gear::register_special_effect( 326913, runeforge::hysteria );
   }
   
-  void register_hotfixes() const override
+  /*void register_hotfixes() const override
   {
     hotfix::register_effect( "Death Knight", "2024-09-30", "Obliterate Main-Hand nerfed 6%", 331344, hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
@@ -15165,7 +15165,7 @@ struct death_knight_module_t : public module_t
         .operation( hotfix::HOTFIX_SET )
         .modifier( 1.224 )
         .verification_value( 1.36 );    
-  }
+  }*/
 
   void init( player_t* ) const override
   {
