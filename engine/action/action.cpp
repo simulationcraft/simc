@@ -624,7 +624,9 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   suppress_target_procs       = spell_data.flags( spell_attribute::SX_SUPPRESS_TARGET_PROCS );
   enable_proc_from_suppressed = spell_data.flags( spell_attribute::SX_ENABLE_PROCS_FROM_SUPPRESSED );
   tick_may_crit               = spell_data.flags( spell_attribute::SX_TICK_MAY_CRIT );
-  hasted_ticks                = spell_data.flags( spell_attribute::SX_DOT_HASTED );
+  // check for either spell or melee haste flag. separate if distinction becomes relevant.
+  hasted_ticks                = spell_data.flags( spell_attribute::SX_DOT_HASTED ) ||
+                                spell_data.flags( spell_attribute::SX_DOT_HASTED_MELEE );
   tick_on_application         = spell_data.flags( spell_attribute::SX_TICK_ON_APPLICATION );
   hasted_dot_duration         = spell_data.flags( spell_attribute::SX_DURATION_HASTED );
   rolling_periodic            = spell_data.flags( spell_attribute::SX_ROLLING_PERIODIC );

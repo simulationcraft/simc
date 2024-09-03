@@ -1708,7 +1708,7 @@ void treacherous_transmitter( special_effect_t& effect )
 // 443128 coeffs
 //  e1: damage
 //  e2: heal
-//  e3: unknown, missing hp multiplier?
+//  e3: unknown
 //  e4: cdr on kill
 // 446067 heal
 // 455162 heal return
@@ -1736,7 +1736,7 @@ void mad_queens_mandate( special_effect_t& effect )
         item_cd( e.player->get_cooldown( e.cooldown_name() ) ),
         cdr( timespan_t::from_seconds( data->effectN( 4 ).base_value() ) ),
         heal_speed( e.trigger()->missile_speed() ),
-        hp_mul( data->effectN( 3 ).percent() )
+        hp_mul( 0.5 ) // not present in spell data
     {
       base_dd_min = base_dd_max = data->effectN( 1 ).average( e ) * role_mult( e );
       base_multiplier *= role_mult( e );
@@ -3836,6 +3836,62 @@ void stormrider_flight_badge( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 435502 driver
+// 440389 debuff
+void shadowbinding_ritual_knife( special_effect_t& effect )
+{
+  auto primary_buff = create_buff<stat_buff_t>( effect.player, "shadowbinding_ritual_knife_primary", effect.driver() )
+                          ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
+                          ->set_chance( 1.0 )
+                          ->set_rppm( RPPM_DISABLE )
+                          ->set_duration( 0_s )
+                          ->set_constant_behavior( buff_constant_behavior::ALWAYS_CONSTANT );
+
+  effect.player->register_combat_begin( [ primary_buff ]( player_t* ) { primary_buff->trigger(); } );
+
+  std::vector<buff_t*> negative_buffs = {};
+
+  auto buff_spell = effect.driver()->effectN( 2 ).trigger();
+
+  for ( const auto& e : buff_spell->effects() )
+  {
+    if ( e.type() == E_APPLY_AURA && ( e.subtype() == A_MOD_RATING ) )
+    {
+      auto mods = util::translate_all_rating_mod( e.misc_value1() );
+
+      std::vector<std::string> str_list;
+
+      for ( auto stat : mods )
+        str_list.emplace_back( util::stat_type_string( stat ) );
+
+      auto negative_buff = make_buff<stat_buff_t>(
+          effect.player, fmt::format( "shadowbinding_ritual_knife_{}", util::string_join( str_list ) ), buff_spell );
+
+      if ( !mods.empty() )
+      {
+        for ( const auto& s : mods )
+        {
+          negative_buff->add_stat( s, effect.driver()->effectN( 2 ).average( effect.item ) );
+        }
+        negative_buffs.push_back( negative_buff );
+      }
+
+    }
+  }
+
+  if ( negative_buffs.size() > 0 )
+  {
+    effect.player->callbacks.register_callback_execute_function(
+        effect.driver()->id(), [ negative_buffs ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* ) {
+          negative_buffs[ cb->listener->rng().range( negative_buffs.size() ) ]->trigger();
+        } );
+  }
+
+  effect.buff_disabled = true;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -4628,8 +4684,8 @@ void register_special_effects()
   register_special_effect( 455419, items::spelunkers_waning_candle );
   register_special_effect( 455436, items::unstable_power_core );
   register_special_effect( 451742, items::stormrider_flight_badge );
-  register_special_effect( 451750, DISABLED_EFFECT );  // stormrider flight badge special effect 2
-  
+  register_special_effect( 451750, DISABLED_EFFECT );  // stormrider flight badge special effect 
+  register_special_effect( 435502, items::shadowbinding_ritual_knife );  
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
