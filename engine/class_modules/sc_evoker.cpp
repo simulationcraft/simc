@@ -4166,7 +4166,8 @@ struct disintegrate_t : public essence_spell_t
       td->debuffs.bombardments->trigger();
     }
 
-    p()->buff.mass_disintegrate_stacks->decrement();
+    if ( s->chain_target == 0 )
+      p()->buff.mass_disintegrate_stacks->decrement();
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
