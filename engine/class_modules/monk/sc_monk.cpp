@@ -140,6 +140,7 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talent.windwalker.brawlers_intensity );
   apply_affecting_aura( p()->talent.windwalker.hardened_soles );
   apply_affecting_aura( p()->talent.windwalker.shadowboxing_treads );
+  apply_affecting_aura( p()->talent.windwalker.rising_star );
 
   // Conduit of the Celestials
   apply_affecting_aura( p()->talent.conduit_of_the_celestials.temple_training );
@@ -149,7 +150,9 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talent.master_of_harmony.manifestation );
 
   // Shado-Pan
-  apply_affecting_aura( p()->talent.shado_pan.efficient_training );
+  parse_effects( p()->talent.shado_pan.efficient_training, p()->specialization() == MONK_WINDWALKER
+                                                               ? effect_mask_t( true ).disable( 5 )
+                                                               : effect_mask_t( true ) );
   apply_affecting_aura( p()->talent.shado_pan.one_versus_many );
   apply_affecting_aura( p()->talent.shado_pan.vigilant_watch );
 
@@ -1336,8 +1339,6 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
     background  = true;
     ww_mastery  = true;
     sef_ability = actions::sef_ability_e::SEF_GLORY_OF_THE_DAWN;
-
-    apply_affecting_aura( p->talent.windwalker.rising_star );
   }
 
   void impact( action_state_t *s ) override
@@ -1469,8 +1470,6 @@ struct rising_sun_kick_dmg_t : public overwhelming_force_t<monk_melee_attack_t>
     background = dual = true;
     may_crit          = true;
     trigger_chiji     = true;
-
-    apply_affecting_aura( p->talent.windwalker.rising_star );
   }
 
   void execute() override
