@@ -2724,6 +2724,9 @@ void action_t::init()
     }
   }
 
+  if ( action_list && action_list->name_str == "precombat" )
+    is_precombat = true;
+
   initialized = true;
 
 #ifndef NDEBUG
@@ -2862,9 +2865,6 @@ void action_t::init_finished()
             option.cancel_if_expr_str ) );
     }
   }
-
-  if ( action_list && action_list->name_str == "precombat" )
-    is_precombat = true;
 
   if ( track_cd_waste )
     cd_waste_data = player->get_cooldown_waste_data( cooldown );

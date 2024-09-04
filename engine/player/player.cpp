@@ -9274,11 +9274,6 @@ struct use_item_t : public action_t
     }
 
     action_t::init();
-  }
-
-  void init_finished() override
-  {
-    action_t::init_finished();
 
     if ( action )
       action->is_precombat = is_precombat;
