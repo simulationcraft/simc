@@ -3937,8 +3937,9 @@ struct backstab_t : public rogue_attack_t
     return rogue_attack_t::verify_actor_spec();
   }
 
+  // 2024-9-04 -- Currently does not proc from Weaponmaster hits
   bool procs_nimble_flurry() const override
-  { return true; }
+  { return !p()->bugs || !is_secondary_action(); }
 };
 
 // Dispatch =================================================================
@@ -6253,8 +6254,9 @@ struct shadowstrike_t : public rogue_attack_t
     return 0;
   }
 
+  // 2024-9-04 -- Currently does not proc from Weaponmaster hits
   bool procs_nimble_flurry() const override
-  { return true; }
+  { return !p()->bugs || !is_secondary_action(); }
 };
 
 // Black Powder =============================================================
