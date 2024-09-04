@@ -857,11 +857,6 @@ public:
     proc_t* clearcasting_wasted;
   } proc;
 
-  // Proc RNGs
-  struct proc_rngs_t
-  {
-  } rngs;
-
   // Talents
   struct talents_t
   {
@@ -1269,7 +1264,6 @@ public:
       gain(),
       mastery(),
       proc(),
-      rngs(),
       talent(),
       spec(),
       uptime()
@@ -1301,7 +1295,6 @@ public:
   void init_stats() override;
   void init_gains() override;
   void init_procs() override;
-  void init_rng() override;
   void init_uptimes() override;
   void init_resources( bool ) override;
   void init_special_effects() override;
@@ -2345,7 +2338,9 @@ template <size_t IDX, typename BASE>
 struct trigger_thriving_growth_t : public BASE
 {
 private:
-  accumulated_rng_t* vine_rng = nullptr;
+  target_specific_t<accumulated_rng_t> vine_rng;
+  double scale = 0.0;
+  double shift = 0.0;
 
 public:
   using base_t = trigger_thriving_growth_t<IDX, BASE>;
@@ -2355,21 +2350,40 @@ public:
   {
     if ( p->talent.thriving_growth.ok() )
     {
-      double scale = p->talent.thriving_growth->effectN( IDX ).percent();
-      double shift = 3 - BASE::base_tick_time.total_seconds();
-
-      vine_rng = p->get_accumulated_rng( fmt::format( "{}_vines", n ), scale, [ shift ]( double scale, unsigned c ) {
-        return std::max( 0.0, 0.6 - std::pow( 1.13, -scale * ( c - shift ) ) );
-      } );
+      scale = p->talent.thriving_growth->effectN( IDX ).percent();
+      shift = 3 - BASE::base_tick_time.total_seconds();
     }
+  }
+
+  double rng_fn( unsigned c ) const
+  {
+    return std::max( 0.0, 0.6 - std::pow( 1.13, -scale * ( c - shift ) ) );
   }
 
   void tick( dot_t* d ) override
   {
     BASE::tick( d );
 
-    if ( vine_rng && vine_rng->trigger() )
+    if ( !scale )
+      return;
+
+    auto& _rng = vine_rng[ d->target ];
+    if ( !_rng )
+    {
+      _rng = BASE::p()->get_accumulated_rng( fmt::format( "{}_vines_{}", BASE::name(), d->target->actor_index ), scale,
+                                             [ this ]( double, unsigned c ) { return rng_fn( c ); } );
+
+      d->target->register_on_demise_callback( d->target, [ _rng ]( player_t* ) { _rng->reset(); } );
+    }
+
+    if ( _rng->trigger() )
+    {
       BASE::p()->active.bloodseeker_vines->execute_on_target( d->target );
+
+      for ( auto e : vine_rng.get_entries() )
+        if ( e )
+          e->reset();
+    }
   }
 };
 
@@ -11577,12 +11591,6 @@ void druid_t::init_procs()
 
   if ( talent.omen_of_clarity_cat.ok() || talent.omen_of_clarity_tree.ok() )
     proc.clearcasting_wasted = get_proc( "Clearcasting (Wasted)" );
-}
-
-// druid_t::init_rng ========================================================
-void druid_t::init_rng()
-{
-  player_t::init_rng();
 }
 
 // druid_t::init_uptimes ====================================================
