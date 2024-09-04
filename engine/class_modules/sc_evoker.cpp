@@ -4071,7 +4071,7 @@ struct disintegrate_t : public essence_spell_t
 
   int max_targets() const
   {
-    return 1 + ( p()->buff.mass_disintegrate_stacks->check() > 0 ) * 2;
+    return ( p()->buff.mass_disintegrate_stacks->check() > 0 ) * 3;
   }
 
   int targets() const
@@ -4897,7 +4897,7 @@ struct pyre_t : public essence_spell_t
     damage->stats   = stats;
     damage->proc    = true;
 
-    firestorm = p->get_secondary_action<firestorm_t>( "firestorm_ftf", "firestorm_ftf", true );
+    firestorm = p->get_secondary_action<firestorm_t>( name_str + "_firestorm_ftf", name_str + "_firestorm_ftf", true );
     add_child( firestorm );
   }
 
