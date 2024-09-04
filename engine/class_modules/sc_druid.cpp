@@ -2346,7 +2346,7 @@ public:
   using base_t = trigger_thriving_growth_t<IDX, BASE>;
 
   trigger_thriving_growth_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
-    : BASE( n, p, s, f )
+    : BASE( n, p, s, f ), vine_rng( false )
   {
     if ( p->talent.thriving_growth.ok() )
     {
