@@ -4132,7 +4132,9 @@ struct disintegrate_t : public essence_spell_t
     action_state_t::release( state );
 
     int targets_            = targets();
-    int virtual_buff_stacks = num_ticks * targets();
+    targets_                = targets_ ? targets_ : 1;
+
+    int virtual_buff_stacks = num_ticks * targets_;
 
     // trigger the buffs first so tick-zero can get buffed
     if ( p()->buff.essence_burst->check() )
@@ -4144,6 +4146,8 @@ struct disintegrate_t : public essence_spell_t
     if ( p()->buff.mass_disintegrate_stacks->check() )
     {
       int max_targets_ = max_targets();
+      max_targets_ = max_targets_ ? max_targets_ : 1;
+
       auto buff_size   = ( max_targets_ - targets_ ) * mass_disint_mult;
       p()->buff.mass_disintegrate_ticks->trigger( num_ticks, buff_size, -1, buff_duration );
     }
