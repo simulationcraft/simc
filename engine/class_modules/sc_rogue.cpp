@@ -4634,17 +4634,12 @@ struct envenom_t : public rogue_attack_t
       m *= 1.0 + p()->talent.assassination.rapid_injection->effectN( 1 ).percent();
     }
 
-    return m;
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = rogue_attack_t::composite_target_multiplier( target );
-
+    // 2024-09-04 -- Although logically a target modifier, the mechanic is such that it consumes stacks on the target
+    //               to deal increased base damage, rather than causing the target to take additional damage.
     if ( p()->talent.assassination.amplifying_poison->ok() )
     {
       const int consume_stacks = as<int>( p()->talent.assassination.amplifying_poison->effectN( 2 ).base_value() );
-      rogue_td_t* tdata = td( target );
+      rogue_td_t* tdata = td( state->target );
 
       if ( tdata->debuffs.amplifying_poison->stack() >= consume_stacks )
       {
@@ -5536,11 +5531,13 @@ struct mutilate_t : public rogue_attack_t
 
     if ( result_is_hit( execute_state->result ) )
     {
+      // Triggered prior to damage impacts, so affects things like Vicious Venoms
+      trigger_caustic_spatter_debuff( execute_state );
+
       mh_strike->execute_on_target( execute_state->target );
       oh_strike->execute_on_target( execute_state->target );
 
       trigger_blindside( execute_state );
-      trigger_caustic_spatter_debuff( execute_state );
     }
   }
 
@@ -7455,10 +7452,14 @@ struct corrupt_the_blood_t : public rogue_attack_t
   {
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  double composite_da_multiplier( const action_state_t* state ) const override
   {
-    double m = rogue_attack_t::composite_target_multiplier( target );
-    m *= 1.0 + td( target )->debuffs.corrupt_the_blood->check();
+    double m = rogue_attack_t::composite_da_multiplier( state );
+
+    // 2024-09-04 -- Appears based on how secondary effects that reverse target modifiers out that the
+    //               stacking bonus is not handled as a target modifier, even if it logically should be
+    m *= 1.0 + td( state->target )->debuffs.corrupt_the_blood->check();
+
     return m;
   }
 
