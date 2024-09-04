@@ -156,7 +156,7 @@ spec=fury
 load_default_gear=1
 load_default_talents=1
 
-#warrior=protection_war
-#spec=protection
-#load_default_gear=1
-#load_default_talents=1
+warrior=protection_war
+spec=protection
+load_default_gear=1
+load_default_talents=1

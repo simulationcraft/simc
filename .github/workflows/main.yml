@@ -229,7 +229,7 @@ jobs:
             rogue_assassination, rogue_outlaw, rogue_subtlety,
             shaman_elemental,
             warlock_affliction, warlock_demonology, warlock_destruction,
-            warrior_arms, warrior_fury
+            warrior_arms, warrior_fury, warrior_protection
           ]
         fightstyle: [singletarget, multitarget, dungeonslice]
         include:
