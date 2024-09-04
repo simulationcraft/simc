@@ -63,7 +63,7 @@ neck=strapped_rescue_keg,id=221060,ilevel=593
 shoulders=flesh_connectors_epaulets,id=221185,ilevel=593
 back=anvilhide_cape,id=221088,ilevel=593
 chest=slashproof_business_plate,id=221069,ilevel=593,enchant=crystalline_radiance_2
-wrists=vociferous_subjugators_bracers,id=221167,ilevel=5938
+wrists=vociferous_subjugators_bracers,id=221167,ilevel=593
 hands=machinists_searing_handguards,id=221086,ilevel=593
 waist=girdle_of_somber_ploys,id=221133,ilevel=593
 legs=thunder_clad_legguards,id=221034,ilevel=593,enchant=defenders-armor-kit_2
