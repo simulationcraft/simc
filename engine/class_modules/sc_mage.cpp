@@ -5512,7 +5512,6 @@ struct ice_nova_t final : public frost_mage_spell_t
     excess( excess_ )
   {
     parse_options( options_str );
-    consumes_winters_chill = true;
     aoe = -1;
     // TODO: currently deals full damage to all targets, probably a bug
     if ( !p->bugs )
