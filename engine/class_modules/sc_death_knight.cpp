@@ -6543,11 +6543,11 @@ struct summon_mograine_t final : public summon_rider_t
     else if ( !random )
     {
       death_knight_spell_t::execute();
-      p()->pets.mograine.active_pet()->adjust_duration( duration );
-      p()->pets.mograine.active_pet()->rp_spent = 0;
+      pets::mograine_pet_t* mograine = p()->pets.mograine.active_pet();
+      mograine->adjust_duration( duration );
+      mograine->rp_spent = 0;
       if ( p()->pets.mograine.active_pet() != nullptr )
       {
-        pets::mograine_pet_t* mograine = debug_cast<pets::mograine_pet_t*>( p()->pets.mograine.active_pet() );
         if ( mograine->dnd_aura->check() )
           mograine->extended_by_apoc_now = true;
         else
