@@ -4071,7 +4071,7 @@ struct disintegrate_t : public essence_spell_t
 
   int max_targets() const
   {
-    return 1 + ( p()->buff.mass_disintegrate_stacks->check() > 0 ) * 2;
+    return ( p()->buff.mass_disintegrate_stacks->check() > 0 ) * 3;
   }
 
   int targets() const
