@@ -2405,7 +2405,7 @@ struct sacred_weapon_proc_damage_t : public paladin_spell_t
   {
     double m = paladin_spell_t::composite_da_multiplier( s );
     // If we're faking Solidarity, we double the amount 
-    if ( p()->options.fake_solidarity )
+    if ( p()->talents.lightsmith.solidarity->ok() && p()->options.fake_solidarity )
       m *= 2.0;
     return m;
   }
@@ -2434,7 +2434,7 @@ struct sacred_weapon_proc_heal_t : public paladin_heal_t
   {
     double m = paladin_heal_t::composite_da_multiplier( s );
     // If we're faking Solidarity, we double the amount 
-    if ( p()->options.fake_solidarity )
+    if ( p()->talents.lightsmith.solidarity->ok() && p()->options.fake_solidarity )
       m *= 2.0;
     return m;
   }
