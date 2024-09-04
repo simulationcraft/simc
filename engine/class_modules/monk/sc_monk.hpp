@@ -630,6 +630,7 @@ public:
     propagate_const<buff_t *> secret_infusion_crit;
     propagate_const<buff_t *> secret_infusion_mastery;
     propagate_const<buff_t *> secret_infusion_versatility;
+    propagate_const<buff_t *> sheiluns_gift;
     propagate_const<buff_t *> teachings_of_the_monastery;
     propagate_const<buff_t *> thunder_focus_tea;
 
@@ -1078,6 +1079,7 @@ public:
       player_talent_t gift_of_the_celestials;
       player_talent_t focused_thunder;
       player_talent_t sheiluns_gift;
+      const spell_data_t *sheiluns_gift_stacks;
       // Row 9
       player_talent_t ancient_concordance;
       const spell_data_t *ancient_concordance_buff;

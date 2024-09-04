@@ -4819,6 +4819,32 @@ struct revival_t : public monk_heal_t
 };
 
 // ==========================================================================
+// Sheilun's Gift
+// ==========================================================================
+
+struct sheiluns_gift_t : public monk_heal_t
+{
+  sheiluns_gift_t( monk_t *p, util::string_view options_str )
+    : monk_heal_t( p, "sheiluns_gift", p->talent.mistweaver.sheiluns_gift )
+  {
+    parse_options( options_str );
+
+    may_miss = false;
+
+    aoe = as<int>( data().effectN( 2 ).base_value() );
+    aoe += as<int>( p->talent.mistweaver.legacy_of_wisdom->effectN( 1 ).base_value() );
+
+    apply_affecting_aura( p->talent.mistweaver.legacy_of_wisdom );
+  }
+
+  void execute() override
+  {
+    p()->buff.heart_of_the_jade_serpent_stack_mw->increment( p()->buff.sheiluns_gift->stack() );
+    p()->buff.sheiluns_gift->reset();
+  }
+};
+
+// ==========================================================================
 // Expel Harm
 // ==========================================================================
 struct expel_harm_t : monk_heal_t
@@ -6553,6 +6579,8 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
     return new renewing_mist_t( this, options_str );
   if ( name == "revival" )
     return new revival_t( this, options_str );
+  if ( name == "sheiluns_gift" )
+    return new sheiluns_gift_t( this, options_str );
   if ( name == "thunder_focus_tea" )
     return new thunder_focus_tea_t( this, options_str );
 
@@ -7109,6 +7137,8 @@ void monk_t::init_spells()
     talent.mistweaver.secret_infusion_crit_buff    = find_spell( 388498 );
     talent.mistweaver.secret_infusion_mastery_buff = find_spell( 388499 );
     talent.mistweaver.secret_infusion_vers_buff    = find_spell( 388500 );
+    talent.mistweaver.secret_infusion_vers_buff    = _ST( "Sheilun's Gift" );
+    talent.mistweaver.sheiluns_gift_stacks         = find_spell( 399497 );
     talent.mistweaver.misty_peaks                  = _ST( "Misty Peaks" );
     talent.mistweaver.peaceful_mending             = _ST( "Peaceful Mending" );
     talent.mistweaver.veil_of_pride                = _ST( "Veil of Pride" );
@@ -7840,6 +7870,10 @@ void monk_t::create_buffs()
 
   buff.secret_infusion_versatility =
       make_secret_infusion_buff( "secret_infusion_versatility", talent.mistweaver.secret_infusion_vers_buff );
+
+  buff.sheiluns_gift = make_buff_fallback( talent.mistweaver.sheiluns_gift->ok(), this, "sheiluns_gift",
+                                           talent.mistweaver.sheiluns_gift_stacks )
+                           ->set_trigger_spell( talent.mistweaver.sheiluns_gift );
 
   buff.thunder_focus_tea =
       make_buff( this, "thunder_focus_tea", talent.mistweaver.thunder_focus_tea )
@@ -9042,6 +9076,17 @@ void monk_t::combat_begin()
       bool trigger( double index );
       make_repeating_event( sim, talent.windwalker.combat_wisdom->effectN( 2 ).period(),
                             [ this ]() { buff.combat_wisdom->trigger(); } );
+    }
+  }
+
+  if ( specialization() == MONK_MISTWEAVER )
+  {
+    if ( talent.mistweaver.sheiluns_gift->ok() )
+    {
+      auto period = timespan_t::from_seconds( 8 );
+      period += talent.mistweaver.veil_of_pride->effectN( 1 ).time_value();
+
+      make_repeating_event( sim, period, [ this ]() { buff.sheiluns_gift->increment( 1 ); } );
     }
   }
 
