@@ -8058,6 +8058,7 @@ void monk_t::create_buffs()
   buff.heart_of_the_jade_serpent_stack_mw =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
                           "heart_of_the_jade_serpent_stack_mw", find_spell( 443506 ) )
+          ->apply_affecting_aura( talent.mistweaver.veil_of_pride )
           ->set_stack_change_callback( [ this ]( buff_t *buff_, int, int new_ ) {
             if ( new_ == buff_->max_stack() )
               buff.heart_of_the_jade_serpent_cdr->trigger();
