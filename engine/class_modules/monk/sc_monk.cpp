@@ -5644,6 +5644,7 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
 
     apply_affecting_aura( player->talent.conduit_of_the_celestials.yulons_knowledge );
     apply_affecting_aura( player->baseline.brewmaster.aura );
+    apply_affecting_aura( player->baseline.windwalker.aura );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
