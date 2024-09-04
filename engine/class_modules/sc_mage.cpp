@@ -1819,6 +1819,18 @@ struct mage_spell_state_t : public action_state_t
   { return action_state_t::composite_ta_multiplier() * composite_frozen_multiplier(); }
 };
 
+// Some Frost(fire) spells snapshot on impact (rather than execute). This is handled via
+// the calculate_on_impact flag.
+//
+// When set to true:
+//   * All snapshot flags are moved from snapshot_flags to impact_flags.
+//   * calculate_result and calculate_direct_amount don't do any calculations.
+//   * On spell impact:
+//     - State is snapshot via frost_mage_spell_t::snapshot_impact_state.
+//     - Result is calculated via frost_mage_spell_t::calculate_impact_result.
+//     - Amount is calculated via frost_mage_spell_t::calculate_impact_direct_amount.
+//
+// The previous functions are virtual and can be overridden when needed.
 struct mage_spell_t : public spell_t
 {
   static const snapshot_state_e STATE_FROZEN     = STATE_TGT_USER_1;
@@ -1879,11 +1891,16 @@ struct mage_spell_t : public spell_t
     target_trigger_type_e unleashed_inferno = TT_NONE;
   } triggers;
 
+  bool calculate_on_impact;
+  unsigned impact_flags;
+
 public:
   mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
     affected_by(),
-    triggers()
+    triggers(),
+    calculate_on_impact(),
+    impact_flags()
   {
     weapon_multiplier = 0.0;
     affected_by.ice_floes = data().affected_by( p->talents.ice_floes->effectN( 1 ) );
@@ -1965,6 +1982,9 @@ public:
       snapshot_flags |= STATE_FROZEN | STATE_FROZEN_MUL;
       update_flags   |= STATE_FROZEN | STATE_FROZEN_MUL;
     }
+
+    if ( calculate_on_impact )
+      std::swap( snapshot_flags, impact_flags );
 
     if ( !harmful )
       target = player;
@@ -2121,6 +2141,31 @@ public:
       cast_state( s )->totm_factor = composite_target_damage_vulnerability( s->target );
   }
 
+  virtual void snapshot_impact_state( action_state_t* s, result_amount_type rt )
+  { snapshot_internal( s, impact_flags, rt ); }
+
+  double calculate_direct_amount( action_state_t* s ) const override
+  { return calculate_on_impact ? 0.0 : spell_t::calculate_direct_amount( s ); }
+
+  virtual double calculate_impact_direct_amount( action_state_t* s ) const
+  { return spell_t::calculate_direct_amount( s ); }
+
+  result_e calculate_result( action_state_t* s ) const override
+  { return calculate_on_impact ? RESULT_NONE : spell_t::calculate_result( s ); }
+
+  virtual result_e calculate_impact_result( action_state_t* s ) const
+  { return spell_t::calculate_result( s ); }
+
+  void enable_calculate_on_impact( unsigned spell_id )
+  {
+    calculate_on_impact = true;
+    auto spell = player->find_spell( spell_id );
+    for ( const auto& eff : spell->effects() )
+      parse_effect_data( eff );
+    may_crit = !spell->flags( SX_CANNOT_CRIT );
+    tick_may_crit = spell->flags( SX_TICK_MAY_CRIT );
+  }
+
   bool usable_moving() const override
   {
     if ( p()->buffs.ice_floes->check() && affected_by.ice_floes )
@@ -2174,6 +2219,15 @@ public:
 
   void impact( action_state_t* s ) override
   {
+    if ( calculate_on_impact )
+    {
+      // Spells that calculate damage on impact need to snapshot relevant values
+      // right before impact and then recalculate the result and total damage.
+      snapshot_impact_state( s, amount_type( s ) );
+      s->result = calculate_impact_result( s );
+      s->result_amount = calculate_impact_direct_amount( s );
+    }
+
     spell_t::impact( s );
 
     if ( s->result_total <= 0.0 )
@@ -2950,21 +3004,8 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 // Frost Mage Spell
 // ==========================================================================
 
-// Some Frost spells snapshot on impact (rather than execute). This is handled via
-// the calculate_on_impact flag.
-//
-// When set to true:
-//   * All snapshot flags are moved from snapshot_flags to impact_flags.
-//   * calculate_result and calculate_direct_amount don't do any calculations.
-//   * On spell impact:
-//     - State is snapshot via frost_mage_spell_t::snapshot_impact_state.
-//     - Result is calculated via frost_mage_spell_t::calculate_impact_result.
-//     - Amount is calculated via frost_mage_spell_t::calculate_impact_direct_amount.
-//
-// The previous functions are virtual and can be overridden when needed.
 struct frost_mage_spell_t : public mage_spell_t
 {
-  bool calculate_on_impact;
   bool consumes_winters_chill;
 
   proc_t* proc_brain_freeze;
@@ -2974,30 +3015,15 @@ struct frost_mage_spell_t : public mage_spell_t
   bool track_shatter;
   shatter_source_t* shatter_source;
 
-  unsigned impact_flags;
-
   frost_mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     mage_spell_t( n, p, s ),
-    calculate_on_impact(),
     consumes_winters_chill(),
     proc_brain_freeze(),
     proc_fof(),
     proc_winters_chill_consumed(),
     track_shatter(),
-    shatter_source(),
-    impact_flags()
+    shatter_source()
   { }
-
-  void init() override
-  {
-    if ( initialized )
-      return;
-
-    mage_spell_t::init();
-
-    if ( calculate_on_impact )
-      std::swap( snapshot_flags, impact_flags );
-  }
 
   void init_finished() override
   {
@@ -3017,31 +3043,6 @@ struct frost_mage_spell_t : public mage_spell_t
   double icicle_sp_coefficient() const
   {
     return p()->cache.mastery() * p()->spec.icicles->effectN( 3 ).sp_coeff();
-  }
-
-  virtual void snapshot_impact_state( action_state_t* s, result_amount_type rt )
-  { snapshot_internal( s, impact_flags, rt ); }
-
-  double calculate_direct_amount( action_state_t* s ) const override
-  { return calculate_on_impact ? 0.0 : mage_spell_t::calculate_direct_amount( s ); }
-
-  virtual double calculate_impact_direct_amount( action_state_t* s ) const
-  { return mage_spell_t::calculate_direct_amount( s ); }
-
-  result_e calculate_result( action_state_t* s ) const override
-  { return calculate_on_impact ? RESULT_NONE : mage_spell_t::calculate_result( s ); }
-
-  virtual result_e calculate_impact_result( action_state_t* s ) const
-  { return mage_spell_t::calculate_result( s ); }
-
-  void enable_calculate_on_impact( unsigned spell_id )
-  {
-    calculate_on_impact = true;
-    auto spell = player->find_spell( spell_id );
-    for ( const auto& eff : spell->effects() )
-      parse_effect_data( eff );
-    may_crit = !spell->flags( SX_CANNOT_CRIT );
-    tick_may_crit = spell->flags( SX_TICK_MAY_CRIT );
   }
 
   void record_shatter_source( const action_state_t* s, shatter_source_t* source )
@@ -3071,15 +3072,6 @@ struct frost_mage_spell_t : public mage_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if ( calculate_on_impact )
-    {
-      // Spells that calculate damage on impact need to snapshot relevant values
-      // right before impact and then recalculate the result and total damage.
-      snapshot_impact_state( s, amount_type( s ) );
-      s->result = calculate_impact_result( s );
-      s->result_amount = calculate_impact_direct_amount( s );
-    }
-
     mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
