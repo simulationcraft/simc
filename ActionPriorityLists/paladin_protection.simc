@@ -68,7 +68,7 @@ actions.standard+=/holy_armaments,if=next_armament=holy_bulwark
 actions.standard+=/blessed_hammer
 actions.standard+=/hammer_of_the_righteous
 actions.standard+=/crusader_strike
-actions.standard+=/word_of_glory,if=buff.shining_light_free.up&talent.lights_guidance.enabled
+actions.standard+=/word_of_glory,if=buff.shining_light_free.up&talent.lights_guidance.enabled&cooldown.hammerfall_icd.remains=0
 actions.standard+=/avengers_shield
 actions.standard+=/eye_of_tyr,if=!talent.lights_deliverance.enabled
 actions.standard+=/word_of_glory,if=buff.shining_light_free.up
