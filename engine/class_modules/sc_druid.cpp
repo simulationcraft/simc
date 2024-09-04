@@ -13039,11 +13039,11 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     debuff.bloodseeker_vines->set_stack_change_callback( [ & ]( buff_t* b, int old_, int new_ ) {
       if ( new_ > old_ )
       {
-        source.buff.root_network->trigger();
+        source.buff.root_network->trigger( new_ - old_ );
       }
-      else
+      else if ( old_ > new_ )
       {
-        source.buff.root_network->decrement();
+        source.buff.root_network->decrement( old_ - new_ );
 
         if ( source.active.bursting_growth )
           source.active.bursting_growth->execute_on_target( b->player );
