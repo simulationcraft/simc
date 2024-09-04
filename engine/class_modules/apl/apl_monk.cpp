@@ -279,7 +279,7 @@ void mistweaver( player_t *p )
   def->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.up" );
   def->add_action( "chi_burst,if=active_enemies>=2" );
 
-  def->add_action( "jadefire_stomp,if=active_enemies>=4" );
+  def->add_action( "jadefire_stomp,if=active_enemies>=4&active_enemies<=10" );
   def->add_action( "spinning_crane_kick,if=active_enemies>=4" );
 
   def->add_action( "jadefire_stomp,if=buff.jadefire_stomp.down" );
