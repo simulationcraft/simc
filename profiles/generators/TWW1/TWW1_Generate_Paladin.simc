@@ -7,7 +7,7 @@ position=front
 talents=CIEAAAAAAAAAAAAAAAAAAAAAAsMmZMjHYegFmZmZssxMjZwwMAAADAAAAAAAphZmhBmBzMLGmZGAwYgZAYwMADAwMTbzysNDQgNzA
 
 head=visor_of_the_ascended_captain,id=212427,bonus_id=10878,ilevel=639,gem_id=213743
-neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213485/213485
+neck=sureki_zealots_insignia,id=225577,bonus_id=10879,ilevel=639,gem_id=213485/213485
 shoulders=entombed_seraphs_plumes,id=211991,ilevel=639
 back=anvilhide_cape,id=221088,ilevel=639,enchant_id=7409
 chest=entombed_seraphs_breastplate,id=211996,ilevel=639,enchant_id=7364
