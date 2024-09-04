@@ -4140,6 +4140,11 @@ struct mograine_pet_t final : public horseman_pet_t
       }
     }
 
+    mograine_pet_t* mograine() const
+    {
+      return debug_cast<mograine_pet_t*>( player );
+    }
+
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
       buff_t::expire_override( expiration_stacks, remaining_duration );
@@ -4147,6 +4152,11 @@ struct mograine_pet_t final : public horseman_pet_t
       {
         dk->buffs.mograines_might->expire();
         dk->buffs.death_and_decay->expire();
+      }
+      if ( mograine()->extended_by_apoc_now )
+      {
+        mograine()->extended_by_apoc_now = false;
+        trigger();
       }
     }
 
@@ -4209,6 +4219,7 @@ struct mograine_pet_t final : public horseman_pet_t
 
 public:
   buff_t* dnd_aura;
+  bool extended_by_apoc_now;
 };
 
 // ==========================================================================
@@ -6534,9 +6545,13 @@ struct summon_mograine_t final : public summon_rider_t
       death_knight_spell_t::execute();
       p()->pets.mograine.active_pet()->adjust_duration( duration );
       p()->pets.mograine.active_pet()->rp_spent = 0;
-      if ( !p()->bugs )
+      if ( p()->pets.mograine.active_pet() != nullptr )
       {
-        p()->pets.mograine.active_pet()->dnd_aura->trigger();
+        pets::mograine_pet_t* mograine = debug_cast<pets::mograine_pet_t*>( p()->pets.mograine.active_pet() );
+        if ( mograine->dnd_aura->check() )
+          mograine->extended_by_apoc_now = true;
+        else
+          mograine->dnd_aura->trigger();
       }
     }
   }
