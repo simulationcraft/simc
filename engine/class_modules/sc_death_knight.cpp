@@ -4219,7 +4219,7 @@ struct mograine_pet_t final : public horseman_pet_t
 
 public:
   buff_t* dnd_aura;
-  bool extended_by_apoc_now;
+  bool extended_by_apoc_now = false;
 };
 
 // ==========================================================================
