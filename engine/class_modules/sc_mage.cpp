@@ -2233,6 +2233,8 @@ public:
     if ( s->result_total <= 0.0 )
       return;
 
+    // TODO: OE now triggers from procs but expires from non-procs. We'll need to
+    // redo triggers.overflowing_energy and properly mark every proc spell in the module.
     if ( callbacks && p()->talents.overflowing_energy.ok() && s->result_type == result_amount_type::DMG_DIRECT && ( s->result == RESULT_CRIT || triggers.overflowing_energy ) )
       p()->trigger_merged_buff( p()->buffs.overflowing_energy, s->result != RESULT_CRIT );
 
