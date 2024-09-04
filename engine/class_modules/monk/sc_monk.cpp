@@ -4450,7 +4450,7 @@ struct celestial_conduit_t : public monk_spell_t
   struct celestial_conduit_dmg_t : public monk_spell_t
   {
     celestial_conduit_dmg_t( monk_t *p )
-      : monk_spell_t( p, "celestial_conduit_dmg", p->talent.conduit_of_the_celestials.celestial_conduit_dmg )
+      : monk_spell_t( p, "celestial_conduit_damage", p->talent.conduit_of_the_celestials.celestial_conduit_dmg )
     {
       background       = true;
       aoe              = -1;
@@ -6652,8 +6652,10 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
     return new crackling_jade_lightning_t( this, options_str );
   if ( name == "tiger_palm" )
     return new tiger_palm_t( this, options_str );
-  if ( name == "blackout_kick" )
+  if ( name == "blackout_kick" && user_options.sef_beta )
     return new sef_action_t<blackout_kick_t>( this, "blackout_kick", options_str );
+  if ( name == "blackout_kick" )
+    return new blackout_kick_t( this, "blackout_kick", options_str );
   if ( name == "expel_harm" )
     return new expel_harm_t( this, options_str );
   if ( name == "leg_sweep" )
@@ -9005,6 +9007,15 @@ void monk_t::copy_from( player_t *source )
   auto *source_p = debug_cast<monk_t *>( source );
 
   user_options = source_p->user_options;
+}
+
+// monk_t::copy_from =========================================================
+action_t *monk_t::find_action( int id )
+{
+  for ( const action_t *action : action_list )
+    if ( id == action->id )
+      return action;
+  return nullptr;
 }
 
 // monk_t::primary_resource =================================================

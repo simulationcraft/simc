@@ -1394,6 +1394,7 @@ public:
   void reset() override;
   void create_options() override;
   void copy_from( player_t * ) override;
+  action_t *find_action( int id );
   resource_e primary_resource() const override;
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
