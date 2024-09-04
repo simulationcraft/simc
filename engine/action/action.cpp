@@ -2724,6 +2724,9 @@ void action_t::init()
     }
   }
 
+  if ( action_list && action_list->name_str == "precombat" )
+    is_precombat = true;
+
   initialized = true;
 
 #ifndef NDEBUG
@@ -2862,9 +2865,6 @@ void action_t::init_finished()
             option.cancel_if_expr_str ) );
     }
   }
-
-  if ( action_list && action_list->name_str == "precombat" )
-    is_precombat = true;
 
   if ( track_cd_waste )
     cd_waste_data = player->get_cooldown_waste_data( cooldown );
@@ -4082,15 +4082,16 @@ double action_t::ppm_proc_chance( double PPM ) const
 
 timespan_t action_t::tick_time( const action_state_t* s ) const
 {
-  auto base = base_tick_time.base;
+  auto base = base_tick_time.base + base_tick_time.flat_add + tick_time_flat_modifier( s );
+  if ( base <= 0_ms )
+    return 0_ms;
 
   auto mul = base_tick_time.pct_mul * tick_time_pct_multiplier( s );
   if ( mul <= 0 )
     return 0_ms;
 
-  base += base_tick_time.flat_add + tick_time_flat_modifier( s );
-  if ( base <= 0_ms )
-    return 0_ms;
+  if ( hasted_ticks )
+    mul *= s->haste;
 
   // Tick time is rounded to nearest ms.
   // Assuming this applies to all tick time, including hasted duration dots. As tick time is used in calculation for
@@ -4106,9 +4107,6 @@ timespan_t action_t::tick_time_flat_modifier( const action_state_t* ) const
 
 double action_t::tick_time_pct_multiplier( const action_state_t* s ) const
 {
-  if ( hasted_ticks )
-    return s->haste;
-
   return 1.0;
 }
 
@@ -4183,15 +4181,42 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
 
 timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
 {
-  auto base = dot_duration.base;
+  auto base = dot_duration.base + dot_duration.flat_add + dot_duration_flat_modifier( s );
+  if ( base <= 0_ms )
+    return 0_ms;
 
   auto mul = dot_duration.pct_mul * dot_duration_pct_multiplier( s );
   if ( mul <= 0 )
     return 0_ms;
 
-  base += dot_duration.flat_add + dot_duration_flat_modifier( s );
-  if ( base <= 0_ms )
-    return 0_ms;
+  if ( hasted_dot_duration )
+  {
+    // if duration and tick are both hasted, we rebuild the duration based on the tick time * number of ticks to ensure
+    // that tick time rounding does not result in erroneous partial ticks.
+    // TODO: determine if this should also be the case for hasted duration without hasted ticks
+    if ( hasted_ticks )
+    {
+      // duplicate action_t::tick_time without haste modification.
+      auto _tick_time =
+        static_cast<double>(
+          ( base_tick_time.base + base_tick_time.flat_add + tick_time_flat_modifier( s ) ).total_millis() ) *
+        base_tick_time.pct_mul * tick_time_pct_multiplier( s );
+
+      // determine base number of ticks
+      auto _duration = static_cast<double>( base.total_millis() ) * mul;
+      auto _num_ticks = _duration / _tick_time;
+
+      // should we always check this in an integer? or error/warn if not?
+      // assert( static_cast<double>( static_cast<int>( _num_ticks ) ) == _num_ticks );
+
+      // rebuild duration based on hasted tick time * number of ticks
+      return timespan_t::from_millis( std::round( _tick_time * s->haste ) * _num_ticks );
+    }
+    else
+    {
+      mul *= s->haste;
+    }
+  }
 
   // TODO: assumed to be rounded to ms like tick_time(), confirm if possible.
   return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
@@ -4204,12 +4229,6 @@ timespan_t action_t::dot_duration_flat_modifier( const action_state_t* ) const
 
 double action_t::dot_duration_pct_multiplier( const action_state_t* s ) const
 {
-  if ( hasted_dot_duration )
-  {
-    auto tt = timespan_t::from_millis( std::round( static_cast<double>( base_tick_time.total_millis() ) * s->haste ) );
-    return tt / base_tick_time;
-  }
-
   return 1.0;
 }
 

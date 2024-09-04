@@ -567,7 +567,7 @@ bool has_foreground_actions( const player_t& p )
 
 // parse_talent_string ======================================================
 
-bool parse_talent_string( sim_t* sim, std::string_view name, std::string_view string )
+bool parse_talent_string( sim_t* sim, std::string_view, std::string_view string )
 {
   player_t* p = sim->active_player;
 
@@ -578,7 +578,7 @@ bool parse_talent_string( sim_t* sim, std::string_view name, std::string_view st
 
 // parse_timeofday ====================================================
 
-bool parse_timeofday( sim_t* sim, util::string_view name, util::string_view override_str )
+bool parse_timeofday( sim_t* sim, std::string_view, std::string_view override_str )
 {
   player_t* p = sim->active_player;
 
@@ -601,11 +601,8 @@ bool parse_timeofday( sim_t* sim, util::string_view name, util::string_view over
 
 // parse_loa ====================================================
 
-bool parse_loa( sim_t* sim, util::string_view name, util::string_view override_str )
+bool parse_loa( sim_t* sim, std::string_view, std::string_view override_str )
 {
-  assert( name == "zandalari_loa" );
-  ( void )name;
-
   player_t* p = sim->active_player;
 
   if ( util::str_compare_ci( override_str, "akunda" ) || util::str_compare_ci( override_str, "embrace_of_akunda" ) )
@@ -642,7 +639,7 @@ bool parse_loa( sim_t* sim, util::string_view name, util::string_view override_s
 }
 
 // parse_tricks
-bool parse_tricks( sim_t* sim, util::string_view name, util::string_view override_str )
+bool parse_tricks( sim_t* sim, std::string_view, std::string_view override_str )
 {
   player_t* p = sim->active_player;
   if ( util::str_compare_ci( override_str, "corrosive" ) || util::str_compare_ci( override_str, "corrosive_vial" ) )
@@ -677,7 +674,7 @@ bool parse_tricks( sim_t* sim, util::string_view name, util::string_view overrid
 
 // parse_role_string ========================================================
 
-bool parse_role_string( sim_t* sim, util::string_view name, util::string_view value )
+bool parse_role_string( sim_t* sim, std::string_view, std::string_view value )
 {
   sim->active_player->role = util::parse_role_type( value );
 
@@ -686,7 +683,7 @@ bool parse_role_string( sim_t* sim, util::string_view name, util::string_view va
 
 // parse_world_lag ==========================================================
 
-bool parse_world_lag( sim_t* sim, util::string_view name, util::string_view value )
+bool parse_world_lag( sim_t* sim, std::string_view, std::string_view value )
 {
   sim->active_player->world_lag.mean = timespan_t::from_seconds( util::to_double( value ) );
 
@@ -700,7 +697,7 @@ bool parse_world_lag( sim_t* sim, util::string_view name, util::string_view valu
 
 // parse_world_lag ==========================================================
 
-bool parse_world_lag_stddev( sim_t* sim, util::string_view name, util::string_view value )
+bool parse_world_lag_stddev( sim_t* sim, std::string_view, std::string_view value )
 {
   sim->active_player->world_lag.stddev = timespan_t::from_seconds( util::to_double( value ) );
 
@@ -714,7 +711,7 @@ bool parse_world_lag_stddev( sim_t* sim, util::string_view name, util::string_vi
 
 // parse_brain_lag ==========================================================
 
-bool parse_brain_lag( sim_t* sim, util::string_view name, util::string_view value )
+bool parse_brain_lag( sim_t* sim, std::string_view, std::string_view value )
 {
   sim->active_player->brain_lag.mean = timespan_t::from_seconds( util::to_double( value ) );
 
@@ -728,7 +725,7 @@ bool parse_brain_lag( sim_t* sim, util::string_view name, util::string_view valu
 
 // parse_brain_lag_stddev ===================================================
 
-bool parse_brain_lag_stddev( sim_t* sim, util::string_view name, util::string_view value )
+bool parse_brain_lag_stddev( sim_t* sim, std::string_view, std::string_view value )
 {
   sim->active_player->brain_lag.stddev = timespan_t::from_seconds( util::to_double( value ) );
 
@@ -742,7 +739,7 @@ bool parse_brain_lag_stddev( sim_t* sim, util::string_view name, util::string_vi
 
 // parse_specialization =====================================================
 
-bool parse_specialization( sim_t* sim, util::string_view, util::string_view value )
+bool parse_specialization( sim_t* sim, std::string_view, std::string_view value )
 {
   sim->active_player->_spec = dbc::translate_spec_str( sim->active_player->type, value );
 
@@ -757,9 +754,9 @@ bool parse_specialization( sim_t* sim, util::string_view, util::string_view valu
 
 // parse stat timelines =====================================================
 
-bool parse_stat_timelines( sim_t* sim, util::string_view name, util::string_view value )
+bool parse_stat_timelines( sim_t* sim, std::string_view, std::string_view value )
 {
-  auto stats = util::string_split<util::string_view>( value, "," );
+  auto stats = util::string_split<std::string_view>( value, "," );
 
   for ( auto& stat_type : stats )
   {
@@ -778,7 +775,7 @@ bool parse_stat_timelines( sim_t* sim, util::string_view name, util::string_view
 
 // parse_origin =============================================================
 
-bool parse_origin( sim_t* sim, util::string_view, util::string_view origin )
+bool parse_origin( sim_t* sim, std::string_view, std::string_view origin )
 {
   player_t& p = *sim->active_player;
 
@@ -796,7 +793,7 @@ bool parse_origin( sim_t* sim, util::string_view, util::string_view origin )
 
 // parse_source ===============================================================
 
-bool parse_source( sim_t* sim, util::string_view, util::string_view value )
+bool parse_source( sim_t* sim, std::string_view, std::string_view value )
 {
   player_t& p = *sim->active_player;
 
@@ -805,13 +802,13 @@ bool parse_source( sim_t* sim, util::string_view, util::string_view value )
   return true;
 }
 
-bool parse_set_bonus( sim_t* sim, util::string_view, util::string_view value )
+bool parse_set_bonus( sim_t* sim, std::string_view, std::string_view value )
 {
   static constexpr const char* error_str = "{} invalid 'set_bonus' option value '{}' given, available options: {}";
 
   player_t* p = sim->active_player;
 
-  auto set_bonus_split = util::string_split<util::string_view>( value, "=" );
+  auto set_bonus_split = util::string_split<std::string_view>( value, "=" );
 
   if ( set_bonus_split.size() != 2 )
   {
@@ -840,13 +837,13 @@ bool parse_set_bonus( sim_t* sim, util::string_view, util::string_view value )
   return true;
 }
 
-bool parse_initial_resource( sim_t* sim, util::string_view, util::string_view value )
+bool parse_initial_resource( sim_t* sim, std::string_view, std::string_view value )
 {
   player_t* player = sim->active_player;
-  auto opts        = util::string_split<util::string_view>( value, ":/" );
+  auto opts        = util::string_split<std::string_view>( value, ":/" );
   for ( const auto& opt_str : opts )
   {
-    auto resource_split = util::string_split<util::string_view>( opt_str, "=" );
+    auto resource_split = util::string_split<std::string_view>( opt_str, "=" );
     if ( resource_split.size() != 2 )
     {
       sim->error( "{} unknown initial_resources option '{}'", player->name(), opt_str );
@@ -9277,11 +9274,6 @@ struct use_item_t : public action_t
     }
 
     action_t::init();
-  }
-
-  void init_finished() override
-  {
-    action_t::init_finished();
 
     if ( action )
       action->is_precombat = is_precombat;

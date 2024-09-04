@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56313
-static const std::array<spelltext_data_t, 26324> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 26328> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -25259,6 +25259,7 @@ static const std::array<spelltext_data_t, 26324> __ptr_spelltext_data { {
   { 455434, "$@spelldesc455432", 0, 0 },
   { 455435, "Your spells have a chance to bring the candle to life, summoning a waxen ally to light up your enemies.", 0, 0 },
   { 455436, "The Core's unstable energies will randomly buff one of your secondary stats for $s1. This lasts between 10 and 30 sec before randomly changing to another stat.", 0, 0 },
+  { 455441, 0, "Increases Mastery Rating by $w1.", 0 },
   { 455443, "$@spelldesc455435", 0, 0 },
   { 455444, "$@spelldesc455419", "Critical Strike increased by $w1.", 0 },
   { 455445, "$@spelldesc455435", 0, 0 },
@@ -25270,6 +25271,9 @@ static const std::array<spelltext_data_t, 26324> __ptr_spelltext_data { {
   { 455451, "$@class be nimble, $@class be quick. $@class invoke the power of the candlestick to increase movement speed by $s1% and Haste by $s2 for $d.", "Increased movement speed and haste.", 0 },
   { 455452, "Your harmful spells have a high chance to resonate with a dark ritual, storing magic within the emblem.", 0, 0 },
   { 455453, "$@spelldesc455435", 0, 0 },
+  { 455454, 0, "Increases Critical Strike Rating by $w1.", 0 },
+  { 455455, 0, "Increases Haste Rating by $w1.", 0 },
+  { 455456, 0, "Increases Versatility Rating by $w1.", 0 },
   { 455461, "When you remove an effect with Soothe or $?s88423[Nature's Cure][Remove Corruption], gain a combo point and heal for $s1% of your maximum health. If you are at full health an injured party or raid member will be healed instead.", 0, 0 },
   { 455464, "$@spelldesc455467", "A dark ritual is storing energy, ready to be unleashed.", 0 },
   { 455465, "Summon a Gloomhound to fight for you for the next $d.", 0, 0 },
@@ -25301,6 +25305,7 @@ static const std::array<spelltext_data_t, 26324> __ptr_spelltext_data { {
   { 455512, "The idol draws upon unholy energy to prevent fatal damage on players, instead healing them for an amount equal to $455514s1% of their maximum health and turning them Undead.\r\n\r\nWhile Undead, they cannot be healed, lose $456699s1% of their maximum health every $455516t1 sec, and gain $455516s2% damage and healing done.", 0, "Rank 1/4" },
   { 455514, "$@spelldesc455512", 0, 0 },
   { 455516, "$@spelldesc455512", "Turned Undead, preventing all healing, losing $456699s1% maximum health every $t sec, and increasing damage and healing done by $w2%.", 0 },
+  { 455521, "$?a455524[|cnRED_FONT_COLOR:Modified by Cool Sunset Bracers.|r\r\n\r\nHealing spells and abilities have the chance to cause your tailored threads to radiate with Woven Duskweave granting $s2 Haste for $457630d.][$@spelldesc455522]", 0, 0 },
   { 455522, "Healing spells and abilities have the chance to cause your tailored threads to radiate with Woven Dawnweave granting $s2  Mastery for $d.", 0, 0 },
   { 455523, "Damaging spells and abilities have the chance to cause your tailored threads to radiate with Woven Duskweave granting $s2  Haste for $d.", 0, 0 },
   { 455524, "Cooling sunset spellthreads alter the effects of Woven Dawnweave to become Woven Duskweave.", 0, 0 },
@@ -26323,7 +26328,6 @@ static const std::array<spelltext_data_t, 26324> __ptr_spelltext_data { {
   { 466879, "Add the Challenger's Peril affix to a Mythic Keystone.", 0, 0 },
   { 467059, "Finishing move that dispatches the enemy, dealing damage per combo point:\r\n   1 point  : ${$m1*1} damage\r\n   2 points: ${$m1*2} damage\r\n   3 points: ${$m1*3} damage\r\n   4 points: ${$m1*4} damage\r\n   5 points: ${$m1*5} damage$?s193531|((s394320|s394321)&!s193531)[\r\n   6 points: ${$m1*6} damage][]$?s193531&(s394320|s394321)[\r\n   7 points: ${$m1*7} damage][]", 0, 0 },
   { 468655, "Launches a bolt of frostfire at the enemy, causing $s1 Frostfire damage, slowing movement speed by $s3%, and causing an additional $o2 Frostfire damage over $d.\r\n\r\nFrostfire Bolt generates stacks for both Fire Mastery and Frost Mastery.", "Movement speed reduced by $w3% and receiving $w2 damage every $t2 sec.", 0 },
-  { 469347, "$@spelldesc358267", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56313

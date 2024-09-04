@@ -4,29 +4,30 @@ level=80
 race=mechagnome
 role=spell
 position=back
-talents=C4DAAAAAAAAAAAAAAAAAAAAAAYMbmtZBzwYW8A8AmZYMNzsMDAAAAAADAYmZaZWWmBAiNAAAAAA2AYZGDmZmZGDzMGzMjZmZMMG
+talents=C4DAAAAAAAAAAAAAAAAAAAAAAYMMbzCmxMmFPAjZGGTzMmBAAAAAgBAMzMtMLLzAAxGAAAAAAAYZGDmZmZGDzMGzMjZmZMMG
 
 potion=tempered_potion_3
 flask=flask_of_alchemical_chaos_3
-food=salty_dog
+food=everything_stew
 augmentation=crystallized
 temporary_enchant=main_hand:algari_mana_oil_3
 
-head=devotees_discarded_headdress,id=212440,ilevel=639,gem_id=213743
-neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213497/213485
+head=cocoonsilk_cowl,id=178693,ilevel=639,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213494/213455
 shoulder=beacons_of_violet_rebirth,id=212090,ilevel=639
-back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant_id=7403
+back=ward_of_violet_rebirth,id=212087,ilevel=639,enchant_id=7415
 chest=runecoat_of_violet_rebirth,id=212095,ilevel=639,enchant_id=7364
-wrist=consecrated_cuffs,id=222815,bonus_id=11303,ilevel=636,gem_id=213482,crafted_stats=36/49
+wrist=consecrated_cuffs,id=222815,ilevel=636,gem_id=213470,enchant_id=7397,bonus_id=11109,crafted_stats=36/49
 hands=jeweled_gauntlets_of_violet_rebirth,id=212093,ilevel=639
-waist=acrid_ascendants_sash,id=225585,ilevel=639,gem_id=213467
+waist=acrid_ascendants_sash,id=225585,ilevel=639,gem_id=213494
 legs=coattails_of_violet_rebirth,id=212091,ilevel=639,enchant_id=7534
-feet=consecrated_slippers,id=222814,bonus_id=11303,ilevel=636,gem_id=213482,crafted_stats=40/49
-finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213494/213494,enchant_id=7334
-finger2=experiment_08752s_band,id=221189,ilevel=639,gem_id=213494/213494,enchant_id=7334
+feet=slippers_of_violet_rebirth,id=212094,ilevel=639,enchant_id=7424
+finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213482/213482,enchant_id=7340
+finger2=writhing_ringworm,id=225576,ilevel=639,gem_id=213482/213482,enchant_id=7340
 trinket1=arakara_sacbrood,id=219314,ilevel=639
 trinket2=spymasters_web,id=220202,ilevel=639
-main_hand=takazjs_entropic_edict,id=212397,ilevel=639,enchant_id=7460
+main_hand=sovereigns_disdain,id=212394,enchant_id=7460,ilevel=639
+off_hand=vagabonds_torch,id=222566,ilevel=636,bonus_id=11300,crafted_stats=36/49
 
 save=TWW1_Mage_Arcane.simc
 

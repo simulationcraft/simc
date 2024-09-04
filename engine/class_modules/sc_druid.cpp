@@ -857,11 +857,10 @@ public:
     proc_t* clearcasting_wasted;
   } proc;
 
-  // RPPM
-  struct rppms_t
+  // Proc RNGs
+  struct proc_rngs_t
   {
-    real_ppm_t* the_light_of_elune;
-  } rppm;
+  } rngs;
 
   // Talents
   struct talents_t
@@ -1270,7 +1269,7 @@ public:
       gain(),
       mastery(),
       proc(),
-      rppm(),
+      rngs(),
       talent(),
       spec(),
       uptime()
@@ -4324,6 +4323,9 @@ struct ferocious_bite_base_t : public cat_finisher_t
       aoe = -1;
       reduced_aoe_targets = p->talent.rampant_ferocity->effectN( 1 ).base_value();
       name_str_reporting = "rampant_ferocity";
+
+      // bloodtalons is applied via script
+      force_effect( p->buff.bloodtalons, 2, IGNORE_STACKS );
     }
 
     action_state_t* new_state() override
@@ -7472,6 +7474,8 @@ struct moonfire_t final : public druid_spell_t
 {
   struct moonfire_damage_t final : public trigger_gore_t<use_dot_list_t<trigger_waning_twilight_t<druid_spell_t>>>
   {
+    real_ppm_t* light_of_elune_rng = nullptr;
+
     moonfire_damage_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->spec.moonfire_dmg, f )
     {
       may_miss = false;
@@ -7487,6 +7491,11 @@ struct moonfire_t final : public druid_spell_t
           .set_buff( p->buff.galactic_guardian )
           .set_value( eff.percent() )
           .set_eff( &eff );
+      }
+
+      if ( p->talent.the_light_of_elune.ok() )
+      {
+        light_of_elune_rng = p->get_rppm( "The Light of Elune", p->talent.the_light_of_elune );
       }
     }
 
@@ -7512,7 +7521,7 @@ struct moonfire_t final : public druid_spell_t
 
       base_t::tick( d );
 
-      if ( p()->rppm.the_light_of_elune && p()->rppm.the_light_of_elune->trigger() )
+      if ( light_of_elune_rng && light_of_elune_rng->trigger() )
         p()->active.the_light_of_elune->execute_on_target( d->target );
     }
 
@@ -7520,7 +7529,7 @@ struct moonfire_t final : public druid_spell_t
     {
       base_t::impact( s );
 
-      if ( p()->rppm.the_light_of_elune && p()->rppm.the_light_of_elune->trigger() )
+      if ( light_of_elune_rng && light_of_elune_rng->trigger() )
         p()->active.the_light_of_elune->execute_on_target( s->target );
     }
   };
@@ -10518,23 +10527,26 @@ void druid_t::create_buffs()
   buff.natures_balance = make_fallback( talent.natures_balance.ok(), this, "natures_balance", talent.natures_balance )
     ->set_quiet( true )
     ->set_freeze_stacks( true );
-  const auto& nb_eff = find_effect( buff.natures_balance, A_PERIODIC_ENERGIZE );
-  buff.natures_balance->set_default_value( nb_eff.resource() / nb_eff.period().total_seconds() )
-    ->set_tick_callback(
-      [ ap = nb_eff.resource(),
-        cap = talent.natures_balance->effectN( 2 ).percent(),
-        g = get_gain( "Natures Balance" ),
-        this ]
-      ( buff_t*, int, timespan_t ) mutable {
-        if ( !in_combat )
-        {
-          if ( resources.current[ RESOURCE_ASTRAL_POWER ] < resources.base[ RESOURCE_ASTRAL_POWER ] * cap )
-            ap *= 3.0;
-          else
-            ap = 0;
-        }
-        resource_gain( RESOURCE_ASTRAL_POWER, ap, g );
-      } );
+  if ( talent.natures_balance.ok() )
+  {
+    const auto& nb_eff = find_effect( buff.natures_balance, A_PERIODIC_ENERGIZE );
+    buff.natures_balance->set_default_value( nb_eff.resource() / nb_eff.period().total_seconds() )
+      ->set_tick_callback(
+        [ ap = nb_eff.resource(),
+          cap = talent.natures_balance->effectN( 2 ).percent(),
+          g = get_gain( "Natures Balance" ),
+          this ]
+        ( buff_t*, int, timespan_t ) mutable {
+          if ( !in_combat )
+          {
+            if ( resources.current[ RESOURCE_ASTRAL_POWER ] < resources.base[ RESOURCE_ASTRAL_POWER ] * cap )
+              ap *= 3.0;
+            else
+              ap = 0;
+          }
+          resource_gain( RESOURCE_ASTRAL_POWER, ap, g );
+        } );
+  }
 
   buff.orbit_breaker = make_fallback( talent.orbit_breaker.ok(), this, "orbit_breaker" )
     ->set_quiet( true )
@@ -10936,15 +10948,18 @@ void druid_t::create_buffs()
   buff.bounteous_bloom = make_fallback( talent.bounteous_bloom.ok(), this, "bounteous_bloom", find_spell( 429217 ) )
     ->set_freeze_stacks( true )
     ->set_cooldown( 0_ms );
-  const auto& bb_eff = find_effect( buff.bounteous_bloom, E_APPLY_AREA_AURA_PET, A_PERIODIC_ENERGIZE );
-  buff.bounteous_bloom->set_default_value( bb_eff.resource() / bb_eff.period().total_seconds() )
-    ->set_tick_callback(
-      [ ap = bb_eff.resource(),
-        g = get_gain( "Bounteous Bloom" ),
-        this ]
-      ( buff_t* b, int, timespan_t ) {
-        resource_gain( RESOURCE_ASTRAL_POWER, ap * b->check(), g );
-      } );
+  if ( talent.bounteous_bloom.ok() )
+  {
+    const auto& bb_eff = find_effect( buff.bounteous_bloom, E_APPLY_AREA_AURA_PET, A_PERIODIC_ENERGIZE );
+    buff.bounteous_bloom->set_default_value( bb_eff.resource() / bb_eff.period().total_seconds() )
+      ->set_tick_callback(
+        [ ap = bb_eff.resource(),
+          g = get_gain( "Bounteous Bloom" ),
+          this ]
+        ( buff_t* b, int, timespan_t ) {
+          resource_gain( RESOURCE_ASTRAL_POWER, ap * b->check(), g );
+        } );
+  }
 
   buff.cenarius_might =
     make_fallback( talent.cenarius_might.ok(), this, "cenarius_might", find_trigger( talent.cenarius_might ).trigger() )
@@ -11510,21 +11525,25 @@ void druid_t::init()
 
 bool druid_t::validate_fight_style( fight_style_e style ) const
 {
-  if ( specialization() == DRUID_RESTORATION )
+  switch ( specialization() )
   {
-    sim->error( "Restoration Druid does not yet have an Action Priority List (APL)." );
-    return false;
-  }
-  else if ( specialization() == DRUID_BALANCE )
-  {
-    sim->error( "Upcoming 2024-09-03 hotfixes are included." );
+    case DRUID_BALANCE:
+      if ( style != FIGHT_STYLE_PATCHWERK )
+        return false;
 
-    if ( style != FIGHT_STYLE_PATCHWERK )
+      break;
+    case DRUID_FERAL:
+      break;
+
+    case DRUID_GUARDIAN:
+      break;
+
+    case DRUID_RESTORATION:
+      sim->error( "Restoration Druid does not yet have an Action Priority List (APL)." );
       return false;
-  }
-  else if ( specialization() == DRUID_FERAL )
-  {
-    sim->error( "Upcoming 2024-09-03 hotfixes are included." );
+
+    default:
+      break;
   }
 
   return true;
@@ -11564,9 +11583,6 @@ void druid_t::init_procs()
 void druid_t::init_rng()
 {
   player_t::init_rng();
-
-  if ( talent.the_light_of_elune.ok() )
-    rppm.the_light_of_elune = get_rppm( "The Light of Elune", talent.the_light_of_elune );
 }
 
 // druid_t::init_uptimes ====================================================
@@ -14178,46 +14194,6 @@ struct druid_module_t final : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_spell( "Druid", "2024-09-03", "Bloodtalons and Lion's Strength now also increase the damage of Rampant Ferocity.", 391710 )
-      .field( "class_flags" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 108 );
-
-    hotfix::register_effect( "Druid", "2024-09-03", "Umbral Intensity increases the damage of Wrath by 20/40% (was 25/50%).", 1014956 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 20 )
-      .verification_value( 25 );
-
-    hotfix::register_effect( "Druid", "2024-09-03", "Umbral Intensity increases the damage of Starfire by 15/30% (was 50%).", 1150828 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 15 )
-      .verification_value( 25 );
-
-    hotfix::register_effect( "Druid", "2024-09-03", "Starsurge damage increased by 12%.", 68268 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.12 )
-      .verification_value( 1.876 );
-
-    hotfix::register_effect( "Druid", "2024-09-03", "Starfall damage increased by 20%.", 280158 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.2 )
-      .verification_value( 0.1484 );
-
-    hotfix::register_effect( "Druid", "2024-09-03", "Harmony of the Heavens increases Eclipse power by 2% per proc (was 1% per proc).", 1150545 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 2 )
-      .verification_value( 1 );
-
-    hotfix::register_effect( "Druid", "2024-09-03", "Harmony of the Heavens increases Eclipse power max 6% (was max 5%).", 1150546 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 6 )
-      .verification_value( 5 );
   }
 
   void combat_begin( sim_t* ) const override {}

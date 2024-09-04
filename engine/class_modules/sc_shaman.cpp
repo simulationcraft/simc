@@ -9164,11 +9164,7 @@ struct surging_totem_pulse_t : public spell_totem_action_t
     : spell_totem_action_t( "tremor", totem, totem->find_spell( 455622 ) ), sundered( false )
   {
     aoe          = -1;
-    full_amount_targets = 1;
-    // full_amount_targets = as<double>( data().effectN( 2 ).base_value() );
-    // TODO: Reduction past N enemies
-    // reduced_aoe_targets = as<double>( data().effectN( 2 ).base_value() );
-    reduced_aoe_targets = 5;
+    reduced_aoe_targets = as<double>( data().effectN( 2 ).base_value() );
     hasted_pulse = true;
   }
 
@@ -9516,6 +9512,8 @@ struct tempest_overload_t : public elemental_overload_spell_t
     : elemental_overload_spell_t( p, "tempest_overload", p->find_spell( 463351 ), parent_ )
   {
     aoe = -1;
+    // Blizzard forgot to apply Tempest's AOE soft cap hotfix to its overload spell
+    // reduced_aoe_targets = as<double>( data().effectN( 3 ).base_value() );
     base_aoe_multiplier = data().effectN( 2 ).percent();
   }
 };
@@ -9528,6 +9526,7 @@ struct tempest_t : public shaman_spell_t
     parse_options( options_str );
 
     aoe = -1;
+    reduced_aoe_targets = as<double>( data().effectN( 3 ).base_value() );
     base_aoe_multiplier = data().effectN( 2 ).percent();
 
     if ( player->mastery.elemental_overload->ok() )
@@ -12567,9 +12566,9 @@ double shaman_t::resource_loss( resource_e resource_type, double amount, gain_t*
     {
       buff.unlimited_power->trigger();
     }
+  
+    buff.tww1_4pc_ele->trigger();
   }
-
-  buff.tww1_4pc_ele->trigger();
 
   return loss;
 }

@@ -4140,6 +4140,11 @@ struct mograine_pet_t final : public horseman_pet_t
       }
     }
 
+    mograine_pet_t* mograine() const
+    {
+      return debug_cast<mograine_pet_t*>( player );
+    }
+
     void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
     {
       buff_t::expire_override( expiration_stacks, remaining_duration );
@@ -4147,6 +4152,12 @@ struct mograine_pet_t final : public horseman_pet_t
       {
         dk->buffs.mograines_might->expire();
         dk->buffs.death_and_decay->expire();
+      }
+      if ( mograine()->extended_by_apoc_now )
+      {
+        mograine()->extended_by_apoc_now = false;
+        // Triggers again 100_ms after the buff expires
+        make_event( *sim, 100_ms, [ & ]() { trigger(); } );
       }
     }
 
@@ -4209,6 +4220,7 @@ struct mograine_pet_t final : public horseman_pet_t
 
 public:
   buff_t* dnd_aura;
+  bool extended_by_apoc_now = false;
 };
 
 // ==========================================================================
@@ -6532,12 +6544,13 @@ struct summon_mograine_t final : public summon_rider_t
     else if ( !random )
     {
       death_knight_spell_t::execute();
-      p()->pets.mograine.active_pet()->adjust_duration( duration );
-      p()->pets.mograine.active_pet()->rp_spent = 0;
-      if ( !p()->bugs )
-      {
-        p()->pets.mograine.active_pet()->dnd_aura->trigger();
-      }
+      pets::mograine_pet_t* mograine = p()->pets.mograine.active_pet();
+      mograine->adjust_duration( duration );
+      mograine->rp_spent = 0;
+      if ( mograine->dnd_aura->check() )
+        mograine->extended_by_apoc_now = true;
+      else
+        mograine->dnd_aura->trigger();
     }
   }
 };
@@ -7347,21 +7360,26 @@ struct bonestorm_t final : public death_knight_spell_t
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
-    int charges = std::min( p()->buffs.bone_shield->check(), as<int>( p()->talent.blood.bonestorm->effectN( 4 ).base_value() ) );
+    int charges =
+        std::min( p()->buffs.bone_shield->check(), as<int>( p()->talent.blood.bonestorm->effectN( 4 ).base_value() ) );
     p()->buffs.bone_shield->decrement( charges );
 
-    if( p() -> talent.blood.ossified_vitriol -> ok() )
-      p()->buffs.ossified_vitriol->trigger( charges );
-
-    if ( p()->talent.blood.insatiable_blade->ok() )
-      p()->cooldown.dancing_rune_weapon->adjust( p()->talent.blood.insatiable_blade->effectN( 1 ).time_value() * charges );
-
-    if ( charges > 0 && p()->talent.blood.shattering_bone.ok() )
+    if ( charges > 0 )
     {
-      // Set the number of charges of BS consumed, as it's used as a multiplier in shattering bone
-      debug_cast<shattering_bone_t*>( p()->active_spells.shattering_bone )->boneshield_charges_consumed = charges;
-      p()->active_spells.shattering_bone->execute_on_target( target );
-    }
+      if ( p()->talent.blood.ossified_vitriol->ok() )
+        p()->buffs.ossified_vitriol->trigger( charges );
+
+      if ( p()->talent.blood.insatiable_blade->ok() )
+        p()->cooldown.dancing_rune_weapon->adjust( p()->talent.blood.insatiable_blade->effectN( 1 ).time_value() *
+                                                   charges );
+
+      if ( p()->talent.blood.shattering_bone.ok() )
+      {
+        // Set the number of charges of BS consumed, as it's used as a multiplier in shattering bone
+        debug_cast<shattering_bone_t*>( p()->active_spells.shattering_bone )->boneshield_charges_consumed = charges;
+        p()->active_spells.shattering_bone->execute_on_target( target );
+      }
+    }    
 
     p()->sim->print_debug( "Bonestorm consumed {} charges of bone shield", charges );
     return p()->talent.blood.bonestorm->duration() * charges;
@@ -7379,6 +7397,14 @@ struct bonestorm_t final : public death_knight_spell_t
     {
       p()->buffs.icy_talons->trigger();
     }
+  }
+
+  bool ready() override
+  {
+    if ( !p()->buffs.bone_shield->check() )
+      return false;
+
+    return death_knight_spell_t::ready();
   }
 };
 
@@ -15114,7 +15140,7 @@ struct death_knight_module_t : public module_t
     unique_gear::register_special_effect( 326913, runeforge::hysteria );
   }
   
-  void register_hotfixes() const override
+  /*void register_hotfixes() const override
   {
     hotfix::register_effect( "Death Knight", "2024-09-30", "Obliterate Main-Hand nerfed 6%", 331344, hotfix::HOTFIX_FLAG_LIVE )
         .field( "ap_coefficient" )
@@ -15165,7 +15191,7 @@ struct death_knight_module_t : public module_t
         .operation( hotfix::HOTFIX_SET )
         .modifier( 1.224 )
         .verification_value( 1.36 );    
-  }
+  }*/
 
   void init( player_t* ) const override
   {

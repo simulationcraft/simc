@@ -19,7 +19,9 @@ precombat->add_action( "stellar_flare" );
 
 def->add_action( "variable,name=passive_asp,value=6%spell_haste+talent.natures_balance+talent.orbit_breaker*dot.moonfire.ticking*(buff.orbit_breaker.stack>(27-2*buff.solstice.up))*40","Executed every time the actor is available." );
 def->add_action( "use_item,name=spymasters_web,if=buff.ca_inc.up&buff.spymasters_report.stack>29|fight_remains<20" );
-def->add_action( "use_items,if=buff.ca_inc.up|fight_remains<20" );
+def->add_action( "use_items,slots=trinket1,if=variable.on_use_trinket!=1&!trinket.2.ready_cooldown|(variable.on_use_trinket=1|variable.on_use_trinket=3)&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0" );
+def->add_action( "use_items,slots=trinket2,if=variable.on_use_trinket!=2&!trinket.1.ready_cooldown|variable.on_use_trinket=2&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0" );
+def->add_action( "use_items" );
 def->add_action( "potion,use_off_gcd=1,if=buff.ca_inc.up|fight_remains<=30" );
 def->add_action( "berserking,if=buff.ca_inc.remains>=20|variable.no_cd_talent|fight_remains<15" );
 def->add_action( "variable,name=eclipse,value=buff.eclipse_lunar.up|buff.eclipse_solar.up" );

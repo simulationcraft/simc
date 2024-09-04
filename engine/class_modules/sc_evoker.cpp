@@ -4071,7 +4071,7 @@ struct disintegrate_t : public essence_spell_t
 
   int max_targets() const
   {
-    return 1 + ( p()->buff.mass_disintegrate_stacks->check() > 0 ) * 2;
+    return ( p()->buff.mass_disintegrate_stacks->check() > 0 ) * 3;
   }
 
   int targets() const
@@ -4132,7 +4132,9 @@ struct disintegrate_t : public essence_spell_t
     action_state_t::release( state );
 
     int targets_            = targets();
-    int virtual_buff_stacks = num_ticks * targets();
+    targets_                = targets_ ? targets_ : 1;
+
+    int virtual_buff_stacks = num_ticks * targets_;
 
     // trigger the buffs first so tick-zero can get buffed
     if ( p()->buff.essence_burst->check() )
@@ -4144,6 +4146,8 @@ struct disintegrate_t : public essence_spell_t
     if ( p()->buff.mass_disintegrate_stacks->check() )
     {
       int max_targets_ = max_targets();
+      max_targets_ = max_targets_ ? max_targets_ : 1;
+
       auto buff_size   = ( max_targets_ - targets_ ) * mass_disint_mult;
       p()->buff.mass_disintegrate_ticks->trigger( num_ticks, buff_size, -1, buff_duration );
     }
@@ -4897,7 +4901,7 @@ struct pyre_t : public essence_spell_t
     damage->stats   = stats;
     damage->proc    = true;
 
-    firestorm = p->get_secondary_action<firestorm_t>( "firestorm_ftf", "firestorm_ftf", true );
+    firestorm = p->get_secondary_action<firestorm_t>( name_str + "_firestorm_ftf", name_str + "_firestorm_ftf", true );
     add_child( firestorm );
   }
 
