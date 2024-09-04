@@ -7504,6 +7504,9 @@ struct fatal_intent_t : public rogue_attack_t
 
   bool procs_shadow_blades_damage() const override
   { return false; }
+
+  bool procs_caustic_spatter() const override
+  { return false; }
 };
 
 struct hunt_them_down_t : public rogue_attack_t
@@ -7527,6 +7530,9 @@ struct singular_focus_t : public rogue_attack_t
   }
 
   bool procs_shadow_blades_damage() const override
+  { return false; }
+
+  bool procs_caustic_spatter() const override
   { return false; }
 };
 
