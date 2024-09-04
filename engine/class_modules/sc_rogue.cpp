@@ -2373,7 +2373,7 @@ public:
 
   // Generic rules for proccing Caustic Spatter, used by rogue_t::trigger_caustic_spatter()
   virtual bool procs_caustic_spatter() const
-  { return ab::get_school() == SCHOOL_NATURE; }
+  { return dbc::has_common_school( ab::get_school(), SCHOOL_NATURE ); }
 
   // Generic rules for proccing Seal Fate, used by rogue_t::trigger_seal_fate()
   virtual bool procs_seal_fate() const
@@ -4595,7 +4595,7 @@ struct envenom_t : public rogue_attack_t
     { return false; }
 
     bool procs_caustic_spatter() const override
-    { return true; } // TOCHECK
+    { return false; }
   };
 
   envenomous_explosion_t* envenomous_explosion;
@@ -7014,9 +7014,6 @@ struct poison_bomb_t : public rogue_attack_t
   {
     aoe = -1;
   }
-
-  bool procs_caustic_spatter() const override
-  { return false; }
 };
 
 // Caustic Spatter ==========================================================
@@ -7565,9 +7562,6 @@ struct fatebound_coin_tails_t : public rogue_attack_t
 
   bool procs_blade_flurry() const override
   { return true; }
-
-  bool procs_caustic_spatter() const override
-  { return true; }
 };
 
 struct fatebound_coin_tails_delivered_t : public fatebound_coin_tails_t
@@ -7587,9 +7581,6 @@ struct fatebound_lucky_coin_t : public rogue_attack_t
   }
 
   bool procs_blade_flurry() const override
-  { return true; }
-
-  bool procs_caustic_spatter() const override
   { return true; }
 };
 
@@ -9803,7 +9794,9 @@ void actions::rogue_action_t<Base>::trigger_caustic_spatter_debuff( const action
 
   // Caustic Spatter is checked after impacts have an opportunity to trigger poisons
   auto tdata = td( state->target );
-  if ( tdata->dots.rupture->is_ticking() && tdata->dots.deadly_poison->is_ticking() )
+  if ( tdata->dots.rupture->is_ticking() && ( tdata->dots.deadly_poison->is_ticking() ||
+                                              tdata->debuffs.amplifying_poison->check() ||
+                                              tdata->debuffs.amplifying_poison_deathmark->check() ) )
   {
     // Caustic Spatter debuff can only exist on one target at a time
     tdata->debuffs.caustic_spatter->trigger();
