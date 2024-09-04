@@ -4156,7 +4156,8 @@ struct mograine_pet_t final : public horseman_pet_t
       if ( mograine()->extended_by_apoc_now )
       {
         mograine()->extended_by_apoc_now = false;
-        trigger();
+        // Triggers again 100_ms after the buff expires
+        make_event( *sim, 100_ms, [ & ]() { trigger(); } );
       }
     }
 
@@ -6546,13 +6547,10 @@ struct summon_mograine_t final : public summon_rider_t
       pets::mograine_pet_t* mograine = p()->pets.mograine.active_pet();
       mograine->adjust_duration( duration );
       mograine->rp_spent = 0;
-      if ( p()->pets.mograine.active_pet() != nullptr )
-      {
-        if ( mograine->dnd_aura->check() )
-          mograine->extended_by_apoc_now = true;
-        else
-          mograine->dnd_aura->trigger();
-      }
+      if ( mograine->dnd_aura->check() )
+        mograine->extended_by_apoc_now = true;
+      else
+        mograine->dnd_aura->trigger();
     }
   }
 };
