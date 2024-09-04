@@ -857,11 +857,10 @@ public:
     proc_t* clearcasting_wasted;
   } proc;
 
-  // RPPM
-  struct rppms_t
+  // Proc RNGs
+  struct proc_rngs_t
   {
-    real_ppm_t* the_light_of_elune;
-  } rppm;
+  } rngs;
 
   // Talents
   struct talents_t
@@ -1270,7 +1269,7 @@ public:
       gain(),
       mastery(),
       proc(),
-      rppm(),
+      rngs(),
       talent(),
       spec(),
       uptime()
@@ -7475,6 +7474,8 @@ struct moonfire_t final : public druid_spell_t
 {
   struct moonfire_damage_t final : public trigger_gore_t<use_dot_list_t<trigger_waning_twilight_t<druid_spell_t>>>
   {
+    real_ppm_t* light_of_elune_rng = nullptr;
+
     moonfire_damage_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->spec.moonfire_dmg, f )
     {
       may_miss = false;
@@ -7490,6 +7491,11 @@ struct moonfire_t final : public druid_spell_t
           .set_buff( p->buff.galactic_guardian )
           .set_value( eff.percent() )
           .set_eff( &eff );
+      }
+
+      if ( p->talent.the_light_of_elune.ok() )
+      {
+        light_of_elune_rng = p->get_rppm( "The Light of Elune", p->talent.the_light_of_elune );
       }
     }
 
@@ -7515,7 +7521,7 @@ struct moonfire_t final : public druid_spell_t
 
       base_t::tick( d );
 
-      if ( p()->rppm.the_light_of_elune && p()->rppm.the_light_of_elune->trigger() )
+      if ( light_of_elune_rng && light_of_elune_rng->trigger() )
         p()->active.the_light_of_elune->execute_on_target( d->target );
     }
 
@@ -7523,7 +7529,7 @@ struct moonfire_t final : public druid_spell_t
     {
       base_t::impact( s );
 
-      if ( p()->rppm.the_light_of_elune && p()->rppm.the_light_of_elune->trigger() )
+      if ( light_of_elune_rng && light_of_elune_rng->trigger() )
         p()->active.the_light_of_elune->execute_on_target( s->target );
     }
   };
@@ -11571,9 +11577,6 @@ void druid_t::init_procs()
 void druid_t::init_rng()
 {
   player_t::init_rng();
-
-  if ( talent.the_light_of_elune.ok() )
-    rppm.the_light_of_elune = get_rppm( "The Light of Elune", talent.the_light_of_elune );
 }
 
 // druid_t::init_uptimes ====================================================
