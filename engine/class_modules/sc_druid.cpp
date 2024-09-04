@@ -10527,23 +10527,26 @@ void druid_t::create_buffs()
   buff.natures_balance = make_fallback( talent.natures_balance.ok(), this, "natures_balance", talent.natures_balance )
     ->set_quiet( true )
     ->set_freeze_stacks( true );
-  const auto& nb_eff = find_effect( buff.natures_balance, A_PERIODIC_ENERGIZE );
-  buff.natures_balance->set_default_value( nb_eff.resource() / nb_eff.period().total_seconds() )
-    ->set_tick_callback(
-      [ ap = nb_eff.resource(),
-        cap = talent.natures_balance->effectN( 2 ).percent(),
-        g = get_gain( "Natures Balance" ),
-        this ]
-      ( buff_t*, int, timespan_t ) mutable {
-        if ( !in_combat )
-        {
-          if ( resources.current[ RESOURCE_ASTRAL_POWER ] < resources.base[ RESOURCE_ASTRAL_POWER ] * cap )
-            ap *= 3.0;
-          else
-            ap = 0;
-        }
-        resource_gain( RESOURCE_ASTRAL_POWER, ap, g );
-      } );
+  if ( talent.natures_balance.ok() )
+  {
+    const auto& nb_eff = find_effect( buff.natures_balance, A_PERIODIC_ENERGIZE );
+    buff.natures_balance->set_default_value( nb_eff.resource() / nb_eff.period().total_seconds() )
+      ->set_tick_callback(
+        [ ap = nb_eff.resource(),
+          cap = talent.natures_balance->effectN( 2 ).percent(),
+          g = get_gain( "Natures Balance" ),
+          this ]
+        ( buff_t*, int, timespan_t ) mutable {
+          if ( !in_combat )
+          {
+            if ( resources.current[ RESOURCE_ASTRAL_POWER ] < resources.base[ RESOURCE_ASTRAL_POWER ] * cap )
+              ap *= 3.0;
+            else
+              ap = 0;
+          }
+          resource_gain( RESOURCE_ASTRAL_POWER, ap, g );
+        } );
+  }
 
   buff.orbit_breaker = make_fallback( talent.orbit_breaker.ok(), this, "orbit_breaker" )
     ->set_quiet( true )
@@ -10945,15 +10948,18 @@ void druid_t::create_buffs()
   buff.bounteous_bloom = make_fallback( talent.bounteous_bloom.ok(), this, "bounteous_bloom", find_spell( 429217 ) )
     ->set_freeze_stacks( true )
     ->set_cooldown( 0_ms );
-  const auto& bb_eff = find_effect( buff.bounteous_bloom, E_APPLY_AREA_AURA_PET, A_PERIODIC_ENERGIZE );
-  buff.bounteous_bloom->set_default_value( bb_eff.resource() / bb_eff.period().total_seconds() )
-    ->set_tick_callback(
-      [ ap = bb_eff.resource(),
-        g = get_gain( "Bounteous Bloom" ),
-        this ]
-      ( buff_t* b, int, timespan_t ) {
-        resource_gain( RESOURCE_ASTRAL_POWER, ap * b->check(), g );
-      } );
+  if ( talent.bounteous_bloom.ok() )
+  {
+    const auto& bb_eff = find_effect( buff.bounteous_bloom, E_APPLY_AREA_AURA_PET, A_PERIODIC_ENERGIZE );
+    buff.bounteous_bloom->set_default_value( bb_eff.resource() / bb_eff.period().total_seconds() )
+      ->set_tick_callback(
+        [ ap = bb_eff.resource(),
+          g = get_gain( "Bounteous Bloom" ),
+          this ]
+        ( buff_t* b, int, timespan_t ) {
+          resource_gain( RESOURCE_ASTRAL_POWER, ap * b->check(), g );
+        } );
+  }
 
   buff.cenarius_might =
     make_fallback( talent.cenarius_might.ok(), this, "cenarius_might", find_trigger( talent.cenarius_might ).trigger() )
