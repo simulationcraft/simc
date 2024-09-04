@@ -4435,9 +4435,6 @@ struct fireball_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, frostfire_ ? p->talents.frostfire_bolt : p->find_specialization_spell( "Fireball" ) ),
     frostfire( frostfire_ )
   {
-    // TODO Frostfire
-    // see frostbolt_t
-
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = TT_ALL_TARGETS;
     triggers.calefaction = triggers.unleashed_inferno = TT_MAIN_TARGET;
@@ -4448,6 +4445,7 @@ struct fireball_t final : public fire_mage_spell_t
     {
       base_execute_time *= 1.0 + p->talents.thermal_conditioning->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->spec.fire_mage->effectN( 6 ).percent();
+      enable_calculate_on_impact( 468655 );
     }
   }
 
@@ -4538,7 +4536,8 @@ struct fireball_t final : public fire_mage_spell_t
     if ( frostfire )
     {
       m *= 1.0 + p()->buffs.severe_temperatures->check_stack_value();
-      m *= 1.0 + p()->buffs.frostfire_empowerment->check_value();
+      if ( p()->state.trigger_ff_empowerment )
+        m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 3 ).percent();
     }
 
     return m;
@@ -4548,7 +4547,7 @@ struct fireball_t final : public fire_mage_spell_t
   {
     double m = fire_mage_spell_t::composite_crit_chance_multiplier();
 
-    if ( frostfire && p()->buffs.frostfire_empowerment->check() )
+    if ( frostfire && p()->state.trigger_ff_empowerment )
       m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 1 ).percent();
 
     return m;
@@ -4857,32 +4856,17 @@ struct frostbolt_t final : public frost_mage_spell_t
     fractured_frost_mul()
   {
     // TODO Frostfire
-    // This spell is now extremely buggy, not sure if it's worth implementing at this point
-    // * doesn't trigger on-hit effects like Overflowing Energy, Frostfire Infusion, Frostfire Empowerment, presumably trinkets as well
-    // * doesn't trigger or consume Pyrotechnics and Firefall
-    // * doesn't trigger the CDR from Unleashed Inferno, From the Ashes, and Kindling
-    // * consumes Frostfire Empowerment on cast and on hit (which completely breaks it because it snapshots on hit)
-    // * triggers an additional Fire Mastery stack on hit
-    // * triggers an additional Bone Chilling stack on cast (even on failed casts)
+    // * triggers an additional Frost/Fire Mastery on hit rather than on cast
     // * Fractured Frost makes the first projectile hit 3 nearby targets, doesn't care about where the other projectiles are going
     // * extra hits from Fractured Frost don't trigger Bone Chilling
 
-    // TOCHECK when implementing
-    // * rolling DoT
-    // * hasted ticks
-    // * snapshot on hit
-    // * consuming FFE on hit triggers frostfire mastery
-
     parse_options( options_str );
-    // 468655 is the new on-impact spell for FFB
-    if ( !frostfire )
-      enable_calculate_on_impact( 228597 );
-    else
+    if ( frostfire )
       base_execute_time *= 1.0 + p->talents.thermal_conditioning->effectN( 1 ).percent();
+    enable_calculate_on_impact( frostfire ? 468655 : 228597 );
 
     track_shatter = consumes_winters_chill = true;
     triggers.chill = triggers.overflowing_energy = true;
-    triggers.calefaction = TT_MAIN_TARGET;
     base_dd_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_dd_multiplier *= 1.0 + p->talents.wintertide->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
@@ -4943,7 +4927,8 @@ struct frostbolt_t final : public frost_mage_spell_t
     if ( frostfire )
     {
       m *= 1.0 + p()->buffs.severe_temperatures->check_stack_value();
-      m *= 1.0 + p()->buffs.frostfire_empowerment->check_value();
+      if ( p()->state.trigger_ff_empowerment )
+        m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 3 ).percent();
     }
 
     if ( p()->talents.fractured_frost.ok() && p()->buffs.icy_veins->check() )
@@ -4956,7 +4941,7 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     double m = frost_mage_spell_t::composite_crit_chance_multiplier();
 
-    if ( frostfire && p()->buffs.frostfire_empowerment->check() )
+    if ( frostfire && p()->state.trigger_ff_empowerment )
       m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 1 ).percent();
 
     return m;
@@ -8372,7 +8357,6 @@ void mage_t::create_buffs()
                                   ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
                                   ->set_chance( talents.frostfire_mastery.ok() );
   buffs.frostfire_empowerment = make_buff( this, "frostfire_empowerment", find_spell( 431177 ) )
-                                  ->set_default_value_from_effect( 3 )
                                   ->set_trigger_spell( talents.frostfire_empowerment );
   buffs.severe_temperatures   = make_buff( this, "severe_temperatures", find_spell( 431190 ) )
                                   ->set_default_value_from_effect( 1 )
