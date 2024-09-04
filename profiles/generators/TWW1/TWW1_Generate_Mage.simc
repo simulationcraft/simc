@@ -60,8 +60,7 @@ trinket1=arakara_sacbrood,id=219314,ilevel=639
 trinket2=spymasters_web,id=220202,ilevel=639
 main_hand=krixvizks_speech_rod,id=221166,ilevel=639,enchant_id=7460
 
-
-# save=TWW1_Mage_Fire.simc
+save=TWW1_Mage_Fire.simc
 
 # mage="TWW1_Mage_Frost"
 # spec=frost
