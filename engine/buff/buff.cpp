@@ -1155,6 +1155,9 @@ buff_t* buff_t::set_pct_buff_type( stat_pct_buff_type type )
 
 buff_t* buff_t::set_default_value( double value, size_t effect_idx )
 {
+  if ( !s_data->ok() )
+    return this;
+
   // Ensure we are not errantly overwriting a value that is already set to a given effect
   assert( default_value_effect_idx == 0 || default_value_effect_idx == effect_idx );
 
