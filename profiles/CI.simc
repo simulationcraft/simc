@@ -46,10 +46,10 @@ load_default_talents=1
 #load_default_gear=1
 #load_default_talents=1
 
-#evoker=devastation
-#spec=devastation
-#load_default_gear=1
-#load_default_talents=1
+evoker=devastation
+spec=devastation
+load_default_gear=1
+load_default_talents=1
 
 hunter=beast_mastery
 spec=beast_mastery
@@ -131,30 +131,30 @@ load_default_talents=1
 #load_default_gear=1
 #load_default_talents=1
 
-#warlock=affliction
-#spec=affliction
-#load_default_gear=1
-#load_default_talents=1
+warlock=affliction
+spec=affliction
+load_default_gear=1
+load_default_talents=1
 
-#warlock=demonology
-#spec=demonology
-#load_default_gear=1
-#load_default_talents=1
+warlock=demonology
+spec=demonology
+load_default_gear=1
+load_default_talents=1
 
-#warlock=destruction
-#spec=destruction
-#load_default_gear=1
-#load_default_talents=1
+warlock=destruction
+spec=destruction
+load_default_gear=1
+load_default_talents=1
 
-#warrior=arms
-#spec=arms
-#load_default_gear=1
-#load_default_talents=1
+warrior=arms
+spec=arms
+load_default_gear=1
+load_default_talents=1
 
-#warrior=fury
-#spec=fury
-#load_default_gear=1
-#load_default_talents=1
+warrior=fury
+spec=fury
+load_default_gear=1
+load_default_talents=1
 
 #warrior=protection_war
 #spec=protection
