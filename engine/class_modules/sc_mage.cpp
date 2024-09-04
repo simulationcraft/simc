@@ -4453,7 +4453,10 @@ struct fireball_t final : public fire_mage_spell_t
     affected_by.unleashed_inferno = affected_by.flame_accelerant = true;
 
     if ( frostfire )
+    {
       base_execute_time *= 1.0 + p->talents.thermal_conditioning->effectN( 1 ).percent();
+      base_dd_multiplier *= 1.0 + p->spec.fire_mage->effectN( 6 ).percent();
+    }
   }
 
   timespan_t travel_time() const override
