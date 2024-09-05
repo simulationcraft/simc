@@ -1819,6 +1819,18 @@ struct mage_spell_state_t : public action_state_t
   { return action_state_t::composite_ta_multiplier() * composite_frozen_multiplier(); }
 };
 
+// Some Frost(fire) spells snapshot on impact (rather than execute). This is handled via
+// the calculate_on_impact flag.
+//
+// When set to true:
+//   * All snapshot flags are moved from snapshot_flags to impact_flags.
+//   * calculate_result and calculate_direct_amount don't do any calculations.
+//   * On spell impact:
+//     - State is snapshot via frost_mage_spell_t::snapshot_impact_state.
+//     - Result is calculated via frost_mage_spell_t::calculate_impact_result.
+//     - Amount is calculated via frost_mage_spell_t::calculate_impact_direct_amount.
+//
+// The previous functions are virtual and can be overridden when needed.
 struct mage_spell_t : public spell_t
 {
   static const snapshot_state_e STATE_FROZEN     = STATE_TGT_USER_1;
@@ -1879,11 +1891,16 @@ struct mage_spell_t : public spell_t
     target_trigger_type_e unleashed_inferno = TT_NONE;
   } triggers;
 
+  bool calculate_on_impact;
+  unsigned impact_flags;
+
 public:
   mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     spell_t( n, p, s ),
     affected_by(),
-    triggers()
+    triggers(),
+    calculate_on_impact(),
+    impact_flags()
   {
     weapon_multiplier = 0.0;
     affected_by.ice_floes = data().affected_by( p->talents.ice_floes->effectN( 1 ) );
@@ -1965,6 +1982,9 @@ public:
       snapshot_flags |= STATE_FROZEN | STATE_FROZEN_MUL;
       update_flags   |= STATE_FROZEN | STATE_FROZEN_MUL;
     }
+
+    if ( calculate_on_impact )
+      std::swap( snapshot_flags, impact_flags );
 
     if ( !harmful )
       target = player;
@@ -2121,6 +2141,31 @@ public:
       cast_state( s )->totm_factor = composite_target_damage_vulnerability( s->target );
   }
 
+  virtual void snapshot_impact_state( action_state_t* s, result_amount_type rt )
+  { snapshot_internal( s, impact_flags, rt ); }
+
+  double calculate_direct_amount( action_state_t* s ) const override
+  { return calculate_on_impact ? 0.0 : spell_t::calculate_direct_amount( s ); }
+
+  virtual double calculate_impact_direct_amount( action_state_t* s ) const
+  { return spell_t::calculate_direct_amount( s ); }
+
+  result_e calculate_result( action_state_t* s ) const override
+  { return calculate_on_impact ? RESULT_NONE : spell_t::calculate_result( s ); }
+
+  virtual result_e calculate_impact_result( action_state_t* s ) const
+  { return spell_t::calculate_result( s ); }
+
+  void enable_calculate_on_impact( unsigned spell_id )
+  {
+    calculate_on_impact = true;
+    auto spell = player->find_spell( spell_id );
+    for ( const auto& eff : spell->effects() )
+      parse_effect_data( eff );
+    may_crit = !spell->flags( SX_CANNOT_CRIT );
+    tick_may_crit = spell->flags( SX_TICK_MAY_CRIT );
+  }
+
   bool usable_moving() const override
   {
     if ( p()->buffs.ice_floes->check() && affected_by.ice_floes )
@@ -2174,11 +2219,22 @@ public:
 
   void impact( action_state_t* s ) override
   {
+    if ( calculate_on_impact )
+    {
+      // Spells that calculate damage on impact need to snapshot relevant values
+      // right before impact and then recalculate the result and total damage.
+      snapshot_impact_state( s, amount_type( s ) );
+      s->result = calculate_impact_result( s );
+      s->result_amount = calculate_impact_direct_amount( s );
+    }
+
     spell_t::impact( s );
 
     if ( s->result_total <= 0.0 )
       return;
 
+    // TODO: OE now triggers from procs but expires from non-procs. We'll need to
+    // redo triggers.overflowing_energy and properly mark every proc spell in the module.
     if ( callbacks && p()->talents.overflowing_energy.ok() && s->result_type == result_amount_type::DMG_DIRECT && ( s->result == RESULT_CRIT || triggers.overflowing_energy ) )
       p()->trigger_merged_buff( p()->buffs.overflowing_energy, s->result != RESULT_CRIT );
 
@@ -2950,21 +3006,8 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 // Frost Mage Spell
 // ==========================================================================
 
-// Some Frost spells snapshot on impact (rather than execute). This is handled via
-// the calculate_on_impact flag.
-//
-// When set to true:
-//   * All snapshot flags are moved from snapshot_flags to impact_flags.
-//   * calculate_result and calculate_direct_amount don't do any calculations.
-//   * On spell impact:
-//     - State is snapshot via frost_mage_spell_t::snapshot_impact_state.
-//     - Result is calculated via frost_mage_spell_t::calculate_impact_result.
-//     - Amount is calculated via frost_mage_spell_t::calculate_impact_direct_amount.
-//
-// The previous functions are virtual and can be overridden when needed.
 struct frost_mage_spell_t : public mage_spell_t
 {
-  bool calculate_on_impact;
   bool consumes_winters_chill;
 
   proc_t* proc_brain_freeze;
@@ -2974,30 +3017,15 @@ struct frost_mage_spell_t : public mage_spell_t
   bool track_shatter;
   shatter_source_t* shatter_source;
 
-  unsigned impact_flags;
-
   frost_mage_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     mage_spell_t( n, p, s ),
-    calculate_on_impact(),
     consumes_winters_chill(),
     proc_brain_freeze(),
     proc_fof(),
     proc_winters_chill_consumed(),
     track_shatter(),
-    shatter_source(),
-    impact_flags()
+    shatter_source()
   { }
-
-  void init() override
-  {
-    if ( initialized )
-      return;
-
-    mage_spell_t::init();
-
-    if ( calculate_on_impact )
-      std::swap( snapshot_flags, impact_flags );
-  }
 
   void init_finished() override
   {
@@ -3017,31 +3045,6 @@ struct frost_mage_spell_t : public mage_spell_t
   double icicle_sp_coefficient() const
   {
     return p()->cache.mastery() * p()->spec.icicles->effectN( 3 ).sp_coeff();
-  }
-
-  virtual void snapshot_impact_state( action_state_t* s, result_amount_type rt )
-  { snapshot_internal( s, impact_flags, rt ); }
-
-  double calculate_direct_amount( action_state_t* s ) const override
-  { return calculate_on_impact ? 0.0 : mage_spell_t::calculate_direct_amount( s ); }
-
-  virtual double calculate_impact_direct_amount( action_state_t* s ) const
-  { return mage_spell_t::calculate_direct_amount( s ); }
-
-  result_e calculate_result( action_state_t* s ) const override
-  { return calculate_on_impact ? RESULT_NONE : mage_spell_t::calculate_result( s ); }
-
-  virtual result_e calculate_impact_result( action_state_t* s ) const
-  { return mage_spell_t::calculate_result( s ); }
-
-  void enable_calculate_on_impact( unsigned spell_id )
-  {
-    calculate_on_impact = true;
-    auto spell = player->find_spell( spell_id );
-    for ( const auto& eff : spell->effects() )
-      parse_effect_data( eff );
-    may_crit = !spell->flags( SX_CANNOT_CRIT );
-    tick_may_crit = spell->flags( SX_TICK_MAY_CRIT );
   }
 
   void record_shatter_source( const action_state_t* s, shatter_source_t* source )
@@ -3071,15 +3074,6 @@ struct frost_mage_spell_t : public mage_spell_t
 
   void impact( action_state_t* s ) override
   {
-    if ( calculate_on_impact )
-    {
-      // Spells that calculate damage on impact need to snapshot relevant values
-      // right before impact and then recalculate the result and total damage.
-      snapshot_impact_state( s, amount_type( s ) );
-      s->result = calculate_impact_result( s );
-      s->result_amount = calculate_impact_direct_amount( s );
-    }
-
     mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
@@ -4443,9 +4437,6 @@ struct fireball_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, frostfire_ ? p->talents.frostfire_bolt : p->find_specialization_spell( "Fireball" ) ),
     frostfire( frostfire_ )
   {
-    // TODO Frostfire
-    // see frostbolt_t
-
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = TT_ALL_TARGETS;
     triggers.calefaction = triggers.unleashed_inferno = TT_MAIN_TARGET;
@@ -4456,6 +4447,7 @@ struct fireball_t final : public fire_mage_spell_t
     {
       base_execute_time *= 1.0 + p->talents.thermal_conditioning->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->spec.fire_mage->effectN( 6 ).percent();
+      enable_calculate_on_impact( 468655 );
     }
   }
 
@@ -4546,7 +4538,8 @@ struct fireball_t final : public fire_mage_spell_t
     if ( frostfire )
     {
       m *= 1.0 + p()->buffs.severe_temperatures->check_stack_value();
-      m *= 1.0 + p()->buffs.frostfire_empowerment->check_value();
+      if ( p()->state.trigger_ff_empowerment )
+        m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 3 ).percent();
     }
 
     return m;
@@ -4556,7 +4549,7 @@ struct fireball_t final : public fire_mage_spell_t
   {
     double m = fire_mage_spell_t::composite_crit_chance_multiplier();
 
-    if ( frostfire && p()->buffs.frostfire_empowerment->check() )
+    if ( frostfire && p()->state.trigger_ff_empowerment )
       m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 1 ).percent();
 
     return m;
@@ -4865,32 +4858,17 @@ struct frostbolt_t final : public frost_mage_spell_t
     fractured_frost_mul()
   {
     // TODO Frostfire
-    // This spell is now extremely buggy, not sure if it's worth implementing at this point
-    // * doesn't trigger on-hit effects like Overflowing Energy, Frostfire Infusion, Frostfire Empowerment, presumably trinkets as well
-    // * doesn't trigger or consume Pyrotechnics and Firefall
-    // * doesn't trigger the CDR from Unleashed Inferno, From the Ashes, and Kindling
-    // * consumes Frostfire Empowerment on cast and on hit (which completely breaks it because it snapshots on hit)
-    // * triggers an additional Fire Mastery stack on hit
-    // * triggers an additional Bone Chilling stack on cast (even on failed casts)
+    // * triggers an additional Frost/Fire Mastery on hit rather than on cast
     // * Fractured Frost makes the first projectile hit 3 nearby targets, doesn't care about where the other projectiles are going
     // * extra hits from Fractured Frost don't trigger Bone Chilling
 
-    // TOCHECK when implementing
-    // * rolling DoT
-    // * hasted ticks
-    // * snapshot on hit
-    // * consuming FFE on hit triggers frostfire mastery
-
     parse_options( options_str );
-    // 468655 is the new on-impact spell for FFB
-    if ( !frostfire )
-      enable_calculate_on_impact( 228597 );
-    else
+    if ( frostfire )
       base_execute_time *= 1.0 + p->talents.thermal_conditioning->effectN( 1 ).percent();
+    enable_calculate_on_impact( frostfire ? 468655 : 228597 );
 
     track_shatter = consumes_winters_chill = true;
     triggers.chill = triggers.overflowing_energy = true;
-    triggers.calefaction = TT_MAIN_TARGET;
     base_dd_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
     base_dd_multiplier *= 1.0 + p->talents.wintertide->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
@@ -4951,7 +4929,8 @@ struct frostbolt_t final : public frost_mage_spell_t
     if ( frostfire )
     {
       m *= 1.0 + p()->buffs.severe_temperatures->check_stack_value();
-      m *= 1.0 + p()->buffs.frostfire_empowerment->check_value();
+      if ( p()->state.trigger_ff_empowerment )
+        m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 3 ).percent();
     }
 
     if ( p()->talents.fractured_frost.ok() && p()->buffs.icy_veins->check() )
@@ -4964,7 +4943,7 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     double m = frost_mage_spell_t::composite_crit_chance_multiplier();
 
-    if ( frostfire && p()->buffs.frostfire_empowerment->check() )
+    if ( frostfire && p()->state.trigger_ff_empowerment )
       m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 1 ).percent();
 
     return m;
@@ -5533,7 +5512,6 @@ struct ice_nova_t final : public frost_mage_spell_t
     excess( excess_ )
   {
     parse_options( options_str );
-    consumes_winters_chill = true;
     aoe = -1;
     // TODO: currently deals full damage to all targets, probably a bug
     if ( !p->bugs )
@@ -8380,7 +8358,6 @@ void mage_t::create_buffs()
                                   ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
                                   ->set_chance( talents.frostfire_mastery.ok() );
   buffs.frostfire_empowerment = make_buff( this, "frostfire_empowerment", find_spell( 431177 ) )
-                                  ->set_default_value_from_effect( 3 )
                                   ->set_trigger_spell( talents.frostfire_empowerment );
   buffs.severe_temperatures   = make_buff( this, "severe_temperatures", find_spell( 431190 ) )
                                   ->set_default_value_from_effect( 1 )

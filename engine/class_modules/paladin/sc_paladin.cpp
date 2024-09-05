@@ -2400,6 +2400,15 @@ struct sacred_weapon_proc_damage_t : public paladin_spell_t
       m *= 1.5;
     return m;
   }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = paladin_spell_t::composite_da_multiplier( s );
+    // If we're faking Solidarity, we double the amount 
+    if ( p()->talents.lightsmith.solidarity->ok() && p()->options.fake_solidarity )
+      m *= 2.0;
+    return m;
+  }
 };
 
 struct sacred_weapon_proc_heal_t : public paladin_heal_t
@@ -2417,6 +2426,15 @@ struct sacred_weapon_proc_heal_t : public paladin_heal_t
     double m = paladin_heal_t::composite_aoe_multiplier( state );
     // If Sacred Weapon heal hits only 1 target, it's healing is increased by 100%
     if ( state->n_targets == 1 )
+      m *= 2.0;
+    return m;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = paladin_heal_t::composite_da_multiplier( s );
+    // If we're faking Solidarity, we double the amount 
+    if ( p()->talents.lightsmith.solidarity->ok() && p()->options.fake_solidarity )
       m *= 2.0;
     return m;
   }
@@ -2525,7 +2543,7 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, bo
   nextArmament->execute_on_target( target );
   sim->print_debug( "Player {} cast Holy Armaments on {}", name(), target->name() );
 
-  if ( talents.lightsmith.solidarity->ok() )
+  if ( talents.lightsmith.solidarity->ok() && !options.fake_solidarity )
   {
     if ( target != this )
     {
@@ -4984,6 +5002,7 @@ void paladin_t::create_options()
   add_option( opt_int( "min_dg_heal_targets", options.min_dg_heal_targets, 0, 5 ) );
   add_option( opt_int( "max_dg_heal_targets", options.max_dg_heal_targets, 0, 5 ) );
   add_option( opt_bool( "sacred_weapon_prefer_new_targets", options.sacred_weapon_prefer_new_targets ) );
+  add_option( opt_bool( "fake_solidarity", options.fake_solidarity ) );
 
   player_t::create_options();
 }

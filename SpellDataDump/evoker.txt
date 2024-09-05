@@ -15359,6 +15359,7 @@ Description      : $?s403631[Breath of Eons][Deep Breath] can now be steered in 
 In addition, $?s403631[Breath of Eons][Deep Breath] burns targets for $441172o1 Volcanic damage over $441172d.
 
 Name             : Deep Breath (desc=Black) (id=433874) [Spell Family (224)] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Firestorm
 Spell Type       : Magic
@@ -15375,7 +15376,7 @@ Labels           : 16: Class Spells
                  : 3022
 Affecting spells : Recall (371807 effect#2), Onyx Legacy (386348 effect#1), Recall (403760 effect#2), Recall (455962 effect#1)
 Family Flags     : 9
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15383,7 +15384,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Display Range (126), Always Line of Sight (185), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Reset cooldown upon ending an encounter (333), Face Destination (395), Nameplate Personal Buffs/Debuffs (423)
+                 : Not Shapeshifted (16), Immunity to Hostile & Friendly Effects (48), Do Not Display Range (126), Always Line of Sight (185), Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Reset cooldown upon ending an encounter (333), Face Destination (395), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1123474)  : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -15407,6 +15408,9 @@ Effects          :
                    Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Misc Value: 38 | Target: Self (1)
 #11 (id=1153735)  : Apply Aura (6) | Resist Forced Movement% (485)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Target: Self (1)
+#12 (id=1184753)  : Apply Aura (6) | Modify Min Speed% (305)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Take in a deep breath and fly forward, spewing molten cinders dealing $353759o1 Volcanic damage to enemies in your path.
 
 Removes all root effects. You are immune to movement impairing and loss of control effects while flying.$?s395153[
@@ -16284,6 +16288,9 @@ Effects          :
                    Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Misc Value: 38 | Target: Self (1)
 #11 (id=1153736)  : Apply Aura (6) | Resist Forced Movement% (485)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Target: Self (1)
+#12 (id=1184754)  : Apply Aura (6) | Modify Min Speed% (305)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : Take in a deep breath and fly to the targeted location, spewing molten cinders dealing $353759o1 Volcanic damage to enemies in your path.
 
 Removes all root effects. You are immune to movement impairing and loss of control effects while flying.$?s395153[
