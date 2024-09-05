@@ -6555,6 +6555,9 @@ struct bestial_wrath_t: public hunter_spell_t
     parse_options( options_str );
 
     precast_time = clamp( precast_time, 0_ms, data().duration() );
+  
+    //Can be cast precombat without it being harmful 
+    harmful = false; 
   }
 
   void init_finished() override
@@ -6563,6 +6566,9 @@ struct bestial_wrath_t: public hunter_spell_t
       add_pet_stats( pet, { "bestial_wrath" } );
 
     hunter_spell_t::init_finished();
+
+    //Any casts after precombat are considered harmful
+    harmful = !is_precombat;
   }
 
   void execute() override
