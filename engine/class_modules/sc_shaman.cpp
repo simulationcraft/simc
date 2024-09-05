@@ -5834,7 +5834,9 @@ struct chain_lightning_t : public chained_base_t
     if ( state->chain_target == 0 && p()->talent.conductive_energy.ok() &&
          p()->specialization() == SHAMAN_ENHANCEMENT )
     {
-      td( execute_state->target )->debuff.lightning_rod->trigger();
+      make_event( *sim, [ this ]() {
+        td( execute_state->target )->debuff.lightning_rod->trigger();
+      });
     }
   }
 
@@ -9625,7 +9627,9 @@ struct tempest_t : public shaman_spell_t
          ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.conductive_energy.ok() &&
            p()->talent.lightning_rod.ok() ) ) )
     {
-      td( execute_state->target )->debuff.lightning_rod->trigger();
+      make_event( *sim, [ this ]() {
+        td( execute_state->target )->debuff.lightning_rod->trigger();
+      });
     }
   }
 
