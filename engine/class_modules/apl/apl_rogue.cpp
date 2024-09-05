@@ -233,7 +233,7 @@ void outlaw( player_t* p )
   cds->add_action( "keep_it_rolling,if=rtb_buffs>=4&(rtb_buffs.min_remains<2|buff.broadside.up)", "Use Keep it Rolling with any 4 buffs. If Broadside is not active, then wait until just before the lowest buff expires in an attempt to obtain it from Count the Odds." );
   cds->add_action( "ghostly_strike,if=combo_points<cp_max_spend" );
   cds->add_action( "use_item,name=imperfect_ascendancy_serum,if=!stealthed.all|fight_remains<=22", "Trinkets that should not be used during stealth and have higher priority than entering stealth" );
-  cds->add_action( "use_item,name=mad_queens_mandate,use_off_gcd=1,if=gcd.remains<=action.sinister_strike.gcd%2&(!stealthed.all|fight_remains<=5)" );
+  cds->add_action( "use_item,name=mad_queens_mandate,if=!stealthed.all|fight_remains<=5" );
   cds->add_action( "killing_spree,if=variable.finish_condition&!stealthed.all", "Killing Spree has higher priority than stealth cooldowns" );
   cds->add_action( "call_action_list,name=stealth_cds,if=!stealthed.all&(!talent.crackshot|cooldown.between_the_eyes.ready)", "Crackshot builds use stealth cooldowns if Between the Eyes is ready" );
   cds->add_action( "thistle_tea,if=!buff.thistle_tea.up&(energy.base_deficit>=150|fight_remains<charges*6)" );

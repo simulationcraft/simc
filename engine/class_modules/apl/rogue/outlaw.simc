@@ -73,7 +73,7 @@ actions.cds+=/keep_it_rolling,if=rtb_buffs>=4&(rtb_buffs.min_remains<2|buff.broa
 actions.cds+=/ghostly_strike,if=combo_points<cp_max_spend
 # Trinkets that should not be used during stealth and have higher priority than entering stealth
 actions.cds+=/use_item,name=imperfect_ascendancy_serum,if=!stealthed.all|fight_remains<=22
-actions.cds+=/use_item,name=mad_queens_mandate,use_off_gcd=1,if=gcd.remains<=action.sinister_strike.gcd%2&(!stealthed.all|fight_remains<=5)
+actions.cds+=/use_item,name=mad_queens_mandate,if=!stealthed.all|fight_remains<=5
 # Killing Spree has higher priority than stealth cooldowns
 actions.cds+=/killing_spree,if=variable.finish_condition&!stealthed.all
 # Crackshot builds use stealth cooldowns if Between the Eyes is ready
