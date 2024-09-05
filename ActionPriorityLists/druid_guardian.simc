@@ -9,6 +9,7 @@ actions.mitigation+=/frenzied_regeneration,if=buff.bear_form.up&buff.frenzied_re
 actions.mitigation+=/renewal,if=health.pct<65
 actions.mitigation+=/survival_instincts,if=buff.survival_instincts.down&buff.barkskin.down&health.pct<60&incoming_damage_5s>0.25*health.max
 
+
 ########################################
 
 actions.precombat=flask
@@ -41,6 +42,7 @@ actions.bear+=/moonfire,cycle_targets=1,if=refreshable&target.time_to_die>12&act
 actions.bear+=/thrash_bear,if=refreshable|dot.thrash_bear.stack<3+talent.flashing_claws.rank
 
 actions.bear+=/pulverize
+actions.bear+=/barkskin
 actions.bear+=/bristling_fur,if=cooldown.rage_of_the_sleeper.remains>8
 
 actions.bear+=/heart_of_the_wild,if=!variable.ripweaving
@@ -52,6 +54,7 @@ actions.bear+=/rage_of_the_sleeper,if=(cooldown.incarnation_guardian_of_ursoc.re
 actions.bear+=/berserking,if=buff.incarnation_guardian_of_ursoc.up|buff.berserk_bear.up
 
 actions.bear+=/ironfur,if=!buff.ravage.up&variable.ironfur_spam&(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains>2)
+actions.bear+=/ironfur,if=!buff.ravage.up&rage.deficit<=(12+4*buff.gore.up+5*talent.soul_of_the_forest.enabled)<?(talent.blood_frenzy.enabled*3*(active_enemies>?5))
 
 actions.bear+=/maul,if=buff.ravage.up
 actions.bear+=/call_action_list,name=preweave,if=variable.ripweaving&!buff.ravage.up&active_enemies<=2&energy>60&(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains<=52)&buff.feline_potential_counter.stack=6
@@ -72,8 +75,6 @@ actions.bear+=/maul,if=buff.tooth_and_claw.stack=1&!(talent.ravage.enabled&varia
 
 actions.bear+=/raze,if=cooldown.rage_of_the_sleeper.remains>2&active_enemies>=2&(talent.ravage.enabled)
 # actions.bear+=/maul,if=cooldown.rage_of_the_sleeper.remains>2&active_enemies<=5
-
-actions.bear+=/ironfur,if=!buff.ravage.up&rage.deficit<=(12+4*buff.gore.up+5*talent.soul_of_the_forest.enabled)<?(talent.blood_frenzy.enabled*3*(active_enemies>?5))
 
 actions.bear+=/call_action_list,name=generator,if=!talent.ravage.enabled
 #,if=buff.rage_of_the_sleeper.up
