@@ -606,7 +606,7 @@ void monk_action_t<Base>::execute()
       p()->buff.tiger_strikes->decrement();
   }
 
-  if ( p()->buff.jadefire_stomp->up() && trigger_jadefire_stomp && p()->buff.jadefire_stomp_reset->ok() )
+  if ( p()->buff.jadefire_stomp->up() && trigger_jadefire_stomp && p()->buff.jadefire_stomp_reset->data().ok() )
   {
     double reset_value = p()->buff.jadefire_stomp_reset->data().effectN( 2 ).percent();
 
