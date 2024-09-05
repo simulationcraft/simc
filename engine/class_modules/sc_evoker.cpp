@@ -1832,7 +1832,8 @@ public:
   //   parse_effects( buff3, [ this ] { return p()->check2() && p()->check3(); } );
   void apply_buff_effects()
   {
-    parse_effects( p()->buff.ancient_flame );
+    auto af_mask = effect_mask_t( true ).disable( 2 );
+    parse_effects( p()->buff.ancient_flame, af_mask );
     parse_effects( p()->buff.burnout );
     parse_effects( p()->buff.essence_burst, p()->talent.ignition_rush );
     parse_effects( p()->buff.snapfire );
@@ -2852,7 +2853,7 @@ struct verdant_embrace_t : public evoker_heal_t
       add_child( panacea );
     }
 
-    void impact(action_state_t* s) override
+    void impact( action_state_t* s ) override
     {
       evoker_heal_t::impact( s );
       if ( panacea )
