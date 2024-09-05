@@ -53,7 +53,7 @@ save=TWW1_Warrior_Fury.simc
 
 warrior="TWW1_Warrior_Protection"
 level=80
-race=draenei
+race=mechagnome
 spec=protection
 role=tank
 position=front
