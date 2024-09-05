@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56421
-static const std::array<spelltext_data_t, 26336> __spelltext_data { {
+static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26336,6 +26336,8 @@ static const std::array<spelltext_data_t, 26336> __spelltext_data { {
   { 468655, "Launches a bolt of frostfire at the enemy, causing $s1 Frostfire damage, slowing movement speed by $s3%, and causing an additional $o2 Frostfire damage over $d.\r\n\r\nFrostfire Bolt generates stacks for both Fire Mastery and Frost Mastery.", "Movement speed reduced by $w3% and receiving $w2 damage every $t2 sec.", 0 },
   { 469347, "$@spelldesc358267", 0, 0 },
   { 469637, "$@spelldesc457058", "Your next $?c1[Envenom][Eviscerate] cast with maximum combo points is guaranteed to critically strike, deal $w2% additional damage, and apply $w3 stacks of Deathstalker's Mark to the target.", 0 },
+  { 469991, "Place a Sigil of Flame at the target location that activates after $d.\r\n\r\nDeals $204598s1 $@spelldesc395020 damage, and an additional $204598o3 $@spelldesc395020 damage over $204598d, to all enemies affected by the sigil.\r\n\r\n|CFFffffffGenerates $389787s1 Fury.|R", "Sigil of Flame is active.", 0 },
+  { 469995, "$@spelldesc452402", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56421
