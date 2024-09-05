@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56421
-static const std::array<spelltext_data_t, 26339> __spelltext_data { {
+static const std::array<spelltext_data_t, 26336> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -22022,7 +22022,6 @@ static const std::array<spelltext_data_t, 26339> __spelltext_data { {
   { 417712, "Increases your damage and healing by $417714s1% during the day.\r\n\r\nIncreases your Versatility by $417715s1% during the night.", 0, 0 },
   { 417714, "Increases your damage and healing by $s1% during the day.", "Damage and healing increased by $s1%.", 0 },
   { 417715, "Increases your Versatility by $s1% during the night.", "Versatility increased by $s1%.", 0 },
-  { 417775, "Add a Downy Liner and Crystal Ocular Lenses to the Thought Calculating Apparatus.", 0, 0 },
   { 417792, "$@spelldesc417534", 0, 0 },
   { 417855, "Holy Shock, Holy Light, and Flash of Light critical healing increased by $s1%.", 0, 0 },
   { 417875, "$@spelldesc324536", 0, 0 },
@@ -23127,7 +23126,6 @@ static const std::array<spelltext_data_t, 26339> __spelltext_data { {
   { 434598, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
   { 434635, "Call down a demon-infested meteor from the depths of the Twisting Nether, dealing $434636s1 Chaos damage on impact to all enemies within $434636a1 yds of the target$?s137046[ and summoning $433885s3 Diabolic Imp.\r\n\r\nDamage is further increased by your critical strike chance and is reduced beyond $s2 targets.][ and summoning $433885s2 Wild Imps.\r\n\r\nDamage is reduced beyond $s2 targets.]", 0, 0 },
   { 434636, "$@spelldesc434635", 0, 0 },
-  { 434651, "Break.", 0, 0 },
   { 434674, "$@spelldesc433901", 0, 0 },
   { 434679, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF16 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
   { 434681, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF14 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
@@ -23450,7 +23448,6 @@ static const std::array<spelltext_data_t, 26339> __spelltext_data { {
   { 440474, "$@spelldesc163201", 0, 0 },
   { 440476, "When you suffer a damaging effect equal to $s1% of your maximum health, you instantly cast Death Pact at $s3% effectiveness. May only occur every $s2 min.\r\n\r\nWhen a Reaper's Mark explodes, the cooldowns of this effect and Death Pact are reduced by $s4 sec.", 0, 0 },
   { 440537, "Awaken the power within Nasz'uro, the Unbound Legacy, increasing its item level to $s1 and allowing it to be upgraded further.\r\n", 0, 0 },
-  { 440552, "$@spelldesc153626", 0, 0 },
   { 440572, "Awaken the power within Fyr'alath the Dreamrender, increasing its item level to $s1 and allowing it to be upgraded further.", 0, 0 },
   { 440592, "$@spelldesc163201", 0, 0 },
   { 440598, "$@spelldesc5308", 0, 0 },
