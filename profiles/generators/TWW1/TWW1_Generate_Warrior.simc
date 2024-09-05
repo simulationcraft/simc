@@ -72,7 +72,7 @@ feet=warsculptors_carved_boots,id=211986,ilevel=639,enchant=defenders_march_3
 finger1=devout_zealots_ring,id=221136,bonus_id=10879,gem_id=213479/213479,enchant=radiant_haste_3
 finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,gem_id=213479/213479,enchant=radiant_haste_3
 trinket1=ara_kara_sacbrood,id=219314,ilevel=639
-trinket1=mad_queens_mandate,id=212454,ilevel=639
+trinket2=mad_queens_mandate,id=212454,ilevel=639
 main_hand=duelists_dancing_steel,id=212392,ilevel=639,enchant=authority_of_the_depths_3
 off_hand=crest_of_the_caustic_despot,id=225579,ilevel=639
 
