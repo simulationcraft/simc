@@ -52,7 +52,7 @@ trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
 main_hand=ansureks_final_judgment,id=212401,ilevel=639,enchant=rune_of_the_stoneskin_gargoyle
 off_hand=charged_slicer,id=222451,bonus_id=11144/9627/9633/8902/10222/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=49/32
 
-save="TWW1_Death_Knight_Frost_Breath_Deathbringer.simc"
+save="TWW1_Death_Knight_Frost.simc"
 
 deathknight="TWW1_Death_Knight_Frost_Shattering_Deathbringer"
 spec=frost
