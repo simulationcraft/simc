@@ -588,7 +588,7 @@ void monk_action_t<Base>::execute()
 
   trigger_storm_earth_and_fire( this );
 
-  if ( p()->buff.jadefire_stomp->up() && trigger_jadefire_stomp && p()->buff.jadefire_stomp_reset->ok() )
+  if ( p()->buff.jadefire_stomp->up() && trigger_jadefire_stomp && p()->buff.jadefire_stomp_reset->data().ok() )
   {
     double reset_value = p()->buff.jadefire_stomp_reset->data().effectN( 2 ).percent();
 
