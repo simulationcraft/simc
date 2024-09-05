@@ -1,6 +1,12 @@
 actions+=/skull_bash
 actions+=/soothe
+actions+=/call_action_list,name=mitigation
 
+actions.mitigation+=/ironfur,if=tanking&incoming_damage_5s>0.1*health.max&buff.ironfur.remains<2
+actions.mitigation+=/regrowth,if=health.pct<65
+actions.mitigation+=/frenzied_regeneration,if=buff.frenzied_regeneration.down&health.pct<65
+actions.mitigation+=/renewal,if=health.pct<65
+actions.mitigation+=/survival_instincts,if=buff.survival_instincts.down&buff.barkskin.down&health.pct<60&incoming_damage_5s>0.25*health.max
 
 ########################################
 
