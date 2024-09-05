@@ -9386,14 +9386,25 @@ void mage_t::trigger_spellfire_spheres()
 
   buffs.spellfire_spheres->trigger();
 
-  if ( buffs.spellfire_spheres->check() >= max_stacks )
+  auto check_stacks = [ this, s = max_stacks ]
   {
-    if ( talents.ignite_the_future.ok() && pets.arcane_phoenix && !pets.arcane_phoenix->is_sleeping() && !buffs.spellfire_sphere->at_max_stacks() )
-      debug_cast<pets::arcane_phoenix::arcane_phoenix_pet_t*>( pets.arcane_phoenix )->exceptional_spells_remaining++;
-    buffs.spellfire_sphere->trigger();
-    buffs.spellfire_spheres->expire();
-    buffs.burden_of_power->trigger();
-  }
+    if ( buffs.spellfire_spheres->check() >= s )
+    {
+      if ( talents.ignite_the_future.ok() && pets.arcane_phoenix && !pets.arcane_phoenix->is_sleeping() && !buffs.spellfire_sphere->at_max_stacks() )
+        debug_cast<pets::arcane_phoenix::arcane_phoenix_pet_t*>( pets.arcane_phoenix )->exceptional_spells_remaining++;
+      buffs.spellfire_sphere->trigger();
+      buffs.spellfire_spheres->expire();
+      buffs.burden_of_power->trigger();
+    }
+  };
+
+  // For Arcane, casting Arcane Blast and Arcane Barrage together results in both stacks of spellfire_spheres
+  // being applied before they are consumed. This can be handled with a delay here. This does not work for Firek
+  // because Pyroblast will consume the Burden of Power that was applied by the Hot Streak that it just consumed.
+  if ( specialization() == MAGE_FIRE )
+    check_stacks();
+  else
+    make_event( *sim, 15_ms, check_stacks );
 }
 
 void mage_t::consume_burden_of_power()
