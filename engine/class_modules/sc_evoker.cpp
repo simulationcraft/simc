@@ -3986,7 +3986,7 @@ struct deep_breath_t : public evoker_spell_t
     travel_speed = 19.5;  // guesstimate, TODO: confirm
 
     trigger_gcd = p->talent.scalecommander.maneuverability.ok() ? 1.5_s : 2_s;
-    gcd_type    = gcd_haste_type::NONE;
+    gcd_type    = p->talent.scalecommander.maneuverability.ok() ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
 
     if ( data().ok() )
     {
@@ -5695,7 +5695,7 @@ struct breath_of_eons_t : public evoker_spell_t
     travel_speed = 19.5;  // guesstimate, TODO: confirm
 
     trigger_gcd = p->talent.scalecommander.maneuverability.ok() ? 1.5_s : 2_s;
-    gcd_type    = gcd_haste_type::NONE;
+    gcd_type    = p->talent.scalecommander.maneuverability.ok() ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
 
     aoe = -1;
 
