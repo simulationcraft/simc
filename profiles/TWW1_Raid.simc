@@ -24,13 +24,13 @@ TWW1_Evoker_Devastation.simc
 
 # TWW1_Mage_Fire.simc
 # TWW1_Mage_Frost.simc
-#TWW1_Mage_Arcane.simc
+TWW1_Mage_Arcane.simc
 
 # TWW1_Monk_Brewmaster.simc
 # TWW1_Monk_Brewmaster_Niuzao.simc
 # TWW1_Monk_Windwalker.simc
 
-#TWW1_Paladin_Protection.simc
+TWW1_Paladin_Protection.simc
 # TWW1_Paladin_Retribution.simc
 # TWW1_Paladin_Retribution_CS.simc
 
