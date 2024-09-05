@@ -366,7 +366,7 @@ void frost( player_t* p )
   variables->add_action( "variable,name=pooling_runes,value=rune<variable.oblit_rune_pooling&talent.obliteration&(!talent.breath_of_sindragosa|variable.true_breath_cooldown)&cooldown.pillar_of_frost.remains<variable.oblit_pooling_time" );
   variables->add_action( "variable,name=pooling_runic_power,value=talent.breath_of_sindragosa&variable.true_breath_cooldown<variable.breath_pooling_time|talent.obliteration&runic_power<35&cooldown.pillar_of_frost.remains<variable.oblit_pooling_time" );
   variables->add_action( "variable,name=ga_priority,value=(!talent.shattered_frost&talent.shattering_blade&active_enemies>=4)|(!talent.shattered_frost&!talent.shattering_blade&active_enemies>=2)" );
-  variables->add_action( "variable,name=breath_dying,value=runic_power<variable.breath_rp_cost*2&rune.time_to_2>runic_power%variable.breath_rp_cost" );
+  variables->add_action( "variable,name=breath_dying,value=runic_power<variable.breath_rp_cost*2*gcd.max&rune.time_to_2>runic_power%variable.breath_rp_cost" );
 }
 //frost_apl_end
 
