@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56313
-static const std::array<spelltext_data_t, 26328> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 26334> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -24472,6 +24472,7 @@ static const std::array<spelltext_data_t, 26328> __ptr_spelltext_data { {
   { 450432, "Paralysis now removes all Enrage effects from its target.", 0, 0 },
   { 450448, "Reduces the cooldown of Ring of Peace by ${$s1/-1000} sec and Song of Chi-Ji's cast time is reduced by ${$s2/-1000}.1 sec.", 0, 0 },
   { 450453, "$@spelldesc446764", "Your next melee attack will inflict additional Fire damage.", 0 },
+  { 450461, "Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].$?a383669[\r\n\r\nPyroblast's initial damage is increased by $383669s1% when the target is above $383669s3% health or below $383669s2% health.][]", 0, 0 },
   { 450462, "Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage. Deals reduced damage beyond $s3 targets.$?a205037[\r\n\r\nLeaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d.][]", "Movement speed slowed by $s2%.", 0 },
   { 450499, "Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. ", 0, 0 },
   { 450503, "The duration of snare effects on you is reduced by $s1%.", 0, 0 },
@@ -24707,6 +24708,11 @@ static const std::array<spelltext_data_t, 26328> __ptr_spelltext_data { {
   { 451905, "Deals a small amount of Nature damage to the target.", 0, 0 },
   { 451910, "Deals a small amount of Nature damage to the target.", 0, 0 },
   { 451911, "Deals a small amount of Nature damage to the target.", 0, 0 },
+  { 451916, "Increases Haste by $s1.", "Haste increased by $w1.", 0 },
+  { 451917, "Increases Versatility by $s1.", "Versatility increased by $w1.", 0 },
+  { 451918, "Increases Critical Strike by $s1.", "Critical strike increased by $w1.", 0 },
+  { 451920, "Increases Mastery by $s1.", "Mastery increased by $w1.", 0 },
+  { 451921, "Increases Stamina by $s1.", "Stamina increased by $w1.", 0 },
   { 451924, "$@spelldesc443529", "Absorbs $s2% of damage taken, up to $w1.", 0 },
   { 451925, "Coat your weapon in an oil that emits a warm light. The oil has a chance to resonate with your healing, healing an additional $451933s1 Health to the target.\r\n\r\nLasts $M2 min.", 0, 0 },
   { 451926, "Coat your weapon in an oil that emits a warm light. The oil has a chance to resonate with your healing, healing an additional $451928s1 Health to the target.\r\n\r\nLasts $M2 min.\r\n", 0, 0 },
