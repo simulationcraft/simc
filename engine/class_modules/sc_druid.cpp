@@ -8129,9 +8129,9 @@ struct starfire_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
     }
   }
 
-  void init_finished() override
+  void init() override
   {
-    base_t::init_finished();
+    base_t::init();
 
     // for precombat we hack it to manually energize 100ms later to get around AP capping on combat start
     if ( is_precombat && energize_resource_() == RESOURCE_ASTRAL_POWER )
@@ -8261,10 +8261,6 @@ struct starsurge_t final : public ap_spender_t
 
   void init() override
   {
-    // Need to set is_precombat first to bypass action_t::init() checks
-    if ( action_list && action_list->name_str == "precombat" )
-      is_precombat = true;
-
     base_t::init();
 
     if ( is_precombat )
@@ -8272,12 +8268,11 @@ struct starsurge_t final : public ap_spender_t
       moonkin_form_in_precombat = range::any_of( p()->precombat_action_list, []( action_t* a ) {
         return util::str_compare_ci( a->name(), "moonkin_form" );
       } );
-    }
-  }
 
-  timespan_t travel_time() const override
-  {
-    return is_precombat ? 100_ms : base_t::travel_time();
+      // hardcode travel time to 100ms
+      travel_speed = 0.0;
+      min_travel_time = 0.1;
+    }
   }
 
   bool ready() override
