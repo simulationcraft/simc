@@ -1,71 +1,106 @@
+actions+=/skull_bash
+actions+=/soothe
 
-# This default action priority list is automatically created based on your character.
-# It is a attempt to provide you with a action list that is both simple and practicable,
-# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
-# Feel free to edit, adapt and improve it to your own needs.
-# SimulationCraft is always looking for updates and improvements to the default action lists.
 
-# Guardian APL can be found at https://www.dreamgrove.gg/sims/bear/guardian.txt
+########################################
 
-# Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
-# Snapshot raid buffed stats before combat begins and pre-potting is done.
-actions.precombat+=/snapshot_stats
-# Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat+=/variable,name=If_build,value=1,value_else=0,if=talent.thorns_of_iron.enabled&talent.reinforced_fur.enabled
-actions.precombat+=/variable,name=ripweaving,value=1,value_else=0,if=talent.primal_fury.enabled&talent.fluid_form.enabled&talent.wildpower_surge.enabled
-actions.precombat+=/heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&!talent.rip.enabled
-actions.precombat+=/bear_form
 
-# Executed every time the actor is available.
-# Executed every time the actor is available.
+actions.precombat+=/snapshot_stats
+
 actions=auto_attack,if=!buff.prowl.up
+
+########################################
+
+
+actions.precombat+=/bear_form
+actions.precombat+=/mark_of_the_wild
+actions.precombat+=/variable,name=ironfur_spam,value=1,value_else=0,if=talent.thorns_of_iron.enabled&talent.reinforced_fur.enabled
+actions.precombat+=/variable,name=ripweaving,value=1,value_else=0,if=talent.rip.enabled&talent.fluid_form.enabled&talent.wildpower_surge.enabled
+actions.precombat+=/variable,name=use_cat_filler,value=1,value_else=0,if=variable.ripweaving&talent.primal_fury.enabled
+actions.precombat+=/heart_of_the_wild,if=!variable.ripweaving
+
+
 actions+=/use_item,slot=trinket1
 actions+=/use_item,slot=trinket2
 actions+=/potion,if=(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)
+actions+=/run_action_list,name=cat,if=buff.cat_form.up
 actions+=/run_action_list,name=bear
 
-actions.bear=maul,if=buff.ravage.up&active_enemies>1
-actions.bear+=/heart_of_the_Wild,if=(talent.heart_of_the_wild.enabled&!talent.rip.enabled)|talent.heart_of_the_wild.enabled&buff.feline_potential_counter.stack=6&active_enemies<3
-actions.bear+=/moonfire,cycle_targets=1,if=buff.bear_form.up&(((!ticking&target.time_to_die>12)|(refreshable&target.time_to_die>12))&active_enemies<7&talent.fury_of_nature.enabled)|(((!ticking&target.time_to_die>12)|(refreshable&target.time_to_die>12))&active_enemies<4&!talent.fury_of_nature.enabled)
-actions.bear+=/thrash_bear,target_if=refreshable|(dot.thrash_bear.stack<5&talent.flashing_claws.rank=2|dot.thrash_bear.stack<4&talent.flashing_claws.rank=1|dot.thrash_bear.stack<3&!talent.flashing_claws.enabled)
-actions.bear+=/bristling_fur,if=!cooldown.pause_action.remains&cooldown.rage_of_the_sleeper.remains>8
-actions.bear+=/barkskin,if=buff.bear_form.up
-actions.bear+=/lunar_beam
-actions.bear+=/convoke_the_spirits,if=(talent.wildpower_surge.enabled&buff.cat_form.up&buff.feline_potential.up)|!talent.wildpower_surge.enabled
-actions.bear+=/berserk_bear
+
+actions.bear+=/moonfire,cycle_targets=1,if=refreshable&target.time_to_die>12&active_enemies<=3+3*talent.fury_of_nature.enabled
+actions.bear+=/thrash_bear,if=refreshable|dot.thrash_bear.stack<3+talent.flashing_claws.rank
+
+actions.bear+=/pulverize
+actions.bear+=/barkskin
+actions.bear+=/bristling_fur,if=cooldown.rage_of_the_sleeper.remains>8
+
+actions.bear+=/heart_of_the_wild,if=!variable.ripweaving
+actions.bear+=/convoke_the_spirits,if=!variable.ripweaving
 actions.bear+=/incarnation
-actions.bear+=/rage_of_the_sleeper,if=(((buff.incarnation_guardian_of_ursoc.down&cooldown.incarnation_guardian_of_ursoc.remains>60)|buff.berserk_bear.down)&rage>40&(!talent.convoke_the_spirits.enabled)|(buff.incarnation_guardian_of_ursoc.up|buff.berserk_bear.up)&rage>40&(!talent.convoke_the_spirits.enabled)|(talent.convoke_the_spirits.enabled)&rage>40)
-actions.bear+=/berserking,if=(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)
-actions.bear+=/maul,if=buff.ravage.up&active_enemies<2
-actions.bear+=/raze,if=(buff.tooth_and_claw.stack>1|buff.tooth_and_claw.remains<1+gcd)&variable.If_build=1&active_enemies>1
-actions.bear+=/thrash_bear,if=active_enemies>=5&talent.lunar_calling.enabled
-actions.bear+=/ironfur,target_if=!debuff.tooth_and_claw.up,if=!buff.ironfur.up&rage>50&!cooldown.pause_action.remains&variable.If_build=0&!buff.rage_of_the_sleeper.up|rage>90&variable.If_build=0|!debuff.tooth_and_claw.up&!buff.ironfur.up&rage>50&!cooldown.pause_action.remains&variable.If_build=0&!buff.rage_of_the_sleeper.up
-actions.bear+=/ironfur,if=!buff.ravage.up&((rage>40&variable.If_build=1&cooldown.rage_of_the_sleeper.remains>3&talent.rage_of_the_sleeper.enabled|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1&cooldown.rage_of_the_sleeper.remains>3&talent.rage_of_the_sleeper.enabled|rage>90&variable.If_build=1&!talent.fount_of_strength.enabled|rage>110&variable.If_build=1&talent.fount_of_strength.enabled|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1&buff.rage_of_the_sleeper.up&talent.rage_of_the_sleeper.enabled))
-actions.bear+=/ironfur,if=!buff.ravage.up&((rage>40&variable.If_build=1&!talent.rage_of_the_sleeper.enabled|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1&!talent.rage_of_the_sleeper.enabled|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1&!talent.rage_of_the_sleeper.enabled))
-actions.bear+=/ferocious_bite,if=(buff.cat_form.up&buff.feline_potential.up&active_enemies<3&(buff.incarnation.up|buff.berserk_bear.up)&!dot.rip.refreshable)
-actions.bear+=/rip,if=(buff.cat_form.up&buff.feline_potential.up&active_enemies<3&(!buff.incarnation.up|!buff.berserk_bear.up))|(buff.cat_form.up&buff.feline_potential.up&active_enemies<3&(buff.incarnation.up|buff.berserk_bear.up)&refreshable)
-actions.bear+=/raze,if=variable.If_build=1&buff.vicious_cycle_maul.stack=3&active_enemies>1&!talent.ravage.enabled
-actions.bear+=/mangle,if=buff.gore.up&active_enemies<11|buff.incarnation_guardian_of_ursoc.up&buff.feline_potential_counter.stack<6&talent.wildpower_surge.enabled
-actions.bear+=/raze,if=variable.If_build=0&(active_enemies>1|(buff.tooth_and_claw.up)&active_enemies>1|buff.vicious_cycle_maul.stack=3&active_enemies>1)
-actions.bear+=/shred,if=cooldown.rage_of_the_sleeper.remains<=52&buff.feline_potential_counter.stack=6&!buff.cat_form.up&!dot.rake.refreshable&active_enemies<3&talent.fluid_form.enabled
-actions.bear+=/rake,if=cooldown.rage_of_the_sleeper.remains<=52&buff.feline_potential_counter.stack=6&!buff.cat_form.up&active_enemies<3&talent.fluid_form.enabled
-actions.bear+=/mangle,if=buff.cat_form.up&talent.fluid_form.enabled
-actions.bear+=/maul,if=variable.If_build=1&(((buff.tooth_and_claw.stack>1|buff.tooth_and_claw.remains<1+gcd)&active_enemies<=5&!talent.raze.enabled)|((buff.tooth_and_claw.stack>1|buff.tooth_and_claw.remains<1+gcd)&active_enemies=1&talent.raze.enabled)|((buff.tooth_and_claw.stack>1|buff.tooth_and_claw.remains<1+gcd)&active_enemies<=5&!talent.raze.enabled))
-actions.bear+=/maul,if=variable.If_build=0&((buff.tooth_and_claw.up&active_enemies<=5&!talent.raze.enabled)|(buff.tooth_and_claw.up&active_enemies=1&talent.raze.enabled))
-actions.bear+=/maul,if=(active_enemies<=5&!talent.raze.enabled&variable.If_build=0)|(active_enemies=1&talent.raze.enabled&variable.If_build=0)|buff.vicious_cycle_maul.stack=3&active_enemies<=5&!talent.raze.enabled
-actions.bear+=/thrash_bear,if=active_enemies>=5
-actions.bear+=/mangle,if=(buff.incarnation.up&active_enemies<=4)|(buff.incarnation.up&talent.soul_of_the_forest.enabled&active_enemies<=5)|((rage<88)&active_enemies<11)|((rage<83)&active_enemies<11&talent.soul_of_the_forest.enabled)
-actions.bear+=/thrash_bear,if=active_enemies>1
-actions.bear+=/pulverize,target_if=dot.thrash_bear.stack>2
-actions.bear+=/thrash_bear
-actions.bear+=/moonfire,if=buff.galactic_guardian.up&buff.bear_form.up&talent.boundless_moonlight.enabled
-actions.bear+=/rake,if=cooldown.rage_of_the_sleeper.remains<=52&rage<40&active_enemies<3&!talent.lunar_insight.enabled&talent.fluid_form.enabled&energy>70&refreshable&variable.ripweaving=1
-actions.bear+=/shred,if=cooldown.rage_of_the_sleeper.remains<=52&rage<40&active_enemies<3&!talent.lunar_insight.enabled&talent.fluid_form.enabled&energy>70&!buff.rage_of_the_sleeper.up&variable.ripweaving=1
-actions.bear+=/rip,if=buff.cat_form.up&!dot.rip.ticking&active_enemies<3&variable.ripweaving=1
-actions.bear+=/ferocious_bite,if=dot.rip.ticking&combo_points>4&active_enemies<3&variable.ripweaving=1
+actions.bear+=/berserk_bear
+actions.bear+=/lunar_beam,if=(cooldown.incarnation_guardian_of_ursoc.remains>10+5*talent.ursocs_guidance.enabled|cooldown.berserk_bear.remains>10)&(cooldown.rage_of_the_sleeper.ready|cooldown.rage_of_the_sleeper.remains>5)
+actions.bear+=/rage_of_the_sleeper,if=(cooldown.incarnation_guardian_of_ursoc.remains>10+5*talent.ursocs_guidance.enabled|cooldown.berserk_bear.remains>10)&rage>40&(!talent.lunar_beam.enabled|cooldown.lunar_beam.remains>5)
+actions.bear+=/berserking,if=buff.incarnation_guardian_of_ursoc.up|buff.berserk_bear.up
+
+actions.bear+=/ironfur,if=!buff.ravage.up&variable.ironfur_spam&(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains>2)
+
+actions.bear+=/maul,if=buff.ravage.up
+actions.bear+=/call_action_list,name=preweave,if=variable.ripweaving&!buff.ravage.up&active_enemies<=2&energy>60&(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains<=52)&buff.feline_potential_counter.stack=6
+actions.bear+=/mangle,if=variable.ripweaving&active_enemies<=2&buff.feline_potential_counter.stack<6&rage.deficit>12+4*buff.gore.up+5*talent.soul_of_the_forest.enabled
+
+actions.bear+=/thrash_bear,if=active_enemies>=5&rage.deficit>talent.blood_frenzy.enabled*15&talent.lunar_calling.enabled
+
+actions.bear+=/call_action_list,name=generator,if=talent.ravage.enabled
+
+actions.bear+=/raze,if=(buff.tooth_and_claw.stack=2|buff.tooth_and_claw.remains<1+gcd.max)&cooldown.rage_of_the_sleeper.remains>2&active_enemies>=2
+actions.bear+=/maul,if=(buff.tooth_and_claw.stack=2|buff.tooth_and_claw.remains<1+gcd.max)&cooldown.rage_of_the_sleeper.remains>2&active_enemies<=5
+
+actions.bear+=/raze,if=buff.tooth_and_claw.stack=1&!(talent.ravage.enabled&variable.ironfur_spam)&cooldown.rage_of_the_sleeper.remains>2&active_enemies>=2
+actions.bear+=/maul,if=buff.tooth_and_claw.stack=1&!(talent.ravage.enabled&variable.ironfur_spam)&cooldown.rage_of_the_sleeper.remains>2&active_enemies<=5
+
+# actions.bear+=/raze,if=buff.vicious_cycle_maul.stack=3&cooldown.rage_of_the_sleeper.remains>2&active_enemies>=2
+# actions.bear+=/maul,if=buff.vicious_cycle_maul.stack=3&cooldown.rage_of_the_sleeper.remains>2&active_enemies<=5
+
+actions.bear+=/raze,if=cooldown.rage_of_the_sleeper.remains>2&active_enemies>=2&(talent.ravage.enabled)
+# actions.bear+=/maul,if=cooldown.rage_of_the_sleeper.remains>2&active_enemies<=5
+
+actions.bear+=/ironfur,if=!buff.ravage.up&rage.deficit<=(12+4*buff.gore.up+5*talent.soul_of_the_forest.enabled)<?(talent.blood_frenzy.enabled*3*(active_enemies>?5))
+
+actions.bear+=/call_action_list,name=generator,if=!talent.ravage.enabled
+#,if=buff.rage_of_the_sleeper.up
+
+actions.bear+=/rake,if=(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains<=52)&active_enemies<=2&energy>60&refreshable&variable.use_cat_filler
+actions.bear+=/shred,if=(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains<=52)&active_enemies<=2&energy>60&!dot.rake.refreshable&variable.use_cat_filler
+
+# actions.bear+=/call_action_list,name=preweave,if=variable.use_cat_filler&!buff.ravage.up&active_enemies<=2&energy>60&(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains<=52)
+
 actions.bear+=/starsurge,if=talent.starsurge.enabled&rage<20
-actions.bear+=/swipe_bear,if=(talent.lunar_insight.enabled&active_enemies>4)|!talent.lunar_insight.enabled|talent.lunar_insight.enabled&active_enemies<2
-actions.bear+=/moonfire,if=(talent.lunar_insight.enabled&active_enemies>1)&buff.bear_form.up
+actions.bear+=/moonfire,if=talent.lunar_insight.enabled&active_enemies>=2&active_enemies<=4
+actions.bear+=/swipe_bear
+
+
+actions.generator+=/mangle,if=buff.incarnation.up&active_enemies>=2&active_enemies<=10&rage.deficit>12+4*buff.gore.up+5*talent.soul_of_the_forest.enabled
+actions.generator+=/mangle,if=buff.vicious_cycle_mangle.stack=3&active_enemies<=10&rage.deficit>12+4*buff.gore.up+5*talent.soul_of_the_forest.enabled
+actions.generator+=/mangle,if=buff.gore.up&active_enemies<=10&rage.deficit>12+4*buff.gore.up+5*talent.soul_of_the_forest.enabled
+actions.generator+=/thrash_bear,if=active_enemies>=5&rage.deficit>talent.blood_frenzy.enabled*15
+actions.generator+=/mangle,if=active_enemies<=10&rage.deficit>12+4*buff.gore.up+5*talent.soul_of_the_forest.enabled
+actions.generator+=/thrash_bear,if=active_enemies>=1&active_enemies<=4&rage.deficit>talent.blood_frenzy.enabled*3*active_enemies
+actions.generator+=/moonfire,if=buff.galactic_guardian.up&talent.boundless_moonlight.enabled&rage.deficit>8
+
+
+actions.preweave+=/heart_of_the_wild,if=buff.feline_potential_counter.stack=6
+actions.preweave+=/ironfur,if=variable.ironfur_spam
+actions.preweave+=/rake,if=refreshable
+actions.preweave+=/shred,if=!dot.rake.refreshable
+
+
+actions.cat+=/convoke_the_spirits,if=buff.feline_potential.up
+actions.cat+=/rip,if=buff.feline_potential.up&refreshable
+actions.cat+=/ferocious_bite,if=buff.feline_potential.up&!dot.rip.refreshable&energy>50
+actions.cat+=/rip,if=combo_points<=2&variable.use_cat_filler&!ticking
+actions.cat+=/ferocious_bite,if=combo_points=5&variable.use_cat_filler&dot.rip.ticking&energy>50
+actions.cat+=/mangle
+actions.cat+=/shred,if=energy>60
