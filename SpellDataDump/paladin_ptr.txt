@@ -3360,6 +3360,10 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Blast Wave (157981), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Blast Wave (389631)
                    Family Flags: 38
+#9 (id=1184258)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Family Flags: 109
+Hotfixed         : NEW EFFECT
 
 Name             : Paladin (id=137026) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
@@ -8005,11 +8009,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=713921)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Divine Storm (53385), Shield of the Righteous (53600), Consecration (81297), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Judgment (275773), Judgment (275779), Light's Decree (286232), Sanctified Wrath (326731), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Highlord's Judgment (383921), Judgment (383991), Execution Sentence (387113), Truth's Wake (403695), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Shield of the Righteous (415091), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Empyrean Hammer (431398), Templar Slash (447142)
+                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Divine Storm (53385), Shield of the Righteous (53600), Consecration (81297), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Judgment (275773), Judgment (275779), Light's Decree (286232), Sanctified Wrath (326731), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Highlord's Judgment (383921), Judgment (383991), Seal of the Crusader (385723), Execution Sentence (387113), Truth's Wake (403695), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Shield of the Righteous (415091), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Sun's Avatar (431911), Templar Slash (447142), Sun's Avatar (463075)
                    Family Flags: 27
 #2 (id=713922)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Divine Storm (53385), Shield of the Righteous (53600), Consecration (81297), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Judgment (275773), Judgment (275779), Light's Decree (286232), Sanctified Wrath (326731), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Highlord's Judgment (383921), Judgment (383991), Execution Sentence (387113), Truth's Wake (403695), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Shield of the Righteous (415091), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Empyrean Hammer (431398), Templar Slash (447142)
+                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Divine Storm (53385), Shield of the Righteous (53600), Consecration (81297), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Judgment (275773), Judgment (275779), Light's Decree (286232), Sanctified Wrath (326731), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Highlord's Judgment (383921), Judgment (383991), Seal of the Crusader (385723), Execution Sentence (387113), Truth's Wake (403695), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Shield of the Righteous (415091), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Sun's Avatar (431911), Templar Slash (447142), Sun's Avatar (463075)
                    Family Flags: 27
 #3 (id=1148155)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effects (8)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 8 | Misc Value 2: 3502 (Label) | Target: Self (1)
@@ -15163,6 +15167,7 @@ $@spellicon465 $@spellname465:
 $@spelldesc465
 
 Name             : Seal of the Crusader (id=385723) [Spell Family (10)] 
+Hotfixed         : Affecting Spells
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -15171,9 +15176,9 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 1782
-Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
+Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Triggered by     : Seal of the Crusader (385728)
-Family Flags     : 65
+Family Flags     : 27, 65
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -22274,6 +22279,7 @@ Description      : Casting $?c1[Holy Prism or Barrier of Faith]?c3[Wake of Ashes
 $431581s1% of Dawnlight's damage and healing radiates to nearby allies or enemies, reduced beyond $431581s2 targets.
 
 Name             : Dawnlight (id=431380) [Spell Family (10)] 
+Hotfixed         : Attributes, Affecting Spells
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -22283,17 +22289,17 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 2511: Penitence (403026 effect#1)
-Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2), Sun's Avatar (431425 effect#1), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
-Family Flags     : 1, 65
+Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2), Sun's Avatar (431425 effect#1), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
+Family Flags     : 1, 27, 65
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Extra Initial Period (169), Spell Haste Affects Periodic (173), Aura Points On Client (268), Bypass Visibility Check (320)
+                 : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320)
 Effects          :
 #1 (id=1119125)  : Apply Aura (6) | Periodic Damage (3): holyfire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -22339,6 +22345,7 @@ Tooltip          : Healing $w1 and radiating $431581s1% of this healing to nearb
 Movement speed increased by $w3%.][]
 
 Name             : Dawnlight (id=431382) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
@@ -22352,11 +22359,11 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Redirection (35), No Reflection (39), Can't Crit (93), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
+                 : No Redirection (35), No Reflection (39), Can't Crit (93), Do Not Display Range (126), Not In Spellbook (143), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1119129)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Target (63) -> At Friendly in Area (31)
@@ -22390,6 +22397,7 @@ Effects          :
 Description      : A Holy Hammer called down from the skies to deal $s1 Holy damage to its target.
 
 Name             : Dawnlight (id=431399) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -22401,13 +22409,13 @@ Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin 
 Family Flags     : 65
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ......x. 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ..x..... 
                  : ........ x....... ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : No Redirection (35), No Reflection (39), Can't Crit (93), Do Not Display Range (126), Not In Spellbook (143), Do Not Chain To Crowd-Controlled Targets (200), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
+                 : No Redirection (35), No Reflection (39), Can't Crit (93), Do Not Display Range (126), Not In Spellbook (143), Always AOE Line of Sight (186), Do Not Chain To Crowd-Controlled Targets (200), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1119152)  : School Damage (2): holyfire
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 12 yards | Target: At Target (63) -> At Enemy in Area (16)
@@ -23295,6 +23303,7 @@ Description      : $@spelldesc431425
 Tooltip          : Linked with an ally, causing $431911s1 damage to enemies or $431911s2 healing to allies who touch the link.
 
 Name             : Sun's Avatar (id=431911) [Spell Family (10)] 
+Hotfixed         : Attributes, Affecting Spells
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -23304,17 +23313,17 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
-Family Flags     : 65
+Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
+Family Flags     : 27, 65
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Class Ability Procs (416)
+                 : Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1120108)  : School Damage (2): holyfire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.21600 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: Unknown(87) -> Line to Enemy (134)
@@ -26640,6 +26649,7 @@ Effects          :
 Description      : $@spelldesc431425
 
 Name             : Sun's Avatar (id=463075) [Spell Family (10)] 
+Hotfixed         : Attributes, Affecting Spells
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -26649,17 +26659,17 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
-Family Flags     : 65
+Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
+Family Flags     : 27, 65
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Class Ability Procs (416)
+                 : Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1173454)  : School Damage (2): holyfire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.18000 | PvP Coefficient: 1.00000 | Radius: 0 - 5 yards | Target: At Self (18) -> At Enemy in Area (16)

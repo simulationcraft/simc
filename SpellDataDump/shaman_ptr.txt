@@ -21822,12 +21822,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1156264)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192106), Lightning Shield (192109), Crash Lightning (195592), Thunderstorm (204406), Thunderstorm (204408), Lightning Bolt (214815), Lightning Bolt Overload (214816), Lightning Shield Overcharge (273323), Lightning Shield (273324), Lightning Lasso (305483), Lightning Lasso (305484), Lightning Lasso (305485), Primordial Wave (326059), Lightning Shield (344174), Elemental Blast (344645), Primordial Wave (375982), Earth Shock Overload (381725), Primordial Wave (428332), Tempest (452201)
-                   Family Flags: 0, 1, 3, 10, 20, 25, 28, 34, 45, 63, 82, 85, 96, 98, 101, 107, 108
+                   Affected Spells: Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192106), Lightning Shield (192109), Crash Lightning (195592), Thunderstorm (204406), Thunderstorm (204408), Lightning Bolt (214815), Lightning Bolt Overload (214816), Lightning Shield Overcharge (273323), Lightning Shield (273324), Lightning Lasso (305483), Lightning Lasso (305484), Lightning Lasso (305485), Primordial Wave (326059), Lightning Shield (344174), Elemental Blast (344645), Primordial Wave (375982), Earth Shock Overload (381725), Primordial Wave (428332), Tempest (452201), Tempest Overload (463351)
+                   Family Flags: 0, 1, 3, 10, 20, 25, 28, 34, 45, 63, 64, 82, 85, 96, 98, 101, 107, 108
+Hotfixed         : Affects Spells
 #2 (id=1156265)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192106), Lightning Shield (192109), Crash Lightning (195592), Thunderstorm (204406), Thunderstorm (204408), Lightning Bolt (214815), Lightning Bolt Overload (214816), Lightning Shield Overcharge (273323), Lightning Shield (273324), Lightning Lasso (305483), Lightning Lasso (305484), Lightning Lasso (305485), Primordial Wave (326059), Lightning Shield (344174), Elemental Blast (344645), Primordial Wave (375982), Earth Shock Overload (381725), Primordial Wave (428332), Tempest (452201)
-                   Family Flags: 0, 1, 3, 10, 20, 25, 28, 34, 45, 63, 82, 85, 96, 98, 101, 107, 108, 118
+                   Affected Spells: Earth Shock (8042), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Shield (192106), Lightning Shield (192109), Crash Lightning (195592), Thunderstorm (204406), Thunderstorm (204408), Lightning Bolt (214815), Lightning Bolt Overload (214816), Lightning Shield Overcharge (273323), Lightning Shield (273324), Lightning Lasso (305483), Lightning Lasso (305484), Lightning Lasso (305485), Primordial Wave (326059), Lightning Shield (344174), Elemental Blast (344645), Primordial Wave (375982), Earth Shock Overload (381725), Primordial Wave (428332), Tempest (452201), Tempest Overload (463351)
+                   Family Flags: 0, 1, 3, 10, 20, 25, 28, 34, 45, 63, 64, 82, 85, 96, 98, 101, 107, 108, 118
+Hotfixed         : Affects Spells
 #3 (id=1176169)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Critical Chance (7)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 7 | Misc Value 2: 4013 (Label) | Target: Self (1)
                    Affected Spells (Label): Earthen Rage (170379), Ascendance (344548), Tempest Strikes (428078), Awakening Storms (455130), Thunderstrike (462763)
@@ -24480,6 +24482,7 @@ Effects          :
 Description      : $@spelldesc192249
 
 Name             : Tempest Overload (id=463351) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -24489,17 +24492,17 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #14, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Initial Shaman (417374 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #14, #26, #27), Enhancement Shaman (137041 effects: #1, #2), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #4, #5), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Nature's Fury (381655 effect#1), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 39, 56, 64, 79, 126
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ .x......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Doesn't Reset Swing Timer if Instant (217)
+                 : Always AOE Line of Sight (186), Doesn't Reset Swing Timer if Instant (217)
 Effects          :
 #1 (id=1173986)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.10500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
