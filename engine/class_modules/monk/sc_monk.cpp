@@ -64,6 +64,7 @@ monk_action_t<Base>::monk_action_t( Args &&...args )
     ww_mastery( false ),
     may_combo_strike( false ),
     trigger_chiji( false ),
+    trigger_jadefire_stomp( false ),
     cast_during_sck( false ),
     track_cd_waste( false )
 {
@@ -586,6 +587,23 @@ void monk_action_t<Base>::execute()
   base_t::execute();
 
   trigger_storm_earth_and_fire( this );
+
+  if ( p()->buff.jadefire_stomp->up() && trigger_jadefire_stomp && p()->buff.jadefire_stomp_reset->ok() )
+  {
+    double reset_value = p()->buff.jadefire_stomp_reset->data().effectN( 2 ).percent();
+
+    if ( base_t::id == p()->baseline.monk.blackout_kick->id() )
+      reset_value += p()->talent.mistweaver.ancient_concordance->effectN( 1 ).percent();
+
+    reset_value *= 1 + p()->talent.mistweaver.awakened_jadefire->effectN( 2 ).percent();
+
+    if ( p()->rng().roll( reset_value ) )
+    {
+      p()->cooldown.jadefire_stomp->reset( true, 1 );
+      p()->buff.jadefire_stomp_reset->trigger();
+      p()->proc.jadefire_stomp_reset->occur();
+    }
+  }
 }
 
 template <class Base>
@@ -1189,12 +1207,13 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     parse_options( options_str );
 
     // allow Darting Hurricane to reduce GCD all the way down to 500ms
-    min_gcd          = 500_ms;
-    ww_mastery       = true;
-    may_combo_strike = true;
-    trigger_chiji    = true;
-    sef_ability      = actions::sef_ability_e::SEF_TIGER_PALM;
-    cast_during_sck  = player->specialization() != MONK_WINDWALKER;
+    min_gcd                = 500_ms;
+    ww_mastery             = true;
+    may_combo_strike       = true;
+    trigger_chiji          = true;
+    trigger_jadefire_stomp = true;
+    sef_ability            = actions::sef_ability_e::SEF_TIGER_PALM;
+    cast_during_sck        = player->specialization() != MONK_WINDWALKER;
 
     if ( p->specialization() == MONK_WINDWALKER )
       energize_amount = p->baseline.windwalker.aura->effectN( 4 ).base_value();
@@ -1524,10 +1543,11 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    may_combo_strike = true;
-    sef_ability      = actions::sef_ability_e::SEF_RISING_SUN_KICK;
-    ap_type          = attack_power_type::NONE;
-    cast_during_sck  = player->specialization() != MONK_WINDWALKER;
+    may_combo_strike       = true;
+    sef_ability            = actions::sef_ability_e::SEF_RISING_SUN_KICK;
+    ap_type                = attack_power_type::NONE;
+    cast_during_sck        = player->specialization() != MONK_WINDWALKER;
+    trigger_jadefire_stomp = true;
 
     attack_power_mod.direct = 0;
 
@@ -1715,11 +1735,12 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     if ( p->specialization() == MONK_WINDWALKER )
       ap_type = attack_power_type::WEAPON_BOTH;
 
-    sef_ability      = actions::sef_ability_e::SEF_BLACKOUT_KICK;
-    ww_mastery       = true;
-    may_combo_strike = true;
-    trigger_chiji    = true;
-    cast_during_sck  = p->specialization() != MONK_WINDWALKER;
+    sef_ability            = actions::sef_ability_e::SEF_BLACKOUT_KICK;
+    ww_mastery             = true;
+    may_combo_strike       = true;
+    trigger_chiji          = true;
+    trigger_jadefire_stomp = true;
+    cast_during_sck        = p->specialization() != MONK_WINDWALKER;
 
     apply_affecting_aura( p->talent.brewmaster.fluidity_of_motion );
     apply_affecting_aura( p->talent.brewmaster.shadowboxing_treads );
@@ -1945,7 +1966,8 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
       buff( player->buff.rushing_jade_wind )
   {
     parse_options( options_str );
-    may_combo_strike = true;
+    may_combo_strike       = true;
+    trigger_jadefire_stomp = true;
   }
 
   void execute() override
@@ -2053,10 +2075,11 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    sef_ability      = actions::sef_ability_e::SEF_SPINNING_CRANE_KICK;
-    may_combo_strike = true;
-    tick_zero        = true;
-    tick_action      = new sck_tick_action_t( p, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
+    sef_ability            = actions::sef_ability_e::SEF_SPINNING_CRANE_KICK;
+    may_combo_strike       = true;
+    trigger_jadefire_stomp = true;
+    tick_zero              = true;
+    tick_action            = new sck_tick_action_t( p, "spinning_crane_kick_tick", data().effectN( 1 ).trigger() );
 
     interrupt_auto_attack = p->specialization() != MONK_WINDWALKER;
     if ( p->specialization() == MONK_BREWMASTER )
@@ -2906,6 +2929,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     ww_mastery = true;
     may_crit = hasted_ticks = false;
     may_combo_strike        = true;
+    trigger_jadefire_stomp  = true;
     cast_during_sck         = true;
     parse_options( options_str );
 
@@ -3360,8 +3384,9 @@ struct crackling_jade_lightning_t : public monk_spell_t
     crackling_jade_lightning_aoe_t( monk_t *p )
       : monk_spell_t( p, "crackling_jade_lightning_aoe", p->baseline.monk.crackling_jade_lightning )
     {
-      dual = background = true;
-      ww_mastery        = true;
+      dual = background      = true;
+      ww_mastery             = true;
+      trigger_jadefire_stomp = true;
 
       parse_effects( p->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
       parse_effects( p->buff.the_emperors_capacitor );
@@ -5090,8 +5115,9 @@ struct chi_wave_t : public monk_spell_t
       heal( new bounce_t<monk_heal_t>( player, "heal", player->talent.monk.chi_wave_heal ) ),
       damage( new bounce_t<monk_spell_t>( player, "damage", player->talent.monk.chi_wave_damage ) )
   {
-    background       = true;
-    may_combo_strike = false;
+    background             = true;
+    may_combo_strike       = false;
+    trigger_jadefire_stomp = true;
 
     heal->other_cb   = damage->this_cb;
     damage->other_cb = heal->this_cb;
@@ -5154,8 +5180,9 @@ struct chi_burst_t : monk_spell_t
       buff( buff_t::find( player, "chi_burst" ) )
   {
     parse_options( options_str );
-    may_combo_strike = true;
-    gcd_type         = gcd_haste_type::NONE;
+    may_combo_strike       = true;
+    trigger_jadefire_stomp = true;
+    gcd_type               = gcd_haste_type::NONE;
 
     stats = damage->stats;
     add_child( heal );
@@ -7835,6 +7862,10 @@ void monk_t::create_buffs()
                               ->set_trigger_spell( talent.mistweaver.invoke_chi_ji_the_red_crane )
                               ->set_default_value_from_effect( 1 );
 
+  buff.jadefire_stomp_reset = make_buff_fallback( shared.jadefire_stomp->ok() && specialization() == MONK_MISTWEAVER,
+                                                  this, "jadefire_stomp_reset", find_spell( 388193 ) )
+                                  ->set_trigger_spell( shared.jadefire_stomp );
+
   buff.life_cocoon = make_buff<absorb_buff_t>( this, "life_cocoon", talent.mistweaver.life_cocoon );
   buff.life_cocoon->set_absorb_source( get_stats( "life_cocoon" ) )
       ->set_trigger_spell( talent.mistweaver.life_cocoon )
@@ -8278,6 +8309,7 @@ void monk_t::init_procs()
   proc.elusive_footwork_proc          = get_proc( "Elusive Footwork" );
   proc.face_palm                      = get_proc( "Face Palm" );
   proc.glory_of_the_dawn              = get_proc( "Glory of the Dawn" );
+  proc.jadefire_stomp_reset           = get_proc( "Jadefire Stomp Reset" );
   proc.keg_smash_scalding_brew        = get_proc( "Keg Smash - Scalding Brew" );
   proc.quick_sip                      = get_proc( "Quick Sip" );
   proc.rsk_reset_totm                 = get_proc( "Rising Sun Kick TotM Reset" );
