@@ -2262,7 +2262,7 @@ void overclocked_geararang_launcher( special_effect_t& e )
       : dbc_proc_callback_t( e.player, e ),
         buff( buff ),
         item_cd( e.player->get_cooldown( use.cooldown_name() ) ),
-        shared_trinket_cd( e.player->get_cooldown( "item_cd_" + util::to_string( e.driver()->category() ) ) ),
+        shared_trinket_cd( e.player->get_cooldown( "item_cd_" + util::to_string( use.driver()->category() ) ) ),
         equip_driver( e.driver() )
     {
     }
