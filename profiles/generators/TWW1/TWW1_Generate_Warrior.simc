@@ -32,7 +32,7 @@ role=attack
 position=back
 talents=CgEAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAgRDMDYMMDjBmFYYGjZmHYYmZbbMmZmFMzDMzMjZMbDzMMGAAAIMjltBWATwMMBGbDbA
 
-head=darkfrost_helmet,id=178777,bonus_id=8780,ilevel=639,gem_id=213743
+head=darkfrost_helmet,id=178777,bonus_id=10878,ilevel=639,gem_id=213743
 neck=emergency_stop_keychain,id=221077,bonus_id=10879,ilevel=639,gem_id=213482/213473
 shoulders=warsculptors_horned_spaulders,id=211982,ilevel=639
 back=royal_emblem_of_nerubar,id=212446,ilevel=639,enchant=chant_of_winged_grace_3
@@ -59,20 +59,20 @@ role=tank
 position=front
 talents=CkEAAAAAAAAAAAAAAAAAAAAAAYEDAAAAzMzYmZGMbzsMzMz2mZMMNzgZmBwyADbMzMwDMzDMMAAAAAAgZGAgltNADDsBLLGNmBwsFbYD
 
-head=warsculptors_barbute,id=211984,bonus_id=8780,ilevel=639,gem_id=213743
+head=warsculptors_barbute,id=211984,bonus_id=10878,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,bonus_id=10879,ilevel=639,gem_id=213479/213479
 shoulders=warsculptors_horned_spaulders,id=211982,ilevel=639
 back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant=chant_of_winged_grace_3
 chest=warsculptors_furred_plastron,id=211987,ilevel=639,enchant=crystalline_radiance_3
-wrists=everforged_vambraces,id=222435,bonus_id=10222/8780/11304,ilevel=636,gem_id=213479,crafted_stats=32/36
+wrists=everforged_vambraces,id=222435,bonus_id=10222/10878/11304,ilevel=636,gem_id=213479,crafted_stats=32/36
 hands=machinists_searing_handguards,id=221086,ilevel=639
-waist=everforged_greatbelt,id=217849,ilevel=636bonus_id=10222/8790/8960/8780/11304,gem_id=213479
+waist=everforged_greatbelt,id=217849,ilevel=636bonus_id=10222/8790/8960/10878/11304,gem_id=213479
 legs=warsculptors_cuisses,id=211983,ilevel=639,enchant=defenders_armor_kit_3
 feet=warsculptors_carved_boots,id=211986,ilevel=639,enchant=defenders_march_3
 finger1=devout_zealots_ring,id=221136,bonus_id=10879,ilevel=639,gem_id=213479/213479,enchant=radiant_haste_3
 finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,ilevel=639,gem_id=213479/213479,enchant=radiant_haste_3
 trinket1=arakara_sacbrood,id=219314,ilevel=639
-trinket2=mad_queens_mandate,id=212454,ilevel=639
+trinket2=spare_meat_hook,id=178751,ilevel=639
 main_hand=duelists_dancing_steel,id=212392,ilevel=639,enchant=authority_of_the_depths_3
 off_hand=crest_of_the_caustic_despot,id=225579,ilevel=639
 
