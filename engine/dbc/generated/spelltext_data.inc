@@ -1,5 +1,5 @@
-// Spell text, wow build 11.0.2.56421
-static const std::array<spelltext_data_t, 26339> __spelltext_data { {
+// Spell text, wow build 11.0.2.56461
+static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -22022,7 +22022,6 @@ static const std::array<spelltext_data_t, 26339> __spelltext_data { {
   { 417712, "Increases your damage and healing by $417714s1% during the day.\r\n\r\nIncreases your Versatility by $417715s1% during the night.", 0, 0 },
   { 417714, "Increases your damage and healing by $s1% during the day.", "Damage and healing increased by $s1%.", 0 },
   { 417715, "Increases your Versatility by $s1% during the night.", "Versatility increased by $s1%.", 0 },
-  { 417775, "Add a Downy Liner and Crystal Ocular Lenses to the Thought Calculating Apparatus.", 0, 0 },
   { 417792, "$@spelldesc417534", 0, 0 },
   { 417855, "Holy Shock, Holy Light, and Flash of Light critical healing increased by $s1%.", 0, 0 },
   { 417875, "$@spelldesc324536", 0, 0 },
@@ -23127,7 +23126,6 @@ static const std::array<spelltext_data_t, 26339> __spelltext_data { {
   { 434598, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
   { 434635, "Call down a demon-infested meteor from the depths of the Twisting Nether, dealing $434636s1 Chaos damage on impact to all enemies within $434636a1 yds of the target$?s137046[ and summoning $433885s3 Diabolic Imp.\r\n\r\nDamage is further increased by your critical strike chance and is reduced beyond $s2 targets.][ and summoning $433885s2 Wild Imps.\r\n\r\nDamage is reduced beyond $s2 targets.]", 0, 0 },
   { 434636, "$@spelldesc434635", 0, 0 },
-  { 434651, "Break.", 0, 0 },
   { 434674, "$@spelldesc433901", 0, 0 },
   { 434679, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF16 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
   { 434681, "|CFFFFFFFF- Close range|R\r\n|CFFFFFFFF- Traps root|R\r\n|CFFFFFFFF- Long duration|R\r\n\r\n|CFFFFFFFF14 sec cooldown|R\r\nToss a cluster of steel traps directly in front of the caster, rooting and damaging enemies that trigger them.", 0, "Utility" },
@@ -23450,7 +23448,6 @@ static const std::array<spelltext_data_t, 26339> __spelltext_data { {
   { 440474, "$@spelldesc163201", 0, 0 },
   { 440476, "When you suffer a damaging effect equal to $s1% of your maximum health, you instantly cast Death Pact at $s3% effectiveness. May only occur every $s2 min.\r\n\r\nWhen a Reaper's Mark explodes, the cooldowns of this effect and Death Pact are reduced by $s4 sec.", 0, 0 },
   { 440537, "Awaken the power within Nasz'uro, the Unbound Legacy, increasing its item level to $s1 and allowing it to be upgraded further.\r\n", 0, 0 },
-  { 440552, "$@spelldesc153626", 0, 0 },
   { 440572, "Awaken the power within Fyr'alath the Dreamrender, increasing its item level to $s1 and allowing it to be upgraded further.", 0, 0 },
   { 440592, "$@spelldesc163201", 0, 0 },
   { 440598, "$@spelldesc5308", 0, 0 },
@@ -26339,13 +26336,15 @@ static const std::array<spelltext_data_t, 26339> __spelltext_data { {
   { 468655, "Launches a bolt of frostfire at the enemy, causing $s1 Frostfire damage, slowing movement speed by $s3%, and causing an additional $o2 Frostfire damage over $d.\r\n\r\nFrostfire Bolt generates stacks for both Fire Mastery and Frost Mastery.", "Movement speed reduced by $w3% and receiving $w2 damage every $t2 sec.", 0 },
   { 469347, "$@spelldesc358267", 0, 0 },
   { 469637, "$@spelldesc457058", "Your next $?c1[Envenom][Eviscerate] cast with maximum combo points is guaranteed to critically strike, deal $w2% additional damage, and apply $w3 stacks of Deathstalker's Mark to the target.", 0 },
+  { 469991, "Place a Sigil of Flame at the target location that activates after $d.\r\n\r\nDeals $204598s1 $@spelldesc395020 damage, and an additional $204598o3 $@spelldesc395020 damage over $204598d, to all enemies affected by the sigil.\r\n\r\n|CFFffffffGenerates $389787s1 Fury.|R", "Sigil of Flame is active.", 0 },
+  { 469995, "$@spelldesc452402", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.0.2.56421
+// spelltext hotfix entries, wow build 11.0.2.56461
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.0.2.56421
+// Spell description variables, wow build 11.0.2.56461
 static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26933,7 +26932,7 @@ static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {  462620, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.2.56421
+// spelldesc_vars hotfix entries, wow build 11.0.2.56461
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

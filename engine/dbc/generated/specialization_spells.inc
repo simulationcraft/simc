@@ -1,4 +1,4 @@
-// Talent tree specialization abilities, wow build 11.0.2.56421
+// Talent tree specialization abilities, wow build 11.0.2.56461
 static const std::array<specialization_spell_entry_t, 499> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
