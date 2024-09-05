@@ -1587,10 +1587,11 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
 // 449946 on use
 // 446209 stat buff value container
 // 449947 jump task
-// 449948 collect orb
-// 449952 stand here task
+// 449952 collect orb
+// 449948 stand here task
 // 450025 stand here task AoE DR/stacking trigger
 // 449954 primary buff
+// TODO: Implement precombat use with timing option.
 struct do_treacherous_transmitter_task_t : public action_t
 {
   buff_t* task = nullptr;
@@ -1610,7 +1611,38 @@ struct do_treacherous_transmitter_task_t : public action_t
   bool ready() override
   {
     if ( task != nullptr )
-      return task->check();
+    {
+      // Set the minimum time it would reasonably take to complete the task
+      // Prevents using the trinket and instantly completing the tasks, which is unreasonable.
+      // Starting at a 1.5s minimum for all tasks
+      if ( task->remains() > task->buff_duration() - 1.5_s )
+        return false;
+
+      switch ( task->data().id() )
+      {
+        case 449947:
+          // Jumping takes almost no time, 1.5s minimum is fine.
+          return task->check();
+          break;
+        case 449952:
+          // Collecting the orb should take a bit longer, due to its movement, 2s minimum should be fine.
+          if ( task->remains() <= task->buff_duration() - 2_s )
+            return task->check();
+          else
+            return false;
+          break;
+        case 449948:
+          // If the task is stand here, account for the movement time, and 2s for the stacking buff to occur.
+          if ( task->remains() <= task->buff_duration() - 3_s )
+            return task->check();
+          else
+            return false;
+          break;
+        default:
+          return false;
+          break;
+      }
+    }
     else
       return false;
   }
@@ -1654,8 +1686,8 @@ void treacherous_transmitter( special_effect_t& effect )
       if ( apl_actions.size() > 0 )
       {
         buff_t* jump_task   = create_buff<buff_t>( e.player, e.player->find_spell( 449947 ) );
-        buff_t* collect_orb = create_buff<buff_t>( e.player, e.player->find_spell( 449948 ) );
-        buff_t* stand_here  = create_buff<buff_t>( e.player, e.player->find_spell( 449952 ) );
+        buff_t* collect_orb = create_buff<buff_t>( e.player, e.player->find_spell( 449952 ) );
+        buff_t* stand_here  = create_buff<buff_t>( e.player, e.player->find_spell( 449948 ) );
 
         tasks.push_back( jump_task );
         tasks.push_back( collect_orb );
@@ -1698,7 +1730,7 @@ void treacherous_transmitter( special_effect_t& effect )
       }
     }
   };
-
+  
   effect.disable_buff();
   effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
   effect.execute_action = create_proc_action<cryptic_instructions_t>( "cryptic_instructions", effect );
