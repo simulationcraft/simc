@@ -2255,12 +2255,14 @@ void overclocked_geararang_launcher( special_effect_t& e )
   {
     buff_t* buff;
     cooldown_t* item_cd;
+    cooldown_t* shared_trinket_cd;
     const spell_data_t* equip_driver;
 
     overclock_cb_t( const special_effect_t& e, const special_effect_t& use, buff_t* buff )
       : dbc_proc_callback_t( e.player, e ),
         buff( buff ),
         item_cd( e.player->get_cooldown( use.cooldown_name() ) ),
+        shared_trinket_cd( e.player->get_cooldown( "item_cd_" + util::to_string( e.driver()->category() ) ) ),
         equip_driver( e.driver() )
     {
     }
@@ -2268,6 +2270,10 @@ void overclocked_geararang_launcher( special_effect_t& e )
     void execute( action_t*, action_state_t* ) override
     {
       item_cd->adjust( timespan_t::from_seconds( -equip_driver->effectN( 1 ).base_value() ) );
+      if ( listener->bugs )
+      {
+        shared_trinket_cd->adjust( timespan_t::from_seconds( -equip_driver->effectN( 1 ).base_value() ) );
+      }
       buff->trigger();
     }
   };
