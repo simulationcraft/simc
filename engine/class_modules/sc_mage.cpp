@@ -254,7 +254,6 @@ public:
   // Events
   struct events_t
   {
-    event_t* burden_of_power;
     event_t* enlightened;
     event_t* flame_accelerant;
     event_t* icicle;
@@ -7720,7 +7719,7 @@ void mage_t::create_options()
                 else if ( value == "aoe" )
                   options.arcane_phoenix_rotation_override = arcane_phoenix_rotation::AOE;
                 else
-                  throw std::invalid_argument( fmt::format( "Invalid rotation for {}: \"{}\"", name, value ) );
+                  throw std::invalid_argument( "valid options are 'default', 'st', and 'aoe'." );
                 return true;
               } ) );
 
@@ -9399,7 +9398,7 @@ void mage_t::trigger_spellfire_spheres()
 
 void mage_t::consume_burden_of_power()
 {
-  if ( !buffs.burden_of_power->check() || events.burden_of_power )
+  if ( !buffs.burden_of_power->check() )
     return;
 
   buffs.burden_of_power->decrement();
