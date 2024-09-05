@@ -2708,6 +2708,16 @@ using empowered_release_heal_t = empowered_release_t<evoker_heal_t>;
 
 // Heals ====================================================================
 
+ struct panacea_t : public evoker_heal_t
+{
+  panacea_t( evoker_t* p, std::string_view name ) : evoker_heal_t( name, p, p->talent.panacea_spell )
+  {
+    harmful = false;
+    dual    = true;
+    target  = p;
+  }
+};
+
 struct emerald_blossom_t : public essence_heal_t
 {
   struct emerald_blossom_heal_t : public evoker_heal_t
@@ -2724,16 +2734,6 @@ struct emerald_blossom_t : public essence_heal_t
     }
   };
 
-  struct panacea_t : public evoker_heal_t
-  {
-    panacea_t( evoker_t* p ) : evoker_heal_t( "panacea", p, p->talent.panacea_spell )
-    {
-      harmful = false;
-      dual    = true;
-      target  = p;
-    }
-  };
-
   action_t *heal, *panacea, *virtual_heal;
 
   timespan_t extend_ebon;
@@ -2744,7 +2744,7 @@ struct emerald_blossom_t : public essence_heal_t
     harmful      = false;
     heal         = p->get_secondary_action<emerald_blossom_heal_t>( "emerald_blossom_heal" );
     virtual_heal = p->get_secondary_action<emerald_blossom_heal_t>( "emerald_blossom_virtual_heal", false );
-    panacea      = p->get_secondary_action<panacea_t>( "panacea" );
+    panacea      = p->get_secondary_action<panacea_t>( "panacea_eb", "panacea_eb" );
 
     min_travel_time = data().duration().total_seconds();
 
@@ -2840,10 +2840,23 @@ struct verdant_embrace_t : public evoker_heal_t
 {
   struct verdant_embrace_heal_t : public evoker_heal_t
   {
-    verdant_embrace_heal_t( evoker_t* p ) : evoker_heal_t( "verdant_embrace_heal", p, p->find_spell( 361195 ) )
+    action_t* panacea;
+
+    verdant_embrace_heal_t( evoker_t* p )
+      : evoker_heal_t( "verdant_embrace_heal", p, p->find_spell( 361195 ) ), panacea( nullptr )
     {
       harmful = false;
       dual    = true;
+
+      panacea = p->get_secondary_action<panacea_t>( "panacea_ve", "panacea_ve" );
+      add_child( panacea );
+    }
+
+    void impact(action_state_t* s) override
+    {
+      evoker_heal_t::impact( s );
+      if ( panacea )
+        panacea->execute_on_target( s->target );
     }
   };
 
