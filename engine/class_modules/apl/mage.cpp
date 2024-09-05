@@ -301,6 +301,7 @@ void frost( player_t* p )
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
+  action_priority_list_t* ss_cleave = p->get_action_priority_list( "ss_cleave" );
   action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
   action_priority_list_t* movement = p->get_action_priority_list( "movement" );
   action_priority_list_t* ss_st = p->get_action_priority_list( "ss_st" );
@@ -317,6 +318,7 @@ void frost( player_t* p )
   default_->add_action( "counterspell" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "run_action_list,name=aoe,if=active_enemies>=7&!set_bonus.tier30_2pc|active_enemies>=4&talent.ice_caller" );
+  default_->add_action( "run_action_list,name=ss_cleave,if=active_enemies>=2&active_enemies<=3&talent.splinterstorm" );
   default_->add_action( "run_action_list,name=cleave,if=active_enemies>=2&active_enemies<=3" );
   default_->add_action( "run_action_list,name=ss_st,if=talent.splinterstorm" );
   default_->add_action( "run_action_list,name=st" );
@@ -355,6 +357,18 @@ void frost( player_t* p )
   cds->add_action( "fireblood" );
   cds->add_action( "ancestral_call" );
 
+  ss_cleave->add_action( "flurry,target_if=min:debuff.winters_chill.stack,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&(prev_gcd.1.frostbolt|prev_gcd.1.glacial_spike)" );
+  ss_cleave->add_action( "ice_lance,target_if=max:debuff.winters_chill.stack,if=buff.icy_veins.up&debuff.winters_chill.stack=2" );
+  ss_cleave->add_action( "ray_of_frost,if=buff.icy_veins.down&buff.freezing_winds.down&remaining_winters_chill=1" );
+  ss_cleave->add_action( "frozen_orb" );
+  ss_cleave->add_action( "shifting_power" );
+  ss_cleave->add_action( "ice_lance,target_if=max:debuff.winters_chill.stack,if=remaining_winters_chill|buff.fingers_of_frost.react" );
+  ss_cleave->add_action( "comet_storm,if=prev_gcd.1.flurry|prev_gcd.1.cone_of_cold|action.splinterstorm.in_flight" );
+  ss_cleave->add_action( "glacial_spike,if=buff.icicles.react=5" );
+  ss_cleave->add_action( "flurry,target_if=min:debuff.winters_chill.stack,if=cooldown_react&buff.icy_veins.up" );
+  ss_cleave->add_action( "frostbolt" );
+  ss_cleave->add_action( "call_action_list,name=movement" );
+  
   cleave->add_action( "comet_storm,if=prev_gcd.1.flurry|prev_gcd.1.cone_of_cold" );
   cleave->add_action( "flurry,target_if=min:debuff.winters_chill.stack,if=cooldown_react&(((prev_gcd.1.frostbolt|prev_gcd.1.frostfire_bolt)&buff.icicles.react>=3)|prev_gcd.1.glacial_spike|(buff.icicles.react>=3&buff.icicles.react<5&charges_fractional=2))" );
   cleave->add_action( "ice_lance,target_if=max:debuff.winters_chill.stack,if=talent.glacial_spike&debuff.winters_chill.down&buff.icicles.react=4&buff.fingers_of_frost.react" );
