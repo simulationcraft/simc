@@ -62,7 +62,7 @@ talents=CkEAAAAAAAAAAAAAAAAAAAAAAYEDAAAAzMzYmZGMbzsMzMz2mZMMNzgZmBwyADbMzMwDMzDM
 head=warsculptors_barbute,id=211984,bonus_id=8780,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,bonus_id=10879,ilevel=639,gem_id=213479/213479
 shoulders=warsculptors_horned_spaulders,id=211982,ilevel=639
-back=wings_of_shattered_sorrow,id=225574,ilevel=693,enchant=chant_of_winged_grace_3
+back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant=chant_of_winged_grace_3
 chest=warsculptors_furred_plastron,id=211987,ilevel=639,enchant=crystalline_radiance_3
 wrists=everforged_vambraces,id=222435,bonus_id=10222/8780/11304,ilevel=636,gem_id=213479,crafted_stats=32/36
 hands=machinists_searing_handguards,id=221086,ilevel=639
