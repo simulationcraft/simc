@@ -16,7 +16,7 @@ hands=black_blood_injectors,id=212418,ilevel=639
 waist=crystal_fissure_girdle,id=221079,bonus_id=10878,ilevel=639,gem_id=213482
 legs=warsculptors_cuisses,id=211983,ilevel=639,enchant=defenders_armor_kit_3
 feet=shattershell_greaves,id=212443,ilevel=639,enchant=defenders_march_3
-finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,gem_id=213482/213482,enchant=radiant_critical_strike_3
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,ilevel=639,gem_id=213482/213482,enchant=radiant_critical_strike_3
 finger2=band_of_the_ancient_dredger,id=159461,bonus_id=10879,ilevel=639,gem_id=213458/213479,enchant=radiant_critical_strike_3
 trinket1=mad_queens_mandate,id=212454,ilevel=639
 trinket2=arakara_sacbrood,id=219314,ilevel=639
@@ -70,7 +70,7 @@ waist=everforged_greatbelt,id=217849,ilevel=636bonus_id=10222/8790/8960/8780/113
 legs=warsculptors_cuisses,id=211983,ilevel=639,enchant=defenders_armor_kit_3
 feet=warsculptors_carved_boots,id=211986,ilevel=639,enchant=defenders_march_3
 finger1=devout_zealots_ring,id=221136,bonus_id=10879,ilevel=639,gem_id=213479/213479,enchant=radiant_haste_3
-finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,gem_id=213479/213479,enchant=radiant_haste_3
+finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,ilevel=639,gem_id=213479/213479,enchant=radiant_haste_3
 trinket1=arakara_sacbrood,id=219314,ilevel=639
 trinket2=mad_queens_mandate,id=212454,ilevel=639
 main_hand=duelists_dancing_steel,id=212392,ilevel=639,enchant=authority_of_the_depths_3
