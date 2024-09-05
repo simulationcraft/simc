@@ -2,9 +2,10 @@ actions+=/skull_bash
 actions+=/soothe
 actions+=/call_action_list,name=mitigation
 
-actions.mitigation+=/ironfur,if=tanking&incoming_damage_5s>0.1*health.max&buff.ironfur.remains<2
+actions.mitigation+=/barkskin
+actions.mitigation+=/ironfur,if=buff.bear_form.up&tanking&incoming_damage_5s>0.1*health.max&buff.ironfur.remains<2
 actions.mitigation+=/regrowth,if=health.pct<65
-actions.mitigation+=/frenzied_regeneration,if=buff.frenzied_regeneration.down&health.pct<65
+actions.mitigation+=/frenzied_regeneration,if=buff.bear_form.up&buff.frenzied_regeneration.down&health.pct<65
 actions.mitigation+=/renewal,if=health.pct<65
 actions.mitigation+=/survival_instincts,if=buff.survival_instincts.down&buff.barkskin.down&health.pct<60&incoming_damage_5s>0.25*health.max
 
@@ -21,8 +22,8 @@ actions=auto_attack,if=!buff.prowl.up
 ########################################
 
 
-actions.precombat+=/bear_form
 actions.precombat+=/mark_of_the_wild
+actions.precombat+=/bear_form
 actions.precombat+=/variable,name=ironfur_spam,value=1,value_else=0,if=talent.thorns_of_iron.enabled&talent.reinforced_fur.enabled
 actions.precombat+=/variable,name=ripweaving,value=1,value_else=0,if=talent.rip.enabled&talent.fluid_form.enabled&talent.wildpower_surge.enabled
 actions.precombat+=/variable,name=use_cat_filler,value=1,value_else=0,if=variable.ripweaving&talent.primal_fury.enabled
@@ -40,7 +41,6 @@ actions.bear+=/moonfire,cycle_targets=1,if=refreshable&target.time_to_die>12&act
 actions.bear+=/thrash_bear,if=refreshable|dot.thrash_bear.stack<3+talent.flashing_claws.rank
 
 actions.bear+=/pulverize
-actions.bear+=/barkskin
 actions.bear+=/bristling_fur,if=cooldown.rage_of_the_sleeper.remains>8
 
 actions.bear+=/heart_of_the_wild,if=!variable.ripweaving
