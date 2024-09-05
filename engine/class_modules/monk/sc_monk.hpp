@@ -90,6 +90,7 @@ struct monk_action_t : public parse_action_effects_t<Base>
   bool ww_mastery;
   bool may_combo_strike;
   bool trigger_chiji;
+  bool trigger_jadefire_stomp;
   bool cast_during_sck;
   bool track_cd_waste;
 
@@ -622,6 +623,7 @@ public:
     propagate_const<buff_t *> dance_of_chiji_mw;
     propagate_const<buff_t *> invoke_chiji;
     propagate_const<buff_t *> invoke_chiji_evm;
+    propagate_const<buff_t *> jadefire_stomp_reset;
     propagate_const<buff_t *> lifecycles_enveloping_mist;
     propagate_const<buff_t *> lifecycles_vivify;
     propagate_const<buff_t *> mana_tea;
@@ -753,6 +755,7 @@ public:
     propagate_const<proc_t *> dance_of_chiji;
     propagate_const<proc_t *> elusive_footwork_proc;
     propagate_const<proc_t *> face_palm;
+    propagate_const<proc_t *> jadefire_stomp_reset;
     propagate_const<proc_t *> glory_of_the_dawn;
     propagate_const<proc_t *> keg_smash_scalding_brew;
     propagate_const<proc_t *> quick_sip;
