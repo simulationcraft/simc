@@ -2254,6 +2254,22 @@ public:
   }
 };
 
+template <typename BASE>
+struct trigger_guardians_tenacity_t : public BASE
+{
+  using base_t = trigger_guardians_tenacity_t<BASE>;
+
+  trigger_guardians_tenacity_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
+    : BASE( n, p, s, f )  {}
+
+  void execute() override
+  {
+    BASE::execute();
+
+    BASE::p()->buff.guardians_tenacity->trigger( this );
+  }
+};
+
 template <typename BASE, typename DOT_BASE>
 struct ravage_base_t : public BASE
 {
@@ -5608,7 +5624,9 @@ struct swipe_bear_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
 // Thrash (Bear) ============================================================
 struct thrash_bear_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
                                       trigger_aggravate_wounds_t<DRUID_GUARDIAN,
-                                        trigger_ursocs_fury_t<trigger_gore_t<bear_attack_t>>>>
+                                        trigger_guardians_tenacity_t<
+                                          trigger_ursocs_fury_t<
+                                            trigger_gore_t<bear_attack_t>>>>>
 {
   struct thrash_bear_bleed_t final
     : public trigger_ursocs_fury_t<use_dot_list_t<trigger_waning_twilight_t<bear_attack_t>>>
@@ -7490,7 +7508,10 @@ struct moon_proxy_t : public druid_spell_t
 // Moonfire Spell ===========================================================
 struct moonfire_t final : public druid_spell_t
 {
-  struct moonfire_damage_t final : public trigger_gore_t<use_dot_list_t<trigger_waning_twilight_t<druid_spell_t>>>
+  struct moonfire_damage_t final : public trigger_guardians_tenacity_t<
+                                            trigger_gore_t<
+                                              use_dot_list_t<
+                                                trigger_waning_twilight_t<druid_spell_t>>>>
   {
     real_ppm_t* light_of_elune_rng = nullptr;
 
