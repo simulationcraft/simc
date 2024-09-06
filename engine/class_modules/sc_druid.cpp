@@ -4203,10 +4203,8 @@ struct bloodseeker_vines_t final : public cat_attack_t
   {
     cat_attack_t::trigger_dot( s );
 
-    // execute() instead of trigger() to avoid proc delay
-    make_event( *sim, [ s, this ] {
-      td( s->target )->debuff.bloodseeker_vines->execute( 1, buff_t::DEFAULT_VALUE(), dot_duration );
-    } );
+    // execute() instead of trigger() to avoid proc delay, and add 1ms to ensure final tick is buffed
+    td( s->target )->debuff.bloodseeker_vines->execute( 1, buff_t::DEFAULT_VALUE(), dot_duration + 1_ms );
 
     // TODO: can this trigger itself? what about spread from killed target?
     if ( rng().roll( twin_pct ) && orig_dur == dot_duration )
