@@ -3545,28 +3545,14 @@ void darkmoon_deck_radiance( special_effect_t& effect )
   {
     double accumulated_damage;
     double max_damage;
-    double max_buff_value;
     buff_t* buff;
 
-    radiant_focus_debuff_t( actor_pair_t td, const special_effect_t& e, util::string_view n, const spell_data_t* s, bool embelish )
-      : buff_t( td, n, s ), accumulated_damage( 0 ), max_damage( 0 ), max_buff_value( 0 ), buff(nullptr)
+    radiant_focus_debuff_t( actor_pair_t td, const special_effect_t& e, util::string_view n, const spell_data_t* s,
+                            bool embelish, buff_t* b )
+      : buff_t( td, n, s ), accumulated_damage( 0 ), max_damage( 0 ), buff( b )
     {
       max_damage = data().effectN( 1 ).average( e );
       set_default_value( max_damage );
-
-      auto buff_spell = e.player->find_spell( 454785 );
-      if( embelish )
-        max_buff_value = player->find_spell( 454558 )->effectN( 2 ).average( e );
-      else
-        max_buff_value = player->find_spell( 463108 )->effectN( 1 ).average( e );
-
-      // Very oddly setup buff, scripted to provide the highest secondary stat of the player
-      // Data doesnt contain the other stats like usual, manually setting things up here.
-      buff = create_buff<stat_buff_t>( e.player, buff_spell )
-        ->add_stat( STAT_CRIT_RATING, 0 )
-        ->add_stat( STAT_MASTERY_RATING, 0 )
-        ->add_stat( STAT_HASTE_RATING, 0 )
-        ->add_stat( STAT_VERSATILITY_RATING, 0 );
     }
 
     void reset() override
@@ -3584,7 +3570,7 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     void expire_override( int stacks, timespan_t duration ) override
     {
       buff_t::expire_override( stacks, duration );
-      double buff_value = std::min( 1.0, std::max( 0.5, accumulated_damage / max_damage ) ) * max_buff_value;
+      double buff_value = std::min( 1.0, std::max( 0.5, accumulated_damage / max_damage ) ) * buff->default_value;
 
       auto stat_buff = debug_cast<stat_buff_t*>( buff );
 
@@ -3611,12 +3597,14 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     const spell_data_t* debuff_spell;
     const special_effect_t& effect;
     bool embelishment;
+    buff_t* buff;
 
-    radiant_focus_cb_t( const special_effect_t& e, bool embelish )
+    radiant_focus_cb_t( const special_effect_t& e, bool embelish, buff_t* b )
       : dbc_proc_callback_t( e.player, e ),
         debuff_spell( e.player->find_spell( 454560 ) ),
         effect( e ),
-        embelishment( embelish )
+        embelishment( embelish ),
+        buff( b )
     {
       effect.player->callbacks.register_callback_execute_function(
           454560, [ & ]( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) {
@@ -3641,15 +3629,8 @@ void darkmoon_deck_radiance( special_effect_t& effect )
 
     buff_t* create_debuff( player_t* t ) override
     {
-      auto name_append = "trinket";
-
-      if ( embelishment )
-        name_append = "embelishment";
-
-      // TODO: Test if these are actually seperate debuffs, if not need to figure out how to handle that
-      auto debuff = make_buff<radiant_focus_debuff_t>( actor_pair_t( t, listener ), effect,
-                                                       "radiant_focus_debuff_" + util::tokenize_fn( name_append ),
-                                                       debuff_spell, embelishment );
+      auto debuff = make_buff<radiant_focus_debuff_t>( actor_pair_t( t, listener ), effect, "radiant_focus_debuff",
+                                                       debuff_spell, embelishment, buff );
 
       return debuff;
     }
@@ -3665,7 +3646,7 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     }
   };
 
-  auto radiant_focus = new special_effect_t( effect.player );
+  auto radiant_focus      = new special_effect_t( effect.player );
   radiant_focus->name_str = "radiant_focus_darkmoon";
   radiant_focus->spell_id = 454560;
   effect.player->special_effects.push_back( radiant_focus );
@@ -3679,9 +3660,36 @@ void darkmoon_deck_radiance( special_effect_t& effect )
   if ( effect.spell_id == 454558 )
     embelish = true;
 
+  auto buff = buff_t::find( effect.player, "radiance" );
+  if ( !buff )
+  {
+    auto buff_spell = effect.player->find_spell( 454785 );
+
+    // Very oddly setup buff, scripted to provide the highest secondary stat of the player
+    // Data doesnt contain the other stats like usual, manually setting things up here.
+    buff = create_buff<stat_buff_t>( effect.player, buff_spell )
+               ->add_stat( STAT_CRIT_RATING, 0 )
+               ->add_stat( STAT_MASTERY_RATING, 0 )
+               ->add_stat( STAT_HASTE_RATING, 0 )
+               ->add_stat( STAT_VERSATILITY_RATING, 0 );
+
+    if ( embelish )
+      buff->set_default_value( effect.player->find_spell( 454558 )->effectN( 2 ).average( effect ) );
+    else
+      buff->set_default_value( effect.player->find_spell( 463108 )->effectN( 1 ).average( effect ) );
+  }
+  else if ( buff )
+  {
+    if ( embelish )
+      buff->modify_default_value( effect.player->find_spell( 454558 )->effectN( 2 ).average( effect ) );
+    else
+      buff->modify_default_value( effect.player->find_spell( 463108 )->effectN( 1 ).average( effect ) );
+  }
+
   effect.spell_id = 454559;
   effect.name_str = "radiant_focus";
-  new radiant_focus_cb_t( effect, embelish );
+
+  new radiant_focus_cb_t( effect, embelish, buff );
 }
 
 // Nerubian Pheromone Secreter
