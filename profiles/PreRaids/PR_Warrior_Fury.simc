@@ -1,0 +1,203 @@
+warrior="PR_Warrior_Fury"
+source=default
+spec=fury
+level=80
+race=mechagnome
+role=attack
+position=back
+talents=CgEAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAgRDMDYMMDjBmFYYGjZmHYYmZbbMmZmFMzDMzMjZMbDzMMGAAAIMjltBWATwMMBGbDbA
+
+# Default consumables
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=the_sushi_special
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/variable,name=trinket_1_exclude,value=trinket.1.is.treacherous_transmitter
+actions.precombat+=/variable,name=trinket_2_exclude,value=trinket.2.is.treacherous_transmitter
+# Evaluates a trinkets cooldown, divided by avatar or odyns fury. If it's value has no remainder return 1, else return 0.5.
+actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=trinket.1.has_use_buff&(trinket.1.cooldown.duration%%cooldown.avatar.duration=0|trinket.1.cooldown.duration%%cooldown.odyns_fury.duration=0)
+actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=trinket.2.has_use_buff&(trinket.2.cooldown.duration%%cooldown.avatar.duration=0|trinket.2.cooldown.duration%%cooldown.odyns_fury.duration=0)
+actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_stat.any_dps&!variable.trinket_1_exclude)
+actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_stat.any_dps&!variable.trinket_2_exclude)
+actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync))
+actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.algethar_puzzle_box
+actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.algethar_puzzle_box
+actions.precombat+=/berserker_stance,toggle=on
+actions.precombat+=/recklessness,if=!equipped.fyralath_the_dreamrender
+actions.precombat+=/avatar,if=!talent.titans_torment
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/charge,if=time<=0.5|movement.distance>5
+actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)
+actions+=/potion
+actions+=/pummel,if=target.debuff.casting.react
+actions+=/call_action_list,name=trinkets
+actions+=/call_action_list,name=variables
+actions+=/lights_judgment,if=variable.on_gcd_racials
+actions+=/bag_of_tricks,if=variable.on_gcd_racials
+actions+=/berserking,if=buff.recklessness.up
+actions+=/blood_fury
+actions+=/fireblood
+actions+=/ancestral_call
+actions+=/invoke_external_buff,name=power_infusion,if=buff.avatar.remains>15&fight_remains>=135|variable.execute_phase&buff.avatar.up|fight_remains<=25
+actions+=/run_action_list,name=slayer_st,if=talent.slayers_dominance&active_enemies=1
+actions+=/run_action_list,name=slayer_mt,if=talent.slayers_dominance&active_enemies>1
+actions+=/run_action_list,name=thane_st,if=talent.lightning_strikes&active_enemies=1
+actions+=/run_action_list,name=thane_mt,if=talent.lightning_strikes&active_enemies>1
+
+actions.slayer_mt=recklessness,if=(!talent.anger_management&cooldown.avatar.remains<1&talent.titans_torment)|talent.anger_management|!talent.titans_torment
+actions.slayer_mt+=/avatar,if=(talent.titans_torment&(buff.enrage.up|talent.titanic_rage)&(debuff.champions_might.up|!talent.champions_might))|!talent.titans_torment
+actions.slayer_mt+=/thunderous_roar,if=buff.enrage.up
+actions.slayer_mt+=/champions_spear,if=(buff.enrage.up&talent.titans_torment&cooldown.avatar.remains<gcd)|(buff.enrage.up&!talent.titans_torment)
+actions.slayer_mt+=/odyns_fury,if=dot.odyns_fury_torment_mh.remains<1&(buff.enrage.up|talent.titanic_rage)&cooldown.avatar.remains
+actions.slayer_mt+=/whirlwind,if=buff.meat_cleaver.stack=0&talent.meat_cleaver
+actions.slayer_mt+=/execute,if=talent.ashen_juggernaut&buff.ashen_juggernaut.remains<=gcd&buff.enrage.up
+actions.slayer_mt+=/rampage,if=talent.bladestorm&cooldown.bladestorm.remains<=gcd&!debuff.champions_might.up
+actions.slayer_mt+=/bladestorm,if=buff.enrage.up&cooldown.avatar.remains>=9
+actions.slayer_mt+=/onslaught,if=talent.tenderize&buff.brutal_finish.up
+actions.slayer_mt+=/rampage,if=talent.anger_management
+actions.slayer_mt+=/crushing_blow
+actions.slayer_mt+=/onslaught,if=talent.tenderize
+actions.slayer_mt+=/bloodbath,if=buff.enrage.up
+actions.slayer_mt+=/rampage,if=talent.reckless_abandon
+actions.slayer_mt+=/execute,if=buff.enrage.up&debuff.marked_for_execution.up
+actions.slayer_mt+=/bloodbath
+actions.slayer_mt+=/raging_blow,if=talent.slaughtering_strikes
+actions.slayer_mt+=/onslaught
+actions.slayer_mt+=/execute
+actions.slayer_mt+=/bloodthirst
+actions.slayer_mt+=/raging_blow
+actions.slayer_mt+=/whirlwind
+actions.slayer_mt+=/storm_bolt,if=buff.bladestorm.up
+
+actions.slayer_st=recklessness,if=(!talent.anger_management&cooldown.avatar.remains<1&talent.titans_torment)|talent.anger_management|!talent.titans_torment
+actions.slayer_st+=/avatar,if=(talent.titans_torment&(buff.enrage.up|talent.titanic_rage)&(debuff.champions_might.up|!talent.champions_might))|!talent.titans_torment
+actions.slayer_st+=/thunderous_roar,if=buff.enrage.up
+actions.slayer_st+=/champions_spear,if=(buff.enrage.up&talent.titans_torment&cooldown.avatar.remains<gcd)|(buff.enrage.up&!talent.titans_torment)
+actions.slayer_st+=/odyns_fury,if=dot.odyns_fury_torment_mh.remains<1&(buff.enrage.up|talent.titanic_rage)&cooldown.avatar.remains
+actions.slayer_st+=/execute,if=talent.ashen_juggernaut&buff.ashen_juggernaut.remains<=gcd&buff.enrage.up
+actions.slayer_st+=/rampage,if=talent.bladestorm&cooldown.bladestorm.remains<=gcd&!debuff.champions_might.up
+actions.slayer_st+=/bladestorm,if=buff.enrage.up&cooldown.avatar.remains>=9
+actions.slayer_st+=/onslaught,if=talent.tenderize&buff.brutal_finish.up
+actions.slayer_st+=/rampage,if=talent.anger_management
+actions.slayer_st+=/crushing_blow
+actions.slayer_st+=/onslaught,if=talent.tenderize
+actions.slayer_st+=/bloodbath,if=buff.enrage.up
+actions.slayer_st+=/raging_blow,if=talent.slaughtering_strikes&rage<110&talent.reckless_abandon
+actions.slayer_st+=/execute,if=buff.enrage.up&debuff.marked_for_execution.up
+actions.slayer_st+=/rampage,if=talent.reckless_abandon
+actions.slayer_st+=/bloodthirst,if=!talent.reckless_abandon&buff.enrage.up
+actions.slayer_st+=/raging_blow
+actions.slayer_st+=/onslaught
+actions.slayer_st+=/execute
+actions.slayer_st+=/bloodthirst
+actions.slayer_st+=/whirlwind,if=talent.meat_cleaver
+actions.slayer_st+=/slam
+actions.slayer_st+=/storm_bolt,if=buff.bladestorm.up
+
+actions.thane_mt=recklessness,if=(!talent.anger_management&cooldown.avatar.remains<1&talent.titans_torment)|talent.anger_management|!talent.titans_torment
+actions.thane_mt+=/thunder_blast,if=buff.enrage.up
+actions.thane_mt+=/avatar,if=(talent.titans_torment&(buff.enrage.up|talent.titanic_rage)&(debuff.champions_might.up|!talent.champions_might))|!talent.titans_torment
+actions.thane_mt+=/thunder_clap,if=buff.meat_cleaver.stack=0&talent.meat_cleaver
+actions.thane_mt+=/thunderous_roar,if=buff.enrage.up
+actions.thane_mt+=/ravager
+actions.thane_mt+=/champions_spear,if=buff.enrage.up
+actions.thane_mt+=/odyns_fury,if=dot.odyns_fury_torment_mh.remains<1&(buff.enrage.up|talent.titanic_rage)&cooldown.avatar.remains
+actions.thane_mt+=/execute,if=talent.ashen_juggernaut&buff.ashen_juggernaut.remains<=gcd&buff.enrage.up
+actions.thane_mt+=/rampage,if=talent.bladestorm&cooldown.bladestorm.remains<=gcd&!debuff.champions_might.up
+actions.thane_mt+=/bladestorm,if=buff.enrage.up
+actions.thane_mt+=/rampage,if=talent.anger_management
+actions.thane_mt+=/crushing_blow,if=buff.enrage.up
+actions.thane_mt+=/onslaught,if=talent.tenderize
+actions.thane_mt+=/bloodbath
+actions.thane_mt+=/rampage,if=talent.reckless_abandon
+actions.thane_mt+=/bloodthirst
+actions.thane_mt+=/thunder_clap
+actions.thane_mt+=/onslaught
+actions.thane_mt+=/execute
+actions.thane_mt+=/raging_blow
+actions.thane_mt+=/whirlwind
+
+actions.thane_st=recklessness,if=(!talent.anger_management&cooldown.avatar.remains<1&talent.titans_torment)|talent.anger_management|!talent.titans_torment
+actions.thane_st+=/thunder_blast,if=buff.enrage.up
+actions.thane_st+=/avatar,if=(talent.titans_torment&(buff.enrage.up|talent.titanic_rage)&(debuff.champions_might.up|!talent.champions_might))|!talent.titans_torment
+actions.thane_st+=/ravager
+actions.thane_st+=/thunderous_roar,if=buff.enrage.up
+actions.thane_st+=/champions_spear,if=buff.enrage.up&(cooldown.avatar.remains<gcd|!talent.titans_torment)
+actions.thane_st+=/odyns_fury,if=dot.odyns_fury_torment_mh.remains<1&(buff.enrage.up|talent.titanic_rage)&cooldown.avatar.remains
+actions.thane_st+=/execute,if=talent.ashen_juggernaut&buff.ashen_juggernaut.remains<=gcd&buff.enrage.up
+actions.thane_st+=/rampage,if=talent.bladestorm&cooldown.bladestorm.remains<=gcd&!debuff.champions_might.up
+actions.thane_st+=/bladestorm,if=buff.enrage.up&talent.unhinged
+actions.thane_st+=/rampage,if=talent.anger_management
+actions.thane_st+=/crushing_blow
+actions.thane_st+=/onslaught,if=talent.tenderize
+actions.thane_st+=/bloodbath
+actions.thane_st+=/rampage,if=talent.reckless_abandon
+actions.thane_st+=/raging_blow
+actions.thane_st+=/execute
+actions.thane_st+=/bloodthirst,if=buff.enrage.up&(!buff.burst_of_power.up|!talent.reckless_abandon)
+actions.thane_st+=/onslaught
+actions.thane_st+=/bloodthirst
+actions.thane_st+=/thunder_clap
+actions.thane_st+=/whirlwind,if=talent.meat_cleaver
+actions.thane_st+=/slam
+
+# Trinkets
+actions.trinkets=do_treacherous_transmitter_task
+actions.trinkets+=/use_item,name=treacherous_transmitter,if=variable.adds_remain|variable.st_planning
+# Trinkets The trinket with the highest estimated value, will be used first and paired with Avatar.
+actions.trinkets+=/use_item,slot=trinket1,if=variable.trinket_1_buffs&!variable.trinket_1_manual&(!buff.avatar.up&trinket.1.cast_time>0|!trinket.1.cast_time>0)&((talent.titans_torment&cooldown.avatar.ready)|(buff.avatar.up&!talent.titans_torment))&(variable.trinket_2_exclude|!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains
+actions.trinkets+=/use_item,slot=trinket2,if=variable.trinket_2_buffs&!variable.trinket_2_manual&(!buff.avatar.up&trinket.2.cast_time>0|!trinket.2.cast_time>0)&((talent.titans_torment&cooldown.avatar.ready)|(buff.avatar.up&!talent.titans_torment))&(variable.trinket_1_exclude|!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains
+# If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown.
+actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.1.cast_time>0&!buff.avatar.up|!trinket.1.cast_time>0)&!variable.trinket_1_manual&(!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)|(trinket.1.cast_time>0&!buff.avatar.up|!trinket.1.cast_time>0)|cooldown.avatar.remains_expected>20)
+actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.2.cast_time>0&!buff.avatar.up|!trinket.2.cast_time>0)&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|(trinket.2.cast_time>0&!buff.avatar.up|!trinket.2.cast_time>0)|cooldown.avatar.remains_expected>20)
+actions.trinkets+=/use_item,slot=main_hand,if=!equipped.fyralath_the_dreamrender&(!variable.trinket_1_buffs|trinket.1.cooldown.remains)&(!variable.trinket_2_buffs|trinket.2.cooldown.remains)
+
+# Variables
+actions.variables=variable,name=st_planning,value=active_enemies=1&(raid_event.adds.in>15|!raid_event.adds.exists)
+actions.variables+=/variable,name=adds_remain,value=active_enemies>=2&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>5)
+actions.variables+=/variable,name=execute_phase,value=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20
+actions.variables+=/variable,name=on_gcd_racials,value=buff.recklessness.down&buff.avatar.down&rage<80&buff.bloodbath.down&buff.crushing_blow.down&buff.sudden_death.down&!cooldown.bladestorm.ready&(!cooldown.execute.ready|!variable.execute_phase)
+
+head=soaring_behemoths_greathelm,id=221146,ilevel=593
+neck=emergency_stop_keychain,id=221077,ilevel=593
+shoulders=swarm_monarchs_spaulders,id=221155,ilevel=593
+back=anvilhide_cape,id=221088,ilevel=593
+chest=experimental_goresilk_chestguard,id=221161,ilevel=593,enchant=crystalline_radiance_2
+wrists=flameforged_armguard,id=221118,ilevel=593
+hands=machinists_searing_handguards,id=221086,ilevel=593
+waist=lightningconductors_bands,id=221040,ilevel=593
+legs=legplates_of_duality,id=221173,ilevel=593,enchant=defenders_armor_kit_2
+feet=hopsladen_greatboots,id=221061,ilevel=593
+finger1=85year_tenure_ring,id=221198,ilevel=593,enchant=radiant_mastery_2
+finger2=wicks_golden_loop,id=221099,ilevel=593,enchant=radiant_mastery_2
+trinket1=overclocked_geararang_launcher,id=219301,ilevel=593
+trinket2=arakara_sacbrood,id=219314,ilevel=593
+main_hand=hivebreakers_dipper,id=221063,ilevel=593,enchant=authority_of_radiant_power_2
+off_hand=poleaxe_of_somber_fate,id=221111,ilevel=593,enchant=oathsworns_tenacity_2
+
+# Gear Summary
+# gear_ilvl=593.00
+# gear_strength=23976
+# gear_stamina=136057
+# gear_crit_rating=4003
+# gear_haste_rating=10174
+# gear_mastery_rating=10433
+# gear_versatility_rating=5149
+# gear_armor=43390
+# gear_bonus_armor=835
