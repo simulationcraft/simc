@@ -3545,10 +3545,9 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     buff_t* buff;
 
     radiant_focus_debuff_t( actor_pair_t td, const special_effect_t& e, util::string_view n, const spell_data_t* s,
-                            bool embelish, buff_t* b )
-      : buff_t( td, n, s ), accumulated_damage( 0 ), max_damage( 0 ), buff( b )
+                            buff_t* b )
+      : buff_t( td, n, s ), accumulated_damage( 0 ), max_damage( data().effectN( 1 ).average( e ) ), buff( b )
     {
-      max_damage = data().effectN( 1 ).average( e );
       set_default_value( max_damage );
     }
 
@@ -3593,15 +3592,10 @@ void darkmoon_deck_radiance( special_effect_t& effect )
   {
     const spell_data_t* debuff_spell;
     const special_effect_t& effect;
-    bool embelishment;
     buff_t* buff;
 
-    radiant_focus_cb_t( const special_effect_t& e, bool embelish, buff_t* b )
-      : dbc_proc_callback_t( e.player, e ),
-        debuff_spell( e.player->find_spell( 454560 ) ),
-        effect( e ),
-        embelishment( embelish ),
-        buff( b )
+    radiant_focus_cb_t( const special_effect_t& e, buff_t* b )
+      : dbc_proc_callback_t( e.player, e ), debuff_spell( e.player->find_spell( 454560 ) ), effect( e ), buff( b )
     {
       effect.player->callbacks.register_callback_execute_function(
           454560, [ & ]( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) {
@@ -3627,7 +3621,7 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     buff_t* create_debuff( player_t* t ) override
     {
       auto debuff = make_buff<radiant_focus_debuff_t>( actor_pair_t( t, listener ), effect, "radiant_focus_debuff",
-                                                       debuff_spell, embelishment, buff );
+                                                       debuff_spell, buff );
 
       return debuff;
     }
@@ -3652,10 +3646,7 @@ void darkmoon_deck_radiance( special_effect_t& effect )
   radiant_focus_proc->initialize();
   radiant_focus_proc->activate();
 
-  bool embelish = false;
-
-  if ( effect.spell_id == 454558 )
-    embelish = true;
+  bool embelish = effect.driver()->id() == 454558;
 
   auto buff = buff_t::find( effect.player, "radiance" );
   if ( !buff )
@@ -3671,22 +3662,22 @@ void darkmoon_deck_radiance( special_effect_t& effect )
                ->add_stat( STAT_VERSATILITY_RATING, 0 );
 
     if ( embelish )
-      buff->set_default_value( effect.player->find_spell( 454558 )->effectN( 2 ).average( effect ) );
+      buff->set_default_value( effect.driver()->effectN( 2 ).average( effect ) );
     else
-      buff->set_default_value( effect.player->find_spell( 463108 )->effectN( 1 ).average( effect ) );
+      buff->set_default_value( effect.driver()->effectN( 1 ).average( effect ) );
   }
   else if ( buff )
   {
     if ( embelish )
-      buff->modify_default_value( effect.player->find_spell( 454558 )->effectN( 2 ).average( effect ) );
+      buff->modify_default_value( effect.driver()->effectN( 2 ).average( effect ) );
     else
-      buff->modify_default_value( effect.player->find_spell( 463108 )->effectN( 1 ).average( effect ) );
+      buff->modify_default_value( effect.driver()->effectN( 1 ).average( effect ) );
   }
 
   effect.spell_id = 454559;
   effect.name_str = "radiant_focus";
 
-  new radiant_focus_cb_t( effect, embelish, buff );
+  new radiant_focus_cb_t( effect, buff );
 }
 
 // Nerubian Pheromone Secreter
