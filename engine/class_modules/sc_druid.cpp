@@ -4189,10 +4189,14 @@ struct bloodseeker_vines_t final : public cat_attack_t
     : cat_attack_t( n, p, p->spec.bloodseeker_vines ), twin_pct( p->talent.twin_sprouts->effectN( 1 ).percent() )
   {
     dot_max_stack = 1;
-    dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
 
     dot_name = "bloodseeker_vines";
     orig_dur = dot_duration;
+  }
+
+  timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t dur ) const override
+  {
+    return dur;
   }
 
   void trigger_dot( action_state_t* s ) override
