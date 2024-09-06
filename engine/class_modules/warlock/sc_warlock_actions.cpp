@@ -3299,6 +3299,14 @@ using namespace helpers;
         return tl.size();
       }
 
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        if ( p()->bugs && p()->talents.diabolic_embers.ok() && s->result == RESULT_CRIT )
+          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits );
+      }
+
       double action_multiplier() const override
       {
         double m = warlock_spell_t::action_multiplier();
