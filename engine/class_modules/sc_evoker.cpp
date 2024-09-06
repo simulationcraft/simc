@@ -143,7 +143,7 @@ struct evoker_td_t : public actor_target_data_t
   struct chrono_tracker_t
   {
     std::array<double, 5> damage_buckets = { 0, 0, 0, 0, 0 };
-    time_t last_accessed_second          = std::numeric_limits<time_t>::min();
+    time_t last_accessed_second          = 0;
   } chrono_tracker;
 
   evoker_td_t( player_t* target, evoker_t* source );
@@ -8403,7 +8403,7 @@ void evoker_t::reset()
       if ( !td )
         continue;
 
-      td->chrono_tracker.last_accessed_second = std::numeric_limits<time_t>::min();
+      td->chrono_tracker.last_accessed_second = 0;
 
       for ( auto& bucket : td->chrono_tracker.damage_buckets )
       {
