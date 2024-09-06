@@ -4248,7 +4248,7 @@ void siphoning_stilleto( special_effect_t& effect )
       // TODO: implement range check if it ever matters for specilizations that can use this.
       make_event( *listener->sim, duration, [ & ] {
         auto target = listener->sim
-          ->target_non_sleeping_list[ rng().range( as<int>( listener->sim->target_non_sleeping_list.size() ) ) ];
+          ->target_non_sleeping_list[ rng().range( listener->sim->target_non_sleeping_list.size() ) ];
         damage->execute_on_target( target );
       } );
     }
