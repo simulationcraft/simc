@@ -92,9 +92,8 @@ actions.cds+=/roll_the_bones,if=variable.rtb_reroll|rtb_buffs=0
 actions.cds+=/keep_it_rolling,if=rtb_buffs>=4&(rtb_buffs.min_remains<2|buff.broadside.up)
 actions.cds+=/ghostly_strike,if=combo_points<cp_max_spend
 # Trinkets that should not be used during stealth and have higher priority than entering stealth
-actions.cds+=/use_item,name=manic_grieftorch,if=!stealthed.all&buff.between_the_eyes.up|fight_remains<=5
-actions.cds+=/use_item,name=beacon_to_the_beyond,if=!stealthed.all&buff.between_the_eyes.up|fight_remains<=5
 actions.cds+=/use_item,name=imperfect_ascendancy_serum,if=!stealthed.all|fight_remains<=22
+actions.cds+=/use_item,name=mad_queens_mandate,if=!stealthed.all|fight_remains<=5
 # Killing Spree has higher priority than stealth cooldowns
 actions.cds+=/killing_spree,if=variable.finish_condition&!stealthed.all
 # Crackshot builds use stealth cooldowns if Between the Eyes is ready
@@ -108,12 +107,6 @@ actions.cds+=/berserking
 actions.cds+=/fireblood
 actions.cds+=/ancestral_call
 # Default conditions for usable items.
-actions.cds+=/use_item,name=elementium_pocket_anvil,use_off_gcd=1,if=gcd.remains<=action.sinister_strike.gcd%2
-# Use Bomb Dispenser on cooldown, but hold if 2nd trinket is nearly off cooldown, unless at max charges or sim duration ends soon
-actions.cds+=/use_item,name=dragonfire_bomb_dispenser,use_off_gcd=1,if=gcd.remains<=action.sinister_strike.gcd%2&((!trinket.1.is.dragonfire_bomb_dispenser&trinket.1.cooldown.remains>10|trinket.2.cooldown.remains>10)|cooldown.dragonfire_bomb_dispenser.charges>2|fight_remains<20|!trinket.2.has_cooldown|!trinket.1.has_cooldown)
-actions.cds+=/use_item,name=stormeaters_boon,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|raid_event.adds.count<2|fight_remains<10
-actions.cds+=/use_item,name=enduring_dreadplate,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|raid_event.adds.count<2|fight_remains<16
-actions.cds+=/use_item,name=windscar_whetstone,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|raid_event.adds.count<2|fight_remains<7
 actions.cds+=/use_items,slots=trinket1,if=buff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20
 actions.cds+=/use_items,slots=trinket2,if=buff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20
 
@@ -150,33 +143,32 @@ actions.stealth_cds+=/vanish,if=!talent.underhanded_upper_hand&!talent.crackshot
 actions.stealth_cds+=/shadowmeld,if=variable.finish_condition&!cooldown.vanish.ready
 
 head=kareshi_phantoms_emptiness,id=212038,bonus_id=1540/10299
-neck=elders_hemolymphal_periapt,id=221181,bonus_id=3131/10299,gem_id=213743/213467
+neck=amulet_of_earthen_craftsmanship,id=215136,bonus_id=10421/9633/8902/11144/10222/1485/8781,gem_id=213743/213467,crafted_stats=36/40
 shoulders=kareshi_phantoms_shoulderpads,id=212036,bonus_id=1540/10299
 back=wings_of_shattered_sorrow,id=225574,bonus_id=1540/10299,enchant=chant_of_leeching_fangs_3
 chest=kareshi_phantoms_nexus_wraps,id=212041,bonus_id=1540/10299,enchant=crystalline_radiance_3
 wrists=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960/8792,enchant=chant_of_armored_leech_3,crafted_stats=32/40
 hands=kareshi_phantoms_grips,id=212039,bonus_id=1540/10299
-waist=sapgorger_belt,id=178699,bonus_id=9948/10299
+waist=kareshi_phantoms_belt,id=212035,bonus_id=1540/10299
 legs=runebranded_legwraps,id=219332,bonus_id=10421/9633/8902/1515/10520/8960/8792,enchant=stormbound_armor_kit_3,crafted_stats=36/40
 feet=viscerastitched_footpads,id=178731,bonus_id=9948/10299,enchant=defenders_march_3
-finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=9948/10299,gem_id=213467/213467,enchant=cursed_versatility_3
-finger2=experiment_08752s_band,id=221189,bonus_id=3131/10299,gem_id=213467/213467,enchant=cursed_versatility_3
-trinket1=void_reapers_contract,id=212456,bonus_id=1540/10299
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10299,gem_id=213467/213467,enchant=cursed_versatility_3
+finger2=stitchfleshs_misplaced_signet,id=178736,bonus_id=9948/10299,gem_id=213467/213467,enchant=cursed_versatility_3
+trinket1=mad_queens_mandate,id=212454,bonus_id=1540/10870
 trinket2=arakara_sacbrood,id=219314,bonus_id=3131/10299
 main_hand=void_reapers_warp_blade,id=219877,bonus_id=1540/10299,enchant=authority_of_the_depths_3
 off_hand=bloodkissed_kukri,id=212395,bonus_id=1540/10299,enchant=authority_of_the_depths_3
 
 # Gear Summary
-# gear_ilvl=638.63
-# gear_agility=36129
-# gear_stamina=237765
+# gear_ilvl=638.44
+# gear_agility=32522
+# gear_stamina=237221
 # gear_attack_power=938
-# gear_crit_rating=7412
-# gear_haste_rating=12653
-# gear_mastery_rating=880
-# gear_versatility_rating=16819
+# gear_crit_rating=11747
+# gear_haste_rating=12662
+# gear_mastery_rating=1756
+# gear_versatility_rating=12916
 # gear_leech_rating=3060
 # gear_armor=26282
-# set_bonus=kyevezzas_cruel_implements_2pc=1
 # set_bonus=thewarwithin_season_1_2pc=1
 # set_bonus=thewarwithin_season_1_4pc=1
