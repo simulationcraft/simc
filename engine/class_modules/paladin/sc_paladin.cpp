@@ -3017,6 +3017,8 @@ struct dawnlight_t : public paladin_spell_t
 
   {
     background = true;
+    affected_by.highlords_judgment = true;
+    tick_may_crit = true;
     dot_behavior = dot_behavior_e::DOT_EXTEND; // per bolas test Aug 21 2024
   }
 
@@ -3149,8 +3151,8 @@ void paladin_t::apply_avatar_dawnlights()
   if ( num_dawnlights < have_total )
     have_total = num_dawnlights;
 
-  for ( auto i = 0u; i < have_total; i++ )
-    active.dawnlight->execute_on_target( tl_candidates[ i ] );
+  for ( auto i = 0u; i < num_dawnlights; i++ )
+    active.dawnlight->execute_on_target( tl_candidates[ i % have_total ] );
 }
 
 struct suns_avatar_dmg_t : public paladin_spell_t
