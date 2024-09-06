@@ -5534,7 +5534,7 @@ struct demon_blades_t : public felblade_trigger_t<demon_hunter_attack_t>
   {
     double ea = base_t::composite_energize_amount( s );
 
-    if ( p()->talent.felscarred.demonsurge->ok() )
+    if ( p()->talent.felscarred.demonsurge->ok() && p()->buff.metamorphosis->check() )
     {
       ea += as<int>( p()->spec.metamorphosis_buff->effectN( 10 ).base_value() );
     }
