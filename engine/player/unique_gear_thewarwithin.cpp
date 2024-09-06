@@ -2232,13 +2232,14 @@ void ravenous_honey_buzzer( special_effect_t& e )
   e.execute_action = create_proc_action<ravenous_honey_buzzer_t>( "ravenous_honey_buzzer", e );
 }
 
-// Overlocked Gear-a-rang Launcher
+// Overclocked Gear-a-rang Launcher
 // 443411 Use Driver
 // 446764 Equip Driver
 // 446811 Use Damage
 // 449842 Ground Effect Trigger
 // 449828 Equip Damage
 // 450453 Equip Buff
+// TODO: stagger travel time on targets to simulate the blade movement
 void overclocked_geararang_launcher( special_effect_t& e )
 {
   struct overclocked_strike_cb_t : public dbc_proc_callback_t
@@ -2285,28 +2286,35 @@ void overclocked_geararang_launcher( special_effect_t& e )
     }
   };
 
-  struct geararang_launcher_t : public generic_proc_t
+  struct geararang_serration_t : public generic_proc_t
   {
-    ground_aoe_params_t params;
-    geararang_launcher_t( const special_effect_t& e, action_t* equip_damage )
-      : generic_proc_t( e, "geararang_launcher", e.driver() ), params()
+    geararang_serration_t( const special_effect_t& e ) : generic_proc_t( e, "geararang_serration", 446811 )
     {
-      auto damage        = create_proc_action<generic_aoe_proc_t>( "geararang_serration", e, 446811 );
-      damage->radius     = e.driver()->effectN( 1 ).radius();
-      auto ground_effect = e.player->find_spell( 449842 );
-      params.action( damage ).duration( ground_effect->duration() );
-      cooldown->duration = 0_ms;  // Handled by the item
-      add_child( damage );
-      add_child( equip_damage );
+      aoe = -1;
+      radius = e.driver()->effectN( 1 ).radius();
+      base_multiplier *= role_mult( e );
+      chain_multiplier = 0.95;  // not in spell data
+      // TODO: stagger travel time on targets to simulate the blade movement
+      range = 30;
+      travel_speed = 20;  // guessed ~1.5s to reach max range of ~30yd
     }
 
-    void impact( action_state_t* s ) override
+    std::vector<player_t*>& target_list() const override
     {
-      generic_proc_t::impact( s );
+      // to simulate mobs not always grouping up in the exact same order, re-create the target list every time.
+      available_targets( target_cache.list );
+      player->rng().shuffle( target_cache.list.begin(), target_cache.list.end() );
 
-      make_event<ground_aoe_event_t>( *sim, player,
-                                      params.target( s->target ).x( s->target->x_position ).y( s->target->y_position ),
-                                      true /* Immediate pulse */ );
+      // duplicate the list add in reverse to simulate the blade going out then returning
+      std::vector<player_t*> tmp_tl = target_cache.list;  // make a copy
+
+      while ( !tmp_tl.empty() )
+      {
+        target_cache.list.push_back( tmp_tl.back() );
+        tmp_tl.pop_back();
+      }
+
+      return target_cache.list;
     }
   };
 
@@ -2343,7 +2351,8 @@ void overclocked_geararang_launcher( special_effect_t& e )
   overclock_cb->initialize();
   overclock_cb->activate();
 
-  e.execute_action = create_proc_action<geararang_launcher_t>( "geararang_launcher", e, overclock_strike );
+  e.execute_action = create_proc_action<geararang_serration_t>( "geararang_serration", e );
+  e.execute_action->add_child( overclock_strike );
 }
 
 // Remnant of Darkness
