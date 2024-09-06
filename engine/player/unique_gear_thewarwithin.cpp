@@ -112,18 +112,18 @@ enum gem_color_e : unsigned
 
 static constexpr std::array<gem_color_e, 5> gem_colors = { GEM_RUBY, GEM_AMBER, GEM_EMERALD, GEM_SAPPHIRE, GEM_ONYX };
 
-std::vector<gem_color_e> algari_gem_list( const special_effect_t& effect )
+std::vector<gem_color_e> algari_gem_list( player_t* player )
 {
   std::vector<gem_color_e> gems;
 
-  for ( const auto& item : effect.player->items )
+  for ( const auto& item : player->items )
   {
     for ( auto gem_id : item.parsed.gem_id )
     {
       if ( gem_id )
       {
-        const auto& _gem = effect.player->dbc->item( gem_id );
-        const auto& _prop = effect.player->dbc->gem_property( _gem.gem_properties );
+        const auto& _gem  = player->dbc->item( gem_id );
+        const auto& _prop = player->dbc->gem_property( _gem.gem_properties );
         for ( auto g : gem_colors )
         {
           if ( _prop.desc_id == static_cast<unsigned>( g ) )
@@ -139,15 +139,25 @@ std::vector<gem_color_e> algari_gem_list( const special_effect_t& effect )
   return gems;
 }
 
-std::vector<gem_color_e> unique_gem_list( const special_effect_t& effect )
+std::vector<gem_color_e> algari_gem_list( const special_effect_t& effect )
 {
-  auto _list = algari_gem_list( effect );
+  return algari_gem_list( effect.player );
+}
+
+std::vector<gem_color_e> unique_gem_list( player_t* player )
+{
+  auto _list = algari_gem_list( player );
   range::sort( _list );
 
   auto it = range::unique( _list );
   _list.erase( it, _list.end() );
 
   return _list;
+}
+
+std::vector<gem_color_e> unique_gem_list( const special_effect_t& effect )
+{
+  return unique_gem_list( effect.player );
 }
 
 namespace consumables
@@ -607,50 +617,83 @@ void elemental_focusing_lens( special_effect_t& effect )
 // 436159 Boon of Binding Buff
 void binding_of_binding( special_effect_t& effect )
 {
-  auto gems = unique_gem_list( effect );
-
-  if ( !gems.size() )
-    return;
-
-  if ( effect.player->thewarwithin_opts.binding_of_binding_on_you <= 0 )
-    return;
-
-  /* for reference, currently unused
-  static constexpr std::array<std::tuple<gem_color_e, unsigned, const char*>, 5> effect_index = { {
-    { GEM_RUBY, 2, "ruby" },
-    { GEM_AMBER, -1, "amber" },
-    { GEM_EMERALD, 3, "emerald" },
-    { GEM_SAPPHIRE, 4, "sapphire" },
-    { GEM_ONYX, 5, "onyx" } } };
-  */
-
-   auto buff_spell = effect.player->find_spell( 436159 );
-
-   auto buff = create_buff<stat_buff_t>( effect.player, "boon_of_binding", buff_spell );
-
-   for ( gem_color_e gem_color : gems )
+  struct binding_of_binding_cb_t : public dbc_proc_callback_t
    {
-     switch ( gem_color )
+     target_specific_t<buff_t> buffs;
+     double binding_chance_if_only_dps;
+     binding_of_binding_cb_t( const special_effect_t& e )
+       : dbc_proc_callback_t( e.player, e ),
+         buffs{ false },
+         binding_chance_if_only_dps( 0.8 )
      {
-       case GEM_RUBY:
-         buff->add_stat_from_effect( 2, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
-         break;
-       case GEM_EMERALD:
-         buff->add_stat_from_effect( 3, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
-         break;
-       case GEM_SAPPHIRE:
-         buff->add_stat_from_effect( 4, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
-         break;
-       case GEM_ONYX:
-         buff->add_stat_from_effect( 5, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
-         break;
-       default:
-         break;
+       get_buff( effect.player );
      }
-   }
 
-   effect.custom_buff = buff;
-   new dbc_proc_callback_t( effect.player, effect );
+     buff_t* get_buff( player_t* buff_player )
+     {
+       if ( buffs[ buff_player ] )
+         return buffs[ buff_player ];
+
+       auto gems = unique_gem_list( buff_player );
+
+       auto buff_spell = effect.player->find_spell( 436159 );
+
+       auto buff = make_buff<stat_buff_t>( actor_pair_t{ buff_player, effect.player }, "boon_of_binding", buff_spell );
+
+       for ( gem_color_e gem_color : gems )
+       {
+         switch ( gem_color )
+         {
+           case GEM_RUBY:
+             buff->add_stat_from_effect( 2, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
+             break;
+           case GEM_EMERALD:
+             buff->add_stat_from_effect( 3, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
+             break;
+           case GEM_SAPPHIRE:
+             buff->add_stat_from_effect( 4, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
+             break;
+           case GEM_ONYX:
+             buff->add_stat_from_effect( 5, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
+             break;
+           default:
+             break;
+         }
+       }
+
+       buffs[ buff_player ] = buff;
+
+       return buff;
+     }
+
+     void execute( action_t*, action_state_t* ) override
+     {
+       if ( effect.player->thewarwithin_opts.binding_of_binding_on_you > 0 )
+       {
+         buffs[ effect.player ]->trigger();
+       }
+       else
+       {
+         if ( !effect.player->sim->single_actor_batch && effect.player->sim->player_non_sleeping_list.size() > 1 )
+         {
+           std::vector<player_t*> helper_vector = effect.player->sim->player_non_sleeping_list.data();
+           rng().shuffle( helper_vector.begin(), helper_vector.end() );
+
+           for ( auto p : helper_vector )
+           {
+             if ( p == effect.player || p->is_pet() )
+               continue;
+
+             if ( rng().roll( binding_chance_if_only_dps ) )
+               get_buff( p )->trigger();
+             break;
+           }
+         }
+       }
+     }
+   };
+
+   new binding_of_binding_cb_t( effect );
 }
 
 // 457665 dawnthread driver
