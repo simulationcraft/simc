@@ -2027,10 +2027,8 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
             .set_eff( &effect );
     };
 
-    if ( p->specialization() == MONK_MISTWEAVER )
-      add_docj_parse_entry( p->talent.mistweaver.dance_of_chiji );
-    else if ( p->specialization() == MONK_WINDWALKER )
-      add_docj_parse_entry( p->talent.windwalker.dance_of_chiji );
+    add_docj_parse_entry( p->talent.mistweaver.dance_of_chiji );
+    add_docj_parse_entry( p->talent.windwalker.dance_of_chiji );
 
     parse_effects( p->buff.cyclone_strikes, USE_CURRENT );
   }
@@ -4849,21 +4847,21 @@ struct revival_t : public monk_heal_t
 
 struct sheiluns_gift_t : public monk_heal_t
 {
-  sheiluns_gift_t( monk_t *p, util::string_view options_str )
-    : monk_heal_t( p, "sheiluns_gift", p->talent.mistweaver.sheiluns_gift )
+  sheiluns_gift_t( monk_t *player, util::string_view options_str )
+    : monk_heal_t( player, "sheiluns_gift", player->talent.mistweaver.sheiluns_gift )
   {
     parse_options( options_str );
 
-    may_miss = false;
-
     aoe = as<int>( data().effectN( 2 ).base_value() );
-    aoe += as<int>( p->talent.mistweaver.legacy_of_wisdom->effectN( 1 ).base_value() );
+    aoe += as<int>( player->talent.mistweaver.legacy_of_wisdom->effectN( 1 ).base_value() );
 
-    apply_affecting_aura( p->talent.mistweaver.legacy_of_wisdom );
+    apply_affecting_aura( player->talent.mistweaver.legacy_of_wisdom );
   }
 
   void execute() override
   {
+    base_t::execute();
+
     p()->buff.heart_of_the_jade_serpent_stack_mw->increment( p()->buff.sheiluns_gift->stack() );
     p()->buff.sheiluns_gift->reset();
   }
@@ -7689,8 +7687,7 @@ void monk_t::create_buffs()
           ->set_quiet( true )
           ->set_cooldown( 0_ms )
           ->set_duration( 1_ms )
-          ->set_max_stack( 1 )
-          ->set_default_value( 0.0 );
+          ->set_max_stack( 1 );
 
   buff.invoke_niuzao = make_buff( this, "invoke_niuzao_the_black_ox", talent.brewmaster.invoke_niuzao_the_black_ox )
                            ->set_default_value_from_effect( 2 )
@@ -7747,9 +7744,9 @@ void monk_t::create_buffs()
                               ->set_trigger_spell( talent.mistweaver.invoke_chi_ji_the_red_crane )
                               ->set_default_value_from_effect( 1 );
 
-  buff.jadefire_stomp_reset = make_buff_fallback( shared.jadefire_stomp->ok() && specialization() == MONK_MISTWEAVER,
-                                                  this, "jadefire_stomp_reset", find_spell( 388193 ) )
-                                  ->set_trigger_spell( shared.jadefire_stomp );
+  buff.jadefire_stomp_reset =
+      make_buff_fallback( talent.mistweaver.jadefire_stomp->ok(), this, "jadefire_stomp_reset", find_spell( 388193 ) )
+          ->set_trigger_spell( shared.jadefire_stomp );
 
   buff.life_cocoon = make_buff<absorb_buff_t>( this, "life_cocoon", talent.mistweaver.life_cocoon );
   buff.life_cocoon->set_absorb_source( get_stats( "life_cocoon" ) )
@@ -8997,15 +8994,12 @@ void monk_t::combat_begin()
     }
   }
 
-  if ( specialization() == MONK_MISTWEAVER )
+  if ( talent.mistweaver.sheiluns_gift->ok() )
   {
-    if ( talent.mistweaver.sheiluns_gift->ok() )
-    {
-      auto period = timespan_t::from_seconds( 8 );
-      period += talent.mistweaver.veil_of_pride->effectN( 1 ).time_value();
+    auto period = timespan_t::from_seconds( 8 );
+    period += talent.mistweaver.veil_of_pride->effectN( 1 ).time_value();
 
-      make_repeating_event( sim, period, [ this ]() { buff.sheiluns_gift->increment( 1 ); } );
-    }
+    make_repeating_event( sim, period, [ this ]() { buff.sheiluns_gift->increment( 1 ); } );
   }
 
   // if ( specialization() == MONK_BREWMASTER )
