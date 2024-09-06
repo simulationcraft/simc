@@ -734,7 +734,7 @@ void dawn_dusk_thread_lining( special_effect_t& effect )
                   ->collect_duration( *effect.player->sim )
                   ->collect_uptime( *effect.player->sim );
 
-    buff->player->register_combat_begin( [ buff, up ]( player_t* p ) {
+    buff->player->register_precombat_begin( [ buff, up ]( player_t* p ) {
       buff->trigger();
       up->update( true, p->sim->current_time() );
 
@@ -4248,7 +4248,7 @@ void siphoning_stilleto( special_effect_t& effect )
       // TODO: implement range check if it ever matters for specilizations that can use this.
       make_event( *listener->sim, duration, [ & ] {
         auto target = listener->sim
-          ->target_non_sleeping_list[ rng().range( 0, as<int>( listener->sim->target_non_sleeping_list.size() ) ) ];
+          ->target_non_sleeping_list[ rng().range( as<int>( listener->sim->target_non_sleeping_list.size() ) ) ];
         damage->execute_on_target( target );
       } );
     }
