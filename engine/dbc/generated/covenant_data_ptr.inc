@@ -1,4 +1,4 @@
-// Covenant abilities, wow build 11.0.2.56313
+// Covenant abilities, wow build 11.0.5.56487
 static const std::array<covenant_ability_entry_t, 68> __ptr_covenant_ability_data { {
   {  6, 4, 0, 315443, "Abomination Limb"                   },
   { 11, 4, 0, 325727, "Adaptive Swarm"                     },
@@ -70,7 +70,7 @@ static const std::array<covenant_ability_entry_t, 68> __ptr_covenant_ability_dat
   {  3, 3, 0, 328231, "Wild Spirits"                       },
 } };
 
-// Soulbind abilities, wow build 11.0.2.56313
+// Soulbind abilities, wow build 11.0.5.56487
 static const std::array<soulbind_ability_entry_t, 128> __ptr_soulbind_ability_data { {
   { 319191, 3,  824, "Field of Blossoms"                  },
   { 319210, 3,  826, "Social Butterfly"                   },
@@ -202,7 +202,7 @@ static const std::array<soulbind_ability_entry_t, 128> __ptr_soulbind_ability_da
   { 352806, 3, 1851, "Hunt's Exhilaration"                },
 } };
 
-// Conduits, wow build 11.0.2.56313
+// Conduits, wow build 11.0.5.56487
 static const std::array<conduit_entry_t, 286> __ptr_conduit_data { {
   {   5, 334993, "Stalwart Guardian"                  },
   {   7, 335010, "Brutal Vitality"                    },
@@ -531,7 +531,7 @@ static const std::array<uint16_t, 286> __ptr_conduit_spell_id_index { {
     281,   280,   279,   277,   278,   276,
 } };
 
-// Conduit ranks, wow build 11.0.2.56313
+// Conduit ranks, wow build 11.0.5.56487
 static const std::array<conduit_rank_entry_t, 4290> __ptr_conduit_rank_data { {
   {   5,  0, 334993, -20000.000000 },
   {   5,  1, 334993, -22000.000000 },
@@ -4825,7 +4825,7 @@ static const std::array<conduit_rank_entry_t, 4290> __ptr_conduit_rank_data { {
   { 294, 14, 387198, 2.600000 },
 } };
 
-// Renown reward abilities, wow build 11.0.2.56313
+// Renown reward abilities, wow build 11.0.5.56487
 static const std::array<renown_reward_entry_t, 25> __ptr_renown_reward_ability_data { {
   { 1,   2, 344087, "Deepening Bond"                     }, // Kyrian
   { 1,  19, 344089, "Deepening Bond"                     }, // Kyrian
@@ -4854,7 +4854,7 @@ static const std::array<renown_reward_entry_t, 25> __ptr_renown_reward_ability_d
   { 28,   1, 454473, "Airship: Wings 05 - Lantern Wing"   }, // [DNT] 11.0 Delves Season 1
 } };
 
-// Enhanced conduit renown levels, wow build 11.0.2.56313
+// Enhanced conduit renown levels, wow build 11.0.5.56487
 static const std::array<enhanced_conduit_entry_t, 120> __ptr_enhanced_conduit_data { {
   {  1,  1, 0,  63 }, // Niya
   {  1,  1, 2,  63 }, // Niya

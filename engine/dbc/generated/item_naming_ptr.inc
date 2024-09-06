@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 11.0.2.56313
-static const std::array<item_name_description_t, 910> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 11.0.5.56487
+static const std::array<item_name_description_t, 931> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -901,7 +901,10 @@ static const std::array<item_name_description_t, 910> __ptr_item_name_descriptio
   { 14168, "Rank 2/4"                                    },
   { 14169, "Rank 3/4"                                    },
   { 14170, "Rank 4/4"                                    },
+  { 14172, "Trading Post - WoW Anniversary"              },
+  { 14173, "WoW Anniversary"                             },
   { 14174, "Delves"                                      },
+  { 14175, "Bronze Dragon Celebration"                   },
   { 14176, "Tier 1"                                      },
   { 14177, "Tier 2"                                      },
   { 14178, "Tier 3"                                      },
@@ -910,5 +913,23 @@ static const std::array<item_name_description_t, 910> __ptr_item_name_descriptio
   { 14181, "Tier 6"                                      },
   { 14182, "Tier 7"                                      },
   { 14183, "Tier 8"                                      },
+  { 14186, "Darkmoon Fortune Deck"                       },
+  { 14195, "Dragonflight Season 1 Elite"                 },
+  { 14196, "Dragonflight Season 2 Elite"                 },
+  { 14197, "Dragonflight Season 3 Elite"                 },
+  { 14198, "Dragonflight Season 4 Elite"                 },
+  { 14199, "Dragonflight Season 3 & 4 Elite"             },
+  { 14203, "Timewalking Vendor - Blue"                   },
+  { 14204, "Timewalking Vendor - Brown"                  },
+  { 14205, "Timewalking Vendor - Purple"                 },
+  { 14206, "Reputation Vendors - Red"                    },
+  { 14207, "Dungeons - Silver"                           },
+  { 14208, "Dungeons - Blue"                             },
+  { 14209, "Dungeons - Brown"                            },
+  { 14210, "Dungeons - Purple"                           },
+  { 14211, "Dungeons - White"                            },
+  { 14212, "Timewalking Vendor - Green"                  },
+  { 14213, "Dungeons - Green"                            },
+  { 14214, "Rare Monsters"                               },
 } };
 

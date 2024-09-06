@@ -1,4 +1,4 @@
-// Item enchantment data, wow build 11.0.2.56313
+// Item enchantment data, wow build 11.0.5.56487
 static const std::array<item_enchantment_data_t, 5042> __ptr_spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },      0, "Sharpened III"                     },
