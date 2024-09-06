@@ -2260,17 +2260,19 @@ struct amn_full_mastery_bug_t : public BASE
 {
   using base_t = amn_full_mastery_bug_t<BASE>;
 
-  amn_full_mastery_bug_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s )
-    : BASE( n, p, s )
+  amn_full_mastery_bug_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : BASE( n, p, s )
   {
     // 2024-08-30 -- Demonsurge / Burning Blades gets a full 100% mastery buff from AMN instead of 80%
-    if (p->bugs) {
-      if (BASE::affected_by.any_means_necessary.direct) {
-        BASE::affected_by.any_means_necessary.direct = false;
+    if ( p->bugs )
+    {
+      if ( BASE::affected_by.any_means_necessary.direct )
+      {
+        BASE::affected_by.any_means_necessary.direct      = false;
         BASE::affected_by.any_means_necessary_full.direct = true;
       }
-      if (BASE::affected_by.any_means_necessary.periodic) {
-        BASE::affected_by.any_means_necessary.periodic = false;
+      if ( BASE::affected_by.any_means_necessary.periodic )
+      {
+        BASE::affected_by.any_means_necessary.periodic      = false;
         BASE::affected_by.any_means_necessary_full.periodic = true;
       }
     }
@@ -4535,9 +4537,22 @@ struct demonsurge_t : public amn_full_mastery_bug_t<demon_hunter_spell_t>
     double m = demon_hunter_spell_t::composite_da_multiplier( s );
 
     // Focused Hatred increases Demonsurge damage when hitting only one target
-    if ( s->n_targets == 1 && p()->talent.felscarred.focused_hatred->ok() )
+    if ( p()->talent.felscarred.focused_hatred->ok() )
     {
-      m *= 1.0 + p()->talent.felscarred.focused_hatred->effectN( 1 ).percent();
+      if ( p()->is_ptr() && s->n_targets <= 5 )
+      {
+        // 1 target is always effect 1 %
+        // 2 target is effect 1 % - effect 2 %
+        // 3 target is effect 1 % - (effect 2 % * 2)
+        // etc up to 5 target
+        auto num_target_reduction_percent =
+            p()->talent.felscarred.focused_hatred->effectN( 2 ).percent() * ( s->n_targets - 1 );
+        m *= 1.0 + ( p()->talent.felscarred.focused_hatred->effectN( 1 ).percent() - num_target_reduction_percent );
+      }
+      else if ( !p()->is_ptr() && s->n_targets == 1 )
+      {
+        m *= 1.0 + p()->talent.felscarred.focused_hatred->effectN( 1 ).percent();
+      }
     }
 
     return m;
@@ -6208,7 +6223,8 @@ struct soulscar_t : public residual_action::residual_periodic_action_t<demon_hun
 };
 
 // Burning Blades ===========================================================
-struct burning_blades_t : public residual_action::residual_periodic_action_t<amn_full_mastery_bug_t<demon_hunter_spell_t>>
+struct burning_blades_t
+  : public residual_action::residual_periodic_action_t<amn_full_mastery_bug_t<demon_hunter_spell_t>>
 {
   burning_blades_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->hero_spec.burning_blades_debuff )
   {
