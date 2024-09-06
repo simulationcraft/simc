@@ -17,7 +17,6 @@ actions+=/variable,name=num_spawnable_souls,op=max,value=2,if=talent.fracture&co
 actions+=/variable,name=num_spawnable_souls,op=max,value=3,if=talent.fracture&cooldown.fracture.charges_fractional>=1&buff.metamorphosis.up
 actions+=/variable,name=num_spawnable_souls,op=add,value=1,if=talent.soul_carver&(cooldown.soul_carver.remains>(cooldown.soul_carver.duration-3))
 actions+=/auto_attack
-actions+=/retarget_auto_attack,line_cd=1,target_if=min:debuff.reavers_mark.remains,if=hero_tree.aldrachi_reaver
 actions+=/disrupt,if=target.debuff.casting.react
 actions+=/infernal_strike,use_off_gcd=1
 actions+=/demon_spikes,use_off_gcd=1,if=!buff.demon_spikes.up&!cooldown.pause_action.remains
@@ -35,7 +34,7 @@ actions.ar+=/variable,name=double_rm_remains,op=print
 actions.ar+=/variable,name=rg_sequence_duration,op=set,value=action.fracture.execute_time+action.soul_cleave.execute_time+action.reavers_glaive.execute_time
 actions.ar+=/variable,name=rg_sequence_duration,op=add,value=gcd.max,if=!talent.keen_engagement
 actions.ar+=/variable,name=trigger_overflow,op=set,value=0,if=!buff.glaive_flurry.up&!buff.rending_strike.up
-actions.ar+=/variable,name=rg_enhance_cleave,op=setif,condition=variable.big_aoe|fight_remains<8|variable.trigger_overflow,value=1,value_else=0
+actions.ar+=/variable,name=rg_enhance_cleave,op=setif,condition=spell_targets.spirit_bomb>4|fight_remains<8|variable.trigger_overflow,value=1,value_else=0
 actions.ar+=/variable,name=cooldown_sync,value=(debuff.reavers_mark.remains>gcd.max&debuff.reavers_mark.stack=2&buff.thrill_of_the_fight_damage.remains>gcd.max)|fight_remains<20
 actions.ar+=/potion,use_off_gcd=1,if=gcd.remains=0&(variable.cooldown_sync|(buff.rending_strike.up&buff.glaive_flurry.up))
 actions.ar+=/use_items,use_off_gcd=1,if=variable.cooldown_sync
@@ -46,12 +45,12 @@ actions.ar+=/vengeful_retreat,use_off_gcd=1,if=talent.unhindered_assault&!cooldo
 actions.ar+=/the_hunt,if=!buff.reavers_glaive.up&(buff.art_of_the_glaive.stack+soul_fragments.total)<20
 actions.ar+=/immolation_aura,if=!(buff.glaive_flurry.up|buff.rending_strike.up)
 actions.ar+=/sigil_of_flame,if=!(buff.glaive_flurry.up|buff.rending_strike.up)&(talent.ascending_flame|(!talent.ascending_flame&!prev_gcd.1.sigil_of_flame&(dot.sigil_of_flame.remains<(1+talent.quickened_sigils))))
-actions.ar+=/call_action_list,name=rg_overflow,if=buff.reavers_glaive.up&buff.thrill_of_the_fight_damage.up&buff.thrill_of_the_fight_damage.remains<variable.rg_sequence_duration&(((((1.2+(1*raw_haste_pct))*(variable.double_rm_remains-variable.rg_sequence_duration))+soul_fragments.total+buff.art_of_the_glaive.stack)>=20)|((cooldown.the_hunt.remains)<(variable.double_rm_remains-(variable.rg_sequence_duration+action.the_hunt.execute_time))))
+actions.ar+=/call_action_list,name=rg_overflow,if=buff.reavers_glaive.up&buff.thrill_of_the_fight_damage.up&buff.thrill_of_the_fight_damage.remains<variable.rg_sequence_duration&(((((1.2*(1+raw_haste_pct))*(variable.double_rm_remains-variable.rg_sequence_duration))+soul_fragments.total+buff.art_of_the_glaive.stack)>=20)|((cooldown.the_hunt.remains)<(variable.double_rm_remains-(variable.rg_sequence_duration+action.the_hunt.execute_time))))
 actions.ar+=/call_action_list,name=ar_execute,if=fight_remains<20
 actions.ar+=/soul_cleave,if=(variable.double_rm_remains<=(execute_time+variable.rg_sequence_duration))&(soul_fragments.total>=2&buff.art_of_the_glaive.stack>=(20-2))&(fury<40|!variable.can_spb)
 actions.ar+=/spirit_bomb,if=(variable.double_rm_remains<=(execute_time+variable.rg_sequence_duration))&(buff.art_of_the_glaive.stack+soul_fragments.total>=20)
 actions.ar+=/bulk_extraction,if=(variable.double_rm_remains<=(execute_time+variable.rg_sequence_duration))&(buff.art_of_the_glaive.stack+(spell_targets>?5)>=20)
-actions.ar+=/reavers_glaive,if=buff.thrill_of_the_fight_damage.remains<variable.rg_sequence_duration&(!buff.thrill_of_the_fight_attack_speed.up|(variable.double_rm_remains<=variable.rg_sequence_duration)|variable.rg_enhance_cleave)
+actions.ar+=/reavers_glaive,if=(variable.rg_enhance_cleave&fury>=5|!variable.rg_enhance_cleave&fury>=30)&buff.thrill_of_the_fight_damage.remains<variable.rg_sequence_duration&(!buff.thrill_of_the_fight_attack_speed.up|(variable.double_rm_remains<=variable.rg_sequence_duration)|variable.rg_enhance_cleave)
 actions.ar+=/fiery_brand,if=!talent.fiery_demise|(talent.fiery_demise&((talent.down_in_flames&charges>=max_charges)|(active_dot.fiery_brand=0)))
 actions.ar+=/sigil_of_spite,if=!talent.spirit_bomb|(talent.spirit_bomb&fury>=40&(variable.can_spb|variable.can_spb_soon|soul_fragments.total<=(2-talent.soul_sigils.rank)))
 actions.ar+=/spirit_bomb,if=variable.can_spb
@@ -69,7 +68,7 @@ actions.ar+=/felblade
 actions.ar+=/throw_glaive
 
 actions.ar_execute=metamorphosis,use_off_gcd=1
-actions.ar_execute+=/reavers_glaive
+actions.ar_execute+=/reavers_glaive,if=fury>=30
 actions.ar_execute+=/the_hunt,if=!buff.reavers_glaive.up
 actions.ar_execute+=/bulk_extraction,if=spell_targets>=3&buff.art_of_the_glaive.stack>=20
 actions.ar_execute+=/sigil_of_flame
@@ -81,23 +80,24 @@ actions.ar_execute+=/fel_devastation
 actions.externals=invoke_external_buff,name=symbol_of_hope
 actions.externals+=/invoke_external_buff,name=power_infusion
 
-actions.fel_dev=spirit_burst,if=variable.can_spburst|soul_fragments>=4|buff.metamorphosis.remains<(gcd.max*2)
-actions.fel_dev+=/soul_sunder,if=!variable.dont_soul_cleave|buff.metamorphosis.remains<(gcd.max*2)
+actions.fel_dev=spirit_burst,if=buff.demonsurge_spirit_burst.up&(variable.can_spburst|soul_fragments>=4|(buff.metamorphosis.remains<(gcd.max*2)))
+actions.fel_dev+=/soul_sunder,if=buff.demonsurge_soul_sunder.up&(!buff.demonsurge_spirit_burst.up|(buff.metamorphosis.remains<(gcd.max*2)))
 actions.fel_dev+=/sigil_of_spite,if=soul_fragments.total<=2&buff.demonsurge_spirit_burst.up
 actions.fel_dev+=/soul_carver,if=soul_fragments.total<=2&!prev_gcd.1.sigil_of_spite&buff.demonsurge_spirit_burst.up
 actions.fel_dev+=/fracture,if=soul_fragments.total<=2&buff.demonsurge_spirit_burst.up
 actions.fel_dev+=/felblade
 actions.fel_dev+=/fracture
 
-actions.fel_dev_prep=potion,use_off_gcd=1,if=gcd.remains=0&prev_gcd.1.fiery_brand
-actions.fel_dev_prep+=/fiery_brand,if=talent.fiery_demise&((fury+(talent.darkglare_boon.rank*23)+(10*(action.fel_devastation.execute_time+action.spirit_bomb.execute_time+action.soul_cleave.execute_time)))-(action.spirit_burst.cost+action.soul_sunder.cost+action.fel_devastation.cost)>=0)&(variable.can_spburst|variable.can_spburst_soon|soul_fragments.total>=4)&active_dot.fiery_brand=0&(cooldown.metamorphosis.remains<(execute_time+action.fel_devastation.execute_time+(gcd.max*2)))
-actions.fel_dev_prep+=/fel_devastation,if=((fury+(talent.darkglare_boon.rank*23)+(10*(action.fel_devastation.execute_time+action.spirit_bomb.execute_time+action.soul_cleave.execute_time)))-(action.spirit_burst.cost+action.soul_sunder.cost+action.fel_devastation.cost)>=0)&(variable.can_spburst|variable.can_spburst_soon|soul_fragments.total>=4)
-actions.fel_dev_prep+=/sigil_of_spite,if=!(variable.can_spburst|variable.can_spburst_soon|soul_fragments.total>=4)
-actions.fel_dev_prep+=/soul_carver,if=!(variable.can_spburst|variable.can_spburst_soon|soul_fragments.total>=4)&!prev_gcd.1.sigil_of_spite&!prev_gcd.2.sigil_of_spite
-actions.fel_dev_prep+=/felblade,if=!((fury+(talent.darkglare_boon.rank*23)+(10*(action.fel_devastation.execute_time+action.spirit_bomb.execute_time+action.soul_cleave.execute_time)))-(action.spirit_burst.cost+action.soul_sunder.cost+action.fel_devastation.cost)>=0)
-actions.fel_dev_prep+=/fracture,if=!(variable.can_spburst|variable.can_spburst_soon|soul_fragments.total>=4)|!((fury+(talent.darkglare_boon.rank*23)+(10*(action.fel_devastation.execute_time+action.spirit_bomb.execute_time+action.soul_cleave.execute_time)))-(action.spirit_burst.cost+action.soul_sunder.cost+action.fel_devastation.cost)>=0)
+actions.fel_dev_prep=potion,use_off_gcd=1,if=prev_gcd.1.fiery_brand
+actions.fel_dev_prep+=/fiery_brand,if=talent.fiery_demise&((fury+variable.fel_dev_passive_fury_gen)>=115)&(variable.can_spburst|variable.can_spburst_soon|soul_fragments.total>=4)&active_dot.fiery_brand=0&(cooldown.metamorphosis.remains<(execute_time+action.fel_devastation.execute_time+(gcd.max*2)))
+actions.fel_dev_prep+=/fel_devastation,if=((fury+variable.fel_dev_passive_fury_gen)>=115)&(variable.can_spburst|variable.can_spburst_soon|soul_fragments.total>=4)
+actions.fel_dev_prep+=/sigil_of_spite,if=soul_fragments.total<=1|(!(variable.can_spburst|variable.can_spburst_soon|soul_fragments.total>=4)&action.fracture.charges_fractional<1)
+actions.fel_dev_prep+=/soul_carver,if=(soul_fragments.total<=1|(!(variable.can_spburst|variable.can_spburst_soon|soul_fragments.total>=4)&action.fracture.charges_fractional<1))&!prev_gcd.1.sigil_of_spite&!prev_gcd.2.sigil_of_spite
+actions.fel_dev_prep+=/felblade,if=!((fury+variable.fel_dev_passive_fury_gen)>=115)
+actions.fel_dev_prep+=/fracture,if=!(variable.can_spburst|variable.can_spburst_soon|soul_fragments.total>=4)|!((fury+variable.fel_dev_passive_fury_gen)>=115)
 actions.fel_dev_prep+=/felblade
 actions.fel_dev_prep+=/fracture
+actions.fel_dev_prep+=/fel_devastation
 
 actions.fs=variable,name=spbomb_threshold,op=setif,condition=talent.fiery_demise&dot.fiery_brand.ticking,value=(variable.single_target*5)+(variable.small_aoe*4)+(variable.big_aoe*4),value_else=(variable.single_target*5)+(variable.small_aoe*4)+(variable.big_aoe*4)
 actions.fs+=/variable,name=can_spbomb,op=setif,condition=talent.spirit_bomb,value=soul_fragments>=variable.spbomb_threshold,value_else=0
@@ -107,9 +107,21 @@ actions.fs+=/variable,name=spburst_threshold,op=setif,condition=talent.fiery_dem
 actions.fs+=/variable,name=can_spburst,op=setif,condition=talent.spirit_bomb,value=soul_fragments>=variable.spburst_threshold,value_else=0
 actions.fs+=/variable,name=can_spburst_soon,op=setif,condition=talent.spirit_bomb,value=soul_fragments.total>=variable.spburst_threshold,value_else=0
 actions.fs+=/variable,name=can_spburst_one_gcd,op=setif,condition=talent.spirit_bomb,value=(soul_fragments.total+variable.num_spawnable_souls)>=variable.spburst_threshold,value_else=0
-actions.fs+=/variable,name=dont_soul_cleave,op=setif,condition=buff.metamorphosis.up&buff.demonsurge_hardcast.up,value=talent.spirit_bomb&!buff.demonsurge_soul_sunder.up&(((cooldown.fel_desolation.remains<=gcd.remains+execute_time)&fury<80)|(variable.can_spburst|variable.can_spburst_soon)|(prev_gcd.1.sigil_of_spite|prev_gcd.1.soul_carver)),value_else=talent.spirit_bomb&!buff.demonsurge_soul_sunder.up&(((cooldown.fel_devastation.remains<=(gcd.max*4))&!((fury+(talent.darkglare_boon.rank*23)+(10*(action.fel_devastation.execute_time+action.spirit_bomb.execute_time+action.soul_cleave.execute_time)))-(action.spirit_burst.cost+action.soul_sunder.cost+action.fel_devastation.cost)>=0))|(variable.can_spbomb|variable.can_spbomb_soon)|(buff.metamorphosis.up&!buff.demonsurge_hardcast.up&buff.demonsurge_spirit_burst.up)|(prev_gcd.1.sigil_of_spite|prev_gcd.1.soul_carver))
+actions.fs+=/variable,name=dont_soul_cleave,op=setif,condition=buff.metamorphosis.up&buff.demonsurge_hardcast.up,value=(buff.metamorphosis.remains<(gcd.max*2)&(!((fury+variable.fel_dev_passive_fury_gen)>=115)|!(variable.can_spburst|variable.can_spburst_soon|soul_fragments.total>=4))),value_else=(cooldown.fel_devastation.remains<(gcd.max*4)&(!((fury+variable.fel_dev_passive_fury_gen)>=115)|!(variable.can_spburst|variable.can_spburst_soon|soul_fragments.total>=4)))
 actions.fs+=/variable,name=fiery_brand_back_before_meta,op=setif,condition=talent.down_in_flames,value=charges>=max_charges|(charges_fractional>=1&cooldown.fiery_brand.full_recharge_time<=gcd.remains+execute_time)|(charges_fractional>=1&((max_charges-(charges_fractional-1))*cooldown.fiery_brand.duration)<=cooldown.metamorphosis.remains),value_else=cooldown.fiery_brand.duration<=cooldown.metamorphosis.remains
-actions.fs+=/variable,name=hold_sof,op=setif,condition=talent.student_of_suffering,value=(buff.student_of_suffering.remains>(4-talent.quickened_sigils))|(!talent.ascending_flame&(dot.sigil_of_flame.remains>(4-talent.quickened_sigils)))|prev_gcd.1.sigil_of_flame|(talent.illuminated_sigils&charges=1&time<(2-talent.quickened_sigils))|cooldown.metamorphosis.up,value_else=cooldown.metamorphosis.up|(cooldown.sigil_of_flame.max_charges>1&talent.ascending_flame&((cooldown.sigil_of_flame.max_charges-(cooldown.sigil_of_flame.charges_fractional-1))*cooldown.sigil_of_flame.duration)>cooldown.metamorphosis.remains)|((prev_gcd.1.sigil_of_flame|dot.sigil_of_flame.remains>(4-talent.quickened_sigils)))
+actions.fs+=/variable,name=hold_sof,op=setif,condition=talent.student_of_suffering,value=(buff.student_of_suffering.remains>(4-talent.quickened_sigils))|(!talent.ascending_flame&(dot.sigil_of_flame.remains>(4-talent.quickened_sigils)))|prev_gcd.1.sigil_of_flame|(talent.illuminated_sigils&charges=1&time<(2-talent.quickened_sigils))|cooldown.metamorphosis.up,value_else=(cooldown.metamorphosis.up&(talent.ascending_flame|(!talent.ascending_flame&cooldown.sigil_of_flame.charges_fractional<2)))|(cooldown.sigil_of_flame.max_charges>1&talent.ascending_flame&((cooldown.sigil_of_flame.max_charges-(cooldown.sigil_of_flame.charges_fractional-1))*cooldown.sigil_of_flame.duration)>cooldown.metamorphosis.remains)
+actions.fs+=/variable,name=crit_pct,op=set,value=(dot.sigil_of_flame.crit_pct+(talent.aura_of_pain*6))%100,if=active_dot.sigil_of_flame>0&talent.volatile_flameblood
+actions.fs+=/variable,name=fel_dev_sequence_time,op=set,value=2+(2*gcd.max)
+actions.fs+=/variable,name=fel_dev_sequence_time,op=add,value=gcd.max,if=talent.fiery_demise&cooldown.fiery_brand.up
+actions.fs+=/variable,name=fel_dev_sequence_time,op=add,value=gcd.max,if=cooldown.sigil_of_flame.up|cooldown.sigil_of_flame.remains<variable.fel_dev_sequence_time
+actions.fs+=/variable,name=fel_dev_sequence_time,op=add,value=gcd.max,if=cooldown.immolation_aura.up|cooldown.immolation_aura.remains<variable.fel_dev_sequence_time
+actions.fs+=/variable,name=fel_dev_passive_fury_gen,op=set,value=0
+actions.fs+=/variable,name=fel_dev_passive_fury_gen,op=add,value=2.5*floor((buff.student_of_suffering.remains>?variable.fel_dev_sequence_time)),if=talent.student_of_suffering.enabled&(buff.student_of_suffering.remains>1|prev_gcd.1.sigil_of_flame)
+actions.fs+=/variable,name=fel_dev_passive_fury_gen,op=add,value=30+(2*talent.flames_of_fury),if=(cooldown.sigil_of_flame.remains<variable.fel_dev_sequence_time)&!variable.hold_sof
+actions.fs+=/variable,name=fel_dev_passive_fury_gen,op=add,value=8,if=cooldown.immolation_aura.remains<variable.fel_dev_sequence_time
+actions.fs+=/variable,name=fel_dev_passive_fury_gen,op=add,value=2*floor((buff.immolation_aura.remains>?variable.fel_dev_sequence_time)),if=buff.immolation_aura.remains>1
+actions.fs+=/variable,name=fel_dev_passive_fury_gen,op=add,value=7.5*variable.crit_pct*floor((buff.immolation_aura.remains>?variable.fel_dev_sequence_time)),if=talent.volatile_flameblood&buff.immolation_aura.remains>1
+actions.fs+=/variable,name=fel_dev_passive_fury_gen,op=add,value=22,if=talent.darkglare_boon.enabled
 actions.fs+=/use_items,use_off_gcd=1,if=!buff.metamorphosis.up
 actions.fs+=/immolation_aura,if=!(cooldown.metamorphosis.up&prev_gcd.1.sigil_of_flame)&!((variable.small_aoe|variable.big_aoe)&(variable.can_spb|variable.can_spb_soon))
 actions.fs+=/sigil_of_flame,if=!variable.hold_sof
@@ -123,12 +135,12 @@ actions.fs+=/the_hunt
 actions.fs+=/felblade,if=((cooldown.sigil_of_spite.remains<execute_time|cooldown.soul_carver.remains<execute_time)&cooldown.fel_devastation.remains<(execute_time+gcd.max)&fury<50)
 actions.fs+=/soul_carver,if=(!talent.fiery_demise|talent.fiery_demise&dot.fiery_brand.ticking)&((!talent.spirit_bomb|variable.single_target)|(talent.spirit_bomb&!prev_gcd.1.sigil_of_spite&((soul_fragments.total+3<=5&fury>=40)|(soul_fragments.total=0&fury>=15))))
 actions.fs+=/sigil_of_spite,if=(!talent.spirit_bomb|variable.single_target)|(talent.spirit_bomb&soul_fragments<=1)|(fury>=40&(variable.can_spbomb|(buff.metamorphosis.up&variable.can_spburst)|variable.can_spbomb_soon|(buff.metamorphosis.up&variable.can_spburst_soon)))
-actions.fs+=/soul_sunder,if=variable.single_target
-actions.fs+=/soul_cleave,if=variable.single_target
+actions.fs+=/soul_sunder,if=variable.single_target&!variable.dont_soul_cleave
+actions.fs+=/soul_cleave,if=variable.single_target&!variable.dont_soul_cleave
 actions.fs+=/spirit_burst,if=variable.can_spburst
 actions.fs+=/spirit_bomb,if=variable.can_spbomb
-actions.fs+=/soul_sunder,if=fury.deficit<25
-actions.fs+=/soul_cleave,if=fury.deficit<25
+actions.fs+=/soul_sunder,if=fury.deficit<25&!variable.dont_soul_cleave
+actions.fs+=/soul_cleave,if=fury.deficit<25&!variable.dont_soul_cleave
 actions.fs+=/felblade,if=(fury<40&((buff.metamorphosis.up&(variable.can_spburst|variable.can_spburst_soon))|(!buff.metamorphosis.up&(variable.can_spbomb|variable.can_spbomb_soon))))|fury<30
 actions.fs+=/fracture,if=!prev_gcd.1.fracture&talent.spirit_bomb&((fury<40&((buff.metamorphosis.up&(variable.can_spburst|variable.can_spburst_soon))|(!buff.metamorphosis.up&(variable.can_spbomb|variable.can_spbomb_soon))))|(buff.metamorphosis.up&variable.can_spburst_one_gcd)|(!buff.metamorphosis.up&variable.can_spbomb_one_gcd))
 actions.fs+=/soul_sunder,if=!variable.dont_soul_cleave
@@ -145,42 +157,48 @@ actions.fs_execute+=/sigil_of_spite
 actions.fs_execute+=/soul_carver
 actions.fs_execute+=/fel_devastation
 
-actions.meta_prep=metamorphosis,use_off_gcd=1,if=cooldown.sigil_of_flame.charges<1&gcd.remains=0
+actions.meta_prep=metamorphosis,use_off_gcd=1,if=cooldown.sigil_of_flame.charges<1
 actions.meta_prep+=/fiery_brand,if=talent.fiery_demise&((talent.down_in_flames&charges>=max_charges)|active_dot.fiery_brand=0)
-actions.meta_prep+=/potion,use_off_gcd=1,if=gcd.remains=0
+actions.meta_prep+=/potion,use_off_gcd=1
 actions.meta_prep+=/sigil_of_flame
 
 actions.metamorphosis=call_action_list,name=externals
-actions.metamorphosis+=/immolation_aura
 actions.metamorphosis+=/fel_desolation,if=buff.metamorphosis.remains<(gcd.max*3)
 actions.metamorphosis+=/felblade,if=fury<50&(buff.metamorphosis.remains<(gcd.max*3))&cooldown.fel_desolation.up
 actions.metamorphosis+=/fracture,if=fury<50&!cooldown.felblade.up&(buff.metamorphosis.remains<(gcd.max*3))&cooldown.fel_desolation.up
+actions.metamorphosis+=/immolation_aura
+actions.metamorphosis+=/sigil_of_doom,if=!talent.student_of_suffering&(talent.ascending_flame|(dot.sigil_of_flame.remains<(4-talent.quickened_sigils)&!prev_gcd.1.sigil_of_flame))
 actions.metamorphosis+=/fel_desolation,if=soul_fragments<=3&(soul_fragments.inactive>=2|prev_gcd.1.sigil_of_spite)
 actions.metamorphosis+=/sigil_of_doom,if=(talent.student_of_suffering&!prev_gcd.1.sigil_of_flame&!prev_gcd.1.sigil_of_doom&(buff.student_of_suffering.remains<(4-talent.quickened_sigils)))|(!buff.demonsurge_soul_sunder.up&!buff.demonsurge_spirit_burst.up&!buff.demonsurge_consuming_fire.up&!buff.demonsurge_fel_desolation.up&(buff.demonsurge_sigil_of_doom.up|(!buff.demonsurge_sigil_of_doom.up&charges_fractional>=1)))|buff.metamorphosis.remains<(gcd.max*3)
 actions.metamorphosis+=/felblade,if=((cooldown.sigil_of_spite.remains<execute_time|cooldown.soul_carver.remains<execute_time)&cooldown.fel_desolation.remains<(execute_time+gcd.max)&fury<50)
-actions.metamorphosis+=/sigil_of_spite,if=!talent.spirit_bomb|(talent.spirit_bomb&fury>=40&(variable.can_spb|variable.can_spb_soon|soul_fragments.total<=(2-talent.soul_sigils.rank)))
+actions.metamorphosis+=/sigil_of_spite,if=!talent.spirit_bomb|(fury>=40&(variable.can_spb|variable.can_spb_soon|soul_fragments.total<=(2-talent.soul_sigils.rank)))
 actions.metamorphosis+=/spirit_burst,if=variable.can_spburst&buff.demonsurge_spirit_burst.up
 actions.metamorphosis+=/soul_carver,if=(!talent.spirit_bomb|variable.single_target)|(((soul_fragments.total+3)<=5)&fury>=40&!prev_gcd.1.sigil_of_spite)
 actions.metamorphosis+=/sigil_of_spite,if=soul_fragments.total<=(2-talent.soul_sigils.rank)
 actions.metamorphosis+=/fel_desolation
-actions.metamorphosis+=/soul_sunder,if=buff.demonsurge_soul_sunder.up|variable.single_target
+actions.metamorphosis+=/soul_sunder,if=buff.demonsurge_soul_sunder.up|(variable.single_target&!variable.dont_soul_cleave)
 actions.metamorphosis+=/spirit_burst,if=variable.can_spburst
-actions.metamorphosis+=/felblade,if=talent.spirit_bomb&fury<40&(variable.can_spburst|variable.can_spburst_soon)
-actions.metamorphosis+=/fracture,if=variable.big_aoe&talent.spirit_bomb&(soul_fragments>=1&soul_fragments<=3)
+actions.metamorphosis+=/felblade,if=fury<40&(variable.can_spburst|variable.can_spburst_soon)
+actions.metamorphosis+=/fracture,if=variable.big_aoe&talent.spirit_bomb&(soul_fragments>=2&soul_fragments<=3)
 actions.metamorphosis+=/felblade,if=fury<30
 actions.metamorphosis+=/soul_sunder,if=!variable.dont_soul_cleave
 actions.metamorphosis+=/felblade
 actions.metamorphosis+=/fracture
 
 actions.rg_overflow=variable,name=trigger_overflow,op=set,value=1
-actions.rg_overflow+=/reavers_glaive,if=!buff.rending_strike.up&!buff.glaive_flurry.up
+actions.rg_overflow+=/variable,name=rg_enhance_cleave,op=set,value=1
+actions.rg_overflow+=/reavers_glaive,if=(variable.rg_enhance_cleave&fury>=5|!variable.rg_enhance_cleave&fury>=30)&!buff.rending_strike.up&!buff.glaive_flurry.up
 
 actions.rg_sequence=call_action_list,name=rg_sequence_filler,if=(fury<30&(!variable.rg_enhance_cleave&buff.glaive_flurry.up&buff.rending_strike.up|variable.rg_enhance_cleave&!buff.rending_strike.up))|(action.fracture.charges_fractional<1&(variable.rg_enhance_cleave&buff.rending_strike.up&buff.glaive_flurry.up|!variable.rg_enhance_cleave&!buff.glaive_flurry.up))
 actions.rg_sequence+=/fracture,if=(variable.rg_enhance_cleave&buff.rending_strike.up&buff.glaive_flurry.up|!variable.rg_enhance_cleave&!buff.glaive_flurry.up)
 actions.rg_sequence+=/shear,if=(variable.rg_enhance_cleave&buff.rending_strike.up&buff.glaive_flurry.up|!variable.rg_enhance_cleave&!buff.glaive_flurry.up)
 actions.rg_sequence+=/soul_cleave,if=(!variable.rg_enhance_cleave&buff.glaive_flurry.up&buff.rending_strike.up|variable.rg_enhance_cleave&!buff.rending_strike.up)
 
-actions.rg_sequence_filler=sigil_of_flame
-actions.rg_sequence_filler+=/felblade,if=fury.deficit>30
-actions.rg_sequence_filler+=/wait,sec=0.1,if=action.fracture.charges_fractional<0.8&(variable.rg_enhance_cleave&buff.rending_strike.up&buff.glaive_flurry.up|!variable.rg_enhance_cleave&!buff.glaive_flurry.up)
+actions.rg_sequence_filler=felblade,if=fury.deficit>30
 actions.rg_sequence_filler+=/fracture,if=!buff.rending_strike.up
+actions.rg_sequence_filler+=/wait,sec=0.1,if=action.fracture.charges_fractional>=0.8&(variable.rg_enhance_cleave&buff.rending_strike.up&buff.glaive_flurry.up|!variable.rg_enhance_cleave&!buff.glaive_flurry.up)
+actions.rg_sequence_filler+=/sigil_of_flame
+actions.rg_sequence_filler+=/sigil_of_spite
+actions.rg_sequence_filler+=/soul_carver
+actions.rg_sequence_filler+=/fel_devastation
+actions.rg_sequence_filler+=/throw_glaive
