@@ -447,6 +447,7 @@ public:
 
   /// Buff state tracking
   unsigned buff_state_lightning_rod;
+  unsigned buff_state_lashing_flames;
 
   // Cached actions
   struct actions_t
@@ -1138,6 +1139,7 @@ public:
 
     // Buff States
     buff_state_lightning_rod = 0U;
+    buff_state_lashing_flames = 0U;
   }
 
   ~shaman_t() override = default;
@@ -1485,8 +1487,20 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
 
   // Enhancement
   debuff.lashing_flames = make_buff( *this, "lashing_flames", p->find_spell( 334168 ) )
-      ->set_trigger_spell( p->talent.lashing_flames )
-      ->set_default_value_from_effect( 1 );
+    ->set_trigger_spell( p->talent.lashing_flames )
+    ->set_stack_change_callback(
+      [ p ]( buff_t*, int old, int new_ ) {
+        if ( new_ - old > 0 )
+        {
+          p->buff_state_lashing_flames++;
+        }
+        else
+        {
+          p->buff_state_lashing_flames--;
+        }
+      }
+    )
+    ->set_default_value_from_effect( 1 );
 }
 
 // ==========================================================================
@@ -10214,12 +10228,7 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 
   if ( util::str_compare_ci( splits[ 0 ], "lashing_flames" ) )
   {
-    return make_fn_expr( splits[ 0 ], [ this ]() {
-      return std::accumulate( sim->target_non_sleeping_list.begin(), sim->target_non_sleeping_list.end(), 0.0,
-        [ this ]( double v, player_t* target ) {
-          return v + as<double>( get_target_data( target )->debuff.lashing_flames->check() );
-        } );
-    } );
+    return make_ref_expr( splits[ 0 ], buff_state_lashing_flames );
   }
 
   if ( util::str_compare_ci( splits[ 0 ], "lightning_rod" ) )
@@ -13464,6 +13473,7 @@ void shaman_t::reset()
 
   assert( active_flame_shock.empty() );
   assert( buff_state_lightning_rod == 0U );
+  assert( buff_state_lashing_flames == 0U );
 }
 
 
