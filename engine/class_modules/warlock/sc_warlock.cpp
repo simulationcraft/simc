@@ -593,6 +593,16 @@ bool warlock_t::min_version_check( version_check_e version ) const
   return false;
 }
 
+static std::string append_rng_option( warlock_t::rng_settings_t::rng_setting_t setting )
+{
+  std::string str = "";
+
+  if ( setting.setting_value != setting.default_value )
+    str += "rng_" + setting.option_name + util::to_string( setting.setting_value ) + "\n";
+
+  return str;
+}
+
 std::string warlock_t::create_profile( save_e stype )
 {
   std::string profile_str = player_t::create_profile( stype );
@@ -608,40 +618,23 @@ std::string warlock_t::create_profile( save_e stype )
     if ( normalize_destruction_mastery )
       profile_str += "normalize_destruction_mastery=" + util::to_string( normalize_destruction_mastery ) + "\n";
 
-    if ( rng_settings.cunning_cruelty_sb.setting_value != rng_settings.cunning_cruelty_sb.default_value )
-      profile_str += "rng_cunning_cruelty_sb=" + util::to_string( rng_settings.cunning_cruelty_sb.setting_value ) + "\n";
-    if ( rng_settings.cunning_cruelty_ds.setting_value != rng_settings.cunning_cruelty_ds.default_value )
-      profile_str += "rng_cunning_cruelty_ds=" + util::to_string( rng_settings.cunning_cruelty_ds.setting_value ) + "\n";
-    if ( rng_settings.agony.setting_value != rng_settings.agony.default_value )
-      profile_str += "rng_agony=" + util::to_string( rng_settings.agony.setting_value ) + "\n";
-    if ( rng_settings.nightfall.setting_value != rng_settings.nightfall.default_value )
-      profile_str += "rng_nightfall=" + util::to_string( rng_settings.nightfall.setting_value ) + "\n";
-    if ( rng_settings.pact_of_the_eredruin.setting_value != rng_settings.pact_of_the_eredruin.default_value )
-      profile_str += "rng_pact_of_the_eredruin=" + util::to_string( rng_settings.pact_of_the_eredruin.setting_value ) + "\n";
-    if ( rng_settings.shadow_invocation.setting_value != rng_settings.shadow_invocation.default_value )
-      profile_str += "rng_shadow_invocation=" + util::to_string( rng_settings.shadow_invocation.setting_value ) + "\n";
-    if ( rng_settings.spiteful_reconstitution.setting_value != rng_settings.spiteful_reconstitution.default_value )
-      profile_str += "rng_spiteful_reconsitution=" + util::to_string( rng_settings.spiteful_reconstitution.setting_value ) + "\n";
-    if ( rng_settings.decimation.setting_value != rng_settings.decimation.default_value )
-      profile_str += "rng_decimation=" + util::to_string( rng_settings.decimation.setting_value ) + "\n";
-    if ( rng_settings.dimension_ripper.setting_value != rng_settings.dimension_ripper.default_value )
-      profile_str += "rng_dimension_ripper=" + util::to_string( rng_settings.dimension_ripper.setting_value ) + "\n";
-    if ( rng_settings.blackened_soul.setting_value != rng_settings.blackened_soul.default_value )
-      profile_str += "rng_blackened_soul=" + util::to_string( rng_settings.blackened_soul.setting_value ) + "\n";
-    if ( rng_settings.bleakheart_tactics.setting_value != rng_settings.bleakheart_tactics.default_value )
-      profile_str += "rng_bleakheart_tactics=" + util::to_string( rng_settings.bleakheart_tactics.setting_value ) + "\n";
-    if ( rng_settings.seeds_of_their_demise.setting_value != rng_settings.seeds_of_their_demise.default_value )
-      profile_str += "rng_seeds_of_their_demise=" + util::to_string( rng_settings.seeds_of_their_demise.setting_value ) + "\n";
-    if ( rng_settings.mark_of_perotharn.setting_value != rng_settings.mark_of_perotharn.default_value )
-      profile_str += "rng_mark_of_perotharn=" + util::to_string( rng_settings.mark_of_perotharn.setting_value ) + "\n";
-    if ( rng_settings.succulent_soul.setting_value != rng_settings.succulent_soul.default_value )
-      profile_str += "rng_succulent_soul=" + util::to_string( rng_settings.succulent_soul.setting_value ) + "\n";
-    if ( rng_settings.feast_of_souls.setting_value != rng_settings.feast_of_souls.default_value )
-      profile_str += "rng_feast_of_souls=" + util::to_string( rng_settings.feast_of_souls.setting_value ) + "\n";
-    if ( rng_settings.umbral_lattice.setting_value != rng_settings.umbral_lattice.default_value )
-      profile_str += "rng_umbral_lattice=" + util::to_string( rng_settings.umbral_lattice.setting_value ) + "\n";
-    if ( rng_settings.empowered_legion_strike.setting_value != rng_settings.empowered_legion_strike.default_value )
-      profile_str += "rng_empowered_legion_strike=" + util::to_string( rng_settings.empowered_legion_strike.setting_value ) + "\n";
+    profile_str += append_rng_option( rng_settings.cunning_cruelty_sb );
+    profile_str += append_rng_option( rng_settings.cunning_cruelty_ds );
+    profile_str += append_rng_option( rng_settings.agony );
+    profile_str += append_rng_option( rng_settings.nightfall );
+    profile_str += append_rng_option( rng_settings.pact_of_the_eredruin );
+    profile_str += append_rng_option( rng_settings.shadow_invocation );
+    profile_str += append_rng_option( rng_settings.spiteful_reconstitution );
+    profile_str += append_rng_option( rng_settings.decimation );
+    profile_str += append_rng_option( rng_settings.dimension_ripper );
+    profile_str += append_rng_option( rng_settings.blackened_soul );
+    profile_str += append_rng_option( rng_settings.bleakheart_tactics );
+    profile_str += append_rng_option( rng_settings.seeds_of_their_demise );
+    profile_str += append_rng_option( rng_settings.mark_of_perotharn );
+    profile_str += append_rng_option( rng_settings.succulent_soul );
+    profile_str += append_rng_option( rng_settings.feast_of_souls );
+    profile_str += append_rng_option( rng_settings.umbral_lattice );
+    profile_str += append_rng_option( rng_settings.empowered_legion_strike );
   }
 
   return profile_str;
