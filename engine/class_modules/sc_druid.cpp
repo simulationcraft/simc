@@ -1374,6 +1374,7 @@ private:
   void apl_precombat();
   void apl_default();
   void apl_feral();
+  void apl_feral_ptr();
   void apl_balance();
   void apl_balance_ptr();
   void apl_guardian();
@@ -11422,14 +11423,12 @@ void druid_t::apl_default()
 // Action Priority Lists ========================================
 void druid_t::apl_feral()
 {
-//    Good                 Okay        Stinky
-//   ------               ----         -----
-//  Night Fae  /\_/\     Kyrian       Venthyr (yuckers)
-//           _| . . |_  Necrolords
-//           >_  W  _<
-//             |   |
-// @Kotacat4, updated by @GuiltyasFeral
 #include "class_modules/apl/feral_apl.inc"
+}
+
+void druid_t::apl_feral_ptr()
+{
+#include "class_modules/apl/feral_apl_ptr.inc"
 }
 
 void druid_t::apl_balance()
@@ -12082,7 +12081,7 @@ void druid_t::init_action_list()
 
   switch ( specialization() )
   {
-    case DRUID_FERAL:       apl_feral();                                  break;
+    case DRUID_FERAL:       is_ptr() ? apl_feral_ptr() : apl_feral();     break;
     case DRUID_BALANCE:     is_ptr() ? apl_balance_ptr() : apl_balance(); break;
     case DRUID_GUARDIAN:    apl_guardian();                               break;
     case DRUID_RESTORATION: apl_restoration();                            break;
