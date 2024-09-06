@@ -5235,8 +5235,7 @@ struct chaos_strike_base_t
         td( s->target )->debuffs.serrated_glaive->trigger();
       }
 
-      if ( p()->talent.aldrachi_reaver.warblades_hunger && p()->buff.warblades_hunger->up() &&
-           parent->can_proc_warblades_hunger )
+      if ( p()->talent.aldrachi_reaver.warblades_hunger && p()->buff.warblades_hunger->up() )
       {
         p()->active.warblades_hunger->execute_on_target( target );
         p()->buff.warblades_hunger->expire();
@@ -5247,14 +5246,12 @@ struct chaos_strike_base_t
   std::vector<chaos_strike_damage_t*> attacks;
   bool from_onslaught;
   double tww1_reset_proc_chance;
-  bool can_proc_warblades_hunger;
 
   chaos_strike_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s,
                        util::string_view options_str = {} )
     : base_t( n, p, s, options_str ),
       from_onslaught( false ),
-      tww1_reset_proc_chance( 0.0 ),
-      can_proc_warblades_hunger( true )
+      tww1_reset_proc_chance( 0.0 )
   {
     if ( p->set_bonuses.tww1_havoc_4pc->ok() )
     {
@@ -5380,8 +5377,6 @@ struct annihilation_t : public demonsurge_trigger_t<demonsurge_ability::ANNIHILA
   annihilation_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {} )
     : base_t( name, p, p->spec.annihilation, options_str )
   {
-    this->can_proc_warblades_hunger = !p->bugs;
-
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_1", name ),
