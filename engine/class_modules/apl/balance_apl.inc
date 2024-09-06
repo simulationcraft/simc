@@ -5,8 +5,8 @@ action_priority_list_t* st = get_action_priority_list( "st" );
 
 precombat->add_action( "variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune|druid.no_cds","Executed before combat begins. Accepts non-harmful actions only." );
 precombat->add_action( "variable,name=on_use_trinket,value=0" );
-precombat->add_action( "variable,name=on_use_trinket,op=add,value=trinket.1.has_proc.any&trinket.1.cooldown.duration|trinket.1.is.spymasters_web" );
-precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.2.has_proc.any&trinket.2.cooldown.duration|trinket.2.is.spymasters_web)*2" );
+precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.1.has_proc.any&trinket.1.cooldown.duration|trinket.1.is.spymasters_web|trinket.1.is.signet_of_the_priory)&!trinket.1.is.arakara_sacbrood" );
+precombat->add_action( "variable,name=on_use_trinket,op=add,value=((trinket.2.has_proc.any&trinket.2.cooldown.duration|trinket.2.is.spymasters_web|trinket.2.is.signet_of_the_priory)*2&!trinket.2.is.arakara_sacbrood)" );
 precombat->add_action( "moonkin_form" );
 precombat->add_action( "regrowth,if=hero_tree.keeper_of_the_grove" );
 precombat->add_action( "regrowth,if=hero_tree.keeper_of_the_grove" );
@@ -18,12 +18,12 @@ precombat->add_action( "starfire,if=!talent.stellar_flare" );
 precombat->add_action( "stellar_flare" );
 
 def->add_action( "variable,name=passive_asp,value=6%spell_haste+talent.natures_balance+talent.orbit_breaker*dot.moonfire.ticking*(buff.orbit_breaker.stack>(27-2*buff.solstice.up))*40","Executed every time the actor is available." );
-def->add_action( "use_item,name=spymasters_web,if=buff.ca_inc.up&buff.spymasters_report.stack>29|fight_remains<20" );
+def->add_action( "use_item,name=spymasters_web,if=buff.ca_inc.up&buff.spymasters_report.stack>29|fight_remains<20","TRINKETS" );
 def->add_action( "use_items,slots=trinket1,if=variable.on_use_trinket!=1&!trinket.2.ready_cooldown|(variable.on_use_trinket=1|variable.on_use_trinket=3)&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0" );
 def->add_action( "use_items,slots=trinket2,if=variable.on_use_trinket!=2&!trinket.1.ready_cooldown|variable.on_use_trinket=2&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0" );
-def->add_action( "use_items" );
+def->add_action( "use_items,if=buff.ca_inc.up" );
 def->add_action( "potion,use_off_gcd=1,if=buff.ca_inc.up|fight_remains<=30" );
-def->add_action( "berserking,if=buff.ca_inc.remains>=20|variable.no_cd_talent|fight_remains<15" );
+def->add_action( "berserking,if=buff.ca_inc.remains>=20|variable.no_cd_talent|fight_remains<15","Variables+cooldowns+eclipse" );
 def->add_action( "variable,name=eclipse,value=buff.eclipse_lunar.up|buff.eclipse_solar.up" );
 def->add_action( "variable,name=eclipse_remains,value=buff.eclipse_lunar.remains<?buff.eclipse_solar.remains" );
 def->add_action( "variable,name=enter_solar,value=!talent.lunar_calling&(spell_targets<3|buff.warrior_of_elune.up)&(!variable.eclipse|variable.eclipse_remains<action.starfire.cast_time)" );
@@ -41,11 +41,8 @@ def->add_action( "wrath,if=variable.enter_lunar" );
 def->add_action( "starfire,if=variable.enter_solar" );
 def->add_action( "call_action_list,name=aoe,if=spell_targets>1" );
 def->add_action( "call_action_list,name=st,if=spell_targets=1" );
-def->add_action( "use_items,slots=trinket1,if=variable.on_use_trinket!=1&!trinket.2.ready_cooldown|(variable.on_use_trinket=1|variable.on_use_trinket=3)&buff.ca_inc.up&buff.ca_inc.remains>15|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0" );
-def->add_action( "use_items,slots=trinket2,if=variable.on_use_trinket!=2&!trinket.1.ready_cooldown|variable.on_use_trinket=2&buff.ca_inc.up&buff.ca_inc.remains>15|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0" );
-def->add_action( "use_items" );
 
-aoe->add_action( "moonfire,target_if=refreshable&(target.time_to_die-remains)>6&astral_power.deficit>variable.passive_asp+energize_amount,if=fight_style.dungeonroute" );
+aoe->add_action( "moonfire,target_if=refreshable&(target.time_to_die-remains)>6&astral_power.deficit>variable.passive_asp+energize_amount,if=fight_style.dungeonroute","AoE APL" );
 aoe->add_action( "sunfire,target_if=refreshable&(target.time_to_die-remains)>6-(spell_targets%2)&astral_power.deficit>variable.passive_asp+energize_amount" );
 aoe->add_action( "moonfire,target_if=refreshable&(target.time_to_die-remains)>6&astral_power.deficit>variable.passive_asp+energize_amount,if=!fight_style.dungeonroute" );
 aoe->add_action( "stellar_flare,target_if=refreshable&(target.time_to_die-remains-target>7+spell_targets),if=(1+(0.65*talent.lunar_calling))*spell_targets<(11-talent.umbral_intensity.rank-(2*talent.astral_smolder))" );
@@ -70,7 +67,7 @@ aoe->add_action( "wild_mushroom" );
 aoe->add_action( "starfire,if=talent.lunar_calling|buff.eclipse_lunar.up&spell_targets.starfire>1" );
 aoe->add_action( "wrath" );
 
-st->add_action( "fury_of_elune,if=energize_amount+variable.passive_asp>astral_power.deficit-(20*talent.astral_communion)" );
+st->add_action( "fury_of_elune,if=energize_amount+variable.passive_asp>astral_power.deficit-(20*talent.astral_communion)","ST APL" );
 st->add_action( "starsurge,if=(buff.starlord.stack>0&buff.starlord.stack<3)|!buff.starlord.up&((2*variable.passive_asp)>astral_power.deficit-(20*talent.astral_communion))" );
 st->add_action( "starsurge,if=cooldown.convoke_the_spirits.ready&astral_power.deficit>energize_amount" );
 st->add_action( "convoke_the_spirits,if=fight_remains<5|(buff.ca_inc.up|cooldown.ca_inc.remains>40)|(buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>15)" );

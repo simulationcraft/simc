@@ -6554,11 +6554,12 @@ struct bestial_wrath_t: public hunter_spell_t
     add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
 
-    //Specifically set to true for 10.1 class trinket 
-    if( !is_precombat )
-      harmful = true;
-
     precast_time = clamp( precast_time, 0_ms, data().duration() );
+  }
+
+  bool usable_precombat() const override
+  {
+    return true;
   }
 
   void init_finished() override
@@ -6567,10 +6568,6 @@ struct bestial_wrath_t: public hunter_spell_t
       add_pet_stats( pet, { "bestial_wrath" } );
 
     hunter_spell_t::init_finished();
-
-    //Used to ensure that during precombat this isn't harmful for the duration of 10.1 due to the class trinket existing
-    if ( is_precombat )
-      harmful = false;
   }
 
   void execute() override
@@ -6738,18 +6735,6 @@ struct trueshot_t: public hunter_spell_t
     hunter_spell_t( "trueshot", p, p -> talents.trueshot )
   {
     parse_options( options_str );
-
-    //Only set to harmful for the 10.1 class trinket effect
-    harmful = true;
-  }
-
-  //Used to ensure that during precombat this isn't harmful for the duration of 10.1 due to the class trinket existing
-  void init_finished() override
-  {
-    hunter_spell_t::init_finished();
-
-    if ( is_precombat )
-      harmful = false;
   }
 
   void execute() override

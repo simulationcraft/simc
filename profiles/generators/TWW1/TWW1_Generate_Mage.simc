@@ -58,29 +58,35 @@ save=TWW1_Mage_Arcane.simc
 
 # save=TWW1_Mage_Fire.simc
 
-# mage="TWW1_Mage_Frost"
-# spec=frost
-# level=70
-# race=dwarf
-# role=spell
-# position=ranged_back
-# talents=2032031
+mage="TWW1_Mage_Frost"
+spec=frost
+level=80
+race=dwarf
+role=spell
+position=ranged_back
+talents=CAEArhxZfsv/vllYUrQS3iw2nPzYzsZBzMmZW8AwYmGjZGzMMzwMMzMzMzYmZmZmZmZYGIAIgZmZZZZmpNAAAAAAYBAAAAAAAA
 
-# head=grimveiled_hood,id=173245,bonus_id=1588/8123/6647/6649/6935,gem_id=173128
-# neck=ornately_engraved_amplifier,id=185842,bonus_id=1595/6536/6646/6935,gem_id=173127
-# shoulder=erudite_occultists_mantle,id=188843,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-# chest=erudite_occultists_robes,id=188839,bonus_id=1505/7187,enchant=eternal_stats
-# wrist=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173128,enchant=eternal_intellect
-# hands=erudite_occultists_handwraps,id=188845,bonus_id=1498/7187
-# waist=grimveiled_belt,id=173248,bonus_id=1588/6823/6647/6649/6935,gem_id=173128
-# legs=erudite_occultists_leggings,id=188842,bonus_id=1498/7187
-# feet=erudite_occultists_treads,id=188838,bonus_id=1498/7187
-# finger1=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646/6935,gem_id=173127,enchant=tenet_of_critical_strike
-# finger2=arachnid_cipher_ring,id=178933,bonus_id=1592/6536/6646/6935,gem_id=173128,enchant=tenet_of_haste
-# trinket1=infinitely_divisible_ooze,id=178769,bonus_id=1592/6536/6646
-# trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
-# main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
-# off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
+potion=tempered_potion_3
+flask=flask_of_tempered_swiftness_3
+food=feast_of_the_midnight_masquerade
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3
 
-# save=TWW1_Mage_Frost.simc
+head=hood_of_violet_rebirth,id=212092,ilevel=639,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213494/213458
+shoulders=beacons_of_violet_rebirth,id=212090,ilevel=639
+back=royal_emblem_of_nerubar,id=212446,ilevel=639,enchant_id=7415
+chest=runecoat_of_violet_rebirth,id=212095,ilevel=639,enchant_id=7364
+wrists=consecrated_cuffs,id=222815,bonus_id=11109,ilevel=636,gem_id=213479,enchant_id=7397,crafted_stats=32/36
+hands=jeweled_gauntlets_of_violet_rebirth,id=212093,ilevel=639
+waist=acrid_ascendants_sash,id=225585,ilevel=639,gem_id=213482
+legs=voidspoken_sarong,id=212434,ilevel=639,enchant_id=7534
+feet=assimilated_eggshell_slippers,id=225582,ilevel=639,enchant_id=7418
+finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213473/213509,enchant_id=7340
+finger2=experiment_08752s_band,id=221189,ilevel=639,gem_id=213494/213494,enchant_id=7340
+trinket1=arakara_sacbrood,id=219314,ilevel=639
+trinket2=spymasters_web,id=220202,ilevel=639
+main_hand=sovereigns_disdain,id=212394,ilevel=639,enchant_id=7460
+off_hand=vagabonds_torch,id=222566,bonus_id=11300,ilevel=636,crafted_stats=32/36
+
+save=TWW1_Mage_Frost.simc

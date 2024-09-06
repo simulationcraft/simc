@@ -112,18 +112,18 @@ enum gem_color_e : unsigned
 
 static constexpr std::array<gem_color_e, 5> gem_colors = { GEM_RUBY, GEM_AMBER, GEM_EMERALD, GEM_SAPPHIRE, GEM_ONYX };
 
-std::vector<gem_color_e> algari_gem_list( const special_effect_t& effect )
+std::vector<gem_color_e> algari_gem_list( player_t* player )
 {
   std::vector<gem_color_e> gems;
 
-  for ( const auto& item : effect.player->items )
+  for ( const auto& item : player->items )
   {
     for ( auto gem_id : item.parsed.gem_id )
     {
       if ( gem_id )
       {
-        const auto& _gem = effect.player->dbc->item( gem_id );
-        const auto& _prop = effect.player->dbc->gem_property( _gem.gem_properties );
+        const auto& _gem  = player->dbc->item( gem_id );
+        const auto& _prop = player->dbc->gem_property( _gem.gem_properties );
         for ( auto g : gem_colors )
         {
           if ( _prop.desc_id == static_cast<unsigned>( g ) )
@@ -139,15 +139,25 @@ std::vector<gem_color_e> algari_gem_list( const special_effect_t& effect )
   return gems;
 }
 
-std::vector<gem_color_e> unique_gem_list( const special_effect_t& effect )
+std::vector<gem_color_e> algari_gem_list( const special_effect_t& effect )
 {
-  auto _list = algari_gem_list( effect );
+  return algari_gem_list( effect.player );
+}
+
+std::vector<gem_color_e> unique_gem_list( player_t* player )
+{
+  auto _list = algari_gem_list( player );
   range::sort( _list );
 
   auto it = range::unique( _list );
   _list.erase( it, _list.end() );
 
   return _list;
+}
+
+std::vector<gem_color_e> unique_gem_list( const special_effect_t& effect )
+{
+  return unique_gem_list( effect.player );
 }
 
 namespace consumables
@@ -607,50 +617,84 @@ void elemental_focusing_lens( special_effect_t& effect )
 // 436159 Boon of Binding Buff
 void binding_of_binding( special_effect_t& effect )
 {
-  auto gems = unique_gem_list( effect );
-
-  if ( !gems.size() )
-    return;
-
-  if ( effect.player->thewarwithin_opts.binding_of_binding_on_you <= 0 )
-    return;
-
-  /* for reference, currently unused
-  static constexpr std::array<std::tuple<gem_color_e, unsigned, const char*>, 5> effect_index = { {
-    { GEM_RUBY, 2, "ruby" },
-    { GEM_AMBER, -1, "amber" },
-    { GEM_EMERALD, 3, "emerald" },
-    { GEM_SAPPHIRE, 4, "sapphire" },
-    { GEM_ONYX, 5, "onyx" } } };
-  */
-
-   auto buff_spell = effect.player->find_spell( 436159 );
-
-   auto buff = create_buff<stat_buff_t>( effect.player, "boon_of_binding", buff_spell );
-
-   for ( gem_color_e gem_color : gems )
+  struct binding_of_binding_cb_t : public dbc_proc_callback_t
    {
-     switch ( gem_color )
+     target_specific_t<buff_t> buffs;
+     double binding_of_binding_ally_skip_chance;
+     binding_of_binding_cb_t( const special_effect_t& e )
+       : dbc_proc_callback_t( e.player, e ),
+         buffs{ false },
+         binding_of_binding_ally_skip_chance( effect.player->thewarwithin_opts.binding_of_binding_ally_skip_chance )
      {
-       case GEM_RUBY:
-         buff->add_stat_from_effect( 2, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
-         break;
-       case GEM_EMERALD:
-         buff->add_stat_from_effect( 3, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
-         break;
-       case GEM_SAPPHIRE:
-         buff->add_stat_from_effect( 4, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
-         break;
-       case GEM_ONYX:
-         buff->add_stat_from_effect( 5, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
-         break;
-       default:
-         break;
+       get_buff( effect.player );
      }
-   }
 
-   effect.custom_buff = buff;
-   new dbc_proc_callback_t( effect.player, effect );
+     buff_t* get_buff( player_t* buff_player )
+     {
+       if ( buffs[ buff_player ] )
+         return buffs[ buff_player ];
+
+       auto gems = unique_gem_list( buff_player );
+
+       auto buff_spell = effect.player->find_spell( 436159 );
+
+       auto buff = make_buff<stat_buff_t>( actor_pair_t{ buff_player, effect.player }, "boon_of_binding", buff_spell );
+
+       for ( gem_color_e gem_color : gems )
+       {
+         switch ( gem_color )
+         {
+           case GEM_RUBY:
+             buff->add_stat_from_effect( 2, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
+             break;
+           case GEM_EMERALD:
+             buff->add_stat_from_effect( 3, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
+             break;
+           case GEM_SAPPHIRE:
+             buff->add_stat_from_effect( 4, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
+             break;
+           case GEM_ONYX:
+             buff->add_stat_from_effect( 5, effect.driver()->effectN( 1 ).average( effect.player ) / 4 );
+             break;
+           default:
+             break;
+         }
+       }
+
+       buffs[ buff_player ] = buff;
+
+       return buff;
+     }
+
+     void execute( action_t*, action_state_t* ) override
+     {
+       if ( effect.player->thewarwithin_opts.binding_of_binding_on_you > 0 )
+       {
+         buffs[ effect.player ]->trigger();
+       }
+       else
+       {
+         if ( !effect.player->sim->single_actor_batch && effect.player->sim->player_non_sleeping_list.size() > 1 )
+         {
+           std::vector<player_t*> helper_vector = effect.player->sim->player_non_sleeping_list.data();
+           rng().shuffle( helper_vector.begin(), helper_vector.end() );
+
+           for ( auto p : helper_vector )
+           {
+             if ( p == effect.player || p->is_pet() )
+               continue;
+
+             if ( rng().roll( binding_of_binding_ally_skip_chance ) )
+               get_buff( p )->trigger();
+
+             break;
+           }
+         }
+       }
+     }
+   };
+
+   new binding_of_binding_cb_t( effect );
 }
 
 // 457665 dawnthread driver
@@ -2211,6 +2255,13 @@ void ravenous_honey_buzzer( special_effect_t& e )
         movement_dur( timespan_t::from_seconds( e.trigger()->missile_speed() ) )
     {
       base_multiplier *= role_mult( e );
+
+      // TODO: doesn't split damage at all
+      if ( e.player->bugs )
+      {
+        split_aoe_damage = false;
+        aoe_damage_increase = false;
+      }
     }
 
     void execute() override
@@ -2225,13 +2276,14 @@ void ravenous_honey_buzzer( special_effect_t& e )
   e.execute_action = create_proc_action<ravenous_honey_buzzer_t>( "ravenous_honey_buzzer", e );
 }
 
-// Overlocked Gear-a-rang Launcher
+// Overclocked Gear-a-rang Launcher
 // 443411 Use Driver
 // 446764 Equip Driver
 // 446811 Use Damage
 // 449842 Ground Effect Trigger
 // 449828 Equip Damage
 // 450453 Equip Buff
+// TODO: stagger travel time on targets to simulate the blade movement
 void overclocked_geararang_launcher( special_effect_t& e )
 {
   struct overclocked_strike_cb_t : public dbc_proc_callback_t
@@ -2255,12 +2307,14 @@ void overclocked_geararang_launcher( special_effect_t& e )
   {
     buff_t* buff;
     cooldown_t* item_cd;
+    cooldown_t* shared_trinket_cd;
     const spell_data_t* equip_driver;
 
     overclock_cb_t( const special_effect_t& e, const special_effect_t& use, buff_t* buff )
       : dbc_proc_callback_t( e.player, e ),
         buff( buff ),
         item_cd( e.player->get_cooldown( use.cooldown_name() ) ),
+        shared_trinket_cd( e.player->get_cooldown( "item_cd_" + util::to_string( use.driver()->category() ) ) ),
         equip_driver( e.driver() )
     {
     }
@@ -2268,32 +2322,43 @@ void overclocked_geararang_launcher( special_effect_t& e )
     void execute( action_t*, action_state_t* ) override
     {
       item_cd->adjust( timespan_t::from_seconds( -equip_driver->effectN( 1 ).base_value() ) );
+      if ( listener->bugs )
+      {
+        shared_trinket_cd->adjust( timespan_t::from_seconds( -equip_driver->effectN( 1 ).base_value() ) );
+      }
       buff->trigger();
     }
   };
 
-  struct geararang_launcher_t : public generic_proc_t
+  struct geararang_serration_t : public generic_proc_t
   {
-    ground_aoe_params_t params;
-    geararang_launcher_t( const special_effect_t& e, action_t* equip_damage )
-      : generic_proc_t( e, "geararang_launcher", e.driver() ), params()
+    geararang_serration_t( const special_effect_t& e ) : generic_proc_t( e, "geararang_serration", 446811 )
     {
-      auto damage        = create_proc_action<generic_aoe_proc_t>( "geararang_serration", e, 446811 );
-      damage->radius     = e.driver()->effectN( 1 ).radius();
-      auto ground_effect = e.player->find_spell( 449842 );
-      params.action( damage ).duration( ground_effect->duration() );
-      cooldown->duration = 0_ms;  // Handled by the item
-      add_child( damage );
-      add_child( equip_damage );
+      aoe = -1;
+      radius = e.driver()->effectN( 1 ).radius();
+      base_multiplier *= role_mult( e );
+      chain_multiplier = 0.95;  // not in spell data
+      // TODO: stagger travel time on targets to simulate the blade movement
+      range = 30;
+      travel_speed = 20;  // guessed ~1.5s to reach max range of ~30yd
     }
 
-    void impact( action_state_t* s ) override
+    std::vector<player_t*>& target_list() const override
     {
-      generic_proc_t::impact( s );
+      // to simulate mobs not always grouping up in the exact same order, re-create the target list every time.
+      available_targets( target_cache.list );
+      player->rng().shuffle( target_cache.list.begin(), target_cache.list.end() );
 
-      make_event<ground_aoe_event_t>( *sim, player,
-                                      params.target( s->target ).x( s->target->x_position ).y( s->target->y_position ),
-                                      true /* Immediate pulse */ );
+      // duplicate the list add in reverse to simulate the blade going out then returning
+      std::vector<player_t*> tmp_tl = target_cache.list;  // make a copy
+
+      while ( !tmp_tl.empty() )
+      {
+        target_cache.list.push_back( tmp_tl.back() );
+        tmp_tl.pop_back();
+      }
+
+      return target_cache.list;
     }
   };
 
@@ -2330,7 +2395,8 @@ void overclocked_geararang_launcher( special_effect_t& e )
   overclock_cb->initialize();
   overclock_cb->activate();
 
-  e.execute_action = create_proc_action<geararang_launcher_t>( "geararang_launcher", e, overclock_strike );
+  e.execute_action = create_proc_action<geararang_serration_t>( "geararang_serration", e );
+  e.execute_action->add_child( overclock_strike );
 }
 
 // Remnant of Darkness

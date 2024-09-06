@@ -512,6 +512,7 @@ jobs:
         run: ${{ github.workspace }}/generate_profiles_ci.sh
 
       - name: Commit Profiles
+        continue-on-error: true
         uses: EndBug/add-and-commit@v9.1.4
         with:
           message: 'Regenerate profiles'

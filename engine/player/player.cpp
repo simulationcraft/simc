@@ -642,6 +642,7 @@ bool parse_loa( sim_t* sim, std::string_view, std::string_view override_str )
 bool parse_tricks( sim_t* sim, std::string_view, std::string_view override_str )
 {
   player_t* p = sim->active_player;
+
   if ( util::str_compare_ci( override_str, "corrosive" ) || util::str_compare_ci( override_str, "corrosive_vial" ) )
   {
     p->vulpera_tricks = player_t::CORROSIVE;
@@ -666,6 +667,40 @@ bool parse_tricks( sim_t* sim, std::string_view, std::string_view override_str )
   else
   {
     sim->error( "{} vulpera_tricks string '{}' not valid.", sim->active_player->name(), override_str );
+    return false;
+  }
+
+  return true;
+}
+
+// parse_mineral
+bool parse_mineral( sim_t* sim, std::string_view, std::string_view override_str )
+{
+  player_t*p = sim->active_player;
+
+  if ( util::str_compare_ci( override_str, "amber" ) || util::str_prefix_ci( override_str, "sta" ) )
+  {
+    p->earthen_mineral = player_t::AMBER;
+  }
+  else if ( util::str_compare_ci( override_str, "emerald" ) || util::str_prefix_ci( override_str, "has" ) )
+  {
+    p->earthen_mineral = player_t::EMERALD;
+  }
+  else if ( util::str_compare_ci( override_str, "onyx" ) || util::str_prefix_ci( override_str, "mas" ) )
+  {
+    p->earthen_mineral = player_t::ONYX;
+  }
+  else if ( util::str_compare_ci( override_str, "ruby" ) || util::str_prefix_ci( override_str, "crit" ) )
+  {
+    p->earthen_mineral = player_t::RUBY;
+  }
+  else if ( util::str_compare_ci( override_str, "sapphire" ) || util::str_prefix_ci( override_str, "vers" ) )
+  {
+    p->earthen_mineral = player_t::SAPPHIRE;
+  }
+  else
+  {
+    sim->error( "{} earthen_mineral string '{}' not valid.", sim->active_player->name(), override_str );
     return false;
   }
 
@@ -1007,6 +1042,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     timeofday( NIGHT_TIME ),  // Depends on server time, default to night that's more common for raid hours
     zandalari_loa( PAKU ),  // Default to Paku as it has some non-zero dps benefit for all specs
     vulpera_tricks( CORROSIVE ),  // default trick for damage
+    earthen_mineral( RUBY ),  // default mineral is ruby (crit)
     gcd_ready( 0_ms ),
     base_gcd( 1.5_s ),
     min_gcd( 750_ms ),
@@ -4015,9 +4051,29 @@ void player_t::create_buffs()
                           util::round( find_spell( 265226 )->effectN( 1 ).average( this, level() ) ) * 3 );
     }
     else
+    {
       buffs.fireblood = buff_t::make_fallback( this, "fireblood", this );
+    }
 
     buffs.darkflight = make_buff_fallback( race == RACE_WORGEN, this, "darkflight", find_racial_spell( "darkflight" ) );
+
+    // fallback for ingest mineral isn't necessary as it's a passive effect that should not have any apl interaction
+    if ( race == RACE_EARTHEN_HORDE || race == RACE_EARTHEN_ALLIANCE )
+    {
+      unsigned _id = 451918;  // crit is default
+
+      switch ( earthen_mineral )
+      {
+        case player_t::AMBER:    _id = 451921; break;  // stamina
+        case player_t::EMERALD:  _id = 451916; break;  // haste
+        case player_t::ONYX:     _id = 451920; break;  // mastery
+        case player_t::SAPPHIRE: _id = 451917; break;  // versatility
+        default:                 break;
+      }
+
+      buffs.ingest_mineral = make_buff<stat_buff_t>( this, "ingest_mineral", find_spell( _id ) )
+        ->set_name_reporting( "Ingest Mineral" );
+    }
 
     buffs.movement = new movement_buff_t( this );
 
@@ -6439,6 +6495,9 @@ void player_t::arise()
 
   if ( buffs.elegy_of_the_eternals_external )
     buffs.elegy_of_the_eternals_external->trigger();
+
+  if ( buffs.ingest_mineral )
+    buffs.ingest_mineral->trigger();
 
   if ( is_enemy() )
   {
@@ -11813,28 +11872,40 @@ std::string player_t::create_profile( save_e stype )
     profile_str += dbc::specialization_string( specialization() ) + term;
     profile_str += "level=" + util::to_string( true_level ) + term;
     profile_str += "race=" + race_str + term;
+
     if ( race == RACE_NIGHT_ELF )
     {
       profile_str += "timeofday=" + util::to_string( timeofday == player_t::NIGHT_TIME ? "night" : "day" ) + term;
     }
-    if ( race == RACE_ZANDALARI_TROLL )
+    else if ( race == RACE_ZANDALARI_TROLL )
     {
-      profile_str += "zandalari_loa=" + util::to_string(zandalari_loa == player_t::AKUNDA ? "akunda" : zandalari_loa == player_t::BWONSAMDI ? "bwonsamdi"
-        : zandalari_loa == player_t::GONK ? "gonk" : zandalari_loa == player_t::KIMBUL ? "kimbul" : zandalari_loa == player_t::KRAGWA ? "kragwa" : "paku") + term;
+      profile_str += "zandalari_loa=" +
+                     util::to_string( zandalari_loa == player_t::AKUNDA      ? "akunda"
+                                      : zandalari_loa == player_t::BWONSAMDI ? "bwonsamdi"
+                                      : zandalari_loa == player_t::GONK      ? "gonk"
+                                      : zandalari_loa == player_t::KIMBUL    ? "kimbul"
+                                      : zandalari_loa == player_t::KRAGWA    ? "kragwa"
+                                                                             : "paku" ) + term;
     }
-    if ( race == RACE_VULPERA )
+    else if ( race == RACE_VULPERA )
     {
-      profile_str +=
-          "vulpera_tricks=" +
-          util::to_string( vulpera_tricks == player_t::HOLY
-                               ? "holy"
-                               : vulpera_tricks == player_t::FLAMES
-                                     ? "flames"
-                                     : vulpera_tricks == player_t::SHADOWS
-                                           ? "shadows"
-                                           : vulpera_tricks == player_t::HEALING ? "healing" : "corrosive" ) +
-          term;
+      profile_str += "vulpera_tricks=" +
+                     util::to_string( vulpera_tricks == player_t::HOLY      ? "holy"
+                                      : vulpera_tricks == player_t::FLAMES  ? "flames"
+                                      : vulpera_tricks == player_t::SHADOWS ? "shadows"
+                                      : vulpera_tricks == player_t::HEALING ? "healing"
+                                                                            : "corrosive" ) + term;
     }
+    else if ( race == RACE_EARTHEN_HORDE || race == RACE_EARTHEN_ALLIANCE )
+    {
+      profile_str += "earthen_mineral=" +
+                     util::to_string( earthen_mineral == player_t::AMBER      ? "amber"
+                                      : earthen_mineral == player_t::EMERALD  ? "emerald"
+                                      : earthen_mineral == player_t::ONYX     ? "onyx"
+                                      : earthen_mineral == player_t::SAPPHIRE ? "sapphire"
+                                                                              : "ruby" ) + term;
+    }
+
     profile_str += "role=";
     profile_str += util::role_type_string( primary_role() ) + term;
     profile_str += "position=" + position_str + term;
@@ -12154,6 +12225,7 @@ void player_t::copy_from( player_t* source )
   timeofday             = source->timeofday;
   zandalari_loa         = source->zandalari_loa;
   vulpera_tricks        = source->vulpera_tricks;
+  earthen_mineral       = source->earthen_mineral;
   race                  = source->race;
   role                  = source->role;
   _spec                 = source->_spec;
@@ -12242,6 +12314,7 @@ void player_t::create_options()
   add_option( opt_func( "timeofday", parse_timeofday ) );
   add_option( opt_func( "zandalari_loa", parse_loa ) );
   add_option( opt_func( "vulpera_tricks", parse_tricks ) );
+  add_option( opt_func( "earthen_mineral", parse_mineral ) );
   add_option( opt_int( "level", true_level, 1, MAX_LEVEL ) );
   add_option( opt_bool( "ready_trigger", ready_type ) );
   add_option( opt_func( "role", parse_role_string ) );
@@ -12645,6 +12718,7 @@ void player_t::create_options()
   add_option( opt_float( "thewarwithin.embrace_of_the_cinderbee_miss_chance", thewarwithin_opts.embrace_of_the_cinderbee_miss_chance, 0, 1 ) );
   add_option( opt_int( "thewarwithin.nerubian_pheromone_secreter_pheromones", thewarwithin_opts.nerubian_pheromone_secreter_pheromones, 0, 3 ) );
   add_option( opt_int( "thewarwithin.binding_of_binding_on_you", thewarwithin_opts.binding_of_binding_on_you, 0, 29 ) );
+  add_option( opt_float( "thewarwithin.binding_of_binding_ally_skip_chance", thewarwithin_opts.binding_of_binding_ally_skip_chance, 0, 1 ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

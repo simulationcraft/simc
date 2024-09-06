@@ -1,4 +1,4 @@
-// Racial abilities, wow build 11.0.2.56313
+// Racial abilities, wow build 11.0.5.56487
 static const std::array<racial_spell_entry_t, 168> __ptr_racial_spell_data { {
   { 0x0000000000000001, 0x00000000, 458619, "No Place Like Home"                 },
   { 0x0000000000000001, 0x00000000,  20598, "The Human Spirit"                   },

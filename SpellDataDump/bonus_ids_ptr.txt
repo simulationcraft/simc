@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56313 thewarwithin-BETA
+SimulationCraft 1100-01 for World of Warcraft 11.0.5.56487 thewarwithin-BETA
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4128,11 +4128,11 @@ bonus_id={ 7171 }, ilevel={ 6 @plvl 1 - 61 @plvl 70 }
 bonus_id={ 7172 }, quality={ epic }, ilevel={ 10 @plvl 1 - 61 @plvl 70 }
 bonus_id={ 7173 }, quality={ epic }, ilevel={ 27 @plvl 1 - 200 @plvl 70 }
 bonus_id={ 7174 }, ilevel={ 168 @plvl 0 - 168 @plvl 0 }
-bonus_id={ 7175 }, ilevel={ 29 @plvl 0 - 29 @plvl 1 }
-bonus_id={ 7176 }, ilevel={ 65 @plvl 0 - 65 @plvl 1 }
-bonus_id={ 7177 }, ilevel={ 94 @plvl 0 - 94 @plvl 1 }
-bonus_id={ 7178 }, ilevel={ 127 @plvl 0 - 127 @plvl 1 }
-bonus_id={ 7179 }, ilevel={ 163 @plvl 0 - 163 @plvl 1 }
+bonus_id={ 7175 }, base_ilevel={ 29 }
+bonus_id={ 7176 }, base_ilevel={ 65 }
+bonus_id={ 7177 }, base_ilevel={ 94 }
+bonus_id={ 7178 }, base_ilevel={ 127 }
+bonus_id={ 7179 }, base_ilevel={ 163 }
 bonus_id={ 7180 }, ilevel={ 117 @plvl 0 - 117 @plvl 0 }
 bonus_id={ 7181 }, ilevel={ 129 @plvl 0 - 129 @plvl 0 }
 bonus_id={ 7182 }, ilevel={ 151 @plvl 0 - 151 @plvl 0 }
@@ -6316,7 +6316,7 @@ bonus_id={ 11319 }, desc={ Tier 1 }, effects={ Delver's Bounty (id=460285, index
 bonus_id={ 11329 }, quality={ rare }, ilevel={ 10 @plvl 0 - 10 @plvl 1 }
 bonus_id={ 11330 }, base_ilevel={ 545 }
 bonus_id={ 11331 }, base_ilevel={ 561 }
-bonus_id={ 11332 }, ilevel={ 350 @plvl 0 - 350 @plvl 1 }
+bonus_id={ 11332 }, base_ilevel={ 350 }
 bonus_id={ 11334 }, quality={ rare }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
 bonus_id={ 11335 }, quality={ rare }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
 bonus_id={ 11336 }, quality={ rare }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
@@ -6935,3 +6935,5 @@ bonus_id={ 12008 }, desc={ Rank 1/4 }, effects={ Adding (id=464659, index=0, typ
 bonus_id={ 12009 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=464725, index=0, type=use) }
 bonus_id={ 12010 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=464726, index=0, type=use) }
 bonus_id={ 12011 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=464727, index=0, type=use) }
+bonus_id={ 12057 }, ilevel={ 356 @plvl 55 - 551 @plvl 90 }
+bonus_id={ 12058 }, quality={ rare }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
