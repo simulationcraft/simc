@@ -57,7 +57,7 @@ race=mechagnome
 spec=protection
 role=tank
 position=front
-talents=CgEAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAgRDMzAMMDjBmFYYGjZmHYYmZbbMmZmFMzMzMjZMbDPAjxAAAAhZssNwCYCmhJwYbYD
+talents=CkEAAAAAAAAAAAAAAAAAAAAAAYEDAAAAzMzYmZGMbzsMzMz2mZMMNzgZmBwyADbMzMwDMzDMMAAAAAAgZGAgltNADDsBLLGNmBwsFbYD
 
 head=warsculptors_barbute,id=211984,bonus_id=10878,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,bonus_id=10879,ilevel=639,gem_id=213479/213479
@@ -70,7 +70,7 @@ waist=everforged_greatbelt,id=222431,ilevel=636bonus_id=10222/8790/8960/10878/11
 legs=warsculptors_cuisses,id=211983,ilevel=639,enchant=defenders_armor_kit_3
 feet=warsculptors_carved_boots,id=211986,ilevel=639,enchant=defenders_march_3
 finger1=devout_zealots_ring,id=221136,bonus_id=10879,ilevel=639,gem_id=213479/213479,enchant=radiant_haste_3
-finger2=seal_of_the_poisoned_pact,id=22557CkEAAAAAAAAAAAAAAAAAAAAAAYEDAAAAzMzYmZGMbzsMzMz2mZMMNzgZmBwyADbMzMwDMzDMMAAAAAAgZGAgltNADDsBLLGNmBwsFbYD8,bonus_id=10879,ilevel=639,gem_id=213479/213479,enchant=radiant_haste_3
+finger2=seal_of_the_poisoned_pact,id=22557,bonus_id=10879,ilevel=639,gem_id=213479/213479,enchant=radiant_haste_3
 trinket1=arakara_sacbrood,id=219314,ilevel=639
 trinket2=spare_meat_hook,id=178751,ilevel=639
 main_hand=duelists_dancing_steel,id=212392,ilevel=639,enchant=authority_of_the_depths_3
