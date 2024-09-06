@@ -89,7 +89,6 @@ struct monk_action_t : public parse_action_effects_t<Base>
   sef_ability_e sef_ability;
   bool ww_mastery;
   bool may_combo_strike;
-  bool trigger_chiji;
   bool trigger_jadefire_stomp;
   bool cast_during_sck;
   bool track_cd_waste;
@@ -351,9 +350,6 @@ public:
     propagate_const<dot_t *> crackling_jade_lightning_aoe;
     propagate_const<dot_t *> crackling_jade_lightning_sef;
     propagate_const<dot_t *> crackling_jade_lightning_sef_aoe;
-    propagate_const<dot_t *> enveloping_mist;
-    propagate_const<dot_t *> renewing_mist;
-    propagate_const<dot_t *> soothing_mist;
     propagate_const<dot_t *> touch_of_karma;
 
     // Master of Harmony
@@ -619,15 +615,8 @@ public:
 
     // Mistweaver
     propagate_const<absorb_buff_t *> life_cocoon;
-    propagate_const<buff_t *> channeling_soothing_mist;
     propagate_const<buff_t *> dance_of_chiji_mw;
-    propagate_const<buff_t *> invoke_chiji;
-    propagate_const<buff_t *> invoke_chiji_evm;
     propagate_const<buff_t *> jadefire_stomp_reset;
-    propagate_const<buff_t *> lifecycles_enveloping_mist;
-    propagate_const<buff_t *> lifecycles_vivify;
-    propagate_const<buff_t *> mana_tea;
-    propagate_const<buff_t *> refreshing_jade_wind;
     propagate_const<buff_t *> secret_infusion_haste;
     propagate_const<buff_t *> secret_infusion_crit;
     propagate_const<buff_t *> secret_infusion_mastery;
