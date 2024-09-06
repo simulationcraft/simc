@@ -6935,3 +6935,5 @@ bonus_id={ 12008 }, desc={ Rank 1/4 }, effects={ Adding (id=464659, index=0, typ
 bonus_id={ 12009 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=464725, index=0, type=use) }
 bonus_id={ 12010 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=464726, index=0, type=use) }
 bonus_id={ 12011 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=464727, index=0, type=use) }
+bonus_id={ 12057 }, ilevel={ 356 @plvl 55 - 551 @plvl 90 }
+bonus_id={ 12058 }, quality={ rare }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
