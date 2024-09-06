@@ -1954,7 +1954,7 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
   sck_tick_action_t( monk_t *p, std::string_view name, const spell_data_t *data )
     : charred_passions_t<monk_melee_attack_t>( p, name, data )
   {
-    ww_mastery    = true;
+    ww_mastery = true;
 
     dual = background   = true;
     aoe                 = -1;
@@ -4617,8 +4617,9 @@ struct vivify_t : public monk_heal_t
 {
   vivify_t( monk_t *p, util::string_view options_str ) : monk_heal_t( p, "vivify", p->baseline.monk.vivify )
   {
-    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
+    parse_options( options_str );
 
+    spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
     base_execute_time += p->talent.monk.vivacious_vivification->effectN( 1 ).time_value();
   }
 
@@ -7019,9 +7020,6 @@ void monk_t::init_spells()
   shared.invokers_delight = _priority( talent.windwalker.invokers_delight, talent.mistweaver.invokers_delight );
 
   shared.rushing_jade_wind = _priority( talent.windwalker.rushing_jade_wind, talent.brewmaster.rushing_jade_wind );
-
-  shared.shadowboxing_treads =
-      _priority( talent.windwalker.shadowboxing_treads, talent.brewmaster.shadowboxing_treads );
 
   if ( talent.windwalker.teachings_of_the_monastery->ok() )
     shared.teachings_of_the_monastery = talent.windwalker.teachings_of_the_monastery;
