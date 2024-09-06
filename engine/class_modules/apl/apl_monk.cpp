@@ -273,7 +273,8 @@ void mistweaver( player_t *p )
 
   def->add_action( "touch_of_death" );
   def->add_action( "thunder_focus_tea" );
-  def->add_action( "invoke_chiji_the_red_crane,if=talent.invokers_delight" );
+  def->add_action( "invoke_chiji,if=talent.invokers_delight" );
+  def->add_action( "invoke_yulon,if=talent.invokers_delight" );
   def->add_action( "celestial_conduit" );
   def->add_action( "rising_sun_kick,if=talent.secret_infusion&buff.thunder_focus_tea.up" );
   def->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.up" );

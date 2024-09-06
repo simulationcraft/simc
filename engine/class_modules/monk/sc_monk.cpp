@@ -63,7 +63,6 @@ monk_action_t<Base>::monk_action_t( Args &&...args )
     sef_ability( actions::sef_ability_e::SEF_NONE ),
     ww_mastery( false ),
     may_combo_strike( false ),
-    trigger_chiji( false ),
     trigger_jadefire_stomp( false ),
     cast_during_sck( false ),
     track_cd_waste( false )
@@ -573,12 +572,7 @@ void monk_action_t<Base>::consume_resource()
 template <class Base>
 void monk_action_t<Base>::execute()
 {
-  if ( p()->specialization() == MONK_MISTWEAVER )
-  {
-    if ( trigger_chiji && p()->buff.invoke_chiji->up() )
-      p()->buff.invoke_chiji_evm->trigger();
-  }
-  else if ( p()->specialization() == MONK_WINDWALKER )
+  if ( p()->specialization() == MONK_WINDWALKER )
   {
     if ( may_combo_strike )
       combo_strikes_trigger();
@@ -704,21 +698,6 @@ double monk_heal_t::action_multiplier() const
   switch ( p()->specialization() )
   {
     case MONK_MISTWEAVER:
-
-      if ( auto td = this->get_td( t ) )  // Use get_td since we can have a ticking dot without target-data
-      {
-        if ( td->dot.enveloping_mist->is_ticking() )
-        {
-          if ( p()->talent.mistweaver.mist_wrap->ok() )
-            am *= 1.0 + p()->talent.mistweaver.enveloping_mist->effectN( 2 ).percent() +
-                  p()->talent.mistweaver.mist_wrap->effectN( 2 ).percent();
-          else
-            am *= 1.0 + p()->talent.mistweaver.enveloping_mist->effectN( 2 ).percent();
-        }
-      }
-
-      if ( p()->buff.life_cocoon->check() )
-        am *= 1.0 + p()->talent.mistweaver.life_cocoon->effectN( 2 ).percent();
 
       break;
 
@@ -1210,7 +1189,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     min_gcd                = 500_ms;
     ww_mastery             = true;
     may_combo_strike       = true;
-    trigger_chiji          = true;
     trigger_jadefire_stomp = true;
     sef_ability            = actions::sef_ability_e::SEF_TIGER_PALM;
     cast_during_sck        = player->specialization() != MONK_WINDWALKER;
@@ -1481,7 +1459,6 @@ struct rising_sun_kick_dmg_t : public overwhelming_force_t<monk_melee_attack_t>
 
     background = dual = true;
     may_crit          = true;
-    trigger_chiji     = true;
   }
 
   void execute() override
@@ -1599,7 +1576,6 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
     ww_mastery         = false;
     cooldown->duration = timespan_t::zero();
     background = dual = true;
-    trigger_chiji     = true;
     trigger_gcd       = timespan_t::zero();
   }
 
@@ -1738,7 +1714,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     sef_ability            = actions::sef_ability_e::SEF_BLACKOUT_KICK;
     ww_mastery             = true;
     may_combo_strike       = true;
-    trigger_chiji          = true;
     trigger_jadefire_stomp = true;
     cast_during_sck        = p->specialization() != MONK_WINDWALKER;
 
@@ -2008,7 +1983,6 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     : charred_passions_t<monk_melee_attack_t>( p, name, data )
   {
     ww_mastery    = true;
-    trigger_chiji = true;
 
     dual = background   = true;
     aoe                 = -1;
@@ -3762,35 +3736,6 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
 };
 
 // ==========================================================================
-// Mana Tea
-// ==========================================================================
-// Manatee
-//                   _.---.._
-//     _        _.-'         ''-.
-//   .'  '-,_.-'                 '''.
-//  (       _                     o  :
-//   '._ .-'  '-._         \  \-  ---]
-//                 '-.___.-')  )..-'
-//                          (_/lame
-
-struct mana_tea_t : public monk_spell_t
-{
-  mana_tea_t( monk_t *p, util::string_view options_str ) : monk_spell_t( p, "mana_tea", p->talent.mistweaver.mana_tea )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-  }
-
-  void execute() override
-  {
-    monk_spell_t::execute();
-
-    p()->buff.mana_tea->trigger();
-  }
-};
-
-// ==========================================================================
 // Thunder Focus Tea
 // ==========================================================================
 
@@ -4169,8 +4114,6 @@ struct chiji_spell_t : public monk_spell_t
     monk_spell_t::execute();
 
     p()->pets.chiji.spawn( p()->talent.mistweaver.invoke_chi_ji_the_red_crane->duration(), 1 );
-
-    p()->buff.invoke_chiji->trigger();
 
     p()->buff.invokers_delight->trigger();
 
@@ -4611,79 +4554,11 @@ struct gale_force_t : public monk_spell_t
 namespace heals
 {
 // ==========================================================================
-// Soothing Mist
-// ==========================================================================
-/*
-struct soothing_mist_t : public monk_heal_t
-{
-  soothing_mist_t( monk_t *p ) : monk_heal_t( p, "soothing_mist", p->passives.soothing_mist_heal )
-  {
-    background = dual = true;
-
-    tick_zero = true;
-  }
-
-  bool ready() override
-  {
-    if ( p()->buff.channeling_soothing_mist->check() )
-      return false;
-
-    return monk_heal_t::ready();
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    monk_heal_t::impact( s );
-
-    p()->buff.channeling_soothing_mist->trigger();
-  }
-
-  void last_tick( dot_t *d ) override
-  {
-    monk_heal_t::last_tick( d );
-
-    p()->buff.channeling_soothing_mist->expire();
-  }
-}; */
-
-// ==========================================================================
-// Gust of Mists
-// ==========================================================================
-// The mastery actually affects the Spell Power Coefficient but I am not sure if that
-// would work normally. Using Action Multiplier since it APPEARS to calculate the same.
-//
-// TODO: Double Check if this works.
-
-struct gust_of_mists_t : public monk_heal_t
-{
-  gust_of_mists_t( monk_t *p )
-    : monk_heal_t( p, "gust_of_mists", p->baseline.mistweaver.mastery->effectN( 2 ).trigger() )
-  {
-    background = dual      = true;
-    spell_power_mod.direct = 1;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-
-    am *= p()->cache.mastery_value();
-
-    // Mastery's Effect 3 gives a flat add modifier of 0.1 Spell Power co-efficient
-    // TODO: Double check calculation
-
-    return am;
-  }
-};
-
-// ==========================================================================
 // Enveloping Mist
 // ==========================================================================
 
 struct enveloping_mist_t : public monk_heal_t
 {
-  gust_of_mists_t *mastery;
-
   enveloping_mist_t( monk_t *p, util::string_view options_str )
     : monk_heal_t( p, "enveloping_mist", p->talent.mistweaver.enveloping_mist )
   {
@@ -4695,8 +4570,6 @@ struct enveloping_mist_t : public monk_heal_t
     dot_duration = p->talent.mistweaver.enveloping_mist->duration();
     if ( p->talent.mistweaver.mist_wrap->ok() )
       dot_duration += p->talent.mistweaver.mist_wrap->effectN( 1 ).time_value();
-
-    mastery = new gust_of_mists_t( p );
   }
 
   double execute_time_pct_multiplier() const override
@@ -4712,21 +4585,12 @@ struct enveloping_mist_t : public monk_heal_t
   {
     monk_heal_t::execute();
 
-    if ( p()->talent.mistweaver.lifecycles->ok() )
-    {
-      p()->buff.lifecycles_enveloping_mist->expire();
-
-      p()->buff.lifecycles_vivify->trigger();
-    }
-
     if ( p()->buff.thunder_focus_tea->up() )
     {
       p()->buff.secret_infusion_crit->trigger();
 
       p()->buff.thunder_focus_tea->decrement();
     }
-
-    mastery->execute();
   }
 };
 
@@ -4736,15 +4600,11 @@ struct enveloping_mist_t : public monk_heal_t
 
 struct renewing_mist_t : public monk_heal_t
 {
-  gust_of_mists_t *mastery;
-
   renewing_mist_t( monk_t *p, util::string_view options_str )
     : monk_heal_t( p, "renewing_mist", p->talent.mistweaver.renewing_mist )
   {
     parse_options( options_str );
     may_crit = may_miss = false;
-
-    mastery = new gust_of_mists_t( p );
   }
 
   void update_ready( timespan_t ) override
@@ -4761,8 +4621,6 @@ struct renewing_mist_t : public monk_heal_t
   {
     monk_heal_t::execute();
 
-    mastery->execute();
-
     if ( p()->buff.thunder_focus_tea->up() )
     {
       p()->buff.secret_infusion_haste->trigger();
@@ -4778,17 +4636,11 @@ struct renewing_mist_t : public monk_heal_t
 
 struct vivify_t : public monk_heal_t
 {
-  gust_of_mists_t *mastery;
-
   vivify_t( monk_t *p, util::string_view options_str ) : monk_heal_t( p, "vivify", p->baseline.monk.vivify )
   {
-    parse_options( options_str );
-
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
 
     base_execute_time += p->talent.monk.vivacious_vivification->effectN( 1 ).time_value();
-
-    mastery = new gust_of_mists_t( p );
   }
 
   double cost_pct_multiplier() const override
@@ -4812,32 +4664,7 @@ struct vivify_t : public monk_heal_t
       p()->buff.thunder_focus_tea->decrement();
     }
 
-    if ( p()->talent.mistweaver.lifecycles )
-    {
-      p()->buff.lifecycles_vivify->expire();
-
-      p()->buff.lifecycles_enveloping_mist->trigger();
-    }
-
-    if ( p()->baseline.mistweaver.mastery->ok() )
-      mastery->execute();
-
     p()->active_actions.chi_wave->execute();
-  }
-};
-
-// ==========================================================================
-// Revival
-// ==========================================================================
-
-struct revival_t : public monk_heal_t
-{
-  revival_t( monk_t *p, util::string_view options_str ) : monk_heal_t( p, "revival", p->talent.mistweaver.revival )
-  {
-    parse_options( options_str );
-
-    may_miss = false;
-    aoe      = -1;
   }
 };
 
@@ -5099,53 +4926,6 @@ struct chi_burst_t : monk_spell_t
 };
 
 // ==========================================================================
-// Healing Elixirs
-// ==========================================================================
-
-struct healing_elixir_t : public monk_heal_t
-{
-  healing_elixir_t( monk_t *p ) : monk_heal_t( p, "healing_elixir", p->shared.healing_elixir )
-  {
-    harmful = may_crit = false;
-    target             = p;
-    base_pct_heal      = data().effectN( 1 ).percent();
-  }
-};
-
-// ==========================================================================
-// Refreshing Jade Wind
-// ==========================================================================
-
-struct refreshing_jade_wind_heal_t : public monk_heal_t
-{
-  refreshing_jade_wind_heal_t( monk_t *player )
-    : monk_heal_t( player, "refreshing_jade_wind_heal",
-                   player->talent.mistweaver.refreshing_jade_wind->effectN( 1 ).trigger() )
-  {
-    background = true;
-    aoe        = 6;
-  }
-};
-
-struct refreshing_jade_wind_t : public monk_spell_t
-{
-  refreshing_jade_wind_heal_t *heal;
-  refreshing_jade_wind_t( monk_t *player, util::string_view options_str )
-    : monk_spell_t( player, "refreshing_jade_wind", player->talent.mistweaver.refreshing_jade_wind )
-  {
-    parse_options( options_str );
-    heal = new refreshing_jade_wind_heal_t( player );
-  }
-
-  void tick( dot_t *d ) override
-  {
-    monk_spell_t::tick( d );
-
-    heal->execute();
-  }
-};
-
-// ==========================================================================
 // Celestial Fortune
 // ==========================================================================
 // This is a Brewmaster-specific critical strike effect
@@ -5237,28 +5017,6 @@ struct celestial_brew_t : public brew_t<monk_absorb_t>
     p()->buff.purified_chi->expire();
     p()->buff.pretense_of_instability->trigger();
     p()->active_actions.special_delivery->execute();
-  }
-};
-
-// ==========================================================================
-// Life Cocoon
-// ==========================================================================
-struct life_cocoon_t : public monk_absorb_t
-{
-  life_cocoon_t( monk_t *p, util::string_view options_str )
-    : monk_absorb_t( p, "life_cocoon", p->talent.mistweaver.life_cocoon )
-  {
-    parse_options( options_str );
-    harmful = may_crit = false;
-
-    base_dd_min = p->max_health() * p->talent.mistweaver.life_cocoon->effectN( 3 ).percent();
-    base_dd_max = base_dd_min;
-  }
-
-  void impact( action_state_t *s ) override
-  {
-    p()->buff.life_cocoon->trigger( 1, s->result_amount );
-    stats->add_result( 0.0, s->result_amount, result_amount_type::ABSORB, s->result, s->block_result, s->target );
   }
 };
 }  // namespace absorbs
@@ -6250,9 +6008,6 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
   dot.crackling_jade_lightning_aoe     = target->get_dot( "crackling_jade_lightning_aoe", p );
   dot.crackling_jade_lightning_sef     = target->get_dot( "crackling_jade_lightning_sef", p );
   dot.crackling_jade_lightning_sef_aoe = target->get_dot( "crackling_jade_lightning_sef_aoe", p );
-  dot.enveloping_mist                  = target->get_dot( "enveloping_mist", p );
-  dot.renewing_mist                    = target->get_dot( "renewing_mist", p );
-  dot.soothing_mist                    = target->get_dot( "soothing_mist", p );
   dot.touch_of_karma                   = target->get_dot( "touch_of_karma", p );
   dot.aspect_of_harmony                = target->get_dot( "aspect_of_harmony_damage", p );
 }
@@ -6473,22 +6228,12 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
   // Mistweaver
   if ( name == "enveloping_mist" )
     return new enveloping_mist_t( this, options_str );
-  if ( name == "invoke_chiji" )
+  if ( name == "invoke_chiji" || name == "invoke_chiji_the_red_crane" )
     return new chiji_spell_t( this, options_str );
-  if ( name == "invoke_chiji_the_red_crane" )
-    return new chiji_spell_t( this, options_str );
-  if ( name == "invoke_yulon" )
+  if ( name == "invoke_yulon" || name == "invoke_yulon_the_jade_serpent" )
     return new yulon_spell_t( this, options_str );
-  if ( name == "invoke_yulon_the_jade_serpent" )
-    return new yulon_spell_t( this, options_str );
-  if ( name == "life_cocoon" )
-    return new life_cocoon_t( this, options_str );
-  if ( name == "mana_tea" )
-    return new mana_tea_t( this, options_str );
   if ( name == "renewing_mist" )
     return new renewing_mist_t( this, options_str );
-  if ( name == "revival" )
-    return new revival_t( this, options_str );
   if ( name == "sheiluns_gift" )
     return new sheiluns_gift_t( this, options_str );
   if ( name == "thunder_focus_tea" )
@@ -6525,8 +6270,6 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
     return new xuen_spell_t( this, options_str );
   if ( name == "invoke_xuen_the_white_tiger" )
     return new xuen_spell_t( this, options_str );
-  if ( name == "refreshing_jade_wind" )
-    return new refreshing_jade_wind_t( this, options_str );
   if ( name == "rushing_jade_wind" )
     return new rushing_jade_wind_t( this, options_str );
   if ( name == "whirling_dragon_punch" )
@@ -7575,9 +7318,6 @@ void monk_t::create_buffs()
   buff.chi_burst = make_buff_fallback( talent.monk.chi_burst->ok() && specialization() == MONK_WINDWALKER, this,
                                        "chi_burst", talent.monk.chi_burst_buff );
 
-  // buff.channeling_soothing_mist = make_buff( this, "channeling_soothing_mist", passives.soothing_mist_heal )
-  //                                     ->set_trigger_spell( talent.monk.soothing_mist );
-
   buff.chi_torpedo = make_buff_fallback( talent.monk.chi_torpedo->ok(), this, "chi_torpedo", find_spell( 119085 ) )
                          ->set_trigger_spell( talent.monk.chi_torpedo )
                          ->set_default_value_from_effect( 1 );
@@ -7737,13 +7477,6 @@ void monk_t::create_buffs()
   buff.ancient_concordance = make_buff_fallback( talent.mistweaver.ancient_concordance->ok(), this,
                                                  "ancient_concordance", talent.mistweaver.ancient_concordance_buff );
 
-  buff.invoke_chiji = make_buff( this, "invoke_chiji", find_spell( 343818 ) )
-                          ->set_trigger_spell( talent.mistweaver.invoke_chi_ji_the_red_crane );
-
-  buff.invoke_chiji_evm = make_buff( this, "invoke_chiji_evm", find_spell( 343820 ) )
-                              ->set_trigger_spell( talent.mistweaver.invoke_chi_ji_the_red_crane )
-                              ->set_default_value_from_effect( 1 );
-
   buff.jadefire_stomp_reset =
       make_buff_fallback( talent.mistweaver.jadefire_stomp->ok(), this, "jadefire_stomp_reset", find_spell( 388193 ) )
           ->set_trigger_spell( shared.jadefire_stomp );
@@ -7752,19 +7485,6 @@ void monk_t::create_buffs()
   buff.life_cocoon->set_absorb_source( get_stats( "life_cocoon" ) )
       ->set_trigger_spell( talent.mistweaver.life_cocoon )
       ->set_cooldown( timespan_t::zero() );
-
-  buff.mana_tea = make_buff( this, "mana_tea", talent.mistweaver.mana_tea )->set_default_value_from_effect( 1 );
-
-  buff.lifecycles_enveloping_mist = make_buff( this, "lifecycles_enveloping_mist", find_spell( 197919 ) )
-                                        ->set_trigger_spell( talent.mistweaver.lifecycles )
-                                        ->set_default_value_from_effect( 1 );
-
-  buff.lifecycles_vivify = make_buff( this, "lifecycles_vivify", find_spell( 197916 ) )
-                               ->set_trigger_spell( talent.mistweaver.lifecycles )
-                               ->set_default_value_from_effect( 1 );
-
-  buff.refreshing_jade_wind = make_buff( this, "refreshing_jade_wind", talent.mistweaver.refreshing_jade_wind )
-                                  ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   const auto make_secret_infusion_buff = [ this ]( std::string_view name, const spell_data_t *spell_data ) {
     return make_buff_fallback( talent.mistweaver.secret_infusion->ok(), this, name, spell_data )
@@ -9425,18 +9145,6 @@ struct monk_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    /*
-          hotfix::register_effect( "Monk", "2023-11-14", "Manually apply BrM-T31-2p Buff", 1098484)
-            .field( "base_value" )
-            .operation( hotfix::HOTFIX_SET )
-            .modifier( 40 )
-            .verification_value( 20 );
-          hotfix::register_effect( "Monk", "2023-11-14", "Manually apply BrM-T31-4p Buff", 1098485)
-            .field( "base_value" )
-            .operation( hotfix::HOTFIX_SET )
-            .modifier( 15 )
-            .verification_value( 10 );
-    */
   }
 
   void init( player_t *p ) const override
