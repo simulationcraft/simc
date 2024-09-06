@@ -18,7 +18,7 @@ legs=warsculptors_cuisses,id=211983,ilevel=639,enchant=defenders_armor_kit_3
 feet=shattershell_greaves,id=212443,ilevel=639,enchant=defenders_march_3
 finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,ilevel=639,gem_id=213482/213482,enchant=radiant_critical_strike_3
 finger2=band_of_the_ancient_dredger,id=159461,bonus_id=10879,ilevel=639,gem_id=213458/213479,enchant=radiant_critical_strike_3
-trinket1=mad_queens_mandate,id=212454,ilevel=639
+trinket1=treacherous_transmitter,id=221023,ilevel=639
 trinket2=arakara_sacbrood,id=219314,ilevel=639
 main_hand=charged_claymore,id=222447,bonus_id=10222/11300/8960,ilevel=636,enchant=authority_of_the_depths_3,crafted_stats=32/36
 
@@ -45,7 +45,7 @@ feet=boots_of_the_black_bulwark,id=225590,ilevel=639,enchant=defenders_march_3
 finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,ilevel=639,gem_id=213494/213494,enchant=radiant_mastery_3
 finger2=writhing_ringworm,id=225576,bonus_id=10879,ilevel=639,gem_id=213494/213494,enchant=radiant_mastery_3
 trinket1=overclocked_geararang_launcher,id=219301,ilevel=639
-trinket2=mad_queens_mandate,id=212454,ilevel=639
+trinket2=arakara_sacbrood,id=219314,ilevel=639
 main_hand=wild_hammer,id=133298,ilevel=639,enchant=authority_of_the_depths_3
 off_hand=charged_claymore,id=222447,bonus_id=10222/11300/8960,ilevel=636,enchant=authority_of_the_depths_3,crafted_stats=49/40
 
