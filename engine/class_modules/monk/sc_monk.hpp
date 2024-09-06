@@ -158,7 +158,6 @@ struct monk_heal_t : public monk_action_t<heal_t>
 {
   using base_t = monk_action_t<heal_t>;
   monk_heal_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
-  double action_multiplier() const override;
 };
 
 struct monk_absorb_t : public monk_action_t<absorb_t>
