@@ -223,7 +223,7 @@ jobs:
             evoker_devastation,
             hunter_beast_mastery, hunter_marksmanship, hunter_survival,
             mage_arcane, mage_fire, mage_frost,
-            monk_brewmaster, monk_windwalker,
+            monk_brewmaster, monk_windwalker, monk_mistweaver,
             paladin_protection,
             priest_shadow,
             rogue_assassination, rogue_outlaw, rogue_subtlety,
@@ -242,7 +242,7 @@ jobs:
 
     env:
       UBSAN_OPTIONS: print_stacktrace=1
-      SIMC_ARGS: output=/dev/null threads=2 iterations=10 cleanup_threads=1
+      SIMC_ARGS: output=/dev/null threads=2 iterations=10 cleanup_threads=1 allow_experimental_specializations=1
       PLAYER_ARGS: load_default_gear=1
 
     steps:
