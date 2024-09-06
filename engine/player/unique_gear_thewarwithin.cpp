@@ -620,11 +620,11 @@ void binding_of_binding( special_effect_t& effect )
   struct binding_of_binding_cb_t : public dbc_proc_callback_t
    {
      target_specific_t<buff_t> buffs;
-     double binding_chance_if_only_dps;
+     double binding_of_binding_ally_skip_chance;
      binding_of_binding_cb_t( const special_effect_t& e )
        : dbc_proc_callback_t( e.player, e ),
          buffs{ false },
-         binding_chance_if_only_dps( 0.8 )
+         binding_of_binding_ally_skip_chance( effect.player->thewarwithin_opts.binding_of_binding_ally_skip_chance )
      {
        get_buff( effect.player );
      }
@@ -684,8 +684,9 @@ void binding_of_binding( special_effect_t& effect )
              if ( p == effect.player || p->is_pet() )
                continue;
 
-             if ( rng().roll( binding_chance_if_only_dps ) )
+             if ( rng().roll( binding_of_binding_ally_skip_chance ) )
                get_buff( p )->trigger();
+
              break;
            }
          }

@@ -12718,6 +12718,7 @@ void player_t::create_options()
   add_option( opt_float( "thewarwithin.embrace_of_the_cinderbee_miss_chance", thewarwithin_opts.embrace_of_the_cinderbee_miss_chance, 0, 1 ) );
   add_option( opt_int( "thewarwithin.nerubian_pheromone_secreter_pheromones", thewarwithin_opts.nerubian_pheromone_secreter_pheromones, 0, 3 ) );
   add_option( opt_int( "thewarwithin.binding_of_binding_on_you", thewarwithin_opts.binding_of_binding_on_you, 0, 29 ) );
+  add_option( opt_float( "thewarwithin.binding_of_binding_ally_skip_chance", thewarwithin_opts.binding_of_binding_ally_skip_chance, 0, 1 ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

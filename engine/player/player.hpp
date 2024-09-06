@@ -859,6 +859,7 @@ struct player_t : public actor_t
     int nerubian_pheromone_secreter_pheromones = 1;
     // Allied Binding of Binding on you
     int binding_of_binding_on_you = 0;
+    double binding_of_binding_ally_skip_chance = 0.8;
   } thewarwithin_opts;
 
 private:
