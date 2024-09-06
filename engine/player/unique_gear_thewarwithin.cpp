@@ -3181,7 +3181,8 @@ void twin_fang_instruments( special_effect_t& effect )
   effect.execute_action = create_proc_action<twin_fang_instruments_t>( "twin_fang_instruments", effect, data );
 }
 
-// 463610 equip
+// 463610 trinket equip
+// 463232 embellishment equip
 //  e1: trigger cycle
 //  e2: buff coeff
 // 455535 cycle
@@ -3191,7 +3192,7 @@ void twin_fang_instruments( special_effect_t& effect )
 // TODO: confirm buff value once scaling is fixed
 void darkmoon_deck_symbiosis( special_effect_t& effect )
 {
-  bool is_embellishment = effect.item->dbc_inventory_type() != INVTYPE_TRINKET;
+  bool is_embellishment = effect.driver()->id() == 463232;
 
   struct symbiosis_buff_t : public stat_buff_t
   {
@@ -3200,7 +3201,7 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
     timespan_t period;
     double self_damage_pct;
 
-    symbiosis_buff_t( const special_effect_t& e, bool /* embellish */ )
+    symbiosis_buff_t( const special_effect_t& e )
       : stat_buff_t( e.player, "symbiosis", e.player->find_spell( 455536 ) ),
         period( e.player->find_spell( 455535 )->effectN( 1 ).period() )
     {
@@ -3239,7 +3240,7 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
 
   if ( !buff )
   {
-    buff      = make_buff<symbiosis_buff_t>( effect, is_embellishment );
+    buff      = make_buff<symbiosis_buff_t>( effect );
     symbiosis = debug_cast<symbiosis_buff_t*>( buff );
     effect.player->register_on_combat_state_callback( [ symbiosis ]( player_t*, bool c ) {
       if ( c )
@@ -3253,14 +3254,10 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
     symbiosis = debug_cast<symbiosis_buff_t*>( buff );
   }
 
-  double value = 0;
+  double value = effect.driver()->effectN( 2 ).average( effect );
   if ( is_embellishment )
-    value = effect.player->find_spell( 463232 )->effectN( 2 ).average( effect ) * writhing_mul( effect.player );
-  else
-    value = effect.driver()->effectN( 2 ).average( effect );
+    value *= writhing_mul( effect.player );
 
-  // TODO: confirm buff value once TWW goes live. currently has -9 scaling with no ilevel scaling.
-  // Assuming here since the embellishment and trinket use the same driver and buff that the effects are just added.
   symbiosis->add_stat_from_effect_type( A_MOD_RATING, value );
 }
 
@@ -4780,7 +4777,7 @@ void register_special_effects()
   register_special_effect( 443337, items::charged_stormrook_plume );
   register_special_effect( 443556, items::twin_fang_instruments );
   register_special_effect( 450044, DISABLED_EFFECT );  // twin fang instruments
-  register_special_effect( 463610, items::darkmoon_deck_symbiosis );
+  register_special_effect( { 463610, 463232 }, items::darkmoon_deck_symbiosis );
   register_special_effect( 455482, items::imperfect_ascendancy_serum );
   register_special_effect( 454857, items::darkmoon_deck_vivacity );
   register_special_effect( 432421, items::algari_alchemist_stone );
