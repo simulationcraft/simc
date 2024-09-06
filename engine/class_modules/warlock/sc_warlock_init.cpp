@@ -1128,7 +1128,8 @@ namespace warlock
     add_rng_option( rng_settings.bleakheart_tactics );
     add_rng_option( rng_settings.seeds_of_their_demise );
     add_rng_option( rng_settings.mark_of_perotharn );
-    add_rng_option( rng_settings.succulent_soul );
+    add_rng_option( rng_settings.succulent_soul_aff );
+    add_rng_option( rng_settings.succulent_soul_demo );
     add_rng_option( rng_settings.feast_of_souls );
     add_rng_option( rng_settings.umbral_lattice );
     add_rng_option( rng_settings.empowered_legion_strike );
