@@ -9751,6 +9751,18 @@ struct tempest_t : public shaman_spell_t
       p()->action.feral_spirit_rt->set_target( execute_state->target );
       p()->action.feral_spirit_rt->execute();
     }
+
+    if ( p()->talent.thorims_invocation.ok() && exec_type == spell_variant::NORMAL )
+    {
+      if ( execute_state->n_targets == 1 )
+      {
+        p()->action.ti_trigger = p()->action.lightning_bolt_ti;
+      }
+      else if ( execute_state->n_targets > 1 )
+      {
+        p()->action.ti_trigger = p()->action.chain_lightning_ti;
+      }
+    }
   }
 
   void impact( action_state_t* state ) override
