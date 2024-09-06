@@ -7466,7 +7466,7 @@ void monk_t::create_buffs()
   const auto make_secret_infusion_buff = [ this ]( std::string_view name, const spell_data_t *spell_data ) {
     return make_buff_fallback( talent.mistweaver.secret_infusion->ok(), this, name, spell_data )
         ->set_trigger_spell( talent.mistweaver.secret_infusion )
-        ->set_default_value( talent.mistweaver.secret_infusion->effectN( 1 ).percent(), 1 );
+        ->set_default_value( talent.mistweaver.secret_infusion->effectN( 1 ).percent() );
   };
 
   buff.secret_infusion_haste =
