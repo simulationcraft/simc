@@ -3202,7 +3202,7 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
 
     symbiosis_buff_t( const special_effect_t& e, bool /* embellish */ )
       : stat_buff_t( e.player, "symbiosis", e.player->find_spell( 455536 ) ),
-        period( e.trigger()->effectN( 1 ).trigger()->effectN( 1 ).period() )
+        period( e.player->find_spell( 455535 )->effectN( 1 ).period() )
     {
       self_damage = create_proc_action<generic_proc_t>( "symbiosis_self", e, 455537 );
 
