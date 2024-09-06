@@ -631,7 +631,8 @@ std::string warlock_t::create_profile( save_e stype )
     profile_str += append_rng_option( rng_settings.bleakheart_tactics );
     profile_str += append_rng_option( rng_settings.seeds_of_their_demise );
     profile_str += append_rng_option( rng_settings.mark_of_perotharn );
-    profile_str += append_rng_option( rng_settings.succulent_soul );
+    profile_str += append_rng_option( rng_settings.succulent_soul_aff );
+    profile_str += append_rng_option( rng_settings.succulent_soul_demo );
     profile_str += append_rng_option( rng_settings.feast_of_souls );
     profile_str += append_rng_option( rng_settings.umbral_lattice );
     profile_str += append_rng_option( rng_settings.empowered_legion_strike );
@@ -664,7 +665,8 @@ void warlock_t::copy_from( player_t* source )
   rng_settings.bleakheart_tactics = p->rng_settings.bleakheart_tactics;
   rng_settings.seeds_of_their_demise = p->rng_settings.seeds_of_their_demise;
   rng_settings.mark_of_perotharn = p->rng_settings.mark_of_perotharn;
-  rng_settings.succulent_soul = p->rng_settings.succulent_soul;
+  rng_settings.succulent_soul_aff = p->rng_settings.succulent_soul_aff;
+  rng_settings.succulent_soul_demo = p->rng_settings.succulent_soul_demo;
   rng_settings.feast_of_souls = p->rng_settings.feast_of_souls;
   rng_settings.umbral_lattice = p->rng_settings.umbral_lattice;
   rng_settings.empowered_legion_strike = p->rng_settings.empowered_legion_strike;
@@ -936,7 +938,15 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
   {
     for ( int i = 0; i < as<int>( actual_amount ); i++ )
     {
-      if ( rng().roll( rng_settings.succulent_soul.setting_value ) )
+      double chance = 0.0;
+
+      if ( specialization() == WARLOCK_AFFLICTION )
+        chance = rng_settings.succulent_soul_aff.setting_value;
+
+      if ( specialization() == WARLOCK_DEMONOLOGY )
+        chance = rng_settings.succulent_soul_demo.setting_value;
+
+      if ( chance )
       {
         buffs.succulent_soul->trigger();
         procs.succulent_soul->occur();

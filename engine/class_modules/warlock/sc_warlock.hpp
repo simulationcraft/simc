@@ -784,7 +784,8 @@ public:
     rng_setting_t mark_of_perotharn = { 0.15, 0.15, "mark_of_perotharn" };
 
     // Soul Harvester
-    rng_setting_t succulent_soul = { 0.20, 0.20, "succulent_soul" };
+    rng_setting_t succulent_soul_aff = { 0.20, 0.20, "succulent_soul_aff" };
+    rng_setting_t succulent_soul_demo = { 0.15, 0.15, "succulent_soul_demo" };
     rng_setting_t feast_of_souls = { 0.125, 0.125, "feast_of_souls" };
   } rng_settings;
 
