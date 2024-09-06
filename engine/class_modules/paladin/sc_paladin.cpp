@@ -3151,8 +3151,15 @@ void paladin_t::apply_avatar_dawnlights()
   if ( num_dawnlights < have_total )
     have_total = num_dawnlights;
 
-  for ( auto i = 0u; i < num_dawnlights; i++ )
-    active.dawnlight->execute_on_target( tl_candidates[ i % have_total ] );
+  for ( auto i = 0u; i < have_total; i++ )
+  {
+    active.dawnlight->execute_on_target( tl_candidates[ i ] );
+  }
+
+  if ( bugs && have_total > 0 && talents.radiant_glory->ok() )
+  {
+    active.dawnlight->execute_on_target( tl_candidates[ 0 ] );
+  }
 }
 
 struct suns_avatar_dmg_t : public paladin_spell_t
