@@ -4719,8 +4719,7 @@ struct rip_t final : public trigger_thriving_growth_t<1, trigger_waning_twilight
     {
       name_str_reporting = "tear";
 
-      residual_mul = p->talent.rip_and_tear->effectN( 1 ).percent() *
-                     find_effect( this, A_PERIODIC_DAMAGE ).period() / dot_duration;
+      residual_mul = p->talent.rip_and_tear->effectN( 1 ).percent() * base_tick_time / dot_duration;
     }
   };
 
