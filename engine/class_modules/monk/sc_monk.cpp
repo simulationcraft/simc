@@ -689,34 +689,6 @@ monk_heal_t::monk_heal_t( monk_t *player, std::string_view name, const spell_dat
   ap_type = attack_power_type::WEAPON_MAINHAND;
 }
 
-double monk_heal_t::action_multiplier() const
-{
-  double am = base_t::action_multiplier();
-
-  player_t *t = ( execute_state ) ? execute_state->target : target;
-
-  switch ( p()->specialization() )
-  {
-    case MONK_MISTWEAVER:
-
-      break;
-
-    case MONK_WINDWALKER:
-
-      break;
-
-    case MONK_BREWMASTER:
-
-      break;
-
-    default:
-      assert( 0 );
-      break;
-  }
-
-  return am;
-}
-
 monk_absorb_t::monk_absorb_t( monk_t *player, std::string_view name, const spell_data_t *spell_data )
   : monk_action_t<absorb_t>( name, player, spell_data )
 {
@@ -3736,6 +3708,28 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
 };
 
 // ==========================================================================
+// Mana Tea
+// ==========================================================================
+// Manatee
+//                   _.---.._
+//     _        _.-'         ''-.
+//   .'  '-,_.-'                 '''.
+//  (       _                     o  :
+//   '._ .-'  '-._         \  \-  ---]
+//                 '-.___.-')  )..-'
+//                          (_/lame
+
+struct mana_tea_t : public monk_spell_t
+{
+  mana_tea_t( monk_t *p, util::string_view options_str ) : monk_spell_t( p, "mana_tea", p->talent.mistweaver.mana_tea )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+  }
+};
+
+// ==========================================================================
 // Thunder Focus Tea
 // ==========================================================================
 
@@ -4565,11 +4559,6 @@ struct enveloping_mist_t : public monk_heal_t
     parse_options( options_str );
 
     may_miss = false;
-    target   = p;
-
-    dot_duration = p->talent.mistweaver.enveloping_mist->duration();
-    if ( p->talent.mistweaver.mist_wrap->ok() )
-      dot_duration += p->talent.mistweaver.mist_wrap->effectN( 1 ).time_value();
   }
 
   double execute_time_pct_multiplier() const override
@@ -4605,16 +4594,6 @@ struct renewing_mist_t : public monk_heal_t
   {
     parse_options( options_str );
     may_crit = may_miss = false;
-  }
-
-  void update_ready( timespan_t ) override
-  {
-    timespan_t cd = cooldown->duration;
-
-    if ( p()->buff.thunder_focus_tea->check() )
-      cd *= 1 + p()->talent.mistweaver.thunder_focus_tea->effectN( 1 ).percent();
-
-    monk_heal_t::update_ready( cd );
   }
 
   void execute() override
@@ -9145,6 +9124,18 @@ struct monk_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    /*
+          hotfix::register_effect( "Monk", "2023-11-14", "Manually apply BrM-T31-2p Buff", 1098484)
+            .field( "base_value" )
+            .operation( hotfix::HOTFIX_SET )
+            .modifier( 40 )
+            .verification_value( 20 );
+          hotfix::register_effect( "Monk", "2023-11-14", "Manually apply BrM-T31-4p Buff", 1098485)
+            .field( "base_value" )
+            .operation( hotfix::HOTFIX_SET )
+            .modifier( 15 )
+            .verification_value( 10 );
+    */
   }
 
   void init( player_t *p ) const override
