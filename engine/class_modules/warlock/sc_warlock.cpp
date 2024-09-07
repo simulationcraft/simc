@@ -946,7 +946,7 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
       if ( specialization() == WARLOCK_DEMONOLOGY )
         chance = rng_settings.succulent_soul_demo.setting_value;
 
-      if ( chance )
+      if ( rng().roll( chance ) )
       {
         buffs.succulent_soul->trigger();
         procs.succulent_soul->occur();
