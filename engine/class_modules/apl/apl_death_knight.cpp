@@ -256,7 +256,7 @@ void frost( player_t* p )
   aoe->add_action( "horn_of_winter,if=rune<2&runic_power.deficit>25&(!talent.breath_of_sindragosa|variable.true_breath_cooldown>cooldown.horn_of_winter.duration-15)" );
   aoe->add_action( "arcane_torrent,if=runic_power.deficit>25" );
 
-  breath->add_action( "howling_blast,if=variable.rime_buffs&runic_power>(variable.breath_rime_rp_threshold-(talent.rage_of_the_frozen_champion*(dbc.effect.842306.base_value%10)))", "Breath Active Rotation" );
+  breath->add_action( "howling_blast,if=variable.rime_buffs&runic_power>(variable.breath_rime_rp_threshold-(talent.rage_of_the_frozen_champion*(dbc.effect.842306.base_value%10)))|!dot.frost_fever.ticking", "Breath Active Rotation" );
   breath->add_action( "horn_of_winter,if=rune<2&runic_power.deficit>30&(!buff.empower_rune_weapon.up|variable.breath_dying)" );
   breath->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice+((hero_tree.deathbringer&debuff.reapers_mark_debuff.down)*5),if=buff.killing_machine.react|runic_power.deficit>20" );
   breath->add_action( "remorseless_winter,if=variable.breath_dying" );
