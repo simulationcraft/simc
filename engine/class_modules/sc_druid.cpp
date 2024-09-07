@@ -13921,7 +13921,6 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.groves_inspiration );
   action.apply_affecting_aura( talent.hunt_beneath_the_open_skies );
   action.apply_affecting_aura( talent.lunar_calling );  // TODO: confirm arcane thrash applies to balance, and starfire damage to guardian
-  action.apply_affecting_aura( talent.lunar_insight );
   action.apply_affecting_aura( talent.potent_enchantments );
   action.apply_affecting_aura( talent.resilient_flourishing );
   action.apply_affecting_aura( talent.stellar_command );
@@ -14073,21 +14072,18 @@ void druid_t::parse_action_effects( action_t* action )
                      talent.berserk_unchecked_aggression );
   _a->parse_effects( buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), CONSUME_BUFF );
 
-  if ( talent.lunar_calling.ok() )
-    _a->parse_effects( sets->set( DRUID_GUARDIAN, TWW1, B4 ), effect_mask_t( true ).disable( 3, 4 ) );
-  else
-    _a->parse_effects( sets->set( DRUID_GUARDIAN, TWW1, B4 ), effect_mask_t( true ).disable( 5, 6 ) );
-
-  _a->parse_effects( buff.guardians_tenacity );
+  // dot damage is buffed via script so copy da_mult entries to ta_mult
+  // thrash damage buff always applies
+  _a->parse_effects( spec.elunes_favored, &_a->ta_multiplier_effects, effect_mask_t( false ).enable( 1 ) );
+  _a->parse_effects( spec.elunes_favored, effect_mask_t( false ).enable( 3, 4 ) );
 
   // dot damage is buffed via script so copy da_mult entries to ta_mult
-  _a->parse_effects( spec.elunes_favored, &_a->ta_multiplier_effects, effect_mask_t( false ).enable( 1 ) );
-  _a->parse_effects( spec.fury_of_nature, &_a->ta_multiplier_effects, effect_mask_t( false ).enable( 1 ) );
-  if ( talent.lunar_calling.ok() )
-  {
-    _a->parse_effects( spec.elunes_favored, effect_mask_t( false ).enable( 3, 4 ) );
-    _a->parse_effects( spec.fury_of_nature, effect_mask_t( false ).enable( 2, 3 ) );
-  }
+  // thrash damage buff always applies
+  // value is set on talent via script
+  _a->parse_effects( spec.fury_of_nature, &_a->ta_multiplier_effects, effect_mask_t( false ).enable( 1 ),
+                     talent.fury_of_nature->effectN( 1 ).percent() );
+  _a->parse_effects( spec.fury_of_nature, effect_mask_t( false ).enable( 2, 3 ),
+                     talent.fury_of_nature->effectN( 1 ).percent() );
 
   _a->parse_effects( buff.gory_fur, CONSUME_BUFF );
   _a->parse_effects( buff.rage_of_the_sleeper );
@@ -14095,6 +14091,10 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( buff.tooth_and_claw );
   _a->parse_effects( buff.vicious_cycle_mangle, USE_DEFAULT, CONSUME_BUFF );
   _a->parse_effects( buff.vicious_cycle_maul, USE_DEFAULT, CONSUME_BUFF );
+
+  _a->parse_effects( buff.guardians_tenacity );
+  // effects#5 and #6 are ignored regardless of lunar calling
+  _a->parse_effects( sets->set( DRUID_GUARDIAN, TWW1, B4 ), effect_mask_t( true ).disable( 5, 6 ) );
 
   // Restoration
   _a->parse_effects( buff.abundance );
@@ -14107,6 +14107,7 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( buff.blooming_infusion_heal, CONSUME_BUFF );
   _a->parse_effects( buff.feline_potential, CONSUME_BUFF );
   _a->parse_effects( buff.harmony_of_the_grove );
+  _a->parse_effects( talent.lunar_insight, spec_spell );  // bear aura affects lunar insight
   _a->parse_effects( buff.root_network );
   _a->parse_effects( buff.strategic_infusion );
   _a->parse_effects( buff.ursine_potential, CONSUME_BUFF );
