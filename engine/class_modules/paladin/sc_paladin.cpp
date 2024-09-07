@@ -1012,8 +1012,6 @@ struct shield_of_vengeance_t : public paladin_absorb_t
   {
     double shield_amount = p()->resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
 
-    if ( p()->talents.aegis_of_protection->ok() )
-      shield_amount *= 1.0 + p()->talents.aegis_of_protection->effectN( 2 ).percent();
     shield_amount *= shield_modifier;
     shield_amount *= 1.0 + p()->composite_heal_versatility();
 
