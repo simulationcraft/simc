@@ -937,7 +937,7 @@ namespace helpers
     virtual void execute() override;
   };
 
-  bool crescendo_check( warlock_t* p );
+  bool crescendo_check( warlock_t* p, player_t* tar );
   void nightfall_updater( warlock_t* p, dot_t* d );
 
   void trigger_blackened_soul( warlock_t* p, bool malevolence );
