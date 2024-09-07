@@ -4453,6 +4453,11 @@ using namespace helpers;
 
   void helpers::trigger_blackened_soul( warlock_t* p, bool malevolence )
   {
+    if ( !malevolence && p->cooldowns.blackened_soul->down() )
+      return;
+
+    bool stack_gained = false;
+
     for ( const auto target : p->sim->target_non_sleeping_list )
     {
       warlock_td_t* tdata = p->get_target_data( target );
@@ -4463,18 +4468,18 @@ using namespace helpers;
         continue;
 
       tdata->dots_wither->increment( malevolence ? as<int>( p->hero.malevolence->effectN( 1 ).base_value() ) : 1 );
+      stack_gained = true;
 
       if ( p->buffs.malevolence->check() && !malevolence )
         tdata->dots_wither->increment( as<int>( p->hero.malevolence->effectN( 2 ).base_value() ) );
 
-      // TOCHECK: Chance for this effect is not in spell data!
-      if ( p->hero.bleakheart_tactics.ok() && p->rng().roll( p->rng_settings.bleakheart_tactics.setting_value ) )
+      if ( p->hero.bleakheart_tactics.ok() && !malevolence && p->rng().roll( p->rng_settings.bleakheart_tactics.setting_value ) )
       {
         tdata->dots_wither->increment( 1 );
         p->procs.bleakheart_tactics->occur();
       }
 
-      bool collapse = p->buffs.malevolence->check();
+      bool collapse = false; // 2024-09-06 Malevolence no longer initiates collapse automatically
       collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && target->health_percentage() <= p->hero.seeds_of_their_demise->effectN( 2 ).base_value() ) ;
       collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && tdata->dots_wither->current_stack() >= as<int>( p->hero.seeds_of_their_demise->effectN( 1 ).base_value() ) );
 
@@ -4484,7 +4489,6 @@ using namespace helpers;
       }
       else if ( p->rng().roll( p->rng_settings.blackened_soul.setting_value ) )
       {
-        // TOCHECK: Chance for this effect is not in spell data!
         tdata->debuffs_blackened_soul->trigger();
         p->procs.blackened_soul->occur();
       }
@@ -4492,6 +4496,9 @@ using namespace helpers;
       if ( malevolence )
         p->proc_actions.malevolence->execute_on_target( target );
     }
+
+    if ( stack_gained )
+      p->cooldowns.blackened_soul->start();
   }
 
   // Event for spawning Wild Imps for Demonology
