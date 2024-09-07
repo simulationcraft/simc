@@ -1,1 +1,1 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.2.56461 Live (hotfix 2024-09-07/56461, git build data-update-live-56461 8aa1979)
+SimulationCraft 1100-02 for World of Warcraft 11.0.2.56461 Live (hotfix 2024-09-07/56461)
