@@ -2260,7 +2260,7 @@ namespace diabolist
       : warlock_pet_spell_t( "Chaos Salvo", p, p->o()->hero.chaos_salvo )
     {
       channeled = true;
-
+      // TOCHECK: Does Mother of Chaos have any cap with haste scaling?
       tick_action = new chaos_salvo_tick_t( p ); }
 
     bool ready() override
