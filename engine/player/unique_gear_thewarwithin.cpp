@@ -392,6 +392,18 @@ void oil_of_deep_toxins( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void bubbling_wax( special_effect_t& effect )
+{
+  auto spill = effect.trigger();
+
+  auto spill_proc = create_proc_action<generic_aoe_proc_t>( "bubbling_wax_spill", effect, "bubbling_wax_spill", spill, true );
+  spill_proc->base_dd_min = spill_proc->base_dd_max = effect.driver()->effectN( 1 ).average( effect.player );
+
+  effect.execute_action = spill_proc;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 }  // namespace consumables
 
 namespace enchants
@@ -4700,6 +4712,7 @@ void register_special_effects()
 
   // Oils
   register_special_effect( { 451904, 451909, 451912 }, consumables::oil_of_deep_toxins );
+  register_special_effect( 448000, consumables::bubbling_wax );
 
   // Enchants & gems
   register_special_effect( { 448710, 448714, 448716 }, enchants::authority_of_radiant_power );
