@@ -5306,22 +5306,39 @@ void action_t::apply_affecting_aura( const spell_data_t* spell, const spell_data
     {
       for ( const auto& m_eff : modifier->effects() )
       {
-        if ( m_eff.type() == E_APPLY_AURA &&
-             ( m_eff.subtype() == A_ADD_FLAT_MODIFIER || m_eff.subtype() == A_ADD_PCT_MODIFIER ) )
-        {
-          switch ( m_eff.property_type() )
-          {
-            case P_EFFECT_1: if ( effect.index() == 0 ) mod = &m_eff; break;
-            case P_EFFECT_2: if ( effect.index() == 1 ) mod = &m_eff; break;
-            case P_EFFECT_3: if ( effect.index() == 2 ) mod = &m_eff; break;
-            case P_EFFECT_4: if ( effect.index() == 3 ) mod = &m_eff; break;
-            case P_EFFECT_5: if ( effect.index() == 4 ) mod = &m_eff; break;
-            default:         break;
-          }
+        if ( m_eff.type() != E_APPLY_AURA )
+          continue;
 
-          if ( mod )
-            break;
+        switch ( m_eff.subtype() )
+        {
+          case A_ADD_FLAT_MODIFIER:
+          case A_ADD_PCT_MODIFIER:
+            if ( spell->affected_by( m_eff ) )
+              break;
+            else
+              continue;
+          case A_ADD_FLAT_LABEL_MODIFIER:
+          case A_ADD_PCT_LABEL_MODIFIER:
+            if ( spell->affected_by_label( m_eff ) )
+              break;
+            else
+              continue;
+          default:
+            continue;
         }
+
+        switch ( m_eff.property_type() )
+        {
+          case P_EFFECT_1: if ( effect.index() == 0 ) break;
+          case P_EFFECT_2: if ( effect.index() == 1 ) break;
+          case P_EFFECT_3: if ( effect.index() == 2 ) break;
+          case P_EFFECT_4: if ( effect.index() == 3 ) break;
+          case P_EFFECT_5: if ( effect.index() == 4 ) break;
+          default:         continue;
+        }
+
+        mod = &m_eff;
+        break;
       }
     }
 
@@ -5660,9 +5677,9 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
   auto m_effect = modified_effect_value_t( effect );
   if ( modifier && modifier->ok() )
   {
-    if ( modifier->subtype() == A_ADD_FLAT_MODIFIER )
+    if ( modifier->subtype() == A_ADD_FLAT_MODIFIER || modifier->subtype() == A_ADD_FLAT_LABEL_MODIFIER )
       m_effect.value += modifier->base_value();
-    else if ( modifier->subtype() == A_ADD_PCT_MODIFIER )
+    else if ( modifier->subtype() == A_ADD_PCT_MODIFIER || modifier->subtype() == A_ADD_PCT_LABEL_MODIFIER)
       m_effect.value *= 1 + modifier->percent();
   }
 
