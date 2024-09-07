@@ -276,6 +276,7 @@ public:
     buff_t* fel_barrage;
     buff_t* furious_gaze;
     buff_t* inertia;
+    buff_t* inertia_trigger;  // hidden buff that determines if we can trigger inertia
     buff_t* initiative;
     buff_t* inner_demon;
     buff_t* momentum;
@@ -5686,8 +5687,9 @@ struct fel_rush_t : public demon_hunter_attack_t
 
     demon_hunter_attack_t::execute();
 
-    if ( p()->buff.unbound_chaos->up() && p()->talent.havoc.inertia->ok() )
+    if ( p()->buff.inertia_trigger->up() && p()->talent.havoc.inertia->ok() )
     {
+      p()->buff.inertia_trigger->expire();
       p()->buff.inertia->trigger();
     }
 
@@ -6601,6 +6603,10 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
       if ( p()->talent.havoc.unbound_chaos->ok() )
       {
         p()->buff.unbound_chaos->trigger();
+        if ( p()->talent.havoc.inertia->ok() )
+        {
+          p()->buff.inertia_trigger->trigger();
+        }
       }
     }
 
@@ -7300,6 +7306,7 @@ void demon_hunter_t::create_buffs()
   buff.inertia->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
     return std::min( b->remains() + d, 10_s );  // Capped to 10 seconds
   } );
+  buff.inertia_trigger = make_buff( this, "inertia_trigger", spell_data_t::nil() )->set_quiet( true );
 
   buff.inner_demon = make_buff( this, "inner_demon", spec.inner_demon_buff );
 
