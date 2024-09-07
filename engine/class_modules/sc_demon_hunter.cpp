@@ -4538,8 +4538,8 @@ struct demonsurge_t : public amn_full_mastery_bug_t<demon_hunter_spell_t>
 
   void execute() override
   {
-    p()->buff.demonsurge->trigger();
     demon_hunter_spell_t::execute();
+    p()->buff.demonsurge->trigger();
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
