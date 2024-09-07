@@ -770,7 +770,7 @@ public:
     rng_setting_t pact_of_the_eredruin = { 0.40, 0.40, "pact_of_the_eredruin" };
     rng_setting_t shadow_invocation = { 0.20, 0.20, "shadow_invocation" };
     rng_setting_t spiteful_reconstitution = { 0.30, 0.30, "spiteful_reconstitution" };
-    rng_setting_t empowered_legion_strike = { 0.05, 0.05, "empowered_legion_strike" };
+    rng_setting_t empowered_legion_strike = { 0.25, 0.25, "empowered_legion_strike" };
 
     // Destruction
     rng_setting_t decimation = { 0.10, 0.10, "decimation" };
