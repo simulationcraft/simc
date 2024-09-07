@@ -15,8 +15,8 @@ hands=,id=212030,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
 waist=,id=212026,bonus_id=1540/10299/1808,gem_id=213494
 legs=,id=212435,bonus_id=1540/10299/10376,enchant=sunset_spellthread_3
 feet=,id=225586,bonus_id=1540/10299/10376,enchant_id=7424
-finger1=,id=225578,bonus_id=6652/10354/10268/1514/10255/10394/10879,enchant=radiant_crit_3,gem_id=213494/213494,ilevel=639
-finger2=,id=221136,bonus_id=3131/10299/10376/8781,enchant=radiant_crit_3,gem_id=213494/213494
+finger1=,id=225578,bonus_id=6652/10354/10268/1514/10255/10394/10879,enchant=radiant_critical_strike_3,gem_id=213494/213494,ilevel=639
+finger2=,id=221136,bonus_id=3131/10299/10376/8781,enchant=radiant_critical_strike_3,gem_id=213494/213494
 trinket1=,id=219314,bonus_id=10273/10390/6652/10383/1632/10255,ilevel=639
 trinket2=,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
 main_hand=,id=212405,bonus_id=1540/10299/10376,enchant=authority_of_the_depths_3
