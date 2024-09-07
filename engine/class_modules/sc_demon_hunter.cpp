@@ -2121,6 +2121,16 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
   }
 };
 
+struct demon_hunter_ranged_attack_t : public demon_hunter_action_t<ranged_attack_t>
+{
+  demon_hunter_ranged_attack_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                                util::string_view o = {} )
+    : base_t( n, p, s, o )
+  {
+    special = true;
+  }
+};
+
 template <demonsurge_ability ABILITY, typename BASE>
 struct demonsurge_trigger_t : public BASE
 {
@@ -5249,9 +5259,7 @@ struct chaos_strike_base_t
 
   chaos_strike_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s,
                        util::string_view options_str = {} )
-    : base_t( n, p, s, options_str ),
-      from_onslaught( false ),
-      tww1_reset_proc_chance( 0.0 )
+    : base_t( n, p, s, options_str ), from_onslaught( false ), tww1_reset_proc_chance( 0.0 )
   {
     if ( p->set_bonuses.tww1_havoc_4pc->ok() )
     {
@@ -6413,12 +6421,55 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
   }
 };
 
-struct preemptive_strike_t : public demon_hunter_attack_t
+struct preemptive_strike_t : public demon_hunter_ranged_attack_t
 {
   preemptive_strike_t( util::string_view name, demon_hunter_t* p )
-    : demon_hunter_attack_t( name, p, p->talent.aldrachi_reaver.preemptive_strike->effectN( 1 ).trigger() )
+    : demon_hunter_ranged_attack_t( name, p, p->talent.aldrachi_reaver.preemptive_strike->effectN( 1 ).trigger() )
   {
     background = dual = true;
+  }
+
+  // 2024-09-06 -- Preemptive Strike is very bugged and is using the following damage conversion process:
+  //               weapon dps -> AP conversion without mastery -> AP coeff -> vers
+  //               it also does not split AoE damage
+  double calculate_direct_amount( action_state_t* state ) const override
+  {
+    if ( !p()->bugs )
+    {
+      return demon_hunter_ranged_attack_t::calculate_direct_amount( state );
+    }
+
+    double mh_wdps            = p()->main_hand_weapon.dps;
+    double ap_conversion      = WEAPON_POWER_COEFFICIENT;
+    double base_direct_amount = mh_wdps * ap_conversion;
+    double ap_coeff           = data().effectN( 1 ).ap_coeff();
+    double mult               = state->composite_da_multiplier();
+    double amount             = base_direct_amount * ap_coeff * mult;
+
+    if ( !sim->average_range )
+      amount = floor( amount + rng().real() );
+
+    if ( amount < 0 )
+    {
+      amount = 0;
+    }
+
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} direct amount for {}: amount={} base={} mult={}", *p(), *this, amount, base_direct_amount,
+                        mult );
+    }
+
+    if ( result_is_miss( state->result ) )
+    {
+      state->result_total = 0.0;
+      return 0.0;
+    }
+    else
+    {
+      state->result_total = amount;
+      return amount;
+    }
   }
 };
 
