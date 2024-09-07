@@ -2859,19 +2859,21 @@ void mereldars_toll( special_effect_t& effect )
 
   auto data = equip->driver();
 
-  // TODO: move to external/passive/custom buff system
-  auto vers = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 450551 ) )
-    ->add_stat_from_effect_type( A_MOD_RATING, data->effectN( 1 ).average( effect ) );
-
   struct mereldars_toll_t : public generic_proc_t
   {
     buff_t* vers;
     int allies;
+    target_specific_t<buff_t> buffs;
+    const spell_data_t* equip_data;
+    const special_effect_t& driver_effect;
 
-    mereldars_toll_t( const special_effect_t& e, const spell_data_t* data, buff_t* b )
+
+    mereldars_toll_t( const special_effect_t& e, const spell_data_t* data )
       : generic_proc_t( e, "mereldars_toll", e.driver() ),
-        vers( b ),
-        allies( as<int>( data->effectN( 3 ).base_value() ) )
+        allies( as<int>( data->effectN( 3 ).base_value() ) ),
+        buffs{ false },
+        equip_data( data ),
+        driver_effect( e )
     {
       target_debuff = e.trigger();
 
@@ -2880,6 +2882,29 @@ void mereldars_toll( special_effect_t& effect )
       // TODO: confirm 950ms delay in damage
       impact_action->travel_delay = e.driver()->effectN( 2 ).misc_value1() * 0.001;
       impact_action->stats = stats;
+
+      // Pre-initialise the players own personal buff.
+      get_buff( e.player );
+    }
+
+    buff_t* get_buff( player_t* buff_player )
+    {
+      if ( buffs[ buff_player ] )
+        return buffs[ buff_player ];
+
+      if ( auto buff = buff_t::find( buff_player, "mereldars_toll", player ) )
+      {
+        buffs[ buff_player ] = buff;
+        return buff;
+      }
+
+      auto vers =
+          make_buff<stat_buff_t>( actor_pair_t{ buff_player, player }, "mereldars_toll", player->find_spell( 450551 ) )
+              ->add_stat_from_effect_type( A_MOD_RATING, equip_data->effectN( 1 ).average( driver_effect ) );
+
+      buffs[ buff_player ] = vers;
+
+      return vers;
     }
 
     buff_t* create_debuff( player_t* t ) override
@@ -2896,8 +2921,9 @@ void mereldars_toll( special_effect_t& effect )
 
       // TODO: determine if attack needs to do damage to proc vers buff
       t->callbacks.register_callback_execute_function(
-        toll->spell_id, [ this, debuff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
-          if ( !vers->check() )
+        toll->spell_id, [ this, debuff ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+          auto vers = get_buff( a->player );
+          if ( vers && !vers->check() )
           {
             debuff->trigger();
             vers->trigger();
@@ -2918,7 +2944,7 @@ void mereldars_toll( special_effect_t& effect )
     }
   };
 
-  effect.execute_action = create_proc_action<mereldars_toll_t>( "mereldars_toll", effect, data, vers );
+  effect.execute_action = create_proc_action<mereldars_toll_t>( "mereldars_toll", effect, data );
 }
 
 // 443527 driver
