@@ -1101,6 +1101,11 @@ namespace warlock
     player_t::init_action_list();
   }
 
+  void warlock_t::add_rng_option( warlock_t::rng_settings_t::rng_setting_t& setting )
+  {
+    add_option( opt_float( "rng_" + setting.option_name, setting.setting_value ) );
+  }
+
   void warlock_t::create_options()
   {
     player_t::create_options();
@@ -1110,23 +1115,24 @@ namespace warlock
     add_option( opt_bool( "disable_felstorm", disable_auto_felstorm ) );
     add_option( opt_bool( "normalize_destruction_mastery", normalize_destruction_mastery ) );
 
-    add_option( opt_float( "rng_cunning_cruelty_sb", rng_settings.cunning_cruelty_sb.setting_value ) );
-    add_option( opt_float( "rng_cunning_cruelty_ds", rng_settings.cunning_cruelty_ds.setting_value ) );
-    add_option( opt_float( "rng_agony", rng_settings.agony.setting_value ) );
-    add_option( opt_float( "rng_nightfall", rng_settings.nightfall.setting_value ) );
-    add_option( opt_float( "rng_pact_of_the_eredruin", rng_settings.pact_of_the_eredruin.setting_value ) );
-    add_option( opt_float( "rng_shadow_invocation", rng_settings.shadow_invocation.setting_value ) );
-    add_option( opt_float( "rng_spiteful_reconstitution", rng_settings.spiteful_reconstitution.setting_value ) );
-    add_option( opt_float( "rng_decimation", rng_settings.decimation.setting_value ) );
-    add_option( opt_float( "rng_dimension_ripper", rng_settings.dimension_ripper.setting_value ) );
-    add_option( opt_float( "rng_blackened_soul", rng_settings.blackened_soul.setting_value ) );
-    add_option( opt_float( "rng_bleakheart_tactics", rng_settings.bleakheart_tactics.setting_value ) );
-    add_option( opt_float( "rng_seeds_of_their_demise", rng_settings.seeds_of_their_demise.setting_value ) );
-    add_option( opt_float( "rng_mark_of_perotharn", rng_settings.mark_of_perotharn.setting_value ) );
-    add_option( opt_float( "rng_succulent_soul", rng_settings.succulent_soul.setting_value ) );
-    add_option( opt_float( "rng_feast_of_souls", rng_settings.feast_of_souls.setting_value ) );
-    add_option( opt_float( "rng_umbral_lattice", rng_settings.umbral_lattice.setting_value ) );
-    add_option( opt_float( "rng_empowered_legion_strike", rng_settings.empowered_legion_strike.setting_value ) );
+    add_rng_option( rng_settings.cunning_cruelty_sb );
+    add_rng_option( rng_settings.cunning_cruelty_ds );
+    add_rng_option( rng_settings.agony );
+    add_rng_option( rng_settings.nightfall );
+    add_rng_option( rng_settings.pact_of_the_eredruin );
+    add_rng_option( rng_settings.shadow_invocation );
+    add_rng_option( rng_settings.spiteful_reconstitution );
+    add_rng_option( rng_settings.decimation );
+    add_rng_option( rng_settings.dimension_ripper );
+    add_rng_option( rng_settings.blackened_soul );
+    add_rng_option( rng_settings.bleakheart_tactics );
+    add_rng_option( rng_settings.seeds_of_their_demise );
+    add_rng_option( rng_settings.mark_of_perotharn );
+    add_rng_option( rng_settings.succulent_soul_aff );
+    add_rng_option( rng_settings.succulent_soul_demo );
+    add_rng_option( rng_settings.feast_of_souls );
+    add_rng_option( rng_settings.umbral_lattice );
+    add_rng_option( rng_settings.empowered_legion_strike );
   }
 
   void warlock_t::combat_begin()

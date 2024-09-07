@@ -178,31 +178,31 @@ actions.trinkets+=/use_item,slot=trinket2,if=buff.dragonrage.up&((variable.trink
 actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)&(variable.next_dragonrage>20|!talent.dragonrage)&!variable.trinket_1_manual
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)&(variable.next_dragonrage>20|!talent.dragonrage)&!variable.trinket_2_manual
 
-head=horns_of_the_destroyer,id=212029,bonus_id=6652/10876/10376/10354/10273/1498/10255,ilevel=639
-neck=amulet_of_earthen_craftsmanship,id=215136,bonus_id=10421/9633/8902/10394/10879/9627/10222/8795/11144,ilevel=636,gem_id=213743/213467,crafted_stats=32/36
+head=horns_of_the_destroyer,id=212029,bonus_id=1540/10299/1808,gem_id=213743
+neck=locket_of_broken_memories,id=212448,bonus_id=1540/10299/10376/8781,gem_id=213494/213494
 shoulders=fumaroles_of_the_destroyer,id=212027,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-back=wings_of_shattered_sorrow,id=225574,bonus_id=6652/10376/10354/10269/1511/10255,ilevel=639,enchant_id=7403
-chest=scales_of_the_destroyer,id=212032,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7364
-wrists=glyphetched_vambraces,id=219342,bonus_id=10421/9633/8902/9627/11144/8790/10222,ilevel=636,enchant_id=7385,crafted_stats=36/49
+back=wings_of_shattered_sorrow,id=225574,bonus_id=6652/10376/10354/10269/1511/10255,ilevel=639
+chest=scales_of_the_destroyer,id=212032,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant=crystalline_radiance_3
+wrists=glyphetched_vambraces,id=219342,bonus_id=10421/9633/8902/11144/10222/1485/1808/11109/8960,gem_id=213494,crafted_stats=32/36
 hands=rippers_of_the_destroyer,id=212030,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-waist=glyphetched_binding,id=219339,bonus_id=10421/9633/8902/9627/11144/11303/8960/8790/10222,ilevel=639,crafted_stats=32/49
-legs=glyphetched_cuisses,id=219340,bonus_id=10421/9633/8902/9627/11144/11303/8960/8791/10222,ilevel=639,enchant_id=7534,crafted_stats=40/32
-feet=glyphetched_stompers,id=219335,bonus_id=10421/9633/8902/9627/11144/8795/10222,ilevel=636,enchant_id=7424,crafted_stats=49/36
-finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10394/10879,ilevel=639,gem_id=213479/213491,enchant_id=7470
-finger2=ring_of_earthen_craftsmanship,id=215135,bonus_id=10421/9633/8902/10395/10879/9627/10222/8790/11144,ilevel=636,gem_id=213455/213503,enchant_id=7470,crafted_stats=49/40
+waist=core_of_the_destroyer,id=212026,bonus_id=1540/10299/1808,gem_id=213494
+legs=liquified_defectors_leggings,id=212435,bonus_id=1540/10299/10376,enchant=sunset_spellthread_3
+feet=rashanans_grotesque_talons,id=225586,bonus_id=1540/10299/10376,enchant_id=7424
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10394/10879,ilevel=639,gem_id=213494/213494,enchant=radiant_critical_strike_3
+finger2=devout_zealots_ring,id=221136,bonus_id=3131/10299/10376/8781,gem_id=213494/213494,enchant=radiant_critical_strike_3
 trinket1=arakara_sacbrood,id=219314,bonus_id=10273/10390/6652/10383/1632/10255,ilevel=639
 trinket2=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
-main_hand=blue_winglords_staff,id=194522,bonus_id=10289/9988,ilevel=639,enchant_id=7463
+main_hand=flawless_phase_blade,id=212405,bonus_id=1540/10299/10376,enchant=authority_of_the_depths_3
+off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960,crafted_stats=32/36
 
 # Gear Summary
-# gear_ilvl=638.20
-# gear_stamina=236458
-# gear_intellect=45439
-# gear_crit_rating=19697
-# gear_haste_rating=8529
-# gear_mastery_rating=5149
-# gear_versatility_rating=5907
-# gear_avoidance_rating=1635
-# gear_armor=37943
+# gear_ilvl=638.63
+# gear_stamina=237584
+# gear_intellect=45357
+# gear_crit_rating=23510
+# gear_haste_rating=9328
+# gear_mastery_rating=5508
+# gear_versatility_rating=2009
+# gear_armor=38017
 # set_bonus=thewarwithin_season_1_2pc=1
 # set_bonus=thewarwithin_season_1_4pc=1

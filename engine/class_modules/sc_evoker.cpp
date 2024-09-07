@@ -3196,7 +3196,10 @@ public:
       if ( t == p() && p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW1, B4 ) )
       {
         p()->buff.tww1_4pc_aug->expire();
-        p()->buff.tww1_4pc_aug->trigger();
+        make_event( sim, p()->buff.tww1_4pc_aug->tick_time(), [ this ] {
+          if ( p()->buff.ebon_might_self_buff->check() )
+            p()->buff.tww1_4pc_aug->trigger();
+        } );
       }
 
       auto time = ebon_time >= timespan_t::zero() ? ebon_time : buff->buff_duration();

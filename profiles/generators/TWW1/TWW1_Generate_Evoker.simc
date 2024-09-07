@@ -5,20 +5,21 @@ role=spell
 spec=devastation
 talents=CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzMzMYmNzgBMwYmpZMzkZbsMmZmxMmZbGwMmZbMzsMmBGYMYBWGjGLDIzAwGA
 
-head=,id=212029,bonus_id=6652/10876/10376/10354/10273/1498/10255,ilevel=639
-neck=,id=215136,bonus_id=10421/9633/8902/10394/10879/9627/10222/8795/11144,gem_id=213743/213467,ilevel=636,crafted_stats=32/36
+head=,id=212029,bonus_id=1540/10299/1808,gem_id=213743
+neck=,id=212448,bonus_id=1540/10299/10376/8781,gem_id=213494/213494
 shoulder=,id=212027,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-back=,id=225574,bonus_id=6652/10376/10354/10269/1511/10255,enchant_id=7403,ilevel=639
-chest=,id=212032,bonus_id=6652/10376/10354/10273/1498/10255,enchant_id=7364,ilevel=639
-wrist=,id=219342,bonus_id=10421/9633/8902/9627/11144/8790/10222,enchant_id=7385,ilevel=636,crafted_stats=36/49
+back=,id=225574,bonus_id=6652/10376/10354/10269/1511/10255,ilevel=639
+chest=,id=212032,bonus_id=6652/10376/10354/10273/1498/10255,enchant=crystalline_radiance_3,ilevel=639
+wrist=,id=219342,bonus_id=10421/9633/8902/11144/10222/1485/1808/11109/8960,gem_id=213494,crafted_stats=32/36
 hands=,id=212030,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-waist=,id=219339,bonus_id=10421/9633/8902/9627/11144/11303/8960/8790/10222,ilevel=639,crafted_stats=32/49
-legs=,id=219340,bonus_id=10421/9633/8902/9627/11144/11303/8960/8791/10222,enchant_id=7534,ilevel=639,crafted_stats=40/32
-feet=,id=219335,bonus_id=10421/9633/8902/9627/11144/8795/10222,enchant_id=7424,ilevel=636,crafted_stats=49/36
-finger1=,id=225578,bonus_id=6652/10354/10268/1514/10255/10394/10879,enchant_id=7470,gem_id=213479/213491,ilevel=639
-finger2=,id=215135,bonus_id=10421/9633/8902/10395/10879/9627/10222/8790/11144,enchant_id=7470,gem_id=213455/213503,ilevel=636,crafted_stats=49/40
+waist=,id=212026,bonus_id=1540/10299/1808,gem_id=213494
+legs=,id=212435,bonus_id=1540/10299/10376,enchant=sunset_spellthread_3
+feet=,id=225586,bonus_id=1540/10299/10376,enchant_id=7424
+finger1=,id=225578,bonus_id=6652/10354/10268/1514/10255/10394/10879,enchant=radiant_critical_strike_3,gem_id=213494/213494,ilevel=639
+finger2=,id=221136,bonus_id=3131/10299/10376/8781,enchant=radiant_critical_strike_3,gem_id=213494/213494
 trinket1=,id=219314,bonus_id=10273/10390/6652/10383/1632/10255,ilevel=639
 trinket2=,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
-main_hand=,id=194522,bonus_id=10289/9988,enchant_id=7463,ilevel=639
+main_hand=,id=212405,bonus_id=1540/10299/10376,enchant=authority_of_the_depths_3
+off_hand=,id=222566,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960,crafted_stats=32/36
 
 save=TWW1_Evoker_Devastation.simc

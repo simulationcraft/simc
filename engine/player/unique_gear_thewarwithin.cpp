@@ -734,7 +734,7 @@ void dawn_dusk_thread_lining( special_effect_t& effect )
                   ->collect_duration( *effect.player->sim )
                   ->collect_uptime( *effect.player->sim );
 
-    buff->player->register_combat_begin( [ buff, up ]( player_t* p ) {
+    buff->player->register_precombat_begin( [ buff, up ]( player_t* p ) {
       buff->trigger();
       up->update( true, p->sim->current_time() );
 
@@ -2859,19 +2859,21 @@ void mereldars_toll( special_effect_t& effect )
 
   auto data = equip->driver();
 
-  // TODO: move to external/passive/custom buff system
-  auto vers = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 450551 ) )
-    ->add_stat_from_effect_type( A_MOD_RATING, data->effectN( 1 ).average( effect ) );
-
   struct mereldars_toll_t : public generic_proc_t
   {
     buff_t* vers;
     int allies;
+    target_specific_t<buff_t> buffs;
+    const spell_data_t* equip_data;
+    const special_effect_t& driver_effect;
 
-    mereldars_toll_t( const special_effect_t& e, const spell_data_t* data, buff_t* b )
+
+    mereldars_toll_t( const special_effect_t& e, const spell_data_t* data )
       : generic_proc_t( e, "mereldars_toll", e.driver() ),
-        vers( b ),
-        allies( as<int>( data->effectN( 3 ).base_value() ) )
+        allies( as<int>( data->effectN( 3 ).base_value() ) ),
+        buffs{ false },
+        equip_data( data ),
+        driver_effect( e )
     {
       target_debuff = e.trigger();
 
@@ -2880,6 +2882,29 @@ void mereldars_toll( special_effect_t& effect )
       // TODO: confirm 950ms delay in damage
       impact_action->travel_delay = e.driver()->effectN( 2 ).misc_value1() * 0.001;
       impact_action->stats = stats;
+
+      // Pre-initialise the players own personal buff.
+      get_buff( e.player );
+    }
+
+    buff_t* get_buff( player_t* buff_player )
+    {
+      if ( buffs[ buff_player ] )
+        return buffs[ buff_player ];
+
+      if ( auto buff = buff_t::find( buff_player, "mereldars_toll", player ) )
+      {
+        buffs[ buff_player ] = buff;
+        return buff;
+      }
+
+      auto vers =
+          make_buff<stat_buff_t>( actor_pair_t{ buff_player, player }, "mereldars_toll", player->find_spell( 450551 ) )
+              ->add_stat_from_effect_type( A_MOD_RATING, equip_data->effectN( 1 ).average( driver_effect ) );
+
+      buffs[ buff_player ] = vers;
+
+      return vers;
     }
 
     buff_t* create_debuff( player_t* t ) override
@@ -2896,8 +2921,9 @@ void mereldars_toll( special_effect_t& effect )
 
       // TODO: determine if attack needs to do damage to proc vers buff
       t->callbacks.register_callback_execute_function(
-        toll->spell_id, [ this, debuff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
-          if ( !vers->check() )
+        toll->spell_id, [ this, debuff ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+          auto vers = get_buff( a->player );
+          if ( vers && !vers->check() )
           {
             debuff->trigger();
             vers->trigger();
@@ -2918,7 +2944,7 @@ void mereldars_toll( special_effect_t& effect )
     }
   };
 
-  effect.execute_action = create_proc_action<mereldars_toll_t>( "mereldars_toll", effect, data, vers );
+  effect.execute_action = create_proc_action<mereldars_toll_t>( "mereldars_toll", effect, data );
 }
 
 // 443527 driver
@@ -3181,7 +3207,8 @@ void twin_fang_instruments( special_effect_t& effect )
   effect.execute_action = create_proc_action<twin_fang_instruments_t>( "twin_fang_instruments", effect, data );
 }
 
-// 463610 equip
+// 463610 trinket equip
+// 463232 embellishment equip
 //  e1: trigger cycle
 //  e2: buff coeff
 // 455535 cycle
@@ -3191,7 +3218,7 @@ void twin_fang_instruments( special_effect_t& effect )
 // TODO: confirm buff value once scaling is fixed
 void darkmoon_deck_symbiosis( special_effect_t& effect )
 {
-  bool is_embellishment = effect.item->dbc_inventory_type() != INVTYPE_TRINKET;
+  bool is_embellishment = effect.driver()->id() == 463232;
 
   struct symbiosis_buff_t : public stat_buff_t
   {
@@ -3200,7 +3227,7 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
     timespan_t period;
     double self_damage_pct;
 
-    symbiosis_buff_t( const special_effect_t& e, bool /* embellish */ )
+    symbiosis_buff_t( const special_effect_t& e )
       : stat_buff_t( e.player, "symbiosis", e.player->find_spell( 455536 ) ),
         period( e.player->find_spell( 455535 )->effectN( 1 ).period() )
     {
@@ -3239,7 +3266,7 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
 
   if ( !buff )
   {
-    buff      = make_buff<symbiosis_buff_t>( effect, is_embellishment );
+    buff      = make_buff<symbiosis_buff_t>( effect );
     symbiosis = debug_cast<symbiosis_buff_t*>( buff );
     effect.player->register_on_combat_state_callback( [ symbiosis ]( player_t*, bool c ) {
       if ( c )
@@ -3253,14 +3280,10 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
     symbiosis = debug_cast<symbiosis_buff_t*>( buff );
   }
 
-  double value = 0;
+  double value = effect.driver()->effectN( 2 ).average( effect );
   if ( is_embellishment )
-    value = effect.player->find_spell( 463232 )->effectN( 2 ).average( effect ) * writhing_mul( effect.player );
-  else
-    value = effect.driver()->effectN( 2 ).average( effect );
+    value *= writhing_mul( effect.player );
 
-  // TODO: confirm buff value once TWW goes live. currently has -9 scaling with no ilevel scaling.
-  // Assuming here since the embellishment and trinket use the same driver and buff that the effects are just added.
   symbiosis->add_stat_from_effect_type( A_MOD_RATING, value );
 }
 
@@ -3545,28 +3568,13 @@ void darkmoon_deck_radiance( special_effect_t& effect )
   {
     double accumulated_damage;
     double max_damage;
-    double max_buff_value;
     buff_t* buff;
 
-    radiant_focus_debuff_t( actor_pair_t td, const special_effect_t& e, util::string_view n, const spell_data_t* s, bool embelish )
-      : buff_t( td, n, s ), accumulated_damage( 0 ), max_damage( 0 ), max_buff_value( 0 ), buff(nullptr)
+    radiant_focus_debuff_t( actor_pair_t td, const special_effect_t& e, util::string_view n, const spell_data_t* s,
+                            buff_t* b )
+      : buff_t( td, n, s ), accumulated_damage( 0 ), max_damage( data().effectN( 1 ).average( e ) ), buff( b )
     {
-      max_damage = data().effectN( 1 ).average( e );
       set_default_value( max_damage );
-
-      auto buff_spell = e.player->find_spell( 454785 );
-      if( embelish )
-        max_buff_value = player->find_spell( 454558 )->effectN( 2 ).average( e );
-      else
-        max_buff_value = player->find_spell( 463108 )->effectN( 1 ).average( e );
-
-      // Very oddly setup buff, scripted to provide the highest secondary stat of the player
-      // Data doesnt contain the other stats like usual, manually setting things up here.
-      buff = create_buff<stat_buff_t>( e.player, buff_spell )
-        ->add_stat( STAT_CRIT_RATING, 0 )
-        ->add_stat( STAT_MASTERY_RATING, 0 )
-        ->add_stat( STAT_HASTE_RATING, 0 )
-        ->add_stat( STAT_VERSATILITY_RATING, 0 );
     }
 
     void reset() override
@@ -3584,7 +3592,7 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     void expire_override( int stacks, timespan_t duration ) override
     {
       buff_t::expire_override( stacks, duration );
-      double buff_value = std::min( 1.0, std::max( 0.5, accumulated_damage / max_damage ) ) * max_buff_value;
+      double buff_value = std::min( 1.0, std::max( 0.5, accumulated_damage / max_damage ) ) * buff->default_value;
 
       auto stat_buff = debug_cast<stat_buff_t*>( buff );
 
@@ -3610,13 +3618,10 @@ void darkmoon_deck_radiance( special_effect_t& effect )
   {
     const spell_data_t* debuff_spell;
     const special_effect_t& effect;
-    bool embelishment;
+    buff_t* buff;
 
-    radiant_focus_cb_t( const special_effect_t& e, bool embelish )
-      : dbc_proc_callback_t( e.player, e ),
-        debuff_spell( e.player->find_spell( 454560 ) ),
-        effect( e ),
-        embelishment( embelish )
+    radiant_focus_cb_t( const special_effect_t& e, buff_t* b )
+      : dbc_proc_callback_t( e.player, e ), debuff_spell( e.player->find_spell( 454560 ) ), effect( e ), buff( b )
     {
       effect.player->callbacks.register_callback_execute_function(
           454560, [ & ]( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) {
@@ -3641,15 +3646,8 @@ void darkmoon_deck_radiance( special_effect_t& effect )
 
     buff_t* create_debuff( player_t* t ) override
     {
-      auto name_append = "trinket";
-
-      if ( embelishment )
-        name_append = "embelishment";
-
-      // TODO: Test if these are actually seperate debuffs, if not need to figure out how to handle that
-      auto debuff = make_buff<radiant_focus_debuff_t>( actor_pair_t( t, listener ), effect,
-                                                       "radiant_focus_debuff_" + util::tokenize_fn( name_append ),
-                                                       debuff_spell, embelishment );
+      auto debuff = make_buff<radiant_focus_debuff_t>( actor_pair_t( t, listener ), effect, "radiant_focus_debuff",
+                                                       debuff_spell, buff );
 
       return debuff;
     }
@@ -3665,7 +3663,7 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     }
   };
 
-  auto radiant_focus = new special_effect_t( effect.player );
+  auto radiant_focus      = new special_effect_t( effect.player );
   radiant_focus->name_str = "radiant_focus_darkmoon";
   radiant_focus->spell_id = 454560;
   effect.player->special_effects.push_back( radiant_focus );
@@ -3674,14 +3672,38 @@ void darkmoon_deck_radiance( special_effect_t& effect )
   radiant_focus_proc->initialize();
   radiant_focus_proc->activate();
 
-  bool embelish = false;
+  bool embelish = effect.driver()->id() == 454558;
 
-  if ( effect.spell_id == 454558 )
-    embelish = true;
+  auto buff = buff_t::find( effect.player, "radiance" );
+  if ( !buff )
+  {
+    auto buff_spell = effect.player->find_spell( 454785 );
+
+    // Very oddly setup buff, scripted to provide the highest secondary stat of the player
+    // Data doesnt contain the other stats like usual, manually setting things up here.
+    buff = create_buff<stat_buff_t>( effect.player, buff_spell )
+               ->add_stat( STAT_CRIT_RATING, 0 )
+               ->add_stat( STAT_MASTERY_RATING, 0 )
+               ->add_stat( STAT_HASTE_RATING, 0 )
+               ->add_stat( STAT_VERSATILITY_RATING, 0 );
+
+    if ( embelish )
+      buff->set_default_value( effect.driver()->effectN( 2 ).average( effect ) );
+    else
+      buff->set_default_value( effect.driver()->effectN( 1 ).average( effect ) );
+  }
+  else if ( buff )
+  {
+    if ( embelish )
+      buff->modify_default_value( effect.driver()->effectN( 2 ).average( effect ) );
+    else
+      buff->modify_default_value( effect.driver()->effectN( 1 ).average( effect ) );
+  }
 
   effect.spell_id = 454559;
   effect.name_str = "radiant_focus";
-  new radiant_focus_cb_t( effect, embelish );
+
+  new radiant_focus_cb_t( effect, buff );
 }
 
 // Nerubian Pheromone Secreter
@@ -4252,7 +4274,7 @@ void siphoning_stilleto( special_effect_t& effect )
       // TODO: implement range check if it ever matters for specilizations that can use this.
       make_event( *listener->sim, duration, [ & ] {
         auto target = listener->sim
-          ->target_non_sleeping_list[ rng().range( 0, as<int>( listener->sim->target_non_sleeping_list.size() ) ) ];
+          ->target_non_sleeping_list[ rng().range( listener->sim->target_non_sleeping_list.size() ) ];
         damage->execute_on_target( target );
       } );
     }
@@ -4772,7 +4794,7 @@ void register_special_effects()
   register_special_effect( 443337, items::charged_stormrook_plume );
   register_special_effect( 443556, items::twin_fang_instruments );
   register_special_effect( 450044, DISABLED_EFFECT );  // twin fang instruments
-  register_special_effect( 463610, items::darkmoon_deck_symbiosis );
+  register_special_effect( { 463610, 463232 }, items::darkmoon_deck_symbiosis );
   register_special_effect( 455482, items::imperfect_ascendancy_serum );
   register_special_effect( 454857, items::darkmoon_deck_vivacity );
   register_special_effect( 432421, items::algari_alchemist_stone );
