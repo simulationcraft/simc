@@ -4686,6 +4686,9 @@ struct vivify_t : public monk_heal_t
     }
 
     p()->active_actions.chi_wave->execute();
+
+    if ( p()->baseline.monk.vivify->affected_by( p()->buff.august_dynasty->data() ) )
+      p()->buff.august_dynasty->expire();
   }
 };
 
