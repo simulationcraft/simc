@@ -6971,19 +6971,6 @@ struct celestial_alignment_base_t : public trigger_control_of_the_dream_t<druid_
       buff( p->buff.celestial_alignment )
   {
     harmful = false;
-
-    // TODO: do this manually until we can get redirection working on apply_affecting_aura
-    if ( p->talent.whirling_stars.ok() )
-    {
-      apply_affecting_aura( p->talent.whirling_stars );
-
-      if ( p->talent.potent_enchantments.ok() )
-      {
-        auto mod = find_effect( p->talent.potent_enchantments, p->talent.whirling_stars ).time_value();
-        cooldown->duration += mod;
-        sim->print_debug( "{} cooldown recharge time modified by {}", *this, mod );
-      }
-    }
   }
 
   void execute() override
@@ -13858,6 +13845,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.radiant_moonlight );
   action.apply_affecting_aura( talent.rattle_the_stars );
   action.apply_affecting_aura( talent.twin_moons );
+  action.apply_affecting_aura( talent.whirling_stars, talent.potent_enchantments );
   action.apply_affecting_aura( talent.wild_surges );
   action.apply_affecting_aura( sets->set( DRUID_BALANCE, TWW1, B2 ) );
 
@@ -13904,12 +13892,13 @@ void druid_t::apply_affecting_auras( action_t& action )
     action.apply_affecting_aura( talent.arcane_affinity );
 
   action.apply_affecting_aura( talent.astral_insight );
-  action.apply_affecting_aura( talent.bestial_strength );  // TODO: does fb bonus apply to guardian
+  action.apply_affecting_aura( talent.bestial_strength );
   action.apply_affecting_aura( talent.early_spring );
   action.apply_affecting_aura( talent.empowered_shapeshifting );
   action.apply_affecting_aura( talent.groves_inspiration );
   action.apply_affecting_aura( talent.hunt_beneath_the_open_skies );
-  action.apply_affecting_aura( talent.lunar_calling );  // TODO: confirm arcane thrash applies to balance, and starfire damage to guardian
+  action.apply_affecting_aura( talent.lunar_calling );
+  action.apply_affecting_aura( talent.lunar_insight, spec_spell );
   action.apply_affecting_aura( talent.potent_enchantments );
   action.apply_affecting_aura( talent.resilient_flourishing );
   action.apply_affecting_aura( talent.stellar_command );
@@ -14040,7 +14029,7 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( talent.taste_for_blood, [ this ] { return buff.tigers_fury->check();},
                      talent.taste_for_blood->effectN( 2 ).percent() );
   _a->parse_effects( spec.feral_overrides, [ this ] { return !buff.moonkin_form->check(); } );
-  _a->parse_effects( buff.fell_prey, CONSUME_BUFF );  // TODO: determine if this actually buffs rampant ferority
+  _a->parse_effects( buff.fell_prey, CONSUME_BUFF );
 
   // Guardian
   _a->parse_effects( buff.bear_form );
@@ -14096,7 +14085,6 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( buff.blooming_infusion_heal, CONSUME_BUFF );
   _a->parse_effects( buff.feline_potential, CONSUME_BUFF );
   _a->parse_effects( buff.harmony_of_the_grove );
-  _a->parse_effects( talent.lunar_insight, spec_spell );  // bear aura affects lunar insight
   _a->parse_effects( buff.root_network );
   _a->parse_effects( buff.strategic_infusion );
   _a->parse_effects( buff.ursine_potential, CONSUME_BUFF );
