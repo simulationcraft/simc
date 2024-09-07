@@ -18,13 +18,14 @@ actions.precombat+=/augmentation
 
 actions.precombat+=/snapshot_stats
 
+actions.precombat+=/bear_form
+
 actions=auto_attack,if=!buff.prowl.up
 
 ########################################
 
 
 actions.precombat+=/mark_of_the_wild
-actions.precombat+=/bear_form
 actions.precombat+=/variable,name=ironfur_spam,value=1,value_else=0,if=talent.thorns_of_iron.enabled&talent.reinforced_fur.enabled
 actions.precombat+=/variable,name=ripweaving,value=1,value_else=0,if=talent.rip.enabled&talent.fluid_form.enabled&talent.wildpower_surge.enabled
 actions.precombat+=/variable,name=use_cat_filler,value=1,value_else=0,if=variable.ripweaving&talent.primal_fury.enabled
