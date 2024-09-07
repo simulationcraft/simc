@@ -3916,7 +3916,8 @@ struct lightning_rod_damage_t : public shaman_spell_t
   {
     shaman_spell_t::init();
 
-    snapshot_flags = update_flags = STATE_TGT_MUL_DA;
+    // Apparently only Enhancement gains the benefits of target modifiers for Lightning Rod.
+    snapshot_flags = update_flags = p()->specialization() == SHAMAN_ENHANCEMENT ? STATE_TGT_MUL_DA : 0;
   }
 };
 
