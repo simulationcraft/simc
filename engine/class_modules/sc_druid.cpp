@@ -6635,7 +6635,7 @@ public:
     p()->buff.blooming_infusion_heal_counter->trigger( this );
 
     if ( last_resource_cost <= 0 && hail_dur > 0_ms )
-      p()->buff.solstice->trigger( hail_dur );
+      p()->buff.solstice->extend_duration_or_trigger( hail_dur );
   }
 
   void execute() override
