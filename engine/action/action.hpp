@@ -765,8 +765,8 @@ public:
 
   player_t* select_target_if_target();
 
-  void apply_affecting_aura( const spell_data_t* );
-  void apply_affecting_effect( const spelleffect_data_t& effect );
+  void apply_affecting_aura( const spell_data_t*, const spell_data_t* modifier = nullptr );
+  void apply_affecting_effect( const spelleffect_data_t& effect, const spelleffect_data_t* modifier = nullptr );
   void apply_affecting_conduit( const conduit_data_t& conduit, int effect_num = 1 );
   void apply_affecting_conduit_effect( const conduit_data_t& conduit, size_t effect_num );
 
