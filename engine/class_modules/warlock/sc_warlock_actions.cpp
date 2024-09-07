@@ -1363,17 +1363,24 @@ using namespace helpers;
       if ( td( tar )->dots_wither->current_stack() <= 1 )
         make_event( *sim, 0_ms, [ this, tar ] { td( tar )->debuffs_blackened_soul->expire(); } );
 
-      if ( affliction() && p()->hero.seeds_of_their_demise.ok() && rng().roll( p()->rng_settings.seeds_of_their_demise.setting_value ) )
+      bool seeds_triggered = false;
+
+      if ( affliction() && p()->hero.seeds_of_their_demise.ok() && p()->cooldowns.seeds_of_their_demise->up() && rng().roll( p()->rng_settings.seeds_of_their_demise.setting_value ) )
       {
         p()->buffs.tormented_crescendo->trigger();
         p()->procs.seeds_of_their_demise->occur();
+        seeds_triggered = true;
       }
 
-      if ( destruction() && p()->hero.seeds_of_their_demise.ok() && rng().roll( p()->rng_settings.seeds_of_their_demise.setting_value ) )
+      if ( destruction() && p()->hero.seeds_of_their_demise.ok() && p()->cooldowns.seeds_of_their_demise->up() && rng().roll( p()->rng_settings.seeds_of_their_demise.setting_value ) )
       {
         p()->buffs.flashpoint->trigger( 2 );
         p()->procs.seeds_of_their_demise->occur();
+        seeds_triggered = true;
       }
+
+      if ( seeds_triggered )
+        p()->cooldowns.seeds_of_their_demise->start();
     }
   };
 
