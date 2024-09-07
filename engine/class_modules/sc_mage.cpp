@@ -7062,6 +7062,18 @@ struct splinter_t final : public mage_spell_t
     if ( splinterstorm && p()->specialization() == MAGE_FROST )
       trigger_winters_chill( s );
   }
+
+  timespan_t travel_time() const override
+  {
+    timespan_t t = mage_spell_t::travel_time();
+
+    // Spread the splinter impacts around a bit. Note that we have to use gauss( double, double )
+    // here because the timespan one doesn't produce negative values.
+    if ( !splinterstorm )
+      t += timespan_t::from_millis( rng().gauss( 0.0, 5.0 ) );
+
+    return std::max( t, 0_ms );
+  }
 };
 
 // ==========================================================================
