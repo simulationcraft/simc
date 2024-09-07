@@ -21777,6 +21777,7 @@ Description      : Every $?s137040[$s1][$s2] $?s137040[Maelstrom][Maelstrom Weap
 $@spelltooltip452201
 
 Name             : Tempest (id=454015) [Spell Family (11)] 
+Hotfixed         : Max stacks (0 -> 2)
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -21785,6 +21786,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
+Stacks           : 2 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ....x... x....... ........   ........ ........ ........ ........   
                  : Generic Hostile Spell, Magic Hostile Spell
@@ -21798,8 +21800,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Points On Client (268), Spellcast Override In Spellbook (310)
 Effects          :
-#1 (id=1156250)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+#1 (id=1156250)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332) | Attributes: Suppress Points Stacking (6)
                    Base Value: 452201 | Scaled Value: 452201 | PvP Coefficient: 1.00000 | Misc Value: 188196 | Target: Self (1)
+Hotfixed         : Attribute (0 -> 64)
 Description      : $@spelldesc454009
 Tooltip          : Lightning Bolt replaced by Tempest.
 
