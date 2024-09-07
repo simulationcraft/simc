@@ -15140,58 +15140,50 @@ struct death_knight_module_t : public module_t
     unique_gear::register_special_effect( 326913, runeforge::hysteria );
   }
   
-  /*void register_hotfixes() const override
+  void register_hotfixes() const override
   {
-    hotfix::register_effect( "Death Knight", "2024-09-30", "Obliterate Main-Hand nerfed 6%", 331344, hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.83818 )
-        .verification_value( 0.89168 );
-
-    hotfix::register_effect( "Death Knight", "2024-09-30", "Obliterate Off-Hand nerfed 6%", 60372, hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.83818 )
-        .verification_value( 0.89168 );
-
-    hotfix::register_effect( "Death Knight", "2024-09-30", "Obliterate Two-Hand nerfed 6%", 815754, hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 1.2408 )
-        .verification_value( 1.32 );
-
-    hotfix::register_effect( "Death Knight", "2024-09-30", "Frost Strike Main-Hand nerfed 6%", 331347, hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.69447 )
-        .verification_value( 0.74114 );
-
-    hotfix::register_effect( "Death Knight", "2024-09-30", "Frost Strike Off-Hand nerfed 6%", 60368, hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.69447 )
-        .verification_value( 0.74114 );
-
-    hotfix::register_effect( "Death Knight", "2024-09-30", "Frost Strike Two-Hand nerfed 6%", 815761, hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( .99046 )
-        .verification_value( 1.05386 );
-
-    hotfix::register_effect( "Death Knight", "2024-09-30", "Glacial Advance nerfed 10%", 287633,
+    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Commander Nerfed by 50%", 1161082,
                              hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
+        .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.50742 )
-        .verification_value( 0.5638 );
+        .modifier( 1 )
+        .verification_value( 2 );
 
-    hotfix::register_effect( "Death Knight", "2024-09-30", "Icy Death Torrent nerfed 10%", 1132889,
+    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Commander Buff Nerfed by 50%", 1155631,
                              hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
+        .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 1.224 )
-        .verification_value( 1.36 );    
-  }*/
+        .modifier( 1 )
+        .verification_value( 2 );
+
+    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Specilization Aura Direct Damage buffed by 5%", 179690,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( -5 )
+        .verification_value( -10 );
+
+    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Specilization Periodic Aura buffed by 5%", 191170,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( -5 )
+        .verification_value( -10 );
+
+    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Specilization Pet Aura buffed by 5%", 191171,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( -5 )
+        .verification_value( -10 );
+
+    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Specilization Guardian Aura buffed by 5%", 1032341,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( -5 )
+        .verification_value( -10 );
+  }
 
   void init( player_t* ) const override
   {
