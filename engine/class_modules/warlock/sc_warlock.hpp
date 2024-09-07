@@ -595,6 +595,7 @@ public:
     propagate_const<cooldown_t*> soul_fire;
     propagate_const<cooldown_t*> dimensional_rift;
     propagate_const<cooldown_t*> felstorm_icd; // Shared between Felstorm, Demonic Strength, and Guillotine TODO: Actually use this!
+    propagate_const<cooldown_t*> blackened_soul; // Internal cooldown on triggering stack increase to Wither
   } cooldowns;
 
   // Buffs
