@@ -9284,7 +9284,7 @@ void actions::rogue_action_t<Base>::trigger_cut_to_the_chase( const action_state
   if ( !p()->spell.cut_to_the_chase->ok() || !ab::result_is_hit( state->result ) )
     return;
 
-  if ( !p()->buffs.slice_and_dice->check() || p()->is_ptr() )
+  if ( !p()->buffs.slice_and_dice->check() && !p()->is_ptr() )
     return;
 
   if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 )
