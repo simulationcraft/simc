@@ -1,5 +1,4 @@
 warlock="TWW1_Warlock_Affliction_Soul_Harvester"
-source=default
 spec=affliction
 level=80
 race=orc
@@ -29,7 +28,6 @@ off_hand=broodtwisters_grim_catalyst,id=212387,bonus_id=1540/10299/10376
 save=TWW1_Warlock_Affliction_Soul_Harvester.simc
 
 warlock="TWW1_Warlock_Demonology_Soul_Harvester"
-source=default
 spec=demonology
 level=80
 race=Orc
@@ -85,7 +83,6 @@ off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/11144/10222/1485/113
 save=TWW1_Warlock_Demonology_Diabolist.simc
 
 warlock="TWW1_Warlock_Destruction_Diabolist"
-source=default
 spec=destruction
 level=80
 race=Orc
