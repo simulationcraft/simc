@@ -13899,21 +13899,8 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.soul_of_the_forest_cat );
 
   // Hero talents
-  // thrash family flags only apply with lunar calling
-  bool apply_arcane_affinity = talent.arcane_affinity.ok();
-  if ( action.data().class_flag( 40 ) ||  //  flag 40: bear thrash dot
-       action.data().class_flag( 91 ) ||  //  flag 91: bear thrash direct
-       action.data().class_flag( 126 ) )  //  flag 126: cat thrash
-  {
-    apply_arcane_affinity = apply_arcane_affinity && talent.lunar_calling.ok();
-  }
-  // wrath is handled in wrath_t
-  else if ( action.data().class_flag( 0 ) )  // flag 0: wrath
-  {
-    apply_arcane_affinity = false;
-  }
-
-  if ( apply_arcane_affinity )
+  // arcane affinity has bugged behavior with wrath, so handled in wrath_t
+  if ( !action.data().class_flag( 0 ) )  // flag 0: wrath
     action.apply_affecting_aura( talent.arcane_affinity );
 
   action.apply_affecting_aura( talent.astral_insight );
