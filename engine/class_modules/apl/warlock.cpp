@@ -142,7 +142,7 @@ void affliction( player_t* p )
   cleave->add_action( "haunt,if=debuff.haunt.remains<3" );
   cleave->add_action( "wither,target_if=min:remains,if=remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)&fight_remains>5" );
   cleave->add_action( "corruption,target_if=min:remains,if=remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)&fight_remains>5" );
-  cleave->add_action( "summon_darkglare,if=(!talent.shadow_embrace|debuff.shadow_embrace.stack=3)&variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot" );
+  cleave->add_action( "summon_darkglare,if=(!talent.shadow_embrace|(debuff.shadow_embrace.stack=debuff.shadow_embrace.max_stack))&variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot" );
   cleave->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react=1&soul_shard>3" );
   cleave->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react" );
   cleave->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react=2" );
