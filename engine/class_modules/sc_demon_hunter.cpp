@@ -5328,10 +5328,10 @@ struct chaos_strike_base_t
       p()->buff.inner_demon->expire();
     }
 
-    // TWWBETA TOCHECK -- Is this flat % chance or something else (deck?)
     // Note - cannot proc fury reduction buff if blade dance is not on cooldown
+    // 2024-09-06 -- Cannot proc if Blade Dance has less than 3s left on CD
     if ( p()->set_bonuses.tww1_havoc_4pc->ok() && p()->cooldown.blade_dance->down() &&
-         p()->rng().roll( tww1_reset_proc_chance ) )
+         p()->cooldown.blade_dance->remains() >= 3_s && p()->rng().roll( tww1_reset_proc_chance ) )
     {
       p()->buff.tww1_havoc_4pc->trigger();
       p()->cooldown.blade_dance->reset( true );
