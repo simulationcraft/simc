@@ -11055,8 +11055,10 @@ void druid_t::create_buffs()
       ->set_max_stack( as<int>( talent.blooming_infusion->effectN( 1 ).base_value() ) )
       ->set_expire_at_max_stack( true )
       ->set_trigger_spell( talent.blooming_infusion )
-      ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
-        buff.blooming_infusion_damage->trigger();
+      // use stack change callback as expire at max stack is queued so we can't use expire callback for precombat
+      ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
+        if ( b->at_max_stacks() )
+          buff.blooming_infusion_damage->trigger();
       } );
 
   buff.blooming_infusion_heal =
