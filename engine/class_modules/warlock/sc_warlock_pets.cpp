@@ -724,6 +724,14 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
       background = dual = true;
       aoe = -1;
       ignores_armor = true;
+      base_dd_min = base_dd_max = 0;
+    }
+
+    void init_finished() override
+    {
+      warlock_pet_melee_attack_t::init_finished();
+
+      snapshot_flags &= STATE_NO_MULTIPLIER;
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -1813,13 +1821,18 @@ struct dimensional_cinder_t : public warlock_pet_spell_t
     base_dd_min = base_dd_max = 0;
   }
 
+  void init_finished() override
+  {
+    warlock_pet_spell_t::init_finished();
+
+    snapshot_flags &= ~STATE_MUL_PET;
+    snapshot_flags &= ~STATE_TGT_MUL_PET;
+    snapshot_flags &= ~STATE_VERSATILITY;
+  }
+
   double action_multiplier() const override
   {
     double m = warlock_pet_spell_t::action_multiplier();
-
-    m /= 1.0 + p()->o()->warlock_base.destruction_warlock->effectN( 4 ).percent();
-
-    m /= 1.0 + p()->o()->racials.command->effectN( 2 ).percent();
 
     m *= p()->o()->talents.unstable_rifts->effectN( 1 ).percent();
 
