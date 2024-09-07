@@ -7032,11 +7032,11 @@ struct fatebound_coin_tails_t : public rogue_attack_t
       auto num_targets = targets_in_range_list( target_list() ).size();
       if ( !p()->is_ptr() && num_targets == 1 )
       {
-        m *= p()->talent.fatebound.delivered_doom->effectN( 1 ).percent();
+        m *= 1.0 + p()->talent.fatebound.delivered_doom->effectN( 1 ).percent();
       }
       if ( p()->is_ptr() && num_targets < 6 )
       {
-        m *= p()->talent.fatebound.delivered_doom->effectN( 1 ).percent() -
+        m *= 1.0 + p()->talent.fatebound.delivered_doom->effectN( 1 ).percent() -
           ( p()->talent.fatebound.delivered_doom->effectN( 2 ).percent() * ( num_targets - 1 ) );
       }
     }
