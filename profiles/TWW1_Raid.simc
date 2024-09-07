@@ -10,7 +10,7 @@ TWW1_Death_Knight_Unholy_San'layn.simc
 
 # TWW1_Demon_Hunter_Havoc.simc
 # TWW1_Demon_Hunter_Havoc_SD.simc
-# TWW1_Demon_Hunter_Vengeance.simc
+TWW1_Demon_Hunter_Vengeance.simc
 
 # TWW1_Druid_Balance.simc
 # TWW1_Druid_Feral.simc
@@ -49,6 +49,6 @@ TWW1_Shaman_Enhancement_Storm.simc
 # TWW1_Warlock_Demonology.simc
 # TWW1_Warlock_Destruction.simc
 
-# TWW1_Warrior_Arms.simc
-# TWW1_Warrior_Fury.simc
-# TWW1_Warrior_Protection.simc
+TWW1_Warrior_Arms.simc
+TWW1_Warrior_Fury.simc
+TWW1_Warrior_Protection.simc
