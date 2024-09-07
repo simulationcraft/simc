@@ -1014,7 +1014,7 @@ using namespace helpers;
 
         if ( p()->talents.tormented_crescendo.ok() )
         {
-          if ( crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
+          if ( crescendo_check( p(), s->target ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
           {
             p()->procs.tormented_crescendo->occur();
             p()->buffs.tormented_crescendo->trigger();
@@ -2095,7 +2095,7 @@ using namespace helpers;
 
         if ( p()->talents.tormented_crescendo.ok() )
         {
-          if ( crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 2 ).percent() ) )
+          if ( crescendo_check( p(), d->target ) && rng().roll( p()->talents.tormented_crescendo->effectN( 2 ).percent() ) )
           {
             p()->procs.tormented_crescendo->occur();
             p()->buffs.tormented_crescendo->trigger();
@@ -4405,28 +4405,25 @@ using namespace helpers;
   }
 
   // Checks whether Tormented Crescendo conditions are met
-  bool helpers::crescendo_check( warlock_t* p )
+  bool helpers::crescendo_check( warlock_t* p, player_t* tar )
   {
-    bool agony = false;
-    bool corruption = false;
-    for ( const auto target : p->sim->target_non_sleeping_list )
+    if ( tar != p->ua_target )
+      return false;
+
+    bool valid = p->get_target_data( tar )->dots_unstable_affliction->is_ticking();
+
+    if ( p->hero.wither.ok() )
     {
-      warlock_td_t* td = p->get_target_data( target );
-      if ( !td )
-        continue;
-
-      agony = agony || td->dots_agony->is_ticking();
-
-      if ( p->hero.wither.ok() )
-        corruption = corruption || td->dots_wither->is_ticking();
-      else
-        corruption = corruption || td->dots_corruption->is_ticking();
-
-      if ( agony && corruption )
-        break;
+      valid = valid && p->get_target_data( tar )->dots_wither->is_ticking();
     }
+    else
+    {
+      valid = valid && p->get_target_data( tar )->dots_corruption->is_ticking();
+    }
+    
+    valid = valid && p->get_target_data( tar )->dots_agony->is_ticking();
 
-    return agony && corruption && ( p->ua_target && p->get_target_data( p->ua_target )->dots_unstable_affliction->is_ticking() );
+    return valid;
   }
 
   void helpers::nightfall_updater( warlock_t* p, dot_t* d )
