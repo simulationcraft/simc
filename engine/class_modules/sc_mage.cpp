@@ -1363,32 +1363,36 @@ struct arcane_phoenix_pet_t final : public mage_pet_t
     cast_event = nullptr;
     action_t* action;
     const auto& tl = sim->target_non_sleeping_list;
-
-    if ( spells_used % 2 == 1 && exceptional_spells_remaining > 0 )
+    // TODO: Check what actually happens when there are no valid targets for part of the Phoenix duration.
+    if ( !tl.empty() )
     {
-      action = exceptional_actions[ rng().range( exceptional_actions.size() ) ];
-      // TODO: What happens with Ignite the Future and without Codex of the Sunstriders?
-      o()->buffs.spellfire_sphere->decrement();
-      o()->buffs.lingering_embers->trigger();
-      exceptional_spells_used++;
-      exceptional_spells_remaining--;
-    }
-    else
-    {
-      if ( o()->options.arcane_phoenix_rotation_override == arcane_phoenix_rotation::DEFAULT && tl.size() > 1
-        || o()->options.arcane_phoenix_rotation_override == arcane_phoenix_rotation::AOE )
+      if ( spells_used % 2 == 1 && exceptional_spells_remaining > 0 )
       {
-        action = aoe_actions[ rng().range( aoe_actions.size() ) ];
+        action = exceptional_actions[ rng().range( exceptional_actions.size() ) ];
+        // TODO: What happens with Ignite the Future and without Codex of the Sunstriders?
+        o()->buffs.spellfire_sphere->decrement();
+        o()->buffs.lingering_embers->trigger();
+        exceptional_spells_used++;
+        exceptional_spells_remaining--;
       }
       else
       {
-        action = st_actions[ rng().range( st_actions.size() ) ];
+        if ( o()->options.arcane_phoenix_rotation_override == arcane_phoenix_rotation::DEFAULT && tl.size() > 1
+          || o()->options.arcane_phoenix_rotation_override == arcane_phoenix_rotation::AOE )
+        {
+          action = aoe_actions[ rng().range( aoe_actions.size() ) ];
+        }
+        else
+        {
+          action = st_actions[ rng().range( st_actions.size() ) ];
+        }
       }
+
+      player_t* t = tl[ rng().range( tl.size() ) ];
+      action->execute_on_target( t );
     }
 
     spells_used++;
-    player_t* t = tl[ rng().range( tl.size() ) ];
-    action->execute_on_target( t );
     cast_event = make_event( *sim, cast_period, [ this ] { schedule_cast(); } );
   }
 
