@@ -22100,12 +22100,13 @@ $@spelldesc427453
 
 
 Name             : Hammer of Light (id=427453) [Spell Family (10)] 
+Hotfixed         : Spell Type (1 -> 2)
 Class            : Paladin
 School           : Holy
-Spell Type       : Magic
+Spell Type       : Melee
 Resource         : 5 Holy Power (9) (id=305690) w/ Retribution Paladin (id=137027)
 Resource         : 3 Holy Power (9) (id=307350) w/ Protection Paladin (id=137028)
-Range            : 12 yards
+Range            : 14 yards
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Labels           : 16: Class Spells
@@ -22231,10 +22232,11 @@ Effects          :
 Description      : Holy Paladin core passive
 
 Name             : Hammer of Light (id=429826) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
-Range            : 14 yards
+Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -22243,14 +22245,14 @@ Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin 
 Triggered by     : Hammer of Light (427453)
 Family Flags     : 27, 65, 112
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : x....... ........ ........ ........   ........ .x...... ........ ..x..... 
+                 : x....... ........ ........ ........   ........ .x...... ........ ..x...x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Dead Target (64), Not a Proc (105), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
+                 : Allow Dead Target (64), Not a Proc (105), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1114338)  : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 5.80645 | PvP Coefficient: 0.80000 | Target: Enemy (6)

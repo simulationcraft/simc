@@ -23484,7 +23484,7 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 440993, "When your health is brought below 35%, you gain a Second Wind, healing you for ${$441387s1*$441387t1*$441387d}% of your max health over $441387d.\r\n\r\nThis effect cannot occur more than once every $proccooldown sec.", 0, 0 },
   { 440995, "Colossal Might increases the damage of your Rend and Deep Wounds by $440989s2% per stack.\r\n", 0, 0 },
   { 440997, "$@spelldesc439669", 0, 0 },
-  { 441023, "Your spells and abilities have a chance to secrete $<effectCount> different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.", 0, 0 },
+  { 441023, "Your spells and abilities have a chance to secrete $?pc129946[][$<effectCount> ]different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.$?pc129945[][\r\n\r\nReach Accomplice reputation with each of the Severed Threads' pacts to secrete more pheromones.]", 0, 0 },
   { 441090, "$@spelldesc441092", 0, 0 },
   { 441091, "$@spelldesc441092", "$w1 Healing collected.", 0 },
   { 441092, "$s1% of your damage is collected as Vindication. Every $441091d, Vindication is consumed to heal up to $s2 allies within $441090A1 yards for the amount consumed.", 0, 0 },
@@ -26341,7 +26341,8 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56461
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  441023,  0, "Your spells and abilities have a chance to secrete $<effectCount> different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.", "Your spells and abilities have a chance to secrete $?pc129946[][$<effectCount> ]different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.$?pc129945[][\r\n\r\nReach Accomplice reputation with each of the Severed Threads' pacts to secrete more pheromones.]" },
 } };
 
 // Spell description variables, wow build 11.0.2.56461
