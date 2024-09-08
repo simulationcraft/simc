@@ -45,9 +45,12 @@ TWW1_Shaman_Elemental.simc
 TWW1_Shaman_Enhancement.simc
 TWW1_Shaman_Enhancement_Storm.simc
 
-# TWW1_Warlock_Affliction.simc
-# TWW1_Warlock_Demonology.simc
-# TWW1_Warlock_Destruction.simc
+TWW1_Warlock_Affliction_Hellcaller.simc
+TWW1_Warlock_Affliction_Soul_Harvester.simc
+TWW1_Warlock_Demonology_Diabolist.simc
+TWW1_Warlock_Demonology_Soul_Harvester.simc
+TWW1_Warlock_Destruction_Diabolist.simc
+TWW1_Warlock_Destruction_Hellcaller.simc
 
 TWW1_Warrior_Arms.simc
 TWW1_Warrior_Fury.simc
