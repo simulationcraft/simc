@@ -10376,8 +10376,10 @@ void druid_t::init_finished()
         // unnecessary offspec resources are disabled by default, so evaluate any if-expr on the candidate action first
         // so we don't call action_ready() on possible offspec actions that will require off-spec resources to be
         // enabled
-        if ( a->harmful && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
-          wr->harmful = false;  // more harmful actions exist, set current wrath to non-harmful so we can keep casting
+        // * don't check harmful: we assume that any action that follows waits for wrath to finish, meaning wrath happens
+        // entirely precombat
+        if ( ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
+          wr->harmful = false;  // more actions exist, set current wrath to non-harmful so we can keep casting
 
         if ( a->name_str == wr->name_str )
           wr->count++;  // see how many wrath casts are left, so we can adjust travel time when combat begins
