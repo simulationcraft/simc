@@ -1821,8 +1821,12 @@ int raidbots_talent_render_width( specialization_e spec, int height, bool mini =
 {
   switch ( spec )
   {
-    case HUNTER_BEAST_MASTERY: return mini ? height * 13 / 9 : height * 8 / 5;
-    default:                   return mini ? height * 8 / 5 : height * 7 / 4;
+    // narrower trees
+    case HUNTER_BEAST_MASTERY: return mini ? height * 1.45 : height * 1.60;
+    // wider trees
+    case DRUID_RESTORATION:    return mini ? height * 1.80 : height * 1.95;
+    // default size
+    default:                   return mini ? height * 1.60 : height * 1.75;
   }
 }
 
@@ -3699,7 +3703,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   else
     os << "<h3 class=\"toggle open\">Results, Spec and Gear</h3>\n";
 
-  os << "<div class=\"toggle-content\" style=\"height:110px\">\n";
+  os << "<div class=\"toggle-content\" style=\"min-height:110px\">\n";
 
   if ( p.sim->players_by_name.size() == 1 )
   {
