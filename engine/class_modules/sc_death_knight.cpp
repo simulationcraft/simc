@@ -3392,7 +3392,6 @@ private:
 
 struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 {
-  bool bp_ticking;
   template <typename T_ACTION>
   struct drw_action_t : public pet_action_t<dancing_rune_weapon_pet_t, T_ACTION>
   {
@@ -3443,17 +3442,10 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
         snapshot_coagulopathy = dk()->buffs.coagulopathy->stack_value();
     }
 
-    void last_tick( dot_t* dot ) override
-    {
-      drw_action_t::last_tick( dot );
-      pet()->bp_ticking = false;
-    }
-
     void execute() override
     {
       drw_action_t::execute();
       snapshot_coagulopathy = 0.0;
-      pet()->bp_ticking = true;
     }
   };
 
@@ -12650,7 +12642,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
     if ( util::str_compare_ci( splits[ 1 ], "bp_ticking" ) && splits.size() == 2 )
       return make_fn_expr( "dancing_rune_weapon_blood_plague_ticking_expression", [ this ]() {
         return pets.dancing_rune_weapon_pet.active_pet() != nullptr &&
-               pets.dancing_rune_weapon_pet.active_pet()->bp_ticking;
+               pets.dancing_rune_weapon_pet.active_pet()->get_dot( "Blood Plague", pets.dancing_rune_weapon_pet.active_pet() )->is_ticking();
       } );
   }
 
