@@ -12350,6 +12350,26 @@ void rogue_t::init_special_effects()
     cb->initialize();
   }
 
+  // Bubbling wax poison application procs
+  if ( unique_gear::find_special_effect( this, 448000 ) )
+  {
+    std::vector<unsigned> poison_ids = {
+      spell.instant_poison->effectN( 1 ).trigger()->id(),
+      spell.crippling_poison->effectN( 1 ).trigger()->id(),
+      spell.wound_poison->effectN( 1 ).trigger()->id(),
+      talent.rogue.atrophic_poison->effectN( 1 ).trigger()->id(),
+      talent.rogue.numbing_poison->effectN( 1 ).trigger()->id(),
+      talent.assassination.deadly_poison->effectN( 1 ).trigger()->id(),
+      talent.assassination.amplifying_poison->effectN( 3 ).trigger()->id()
+    };
+    range::erase_remove( poison_ids, 0 );
+
+    callbacks.register_callback_trigger_function(
+      448000, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ poison_ids ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
+        return !a->special || range::contains( poison_ids, a->data().id() );
+    } );
+  }
 }
 
 // rogue_t::init_finished ===================================================
