@@ -5865,6 +5865,17 @@ struct chain_lightning_t : public chained_base_t
   {
     chained_base_t::execute();
 
+    if ( exec_type == spell_variant::NORMAL && p()->specialization() == SHAMAN_ELEMENTAL )
+    {
+      if ( p()->is_ptr() )
+      {
+        if ( p()->rng_obj.icefury->trigger() )
+        {
+          p()->buff.icefury_cast->trigger();
+        }
+      }
+    }
+
     // Storm Elemental Wind Gust passive buff trigger
     if ( p()->buff.storm_elemental->check() || p()->buff.lesser_storm_elemental->check() )
     {
@@ -6614,7 +6625,6 @@ struct lava_burst_t : public shaman_spell_t
       p()->buff.icefury_cast->trigger();
     }
 
-
     if ( p()->talent.routine_communication.ok() && exec_type == spell_variant::NORMAL )
     {
       p()->summon_ancestor( p()->talent.routine_communication->effectN( 2 ).percent() );
@@ -6803,6 +6813,14 @@ struct lightning_bolt_t : public shaman_spell_t
         p()->buff.stormkeeper->decrement();
       }
       p()->sk_during_cast = false;
+
+      if ( p()->is_ptr() )
+      {
+        if ( p()->rng_obj.icefury->trigger() )
+        {
+          p()->buff.icefury_cast->trigger();
+        }
+      }
     }
 
     p()->trigger_flash_of_lightning();
