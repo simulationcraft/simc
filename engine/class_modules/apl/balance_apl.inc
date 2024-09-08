@@ -13,7 +13,6 @@ precombat->add_action( "regrowth,if=hero_tree.keeper_of_the_grove" );
 precombat->add_action( "regrowth,if=hero_tree.keeper_of_the_grove" );
 precombat->add_action( "regrowth,if=hero_tree.keeper_of_the_grove" );
 precombat->add_action( "wrath" );
-precombat->add_action( "regrowth,if=hero_tree.keeper_of_the_grove" );
 precombat->add_action( "wrath" );
 precombat->add_action( "starfire,if=!talent.stellar_flare" );
 precombat->add_action( "stellar_flare" );
