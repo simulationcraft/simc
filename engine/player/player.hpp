@@ -148,9 +148,14 @@ struct player_t : public actor_t
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
   std::string class_talents_str, spec_talents_str, hero_talents_str;
-  enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday; // Specify InGame time of day to determine Night Elf racial
-  enum zandalari_loa_e {AKUNDA, BWONSAMDI, GONK, KIMBUL, KRAGWA, PAKU} zandalari_loa; //Specify which loa zandalari has chosen to determine racial
-  enum vulpera_tricks_e { CORROSIVE, FLAMES, SHADOWS, HEALING, HOLY } vulpera_tricks; //Specify which trick to use for vulpera bag of tricks
+  // Specify in-game time of day to determine Night Elf racial
+  enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday;
+  // Specify which loa Zandalari has chosen to determine racial
+  enum zandalari_loa_e { AKUNDA, BWONSAMDI, GONK, KIMBUL, KRAGWA, PAKU } zandalari_loa;
+  // Specify which trick to use for Vulpera bag of tricks
+  enum vulpera_tricks_e { CORROSIVE, FLAMES, SHADOWS, HEALING, HOLY } vulpera_tricks;
+  // Specify which mineral to ingest for Earthen Dwarf racial
+  enum earthen_mineral_e { AMBER, EMERALD, ONYX, RUBY, SAPPHIRE } earthen_mineral;
 
   // GCD Related attributes
   timespan_t  gcd_ready, base_gcd, min_gcd; // When is GCD ready, default base and minimum GCD times.
@@ -182,9 +187,9 @@ struct player_t : public actor_t
   // Stat Timelines to Display
   std::vector<stat_e> stat_timelines;
 
-  // Talent Parsing
+  // Obsolete grid/number based talent system
+  // Currently not created and will return nullptr
   std::unique_ptr<player_talent_points_t> talent_points;
-  std::string talent_overrides_str;
 
   // Player selected (trait entry id, rank) tuples
   std::vector<std::tuple<talent_tree, unsigned, unsigned>> player_traits;
@@ -564,6 +569,7 @@ struct player_t : public actor_t
     buff_t* heavens_nemesis; // Neltharax, Enemy of the Sky
 
     // 11.0 The War Within
+    buff_t* ingest_mineral;  // earthen well fed racial
     buff_t* surekian_grace;  // sik'ran's shadow arsenal barrage movement speed buff
     buff_t* earthen_ire;     // sigil of algari concordance tank buff
   } buffs;
@@ -838,7 +844,7 @@ struct player_t : public actor_t
     timespan_t signet_of_the_priory_party_use_cooldown = 120_s;
     timespan_t signet_of_the_priory_party_use_stddev = 6_s;
     // harvester's edict chance to intercept
-    double harvesters_edict_intercept_chance = 0.5;
+    double harvesters_edict_intercept_chance = 0.2;
     // Dawn/Duskthread Lining
     double dawn_dusk_thread_lining_uptime = 0.6;
     // Interval between checking blue_silken_lining_uptime
@@ -849,6 +855,11 @@ struct player_t : public actor_t
     timespan_t embrace_of_the_cinderbee_timing = 0_ms;
     // Embrace of the Cinderbee miss chance
     double embrace_of_the_cinderbee_miss_chance = 0;
+    // Nerubian Phearomone Secreter number of phearomones
+    int nerubian_pheromone_secreter_pheromones = 1;
+    // Allied Binding of Binding on you
+    int binding_of_binding_on_you = 0;
+    double binding_of_binding_ally_skip_chance = 0.8;
   } thewarwithin_opts;
 
 private:
@@ -887,9 +898,6 @@ public:
   double get_stat_value(stat_e);
   void stat_gain( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
   void stat_loss( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
-  void create_talents_numbers();
-  void create_talents_armory();
-  void create_talents_blizzard();
   void clear_action_priority_lists() const;
   void copy_action_priority_list( util::string_view old_list, util::string_view new_list );
   void change_position( position_e );
@@ -898,9 +906,6 @@ public:
   bool add_action( util::string_view action, util::string_view options = {}, util::string_view alist = "default" );
   bool add_action( const spell_data_t* s, util::string_view options = {}, util::string_view alist = "default" );
   void add_option( std::unique_ptr<option_t> o );
-  void parse_talents_numbers( util::string_view talent_string );
-  bool parse_talents_armory( util::string_view talent_string );
-  bool parse_talents_armory2( util::string_view talent_url );
   void parse_temporary_enchants();
 
   bool is_moving() const;
@@ -969,7 +974,6 @@ public:
   const spell_data_t* find_rank_spell( util::string_view name, util::string_view rank,
                                        specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( util::string_view name ) const;
-  const spell_data_t* find_talent_spell( util::string_view name, specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
   player_talent_t find_talent_spell( talent_tree tree, util::string_view name, specialization_e s = SPEC_NONE, bool name_tokenized = false ) const;
   player_talent_t find_talent_spell( talent_tree tree, unsigned spell_id, specialization_e s = SPEC_NONE  ) const;
   player_talent_t find_talent_spell( unsigned talent_entry_id ) const;
@@ -1054,7 +1058,6 @@ public:
   virtual void validate_sim_options() {}
   virtual bool validate_fight_style( fight_style_e ) const
   { return true; }
-  virtual void override_talent( util::string_view override_str );
   virtual void init_meta_gem();
   virtual void init_resources( bool force = false );
   virtual std::vector<std::string> get_item_actions();
@@ -1299,7 +1302,6 @@ public:
   virtual std::unique_ptr<expr_t> create_resource_expression( util::string_view expression_str );
 
   virtual void create_options();
-  void recreate_talent_str( talent_format format = talent_format::BLIZZARD );
   virtual std::string create_profile( save_e = SAVE_ALL );
 
   virtual void copy_from( player_t* source );

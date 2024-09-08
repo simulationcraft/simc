@@ -21,7 +21,7 @@ struct character_loadout_data_t
   static util::span<const character_loadout_data_t> data( bool ptr );
   static util::span<const character_loadout_data_t> data( unsigned class_idx, bool ptr );
   static util::span<const character_loadout_data_t> data( unsigned class_idx, unsigned spec_idx, bool ptr );
-  static int default_item_level();
+  static int default_item_level( bool ptr );
 };
 
 struct trait_loadout_data_t

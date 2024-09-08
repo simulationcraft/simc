@@ -4907,17 +4907,12 @@ struct convergence_of_fates_callback_t : public dbc_proc_callback_t
   }
 };
 
-bool player_talent( player_t* player_, ::util::string_view talent )
-{
-  return player_ -> find_talent_spell( talent ) -> ok();
-}
-
 void item::convergence_of_fates( special_effect_t& effect )
 {
   switch ( effect.player -> specialization() )
   {
   case PALADIN_RETRIBUTION:
-    if ( player_talent( effect.player, "Crusade" ) )
+    if ( effect.player->find_talent_spell( talent_tree::SPECIALIZATION, "Crusade" ).ok() )
     {
       effect.ppm_ = -1.5;
       effect.rppm_modifier_ = 1.0;
@@ -4929,7 +4924,7 @@ void item::convergence_of_fates( special_effect_t& effect )
     }
     break;
   case MONK_WINDWALKER:
-    if ( player_talent( effect.player, "Serenity" ) )
+    if ( effect.player->find_talent_spell( talent_tree::SPECIALIZATION, "Serenity" ).ok() )
     {
       effect.ppm_ = -1.6;
       effect.rppm_modifier_ = 1.0;
@@ -4937,7 +4932,7 @@ void item::convergence_of_fates( special_effect_t& effect )
     break;
 
   case DRUID_FERAL:
-    if ( player_talent( effect.player, "Incarnation: King of the Jungle" ) )
+    if ( effect.player->find_talent_spell( talent_tree::SPECIALIZATION, "Incarnation: King of the Jungle" ).ok() )
     {
       effect.ppm_ = -3.7;
       effect.rppm_modifier_ = 1.0;

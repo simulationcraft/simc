@@ -1328,7 +1328,7 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
       case P_TICK_TIME:     str = "tick time";              return &tick_time_effects;
       case P_RESOURCE_COST: str = "cost percent";           return &cost_effects;
       case P_CRIT:          str = "crit chance multiplier"; return &crit_chance_multiplier_effects;
-      case P_CRIT_DAMAGE:   str = "crit damage";            return &crit_damage_effects;
+      case P_CRIT_BONUS:    str = "crit bonus multiplier";  return &crit_bonus_effects;
       case P_COOLDOWN:      str = "cooldown";               return &recharge_multiplier_effects;
       default:              return nullptr;
     }
@@ -1354,11 +1354,21 @@ std::vector<player_effect_t>* parse_action_base_t::get_effect_vector( const spel
     str = "cooldown";
     return &recharge_multiplier_effects;
   }
-  else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY ||
-            eff.subtype() == A_MOD_RECHARGE_RATE )
+  else if ( eff.subtype() == A_MOD_RECHARGE_RATE_CATEGORY )
   {
-    str = "recharge rate";
-    return &recharge_rate_effects;
+    if ( !_action->data().charges() )
+    {
+      str = "recharge rate";
+      return &recharge_rate_effects;
+    }
+  }
+  else if ( eff.subtype() == A_MOD_RECHARGE_RATE_LABEL || eff.subtype() == A_MOD_RECHARGE_RATE )
+  {
+    if ( _action->data().charges() )
+    {
+      str = "recharge rate";
+      return &recharge_rate_effects;
+    }
   }
   else if ( eff.subtype() == A_MODIFY_SCHOOL )
   {
@@ -1468,7 +1478,7 @@ std::vector<target_effect_t>* parse_action_base_t::get_effect_vector( const spel
     case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:    str = "damage";      return &target_multiplier_effects;
     case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS:     flat = true;
                                                    str = "crit chance"; return &target_crit_chance_effects;
-    case A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS: str = "crit damage"; return &target_crit_damage_effects;
+    case A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS: str = "crit bonus";  return &target_crit_bonus_effects;
     default:                                       return nullptr;
   }
 
@@ -1579,7 +1589,7 @@ void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os )
     print_parsed_type( os, &VEC::da_multiplier_effects, "Direct Damage" );
     print_parsed_type( os, &VEC::ta_multiplier_effects, "Periodic Damage" );
     print_parsed_type( os, &VEC::crit_chance_effects, "Critical Strike Chance" );
-    print_parsed_type( os, &VEC::crit_damage_effects, "Critical Strike Damage" );
+    print_parsed_type( os, &VEC::crit_bonus_effects, "Critical Strike Bonus Damage" );
     print_parsed_type( os, &VEC::flat_execute_time_effects, "Flat Cast Time", nullptr, timespan_fn );
     print_parsed_type( os, &VEC::execute_time_effects, "Percent Cast Time" );
     print_parsed_type( os, &VEC::gcd_effects, "GCD" );
@@ -1594,7 +1604,7 @@ void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os )
     print_parsed_type( os, &VEC::spell_school_effects, "Spell School", &opt_strings::school, empty_fn );
     print_parsed_type( os, &VEC::target_multiplier_effects, "Damage on Debuff" );
     print_parsed_type( os, &VEC::target_crit_chance_effects, "Crit Chance on Debuff" );
-    print_parsed_type( os, &VEC::target_crit_damage_effects, "Crit Damage on Debuff" );
+    print_parsed_type( os, &VEC::target_crit_bonus_effects, "Critical Strike Bonus on Debuff" );
     print_parsed_custom_type( os );
 
     os << "</table>\n"
@@ -1619,11 +1629,11 @@ size_t parse_action_base_t::total_effects_count()
          flat_cost_effects.size() +
          crit_chance_effects.size() +
          crit_chance_multiplier_effects.size() +
-         crit_damage_effects.size() +
+         crit_bonus_effects.size() +
          spell_school_effects.size() +
          target_multiplier_effects.size() +
          target_crit_chance_effects.size() +
-         target_crit_damage_effects.size();
+         target_crit_bonus_effects.size();
 }
 
 void parse_action_base_t::initialize_buff_list_on_vector( std::vector<player_effect_t>& vec )
@@ -1673,7 +1683,7 @@ void parse_action_base_t::initialize_buff_list()
   initialize_buff_list_on_vector( flat_cost_effects );
   initialize_buff_list_on_vector( crit_chance_effects );
   initialize_buff_list_on_vector( crit_chance_multiplier_effects );
-  initialize_buff_list_on_vector( crit_damage_effects );
+  initialize_buff_list_on_vector( crit_bonus_effects );
   initialize_buff_list_on_vector( spell_school_effects );
 }
 

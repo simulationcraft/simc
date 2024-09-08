@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 /*
-  TODO: Update Holy for BfA
+  TODO: reimplement Holy if anyone ever becomes interested in maintaining it
 */
 #include "sc_paladin.hpp"
 
@@ -89,9 +89,6 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
 
   cooldowns.searing_light_icd = get_cooldown( "searing_light_icd" );
   cooldowns.searing_light_icd->duration = timespan_t::from_seconds( 15 );
-
-  cooldowns.higher_calling_icd           = get_cooldown( "higher_calling_icd" );
-  cooldowns.higher_calling_icd->duration = find_spell( 431687 )->internal_cooldown();
 
   cooldowns.endless_wrath_icd           = get_cooldown( "endless_wrath_icd" );
   cooldowns.endless_wrath_icd->duration = find_spell( 432615 )->internal_cooldown();
@@ -323,7 +320,6 @@ void avenging_wrath_t::execute()
   if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
   {
     p()->apply_avatar_dawnlights();
-    p()->buffs.herald_of_the_sun.suns_avatar->trigger();
   }
 }
 
@@ -894,7 +890,7 @@ struct lay_on_hands_t : public paladin_heal_t
 struct blinding_light_t : public paladin_spell_t
 {
   blinding_light_t( paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( "blinding_light", p, p->find_talent_spell( "Blinding Light" ) )
+    : paladin_spell_t( "blinding_light", p, p->talents.blinding_light )
   {
     parse_options( options_str );
 
@@ -1016,8 +1012,6 @@ struct shield_of_vengeance_t : public paladin_absorb_t
   {
     double shield_amount = p()->resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
 
-    if ( p()->talents.aegis_of_protection->ok() )
-      shield_amount *= 1.0 + p()->talents.aegis_of_protection->effectN( 2 ).percent();
     shield_amount *= shield_modifier;
     shield_amount *= 1.0 + p()->composite_heal_versatility();
 
@@ -1373,11 +1367,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
     }
 
     p()->trigger_grand_crusader();
-
-    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T29, B4 ) )
-    {
-      p()->t29_4p_prot();
-    }
     p()->buffs.lightsmith.blessed_assurance->expire();
   }
 
@@ -1734,10 +1723,10 @@ void judgment_t::execute()
     }
   }
 
-  // ToDo (Ret): Check if this doesn't trigger on Ret's Divine Toll, but Ret's Divine Resonance
-  p()->buffs.templar.for_whom_the_bell_tolls->decrement();
+  // Decrement only if active Judgment, Divine Toll handling on judgment_ret_t
+  if ( !background )
+    p()->buffs.templar.for_whom_the_bell_tolls->decrement();
 
-  // ToDo (Ret): Check if this correctly gives Ret 5 Stacks on Divine Toll and 1 Stack on Divine Resonance
   if ( p()->talents.templar.sanctification->ok() )
   {
     p()->buffs.templar.sanctification->trigger();
@@ -1751,8 +1740,8 @@ double judgment_t::action_multiplier() const
   if ( p()->talents.justification->ok() )
     am *= 1.0 + p()->talents.justification->effectN( 1 ).percent();
 
-  // ToDo (Ret): Check if this doesn't benefit for Ret's Divine Toll, but Ret's Divine Resonance
-  if ( p()->buffs.templar.for_whom_the_bell_tolls->up() )
+  // Increase only if active Judgment, Divine Toll handling on judgment_ret_t
+  if ( p()->buffs.templar.for_whom_the_bell_tolls->up() && !background )
     am *= 1.0 + p()->buffs.templar.for_whom_the_bell_tolls->current_value;
 
   return am;
@@ -1839,17 +1828,6 @@ struct divine_toll_t : public paladin_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      // T31 only procs on the first valid target, others are not affected, even if valid
-      if ( !t31HasProcced && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B2 ) &&
-           td( s->target )->dots.expurgation->is_ticking() )
-      {
-        t31HasProcced = true;
-        p()->active.wrathful_sanction->set_target( s->target );
-        p()->active.wrathful_sanction->execute();
-        if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T31, B4 ) )
-          p()->buffs.echoes_of_wrath->trigger();
-      }
-
       p()->active.divine_toll->set_target( s->target );
       p()->active.divine_toll->schedule_execute();
     }
@@ -2239,10 +2217,6 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     // It costs 5 for Ret, 3 for Prot
     double c = p()->specialization() == PALADIN_RETRIBUTION ? ret_cost : prot_cost;
 
-    // 2024-08-04 Hammer of Light always costs 3 Holy Power. It's never free D:
-    if ( p()->bugs && p()->specialization() == PALADIN_PROTECTION )
-      return c;
-
     if ( p()->buffs.templar.hammer_of_light_free->up() )
       c *= 1.0 + p()->buffs.templar.hammer_of_light_free->value();
     if ( affected_by.divine_purpose_cost && p()->buffs.divine_purpose->check() )
@@ -2285,7 +2259,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     }
     if (p()->talents.templar.zealous_vindication->ok())
     {
-      p()->trigger_empyrean_hammer( target, 2, 0_ms );
+      p()->trigger_empyrean_hammer( target, 2, 0_ms, false );
     }
     if ( p()->talents.templar.sacrosanct_crusade->ok() )
     {
@@ -2467,6 +2441,15 @@ struct sacred_weapon_proc_damage_t : public paladin_spell_t
       m *= 1.5;
     return m;
   }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = paladin_spell_t::composite_da_multiplier( s );
+    // If we're faking Solidarity, we double the amount 
+    if ( p()->talents.lightsmith.solidarity->ok() && p()->options.fake_solidarity )
+      m *= 2.0;
+    return m;
+  }
 };
 
 struct sacred_weapon_proc_heal_t : public paladin_heal_t
@@ -2484,6 +2467,15 @@ struct sacred_weapon_proc_heal_t : public paladin_heal_t
     double m = paladin_heal_t::composite_aoe_multiplier( state );
     // If Sacred Weapon heal hits only 1 target, it's healing is increased by 100%
     if ( state->n_targets == 1 )
+      m *= 2.0;
+    return m;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = paladin_heal_t::composite_da_multiplier( s );
+    // If we're faking Solidarity, we double the amount 
+    if ( p()->talents.lightsmith.solidarity->ok() && p()->options.fake_solidarity )
       m *= 2.0;
     return m;
   }
@@ -2592,7 +2584,7 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, bo
   nextArmament->execute_on_target( target );
   sim->print_debug( "Player {} cast Holy Armaments on {}", name(), target->name() );
 
-  if ( talents.lightsmith.solidarity->ok() )
+  if ( talents.lightsmith.solidarity->ok() && !options.fake_solidarity )
   {
     if ( target != this )
     {
@@ -2745,18 +2737,6 @@ public:
     {
       add_child( p->active.background_blessed_hammer );
     }
-
-    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
-    {
-      crit_bonus_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 2 ).percent();
-      base_multiplier *= 1.0 + p->sets->set( PALADIN_RETRIBUTION, T30, B2 )->effectN( 1 ).percent();
-    }
-
-    if ( p->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B4 ) )
-    {
-      aoe = as<int>( p->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 2 ).base_value() );
-      base_aoe_multiplier *= p->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 4 ).percent();
-    }
     triggers_higher_calling = true;
 
     if ( p->talents.herald_of_the_sun.second_sunrise->ok() )
@@ -2888,11 +2868,6 @@ public:
         echo->target = s->target;
         echo->start_action_execute_event( 200_ms );
       }
-    }
-
-    if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B2 ) )
-    {
-      td( s->target )->debuff.judgment->trigger();
     }
   }
 
@@ -3047,7 +3022,6 @@ struct incandescence_t : public paladin_spell_t
 };
 
 // TODO: friendly dawnlights
-// TODO(mserrano): dawnlight cleave
 struct dawnlight_aoe_t : public paladin_spell_t
 {
   dawnlight_aoe_t( paladin_t* p ) : paladin_spell_t( "dawnlight_aoe", p, p->find_spell( 431399 ) )
@@ -3084,6 +3058,9 @@ struct dawnlight_t : public paladin_spell_t
 
   {
     background = true;
+    affected_by.highlords_judgment = true;
+    tick_may_crit = true;
+    dot_behavior = dot_behavior_e::DOT_EXTEND; // per bolas test Aug 21 2024
   }
 
   void execute() override
@@ -3173,6 +3150,13 @@ void paladin_t::apply_avatar_dawnlights()
     return;
 
   unsigned num_dawnlights = (unsigned) as<int>( talents.herald_of_the_sun.suns_avatar->effectN( 3 ).base_value() );
+
+  // per bolas Aug 21 2024. Can't seem to find this in spelldata
+  if ( !talents.crusade->ok() )
+    num_dawnlights = 2;
+  if ( talents.radiant_glory->ok() )
+    num_dawnlights = 1;
+
   std::vector<player_t*> tl_candidates;
   std::vector<player_t*> tl_yes_dawnlight;
   for ( auto* t : sim->target_non_sleeping_list )
@@ -3209,7 +3193,14 @@ void paladin_t::apply_avatar_dawnlights()
     have_total = num_dawnlights;
 
   for ( auto i = 0u; i < have_total; i++ )
+  {
     active.dawnlight->execute_on_target( tl_candidates[ i ] );
+  }
+
+  if ( bugs && have_total > 0 && talents.radiant_glory->ok() )
+  {
+    active.dawnlight->execute_on_target( tl_candidates[ 0 ] );
+  }
 }
 
 struct suns_avatar_dmg_t : public paladin_spell_t
@@ -3825,19 +3816,62 @@ void paladin_t::create_buffs()
 
   if ( talents.seal_of_order->ok() )
   {
-    buffs.blessing_of_dusk->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      double recharge_mult = 1.0 / ( 1.0 + talents.seal_of_order->effectN( 1 ).percent() );
-      for ( size_t i = 3; i < 9; i++ )
+    buffs.blessing_of_dusk->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+      for ( auto a : action_list )
       {
-        // Effects 6 (Blessed Hammer) and 7 (Crusader Strike) are already in Effect 3
-        // Effect 4: Hammer of the Righteous, Effect 5: Judgment, Effect 8: Hammer of Wrath
-        if ( i == 6 )
-          i = 8;
-        spelleffect_data_t label = find_spell( 385126 )->effectN( i );
-        for ( auto a : action_list )
+        if ( a->cooldown->duration == 0_ms )
+          continue;
+
+        // per bolas (Aug 19 2024) Wake is unaffected in spite of being in the spelldata
+        if ( a->data().id() == 255937 )
+         continue;
+
+        bool already_done = false;
+        for ( size_t i = 3; i < 14; i++ )
         {
-          if ( a->cooldown->duration != 0_ms &&
-               ( a->data().affected_by( label ) || a->data().affected_by_category( label ) ) )
+          // spell effect 13, for Eye of Tyr, only applies if we have undisputed ruling
+          if ( i == 13 && !talents.templar.undisputed_ruling->ok() )
+            continue;
+
+          spelleffect_data_t label = b->data().effectN( i );
+          if ( label.subtype() != A_MOD_RECHARGE_TIME_PCT_CATEGORY )
+            continue;
+          if ( a->data().affected_by( label ) || a->data().affected_by_category( label ) )
+          {
+            if ( new_ == 1 )
+              a->dynamic_recharge_multiplier *= 1.0 + label.percent();
+            else
+              a->dynamic_recharge_multiplier /= 1.0 + label.percent();
+
+            if ( a->cooldown->action == a )
+              a->cooldown->adjust_recharge_multiplier();
+            if ( a->internal_cooldown->action == a )
+              a->internal_cooldown->adjust_recharge_multiplier();
+
+            already_done = true;
+
+            // empirically no spell seems to be affected by multiple of these
+            break;
+          }
+        }
+
+        // For some reason some spells are in both lists. Empirically it seems like the
+        // "displayed" CDR takes precedence
+        if ( already_done )
+          continue;
+
+        for ( size_t i = 3; i < 14; i++ )
+        {
+          // Spell effect 9, for ES/FR, only applies if we have divine auxiliary talented
+          if ( i == 9 && !talents.divine_auxiliary->ok() )
+            continue;
+
+          spelleffect_data_t label = b->data().effectN( i );
+          if ( label.subtype() == A_MOD_RECHARGE_TIME_PCT_CATEGORY )
+            continue;
+
+          double recharge_mult = 1.0 / ( 1.0 + label.percent() );
+          if ( a->data().affected_by( label ) || a->data().affected_by_category( label ) )
           {
             if ( new_ == 1 )
               a->dynamic_recharge_rate_multiplier *= recharge_mult;
@@ -3846,7 +3880,6 @@ void paladin_t::create_buffs()
 
             if ( a->cooldown->action == a )
               a->cooldown->adjust_recharge_multiplier();
-
             if ( a->internal_cooldown->action == a )
               a->internal_cooldown->adjust_recharge_multiplier();
           }
@@ -3929,6 +3962,7 @@ void paladin_t::create_buffs()
                                   this->trigger_empyrean_hammer( nullptr, 1, 0_ms );
                                         } )
                                         ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+                                        ->set_tick_behavior( buff_tick_behavior::REFRESH )
                                         ->set_partial_tick( true );
   buffs.templar.endless_wrath = make_buff( this, "endless_wrath", find_spell( 452244 ) )
                                     ->set_chance( talents.templar.endless_wrath->effectN( 1 ).percent() );
@@ -3976,9 +4010,9 @@ void paladin_t::create_buffs()
 
 std::string paladin_t::default_potion() const
 {
-  std::string retribution_pot = ( true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "disabled";
+  std::string retribution_pot = ( true_level > 70 ) ? "tempered_potion_3" : "disabled";
 
-  std::string protection_pot = ( true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : "disabled";
+  std::string protection_pot = ( true_level > 70 ) ? "tempered_potion_3" : "disabled";
 
   std::string holy_dps_pot = ( true_level > 50 ) ? "spectral_intellect" : "disabled";
 
@@ -3999,9 +4033,9 @@ std::string paladin_t::default_potion() const
 
 std::string paladin_t::default_food() const
 {
-  std::string retribution_food = ( true_level > 50 ) ? "fated_fortune_cookie" : "disabled";
+  std::string retribution_food = ( true_level > 70 ) ? "the_sushi_special" : "disabled";
 
-  std::string protection_food = ( true_level > 50 ) ? "fated_fortune_cookie" : "disabled";
+  std::string protection_food = ( true_level > 70 ) ? "feast_of_the_divine_day" : "disabled";
 
   std::string holy_dps_food = ( true_level > 50 ) ? "feast_of_gluttonous_hedonism" : "disabled";
 
@@ -4022,9 +4056,9 @@ std::string paladin_t::default_food() const
 
 std::string paladin_t::default_flask() const
 {
-  std::string retribution_flask = ( true_level > 60 ) ? "iced_phial_of_corrupting_rage_3" : "disabled";
+  std::string retribution_flask = ( true_level > 70 ) ? "flask_of_alchemical_chaos_3" : "disabled";
 
-  std::string protection_flask = ( true_level > 60 ) ? "phial_of_tepid_versatility_3" : "disabled";
+  std::string protection_flask = ( true_level > 70 ) ? "flask_of_alchemical_chaos_3" : "disabled";
 
   std::string holy_dps_flask = ( true_level > 50 ) ? "spectral_flask_of_power" : "disabled";
 
@@ -4045,7 +4079,7 @@ std::string paladin_t::default_flask() const
 
 std::string paladin_t::default_rune() const
 {
-  return ( true_level > 50 ) ? "draconic_augment_rune" : "disabled";
+  return ( true_level > 70 ) ? "crystallized" : "disabled";
 }
 
 // paladin_t::default_temporary_enchant ================================
@@ -4055,9 +4089,9 @@ std::string paladin_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
-      return "main_hand:howling_rune_3,if=!(talent.rite_of_adjuration.enabled|talent.rite_of_sanctification.enabled)";
+      return "main_hand:algari_mana_oil_3,if=!(talent.rite_of_adjuration.enabled|talent.rite_of_sanctification.enabled)";
     case PALADIN_RETRIBUTION:
-      return "main_hand:howling_rune_3";
+      return "main_hand:ironclaw_whetstone_3";
 
     default:
       return "main_hand:howling_rune_3";
@@ -4365,41 +4399,6 @@ void paladin_t::init_spells()
 
   spells.herald_of_the_sun.gleaming_rays = find_spell( 431481 );
   spells.herald_of_the_sun.dawnlight_aoe_metadata = find_spell( 431581 );
-
-  // Dragonflight Tier Sets
-  tier_sets.ally_of_the_light_2pc = sets->set( PALADIN_PROTECTION, T29, B2 );
-  tier_sets.ally_of_the_light_4pc = sets->set( PALADIN_PROTECTION, T29, B4 );
-  tier_sets.heartfire_sentinels_authority_2pc = sets->set( PALADIN_PROTECTION, T30, B2 );
-  tier_sets.heartfire_sentinels_authority_4pc = sets->set( PALADIN_PROTECTION, T30, B4 );
-  tier_sets.t31_2pc = sets->set( PALADIN_PROTECTION, T31, B2 );
-  tier_sets.t31_4pc = sets->set( PALADIN_PROTECTION, T31, B4 );
-}
-
-void paladin_t::init_items()
-{
-  player_t::init_items();
-
-  set_bonus_type_e tier_to_enable;
-  switch ( specialization() )
-  {
-    case PALADIN_PROTECTION:
-      tier_to_enable = T29;
-      break;
-    case PALADIN_HOLY:
-      tier_to_enable = T30;
-      break;
-    case PALADIN_RETRIBUTION:
-      tier_to_enable = T31;
-      break;
-    default:
-      return;
-  }
-
-  if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
-    sets->enable_set_bonus( specialization(), tier_to_enable, B2 );
-
-  if ( sets->has_set_bonus( specialization(), DF4, B4 ) )
-    sets->enable_set_bonus( specialization(), tier_to_enable, B4 );
 }
 
 // paladin_t::primary_role ==================================================
@@ -5050,9 +5049,10 @@ void paladin_t::create_options()
   // TODO: figure out a better solution for this.
   add_option( opt_bool( "paladin_fake_sov", options.fake_sov ) );
   add_option( opt_float( "proc_chance_ret_aura_sera", options.proc_chance_ret_aura_sera, 0.0, 1.0 ) );
-  add_option( opt_float( "min_dg_heal_targets", options.min_dg_heal_targets, 0.0, 5.0 ) );
-  add_option( opt_float( "max_dg_heal_targets", options.max_dg_heal_targets, 0.0, 5.0 ) );
+  add_option( opt_int( "min_dg_heal_targets", options.min_dg_heal_targets, 0, 5 ) );
+  add_option( opt_int( "max_dg_heal_targets", options.max_dg_heal_targets, 0, 5 ) );
   add_option( opt_bool( "sacred_weapon_prefer_new_targets", options.sacred_weapon_prefer_new_targets ) );
+  add_option( opt_bool( "fake_solidarity", options.fake_solidarity ) );
 
   player_t::create_options();
 }
@@ -5431,6 +5431,8 @@ void paladin_t::apply_affecting_auras( action_t& action )
   player_t::apply_affecting_auras( action );
 
   action.apply_affecting_aura( spec.retribution_paladin );
+  if ( specialization() == PALADIN_RETRIBUTION )
+    action.apply_affecting_aura( spec.retribution_paladin_2 );
   action.apply_affecting_aura( spec.holy_paladin );
   action.apply_affecting_aura( spec.protection_paladin );
   action.apply_affecting_aura( passives.paladin );
@@ -5506,14 +5508,13 @@ struct paladin_module_t : public module_t
     // 9.0 Paladin Night Fae
 
     // Only create these if the player sets the option to get the buff.
-    if (!p->external_buffs.blessing_of_summer.empty())
+    if ( !p->external_buffs.blessing_of_summer.empty() )
     {
       action_t* summer_proc = new blessing_of_summer_proc_t(p);
       const spell_data_t* summer_data = p->find_spell(328620);
 
       // This effect can proc on almost any damage, including many actions in simc that have callbacks = false.
       // Using an assessor here will cause this to have the chance to proc on damage from any action.
-      // TODO: Ensure there is no incorrect looping that can happen with other similar effects.
       p->assessor_out_damage.add(
         assessor::CALLBACKS, [p, summer_proc, summer_data](result_amount_type, action_state_t* s) {
           if (!(p->buffs.blessing_of_summer->up()))

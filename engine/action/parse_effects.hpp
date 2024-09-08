@@ -782,11 +782,11 @@ struct parse_action_base_t : public parse_effects_t
   std::vector<player_effect_t> flat_cost_effects;
   std::vector<player_effect_t> crit_chance_effects;
   std::vector<player_effect_t> crit_chance_multiplier_effects;
-  std::vector<player_effect_t> crit_damage_effects;
+  std::vector<player_effect_t> crit_bonus_effects;
   std::vector<player_effect_t> spell_school_effects;
   std::vector<target_effect_t> target_multiplier_effects;
   std::vector<target_effect_t> target_crit_chance_effects;
-  std::vector<target_effect_t> target_crit_damage_effects;
+  std::vector<target_effect_t> target_crit_bonus_effects;
 
 private:
   std::vector<buff_t*> _buff_list;
@@ -989,7 +989,7 @@ public:
   {
     auto cd = BASE::composite_crit_damage_bonus_multiplier();
 
-    for ( const auto& i : crit_damage_effects )
+    for ( const auto& i : crit_bonus_effects )
       cd *= 1.0 + get_effect_value( i, true );
 
     return cd;
@@ -1124,7 +1124,7 @@ public:
     auto cd = BASE::composite_target_crit_damage_bonus_multiplier( t );
     auto td = _player->get_target_data( t );
 
-    for ( const auto& i : target_crit_damage_effects )
+    for ( const auto& i : target_crit_bonus_effects )
       cd *= 1.0 + get_effect_value( i, td );
 
     return cd;

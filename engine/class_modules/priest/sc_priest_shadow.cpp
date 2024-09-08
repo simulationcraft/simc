@@ -2367,10 +2367,12 @@ void priest_t::init_rng_shadow()
   rppm.power_of_the_dark_side = get_rppm( "power_of_the_dark_side", talents.discipline.power_of_the_dark_side );
 
 
+  // Shadowy Insight
   const dot_t* shadow_word_pain = get_dot( "shadow_word_pain", this );
+  double mod = sets->has_set_bonus( PRIEST_SHADOW, T30, B2 ) ? 1.25 : 1.0;
 
   threshold_rng.shadowy_insight =
-      get_threshold_rng( "shadowy_insight", talents.shadow.shadowy_insight.ok() ? 0.1558 : 0.0,
+      get_threshold_rng( "shadowy_insight", talents.shadow.shadowy_insight.ok() ? 0.1558 * mod : 0.0,
                          [ this, shadow_word_pain ]( double increment_max ) {
                            unsigned active_dots = get_active_dots( shadow_word_pain );
                            if ( active_dots == 0 )

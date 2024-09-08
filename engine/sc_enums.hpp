@@ -191,14 +191,6 @@ enum class movement_direction_type : int
   MAX,
 };
 
-enum class talent_format
-{
-  BLIZZARD,
-  ARMORY,
-  WOWHEAD,
-  UNCHANGED
-};
-
 enum race_e
 {
   RACE_NONE = 0,
@@ -859,6 +851,8 @@ enum set_bonus_type_e
   TWW_FSR,
   TWW_KCI,
   TWW1,
+  TWW_WDusk,
+  TWW_WDawn,
   SET_BONUS_MAX,
 };
 

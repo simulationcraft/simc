@@ -459,14 +459,6 @@ struct execute_pet_action_t : public action_t
   }
 };
 
-struct override_talent_action_t : action_t
-{
-  override_talent_action_t( player_t* player ) : action_t( ACTION_OTHER, "override_talent", player )
-  {
-    background = true;
-  }
-};
-
 struct leech_t : public heal_t
 {
   leech_t( player_t* player ) : heal_t( "leech", player, player->find_spell( 143924 ) )
@@ -573,70 +565,21 @@ bool has_foreground_actions( const player_t& p )
   return ( p.active_action_list && !p.active_action_list->foreground_action_list.empty() );
 }
 
-// parse_talent_url =========================================================
+// parse_talent_string ======================================================
 
-bool parse_talent_url( sim_t* sim, util::string_view name, util::string_view url )
+bool parse_talent_string( sim_t* sim, std::string_view, std::string_view string )
 {
-  assert( name == "talents" );
-  (void)name;
-
   player_t* p = sim->active_player;
 
-  p->talents_str = std::string( url );
-
-  auto cut_pt = url.find( '#' );
-
-  if ( cut_pt != url.npos )
-  {
-    ++cut_pt;
-    if ( url.find( ".battle.net" ) != url.npos || url.find( ".battlenet.com" ) != url.npos )
-    {
-      if ( sim->talent_input_format == talent_format::UNCHANGED )
-        sim->talent_input_format = talent_format::ARMORY;
-      return p->parse_talents_armory( url.substr( cut_pt ) );
-    }
-    else if ( url.find( "worldofwarcraft.com" ) != url.npos || url.find( "www.wowchina.com" ) != url.npos )
-    {
-      if ( sim->talent_input_format == talent_format::UNCHANGED )
-        sim->talent_input_format = talent_format::ARMORY;
-      return p->parse_talents_armory2( url );
-    }
-  }
-  else
-  {
-    if ( sim->talent_input_format == talent_format::UNCHANGED )
-        sim->talent_input_format = talent_format::BLIZZARD;
-    return true;
-  }
-
-  sim->error( "Unable to decode talent string '{}' for player '{}'.\n", url, p->name() );
-
-  return false;
-}
-
-// parse_talent_override ====================================================
-
-bool parse_talent_override( sim_t* sim, util::string_view name, util::string_view override_str )
-{
-  assert( name == "talent_override" );
-  (void)name;
-
-  player_t* p = sim->active_player;
-
-  if ( !p->talent_overrides_str.empty() )
-    p->talent_overrides_str += "/";
-  p->talent_overrides_str += std::string( override_str );
+  p->talents_str = std::string( string );
 
   return true;
 }
 
 // parse_timeofday ====================================================
 
-bool parse_timeofday( sim_t* sim, util::string_view name, util::string_view override_str )
+bool parse_timeofday( sim_t* sim, std::string_view, std::string_view override_str )
 {
-  assert( name == "timeofday" );
-  (void)name;
-
   player_t* p = sim->active_player;
 
   if ( util::str_compare_ci( override_str, "night" ) || util::str_compare_ci( override_str, "nighttime" ) )
@@ -658,11 +601,8 @@ bool parse_timeofday( sim_t* sim, util::string_view name, util::string_view over
 
 // parse_loa ====================================================
 
-bool parse_loa( sim_t* sim, util::string_view name, util::string_view override_str )
+bool parse_loa( sim_t* sim, std::string_view, std::string_view override_str )
 {
-  assert( name == "zandalari_loa" );
-  ( void )name;
-
   player_t* p = sim->active_player;
 
   if ( util::str_compare_ci( override_str, "akunda" ) || util::str_compare_ci( override_str, "embrace_of_akunda" ) )
@@ -699,12 +639,10 @@ bool parse_loa( sim_t* sim, util::string_view name, util::string_view override_s
 }
 
 // parse_tricks
-bool parse_tricks( sim_t* sim, util::string_view name, util::string_view override_str )
+bool parse_tricks( sim_t* sim, std::string_view, std::string_view override_str )
 {
-  assert( name == "vulpera_tricks" );
-  (void)name;
-
   player_t* p = sim->active_player;
+
   if ( util::str_compare_ci( override_str, "corrosive" ) || util::str_compare_ci( override_str, "corrosive_vial" ) )
   {
     p->vulpera_tricks = player_t::CORROSIVE;
@@ -735,13 +673,44 @@ bool parse_tricks( sim_t* sim, util::string_view name, util::string_view overrid
   return true;
 }
 
+// parse_mineral
+bool parse_mineral( sim_t* sim, std::string_view, std::string_view override_str )
+{
+  player_t*p = sim->active_player;
+
+  if ( util::str_compare_ci( override_str, "amber" ) || util::str_prefix_ci( override_str, "sta" ) )
+  {
+    p->earthen_mineral = player_t::AMBER;
+  }
+  else if ( util::str_compare_ci( override_str, "emerald" ) || util::str_prefix_ci( override_str, "has" ) )
+  {
+    p->earthen_mineral = player_t::EMERALD;
+  }
+  else if ( util::str_compare_ci( override_str, "onyx" ) || util::str_prefix_ci( override_str, "mas" ) )
+  {
+    p->earthen_mineral = player_t::ONYX;
+  }
+  else if ( util::str_compare_ci( override_str, "ruby" ) || util::str_prefix_ci( override_str, "crit" ) )
+  {
+    p->earthen_mineral = player_t::RUBY;
+  }
+  else if ( util::str_compare_ci( override_str, "sapphire" ) || util::str_prefix_ci( override_str, "vers" ) )
+  {
+    p->earthen_mineral = player_t::SAPPHIRE;
+  }
+  else
+  {
+    sim->error( "{} earthen_mineral string '{}' not valid.", sim->active_player->name(), override_str );
+    return false;
+  }
+
+  return true;
+}
+
 // parse_role_string ========================================================
 
-bool parse_role_string( sim_t* sim, util::string_view name, util::string_view value )
+bool parse_role_string( sim_t* sim, std::string_view, std::string_view value )
 {
-  assert( name == "role" );
-  (void)name;
-
   sim->active_player->role = util::parse_role_type( value );
 
   return true;
@@ -749,11 +718,8 @@ bool parse_role_string( sim_t* sim, util::string_view name, util::string_view va
 
 // parse_world_lag ==========================================================
 
-bool parse_world_lag( sim_t* sim, util::string_view name, util::string_view value )
+bool parse_world_lag( sim_t* sim, std::string_view, std::string_view value )
 {
-  assert( name == "world_lag" );
-  (void)name;
-
   sim->active_player->world_lag.mean = timespan_t::from_seconds( util::to_double( value ) );
 
   if ( sim->active_player->world_lag.mean < 0_ms )
@@ -766,11 +732,8 @@ bool parse_world_lag( sim_t* sim, util::string_view name, util::string_view valu
 
 // parse_world_lag ==========================================================
 
-bool parse_world_lag_stddev( sim_t* sim, util::string_view name, util::string_view value )
+bool parse_world_lag_stddev( sim_t* sim, std::string_view, std::string_view value )
 {
-  assert( name == "world_lag_stddev" );
-  (void)name;
-
   sim->active_player->world_lag.stddev = timespan_t::from_seconds( util::to_double( value ) );
 
   if ( sim->active_player->world_lag.stddev < 0_ms )
@@ -783,11 +746,8 @@ bool parse_world_lag_stddev( sim_t* sim, util::string_view name, util::string_vi
 
 // parse_brain_lag ==========================================================
 
-bool parse_brain_lag( sim_t* sim, util::string_view name, util::string_view value )
+bool parse_brain_lag( sim_t* sim, std::string_view, std::string_view value )
 {
-  assert( name == "brain_lag" );
-  (void)name;
-
   sim->active_player->brain_lag.mean = timespan_t::from_seconds( util::to_double( value ) );
 
   if ( sim->active_player->brain_lag.mean < 0_ms )
@@ -800,11 +760,8 @@ bool parse_brain_lag( sim_t* sim, util::string_view name, util::string_view valu
 
 // parse_brain_lag_stddev ===================================================
 
-bool parse_brain_lag_stddev( sim_t* sim, util::string_view name, util::string_view value )
+bool parse_brain_lag_stddev( sim_t* sim, std::string_view, std::string_view value )
 {
-  assert( name == "brain_lag_stddev" );
-  (void)name;
-
   sim->active_player->brain_lag.stddev = timespan_t::from_seconds( util::to_double( value ) );
 
   if ( sim->active_player->brain_lag.stddev < 0_ms )
@@ -817,7 +774,7 @@ bool parse_brain_lag_stddev( sim_t* sim, util::string_view name, util::string_vi
 
 // parse_specialization =====================================================
 
-bool parse_specialization( sim_t* sim, util::string_view, util::string_view value )
+bool parse_specialization( sim_t* sim, std::string_view, std::string_view value )
 {
   sim->active_player->_spec = dbc::translate_spec_str( sim->active_player->type, value );
 
@@ -832,12 +789,9 @@ bool parse_specialization( sim_t* sim, util::string_view, util::string_view valu
 
 // parse stat timelines =====================================================
 
-bool parse_stat_timelines( sim_t* sim, util::string_view name, util::string_view value )
+bool parse_stat_timelines( sim_t* sim, std::string_view, std::string_view value )
 {
-  assert( name == "stat_timelines" );
-  (void)name;
-
-  auto stats = util::string_split<util::string_view>( value, "," );
+  auto stats = util::string_split<std::string_view>( value, "," );
 
   for ( auto& stat_type : stats )
   {
@@ -856,7 +810,7 @@ bool parse_stat_timelines( sim_t* sim, util::string_view name, util::string_view
 
 // parse_origin =============================================================
 
-bool parse_origin( sim_t* sim, util::string_view, util::string_view origin )
+bool parse_origin( sim_t* sim, std::string_view, std::string_view origin )
 {
   player_t& p = *sim->active_player;
 
@@ -874,7 +828,7 @@ bool parse_origin( sim_t* sim, util::string_view, util::string_view origin )
 
 // parse_source ===============================================================
 
-bool parse_source( sim_t* sim, util::string_view, util::string_view value )
+bool parse_source( sim_t* sim, std::string_view, std::string_view value )
 {
   player_t& p = *sim->active_player;
 
@@ -883,13 +837,13 @@ bool parse_source( sim_t* sim, util::string_view, util::string_view value )
   return true;
 }
 
-bool parse_set_bonus( sim_t* sim, util::string_view, util::string_view value )
+bool parse_set_bonus( sim_t* sim, std::string_view, std::string_view value )
 {
   static constexpr const char* error_str = "{} invalid 'set_bonus' option value '{}' given, available options: {}";
 
   player_t* p = sim->active_player;
 
-  auto set_bonus_split = util::string_split<util::string_view>( value, "=" );
+  auto set_bonus_split = util::string_split<std::string_view>( value, "=" );
 
   if ( set_bonus_split.size() != 2 )
   {
@@ -918,13 +872,13 @@ bool parse_set_bonus( sim_t* sim, util::string_view, util::string_view value )
   return true;
 }
 
-bool parse_initial_resource( sim_t* sim, util::string_view, util::string_view value )
+bool parse_initial_resource( sim_t* sim, std::string_view, std::string_view value )
 {
   player_t* player = sim->active_player;
-  auto opts        = util::string_split<util::string_view>( value, ":/" );
+  auto opts        = util::string_split<std::string_view>( value, ":/" );
   for ( const auto& opt_str : opts )
   {
-    auto resource_split = util::string_split<util::string_view>( opt_str, "=" );
+    auto resource_split = util::string_split<std::string_view>( opt_str, "=" );
     if ( resource_split.size() != 2 )
     {
       sim->error( "{} unknown initial_resources option '{}'", player->name(), opt_str );
@@ -1088,6 +1042,7 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     timeofday( NIGHT_TIME ),  // Depends on server time, default to night that's more common for raid hours
     zandalari_loa( PAKU ),  // Default to Paku as it has some non-zero dps benefit for all specs
     vulpera_tricks( CORROSIVE ),  // default trick for damage
+    earthen_mineral( RUBY ),  // default mineral is ruby (crit)
     gcd_ready( 0_ms ),
     base_gcd( 1.5_s ),
     min_gcd( 750_ms ),
@@ -1108,7 +1063,8 @@ player_t::player_t( sim_t* s, player_e t, util::string_view n, race_e r )
     cooldown_tolerance_( timespan_t::min() ),
     dbc( new dbc_t(*(s->dbc)) ),
     dbc_override( sim->dbc_override.get() ),
-    talent_points( new player_talent_points_t()),
+    // talent_points( new player_talent_points_t()),
+    talent_points( nullptr ),
     profession(),
     azerite( nullptr ),
     base(),
@@ -1883,7 +1839,7 @@ void player_t::init_items()
         }
 
         items[ slot ].options_str =
-            fmt::format( ",id={},ilevel={}", gear.id_item, character_loadout_data_t::default_item_level() );
+            fmt::format( ",id={},ilevel={}", gear.id_item, character_loadout_data_t::default_item_level( is_ptr() ) );
       }
     }
 
@@ -1891,7 +1847,7 @@ void player_t::init_items()
     if ( sim->enable_all_item_effects )
     {
       items[ SLOT_SHIRT ].options_str =
-          fmt::format( ",id=45037,ilevel={}", character_loadout_data_t::default_item_level() );
+          fmt::format( ",id=45037,ilevel={}", character_loadout_data_t::default_item_level( is_ptr() ) );
     }
   }
   // We need to simple-parse the items first, this will set up some base information, and parse out
@@ -2439,81 +2395,6 @@ void player_t::activate_action_list( action_priority_list_t* a, execute_type typ
   else
     active_action_list = a;
   a->used = true;
-}
-
-void player_t::override_talent( util::string_view override_str )
-{
-  auto cut_pt = override_str.find( ',' );
-
-  if ( cut_pt != override_str.npos && override_str.substr( cut_pt + 1, 3 ) == "if=" )
-  {
-    override_talent_action_t* dummy_action = new override_talent_action_t( this );
-    auto expr = expr_t::parse( dummy_action, override_str.substr( cut_pt + 4 ) );
-    if ( !expr )
-      return;
-    bool success = expr->success();
-    if ( !success )
-      return;
-    override_str = override_str.substr( 0, cut_pt );
-  }
-
-  // Support disable_row:<row> syntax
-  std::string::size_type pos = override_str.find( "disable_row" );
-  if ( pos != std::string::npos )
-  {
-    auto row_str = override_str.substr( 11 );
-    if ( !row_str.empty() )
-    {
-      unsigned row = util::to_unsigned( override_str.substr( 11 ) );
-      if ( row == 0 || row > MAX_TALENT_ROWS )
-      {
-        throw std::invalid_argument(fmt::format("talent_override: Invalid talent row {} in '{}'.", row, override_str ));
-      }
-
-      talent_points->clear( row - 1 );
-      if ( sim->num_players == 1 )
-      {
-        sim->error( "talent_override: Talent row {} for {} disabled.\n", row, *this );
-      }
-      return;
-    }
-  }
-
-  unsigned spell_id = dbc->talent_ability_id( type, specialization(), override_str, true );
-
-  if ( !spell_id || dbc->spell( spell_id )->id() != spell_id )
-  {
-    throw std::invalid_argument(fmt::format("talent_override: Override talent '{}' not found.\n", override_str ));
-  }
-
-  for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
-  {
-    for ( int i = 0; i < MAX_TALENT_COLS; i++ )
-    {
-      const talent_data_t* t = talent_data_t::find( type, j, i, specialization(), dbc->ptr );
-      if ( t && ( t->spell_id() == spell_id ) )
-      {
-        if ( true_level < 20 + ( j == 0 ? -1 : j ) * 5 )
-        {
-          throw std::invalid_argument(fmt::format("talent_override: Override talent '{}' is too high level.\n",
-              override_str ));
-        }
-
-        if ( talent_points->has_row_col( j, i ) )
-        {
-          sim->print_debug( "talent_override: talent {} for {} is already enabled\n",
-                                 override_str, *this );
-        }
-
-        if ( sim->num_players == 1 )
-        {  // To prevent spamming up raid reports, only do this with 1 player sims.
-          sim->error( "talent_override: talent '{}' for {}s replaced talent {} in tier {}.\n", override_str,
-                       *this, talent_points->choice( j ) + 1, j + 1 );
-        }
-        talent_points->select_row_col( j, i );
-      }
-    }
-  }
 }
 
 static void parse_traits( talent_tree tree, const std::string& opt_str, player_t* player )
@@ -3071,20 +2952,9 @@ void player_t::init_talents()
   {
     enable_default_talents( this );
   }
-  else
+  else if ( !talents_str.empty() )
   {
-    if ( !talents_str.empty() && sim->talent_input_format == talent_format::BLIZZARD )
-    {
-      parse_traits_hash( talents_str, this );
-    }
-
-    if ( !talent_overrides_str.empty() )
-    {
-      for ( auto& split : util::string_split<util::string_view>( talent_overrides_str, "/" ) )
-      {
-        override_talent( split );
-      }
-    }
+    parse_traits_hash( talents_str, this );
   }
 
   auto parsed_sub_trees = player_sub_trees;
@@ -3103,6 +2973,11 @@ void player_t::init_talents()
     for ( const auto& trait : trait_data_t::data( util::class_id( type ), talent_tree::SELECTION, is_ptr() ) )
       if ( range::contains( trait.id_spec, specialization() ) && range::contains( diff, trait.id_sub_tree ) )
         player_traits.emplace_back( talent_tree::SELECTION, trait.id_trait_node_entry, 1 );
+  }
+
+  if ( talents_str.empty() || !class_talents_str.empty() || !spec_talents_str.empty() || !hero_talents_str.empty() )
+  {
+    talents_str = generate_traits_hash( this );
   }
 
   // Generate talent effect overrides based on parsed trait information
@@ -4176,9 +4051,29 @@ void player_t::create_buffs()
                           util::round( find_spell( 265226 )->effectN( 1 ).average( this, level() ) ) * 3 );
     }
     else
+    {
       buffs.fireblood = buff_t::make_fallback( this, "fireblood", this );
+    }
 
     buffs.darkflight = make_buff_fallback( race == RACE_WORGEN, this, "darkflight", find_racial_spell( "darkflight" ) );
+
+    // fallback for ingest mineral isn't necessary as it's a passive effect that should not have any apl interaction
+    if ( race == RACE_EARTHEN_HORDE || race == RACE_EARTHEN_ALLIANCE )
+    {
+      unsigned _id = 451918;  // crit is default
+
+      switch ( earthen_mineral )
+      {
+        case player_t::AMBER:    _id = 451921; break;  // stamina
+        case player_t::EMERALD:  _id = 451916; break;  // haste
+        case player_t::ONYX:     _id = 451920; break;  // mastery
+        case player_t::SAPPHIRE: _id = 451917; break;  // versatility
+        default:                 break;
+      }
+
+      buffs.ingest_mineral = make_buff<stat_buff_t>( this, "ingest_mineral", find_spell( _id ) )
+        ->set_name_reporting( "Ingest Mineral" );
+    }
 
     buffs.movement = new movement_buff_t( this );
 
@@ -5960,7 +5855,7 @@ void prepare( player_t& p )
 #endif
 }
 
-void report_unmatched( const buff_t& b )
+void report_unmatched( [[maybe_unused]] const buff_t& b )
 {
 #ifndef NDEBUG
   /* Don't complain about targetdata buffs, since it is perfectly viable that the buff
@@ -5970,21 +5865,14 @@ void report_unmatched( const buff_t& b )
   {
     b.sim->error( "{} can't merge buff '{}' with source '{}'.", *b.player, b.name(), b.source_name() );
   }
-#else
-  // "Use" the parameters to silence compiler warnings.
-  (void)b;
 #endif
 }
 
-void check_tail( player_t& p, size_t first )
+void check_tail( [[maybe_unused]] player_t& p, [[maybe_unused]] size_t first )
 {
 #ifndef NDEBUG
   for ( size_t last = p.buff_list.size(); first < last; ++first )
     report_unmatched( *p.buff_list[ first ] );
-#else
-  // "Use" the parameters to silence compiler warnings.
-  (void)p;
-  (void)first;
 #endif
 }
 
@@ -6607,6 +6495,9 @@ void player_t::arise()
 
   if ( buffs.elegy_of_the_eternals_external )
     buffs.elegy_of_the_eternals_external->trigger();
+
+  if ( buffs.ingest_mineral )
+    buffs.ingest_mineral->trigger();
 
   if ( is_enemy() )
   {
@@ -9442,11 +9333,6 @@ struct use_item_t : public action_t
     }
 
     action_t::init();
-  }
-
-  void init_finished() override
-  {
-    action_t::init_finished();
 
     if ( action )
       action->is_precombat = is_precombat;
@@ -10406,270 +10292,9 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
   return consumable::create_action( this, name, options_str );
 }
 
-void player_t::parse_talents_numbers( util::string_view talent_string )
-{
-  talent_points->clear();
-
-  int i_max = std::min( static_cast<int>( talent_string.size() ), MAX_TALENT_ROWS );
-
-  for ( int i = 0; i < i_max; ++i )
-  {
-    char c = talent_string[ i ];
-    if ( c < '0' || c > ( '0' + MAX_TALENT_COLS ) )
-    {
-      throw std::runtime_error(fmt::format("Illegal character '{}' in talent encoding.", c ));
-    }
-    if ( c > '0' )
-      talent_points->select_row_col( i, c - '1' );
-  }
-
-  create_talents_numbers();
-}
-
 pet_t* player_t::create_pet( util::string_view, util::string_view )
 {
   return nullptr;
-}
-
-/**
- * Old-style armory format for xx.battle.net / xx.battlenet.com
- */
-bool player_t::parse_talents_armory( util::string_view talent_string )
-{
-  talent_points->clear();
-
-  if ( talent_string.size() < 2 )
-  {
-    sim->errorf( "Player %s has malformed MoP battle.net talent string. Empty or too short string.\n", name() );
-    return false;
-  }
-
-  // Verify class
-  {
-    player_e w_class = PLAYER_NONE;
-    switch ( talent_string[ 0 ] )
-    {
-      case 'd':
-        w_class = DEATH_KNIGHT;
-        break;
-      case 'g':
-        w_class = DEMON_HUNTER;
-        break;
-      case 'U':
-        w_class = DRUID;
-        break;
-      case 'Y':
-        w_class = HUNTER;
-        break;
-      case 'e':
-        w_class = MAGE;
-        break;
-      case 'f':
-        w_class = MONK;
-        break;
-      case 'b':
-        w_class = PALADIN;
-        break;
-      case 'X':
-        w_class = PRIEST;
-        break;
-      case 'c':
-        w_class = ROGUE;
-        break;
-      case 'W':
-        w_class = SHAMAN;
-        break;
-      case 'V':
-        w_class = WARLOCK;
-        break;
-      case 'Z':
-        w_class = WARRIOR;
-        break;
-      default:
-        sim->error( "Player {} has malformed talent string '{}': invalid class character '{}'.\n", name(),
-                     talent_string, talent_string[ 0 ] );
-        return false;
-    }
-
-    if ( w_class != type )
-    {
-      sim->error( "Player {} has malformed talent string '{}': specified class {} does not match player class {}.\n",
-                   name(), talent_string, util::player_type_string( w_class ),
-                   util::player_type_string( type ) );
-      return false;
-    }
-  }
-
-  auto cut_pt = talent_string.find( '!' );
-  if ( cut_pt == talent_string.npos )
-  {
-    sim->error( "Player {} has malformed talent string '{}'.\n", name(), talent_string );
-    return false;
-  }
-
-  auto spec_string = talent_string.substr( 1, cut_pt - 1 );
-  if ( !spec_string.empty() )
-  {
-    unsigned specidx = 0;
-    // A spec was specified
-    switch ( spec_string[ 0 ] )
-    {
-      case 'a':
-        specidx = 0;
-        break;
-      case 'Z':
-        specidx = 1;
-        break;
-      case 'b':
-        specidx = 2;
-        break;
-      case 'Y':
-        specidx = 3;
-        break;
-      default:
-        sim->error( "Player {} has malformed talent string '{}': invalid spec character '{}'.\n", name(),
-                     talent_string, spec_string[ 0 ] );
-        return false;
-    }
-
-    _spec = dbc->spec_by_idx( type, specidx );
-  }
-
-  auto t_str = talent_string.substr( cut_pt + 1 );
-  if ( t_str.empty() )
-  {
-    // No talents picked.
-    return true;
-  }
-
-  //  if ( t_str.size() < MAX_TALENT_ROWS )
-  //  {
-  //    sim -> errorf( "Player %s has malformed talent string '%s': talent list too short.\n",
-  //                   name(), talent_string.c_str() );
-  //    return false;
-  //  }
-
-  for ( size_t i = 0; i < std::min( t_str.size(), (size_t)MAX_TALENT_ROWS ); ++i )
-  {
-    switch ( t_str[ i ] )
-    {
-      case '.':
-        break;
-      case '0':
-      case '1':
-      case '2':
-        talent_points->select_row_col( static_cast<int>( i ), t_str[ i ] - '0' );
-        break;
-      default:
-        sim->error( "Player {} has malformed talent string '{}': talent list has invalid character '{}'.\n", name(),
-                     talent_string, t_str[ i ] );
-        return false;
-    }
-  }
-
-  create_talents_armory();
-
-  return true;
-}
-
-namespace
-{
-std::string armory2_class_name( util::string_view tokenized_class, util::string_view tokenized_spec )
-{
-  auto class_str = std::string( tokenized_class );
-  auto spec_str  = std::string( tokenized_spec );
-
-  util::replace_all( class_str, "-", " " );
-  util::replace_all( spec_str, "-", " " );
-  return util::inverse_tokenize( spec_str ) + " " + util::inverse_tokenize( class_str );
-}
-
-player_e armory2_parse_player_type( util::string_view class_name )
-{
-  if ( util::str_compare_ci( class_name, "death-knight" ) )
-  {
-    return DEATH_KNIGHT;
-  }
-  else if ( util::str_compare_ci( class_name, "demon-hunter" ) )
-  {
-    return DEMON_HUNTER;
-  }
-  else
-  {
-    return util::parse_player_type( class_name );
-  }
-}
-}  // namespace
-
-/**
- * New armory format used in worldofwarcraft.com / www.wowchina.com
- */
-bool player_t::parse_talents_armory2( util::string_view talent_url )
-{
-  auto split = util::string_split<util::string_view>( talent_url, "#/=" );
-  if ( split.size() < 5 )
-  {
-    sim->error( "Player {} has malformed talent url '{}'", name(), talent_url );
-    return false;
-  }
-
-  // Sanity check that second to last split is "talents"
-  if ( !util::str_compare_ci( split[ split.size() - 2 ], "talents" ) )
-  {
-    sim->error( "Player {} has malformed talent url '{}'", name(), talent_url );
-    return false;
-  }
-
-  const size_t OFFSET_CLASS   = split.size() - 4;
-  const size_t OFFSET_SPEC    = split.size() - 3;
-  const size_t OFFSET_TALENTS = split.size() - 1;
-
-  auto spec_name_str = armory2_class_name( split[ OFFSET_CLASS ], split[ OFFSET_SPEC ] );
-  auto player_type   = armory2_parse_player_type( split[ OFFSET_CLASS ] );
-  auto spec_type     = util::parse_specialization_type( spec_name_str );
-
-  if ( player_type == PLAYER_NONE || type != player_type )
-  {
-    sim->error( "Player {} has malformed talent url '{}': expected class '{}', got '{}'", name(), talent_url,
-                util::player_type_string( type ), split[ OFFSET_CLASS ] );
-    return false;
-  }
-
-  if ( spec_type == SPEC_NONE || specialization() != spec_type )
-  {
-    sim->error( "Player {} has malformed talent url '{}': expected specialization '{}', got '{}'", name(), talent_url,
-                dbc::specialization_string( specialization() ), split[ OFFSET_SPEC ] );
-    return false;
-  }
-
-  talent_points->clear();
-
-  auto idx_max = std::min( as<int>( split[ OFFSET_TALENTS ].size() ), MAX_TALENT_ROWS );
-
-  for ( auto talent_idx = 0; talent_idx < idx_max; ++talent_idx )
-  {
-    auto c = split[ OFFSET_TALENTS ][ talent_idx ];
-    if ( c < '0' || c > ( '0' + MAX_TALENT_COLS ) )
-    {
-      sim->errorf( "Player %s has illegal character '%c' in talent encoding.\n", name(), c );
-      return false;
-    }
-
-    if ( c > '0' )
-    {
-      talent_points->select_row_col( talent_idx, c - '1' );
-    }
-  }
-
-  create_talents_armory();
-
-  return true;
-}
-
-void player_t::create_talents_blizzard()
-{
-  talents_str.clear();
-  talents_str = generate_traits_hash( this );
 }
 
 /**
@@ -10697,24 +10322,6 @@ double player_t::avg_item_level() const
 double player_t::get_attribute( attribute_e a ) const
 {
   return util::floor( composite_attribute( a ) * composite_attribute_multiplier( a ) );
-}
-
-void player_t::create_talents_armory()
-{
-  if ( is_enemy() )
-    return;
-
-  talents_str = util::create_blizzard_talent_url( *this );
-}
-
-void player_t::create_talents_numbers()
-{
-  talents_str.clear();
-
-  for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
-  {
-    talents_str += util::to_string( talent_points->choice( j ) + 1 );
-  }
 }
 
 static bool parse_min_gcd( sim_t* sim, util::string_view name, util::string_view value )
@@ -10763,23 +10370,6 @@ void player_t::replace_spells()
           dbc->replace_id( entry.override_spell_id, entry.spell_id );
         }
     } );
-  }
-
-  // Search talents for spells to replace.
-  for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
-  {
-    for ( int i = 0; i < MAX_TALENT_COLS; i++ )
-    {
-      if ( talent_points->has_row_col( j, i ) && true_level < 20 + ( j == 0 ? -1 : j ) * 5 )
-      {
-        const talent_data_t* td = talent_data_t::find( type, j, i, specialization(), dbc->ptr );
-        if ( td && td->replace_id() )
-        {
-          dbc->replace_id( td->replace_id(), td->spell_id() );
-          break;
-        }
-      }
-    }
   }
 
   // Search general spells for spells to replace (a spell you learn earlier might be
@@ -10854,58 +10444,6 @@ void player_t::replace_spells()
           talent_obj.trait()->id_spell );
     }
   }
-}
-
-/**
- * Retrieves the Spell Data Associated with a given talent.
- *
- * If the player does not have have the talent activated, or the talent is not found,
- * spell_data_t::not_found() is returned.
- * The talent search by name is case sensitive, including all special characters!
- */
-const spell_data_t* player_t::find_talent_spell( util::string_view n, specialization_e s, bool name_tokenized,
-                                                 bool check_validity ) const
-{
-  if ( s == SPEC_NONE )
-  {
-    s = specialization();
-  }
-
-  // Get a talent's spell id for a given talent name
-  unsigned spell_id = dbc->talent_ability_id( type, s, n, name_tokenized );
-
-  if ( !spell_id )
-  {
-    sim->print_debug( "Player {}: Can't find talent with name '{}'.", name(), n );
-    return spell_data_t::not_found();
-  }
-
-  for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
-  {
-    for ( int i = 0; i < MAX_TALENT_COLS; i++ )
-    {
-      auto td = talent_data_t::find( type, j, i, s, dbc->ptr );
-      if ( !td )
-        continue;
-      auto spell = dbc::find_spell( this, td->spell_id() );
-
-      // Loop through all our classes talents, and check if their spell's id match the one we maped to the given
-      // talent name
-      if ( td && ( td->spell_id() == spell_id ) )
-      {
-        // check if we have the talent enabled or not
-        // Level tiers are hardcoded here which means they will need to changed when levels change
-        if ( check_validity &&
-          ( !talent_points->validate( spell, j, i ) || true_level < 20 + ( j == 0 ? -1 : j ) * 5 ) )
-          return spell_data_t::not_found();
-
-        return spell;
-      }
-    }
-  }
-
-  /* Talent not enabled */
-  return spell_data_t::not_found();
 }
 
 static player_talent_t create_talent_obj( const player_t* player, const trait_data_t* trait )
@@ -11200,40 +10738,42 @@ void player_t::vision_of_perfection_proc()
  * Tries to find spell data by name.
  *
  * It does this by going through various spell lists in following order:
- * class spell, specialization spell, mastery spell, talent spell, racial spell, pet_spell
+ * class spell, specialization spell, mastery spell, class/spec/hero talent spell, racial spell, pet_spell
  */
 const spell_data_t* player_t::find_spell( util::string_view name, specialization_e s ) const
 {
   const spell_data_t* sp = find_class_spell( name, s );
-  assert( sp );
   if ( sp->ok() )
     return sp;
 
   sp = find_specialization_spell( name );
-  assert( sp );
   if ( sp->ok() )
     return sp;
 
   if ( s != SPEC_NONE )
   {
     sp = find_mastery_spell( s );
-    assert( sp );
     if ( sp->ok() )
       return sp;
   }
 
-  sp = find_talent_spell( name );
-  assert( sp );
+  sp = find_talent_spell( talent_tree::CLASS, name );
+  if ( sp->ok() )
+    return sp;
+
+  sp = find_talent_spell( talent_tree::SPECIALIZATION, name );
+  if ( sp->ok() )
+    return sp;
+
+  sp = find_talent_spell( talent_tree::HERO, name );
   if ( sp->ok() )
     return sp;
 
   sp = find_racial_spell( name );
-  assert( sp );
   if ( sp->ok() )
     return sp;
 
   sp = find_pet_spell( name );
-  assert( sp );
   if ( sp->ok() )
     return sp;
 
@@ -12305,21 +11845,6 @@ double player_t::calculate_time_to_bloodlust() const
   return 3 * sim->expected_iteration_time.total_seconds();
 }
 
-void player_t::recreate_talent_str( talent_format format )
-{
-  switch ( format )
-  {
-    case talent_format::ARMORY:
-      create_talents_armory();
-      break;
-    case talent_format::WOWHEAD:
-      break;
-    default:
-      create_talents_blizzard();
-      break;
-  }
-}
-
 std::string player_t::create_profile( save_e stype )
 {
   std::string profile_str;
@@ -12347,28 +11872,40 @@ std::string player_t::create_profile( save_e stype )
     profile_str += dbc::specialization_string( specialization() ) + term;
     profile_str += "level=" + util::to_string( true_level ) + term;
     profile_str += "race=" + race_str + term;
+
     if ( race == RACE_NIGHT_ELF )
     {
       profile_str += "timeofday=" + util::to_string( timeofday == player_t::NIGHT_TIME ? "night" : "day" ) + term;
     }
-    if ( race == RACE_ZANDALARI_TROLL )
+    else if ( race == RACE_ZANDALARI_TROLL )
     {
-      profile_str += "zandalari_loa=" + util::to_string(zandalari_loa == player_t::AKUNDA ? "akunda" : zandalari_loa == player_t::BWONSAMDI ? "bwonsamdi"
-        : zandalari_loa == player_t::GONK ? "gonk" : zandalari_loa == player_t::KIMBUL ? "kimbul" : zandalari_loa == player_t::KRAGWA ? "kragwa" : "paku") + term;
+      profile_str += "zandalari_loa=" +
+                     util::to_string( zandalari_loa == player_t::AKUNDA      ? "akunda"
+                                      : zandalari_loa == player_t::BWONSAMDI ? "bwonsamdi"
+                                      : zandalari_loa == player_t::GONK      ? "gonk"
+                                      : zandalari_loa == player_t::KIMBUL    ? "kimbul"
+                                      : zandalari_loa == player_t::KRAGWA    ? "kragwa"
+                                                                             : "paku" ) + term;
     }
-    if ( race == RACE_VULPERA )
+    else if ( race == RACE_VULPERA )
     {
-      profile_str +=
-          "vulpera_tricks=" +
-          util::to_string( vulpera_tricks == player_t::HOLY
-                               ? "holy"
-                               : vulpera_tricks == player_t::FLAMES
-                                     ? "flames"
-                                     : vulpera_tricks == player_t::SHADOWS
-                                           ? "shadows"
-                                           : vulpera_tricks == player_t::HEALING ? "healing" : "corrosive" ) +
-          term;
+      profile_str += "vulpera_tricks=" +
+                     util::to_string( vulpera_tricks == player_t::HOLY      ? "holy"
+                                      : vulpera_tricks == player_t::FLAMES  ? "flames"
+                                      : vulpera_tricks == player_t::SHADOWS ? "shadows"
+                                      : vulpera_tricks == player_t::HEALING ? "healing"
+                                                                            : "corrosive" ) + term;
     }
+    else if ( race == RACE_EARTHEN_HORDE || race == RACE_EARTHEN_ALLIANCE )
+    {
+      profile_str += "earthen_mineral=" +
+                     util::to_string( earthen_mineral == player_t::AMBER      ? "amber"
+                                      : earthen_mineral == player_t::EMERALD  ? "emerald"
+                                      : earthen_mineral == player_t::ONYX     ? "onyx"
+                                      : earthen_mineral == player_t::SAPPHIRE ? "sapphire"
+                                                                              : "ruby" ) + term;
+    }
+
     profile_str += "role=";
     profile_str += util::role_type_string( primary_role() ) + term;
     profile_str += "position=" + position_str + term;
@@ -12383,7 +11920,6 @@ std::string player_t::create_profile( save_e stype )
   {
     if ( !talents_str.empty() )
     {
-      recreate_talent_str( sim->talent_input_format );
       profile_str += "talents=" + talents_str + term;
     }
 
@@ -12400,15 +11936,6 @@ std::string player_t::create_profile( save_e stype )
     if ( !hero_talents_str.empty() )
     {
       profile_str += "hero_talents=" + hero_talents_str + term;
-    }
-
-    if ( !talent_overrides_str.empty() )
-    {
-      auto splits = util::string_split<util::string_view>( talent_overrides_str, "/" );
-      for ( const auto& split : splits )
-      {
-        profile_str += fmt::format( "talent_override={}{}", split, term );
-      }
     }
 
     if ( azerite )
@@ -12698,14 +12225,14 @@ void player_t::copy_from( player_t* source )
   timeofday             = source->timeofday;
   zandalari_loa         = source->zandalari_loa;
   vulpera_tricks        = source->vulpera_tricks;
+  earthen_mineral       = source->earthen_mineral;
   race                  = source->race;
   role                  = source->role;
   _spec                 = source->_spec;
   base.distance         = source->base.distance;
   position_str          = source->position_str;
   professions_str       = source->professions_str;
-  this->recreate_talent_str( talent_format::UNCHANGED );
-  parse_talent_url( sim, "talents", source->talents_str );
+  talents_str           = source->talents_str;
   class_talents_str     = source->class_talents_str;
   spec_talents_str      = source->spec_talents_str;
   hero_talents_str      = source->hero_talents_str;
@@ -12737,7 +12264,6 @@ void player_t::copy_from( player_t* source )
     dbc_override = dbc_override_.get();
   }
 
-  talent_overrides_str = source->talent_overrides_str;
   action_list_str      = source->action_list_str;
   alist_map            = source->alist_map;
   use_apl              = source->use_apl;
@@ -12783,12 +12309,12 @@ void player_t::create_options()
   add_option( opt_string( "server", server_str ) );
   add_option( opt_string( "thumbnail", report_information.thumbnail_url ) );
   add_option( opt_string( "id", id_str ) );
-  add_option( opt_func( "talents", parse_talent_url ) );
-  add_option( opt_func( "talent_override", parse_talent_override ) );
+  add_option( opt_func( "talents", parse_talent_string ) );
   add_option( opt_string( "race", race_str ) );
   add_option( opt_func( "timeofday", parse_timeofday ) );
   add_option( opt_func( "zandalari_loa", parse_loa ) );
   add_option( opt_func( "vulpera_tricks", parse_tricks ) );
+  add_option( opt_func( "earthen_mineral", parse_mineral ) );
   add_option( opt_int( "level", true_level, 1, MAX_LEVEL ) );
   add_option( opt_bool( "ready_trigger", ready_type ) );
   add_option( opt_func( "role", parse_role_string ) );
@@ -13190,6 +12716,9 @@ void player_t::create_options()
   add_option( opt_timespan( "thewarwithin.dawn_dusk_thread_lining_update_interval_stddev", thewarwithin_opts.dawn_dusk_thread_lining_update_interval_stddev, 1_s, timespan_t::max() ) );
   add_option( opt_timespan( "thewarwithin.embrace_of_the_cinderbee_timing", thewarwithin_opts.embrace_of_the_cinderbee_timing, 100_ms, 10_s ) );
   add_option( opt_float( "thewarwithin.embrace_of_the_cinderbee_miss_chance", thewarwithin_opts.embrace_of_the_cinderbee_miss_chance, 0, 1 ) );
+  add_option( opt_int( "thewarwithin.nerubian_pheromone_secreter_pheromones", thewarwithin_opts.nerubian_pheromone_secreter_pheromones, 0, 3 ) );
+  add_option( opt_int( "thewarwithin.binding_of_binding_on_you", thewarwithin_opts.binding_of_binding_on_you, 0, 29 ) );
+  add_option( opt_float( "thewarwithin.binding_of_binding_ally_skip_chance", thewarwithin_opts.binding_of_binding_ally_skip_chance, 0, 1 ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )
@@ -13364,8 +12893,6 @@ void player_t::analyze( sim_t& s )
       collected_data.timeline_dmg.adjust( collected_data.fight_length );
     }
   }
-
-  recreate_talent_str( s.talent_input_format );
 }
 
 /**
@@ -13612,14 +13139,13 @@ void player_t::update_movement( timespan_t duration )
 /**
  * Instant teleport. No overshooting support for now.
  */
-void player_t::teleport( double yards, timespan_t duration )
+void player_t::teleport( double yards, timespan_t )
 {
   do_update_movement( yards );
 
   if ( sim->debug )
     sim->out_debug.printf( "Player %s warp, direction=%s speed=LIGHTSPEED! distance_covered=%f to_go=%f", name(),
                            util::movement_direction_string( movement_direction() ), yards, current.distance_to_move );
-  (void)duration;
 }
 
 /**

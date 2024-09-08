@@ -303,6 +303,7 @@ public:
     const spell_data_t* holy_paladin;
     const spell_data_t* protection_paladin;
     const spell_data_t* retribution_paladin;
+    const spell_data_t* retribution_paladin_2;
     const spell_data_t* word_of_glory_2;
     const spell_data_t* holy_shock_2;
     const spell_data_t* improved_crusader_strike;
@@ -352,7 +353,6 @@ public:
     cooldown_t* second_sunrise_icd;
 
     cooldown_t* eye_of_tyr;          // Light's Deliverance
-    cooldown_t* higher_calling_icd;  // Needed for Crusading Strikes
     cooldown_t* endless_wrath_icd;   // Needed for many random hammer procs
     cooldown_t* hammerfall_icd;
     cooldown_t* art_of_war;
@@ -429,10 +429,6 @@ public:
     const spell_data_t* seraphim_buff;
     const spell_data_t* crusade;
     const spell_data_t* sentinel;
-    const spell_data_t* cleansing_flame_damage;
-    const spell_data_t* cleansing_flame_heal;
-    const spell_data_t* wrathful_sanction;
-
 
     struct
     {
@@ -736,24 +732,15 @@ public:
 
   } talents;
 
-  struct tier_sets_t
-  {
-    const spell_data_t* ally_of_the_light_2pc;
-    const spell_data_t* ally_of_the_light_4pc;
-    const spell_data_t* heartfire_sentinels_authority_2pc;
-    const spell_data_t* heartfire_sentinels_authority_4pc;
-    const spell_data_t* t31_2pc;
-    const spell_data_t* t31_4pc;
-  } tier_sets;
-
   // Paladin options
   struct options_t
   {
     bool fake_sov                         = true;
     double proc_chance_ret_aura_sera      = 0.10;
-    double min_dg_heal_targets            = 1.0;
-    double max_dg_heal_targets            = 5.0;
+    int min_dg_heal_targets               = 1;
+    int max_dg_heal_targets               = 5;
     bool sacred_weapon_prefer_new_targets = false;
+    bool fake_solidarity                  = false;
   } options;
   player_t* beacon_target;
 
@@ -784,7 +771,6 @@ public:
   virtual void init_rng() override;
   virtual void init_spells() override;
   virtual void init_action_list() override;
-  virtual void init_items() override;
   virtual bool validate_fight_style( fight_style_e style ) const override;
   virtual void reset() override;
   virtual std::unique_ptr<expr_t> create_expression( util::string_view name ) override;
@@ -1004,16 +990,6 @@ struct execution_sentence_debuff_t : public buff_t
     return accumulated_damage * accum_percent;
   }
 
-  void do_will_extension()
-  {
-    if ( extended_count >= 8 )
-      return;
-
-    extended_count += 1;
-    // TODO(mserrano): pull this out of spelldata
-    extend_duration( player, timespan_t::from_seconds( 1 ) );
-  }
-
 private:
   double accumulated_damage;
   double accum_percent;
@@ -1150,7 +1126,7 @@ public:
     bool avenging_wrath, judgment, blessing_of_dawn, seal_of_reprisal, seal_of_order, divine_purpose,
       divine_purpose_cost;                                                               // Shared
     bool crusade, highlords_judgment, highlords_judgment_hidden, final_reckoning_st, final_reckoning_aoe,
-      divine_arbiter, divine_hammer, ret_t29_2p, ret_t29_4p, rise_from_ash; // Ret
+      blades_of_light, divine_hammer, ret_t29_2p, ret_t29_4p, rise_from_ash; // Ret
     bool avenging_crusader;                                                                // Holy
     bool bastion_of_light, sentinel, heightened_wrath;                                     // Prot
     bool gleaming_rays; // Herald of the Sun
@@ -1249,25 +1225,18 @@ public:
 
     if ( p->talents.blades_of_light->ok() && this->data().affected_by( p->talents.blades_of_light->effectN( 1 ) ) )
     {
+      this->affected_by.blades_of_light = true;
       ab::school = SCHOOL_HOLYSTRIKE;
       ab::base_multiplier *= 1.0 + p->talents.blades_of_light->effectN( 2 ).percent();
+    }
+    else
+    {
+      this->affected_by.blades_of_light = false;
     }
 
     if ( p->talents.burning_crusade->ok() && this->data().affected_by( p->talents.burning_crusade->effectN( 1 ) ) )
     {
       ab::school = SCHOOL_RADIANT;
-    }
-
-    if ( p->talents.divine_arbiter->ok() )
-    {
-      int label                        = p->talents.divine_arbiter->effectN( 1 ).misc_value2();
-      this->affected_by.divine_arbiter = this->data().affected_by_label( label );
-      if ( this->affected_by.divine_arbiter && p->bugs )
-        ab::base_multiplier *= 1.0 + p->talents.divine_arbiter->effectN( 1 ).percent();
-    }
-    else
-    {
-      this->affected_by.divine_arbiter = false;
     }
 
     if ( p->talents.herald_of_the_sun.gleaming_rays->ok() )
@@ -1329,7 +1298,7 @@ public:
   {
     ab::execute();
 
-    if ( ( this->affected_by.divine_arbiter || always_do_capstones ) && p()->talents.divine_arbiter->ok() )
+    if ( ( this->affected_by.blades_of_light || always_do_capstones ) && p()->talents.divine_arbiter->ok() )
     {
       p()->buffs.divine_arbiter->trigger( 1 );
     }
@@ -1339,18 +1308,17 @@ public:
       if ( ab::rng().roll( p()->talents.searing_light->proc_chance() ) && p()->cooldowns.searing_light_icd->up() )
       {
         p()->cooldowns.searing_light_icd->start();
-        p()->active.searing_light->set_target( ab::execute_state->target );
+        p()->active.searing_light->set_target( ab::target );
         p()->active.searing_light->schedule_execute();
       }
     }
-    if ( triggers_higher_calling && p()->talents.templar.higher_calling->ok() && p()->buffs.templar.shake_the_heavens->up() && p()->cooldowns.higher_calling_icd->up() )
+    if ( triggers_higher_calling && p()->talents.templar.higher_calling->ok() && p()->buffs.templar.shake_the_heavens->up() )
     {
       timespan_t extension = timespan_t::from_seconds( p()->talents.templar.higher_calling->effectN( 1 ).base_value() );
       // If Crusading Strikes is triggering, extension is only 500ms
       if ( ab::id == 408385 )
         extension = 500_ms;
       p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
-      p()->cooldowns.higher_calling_icd->start();
     }
 
     if ( affected_by.divine_hammer && p()->buffs.divine_hammer->up() )
@@ -1377,13 +1345,6 @@ public:
         if ( td->debuff.judgment->up() )
           td->debuff.judgment->decrement();
       }
-      if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, T31, B4 ) )
-      {
-        if ( s->action->harmful )
-          p()->t31_4p_prot( s );
-        else
-          p()->t31_4p_prot_heal( s );
-      }
     }
   }
 
@@ -1409,20 +1370,9 @@ public:
         am *= 1.0 + mastery_amount;
       }
 
-
       if ( affected_by.crusade && p()->buffs.crusade->up() )
       {
         am *= 1.0 + p()->buffs.crusade->get_damage_mod();
-      }
-
-      if ( affected_by.ret_t29_2p && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T29, B2 ) )
-      {
-        am *= 1.0 + p()->sets->set( PALADIN_RETRIBUTION, T29, B2 )->effectN( 1 ).percent();
-      }
-
-      if ( affected_by.ret_t29_4p && p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T29, B4 ) )
-      {
-        am *= 1.0 + p()->sets->set( PALADIN_RETRIBUTION, T29, B4 )->effectN( 1 ).percent();
       }
     }
 
@@ -1490,11 +1440,7 @@ public:
     // Handles both holy and ret judgment
     if ( affected_by.judgment && td->debuff.judgment->up() )
     {
-      // ToDo (Ret): Check if this is correct for Ret, too
       double judg_mul = 1.0 + td->debuff.judgment->default_value;
-      if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T30, B4 ) )
-        judg_mul += p()->sets->set( PALADIN_RETRIBUTION, T30, B4 )->effectN( 1 ).percent();
-
       ctm *= judg_mul;
     }
 
@@ -1787,12 +1733,8 @@ public:
 
     if ( ab::result_is_hit( s->result ) &&  p->buffs.herald_of_the_sun.dawnlight->up() )
     {
-      paladin_td_t* td = p->get_target_data( s->target );
-      if ( ! td->dots.dawnlight->is_ticking() )
-      {
-        p->active.dawnlight->execute_on_target( s->target );
-        p->buffs.herald_of_the_sun.dawnlight->decrement();
-      }
+      p->active.dawnlight->execute_on_target( s->target );
+      p->buffs.herald_of_the_sun.dawnlight->decrement();
     }
   }
 
@@ -1892,6 +1834,8 @@ public:
       p->radiant_glory_accumulator += ab::rng().range( 0.0, 0.225 );
       if ( p->radiant_glory_accumulator >= 1.0 )
       {
+        bool do_avatar = p->talents.herald_of_the_sun.suns_avatar->ok() && !( p->buffs.avenging_wrath->up() || p->buffs.crusade->up() );
+
         // TODO(mserrano): get this from spell data
         if ( p->talents.crusade->ok() )
         {
@@ -1899,9 +1843,14 @@ public:
         }
         else if ( p->talents.avenging_wrath->ok() )
         {
-          p->buffs.avenging_wrath->trigger( timespan_t::from_seconds( 4 ) );
+          p->buffs.avenging_wrath->extend_duration_or_trigger( timespan_t::from_seconds( 4 ) );
         }
         p->radiant_glory_accumulator -= 1.0;
+
+        if ( do_avatar )
+        {
+          p->apply_avatar_dawnlights();
+        }
       }
     }
 

@@ -143,7 +143,7 @@ struct evoker_td_t : public actor_target_data_t
   struct chrono_tracker_t
   {
     std::array<double, 5> damage_buckets = { 0, 0, 0, 0, 0 };
-    time_t last_accessed_second          = std::numeric_limits<time_t>::min();
+    time_t last_accessed_second          = 0;
   } chrono_tracker;
 
   evoker_td_t( player_t* target, evoker_t* source );
@@ -296,6 +296,9 @@ struct simplified_player_t : public player_t
   action_t* snapshot_stats;
   std::vector<buff_t*> damage_buffs;
 
+  bool has_hasted_gcds;
+  double haste_modifier;
+
   struct bob_settings_t
   {
     struct bob_buff_t
@@ -317,6 +320,8 @@ struct simplified_player_t : public player_t
     int aoe;
     int reduced_aoe_targets;
     int full_amount_targets;
+        
+    double haste_modifier;
 
     double flat_damage_per_hit;
 
@@ -328,37 +333,37 @@ struct simplified_player_t : public player_t
   // Options
   struct options_t
   {
-    int item_level = 639;
+    int item_level = 593;
     std::string variant = "default";
   } option;
 
   
   std::map<std::string, bob_settings_t> bob_settings = {
-      { "default", { ROLE_SPELL,  11,  true, 1.5_s, 0.40, -1, 8, 1, 20000.0, 0.0011, {} } }, // 250.9k
-      { "tank",    { ROLE_TANK,  6.1,  true, 1.5_s, 0.45, -1, 8, 1, 20000.0, 0.0011, {} } },      // 157.4k
-      { "healer",  { ROLE_HEAL,  1.8,  true, 1.5_s, 0.25, -1, 5, 1, 20000.0, 0.0011, {} } },      // 78k
-      { "shadow",  { ROLE_SPELL, 6.3,  true, 1.5_s, 0.45, -1, 8, 1, 20000.0, 0.0011, {       // 244.8k
+      { "default", { ROLE_SPELL, 10.3 , true, 1.5_s, 0.40, -1, 8, 1, 0.0, 20000.0, 0.0011, {} } }, // 250.9k
+      { "tank",    { ROLE_TANK,   6.1 , true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, {} } },      // 157.4k
+      { "healer",  { ROLE_HEAL,   1.8 , true, 1.5_s, 0.25, -1, 5, 1, 0.0, 20000.0, 0.0011, {} } },      // 78k
+      { "shadow",  { ROLE_SPELL,  6.45, true, 1.5_s, 0.45, -1, 8, 1, 0.0, 20000.0, 0.0011, {       // 244.8k
           { "two_mins_cds",      0.4, 15_s, 120_s, 3_s },
           { "one_mins_cds",      0.4, 15_s,  60_s, 3_s },
           { "two_mins_cds_two",  0.4, 45_s, 120_s, 3_s } } } },
-      { "bm",      { ROLE_SPELL, 8,    true, 1.5_s, 0.4,  -1, 8, 1, 14000.0, 0.0011, {              // 243.5k
-          { "two_mins_cds", 0.5,  20_s, 120_s, 3_s },
-          { "30s_cds",      0.25, 15_s,  30_s, 3_s } } } },
-      { "assa",    { ROLE_SPELL, 3.3, false, 1_s,   0.5,  -1, 8, 1, 11100.0, 0.0011, {              // 234.6k
-          { "ten_mins_cds", 0.2,  40_s, 600_s, 0_s },
-          { "two_mins_cds", 1.25, 20_s, 120_s, 6_s },
-          { "one_mins_cds", 1.1,  14_s,  60_s, 7_s } } } },
-      { "unh",     { ROLE_SPELL, 5.5,    true, 1.5_s, 0.4,  -1, 8, 1, 18000.0, 0.0011, {             // 251.4k
-          { "90s_cds",        1.1, 20_s,  90_s, 7_s },
-          { "45s_cds",        0.6, 20_s,  45_s ,8_s } } } },
+      { "bm",      { ROLE_SPELL,  6.7,  true, 1.5_s, 0.4,  -1, 8, 1, 0.5, 14000.0, 0.0011, {              // 243.5k
+          { "two_mins_cds",           0.3,   20_s, 120_s, 3_s },
+          { "two_mins_cds_lingering", 0.15,  30_s, 120_s, 3_s },
+          { "30s_cds",                0.35, 15_s,  30_s, 3_s } } } },
+      { "assa",    { ROLE_SPELL,  4.65, false,   1_s, 0.5,  -1, 8, 1, 0.8, 11100.0, 0.0011, {              // 234.6k
+          { "two_mins_cds", 0.9 , 20_s, 120_s, 6_s },
+          { "one_mins_cds", 0.65, 14_s,  60_s, 8_s } } } },
+      { "unh",     { ROLE_SPELL,  5.7,  true, 1.5_s, 0.4,  -1, 8, 1, 0.0, 18000.0, 0.0011, {             // 251.4k
+          { "90s_cds",      1.1, 20_s,  90_s, 7_s },
+          { "45s_cds",      0.6, 20_s,  45_s, 8_s } } } },
       // Could probably use some RNG in the 40s cds to better emulate the 30-40s variance in use timing
-      { "dk_frost",{ ROLE_SPELL, 9.1, true, 1.5_s, 0.4,  -1, 8, 1, 13900.0, 0.0011, {             // 262.4k
+      { "dk_frost",{ ROLE_SPELL,  8.4,  true, 1.5_s, 0.4,  -1, 8, 1, 0.0, 13900.0, 0.0011, {             // 262.4k
           { "two_mins_cds", 0.2,  20_s, 120_s, 3_s },
           { "40s_cds", 0.25, 12_s, 34_s, 3_s } } } },
   };
 
   simplified_player_t( sim_t* sim, std::string_view name, race_e r = RACE_HUMAN )
-    : player_t( sim, PLAYER_SIMPLIFIED, name, r ), damage_buffs()
+    : player_t( sim, PLAYER_SIMPLIFIED, name, r ), damage_buffs(), has_hasted_gcds( true ), haste_modifier( 0.0 )
   {
     resource_regeneration = regen_type::DISABLED;
 
@@ -414,6 +419,8 @@ struct simplified_player_t : public player_t
     player_t::init();
 
     role = get_variant_settings().role;
+    has_hasted_gcds = get_variant_settings().hasted_gcds;
+    haste_modifier  = get_variant_settings().haste_modifier;
   }
 
   void init_defence()
@@ -453,10 +460,16 @@ struct simplified_player_t : public player_t
       }
     };
 
+    simplified_player_t* p()
+    {
+      return debug_cast<simplified_player_t*>( player );
+    }
+
     action_t* damage_proc;
+    double haste_modifier;
 
     simple_ability_t( simplified_player_t* p, bob_settings_t settings )
-      : spell_t( "simple_spell", p ), damage_proc( nullptr )
+      : spell_t( "simple_spell", p ), damage_proc( nullptr ), haste_modifier( 0.0 )
     {
       background = repeating = true;
 
@@ -473,8 +486,8 @@ struct simplified_player_t : public player_t
       spell_power_mod.direct = settings.sp_coeff * scaling_factor;
       gcd_type               = settings.hasted_gcds ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
       base_execute_time      = settings.gcd_time;
-      
-      school                 = SCHOOL_MAGIC;
+
+      school = SCHOOL_MAGIC;
 
       aoe                 = settings.aoe;
       reduced_aoe_targets = settings.reduced_aoe_targets;
@@ -486,6 +499,16 @@ struct simplified_player_t : public player_t
         damage_proc = new simple_proc_t( p, settings );
         add_child( damage_proc );
       }
+
+      haste_modifier = settings.haste_modifier;
+    }
+
+    double execute_time_pct_multiplier() const override
+    {
+      if ( gcd_type == gcd_haste_type::SPELL_HASTE )
+        return spell_t::execute_time_pct_multiplier();
+
+      return 1.0;
     }
 
     bool usable_moving() const override
@@ -548,18 +571,18 @@ struct simplified_player_t : public player_t
     int item_level = option.item_level;
 
     std::map<slot_e, std::string> default_items = {
-        { SLOT_HEAD,      fmt::format( ",id=195476,ilevel={},gem_id=192919", item_level ) },
-        { SLOT_NECK,      fmt::format( ",id=207163,ilevel={},gem_id=192988/192919/192919", item_level ) },
+        { SLOT_HEAD,      fmt::format( ",id=195476,ilevel={},gem_id=213743", item_level ) },
+        { SLOT_NECK,      fmt::format( ",id=207163,ilevel={},gem_id=213482/213458", item_level ) },
         { SLOT_SHOULDERS, fmt::format( ",id=193637,ilevel={}", item_level ) },
         { SLOT_BACK,      fmt::format( ",id=195482,ilevel={}", item_level ) },
-        { SLOT_CHEST,     fmt::format( ",id=193801,ilevel={},enchant=waking_stats_3", item_level ) },
-        { SLOT_WRISTS,    fmt::format( ",id=193812,ilevel={},gem_id=192919", item_level ) },
+        { SLOT_CHEST,     fmt::format( ",id=193801,ilevel={},enchant=crystalline_radiance_3", item_level ) },
+        { SLOT_WRISTS,    fmt::format( ",id=193812,ilevel={},gem_id=213491", item_level ) },
         { SLOT_HANDS,     fmt::format( ",id=193818,ilevel={}", item_level ) },
-        { SLOT_WAIST,     fmt::format( ",id=207144,ilevel={},gem_id=192919", item_level ) },
-        { SLOT_LEGS,      fmt::format( ",id=193759,ilevel={},enchant=frozen_spellthread_3", item_level ) },
+        { SLOT_WAIST,     fmt::format( ",id=207144,ilevel={},gem_id=213473", item_level ) },
+        { SLOT_LEGS,      fmt::format( ",id=193759,ilevel={},enchant=sunset_spellthread_3", item_level ) },
         { SLOT_FEET,      fmt::format( ",id=207139,ilevel={}", item_level ) },
-        { SLOT_FINGER_1,  fmt::format( ",id=207159,ilevel={},gem_id=192919,enchant=devotion_of_mastery_3", item_level ) },
-        { SLOT_FINGER_2,  fmt::format( ",id=204398,ilevel={},gem_id=192919,enchant=devotion_of_mastery_3", item_level ) },
+        { SLOT_FINGER_1,  fmt::format( ",id=207159,ilevel={},gem_id=213494/213494,enchant=radiant_mastery_3", item_level ) },
+        { SLOT_FINGER_2,  fmt::format( ",id=204398,ilevel={},gem_id=213494/213494,enchant=radiant_mastery_3", item_level ) },
         { SLOT_TRINKET_1, fmt::format( ",id=153816,ilevel={}", item_level ) },
         { SLOT_TRINKET_2, fmt::format( ",id=153819,ilevel={}", item_level ) },
         { SLOT_MAIN_HAND, fmt::format( ",id=202565,ilevel={}", item_level ) },
@@ -606,6 +629,9 @@ struct simplified_player_t : public player_t
       }
     }
 
+    if ( haste_modifier > 0 )
+      m *= 1.0 - haste_modifier + haste_modifier / cache.spell_cast_speed();
+
     return m;
   }
 
@@ -636,6 +662,10 @@ struct simplified_player_t : public player_t
     {
       case CACHE_MASTERY:
         player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        break;
+      case CACHE_HASTE:
+        if ( haste_modifier > 0 )
+          player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
         break;
       default:
         break;
@@ -1304,7 +1334,6 @@ struct time_skip_t : public buff_t
   {
     set_cooldown( 0_ms );
     set_default_value_from_effect( 1 );
-    set_reverse( true );
 
     apply_affecting_aura( p->talent.tomorrow_today );
 
@@ -1803,7 +1832,8 @@ public:
   //   parse_effects( buff3, [ this ] { return p()->check2() && p()->check3(); } );
   void apply_buff_effects()
   {
-    parse_effects( p()->buff.ancient_flame );
+    auto af_mask = effect_mask_t( true ).disable( 2 );
+    parse_effects( p()->buff.ancient_flame, af_mask );
     parse_effects( p()->buff.burnout );
     parse_effects( p()->buff.essence_burst, p()->talent.ignition_rush );
     parse_effects( p()->buff.snapfire );
@@ -2679,6 +2709,16 @@ using empowered_release_heal_t = empowered_release_t<evoker_heal_t>;
 
 // Heals ====================================================================
 
+ struct panacea_t : public evoker_heal_t
+{
+  panacea_t( evoker_t* p, std::string_view name ) : evoker_heal_t( name, p, p->talent.panacea_spell )
+  {
+    harmful = false;
+    dual    = true;
+    target  = p;
+  }
+};
+
 struct emerald_blossom_t : public essence_heal_t
 {
   struct emerald_blossom_heal_t : public evoker_heal_t
@@ -2695,16 +2735,6 @@ struct emerald_blossom_t : public essence_heal_t
     }
   };
 
-  struct panacea_t : public evoker_heal_t
-  {
-    panacea_t( evoker_t* p ) : evoker_heal_t( "panacea", p, p->talent.panacea_spell )
-    {
-      harmful = false;
-      dual    = true;
-      target  = p;
-    }
-  };
-
   action_t *heal, *panacea, *virtual_heal;
 
   timespan_t extend_ebon;
@@ -2715,7 +2745,7 @@ struct emerald_blossom_t : public essence_heal_t
     harmful      = false;
     heal         = p->get_secondary_action<emerald_blossom_heal_t>( "emerald_blossom_heal" );
     virtual_heal = p->get_secondary_action<emerald_blossom_heal_t>( "emerald_blossom_virtual_heal", false );
-    panacea      = p->get_secondary_action<panacea_t>( "panacea" );
+    panacea      = p->get_secondary_action<panacea_t>( "panacea_eb", "panacea_eb" );
 
     min_travel_time = data().duration().total_seconds();
 
@@ -2811,10 +2841,23 @@ struct verdant_embrace_t : public evoker_heal_t
 {
   struct verdant_embrace_heal_t : public evoker_heal_t
   {
-    verdant_embrace_heal_t( evoker_t* p ) : evoker_heal_t( "verdant_embrace_heal", p, p->find_spell( 361195 ) )
+    action_t* panacea;
+
+    verdant_embrace_heal_t( evoker_t* p )
+      : evoker_heal_t( "verdant_embrace_heal", p, p->find_spell( 361195 ) ), panacea( nullptr )
     {
       harmful = false;
       dual    = true;
+
+      panacea = p->get_secondary_action<panacea_t>( "panacea_ve", "panacea_ve" );
+      add_child( panacea );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      evoker_heal_t::impact( s );
+      if ( panacea )
+        panacea->execute_on_target( s->target );
     }
   };
 
@@ -3153,7 +3196,10 @@ public:
       if ( t == p() && p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW1, B4 ) )
       {
         p()->buff.tww1_4pc_aug->expire();
-        p()->buff.tww1_4pc_aug->trigger();
+        make_event( sim, p()->buff.tww1_4pc_aug->tick_time(), [ this ] {
+          if ( p()->buff.ebon_might_self_buff->check() )
+            p()->buff.tww1_4pc_aug->trigger();
+        } );
       }
 
       auto time = ebon_time >= timespan_t::zero() ? ebon_time : buff->buff_duration();
@@ -3828,9 +3874,11 @@ struct azure_strike_t : public evoker_spell_t
     double eb_chance = p()->talent.azure_essence_burst->effectN( 1 ).percent();
 
     // TODO:  Work out how this is rolled.
-    if ( p()->talent.flameshaper.titanic_precision.ok() && rng().roll( composite_target_crit_chance( target ) ) )
+    if ( p()->talent.flameshaper.titanic_precision.ok() && rng().roll( composite_target_crit_chance( target ) ) &&
+         rng().roll( rng().roll( eb_chance ) ) )
     {
-      eb_chance *= ( 1 + p()->talent.flameshaper.titanic_precision->effectN( 1 ).percent() );
+      p()->buff.essence_burst->trigger();
+      p()->proc.azure_essence_burst->occur();
     }
 
     if ( p()->talent.azure_essence_burst.ok() && ( p()->buff.dragonrage->up() || rng().roll( eb_chance ) ) )
@@ -3940,10 +3988,10 @@ struct deep_breath_t : public evoker_spell_t
     travel_delay = 0.9;   // guesstimate, TODO: confirm
     travel_speed = 19.5;  // guesstimate, TODO: confirm
 
-    trigger_gcd = 2_s;
-    gcd_type    = gcd_haste_type::NONE;
+    trigger_gcd = p->talent.scalecommander.maneuverability.ok() ? 1.5_s : 2_s;
+    gcd_type    = p->talent.scalecommander.maneuverability.ok() ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
 
-    if (data().ok())
+    if ( data().ok() )
     {
       if ( p->talent.scalecommander.maneuverability.ok() )
       {
@@ -4040,7 +4088,7 @@ struct disintegrate_t : public essence_spell_t
 
   int max_targets() const
   {
-    return 1 + ( p()->buff.mass_disintegrate_stacks->check() > 0 ) * 2;
+    return ( p()->buff.mass_disintegrate_stacks->check() > 0 ) * 3;
   }
 
   int targets() const
@@ -4101,7 +4149,9 @@ struct disintegrate_t : public essence_spell_t
     action_state_t::release( state );
 
     int targets_            = targets();
-    int virtual_buff_stacks = num_ticks * targets();
+    targets_                = targets_ ? targets_ : 1;
+
+    int virtual_buff_stacks = num_ticks * targets_;
 
     // trigger the buffs first so tick-zero can get buffed
     if ( p()->buff.essence_burst->check() )
@@ -4113,6 +4163,8 @@ struct disintegrate_t : public essence_spell_t
     if ( p()->buff.mass_disintegrate_stacks->check() )
     {
       int max_targets_ = max_targets();
+      max_targets_ = max_targets_ ? max_targets_ : 1;
+
       auto buff_size   = ( max_targets_ - targets_ ) * mass_disint_mult;
       p()->buff.mass_disintegrate_ticks->trigger( num_ticks, buff_size, -1, buff_duration );
     }
@@ -4129,13 +4181,14 @@ struct disintegrate_t : public essence_spell_t
   {
     essence_spell_t::impact( s );
 
-    if ( p()->talent.scalecommander.bombardments.ok() && p()->buff.mass_disintegrate_stacks->check() )
+    if ( p()->talent.scalecommander.bombardments.ok() && p()->buff.mass_disintegrate_stacks->check() && s->chain_target == 0 )
     {
       auto td = p()->get_target_data( s->target );
       td->debuffs.bombardments->trigger();
     }
 
-    p()->buff.mass_disintegrate_stacks->decrement();
+    if ( s->chain_target == 0 )
+      p()->buff.mass_disintegrate_stacks->decrement();
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
@@ -4607,10 +4660,11 @@ struct living_flame_t : public evoker_spell_t
       for ( int i = 0; i < total_hits; i++ )
       {
         // TODO:  Work out how this is rolled.
-        if ( p()->talent.flameshaper.titanic_precision.ok() && rng().roll( composite_target_crit_chance( target ) ) )
+        if ( p()->talent.flameshaper.titanic_precision.ok() &&
+             rng().roll( composite_target_crit_chance( target ) && rng().roll( eb_chance ) ) )
         {
-          eb_chance = p()->talent.ruby_essence_burst->effectN( 1 ).percent() *
-                      ( 1 + p()->talent.flameshaper.titanic_precision->effectN( 1 ).percent() );
+          p()->buff.essence_burst->trigger();
+          p()->proc.ruby_essence_burst->occur();
         }
 
         if ( p()->buff.dragonrage->up() || rng().roll( eb_chance ) )
@@ -4864,7 +4918,7 @@ struct pyre_t : public essence_spell_t
     damage->stats   = stats;
     damage->proc    = true;
 
-    firestorm = p->get_secondary_action<firestorm_t>( "firestorm_ftf", "firestorm_ftf", true );
+    firestorm = p->get_secondary_action<firestorm_t>( name_str + "_firestorm_ftf", name_str + "_firestorm_ftf", true );
     add_child( firestorm );
   }
 
@@ -5643,8 +5697,8 @@ struct breath_of_eons_t : public evoker_spell_t
     travel_delay = 0.9;   // guesstimate, TODO: confirm
     travel_speed = 19.5;  // guesstimate, TODO: confirm
 
-    trigger_gcd = 2_s;
-    gcd_type    = gcd_haste_type::NONE;
+    trigger_gcd = p->talent.scalecommander.maneuverability.ok() ? 1.5_s : 2_s;
+    gcd_type    = p->talent.scalecommander.maneuverability.ok() ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
 
     aoe = -1;
 
@@ -7264,16 +7318,26 @@ void evoker_t::create_pets()
       option.force_clutchmates = "no";
       close_as_clutchmates     = false;
 
-      bobs = { { "Bob BM", "bm" }, { "Bob Shadow", "shadow" }, { "Bob", "default" }, { "Bob Shadow 2", "shadow" } };
+      bobs = { { "Bob BM", "bm" }, { "Bob Shadow", "shadow" }, { "Bob", "default" }, { "Bob Assa", "assa" } };
     }
 
     for ( auto& pair : bobs )
     {
       simplified_player_t* p = dynamic_cast<simplified_player_t*>( module->create_player( sim, pair.first ) );
+      
+      p->true_level          = level();
       p->option.variant      = pair.second;
+
       if ( option.simplified_actor_ilevel >= 0 )
       {
         p->option.item_level = option.simplified_actor_ilevel;
+      }
+      else
+      {
+        if ( p->level() < 80 )
+        {
+          p->option.item_level = 562;
+        }
       }
     }
   }
@@ -7501,7 +7565,6 @@ void evoker_t::init_finished()
     register_on_combat_state_callback( [ this ]( player_t*, bool in_combat ) {
       if ( in_combat )
       {
-        buff.unrelenting_siege->set_reverse( false );
         if ( !buff.unrelenting_siege->check() )
         {
           buff.unrelenting_siege->trigger();
@@ -8206,7 +8269,8 @@ void evoker_t::create_buffs()
       MBF( talent.chronowarden.temporal_burst.ok(), this, "temporal_burst", talent.chronowarden.temporal_burst_buff )
           ->set_cooldown( 0_ms )
           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-          ->set_default_value_from_effect( 2 );
+          ->set_default_value_from_effect( 2 )
+          ->set_reverse( true );
 
   buff.time_convergence_intellect = MBF( talent.chronowarden.time_convergence.ok(), this, "time_convergence_intellect",
                                          talent.chronowarden.time_convergence_intellect_buff )
@@ -8342,7 +8406,7 @@ void evoker_t::reset()
       if ( !td )
         continue;
 
-      td->chrono_tracker.last_accessed_second = std::numeric_limits<time_t>::min();
+      td->chrono_tracker.last_accessed_second = 0;
 
       for ( auto& bucket : td->chrono_tracker.damage_buckets )
       {

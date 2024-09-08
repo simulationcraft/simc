@@ -3251,7 +3251,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
   }
   else
   {
-    buff_name += util::encode_html( b.name_str );
+    buff_name += util::encode_html( b.name_reporting() );
   }
 
   std::string toggle_name = highchart::build_id( b, "_toggle" );
@@ -3847,8 +3847,9 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
 
     if ( !p.origin_str.empty() )
     {
-      os.format( R"(<tr><th class="help" data-help="#help-origin">Origin</th><td><a href="{}" class="ext">{}</a></td></tr>\n)",
-                 p.origin_str, util::encode_html( p.origin_str ) );
+      os.format(
+        R"(<tr><th class="help" data-help="#help-origin">Origin</th><td class="left"><a href="{}" class="ext">{}</a></td></tr>)",
+        p.origin_str, util::encode_html( p.origin_str ) );
     }
 
     // Talent Hash

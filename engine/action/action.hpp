@@ -66,7 +66,18 @@ struct parsed_value_t
   parsed_value_t( T value = T() ) : base( value ), flat_add(), pct_mul( 1.0 ) {}
 
   T value() const
-  { return ( base + flat_add ) * pct_mul; }
+  {
+    if constexpr( std::is_same_v<T, timespan_t> )
+    {
+      // timespan_t truncates to the nearest second, but in-game testing suggests aura periods & durations are rounded instead.
+      // if this holds for all time values, timespan_t should be adjusted instead.
+      return timespan_t::from_native( std::round( timespan_t::to_native( base + flat_add ) * pct_mul ) );
+    }
+    else
+    {
+      return ( base + flat_add ) * pct_mul;
+    }
+  }
 
   operator T() const
   { return value(); }
@@ -437,7 +448,7 @@ public:
   double base_hit;
   double base_crit;
   double crit_chance_multiplier;
-  double crit_bonus_multiplier;   // action scoped Add Percent Modifier (108): Spell Critical Damage (15)
+  double crit_bonus_multiplier;   // action scoped Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
   double crit_bonus;
   double base_dd_adder;
   double base_ta_adder;

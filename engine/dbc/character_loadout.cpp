@@ -35,9 +35,13 @@ util::span<const character_loadout_data_t> character_loadout_data_t::data( unsig
   return { _spec_range.first, _spec_range.second };
 }
 
-int character_loadout_data_t::default_item_level()
+int character_loadout_data_t::default_item_level( bool ptr )
 {
+#if defined(SC_USE_PTR) && (SC_USE_PTR != 0)
+  return ptr ? ptr_MYTHIC_TARGET_ITEM_LEVEL : MYTHIC_TARGET_ITEM_LEVEL;
+#else
   return MYTHIC_TARGET_ITEM_LEVEL;
+#endif
 }
 
 util::span<const trait_loadout_data_t> trait_loadout_data_t::data( bool ptr )

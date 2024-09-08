@@ -1,0 +1,235 @@
+deathknight="TWW1_Death_Knight_Frost_Breath_Deathbringer"
+source=default
+spec=frost
+level=80
+race=blood_elf
+role=attack
+position=back
+talents=CsPAAAAAAAAAAAAAAAAAAAAAAMGAzMjZmxYYGzMzMzMGmJzYMjBMzYMjZmZmZmZxMAAAAAAAAAAAAbmtBGwCYbYCZsgZYMDA
+
+# Default consumables
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=feast_of_the_divine_day
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+# Evaluates a trinkets cooldown, divided by pillar of frost, empower rune weapon, or breath of sindragosa's cooldown. If it's value has no remainder return 1, else return 0.5.
+actions.precombat+=/variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=trinket.1.has_use_buff&(talent.pillar_of_frost&!talent.breath_of_sindragosa&(trinket.1.cooldown.duration%%cooldown.pillar_of_frost.duration=0)|talent.breath_of_sindragosa&(cooldown.breath_of_sindragosa.duration%%trinket.1.cooldown.duration=0))
+actions.precombat+=/variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=trinket.2.has_use_buff&(talent.pillar_of_frost&!talent.breath_of_sindragosa&(trinket.2.cooldown.duration%%cooldown.pillar_of_frost.duration=0)|talent.breath_of_sindragosa&(cooldown.breath_of_sindragosa.duration%%trinket.2.cooldown.duration=0))
+actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_cooldown&(trinket.1.has_use_buff|trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit)
+actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_cooldown&(trinket.2.has_use_buff|trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit)
+actions.precombat+=/variable,name=trinket_1_duration,op=setif,value=15,value_else=trinket.1.proc.any_dps.duration,condition=trinket.1.is.treacherous_transmitter
+actions.precombat+=/variable,name=trinket_2_duration,op=setif,value=15,value_else=trinket.2.proc.any_dps.duration,condition=trinket.2.is.treacherous_transmitter
+actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs&(trinket.2.has_cooldown|!trinket.1.has_cooldown)|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync)*(1+((trinket.2.ilvl-trinket.1.ilvl)%100)))>((trinket.1.cooldown.duration%variable.trinket_1_duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync)*(1+((trinket.1.ilvl-trinket.2.ilvl)%100)))
+actions.precombat+=/variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl
+actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.treacherous_transmitter
+actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.treacherous_transmitter
+actions.precombat+=/variable,name=rw_buffs,value=talent.gathering_storm|talent.biting_cold
+actions.precombat+=/variable,name=breath_rp_cost,value=dbc.power.9067.cost_per_tick%10
+actions.precombat+=/variable,name=static_rime_buffs,value=talent.rage_of_the_frozen_champion|talent.icebreaker
+# APL Variable Option: How much Runic Power to pool before casting Breath of Sindragosa
+actions.precombat+=/variable,name=breath_rp_threshold,default=60,op=reset
+# APL Variable Option: Used with erw_breath_rune_trigger to determine when resources are low enough to use Empower Rune Weapon
+actions.precombat+=/variable,name=erw_breath_rp_trigger,default=70,op=reset
+# APL Variable Option: Used with erw_breath_rp_trigger to determine when resources are low enough to use Empower Rune Weapon
+actions.precombat+=/variable,name=erw_breath_rune_trigger,default=3,op=reset
+# APL Variable Option: How many Runes the APL will try to pool for Pillar of Frost with Obliteration. It is not a guarantee, just a goal.
+actions.precombat+=/variable,name=oblit_rune_pooling,default=4,op=reset
+# APL Variable Option: Amount of Runic Power pooled during Breath of Sindragosa to be able to use Rime
+actions.precombat+=/variable,name=breath_rime_rp_threshold,default=60,op=reset
+
+# Executed every time the actor is available.
+actions=auto_attack
+# Choose Action list to run
+actions+=/call_action_list,name=variables
+actions+=/call_action_list,name=trinkets
+actions+=/call_action_list,name=high_prio_actions
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=racials
+actions+=/call_action_list,name=cold_heart,if=talent.cold_heart&(!buff.killing_machine.up|talent.breath_of_sindragosa)&((debuff.razorice.stack=5|!death_knight.runeforge.razorice&!talent.glacial_advance&!talent.avalanche&!talent.arctic_assault)|fight_remains<=gcd)
+actions+=/run_action_list,name=breath,if=buff.breath_of_sindragosa.up
+actions+=/run_action_list,name=obliteration,if=talent.obliteration&buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up
+actions+=/call_action_list,name=aoe,if=active_enemies>=2
+actions+=/call_action_list,name=single_target,if=active_enemies=1
+
+# AoE Action List
+actions.aoe=obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice+((hero_tree.deathbringer&debuff.reapers_mark_debuff.down)*5),if=buff.killing_machine.react&talent.cleaving_strikes&buff.death_and_decay.up
+actions.aoe+=/howling_blast,target_if=!dot.frost_fever.ticking
+actions.aoe+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!variable.pooling_runic_power&debuff.razorice.stack=5&talent.shattering_blade&(talent.shattered_frost|active_enemies<4)
+actions.aoe+=/howling_blast,if=buff.rime.react
+actions.aoe+=/glacial_advance,target_if=max:(debuff.razorice.stack),if=!variable.pooling_runic_power&(variable.ga_priority|debuff.razorice.stack<5)
+actions.aoe+=/obliterate
+actions.aoe+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!variable.pooling_runic_power
+actions.aoe+=/horn_of_winter,if=rune<2&runic_power.deficit>25&(!talent.breath_of_sindragosa|variable.true_breath_cooldown>cooldown.horn_of_winter.duration-15)
+actions.aoe+=/arcane_torrent,if=runic_power.deficit>25
+
+# Breath Active Rotation
+actions.breath=howling_blast,if=variable.rime_buffs&runic_power>(variable.breath_rime_rp_threshold-(talent.rage_of_the_frozen_champion*(dbc.effect.842306.base_value%10)))
+actions.breath+=/horn_of_winter,if=rune<2&runic_power.deficit>30&(!buff.empower_rune_weapon.up|variable.breath_dying)
+actions.breath+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice+((hero_tree.deathbringer&debuff.reapers_mark_debuff.down)*5),if=buff.killing_machine.react|runic_power.deficit>20
+actions.breath+=/remorseless_winter,if=variable.breath_dying
+actions.breath+=/death_and_decay,if=!death_and_decay.ticking&variable.st_planning&talent.unholy_ground&runic_power.deficit>=10&!talent.obliteration|variable.breath_dying
+actions.breath+=/howling_blast,if=variable.breath_dying
+actions.breath+=/arcane_torrent,if=runic_power<60
+actions.breath+=/howling_blast,if=buff.rime.react
+
+# Cold Heart
+actions.cold_heart=chains_of_ice,if=fight_remains<gcd&(rune<2|!buff.killing_machine.react&(!main_hand.2h&buff.cold_heart.stack>=4|main_hand.2h&buff.cold_heart.stack>8)|buff.killing_machine.react&(!main_hand.2h&buff.cold_heart.stack>8|main_hand.2h&buff.cold_heart.stack>10))
+actions.cold_heart+=/chains_of_ice,if=!talent.obliteration&buff.pillar_of_frost.up&buff.cold_heart.stack>=10&(buff.pillar_of_frost.remains<gcd*(1+(talent.frostwyrms_fury&cooldown.frostwyrms_fury.ready))|buff.unholy_strength.up&buff.unholy_strength.remains<gcd)
+actions.cold_heart+=/chains_of_ice,if=!talent.obliteration&death_knight.runeforge.fallen_crusader&!buff.pillar_of_frost.up&cooldown.pillar_of_frost.remains>15&(buff.cold_heart.stack>=10&buff.unholy_strength.up|buff.cold_heart.stack>=13)
+actions.cold_heart+=/chains_of_ice,if=!talent.obliteration&!death_knight.runeforge.fallen_crusader&buff.cold_heart.stack>=10&!buff.pillar_of_frost.up&cooldown.pillar_of_frost.remains>20
+actions.cold_heart+=/chains_of_ice,if=talent.obliteration&!buff.pillar_of_frost.up&(buff.cold_heart.stack>=14&buff.unholy_strength.up|buff.cold_heart.stack>=19|cooldown.pillar_of_frost.remains<3&buff.cold_heart.stack>=14)
+
+# Cooldowns
+actions.cooldowns=potion,if=(talent.pillar_of_frost&buff.pillar_of_frost.up|!talent.pillar_of_frost&buff.empower_rune_weapon.up|!talent.pillar_of_frost&!talent.empower_rune_weapon|active_enemies>=2&buff.pillar_of_frost.up)|fight_remains<25
+actions.cooldowns+=/abomination_limb,if=talent.obliteration&!buff.pillar_of_frost.up&variable.sending_cds|fight_remains<15
+actions.cooldowns+=/abomination_limb,if=!talent.obliteration&variable.sending_cds
+actions.cooldowns+=/remorseless_winter,if=variable.rw_buffs&variable.sending_cds&(!talent.arctic_assault|!buff.pillar_of_frost.up)&fight_remains>10
+actions.cooldowns+=/chill_streak,if=variable.sending_cds&(!talent.arctic_assault|!buff.pillar_of_frost.up)
+actions.cooldowns+=/reapers_mark,target_if=first:debuff.reapers_mark_debuff.down,if=!talent.breath_of_sindragosa&(buff.pillar_of_frost.up|cooldown.pillar_of_frost.remains>10)|talent.breath_of_sindragosa
+actions.cooldowns+=/empower_rune_weapon,if=talent.obliteration&!talent.breath_of_sindragosa&buff.pillar_of_frost.up|fight_remains<20
+actions.cooldowns+=/empower_rune_weapon,if=buff.breath_of_sindragosa.up&runic_power<variable.erw_breath_rp_trigger&rune<variable.erw_breath_rune_trigger
+actions.cooldowns+=/empower_rune_weapon,if=!talent.breath_of_sindragosa&!talent.obliteration&!buff.empower_rune_weapon.up&rune<5&(cooldown.pillar_of_frost.remains<7|buff.pillar_of_frost.up|!talent.pillar_of_frost)
+actions.cooldowns+=/pillar_of_frost,if=talent.obliteration&!talent.breath_of_sindragosa&variable.sending_cds|fight_remains<20
+actions.cooldowns+=/pillar_of_frost,if=talent.breath_of_sindragosa&variable.sending_cds&cooldown.breath_of_sindragosa.remains&buff.unleashed_frenzy.up
+actions.cooldowns+=/pillar_of_frost,if=!talent.obliteration&!talent.breath_of_sindragosa&variable.sending_cds
+actions.cooldowns+=/breath_of_sindragosa,use_off_gcd=1,if=!buff.breath_of_sindragosa.up&runic_power>variable.breath_rp_threshold&(cooldown.pillar_of_frost.ready&variable.sending_cds|fight_remains<30)|(time<10&rune<1)
+actions.cooldowns+=/frostwyrms_fury,if=hero_tree.rider_of_the_apocalypse&talent.apocalypse_now&variable.sending_cds&(!talent.breath_of_sindragosa&buff.pillar_of_frost.up|buff.breath_of_sindragosa.up)|fight_remains<20
+actions.cooldowns+=/frostwyrms_fury,if=!talent.apocalypse_now&active_enemies=1&(talent.pillar_of_frost&buff.pillar_of_frost.up&!talent.obliteration|!talent.pillar_of_frost)&(!raid_event.adds.exists|(raid_event.adds.in>15+raid_event.adds.duration|talent.absolute_zero&raid_event.adds.in>15+raid_event.adds.duration))|fight_remains<3
+actions.cooldowns+=/frostwyrms_fury,if=!talent.apocalypse_now&active_enemies>=2&(talent.pillar_of_frost&buff.pillar_of_frost.up|raid_event.adds.exists&raid_event.adds.up&raid_event.adds.in<cooldown.pillar_of_frost.remains-raid_event.adds.in-raid_event.adds.duration)
+actions.cooldowns+=/frostwyrms_fury,if=!talent.apocalypse_now&talent.obliteration&(talent.pillar_of_frost&buff.pillar_of_frost.up&!main_hand.2h|!buff.pillar_of_frost.up&main_hand.2h&cooldown.pillar_of_frost.remains|!talent.pillar_of_frost)&(buff.pillar_of_frost.remains<gcd|(buff.unholy_strength.up&buff.unholy_strength.remains<gcd)|(talent.bonegrinder.rank=2&buff.bonegrinder_frost.up&buff.bonegrinder_frost.remains<gcd))&(debuff.razorice.stack=5|!death_knight.runeforge.razorice&!talent.glacial_advance|talent.shattering_blade)
+actions.cooldowns+=/raise_dead,use_off_gcd=1
+actions.cooldowns+=/soul_reaper,if=fight_remains>5&target.time_to_pct_35<5&target.time_to_pct_0>5&active_enemies<=2&(talent.obliteration&(buff.pillar_of_frost.up&!buff.killing_machine.react&rune>2|!buff.pillar_of_frost.up|buff.killing_machine.react<2&!buff.exterminate.up&!buff.exterminate_painful_death.up&buff.pillar_of_frost.remains<gcd)|talent.breath_of_sindragosa&(buff.breath_of_sindragosa.up&runic_power>50|!buff.breath_of_sindragosa.up)|!talent.breath_of_sindragosa&!talent.obliteration)
+actions.cooldowns+=/frostscythe,if=!buff.killing_machine.react&(!talent.arctic_assault|!buff.pillar_of_frost.up)
+actions.cooldowns+=/any_dnd,if=!buff.death_and_decay.up&variable.adds_remain&(buff.pillar_of_frost.up&buff.killing_machine.react&(talent.enduring_strength|buff.pillar_of_frost.remains>5)|!buff.pillar_of_frost.up&(cooldown.death_and_decay.charges=2|cooldown.pillar_of_frost.remains>cooldown.death_and_decay.duration|!talent.the_long_winter&cooldown.pillar_of_frost.remains<gcd.max*2)|fight_remains<15)&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)
+
+# High Priority Actions
+actions.high_prio_actions=mind_freeze,if=target.debuff.casting.react
+# Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=51271/pillar-of-frost'>Pillar of Frost</a> is up, as well as <a href='https://www.wowhead.com/spell=152279/breath-of-sindragosa'>Breath of Sindragosa</a> or on cooldown if <a href='https://www.wowhead.com/spell=51271/pillar-of-frost'>Pillar of Frost</a> and <a href='https://www.wowhead.com/spell=152279/breath-of-sindragosa'>Breath of Sindragosa</a> are not talented
+actions.high_prio_actions+=/invoke_external_buff,name=power_infusion,if=(buff.pillar_of_frost.up|!talent.pillar_of_frost)&(talent.obliteration|talent.breath_of_sindragosa&buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa&!talent.obliteration)
+actions.high_prio_actions+=/antimagic_shell,if=runic_power.deficit>40&death_knight.first_ams_cast<time&(!talent.breath_of_sindragosa|talent.breath_of_sindragosa&variable.true_breath_cooldown>cooldown.antimagic_shell.duration)
+# Maintain Frost Fever, Icy Talons and Unleashed Frenzy
+actions.high_prio_actions+=/howling_blast,if=!dot.frost_fever.ticking&active_enemies>=2&(!talent.obliteration|talent.obliteration&(!cooldown.pillar_of_frost.ready|buff.pillar_of_frost.up&!buff.killing_machine.react))
+actions.high_prio_actions+=/glacial_advance,if=variable.ga_priority&variable.rp_buffs&talent.obliteration&talent.breath_of_sindragosa&!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time
+actions.high_prio_actions+=/glacial_advance,if=variable.ga_priority&variable.rp_buffs&talent.breath_of_sindragosa&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time
+actions.high_prio_actions+=/glacial_advance,if=variable.ga_priority&variable.rp_buffs&!talent.breath_of_sindragosa&talent.obliteration&!buff.pillar_of_frost.up&!talent.shattered_frost
+actions.high_prio_actions+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=active_enemies=1&variable.rp_buffs&talent.obliteration&talent.breath_of_sindragosa&!buff.pillar_of_frost.up&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time
+actions.high_prio_actions+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=active_enemies=1&variable.rp_buffs&talent.breath_of_sindragosa&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time
+actions.high_prio_actions+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=active_enemies=1&variable.rp_buffs&!talent.breath_of_sindragosa&talent.obliteration&!buff.pillar_of_frost.up
+
+# Obliteration Active Rotation
+actions.obliteration=obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice+((hero_tree.deathbringer&debuff.reapers_mark_debuff.down)*5),if=buff.killing_machine.react&(buff.exterminate.up|buff.exterminate_painful_death.up|fight_remains<gcd*2)
+actions.obliteration+=/howling_blast,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&variable.rime_buffs
+actions.obliteration+=/glacial_advance,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!buff.death_and_decay.up&variable.ga_priority
+actions.obliteration+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!buff.death_and_decay.up
+actions.obliteration+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=debuff.razorice.stack=5&talent.shattering_blade&talent.a_feast_of_souls&buff.a_feast_of_souls.up&!talent.arctic_assault
+actions.obliteration+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react
+actions.obliteration+=/howling_blast,target_if=!dot.frost_fever.ticking,if=!buff.killing_machine.react
+actions.obliteration+=/glacial_advance,target_if=max:(debuff.razorice.stack),if=(variable.ga_priority|debuff.razorice.stack<5)&(!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<gcd*3)|((variable.rp_buffs|rune<2)&active_enemies>1))
+actions.obliteration+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=(rune<2|variable.rp_buffs|debuff.razorice.stack=5&talent.shattering_blade|hero_tree.rider_of_the_apocalypse)&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1|talent.shattered_frost)
+actions.obliteration+=/howling_blast,if=buff.rime.react
+actions.obliteration+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1|talent.shattered_frost)
+actions.obliteration+=/glacial_advance,target_if=max:(debuff.razorice.stack),if=!variable.pooling_runic_power&variable.ga_priority
+actions.obliteration+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!variable.pooling_runic_power
+actions.obliteration+=/horn_of_winter,if=rune<3
+actions.obliteration+=/arcane_torrent,if=rune<1&runic_power<30
+actions.obliteration+=/howling_blast,if=!buff.killing_machine.react
+
+# Racial Abilities
+actions.racials=blood_fury,if=variable.cooldown_check
+actions.racials+=/berserking,if=variable.cooldown_check
+actions.racials+=/arcane_pulse,if=variable.cooldown_check
+actions.racials+=/lights_judgment,if=variable.cooldown_check
+actions.racials+=/ancestral_call,if=variable.cooldown_check
+actions.racials+=/fireblood,if=variable.cooldown_check
+actions.racials+=/bag_of_tricks,if=talent.obliteration&!buff.pillar_of_frost.up&buff.unholy_strength.up
+actions.racials+=/bag_of_tricks,if=!talent.obliteration&buff.pillar_of_frost.up&(buff.unholy_strength.up&buff.unholy_strength.remains<gcd*3|buff.pillar_of_frost.remains<gcd*3)
+
+# Single Target Rotation
+actions.single_target=frost_strike,if=talent.a_feast_of_souls&debuff.razorice.stack=5&talent.shattering_blade&buff.a_feast_of_souls.up
+actions.single_target+=/obliterate,if=buff.killing_machine.react=2|buff.exterminate.up|buff.exterminate_painful_death.up
+actions.single_target+=/horn_of_winter,if=(!talent.breath_of_sindragosa|variable.true_breath_cooldown>cooldown.horn_of_winter.duration-15)&cooldown.pillar_of_frost.remains<variable.oblit_pooling_time
+actions.single_target+=/frost_strike,if=(debuff.razorice.stack=5&talent.shattering_blade)|(rune<2&!talent.icebreaker)
+actions.single_target+=/howling_blast,if=variable.rime_buffs
+actions.single_target+=/obliterate,if=buff.killing_machine.react&!variable.pooling_runes
+actions.single_target+=/glacial_advance,if=!variable.pooling_runic_power&!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<gcd*3)
+actions.single_target+=/frost_strike,if=!variable.pooling_runic_power&(variable.rp_buffs|(!talent.shattering_blade&runic_power.deficit<20))
+actions.single_target+=/howling_blast,if=buff.rime.react
+actions.single_target+=/frost_strike,if=!variable.pooling_runic_power&!(main_hand.2h|talent.shattering_blade)
+actions.single_target+=/obliterate,if=!variable.pooling_runes
+actions.single_target+=/frost_strike,if=!variable.pooling_runic_power
+actions.single_target+=/howling_blast,if=!dot.frost_fever.ticking
+actions.single_target+=/any_dnd,if=talent.breath_of_sindragosa&!buff.breath_of_sindragosa.up&!variable.true_breath_cooldown&rune<2&!buff.death_and_decay.up
+actions.single_target+=/horn_of_winter,if=rune<2&runic_power.deficit>25&(!talent.breath_of_sindragosa|variable.true_breath_cooldown>cooldown.horn_of_winter.duration-15)
+actions.single_target+=/arcane_torrent,if=!talent.breath_of_sindragosa&runic_power.deficit>20
+
+# Trinkets
+actions.trinkets=use_item,use_off_gcd=1,name=treacherous_transmitter,if=cooldown.pillar_of_frost.remains<6&(!talent.breath_of_sindragosa|(buff.breath_of_sindragosa.up|variable.true_breath_cooldown<6))|fight_remains<30
+# When to complete the Tracherous Transmitter task given.
+actions.trinkets+=/do_treacherous_transmitter_task,use_off_gcd=1,if=buff.pillar_of_frost.up|fight_remains<15
+# Trinkets The trinket with the highest estimated value, will be used first and paired with Pillar of Frost.
+actions.trinkets+=/use_item,slot=trinket1,if=variable.trinket_1_buffs&!variable.trinket_1_manual&(!talent.breath_of_sindragosa&buff.pillar_of_frost.remains>10|talent.breath_of_sindragosa)&(!buff.pillar_of_frost.up&trinket.1.cast_time>0|!trinket.1.cast_time>0)&(buff.breath_of_sindragosa.up&buff.pillar_of_frost.up|!talent.breath_of_sindragosa)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|variable.trinket_1_duration>=fight_remains
+actions.trinkets+=/use_item,slot=trinket2,if=variable.trinket_2_buffs&!variable.trinket_2_manual&(!talent.breath_of_sindragosa&buff.pillar_of_frost.remains>10|talent.breath_of_sindragosa)&(!buff.pillar_of_frost.up&trinket.2.cast_time>0|!trinket.2.cast_time>0)&(buff.breath_of_sindragosa.up&buff.pillar_of_frost.up|!talent.breath_of_sindragosa)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|variable.trinket_2_duration>=fight_remains
+# If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown.
+actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(variable.damage_trinket_priority=1|(!trinket.2.has_cooldown|trinket.2.cooldown.remains))&((trinket.1.cast_time>0&!buff.pillar_of_frost.up|!trinket.1.cast_time>0)&(!variable.trinket_2_buffs|cooldown.pillar_of_frost.remains>20)|!talent.pillar_of_frost)|fight_remains<15
+actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(variable.damage_trinket_priority=2|(!trinket.1.has_cooldown|trinket.1.cooldown.remains))&((trinket.2.cast_time>0&!buff.pillar_of_frost.up|!trinket.2.cast_time>0)&(!variable.trinket_1_buffs|cooldown.pillar_of_frost.remains>20)|!talent.pillar_of_frost)|fight_remains<15
+
+# Variables
+actions.variables=variable,name=st_planning,value=active_enemies=1&(raid_event.adds.in>15|!raid_event.adds.exists)
+actions.variables+=/variable,name=adds_remain,value=active_enemies>=2&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>5)
+actions.variables+=/variable,name=sending_cds,value=(variable.st_planning|variable.adds_remain)
+actions.variables+=/variable,name=rime_buffs,value=buff.rime.react&(!dot.frost_fever.ticking|variable.static_rime_buffs|talent.avalanche&!talent.arctic_assault&debuff.razorice.stack<5)
+actions.variables+=/variable,name=rp_buffs,value=talent.unleashed_frenzy&(buff.unleashed_frenzy.remains<gcd.max*3|buff.unleashed_frenzy.stack<3)|talent.icy_talons&(buff.icy_talons.remains<gcd.max*3|buff.icy_talons.stack<(3+(2*talent.smothering_offense)+(2*talent.dark_talons)))
+actions.variables+=/variable,name=cooldown_check,value=talent.pillar_of_frost&buff.pillar_of_frost.up&(talent.obliteration&buff.pillar_of_frost.remains>10|!talent.obliteration)|!talent.pillar_of_frost&buff.empower_rune_weapon.up|!talent.pillar_of_frost&!talent.empower_rune_weapon|active_enemies>=2&buff.pillar_of_frost.up
+actions.variables+=/variable,name=true_breath_cooldown,op=setif,value=cooldown.breath_of_sindragosa.remains,value_else=cooldown.pillar_of_frost.remains,condition=cooldown.breath_of_sindragosa.remains>cooldown.pillar_of_frost.remains
+# Formulaic approach to determine the time before these abilities come off cooldown that the simulation should star to pool resources. Capped at 15s in the run_action_list call.
+actions.variables+=/variable,name=oblit_pooling_time,op=setif,value=((cooldown.pillar_of_frost.remains+1)%gcd.max)%((rune+1)*((runic_power+5)))*100,value_else=3,condition=runic_power<35&rune<2&cooldown.pillar_of_frost.remains<10
+actions.variables+=/variable,name=breath_pooling_time,op=setif,value=((variable.true_breath_cooldown+1)%gcd.max)%((rune+1)*(runic_power+20))*100,value_else=2,condition=runic_power.deficit>10&variable.true_breath_cooldown<10
+actions.variables+=/variable,name=pooling_runes,value=rune<variable.oblit_rune_pooling&talent.obliteration&(!talent.breath_of_sindragosa|variable.true_breath_cooldown)&cooldown.pillar_of_frost.remains<variable.oblit_pooling_time
+actions.variables+=/variable,name=pooling_runic_power,value=talent.breath_of_sindragosa&variable.true_breath_cooldown<variable.breath_pooling_time|talent.obliteration&runic_power<35&cooldown.pillar_of_frost.remains<variable.oblit_pooling_time
+actions.variables+=/variable,name=ga_priority,value=(!talent.shattered_frost&talent.shattering_blade&active_enemies>=4)|(!talent.shattered_frost&!talent.shattering_blade&active_enemies>=2)
+actions.variables+=/variable,name=breath_dying,value=runic_power<variable.breath_rp_cost*2*gcd.max&rune.time_to_2>runic_power%variable.breath_rp_cost
+
+head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213743
+neck=trailspinner_pendant,id=178707,bonus_id=1611/8781,ilevel=639,gem_id=213473/213482
+shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540
+back=wings_of_shattered_sorrow,id=225574,bonus_id=7187/1520,ilevel=639
+chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540,enchant=crystalline_radiance_3
+wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11109/8960/10878,gem_id=213491,crafted_stats=49/32
+hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
+waist=crystalfissure_girdle,id=221079,bonus_id=1611/6935,ilevel=639,gem_id=213458
+legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=stormbound_armor_kit_3
+feet=ballast_sinkers,id=159428,bonus_id=1514/3317/6646,ilevel=639
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213458/213458,enchant=radiant_critical_strike_3
+finger2=seal_of_the_city_watch,id=162542,bonus_id=1514/3317/6646/8781,ilevel=639,gem_id=213458/213458,enchant=radiant_critical_strike_3
+trinket1=treacherous_transmitter,id=221023,bonus_id=7187/1520,ilevel=639
+trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
+main_hand=ansureks_final_judgment,id=212401,ilevel=639,enchant=rune_of_the_stoneskin_gargoyle
+off_hand=charged_slicer,id=222451,bonus_id=11144/9627/9633/8902/10222/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=49/32
+
+# Gear Summary
+# gear_ilvl=638.63
+# gear_strength=32574
+# gear_stamina=237354
+# gear_crit_rating=18835
+# gear_haste_rating=7364
+# gear_mastery_rating=14472
+# gear_versatility_rating=147
+# gear_armor=56297
+# set_bonus=thewarwithin_season_1_2pc=1
+# set_bonus=thewarwithin_season_1_4pc=1
+deathknight.ams_absorb_percent=1
+deathknight.first_ams_cast=0

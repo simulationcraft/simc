@@ -58,11 +58,10 @@ event_manager_t::~event_manager_t()
 
 // event_manager_t::allocate_event ==========================================
 
-void* event_manager_t::allocate_event( const std::size_t size )
+void* event_manager_t::allocate_event( [[maybe_unused]] const std::size_t size )
 {
   static constexpr std::size_t SIZE = util::next_power_of_two( 2 * sizeof( event_t ) );
-  assert( SIZE > size );
-  (void)size;
+  assert( size <= SIZE );
 
   event_t* e = recycled_event_list;
 #ifdef EVENT_QUEUE_DEBUG

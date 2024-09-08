@@ -391,10 +391,12 @@ class BLTEExtract:
         data = self.extract_buffer(data, md5)
         if not data:
             print(f"Unable to extract {os.path.basename(fname)} ...", file=sys.stderr)
-            return
+            return False
 
         with open(fname, 'wb') as f:
             f.write(data)
+
+        return True
 
     def extract_buffer(self, data, md5=None):
         file = BLTEFile(data)

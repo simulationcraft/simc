@@ -24,31 +24,31 @@
 TWW1_Generate_Death_Knight.simc
 
 # Demon Hunter
-# TWW1_Generate_Demon_Hunter.simc
+TWW1_Generate_Demon_Hunter.simc
 
 # Druid
 # TWW1_Generate_Druid.simc
 
 # Evoker
-# TWW1_Generate_Evoker.simc
+TWW1_Generate_Evoker.simc
 
 # Hunter
 # TWW1_Generate_Hunter.simc
 
 # Mage
-# TWW1_Generate_Mage.simc
+TWW1_Generate_Mage.simc
 
 # Monk
 # TWW1_Generate_Monk.simc
 
 # Paladin
-# TWW1_Generate_Paladin.simc
+TWW1_Generate_Paladin.simc
 
 # Priest
 TWW1_Generate_Priest.simc
 
 # Rogue
-# TWW1_Generate_Rogue.simc
+TWW1_Generate_Rogue.simc
 
 # Shaman
 TWW1_Generate_Shaman.simc
@@ -57,4 +57,4 @@ TWW1_Generate_Shaman.simc
 # TWW1_Generate_Warlock.simc
 
 # Warrior
-# TWW1_Generate_Warrior.simc
+TWW1_Generate_Warrior.simc

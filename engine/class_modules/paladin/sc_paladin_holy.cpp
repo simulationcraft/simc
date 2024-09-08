@@ -570,22 +570,22 @@ void paladin_t::create_buffs_holy()
 void paladin_t::init_spells_holy()
 {
   // Talents
-  talents.crusaders_might = find_talent_spell( "Crusader's Might" );
-  talents.bestow_faith    = find_talent_spell( "Bestow Faith" );
-  talents.lights_hammer   = find_talent_spell( "Light's Hammer" );
+  talents.crusaders_might = find_talent_spell( talent_tree::SPECIALIZATION, "Crusader's Might" );
+  talents.bestow_faith    = find_talent_spell( talent_tree::SPECIALIZATION, "Bestow Faith" );
+  talents.lights_hammer   = find_talent_spell( talent_tree::SPECIALIZATION, "Light's Hammer" );
 
-  talents.saved_by_the_light = find_talent_spell( "Saved by the Light" );
-  talents.judgment_of_light  = find_talent_spell( "Judgment of Light" );
-  talents.holy_prism         = find_talent_spell( "Holy Prism" );
+  talents.saved_by_the_light = find_talent_spell( talent_tree::SPECIALIZATION, "Saved by the Light" );
+  talents.judgment_of_light  = find_talent_spell( talent_tree::SPECIALIZATION, "Judgment of Light" );
+  talents.holy_prism         = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Prism" );
 
-  talents.rule_of_law = find_talent_spell( "Rule of Law" );
+  talents.rule_of_law = find_talent_spell( talent_tree::SPECIALIZATION, "Rule of Law" );
 
-  talents.avenging_crusader     = find_talent_spell( "Avenging Crusader" );
-  talents.awakening             = find_talent_spell( "Awakening" );
+  talents.avenging_crusader     = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Crusader" );
+  talents.awakening             = find_talent_spell( talent_tree::SPECIALIZATION, "Awakening" );
 
-  talents.glimmer_of_light = find_talent_spell( "Glimmer of Light" );
-  talents.beacon_of_faith  = find_talent_spell( "Beacon of Faith" );
-  talents.beacon_of_virtue = find_talent_spell( "Beacon of Virtue" );
+  talents.glimmer_of_light = find_talent_spell( talent_tree::SPECIALIZATION, "Glimmer of Light" );
+  talents.beacon_of_faith  = find_talent_spell( talent_tree::SPECIALIZATION, "Beacon of Faith" );
+  talents.beacon_of_virtue = find_talent_spell( talent_tree::SPECIALIZATION, "Beacon of Virtue" );
 
   // Spec passives and useful spells
   spec.holy_paladin    = find_specialization_spell( "Holy Paladin" );

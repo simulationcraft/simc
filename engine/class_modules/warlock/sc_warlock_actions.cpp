@@ -944,10 +944,7 @@ using namespace helpers;
       }
 
       if ( p->talents.cunning_cruelty.ok() )
-      {
         volley = new shadow_bolt_volley_t( p );
-        add_child( volley );
-      }
     }
 
     bool ready() override
@@ -1340,6 +1337,8 @@ using namespace helpers;
       background = dual = true;
 
       affected_by.chaotic_energies = destruction();
+
+      triggers.decimation = false;
     }
 
     double composite_target_multiplier( player_t* target ) const override
@@ -1595,12 +1594,8 @@ using namespace helpers;
         if ( p()->talents.malefic_touch.ok() )
           touch->execute_on_target( s->target );
 
-        // TOCHECK: Demonic Soul is proc'd based on impact, but this makes redundant decrement() calls in AoE.
-        // Is there a good way around this?
         if ( soul_harvester() && p()->buffs.succulent_soul->check() )
         {
-          make_event( *sim, 1_ms, [ this ] { p()->buffs.succulent_soul->decrement(); } );
-
           bool fervor = td( s->target )->dots_unstable_affliction->is_ticking();
           debug_cast<demonic_soul_t*>( p()->proc_actions.demonic_soul )->demoniacs_fervor = fervor;
           p()->proc_actions.demonic_soul->execute_on_target( s->target );
@@ -1682,6 +1677,14 @@ using namespace helpers;
       warlock_spell_t::impact( s );
 
       debug_cast<malefic_rapture_damage_t*>( impact_action )->target_count = as<int>( s->n_targets );
+
+      if ( soul_harvester() && p()->buffs.succulent_soul->check() )
+      {
+        bool primary = ( s->chain_target == 0 );
+
+        if ( primary )
+          make_event( *sim, 1_ms, [ this ] { p()->buffs.succulent_soul->decrement(); } );
+      }
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -2031,10 +2034,7 @@ using namespace helpers;
       base_td_multiplier *= 1.0 + p->talents.dark_virtuosity->effectN( 2 ).percent();
 
       if ( p->talents.cunning_cruelty.ok() )
-      {
         volley = new shadow_bolt_volley_t( p );
-        add_child( volley );
-      }
     }
 
     action_state_t* new_state() override
@@ -3082,13 +3082,14 @@ using namespace helpers;
       for ( auto& pet : p()->pet_list )
       {
         auto lock_pet = dynamic_cast<warlock_pet_t*>( pet );
-        pet_e pet_type = lock_pet->pet_type;
 
         if ( lock_pet == nullptr )
           continue;
 
         if ( lock_pet->is_sleeping() )
           continue;
+
+        pet_e pet_type = lock_pet->pet_type;
 
         if ( pet_type == PET_DEMONIC_TYRANT )
           continue;
@@ -3296,6 +3297,14 @@ using namespace helpers;
           tl.erase( it );
 
         return tl.size();
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        if ( p()->bugs && p()->talents.diabolic_embers.ok() && s->result == RESULT_CRIT )
+          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits );
       }
 
       double action_multiplier() const override

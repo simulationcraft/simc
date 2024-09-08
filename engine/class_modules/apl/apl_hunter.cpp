@@ -5,7 +5,7 @@ namespace hunter_apl {
 
 std::string potion( const player_t* p )
 {
-  return ( p -> true_level > 70 ) ? "potion_of_unwavering_focus_3" : 
+  return ( p -> true_level > 70 ) ? "tempered_potion_3" : 
          ( p -> true_level > 60 ) ? "elemental_potion_of_ultimate_power_3" : 
          ( p -> true_level > 50 ) ? "spectral_agility" :
          ( p -> true_level >= 40 ) ? "unbridled_fury" :
@@ -23,7 +23,7 @@ std::string flask( const player_t* p )
 
 std::string food( const player_t* p )
 {
-  return //( p -> true_level > 70 ) ? "everything_stew" : 
+  return ( p -> true_level > 70 ) ? "the_sushi_special" : 
          ( p -> true_level > 60 ) ? "fated_fortune_cookie" : 
          ( p -> true_level > 50 ) ? "feast_of_gluttonous_hedonism" :
          ( p -> true_level >= 45 ) ? "bountiful_captains_feast" :
@@ -41,10 +41,12 @@ std::string rune( const player_t* p )
 
 std::string temporary_enchant( const player_t* p )
 {
+  std::string lvl80_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:ironclaw_whetstone_3" : "main_hand:algari_mana_oil_3";
   std::string lvl70_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:howling_rune_3" : "main_hand:completely_safe_rockets_3";
   std::string lvl60_temp_enchant = ( p -> specialization() == HUNTER_SURVIVAL ) ? "main_hand:shaded_sharpening_stone" : "main_hand:shadowcore_oil";
 
-  return ( p -> true_level >= 70 ) ? lvl70_temp_enchant :
+  return ( p -> true_level >= 80 ) ? lvl80_temp_enchant :
+         ( p -> true_level >= 70 ) ? lvl70_temp_enchant :
          ( p -> true_level >= 60 ) ? lvl60_temp_enchant :
          "disabled";
 }
@@ -64,7 +66,7 @@ void beast_mastery( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))", "Determine the stronger trinket to sync with cooldowns. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times. Special case to consider Mirror of Fractured Tomorrows weaker than other buff effects since its power is split between the dmg effect and the buff effect." );
+  precombat->add_action( "variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))", "Determine the stronger trinket to sync with cooldowns. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times." );
   precombat->add_action( "variable,name=trinket_2_stronger,value=!variable.trinket_1_stronger" );
 
   default_->add_action( "auto_shot" );
@@ -80,37 +82,37 @@ void beast_mastery( player_t* p )
   cds->add_action( "fireblood,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<9" );
   cds->add_action( "potion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<31" );
 
-  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)|full_recharge_time<gcd&cooldown.bestial_wrath.remains" );
+  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready&(!pet.main.buff.frenzy.up|talent.scent_of_blood)|talent.call_of_the_wild&cooldown.call_of_the_wild.ready)" );
+  cleave->add_action( "black_arrow" );
   cleave->add_action( "multishot,if=pet.main.buff.beast_cleave.remains<0.25+gcd&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)" );
-  cleave->add_action( "bestial_wrath" );
-  cleave->add_action( "call_of_the_wild" );
-  cleave->add_action( "kill_command,if=talent.kill_cleave" );
-  cleave->add_action( "explosive_shot" );
-  cleave->add_action( "bloodshed" );
-  cleave->add_action( "kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.remains<gcd&target.time_to_die>10" );
   cleave->add_action( "dire_beast" );
+  cleave->add_action( "call_of_the_wild" );
+  cleave->add_action( "bestial_wrath" );
+  cleave->add_action( "bloodshed" );
+  cleave->add_action( "kill_command,target_if=max:(target.health.pct<35|!talent.killer_instinct)*2+dot.a_murder_of_crows.refreshable" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery" );
-  cleave->add_action( "kill_command" );
-  cleave->add_action( "multishot,if=pet.main.buff.beast_cleave.remains<gcd*2" );
+  cleave->add_action( "cobra_shot,if=buff.bestial_wrath.up&talent.killer_cobra" );
+  cleave->add_action( "kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.refreshable" );
+  cleave->add_action( "explosive_shot" );
   cleave->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
-  cleave->add_action( "kill_shot" );
   cleave->add_action( "cobra_shot,if=focus.time_to_max<gcd*2" );
   cleave->add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
   cleave->add_action( "arcane_torrent,if=(focus+focus.regen+30)<focus.max" );
 
-  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|pet.main.buff.frenzy.stack<3&(talent.scent_of_blood&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)|!cooldown.bestial_wrath.ready)" );
-  st->add_action( "bestial_wrath" );
-  st->add_action( "kill_command,if=(full_recharge_time<gcd&talent.alpha_predator)|talent.call_of_the_wild" );
-  st->add_action( "dire_beast,if=talent.huntmasters_call&(!buff.bestial_wrath.up&talent.killer_cobra|cooldown.call_of_the_wild.ready)" );
-  st->add_action( "kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.refreshable" );
+  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready&(!pet.main.buff.frenzy.up|talent.scent_of_blood)|talent.call_of_the_wild&cooldown.call_of_the_wild.ready)" );
+  st->add_action( "dire_beast" );
+  st->add_action( "kill_command,if=talent.call_of_the_wild&cooldown.call_of_the_wild.remains<gcd+0.25" );
+  st->add_action( "black_arrow" );
+  st->add_action( "kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.refreshable&talent.black_arrow" );
   st->add_action( "call_of_the_wild" );
   st->add_action( "bloodshed" );
+  st->add_action( "bestial_wrath" );
   st->add_action( "kill_command" );
+  st->add_action( "kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.refreshable&talent.cull_the_herd" );
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_call&charges_fractional>1.4|buff.call_of_the_wild.up|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|talent.savagery|fight_remains<9" );
   st->add_action( "cobra_shot,if=buff.bestial_wrath.up&talent.killer_cobra" );
-  st->add_action( "dire_beast" );
   st->add_action( "explosive_shot,if=!buff.bestial_wrath.up&talent.killer_cobra|!talent.killer_cobra" );
-  st->add_action( "kill_shot,if=buff.hunters_prey.remains<gcd*2&talent.venoms_bite|target.health.pct<20" );
+  st->add_action( "kill_shot" );
   st->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st->add_action( "cobra_shot" );
   st->add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
@@ -140,7 +142,7 @@ void beast_mastery_ptr( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))", "Determine the stronger trinket to sync with cooldowns. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times. Special case to consider Mirror of Fractured Tomorrows weaker than other buff effects since its power is split between the dmg effect and the buff effect." );
+  precombat->add_action( "variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))", "Determine the stronger trinket to sync with cooldowns. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times." );
   precombat->add_action( "variable,name=trinket_2_stronger,value=!variable.trinket_1_stronger" );
 
   default_->add_action( "auto_shot" );
@@ -156,37 +158,37 @@ void beast_mastery_ptr( player_t* p )
   cds->add_action( "fireblood,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<9" );
   cds->add_action( "potion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<31" );
 
-  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|talent.scent_of_blood&cooldown.bestial_wrath.remains<12+gcd|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)|full_recharge_time<gcd&cooldown.bestial_wrath.remains" );
+  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready&(!pet.main.buff.frenzy.up|talent.scent_of_blood)|talent.call_of_the_wild&cooldown.call_of_the_wild.ready)" );
+  cleave->add_action( "black_arrow" );
   cleave->add_action( "multishot,if=pet.main.buff.beast_cleave.remains<0.25+gcd&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)" );
-  cleave->add_action( "bestial_wrath" );
-  cleave->add_action( "call_of_the_wild" );
-  cleave->add_action( "kill_command,if=talent.kill_cleave" );
-  cleave->add_action( "explosive_shot" );
-  cleave->add_action( "bloodshed" );
-  cleave->add_action( "kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.remains<gcd&target.time_to_die>10" );
   cleave->add_action( "dire_beast" );
+  cleave->add_action( "call_of_the_wild" );
+  cleave->add_action( "bestial_wrath" );
+  cleave->add_action( "bloodshed" );
+  cleave->add_action( "kill_command,target_if=max:(target.health.pct<35|!talent.killer_instinct)*2+dot.a_murder_of_crows.refreshable" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery" );
-  cleave->add_action( "kill_command" );
-  cleave->add_action( "multishot,if=pet.main.buff.beast_cleave.remains<gcd*2" );
+  cleave->add_action( "cobra_shot,if=buff.bestial_wrath.up&talent.killer_cobra" );
+  cleave->add_action( "kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.refreshable" );
+  cleave->add_action( "explosive_shot" );
   cleave->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
-  cleave->add_action( "kill_shot" );
   cleave->add_action( "cobra_shot,if=focus.time_to_max<gcd*2" );
   cleave->add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
   cleave->add_action( "arcane_torrent,if=(focus+focus.regen+30)<focus.max" );
 
-  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|pet.main.buff.frenzy.stack<3&(talent.scent_of_blood&(cooldown.bestial_wrath.ready|cooldown.call_of_the_wild.ready)|!cooldown.bestial_wrath.ready)" );
-  st->add_action( "bestial_wrath" );
-  st->add_action( "kill_command,if=(full_recharge_time<gcd&talent.alpha_predator)|talent.call_of_the_wild" );
-  st->add_action( "dire_beast,if=talent.huntmasters_call&(!buff.bestial_wrath.up&talent.killer_cobra|cooldown.call_of_the_wild.ready)" );
-  st->add_action( "kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.refreshable" );
+  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready&(!pet.main.buff.frenzy.up|talent.scent_of_blood)|talent.call_of_the_wild&cooldown.call_of_the_wild.ready)" );
+  st->add_action( "dire_beast" );
+  st->add_action( "kill_command,if=talent.call_of_the_wild&cooldown.call_of_the_wild.remains<gcd+0.25" );
+  st->add_action( "black_arrow" );
+  st->add_action( "kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.refreshable&talent.black_arrow" );
   st->add_action( "call_of_the_wild" );
   st->add_action( "bloodshed" );
+  st->add_action( "bestial_wrath" );
   st->add_action( "kill_command" );
+  st->add_action( "kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.refreshable&talent.cull_the_herd" );
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_call&charges_fractional>1.4|buff.call_of_the_wild.up|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|talent.savagery|fight_remains<9" );
   st->add_action( "cobra_shot,if=buff.bestial_wrath.up&talent.killer_cobra" );
-  st->add_action( "dire_beast" );
   st->add_action( "explosive_shot,if=!buff.bestial_wrath.up&talent.killer_cobra|!talent.killer_cobra" );
-  st->add_action( "kill_shot,if=buff.hunters_prey.remains<gcd*2&talent.venoms_bite|target.health.pct<20" );
+  st->add_action( "kill_shot" );
   st->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st->add_action( "cobra_shot" );
   st->add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
@@ -216,7 +218,7 @@ void marksmanship( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "summon_pet,if=!talent.lone_wolf" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))", "Determine the stronger trinket to sync with cooldowns. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times. Special case to consider Mirror of Fractured Tomorrows weaker than other buff effects since its power is split between the dmg effect and the buff effect." );
+  precombat->add_action( "variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))", "Determine the stronger trinket to sync with cooldowns. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times." );
   precombat->add_action( "variable,name=trinket_2_stronger,value=!variable.trinket_1_stronger" );
   precombat->add_action( "salvo,precast_time=10" );
   precombat->add_action( "aimed_shot,if=active_enemies<3&(!talent.volley|active_enemies<2)", "Precast Aimed Shot on one or two targets unless we could cleave it with Volley on two targets." );
@@ -295,7 +297,7 @@ void marksmanship_ptr( player_t* p )
   precombat->add_action( "food" );
   precombat->add_action( "summon_pet,if=!talent.lone_wolf" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))", "Determine the stronger trinket to sync with cooldowns. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times. Special case to consider Mirror of Fractured Tomorrows weaker than other buff effects since its power is split between the dmg effect and the buff effect." );
+  precombat->add_action( "variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))", "Determine the stronger trinket to sync with cooldowns. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times." );
   precombat->add_action( "variable,name=trinket_2_stronger,value=!variable.trinket_1_stronger" );
   precombat->add_action( "salvo,precast_time=10" );
   precombat->add_action( "aimed_shot,if=active_enemies<3&(!talent.volley|active_enemies<2)", "Precast Aimed Shot on one or two targets unless we could cleave it with Volley on two targets." );
@@ -400,14 +402,14 @@ void survival( player_t* p )
   cds->add_action( "use_items,if=cooldown.coordinated_assault.remains|cooldown.spearhead.remains" );
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
-  plst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1)", "PL revisit fote in ST for mdt/ds sim purposes once we lose S4 set. (DPET dif will be dramatically higher) revisit the need for tipping KS once we lose S4 revisit High prio SS refresh if/when Outland Venom is fixed. revisit sending tipless bombardier ES after bombardier fix for both ST and AOE. revisit for AOE AS IT might outperform with either of the AoE PL nodes. - actions.cleave+=/butchery,if=charges_fractional>2.8&cooldown.wildfire_bomb.charges_fractional<1.5 revisit KS priority for AoE with Cull the Herd. standard performance does well, but not better than low prio KS, heavy falloff beyond 3t. ST is currently optimised for KCspam, if the playstyle ends up fixed it is likely better to entirely redo and take the sentactionlist as a baseline. PACK LEADER SINGLE TARGET ACTIONLIST." );
+  plst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1)", "PL revisit sending tipless bombardier ES after bombardier fix for both ST and AOE. ST is currently optimised for KCspam, if the playstyle ends up fixed it is likely better to entirely redo and take the sentactionlist as a baseline. PACK LEADER SINGLE TARGET ACTIONLIST." );
   plst->add_action( "spearhead,if=cooldown.coordinated_assault.remains" );
   plst->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!dot.serpent_sting.ticking&target.time_to_die>12&(!talent.contagious_reagents|active_dot.serpent_sting=0)" );
   plst->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains,if=talent.contagious_reagents&active_dot.serpent_sting<active_enemies&dot.serpent_sting.remains" );
   plst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd" );
   plst->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
   plst->add_action( "kill_shot,if=(buff.tip_of_the_spear.stack>0|talent.sic_em)" );
-  plst->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack<2" );
+  plst->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1" );
   plst->add_action( "explosive_shot,if=(talent.spearhead&(!talent.symbiotic_adrenaline&(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.spearhead.remains>20|cooldown.spearhead.remains<2))|((talent.symbiotic_adrenaline|!talent.spearhead)&(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.coordinated_assault.remains>20|cooldown.coordinated_assault.remains<2)" );
   plst->add_action( "raptor_bite,if=(buff.furious_assault.up&buff.tip_of_the_spear.stack>0)&(!talent.mongoose_bite|buff.mongoose_fury.stack>4)" );
   plst->add_action( "kill_command,target_if=min:bloodseeker.remains" );
@@ -422,29 +424,30 @@ void survival( player_t* p )
   plcleave->add_action( "explosive_shot,if=buff.bombardier.remains" );
   plcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd" );
   plcleave->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
-  plcleave->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack<2" );
-  plcleave->add_action( "explosive_shot,if=(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.coordinated_assault.remains>20|cooldown.coordinated_assault.remains<2" );
+  plcleave->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1" );
+  plcleave->add_action( "explosive_shot,if=(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&((cooldown.coordinated_assault.remains>20&(cooldown.coordinated_assault.remains<80|buff.coordinated_assault.remains))|(cooldown.coordinated_assault.remains>12&cooldown.coordinated_assault.remains<20))|cooldown.coordinated_assault.remains<2" );
   plcleave->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
-  plcleave->add_action( "kill_shot,if=buff.sic_em.remains&active_enemies<4" );
-  plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
+  plcleave->add_action( "kill_shot,if=buff.sic_em.remains" );
+  plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max|buff.exposed_flank.remains&buff.tip_of_the_spear.stack<2" );
   plcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0" );
+  plcleave->add_action( "butchery,if=charges_fractional>2.8&cooldown.wildfire_bomb.charges_fractional<1.5" );
   plcleave->add_action( "raptor_bite,if=buff.merciless_blows.up" );
   plcleave->add_action( "butchery" );
   plcleave->add_action( "kill_shot" );
+  plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains" );
   plcleave->add_action( "raptor_bite" );
 
-  sentst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1)", "SENT revisit fote in ST for mdt/ds sim purposes once we lose S4 set. (DPET dif will be dramatically higher) revisit the need for tipping KS once we lose S4. revisit High prio SS refresh if/when Outland Venom is fixed. revisit sending tipless bombardier ES after bombardier fix for both ST and AoE. T31 line currently exists since level 70 characters follow the sent/default actionlist. sentinel is currently nyi. SENTINEL | DEFAULT SINGLE TARGET ACTIONLIST." );
+  sentst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1)", "SENT revisit sending tipless bombardier ES after bombardier fix for both ST and AoE. SENTINEL | DEFAULT SINGLE TARGET ACTIONLIST." );
   sentst->add_action( "spearhead,if=cooldown.coordinated_assault.remains" );
   sentst->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!dot.serpent_sting.ticking&target.time_to_die>12&(!talent.contagious_reagents|active_dot.serpent_sting=0)" );
   sentst->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains,if=talent.contagious_reagents&active_dot.serpent_sting<active_enemies&dot.serpent_sting.remains" );
-  sentst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd" );
+  sentst->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1" );
+  sentst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd|!cooldown.lunar_storm.remains" );
   sentst->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
-  sentst->add_action( "fury_of_the_eagle,interrupt=1,if=set_bonus.tier31_2pc" );
-  sentst->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack<2" );
   sentst->add_action( "explosive_shot,if=(talent.spearhead&(!talent.symbiotic_adrenaline&(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.spearhead.remains>20|cooldown.spearhead.remains<2))|((talent.symbiotic_adrenaline|!talent.spearhead)&(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.coordinated_assault.remains>20|cooldown.coordinated_assault.remains<2)" );
   sentst->add_action( "kill_shot,if=buff.tip_of_the_spear.stack>0|talent.sic_em" );
   sentst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(!buff.relentless_primal_ferocity.up||(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<2))" );
-  sentst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>15)" );
+  sentst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.lunar_storm.remains>full_recharge_time-gcd" );
   sentst->add_action( "fury_of_the_eagle,interrupt=1,if=(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>40)" );
   sentst->add_action( "butchery,if=active_enemies>1&(talent.merciless_blows&buff.merciless_blows.down|!talent.merciless_blows)" );
   sentst->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents" );
@@ -455,8 +458,8 @@ void survival( player_t* p )
   sentcleave->add_action( "explosive_shot,if=buff.bombardier.remains" );
   sentcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd" );
   sentcleave->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
-  sentcleave->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack<2" );
-  sentcleave->add_action( "explosive_shot,if=(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.coordinated_assault.remains>20|cooldown.coordinated_assault.remains<2" );
+  sentcleave->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1" );
+  sentcleave->add_action( "explosive_shot,if=(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&((cooldown.coordinated_assault.remains>20&(cooldown.coordinated_assault.remains<80|buff.coordinated_assault.remains))|(cooldown.coordinated_assault.remains>12&cooldown.coordinated_assault.remains<20))|cooldown.coordinated_assault.remains<2" );
   sentcleave->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
   sentcleave->add_action( "kill_shot,if=buff.sic_em.remains&active_enemies<4" );
   sentcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
@@ -509,14 +512,14 @@ void survival_ptr( player_t* p )
   cds->add_action( "use_items,if=cooldown.coordinated_assault.remains|cooldown.spearhead.remains" );
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
-  plst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1)", "PL revisit fote in ST for mdt/ds sim purposes once we lose S4 set. (DPET dif will be dramatically higher) revisit the need for tipping KS once we lose S4 revisit High prio SS refresh if/when Outland Venom is fixed. revisit sending tipless bombardier ES after bombardier fix for both ST and AOE. revisit for AOE AS IT might outperform with either of the AoE PL nodes. - actions.cleave+=/butchery,if=charges_fractional>2.8&cooldown.wildfire_bomb.charges_fractional<1.5 revisit KS priority for AoE with Cull the Herd. standard performance does well, but not better than low prio KS, heavy falloff beyond 3t. ST is currently optimised for KCspam, if the playstyle ends up fixed it is likely better to entirely redo and take the sentactionlist as a baseline. PACK LEADER SINGLE TARGET ACTIONLIST." );
+  plst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1)", "PL revisit sending tipless bombardier ES after bombardier fix for both ST and AOE. ST is currently optimised for KCspam, if the playstyle ends up fixed it is likely better to entirely redo and take the sentactionlist as a baseline. PACK LEADER SINGLE TARGET ACTIONLIST." );
   plst->add_action( "spearhead,if=cooldown.coordinated_assault.remains" );
   plst->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!dot.serpent_sting.ticking&target.time_to_die>12&(!talent.contagious_reagents|active_dot.serpent_sting=0)" );
   plst->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains,if=talent.contagious_reagents&active_dot.serpent_sting<active_enemies&dot.serpent_sting.remains" );
   plst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd" );
   plst->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
   plst->add_action( "kill_shot,if=(buff.tip_of_the_spear.stack>0|talent.sic_em)" );
-  plst->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack<2" );
+  plst->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1" );
   plst->add_action( "explosive_shot,if=(talent.spearhead&(!talent.symbiotic_adrenaline&(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.spearhead.remains>20|cooldown.spearhead.remains<2))|((talent.symbiotic_adrenaline|!talent.spearhead)&(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.coordinated_assault.remains>20|cooldown.coordinated_assault.remains<2)" );
   plst->add_action( "raptor_bite,if=(buff.furious_assault.up&buff.tip_of_the_spear.stack>0)&(!talent.mongoose_bite|buff.mongoose_fury.stack>4)" );
   plst->add_action( "kill_command,target_if=min:bloodseeker.remains" );
@@ -531,29 +534,30 @@ void survival_ptr( player_t* p )
   plcleave->add_action( "explosive_shot,if=buff.bombardier.remains" );
   plcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd" );
   plcleave->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
-  plcleave->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack<2" );
-  plcleave->add_action( "explosive_shot,if=(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.coordinated_assault.remains>20|cooldown.coordinated_assault.remains<2" );
+  plcleave->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1" );
+  plcleave->add_action( "explosive_shot,if=(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&((cooldown.coordinated_assault.remains>20&(cooldown.coordinated_assault.remains<80|buff.coordinated_assault.remains))|(cooldown.coordinated_assault.remains>12&cooldown.coordinated_assault.remains<20))|cooldown.coordinated_assault.remains<2" );
   plcleave->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
-  plcleave->add_action( "kill_shot,if=buff.sic_em.remains&active_enemies<4" );
-  plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
+  plcleave->add_action( "kill_shot,if=buff.sic_em.remains" );
+  plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max|buff.exposed_flank.remains&buff.tip_of_the_spear.stack<2" );
   plcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0" );
+  plcleave->add_action( "butchery,if=charges_fractional>2.8&cooldown.wildfire_bomb.charges_fractional<1.5" );
   plcleave->add_action( "raptor_bite,if=buff.merciless_blows.up" );
   plcleave->add_action( "butchery" );
   plcleave->add_action( "kill_shot" );
+  plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains" );
   plcleave->add_action( "raptor_bite" );
 
-  sentst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1)", "SENT revisit fote in ST for mdt/ds sim purposes once we lose S4 set. (DPET dif will be dramatically higher) revisit the need for tipping KS once we lose S4. revisit High prio SS refresh if/when Outland Venom is fixed. revisit sending tipless bombardier ES after bombardier fix for both ST and AoE. T31 line currently exists since level 70 characters follow the sent/default actionlist. sentinel is currently nyi. SENTINEL | DEFAULT SINGLE TARGET ACTIONLIST." );
+  sentst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1)", "SENT revisit sending tipless bombardier ES after bombardier fix for both ST and AoE. SENTINEL | DEFAULT SINGLE TARGET ACTIONLIST." );
   sentst->add_action( "spearhead,if=cooldown.coordinated_assault.remains" );
   sentst->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!dot.serpent_sting.ticking&target.time_to_die>12&(!talent.contagious_reagents|active_dot.serpent_sting=0)" );
   sentst->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains,if=talent.contagious_reagents&active_dot.serpent_sting<active_enemies&dot.serpent_sting.remains" );
-  sentst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd" );
+  sentst->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1" );
+  sentst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd|!cooldown.lunar_storm.remains" );
   sentst->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
-  sentst->add_action( "fury_of_the_eagle,interrupt=1,if=set_bonus.tier31_2pc" );
-  sentst->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack<2" );
   sentst->add_action( "explosive_shot,if=(talent.spearhead&(!talent.symbiotic_adrenaline&(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.spearhead.remains>20|cooldown.spearhead.remains<2))|((talent.symbiotic_adrenaline|!talent.spearhead)&(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.coordinated_assault.remains>20|cooldown.coordinated_assault.remains<2)" );
   sentst->add_action( "kill_shot,if=buff.tip_of_the_spear.stack>0|talent.sic_em" );
   sentst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(!buff.relentless_primal_ferocity.up||(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<2))" );
-  sentst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>15)" );
+  sentst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.lunar_storm.remains>full_recharge_time-gcd" );
   sentst->add_action( "fury_of_the_eagle,interrupt=1,if=(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>40)" );
   sentst->add_action( "butchery,if=active_enemies>1&(talent.merciless_blows&buff.merciless_blows.down|!talent.merciless_blows)" );
   sentst->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents" );
@@ -564,8 +568,8 @@ void survival_ptr( player_t* p )
   sentcleave->add_action( "explosive_shot,if=buff.bombardier.remains" );
   sentcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd" );
   sentcleave->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
-  sentcleave->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack<2" );
-  sentcleave->add_action( "explosive_shot,if=(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&cooldown.coordinated_assault.remains>20|cooldown.coordinated_assault.remains<2" );
+  sentcleave->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1" );
+  sentcleave->add_action( "explosive_shot,if=(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&((cooldown.coordinated_assault.remains>20&(cooldown.coordinated_assault.remains<80|buff.coordinated_assault.remains))|(cooldown.coordinated_assault.remains>12&cooldown.coordinated_assault.remains<20))|cooldown.coordinated_assault.remains<2" );
   sentcleave->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
   sentcleave->add_action( "kill_shot,if=buff.sic_em.remains&active_enemies<4" );
   sentcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );

@@ -2300,6 +2300,7 @@ struct bloodthirst_t : public warrior_attack_t
   double rage_from_merciless_assault;
   double rage_from_burst_of_power;
   action_t* reap_the_storm;
+  bool unhinged;
   bloodthirst_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodthirst", p, p->talents.fury.bloodthirst ),
       bloodthirst_heal( nullptr ),
@@ -2309,7 +2310,8 @@ struct bloodthirst_t : public warrior_attack_t
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_merciless_assault( p->find_spell( 409983 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_burst_of_power( 0 ),
-      reap_the_storm( nullptr )
+      reap_the_storm( nullptr ),
+      unhinged( false )
   {
     parse_options( options_str );
 
@@ -2356,7 +2358,8 @@ struct bloodthirst_t : public warrior_attack_t
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
-      rage_from_burst_of_power( 0 )
+      rage_from_burst_of_power( 0 ),
+      unhinged( false )
   {
     background = true;
 
@@ -2397,9 +2400,16 @@ struct bloodthirst_t : public warrior_attack_t
     }
   }
 
+  // Constructor for unhinged specfic version, so we can disable sweeping strikes, as well as have a bool to check
+  bloodthirst_t( util::string_view name, warrior_t* p, bool unhinged )
+    : bloodthirst_t( name, p )
+  {
+    this->unhinged = unhinged;
+  }
+
   int n_targets() const override
   {
-    if ( p()->buff.meat_cleaver->check() )
+    if ( !unhinged && p()->buff.meat_cleaver->check() )
     {
       return aoe_targets + 1;
     }
@@ -2463,6 +2473,15 @@ struct bloodthirst_t : public warrior_attack_t
       make_event( *p()->sim, [ this ] { p()->cooldown.bloodbath->reset( true );
                                         p()->cooldown.bloodthirst->reset( true ); } );
     }
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -2491,7 +2510,8 @@ struct bloodthirst_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    p()->buff.meat_cleaver->decrement();
+    if ( !unhinged )
+      p()->buff.meat_cleaver->decrement();
 
     if ( result_is_hit( execute_state->result ) )
     {
@@ -2517,15 +2537,6 @@ struct bloodthirst_t : public warrior_attack_t
     }
 
     p()->buff.fierce_followthrough->expire();
-
-    if ( p()->talents.slayer.reap_the_storm->ok() )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
 
     if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW1, B2 ) )
       p()->buff.bloody_rampage->trigger();
@@ -2563,6 +2574,7 @@ struct bloodbath_t : public warrior_attack_t
   double rage_from_merciless_assault;
   double rage_from_burst_of_power;
   action_t* reap_the_storm;
+  bool unhinged;
   bloodbath_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "bloodbath", p, p->spec.bloodbath ),
       bloodthirst_heal( nullptr ),
@@ -2572,7 +2584,8 @@ struct bloodbath_t : public warrior_attack_t
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_merciless_assault( p->find_spell( 409983 )->effectN( 1 ).base_value() / 10.0 ),
       rage_from_burst_of_power( 0 ),
-      reap_the_storm( nullptr )
+      reap_the_storm( nullptr ),
+      unhinged( false )
   {
     parse_options( options_str );
 
@@ -2626,7 +2639,8 @@ struct bloodbath_t : public warrior_attack_t
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
-      rage_from_burst_of_power( 0 )
+      rage_from_burst_of_power( 0 ),
+      unhinged( false )
   {
     background = true;
 
@@ -2672,9 +2686,16 @@ struct bloodbath_t : public warrior_attack_t
     }
   }
 
+  // Constructor for unhinged specfic version, so we can disable sweeping strikes, as well as have a bool to check
+  bloodbath_t( util::string_view name, warrior_t* p, bool unhinged )
+    : bloodbath_t( name, p )
+  {
+    this->unhinged = unhinged;
+  }
+
   int n_targets() const override
   {
-    if ( p()->buff.meat_cleaver->check() )
+    if ( !unhinged && p()->buff.meat_cleaver->check() )
     {
       return aoe_targets + 1;
     }
@@ -2738,6 +2759,15 @@ struct bloodbath_t : public warrior_attack_t
       make_event( *p()->sim, [ this ] { p()->cooldown.bloodbath->reset( true );
                                         p()->cooldown.bloodthirst->reset( true ); } );
     }
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -2767,7 +2797,8 @@ struct bloodbath_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     p()->buff.bloodbath->decrement();
-    p()->buff.meat_cleaver->decrement();
+    if ( !unhinged )
+      p()->buff.meat_cleaver->decrement();
 
     if ( result_is_hit( execute_state->result ) )
     {
@@ -2785,15 +2816,6 @@ struct bloodbath_t : public warrior_attack_t
     }
 
     p()->buff.fierce_followthrough->expire();
-
-    if ( p()->talents.slayer.reap_the_storm->ok() )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
 
     if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW1, B2 ) )
       p()->buff.bloody_rampage->trigger();
@@ -2852,6 +2874,7 @@ struct mortal_strike_t : public warrior_attack_t
   warrior_attack_t* rend_dot;
   warrior_attack_t* crushing_advance;
   action_t* reap_the_storm;
+  bool unhinged;
   mortal_strike_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "mortal_strike", p, p->talents.arms.mortal_strike ),
       exhilarating_blows_chance( p->talents.arms.exhilarating_blows->proc_chance() ),
@@ -2859,7 +2882,8 @@ struct mortal_strike_t : public warrior_attack_t
       rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() ),
       rend_dot( nullptr ),
       crushing_advance( nullptr ),
-      reap_the_storm( nullptr )
+      reap_the_storm( nullptr ),
+      unhinged( false )
   {
     parse_options( options_str );
 
@@ -2885,7 +2909,8 @@ struct mortal_strike_t : public warrior_attack_t
       exhilarating_blows_chance( p->talents.arms.exhilarating_blows->proc_chance() ),
       frothing_berserker_chance( p->talents.warrior.frothing_berserker->proc_chance() ),
       rage_from_frothing_berserker( p->talents.warrior.frothing_berserker->effectN( 1 ).percent() ),
-      rend_dot( nullptr )
+      rend_dot( nullptr ),
+      unhinged( true )
   {
     background = true;
     impact_action = p->active.deep_wounds_ARMS;
@@ -2901,6 +2926,22 @@ struct mortal_strike_t : public warrior_attack_t
     if ( p->tier_set.t30_arms_4pc->ok() )
     {
       crushing_advance = new crushing_advance_t( "crushing_advance_unhinged", p );
+    }
+  }
+
+  // This version is used for unhinged, to set the variable, as unhinged does not cleave
+  mortal_strike_t( util::string_view name, warrior_t* p, bool unhinged )
+    : mortal_strike_t( name, p )
+  {
+    this->unhinged = unhinged;
+  }
+
+  void init() override
+  {
+    warrior_attack_t::init();
+    if ( unhinged )
+    {
+      affected_by.sweeping_strikes = false;
     }
   }
 
@@ -2965,15 +3006,6 @@ struct mortal_strike_t : public warrior_attack_t
 
     p()->buff.fierce_followthrough->expire();
 
-    if ( p()->talents.slayer.reap_the_storm->ok() )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
-
     if ( p()->sets->has_set_bonus( WARRIOR_ARMS, TWW1, B2 ) )
     {
       p()->buff.overpowering_might->trigger();
@@ -3030,6 +3062,15 @@ struct mortal_strike_t : public warrior_attack_t
     if ( p()->tier_set.t29_arms_4pc->ok() && s->result == RESULT_CRIT )
     {
       p()->buff.strike_vulnerabilities->trigger();
+    }
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
     }
   }
 
@@ -3128,18 +3169,18 @@ struct bladestorm_t : public warrior_attack_t
     // Unhinged DOES work w/ Torment and Signet
     if ( p->talents.arms.unhinged->ok() )
     {
-      mortal_strike = new mortal_strike_t( "mortal_strike_bladestorm_unhinged", p );
+      mortal_strike = new mortal_strike_t( "mortal_strike_bladestorm_unhinged", p, true );
       add_child( mortal_strike );
     }
 
     if ( p->talents.fury.unhinged->ok() )
     {
-      bloodthirst = new bloodthirst_t( "bloodthirst_bladestorm_unhinged", p );
+      bloodthirst = new bloodthirst_t( "bloodthirst_bladestorm_unhinged", p, true );
       add_child( bloodthirst );
 
       if ( p->talents.fury.reckless_abandon->ok() )
       {
-        bloodbath = new bloodbath_t( "bloodbath_bladestorm_unhinged", p );
+        bloodbath = new bloodbath_t( "bloodbath_bladestorm_unhinged", p, true );
         add_child( bloodbath );
       }
     }
@@ -3595,6 +3636,15 @@ struct cleave_t : public warrior_attack_t
     {
       p()->buff.strike_vulnerabilities->trigger();
     }
+
+    if ( p()->talents.slayer.reap_the_storm->ok() )
+    {
+      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
+    }
   }
 
   void execute() override
@@ -3621,15 +3671,6 @@ struct cleave_t : public warrior_attack_t
 
     if ( p() -> talents.arms.fervor_of_battle.ok() && num_targets_hit >= p() -> talents.arms.fervor_of_battle -> effectN( 1 ).base_value() )
       fervor_slam->execute_on_target( target );
-
-    if ( p()->talents.slayer.reap_the_storm->ok() )
-    {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
-      {
-        reap_the_storm->execute();
-        p()->cooldown.reap_the_storm_icd->start();
-      }
-    }
 
     if ( p()->talents.colossus.colossal_might->ok() && execute_state -> n_targets >= p()->talents.colossus.colossal_might->effectN( 1 ).base_value() )
     {
@@ -3945,7 +3986,6 @@ struct thunder_blast_seismic_reverberation_t : public warrior_attack_t
 
 struct thunder_blast_t : public warrior_attack_t
 {
-  bool from_t31;
   double rage_gain;
   double shield_slam_reset;
   warrior_attack_t* rend;
@@ -3955,7 +3995,6 @@ struct thunder_blast_t : public warrior_attack_t
   double rend_targets_hit;
   thunder_blast_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "thunder_blast", p, p->find_spell( 435222 ) ),
-      from_t31( false ),
       rage_gain( data().effectN( 4 ).resource( RESOURCE_RAGE ) ),
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
       rend( nullptr ),
@@ -4007,30 +4046,6 @@ struct thunder_blast_t : public warrior_attack_t
     }
   }
 
-  // T31 constructor
-  thunder_blast_t( warrior_t* p )
-    : warrior_attack_t( "thunder_blast_t31", p, p->find_spell( 396719 ) ),
-      from_t31( true ),
-      rend( nullptr ),
-      rend_target_cap( 0 ),
-      rend_targets_hit( 0 )
-  {
-    aoe       = -1;
-    may_dodge = may_parry = may_block = false;
-    background                        = true;
-
-    radius *= 1.0 + p->talents.warrior.crackling_thunder->effectN( 1 ).percent();
-    energize_type = action_energize::NONE;
-
-    if ( p->talents.shared.rend.ok() )
-    {
-      rend_target_cap = p->talents.warrior.thunder_clap->effectN( 5 ).base_value();
-       if ( p->talents.arms.rend->ok() )
-        rend = new rend_dot_t( p );
-    }
-    base_dd_multiplier *= 1.0 + p -> sets -> set( WARRIOR_ARMS, T31, B4 )->effectN( 2 ).percent();
-  }
-
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
@@ -4046,20 +4061,6 @@ struct thunder_blast_t : public warrior_attack_t
     }
 
     return am;
-  }
-
-  double cost() const override
-  {
-    if ( from_t31 )
-      return 0;
-    return warrior_attack_t::cost();
-  }
-
-  double tactician_cost() const override
-  {
-    if ( from_t31 )
-      return 0;
-    return warrior_attack_t::cost();
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -4181,7 +4182,6 @@ struct thunder_clap_seismic_reverberation_t : public warrior_attack_t
 
 struct thunder_clap_t : public warrior_attack_t
 {
-  bool from_t31;
   double rage_gain;
   double shield_slam_reset;
   warrior_attack_t* rend;
@@ -4191,7 +4191,6 @@ struct thunder_clap_t : public warrior_attack_t
   double rend_targets_hit;
   thunder_clap_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "thunder_clap", p, p->talents.warrior.thunder_clap ),
-      from_t31( false ),
       rage_gain( data().effectN( 4 ).resource( RESOURCE_RAGE ) ),
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
       rend( nullptr ),
@@ -4240,30 +4239,6 @@ struct thunder_clap_t : public warrior_attack_t
     }
   }
 
-  // T31 constructor
-  thunder_clap_t( warrior_t* p )
-    : warrior_attack_t( "thunder_clap_t31", p, p->find_spell( 396719 ) ),
-      from_t31( true ),
-      rend( nullptr ),
-      rend_target_cap( 0 ),
-      rend_targets_hit( 0 )
-  {
-    aoe       = -1;
-    may_dodge = may_parry = may_block = false;
-    background                        = true;
-
-    radius *= 1.0 + p->talents.warrior.crackling_thunder->effectN( 1 ).percent();
-    energize_type = action_energize::NONE;
-
-    if ( p->talents.shared.rend.ok() )
-    {
-      rend_target_cap = p->talents.warrior.thunder_clap->effectN( 5 ).base_value();
-       if ( p->talents.arms.rend->ok() )
-        rend = new rend_dot_t( p );
-    }
-    base_dd_multiplier *= 1.0 + p -> sets -> set( WARRIOR_ARMS, T31, B4 )->effectN( 2 ).percent();
-  }
-
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
@@ -4279,20 +4254,6 @@ struct thunder_clap_t : public warrior_attack_t
     }
 
     return am;
-  }
-
-  double cost() const override
-  {
-    if ( from_t31 )
-      return 0;
-    return warrior_attack_t::cost();
-  }
-
-  double tactician_cost() const override
-  {
-    if ( from_t31 )
-      return 0;
-    return warrior_attack_t::cost();
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -4447,12 +4408,6 @@ struct execute_damage_t : public warrior_attack_t
       }
       td( state->target )->debuffs_marked_for_execution->expire();
     }
-
-    if ( p() -> sets -> has_set_bonus( WARRIOR_ARMS, T31, B4 ) && p() -> buff.sudden_death -> up() )
-    {
-      auto amount = state -> result_amount * p() -> sets -> set ( WARRIOR_ARMS, T31, B4 )->effectN( 1 ).percent();
-      residual_action::trigger( finishing_wound, state->target, amount );
-    }
   }
 };
 
@@ -4463,20 +4418,19 @@ struct execute_arms_t : public warrior_attack_t
   double max_rage;
   double execute_pct;
   double shield_slam_reset;
-  thunder_clap_t* t31_thunder_clap;
   execute_arms_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "execute", p, p->spell.execute ),
     trigger_attack( nullptr ),
     lightning_strike( nullptr ),
     max_rage( 40 ),
     execute_pct( 20 ),
-    shield_slam_reset( p -> talents.protection.strategist -> effectN( 1 ).percent() ),
-    t31_thunder_clap( nullptr )
+    shield_slam_reset( p -> talents.protection.strategist -> effectN( 1 ).percent() )
   {
     parse_options( options_str );
     weapon        = &( p->main_hand_weapon );
 
     trigger_attack = new execute_damage_t( p, options_str );
+    add_child( trigger_attack );
 
     if ( p->talents.arms.massacre->ok() )
     {
@@ -4491,11 +4445,6 @@ struct execute_arms_t : public warrior_attack_t
     {
       lightning_strike = get_action<lightning_strike_t>( "lightning_strike_execute", p );
       add_child( lightning_strike );
-    }
-
-    if ( p->tier_set.t31_arms_4pc->ok() )
-    {
-      t31_thunder_clap = new thunder_clap_t( p );
     }
   }
 
@@ -4556,10 +4505,6 @@ struct execute_arms_t : public warrior_attack_t
       if ( p()->talents.slayer.imminent_demise->ok() )
       {
         p()->buff.imminent_demise->trigger();
-      }
-      if ( p()->tier_set.t31_arms_4pc->ok() )
-      {
-        t31_thunder_clap->execute();
       }
     }
     if ( p()->talents.arms.juggernaut.ok() )
@@ -4784,14 +4729,14 @@ struct execute_fury_t : public warrior_attack_t
     return c;
   }
 
-  double cost() const override
-  {
-    double c = warrior_attack_t::cost();
+//  double cost() const override
+//  {
+//    double c = warrior_attack_t::cost();
 
-    c = std::min( max_rage, std::max( p()->resources.current[ RESOURCE_RAGE ], c ) );
+//    c = std::min( max_rage, std::max( p()->resources.current[ RESOURCE_RAGE ], c ) );
 
-    return c;
-  }
+//    return c;
+//  }
 
   void execute() override
   {
@@ -5605,7 +5550,7 @@ struct odyns_fury_main_hand_t : public warrior_attack_t
   void execute() override
   {
     // sqrt is snapshot on execute for the number of targets hit
-    num_targets = sim->target_non_sleeping_list.size();
+    num_targets = as<int>( sim->target_non_sleeping_list.size() );
 
     warrior_attack_t::execute();
   }
@@ -6079,18 +6024,18 @@ struct ravager_t : public warrior_attack_t
 
     if ( p->talents.arms.unhinged->ok() )
     {
-      mortal_strike = new mortal_strike_t( "mortal_strike_ravager_unhinged", p );
+      mortal_strike = new mortal_strike_t( "mortal_strike_ravager_unhinged", p, true );
       add_child( mortal_strike );
     }
 
     if ( p->talents.fury.unhinged->ok() )
     {
-      bloodthirst = new bloodthirst_t( "bloodthirst_ravager_unhinged", p );
+      bloodthirst = new bloodthirst_t( "bloodthirst_ravager_unhinged", p, true );
       add_child( bloodthirst );
 
       if ( p->talents.fury.reckless_abandon->ok() )
       {
-        bloodbath = new bloodbath_t( "bloodbath_ravager_unhinged", p );
+        bloodbath = new bloodbath_t( "bloodbath_ravager_unhinged", p, true );
         add_child( bloodbath );
       }
     }
@@ -9544,13 +9489,13 @@ std::string warrior_t::default_flask() const
 std::string warrior_t::default_food() const
 {
   std::string fury_food = ( true_level > 70 )
-                              ? "feast_of_the_midnight_masquerade"
+                              ? "the_sushi_special"
                               : ( true_level > 60 )
                                     ? "thousandbone_tongueslicer"
                                     : "disabled";
 
   std::string arms_food = ( true_level > 70 )
-                              ? "feast_of_the_midnight_masquerade"
+                              ? "the_sushi_special"
                               : ( true_level > 60 )
                                     ? "feisty_fish_sticks"
                                     : "disabled";

@@ -755,36 +755,38 @@ public:
     {
       double setting_value;
       double default_value;
+      std::string option_name;
     };
 
     // Affliction
-    rng_setting_t cunning_cruelty_sb = { 0.50, 0.50 };
-    rng_setting_t cunning_cruelty_ds = { 0.25, 0.25 };
-    rng_setting_t agony = { 0.368, 0.368 };
-    rng_setting_t nightfall = { 0.13, 0.13 };
-    rng_setting_t umbral_lattice = { 0.30, 0.30 };
+    rng_setting_t cunning_cruelty_sb = { 0.50, 0.50, "cunning_cruelty_sb" };
+    rng_setting_t cunning_cruelty_ds = { 0.25, 0.25, "cunning_cruelty_ds" };
+    rng_setting_t agony = { 0.368, 0.368, "agony" };
+    rng_setting_t nightfall = { 0.13, 0.13, "nightfall" };
+    rng_setting_t umbral_lattice = { 0.30, 0.30, "umbral_lattice" };
 
     // Demonology
-    rng_setting_t pact_of_the_eredruin = { 0.40, 0.40 };
-    rng_setting_t shadow_invocation = { 0.20, 0.20 };
-    rng_setting_t spiteful_reconstitution = { 0.30, 0.30 };
-    rng_setting_t empowered_legion_strike = { 0.05, 0.05 };
+    rng_setting_t pact_of_the_eredruin = { 0.40, 0.40, "pact_of_the_eredruin" };
+    rng_setting_t shadow_invocation = { 0.20, 0.20, "shadow_invocation" };
+    rng_setting_t spiteful_reconstitution = { 0.30, 0.30, "spiteful_reconstitution" };
+    rng_setting_t empowered_legion_strike = { 0.05, 0.05, "empowered_legion_strike" };
 
     // Destruction
-    rng_setting_t decimation = { 0.10, 0.10 };
-    rng_setting_t dimension_ripper = { 0.05, 0.05 };
+    rng_setting_t decimation = { 0.10, 0.10, "decimation" };
+    rng_setting_t dimension_ripper = { 0.05, 0.05, "dimension_ripper" };
 
     // Diabolist
 
     // Hellcaller
-    rng_setting_t blackened_soul = { 0.10, 0.10 };
-    rng_setting_t bleakheart_tactics = { 0.15, 0.15 };
-    rng_setting_t seeds_of_their_demise = { 0.15, 0.15 };
-    rng_setting_t mark_of_perotharn = { 0.15, 0.15 };
+    rng_setting_t blackened_soul = { 0.10, 0.10, "blackened_soul" };
+    rng_setting_t bleakheart_tactics = { 0.15, 0.15, "bleakheart_tactics" };
+    rng_setting_t seeds_of_their_demise = { 0.15, 0.15, "seeds_of_their_demise" };
+    rng_setting_t mark_of_perotharn = { 0.15, 0.15, "mark_of_perotharn" };
 
     // Soul Harvester
-    rng_setting_t succulent_soul = { 0.20, 0.20 };
-    rng_setting_t feast_of_souls = { 0.125, 0.125 };
+    rng_setting_t succulent_soul_aff = { 0.20, 0.20, "succulent_soul_aff" };
+    rng_setting_t succulent_soul_demo = { 0.15, 0.15, "succulent_soul_demo" };
+    rng_setting_t feast_of_souls = { 0.125, 0.125, "feast_of_souls" };
   } rng_settings;
 
   int initial_soul_shards;
@@ -808,6 +810,7 @@ public:
   void init_special_effects() override;
   void reset() override;
   void create_options() override;
+  void add_rng_option( warlock_t::rng_settings_t::rng_setting_t& );
   int get_spawning_imp_count(); // TODO: Decide if still needed
   timespan_t time_to_imps( int count ); // TODO: Decide if still needed
   int active_demon_count() const;
@@ -937,5 +940,6 @@ namespace helpers
   void nightfall_updater( warlock_t* p, dot_t* d );
 
   void trigger_blackened_soul( warlock_t* p, bool malevolence );
+
 }
 }  // namespace warlock

@@ -1,4 +1,4 @@
-// Gem properties, wow build 11.0.2.56110
+// Gem properties, wow build 11.0.5.56487
 static const std::array<gem_property_data_t, 2271> __ptr_gem_property_data { {
   {    2,  2686, 0x00000002, 0 }, // +$k1 Strength
   {    3,  2687, 0x00000008, 0 }, // +$k1 Agility
@@ -2084,37 +2084,37 @@ static const std::array<gem_property_data_t, 2271> __ptr_gem_property_data { {
   { 4058,  6783, 0x02000000, 0 },
   { 4059,  6784, 0x02000000, 14004 }, // |C00834FFFProphetic Twilight Stone
   { 4060,  6831, 0x01000000, 0 }, // $spell@spelldesc407949
-  { 4061,  7055, 0x0000000e, 14160 }, // +Haste
-  { 4062,  7060, 0x0000000e, 14160 }, // +Critical Strike
-  { 4063,  7061, 0x0000000e, 14160 }, // +Mastery
-  { 4064,  7062, 0x0000000e, 14160 }, // +Leech
-  { 4065,  7064, 0x0000000e, 14160 }, // +Health Regen
-  { 4066,  7063, 0x0000000e, 14160 }, // +Speed
-  { 4067,  7072, 0x0000000e, 14160 }, // +++Critical Strike & +Stamina
-  { 4068,  7073, 0x0000000e, 14160 }, // +++Haste & +Stamina
-  { 4069,  7235, 0x0000000e, 14160 }, // +++Mastery & +Stamina
-  { 4070,  7075, 0x0000000e, 14160 }, // +++Haste
-  { 4071,  7076, 0x0000000e, 14160 }, // +++Critical Strike
-  { 4072,  7077, 0x0000000e, 14160 }, // +++Mastery
+  { 4061,  7055, 0x0000000e, 0 }, // +Haste
+  { 4062,  7060, 0x0000000e, 0 }, // +Critical Strike
+  { 4063,  7061, 0x0000000e, 0 }, // +Mastery
+  { 4064,  7062, 0x0000000e, 0 }, // +Leech
+  { 4065,  7064, 0x0000000e, 0 }, // +Health Regen
+  { 4066,  7063, 0x0000000e, 0 }, // +Speed
+  { 4067,  7072, 0x0000000e, 0 }, // +++Critical Strike & +Stamina
+  { 4068,  7073, 0x0000000e, 0 }, // +++Haste & +Stamina
+  { 4069,  7235, 0x0000000e, 0 }, // +++Mastery & +Stamina
+  { 4070,  7075, 0x0000000e, 0 }, // +++Haste
+  { 4071,  7076, 0x0000000e, 0 }, // +++Critical Strike
+  { 4072,  7077, 0x0000000e, 0 }, // +++Mastery
   { 4073,  7078, 0x0000000e, 0 }, // +++Leech
   { 4074,  7079, 0x0000000e, 0 }, // +++Speed
-  { 4075,  7080, 0x0000000e, 14160 }, // +++Health Regen
+  { 4075,  7080, 0x0000000e, 0 }, // +++Health Regen
   { 4076,  7081, 0x0000000e, 0 }, // ++Haste
-  { 4077,  7082, 0x0000000e, 14160 }, // ++Critical Strike
-  { 4078,  7083, 0x0000000e, 14160 }, // ++Mastery
-  { 4079,  7084, 0x0000000e, 14160 }, // ++Speed
-  { 4080,  7085, 0x0000000e, 14160 }, // ++Leech
-  { 4081,  7086, 0x0000000e, 14160 }, // ++Health Regen
-  { 4082,  7119, 0x01000000, 14159 }, // Opportunist
-  { 4083,  7120, 0x01000000, 14159 }, // Sunstrider's Flourish
-  { 4084,  7121, 0x01000000, 14159 }, // Fervor
-  { 4085,  7122, 0x01000000, 14159 }, // Arcanist's Edge
-  { 4087,  7136, 0x01000000, 14159 }, // Enkindle
-  { 4088,  7137, 0x01000000, 14159 }, // Explosive Barrage
-  { 4089,  7138, 0x01000000, 14159 }, // Wildfire
-  { 4090,  7139, 0x01000000, 14159 }, // Meteor Storm
-  { 4091,  7140, 0x01000000, 14159 }, // Incendiary Terror
-  { 4092,  7142, 0x01000000, 14159 }, // Frost Armor
+  { 4077,  7082, 0x0000000e, 0 }, // ++Critical Strike
+  { 4078,  7083, 0x0000000e, 0 }, // ++Mastery
+  { 4079,  7084, 0x0000000e, 0 }, // ++Speed
+  { 4080,  7085, 0x0000000e, 0 }, // ++Leech
+  { 4081,  7086, 0x0000000e, 0 }, // ++Health Regen
+  { 4082,  7119, 0x01000000, 0 }, // Opportunist
+  { 4083,  7120, 0x01000000, 0 }, // Sunstrider's Flourish
+  { 4084,  7121, 0x01000000, 0 }, // Fervor
+  { 4085,  7122, 0x01000000, 0 }, // Arcanist's Edge
+  { 4087,  7136, 0x01000000, 0 }, // Enkindle
+  { 4088,  7137, 0x01000000, 0 }, // Explosive Barrage
+  { 4089,  7138, 0x01000000, 0 }, // Wildfire
+  { 4090,  7139, 0x01000000, 0 }, // Meteor Storm
+  { 4091,  7140, 0x01000000, 0 }, // Incendiary Terror
+  { 4092,  7142, 0x01000000, 0 }, // Frost Armor
   { 4093,  7146, 0x0000000e, 14110 }, // +$k1 Critical Strike and +$k2 Haste
   { 4094,  7147, 0x0000000e, 14110 }, // +$k1 Critical Strike and +$k2 Haste
   { 4095,  7208, 0x0000000e, 14110 }, // +$k1 Critical Strike and +$k2 Haste
@@ -2190,75 +2190,75 @@ static const std::array<gem_property_data_t, 2271> __ptr_gem_property_data { {
   { 4165,  7220, 0x0000000e, 14118 }, // +$k1 Primary Stat and +$435550s1% Damage Reduction when affected by Crowd Control
   { 4166,  7221, 0x0000000e, 14118 }, // +$k1 Primary Stat and opponent's failed interrupt attempts grant Precognition
   { 4167,  7222, 0x0000000e, 14118 }, // +$k1 Primary Stat and getting snared increases damage of your next attack by $411132s1 per stack
-  { 4168,  7225, 0x01000000, 14159 }, // Mark of Arrogance
-  { 4169,  7226, 0x01000000, 14159 }, // Quick Strike
-  { 4170,  7227, 0x01000000, 14159 }, // Slay
-  { 4171,  7228, 0x01000000, 14159 }, // Tinkmaster's Shield
-  { 4172,  7229, 0x01000000, 14159 }, // Victory Fire
-  { 4173,  7230, 0x00000020, 14157 }, // Blink
-  { 4174,  7231, 0x00000020, 14157 }, // Heroic Leap
-  { 4175,  7232, 0x00000020, 14157 }, // Roll
-  { 4176,  7233, 0x00000020, 14157 }, // Sprint
-  { 4177,  7234, 0x0000000e, 14160 }, // +++Leech & +Stamina
-  { 4178,  7236, 0x0000000e, 14160 }, // +++Speed & +Stamina
-  { 4179,  7074, 0x0000000e, 14160 }, // +++Health Regen & +Stamina
-  { 4180,  7237, 0x01000000, 14159 }, // Hailstorm
-  { 4181,  7238, 0x01000000, 14159 }, // Cold Front
-  { 4182,  7239, 0x01000000, 14159 }, // Brittle
-  { 4183,  7240, 0x01000000, 14159 }, // Memory of Vengeance
-  { 4184,  7241, 0x01000000, 14159 }, // Searing Light
-  { 4185,  7243, 0x00000001, 14158 }, // Oblivion Sphere
-  { 4186,  7244, 0x00000001, 14158 }, // Thundering Orb
-  { 4187,  7245, 0x00000001, 14158 }, // Lifestorm
-  { 4188,  7246, 0x00000001, 14158 }, // Chi-Ji, the Red Crane
+  { 4168,  7225, 0x01000000, 0 }, // Mark of Arrogance
+  { 4169,  7226, 0x01000000, 0 }, // Quick Strike
+  { 4170,  7227, 0x01000000, 0 }, // Slay
+  { 4171,  7228, 0x01000000, 0 }, // Tinkmaster's Shield
+  { 4172,  7229, 0x01000000, 0 }, // Victory Fire
+  { 4173,  7230, 0x00000020, 0 }, // Blink
+  { 4174,  7231, 0x00000020, 0 }, // Heroic Leap
+  { 4175,  7232, 0x00000020, 0 }, // Roll
+  { 4176,  7233, 0x00000020, 0 }, // Sprint
+  { 4177,  7234, 0x0000000e, 0 }, // +++Leech & +Stamina
+  { 4178,  7236, 0x0000000e, 0 }, // +++Speed & +Stamina
+  { 4179,  7074, 0x0000000e, 0 }, // +++Health Regen & +Stamina
+  { 4180,  7237, 0x01000000, 0 }, // Hailstorm
+  { 4181,  7238, 0x01000000, 0 }, // Cold Front
+  { 4182,  7239, 0x01000000, 0 }, // Brittle
+  { 4183,  7240, 0x01000000, 0 }, // Memory of Vengeance
+  { 4184,  7241, 0x01000000, 0 }, // Searing Light
+  { 4185,  7243, 0x00000001, 0 }, // Oblivion Sphere
+  { 4186,  7244, 0x00000001, 0 }, // Thundering Orb
+  { 4187,  7245, 0x00000001, 0 }, // Lifestorm
+  { 4188,  7246, 0x00000001, 0 }, // Chi-Ji, the Red Crane
   { 4189,  7250, 0x00000001, 0 }, // Morphing Elements
   { 4190,  7251, 0x0000000e, 0 }, // +$k1 Primary Stat
   { 4191,  7252, 0x0000000e, 0 }, // +$k1 Primary Stat
   { 4192,  7253, 0x0000000e, 0 }, // +$k1 Primary Stat
-  { 4194,  7276, 0x01000000, 14159 }, // Vindication
-  { 4195,  7277, 0x01000000, 14159 }, // Warmth
-  { 4196,  7278, 0x01000000, 14159 }, // Savior
-  { 4197,  7279, 0x01000000, 14159 }, // Deliverance
-  { 4198,  7280, 0x01000000, 14159 }, // Righteous Frenzy
-  { 4199,  7281, 0x01000000, 14159 }, // Holy Martyr
-  { 4200,  7283, 0x00000020, 14157 }, // Disengage
-  { 4201,  7284, 0x00000020, 14157 }, // Trailblazer
-  { 4202,  7285, 0x00000020, 14157 }, // Leap of Faith
-  { 4203,  7286, 0x00000020, 14157 }, // Vanish
-  { 4204,  7287, 0x00000020, 14157 }, // Stampeding Roar
-  { 4205,  7288, 0x00000020, 14157 }, // Wild Charge
-  { 4206,  7289, 0x00000020, 14157 }, // Pursuit of Justice
-  { 4207,  7290, 0x00000020, 14157 }, // Door of Shadows
-  { 4208,  7291, 0x00000020, 14157 }, // Spirit Walk
-  { 4209,  7292, 0x00000020, 14157 }, // Spiritwalker's Grace
-  { 4210,  7293, 0x00000020, 14157 }, // Dark Pact
-  { 4211,  7294, 0x00000020, 14157 }, // Death's Advance
-  { 4212,  7295, 0x00000020, 14157 }, // Soulshape
-  { 4213,  7297, 0x00000001, 14158 }, // Locus of Power
-  { 4214,  7298, 0x01000000, 14159 }, // Lightning Rod
-  { 4215,  7299, 0x01000000, 14159 }, // Static Charge
-  { 4216,  7300, 0x01000000, 14159 }, // Windweaver
-  { 4217,  7301, 0x01000000, 14159 }, // Storm Overload
-  { 4218,  7302, 0x01000000, 14159 }, // Vampiric Aura
-  { 4219,  7303, 0x01000000, 14159 }, // Grounding
-  { 4220,  7304, 0x01000000, 14159 }, // Ankh of Reincarnation
-  { 4221,  7305, 0x01000000, 14159 }, // Freedom
-  { 4222,  7306, 0x01000000, 14159 }, // Brilliance
-  { 4223,  7307, 0x00000001, 14158 }, // Tireless Spirit
-  { 4224,  7308, 0x01000000, 14159 }, // Bloodthirsty Coral
-  { 4225,  7309, 0x00000001, 14158 }, // Soul Tether
-  { 4227,  7310, 0x00000001, 14158 }, // Ward of Salvation
-  { 4228,  7311, 0x00000001, 14158 }, // Precipice of Madness
-  { 4229,  7312, 0x0000000e, 14160 }, // +Armor
-  { 4230,  7313, 0x0000000e, 14160 }, // ++Armor
-  { 4231,  7314, 0x0000000e, 14160 }, // +++Armor & +Stamina
-  { 4232,  7315, 0x0000000e, 14160 }, // +++Armor
-  { 4233,  7316, 0x0000000e, 14160 }, // +Versatility
-  { 4234,  7317, 0x0000000e, 14160 }, // ++Versatility
-  { 4235,  7318, 0x0000000e, 14160 }, // +++Versatility & +Stamina
-  { 4236,  7319, 0x0000000e, 14160 }, // +++Versatility
-  { 4237,  7465, 0x00000001, 14158 }, // Funeral Pyre
-  { 4238,  7466, 0x00000001, 14158 }, // Bulwark of the Black Ox
+  { 4194,  7276, 0x01000000, 0 }, // Vindication
+  { 4195,  7277, 0x01000000, 0 }, // Warmth
+  { 4196,  7278, 0x01000000, 0 }, // Savior
+  { 4197,  7279, 0x01000000, 0 }, // Deliverance
+  { 4198,  7280, 0x01000000, 0 }, // Righteous Frenzy
+  { 4199,  7281, 0x01000000, 0 }, // Holy Martyr
+  { 4200,  7283, 0x00000020, 0 }, // Disengage
+  { 4201,  7284, 0x00000020, 0 }, // Trailblazer
+  { 4202,  7285, 0x00000020, 0 }, // Leap of Faith
+  { 4203,  7286, 0x00000020, 0 }, // Vanish
+  { 4204,  7287, 0x00000020, 0 }, // Stampeding Roar
+  { 4205,  7288, 0x00000020, 0 }, // Wild Charge
+  { 4206,  7289, 0x00000020, 0 }, // Pursuit of Justice
+  { 4207,  7290, 0x00000020, 0 }, // Door of Shadows
+  { 4208,  7291, 0x00000020, 0 }, // Spirit Walk
+  { 4209,  7292, 0x00000020, 0 }, // Spiritwalker's Grace
+  { 4210,  7293, 0x00000020, 0 }, // Dark Pact
+  { 4211,  7294, 0x00000020, 0 }, // Death's Advance
+  { 4212,  7295, 0x00000020, 0 }, // Soulshape
+  { 4213,  7297, 0x00000001, 0 }, // Locus of Power
+  { 4214,  7298, 0x01000000, 0 }, // Lightning Rod
+  { 4215,  7299, 0x01000000, 0 }, // Static Charge
+  { 4216,  7300, 0x01000000, 0 }, // Windweaver
+  { 4217,  7301, 0x01000000, 0 }, // Storm Overload
+  { 4218,  7302, 0x01000000, 0 }, // Vampiric Aura
+  { 4219,  7303, 0x01000000, 0 }, // Grounding
+  { 4220,  7304, 0x01000000, 0 }, // Ankh of Reincarnation
+  { 4221,  7305, 0x01000000, 0 }, // Freedom
+  { 4222,  7306, 0x01000000, 0 }, // Brilliance
+  { 4223,  7307, 0x00000001, 0 }, // Tireless Spirit
+  { 4224,  7308, 0x01000000, 0 }, // Bloodthirsty Coral
+  { 4225,  7309, 0x00000001, 0 }, // Soul Tether
+  { 4227,  7310, 0x00000001, 0 }, // Ward of Salvation
+  { 4228,  7311, 0x00000001, 0 }, // Precipice of Madness
+  { 4229,  7312, 0x0000000e, 0 }, // +Armor
+  { 4230,  7313, 0x0000000e, 0 }, // ++Armor
+  { 4231,  7314, 0x0000000e, 0 }, // +++Armor & +Stamina
+  { 4232,  7315, 0x0000000e, 0 }, // +++Armor
+  { 4233,  7316, 0x0000000e, 0 }, // +Versatility
+  { 4234,  7317, 0x0000000e, 0 }, // ++Versatility
+  { 4235,  7318, 0x0000000e, 0 }, // +++Versatility & +Stamina
+  { 4236,  7319, 0x0000000e, 0 }, // +++Versatility
+  { 4237,  7465, 0x00000001, 0 }, // Funeral Pyre
+  { 4238,  7466, 0x00000001, 0 }, // Bulwark of the Black Ox
   { 4239,  7503, 0x01000000, 0 }, // Lightning Tether
   { 4240,  7504, 0x01000000, 0 }, // Overclocked S.E.L.F.I.E. Camera
   { 4241,  7505, 0x01000000, 0 }, // Earthen Delivery Drill
