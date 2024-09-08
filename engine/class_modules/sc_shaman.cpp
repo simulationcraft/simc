@@ -8440,7 +8440,7 @@ struct stormkeeper_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p()->buff.stormkeeper->trigger( p()->buff.stormkeeper->max_stack() );
+    p()->buff.stormkeeper->trigger();
 
     if ( p()->buff.fury_of_the_storms->trigger() )
     {
@@ -12049,6 +12049,7 @@ void shaman_t::create_buffs()
 
   buff.stormkeeper = make_buff( this, "stormkeeper", find_spell( 191634 ) )
     ->set_cooldown( timespan_t::zero() )  // Handled by the action
+    ->set_initial_stack( 2 ) // Default to 2 stacks on trigger(), spell database shows this is default but doesn't seem applied automatically
     ->set_default_value_from_effect( 2 ); // Damage bonus as default value
 
   buff.tww1_4pc_ele =
@@ -13421,11 +13422,6 @@ struct rt_event_t : public event_t
       return;
     }
 
-    if ( player->buff.stormkeeper->check() )
-    {
-      return;
-    }
-
     player->buff.stormkeeper->trigger( 1 );
     player->rt_last_trigger = sim().current_time();
   }
@@ -14084,6 +14080,18 @@ struct shaman_module_t : public module_t
 
   void static_init() const override
   { }
+
+  void register_hotfixes() const override
+  {
+    // This is gross but the current value for the stormkeeper spell
+    // when resolved is 0 and not 2, but this achieves the end goal
+    // so whatever man
+    hotfix::register_spell( "Shaman", "2024-09-06", "Manually set Stormkeeper max stacks", 191634)
+      .field( "max_stack" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 3 )
+      .verification_value( 0.0 );
+  }
 
   void combat_begin( sim_t* ) const override
   { }
