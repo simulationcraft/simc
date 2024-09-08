@@ -2375,10 +2375,11 @@ void overclocked_geararang_launcher( special_effect_t& e )
   overclock_strike->base_dd_min = overclock_strike->base_dd_max = equip_driver->effectN( 2 ).average( e );
   overclock_strike->base_multiplier *= role_mult( e );
 
-  auto damage      = new special_effect_t( e.player );
-  damage->name_str = "overclocked_strike_proc";
-  damage->item     = e.item;
-  damage->spell_id = damage_buff_spell->id();
+  auto damage          = new special_effect_t( e.player );
+  damage->name_str     = "overclocked_strike_proc";
+  damage->item         = e.item;
+  damage->spell_id     = damage_buff_spell->id();
+  damage->cooldown_    = 1_ms; // Artificial tiny ICD to prevent double proccing before the buff expires
   damage->proc_flags2_ = PF2_ALL_HIT;
   e.player->special_effects.push_back( damage );
 
