@@ -11618,6 +11618,11 @@ void shaman_t::trigger_flash_of_lightning()
     return;
   }
 
+  if ( is_ptr() ) {
+    // The Cooldown Reduction of Flash of Lightning is removed on the 11.0.5 PTR
+    return;
+  }
+
   auto reduction = talent.flash_of_lightning.spell()->effectN( 1 ).time_value();
 
   if ( talent.storm_elemental.enabled() )
