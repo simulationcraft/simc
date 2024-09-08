@@ -1228,7 +1228,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, std::
 
   // Maximum player name length. Longer characters will be cut off and replaced by ... via the formatter function (in
   // JS) set to xAxis.labels.formatter
-  int max_name_length = 40;
+  int max_name_length = 64;
 
   bc.set( "chart.marginLeft", 7 * std::min( max_name_length + 3, as<int>( longest_name ) ) + 10 * n_chars + 50 );
 

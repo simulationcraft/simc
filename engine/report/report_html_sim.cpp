@@ -566,13 +566,12 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
     sim.add_chart_data( raid_dps );
   }
 
-  os << "<div class=\"column-charts\">\n"; // Open DIV for charts
-
   if ( sim.enemy_targets > 1 )
   {
     highchart::bar_chart_t priority_dps( "priority_dps", sim );
     if ( chart::generate_raid_aps( priority_dps, sim, "prioritydps" ) )
     {
+      priority_dps.width_ = 1162;
       os << priority_dps.to_target_div();
       sim.add_chart_data( priority_dps );
     }
@@ -581,6 +580,7 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
   highchart::bar_chart_t raid_dtps( "raid_dtps", sim );
   if ( chart::generate_raid_aps( raid_dtps, sim, "dtps" ) )
   {
+    raid_dtps.width_ = 1162;
     os << raid_dtps.to_target_div();
     sim.add_chart_data( raid_dtps );
   }
@@ -588,11 +588,10 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
   highchart::bar_chart_t raid_hps( "raid_hps", sim );
   if ( chart::generate_raid_aps( raid_hps, sim, "hps" ) )
   {
+    raid_hps.width_ = 1162;
     os << raid_hps.to_target_div();
     sim.add_chart_data( raid_hps );
   }
-
-  os << "</div>\n"; // Close DIV for charts
 
   if ( !sim.raid_events_str.empty() )
   {
