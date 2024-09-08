@@ -24,7 +24,6 @@ actions.precombat+=/regrowth,if=hero_tree.keeper_of_the_grove
 actions.precombat+=/regrowth,if=hero_tree.keeper_of_the_grove
 actions.precombat+=/regrowth,if=hero_tree.keeper_of_the_grove
 actions.precombat+=/wrath
-actions.precombat+=/regrowth,if=hero_tree.keeper_of_the_grove
 actions.precombat+=/wrath
 actions.precombat+=/starfire,if=!talent.stellar_flare
 actions.precombat+=/stellar_flare
