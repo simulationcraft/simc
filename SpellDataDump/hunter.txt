@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56421 thewarwithin-BETA
+SimulationCraft 1100-02 for World of Warcraft 11.0.2.56461 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -3466,7 +3466,6 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Vicious Hunt (445431)
                    Family Flags: 122
-Hotfixed         : Base Value (-15 -> -5)
 
 Name             : Marksmanship Hunter (id=137016) [Spell Family (9), Passive, Hidden] 
 Class            : Marksmanship Hunter
@@ -3581,26 +3580,21 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Vicious Hunt (445431)
                    Family Flags: 122
-Hotfixed         : Base Value (50 -> 40)
 #13 (id=260884)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 4011 (Label) | Target: Self (1)
                    Affected Spells (Label): Scattered Prey (445768), Scattered Prey (461866)
 #14 (id=1177654)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 4006 (Label) | Target: Self (1)
                    Affected Spells (Label): Howl of the Pack (462515)
-Hotfixed         : Base Value (2 -> 6)
 #15 (id=1184254)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 4094 (Label) | Target: Self (1)
                    Affected Spells (Label): Furious Assault (448814)
-Hotfixed         : NEW EFFECT
 #16 (id=1184255)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 4095 (Label) | Target: Self (1)
                    Affected Spells (Label): Cull the Herd (445717)
-Hotfixed         : NEW EFFECT
 #17 (id=1184257)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 4096 (Label) | Target: Self (1)
                    Affected Spells (Label): Furious Assault (445699)
-Hotfixed         : NEW EFFECT
 
 Name             : Ancient Zandalari Knowledge (id=138430) [Hidden] 
 Class            : Hunter
@@ -21437,7 +21431,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1166405)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (42 -> 4), Trigger Spell (459529 -> 0)
 #4 (id=1166406)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900), Steel Trap (162488), Barbed Shot (217200), Frenzy (217207), Serpent Sting (259491), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260243), Volley (260247), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049), Serpent Sting (271788), Frenzy (272790), Frenzy (272795), Black Arrow (430703)

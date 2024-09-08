@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56421 thewarwithin-BETA
+SimulationCraft 1100-02 for World of Warcraft 11.0.2.56461 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -2717,12 +2717,10 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.27500 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1.5 -> 1.275)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
 #3 (id=1104540)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
-Hotfixed         : Base Value (70 -> 100)
 Description      : $?s214205[Power Word: Shield applies Atonement to your target for $214206d.
 
 Your spell damage heals all targets affected by Atonement for $s1% of the damage done.][Power Word: Shield, Flash Heal, Renew, Power Word: Radiance, and Power Word: Life apply Atonement to your target for $194384d.
@@ -4229,7 +4227,6 @@ Effects          :
                    Base Value: 120 | Scaled Value: 120 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
-Hotfixed         : Base Value (33 -> 120)
 #16 (id=1040388)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
@@ -4277,7 +4274,6 @@ Hotfixed         : Base Value (33 -> 120)
                    Base Value: -42 | Scaled Value: -42 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
-Hotfixed         : Base Value (-4 -> -42)
 #30 (id=1176319)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3985 (Label) | Target: Self (1)
                    Affected Spells (Label): Preemptive Care (440671)
@@ -4342,12 +4338,10 @@ Effects          :
                    Base Value: 42 | Scaled Value: 42 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
-Hotfixed         : Base Value (18 -> 42)
 #13 (id=876303)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 42 | Scaled Value: 42 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
-Hotfixed         : Base Value (18 -> 42)
 #14 (id=876304)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #15 (id=1032424)  : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
@@ -6225,7 +6219,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=301365)   : School Damage (2): holyfire
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.28080 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.234 -> 0.2808)
 #2 (id=301387)   : Trigger Spell (64): Purge the Wicked
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 204213 | Target: Enemy (6)
 Description      : Cleanses the target with fire, causing $s1 Radiant damage and an additional $?a390706[${$204213o1*(1+$390706s1/100)}][$204213o1] Radiant damage over $204213d. Spreads to $?s373003[${1+$373003s2} nearby enemies][a nearby enemy] when you cast Penance on the target.
@@ -6256,7 +6249,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=301385)   : Apply Aura (6) | Periodic Damage (3): holyfire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.1302 -> 0.156)
 #2 (id=1167240)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
@@ -18919,7 +18911,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.62500 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
-Hotfixed         : Base Value (25 -> 40), PvP Coefficient (1 -> 0.625)
 #3 (id=1170141)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Smite (585), Penance (47666), Holy Nova (132157), Penance (186724), Dark Reprimand (373130), Ultimate Penitence (421543), Smite (425529), Void Blast (450215)
@@ -19926,7 +19917,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1151263)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.68000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (1.4 -> 1.68)
 #2 (id=1151264)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : Sends a blast of cosmic void energy at the enemy, causing $s1 Shadow damage.$?c3[

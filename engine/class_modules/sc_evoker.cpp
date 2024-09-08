@@ -143,7 +143,7 @@ struct evoker_td_t : public actor_target_data_t
   struct chrono_tracker_t
   {
     std::array<double, 5> damage_buckets = { 0, 0, 0, 0, 0 };
-    time_t last_accessed_second          = std::numeric_limits<time_t>::min();
+    time_t last_accessed_second          = 0;
   } chrono_tracker;
 
   evoker_td_t( player_t* target, evoker_t* source );
@@ -1832,7 +1832,8 @@ public:
   //   parse_effects( buff3, [ this ] { return p()->check2() && p()->check3(); } );
   void apply_buff_effects()
   {
-    parse_effects( p()->buff.ancient_flame );
+    auto af_mask = effect_mask_t( true ).disable( 2 );
+    parse_effects( p()->buff.ancient_flame, af_mask );
     parse_effects( p()->buff.burnout );
     parse_effects( p()->buff.essence_burst, p()->talent.ignition_rush );
     parse_effects( p()->buff.snapfire );
@@ -2708,6 +2709,16 @@ using empowered_release_heal_t = empowered_release_t<evoker_heal_t>;
 
 // Heals ====================================================================
 
+ struct panacea_t : public evoker_heal_t
+{
+  panacea_t( evoker_t* p, std::string_view name ) : evoker_heal_t( name, p, p->talent.panacea_spell )
+  {
+    harmful = false;
+    dual    = true;
+    target  = p;
+  }
+};
+
 struct emerald_blossom_t : public essence_heal_t
 {
   struct emerald_blossom_heal_t : public evoker_heal_t
@@ -2724,16 +2735,6 @@ struct emerald_blossom_t : public essence_heal_t
     }
   };
 
-  struct panacea_t : public evoker_heal_t
-  {
-    panacea_t( evoker_t* p ) : evoker_heal_t( "panacea", p, p->talent.panacea_spell )
-    {
-      harmful = false;
-      dual    = true;
-      target  = p;
-    }
-  };
-
   action_t *heal, *panacea, *virtual_heal;
 
   timespan_t extend_ebon;
@@ -2744,7 +2745,7 @@ struct emerald_blossom_t : public essence_heal_t
     harmful      = false;
     heal         = p->get_secondary_action<emerald_blossom_heal_t>( "emerald_blossom_heal" );
     virtual_heal = p->get_secondary_action<emerald_blossom_heal_t>( "emerald_blossom_virtual_heal", false );
-    panacea      = p->get_secondary_action<panacea_t>( "panacea" );
+    panacea      = p->get_secondary_action<panacea_t>( "panacea_eb", "panacea_eb" );
 
     min_travel_time = data().duration().total_seconds();
 
@@ -2840,10 +2841,23 @@ struct verdant_embrace_t : public evoker_heal_t
 {
   struct verdant_embrace_heal_t : public evoker_heal_t
   {
-    verdant_embrace_heal_t( evoker_t* p ) : evoker_heal_t( "verdant_embrace_heal", p, p->find_spell( 361195 ) )
+    action_t* panacea;
+
+    verdant_embrace_heal_t( evoker_t* p )
+      : evoker_heal_t( "verdant_embrace_heal", p, p->find_spell( 361195 ) ), panacea( nullptr )
     {
       harmful = false;
       dual    = true;
+
+      panacea = p->get_secondary_action<panacea_t>( "panacea_ve", "panacea_ve" );
+      add_child( panacea );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      evoker_heal_t::impact( s );
+      if ( panacea )
+        panacea->execute_on_target( s->target );
     }
   };
 
@@ -3182,7 +3196,10 @@ public:
       if ( t == p() && p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW1, B4 ) )
       {
         p()->buff.tww1_4pc_aug->expire();
-        p()->buff.tww1_4pc_aug->trigger();
+        make_event( sim, p()->buff.tww1_4pc_aug->tick_time(), [ this ] {
+          if ( p()->buff.ebon_might_self_buff->check() )
+            p()->buff.tww1_4pc_aug->trigger();
+        } );
       }
 
       auto time = ebon_time >= timespan_t::zero() ? ebon_time : buff->buff_duration();
@@ -3971,10 +3988,10 @@ struct deep_breath_t : public evoker_spell_t
     travel_delay = 0.9;   // guesstimate, TODO: confirm
     travel_speed = 19.5;  // guesstimate, TODO: confirm
 
-    trigger_gcd = 2_s;
-    gcd_type    = gcd_haste_type::NONE;
+    trigger_gcd = p->talent.scalecommander.maneuverability.ok() ? 1.5_s : 2_s;
+    gcd_type    = p->talent.scalecommander.maneuverability.ok() ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
 
-    if (data().ok())
+    if ( data().ok() )
     {
       if ( p->talent.scalecommander.maneuverability.ok() )
       {
@@ -4071,7 +4088,7 @@ struct disintegrate_t : public essence_spell_t
 
   int max_targets() const
   {
-    return 1 + ( p()->buff.mass_disintegrate_stacks->check() > 0 ) * 2;
+    return ( p()->buff.mass_disintegrate_stacks->check() > 0 ) * 3;
   }
 
   int targets() const
@@ -4132,7 +4149,9 @@ struct disintegrate_t : public essence_spell_t
     action_state_t::release( state );
 
     int targets_            = targets();
-    int virtual_buff_stacks = num_ticks * targets();
+    targets_                = targets_ ? targets_ : 1;
+
+    int virtual_buff_stacks = num_ticks * targets_;
 
     // trigger the buffs first so tick-zero can get buffed
     if ( p()->buff.essence_burst->check() )
@@ -4144,6 +4163,8 @@ struct disintegrate_t : public essence_spell_t
     if ( p()->buff.mass_disintegrate_stacks->check() )
     {
       int max_targets_ = max_targets();
+      max_targets_ = max_targets_ ? max_targets_ : 1;
+
       auto buff_size   = ( max_targets_ - targets_ ) * mass_disint_mult;
       p()->buff.mass_disintegrate_ticks->trigger( num_ticks, buff_size, -1, buff_duration );
     }
@@ -4897,7 +4918,7 @@ struct pyre_t : public essence_spell_t
     damage->stats   = stats;
     damage->proc    = true;
 
-    firestorm = p->get_secondary_action<firestorm_t>( "firestorm_ftf", "firestorm_ftf", true );
+    firestorm = p->get_secondary_action<firestorm_t>( name_str + "_firestorm_ftf", name_str + "_firestorm_ftf", true );
     add_child( firestorm );
   }
 
@@ -5676,8 +5697,8 @@ struct breath_of_eons_t : public evoker_spell_t
     travel_delay = 0.9;   // guesstimate, TODO: confirm
     travel_speed = 19.5;  // guesstimate, TODO: confirm
 
-    trigger_gcd = 2_s;
-    gcd_type    = gcd_haste_type::NONE;
+    trigger_gcd = p->talent.scalecommander.maneuverability.ok() ? 1.5_s : 2_s;
+    gcd_type    = p->talent.scalecommander.maneuverability.ok() ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
 
     aoe = -1;
 
@@ -8385,7 +8406,7 @@ void evoker_t::reset()
       if ( !td )
         continue;
 
-      td->chrono_tracker.last_accessed_second = std::numeric_limits<time_t>::min();
+      td->chrono_tracker.last_accessed_second = 0;
 
       for ( auto& bucket : td->chrono_tracker.damage_buckets )
       {

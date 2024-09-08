@@ -818,40 +818,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       tick_action = new sef_fists_of_fury_tick_t( player );
     }
-
-    // sef_action_base_t uses the source action's tick_time instead of the sef_action.
-    // Recalculate tick_time here.
-    timespan_t tick_time( const action_state_t *s ) const override
-    {
-      auto base = base_tick_time.base;
-
-      auto mul = base_tick_time.pct_mul * tick_time_pct_multiplier( s );
-      if ( mul <= 0 )
-        return 0_ms;
-
-      base += base_tick_time.flat_add + tick_time_flat_modifier( s );
-      if ( base <= 0_ms )
-        return 0_ms;
-
-      return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
-    }
-
-    // sef_action_base_t uses the source action's composite_dot_duration, which ignores tick_time override made above.
-    // Recalculate composite_dot_duration here.
-    timespan_t composite_dot_duration( const action_state_t *s ) const override
-    {
-      auto base = dot_duration.base;
-
-      auto mul = dot_duration.pct_mul * dot_duration_pct_multiplier( s );
-      if ( mul <= 0 )
-        return 0_ms;
-
-      base += dot_duration.flat_add + dot_duration_flat_modifier( s );
-      if ( base <= 0_ms )
-        return 0_ms;
-
-      return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
-    }
   };
 
   struct sef_chi_explosion_t : public sef_spell_t
@@ -1146,40 +1112,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       weapon_power_mod        = 0;
 
       tick_action = new sef_celestial_conduit_tick_t( player );
-    }
-
-    // sef_action_base_t uses the source action's tick_time instead of the sef_action.
-    // Recalculate tick_time here.
-    timespan_t tick_time( const action_state_t *s ) const override
-    {
-      auto base = base_tick_time.base;
-
-      auto mul = base_tick_time.pct_mul * tick_time_pct_multiplier( s );
-      if ( mul <= 0 )
-        return 0_ms;
-
-      base += base_tick_time.flat_add + tick_time_flat_modifier( s );
-      if ( base <= 0_ms )
-        return 0_ms;
-
-      return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
-    }
-
-    // sef_action_base_t uses the source action's composite_dot_duration, which ignores tick_time override made above.
-    // Recalculate composite_dot_duration here.
-    timespan_t composite_dot_duration( const action_state_t *s ) const override
-    {
-      auto base = dot_duration.base;
-
-      auto mul = dot_duration.pct_mul * dot_duration_pct_multiplier( s );
-      if ( mul <= 0 )
-        return 0_ms;
-
-      base += dot_duration.flat_add + dot_duration_flat_modifier( s );
-      if ( base <= 0_ms )
-        return 0_ms;
-
-      return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
     }
   };
 

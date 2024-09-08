@@ -591,7 +591,7 @@ struct sim_t : private sc_thread_t
   std::string output_file_str, html_file_str, json_file_str;
   std::string reforge_plot_output_file_str;
   std::vector<std::string> error_list;
-  int display_build;
+  int display_build;  // 0: none, 1: normal (default), 2: version + hotfix only
   int report_precision;
   int report_pets_separately;
   int report_targets;

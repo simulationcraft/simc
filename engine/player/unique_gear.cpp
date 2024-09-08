@@ -3776,6 +3776,34 @@ bool buff_has_stat( const buff_t* buff, stat_e stat )
   return false;
 }
 
+bool action_has_damage( const action_t* action )
+{
+  if ( !action )
+    return false;
+
+  // check direct damage
+  if ( action->has_direct_damage_effect( action->data() ) ||
+       action->base_dd_min > 0 ||
+       action->spell_power_mod.direct > 0 ||
+       action->attack_power_mod.direct > 0 ||
+       action->weapon_multiplier > 0 )
+  {
+    return true;
+  }
+
+  // check periodic damage
+  if ( action->has_periodic_damage_effect( action->data() ) ||
+       ( action->dot_duration > 0_ms &&
+         ( action->base_td > 0 ||
+           action->spell_power_mod.tick > 0 ||
+           action->attack_power_mod.tick > 0 ||
+           action->rolling_periodic ) ) )
+  {
+    return true;
+  }
+
+  return false;
+}
 } // UNNAMED NAMESPACE
 
 item_targetdata_initializer_t::item_targetdata_initializer_t( unsigned iid, util::span<const slot_e> s )
@@ -4341,78 +4369,114 @@ struct item_cooldown_exists_expr_t : public item_effect_expr_t
   { return v; }
 };
 
-struct item_has_use_buff_expr_t : public item_effect_expr_t
+struct item_has_use_expr_t : public item_effect_expr_t
 {
   double v;
   bool has_use;
   bool has_buff;
+  bool has_damage;
 
-  item_has_use_buff_expr_t( player_t& player, const std::vector<slot_e>& slots, util::string_view full_expression )
-    : item_effect_expr_t( player, slots, full_expression ), v( 0 ), has_use( false ), has_buff(false)
+  item_has_use_expr_t( player_t& player, const std::vector<slot_e>& slots, std::string_view full_expression,
+                       bool check_buff, bool check_damage )
+    : item_effect_expr_t( player, slots, full_expression ),
+      v( 0 ),
+      has_use( false ),
+      has_buff( false ),
+      has_damage( false )
   {
-
     for ( auto e : effects )
     {
-      if ( e->cooldown() != timespan_t::zero() && e->rppm() == 0 )  // Technically, rppm doesn't have a cooldown.
+      if ( e->cooldown() != 0_ms && e->rppm() == 0 )  // Technically, rppm doesn't have a cooldown.
       {
         has_use = true;
         break;
       }
     }
 
-    for ( auto e : effects )
+    if ( check_buff )
     {
-      // Check if there is a stat set on the special effect
-      if ( stat_fits_criteria( e->stat, STAT_ANY_DPS ) )
+      for ( auto e : effects )
       {
-        has_buff = true;
-        break;
-      }
-
-      // Check if the special effect has a suitable buff effect
-      for ( size_t i = 1, end = e->trigger()->effect_count(); i <= end; i++ )
-      {
-        if ( has_buff )
-          break;
-
-        const spelleffect_data_t& effect = e->trigger()->effectN( i );
-        if ( effect.id() == 0 )
-          continue;
-
-        if ( stat_fits_criteria( e->stat_buff_type( effect ), STAT_ANY_DPS ) )
+        // Check if there is a stat set on the special effect
+        if ( stat_fits_criteria( e->stat, STAT_ANY_DPS ) )
         {
           has_buff = true;
           break;
         }
 
-        // Check if an effect triggers something with a suitable buff effect
-        if ( effect.trigger() )
+        // Check if the special effect has a suitable buff effect
+        for ( size_t i = 1, end = e->trigger()->effect_count(); i <= end; i++ )
         {
-          for ( size_t i = 1, end = effect.trigger()->effect_count(); i <= end; i++ )
-          {
-            const spelleffect_data_t& trigger_effect = effect.trigger()->effectN( i );
-            if ( trigger_effect.id() == 0 )
-              continue;
+          if ( has_buff )
+            break;
 
-            if ( stat_fits_criteria( e->stat_buff_type( trigger_effect ), STAT_ANY_DPS ) )
+          const spelleffect_data_t& effect = e->trigger()->effectN( i );
+          if ( effect.id() == 0 )
+            continue;
+
+          if ( stat_fits_criteria( e->stat_buff_type( effect ), STAT_ANY_DPS ) )
+          {
+            has_buff = true;
+            break;
+          }
+
+          // Check if an effect triggers something with a suitable buff effect
+          if ( effect.trigger() )
+          {
+            for ( size_t i = 1, end = effect.trigger()->effect_count(); i <= end; i++ )
             {
-              has_buff = true;
-              break;
+              const spelleffect_data_t& trigger_effect = effect.trigger()->effectN( i );
+              if ( trigger_effect.id() == 0 )
+                continue;
+
+              if ( stat_fits_criteria( e->stat_buff_type( trigger_effect ), STAT_ANY_DPS ) )
+              {
+                has_buff = true;
+                break;
+              }
             }
           }
         }
-      }
 
-      // Check if the special effect created a suitable buff
-      buff_t* b = buff_t::find( &player, e->name() );
-      if ( buff_has_stat( b, STAT_ANY_DPS ) )
-      {
-        has_buff = true;
-        break;
+        // Check if the special effect created a suitable buff
+        buff_t* b = buff_t::find( &player, e->name() );
+        if ( buff_has_stat( b, STAT_ANY_DPS ) )
+        {
+          has_buff = true;
+          break;
+        }
       }
     }
 
-    if ( has_use && has_buff )
+    if ( check_damage )
+    {
+      for ( auto e : effects )
+      {
+        // check if action name exists
+        action_t* a = player.find_action( e->name() );
+        if ( action_has_damage( a ) )
+        {
+          has_damage = true;
+          break;
+        }
+
+        // check any custom execute_action
+        if ( action_has_damage( e->execute_action ) )
+        {
+          has_damage = true;
+          break;
+        }
+
+        // check any auto-parsed actions
+        if ( e->is_offensive_spell_action() || e->is_attack_action() )
+        {
+          has_damage = true;
+          break;
+        }
+      }
+    }
+
+    if ( has_use && ( has_buff || !check_buff ) && ( has_damage || !check_damage ) )
       v = 1;
   }
 
@@ -4485,13 +4549,13 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
     return nullptr;
   }
 
-  if ( util::is_number( splits[1] ) )
+  if ( util::is_number( splits[ 1 ] ) )
   {
-    if ( splits[1] == "1" )
+    if ( splits[ 1 ] == "1" )
     {
       slots.push_back( SLOT_TRINKET_1 );
     }
-    else if ( splits[1] == "2" )
+    else if ( splits[ 1 ] == "2" )
     {
       slots.push_back( SLOT_TRINKET_2 );
     }
@@ -4530,8 +4594,8 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
 
   if ( splits.size() <= ptype_idx )
   {
-    throw std::invalid_argument(fmt::format("Cannot create unique gear expression: too few parts '{}' < '{}'.",
-        splits.size(), ptype_idx+1));
+    throw std::invalid_argument(
+      fmt::format( "Cannot create unique gear expression: too few parts '{}' < '{}'.", splits.size(), ptype_idx + 1 ) );
   }
 
   if ( util::str_compare_ci( splits[ ptype_idx ], "is" ) )
@@ -4539,14 +4603,22 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
     return std::make_unique<item_is_expr_t>( player, slots, splits[ expr_idx - 1 ] );
   }
 
-  if (util::str_compare_ci( splits[ ptype_idx ], "ilvl" ))
+  if ( util::str_compare_ci( splits[ ptype_idx ], "ilvl" ) )
   {
     return std::make_unique<item_lvl_expr_t>( player, slots, name_str );
   }
 
-  if ( util::str_compare_ci( splits[ ptype_idx ], "has_use_buff" ) )
+  if ( util::str_prefix_ci( splits[ ptype_idx ], "has_use" ) )
   {
-    return std::make_unique<item_has_use_buff_expr_t>( player, slots, name_str );
+    bool check_buff = false;
+    bool check_damage = false;
+
+    if ( util::str_in_str_ci( splits[ ptype_idx ], "buff" ) )
+      check_buff = true;
+    else if ( util::str_in_str_ci( splits[ ptype_idx ], "damage" ) )
+      check_damage = true;
+
+    return std::make_unique<item_has_use_expr_t>( player, slots, name_str, check_buff, check_damage );
   }
 
   if ( util::str_compare_ci( splits[ ptype_idx ], "cast_time" ) )
@@ -4573,8 +4645,9 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
   {
     if ( splits.size() <= stat_idx )
     {
-      throw std::invalid_argument(fmt::format("Cannot create unique gear expression: too few parts to parse stat: '{}' < '{}'.",
-          splits.size(), stat_idx+1));
+      throw std::invalid_argument(
+        fmt::format( "Cannot create unique gear expression: too few parts to parse stat: '{}' < '{}'.", splits.size(),
+                     stat_idx + 1 ) );
     }
     // Use "all stat" to indicate "any" ..
     if ( util::str_compare_ci( splits[ stat_idx ], "any" ) )
@@ -4586,7 +4659,7 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
       stat = util::parse_stat_type( splits[ stat_idx ] );
       if ( stat == STAT_NONE )
       {
-        throw std::invalid_argument(fmt::format("Cannot parse stat '{}'.", splits[ stat_idx ]));
+        throw std::invalid_argument( fmt::format( "Cannot parse stat '{}'.", splits[ stat_idx ] ) );
       }
     }
   }
@@ -4595,7 +4668,9 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
   {
     if ( splits.size() <= expr_idx )
     {
-      throw std::invalid_argument(fmt::format("Cannot create unique gear expression: too few parts to parse buff expression: '{}' < '{}'.", splits.size(), expr_idx + 1));
+      throw std::invalid_argument(
+        fmt::format( "Cannot create unique gear expression: too few parts to parse buff expression: '{}' < '{}'.",
+                     splits.size(), expr_idx + 1 ) );
     }
     return std::make_unique<item_buff_expr_t>( player, slots, stat, ptype == PROC_STACKING_STAT, splits[ expr_idx ] );
   }
@@ -4619,7 +4694,7 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
     return std::make_unique<item_ready_expr_t>( player, slots, name_str );
   }
 
-  throw std::invalid_argument(fmt::format("Unsupported unique gear expression '{}'.", splits.back()));
+  throw std::invalid_argument( fmt::format( "Unsupported unique gear expression '{}'.", splits.back() ) );
 }
 
 namespace unique_gear

@@ -177,9 +177,9 @@ constexpr double m_pi = 3.14159265358979323846;
 // ==========================================================================
 
 #define SC_MAJOR_VERSION "1100"
-#define SC_MINOR_VERSION "01"
+#define SC_MINOR_VERSION "02"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
-#define SC_BETA 1
+#define SC_BETA 0
 #if SC_BETA
 #define SC_BETA_STR "thewarwithin"
 #endif

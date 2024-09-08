@@ -25,32 +25,93 @@
 # save=TWW1_Death_Knight_Blood.simc
 
 
-# deathknight="TWW1_Death_Knight_Frost"
-# level=80
-# race=blood_elf
-# spec=frost
-# role=attack
-# position=back
-# talents=BsPAAAAAAAAAAAAAAAAAAAAAAkIAkIJJkISEhIJhQiIRECIhkIJJJJJplAAAAAAAAAAAAA
+deathknight="TWW1_Death_Knight_Frost_Breath_Deathbringer"
+spec=frost
+level=80
+race=blood_elf
+role=attack
+position=back
+talents=CsPAAAAAAAAAAAAAAAAAAAAAAMGAzMjZmxYYGzMzMzMGmJzYMjBMzYMjZmZmZmZxMAAAAAAAAAAAAbmtBGwCYbYCZsgZYMDA
+deathknight.ams_absorb_percent=1
+deathknight.first_ams_cast=0
 
-# head=earthshakers_steel_visor,id=193735,bonus_id=6808/4786/1594
-# neck=ukhel_ancestry_beads,id=193676,bonus_id=6808/4786/1594
-# shoulders=nokhud_traditionalists_pauldrons,id=193686,bonus_id=6808/4786/1594
-# back=cloak_of_lost_devotion,id=193629,bonus_id=6808/4786/1594,enchant=regenerative_leech_2
-# chest=cuirass_of_irreparable_madness,id=193644,bonus_id=6808/4786/1594,enchant=waking_stats_2
-# wrists=thrashing_wind_vambraces,id=193698,bonus_id=6808/4786/1594,enchant=devotion_of_leech_2
-# hands=keepers_iron_grips,id=193795,bonus_id=6808/4786/1594
-# waist=illusion_breakers_waistguard,id=193650,bonus_id=6808/4786/1594
-# legs=drake_hunters_greaves,id=193694,bonus_id=6808/4786/1594,enchant=fierce_armor_kit_2
-# feet=twentytwoleague_striders,id=193630,bonus_id=6808/4786/1594,enchant=watchers_loam_2
-# finger1=unstable_arcane_loop,id=193633,bonus_id=6808/4786/1594,enchant=devotion_of_critical_strike_2
-# finger2=platinum_star_band,id=193708,bonus_id=6808/4786/1594,enchant=devotion_of_critical_strike_2
-# trinket1=blazebinders_hoof,id=193762,bonus_id=6808/4786/1594
-# trinket2=dragon_games_equipment,id=193719,bonus_id=6808/4786/1594
-# main_hand=strike_twice,id=193700,bonus_id=6808/4786/1594,enchant=rune_of_hysteria
-# off_hand=strike_twice,id=193700,bonus_id=6808/4786/1594,enchant=rune_of_the_fallen_crusader
+head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213743
+neck=trailspinner_pendant,id=178707,bonus_id=1611/8781,ilevel=639,gem_id=213473/213482
+shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540
+back=wings_of_shattered_sorrow,id=225574,bonus_id=7187/1520,ilevel=639
+chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540,enchant=crystalline_radiance_3
+wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11109/8960/10878,gem_id=213491,crafted_stats=49/32
+hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
+waist=crystalfissure_girdle,id=221079,bonus_id=1611/6935,ilevel=639,gem_id=213458
+legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=stormbound_armor_kit_3
+feet=ballast_sinkers,id=159428,bonus_id=1514/3317/6646,ilevel=639
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213458/213458,enchant=radiant_critical_strike_3
+finger2=seal_of_the_city_watch,id=162542,bonus_id=1514/3317/6646/8781,ilevel=639,gem_id=213458/213458,enchant=radiant_critical_strike_3
+trinket1=treacherous_transmitter,id=221023,bonus_id=7187/1520,ilevel=639
+trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
+main_hand=ansureks_final_judgment,id=212401,ilevel=639,enchant=rune_of_the_stoneskin_gargoyle
+off_hand=charged_slicer,id=222451,bonus_id=11144/9627/9633/8902/10222/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=49/32
 
-# save="TWW1_Death_Knight_Frost.simc"
+save="TWW1_Death_Knight_Frost.simc"
+
+deathknight="TWW1_Death_Knight_Frost_Shattering_Deathbringer"
+spec=frost
+level=80
+race=mechagnome
+role=attack
+position=back
+talents=CsPAAAAAAAAAAAAAAAAAAAAAAwAYmZMzMGDzYmZmZmxwMZGjZwgZGzMMzMzMzMLzMAAAAAAAAAAAAbmtBGwCYZYCZsgZMjZA
+deathknight.ams_absorb_percent=1
+deathknight.first_ams_cast=0
+
+head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213743
+neck=trailspinner_pendant,id=178707,bonus_id=1611/8781,ilevel=639,gem_id=213473/213482
+shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540
+back=wings_of_shattered_sorrow,id=225574,bonus_id=7187/1520,ilevel=639
+chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540,enchant=crystalline_radiance_3
+wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11109/8960/10878,gem_id=213491,crafted_stats=49/32
+hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
+waist=crystalfissure_girdle,id=221079,bonus_id=1611/6935,ilevel=639,gem_id=213458
+legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=stormbound_armor_kit_3
+feet=ballast_sinkers,id=159428,bonus_id=1514/3317/6646,ilevel=639
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213458/213458,enchant=radiant_mastery_3
+finger2=seal_of_the_city_watch,id=162542,bonus_id=1514/3317/6646/8781,ilevel=639,gem_id=213458/213458,enchant=radiant_mastery_3
+trinket1=treacherous_transmitter,id=221023,bonus_id=1540
+trinket2=mark_of_khardros,id=133300,bonus_id=9466/1514,ilevel=639
+main_hand=ansureks_final_judgment,id=212401,ilevel=639,enchant=rune_of_razorice
+off_hand=charged_slicer,id=222451,bonus_id=11144/9627/9633/8902/10222/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=49/32
+
+save="TWW1_Death_Knight_Frost_Shattering_Deathbringer.simc"
+
+deathknight="TWW1_Death_Knight_Frost_Rider"
+deathknight.ams_absorb_percent=1
+spec=frost
+level=80
+race=blood_elf
+role=attack
+position=back
+talents=CsPAAAAAAAAAAAAAAAAAAAAAAMAYmZMzMGDzYmZmZmxwMZGjZMgZGjZMzMzMzMLzMAAAAAAAAAAAAgNzihBGY20QDbYMGzAA
+deathknight.ams_absorb_percent=1
+deathknight.first_ams_cast=0
+
+head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213743
+neck=locket_of_broken_memories,id=212448,bonus_id=6652/10354/10269/1540/10255/10394/10879,gem_id=213473/213482
+shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540
+back=wings_of_shattered_sorrow,id=225574,bonus_id=7187/1520,ilevel=639
+chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540,enchant=crystalline_radiance_3
+wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11109/8960/10878,gem_id=213455,crafted_stats=32/36
+hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
+waist=crystalfissure_girdle,id=221079,bonus_id=1611/6935,ilevel=639,gem_id=213458
+legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=stormbound_armor_kit_3
+feet=boots_of_the_black_bulwark,id=225590,bonus_id=1540
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213491/213491,enchant=radiant_critical_strike_3
+finger2=seal_of_the_city_watch,id=162542,bonus_id=1514/3317/6646/8781,ilevel=639,gem_id=213458/213458,enchant=radiant_critical_strike_3
+trinket1=treacherous_transmitter,id=221023,bonus_id=7187/1520,ilevel=639
+trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
+main_hand=ansureks_final_judgment,id=212401,ilevel=639,enchant=rune_of_the_stoneskin_gargoyle
+off_hand=charged_slicer,id=222451,bonus_id=11144/9627/9633/8902/10222/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=32/36
+
+save="TWW1_Death_Knight_Frost_Rider.simc"
 
 deathknight="TWW1_Death_Knight_Unholy_Rider"
 spec=unholy
@@ -63,9 +124,9 @@ talents=CwPAAAAAAAAAAAAAAAAAAAAAAAAzMjZMDDzYmZmphZmZGzYAAAAAAAAAMzMzwYwMAgZzMMbz
 head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213743
 neck=emergency_stop_keychain,id=221077,bonus_id=1611/10879,ilevel=639,gem_id=213494/213494
 shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540
-back=consecrated_cloak,id=221667,bonus_id=11144/9627/9633/8902/10222/11303/8960,crafted_stats=49/36
+back=consecrated_cloak,id=221667,bonus_id=11144/9627/9633/8902/8793/10222/11109/8960,crafted_stats=49/36
 chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540,enchant=crystalline_radiance_3
-wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11303/8960/10878,gem_id=213494,crafted_stats=49/36
+wrists=bracers_of_umbral_mending,id=133306,bonus_id=9466/1514/6935,ilevel=639,gem_id=213494
 hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
 waist=girdle_of_somber_ploys,id=221133,bonus_id=1611/6935,ilevel=639,gem_id=213494
 legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=stormbound_armor_kit_3
@@ -74,7 +135,7 @@ finger1=key_to_the_unseeming,id=212447,bonus_id=1540/10879,gem_id=213494/213494,
 finger2=circle_of_bone,id=133299,bonus_id=9466/1514/10879,ilevel=639,gem_id=213494/213494,enchant=cursed_haste_3
 trinket1=treacherous_transmitter,id=221023,bonus_id=1540
 trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
-main_hand=wild_hammer,id=56131,ilevel=639,enchant=rune_of_the_fallen_crusader
+main_hand=charged_claymore,id=222447,bonus_id=11144/9627/9633/8902/8793/10222/11300/8960,enchant=rune_of_the_fallen_crusader
 
 save=TWW1_Death_Knight_Unholy.simc
 
@@ -89,9 +150,9 @@ talents=CwPAAAAAAAAAAAAAAAAAAAAAAAAzMjZMDDzYmZmphZmZGzYAAAAAAAAAMzMzwYMmBAMbmhZx
 head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1540/10255/10394/10879,gem_id=213482/213482
 shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540
-back=consecrated_cloak,id=221667,bonus_id=11144/9627/9633/8902/10222/11303/8960,crafted_stats=49/36
+back=consecrated_cloak,id=221667,bonus_id=11144/9627/9633/8902/8793/10222/11109/8960,crafted_stats=49/36
 chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540,enchant=crystalline_radiance_3
-wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11303/8960/10878,gem_id=213482,crafted_stats=49/32
+wrists=bracers_of_umbral_mending,id=133306,bonus_id=9466/1514/6935,ilevel=639,gem_id=213494
 hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
 waist=girdle_of_somber_ploys,id=221133,bonus_id=1611/6935,ilevel=639,gem_id=213482
 legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=stormbound_armor_kit_3
@@ -100,7 +161,7 @@ finger1=circle_of_bone,id=133299,bonus_id=9466/1514/10879,ilevel=639,gem_id=2134
 finger2=writhing_ringworm,id=225576,bonus_id=1540/10879,gem_id=213482/213482,enchant=cursed_haste_3
 trinket1=mark_of_khardros,id=133300,bonus_id=9466/1514,ilevel=639
 trinket2=treacherous_transmitter,id=221023,bonus_id=1540
-main_hand=wild_hammer,id=56131,ilevel=639,enchant=rune_of_the_fallen_crusader
+main_hand=charged_claymore,id=222447,bonus_id=11144/9627/9633/8902/8793/10222/11300/8960,enchant=rune_of_the_fallen_crusader
 
 save=TWW1_Death_Knight_Unholy_San'layn.simc
 

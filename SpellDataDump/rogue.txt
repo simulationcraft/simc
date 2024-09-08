@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56421 thewarwithin-BETA
+SimulationCraft 1100-02 for World of Warcraft 11.0.2.56461 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -21872,7 +21872,6 @@ Description      : Finishing move that dispatches the enemy, dealing damage per 
    7 points: ${$m1*7} damage][]
 
 Name             : Darkest Night (id=469637) [Spell Family (8), Hidden] 
-Hotfixed         : NEW SPELL
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -21894,7 +21893,6 @@ Attributes       : ...x...x x....... .....x.. x.xx.x..   ...x.x.x ..x..... .....
 Effects          :
 #1 (id=1184103)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc457058
 Tooltip          : Your next $?c1[Envenom][Eviscerate] cast with maximum combo points is guaranteed to critically strike, deal $w2% additional damage, and apply $w3 stacks of Deathstalker's Mark to the target.
 

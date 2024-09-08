@@ -541,7 +541,14 @@ public:
 
     proc_t* wild_call;
     proc_t* wild_instincts;
-    proc_t* dire_command; 
+    proc_t* dire_command;
+
+    proc_t* sentinel_stacks;
+    proc_t* sentinel_implosions;
+    proc_t* extrapolated_shots_stacks;
+    proc_t* release_and_reload_stacks;
+    proc_t* crescent_steel_stacks;
+    proc_t* overwatch_implosions;
   } procs;
 
   // Talents
@@ -1046,7 +1053,7 @@ public:
   void trigger_outland_venom_update();
   void trigger_calling_the_shots( action_t* action, double cost );
   void consume_trick_shots();
-  void trigger_sentinel( player_t* target, bool force = false );
+  void trigger_sentinel( player_t* target, bool force = false, proc_t* proc = nullptr );
   void trigger_sentinel_implosion( hunter_td_t* td );
   void trigger_symphonic_arsenal();
   void trigger_lunar_storm( player_t* target );
@@ -2645,7 +2652,7 @@ struct kill_command_sv_t : public hunter_main_pet_attack_t
     }
 
     if ( o()->talents.sentinel.ok() )
-      o()->trigger_sentinel( s->target );
+      o()->trigger_sentinel( s->target, false, o()->procs.sentinel_stacks );
   }
   
   void trigger_dot( action_state_t* s ) override
@@ -3440,7 +3447,7 @@ void hunter_t::consume_trick_shots()
   buffs.trick_shots -> decrement();
 }
 
-void hunter_t::trigger_sentinel( player_t* target, bool force )
+void hunter_t::trigger_sentinel( player_t* target, bool force, proc_t* proc )
 {
   if ( force || buffs.eyes_closed->check() || rng().roll( 0.22 ) )
   {
@@ -3449,21 +3456,34 @@ void hunter_t::trigger_sentinel( player_t* target, bool force )
 
     int stacks = sentinel->check();
 
+    if ( proc )
+      proc->occur();
+
     sentinel->trigger();
     if ( rng().roll( talents.release_and_reload->effectN( 1 ).percent() ) )
+    {
+      procs.release_and_reload_stacks->occur();
       sentinel->trigger();
+    }
 
     if ( !stacks && talents.extrapolated_shots.ok() )
     {
+      procs.extrapolated_shots_stacks->occur();
       sentinel->trigger( as<int>( talents.extrapolated_shots->effectN( 1 ).base_value() ) );
       if ( rng().roll( talents.release_and_reload->effectN( 1 ).percent() ) )
+      {
+        procs.release_and_reload_stacks->occur();
         sentinel->trigger();
+      }
     }
 
     // TODO: Seen strange behavior with multiple implosions triggering, ticks desyncing from the 2 second period by possibly 
     // overwriting or ticking in parallel, but for now model as just allowing one to tick at a time.
     if ( !td->sentinel_imploding && sentinel->check() > talents.sentinel->effectN( 1 ).base_value() && rng().roll( 0.32 ) )
+    {
+      procs.sentinel_implosions->occur();
       trigger_sentinel_implosion( td );
+    }
   }
 }
 
@@ -4493,7 +4513,7 @@ struct symphonic_arsenal_t : hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     // Can still proc Sentinel on original target.
-    p()->trigger_sentinel( target );
+    p()->trigger_sentinel( target, false, p()->procs.sentinel_stacks );
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -6554,11 +6574,12 @@ struct bestial_wrath_t: public hunter_spell_t
     add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
 
-    //Specifically set to true for 10.1 class trinket 
-    if( !is_precombat )
-      harmful = true;
-
     precast_time = clamp( precast_time, 0_ms, data().duration() );
+  }
+
+  bool usable_precombat() const override
+  {
+    return true;
   }
 
   void init_finished() override
@@ -6567,10 +6588,6 @@ struct bestial_wrath_t: public hunter_spell_t
       add_pet_stats( pet, { "bestial_wrath" } );
 
     hunter_spell_t::init_finished();
-
-    //Used to ensure that during precombat this isn't harmful for the duration of 10.1 due to the class trinket existing
-    if ( is_precombat )
-      harmful = false;
   }
 
   void execute() override
@@ -6738,18 +6755,6 @@ struct trueshot_t: public hunter_spell_t
     hunter_spell_t( "trueshot", p, p -> talents.trueshot )
   {
     parse_options( options_str );
-
-    //Only set to harmful for the 10.1 class trinket effect
-    harmful = true;
-  }
-
-  //Used to ensure that during precombat this isn't harmful for the duration of 10.1 due to the class trinket existing
-  void init_finished() override
-  {
-    hunter_spell_t::init_finished();
-
-    if ( is_precombat )
-      harmful = false;
   }
 
   void execute() override
@@ -7184,7 +7189,7 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
         if ( crescent_steel_damaged )
         {
           crescent_steel_damaged = false;
-          p->trigger_sentinel( target, true );
+          p->trigger_sentinel( target, true, p->procs.crescent_steel_stacks );
         }
         else
         {
@@ -8273,6 +8278,24 @@ void hunter_t::init_procs()
 
   if ( talents.wild_call.ok() )
     procs.wild_call = get_proc( "Wild Call" );
+
+  if ( talents.sentinel.ok() )
+  {
+    procs.sentinel_stacks = get_proc( "Sentinel Stacks" );
+    procs.sentinel_implosions = get_proc( "Sentinel Implosions" );
+  }
+
+  if ( talents.extrapolated_shots.ok() )
+    procs.extrapolated_shots_stacks = get_proc( "Extrapolated Shots Stacks" );
+
+  if ( talents.release_and_reload.ok() )
+    procs.release_and_reload_stacks = get_proc( "Release and Reload Stacks" );
+
+  if ( talents.crescent_steel.ok() )
+    procs.crescent_steel_stacks = get_proc( "Crescent Steel Stacks" );
+
+  if ( talents.overwatch.ok() )
+    procs.overwatch_implosions = get_proc( "Overwatch Implosion" );
 }
 
 void hunter_t::init_rng()
@@ -8315,7 +8338,10 @@ void hunter_t::init_assessors()
           {
             hunter_td_t* td = get_target_data( t );
             if ( !td->sentinel_imploding )
+            {
+              procs.overwatch_implosions->occur();
               trigger_sentinel_implosion( td );
+            }
           }
         }
       }
@@ -8488,7 +8514,7 @@ void hunter_t::init_special_effects()
       {
         dbc_proc_callback_t::execute( a, s );
 
-        player->trigger_sentinel( s->target );
+        player->trigger_sentinel( s->target, false, player->procs.sentinel_stacks );
       }
     };
 

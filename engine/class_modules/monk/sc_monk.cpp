@@ -1280,7 +1280,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     p()->baseline.brewmaster.brews.adjust(
         timespan_t::from_seconds( p()->baseline.monk.tiger_palm->effectN( 3 ).base_value() ) );
 
-    if ( face_palm && !p()->bugs )
+    if ( face_palm )
       p()->baseline.brewmaster.brews.adjust( p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
 
     if ( p()->buff.combat_wisdom->up() )
@@ -1407,8 +1407,7 @@ struct press_the_advantage_t : base_action_t
       base_action_t::p()->buff.press_the_advantage->expire();
 
       if ( ( face_palm = base_action_t::rng().roll(
-                 base_action_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) &&
-           !base_action_t::p()->bugs )
+                 base_action_t::p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) ) )
       {
         base_action_t::p()->proc.face_palm->occur();
         base_action_t::p()->baseline.brewmaster.brews.adjust(
@@ -5644,6 +5643,7 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
 
     apply_affecting_aura( player->talent.conduit_of_the_celestials.yulons_knowledge );
     apply_affecting_aura( player->baseline.brewmaster.aura );
+    apply_affecting_aura( player->baseline.windwalker.aura );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override

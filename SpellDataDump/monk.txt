@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56421 thewarwithin-BETA
+SimulationCraft 1100-02 for World of Warcraft 11.0.2.56461 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -2401,7 +2401,6 @@ Effects          :
 #1 (id=132060)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.30000 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
-Hotfixed         : PvP Coefficient (1 -> 1.3)
 #2 (id=139560)   : Apply Aura (6) | Modify Periodic Healing Recevied% (259)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friendly (21)
 #3 (id=798098)   : Dummy (3)
@@ -23059,7 +23058,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Chi Burst (123986), Chi Burst (130654), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Chi Burst (261682), Chi Burst (461404)
                    Family Flags: 27, 38, 58
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Chi Burst and Chi Wave deal $s1% increased damage and healing.
 
 Name             : Balanced Stratagem (id=450889) [Spell Family (53), Passive] 

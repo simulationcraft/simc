@@ -1,4 +1,4 @@
-// Active class spells, wow build 11.0.2.56313
+// Active class spells, wow build 11.0.5.56487
 static const std::array<active_class_spell_t, 310> __ptr_active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
@@ -171,7 +171,6 @@ static const std::array<active_class_spell_t, 310> __ptr_active_spells_data { {
   {  7,    0,   8004,      0, "Healing Surge"                      },
   {  7,    0,  32182,      0, "Heroism"                            },
   {  7,    0,  73899,      0, "Primal Strike"                      },
-  {  7,    0, 114074,      0, "Lava Beam"                          },
   {  7,    0, 188196,      0, "Lightning Bolt"                     },
   {  7,    0, 188389,      0, "Flame Shock"                        },
   {  7,    0, 192106,      0, "Lightning Shield"                   },
@@ -268,6 +267,7 @@ static const std::array<active_class_spell_t, 310> __ptr_active_spells_data { {
   { 11,    0, 213764,      0, "Swipe"                              },
   { 11,  102,  24858,      0, "Moonkin Form"                       },
   { 11,  102, 190984,   5176, "Wrath"                              },
+  { 11,  102, 191034,      0, "Starfall"                           },
   { 11,  105,  18562,      0, "Swiftmend"                          },
   { 11,  105,  88423, 440015, "Nature's Cure"                      },
   { 11,  105, 212040,      0, "Revitalize"                         },
@@ -312,7 +312,7 @@ static const std::array<active_class_spell_t, 310> __ptr_active_spells_data { {
   { 13, 1473, 361021,      0, "Sense Power"                        },
 } };
 
-// Pet active spells, wow build 11.0.2.56313
+// Pet active spells, wow build 11.0.5.56487
 static const std::array<active_pet_spell_t, 134> __ptr_active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },
@@ -401,7 +401,7 @@ static const std::array<active_pet_spell_t, 134> __ptr_active_pet_spells_data { 
   {  7, 118345, "Pulverize"                          },
   {  7, 157331, "Wind Gust"                          },
   {  7, 157348, "Call Lightning"                     },
-  {  7, 157375, "Tempest"                            },
+  {  7, 157375, "Stormfury"                          },
   {  8,  31707, "Waterbolt"                          },
   {  8,  33395, "Freeze"                             },
   {  8, 135029, "Water Jet"                          },

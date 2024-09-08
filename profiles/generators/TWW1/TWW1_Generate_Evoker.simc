@@ -1,24 +1,25 @@
-# evoker="TWW1_Evoker_Devastation"
-# level=70
-# race=dracthyr
-# role=spell
-# spec=devastation
-# talents=BsbBnWR3R1Z1HmbUKIpvm3XXhDEAAAAAAQQkkEBhIJJlkkUSAkIRSCBJJJRSkkA
+evoker="TWW1_Evoker_Devastation"
+level=80
+race=dracthyr
+role=spell
+spec=devastation
+talents=CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzMzMYmNzgBMwYmpZMzkZbsMmZmxMmZbGwMmZbMzsMmBGYMYBWGjGLDIzAwGA
 
-# head=,id=200381,bonus_id=1463/8767
-# neck=,id=194536,bonus_id=8942/3209
-# shoulder=,id=200383,bonus_id=1463/8767
-# back=,id=200386,bonus_id=1472/8767
-# chest=,id=200378,bonus_id=1466/8767
-# wrist=,id=200385,bonus_id=1472/8767
-# hands=,id=200380,bonus_id=1466/8767
-# waist=,id=200384,bonus_id=1472/8767
-# legs=,id=200382,bonus_id=1472/8767
-# feet=,id=200379,bonus_id=1472/8767
-# finger1=,id=194533,bonus_id=8942/3209
-# finger2=,id=194534,bonus_id=8942/3209
-# trinket1=,id=194532,bonus_id=8942/3209
-# trinket2=,id=194531,bonus_id=8942/3209
-# main_hand=,id=194522,bonus_id=8942/3209
+head=,id=212029,bonus_id=1540/10299/1808,gem_id=213743
+neck=,id=212448,bonus_id=1540/10299/10376/8781,gem_id=213494/213494
+shoulder=,id=212027,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+back=,id=225574,bonus_id=6652/10376/10354/10269/1511/10255,ilevel=639
+chest=,id=212032,bonus_id=6652/10376/10354/10273/1498/10255,enchant=crystalline_radiance_3,ilevel=639
+wrist=,id=219342,bonus_id=10421/9633/8902/11144/10222/1485/1808/11109/8960,gem_id=213494,crafted_stats=32/36
+hands=,id=212030,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+waist=,id=212026,bonus_id=1540/10299/1808,gem_id=213494
+legs=,id=212435,bonus_id=1540/10299/10376,enchant=sunset_spellthread_3
+feet=,id=225586,bonus_id=1540/10299/10376,enchant_id=7424
+finger1=,id=225578,bonus_id=6652/10354/10268/1514/10255/10394/10879,enchant=radiant_critical_strike_3,gem_id=213494/213494,ilevel=639
+finger2=,id=221136,bonus_id=3131/10299/10376/8781,enchant=radiant_critical_strike_3,gem_id=213494/213494
+trinket1=,id=219314,bonus_id=10273/10390/6652/10383/1632/10255,ilevel=639
+trinket2=,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
+main_hand=,id=212405,bonus_id=1540/10299/10376,enchant=authority_of_the_depths_3
+off_hand=,id=222566,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960,crafted_stats=32/36
 
-# save=TWW1_Evoker_Devastation.simc
+save=TWW1_Evoker_Devastation.simc

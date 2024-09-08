@@ -1,5 +1,5 @@
-// Spell text, wow build 11.0.2.56421
-static const std::array<spelltext_data_t, 26330> __spelltext_data { {
+// Spell text, wow build 11.0.2.56461
+static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23484,7 +23484,7 @@ static const std::array<spelltext_data_t, 26330> __spelltext_data { {
   { 440993, "When your health is brought below 35%, you gain a Second Wind, healing you for ${$441387s1*$441387t1*$441387d}% of your max health over $441387d.\r\n\r\nThis effect cannot occur more than once every $proccooldown sec.", 0, 0 },
   { 440995, "Colossal Might increases the damage of your Rend and Deep Wounds by $440989s2% per stack.\r\n", 0, 0 },
   { 440997, "$@spelldesc439669", 0, 0 },
-  { 441023, "Your spells and abilities have a chance to secrete $<effectCount> different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.", 0, 0 },
+  { 441023, "Your spells and abilities have a chance to secrete $?pc129946[][$<effectCount> ]different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.$?pc129945[][\r\n\r\nReach Accomplice reputation with each of the Severed Threads' pacts to secrete more pheromones.]", 0, 0 },
   { 441090, "$@spelldesc441092", 0, 0 },
   { 441091, "$@spelldesc441092", "$w1 Healing collected.", 0 },
   { 441092, "$s1% of your damage is collected as Vindication. Every $441091d, Vindication is consumed to heal up to $s2 allies within $441090A1 yards for the amount consumed.", 0, 0 },
@@ -24472,6 +24472,7 @@ static const std::array<spelltext_data_t, 26330> __spelltext_data { {
   { 450432, "Paralysis now removes all Enrage effects from its target.", 0, 0 },
   { 450448, "Reduces the cooldown of Ring of Peace by ${$s1/-1000} sec and Song of Chi-Ji's cast time is reduced by ${$s2/-1000}.1 sec.", 0, 0 },
   { 450453, "$@spelldesc446764", "Your next melee attack will inflict additional Fire damage.", 0 },
+  { 450461, "Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].$?a383669[\r\n\r\nPyroblast's initial damage is increased by $383669s1% when the target is above $383669s3% health or below $383669s2% health.][]", 0, 0 },
   { 450462, "Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage. Deals reduced damage beyond $s3 targets.$?a205037[\r\n\r\nLeaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d.][]", "Movement speed slowed by $s2%.", 0 },
   { 450499, "Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. ", 0, 0 },
   { 450503, "The duration of snare effects on you is reduced by $s1%.", 0, 0 },
@@ -24707,6 +24708,11 @@ static const std::array<spelltext_data_t, 26330> __spelltext_data { {
   { 451905, "Deals a small amount of Nature damage to the target.", 0, 0 },
   { 451910, "Deals a small amount of Nature damage to the target.", 0, 0 },
   { 451911, "Deals a small amount of Nature damage to the target.", 0, 0 },
+  { 451916, "Increases Haste by $s1.", "Haste increased by $w1.", 0 },
+  { 451917, "Increases Versatility by $s1.", "Versatility increased by $w1.", 0 },
+  { 451918, "Increases Critical Strike by $s1.", "Critical strike increased by $w1.", 0 },
+  { 451920, "Increases Mastery by $s1.", "Mastery increased by $w1.", 0 },
+  { 451921, "Increases Stamina by $s1.", "Stamina increased by $w1.", 0 },
   { 451924, "$@spelldesc443529", "Absorbs $s2% of damage taken, up to $w1.", 0 },
   { 451925, "Coat your weapon in an oil that emits a warm light. The oil has a chance to resonate with your healing, healing an additional $451933s1 Health to the target.\r\n\r\nLasts $M2 min.", 0, 0 },
   { 451926, "Coat your weapon in an oil that emits a warm light. The oil has a chance to resonate with your healing, healing an additional $451928s1 Health to the target.\r\n\r\nLasts $M2 min.\r\n", 0, 0 },
@@ -26330,13 +26336,16 @@ static const std::array<spelltext_data_t, 26330> __spelltext_data { {
   { 468655, "Launches a bolt of frostfire at the enemy, causing $s1 Frostfire damage, slowing movement speed by $s3%, and causing an additional $o2 Frostfire damage over $d.\r\n\r\nFrostfire Bolt generates stacks for both Fire Mastery and Frost Mastery.", "Movement speed reduced by $w3% and receiving $w2 damage every $t2 sec.", 0 },
   { 469347, "$@spelldesc358267", 0, 0 },
   { 469637, "$@spelldesc457058", "Your next $?c1[Envenom][Eviscerate] cast with maximum combo points is guaranteed to critically strike, deal $w2% additional damage, and apply $w3 stacks of Deathstalker's Mark to the target.", 0 },
+  { 469991, "Place a Sigil of Flame at the target location that activates after $d.\r\n\r\nDeals $204598s1 $@spelldesc395020 damage, and an additional $204598o3 $@spelldesc395020 damage over $204598d, to all enemies affected by the sigil.\r\n\r\n|CFFffffffGenerates $389787s1 Fury.|R", "Sigil of Flame is active.", 0 },
+  { 469995, "$@spelldesc452402", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.0.2.56421
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 11.0.2.56461
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  441023,  0, "Your spells and abilities have a chance to secrete $<effectCount> different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.", "Your spells and abilities have a chance to secrete $?pc129946[][$<effectCount> ]different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.$?pc129945[][\r\n\r\nReach Accomplice reputation with each of the Severed Threads' pacts to secrete more pheromones.]" },
 } };
 
-// Spell description variables, wow build 11.0.2.56421
+// Spell description variables, wow build 11.0.2.56461
 static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26924,7 +26933,7 @@ static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {  462620, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.2.56421
+// spelldesc_vars hotfix entries, wow build 11.0.2.56461
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

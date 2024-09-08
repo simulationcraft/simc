@@ -31,21 +31,21 @@ race=dwarf
 role=attack
 position=back
 spec=outlaw
-talents=CQQAAAAAAAAAAAAAAAAAAAAAAAAMwMzYGDmZGmhBzYmZMzMtMjZZGAAAAAAstMzMYmZsMmZZ2GAAAAmZGwgZbWMzMjmZ2YWYZbahFzA
+talents=CQQAAAAAAAAAAAAAAAAAAAAAAAAMwMzYGDmZGmhxYGzMjZmplZMLzAAAAAAgtlZmBzMjlxMLz2AAAAwMDwgZbWMzMjmZ2YWYZbahFzA
 
-head=beyonds_dark_visage,id=212417,bonus_id=1540/10299
+head=kareshi_phantoms_emptiness,id=212038,bonus_id=1540/10299
 neck=elders_hemolymphal_periapt,id=221181,bonus_id=3131/10299,gem_id=213743/213467
-shoulder=shadowchill_amice,id=221175,bonus_id=3131/10299
-back=shroud_of_dark_memories,id=133309,bonus_id=11342/10299,enchant=chant_of_leeching_fangs_3
+shoulder=kareshi_phantoms_shoulderpads,id=212036,bonus_id=1540/10299
+back=wings_of_shattered_sorrow,id=225574,bonus_id=1540/10299,enchant=chant_of_leeching_fangs_3
 chest=kareshi_phantoms_nexus_wraps,id=212041,bonus_id=1540/10299,enchant=crystalline_radiance_3
-wrist=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960/8795,enchant=chant_of_armored_leech_3,crafted_stats=32/40
+wrist=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960/8792,enchant=chant_of_armored_leech_3,crafted_stats=32/40
 hands=kareshi_phantoms_grips,id=212039,bonus_id=1540/10299
-waist=sapgorger_belt,id=178699,bonus_id=9948/10299
-legs=runebranded_legwraps,id=219332,bonus_id=10421/9633/8902/1515/8795/10520/8960,enchant=stormbound_armor_kit_3,crafted_stats=32/40
+waist=kareshi_phantoms_belt,id=212035,bonus_id=1540/10299
+legs=runebranded_legwraps,id=219332,bonus_id=10421/9633/8902/1515/10520/8960/8792,enchant=stormbound_armor_kit_3,crafted_stats=36/40
 feet=viscerastitched_footpads,id=178731,bonus_id=9948/10299,enchant=defenders_march_3
-finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10299,enchant=cursed_versatility_3,gem_id=213467/213467
-finger2=experiment_08752s_band,id=221189,bonus_id=3131/10299,enchant=cursed_versatility_3,gem_id=213467/213467
-trinket1=void_reapers_contract,id=212456,bonus_id=1540/10299
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10299,gem_id=213467/213467,enchant=cursed_versatility_3
+finger2=ritual_commanders_ring,id=178781,bonus_id=9948/10299,enchant=cursed_versatility_3,gem_id=213467/213467
+trinket1=mad_queens_mandate,id=212454,bonus_id=1540/10870
 trinket2=arakara_sacbrood,id=219314,bonus_id=3131/10299
 main_hand=void_reapers_warp_blade,id=219877,bonus_id=1540/10299,enchant=authority_of_the_depths_3
 off_hand=bloodkissed_kukri,id=212395,bonus_id=1540/10299,enchant=authority_of_the_depths_3
@@ -61,24 +61,23 @@ spec=outlaw
 talents=CQQAAAAAAAAAAAAAAAAAAAAAAAAMWmxMjZMmZmZYGGjZMMzMz0yMmtZAAAAAAw2yMzwDMzMWglZbAAAAYmBYwsNLmZmRzMbMLssNtwiZA
 
 head=kareshi_phantoms_emptiness,id=212038,bonus_id=1540/10299
-neck=elders_hemolymphal_periapt,id=221181,bonus_id=3131/10299,gem_id=213743/213467
+neck=amulet_of_earthen_craftsmanship,id=215136,bonus_id=10421/9633/8902/11144/10222/1485/8781,gem_id=213743/213467,crafted_stats=36/40
 shoulder=kareshi_phantoms_shoulderpads,id=212036,bonus_id=1540/10299
 back=wings_of_shattered_sorrow,id=225574,bonus_id=1540/10299,enchant=chant_of_leeching_fangs_3
 chest=kareshi_phantoms_nexus_wraps,id=212041,bonus_id=1540/10299,enchant=crystalline_radiance_3
 wrist=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960/8792,enchant=chant_of_armored_leech_3,crafted_stats=32/40
 hands=kareshi_phantoms_grips,id=212039,bonus_id=1540/10299
-waist=sapgorger_belt,id=178699,bonus_id=9948/10299
+waist=kareshi_phantoms_belt,id=212035,bonus_id=1540/10299
 legs=runebranded_legwraps,id=219332,bonus_id=10421/9633/8902/1515/10520/8960/8792,enchant=stormbound_armor_kit_3,crafted_stats=36/40
 feet=viscerastitched_footpads,id=178731,bonus_id=9948/10299,enchant=defenders_march_3
-finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=9948/10299,enchant=cursed_versatility_3,gem_id=213467/213467
-finger2=experiment_08752s_band,id=221189,bonus_id=3131/10299,enchant=cursed_versatility_3,gem_id=213467/213467
-trinket1=void_reapers_contract,id=212456,bonus_id=1540/10299
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10299,gem_id=213467/213467,enchant=cursed_versatility_3
+finger2=stitchfleshs_misplaced_signet,id=178736,bonus_id=9948/10299,gem_id=213467/213467,enchant=cursed_versatility_3
+trinket1=mad_queens_mandate,id=212454,bonus_id=1540/10870
 trinket2=arakara_sacbrood,id=219314,bonus_id=3131/10299
 main_hand=void_reapers_warp_blade,id=219877,bonus_id=1540/10299,enchant=authority_of_the_depths_3
 off_hand=bloodkissed_kukri,id=212395,bonus_id=1540/10299,enchant=authority_of_the_depths_3
 
 save=TWW1_Rogue_Outlaw.simc
-
 
 # rogue="TWW1_Rogue_Subtlety"
 # spec=subtlety

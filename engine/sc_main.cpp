@@ -243,9 +243,9 @@ void print_version_info( const dbc_t& dbc )
   fmt::print( "{}", util::version_info_str( &dbc ) );
 }
 
-void print_build_info ( const dbc_t& dbc )
+void print_build_info( const dbc_t& dbc, int display_level )
 {
-  fmt::print( " ({})", util::build_info_str( &dbc ) );
+  fmt::print( " ({})", util::build_info_str( &dbc, display_level ) );
 }
 
 } // anonymous namespace ====================================================
@@ -295,7 +295,7 @@ int sim_t::main( const std::vector<std::string>& args )
     print_version_info( *dbc );
 
     if ( display_build > 0 )
-      print_build_info( *dbc );
+      print_build_info( *dbc, display_build );
 
     // newline as print_version_info does not include it
     fmt::print( "\n" );

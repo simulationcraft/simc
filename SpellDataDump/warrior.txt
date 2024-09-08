@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56421 thewarwithin-BETA
+SimulationCraft 1100-02 for World of Warcraft 11.0.2.56461 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -3646,7 +3646,6 @@ Effects          :
                    Family Flags: 21
 #6 (id=261047)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (2.2 -> 1)
 #7 (id=261048)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=261049)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
@@ -14319,7 +14318,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=1016832)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.50560 | PvP Coefficient: 0.85000 | Radius: 0 - 12 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1 -> 0.85)
 #2 (id=1016833)  : Trigger Spell (64): Thunderous Roar
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 397364 | Target: Self (1)
 Description      : Roar explosively, dealing $s1 Physical damage to enemies within $A1 yds and cause them to bleed for $397364o1 physical damage over $397364d.
@@ -14672,10 +14670,8 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
 Effects          :
 #1 (id=1018080)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.43693 | PvP Coefficient: 0.80000 | Radius: 0 - 12 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 #2 (id=1018081)  : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.41947 | PvP Coefficient: 0.80000 | Radius: 0 - 12 yards | Mechanic: Bleed | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 Description      : $@spelldesc385059
 Tooltip          : Suffering $o3 Physical damage over $d.
 
@@ -14703,7 +14699,6 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
 Effects          :
 #1 (id=1018083)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.43693 | PvP Coefficient: 0.80000 | Radius: 0 - 12 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 Description      : $@spelldesc385059
 
 Name             : Odyn's Fury (id=385062) [Spell Family (4)] 
@@ -14730,7 +14725,6 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
 Effects          :
 #1 (id=1018088)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.43693 | PvP Coefficient: 0.80000 | Radius: 0 - 12 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 Description      : $@spelldesc385059
 Tooltip          : Suffering $o3 Physical damage over $d.
 
@@ -17720,7 +17714,6 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
 Effects          :
 #1 (id=1039589)  : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.62640 | PvP Coefficient: 0.85000 | Radius: 0 - 12 yards | Mechanic: Bleed | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1 -> 0.85)
 #2 (id=1102107)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 0 - 12 yards | Target: At Self (18) -> At Enemy in Area (16)
                    Affected School(s): All

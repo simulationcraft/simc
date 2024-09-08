@@ -740,6 +740,7 @@ public:
     int min_dg_heal_targets               = 1;
     int max_dg_heal_targets               = 5;
     bool sacred_weapon_prefer_new_targets = false;
+    bool fake_solidarity                  = false;
   } options;
   player_t* beacon_target;
 
@@ -1732,12 +1733,8 @@ public:
 
     if ( ab::result_is_hit( s->result ) &&  p->buffs.herald_of_the_sun.dawnlight->up() )
     {
-      paladin_td_t* td = p->get_target_data( s->target );
-      if ( ! td->dots.dawnlight->is_ticking() )
-      {
-        p->active.dawnlight->execute_on_target( s->target );
-        p->buffs.herald_of_the_sun.dawnlight->decrement();
-      }
+      p->active.dawnlight->execute_on_target( s->target );
+      p->buffs.herald_of_the_sun.dawnlight->decrement();
     }
   }
 

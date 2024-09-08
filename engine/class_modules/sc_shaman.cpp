@@ -445,6 +445,10 @@ public:
   /// Rolling Thunder last trigger
   timespan_t rt_last_trigger;
 
+  /// Buff state tracking
+  unsigned buff_state_lightning_rod;
+  unsigned buff_state_lashing_flames;
+
   // Cached actions
   struct actions_t
   {
@@ -1132,6 +1136,10 @@ public:
     dre_uptime_samples.reserve( 8192 );
 
     lvs_samples.reserve( 8192 );
+
+    // Buff States
+    buff_state_lightning_rod = 0U;
+    buff_state_lashing_flames = 0U;
   }
 
   ~shaman_t() override = default;
@@ -1190,7 +1198,6 @@ public:
   void trigger_lava_surge();
   void trigger_splintered_elements( action_t* secondary );
   void trigger_flash_of_lightning();
-  void trigger_lightning_rod_damage( const action_state_t* state );
   void trigger_swirling_maelstrom( const action_state_t* state );
   void trigger_static_accumulation_refund( const action_state_t* state, int mw_stacks );
   void trigger_elemental_assault( const action_state_t* state );
@@ -1464,12 +1471,36 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
 
   // Elemental
   debuff.lightning_rod      = make_buff( *this, "lightning_rod", p->find_spell( 197209 ) )
-    ->set_default_value( p->constant.mul_lightning_rod );
+    ->set_default_value( p->constant.mul_lightning_rod )
+    ->set_stack_change_callback(
+      [ p ]( buff_t*, int old, int new_ ) {
+        if ( new_ - old > 0 )
+        {
+          p->buff_state_lightning_rod++;
+        }
+        else
+        {
+          p->buff_state_lightning_rod--;
+        }
+      }
+    );
 
   // Enhancement
   debuff.lashing_flames = make_buff( *this, "lashing_flames", p->find_spell( 334168 ) )
-      ->set_trigger_spell( p->talent.lashing_flames )
-      ->set_default_value_from_effect( 1 );
+    ->set_trigger_spell( p->talent.lashing_flames )
+    ->set_stack_change_callback(
+      [ p ]( buff_t*, int old, int new_ ) {
+        if ( new_ - old > 0 )
+        {
+          p->buff_state_lashing_flames++;
+        }
+        else
+        {
+          p->buff_state_lashing_flames--;
+        }
+      }
+    )
+    ->set_default_value_from_effect( 1 );
 }
 
 // ==========================================================================
@@ -2589,11 +2620,15 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   bool affected_by_master_of_the_elements = false;
   proc_t* proc_moe;
 
+  // Lightning Rod management
+  double accumulated_lightning_rod_damage;
+  event_t* lr_event;
+
   shaman_spell_t( util::string_view token, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
                  spell_variant type_ = spell_variant::NORMAL ) :
-    base_t( token, p, s, type_ ), overload( nullptr ), proc_sb( nullptr ), proc_moe( nullptr )
+    base_t( token, p, s, type_ ), overload( nullptr ), proc_sb( nullptr ), proc_moe( nullptr ),
+    accumulated_lightning_rod_damage( 0.0 ), lr_event( nullptr )
   {
-
     may_proc_stormbringer = false;
   }
 
@@ -2610,6 +2645,14 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     }
 
     base_t::init_finished();
+  }
+
+  void reset() override
+  {
+    base_t::reset();
+
+    accumulated_lightning_rod_damage = 0.0;
+    lr_event = nullptr;
   }
 
   double action_multiplier() const override
@@ -2730,6 +2773,74 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     }
 
     return true;
+  }
+
+  void trigger_lightning_rod_debuff( player_t* target, timespan_t override_delay = timespan_t::min() )
+  {
+    auto delay = override_delay == timespan_t::min() ? rng().range( 10_ms, 100_ms ) : override_delay;
+
+    sim->print_debug( "{} trigger_lightning_rod_debuff, action={}, delay={}, target={}",
+      player->name(), name(), delay, target->name() );
+
+    make_event( *sim, delay,
+      [ this, target ]() { td( target )->debuff.lightning_rod->trigger(); } );
+  }
+
+  void accumulate_lightning_rod_damage( const action_state_t* state )
+  {
+    if ( !p()->talent.lightning_rod.ok() && !p()->talent.conductive_energy.ok() )
+    {
+      return;
+    }
+
+    if ( p()->buff_state_lightning_rod == 0 )
+    {
+      return;
+    }
+
+    accumulated_lightning_rod_damage += state->result_amount;
+
+    sim->print_debug( "{} accumulate_lightning_rod_damage, action={}, amount={}, total={}",
+      player->name(), name(), state->result_amount, accumulated_lightning_rod_damage );
+
+    // Trigger a single "damage event" for Lightning Rod that after the cast, will iterate over
+    // all the LR targets and proc the accumulated damage of a single cast on it. Note that this
+    // event needs to be triggered before the debuff application event below to ensure that the
+    // first application of the LR debuff will not trigger any damage on the target.
+    if ( lr_event == nullptr )
+    {
+      sim->print_debug( "{} accumulate_lightning_rod_damage creating deferred damage event",
+        player->name() );
+
+      lr_event = make_event( *sim, [ this ]() {
+        trigger_lightning_rod_damage();
+        lr_event = nullptr;
+      } );
+    }
+  }
+
+  void trigger_lightning_rod_damage()
+  {
+    if ( !p()->talent.lightning_rod.ok() && !p()->talent.conductive_energy.ok() )
+    {
+      return;
+    }
+
+    range::for_each( sim->target_non_sleeping_list, [ this ]( player_t* target ) {
+      if ( !td( target )->debuff.lightning_rod->up() )
+      {
+        return;
+      }
+
+      sim->print_debug( "{} trigger_lightning_rod_damage, action={}, target={}, amount={}",
+        player->name(), name(), target->name(),
+        accumulated_lightning_rod_damage * p()->constant.mul_lightning_rod );
+
+      p()->action.lightning_rod->execute_on_target( target,
+        accumulated_lightning_rod_damage * p()->constant.mul_lightning_rod );
+    } );
+
+    accumulated_lightning_rod_damage = 0.0;
   }
 
   virtual double stormbringer_proc_chance() const
@@ -3805,7 +3916,8 @@ struct lightning_rod_damage_t : public shaman_spell_t
   {
     shaman_spell_t::init();
 
-    snapshot_flags = update_flags = STATE_TGT_MUL_DA;
+    // Apparently only Enhancement gains the benefits of target modifiers for Lightning Rod.
+    snapshot_flags = update_flags = p()->specialization() == SHAMAN_ENHANCEMENT ? STATE_TGT_MUL_DA : 0;
   }
 };
 
@@ -5527,7 +5639,11 @@ struct chain_lightning_overload_t : public chained_overload_base_t
   {
     chained_overload_base_t::impact( state );
 
-    p()->trigger_lightning_rod_damage( state );
+    // Accumulate Lightning Rod damage from all targets hit by this cast.
+    if ( p()->talent.lightning_rod.ok() || p()->talent.conductive_energy.ok() )
+    {
+      accumulate_lightning_rod_damage( state );
+    }
   }
 };
 
@@ -5556,7 +5672,10 @@ struct lava_beam_overload_t : public chained_overload_base_t
   {
     chained_overload_base_t::impact( state );
 
-    p()->trigger_lightning_rod_damage( state );
+    if ( p()->talent.lightning_rod.ok() || p()->talent.conductive_energy.ok() )
+    {
+      accumulate_lightning_rod_damage( state );
+    }
   }
 };
 
@@ -5829,13 +5948,17 @@ struct chain_lightning_t : public chained_base_t
   {
     chained_base_t::impact( state );
 
+    // Accumulate Lightning Rod damage from all targets hit by this cast.
+    if ( p()->talent.lightning_rod.ok() || p()->talent.conductive_energy.ok() )
+    {
+      accumulate_lightning_rod_damage( state );
+    }
+
     if ( state->chain_target == 0 && p()->talent.conductive_energy.ok() &&
          p()->specialization() == SHAMAN_ENHANCEMENT )
     {
-      td( execute_state->target )->debuff.lightning_rod->trigger();
+      trigger_lightning_rod_debuff( state->target );
     }
-
-    p()->trigger_lightning_rod_damage( state );
   }
 
   void schedule_travel(action_state_t* s) override
@@ -5912,7 +6035,11 @@ struct lava_beam_t : public chained_base_t
   {
     chained_base_t::impact( state );
 
-    p()->trigger_lightning_rod_damage( state );
+    // Accumulate Lightning Rod damage from all targets hit by this cast.
+    if ( p()->talent.lightning_rod.ok() || p()->talent.conductive_energy.ok() )
+    {
+      accumulate_lightning_rod_damage( state );
+    }
   }
 
   void schedule_travel(action_state_t* s) override
@@ -6536,12 +6663,17 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
   {
     elemental_overload_spell_t::impact( state );
 
-    p()->trigger_lightning_rod_damage( state );
+    if ( p()->talent.lightning_rod.ok() || p()->talent.conductive_energy.ok() )
+    {
+      accumulate_lightning_rod_damage( state );
+    }
   }
 };
 
 struct lightning_bolt_t : public shaman_spell_t
 {
+  timespan_t lr_delay;
+
   lightning_bolt_t( shaman_t* player, spell_variant type_, util::string_view options_str = {} ) :
     shaman_spell_t( ::action_name( "lightning_bolt", type_ ),
         player, player->find_class_spell( "Lightning Bolt" ), type_ )
@@ -6667,7 +6799,6 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     p()->trigger_flash_of_lightning();
-    p()->trigger_lightning_rod_damage( execute_state );
     p()->trigger_static_accumulation_refund( execute_state, mw_consumed_stacks );
 
     if ( exec_type == spell_variant::NORMAL )
@@ -6753,11 +6884,22 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
-    // Note, in impact() to support Primordial Wave Lightning Bolt applying it on all targets, which
-    // may or may not be a bug.
+    if ( ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->talent.conductive_energy.ok() ) ||
+         ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.lightning_rod.ok() ) )
+    {
+      accumulate_lightning_rod_damage( state );
+    }
+
     if ( p()->talent.conductive_energy.ok() && p()->specialization() == SHAMAN_ENHANCEMENT )
     {
-      td( state->target )->debuff.lightning_rod->trigger();
+      // On first impact, randomize a delay for the lightning rod debuff that is associated with all
+      // the subsequent debuff triggers
+      if ( state->chain_target == 0 )
+      {
+        lr_delay = rng().range( 10_ms, 100_ms );
+      }
+
+      trigger_lightning_rod_debuff( state->target, lr_delay );
     }
   }
 
@@ -6958,7 +7100,7 @@ struct elemental_blast_t : public shaman_spell_t
 
     if ( p()->talent.lightning_rod.ok() )
     {
-      td( state->target )->debuff.lightning_rod->trigger();
+      trigger_lightning_rod_debuff( state->target );
     }
   }
 };
@@ -7395,7 +7537,7 @@ struct earthquake_t : public earthquake_base_t
     auto tdata = td( state->target );
     if ( !tdata->debuff.lightning_rod->check() )
     {
-      tdata->debuff.lightning_rod->trigger();
+      trigger_lightning_rod_debuff( state->target );
     }
     else
     {
@@ -7410,7 +7552,7 @@ struct earthquake_t : public earthquake_base_t
       if ( !eligible_targets.empty() )
       {
         auto idx = rng().range( 0U, as<unsigned>( eligible_targets.size() ) );
-        td( eligible_targets[ idx ] )->debuff.lightning_rod->trigger();
+        trigger_lightning_rod_debuff( eligible_targets[ idx ] );
       }
     }
   }
@@ -7666,11 +7808,6 @@ struct earth_shock_t : public shaman_spell_t
       p()->buff.surge_of_power->trigger();
     }
 
-    if ( p()->talent.conductive_energy.ok() )
-    {
-      td( execute_state->target )->debuff.lightning_rod->trigger();
-    }
-
     p()->track_magma_chamber();
     p()->buff.magma_chamber->expire();
     p()->buff.storm_frenzy->trigger();
@@ -7682,7 +7819,7 @@ struct earth_shock_t : public shaman_spell_t
 
     if ( p()->talent.lightning_rod.ok() )
     {
-      td( state->target )->debuff.lightning_rod->trigger();
+      trigger_lightning_rod_debuff( state->target );
     }
   }
 
@@ -9564,7 +9701,7 @@ struct tempest_t : public shaman_spell_t
 
   void execute() override
   {
-    p()->buff.tempest->expire();
+    p()->buff.tempest->decrement();
 
     // PW needs to execute before the primary spell executes so we can retain proper
     // Maelstrom Weapon stacks for the AoE Lightning Bolt
@@ -9608,26 +9745,36 @@ struct tempest_t : public shaman_spell_t
       p()->action.feral_spirit_rt->set_target( execute_state->target );
       p()->action.feral_spirit_rt->execute();
     }
+
+    if ( p()->talent.thorims_invocation.ok() && exec_type == spell_variant::NORMAL )
+    {
+      if ( execute_state->n_targets == 1 )
+      {
+        p()->action.ti_trigger = p()->action.lightning_bolt_ti;
+      }
+      else if ( execute_state->n_targets > 1 )
+      {
+        p()->action.ti_trigger = p()->action.chain_lightning_ti;
+      }
+    }
   }
 
   void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
 
+    if ( ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->talent.conductive_energy.ok() ) ||
+         ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.conductive_energy.ok() && !p()->bugs ) )
+    {
+      accumulate_lightning_rod_damage( state );
+    }
+
     if ( state->chain_target == 0 &&
          ( ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->talent.conductive_energy.ok() ) ||
          ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.conductive_energy.ok() &&
            p()->talent.lightning_rod.ok() ) ) )
     {
-      td( execute_state->target )->debuff.lightning_rod->trigger();
-    }
-
-    // TODO: Is Tempest applying Lightning Rod to targets before or after for Tempest lightning rod
-    // damage?
-    if ( ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->talent.conductive_energy.ok() ) ||
-         ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.conductive_energy.ok() && !p()->bugs ) )
-    {
-      p()->trigger_lightning_rod_damage( state );
+      trigger_lightning_rod_debuff( state->target );
     }
   }
 
@@ -10087,22 +10234,12 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
 
   if ( util::str_compare_ci( splits[ 0 ], "lashing_flames" ) )
   {
-    return make_fn_expr( splits[ 0 ], [ this ]() {
-      return std::accumulate( sim->target_non_sleeping_list.begin(), sim->target_non_sleeping_list.end(), 0.0,
-        [ this ]( double v, player_t* target ) {
-          return v + as<double>( get_target_data( target )->debuff.lashing_flames->check() );
-        } );
-    } );
+    return make_ref_expr( splits[ 0 ], buff_state_lashing_flames );
   }
 
   if ( util::str_compare_ci( splits[ 0 ], "lightning_rod" ) )
   {
-    return make_fn_expr( splits[ 0 ], [ this ]() {
-      return std::accumulate( sim->target_non_sleeping_list.begin(), sim->target_non_sleeping_list.end(), 0.0,
-        [ this ]( double v, player_t* target ) {
-          return v + as<double>( get_target_data( target )->debuff.lightning_rod->check() );
-        } );
-    } );
+    return make_ref_expr( splits[ 0 ], buff_state_lightning_rod );
   }
 
   return player_t::create_expression( name );
@@ -11509,28 +11646,6 @@ void shaman_t::trigger_flash_of_lightning()
   cooldown.flame_shock->adjust( reduction, false );
 
   proc.flash_of_lightning->occur();
-}
-
-void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
-{
-  if ( !talent.lightning_rod.ok() && !talent.conductive_energy.ok() )
-  {
-    return;
-  }
-
-  if ( state->action->result_is_miss( state->result ) )
-  {
-    return;
-  }
-
-  range::for_each( sim->target_non_sleeping_list, [ this, state ]( player_t* target ) {
-    if ( !get_target_data( target )->debuff.lightning_rod->up() )
-    {
-      return;
-    }
-
-    action.lightning_rod->execute_on_target( target, state->result_amount * constant.mul_lightning_rod );
-  } );
 }
 
 void shaman_t::trigger_swirling_maelstrom( const action_state_t* state )
@@ -13363,6 +13478,8 @@ void shaman_t::reset()
   }
 
   assert( active_flame_shock.empty() );
+  assert( buff_state_lightning_rod == 0U );
+  assert( buff_state_lashing_flames == 0U );
 }
 
 

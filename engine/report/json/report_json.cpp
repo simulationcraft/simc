@@ -774,6 +774,11 @@ void to_json( JsonOutput& arr, const ::report::json::report_configuration_t& rep
                              : p.vulpera_tricks == player_t::SHADOWS ? "shadows"
                              : p.vulpera_tricks == player_t::HEALING ? "healing"
                                                                      : "corrosive";
+  root[ "earthen_mineral" ] = p.earthen_mineral == player_t::AMBER      ? "amber"
+                              : p.earthen_mineral == player_t::EMERALD  ? "emerald"
+                              : p.earthen_mineral == player_t::ONYX     ? "onyx"
+                              : p.earthen_mineral == player_t::SAPPHIRE ? "sapphire"
+                                                                        : "ruby";
 
   if ( p.is_enemy() )
   {

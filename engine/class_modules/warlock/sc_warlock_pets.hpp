@@ -540,6 +540,7 @@ namespace diabolist
 
     pit_lord_t( warlock_t*, util::string_view = "pit_lord" );
     void arise() override;
+    void init_base_stats() override;
     action_t* create_action( util::string_view, util::string_view ) override;
   };
 

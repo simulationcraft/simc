@@ -686,6 +686,9 @@ struct food_t : public dbc_consumable_base_t
 
   bool disabled_consumable() const override
   {
+    if ( player->race == RACE_EARTHEN_HORDE || player->race == RACE_EARTHEN_ALLIANCE )
+      return true;
+
     return dbc_consumable_base_t::disabled_consumable() || !static_cast<bool>( sim->allow_food );
   }
 

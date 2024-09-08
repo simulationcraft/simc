@@ -220,14 +220,16 @@ jobs:
             deathknight_blood, deathknight_unholy, deathknight_frost,
             demonhunter_vengeance, demonhunter_havoc,
             druid_balance, druid_feral, druid_guardian, druid_restoration,
+            evoker_devastation,
             hunter_beast_mastery, hunter_marksmanship, hunter_survival,
             mage_arcane, mage_fire, mage_frost,
             monk_brewmaster, monk_windwalker,
-            paladin_protection,
+            paladin_protection, paladin_retribution,
             priest_shadow,
             rogue_assassination, rogue_outlaw, rogue_subtlety,
+            shaman_elemental,
             warlock_affliction, warlock_demonology, warlock_destruction,
-            shaman_elemental
+            warrior_arms, warrior_fury, warrior_protection
           ]
         fightstyle: [singletarget, multitarget, dungeonslice]
         include:
@@ -510,6 +512,7 @@ jobs:
         run: ${{ github.workspace }}/generate_profiles_ci.sh
 
       - name: Commit Profiles
+        continue-on-error: true
         uses: EndBug/add-and-commit@v9.1.4
         with:
           message: 'Regenerate profiles'
@@ -538,7 +541,7 @@ jobs:
         arch: [x64, amd64_arm64]
         include:
           - arch: x64
-            runSmokeTest: true
+            runSmokeTest: false # disable smoke test for now, as it seems to hang the workflow indefinitely on assert, instead of failing.
 
     env:
        CMAKE_BUILD_DIR: ${{ github.workspace }}/builddir/

@@ -877,7 +877,8 @@ struct judgment_ret_t : public judgment_t
 
   judgment_ret_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
     judgment_t( p, name ),
-    holy_power_generation( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) )
+    holy_power_generation( as<int>( p->find_spell( 220637 )->effectN( 1 ).base_value() ) ),
+    local_is_divine_toll( false )
   {
     parse_options( options_str );
 
@@ -959,7 +960,7 @@ struct judgment_ret_t : public judgment_t
     }
   }
 
-  double action_multiplier() const
+  double action_multiplier() const override
   {
     double am = judgment_t::action_multiplier();
 

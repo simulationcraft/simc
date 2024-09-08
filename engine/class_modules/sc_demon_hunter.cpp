@@ -276,6 +276,7 @@ public:
     buff_t* fel_barrage;
     buff_t* furious_gaze;
     buff_t* inertia;
+    buff_t* inertia_trigger;  // hidden buff that determines if we can trigger inertia
     buff_t* initiative;
     buff_t* inner_demon;
     buff_t* momentum;
@@ -2121,6 +2122,16 @@ struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
   }
 };
 
+struct demon_hunter_ranged_attack_t : public demon_hunter_action_t<ranged_attack_t>
+{
+  demon_hunter_ranged_attack_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s = spell_data_t::nil(),
+                                util::string_view o = {} )
+    : base_t( n, p, s, o )
+  {
+    special = true;
+  }
+};
+
 template <demonsurge_ability ABILITY, typename BASE>
 struct demonsurge_trigger_t : public BASE
 {
@@ -2260,17 +2271,19 @@ struct amn_full_mastery_bug_t : public BASE
 {
   using base_t = amn_full_mastery_bug_t<BASE>;
 
-  amn_full_mastery_bug_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s )
-    : BASE( n, p, s )
+  amn_full_mastery_bug_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s ) : BASE( n, p, s )
   {
     // 2024-08-30 -- Demonsurge / Burning Blades gets a full 100% mastery buff from AMN instead of 80%
-    if (p->bugs) {
-      if (BASE::affected_by.any_means_necessary.direct) {
-        BASE::affected_by.any_means_necessary.direct = false;
+    if ( p->bugs )
+    {
+      if ( BASE::affected_by.any_means_necessary.direct )
+      {
+        BASE::affected_by.any_means_necessary.direct      = false;
         BASE::affected_by.any_means_necessary_full.direct = true;
       }
-      if (BASE::affected_by.any_means_necessary.periodic) {
-        BASE::affected_by.any_means_necessary.periodic = false;
+      if ( BASE::affected_by.any_means_necessary.periodic )
+      {
+        BASE::affected_by.any_means_necessary.periodic      = false;
         BASE::affected_by.any_means_necessary_full.periodic = true;
       }
     }
@@ -4526,8 +4539,8 @@ struct demonsurge_t : public amn_full_mastery_bug_t<demon_hunter_spell_t>
 
   void execute() override
   {
-    p()->buff.demonsurge->trigger();
     demon_hunter_spell_t::execute();
+    p()->buff.demonsurge->trigger();
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -4535,9 +4548,22 @@ struct demonsurge_t : public amn_full_mastery_bug_t<demon_hunter_spell_t>
     double m = demon_hunter_spell_t::composite_da_multiplier( s );
 
     // Focused Hatred increases Demonsurge damage when hitting only one target
-    if ( s->n_targets == 1 && p()->talent.felscarred.focused_hatred->ok() )
+    if ( p()->talent.felscarred.focused_hatred->ok() )
     {
-      m *= 1.0 + p()->talent.felscarred.focused_hatred->effectN( 1 ).percent();
+      if ( p()->is_ptr() && s->n_targets <= 5 )
+      {
+        // 1 target is always effect 1 %
+        // 2 target is effect 1 % - effect 2 %
+        // 3 target is effect 1 % - (effect 2 % * 2)
+        // etc up to 5 target
+        auto num_target_reduction_percent =
+            p()->talent.felscarred.focused_hatred->effectN( 2 ).percent() * ( s->n_targets - 1 );
+        m *= 1.0 + ( p()->talent.felscarred.focused_hatred->effectN( 1 ).percent() - num_target_reduction_percent );
+      }
+      else if ( !p()->is_ptr() && s->n_targets == 1 )
+      {
+        m *= 1.0 + p()->talent.felscarred.focused_hatred->effectN( 1 ).percent();
+      }
     }
 
     return m;
@@ -5220,8 +5246,7 @@ struct chaos_strike_base_t
         td( s->target )->debuffs.serrated_glaive->trigger();
       }
 
-      if ( p()->talent.aldrachi_reaver.warblades_hunger && p()->buff.warblades_hunger->up() &&
-           parent->can_proc_warblades_hunger )
+      if ( p()->talent.aldrachi_reaver.warblades_hunger && p()->buff.warblades_hunger->up() )
       {
         p()->active.warblades_hunger->execute_on_target( target );
         p()->buff.warblades_hunger->expire();
@@ -5232,14 +5257,10 @@ struct chaos_strike_base_t
   std::vector<chaos_strike_damage_t*> attacks;
   bool from_onslaught;
   double tww1_reset_proc_chance;
-  bool can_proc_warblades_hunger;
 
   chaos_strike_base_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s,
                        util::string_view options_str = {} )
-    : base_t( n, p, s, options_str ),
-      from_onslaught( false ),
-      tww1_reset_proc_chance( 0.0 ),
-      can_proc_warblades_hunger( true )
+    : base_t( n, p, s, options_str ), from_onslaught( false ), tww1_reset_proc_chance( 0.0 )
   {
     if ( p->set_bonuses.tww1_havoc_4pc->ok() )
     {
@@ -5307,10 +5328,10 @@ struct chaos_strike_base_t
       p()->buff.inner_demon->expire();
     }
 
-    // TWWBETA TOCHECK -- Is this flat % chance or something else (deck?)
     // Note - cannot proc fury reduction buff if blade dance is not on cooldown
+    // 2024-09-06 -- Cannot proc if Blade Dance has less than 3s left on CD
     if ( p()->set_bonuses.tww1_havoc_4pc->ok() && p()->cooldown.blade_dance->down() &&
-         p()->rng().roll( tww1_reset_proc_chance ) )
+         p()->cooldown.blade_dance->remains() >= 3_s && p()->rng().roll( tww1_reset_proc_chance ) )
     {
       p()->buff.tww1_havoc_4pc->trigger();
       p()->cooldown.blade_dance->reset( true );
@@ -5365,8 +5386,6 @@ struct annihilation_t : public demonsurge_trigger_t<demonsurge_ability::ANNIHILA
   annihilation_t( util::string_view name, demon_hunter_t* p, util::string_view options_str = {} )
     : base_t( name, p, p->spec.annihilation, options_str )
   {
-    this->can_proc_warblades_hunger = !p->bugs;
-
     if ( attacks.empty() )
     {
       attacks.push_back( p->get_background_action<chaos_strike_damage_t>( fmt::format( "{}_damage_1", name ),
@@ -5524,7 +5543,7 @@ struct demon_blades_t : public felblade_trigger_t<demon_hunter_attack_t>
   {
     double ea = base_t::composite_energize_amount( s );
 
-    if ( p()->talent.felscarred.demonsurge->ok() )
+    if ( p()->talent.felscarred.demonsurge->ok() && p()->buff.metamorphosis->check() )
     {
       ea += as<int>( p()->spec.metamorphosis_buff->effectN( 10 ).base_value() );
     }
@@ -5668,8 +5687,9 @@ struct fel_rush_t : public demon_hunter_attack_t
 
     demon_hunter_attack_t::execute();
 
-    if ( p()->buff.unbound_chaos->up() && p()->talent.havoc.inertia->ok() )
+    if ( p()->buff.inertia_trigger->up() && p()->talent.havoc.inertia->ok() )
     {
+      p()->buff.inertia_trigger->expire();
       p()->buff.inertia->trigger();
     }
 
@@ -6208,7 +6228,8 @@ struct soulscar_t : public residual_action::residual_periodic_action_t<demon_hun
 };
 
 // Burning Blades ===========================================================
-struct burning_blades_t : public residual_action::residual_periodic_action_t<amn_full_mastery_bug_t<demon_hunter_spell_t>>
+struct burning_blades_t
+  : public residual_action::residual_periodic_action_t<amn_full_mastery_bug_t<demon_hunter_spell_t>>
 {
   burning_blades_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->hero_spec.burning_blades_debuff )
   {
@@ -6402,12 +6423,57 @@ struct art_of_the_glaive_t : public demon_hunter_attack_t
   }
 };
 
-struct preemptive_strike_t : public demon_hunter_attack_t
+struct preemptive_strike_t : public demon_hunter_ranged_attack_t
 {
   preemptive_strike_t( util::string_view name, demon_hunter_t* p )
-    : demon_hunter_attack_t( name, p, p->talent.aldrachi_reaver.preemptive_strike->effectN( 1 ).trigger() )
+    : demon_hunter_ranged_attack_t( name, p, p->talent.aldrachi_reaver.preemptive_strike->effectN( 1 ).trigger() )
   {
     background = dual = true;
+  }
+
+  // 2024-09-06 -- Preemptive Strike is very bugged and is using the following damage conversion process:
+  //               weapon dps -> AP conversion without mastery -> AP coeff -> vers
+  //               it also does not split AoE damage
+  double calculate_direct_amount( action_state_t* state ) const override
+  {
+    if ( !p()->bugs )
+    {
+      return demon_hunter_ranged_attack_t::calculate_direct_amount( state );
+    }
+
+    double mh_wdps            = p()->main_hand_weapon.dps;
+    double ap_conversion      = WEAPON_POWER_COEFFICIENT;
+    double base_direct_amount = mh_wdps * ap_conversion;
+    double ap_coeff           = data().effectN( 1 ).ap_coeff();
+    double mult               = state->composite_da_multiplier();
+    double amount             = base_direct_amount * ap_coeff * mult;
+
+    state->result_raw = amount;
+
+    if ( !sim->average_range )
+      amount = floor( amount + rng().real() );
+
+    if ( amount < 0 )
+    {
+      amount = 0;
+    }
+
+    if ( sim->debug )
+    {
+      sim->print_debug( "{} direct amount for {}: amount={} base={} mult={}", *p(), *this, amount, base_direct_amount,
+                        mult );
+    }
+
+    if ( result_is_miss( state->result ) )
+    {
+      state->result_total = 0.0;
+      return 0.0;
+    }
+    else
+    {
+      state->result_total = amount;
+      return amount;
+    }
   }
 };
 
@@ -6539,6 +6605,10 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
       if ( p()->talent.havoc.unbound_chaos->ok() )
       {
         p()->buff.unbound_chaos->trigger();
+        if ( p()->talent.havoc.inertia->ok() )
+        {
+          p()->buff.inertia_trigger->trigger();
+        }
       }
     }
 
@@ -7238,6 +7308,7 @@ void demon_hunter_t::create_buffs()
   buff.inertia->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
     return std::min( b->remains() + d, 10_s );  // Capped to 10 seconds
   } );
+  buff.inertia_trigger = make_buff( this, "inertia_trigger", spell_data_t::nil() )->set_quiet( true );
 
   buff.inner_demon = make_buff( this, "inner_demon", spec.inner_demon_buff );
 

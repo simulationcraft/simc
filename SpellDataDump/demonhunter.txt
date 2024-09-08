@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.2.56421 thewarwithin-BETA
+SimulationCraft 1100-02 for World of Warcraft 11.0.2.56461 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -3771,14 +3771,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=309744)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Elysian Decree (306830), Elysian Decree (327839), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Sigil of Spite (389815), Sigil of Spite (389858), Sigil of Spite (390163), Elysian Decree (394985), Sigil of Doom (452490)
+                   Affected Spells: Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Elysian Decree (306830), Elysian Decree (327839), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Sigil of Spite (389815), Sigil of Spite (389858), Sigil of Spite (390163), Elysian Decree (394985), Sigil of Doom (452490), Sigil of Doom (469991)
                    Family Flags: 24
 #2 (id=309815)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1606 | Target: Self (1)
                    Affected Spells (Category): Sigil of Chains (202138), Sigil of Chains (207665), Sigil of Chains (389807)
 #3 (id=1109502)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1605 | Target: Self (1)
-                   Affected Spells (Category): Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (389810), Sigil of Doom (452490)
+                   Affected Spells (Category): Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (389810), Sigil of Doom (452490), Sigil of Doom (469991)
 #4 (id=1109503)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1607 | Target: Self (1)
                    Affected Spells (Category): Sigil of Misery (202140), Sigil of Misery (207684), Sigil of Misery (389813)
@@ -4270,7 +4270,7 @@ Effects          :
                    Family Flags: 16
 #3 (id=315237)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Spectral Sight (188501), Metamorphosis (191427), Darkness (196718), Annihilation (201427), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204513), Sigil of Flame (204596), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Death Sweep (210152), Fel Eruption (211881), Felblade (213241), Imprison (217832), Soul Cleave (228477), Spirit Bomb (247454), Essence Break (258860), Immolation Aura (258920), Fracture (263642), Elysian Decree (306830), Sinful Brand (317009), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Throw Glaive (337819), Glaive Tempest (342817), Demon's Bite (344859), Chaos Strike (344862), Chaos Nova (344867), Throw Glaive (346665), The Hunt (370965), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Sigil of Spite (389815), Sigil of Spite (389858), Sigil of Spite (390163), Fodder to the Flame (391430), Throw Glaive (393035), Elysian Decree (394985), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427917), Soul Sunder (452436), Spirit Burst (452437), Consuming Fire (452487), Sigil of Doom (452490), Consuming Fire (456640)
+                   Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Spectral Sight (188501), Metamorphosis (191427), Darkness (196718), Annihilation (201427), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204513), Sigil of Flame (204596), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Death Sweep (210152), Fel Eruption (211881), Felblade (213241), Imprison (217832), Soul Cleave (228477), Spirit Bomb (247454), Essence Break (258860), Immolation Aura (258920), Fracture (263642), Elysian Decree (306830), Sinful Brand (317009), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Throw Glaive (337819), Glaive Tempest (342817), Demon's Bite (344859), Chaos Strike (344862), Chaos Nova (344867), Throw Glaive (346665), The Hunt (370965), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Sigil of Spite (389815), Sigil of Spite (389858), Sigil of Spite (390163), Fodder to the Flame (391430), Throw Glaive (393035), Elysian Decree (394985), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427917), Reaver's Glaive (442294), Soul Sunder (452436), Spirit Burst (452437), Consuming Fire (452487), Sigil of Doom (452490), Consuming Fire (456640), Sigil of Doom (469991)
                    Family Flags: 32
 #4 (id=315238)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4330,7 +4330,7 @@ Effects          :
                    Family Flags: 70
 #3 (id=315252)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Spectral Sight (188501), Metamorphosis (191427), Darkness (196718), Annihilation (201427), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204513), Sigil of Flame (204596), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Death Sweep (210152), Fel Eruption (211881), Felblade (213241), Imprison (217832), Soul Cleave (228477), Spirit Bomb (247454), Essence Break (258860), Immolation Aura (258920), Fracture (263642), Elysian Decree (306830), Sinful Brand (317009), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Throw Glaive (337819), Glaive Tempest (342817), Demon's Bite (344859), Chaos Strike (344862), Chaos Nova (344867), Throw Glaive (346665), The Hunt (370965), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Sigil of Spite (389815), Sigil of Spite (389858), Sigil of Spite (390163), Fodder to the Flame (391430), Throw Glaive (393035), Elysian Decree (394985), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427917), Soul Sunder (452436), Spirit Burst (452437), Consuming Fire (452487), Sigil of Doom (452490), Consuming Fire (456640)
+                   Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Spectral Sight (188501), Metamorphosis (191427), Darkness (196718), Annihilation (201427), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Shear (203782), Demon Blades (203796), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204513), Sigil of Flame (204596), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Death Sweep (210152), Fel Eruption (211881), Felblade (213241), Imprison (217832), Soul Cleave (228477), Spirit Bomb (247454), Essence Break (258860), Immolation Aura (258920), Fracture (263642), Elysian Decree (306830), Sinful Brand (317009), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Fodder to the Flame (329554), Throw Glaive (337819), Glaive Tempest (342817), Demon's Bite (344859), Chaos Strike (344862), Chaos Nova (344867), Throw Glaive (346665), The Hunt (370965), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Sigil of Spite (389815), Sigil of Spite (389858), Sigil of Spite (390163), Fodder to the Flame (391430), Throw Glaive (393035), Elysian Decree (394985), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427917), Reaver's Glaive (442294), Soul Sunder (452436), Spirit Burst (452437), Consuming Fire (452487), Sigil of Doom (452490), Consuming Fire (456640), Sigil of Doom (469991)
                    Family Flags: 32
 #4 (id=315253)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -10973,7 +10973,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1023606)  : Apply Aura (6) | Modify Spell School (220)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
-                   Affected Spells: Disrupt (183752), Infernal Strike (189112), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Soul Fragment (203795), Demon Blades (203796), Fiery Brand (204021), Soul Fragment (204062), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Soul Fragment (219712), Soul Fragment (219739), Spirit Bomb (247455), Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (306830), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Soul Fragment (328957), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), The Hunt (345396), The Hunt (345422), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Sigil of Spite (389815), Sigil of Spite (389858), Sigil of Spite (389860), Sigil of Spite (390163), Ragefire (390197), Fodder to the Flame (391430), Fel Devastation (393834), Elysian Decree (394985), Tip the Scales (408795), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427916), Demonsurge (451266), Demonsurge (452416), Sigil of Doom (452490), Burning Blades (453177), Sigil of Doom (462030)
+                   Affected Spells: Disrupt (183752), Infernal Strike (189112), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Soul Fragment (203795), Demon Blades (203796), Fiery Brand (204021), Soul Fragment (204062), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Soul Fragment (219712), Soul Fragment (219739), Spirit Bomb (247455), Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (306830), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Soul Fragment (328957), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), The Hunt (345396), The Hunt (345422), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Sigil of Spite (389815), Sigil of Spite (389858), Sigil of Spite (389860), Sigil of Spite (390163), Ragefire (390197), Fodder to the Flame (391430), Fel Devastation (393834), Elysian Decree (394985), Tip the Scales (408795), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427916), Demonsurge (451266), Demonsurge (452416), Sigil of Doom (452490), Burning Blades (453177), Sigil of Doom (462030), Sigil of Doom (469991)
                    Family Flags: 11, 24, 33, 44, 49, 61, 72, 81, 82, 83, 86, 87, 92
 #2 (id=1031483)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.80000 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -11330,7 +11330,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1026137)  : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
-                   Affected Spells: Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Elysian Decree (306830), Elysian Decree (307046), Elysian Decree (327839), Elysian Decree (339893), Elysian Decree (339894), Blind Faith (355894), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Sigil of Spite (389815), Sigil of Spite (389858), Sigil of Spite (389860), Sigil of Spite (390163), Elysian Decree (394985), Sigil of Doom (452490), Sigil of Doom (462030)
+                   Affected Spells: Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Elysian Decree (306830), Elysian Decree (307046), Elysian Decree (327839), Elysian Decree (339893), Elysian Decree (339894), Blind Faith (355894), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Sigil of Spite (389815), Sigil of Spite (389858), Sigil of Spite (389860), Sigil of Spite (390163), Elysian Decree (394985), Sigil of Doom (452490), Sigil of Doom (462030), Sigil of Doom (469991)
                    Family Flags: 24, 33
 #2 (id=1109561)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
@@ -14938,14 +14938,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1108406)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Soul Fragment (203795), Demon Blades (203796), Fiery Brand (204021), Soul Fragment (204062), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Soul Fragment (219712), Soul Fragment (219739), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (306830), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Soul Fragment (328957), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335), The Hunt (345396), The Hunt (345422), Burning Wound (346278), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Sigil of Spite (389815), Sigil of Spite (389858), Sigil of Spite (389860), Inner Demon (390137), Sigil of Spite (390163), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Fodder to the Flame (391430), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Elysian Decree (394985), Tip the Scales (408795), Metamorphosis - Alex S Copy (418583), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427916), Demonsurge (451266), Demonsurge (452416), Sigil of Doom (452490), Burning Blades (453177), Sigil of Doom (462030)
+                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Soul Fragment (203795), Demon Blades (203796), Fiery Brand (204021), Soul Fragment (204062), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Soul Fragment (219712), Soul Fragment (219739), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (306830), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Soul Fragment (328957), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335), The Hunt (345396), The Hunt (345422), Burning Wound (346278), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Sigil of Spite (389815), Sigil of Spite (389858), Sigil of Spite (389860), Inner Demon (390137), Sigil of Spite (390163), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Fodder to the Flame (391430), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Elysian Decree (394985), Tip the Scales (408795), Metamorphosis - Alex S Copy (418583), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427916), Demonsurge (451266), Demonsurge (452416), Sigil of Doom (452490), Burning Blades (453177), Sigil of Doom (462030), Sigil of Doom (469991)
                    Family Flags: 11, 24, 33, 43, 44, 49, 61, 72, 81, 82, 83, 86, 87, 90, 92
 #2 (id=1108535)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0.60000 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
 #3 (id=1117851)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Soul Fragment (203795), Demon Blades (203796), Fiery Brand (204021), Soul Fragment (204062), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Soul Fragment (219712), Soul Fragment (219739), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (306830), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Soul Fragment (328957), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335), The Hunt (345396), The Hunt (345422), Burning Wound (346278), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Sigil of Spite (389815), Sigil of Spite (389858), Sigil of Spite (389860), Inner Demon (390137), Sigil of Spite (390163), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Fodder to the Flame (391430), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Elysian Decree (394985), Tip the Scales (408795), Metamorphosis - Alex S Copy (418583), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427916), Demonsurge (451266), Demonsurge (452416), Sigil of Doom (452490), Burning Blades (453177), Sigil of Doom (462030)
+                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Sigil of Silence (202137), Sigil of Chains (202138), Sigil of Misery (202140), Soul Fragment (203795), Demon Blades (203796), Fiery Brand (204021), Soul Fragment (204062), Sigil of Silence (204490), Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (204598), Sigil of Chains (204843), Soul Carver (207407), Sigil of Chains (207665), Sigil of Silence (207682), Sigil of Misery (207684), Sigil of Misery (207685), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Soul Fragment (219712), Soul Fragment (219739), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258920), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (306830), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323639), Elysian Decree (327839), Soul Fragment (328957), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335), The Hunt (345396), The Hunt (345422), Burning Wound (346278), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Chains (389807), Sigil of Silence (389809), Sigil of Flame (389810), Sigil of Misery (389813), Sigil of Spite (389815), Sigil of Spite (389858), Sigil of Spite (389860), Inner Demon (390137), Sigil of Spite (390163), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Fodder to the Flame (391430), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Elysian Decree (394985), Tip the Scales (408795), Metamorphosis - Alex S Copy (418583), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427913), Immolation Aura (427914), Immolation Aura (427915), Immolation Aura (427916), Demonsurge (451266), Demonsurge (452416), Sigil of Doom (452490), Burning Blades (453177), Sigil of Doom (462030), Sigil of Doom (469991)
                    Family Flags: 11, 24, 33, 43, 44, 49, 61, 72, 81, 82, 83, 86, 87, 90, 92
 Description      : Magical damage increased by $s1%, and Physical damage taken reduced by $s2%.
 
@@ -15112,13 +15112,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1109495)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1605 | Target: Self (1)
-                   Affected Spells (Category): Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (389810), Sigil of Doom (452490)
+                   Affected Spells (Category): Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (389810), Sigil of Doom (452490), Sigil of Doom (469991)
 #2 (id=1109496)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 32 | Misc Value 2: 3036 (Label) | Target: Self (1)
                    Affected Spells (Label): Sigil of Flame (204598), Illuminated Sigils (428595), Sigil of Doom (462030)
 #3 (id=1109497)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -5000 | Scaled Value: -5000 | PvP Coefficient: 1.00000 | Misc Value: 1605 | Target: Self (1)
-                   Affected Spells (Category): Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (389810), Sigil of Doom (452490)
+                   Affected Spells (Category): Sigil of Flame (204513), Sigil of Flame (204596), Sigil of Flame (389810), Sigil of Doom (452490), Sigil of Doom (469991)
 Description      : Sigil of Flame has ${$s3/-1000} sec reduced cooldown and $s1 additional $lcharge:charges;.
 
 You have $s2% increased chance to parry attacks from enemies afflicted by your Sigil of Flame.
@@ -15389,6 +15389,7 @@ $@spelldesc442294
 Variables        : $frags = $?a212612[$s1][$s2]
 
 Name             : Reaver's Glaive (id=442294) [Spell Family (107)] 
+Hotfixed         : Affecting Spells
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
@@ -15400,8 +15401,8 @@ Labels           : 16: Class Spells
                  : 292
                  : 3349: Keen Engagement (442497 effect#1)
                  : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4)
-Affecting spells : Demon Soul (163073 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2), Frailty (247456 effect#4), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Serrated Glaive (390155 effect#1), Accelerated Blade (391275 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Champion of the Glaive (429211 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2)
-Family Flags     : 5, 70
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Frailty (247456 effect#4), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Serrated Glaive (390155 effect#1), Accelerated Blade (391275 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Champion of the Glaive (429211 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2)
+Family Flags     : 5, 32, 70
 Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ .......x ........ ........ 
@@ -16981,6 +16982,9 @@ Effects          :
                    Family Flags: 8, 49, 61, 65, 67
 #6 (id=1160967)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 456640 | Scaled Value: 456640 | PvP Coefficient: 1.00000 | Misc Value: 427917 | Target: Self (1)
+#7 (id=1184732)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 469991 | Scaled Value: 469991 | PvP Coefficient: 1.00000 | Misc Value: 389810 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 
 Name             : Sigil of Doom (id=452490) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -17743,5 +17747,70 @@ Effects          :
 #3 (id=1174703)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 289 (Label) | Target: Self (1)
                    Affected Spells (Label): Rethu's Incessant Courage (242597)
+
+Name             : Sigil of Doom (id=469991) [Spell Family (107)] 
+Hotfixed         : NEW SPELL
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Spell Level      : 10
+Range            : 30 yards
+GCD              : 1.5 seconds
+Duration         : 2 seconds
+Charges          : 1 (30 seconds cooldown)
+Category         : 1605: Quickened Sigils (209281 effect#3), Illuminated Sigils (428557 effect#1), Illuminated Sigils (428557 effect#3)
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+                 : 3597
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Any Means Necessary (388114 effect#1), Chains of Anger (389715 effect#1), Demon Hide (428241 effects: #1, #3)
+Family Flags     : 24, 32
+Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1184729)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
+Hotfixed         : NEW EFFECT
+#2 (id=1184730)  : Create Area Trigger (179)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 34377 | Target: At Target (63) -> Unknown(138)
+Hotfixed         : NEW EFFECT
+Description      : Place a Sigil of Flame at the target location that activates after $d.
+
+Deals $204598s1 $@spelldesc395020 damage, and an additional $204598o3 $@spelldesc395020 damage over $204598d, to all enemies affected by the sigil.
+
+|CFFffffffGenerates $389787s1 Fury.|R
+Tooltip          : Sigil of Flame is active.
+
+Name             : Demonsurge (id=469995) [Spell Family (107), Hidden] 
+Hotfixed         : NEW SPELL
+Class            : Demon Hunter
+School           : Fire
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+                 : 3022
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
+Effects          :
+#1 (id=1184742)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+Description      : $@spelldesc452402
 
 

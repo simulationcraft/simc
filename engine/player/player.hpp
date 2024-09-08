@@ -148,9 +148,14 @@ struct player_t : public actor_t
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
   std::string class_talents_str, spec_talents_str, hero_talents_str;
-  enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday; // Specify InGame time of day to determine Night Elf racial
-  enum zandalari_loa_e {AKUNDA, BWONSAMDI, GONK, KIMBUL, KRAGWA, PAKU} zandalari_loa; //Specify which loa zandalari has chosen to determine racial
-  enum vulpera_tricks_e { CORROSIVE, FLAMES, SHADOWS, HEALING, HOLY } vulpera_tricks; //Specify which trick to use for vulpera bag of tricks
+  // Specify in-game time of day to determine Night Elf racial
+  enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday;
+  // Specify which loa Zandalari has chosen to determine racial
+  enum zandalari_loa_e { AKUNDA, BWONSAMDI, GONK, KIMBUL, KRAGWA, PAKU } zandalari_loa;
+  // Specify which trick to use for Vulpera bag of tricks
+  enum vulpera_tricks_e { CORROSIVE, FLAMES, SHADOWS, HEALING, HOLY } vulpera_tricks;
+  // Specify which mineral to ingest for Earthen Dwarf racial
+  enum earthen_mineral_e { AMBER, EMERALD, ONYX, RUBY, SAPPHIRE } earthen_mineral;
 
   // GCD Related attributes
   timespan_t  gcd_ready, base_gcd, min_gcd; // When is GCD ready, default base and minimum GCD times.
@@ -564,6 +569,7 @@ struct player_t : public actor_t
     buff_t* heavens_nemesis; // Neltharax, Enemy of the Sky
 
     // 11.0 The War Within
+    buff_t* ingest_mineral;  // earthen well fed racial
     buff_t* surekian_grace;  // sik'ran's shadow arsenal barrage movement speed buff
     buff_t* earthen_ire;     // sigil of algari concordance tank buff
   } buffs;
@@ -853,6 +859,7 @@ struct player_t : public actor_t
     int nerubian_pheromone_secreter_pheromones = 1;
     // Allied Binding of Binding on you
     int binding_of_binding_on_you = 0;
+    double binding_of_binding_ally_skip_chance = 0.8;
   } thewarwithin_opts;
 
 private:

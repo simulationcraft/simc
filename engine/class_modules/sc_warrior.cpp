@@ -3986,7 +3986,6 @@ struct thunder_blast_seismic_reverberation_t : public warrior_attack_t
 
 struct thunder_blast_t : public warrior_attack_t
 {
-  bool from_t31;
   double rage_gain;
   double shield_slam_reset;
   warrior_attack_t* rend;
@@ -3996,7 +3995,6 @@ struct thunder_blast_t : public warrior_attack_t
   double rend_targets_hit;
   thunder_blast_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "thunder_blast", p, p->find_spell( 435222 ) ),
-      from_t31( false ),
       rage_gain( data().effectN( 4 ).resource( RESOURCE_RAGE ) ),
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
       rend( nullptr ),
@@ -4048,30 +4046,6 @@ struct thunder_blast_t : public warrior_attack_t
     }
   }
 
-  // T31 constructor
-  thunder_blast_t( warrior_t* p )
-    : warrior_attack_t( "thunder_blast_t31", p, p->find_spell( 396719 ) ),
-      from_t31( true ),
-      rend( nullptr ),
-      rend_target_cap( 0 ),
-      rend_targets_hit( 0 )
-  {
-    aoe       = -1;
-    may_dodge = may_parry = may_block = false;
-    background                        = true;
-
-    radius *= 1.0 + p->talents.warrior.crackling_thunder->effectN( 1 ).percent();
-    energize_type = action_energize::NONE;
-
-    if ( p->talents.shared.rend.ok() )
-    {
-      rend_target_cap = p->talents.warrior.thunder_clap->effectN( 5 ).base_value();
-       if ( p->talents.arms.rend->ok() )
-        rend = new rend_dot_t( p );
-    }
-    base_dd_multiplier *= 1.0 + p -> sets -> set( WARRIOR_ARMS, T31, B4 )->effectN( 2 ).percent();
-  }
-
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
@@ -4087,20 +4061,6 @@ struct thunder_blast_t : public warrior_attack_t
     }
 
     return am;
-  }
-
-  double cost() const override
-  {
-    if ( from_t31 )
-      return 0;
-    return warrior_attack_t::cost();
-  }
-
-  double tactician_cost() const override
-  {
-    if ( from_t31 )
-      return 0;
-    return warrior_attack_t::cost();
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -4222,7 +4182,6 @@ struct thunder_clap_seismic_reverberation_t : public warrior_attack_t
 
 struct thunder_clap_t : public warrior_attack_t
 {
-  bool from_t31;
   double rage_gain;
   double shield_slam_reset;
   warrior_attack_t* rend;
@@ -4232,7 +4191,6 @@ struct thunder_clap_t : public warrior_attack_t
   double rend_targets_hit;
   thunder_clap_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "thunder_clap", p, p->talents.warrior.thunder_clap ),
-      from_t31( false ),
       rage_gain( data().effectN( 4 ).resource( RESOURCE_RAGE ) ),
       shield_slam_reset( p->talents.protection.strategist->effectN( 1 ).percent() ),
       rend( nullptr ),
@@ -4281,30 +4239,6 @@ struct thunder_clap_t : public warrior_attack_t
     }
   }
 
-  // T31 constructor
-  thunder_clap_t( warrior_t* p )
-    : warrior_attack_t( "thunder_clap_t31", p, p->find_spell( 396719 ) ),
-      from_t31( true ),
-      rend( nullptr ),
-      rend_target_cap( 0 ),
-      rend_targets_hit( 0 )
-  {
-    aoe       = -1;
-    may_dodge = may_parry = may_block = false;
-    background                        = true;
-
-    radius *= 1.0 + p->talents.warrior.crackling_thunder->effectN( 1 ).percent();
-    energize_type = action_energize::NONE;
-
-    if ( p->talents.shared.rend.ok() )
-    {
-      rend_target_cap = p->talents.warrior.thunder_clap->effectN( 5 ).base_value();
-       if ( p->talents.arms.rend->ok() )
-        rend = new rend_dot_t( p );
-    }
-    base_dd_multiplier *= 1.0 + p -> sets -> set( WARRIOR_ARMS, T31, B4 )->effectN( 2 ).percent();
-  }
-
   double action_multiplier() const override
   {
     double am = warrior_attack_t::action_multiplier();
@@ -4320,20 +4254,6 @@ struct thunder_clap_t : public warrior_attack_t
     }
 
     return am;
-  }
-
-  double cost() const override
-  {
-    if ( from_t31 )
-      return 0;
-    return warrior_attack_t::cost();
-  }
-
-  double tactician_cost() const override
-  {
-    if ( from_t31 )
-      return 0;
-    return warrior_attack_t::cost();
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -4488,12 +4408,6 @@ struct execute_damage_t : public warrior_attack_t
       }
       td( state->target )->debuffs_marked_for_execution->expire();
     }
-
-    if ( p() -> sets -> has_set_bonus( WARRIOR_ARMS, T31, B4 ) && p() -> buff.sudden_death -> up() )
-    {
-      auto amount = state -> result_amount * p() -> sets -> set ( WARRIOR_ARMS, T31, B4 )->effectN( 1 ).percent();
-      residual_action::trigger( finishing_wound, state->target, amount );
-    }
   }
 };
 
@@ -4504,15 +4418,13 @@ struct execute_arms_t : public warrior_attack_t
   double max_rage;
   double execute_pct;
   double shield_slam_reset;
-  thunder_clap_t* t31_thunder_clap;
   execute_arms_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "execute", p, p->spell.execute ),
     trigger_attack( nullptr ),
     lightning_strike( nullptr ),
     max_rage( 40 ),
     execute_pct( 20 ),
-    shield_slam_reset( p -> talents.protection.strategist -> effectN( 1 ).percent() ),
-    t31_thunder_clap( nullptr )
+    shield_slam_reset( p -> talents.protection.strategist -> effectN( 1 ).percent() )
   {
     parse_options( options_str );
     weapon        = &( p->main_hand_weapon );
@@ -4533,11 +4445,6 @@ struct execute_arms_t : public warrior_attack_t
     {
       lightning_strike = get_action<lightning_strike_t>( "lightning_strike_execute", p );
       add_child( lightning_strike );
-    }
-
-    if ( p->tier_set.t31_arms_4pc->ok() )
-    {
-      t31_thunder_clap = new thunder_clap_t( p );
     }
   }
 
@@ -4598,10 +4505,6 @@ struct execute_arms_t : public warrior_attack_t
       if ( p()->talents.slayer.imminent_demise->ok() )
       {
         p()->buff.imminent_demise->trigger();
-      }
-      if ( p()->tier_set.t31_arms_4pc->ok() )
-      {
-        t31_thunder_clap->execute();
       }
     }
     if ( p()->talents.arms.juggernaut.ok() )
