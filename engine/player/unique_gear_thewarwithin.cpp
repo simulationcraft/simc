@@ -4013,6 +4013,20 @@ void shadowbinding_ritual_knife( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 455432 Driver
+// 455433 Damage Spell
+// 455434 Healing Spell
+void shining_arathor_insignia( special_effect_t& effect )
+{
+  // TODO: make it heal players as well
+  auto damage_proc         = create_proc_action<generic_proc_t>( "shining_arathor_insignia_damage", effect, 455433 );
+  damage_proc->base_dd_min = damage_proc->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  
+  effect.execute_action = damage_proc;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -4807,6 +4821,7 @@ void register_special_effects()
   register_special_effect( 451742, items::stormrider_flight_badge );
   register_special_effect( 451750, DISABLED_EFFECT );  // stormrider flight badge special effect 
   register_special_effect( 435502, items::shadowbinding_ritual_knife );  
+  register_special_effect( 455432, items::shining_arathor_insignia );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
