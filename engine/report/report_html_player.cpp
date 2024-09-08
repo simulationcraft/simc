@@ -1817,13 +1817,13 @@ std::string base64_to_url( std::string_view s )
 }
 
 // TODO: update once TWW trees are finalized
-int raidbots_talent_render_width( specialization_e /* spec */, int height )
+int raidbots_talent_render_width( specialization_e spec, int height, bool mini = false )
 {
-  return height * 49 / 25;
-
-/*switch ( spec )
+  switch ( spec )
   {
-  }*/
+    case HUNTER_BEAST_MASTERY: return mini ? height * 13 / 9 : height * 8 / 5;
+    default:                   return mini ? height * 8 / 5 : height * 7 / 4;
+  }
 }
 
 std::string raidbots_domain( [[maybe_unused]] bool ptr )
@@ -1935,7 +1935,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   if ( num_players == 1 )
   {
     auto w_ = raidbots_talent_render_width( p.specialization(), 600 );
-    os.format( "<iframe src=\"{}\" width=\"{}\" height=\"650\"></iframe>\n",
+    os.format( R"(<iframe src="{}" width="{}" height="600"></iframe>)",
                raidbots_talent_render_src( p.talents_str, p.true_level, w_, false, p.dbc->ptr ), w_ );
 
     // Hide the talent table only if the Raidbots talent iframe is present.
@@ -3699,11 +3699,11 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   else
     os << "<h3 class=\"toggle open\">Results, Spec and Gear</h3>\n";
 
-  os << "<div class=\"toggle-content\">\n";
+  os << "<div class=\"toggle-content\" style=\"height:110px\">\n";
 
   if ( p.sim->players_by_name.size() == 1 )
   {
-    auto w_ = raidbots_talent_render_width( p.specialization(), 125 );
+    auto w_ = raidbots_talent_render_width( p.specialization(), 125, true );
     os.format(
       R"(<iframe src="{}" width="{}" height="125" style="margin-right: 8px; margin-top: 5px; float: left"></iframe>)",
       raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
