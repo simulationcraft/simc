@@ -5698,7 +5698,7 @@ Category         : 2074: Stormkeeper (392714 effect#1)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Stacks           : 2 initial, 2 maximum
+Stacks           : 2 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
                  : Magic Hostile Spell
