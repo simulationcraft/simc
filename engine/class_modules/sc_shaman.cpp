@@ -5881,8 +5881,13 @@ struct chain_lightning_t : public chained_base_t
 
   bool ready() override
   {
-    if ( p()->specialization() == SHAMAN_ELEMENTAL && p()->buff.ascendance->check() )
-      return false;
+    if ( !p()->is_ptr() )
+    {
+      if ( p()->specialization() == SHAMAN_ELEMENTAL && p()->buff.ascendance->check() )
+      {
+        return false;
+      }
+    }
 
     return shaman_spell_t::ready();
   }
