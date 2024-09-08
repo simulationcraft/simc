@@ -558,14 +558,15 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
   }
   os << "</ul>\n";
 
-  os << "<div class=\"column-charts\">\n"; // Open DIV for charts
-
   highchart::bar_chart_t raid_dps( "raid_dps", sim );
   if ( chart::generate_raid_aps( raid_dps, sim, "dps" ) )
   {
+    raid_dps.width_ = 1162;
     os << raid_dps.to_target_div();
     sim.add_chart_data( raid_dps );
   }
+
+  os << "<div class=\"column-charts\">\n"; // Open DIV for charts
 
   if ( sim.enemy_targets > 1 )
   {
