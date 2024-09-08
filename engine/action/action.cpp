@@ -2614,13 +2614,13 @@ void action_t::init()
   if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) ||
        data().flags( spell_attribute::SX_DISABLE_PLAYER_HEALING_MULT ) )
   {
-    snapshot_flags &= ~( STATE_VERSATILITY | STATE_MUL_PLAYER_DAM );
+    snapshot_flags &= ~( STATE_VERSATILITY | STATE_MUL_PLAYER_DAM | STATE_MUL_PET );
   }
 
   if ( data().flags( spell_attribute::SX_DISABLE_TARGET_MULT ) )
   {
-    snapshot_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR );
-    update_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR );
+    snapshot_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR | STATE_TGT_MUL_PET );
+    update_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR | STATE_TGT_MUL_PET );
   }
 
   // TODO: accomodate negative mults such as damage reduction
