@@ -29,7 +29,7 @@ def->add_action( "adaptive_swarm,target_if=dot.adaptive_swarm_damage.stack<3&(!d
 def->add_action( "adaptive_swarm,target_if=max:(1+dot.adaptive_swarm_damage.stack)*dot.adaptive_swarm_damage.stack<3*time_to_die,if=buff.cat_form.up&dot.adaptive_swarm_damage.stack<3&talent.unbridled_swarm.enabled&spell_targets.swipe_cat>1&dot.rip.ticking" );
 def->add_action( "ferocious_bite,if=buff.apex_predators_craving.up&!(variable.need_bt&active_bt_triggers=2)" );
 def->add_action( "call_action_list,name=cooldown,if=dot.rip.ticking" );
-def->add_action( "rip,if=spell_targets=1&hero_tree.wildstalker&!(talent.raging_fury&talent.veinripper)&(buff.bloodtalons.up|!talent.bloodtalons)&(dot.rip.pmultiplier<persistent_multiplier&buff.tigers_fury.remains>10&combo_points>=3|buff.tigers_fury.remains<3.0&buff.tigers_fury.up&combo_points>=3&remains<16)","with wildstalker and not both raging fury + veinripper, low cp rips for snapshot reasons is worth" );
+def->add_action( "rip,if=spell_targets=1&hero_tree.wildstalker&!(talent.raging_fury&talent.veinripper)&(buff.bloodtalons.up|!talent.bloodtalons)&(dot.rip.refreshable&buff.tigers_fury.remains>10&combo_points>=3|buff.tigers_fury.remains<3.0&buff.tigers_fury.up&combo_points>=3&remains<16)","with wildstalker and not both raging fury + veinripper, low cp rips for snapshot reasons is worth" );
 def->add_action( "call_action_list,name=finisher,if=combo_points=5" );
 def->add_action( "call_action_list,name=builder,if=spell_targets.swipe_cat=1&combo_points<5&(variable.time_to_pool<=0|!variable.need_bt|variable.proccing_bt)" );
 def->add_action( "call_action_list,name=aoe_builder,if=spell_targets.swipe_cat>=2&combo_points<5&(variable.time_to_pool<=0|!variable.need_bt|variable.proccing_bt)" );
