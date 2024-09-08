@@ -83,4 +83,4 @@ WORKDIR /app/SimulationCraft
 
 ENTRYPOINT [ "./simc" ]
 
-CMD [ "T29_Raid.simc" ]
+CMD [ "TWW1_Raid.simc" ]
