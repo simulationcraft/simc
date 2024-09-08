@@ -4295,6 +4295,14 @@ struct elemental_overload_spell_t : public shaman_spell_t
         p->mastery.elemental_overload->effectN( 2 ).percent() +
         p->talent.echo_chamber->effectN( 1 ).percent();
 
+    if ( p->is_ptr() )
+    {
+      if ( p->buff.ascendance->up() )
+      {
+        base_multiplier *= 1.0 + p->talent.ascendance->effectN( 8 ).percent();
+      }
+    }
+
     // multiplier is used by Mountains Will Fall and is applied after
     // overload damage multiplier is calculated.
     if ( multiplier != -1.0 )
