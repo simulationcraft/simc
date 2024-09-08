@@ -9199,13 +9199,17 @@ struct liquid_magma_totem_spell_t : public shaman_totem_t<spell_totem_pet_t, sha
   {
     add_child( eruption );
 
+    if ( p->is_ptr() )
+    {
+      maelstrom_gain = p->spec.maelstrom->effectN( 13 ).resource( RESOURCE_MAELSTROM );
+    }
+
     ancestor_trigger = ancestor_cast::CHAIN_LIGHTNING;
   }
 
   void execute() override
   {
     shaman_totem_t<spell_totem_pet_t, shaman_spell_t>::execute();
-
     eruption->execute_on_target( execute_state->target );
   }
 };
