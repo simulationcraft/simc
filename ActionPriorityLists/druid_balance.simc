@@ -24,9 +24,9 @@ actions.precombat+=/regrowth,if=hero_tree.keeper_of_the_grove
 actions.precombat+=/regrowth,if=hero_tree.keeper_of_the_grove
 actions.precombat+=/regrowth,if=hero_tree.keeper_of_the_grove
 actions.precombat+=/wrath
-actions.precombat+=/regrowth,if=hero_tree.keeper_of_the_grove
 actions.precombat+=/wrath
-actions.precombat+=/starfire,if=!talent.stellar_flare
+actions.precombat+=/wait,sec=0.1,if=hero_tree.keeper_of_the_grove&!talent.stellar_flare
+actions.precombat+=/starfire,if=!talent.stellar_flare&hero_tree.elunes_chosen
 actions.precombat+=/stellar_flare
 
 # Executed every time the actor is available.

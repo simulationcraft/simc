@@ -9012,7 +9012,7 @@ struct wait_action_base_t : public action_t
     action_t(ACTION_OTHER, name, player, spell_data_t::nil())
   {
     trigger_gcd = timespan_t::zero();
-    interrupt_auto_attack = false;
+    harmful = interrupt_auto_attack = false;
     quiet = true;
     target = player;
   }

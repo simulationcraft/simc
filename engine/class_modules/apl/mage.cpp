@@ -75,17 +75,17 @@ void arcane( player_t* p )
   precombat->add_action( "evocation,if=talent.evocation" );
 
   default_->add_action( "counterspell" );
-  default_->add_action( "potion,if=buff.siphon_storm.up|(!talent.evocation&cooldown.arcane_surge.ready)" );
+  default_->add_action( "potion,if=!equipped.spymasters_web&(buff.siphon_storm.up|(!talent.evocation&cooldown.arcane_surge.ready))|buff.spymasters_web.up" );
   default_->add_action( "lights_judgment,if=(buff.arcane_surge.down&debuff.touch_of_the_magi.down&active_enemies>=2)" );
   default_->add_action( "berserking,if=(prev_gcd.1.arcane_surge&variable.opener)|((prev_gcd.1.arcane_surge&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment))|(prev_gcd.1.arcane_surge&!equipped.spymasters_web))" );
   default_->add_action( "blood_fury,if=(prev_gcd.1.arcane_surge&variable.opener)|((prev_gcd.1.arcane_surge&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment))|(prev_gcd.1.arcane_surge&!equipped.spymasters_web))" );
   default_->add_action( "fireblood,if=(prev_gcd.1.arcane_surge&variable.opener)|((prev_gcd.1.arcane_surge&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment))|(prev_gcd.1.arcane_surge&!equipped.spymasters_web))" );
   default_->add_action( "ancestral_call,if=(prev_gcd.1.arcane_surge&variable.opener)|((prev_gcd.1.arcane_surge&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment))|(prev_gcd.1.arcane_surge&!equipped.spymasters_web))" );
-  default_->add_action( "invoke_external_buff,name=power_infusion,if=prev_gcd.1.arcane_surge", "Invoke Externals with cooldowns except Autumn which should come just after cooldowns" );
+  default_->add_action( "invoke_external_buff,name=power_infusion,if=(!equipped.spymasters_web&prev_gcd.1.arcane_surge)|(equipped.spymasters_web&prev_gcd.1.evocation)", "Invoke Externals with cooldowns except Autumn which should come just after cooldowns" );
   default_->add_action( "invoke_external_buff,name=blessing_of_summer,if=prev_gcd.1.arcane_surge" );
   default_->add_action( "invoke_external_buff,name=blessing_of_autumn,if=cooldown.touch_of_the_magi.remains>5" );
   default_->add_action( "use_items,if=prev_gcd.1.arcane_surge|prev_gcd.1.evocation|fight_remains<20|!variable.steroid_trinket_equipped", "Trinket specific use cases vary, default is just with cooldowns" );
-  default_->add_action( "use_item,name=spymasters_web,if=(prev_gcd.1.arcane_surge|prev_gcd.1.evocation)&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment)|fight_remains<20" );
+  default_->add_action( "use_item,name=spymasters_web,if=(prev_gcd.1.arcane_surge|prev_gcd.1.evocation)&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment|(buff.spymasters_report.stack=40&fight_remains>240))|fight_remains<20" );
   default_->add_action( "use_item,name=high_speakers_accretion,if=(prev_gcd.1.arcane_surge|prev_gcd.1.evocation)|cooldown.evocation.remains<4|fight_remains<20" );
   default_->add_action( "use_item,name=imperfect_ascendancy_serum,if=cooldown.evocation.ready|cooldown.arcane_surge.ready|fight_remains<20" );
   default_->add_action( "use_item,name=treacherous_transmitter,if=buff.arcane_surge.remains>13|prev_gcd.1.evocation|cooldown.arcane_surge.remains<10|fight_remains<20" );
@@ -107,9 +107,9 @@ void arcane( player_t* p )
   cd_opener->add_action( "wait,sec=0.05,if=prev_gcd.1.arcane_surge&time-action.touch_of_the_magi.last_used<0.015,line_cd=15" );
   cd_opener->add_action( "arcane_blast,if=buff.presence_of_mind.up" );
   cd_opener->add_action( "arcane_orb,if=talent.high_voltage&variable.opener,line_cd=10", "Use Orb for charges if you have High Voltage, then evocation, then Missiles for Nether Precision, then Arcane Surge" );
-  cd_opener->add_action( "evocation,if=cooldown.arcane_surge.remains<(gcd.max*3)&cooldown.touch_of_the_magi.remains<(gcd.max*6)" );
-  cd_opener->add_action( "arcane_missiles,if=variable.opener,interrupt_if=tick_time>gcd.remains,interrupt_immediate=1,interrupt_global=1,chain=1,line_cd=10" );
-  cd_opener->add_action( "arcane_surge,if=cooldown.touch_of_the_magi.remains<gcd.max*3" );
+  cd_opener->add_action( "evocation,if=cooldown.arcane_surge.remains<(gcd.max*3)&cooldown.touch_of_the_magi.remains<(gcd.max*5)" );
+  cd_opener->add_action( "arcane_missiles,if=variable.opener,interrupt_if=tick_time>gcd.remains&buff.aether_attunement.down,interrupt_immediate=1,interrupt_global=1,chain=1,line_cd=30" );
+  cd_opener->add_action( "arcane_surge,if=cooldown.touch_of_the_magi.remains<(action.arcane_surge.execute_time+(gcd.max*(buff.arcane_charge.stack=4)))" );
 
   spellslinger_aoe->add_action( "supernova,if=buff.unerring_proficiency.stack=30" );
   spellslinger_aoe->add_action( "cancel_buff,name=presence_of_mind,use_off_gcd=1,if=(debuff.magis_spark_arcane_blast.up&time-action.arcane_blast.last_used>0.015)" );
@@ -119,7 +119,6 @@ void arcane( player_t* p )
   spellslinger_aoe->add_action( "arcane_barrage,if=(talent.arcane_tempo&buff.arcane_tempo.remains<gcd.max)|((buff.intuition.react&(buff.arcane_charge.stack=4|!talent.high_voltage))&buff.nether_precision.up)|(buff.nether_precision.up&action.arcane_blast.executing)" );
   spellslinger_aoe->add_action( "arcane_missiles,if=buff.clearcasting.react&((talent.high_voltage&buff.arcane_charge.stack<4)|buff.nether_precision.down),interrupt_if=tick_time>gcd.remains&buff.aether_attunement.down,interrupt_immediate=1,interrupt_global=1,chain=1", "Clearcasting is exclusively spent on Arcane Missiles in AOE and always interrupted after the global cooldown ends except for Aether Attunement" );
   spellslinger_aoe->add_action( "presence_of_mind,if=buff.arcane_charge.stack=3|buff.arcane_charge.stack=2", "Only use Presence of Mind at low charges, use these to get to 4 Charges, but cancelaura the buff if you need to queue Arcane Barrage" );
-  spellslinger_aoe->add_action( "arcane_blast,if=buff.presence_of_mind.up" );
   spellslinger_aoe->add_action( "arcane_barrage,if=(buff.arcane_charge.stack=4)" );
   spellslinger_aoe->add_action( "arcane_explosion" );
 
@@ -153,7 +152,7 @@ void arcane( player_t* p )
   sunfury->add_action( "wait,sec=0.05,if=buff.presence_of_mind.up&prev_gcd.1.arcane_blast,line_cd=15" );
   sunfury->add_action( "arcane_barrage,if=((buff.arcane_charge.stack=4&(time-action.arcane_blast.last_used<0.015&buff.nether_precision.stack=1)&active_enemies>=(5-(2*(talent.arcane_bombardment&target.health.pct<35)))&talent.arcing_cleave&((talent.high_voltage&buff.clearcasting.react)|(cooldown.arcane_orb.remains<gcd.max|action.arcane_orb.charges>0))))|(buff.aether_attunement.up&talent.high_voltage&buff.clearcasting.react&buff.arcane_charge.stack>1&active_enemies>1)", "AOE Barrage is optimized for funnel at the cost of some overall AOE, tries to make sure you have Clearcasting if you have High Voltage or an Orb charge ready" );
   sunfury->add_action( "arcane_orb,if=buff.arcane_charge.stack<2&buff.arcane_soul.down&(!talent.high_voltage|buff.clearcasting.react=0)", "Orb if you don't have High Voltage and a Clearcasting in AOE" );
-  sunfury->add_action( "arcane_barrage,if=((buff.glorious_incandescence.up|buff.intuition.react)&((time-action.arcane_blast.last_used<0.015&buff.nether_precision.stack=1)|(buff.nether_precision.down&buff.clearcasting.react=0)))|(buff.arcane_soul.up&((buff.clearcasting.react<3)|buff.arcane_soul.remains<gcd.max))|(buff.arcane_charge.stack=4&cooldown.touch_of_the_magi.ready)", "Barrage whenever Intuition/Incandescence and NP is up, double dipping if 1 stack, or just sending it if you dont have Clearcasting; also Barrage during Arcane Soul as long as you don't cap on Clearcasting procs, or if Touch is ready" );
+  sunfury->add_action( "arcane_barrage,if=((buff.glorious_incandescence.up|buff.intuition.react)&((time-action.arcane_blast.last_used<0.015&buff.nether_precision.stack=1)|(buff.nether_precision.down&buff.clearcasting.react=0)))|(buff.arcane_soul.up&((buff.clearcasting.react<3)|buff.arcane_soul.remains<gcd.max))|(buff.arcane_charge.stack=4&(cooldown.touch_of_the_magi.ready|(buff.burden_of_power.up&buff.nether_precision.up)))", "Barrage whenever Intuition/Incandescence and NP is up, double dipping if 1 stack, or just sending it if you dont have Clearcasting; also Barrage during Arcane Soul as long as you don't cap on Clearcasting procs, or if Touch is ready" );
   sunfury->add_action( "arcane_missiles,if=buff.clearcasting.react&((buff.nether_precision.down|(buff.clearcasting.react=3)|(talent.high_voltage&buff.arcane_charge.stack<3)|(buff.nether_precision.stack=1&time-action.arcane_blast.last_used<0.015))),interrupt_if=tick_time>gcd.remains&buff.aether_attunement.down,interrupt_immediate=1,interrupt_global=1,chain=1", "Missiles when it won't impact various Barrage conditions, interrupt the channel immediately after the GCD but not if you have Aether Attunement" );
   sunfury->add_action( "presence_of_mind,if=(buff.arcane_charge.stack=3|buff.arcane_charge.stack=2)&active_enemies>=3" );
   sunfury->add_action( "arcane_explosion,if=(talent.reverberate|buff.arcane_charge.stack<1)&active_enemies>=4", "Explosion to build the first charge if you have 0" );

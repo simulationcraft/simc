@@ -6448,6 +6448,8 @@ struct preemptive_strike_t : public demon_hunter_ranged_attack_t
     double mult               = state->composite_da_multiplier();
     double amount             = base_direct_amount * ap_coeff * mult;
 
+    state->result_raw = amount;
+
     if ( !sim->average_range )
       amount = floor( amount + rng().real() );
 

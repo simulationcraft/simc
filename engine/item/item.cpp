@@ -822,9 +822,8 @@ void item_t::parse_options()
     option_name_str = options_str.substr( 0, cut_pt );
   }
 
-  std::array<std::unique_ptr<option_t>, 35> options { {
+  std::array<std::unique_ptr<option_t>, 33> options { {
     opt_uint("id", parsed.data.id),
-    opt_obsoleted("upgrade"),
     opt_string("stats", option_stats_str),
     opt_string("gems", option_gems_str),
     opt_string("enchant", option_enchant_str),

@@ -2375,10 +2375,11 @@ void overclocked_geararang_launcher( special_effect_t& e )
   overclock_strike->base_dd_min = overclock_strike->base_dd_max = equip_driver->effectN( 2 ).average( e );
   overclock_strike->base_multiplier *= role_mult( e );
 
-  auto damage      = new special_effect_t( e.player );
-  damage->name_str = "overclocked_strike_proc";
-  damage->item     = e.item;
-  damage->spell_id = damage_buff_spell->id();
+  auto damage          = new special_effect_t( e.player );
+  damage->name_str     = "overclocked_strike_proc";
+  damage->item         = e.item;
+  damage->spell_id     = damage_buff_spell->id();
+  damage->cooldown_    = 1_ms; // Artificial tiny ICD to prevent double proccing before the buff expires
   damage->proc_flags2_ = PF2_ALL_HIT;
   e.player->special_effects.push_back( damage );
 
@@ -4013,6 +4014,20 @@ void shadowbinding_ritual_knife( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 455432 Driver
+// 455433 Damage Spell
+// 455434 Healing Spell
+void shining_arathor_insignia( special_effect_t& effect )
+{
+  // TODO: make it heal players as well
+  auto damage_proc         = create_proc_action<generic_proc_t>( "shining_arathor_insignia_damage", effect, 455433 );
+  damage_proc->base_dd_min = damage_proc->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  
+  effect.execute_action = damage_proc;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -4807,6 +4822,7 @@ void register_special_effects()
   register_special_effect( 451742, items::stormrider_flight_badge );
   register_special_effect( 451750, DISABLED_EFFECT );  // stormrider flight badge special effect 
   register_special_effect( 435502, items::shadowbinding_ritual_knife );  
+  register_special_effect( 455432, items::shining_arathor_insignia );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
