@@ -253,6 +253,8 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
   cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
+  cooldowns.blackened_soul = get_cooldown( "blackened_soul_icd" );
+  cooldowns.seeds_of_their_demise = get_cooldown( "seeds_of_their_demise_icd" );
 
   resource_regeneration = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ] = true;

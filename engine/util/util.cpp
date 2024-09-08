@@ -229,7 +229,7 @@ std::string util::version_info_str( const dbc_t* dbc )
                       dbc::client_data_version_str( dbc->ptr ), dbc->wow_ptr_status() );
 }
 
-std::string util::build_info_str( const dbc_t* dbc )
+std::string util::build_info_str( const dbc_t* dbc, int display_level )
 {
   if ( !dbc )
   {
@@ -244,7 +244,7 @@ std::string util::build_info_str( const dbc_t* dbc )
         fmt::format( "hotfix {}/{}", dbc::hotfix_date_str( dbc->ptr ), dbc::hotfix_build_version( dbc->ptr ) ) );
   }
 
-  if ( git_info::available() )
+  if ( git_info::available() && display_level != 2 )
   {
     build_strings.emplace_back( fmt::format( "git build {} {}", git_info::branch(), git_info::revision() ) );
   }

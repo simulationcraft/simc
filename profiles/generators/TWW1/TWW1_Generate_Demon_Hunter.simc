@@ -27,11 +27,11 @@
 
 demonhunter="TWW1_Demon_Hunter_Vengeance"
 level=80
-race=blood_elf
+race=night_elf
 spec=vengeance
 role=tank
 position=front
-talents=CUkAAAAAAAAAAAAAAAAAAAAAAAAGjZmZMMjMzMGDjZbmxgtZMzMMzYYWmZmlZmhZwAAAAwsNDGGLbMJDmZGsA
+talents=CUkAAAAAAAAAAAAAAAAAAAAAAAAGjZmZMMjMzMGDjZbGYsNjZmZMzwMjZmZZMDzgBAAAAYZWMjhZRTDMzMDbA
 
 head=impalers_of_the_hypogeal_nemesis,id=212065,bonus_id=8780,ilevel=639,gem_id=213470
 neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213485/213743

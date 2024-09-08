@@ -595,6 +595,8 @@ public:
     propagate_const<cooldown_t*> soul_fire;
     propagate_const<cooldown_t*> dimensional_rift;
     propagate_const<cooldown_t*> felstorm_icd; // Shared between Felstorm, Demonic Strength, and Guillotine TODO: Actually use this!
+    propagate_const<cooldown_t*> blackened_soul; // Internal cooldown on triggering stack increase to Wither
+    propagate_const<cooldown_t*> seeds_of_their_demise; // Estimated internal cooldown, a guess at how Blizzard is minimizing lucky streaks
   } cooldowns;
 
   // Buffs
@@ -769,7 +771,7 @@ public:
     rng_setting_t pact_of_the_eredruin = { 0.40, 0.40, "pact_of_the_eredruin" };
     rng_setting_t shadow_invocation = { 0.20, 0.20, "shadow_invocation" };
     rng_setting_t spiteful_reconstitution = { 0.30, 0.30, "spiteful_reconstitution" };
-    rng_setting_t empowered_legion_strike = { 0.05, 0.05, "empowered_legion_strike" };
+    rng_setting_t empowered_legion_strike = { 0.25, 0.25, "empowered_legion_strike" };
 
     // Destruction
     rng_setting_t decimation = { 0.10, 0.10, "decimation" };
@@ -936,7 +938,7 @@ namespace helpers
     virtual void execute() override;
   };
 
-  bool crescendo_check( warlock_t* p );
+  bool crescendo_check( warlock_t* p, player_t* tar );
   void nightfall_updater( warlock_t* p, dot_t* d );
 
   void trigger_blackened_soul( warlock_t* p, bool malevolence );
