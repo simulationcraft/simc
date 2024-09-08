@@ -13845,7 +13845,7 @@ void death_knight_t::create_buffs()
             ->set_max_stack( spell.bone_shield->max_stacks() + as<int>( talent.blood.reinforced_bones.ok() ? talent.blood.reinforced_bones->effectN( 2 ).base_value() : 0 ) );  // TODO: Remove this if they fix reinforced bones effect2 to be APPLY_AURA instead of E_APPLY_AREA_AURA_PARTY
 
     buffs.bloodied_blade_stacks = make_buff( this, "bloodied_blade_stacks", spell.bloodied_blade_stacks_buff )
-                                      ->set_default_value( spell.bloodied_blade_stacks_buff->effectN( 1 ).base_value() / 10 )
+                                      ->set_default_value( spell.bloodied_blade_stacks_buff->effectN( 1 ).percent() / 10 )
                                       ->add_invalidate( CACHE_STRENGTH )
                                       ->set_cooldown( spell.bloodied_blade_stacks_buff->internal_cooldown() );
                                       // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH ); // TODO bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
@@ -14546,7 +14546,7 @@ double death_knight_t::composite_attribute( attribute_e attr ) const
     {
       case DEATH_KNIGHT_BLOOD:
         if ( buffs.bloodied_blade_stacks->check() )
-          a += base.stats.attribute[ attr ] * buffs.bloodied_blade_stacks->check_value();
+          a += base.stats.attribute[ attr ] * buffs.bloodied_blade_stacks->check_stack_value();
         if ( buffs.bloodied_blade_final->check() )
           a += base.stats.attribute[ attr ] * buffs.bloodied_blade_final->check_value();
         if ( buffs.visceral_strength->check() )
