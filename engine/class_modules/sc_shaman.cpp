@@ -6562,9 +6562,12 @@ struct lava_burst_t : public shaman_spell_t
   {
     timespan_t d = cooldown->duration;
 
-    if ( p()->buff.ascendance->up() )
+    if ( !p()->is_ptr() )
     {
-      d = timespan_t::zero();
+      if ( p()->buff.ascendance->up() )
+      {
+        d = timespan_t::zero();
+      }
     }
 
     // Lava Surge has procced during the cast of Lava Burst, the cooldown
