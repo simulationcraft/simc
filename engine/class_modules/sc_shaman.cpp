@@ -2777,6 +2777,22 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
         source_state->target->name() );
     }
 
+    if ( p()->is_ptr() )
+    {
+      if ( p()->buff.ascendance->up() )
+      {
+        make_event<elemental_overload_event_t>( *sim, s );
+
+        if ( sim->debug )
+        {
+          sim->out_debug.print( "{} elemental overload {}, chance=1.0 (guaranteed by ascendance), target={}",
+            p()->name(),
+            name(),
+            source_state->target->name() );
+        }
+      }
+    }
+
     return true;
   }
 
