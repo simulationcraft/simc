@@ -13169,8 +13169,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   debuff.bloodseeker_vines =
     make_debuff( source.talent.thriving_growth.ok(), *this, "bloodseeker_vines", source.spec.bloodseeker_vines )
       ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-      ->apply_affecting_aura( source.talent.resilient_flourishing )
-      ->set_quiet( true );
+      ->apply_affecting_aura( source.talent.resilient_flourishing );
   if ( source.talent.bursting_growth.ok() || source.talent.root_network.ok() )
   {
     debuff.bloodseeker_vines->set_stack_change_callback( [ & ]( buff_t* b, int old_, int new_ ) {
