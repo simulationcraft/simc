@@ -12642,7 +12642,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
     if ( util::str_compare_ci( splits[ 1 ], "bp_ticking" ) && splits.size() == 2 )
       return make_fn_expr( "dancing_rune_weapon_blood_plague_ticking_expression", [ this ]() {
         return pets.dancing_rune_weapon_pet.active_pet() != nullptr &&
-               pets.dancing_rune_weapon_pet.active_pet()->get_dot( "Blood Plague", pets.dancing_rune_weapon_pet.active_pet() )->is_ticking();
+               pets.dancing_rune_weapon_pet.active_pet()->target->get_dot( "Blood Plague", pets.dancing_rune_weapon_pet.active_pet() )->is_ticking();
       } );
   }
 
