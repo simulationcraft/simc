@@ -6014,6 +6014,14 @@ struct chain_lightning_t : public chained_base_t
     if ( s->chain_target == 0 && p()->talent.supercharge.ok() )
     {
       trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
+
+      if ( p()->is_ptr() )
+      {
+        if ( p()->buff.ascendance->up() )
+        {
+          trigger_elemental_overload( s, 1.0 );
+        }
+      }
     }
 
     chained_base_t::schedule_travel( s );
