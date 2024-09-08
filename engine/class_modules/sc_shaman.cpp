@@ -2711,7 +2711,16 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
   void schedule_travel( action_state_t* s ) override
   {
-    trigger_elemental_overload( s );
+    if ( trigger_elemental_overload( s ) )
+    {
+      if ( is_ptr() )
+      {
+        if ( p()->specialization() == SHAMAN_ELEMENTAL && p()->buff.ascendance->up() )
+        {
+          trigger_elemental_overload( s, 1.0 );
+        }
+      }
+    }
 
     base_t::schedule_travel( s );
   }
@@ -2775,22 +2784,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       sim->out_debug.print( "{} elemental overload {}, chance={:.5f}{}, target={}", p()->name(),
         name(), proc_chance, override_chance != -1.0 ? " (overridden)" : "",
         source_state->target->name() );
-    }
-
-    if ( p()->is_ptr() )
-    {
-      if ( p()->buff.ascendance->up() )
-      {
-        make_event<elemental_overload_event_t>( *sim, s );
-
-        if ( sim->debug )
-        {
-          sim->out_debug.print( "{} elemental overload {}, chance=1.0 (guaranteed by ascendance), target={}",
-            p()->name(),
-            name(),
-            source_state->target->name() );
-        }
-      }
     }
 
     return true;
