@@ -6150,9 +6150,12 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       }
     }
 
-    if ( p()->buff.ascendance->up() )
+    if ( !p()->is_ptr() )
     {
-      m *= 1.0 + p()->cache.spell_crit_chance();
+      if ( p()->buff.ascendance->up() )
+      {
+        m *= 1.0 + p()->cache.spell_crit_chance();
+      }
     }
 
     m *= 1.0 + p()->buff.flux_melting->value();
@@ -6533,9 +6536,12 @@ struct lava_burst_t : public shaman_spell_t
       }
     }
 
-    if ( p()->buff.ascendance->up() )
+    if ( !p()->is_ptr() )
     {
-      m *= 1.0 + p()->cache.spell_crit_chance();
+      if ( p()->buff.ascendance->up() )
+      {
+        m *= 1.0 + p()->cache.spell_crit_chance();
+      }
     }
 
     m *= 1.0 + p()->buff.flux_melting->value();
