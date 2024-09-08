@@ -25,7 +25,7 @@ trinket2=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=63
 main_hand=sovereigns_disdain,id=212394,bonus_id=1540/10299/10376,enchant_id=7460
 off_hand=broodtwisters_grim_catalyst,id=212387,bonus_id=1540/10299/10376
 
-save=TWW1_Warlock_Affliction_Soul_Harvester.simc
+save=TWW1_Warlock_Affliction.simc
 
 warlock="TWW1_Warlock_Affliction_Hellcaller"
 spec=affliction
@@ -82,7 +82,7 @@ trinket2=arakara_sacbrood,id=219314,bonus_id=6652/10273/1669/10255,ilevel=639
 main_hand=sovereigns_disdain,id=212394,bonus_id=1540/10299/10376,enchant_id=7460
 off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960/8792,crafted_stats=32/36
 
-save=TWW1_Warlock_Demonology_Soul_Harvester.simc
+save=TWW1_Warlock_Demonology.simc
 
 warlock="TWW1_Warlock_Demonology_Diabolist"
 source=default
@@ -138,7 +138,7 @@ trinket2=mad_queens_mandate,id=212454,bonus_id=1540/10299/10376
 main_hand=sovereigns_disdain,id=212394,bonus_id=1540/10299/10376,enchant_id=7460
 off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960/8792,crafted_stats=32/36
 
-save=TWW1_Warlock_Destruction_Diabolist.simc
+save=TWW1_Warlock_Destruction.simc
 
 warlock="TWW1_Warlock_Destruction_Hellcaller"
 spec=destruction
