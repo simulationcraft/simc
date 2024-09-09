@@ -927,7 +927,7 @@ public:
     player_talent_t storm_frenzy;
     player_talent_t swelling_maelstrom;
     player_talent_t primordial_fury;
-    player_talent_t flow_of_power;
+    player_talent_t flow_of_power; // Removed on PTR
     player_talent_t elemental_unity;
     // Row 6
     player_talent_t flux_melting;
@@ -6092,7 +6092,6 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       impact_flags()
   {
     maelstrom_gain = player->spec.maelstrom->effectN( 4 ).resource( RESOURCE_MAELSTROM );
-    //maelstrom_gain += player->talent.flow_of_power->effectN( 4 ).base_value();
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
     travel_speed = player->find_spell( 77451 )->missile_speed();
   }
@@ -6409,7 +6408,14 @@ struct lava_burst_t : public shaman_spell_t
       base_costs[ RESOURCE_MANA ] = 0;
 
       maelstrom_gain = player->spec.maelstrom->effectN( 3 ).resource( RESOURCE_MAELSTROM );
-      maelstrom_gain += player->talent.flow_of_power->effectN( 1 ).base_value();
+
+      if ( !player->is_ptr() )
+      {
+        if ( player->talent.flow_of_power->ok() )
+        {
+          maelstrom_gain += player->talent.flow_of_power->effectN( 1 ).base_value();
+        }
+      }
     }
 
     if ( player->mastery.elemental_overload->ok() )
@@ -6669,7 +6675,6 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     : elemental_overload_spell_t( p, "lightning_bolt_overload", p->find_spell( 45284 ), parent_ )
   {
     maelstrom_gain  = p->spec.maelstrom->effectN( 2 ).resource( RESOURCE_MAELSTROM );
-    //maelstrom_gain += p->talent.flow_of_power->effectN( 4 ).base_value();
 
     affected_by_master_of_the_elements = true;
     // Stormkeeper affected by flagging is applied to the Energize spell ...
@@ -6701,7 +6706,14 @@ struct lightning_bolt_t : public shaman_spell_t
       affected_by_master_of_the_elements = true;
 
       maelstrom_gain = player->spec.maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM );
-      maelstrom_gain += player->talent.flow_of_power->effectN( 2 ).base_value();
+
+      if ( !player->is_ptr() )
+      {
+        if ( player->talent.flow_of_power->ok() )
+        {
+          maelstrom_gain += player->talent.flow_of_power->effectN( 2 ).base_value();
+        }
+      }
     }
 
     if ( player->mastery.elemental_overload->ok() )
@@ -10763,7 +10775,7 @@ void shaman_t::init_spells()
   talent.storm_frenzy           = _ST( "Storm Frenzy" );
   talent.swelling_maelstrom     = _ST( "Swelling Maelstrom" );
   talent.primordial_fury        = _ST( "Primordial Fury" );
-  talent.flow_of_power          = _ST( "Flow of Power" );
+  talent.flow_of_power          = _ST( "Flow of Power" ); // Removed on PTR
   talent.elemental_unity        = _ST( "Elemental Unity" );
   // Row 6
   talent.flux_melting           = _ST( "Flux Melting" );
