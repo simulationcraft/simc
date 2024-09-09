@@ -601,11 +601,9 @@ void pouch_of_pocket_grenades( special_effect_t& effect )
 // 461191 shadow damage from onyx
 // 461192 fire damage from ruby
 // 461193 frost damage from sapphire
-// TODO: determine if damage selection is per gem, or per unique gem type
 void elemental_focusing_lens( special_effect_t& effect )
 {
-  // TODO: determine if damage selection is per gem, or per unique gem type
-  auto gems = algari_gem_list( effect );
+  auto gems = unique_gem_list( effect );
 
   if ( !gems.size() )
     return;
@@ -622,7 +620,7 @@ void elemental_focusing_lens( special_effect_t& effect )
     new dbc_proc_callback_t( effect.player, effect );
   }
 
-  std::unordered_map<gem_color_e, action_t*> damages;
+  std::vector<action_t*> damages;
 
   static constexpr std::array<std::tuple<gem_color_e, unsigned, const char*>, 5> damage_ids = { {
     { GEM_RUBY,     461192, "ruby"     },
@@ -634,19 +632,21 @@ void elemental_focusing_lens( special_effect_t& effect )
 
   for ( auto [ g, id, name ] : damage_ids )
   {
+    if ( !range::contains( gems, g ) )
+      continue;
+
     auto dam = create_proc_action<generic_proc_t>( fmt::format( "elemental_focusing_lens_{}", name ), effect, id );
     dam->base_dd_min += amount;
     dam->base_dd_max += amount;
     dam->name_str_reporting = util::inverse_tokenize( name );
-    damages[ g ] = dam;
+    damages.push_back( dam );
     proxy->add_child( dam );
   }
 
   effect.player->callbacks.register_callback_execute_function(
-    effect.spell_id, [ gems, damages ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
-      damages.at( gems.at( cb->rng().range( gems.size() ) ) )->execute_on_target( s->target );
+    effect.spell_id, [ damages ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
+      damages.at( cb->rng().range( damages.size() ) )->execute_on_target( s->target );
     } );
-
 }
 
 // 436085 on use

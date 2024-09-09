@@ -4814,20 +4814,24 @@ struct rip_t final : public trigger_thriving_growth_t<1, trigger_waning_twilight
     if ( !result_is_hit( s->result ) )
       return;
 
-    if ( tear )
-    {
-      auto tick_amount = calculate_tick_amount( s, 1.0 );
-      auto dot_total = tick_amount * find_dot( s->target )->ticks_left_fractional();
-
-      tear->base_td = dot_total;
-      tear->execute_on_target( s->target );
-    }
-
     // hard-cast rip is scripted to consume implant
     if ( !background && p()->active.bloodseeker_vines_implant && p()->buff.implant->check() )
     {
       p()->active.bloodseeker_vines_implant->execute_on_target( s->target );
       p()->buff.implant->expire();
+    }
+
+    if ( tear )
+    {
+      // target debuffs are not account for in total rip damage calculation. state is released after impact() so we can
+      // safely modify the state here.
+      s->target_da_multiplier = s->target_ta_multiplier = 1.0;
+
+      auto tick_amount = calculate_tick_amount( s, 1.0 );
+      auto dot_total = tick_amount * find_dot( s->target )->ticks_left_fractional();
+
+      tear->base_td = dot_total;
+      tear->execute_on_target( s->target );
     }
   }
 
