@@ -10576,6 +10576,7 @@ Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
 Max Scaling Level: 80
+Min Scaling Level: 1
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -22128,6 +22129,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 100
+Min Scaling Level: 1
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 118
@@ -22151,6 +22153,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 100
+Min Scaling Level: 1
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 118
@@ -22175,6 +22178,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 100
+Min Scaling Level: 1
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 118
