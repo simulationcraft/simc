@@ -1782,45 +1782,9 @@ public:
     if ( p->talents.relentless_inquisitor->ok() && !ab::background )
       p->buffs.relentless_inquisitor->trigger();
 
-    /*
-      Hammer of Light shenanigans, leaving these findings for later, not touching for now:
-      Crusade, no RG:
-      Execute gives 5 Stacks, if no DP active
-      Damage gives 5 Stacks, if DP active
-      (Can go to 10 stacks immediately, if HoL was the one to trigger DP, see
-      https://www.warcraftlogs.com/reports/WjvLtYRhfq1PmQTF#fight=last&type=auras&ability=231895&view=events&pins=0%24Separate%24%23244F4B%24any%24-1%246015535.0.0.Unknown%240.0.0.Any%24true%240.0.0.Any%24true%24429826%7C427453%7C408458
-      )
-
-      Crusade, RG:
-      Execute gives 5 Stacks, if no DP active
-      Damage never gives stacks
-
-      Light's Deliverance never gives Stacks
-    */
-    if ( p->buffs.crusade->check() )
+    if ( num_hopo_spent > 0 && p->buffs.crusade->check() )
     {
-      double crusade_stacks_given = num_hopo_spent;
-
-      if ( is_hammer_of_light_driver )
-      {
-        // 2024-08-05 The driver doesn't give stacks if it was free
-        if ( ( p->buffs.divine_purpose->up() && p->bugs ) ||
-             ( p->buffs.templar.hammer_of_light_free->up() && p->bugs ) )
-        {
-          crusade_stacks_given = 0.0;
-        }
-      }
-      // Damage part of Hammer of Light
-      else if ( is_hammer_of_light )
-      {
-        // 2024-08-05 The damage part gives stacks if Divine Purpose is up (Can go to 10 stacks immediately if the driver procced it). But only for hardcast Crusades
-        if ( p->bugs && p->buffs.divine_purpose->up() && !p->talents.radiant_glory->ok() )
-        {
-          crusade_stacks_given = 5.0;
-        }
-      }
-      if ( crusade_stacks_given > 0 )
-        p->buffs.crusade->trigger( as<int>( crusade_stacks_given ) );
+      p->buffs.crusade->trigger( as<int>( num_hopo_spent ) );
     }
 
     // Hammer of Light driver can proc it under all circumstances, but not the damage part
