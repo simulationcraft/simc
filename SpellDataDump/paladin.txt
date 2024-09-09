@@ -22037,6 +22037,7 @@ Description      : You gain a stack of Light's Deliverance when you call down an
 While $?a137028[Eye of Tyr][Wake of Ashes] and Hammer of Light are unavailable, you consume $433674U stacks of Light's Deliverance, empowering yourself to cast Hammer of Light an additional time for free.
 
 Name             : Hammer of Light (id=427441) [Spell Family (10)] 
+Hotfixed         : Max stacks (0 -> 1), Proc Stacks (0 -> 1), Proc Flags 1 (65536 -> 0), Proc Flags 2 (0 -> 4)
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -22044,9 +22045,10 @@ Duration         : 12 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
+Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
-                 : Magic Hostile Spell
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Triggered by     : Light's Guidance (427445)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
