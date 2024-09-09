@@ -2095,61 +2095,84 @@ struct rite_of_adjuration_t : public weapon_enchant_t
 
 // Hammer of Light // Light's Guidance =====================================================
 
-struct hammer_of_light_damage_t : public holy_power_consumer_t<paladin_melee_attack_t>
+struct hammer_of_light_data_t
 {
-  hammer_of_light_damage_t( paladin_t* p, util::string_view options_str )
-    : holy_power_consumer_t( "hammer_of_light_damage", p, p->spells.templar.hammer_of_light )
-  {
-    parse_options( options_str );
-    background = true;
-
-    auto hol                = p->spells.templar.hammer_of_light;
-    is_hammer_of_light      = true;
-    attack_power_mod.direct = hol->effectN( 1 ).ap_coeff();
-    aoe                     = 5;
-    base_aoe_multiplier     = hol->effectN( 2 ).ap_coeff() / hol->effectN( 1 ).ap_coeff();
-  }
-  void execute() override
-  {
-    holy_power_consumer_t::execute();
-    p()->trigger_empyrean_hammer(
-        target, as<int>( p()->talents.templar.lights_guidance->effectN( 2 ).base_value() ),
-        timespan_t::from_millis( p()->talents.templar.lights_guidance->effectN( 4 ).base_value() ), true );
-    if ( p()->talents.templar.shake_the_heavens->ok() )
-    {
-      if ( p()->buffs.templar.shake_the_heavens->up() )
-      {
-        // While Shake the Heavens is up, 8 seconds are added to the duration, up to 10.4 seconds (Pandemic limit). If
-        // the current duration is above the Pandemic Limit, it's duration does not change.
-        if ( p()->buffs.templar.shake_the_heavens->remains() <
-             p()->buffs.templar.shake_the_heavens->base_buff_duration * 1.3 )
-          p()->buffs.templar.shake_the_heavens->refresh();
-      }
-      else
-        p()->buffs.templar.shake_the_heavens->execute();
-    }
-    // Since Hammer of Light's damage component is a background action, we need to call reset AA ourselves
-    p()->reset_auto_attacks( 0_ms, player->procs.reset_aa_cast );
-  }
-  void impact( action_state_t* s ) override
-  {
-    holy_power_consumer_t::impact( s );
-    if ( p()->talents.templar.undisputed_ruling->ok() )
-    {
-      if ( p()->talents.greater_judgment->ok() )
-      {
-        td( s->target )->debuff.judgment->trigger();
-      }
-      if ( s->chain_target < 2 )
-      {
-        p()->buffs.templar.undisputed_ruling->execute();
-      }
-    }
-  }
+  double divine_purpose_mult;
 };
 
 struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
+  using state_t = paladin_action_state_t<hammer_of_light_data_t>;
+  struct hammer_of_light_damage_t : public holy_power_consumer_t<paladin_melee_attack_t>
+  {
+    hammer_of_light_damage_t( paladin_t* p, util::string_view options_str )
+      : holy_power_consumer_t( "hammer_of_light_damage", p, p->spells.templar.hammer_of_light )
+    {
+      parse_options( options_str );
+      background = true;
+
+      auto hol                   = p->spells.templar.hammer_of_light;
+      is_hammer_of_light         = true;
+      attack_power_mod.direct    = hol->effectN( 1 ).ap_coeff();
+      aoe                        = 5;
+      base_aoe_multiplier        = hol->effectN( 2 ).ap_coeff() / hol->effectN( 1 ).ap_coeff();
+      doesnt_consume_dp          = true;   // The driver consumes DP
+      affected_by.divine_purpose = false;  // We handle this manually
+      base_execute_time =
+          timespan_t::from_millis( p->spells.templar.hammer_of_light_driver->effectN( 1 ).misc_value1() );
+      dual                       = true;
+    }
+    action_state_t* new_state() override
+    {
+      return new state_t( this, target );
+    }
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      auto da = paladin_melee_attack_t::composite_da_multiplier( s );
+      auto s_ = static_cast<const state_t*>( s );
+      da *= 1.0 + s_->divine_purpose_mult;
+      return da;
+    }
+    void execute() override
+    {
+      snapshot_state( pre_execute_state, amount_type( pre_execute_state ) );
+      holy_power_consumer_t::execute();
+      p()->trigger_empyrean_hammer(
+          target, as<int>( p()->talents.templar.lights_guidance->effectN( 2 ).base_value() ),
+          timespan_t::from_millis( p()->talents.templar.lights_guidance->effectN( 4 ).base_value() ), true );
+      if ( p()->talents.templar.shake_the_heavens->ok() )
+      {
+        if ( p()->buffs.templar.shake_the_heavens->up() )
+        {
+          // While Shake the Heavens is up, 8 seconds are added to the duration, up to 10.4 seconds (Pandemic limit). If
+          // the current duration is above the Pandemic Limit, it's duration does not change.
+          if ( p()->buffs.templar.shake_the_heavens->remains() <
+               p()->buffs.templar.shake_the_heavens->base_buff_duration * 1.3 )
+            p()->buffs.templar.shake_the_heavens->refresh();
+        }
+        else
+          p()->buffs.templar.shake_the_heavens->execute();
+      }
+      // Since Hammer of Light's damage component is a background action, we need to call reset AA ourselves
+      p()->reset_auto_attacks( 0_ms, player->procs.reset_aa_cast );
+    }
+    void impact( action_state_t* s ) override
+    {
+      holy_power_consumer_t::impact( s );
+      if ( p()->talents.templar.undisputed_ruling->ok() )
+      {
+        if ( p()->talents.greater_judgment->ok() )
+        {
+          td( s->target )->debuff.judgment->trigger();
+        }
+        if ( s->chain_target < 2 )
+        {
+          p()->buffs.templar.undisputed_ruling->execute();
+        }
+      }
+    }
+  };
+
   hammer_of_light_damage_t* direct_hammer;
   double prot_cost;
   double ret_cost;
@@ -2166,10 +2189,16 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     resource_current = RESOURCE_HOLY_POWER;
     ret_cost         = data().powerN( 1 ).cost();
     prot_cost        = data().powerN( 2 ).cost();
+    direct_hammer->stats = stats;
     add_child( direct_hammer );
 
-    doesnt_consume_dp = !( p->specialization() == PALADIN_PROTECTION && p->bugs );
+    doesnt_consume_dp = false;
     hol_cost          = cost();
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
   }
 
   double cost() const override
@@ -2198,9 +2227,11 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
    void execute() override
    {
      holy_power_consumer_t<paladin_melee_attack_t>::execute();
-     direct_hammer->target = execute_state->target;
-     direct_hammer->start_action_execute_event(
-         timespan_t::from_millis( p()->spells.templar.hammer_of_light_driver->effectN( 1 ).misc_value1() ) );
+     auto state            = static_cast<state_t*>(direct_hammer->get_state());
+     state->target         = execute_state->target;
+     state->divine_purpose_mult =
+         p()->buffs.divine_purpose->up() ? p()->spells.divine_purpose_buff->effectN( 2 ).percent() : 0.0;
+     direct_hammer->schedule_execute( state );
 
     if ( p()->buffs.templar.hammer_of_light_ready->up() )
     {
