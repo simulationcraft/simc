@@ -5235,12 +5235,13 @@ struct weapon_imbue_t : public shaman_spell_t
     shaman_spell_t::init_finished();
 
     if ( player->items[ slot ].active() &&
-         player->items[ slot ].selected_temporary_enchant() > 0 )
+         player->items[ slot ].selected_temporary_enchant() > 0 &&
+         ( !if_expr || if_expr->evaluate() != 0.0 ) )
     {
-      sim->print_debug( "Player {} has a temporary enchant {} on slot {}, disabling {}",
+      sim->error( "Player {} has a temporary enchant {} on slot {}, disabling {}",
         player->name(),
-        util::slot_type_string( slot ),
         player->items[ slot ].selected_temporary_enchant(),
+        util::slot_type_string( slot ),
         name()
       );
     }
