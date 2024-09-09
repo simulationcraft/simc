@@ -402,6 +402,8 @@ void bubbling_wax( special_effect_t& effect )
 
   // TODO: See if check later if RPPM increases while wearing two. Appears currently not?
   // Currently, this only works if you use the wax on your Main Hand and the offhand does not function.
+  // Remove this if they fix it being Main Hand Only, and see below comment what to do incase of RPPM increase instead
+  // of damage.
   if ( effect.item->slot != SLOT_MAIN_HAND )
     return;
 
