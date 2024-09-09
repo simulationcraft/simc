@@ -1301,6 +1301,8 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
   {
     base_t::impact( s );
 
+    p()->buff.teachings_of_the_monastery->trigger();
+
     // Apply Mark of the Crane
     p()->trigger_mark_of_the_crane( s );
 
