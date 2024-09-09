@@ -2118,6 +2118,9 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       base_aoe_multiplier        = hol->effectN( 2 ).ap_coeff() / hol->effectN( 1 ).ap_coeff();
       doesnt_consume_dp          = true;   // The driver consumes DP
       affected_by.divine_purpose = false;  // We handle this manually
+      base_execute_time =
+          timespan_t::from_millis( p->spells.templar.hammer_of_light_driver->effectN( 1 ).misc_value1() );
+      dual                       = true;
     }
     action_state_t* new_state() override
     {
@@ -2132,6 +2135,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     }
     void execute() override
     {
+      snapshot_state( pre_execute_state, amount_type( pre_execute_state ) );
       holy_power_consumer_t::execute();
       p()->trigger_empyrean_hammer(
           target, as<int>( p()->talents.templar.lights_guidance->effectN( 2 ).base_value() ),
@@ -2188,9 +2192,10 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     resource_current = RESOURCE_HOLY_POWER;
     ret_cost         = data().powerN( 1 ).cost();
     prot_cost        = data().powerN( 2 ).cost();
+    direct_hammer->stats = stats;
     add_child( direct_hammer );
 
-    doesnt_consume_dp = !( p->specialization() == PALADIN_PROTECTION && p->bugs );
+    doesnt_consume_dp = false;
     hol_cost          = cost();
   }
 
@@ -2198,18 +2203,6 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
   {
     return new state_t( this, target );
   }
-
-  void snapshot_state( action_state_t* s, result_amount_type rt ) override
-  {
-    paladin_melee_attack_t::snapshot_state( s, rt );
-
-    auto s_ = static_cast<state_t*>( s );
-
-    // Prot and Ret have different multipliers
-    s_->divine_purpose_mult =
-        p()->buffs.divine_purpose->up() ? p()->spells.divine_purpose_buff->effectN( 2 ).percent() : 0.0;
-  }
-
 
   double cost() const override
   {
@@ -2234,16 +2227,14 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     return paladin_melee_attack_t::target_ready( candidate_target );
    }
 
-   void impact( action_state_t* s ) override
+   void execute() override
    {
-     holy_power_consumer_t<paladin_melee_attack_t>::impact( s );
-     direct_hammer->target = execute_state->target;
-     auto state            = direct_hammer->get_state();
-     state->copy_state( s );
-     direct_hammer->snapshot_state( state, direct_hammer->amount_type( state ) );
-     direct_hammer->target = s->target;
-     direct_hammer->start_action_execute_event(
-         timespan_t::from_millis( p()->spells.templar.hammer_of_light_driver->effectN( 1 ).misc_value1() ), state );
+     holy_power_consumer_t<paladin_melee_attack_t>::execute();
+     auto state            = static_cast<state_t*>(direct_hammer->get_state());
+     state->target         = execute_state->target;
+     state->divine_purpose_mult =
+         p()->buffs.divine_purpose->up() ? p()->spells.divine_purpose_buff->effectN( 2 ).percent() : 0.0;
+     direct_hammer->schedule_execute( state );
 
     if ( p()->buffs.templar.hammer_of_light_ready->up() )
     {
