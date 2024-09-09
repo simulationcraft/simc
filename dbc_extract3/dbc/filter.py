@@ -862,7 +862,8 @@ class ExpectedStatModSet(DataSet):
                     mod_ids.append([e, c[1]])
                     break
             else:
-                if e.id_parent == dungeon_id[0]:
+                # check if it's m+ season for the current expansion
+                if e.id_parent == dungeon_id[0] and e.ref('id_mythic_plus_season').id_expansion == xpac:
                     mod_d_ids.append([e, dungeon_id[1]])
 
         # assume highest mythic plus season id is the current season
