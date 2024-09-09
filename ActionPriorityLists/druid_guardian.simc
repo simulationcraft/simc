@@ -106,9 +106,9 @@ actions.preweave+=/shred,if=!dot.rake.refreshable
 
 
 actions.cat+=/convoke_the_spirits,if=buff.feline_potential.up
-actions.cat+=/rip,if=buff.feline_potential.up&refreshable&target.time_to_die>16
-actions.cat+=/ferocious_bite,if=buff.feline_potential.up&(!dot.rip.refreshable|target.time_to_die<=16)&energy>50
-actions.cat+=/rip,if=!buff.feline_potential.up&variable.use_cat_filler&combo_points<=2&!ticking
+actions.cat+=/rip,if=buff.feline_potential.up&refreshable&target.time_to_die>12
+actions.cat+=/ferocious_bite,if=buff.feline_potential.up&(!dot.rip.refreshable|target.time_to_die<=12)&energy>50
+actions.cat+=/rip,if=!buff.feline_potential.up&variable.use_cat_filler&combo_points+buff.feline_potential_counter.stack<=6&!ticking
 actions.cat+=/ferocious_bite,if=!buff.feline_potential.up&variable.use_cat_filler&combo_points=5&energy>50
 actions.cat+=/mangle,if=!buff.feline_potential.up
 actions.cat+=/shred,if=energy>60
