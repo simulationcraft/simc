@@ -1761,7 +1761,15 @@ public:
     // Free Hammer of Light from Divine Purpose counts as 5 Holy Power spent, Free Hammer of Light from Light's
     // Deliverance counts as 0 Holy Power spent
     if ( isFreeSLDPSpender )
+    {
       num_hopo_spent = is_hammer_of_light_driver ? hol_cost : 3.0;
+      // 2024-09-10 If Hammer of Light is affected by Divine Purpose, it counts as 5 Holy Power spent.
+      if ( p->bugs && p->specialization() == PALADIN_PROTECTION && p->buffs.divine_purpose->up() &&
+           is_hammer_of_light_driver )
+      {
+        num_hopo_spent = 5.0;
+      }
+    }
 
     if ( p->talents.righteous_cause->ok() && p->cooldowns.righteous_cause_icd->up() )
     {
