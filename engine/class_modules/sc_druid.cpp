@@ -6615,6 +6615,8 @@ protected:
   using base_t = ap_spender_t;
 
 public:
+  buff_t* weaver_buff = nullptr;
+  buff_t* cosmos_buff = nullptr;  // TODO: remove in 10.0.5
   timespan_t hail_dur = 0_ms;
 
   ap_spender_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : druid_spell_t( n, p, s, f )
@@ -6640,6 +6642,8 @@ public:
 
   void execute() override
   {
+    assert( weaver_buff && cosmos_buff );
+
     druid_spell_t::execute();
 
     p()->buff.starlord->trigger( this );
@@ -6649,6 +6653,15 @@ public:
 
     if ( p()->eclipse_handler.in_solar() )
       p()->buff.harmony_of_the_heavens_solar->trigger( this );
+
+    if ( weaver_buff->check() )
+      weaver_buff->expire( this );
+    else if ( cosmos_buff->check() )
+      cosmos_buff->expire( this );
+    else if ( p()->buff.touch_the_cosmos->check() )
+      p()->buff.touch_the_cosmos->expire( this );
+    else if ( p()->buff.astral_communion->check() )
+      p()->buff.astral_communion->expire( this );
   }
 };
 
@@ -8120,6 +8133,9 @@ struct starfall_t final : public ap_spender_t
         max_ext = timespan_t::from_seconds( m_data->effectN( 2 ).base_value() );
       }
     }
+
+    weaver_buff = p->buff.starweaver_starfall;
+    cosmos_buff = p->buff.touch_the_cosmos_starfall;
   }
 
   void execute() override
@@ -8131,15 +8147,6 @@ struct starfall_t final : public ap_spender_t
     }
 
     base_t::execute();
-
-    if ( p()->buff.starweaver_starfall->check() )
-      p()->buff.starweaver_starfall->expire( this );
-    else if ( p()->buff.touch_the_cosmos_starfall->check() )
-      p()->buff.touch_the_cosmos_starfall->expire( this );
-    else if ( p()->buff.touch_the_cosmos->check() )
-      p()->buff.touch_the_cosmos->expire( this );
-    else
-      p()->buff.astral_communion->expire( this );
 
     p()->buff.starfall->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
       driver->execute();
@@ -8341,6 +8348,9 @@ struct starsurge_t final : public ap_spender_t
       goldrinn = p->get_secondary_action<goldrinns_fang_t>( "goldrinns_fang" + suf, f );
       add_child( goldrinn );
     }
+
+    weaver_buff = p->buff.starweaver_starsurge;
+    cosmos_buff = p->buff.touch_the_cosmos_starsurge;
   }
 
   void init() override
@@ -8379,13 +8389,6 @@ struct starsurge_t final : public ap_spender_t
   void execute() override
   {
     base_t::execute();
-
-    if ( p()->buff.starweaver_starsurge->check() )
-      p()->buff.starweaver_starsurge->expire( this );
-    else if ( p()->buff.touch_the_cosmos_starsurge->check() )
-      p()->buff.touch_the_cosmos_starsurge->expire( this );
-    else
-      p()->buff.astral_communion->expire( this );
 
     if ( goldrinn && rng().roll( p()->talent.power_of_goldrinn->proc_chance() ) )
       goldrinn->execute_on_target( target );

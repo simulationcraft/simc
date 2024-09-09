@@ -481,6 +481,7 @@ Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
 Max Scaling Level: 80
+Min Scaling Level: 1
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -5252,6 +5253,7 @@ Class            : Evoker
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 80
+Min Scaling Level: 1
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)

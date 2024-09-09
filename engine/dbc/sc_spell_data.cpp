@@ -176,13 +176,15 @@ static unsigned spell_conduit_id( const dbc_t& dbc, const spell_data_t& data ) {
   return 0;
 }
 
-static constexpr std::array<sdata_field_t, 41> _spell_data_fields { {
+static constexpr std::array<sdata_field_t, 43> _spell_data_fields { {
   { "name",              nontype< &spell_data_t::_name > },
   { "id",                nontype< &spell_data_t::_id > },
   { "speed",             nontype< &spell_data_t::_prj_speed > },
   { "delay",             nontype< &spell_data_t::_prj_delay > },
   { "min_duration",      nontype< &spell_data_t::_prj_min_duration > },
   { "max_scaling_level", nontype< &spell_data_t::_max_scaling_level > },
+  { "min_scaling_level", nontype< &spell_data_t::_min_scaling_level > },
+  { "scale_from_ilevel", nontype< &spell_data_t::_scale_from_ilevel > },
   { "level",             nontype< &spell_data_t::_spell_level > },
   { "max_level",         nontype< &spell_data_t::_max_level > },
   { "min_range",         nontype< &spell_data_t::_min_range > },

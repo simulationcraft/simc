@@ -392,6 +392,43 @@ void oil_of_deep_toxins( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Bubbling Wax
+void bubbling_wax( special_effect_t& effect )
+{
+  // This is Rogue Only.
+  if ( effect.player->type != ROGUE )
+    return;
+
+  // TODO: See if check later if RPPM increases while wearing two. Appears currently not?
+  // Currently, this only works if you use the wax on your Main Hand and the offhand does not function.
+  // Remove this if they fix it being Main Hand Only, and see below comment what to do incase of RPPM increase instead
+  // of damage.
+  if ( effect.item->slot != SLOT_MAIN_HAND && effect.player->bugs )
+    return;
+
+  auto wax_action = effect.player->find_action( "bubbling_wax" );
+
+  auto damage_amount = effect.driver()->effectN( 1 ).average( effect );
+
+  if ( !wax_action )
+  {
+    auto damage_id      = effect.driver()->effectN( 1 ).trigger_spell_id();
+    auto damage         = create_proc_action<generic_aoe_proc_t>( "bubbling_wax", effect, damage_id, true );
+    damage->base_dd_min = damage->base_dd_max = damage_amount;
+    effect.execute_action                     = damage;
+    new dbc_proc_callback_t( effect.player, effect );
+  }
+  else
+  {
+    // This would increase the damage if you had two, but due to the slot main_hand check above this will never occur
+    // unless bugs=0 is set.
+    // If this is ever fixed and RPPM increases with two instead, remove the if() else() block and initialise two procs,
+    // one for each hand using the main code from the above if.
+    wax_action->base_dd_min += damage_amount;
+    wax_action->base_dd_max += damage_amount;
+  }
+}
 }  // namespace consumables
 
 namespace enchants
@@ -4741,6 +4778,7 @@ void register_special_effects()
 
   // Oils
   register_special_effect( { 451904, 451909, 451912 }, consumables::oil_of_deep_toxins );
+  register_special_effect( 448000, consumables::bubbling_wax );
 
   // Enchants & gems
   register_special_effect( { 448710, 448714, 448716 }, enchants::authority_of_radiant_power );

@@ -2075,22 +2075,34 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell->level() > 0 )
   {
-    s << "Spell Level      : " << (int)spell->level();
+    s << "Spell Level      : " << spell->level();
     if ( spell->max_level() > 0 )
-      s << " (max " << (int)spell->max_level() << ")";
+      s << " (max " << spell->max_level() << ")";
 
     s << std::endl;
   }
 
   if ( spell->max_scaling_level() > 0 )
   {
-    s << "Max Scaling Level: " << (int)spell->max_scaling_level();
+    s << "Max Scaling Level: " << spell->max_scaling_level();
+    s << std::endl;
+  }
+
+  if ( spell->min_scaling_level() > 0 )
+  {
+    s << "Min Scaling Level: " << spell->min_scaling_level();
+    s << std::endl;
+  }
+
+  if ( spell->scale_from_ilevel() )
+  {
+    s << "Scale from ilevel: " << spell->scale_from_ilevel();
     s << std::endl;
   }
 
   if ( spell->req_max_level() > 0 )
   {
-    s << "Req. Max Level   : " << (int)spell->req_max_level();
+    s << "Req. Max Level   : " << spell->req_max_level();
     s << std::endl;
   }
 

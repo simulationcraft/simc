@@ -7817,6 +7817,7 @@ Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
 Max Scaling Level: 80
+Min Scaling Level: 1
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 

@@ -3977,6 +3977,9 @@ struct between_the_eyes_t : public rogue_attack_t
     }
   }
 
+  bool procs_poison() const override
+  { return true; }
+
   bool procs_blade_flurry() const override
   { return true; }
 };
@@ -5108,6 +5111,9 @@ struct pistol_shot_t : public rogue_attack_t
   }
 
   bool procs_fatal_flourish() const override
+  { return true; }
+
+  bool procs_poison() const override
   { return true; }
 
   bool procs_blade_flurry() const override
@@ -7045,6 +7051,9 @@ struct fatebound_coin_tails_t : public rogue_attack_t
   }
 
   bool procs_blade_flurry() const override
+  { return true; }
+
+  bool procs_poison() const override
   { return true; }
 };
 
@@ -12256,6 +12265,26 @@ void rogue_t::init_items()
 void rogue_t::init_special_effects()
 {
   player_t::init_special_effects();
+  
+  if ( unique_gear::find_special_effect( this, 448000 ) )
+  {
+    std::vector<unsigned> poison_ids = {
+      spell.instant_poison->effectN( 1 ).trigger()->id(),
+      spell.crippling_poison->effectN( 1 ).trigger()->id(),
+      spell.wound_poison->effectN( 1 ).trigger()->id(),
+      talent.rogue.atrophic_poison->effectN( 1 ).trigger()->id(),
+      talent.rogue.numbing_poison->effectN( 1 ).trigger()->id(),
+      talent.assassination.deadly_poison->effectN( 1 ).trigger()->id(),
+      talent.assassination.amplifying_poison->effectN( 3 ).trigger()->id()
+    };
+    range::erase_remove( poison_ids, 0 );
+
+    callbacks.register_callback_trigger_function(
+      448000, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ poison_ids ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
+        return !a->special || range::contains( poison_ids, a->data().id() );
+    } );
+  }
 
   if ( weapon_data[ WEAPON_MAIN_HAND ].item_data[ WEAPON_SECONDARY ] )
   {

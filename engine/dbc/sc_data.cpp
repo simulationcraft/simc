@@ -112,6 +112,8 @@ static constexpr auto spell_data_fields = std::make_tuple(
   data_field( "max_level",         &spell_data_t::_max_level ),
   data_field( "req_max_level",     &spell_data_t::_req_max_level ),
   data_field( "max_scaling_level", &spell_data_t::_max_scaling_level ),
+  data_field( "min_scaling_level", &spell_data_t::_min_scaling_level ),
+  data_field( "scale_from_ilevel", &spell_data_t::_scale_from_ilevel ),
   data_field( "min_range",         &spell_data_t::_min_range ),
   data_field( "max_range",         &spell_data_t::_max_range ),
   data_field( "cooldown",          &spell_data_t::_cooldown ),

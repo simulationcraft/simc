@@ -1519,6 +1519,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : Magic
 Max Scaling Level: 100
+Min Scaling Level: 1
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Labels           : 16: Class Spells
@@ -8100,6 +8101,7 @@ Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
 Max Scaling Level: 80
+Min Scaling Level: 1
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 

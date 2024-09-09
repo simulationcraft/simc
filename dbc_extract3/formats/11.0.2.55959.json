@@ -225,7 +225,7 @@
     "parent": "ContentTuning",
     "fields": [
       { "data_type": "i", "field": "id_expected_stat_mod" },
-      { "data_type": "i", "field": "id_mythic_plus_season" },
+      { "data_type": "i", "field": "id_mythic_plus_season", "ref": "MythicPlusSeason" },
       { "data_type": "i", "field": "unk_1" }
     ]
   },
@@ -1704,7 +1704,7 @@
       { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
       { "data_type": "I", "field": "min_scaling_level" },
       { "data_type": "I", "field": "max_scaling_level" },
-      { "data_type": "H", "field": "max_scaling_ilevel" }
+      { "data_type": "H", "field": "scale_from_ilevel" }
     ]
   },
   "SpellShapeshift": {
