@@ -9540,7 +9540,7 @@ std::string warrior_t::default_temporary_enchant() const
                               : "disabled";
 
   std::string protection_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:algari_mana_oil_3"
+                              ? "main_hand:ironclaw_whetstone_3"
                               : "disabled";
   switch ( specialization() )
   {

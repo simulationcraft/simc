@@ -12633,7 +12633,17 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
         return runeforge_expr;
     }
 
+
     throw std::invalid_argument( fmt::format( "Unknown death_knight expression '{}'", splits[ 1 ] ) );
+  }
+
+  if ( util::str_compare_ci( splits[ 0 ], "drw" ) && splits.size() > 1 )
+  {
+    if ( util::str_compare_ci( splits[ 1 ], "bp_ticking" ) && splits.size() == 2 )
+      return make_fn_expr( "dancing_rune_weapon_blood_plague_ticking_expression", [ this ]() {
+        return pets.dancing_rune_weapon_pet.active_pet() != nullptr &&
+               pets.dancing_rune_weapon_pet.active_pet()->target->get_dot( "Blood Plague", pets.dancing_rune_weapon_pet.active_pet() )->is_ticking();
+      } );
   }
 
   // Death and Decay/Defile expressions
@@ -13845,7 +13855,7 @@ void death_knight_t::create_buffs()
             ->set_max_stack( spell.bone_shield->max_stacks() + as<int>( talent.blood.reinforced_bones.ok() ? talent.blood.reinforced_bones->effectN( 2 ).base_value() : 0 ) );  // TODO: Remove this if they fix reinforced bones effect2 to be APPLY_AURA instead of E_APPLY_AREA_AURA_PARTY
 
     buffs.bloodied_blade_stacks = make_buff( this, "bloodied_blade_stacks", spell.bloodied_blade_stacks_buff )
-                                      ->set_default_value( spell.bloodied_blade_stacks_buff->effectN( 1 ).base_value() / 10 )
+                                      ->set_default_value( spell.bloodied_blade_stacks_buff->effectN( 1 ).percent() / 10 )
                                       ->add_invalidate( CACHE_STRENGTH )
                                       ->set_cooldown( spell.bloodied_blade_stacks_buff->internal_cooldown() );
                                       // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH ); // TODO bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
@@ -14546,7 +14556,7 @@ double death_knight_t::composite_attribute( attribute_e attr ) const
     {
       case DEATH_KNIGHT_BLOOD:
         if ( buffs.bloodied_blade_stacks->check() )
-          a += base.stats.attribute[ attr ] * buffs.bloodied_blade_stacks->check_value();
+          a += base.stats.attribute[ attr ] * buffs.bloodied_blade_stacks->check_stack_value();
         if ( buffs.bloodied_blade_final->check() )
           a += base.stats.attribute[ attr ] * buffs.bloodied_blade_final->check_value();
         if ( buffs.visceral_strength->check() )
@@ -15140,58 +15150,50 @@ struct death_knight_module_t : public module_t
     unique_gear::register_special_effect( 326913, runeforge::hysteria );
   }
   
-  /*void register_hotfixes() const override
+  void register_hotfixes() const override
   {
-    hotfix::register_effect( "Death Knight", "2024-09-30", "Obliterate Main-Hand nerfed 6%", 331344, hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.83818 )
-        .verification_value( 0.89168 );
-
-    hotfix::register_effect( "Death Knight", "2024-09-30", "Obliterate Off-Hand nerfed 6%", 60372, hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.83818 )
-        .verification_value( 0.89168 );
-
-    hotfix::register_effect( "Death Knight", "2024-09-30", "Obliterate Two-Hand nerfed 6%", 815754, hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 1.2408 )
-        .verification_value( 1.32 );
-
-    hotfix::register_effect( "Death Knight", "2024-09-30", "Frost Strike Main-Hand nerfed 6%", 331347, hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.69447 )
-        .verification_value( 0.74114 );
-
-    hotfix::register_effect( "Death Knight", "2024-09-30", "Frost Strike Off-Hand nerfed 6%", 60368, hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.69447 )
-        .verification_value( 0.74114 );
-
-    hotfix::register_effect( "Death Knight", "2024-09-30", "Frost Strike Two-Hand nerfed 6%", 815761, hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( .99046 )
-        .verification_value( 1.05386 );
-
-    hotfix::register_effect( "Death Knight", "2024-09-30", "Glacial Advance nerfed 10%", 287633,
+    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Commander Nerfed by 50%", 1161082,
                              hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
+        .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.50742 )
-        .verification_value( 0.5638 );
+        .modifier( 1 )
+        .verification_value( 2 );
 
-    hotfix::register_effect( "Death Knight", "2024-09-30", "Icy Death Torrent nerfed 10%", 1132889,
+    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Commander Buff Nerfed by 50%", 1155631,
                              hotfix::HOTFIX_FLAG_LIVE )
-        .field( "ap_coefficient" )
+        .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 1.224 )
-        .verification_value( 1.36 );    
-  }*/
+        .modifier( 1 )
+        .verification_value( 2 );
+
+    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Specilization Aura Direct Damage buffed by 5%", 179690,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( -5 )
+        .verification_value( -10 );
+
+    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Specilization Periodic Aura buffed by 5%", 191170,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( -5 )
+        .verification_value( -10 );
+
+    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Specilization Pet Aura buffed by 5%", 191171,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( -5 )
+        .verification_value( -10 );
+
+    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Specilization Guardian Aura buffed by 5%", 1032341,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( -5 )
+        .verification_value( -10 );
+  }
 
   void init( player_t* ) const override
   {

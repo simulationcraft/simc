@@ -374,6 +374,9 @@ struct spelleffect_data_t
   double min( const special_effect_t& effect ) const;
   double max( const special_effect_t& effect ) const;
 
+  double average_no_item( const player_t* p, unsigned level ) const;
+  double delta_no_item( const player_t* p, unsigned level ) const;
+  
   bool override_field( util::string_view field, double value );
   double get_field( util::string_view field ) const;
 
@@ -420,6 +423,8 @@ struct spell_data_t
   uint64_t    _race_mask;          // Racial mask for the spell
   unsigned    _class_mask;         // Class mask for spell
   int         _max_scaling_level;  // Max scaling level(?), 0 == no restrictions, otherwise min( player_level, max_scaling_level )
+  int         _min_scaling_level;
+  int         _scale_from_ilevel;  // Forces ilevel scaling at this ilevel, overrides any spell attributes
   // SpellLevels.dbc
   unsigned    _spell_level;        // Spell learned on level. NOTE: Only accurate for "class abilities"
   unsigned    _max_level;          // Maximum level for scaling
@@ -696,6 +701,12 @@ struct spell_data_t
 
   unsigned max_scaling_level() const
   { return _max_scaling_level; }
+
+  unsigned min_scaling_level() const
+  { return _min_scaling_level; }
+
+  unsigned scale_from_ilevel() const
+  { return _scale_from_ilevel; }
 
   timespan_t cast_time() const
   { return timespan_t::from_millis( _cast_time ); }

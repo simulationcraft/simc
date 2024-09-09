@@ -364,9 +364,10 @@
       { "data_type": "H", "field": "flags" },
       { "data_type": "B", "field": "item_context" },
       { "data_type": "B", "field": "id_toggle_difficulty" },
-      { "data_type": "H", "field": "unk_11" },
-      { "data_type": "H", "field": "unk_12" },
-      { "data_type": "H", "field": "unk_13" }
+      { "data_type": "I", "field": "unk_11" },
+      { "data_type": "I", "field": "unk_12" },
+      { "data_type": "I", "field": "unk_13" },
+      { "data_type": "i", "field": "unk_14" }
     ]
   },
   "DisplaySeason": {
@@ -1704,7 +1705,7 @@
       { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
       { "data_type": "I", "field": "min_scaling_level" },
       { "data_type": "I", "field": "max_scaling_level" },
-      { "data_type": "H", "field": "max_scaling_ilevel" }
+      { "data_type": "H", "field": "scale_from_ilevel" }
     ]
   },
   "SpellShapeshift": {

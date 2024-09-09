@@ -1,79 +1,79 @@
-# warrior="TWW1_Warrior_Arms"
-# level=70
-# race=orc
-# spec=arms
-# role=attack
-# position=back
-# talents=2133222
+warrior="TWW1_Warrior_Arms"
+level=80
+race=mechagnome
+spec=arms
+role=attack
+position=back
+talents=CcEAAAAAAAAAAAAAAAAAAAAAAAAzYmZMzMzsZZZZmBAAAADmGmZYbGzAzYMzMYmhBGmhBAAAAAAAPwYWmZmBQgxy2ALgBMDTIDwG
 
-# head=gaze_of_the_infinite_infantry,id=188942,bonus_id=7187/1498
-# neck=worldkiller_iris,id=189859,bonus_id=7187/1524
-# shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524
-# chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
-# wrists=shadowghast_armguards,id=171419,bonus_id=6648/6649/7451/8130/1588,gem_id=173127
-# hands=grasps_of_the_infinite_infantry,id=188937,bonus_id=7187/1498,enchant=eternal_strength
-# waist=shadowghast_waistguard,id=171418,bonus_id=6648/6649/7451/6962/1588,gem_id=173127
-# legs=legguards_of_the_ultimate_threat,id=189858,bonus_id=7187/1524
-# feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=7187/1524
-# finger1=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524,enchant=tenet_of_critical_strike
-# finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524,enchant=tenet_of_critical_strike
-# trinket1=scars_of_fraternal_strife,id=188253,bonus_id=7187/1524
-# trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
-# main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=sinful_revelation
+head=warsculptors_barbute,id=211984,bonus_id=10878,gem_id=213743,ilevel=639
+neck=sureki_zealots_insignia,id=225577,bonus_id=10879,gem_id=213473/213485,,ilevel=639
+shoulders=warsculptors_horned_spaulders,id=211982,ilevel=639
+back=consecrated_cloak,id=222817,bonus_id=10222/8960/11304,ilevel=636,enchant=chant_of_winged_grace_3,crafted_stats=32/36
+chest=warsculptors_furred_plastron,id=211987,ilevel=639,enchant=crystalline_radiance_3
+wrists=everforged_vambraces,id=222435,bonus_id=10222/1087/11304/8960,ilevel=636,gem_id=213494,enchant=chant_of_armored_avoidance_3,crafted_stats=32/36
+hands=black_blood_injectors,id=212418,ilevel=639
+waist=crystalfissure_girdle,id=221079,bonus_id=10878,ilevel=639,gem_id=213482
+legs=warsculptors_cuisses,id=211983,ilevel=639,enchant=defenders_armor_kit_3
+feet=boots_of_the_black_bulwark,id=225590,ilevel=639,enchant=defenders_march_3
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,ilevel=639,gem_id=213482/213482,enchant=radiant_haste_3
+finger2=band_of_the_ancient_dredger,id=159461,bonus_id=10879,ilevel=639,gem_id=213458/213479,enchant=radiant_haste_3
+trinket1=mad_queens_mandate,id=212454,ilevel=639
+trinket2=treacherous_transmitter,id=221023,ilevel=639
+main_hand=surgical_heartstopper,id=221184,ilevel=639,enchant=authority_of_the_depths_3
 
-# save=TWW1_Warrior_Arms.simc
+save=TWW1_Warrior_Arms.simc
 
-# warrior="TWW1_Warrior_Fury"
-# level=70
-# race=mechagnome
-# spec=fury
-# role=attack
-# position=back
-# talents=2122322
+warrior="TWW1_Warrior_Fury"
+level=80
+race=mechagnome
+spec=fury
+role=attack
+position=back
+talents=CgEAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAgRDMzAMMDjBmFYYGjZmHYYmZbbMmZmFMzMzMjZMbDPAjxAAAAhZssNwCYCmhJwYbYD
 
-# head=gaze_of_the_infinite_infantry,id=188942,bonus_id=7187/1498
-# neck=worldkiller_iris,id=189859,bonus_id=7187/1524
-# shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
-# back=grimveiled_cape,id=173242,bonus_id=6648/6649/6964/7451/1588
-# chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
-# wrists=veiled_auctioneers_vambraces,id=189825,bonus_id=7187/1524
-# hands=handguards_of_hidden_realms,id=189850,bonus_id=7187/1524,enchant=eternal_strength
-# waist=shadowghast_waistguard,id=171418,bonus_id=6648/6649/7451/8130/1588,gem_id=173128
-# legs=legplates_of_the_infinite_infantry,id=188940,bonus_id=7187/1498
-# feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=7187/1524
-# finger1=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524,enchant=tenet_of_haste
-# finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524,enchant=tenet_of_haste
-# trinket1=scars_of_fraternal_strife,id=188253,bonus_id=7187/1524
-# trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
-# main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=sinful_revelation
-# off_hand=riftscarred_solcrusher,id=189817,bonus_id=7187/1524,enchant=celestial_guidance
+head=darkfrost_helmet,id=178777,bonus_id=10878,ilevel=639,gem_id=213743
+neck=emergency_stop_keychain,id=221077,bonus_id=10879,ilevel=639,gem_id=213482/213473
+shoulders=warsculptors_horned_spaulders,id=211982,ilevel=639
+back=anvilhide_cape,id=221088,ilevel=639,enchant=chant_of_winged_grace_3
+chest=warsculptors_furred_plastron,id=211987,ilevel=639,enchant=crystalline_radiance_3
+wrists=everforged_vambraces,id=222435,bonus_id=10222/10878/11109/8960,ilevel=636,gem_id=213482,enchant=chant_of_armored_avoidance_3,crafted_stats=49/40
+hands=warsculptors_crushers,id=211985,ilevel=639
+waist=girdle_of_somber_ploys,id=221133,bonus_id=10878,ilevel=639,gem_id=213458
+legs=warsculptors_cuisses,id=211983,ilevel=639,enchant=defenders_armor_kit_3
+feet=boots_of_the_black_bulwark,id=225590,ilevel=639,enchant=defenders_march_3
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,ilevel=639,gem_id=213494/213494,enchant=radiant_mastery_3
+finger2=writhing_ringworm,id=225576,bonus_id=10879,ilevel=639,gem_id=213494/213494,enchant=radiant_mastery_3
+trinket1=treacherous_transmitter,id=221023,ilevel=639
+trinket2=arakara_sacbrood,id=219314,ilevel=639
+main_hand=wild_hammer,id=133298,ilevel=639,enchant=authority_of_the_depths_3
+off_hand=charged_claymore,id=222447,bonus_id=10222/11300/8960,ilevel=636,enchant=authority_of_the_depths_3,crafted_stats=49/40
 
-# save=TWW1_Warrior_Fury.simc
+save=TWW1_Warrior_Fury.simc
 
-# warrior="TWW1_Warrior_Protection"
-# level=70
-# race=draenei
-# spec=protection
-# role=tank
-# position=front
-# talents=3122011
+warrior="TWW1_Warrior_Protection"
+level=80
+race=mechagnome
+spec=protection
+role=tank
+position=front
+talents=CkEAmidFBOBFf5oKuZ7r/WeW7YgBAAAgZmZMzMDmtZWmZmZbzMGGzAzMDglBG2YmZgZmHYYAAAAAAAzMAALbbAGGssNjZZZbYmZYGWmNjNsB
 
-# head=shadowghast_helm,id=171415,bonus_id=6647/6649/6716/8130/1588/6935,gem_id=173129
-# neck=worldkiller_iris,id=189859,bonus_id=4800/4786/1808/1524,gem_id=173128
-# shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524
-# chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
-# wrists=vambraces_of_the_infinite_infantry,id=188943,bonus_id=1498/7187/6935,gem_id=173128
-# hands=grasps_of_the_infinite_infantry,id=188937,bonus_id=1505/7187,enchant=eternal_strength
-# waist=girdle_of_the_soulflayer,id=179326,bonus_id=1592/6536/6646/6935,gem_id=173128
-# legs=legplates_of_the_infinite_infantry,id=188940,bonus_id=7187/1505
-# feet=shadowghast_sabatons,id=171413,bonus_id=6647/6649/6716/6969/1588
-# finger1=bloodoath_signet,id=178871,bonus_id=1592/6536/6646/6935,gem_id=173128,enchant=tenet_of_critical_strike
-# finger2=ritual_commanders_ring,id=178781,bonus_id=3536/4786/1592/6935,gem_id=173128,enchant=tenet_of_critical_strike
-# trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
-# trinket2=ticking_sack_of_terror,id=185844,bonus_id=1595/6536/6646
-# main_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=celestial_guidance
-# off_hand=ruined_crest_of_lordaeron,id=189845,bonus_id=7187/1524
+head=warsculptors_barbute,id=211984,bonus_id=10878,ilevel=639,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,bonus_id=10879,ilevel=639,gem_id=213479/213479
+shoulder=vile_butchers_pauldrons,id=178749,bonus_id=1538/10870/4786,ilevel=639
+back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant=chant_of_winged_grace_3
+chest=warsculptors_furred_plastron,id=211987,ilevel=639,enchant=crystalline_radiance_3
+wrists=everforged_vambraces,id=222435,bonus_id=10222/10878/11304,ilevel=636,gem_id=213479,crafted_stats=32/36
+hands=warsculptors_crushers,id=211985,,ilevel=639
+waist=crystalfissure_girdle,id=221079,bonus_id=1672/10870/1808,gem_id=213470,ilevel=639
+legs=warsculptors_cuisses,id=211983,ilevel=639,enchant=defenders_armor_kit_3
+feet=everforged_sabatons,id=222429,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960,ilevel=636,crafted_stats=32/36,enchant=defenders_march_3
+finger1=band_of_the_ancient_dredger,id=159461,bonus_id=10047/10299/8781,ilevel=639,gem_id=213479/213455,enchant=radiant_haste_3
+finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,ilevel=639,gem_id=213479/213479,enchant=radiant_haste_3
+trinket1=arakara_sacbrood,id=219314,ilevel=639
+trinket2=spare_meat_hook,id=178751,ilevel=639
+main_hand=duelists_dancing_steel,id=212392,ilevel=639,enchant=authority_of_the_depths_3
+off_hand=crest_of_the_caustic_despot,id=225579,ilevel=639
 
-# save=TWW1_Warrior_Protection.simc
+save=TWW1_Warrior_Protection.simc

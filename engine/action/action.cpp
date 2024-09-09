@@ -2614,13 +2614,13 @@ void action_t::init()
   if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) ||
        data().flags( spell_attribute::SX_DISABLE_PLAYER_HEALING_MULT ) )
   {
-    snapshot_flags &= ~( STATE_VERSATILITY | STATE_MUL_PLAYER_DAM );
+    snapshot_flags &= ~( STATE_VERSATILITY | STATE_MUL_PLAYER_DAM | STATE_MUL_PET );
   }
 
   if ( data().flags( spell_attribute::SX_DISABLE_TARGET_MULT ) )
   {
-    snapshot_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR );
-    update_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR );
+    snapshot_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR | STATE_TGT_MUL_PET );
+    update_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR | STATE_TGT_MUL_PET );
   }
 
   // TODO: accomodate negative mults such as damage reduction
@@ -5289,7 +5289,7 @@ void action_t::html_customsection( report::sc_html_stream& os )
   }
 }
 
-void action_t::apply_affecting_aura( const spell_data_t* spell )
+void action_t::apply_affecting_aura( const spell_data_t* spell, const spell_data_t* modifier )
 {
   if ( !spell->ok() )
   {
@@ -5300,12 +5300,77 @@ void action_t::apply_affecting_aura( const spell_data_t* spell )
 
   for ( const spelleffect_data_t& effect : spell->effects() )
   {
-    apply_affecting_effect( effect );
+    const spelleffect_data_t* mod = nullptr;
+
+    if ( modifier && modifier->ok() )
+    {
+      for ( const auto& m_eff : modifier->effects() )
+      {
+        if ( m_eff.type() != E_APPLY_AURA )
+          continue;
+
+        switch ( m_eff.subtype() )
+        {
+          case A_ADD_FLAT_MODIFIER:
+          case A_ADD_PCT_MODIFIER:
+            if ( spell->affected_by( m_eff ) )
+              break;
+            else
+              continue;
+          case A_ADD_FLAT_LABEL_MODIFIER:
+          case A_ADD_PCT_LABEL_MODIFIER:
+            if ( spell->affected_by_label( m_eff ) )
+              break;
+            else
+              continue;
+          default:
+            continue;
+        }
+
+        switch ( m_eff.property_type() )
+        {
+          case P_EFFECT_1: if ( effect.index() == 0 ) break;
+          case P_EFFECT_2: if ( effect.index() == 1 ) break;
+          case P_EFFECT_3: if ( effect.index() == 2 ) break;
+          case P_EFFECT_4: if ( effect.index() == 3 ) break;
+          case P_EFFECT_5: if ( effect.index() == 4 ) break;
+          default:         continue;
+        }
+
+        mod = &m_eff;
+        break;
+      }
+    }
+
+    apply_affecting_effect( effect, mod );
   }
 }
 
-void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
+void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const spelleffect_data_t* modifier )
 {
+  struct modified_effect_value_t
+  {
+    const spelleffect_data_t& effect;
+    double value;
+
+    modified_effect_value_t( const spelleffect_data_t& eff ) : effect( eff ), value( eff.base_value() ) {}
+
+    double base_value() const
+    { return value; }
+
+    double percent() const
+    { return value * ( 1 / 100.0 ); }
+
+    timespan_t time_value() const
+    { return timespan_t::from_millis( value ); }
+
+    double resource( resource_e type ) const
+    { return base_value() * effect.resource_multiplier( type ); }
+
+    property_type_t property_type() const
+    { return effect.property_type(); }
+  };
+
   if ( !effect.ok() || effect.type() != E_APPLY_AURA )
     return;
 
@@ -5329,7 +5394,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
   }
 
   // Applies "Spell Effect N" auras if they directly affect damage auras
-  auto apply_effect_n_multiplier = [ &value_, this ]( const spelleffect_data_t& effect, unsigned n ) {
+  auto apply_effect_n_multiplier = [ &value_, this ]( const modified_effect_value_t& effect, unsigned n ) {
     if ( is_direct_damage_effect( data().effectN( n ) ) )
     {
       base_dd_multiplier *= 1 + effect.percent();
@@ -5345,7 +5410,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
   };
 
   // Applies "Flat Modifier" and "Flat Modifier w/ Label" auras
-  auto apply_flat_modifier = [ &value_, this ]( const spelleffect_data_t& effect ) {
+  auto apply_flat_modifier = [ &value_, this ]( const modified_effect_value_t& effect ) {
     switch ( effect.property_type() )
     {
       case P_DURATION:
@@ -5483,7 +5548,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
   };
 
   // Applies "Percent Modifier" and "Percent Modifier w/ Label" auras
-  auto apply_percent_modifier = [ &value_, this ]( const spelleffect_data_t& effect ) {
+  auto apply_percent_modifier = [ &value_, this ]( const modified_effect_value_t& effect ) {
     switch ( effect.property_type() )
     {
       case P_GENERIC:
@@ -5609,6 +5674,15 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     }
   };
 
+  auto m_effect = modified_effect_value_t( effect );
+  if ( modifier && modifier->ok() )
+  {
+    if ( modifier->subtype() == A_ADD_FLAT_MODIFIER || modifier->subtype() == A_ADD_FLAT_LABEL_MODIFIER )
+      m_effect.value += modifier->base_value();
+    else if ( modifier->subtype() == A_ADD_PCT_MODIFIER || modifier->subtype() == A_ADD_PCT_LABEL_MODIFIER)
+      m_effect.value *= 1 + modifier->percent();
+  }
+
   // Standard Affected-by Auras
   if ( data().affected_by( effect ) )
   {
@@ -5632,11 +5706,11 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case A_ADD_FLAT_MODIFIER:
-        apply_flat_modifier( effect );
+        apply_flat_modifier( m_effect );
         break;
 
       case A_ADD_PCT_MODIFIER:
-        apply_percent_modifier( effect );
+        apply_percent_modifier( m_effect );
         break;
 
       default:
@@ -5649,15 +5723,15 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     switch ( effect.subtype() )
     {
       case A_ADD_FLAT_LABEL_MODIFIER:
-        apply_flat_modifier( effect );
+        apply_flat_modifier( m_effect );
         break;
 
       case A_ADD_PCT_LABEL_MODIFIER:
-        apply_percent_modifier( effect );
+        apply_percent_modifier( m_effect );
         switch ( effect.property_type() )
         {
           case P_EFFECT_1:
-            apply_effect_n_multiplier( effect, 1 );
+            apply_effect_n_multiplier( m_effect, 1 );
             break;
 
           default:
@@ -5679,30 +5753,30 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         {
           if ( data().charge_cooldown() > 0_ms )
           {
-            internal_cooldown->duration += effect.time_value();
+            internal_cooldown->duration += m_effect.time_value();
             if ( internal_cooldown->duration < timespan_t::zero() )
               internal_cooldown->duration = timespan_t::zero();
             sim->print_debug( "{} internal cooldown duration modified by {} to {} (due to being a charge cooldown)",
-                              *this, effect.time_value(), internal_cooldown->duration );
+                              *this, m_effect.time_value(), internal_cooldown->duration );
           }
           else
           {
-            cooldown->duration += effect.time_value();
+            cooldown->duration += m_effect.time_value();
             if ( cooldown->duration < timespan_t::zero() )
               cooldown->duration = timespan_t::zero();
-            sim->print_debug( "{} cooldown duration modified by {} to {}", *this, effect.time_value(),
+            sim->print_debug( "{} cooldown duration modified by {} to {}", *this, m_effect.time_value(),
                               cooldown->duration );
           }
-          value_ = effect.base_value();
+          value_ = m_effect.base_value();
         }
         break;
 
       case A_MOD_MAX_CHARGES:
         if ( cooldown->action == this && data().charge_cooldown() > 0_ms )
         {
-          cooldown->charges += as<int>( effect.base_value() );
-          sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( effect.base_value() ) );
-          value_ = effect.base_value();
+          cooldown->charges += as<int>( m_effect.base_value() );
+          sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( m_effect.base_value() ) );
+          value_ = m_effect.base_value();
         }
         break;
 
@@ -5718,29 +5792,29 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
           if ( data().charge_cooldown() <= 0_ms )
           {
             sim->print_debug( "{} cooldown recharge time modifier ({}) ignored due to not being a charge cooldown",
-                              *this, effect.time_value() );
+                              *this, m_effect.time_value() );
           }
           else
           {
-            cooldown->duration += effect.time_value();
+            cooldown->duration += m_effect.time_value();
             if ( cooldown->duration < timespan_t::zero() )
               cooldown->duration = timespan_t::zero();
-            sim->print_debug( "{} cooldown recharge time modified by {}", *this, effect.time_value() );
+            sim->print_debug( "{} cooldown recharge time modified by {}", *this, m_effect.time_value() );
           }
-          value_ = effect.base_value();
+          value_ = m_effect.base_value();
         }
         break;
 
       case A_MOD_RECHARGE_TIME_PCT_CATEGORY:
         if ( data().charge_cooldown() > 0_ms )
         {
-          base_recharge_multiplier *= 1 + effect.percent();
+          base_recharge_multiplier *= 1 + m_effect.percent();
           if ( base_recharge_multiplier <= 0 )
           {
             cooldown->duration = timespan_t::zero();
           }
-          sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
-          value_ = effect.percent();
+          sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, m_effect.base_value() );
+          value_ = m_effect.percent();
         }
         break;
 

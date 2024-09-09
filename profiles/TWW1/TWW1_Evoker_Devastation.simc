@@ -63,7 +63,7 @@ actions+=/call_action_list,name=trinkets
 actions+=/run_action_list,name=aoe,if=active_enemies>=3
 actions+=/run_action_list,name=st
 
-# AOE action list; This is kind of a mess again and should prolly be rewritten completely Open with star before DR to save a global and start with a free EB
+# AOE action list; Open with star before DR to save a global and start with a free EB
 actions.aoe=shattering_star,target_if=max:target.health.pct,if=cooldown.dragonrage.up&talent.arcane_vigor|talent.eternitys_span&active_enemies<=3
 actions.aoe+=/hover,use_off_gcd=1,if=raid_event.movement.in<6&!buff.hover.up&gcd.remains>=0.5&(buff.mass_disintegrate_stacks.up&talent.mass_disintegrate|active_enemies<=4)
 # Spend firestorm procs ASAP
@@ -74,27 +74,27 @@ actions.aoe+=/firestorm,if=talent.feed_the_flames
 actions.aoe+=/call_action_list,name=fb,if=talent.dragonrage&cooldown.dragonrage.up&talent.iridescence
 actions.aoe+=/deep_breath,if=talent.maneuverability&talent.melt_armor
 actions.aoe+=/dragonrage,if=target.time_to_die>=32|fight_remains<30
-# Use tip to get that sweet aggro
-actions.aoe+=/tip_the_scales,if=buff.dragonrage.up&(active_enemies<=3+3*talent.eternitys_span|!cooldown.fire_breath.up)
-# Cast Fire Breath - stagger for swell/blazing shards outside DR DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s
+# Tip ES at appropiate target count or when playing Flameshaper otherwise Tip FB
+actions.aoe+=/tip_the_scales,if=buff.dragonrage.up&((active_enemies<=3+3*talent.eternitys_span&!talent.engulf)|!cooldown.fire_breath.up)
+# Cast Fire Breath DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s
 actions.aoe+=/call_action_list,name=fb,if=(!talent.dragonrage|buff.dragonrage.up|cooldown.dragonrage.remains>variable.dr_prep_time_aoe|!talent.animosity)&(target.time_to_die>=8|fight_remains<30)
-# Cast Eternity Surge - stagger for swell/blazing shards outside DR DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s
+# Cast Eternity Surge DS optimization: Only cast if current fight will last 8s+ or encounter ends in less than 30s
 actions.aoe+=/call_action_list,name=es,if=(!talent.dragonrage|buff.dragonrage.up|cooldown.dragonrage.remains>variable.dr_prep_time_aoe|!talent.animosity)&(target.time_to_die>=8|fight_remains<30)
 # Cast DB if not in DR and not going to overflow essence.
 actions.aoe+=/deep_breath,if=!buff.dragonrage.up&essence.deficit>3
 # Send SS when it doesn't overflow EB, without vigor send on CD
 actions.aoe+=/shattering_star,target_if=max:target.health.pct,if=buff.essence_burst.stack<buff.essence_burst.max_stack&talent.arcane_vigor|talent.eternitys_span&active_enemies<=3
 actions.aoe+=/engulf,if=dot.fire_breath_damage.ticking&(!talent.shattering_star|debuff.shattering_star_debuff.up)&cooldown.dragonrage.remains>=27
-actions.aoe+=/disintegrate,target_if=min:debuff.bombardments.remains,if=buff.mass_disintegrate_stacks.up&talent.mass_disintegrate
-# Pyre logic Pyre 4T+ Pyre 3T+ if playing Volatility Pyre with 15 stacks of CB
-actions.aoe+=/pyre,target_if=max:target.health.pct,if=active_enemies>=4&!variable.pool_for_id
-actions.aoe+=/pyre,target_if=max:target.health.pct,if=active_enemies>=3&talent.volatility&!variable.pool_for_id
-actions.aoe+=/pyre,target_if=max:target.health.pct,if=buff.charged_blast.stack>=15
+# Use Mass Disintegrate if CB wont't overcap
+actions.aoe+=/disintegrate,target_if=min:debuff.bombardments.remains,if=buff.mass_disintegrate_stacks.up&talent.mass_disintegrate&(buff.charged_blast.stack<10|!talent.charged_blast)
+# Pyre 4T+ - 3T+ with Volatility - 12 stacks of CB - Pool CB for DR
+actions.aoe+=/pyre,target_if=max:target.health.pct,if=(active_enemies>=4|talent.volatility)&(cooldown.dragonrage.remains>gcd.max*4|!talent.charged_blast|talent.engulf&(!talent.arcane_intensity|!talent.eternitys_span))&!variable.pool_for_id
+actions.aoe+=/pyre,target_if=max:target.health.pct,if=buff.charged_blast.stack>=12&cooldown.dragonrage.remains>gcd.max*4
 # Cast LF with leaping flames up if: not playing burnout, burnout is up or the next firebreath is soon.
 actions.aoe+=/living_flame,target_if=max:target.health.pct,if=(!talent.burnout|buff.burnout.up|cooldown.fire_breath.remains<=gcd.max*5|buff.scarlet_adaptation.up|buff.ancient_flame.up)&buff.leaping_flames.up&!buff.essence_burst.up&essence.deficit>1
 # Yoinked the disintegrate logic from ST
 actions.aoe+=/disintegrate,target_if=max:target.health.pct,chain=1,early_chain_if=evoker.use_early_chaining&ticks>=2&(raid_event.movement.in>2|buff.hover.up),interrupt_if=evoker.use_clipping&buff.dragonrage.up&ticks>=2&(raid_event.movement.in>2|buff.hover.up),if=(raid_event.movement.in>2|buff.hover.up)&&!variable.pool_for_id
-# Cast LF with burnout and snapfire proc for those juicy insta firestorms
+# Cast LF with burnout to fish for snapfire procs
 actions.aoe+=/living_flame,target_if=max:target.health.pct,if=talent.snapfire&buff.burnout.up
 actions.aoe+=/firestorm
 # Get Ancient Flame as Filler
@@ -103,7 +103,7 @@ actions.aoe+=/call_action_list,name=green,if=talent.ancient_flame&!buff.ancient_
 actions.aoe+=/azure_strike,target_if=max:target.health.pct
 
 # Eternity Surge, use rank most applicable to targets.
-actions.es=eternity_surge,empower_to=1,target_if=max:target.health.pct,if=active_enemies<=1+talent.eternitys_span|buff.dragonrage.remains<1.75*spell_haste&buff.dragonrage.remains>=1*spell_haste|buff.dragonrage.up&(active_enemies==5&!talent.font_of_magic|active_enemies>(3+talent.font_of_magic)*(1+talent.eternitys_span))|active_enemies>=6&!talent.eternitys_span
+actions.es=eternity_surge,empower_to=1,target_if=max:target.health.pct,if=active_enemies<=1+talent.eternitys_span|buff.dragonrage.remains<1.75*spell_haste&buff.dragonrage.remains>=1*spell_haste|buff.dragonrage.up&(active_enemies>(3+talent.font_of_magic)*(1+talent.eternitys_span))|active_enemies>=6&!talent.eternitys_span
 actions.es+=/eternity_surge,empower_to=2,target_if=max:target.health.pct,if=active_enemies<=2+2*talent.eternitys_span|buff.dragonrage.remains<2.5*spell_haste&buff.dragonrage.remains>=1.75*spell_haste
 actions.es+=/eternity_surge,empower_to=3,target_if=max:target.health.pct,if=active_enemies<=3+3*talent.eternitys_span|!talent.font_of_magic|buff.dragonrage.remains<=3.25*spell_haste&buff.dragonrage.remains>=2.5*spell_haste
 actions.es+=/eternity_surge,empower_to=4,target_if=max:target.health.pct
@@ -178,31 +178,31 @@ actions.trinkets+=/use_item,slot=trinket2,if=buff.dragonrage.up&((variable.trink
 actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)&(variable.next_dragonrage>20|!talent.dragonrage)&!variable.trinket_1_manual
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)&(variable.next_dragonrage>20|!talent.dragonrage)&!variable.trinket_2_manual
 
-head=horns_of_the_destroyer,id=212029,bonus_id=6652/10876/10376/10354/10273/1498/10255,ilevel=639
-neck=amulet_of_earthen_craftsmanship,id=215136,bonus_id=10421/9633/8902/10394/10879/9627/10222/8795/11144,ilevel=636,gem_id=213743/213467,crafted_stats=32/36
+head=horns_of_the_destroyer,id=212029,bonus_id=1540/10299/1808,gem_id=213743
+neck=locket_of_broken_memories,id=212448,bonus_id=1540/10299/10376/8781,gem_id=213494/213494
 shoulders=fumaroles_of_the_destroyer,id=212027,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-back=wings_of_shattered_sorrow,id=225574,bonus_id=6652/10376/10354/10269/1511/10255,ilevel=639,enchant_id=7403
-chest=scales_of_the_destroyer,id=212032,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7364
-wrists=glyphetched_vambraces,id=219342,bonus_id=10421/9633/8902/9627/11144/8790/10222,ilevel=636,enchant_id=7385,crafted_stats=36/49
+back=wings_of_shattered_sorrow,id=225574,bonus_id=6652/10376/10354/10269/1511/10255,ilevel=639
+chest=scales_of_the_destroyer,id=212032,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant=crystalline_radiance_3
+wrists=glyphetched_vambraces,id=219342,bonus_id=10421/9633/8902/11144/10222/1485/1808/11109/8960,gem_id=213494,crafted_stats=32/36
 hands=rippers_of_the_destroyer,id=212030,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-waist=glyphetched_binding,id=219339,bonus_id=10421/9633/8902/9627/11144/11303/8960/8790/10222,ilevel=639,crafted_stats=32/49
-legs=glyphetched_cuisses,id=219340,bonus_id=10421/9633/8902/9627/11144/11303/8960/8791/10222,ilevel=639,enchant_id=7534,crafted_stats=40/32
-feet=glyphetched_stompers,id=219335,bonus_id=10421/9633/8902/9627/11144/8795/10222,ilevel=636,enchant_id=7424,crafted_stats=49/36
-finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10394/10879,ilevel=639,gem_id=213479/213491,enchant_id=7470
-finger2=ring_of_earthen_craftsmanship,id=215135,bonus_id=10421/9633/8902/10395/10879/9627/10222/8790/11144,ilevel=636,gem_id=213455/213503,enchant_id=7470,crafted_stats=49/40
+waist=core_of_the_destroyer,id=212026,bonus_id=1540/10299/1808,gem_id=213494
+legs=liquified_defectors_leggings,id=212435,bonus_id=1540/10299/10376,enchant=sunset_spellthread_3
+feet=rashanans_grotesque_talons,id=225586,bonus_id=1540/10299/10376,enchant_id=7424
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10394/10879,ilevel=639,gem_id=213494/213494,enchant=radiant_critical_strike_3
+finger2=devout_zealots_ring,id=221136,bonus_id=3131/10299/10376/8781,gem_id=213494/213494,enchant=radiant_critical_strike_3
 trinket1=arakara_sacbrood,id=219314,bonus_id=10273/10390/6652/10383/1632/10255,ilevel=639
 trinket2=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
-main_hand=blue_winglords_staff,id=194522,bonus_id=10289/9988,ilevel=639,enchant_id=7463
+main_hand=flawless_phase_blade,id=212405,bonus_id=1540/10299/10376,enchant=authority_of_the_depths_3
+off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960,crafted_stats=32/36
 
 # Gear Summary
-# gear_ilvl=638.20
-# gear_stamina=236458
-# gear_intellect=45439
-# gear_crit_rating=19697
-# gear_haste_rating=8529
-# gear_mastery_rating=5149
-# gear_versatility_rating=5907
-# gear_avoidance_rating=1635
-# gear_armor=37943
+# gear_ilvl=638.63
+# gear_stamina=237584
+# gear_intellect=45357
+# gear_crit_rating=23510
+# gear_haste_rating=9328
+# gear_mastery_rating=5508
+# gear_versatility_rating=2009
+# gear_armor=38017
 # set_bonus=thewarwithin_season_1_2pc=1
 # set_bonus=thewarwithin_season_1_4pc=1

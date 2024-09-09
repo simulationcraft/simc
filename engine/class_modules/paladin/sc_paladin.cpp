@@ -1012,8 +1012,6 @@ struct shield_of_vengeance_t : public paladin_absorb_t
   {
     double shield_amount = p()->resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent();
 
-    if ( p()->talents.aegis_of_protection->ok() )
-      shield_amount *= 1.0 + p()->talents.aegis_of_protection->effectN( 2 ).percent();
     shield_amount *= shield_modifier;
     shield_amount *= 1.0 + p()->composite_heal_versatility();
 
@@ -3017,6 +3015,8 @@ struct dawnlight_t : public paladin_spell_t
 
   {
     background = true;
+    affected_by.highlords_judgment = true;
+    tick_may_crit = true;
     dot_behavior = dot_behavior_e::DOT_EXTEND; // per bolas test Aug 21 2024
   }
 
@@ -3150,7 +3150,14 @@ void paladin_t::apply_avatar_dawnlights()
     have_total = num_dawnlights;
 
   for ( auto i = 0u; i < have_total; i++ )
+  {
     active.dawnlight->execute_on_target( tl_candidates[ i ] );
+  }
+
+  if ( bugs && have_total > 0 && talents.radiant_glory->ok() )
+  {
+    active.dawnlight->execute_on_target( tl_candidates[ 0 ] );
+  }
 }
 
 struct suns_avatar_dmg_t : public paladin_spell_t

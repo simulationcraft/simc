@@ -1014,7 +1014,7 @@ using namespace helpers;
 
         if ( p()->talents.tormented_crescendo.ok() )
         {
-          if ( crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
+          if ( crescendo_check( p(), s->target ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
           {
             p()->procs.tormented_crescendo->occur();
             p()->buffs.tormented_crescendo->trigger();
@@ -1363,17 +1363,24 @@ using namespace helpers;
       if ( td( tar )->dots_wither->current_stack() <= 1 )
         make_event( *sim, 0_ms, [ this, tar ] { td( tar )->debuffs_blackened_soul->expire(); } );
 
-      if ( affliction() && p()->hero.seeds_of_their_demise.ok() && rng().roll( p()->rng_settings.seeds_of_their_demise.setting_value ) )
+      bool seeds_triggered = false;
+
+      if ( affliction() && p()->hero.seeds_of_their_demise.ok() && p()->cooldowns.seeds_of_their_demise->up() && rng().roll( p()->rng_settings.seeds_of_their_demise.setting_value ) )
       {
         p()->buffs.tormented_crescendo->trigger();
         p()->procs.seeds_of_their_demise->occur();
+        seeds_triggered = true;
       }
 
-      if ( destruction() && p()->hero.seeds_of_their_demise.ok() && rng().roll( p()->rng_settings.seeds_of_their_demise.setting_value ) )
+      if ( destruction() && p()->hero.seeds_of_their_demise.ok() && p()->cooldowns.seeds_of_their_demise->up() && rng().roll( p()->rng_settings.seeds_of_their_demise.setting_value ) )
       {
         p()->buffs.flashpoint->trigger( 2 );
         p()->procs.seeds_of_their_demise->occur();
+        seeds_triggered = true;
       }
+
+      if ( seeds_triggered )
+        p()->cooldowns.seeds_of_their_demise->start();
     }
   };
 
@@ -2095,7 +2102,7 @@ using namespace helpers;
 
         if ( p()->talents.tormented_crescendo.ok() )
         {
-          if ( crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 2 ).percent() ) )
+          if ( crescendo_check( p(), d->target ) && rng().roll( p()->talents.tormented_crescendo->effectN( 2 ).percent() ) )
           {
             p()->procs.tormented_crescendo->occur();
             p()->buffs.tormented_crescendo->trigger();
@@ -3299,6 +3306,14 @@ using namespace helpers;
         return tl.size();
       }
 
+      void impact( action_state_t* s ) override
+      {
+        warlock_spell_t::impact( s );
+
+        if ( p()->bugs && p()->talents.diabolic_embers.ok() && s->result == RESULT_CRIT )
+          p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits );
+      }
+
       double action_multiplier() const override
       {
         double m = warlock_spell_t::action_multiplier();
@@ -4397,28 +4412,25 @@ using namespace helpers;
   }
 
   // Checks whether Tormented Crescendo conditions are met
-  bool helpers::crescendo_check( warlock_t* p )
+  bool helpers::crescendo_check( warlock_t* p, player_t* tar )
   {
-    bool agony = false;
-    bool corruption = false;
-    for ( const auto target : p->sim->target_non_sleeping_list )
+    if ( tar != p->ua_target )
+      return false;
+
+    bool valid = p->get_target_data( tar )->dots_unstable_affliction->is_ticking();
+
+    if ( p->hero.wither.ok() )
     {
-      warlock_td_t* td = p->get_target_data( target );
-      if ( !td )
-        continue;
-
-      agony = agony || td->dots_agony->is_ticking();
-
-      if ( p->hero.wither.ok() )
-        corruption = corruption || td->dots_wither->is_ticking();
-      else
-        corruption = corruption || td->dots_corruption->is_ticking();
-
-      if ( agony && corruption )
-        break;
+      valid = valid && p->get_target_data( tar )->dots_wither->is_ticking();
     }
+    else
+    {
+      valid = valid && p->get_target_data( tar )->dots_corruption->is_ticking();
+    }
+    
+    valid = valid && p->get_target_data( tar )->dots_agony->is_ticking();
 
-    return agony && corruption && ( p->ua_target && p->get_target_data( p->ua_target )->dots_unstable_affliction->is_ticking() );
+    return valid;
   }
 
   void helpers::nightfall_updater( warlock_t* p, dot_t* d )
@@ -4445,6 +4457,11 @@ using namespace helpers;
 
   void helpers::trigger_blackened_soul( warlock_t* p, bool malevolence )
   {
+    if ( !malevolence && p->cooldowns.blackened_soul->down() )
+      return;
+
+    bool stack_gained = false;
+
     for ( const auto target : p->sim->target_non_sleeping_list )
     {
       warlock_td_t* tdata = p->get_target_data( target );
@@ -4455,18 +4472,18 @@ using namespace helpers;
         continue;
 
       tdata->dots_wither->increment( malevolence ? as<int>( p->hero.malevolence->effectN( 1 ).base_value() ) : 1 );
+      stack_gained = true;
 
       if ( p->buffs.malevolence->check() && !malevolence )
         tdata->dots_wither->increment( as<int>( p->hero.malevolence->effectN( 2 ).base_value() ) );
 
-      // TOCHECK: Chance for this effect is not in spell data!
-      if ( p->hero.bleakheart_tactics.ok() && p->rng().roll( p->rng_settings.bleakheart_tactics.setting_value ) )
+      if ( p->hero.bleakheart_tactics.ok() && !malevolence && p->rng().roll( p->rng_settings.bleakheart_tactics.setting_value ) )
       {
         tdata->dots_wither->increment( 1 );
         p->procs.bleakheart_tactics->occur();
       }
 
-      bool collapse = p->buffs.malevolence->check();
+      bool collapse = false; // 2024-09-06 Malevolence no longer initiates collapse automatically
       collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && target->health_percentage() <= p->hero.seeds_of_their_demise->effectN( 2 ).base_value() ) ;
       collapse = collapse || ( p->hero.seeds_of_their_demise.ok() && tdata->dots_wither->current_stack() >= as<int>( p->hero.seeds_of_their_demise->effectN( 1 ).base_value() ) );
 
@@ -4476,7 +4493,6 @@ using namespace helpers;
       }
       else if ( p->rng().roll( p->rng_settings.blackened_soul.setting_value ) )
       {
-        // TOCHECK: Chance for this effect is not in spell data!
         tdata->debuffs_blackened_soul->trigger();
         p->procs.blackened_soul->occur();
       }
@@ -4484,6 +4500,9 @@ using namespace helpers;
       if ( malevolence )
         p->proc_actions.malevolence->execute_on_target( target );
     }
+
+    if ( stack_gained )
+      p->cooldowns.blackened_soul->start();
   }
 
   // Event for spawning Wild Imps for Demonology

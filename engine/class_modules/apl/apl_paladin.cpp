@@ -111,7 +111,7 @@ void protection( player_t* p )
   cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=buff.avenging_wrath.up" );
   cooldowns->add_action( "fireblood,if=buff.avenging_wrath.remains>8" );
 
-  standard->add_action( "call_action_list,name=hammer_of_light,if=talent.lights_guidance.enabled&(cooldown.eye_of_tyr.remains<2|buff.hammer_of_light_ready.up)&(!talent.redoubt.enabled|buff.redoubt.stack>=2|!talent.bastion_of_light.enabled)&talent.of_dusk_and_dawn.enabled" );
+  standard->add_action( "call_action_list,name=hammer_of_light,if=talent.lights_guidance.enabled&(cooldown.eye_of_tyr.remains<2|buff.hammer_of_light_ready.up)&(!talent.redoubt.enabled|buff.redoubt.stack>=2|!talent.bastion_of_light.enabled)" );
   standard->add_action( "hammer_of_light,if=(!talent.redoubt.enabled|buff.redoubt.stack=3)&(buff.blessing_of_dawn.stack>=1|!talent.of_dusk_and_dawn.enabled)" );
   standard->add_action( "shield_of_the_righteous,if=(((!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&holy_power>2)|buff.bastion_of_light.up|buff.divine_purpose.up)&!((buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up))" );
   standard->add_action( "holy_armaments,if=next_armament=sacred_weapon&(!buff.sacred_weapon.up|(buff.sacred_weapon.remains<6&!buff.avenging_wrath.up&cooldown.avenging_wrath.remains<=30))" );
@@ -139,8 +139,8 @@ void protection( player_t* p )
   standard->add_action( "arcane_torrent,if=holy_power<5" );
   standard->add_action( "consecration" );
 
-  hammer_of_light->add_action( "hammer_of_light,if=buff.blessing_of_dawn.stack>0|spell_targets.shield_of_the_righteous>=5" );
-  hammer_of_light->add_action( "eye_of_tyr,if=hpg_to_2dawn=5" );
+  hammer_of_light->add_action( "hammer_of_light,if=(buff.blessing_of_dawn.stack>0|!talent.of_dusk_and_dawn.enabled)|spell_targets.shield_of_the_righteous>=5" );
+  hammer_of_light->add_action( "eye_of_tyr,if=hpg_to_2dawn=5|!talent.of_dusk_and_dawn.enabled" );
   hammer_of_light->add_action( "shield_of_the_righteous,if=hpg_to_2dawn=4" );
   hammer_of_light->add_action( "eye_of_tyr,if=hpg_to_2dawn=1|buff.blessing_of_dawn.stack>0" );
   hammer_of_light->add_action( "hammer_of_wrath" );

@@ -779,6 +779,7 @@ struct evoker_t : public player_t
     bool simulate_bombardments                                 = true;
     timespan_t simulate_bombardments_time_between_procs_mean   = 2.0_s;
     timespan_t simulate_bombardments_time_between_procs_stddev = 0.15_s;
+    timespan_t allied_virtual_cd_time = 118_s;
   } option;
 
   // Action pointers
@@ -3196,7 +3197,10 @@ public:
       if ( t == p() && p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW1, B4 ) )
       {
         p()->buff.tww1_4pc_aug->expire();
-        p()->buff.tww1_4pc_aug->trigger();
+        make_event( sim, p()->buff.tww1_4pc_aug->tick_time(), [ this ] {
+          if ( p()->buff.ebon_might_self_buff->check() )
+            p()->buff.tww1_4pc_aug->trigger();
+        } );
       }
 
       auto time = ebon_time >= timespan_t::zero() ? ebon_time : buff->buff_duration();
@@ -5684,6 +5688,7 @@ struct breath_of_eons_t : public evoker_spell_t
   eruption_t* eruption;
   timespan_t plot_duration;
   action_t* melt_armor_dot;
+  cooldown_t* virtual_cooldown;
 
   breath_of_eons_t( evoker_t* p, std::string_view options_str )
     : evoker_spell_t( "breath_of_eons", p, p->talent.breath_of_eons, options_str ),
@@ -5696,6 +5701,9 @@ struct breath_of_eons_t : public evoker_spell_t
 
     trigger_gcd = p->talent.scalecommander.maneuverability.ok() ? 1.5_s : 2_s;
     gcd_type    = p->talent.scalecommander.maneuverability.ok() ? gcd_haste_type::SPELL_HASTE : gcd_haste_type::NONE;
+
+    virtual_cooldown           = p->get_cooldown( "allied_virtual_cd_time", this );
+    virtual_cooldown->duration = p->option.allied_virtual_cd_time;
 
     aoe = -1;
 
@@ -5787,6 +5795,11 @@ struct breath_of_eons_t : public evoker_spell_t
           }
         }
       } );
+    }
+
+    if ( virtual_cooldown )
+    {
+      virtual_cooldown->start();
     }
   }
 };
@@ -8319,7 +8332,8 @@ void evoker_t::create_options()
   add_option( opt_timespan( "evoker.simulate_bombardments_time_between_procs_mean",
                             option.simulate_bombardments_time_between_procs_mean, 0_s, 9999_s ) );
   add_option( opt_timespan( "evoker.simulate_bombardments_time_between_procs_stddev",
-                            option.simulate_bombardments_time_between_procs_stddev, 0_s, 9999_s) );
+                            option.simulate_bombardments_time_between_procs_stddev, 0_s, 9999_s ) );
+  add_option( opt_timespan( "evoker.allied_virtual_cd_time", option.allied_virtual_cd_time, 0_s, 9999_s ) );
 }
 
 void evoker_t::analyze( sim_t& sim )

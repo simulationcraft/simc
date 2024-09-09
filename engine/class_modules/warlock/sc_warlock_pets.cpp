@@ -724,6 +724,14 @@ struct soul_strike_t : public warlock_pet_melee_attack_t
       background = dual = true;
       aoe = -1;
       ignores_armor = true;
+      base_dd_min = base_dd_max = 0;
+    }
+
+    void init_finished() override
+    {
+      warlock_pet_melee_attack_t::init_finished();
+
+      snapshot_flags &= STATE_NO_MULTIPLIER;
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -1813,13 +1821,18 @@ struct dimensional_cinder_t : public warlock_pet_spell_t
     base_dd_min = base_dd_max = 0;
   }
 
+  void init_finished() override
+  {
+    warlock_pet_spell_t::init_finished();
+
+    snapshot_flags &= ~STATE_MUL_PET;
+    snapshot_flags &= ~STATE_TGT_MUL_PET;
+    snapshot_flags &= ~STATE_VERSATILITY;
+  }
+
   double action_multiplier() const override
   {
     double m = warlock_pet_spell_t::action_multiplier();
-
-    m /= 1.0 + p()->o()->warlock_base.destruction_warlock->effectN( 4 ).percent();
-
-    m /= 1.0 + p()->o()->racials.command->effectN( 2 ).percent();
 
     m *= p()->o()->talents.unstable_rifts->effectN( 1 ).percent();
 
@@ -2239,8 +2252,6 @@ namespace diabolist
   mother_of_chaos_t::mother_of_chaos_t( warlock_t* owner, util::string_view name )
     : warlock_pet_t( owner, name, PET_WARLOCK_RANDOM, true )
   {
-    resource_regeneration = regen_type::DISABLED;
-
     action_list_str = "chaos_salvo";
   }
 
@@ -2262,8 +2273,7 @@ namespace diabolist
       : warlock_pet_spell_t( "Chaos Salvo", p, p->o()->hero.chaos_salvo )
     {
       channeled = true;
-      base_costs_per_tick[ RESOURCE_ENERGY ] = 0.0;
-
+      // TOCHECK: Does Mother of Chaos have any cap with haste scaling?
       tick_action = new chaos_salvo_tick_t( p ); }
 
     bool ready() override
@@ -2312,6 +2322,7 @@ namespace diabolist
     {
       background = dual = true;
       aoe = -1;
+
       base_costs[ RESOURCE_ENERGY ] = 0.0;
     }
   };
@@ -2322,7 +2333,9 @@ namespace diabolist
       : warlock_pet_spell_t( "Felseeker", p, p->o()->hero.felseeker )
     {
       channeled = true;
+      tick_zero = tick_on_application = false;
       tick_action = new felseeker_tick_t( p );
+      base_costs_per_tick[ RESOURCE_ENERGY ] = p->o()->hero.felseeker_dmg->cost( POWER_ENERGY );
     }
 
     bool ready() override
@@ -2346,6 +2359,13 @@ namespace diabolist
     warlock_pet_t::arise();
 
     felseekers = 1;
+  }
+
+  void pit_lord_t::init_base_stats()
+  {
+    warlock_pet_t::init_base_stats();
+
+    resources.base[ RESOURCE_ENERGY ] = 99; // Fudge this so that Felseeker only does 4 ticks instead of an extra one at zero resources
   }
 
   action_t* pit_lord_t::create_action( util::string_view name, util::string_view options_str )
