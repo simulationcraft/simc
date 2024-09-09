@@ -8146,7 +8146,7 @@ void hunter_t::create_buffs()
 
   buffs.bombardier = 
     make_buff( this, "bombardier", talents.bombardier_buff )
-      ->set_initial_stack( talents.bombardier_buff->max_stacks() );
+      ->set_initial_stack( talents.bombardier.ok() ? talents.bombardier_buff->max_stacks() : 1 );
 
   // Pet family buffs
 
