@@ -12273,6 +12273,7 @@ void rogue_t::init_special_effects()
       spell.crippling_poison->effectN( 1 ).trigger()->id(),
       spell.wound_poison->effectN( 1 ).trigger()->id(),
       talent.rogue.atrophic_poison->effectN( 1 ).trigger()->id(),
+      talent.rogue.numbing_poison->effectN( 1 ).trigger()->id(),
       talent.assassination.deadly_poison->effectN( 1 ).trigger()->id(),
       talent.assassination.amplifying_poison->effectN( 3 ).trigger()->id()
     };
