@@ -396,6 +396,10 @@ void oil_of_deep_toxins( special_effect_t& effect )
 // Bubbling Wax
 void bubbling_wax( special_effect_t& effect )
 {
+  // This is Rogue Only.
+  if ( effect.player->type != ROGUE )
+    return;
+
   auto wax_action = effect.player->find_action( "bubbling_wax" );
 
   if ( !wax_action )
@@ -409,6 +413,7 @@ void bubbling_wax( special_effect_t& effect )
     effect.execute_action                     = damage;
 
     // TODO: See if check later if RPPM increases while wearing two. Appears currently not?
+    // Currently, this only works if you use the wax on your Main Hand and the offhand does not function.
     new dbc_proc_callback_t( effect.player, effect );
   }
 }
