@@ -201,7 +201,7 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.bok_proc, p()->talent.windwalker.courageous_impulse );
 
   // Conduit of the Celestials
-  parse_effects( p()->buff.august_dynasty );
+  parse_effects( p()->buff.august_dynasty, CONSUME_BUFF );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
                  [ & ] { return !p()->buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
@@ -1529,8 +1529,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
       p()->buff.ordered_elements->trigger();
 
     p()->buff.tigers_ferocity->trigger();
-
-    p()->buff.august_dynasty->expire();
   }
 };
 
@@ -4645,9 +4643,6 @@ struct vivify_t : public monk_heal_t
     }
 
     p()->active_actions.chi_wave->execute();
-
-    if ( p()->baseline.monk.vivify->affected_by( p()->buff.august_dynasty->data() ) )
-      p()->buff.august_dynasty->expire();
   }
 };
 
