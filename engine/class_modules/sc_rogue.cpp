@@ -3977,6 +3977,9 @@ struct between_the_eyes_t : public rogue_attack_t
     }
   }
 
+  bool procs_poison() const override
+  { return true; }
+
   bool procs_blade_flurry() const override
   { return true; }
 };
@@ -5108,6 +5111,9 @@ struct pistol_shot_t : public rogue_attack_t
   }
 
   bool procs_fatal_flourish() const override
+  { return true; }
+
+  bool procs_poison() const override
   { return true; }
 
   bool procs_blade_flurry() const override
