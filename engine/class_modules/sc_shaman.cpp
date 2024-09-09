@@ -722,6 +722,7 @@ public:
     // Elemental
     proc_t* aftershock;
     proc_t* flash_of_lightning;
+    proc_t* herald_of_the_storms;
     proc_t* lightning_rod;
     proc_t* searing_flames;
 
@@ -929,6 +930,7 @@ public:
     player_talent_t primordial_fury;
     player_talent_t flow_of_power;
     player_talent_t elemental_unity;
+    player_talent_t herald_of_the_storms;
     // Row 6
     player_talent_t flux_melting;
     player_talent_t lightning_conduit;
@@ -1202,6 +1204,7 @@ public:
   void trigger_hot_hand( const action_state_t* state );
   void trigger_lava_surge();
   void trigger_splintered_elements( action_t* secondary );
+  void trigger_herald_of_the_storms();
   void trigger_flash_of_lightning();
   void trigger_swirling_maelstrom( const action_state_t* state );
   void trigger_static_accumulation_refund( const action_state_t* state, int mw_stacks );
@@ -5902,6 +5905,7 @@ struct chain_lightning_t : public chained_base_t
     }
 
     p()->trigger_flash_of_lightning();
+    p()->trigger_herald_of_the_storms();
     p()->buff.surge_of_power->decrement();
 
     if ( p()->talent.alpha_wolf.ok() )
@@ -6824,6 +6828,7 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     p()->trigger_flash_of_lightning();
+    p()->trigger_herald_of_the_storms();
     p()->trigger_static_accumulation_refund( execute_state, mw_consumed_stacks );
 
     if ( exec_type == spell_variant::NORMAL )
@@ -10759,6 +10764,7 @@ void shaman_t::init_spells()
   talent.unrelenting_calamity   = _ST( "Unrelenting Calamity" );
   talent.master_of_the_elements = _ST( "Master of the Elements" );
   // Row 5
+  talent.herald_of_the_storms   = _ST( "Herald of the Storms" ); // Added in PTR
   talent.fusion_of_elements     = _ST( "Fusion of Elements" );
   talent.storm_frenzy           = _ST( "Storm Frenzy" );
   talent.swelling_maelstrom     = _ST( "Swelling Maelstrom" );
@@ -11634,6 +11640,26 @@ void shaman_t::trigger_splintered_elements( action_t* secondary )
   buff.splintered_elements->trigger( as<int>( count_duplicates ) );
 }
 
+void shaman_t::trigger_herald_of_the_storms()
+{
+  if ( !talent.herald_of_the_storms.ok() ) {
+    return;
+  }
+
+  if ( !is_ptr() )
+  {
+    return;
+  }
+
+  auto reduction = talent.herald_of_the_storms.spell()->effectN( 1 ).time_value();
+  if ( talent.stormkeeper.enabled() )
+  {
+    cooldown.stormkeeper->adjust( reduction, false );
+  }
+
+  proc.herald_of_the_storms->occur();
+}
+
 void shaman_t::trigger_flash_of_lightning()
 {
   if ( !talent.flash_of_lightning.ok() ) {
@@ -12373,6 +12399,7 @@ void shaman_t::init_procs()
 
   proc.aftershock           = get_proc( "Aftershock" );
   proc.flash_of_lightning   = get_proc( "Flash of Lightning" );
+  proc.herald_of_the_storms = get_proc( "Herald of the Storms" );
   proc.lightning_rod        = get_proc( "Lightning Rod" );
   proc.searing_flames       = get_proc( "Searing Flames" );
   for ( size_t i = 0; i < proc.magma_chamber.size(); i++ )
@@ -12514,6 +12541,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.fire_and_ice );
   action.apply_affecting_aura( talent.thorims_invocation );
   action.apply_affecting_aura( talent.flash_of_lightning );
+  action.apply_affecting_aura( talent.herald_of_the_storms );
 
   action.apply_affecting_aura( talent.stormcaller );
   action.apply_affecting_aura( talent.voltaic_surge );
