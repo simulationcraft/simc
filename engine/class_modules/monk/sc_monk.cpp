@@ -589,7 +589,7 @@ void monk_action_t<Base>::execute()
 
   base_t::execute();
 
-  trigger_storm_earth_and_fire( this );
+  // trigger_storm_earth_and_fire( this );
 }
 
 template <class Base>
@@ -866,11 +866,8 @@ struct storm_earth_and_fire_t : public monk_spell_t
     may_combo_strike = true;
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
 
-    if ( p->user_options.sef_beta )
-    {
-      fire_sef  = new monk_spell_t( p, "fire_elemental", spell_data_t::nil() );
-      earth_sef = new monk_spell_t( p, "earth_elemental", spell_data_t::nil() );
-    }
+    fire_sef  = new monk_spell_t( p, "sef_fire_elemental", spell_data_t::nil() );
+    earth_sef = new monk_spell_t( p, "sef_earth_elemental", spell_data_t::nil() );
   }
 
   bool ready() override
@@ -885,20 +882,11 @@ struct storm_earth_and_fire_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    if ( p()->user_options.sef_beta )
+    if ( p()->talent.windwalker.ordered_elements.ok() )
     {
-      p()->buff.storm_earth_and_fire->trigger( 1, buff_t::DEFAULT_VALUE(), 1, data().duration() );
-    }
-    else
-    {
-      p()->summon_storm_earth_and_fire( data().duration() );
-
-      if ( p()->talent.windwalker.ordered_elements.ok() )
-      {
-        p()->cooldown.rising_sun_kick->reset( true );
-        p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.ordered_elements->effectN( 2 ).base_value(),
-                            p()->gain.ordered_elements );
-      }
+      p()->cooldown.rising_sun_kick->reset( true );
+      p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.ordered_elements->effectN( 2 ).base_value(),
+                          p()->gain.ordered_elements );
     }
   }
 };
@@ -941,24 +929,37 @@ enum sef_type_e
   SEF_TYPE_EARTH
 };
 
-template <class base_t>
-struct sef_action_t : base_t
+template <class TBase>
+struct sef_action_t : monk_spell_t
 {
-  struct child_action_t : base_t
+  struct child_action_t : TBase
   {
+    using base_t = TBase;
     sef_type_e type;
     bool is_fixated;
     player_t *target;
 
-    child_action_t( sef_type_e type, monk_t *player, std::string_view name, const spell_data_t *spell_data )
-      : base_t( player,
-                fmt::format( "{}_{}", name,
-                             type == SEF_TYPE_FIRE    ? "sef_fire"
-                             : type == SEF_TYPE_EARTH ? "sef_earth"
-                                                      : "NONE" ),
-                spell_data )
+    template <class... Args>
+    child_action_t( sef_type_e type, Args &&...args ) : base_t( std::forward<Args>( args )... ), type( type )
     {
       base_t::background = true;
+
+      // Action name must be amended after construction, requiring changing out
+      // several members of `action_t` as well.
+      switch ( type )
+      {
+        case SEF_TYPE_FIRE:
+          base_t::name_str += "_sef_fire";
+          break;
+        case SEF_TYPE_EARTH:
+          base_t::name_str += "_sef_earth";
+          break;
+      }
+      base_t::internal_id       = base_t::p()->get_action_id( base_t::name_str );
+      base_t::gain              = base_t::p()->get_gain( base_t::name_str );
+      base_t::cooldown          = base_t::p()->get_cooldown( base_t::name_str, this );
+      base_t::internal_cooldown = base_t::p()->get_cooldown( base_t::name_str + "_internal", this );
+      base_t::stats             = base_t::p()->get_stats( base_t::name_str, this );
     }
 
     bool from_caster_spells( const spelleffect_data_t *eff ) const
@@ -1002,8 +1003,10 @@ struct sef_action_t : base_t
       {
         case SEF_TYPE_FIRE:
           base_t::p()->find_action( "sef_fire_elemental" )->add_child( this );
+          break;
         case SEF_TYPE_EARTH:
           base_t::p()->find_action( "sef_earth_elemental" )->add_child( this );
+          break;
       }
     }
 
@@ -1071,49 +1074,71 @@ struct sef_action_t : base_t
       return ta;
     }
   };
+
+  action_t *parent_action;
   action_t *sef_fire_action;
   action_t *sef_earth_action;
 
-  // TODO: Target Fire/Earth actions
-  /*
-   * If a non-sleeping target exists with MotC debuff <10s, target that.
-   * If it is already targeted by another elemental, do not retarget.
-   * If all MotC debuffs >=10s, do not retarget.
-   * If fixated, do not retarget.
-   */
-
   template <class... Args>
-  sef_action_t( monk_t *player, Args &&...args ) : base_t( player, std::forward<Args>( args )... )
+  sef_action_t( TBase *parent, Args &&...args )
+    : monk_spell_t( parent->p(), parent->name_str + "_sef_composite" ),
+      parent_action( parent ),
+      sef_fire_action( new child_action_t( SEF_TYPE_FIRE, parent->p(), std::forward<Args>( args )... ) ),
+      sef_earth_action( new child_action_t( SEF_TYPE_EARTH, parent->p(), std::forward<Args>( args )... ) )
   {
-    if ( !player->talent.windwalker.storm_earth_and_fire->ok() )
-      return;
-
-    sef_fire_action =
-        new child_action_t( player, fmt::format( "{}_{}", base_t::name_str, "fire" ), std::forward<Args>( args )... );
-    sef_earth_action =
-        new child_action_t( player, fmt::format( "{}_{}", base_t::name_str, "earth" ), std::forward<Args>( args )... );
-
-    // TODO: Set SEF actions as children of the parent SEF action for each elemental.
-  }
-
-  void init_finished() override
-  {
-    base_t::init_finished();
-
-    base_t::p()->find_action( "fire_elemental" )->add_child( sef_fire_action );
-    base_t::p()->find_action( "earth_elemental" )->add_child( sef_earth_action );
   }
 
   void execute() override
   {
-    base_t::p()->freeze_expiration = true;
-    sef_fire_action->execute_on_target( base_t::p()->target );
-    sef_earth_action->execute_on_target( base_t::p()->target );
+    p()->freeze_expiration = true;
+    sef_fire_action->execute();
+    sef_earth_action->execute();
+    p()->freeze_expiration = false;
 
-    base_t::p()->freeze_expiration = false;
+    parent_action->execute();
     base_t::execute();
   }
 };
+
+// struct sef_action_t : base_t
+// {
+//   action_t *sef_fire_action;
+//   action_t *sef_earth_action;
+
+//   // TODO: Target Fire/Earth actions
+//   /*
+//    * If a non-sleeping target exists with MotC debuff <10s, target that.
+//    * If it is already targeted by another elemental, do not retarget.
+//    * If all MotC debuffs >=10s, do not retarget.
+//    * If fixated, do not retarget.
+//    */
+
+//   template <class... Args>
+//   sef_action_t( monk_t *player, Args &&...args ) : base_t( player, std::forward<Args>( args )... )
+//   {
+//     if ( !player->talent.windwalker.storm_earth_and_fire->ok() )
+//       return;
+
+//     sef_fire_action =
+//         new child_action_t( player, fmt::format( "{}_{}", base_t::name_str, "fire" ), std::forward<Args>( args )...
+//         );
+//     sef_earth_action =
+//         new child_action_t( player, fmt::format( "{}_{}", base_t::name_str, "earth" ), std::forward<Args>( args )...
+//         );
+
+//     // TODO: Set SEF actions as children of the parent SEF action for each elemental.
+//   }
+
+//   void execute() override
+//   {
+//     base_t::p()->freeze_expiration = true;
+//     sef_fire_action->execute_on_target( base_t::p()->target );
+//     sef_earth_action->execute_on_target( base_t::p()->target );
+
+//     base_t::p()->freeze_expiration = false;
+//     base_t::execute();
+//   }
+// };
 
 namespace attacks
 {
@@ -6664,121 +6689,117 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
   if ( name == "auto_attack" )
     return new auto_attack_t( this, options_str );
   if ( name == "crackling_jade_lightning" )
-    return new crackling_jade_lightning_t( this, options_str );
+    return make_action<crackling_jade_lightning_t>( options_str );
   if ( name == "tiger_palm" )
-    return new tiger_palm_t( this, options_str );
+    return make_action<tiger_palm_t>( options_str );
   if ( name == "blackout_kick" )
-    return new blackout_kick_t( this, options_str );
+    return make_action<blackout_kick_t>( options_str );
   if ( name == "expel_harm" )
-    return new expel_harm_t( this, options_str );
+    return make_action<expel_harm_t>( options_str );
   if ( name == "leg_sweep" )
-    return new leg_sweep_t( this, options_str );
+    return make_action<leg_sweep_t>( options_str );
   if ( name == "paralysis" )
-    return new paralysis_t( this, options_str );
+    return make_action<paralysis_t>( options_str );
   if ( name == "rising_sun_kick" )
-    return new rising_sun_kick_t( this, options_str );
+    return make_action<rising_sun_kick_t>( options_str );
   if ( name == "roll" )
-    return new roll_t( this, options_str );
+    return make_action<roll_t>( options_str );
   if ( name == "spear_hand_strike" )
-    return new spear_hand_strike_t( this, options_str );
+    return make_action<spear_hand_strike_t>( options_str );
   if ( name == "spinning_crane_kick" )
-    return new spinning_crane_kick_t( this, options_str );
+    return make_action<spinning_crane_kick_t>( options_str );
   if ( name == "vivify" )
-    return new vivify_t( this, options_str );
+    return make_action<vivify_t>( options_str );
 
   // Brewmaster
   if ( name == "breath_of_fire" )
-    return new breath_of_fire_t( this, options_str );
+    return make_action<breath_of_fire_t>( options_str );
   if ( name == "celestial_brew" )
-    return new celestial_brew_t( this, options_str );
+    return make_action<celestial_brew_t>( options_str );
   if ( name == "exploding_keg" )
-    return new exploding_keg_t( this, options_str );
+    return make_action<exploding_keg_t>( options_str );
   if ( name == "fortifying_brew" )
-    return new fortifying_brew_t( this, options_str );
+    return make_action<fortifying_brew_t>( options_str );
   if ( name == "invoke_niuzao" )
-    return new niuzao_spell_t( this, options_str );
+    return make_action<niuzao_spell_t>( options_str );
   if ( name == "invoke_niuzao_the_black_ox" )
-    return new niuzao_spell_t( this, options_str );
+    return make_action<niuzao_spell_t>( options_str );
   if ( name == "keg_smash" )
-    return new press_the_advantage_t<keg_smash_t>( this, options_str );
+    return make_action<press_the_advantage_t<keg_smash_t>>( options_str );
   if ( name == "purifying_brew" )
-    return new purifying_brew_t( this, options_str );
+    return make_action<purifying_brew_t>( options_str );
   if ( name == "provoke" )
-    return new provoke_t( this, options_str );
+    return make_action<provoke_t>( options_str );
 
   // Mistweaver
   if ( name == "enveloping_mist" )
-    return new enveloping_mist_t( this, options_str );
+    return make_action<enveloping_mist_t>( options_str );
   if ( name == "invoke_chiji" )
-    return new chiji_spell_t( this, options_str );
+    return make_action<chiji_spell_t>( options_str );
   if ( name == "invoke_chiji_the_red_crane" )
-    return new chiji_spell_t( this, options_str );
+    return make_action<chiji_spell_t>( options_str );
   if ( name == "invoke_yulon" )
-    return new yulon_spell_t( this, options_str );
+    return make_action<yulon_spell_t>( options_str );
   if ( name == "invoke_yulon_the_jade_serpent" )
-    return new yulon_spell_t( this, options_str );
+    return make_action<yulon_spell_t>( options_str );
   if ( name == "life_cocoon" )
-    return new life_cocoon_t( this, options_str );
+    return make_action<life_cocoon_t>( options_str );
   if ( name == "mana_tea" )
-    return new mana_tea_t( this, options_str );
-  // if ( name == "renewing_mist" )
-  //   return new renewing_mist_t( this, options_str );
+    return make_action<mana_tea_t>( options_str );
   if ( name == "revival" )
-    return new revival_t( this, options_str );
+    return make_action<revival_t>( options_str );
   if ( name == "thunder_focus_tea" )
-    return new thunder_focus_tea_t( this, options_str );
-  // if ( name == "zen_pulse" )
-  //   return new zen_pulse_t( this, options_str );
+    return make_action<thunder_focus_tea_t>( options_str );
 
   // Windwalker
   if ( name == "fists_of_fury" )
-    return new fists_of_fury_t( this, options_str );
+    return make_action<fists_of_fury_t>( options_str );
   if ( name == "flying_serpent_kick" )
-    return new flying_serpent_kick_t( this, options_str );
+    return make_action<flying_serpent_kick_t>( options_str );
   if ( name == "touch_of_karma" )
-    return new touch_of_karma_t( this, options_str );
+    return make_action<touch_of_karma_t>( options_str );
   if ( name == "touch_of_death" )
-    return new touch_of_death_t( this, options_str );
+    return make_action<touch_of_death_t>( options_str );
   if ( name == "storm_earth_and_fire" )
-    return new storm_earth_and_fire_t( this, options_str );
+    return make_action<storm_earth_and_fire_t>( options_str );
   if ( name == "storm_earth_and_fire_fixate" )
-    return new storm_earth_and_fire_fixate_t( this, options_str );
+    return make_action<storm_earth_and_fire_fixate_t>( options_str );
 
   // Talents
   if ( name == "chi_burst" )
-    return new chi_burst_t( this, options_str );
+    return make_action<chi_burst_t>( options_str );
   if ( name == "chi_torpedo" )
-    return new chi_torpedo_t( this, options_str );
+    return make_action<chi_torpedo_t>( options_str );
   if ( name == "black_ox_brew" )
-    return new black_ox_brew_t( this, options_str );
+    return make_action<black_ox_brew_t>( options_str );
   if ( name == "dampen_harm" )
-    return new dampen_harm_t( this, options_str );
+    return make_action<dampen_harm_t>( options_str );
   if ( name == "diffuse_magic" )
-    return new diffuse_magic_t( this, options_str );
+    return make_action<diffuse_magic_t>( options_str );
   if ( name == "strike_of_the_windlord" )
-    return new strike_of_the_windlord_t( this, options_str );
+    return make_action<strike_of_the_windlord_t>( options_str );
   if ( name == "invoke_xuen" )
-    return new xuen_spell_t( this, options_str );
+    return make_action<xuen_spell_t>( options_str );
   if ( name == "invoke_xuen_the_white_tiger" )
-    return new xuen_spell_t( this, options_str );
+    return make_action<xuen_spell_t>( options_str );
   if ( name == "refreshing_jade_wind" )
-    return new refreshing_jade_wind_t( this, options_str );
+    return make_action<refreshing_jade_wind_t>( options_str );
   if ( name == "rushing_jade_wind" )
-    return new rushing_jade_wind_t( this, options_str );
+    return make_action<rushing_jade_wind_t>( options_str );
   if ( name == "whirling_dragon_punch" )
-    return new whirling_dragon_punch_t( this, options_str );
+    return make_action<whirling_dragon_punch_t>( options_str );
 
   // Covenant Abilities
   if ( name == "jadefire_stomp" )
-    return new jadefire_stomp_t( this, options_str );
+    return make_action<jadefire_stomp_t>( options_str );
   if ( name == "weapons_of_order" )
-    return new weapons_of_order_t( this, options_str );
+    return make_action<weapons_of_order_t>( options_str );
 
   // Hero Talents
   if ( name == "celestial_conduit" )
-    return new celestial_conduit_t( this, options_str );
+    return make_action<celestial_conduit_t>( options_str );
   if ( name == "unity_within" )
-    return new unity_within_t( this, options_str );
+    return make_action<unity_within_t>( options_str );
 
   return base_t::create_action( name, options_str );
 }
@@ -9023,11 +9044,20 @@ void monk_t::copy_from( player_t *source )
 }
 
 template <class TAction, class... Args>
-TAction *monk_t::make_action( Args &&...args )
+action_t *monk_t::make_action( Args &&...args )
 {
-  if ( talent.windwalker.storm_earth_and_fire->ok() && false )
-    return new actions::sef_action_t<TAction>( this, std::forward<Args>( args )... );
-  return new TAction( this, std::forward<Args>( args )... );
+  // 1. create action A no matter what
+  // 2. if the action should not be replicated (channeled, repeated action), return action A
+  // 3. if action A is affected by sef, create sef composite action B using action A
+  // 4. when executing, use sef composite action B execute as to override necessary behaviour
+
+  TAction *parent = new TAction( this, std::forward<Args>( args )... );
+  if ( parent->channeled )
+    return parent;
+  if ( talent.windwalker.storm_earth_and_fire->ok() &&
+       parent->data().affected_by( talent.windwalker.storm_earth_and_fire ) )
+    return new actions::sef_action_t<TAction>( parent, std::forward<Args>( args )... );
+  return parent;
 }
 
 // monk_t::copy_from =========================================================

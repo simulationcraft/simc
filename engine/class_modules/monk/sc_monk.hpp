@@ -1398,7 +1398,7 @@ public:
   void create_options() override;
   void copy_from( player_t * ) override;
   template <class TAction, class... Args>
-  TAction *make_action( Args &&...args );
+  action_t *make_action( Args &&...args );
   using player_t::find_action;
   action_t *find_action( unsigned int id ) const;
   resource_e primary_resource() const override;
