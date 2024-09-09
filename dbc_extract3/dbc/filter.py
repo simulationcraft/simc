@@ -827,8 +827,8 @@ class ExpectedStatModSet(DataSet):
         xpac = maps[0].id_expansion
         maps = [m for m in maps if m.id_expansion == xpac]
 
-        # assume the latest raid has the highest loading screen id
-        maps.sort(key = lambda e: e.id_loading_screen, reverse = True)
+        # assume the latest raid has the highest order index in JournalTierXInstance for the map's JournalInstan ce
+        maps.sort(key = lambda e: e.child_ref('JournalInstance').child_refs('JournalTierXInstance')[0].order, reverse = True)
         map_id = maps[0].id
 
         # find all the difficulties for the map & m+
