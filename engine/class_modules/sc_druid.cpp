@@ -8347,10 +8347,10 @@ struct starsurge_t final : public ap_spender_t
       auto suf = get_suffix( name_str, "starsurge" );
       goldrinn = p->get_secondary_action<goldrinns_fang_t>( "goldrinns_fang" + suf, f );
       add_child( goldrinn );
-
-      weaver_buff = p->buff.starweaver_starsurge;
-      cosmos_buff = p->buff.touch_the_cosmos_starsurge;
     }
+
+    weaver_buff = p->buff.starweaver_starsurge;
+    cosmos_buff = p->buff.touch_the_cosmos_starsurge;
   }
 
   void init() override
