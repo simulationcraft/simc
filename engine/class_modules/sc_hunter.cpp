@@ -7851,8 +7851,8 @@ void hunter_t::create_buffs()
 
   buffs.precise_shots =
     make_buff( this, "precise_shots", talents.precise_shots_buff )
-      -> set_default_value( talents.precise_shots -> effectN( 1 ).percent() )
-      -> set_reverse( true )
+      -> set_default_value( talents.precise_shots->effectN( 1 ).percent() )
+      -> set_initial_stack( talents.precise_shots_buff->max_stacks() )
       -> set_chance( talents.precise_shots.ok() );
 
   buffs.streamline =
@@ -8146,7 +8146,7 @@ void hunter_t::create_buffs()
 
   buffs.bombardier = 
     make_buff( this, "bombardier", talents.bombardier_buff )
-      ->set_reverse( true );
+      ->set_initial_stack( talents.bombardier_buff->max_stacks() );
 
   // Pet family buffs
 
