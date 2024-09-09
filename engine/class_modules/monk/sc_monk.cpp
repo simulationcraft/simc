@@ -1788,10 +1788,14 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
 
       if ( p()->buff.teachings_of_the_monastery->up() )
       {
+        int stacks = p()->buff.teachings_of_the_monastery->current_stack;
         p()->buff.teachings_of_the_monastery->expire();
 
-        if ( p()->rng().roll( p()->talent.conduit_of_the_celestials.xuens_guidance->effectN( 1 ).percent() ) )
-          p()->buff.teachings_of_the_monastery->trigger();
+        for ( int i = 0; i < stacks; ++i )
+        {
+          if ( p()->rng().roll( p()->talent.conduit_of_the_celestials.xuens_guidance->effectN( 1 ).percent() ) )
+            p()->buff.teachings_of_the_monastery->trigger();
+        }
       }
 
       if ( p()->specialization() == MONK_WINDWALKER )
