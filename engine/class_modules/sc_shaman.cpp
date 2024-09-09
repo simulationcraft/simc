@@ -920,7 +920,7 @@ public:
     player_talent_t echo_of_the_elements;
     // Row 4
     player_talent_t icefury;
-    player_talent_t unrelenting_calamity;
+    player_talent_t unrelenting_calamity; // Removed on PTR
     player_talent_t master_of_the_elements;
     // Row 5
     player_talent_t fusion_of_elements;
@@ -7463,11 +7463,20 @@ struct earthquake_base_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
+    auto eq_duration = data().duration();
+    if ( !p()->is_ptr() )
+    {
+      if ( p()->talent.unrelenting_calamity->ok() )
+      {
+        eq_duration += p()->talent.unrelenting_calamity->effectN(2).time_value();
+      }
+    }
+
     make_event<ground_aoe_event_t>(
         *sim, p(),
         ground_aoe_params_t()
           .target( execute_state->target )
-          .duration( data().duration() + p()->talent.unrelenting_calamity->effectN(2).time_value() )
+          .duration( eq_duration )
           .action( rumble ) );
   }
 };
@@ -10756,7 +10765,7 @@ void shaman_t::init_spells()
   talent.echo_of_the_elements   = _ST( "Echo of the Elements" );
   // Row 4
   talent.icefury                = _ST( "Icefury" );
-  talent.unrelenting_calamity   = _ST( "Unrelenting Calamity" );
+  talent.unrelenting_calamity   = _ST( "Unrelenting Calamity" ); // Removed on PTR
   talent.master_of_the_elements = _ST( "Master of the Elements" );
   // Row 5
   talent.fusion_of_elements     = _ST( "Fusion of Elements" );
@@ -12506,7 +12515,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.natures_fury );
   action.apply_affecting_aura( talent.thundershock );
   action.apply_affecting_aura( talent.totemic_surge );
-  action.apply_affecting_aura( talent.unrelenting_calamity );
+  action.apply_affecting_aura( talent.unrelenting_calamity ); // Removed on PTR
   action.apply_affecting_aura( talent.swelling_maelstrom );
   action.apply_affecting_aura( talent.crashing_storms );
   action.apply_affecting_aura( talent.healing_stream_totem );
