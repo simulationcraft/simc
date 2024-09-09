@@ -3703,7 +3703,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   else
     os << "<h3 class=\"toggle open\">Results, Spec and Gear</h3>\n";
 
-  os << "<div class=\"toggle-content\" style=\"min-height:110px\">\n";
+  os << "<div class=\"toggle-content\">\n";
 
   if ( p.sim->players_by_name.size() == 1 )
   {
@@ -3767,6 +3767,9 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     os << "</tr>\n"
        << "</table>\n";
   }
+
+  os << "</div>\n"
+        "<div class=\"flexwrap\">\n";
 
   // Absorb
   if ( cd.aps.mean() > 0 )
