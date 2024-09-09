@@ -131,9 +131,9 @@ void affliction( player_t* p )
   aoe->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react=2" );
   aoe->add_action( "malefic_rapture,if=(variable.cd_dots_up|variable.vt_ps_up)&(soul_shard>2|cooldown.oblivion.remains>10|!talent.oblivion)" );
   aoe->add_action( "malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react" );
-  aoe->add_action( "drain_soul,interrupt_if=cooldown.vile_taint.ready,if=talent.drain_soul&buff.nightfall.react&talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)" );
-  aoe->add_action( "drain_soul,interrupt_if=cooldown.vile_taint.ready,interrupt_global=1,if=talent.drain_soul&(talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3))|!talent.shadow_embrace" );
-  aoe->add_action( "shadow_bolt,if=buff.nightfall.react&talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)" );
+  aoe->add_action( "drain_soul,interrupt_if=cooldown.vile_taint.ready,if=talent.drain_soul&buff.nightfall.react&talent.shadow_embrace&(debuff.shadow_embrace.stack<4|debuff.shadow_embrace.remains<3)" );
+  aoe->add_action( "drain_soul,interrupt_if=cooldown.vile_taint.ready,interrupt_global=1,if=talent.drain_soul&(talent.shadow_embrace&(debuff.shadow_embrace.stack<4|debuff.shadow_embrace.remains<3))|!talent.shadow_embrace" );
+  aoe->add_action( "shadow_bolt,if=buff.nightfall.react&talent.shadow_embrace&(debuff.shadow_embrace.stack<2|debuff.shadow_embrace.remains<3)" );
 
   cleave->add_action( "call_action_list,name=ogcd" );
   cleave->add_action( "call_action_list,name=items" );
