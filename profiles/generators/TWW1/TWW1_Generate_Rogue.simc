@@ -79,29 +79,30 @@ off_hand=bloodkissed_kukri,id=212395,bonus_id=1540/10299,enchant=authority_of_th
 
 save=TWW1_Rogue_Outlaw.simc
 
-# rogue="TWW1_Rogue_Subtlety"
-# spec=subtlety
-# level=70
-# race=voidelf
-# role=attack
-# position=back
-# talents=1320031
+rogue="TWW1_Rogue_Subtlety"
+level=80
+race=orc
+role=attack
+position=back
+spec=subtlety
+talents=CUQAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAzyMzsMNmZZZGzMjhhZmxwY2GjZstNmxMzMGMWmtBAAAwMDGWMLzY2mhxCDLzsNtQbzCjB
 
-# head=umbrahide_helm,id=172317,bonus_id=7124/6716/6647/6650/1588/6935,gem_id=173129
-# neck=azurevenom_choker,id=180115,bonus_id=1592/6536/6646/6935,gem_id=173129
-# shoulders=soulblade_nightwings,id=188905,bonus_id=1505/7187
-# back=drape_of_mournful_melodies,id=189791,bonus_id=1524/7187
-# chest=soulblade_leathers,id=188903,bonus_id=1505/7187,enchant=eternal_skirmish
-# wrists=bands_of_the_undergrowth,id=178702,bonus_id=1592/6536/6646/6935,gem_id=173129
-# hands=soulblade_grasps,id=188907,bonus_id=1505/7187
-# waist=soulblade_baldric,id=188906,bonus_id=1505/7187/6935,gem_id=173129
-# legs=soulblade_leggings,id=188902,bonus_id=1498/7187
-# feet=umbrahide_treads,id=172315,bonus_id=6716/8127/6647/6650/1588,enchant=eternal_agility
-# finger1=ritual_commanders_ring,id=178781,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
-# finger2=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
-# trinket1=chains_of_domination,id=188252,bonus_id=1524/7187
-# trinket2=earthbreakers_impact,id=188264,bonus_id=1524/7187
-# main_hand=observers_umbral_shiv,id=191001,bonus_id=1524/7187,enchant=celestial_guidance
-# off_hand=edge_of_night,id=186398,bonus_id=7187/6652/1498/6646,enchant=sinful_revelation
+head=whispering_mask,id=221163,bonus_id=657/11143/5878/7981/10299,gem_id=213497
+neck=silken_advisors_favor,id=225575,bonus_id=1540/10299,gem_id=213743/213497
+shoulder=kareshi_phantoms_shoulderpads,id=212036,bonus_id=1540/10299
+back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960,crafted_stats=49/40
+chest=kareshi_phantoms_nexus_wraps,id=212041,bonus_id=1540/10299,enchant_id=7364,enchant=crystalline_radiance_3
+wrist=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/11144/10222/1485/1808,gem_id=213497,crafted_stats=49/40
+hands=kareshi_phantoms_grips,id=212039,bonus_id=1540/10299
+waist=devourers_taut_innards,id=212425,bonus_id=1540/10299,gem_id=213467
+legs=kareshi_phantoms_leggings,id=212037,bonus_id=1540/10299,enchant_id=7601,enchant=stormbound_armor_kit_3
+feet=fleeting_massacre_footpads,id=225591,bonus_id=1540/10299
+finger1=ring_of_earthen_craftsmanship,id=215135,bonus_id=10421/9633/8902/11144/10222/1485/8781/10520/8960,enchant_id=7346,,enchant=cursed_mastery_3,gem_id=213497,crafted_stats=49/40
+finger2=high_nerubian_signet,id=221141,bonus_id=657/11143/5878/7981/10299,enchant_id=7346,enchant=cursed_mastery_3,gem_id=213497/213497
+trinket1=void_reapers_contract,id=212456,bonus_id=1540/10299
+trinket2=treacherous_transmitter,id=221023,bonus_id=1540/10299
+main_hand=stitchfleshs_scalpel,id=178743,bonus_id=657/11143/5878/7981/10299,enchant_id=7460,enchant=authority_of_the_depths_3
+off_hand=everforged_stabber,id=222438,bonus_id=10421/9633/8902/11144/10222/1485,enchant_id=7460,enchant=authority_of_the_depths_3,crafted_stats=49/40
 
-# save=TWW1_Rogue_Subtlety.simc
+
+save=TWW1_Rogue_Subtlety.simc
