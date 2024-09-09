@@ -1,5 +1,5 @@
-// Spell text, wow build 11.0.2.56196
-static const std::array<spelltext_data_t, 26315> __spelltext_data { {
+// Spell text, wow build 11.0.2.56461
+static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23484,7 +23484,7 @@ static const std::array<spelltext_data_t, 26315> __spelltext_data { {
   { 440993, "When your health is brought below 35%, you gain a Second Wind, healing you for ${$441387s1*$441387t1*$441387d}% of your max health over $441387d.\r\n\r\nThis effect cannot occur more than once every $proccooldown sec.", 0, 0 },
   { 440995, "Colossal Might increases the damage of your Rend and Deep Wounds by $440989s2% per stack.\r\n", 0, 0 },
   { 440997, "$@spelldesc439669", 0, 0 },
-  { 441023, "Your spells and abilities have a chance to secrete $<effectCount> different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.", 0, 0 },
+  { 441023, "Your spells and abilities have a chance to secrete $?pc129946[][$<effectCount> ]different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.$?pc129945[][\r\n\r\nReach Accomplice reputation with each of the Severed Threads' pacts to secrete more pheromones.]", 0, 0 },
   { 441090, "$@spelldesc441092", 0, 0 },
   { 441091, "$@spelldesc441092", "$w1 Healing collected.", 0 },
   { 441092, "$s1% of your damage is collected as Vindication. Every $441091d, Vindication is consumed to heal up to $s2 allies within $441090A1 yards for the amount consumed.", 0, 0 },
@@ -23913,7 +23913,7 @@ static const std::array<spelltext_data_t, 26315> __spelltext_data { {
   { 444269, "$@spelldesc430714", 0, 0 },
   { 444274, "Activate the Lamplighter firearm, setting fire to moth eggs in front of the caster.", 0, 0 },
   { 444276, "Your healing spells have a high chance to cause you to inject yourself with a charge of $@spellname452816. Multiple charges may overlap.\r\n\r\nIf an ally drops below $s3% health, expel a charge to heal them for $s1. If unconsumed after $452816d, charges catalyze to grant you $s2 Intellect for $452565d instead.", 0, 0 },
-  { 444282, "Feed the Coagulum, redirecting $444271s4% of all healing done until ${$444271s1*$444271s3/100} healing has been consumed. Once sated, the Coagulum bursts to heal $444271s5 allies for ${($444271s1+($444271s1*$444271s3*.01*(1+$444271s6*.01)))/$444271s5}.\r\n\r\nLingering effluvia causes affected allies' next attacks to deal an additional ${444271s2/$444271s5} Shadow damage, increased based on overhealing done by the Coagulum.", "Redirecting $w1% of healing done until the Coagulum has consumed ${$w2} healing.", 0 },
+  { 444282, "Feed the Coagulum, redirecting $444271s4% of all healing done until ${$444271s1*$444271s3/100} healing has been consumed. Once sated, the Coagulum bursts to heal $444271s5 allies for ${($444271s1+($444271s1*$444271s3*.01*(1+$444271s6*.01)))/$444271s5}.\r\n\r\nLingering effluvia causes affected allies' next attacks to deal an additional $444271s2 Shadow damage, increased based on overhealing done by the Coagulum.", "Redirecting $w1% of healing done until the Coagulum has consumed ${$w2} healing.", 0 },
   { 444292, "Your attacks and abilities have a high chance to summon a scarab that retrieves a fortifying chunk of flesh from your target. Scarabs deal $s1 Physical damage and reduce your damage taken by 50% until $s2 damage has been prevented.\r\n\r\n", 0, 0 },
   { 444301, "Send your swarm into a frenzy, summoning $s1 scarabs over $d to ravage your foes. The number of scarabs is increased by your Haste.", "At the heart of the swarm.", 0 },
   { 444318, "Casting Engulf reignites all active Enkindles, increasing their remaining damage or healing over time by $s1%.", 0, "Red" },
@@ -24263,9 +24263,9 @@ static const std::array<spelltext_data_t, 26315> __spelltext_data { {
   { 449018, "$@spelldesc445336", 0, 0 },
   { 449019, "$@spelldesc445336", 0, 0 },
   { 449020, "$@spelldesc445336", 0, 0 },
-  { 449022, "$@spelldesc445339", 0, 0 },
-  { 449023, "$@spelldesc445339", "The storm surges, ready to be let loose upon your foes.", 0 },
-  { 449024, "$@spelldesc445339", 0, 0 },
+  { 449022, "$@spelldesc445336", 0, 0 },
+  { 449023, "$@spelldesc445336", "The storm surges, ready to be let loose upon your foes.", 0 },
+  { 449024, "$@spelldesc445336", 0, 0 },
   { 449055, "$@spelldesc445379", 0, 0 },
   { 449056, "$@spelldesc445379", 0, 0 },
   { 449059, "$@spelldesc445379", 0, 0 },
@@ -24358,7 +24358,7 @@ static const std::array<spelltext_data_t, 26315> __spelltext_data { {
   { 449596, "Spellfire Spheres can now stack up to $s2 times.", 0, 0 },
   { 449609, "$@spelldesc449582", "You may jump twice to dash forward a short distance.", 0 },
   { 449614, "A demonic entity now inhabits your soul, allowing you to detect if a Soul Shard has a Succulent Soul when it's generated. \r\n\r\nA Succulent Soul empowers your next $?s137043[Malefic Rapture, increasing its damage by $449793s2%, and unleashing your demonic soul to deal an additional $449801s1 Shadow damage.][Hand of Gul'dan, increasing its damage by $449793s3%, and unleashing your demonic soul to deal an additional $449801s1 Shadow damage.]", 0, 0 },
-  { 449619, "While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Addiction.\r\n\r\nWhen your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.\r\n\r\n$?c1[$@spellicon451038$@spellname451038:\r\n$@spellaura451038][$@spellicon383874 $@spellname383874:\r\n$@spellaura383874]", 0, 0 },
+  { 449619, "While under the effects of a casted $?c1[Arcane Surge][Combustion], you gain twice as many stacks of Mana Cascade.\r\n\r\nWhen your Arcane Phoenix expires, it empowers you, granting $?c1[Arcane Soul][Hyperthermia] for $?c1[${$s1/1000}][${$s3/1000}] sec, plus an additional $?c1[${$s2/1000}.1][${$s4/1000}.1] sec for each exceptional spell it had cast.\r\n\r\n$?c1[$@spellicon451038$@spellname451038:\r\n$@spellaura451038][$@spellicon383874 $@spellname383874:\r\n$@spellaura383874]", 0, 0 },
   { 449620, "$?s137043[Shadow Bolt and Drain Soul damage increased by $s2%. Nightfall increases the damage of Shadow Bolt and Drain Soul by an additional $s1%.][Shadow Bolt damage increased by $s2%. Power Siphon increases the damage of Demonbolt by an additional $s3%.]", 0, 0 },
   { 449624, "Unleashing your demonic soul bestows a fiendish entity unto the soul of its targets, dealing $450538o1 Shadow damage over $450538d.\r\n\r\nIf this effect is reapplied, any remaining damage will be added to the new Soul Anathema.", 0, 0 },
   { 449627, "Your Arcane Phoenix will Spellsteal when it is summoned and when it expires.", 0, 0 },
@@ -24472,6 +24472,7 @@ static const std::array<spelltext_data_t, 26315> __spelltext_data { {
   { 450432, "Paralysis now removes all Enrage effects from its target.", 0, 0 },
   { 450448, "Reduces the cooldown of Ring of Peace by ${$s1/-1000} sec and Song of Chi-Ji's cast time is reduced by ${$s2/-1000}.1 sec.", 0, 0 },
   { 450453, "$@spelldesc446764", "Your next melee attack will inflict additional Fire damage.", 0 },
+  { 450461, "Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].$?a383669[\r\n\r\nPyroblast's initial damage is increased by $383669s1% when the target is above $383669s3% health or below $383669s2% health.][]", 0, 0 },
   { 450462, "Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage. Deals reduced damage beyond $s3 targets.$?a205037[\r\n\r\nLeaves behind a patch of flames that burns enemies within it for ${8*$205472s1} Fire damage over $205470d.][]", "Movement speed slowed by $s2%.", 0 },
   { 450499, "Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. ", 0, 0 },
   { 450503, "The duration of snare effects on you is reduced by $s1%.", 0, 0 },
@@ -24707,6 +24708,11 @@ static const std::array<spelltext_data_t, 26315> __spelltext_data { {
   { 451905, "Deals a small amount of Nature damage to the target.", 0, 0 },
   { 451910, "Deals a small amount of Nature damage to the target.", 0, 0 },
   { 451911, "Deals a small amount of Nature damage to the target.", 0, 0 },
+  { 451916, "Increases Haste by $s1.", "Haste increased by $w1.", 0 },
+  { 451917, "Increases Versatility by $s1.", "Versatility increased by $w1.", 0 },
+  { 451918, "Increases Critical Strike by $s1.", "Critical strike increased by $w1.", 0 },
+  { 451920, "Increases Mastery by $s1.", "Mastery increased by $w1.", 0 },
+  { 451921, "Increases Stamina by $s1.", "Stamina increased by $w1.", 0 },
   { 451924, "$@spelldesc443529", "Absorbs $s2% of damage taken, up to $w1.", 0 },
   { 451925, "Coat your weapon in an oil that emits a warm light. The oil has a chance to resonate with your healing, healing an additional $451933s1 Health to the target.\r\n\r\nLasts $M2 min.", 0, 0 },
   { 451926, "Coat your weapon in an oil that emits a warm light. The oil has a chance to resonate with your healing, healing an additional $451928s1 Health to the target.\r\n\r\nLasts $M2 min.\r\n", 0, 0 },
@@ -25259,6 +25265,7 @@ static const std::array<spelltext_data_t, 26315> __spelltext_data { {
   { 455434, "$@spelldesc455432", 0, 0 },
   { 455435, "Your spells have a chance to bring the candle to life, summoning a waxen ally to light up your enemies.", 0, 0 },
   { 455436, "The Core's unstable energies will randomly buff one of your secondary stats for $s1. This lasts between 10 and 30 sec before randomly changing to another stat.", 0, 0 },
+  { 455441, 0, "Increases Mastery Rating by $w1.", 0 },
   { 455443, "$@spelldesc455435", 0, 0 },
   { 455444, "$@spelldesc455419", "Critical Strike increased by $w1.", 0 },
   { 455445, "$@spelldesc455435", 0, 0 },
@@ -25270,6 +25277,9 @@ static const std::array<spelltext_data_t, 26315> __spelltext_data { {
   { 455451, "$@class be nimble, $@class be quick. $@class invoke the power of the candlestick to increase movement speed by $s1% and Haste by $s2 for $d.", "Increased movement speed and haste.", 0 },
   { 455452, "Your harmful spells have a high chance to resonate with a dark ritual, storing magic within the emblem.", 0, 0 },
   { 455453, "$@spelldesc455435", 0, 0 },
+  { 455454, 0, "Increases Critical Strike Rating by $w1.", 0 },
+  { 455455, 0, "Increases Haste Rating by $w1.", 0 },
+  { 455456, 0, "Increases Versatility Rating by $w1.", 0 },
   { 455461, "When you remove an effect with Soothe or $?s88423[Nature's Cure][Remove Corruption], gain a combo point and heal for $s1% of your maximum health. If you are at full health an injured party or raid member will be healed instead.", 0, 0 },
   { 455464, "$@spelldesc455467", "A dark ritual is storing energy, ready to be unleashed.", 0 },
   { 455465, "Summon a Gloomhound to fight for you for the next $d.", 0, 0 },
@@ -25301,6 +25311,7 @@ static const std::array<spelltext_data_t, 26315> __spelltext_data { {
   { 455512, "The idol draws upon unholy energy to prevent fatal damage on players, instead healing them for an amount equal to $455514s1% of their maximum health and turning them Undead.\r\n\r\nWhile Undead, they cannot be healed, lose $456699s1% of their maximum health every $455516t1 sec, and gain $455516s2% damage and healing done.", 0, "Rank 1/4" },
   { 455514, "$@spelldesc455512", 0, 0 },
   { 455516, "$@spelldesc455512", "Turned Undead, preventing all healing, losing $456699s1% maximum health every $t sec, and increasing damage and healing done by $w2%.", 0 },
+  { 455521, "$?a455524[|cnRED_FONT_COLOR:Modified by Cool Sunset Bracers.|r\r\n\r\nHealing spells and abilities have the chance to cause your tailored threads to radiate with Woven Duskweave granting $s2 Haste for $457630d.][$@spelldesc455522]", 0, 0 },
   { 455522, "Healing spells and abilities have the chance to cause your tailored threads to radiate with Woven Dawnweave granting $s2  Mastery for $d.", 0, 0 },
   { 455523, "Damaging spells and abilities have the chance to cause your tailored threads to radiate with Woven Duskweave granting $s2  Haste for $d.", 0, 0 },
   { 455524, "Cooling sunset spellthreads alter the effects of Woven Dawnweave to become Woven Duskweave.", 0, 0 },
@@ -25374,6 +25385,7 @@ static const std::array<spelltext_data_t, 26315> __spelltext_data { {
   { 456142, "$@spelldesc453672", "Eruption damage increased by $w1%.", 0 },
   { 456156, "Throw the fish back into the water to gain $s2 Fishing for $d.\r\n\r\nThrowing multiple fish can extend this buff up to $M1 min.", "Fishing skill increased by $w2.", 0 },
   { 456157, "Throw this fish back into the water and gain a stack of Bloody Chum attracting Sanguine Dogfish to your location for $d.\r\n\r\nThis effect increases your odds by $s1% and stacks up to 10 times. Movement will cause your scent to be lost and cancel the effect.", "Increasing your chance to find Sanguine Dogfish by $w2%. \r\n\r\nMovement will cause your scent to be lost and cancel this effect.", 0 },
+  { 456158, "Toss the Whispering Stargazer into the waters of Azj-Kahet and awaken the fish that slumber below.", "The whispers grow...", 0 },
   { 456164, "The cooldown of $@spellname423395 is reduced by an additional $M1% when gathering herbs in Khaz Algar.\r\n\r\n$?PC117340[|cnWHITE_FONT_COLOR:Equip effect requires Khaz Algar Herbalism (1)|R][|cnRED_FONT_COLOR:Equip effect requires Khaz Algar Herbalism (1)|R]\r\n", 0, 0 },
   { 456216, "|cnRED_FONT_COLOR:Curses any Angler unfortunate enough to reel this in.|R", "Cursed by the soul of a Ghoulfish, your Fishing Rod feels foreign, heavy, and incapable of catching anything.\r\n\r\nFinding a way to remove the Cursed Ghoulfish from your inventory will cause the curse to fade.", 0 },
   { 456220, "$@spelldesc453671", 0, 0 },
@@ -25433,6 +25445,8 @@ static const std::array<spelltext_data_t, 26315> __spelltext_data { {
   { 456584, "Smack your enemy with the Hammerfish and stun it for $456585d. Only usable outdoors in Khaz Algar.", 0, 0 },
   { 456585, 0, "Hammerfished.", 0 },
   { 456586, "Throw the fish back into the water to gain $s2 Perception for $d.\r\n\r\nThrowing multiple fish can extend this buff up to $M1 min.", "Khaz Algar Perception increased by $w2.", 0 },
+  { 456587, "Throw this fish back into the water for and gain a stack of Royal Chum, protecting the waters around you from Corrupted Ghoulfish and increasing the likelihood to catch Queen's Lurefish for $d.\r\n\r\nThrowing multiple Regal Dottyback can extend this buff up to $M1 min.", "The Regal Dottyback wards Corrupted Ghoulfish from the water around you and increases your chance to find Queen's Lurefish by $s3%.", 0 },
+  { 456592, "Open the contents of the Huskfish's stomach.", 0, 0 },
   { 456596, 0, "Perception increased by $s1.", 0 },
   { 456620, "$@spelldesc446835", "$@spelldesc446835", 0 },
   { 456640, "$@spelldesc452487", 0, 0 },
@@ -25910,11 +25924,12 @@ static const std::array<spelltext_data_t, 26315> __spelltext_data { {
   { 459136, "$@spelldesc459138", 0, 0 },
   { 459137, "$@spelldesc459138", "$@spelldesc459138", 0 },
   { 459138, "Randomly while in combat a bloodbeast will attach itself to Brann, periodically launching morsels of itself near players, granting $@spellname459133 upon walking through them.\r\n\r\n$@spellicon459133 $@spellname459133\r\n$@spelldesc459133", 0, "Rank 2/4" },
+  { 459139, "Increases damage and healing done by $s1%, and reduces maximum health by $s3% for $d.", "Increases damage and healing done by $w1%, and reduces maximum health by $w3%.", 0 },
   { 459140, "$@spelldesc459144", 0, 0 },
   { 459141, "$@spelldesc459144", 0, 0 },
   { 459142, "$@spelldesc459144", 0, 0 },
   { 459143, "$@spelldesc459144", "$@spelldesc459144", 0 },
-  { 459144, "Randomly while in combat a bloodbeast will attach itself to Brann, periodically launching morsels of itself near players, granting $@spellname459133 upon walking through them.\r\n\r\n$@spellicon459133 $@spellname459133\r\n$@spelldesc459133", 0, "Rank 3/4" },
+  { 459144, "Randomly while in combat a bloodbeast will attach itself to Brann, periodically launching morsels of itself near players, granting $@spellname459139 upon walking through them.\r\n\r\n$@spellicon459139 $@spellname459139\r\n$@spelldesc459139", 0, "Rank 3/4" },
   { 459145, "Increases damage and healing done by $s1%, and reduces maximum health by $s3% for $d.", "Increases damage and healing done by $w1%, and reduces maximum health by $w3%.", 0 },
   { 459146, "$@spelldesc459150", 0, 0 },
   { 459147, "$@spelldesc459150", 0, 0 },
@@ -26240,12 +26255,14 @@ static const std::array<spelltext_data_t, 26315> __spelltext_data { {
   { 462992, "$@spelldesc198067", "Flame Shock deals damage $s2% faster. $?$w3!>0[Newly applied Flame Shocks have $w3% increased duration.][]", 0 },
   { 462993, "$@spelldesc192249", 0, 0 },
   { 463003, "$@spelldesc453575", 0, 0 },
+  { 463059, "Gain $@spellname453575 every $457594t seconds spent in combat.\r\n\r\n$@spellname453575 grants $s1 of a random secondary stat for $457596d, stacking up to $457594s1 times.\r\n\r\n$?a#[][]", 0, 0 },
   { 463073, "$@spelldesc431425", "Linked with a Dawnlight, causing $431911s1 damage to enemies or $431911s2 healing to allies who touch the link.", 0 },
   { 463074, "$@spelldesc431425", 0, 0 },
   { 463075, "$@spelldesc431425", 0, 0 },
   { 463095, "Gain $@spellname453575 every $457594t seconds spent in combat.\r\n\r\n$@spellname453575 grants $s1 of a random secondary stat for $457596d, stacking up to $457594s1 times.", 0, 0 },
   { 463108, "Your damaging spells and abilities have the chance to ignite your target with Radiant Focus for  $454560d. \r\n\r\nAfter dealing up to $454560s1 damage to the target the focused energies ignite you with Radiance, granting between ${$s1*.5} to $s1 of your highest Secondary stat based on damage dealt for $454560d. \r\n", 0, 0 },
   { 463192, "$@spelldesc444483", "$@auracaster's Splinters will deal additional damage to nearby enemies.", 0 },
+  { 463232, "Every $455535t seconds in combat take 1% of your maximum Health as Nature damage and gain a stack of Symbiosis, granting $s2 Versatility for $455536d  stacking up to 5 times.\r\n\r\nThis is a Nerubian embellishment.", 0, 0 },
   { 463301, "Summons a Vanquished Tentacle to your aid for $d.", 0, 0 },
   { 463323, "$@spelldesc453812", "$@spelldesc453812", 0 },
   { 463351, "Deal $s1 Nature damage to your target, and ${$m1*$m2/100} Nature damage to other enemy targets within $A1 yds of your target.", 0, 0 },
@@ -26315,13 +26332,20 @@ static const std::array<spelltext_data_t, 26315> __spelltext_data { {
   { 466876, "Add the Xal'atath's Bargain: Devour affix to a Mythic Keystone.", 0, 0 },
   { 466877, "Add the Xal'atath's Guile affix to a Mythic Keystone.", 0, 0 },
   { 466879, "Add the Challenger's Peril affix to a Mythic Keystone.", 0, 0 },
+  { 467059, "Finishing move that dispatches the enemy, dealing damage per combo point:\r\n   1 point  : ${$m1*1} damage\r\n   2 points: ${$m1*2} damage\r\n   3 points: ${$m1*3} damage\r\n   4 points: ${$m1*4} damage\r\n   5 points: ${$m1*5} damage$?s193531|((s394320|s394321)&!s193531)[\r\n   6 points: ${$m1*6} damage][]$?s193531&(s394320|s394321)[\r\n   7 points: ${$m1*7} damage][]", 0, 0 },
+  { 468655, "Launches a bolt of frostfire at the enemy, causing $s1 Frostfire damage, slowing movement speed by $s3%, and causing an additional $o2 Frostfire damage over $d.\r\n\r\nFrostfire Bolt generates stacks for both Fire Mastery and Frost Mastery.", "Movement speed reduced by $w3% and receiving $w2 damage every $t2 sec.", 0 },
+  { 469347, "$@spelldesc358267", 0, 0 },
+  { 469637, "$@spelldesc457058", "Your next $?c1[Envenom][Eviscerate] cast with maximum combo points is guaranteed to critically strike, deal $w2% additional damage, and apply $w3 stacks of Deathstalker's Mark to the target.", 0 },
+  { 469991, "Place a Sigil of Flame at the target location that activates after $d.\r\n\r\nDeals $204598s1 $@spelldesc395020 damage, and an additional $204598o3 $@spelldesc395020 damage over $204598d, to all enemies affected by the sigil.\r\n\r\n|CFFffffffGenerates $389787s1 Fury.|R", "Sigil of Flame is active.", 0 },
+  { 469995, "$@spelldesc452402", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.0.2.56196
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 11.0.2.56461
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  441023,  0, "Your spells and abilities have a chance to secrete $<effectCount> different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.", "Your spells and abilities have a chance to secrete $?pc129946[][$<effectCount> ]different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.$?pc129945[][\r\n\r\nReach Accomplice reputation with each of the Severed Threads' pacts to secrete more pheromones.]" },
 } };
 
-// Spell description variables, wow build 11.0.2.56196
+// Spell description variables, wow build 11.0.2.56461
 static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26909,7 +26933,7 @@ static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {  462620, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.2.56196
+// spelldesc_vars hotfix entries, wow build 11.0.2.56461
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

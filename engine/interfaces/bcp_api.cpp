@@ -390,31 +390,6 @@ void parse_file( sim_t* sim, const std::string& path, rapidjson::Document& d )
 
 // parse_talents ============================================================
 
-void parse_subtree( player_t* p, const rapidjson::Value& talents )
-{
-  for ( auto talent_idx = 0U, talent_end = talents.Size(); talent_idx < talent_end; ++talent_idx )
-  {
-    const auto& talent_data = talents[ talent_idx ];
-
-    if ( !talent_data.HasMember( "tooltip" ) || !talent_data[ "tooltip" ].HasMember( "talent" )
-        || !talent_data[ "tooltip" ][ "talent" ].HasMember( "id" ) )
-    {
-      throw std::runtime_error( "Unable to determine trait definition id for talent parsing" );
-    }
-    if ( !talent_data.HasMember( "rank" ) )
-    {
-      throw std::runtime_error( "Unable to determine rank for talent parsing" );
-    }
-
-    auto definition_id = talent_data[ "tooltip" ][ "talent" ][ "id" ].GetUint();
-    auto trait = trait_data_t::find_by_trait_definition( definition_id, p->dbc->ptr );
-    auto rank = talent_data[ "rank" ].GetUint();
-
-    p->player_traits.emplace_back( static_cast<talent_tree>( trait->tree_index ), trait->id_trait_node_entry,
-        as<unsigned>( rank ) );
-  }
-}
-
 void parse_talents( player_t* p, const player_spec_t& spec_info, const std::string& url, cache::behavior_e caching )
 {
   rapidjson::Document spec;
@@ -487,15 +462,9 @@ void parse_talents( player_t* p, const player_spec_t& spec_info, const std::stri
       }
 
       p->talents_str = loadout[ "talent_loadout_code" ].GetString();
-
       p->player_traits.clear();
-
-      parse_subtree( p, loadout[ "selected_class_talents" ] );
-      parse_subtree( p, loadout[ "selected_spec_talents" ] );
     }
   }
-
-  p->recreate_talent_str(talent_format::ARMORY );
 }
 
 // parse_items ==============================================================

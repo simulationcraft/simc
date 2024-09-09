@@ -1000,59 +1000,33 @@ statistical_data_t metric_data( const player_t* player, scale_metric_e metric )
   }
 }
 
-void save_output_data( profile_set_t& profileset, const player_t* parent_player, const player_t* player, const std::string& option )
+void save_output_data( profile_set_t& profileset, const player_t* parent_player, const player_t* player,
+                       const std::string& option )
 {
   // TODO: Make an enum to proper use a switch instead of if/else
-  if ( option == "race") {
-    if ( parent_player -> race != player -> race )
+  if ( option == "race" )
+  {
+    if ( parent_player->race != player->race )
     {
-      profileset.output_data().race( player -> race );
+      profileset.output_data().race( player->race );
     }
-  } else if ( option == "talents" ) {
-    if ( parent_player -> talents_str != player -> talents_str ) {
-      std::vector<const talent_data_t*> saved_talents;
-      for ( auto talent_row = 0; talent_row < MAX_TALENT_ROWS; talent_row++ )
-      {
-        const auto& talent_col = player -> talent_points->choice( talent_row );
-        if ( talent_col == -1 )
-        {
-          continue;
-        }
-
-        auto* talent_data = talent_data_t::find( player -> type, talent_row, talent_col, player -> specialization(), player -> dbc->ptr );
-        if ( talent_data == nullptr )
-        {
-          continue;
-        }
-
-        const auto& p_talent_col = parent_player -> talent_points->choice( talent_row );
-        auto* p_talent_data = talent_data_t::find( parent_player -> type, talent_row, talent_col, parent_player -> specialization(), parent_player -> dbc->ptr );
-        if ( p_talent_col == -1 || p_talent_data == nullptr || p_talent_col != talent_col )
-        {
-          saved_talents.push_back( talent_data );
-        }
-      }
-      if ( !saved_talents.empty() )
-      {
-        profileset.output_data().talents( saved_talents );
-      }
-    }
-  } else if ( option == "gear" ) {
-    const auto& parent_items = parent_player -> items;
-    const auto& items = player -> items;
+  }
+  else if ( option == "gear" )
+  {
+    const auto& parent_items = parent_player->items;
+    const auto& items = player->items;
     std::vector<profile_output_data_item_t> saved_gear;
     for ( slot_e slot = SLOT_MIN; slot < SLOT_MAX; slot++ )
     {
       const auto& item = items[ slot ];
-      if ( ! item.active() || ! item.has_stats() )
+      if ( !item.active() || !item.has_stats() )
       {
         continue;
       }
       const auto& parent_item = parent_items[ slot ];
-      if ( parent_item.parsed.data.id != item.parsed.data.id ) {
-        profile_output_data_item_t saved_item {
-          item.slot_name(), item.parsed.data.id, item.item_level()
-        };
+      if ( parent_item.parsed.data.id != item.parsed.data.id )
+      {
+        profile_output_data_item_t saved_item{ item.slot_name(), item.parsed.data.id, item.item_level() };
 
         // saved_item.bonus_id( item.parsed.bonus_id );
 
@@ -1063,8 +1037,10 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
     {
       profileset.output_data().gear( saved_gear );
     }
-  } else if ( option == "stats" ) {
-    const auto& buffed_stats = player -> collected_data.buffed_stats_snapshot;
+  }
+  else if ( option == "stats" )
+  {
+    const auto& buffed_stats = player->collected_data.buffed_stats_snapshot;
 
     // primary stats
 
@@ -1075,34 +1051,36 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
 
     // secondary stats
 
-    profileset.output_data().crit_rating( util::floor( player -> composite_melee_crit_rating() > player -> composite_spell_crit_rating()
-                       ? player -> composite_melee_crit_rating()
-                       : player -> composite_spell_crit_rating() ) );
+    profileset.output_data().crit_rating(
+      util::floor( player->composite_melee_crit_rating() > player->composite_spell_crit_rating()
+                     ? player->composite_melee_crit_rating()
+                     : player->composite_spell_crit_rating() ) );
     profileset.output_data().crit_pct( buffed_stats.attack_crit_chance > buffed_stats.spell_crit_chance
-                       ? buffed_stats.attack_crit_chance
-                       : buffed_stats.spell_crit_chance );
+                                         ? buffed_stats.attack_crit_chance
+                                         : buffed_stats.spell_crit_chance );
 
-    profileset.output_data().haste_rating( util::floor( player -> composite_melee_haste_rating() > player -> composite_spell_haste_rating()
-                       ? player -> composite_melee_haste_rating()
-                       : player -> composite_spell_haste_rating() ) );
+    profileset.output_data().haste_rating(
+      util::floor( player->composite_melee_haste_rating() > player->composite_spell_haste_rating()
+                     ? player->composite_melee_haste_rating()
+                     : player->composite_spell_haste_rating() ) );
 
     double attack_haste_pct = 1 / buffed_stats.attack_haste - 1;
     double spell_haste_pct = 1 / buffed_stats.spell_haste - 1;
     profileset.output_data().haste_pct( attack_haste_pct > spell_haste_pct ? attack_haste_pct : spell_haste_pct );
 
-    profileset.output_data().mastery_rating( util::floor( player -> composite_mastery_rating() ) );
+    profileset.output_data().mastery_rating( util::floor( player->composite_mastery_rating() ) );
     profileset.output_data().mastery_pct( buffed_stats.mastery_value );
 
-    profileset.output_data().versatility_rating( util::floor( player -> composite_damage_versatility_rating() ) );
+    profileset.output_data().versatility_rating( util::floor( player->composite_damage_versatility_rating() ) );
     profileset.output_data().versatility_pct( buffed_stats.damage_versatility );
 
     // tertiary stats
 
-    profileset.output_data().avoidance_rating( player -> composite_avoidance_rating() );
+    profileset.output_data().avoidance_rating( player->composite_avoidance_rating() );
     profileset.output_data().avoidance_pct( buffed_stats.avoidance );
-    profileset.output_data().leech_rating( player -> composite_leech_rating() );
+    profileset.output_data().leech_rating( player->composite_leech_rating() );
     profileset.output_data().leech_pct( buffed_stats.leech );
-    profileset.output_data().speed_rating( player -> composite_spell_haste_rating() );
+    profileset.output_data().speed_rating( player->composite_spell_haste_rating() );
     profileset.output_data().speed_pct( buffed_stats.run_speed );
 
     profileset.output_data().corruption( buffed_stats.corruption );

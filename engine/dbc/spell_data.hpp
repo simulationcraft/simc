@@ -21,6 +21,7 @@
 class dbc_t;
 struct item_t;
 struct player_t;
+struct special_effect_t;
 struct spell_data_t;
 struct spelleffect_data_t;
 struct spelllabel_data_t;
@@ -367,6 +368,11 @@ struct spelleffect_data_t
   double delta( const item_t& item ) const { return delta( &item ); }
   double min( const item_t& item ) const { return min( &item ); }
   double max( const item_t& item ) const { return max( &item ); }
+
+  double average( const special_effect_t& effect ) const;
+  double delta( const special_effect_t& effect ) const;
+  double min( const special_effect_t& effect ) const;
+  double max( const special_effect_t& effect ) const;
 
   bool override_field( util::string_view field, double value );
   double get_field( util::string_view field ) const;

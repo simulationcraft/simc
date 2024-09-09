@@ -30,7 +30,7 @@
 
 shaman="PR_Shaman_Enhancement_Storm²"
 level=80
-race=troll
+race=goblin
 spec=enhancement
 role=attack
 position=back
@@ -57,11 +57,11 @@ save=PR_Shaman_Enhancement_Storm.simc
 
 shaman="PR_Shaman_Enhancement"
 level=80
-race=troll
+race=goblin
 spec=enhancement
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzyMzMYmZYGmFzsMDAAAAAAAAAAsBLYWmxMzsoZZZYZYmpBLAYWmMDmlFmZmxYmZ2M2mZmsgxCjBAYG
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzyMzMYmZYGmNzsMDAAAAAAAAAAsBwYGDDZBWGGawCAmlJzgZZhZmZMmZmNjtZmJLYswYAAmB
 
 head=cryptbound_headpiece,id=221156,ilevel=593
 neck=emergency_stop_keychain,id=221077,ilevel=593

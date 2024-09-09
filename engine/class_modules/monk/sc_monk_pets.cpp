@@ -121,39 +121,6 @@ struct pet_action_base_t : public BASE
       o()->active_actions.gale_force->base_dd_min = o()->active_actions.gale_force->base_dd_max = amount;
       o()->active_actions.gale_force->execute_on_target( s->target );
     }
-
-    if ( !o()->sets->has_set_bonus( MONK_BREWMASTER, T31, B4 ) )
-      return;
-
-    if ( s->action->school == SCHOOL_SHADOWFLAME )
-    {
-      double current_value = o()->buff.brewmaster_t31_4p_accumulator->check_value();
-      double result        = s->result_amount * o()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 2 ).percent();
-      double increase      = std::fmin( current_value + result,
-                                        o()->max_health() );  // accumulator is capped at the player's current max hp
-      o()->buff.brewmaster_t31_4p_accumulator->trigger( 1, increase );
-      o()->sim->print_debug( "t31 4p accumulator increased by {} to {}", result, increase );
-    }
-
-    switch ( s->action->id )
-    {
-      // Blacklist
-      case 425299:  // charred dreams
-      case 325217:  // bonedust brew
-        break;
-      default:
-        // This value is not presented in any spell data and was found via logs.
-        if ( o()->rng().roll( 0.5 ) )
-        {
-          double amt = s->result_amount * o()->sets->set( MONK_BREWMASTER, T31, B4 )->effectN( 1 ).percent();
-          o()->active_actions.charred_dreams_dmg_4p->target = s->target;
-          o()->active_actions.charred_dreams_dmg_4p->base_dd_min =
-              o()->active_actions.charred_dreams_dmg_4p->base_dd_max = amt;
-          o()->active_actions.charred_dreams_dmg_4p->execute();
-          o()->sim->print_debug( "triggering charred dreams 4p from id {}, base damage: {}, charred dreams damage: {}",
-                                 s->action->id, s->result_amount, amt );
-        }
-    }
   }
 
   void tick( dot_t *dot ) override
@@ -734,7 +701,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_blackout_kick_t( storm_earth_and_fire_pet_t *player )
       : sef_melee_attack_t( "blackout_kick", player, player->o()->baseline.monk.blackout_kick )
     {
-      aoe = 1 + (int)o()->shared.shadowboxing_treads->effectN( 1 ).base_value();
+      aoe = 1 + (int)o()->talent.windwalker.shadowboxing_treads->effectN( 1 ).base_value();
 
       if ( player->o()->talent.windwalker.teachings_of_the_monastery->ok() )
       {
@@ -850,40 +817,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       weapon_power_mod        = 0;
 
       tick_action = new sef_fists_of_fury_tick_t( player );
-    }
-
-    // sef_action_base_t uses the source action's tick_time instead of the sef_action.
-    // Recalculate tick_time here.
-    timespan_t tick_time( const action_state_t *s ) const override
-    {
-      auto base = base_tick_time.base;
-
-      auto mul = base_tick_time.pct_mul * tick_time_pct_multiplier( s );
-      if ( mul <= 0 )
-        return 0_ms;
-
-      base += base_tick_time.flat_add + tick_time_flat_modifier( s );
-      if ( base <= 0_ms )
-        return 0_ms;
-
-      return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
-    }
-
-    // sef_action_base_t uses the source action's composite_dot_duration, which ignores tick_time override made above.
-    // Recalculate composite_dot_duration here.
-    timespan_t composite_dot_duration( const action_state_t *s ) const override
-    {
-      auto base = dot_duration.base;
-
-      auto mul = dot_duration.pct_mul * dot_duration_pct_multiplier( s );
-      if ( mul <= 0 )
-        return 0_ms;
-
-      base += dot_duration.flat_add + dot_duration_flat_modifier( s );
-      if ( base <= 0_ms )
-        return 0_ms;
-
-      return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
     }
   };
 
@@ -1179,40 +1112,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       weapon_power_mod        = 0;
 
       tick_action = new sef_celestial_conduit_tick_t( player );
-    }
-
-    // sef_action_base_t uses the source action's tick_time instead of the sef_action.
-    // Recalculate tick_time here.
-    timespan_t tick_time( const action_state_t *s ) const override
-    {
-      auto base = base_tick_time.base;
-
-      auto mul = base_tick_time.pct_mul * tick_time_pct_multiplier( s );
-      if ( mul <= 0 )
-        return 0_ms;
-
-      base += base_tick_time.flat_add + tick_time_flat_modifier( s );
-      if ( base <= 0_ms )
-        return 0_ms;
-
-      return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
-    }
-
-    // sef_action_base_t uses the source action's composite_dot_duration, which ignores tick_time override made above.
-    // Recalculate composite_dot_duration here.
-    timespan_t composite_dot_duration( const action_state_t *s ) const override
-    {
-      auto base = dot_duration.base;
-
-      auto mul = dot_duration.pct_mul * dot_duration_pct_multiplier( s );
-      if ( mul <= 0 )
-        return 0_ms;
-
-      base += dot_duration.flat_add + dot_duration_flat_modifier( s );
-      if ( base <= 0_ms )
-        return 0_ms;
-
-      return timespan_t::from_millis( std::round( static_cast<double>( base.total_millis() ) * mul ) );
     }
   };
 
@@ -1795,145 +1694,6 @@ public:
   }
 };
 
-// ==========================================================================
-// Spirit of Forged Vermillion
-// ==========================================================================
-struct spirit_of_forged_vermillion_t : public monk_pet_t
-{
-private:
-  struct shadowflame_damage_t : public pet_spell_t
-  {
-    shadowflame_damage_t( spirit_of_forged_vermillion_t *p, action_t *source_action )
-      : pet_spell_t( source_action->name_str, p, source_action->s_data )
-    {
-      // Inherit some relevant owner options
-      may_crit         = source_action->may_crit;
-      weapon_power_mod = source_action->weapon_power_mod;
-      spell_power_mod  = source_action->spell_power_mod;
-      attack_power_mod = source_action->attack_power_mod;
-      amount_delta     = source_action->amount_delta;
-
-      // Override inherited owner options
-      background = true;
-      quiet      = false;
-
-      // Inherit action name from owner for channeled abilities
-      if ( source_action->parent_dot && o()->find_action( source_action->parent_dot->name_str )->channeled )
-        name_str_reporting = source_action->parent_dot->name_str;
-
-      // This damage is triggered when the player deals damage so we can ignore GCD tracking
-      // set this to zero on initializiation to prevent any potential headaches
-      trigger_gcd        = timespan_t::zero();
-      cooldown->duration = timespan_t::zero();
-    }
-  };
-
-  // Pet spell vector
-  std::vector<shadowflame_damage_t *> sf_action_list;
-
-  struct melee_t : public pet_melee_t
-  {
-    melee_t( util::string_view n, spirit_of_forged_vermillion_t *player, weapon_t *weapon )
-      : pet_melee_t( n, player, weapon )
-    {
-      background = repeating = may_crit = may_glance = true;
-      this->weapon                                   = weapon;
-      school                                         = SCHOOL_PHYSICAL;
-      weapon_multiplier                              = 1.0;
-      base_execute_time                              = weapon->swing_time;
-      trigger_gcd                                    = timespan_t::zero();
-      special                                        = false;
-    }
-  };
-
-  struct auto_attack_t : public pet_auto_attack_t
-  {
-    auto_attack_t( spirit_of_forged_vermillion_t *player, util::string_view options_str ) : pet_auto_attack_t( player )
-    {
-      parse_options( options_str );
-
-      player->main_hand_attack = new melee_t( "auto_attack_mh", player, &( player->main_hand_weapon ) );
-      player->off_hand_attack  = new melee_t( "auto_attack_oh", player, &( player->off_hand_weapon ) );
-    }
-  };
-
-public:
-  spirit_of_forged_vermillion_t( monk_t *owner )
-    : monk_pet_t( owner, "spirit_of_forged_vermillion", PET_MONK, false, true )
-  {
-    npc_id = owner->tier.t30.shadowflame_spirit_summon->effectN( 1 ).misc_value1();
-    _spec  = owner->specialization();
-
-    main_hand_weapon.type       = WEAPON_SWORD;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.6 );
-    off_hand_weapon.type        = WEAPON_SWORD;
-    off_hand_weapon.swing_time  = timespan_t::from_seconds( 2.6 );
-    owner_coeff.ap_from_ap      = 1.00;
-  }
-
-  void init_action_list() override
-  {
-    action_list_str = "auto_attack";
-
-    pet_t::init_action_list();
-  }
-
-  void init_spells() override
-  {
-    // Initialize pet spells
-    for ( auto action : owner->action_list )
-      if ( action->data().affected_by( o()->tier.t30.shadowflame_spirit->effectN( 2 ) ) )
-        sf_action_list.push_back( new shadowflame_damage_t( this, action ) );
-
-    monk_pet_t::init_spells();
-  }
-
-  void trigger_attack( action_state_t *s )
-  {
-    if ( s->result_amount <= 0 )
-      return;
-
-    auto pet_action = range::find_if(
-        this->sf_action_list, [ s ]( shadowflame_damage_t *pet_action ) { return pet_action->id == s->action->id; } );
-
-    if ( pet_action == this->sf_action_list.end() )
-      return;
-
-    // Copy the owner state
-    ( *pet_action )->base_dd_multiplier = s->da_multiplier;
-    ( *pet_action )->base_td_multiplier = s->ta_multiplier;
-
-    if ( o()->buff.storm_earth_and_fire->up() && o()->affected_by_sef( s->action->data() ) )
-    {
-      // The pet damage is not modified by SEF, so we need to divide here to bring the inheritied modifier back to
-      // normal levels
-      ( *pet_action )->base_dd_multiplier /= 1 + o()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
-      ( *pet_action )->base_td_multiplier /= 1 + o()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
-
-      // During Storm, Earth, and Fire the Shadowflame Spirit damage appears to double
-      // this is verifiable by logs but not attributable to any spell effect
-      // hard coding this for now
-      ( *pet_action )->base_dd_multiplier *= 1.0 + 1.0;
-      ( *pet_action )->base_td_multiplier *= 1.0 + 1.0;
-    }
-
-    // Apply the affecting SFS effect aura
-    ( *pet_action )->apply_affecting_aura( o()->tier.t30.shadowflame_spirit );
-
-    // Execute action
-    ( *pet_action )->set_target( s->target );
-    ( *pet_action )->execute();
-  }
-
-  action_t *create_action( util::string_view name, util::string_view options_str ) override
-  {
-    if ( name == "auto_attack" )
-      return new auto_attack_t( this, options_str );
-
-    return pet_t::create_action( name, options_str );
-  }
-};
-
 }  // end namespace pets
 
 monk_t::pets_t::pets_t( monk_t *p )
@@ -1945,9 +1705,7 @@ monk_t::pets_t::pets_t( monk_t *p )
     white_tiger_statue( "white_tiger_statue", p, []( monk_t *p ) { return new pets::white_tiger_statue_t( p ); } ),
     fury_of_xuen_tiger( "fury_of_xuen_tiger", p, []( monk_t *p ) { return new pets::fury_of_xuen_pet_t( p ); } ),
     call_to_arms_niuzao( "call_to_arms_niuzao", p,
-                         []( monk_t *p ) { return new pets::call_to_arms_niuzao_pet_t( p ); } ),
-    spirit_of_forged_vermillion( "spirit_of_forged_vermillion", p,
-                                 []( monk_t *p ) { return new pets::spirit_of_forged_vermillion_t( p ); } )
+                         []( monk_t *p ) { return new pets::call_to_arms_niuzao_pet_t( p ); } )
 {
 }
 
@@ -1989,20 +1747,6 @@ void monk_t::create_pets()
     // SEF EARTH was changed from 2-handed user to dual welding in Legion
     pets.sef[ (int)pets::sef_pet_e::SEF_EARTH ] =
         new pets::storm_earth_and_fire_pet_t( "earth_spirit", this, true, WEAPON_MACE );
-  }
-}
-
-void monk_t::trigger_spirit_of_forged_vermillion( action_state_t *s )
-{
-  for ( size_t i = 0; i <= pets.spirit_of_forged_vermillion.max_pets(); i++ )
-  {
-    auto spirit_of_forged_vermillion =
-        (pets::spirit_of_forged_vermillion_t *)pets.spirit_of_forged_vermillion.active_pet( i );
-
-    if ( !spirit_of_forged_vermillion )
-      break;
-
-    spirit_of_forged_vermillion->trigger_attack( s );
   }
 }
 

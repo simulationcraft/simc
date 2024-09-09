@@ -229,7 +229,7 @@ std::string util::version_info_str( const dbc_t* dbc )
                       dbc::client_data_version_str( dbc->ptr ), dbc->wow_ptr_status() );
 }
 
-std::string util::build_info_str( const dbc_t* dbc )
+std::string util::build_info_str( const dbc_t* dbc, int display_level )
 {
   if ( !dbc )
   {
@@ -244,7 +244,7 @@ std::string util::build_info_str( const dbc_t* dbc )
         fmt::format( "hotfix {}/{}", dbc::hotfix_date_str( dbc->ptr ), dbc::hotfix_build_version( dbc->ptr ) ) );
   }
 
-  if ( git_info::available() )
+  if ( git_info::available() && display_level != 2 )
   {
     build_strings.emplace_back( fmt::format( "git build {} {}", git_info::branch(), git_info::revision() ) );
   }
@@ -508,6 +508,7 @@ race_e util::parse_race_type( util::string_view name )
   if ( name == "forsaken" ) return RACE_UNDEAD;
   if ( name == "dracthyr" ) return RACE_DRACTHYR_HORDE;
   if ( name == "earthen" )  return RACE_EARTHEN_HORDE;
+  if ( name == "earthen_dwarf" ) return RACE_EARTHEN_HORDE;
 
   return parse_enum_with_default<race_e, RACE_NONE, RACE_MAX, RACE_UNKNOWN, race_type_string>( name );
 }
@@ -2965,71 +2966,6 @@ void util::urlencode( std::string& str )
   }
 
   str.swap( temp );
-}
-
-// create_blizzard_talent_url ===============================================
-
-std::string util::create_blizzard_talent_url( const player_t& p )
-{
-  std::string region = p.region_str;
-
-  if ( region.empty() )
-  {
-    region = p.sim  -> default_region_str;
-  }
-
-  if ( region.empty() )
-  {
-    region = "us";
-  }
-
-  std::string url = "https://worldofwarcraft.com/";
-
-  if ( util::str_compare_ci( region, "us" ) )
-  {
-    url += "en-us";
-  }
-  else if ( util::str_compare_ci( region, "eu" ) )
-  {
-    url += "en-gb";
-  }
-  else if ( util::str_compare_ci( region, "kr" ) )
-  {
-    url += "ko-kr";
-  }
-  else if ( util::str_compare_ci( region, "cn" ) )
-  {
-    url = "https://www.wowchina.com/zh-cn";
-  }
-
-  url += "/game/talent-calculator#";
-
-  switch ( p.type )
-  {
-    case DEATH_KNIGHT:
-      url += "death-knight";
-      break;
-    case DEMON_HUNTER:
-      url += "demon-hunter";
-      break;
-    default:
-      url += player_type_string( p.type );
-      break;
-  }
-
-  url += "/";
-  url += dbc::specialization_string( p.specialization() );
-  url += "/talents=";
-
-  for ( int i = 0; i < MAX_TALENT_ROWS; i++ )
-  {
-    if ( p.talent_points->choice( i ) >= 0 )
-      url += util::to_string( p.talent_points->choice( i ) + 1 );
-    else
-      url += "0";
-  }
-
-  return url;
 }
 
 // urldecode ================================================================

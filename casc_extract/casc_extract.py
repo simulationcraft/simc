@@ -147,7 +147,10 @@ if __name__ == '__main__':
 					print('No data for a given key %s' % binascii.hexlify(file_keys[0]).decode('utf-8'))
 					continue
 
-				blte.extract_buffer_to_file(data, os.path.join(output_path, file_name.replace('\\', '/')))
+				result = blte.extract_buffer_to_file(data, os.path.join(output_path, file_name.replace('\\', '/')))
+				if not result:
+					print('Failed to extract data for %s %s' % (opts.locale, file_name), file=sys.stderr)
+					sys.exit(1)
 
 	elif opts.mode == 'unpack':
 		blte = casc.BLTEExtract(opts)

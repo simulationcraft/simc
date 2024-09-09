@@ -448,35 +448,6 @@ bool parse_cache( sim_t*             /* sim */,
     return false;
 }
 
-// parse_talent_format ======================================================
-
-bool parse_talent_format( sim_t*             sim,
-                          util::string_view name,
-                          util::string_view value )
-{
-  if ( name != "talent_format" ) return false;
-
-  if ( util::str_compare_ci( value, "unchanged" ) )
-  {
-    sim -> talent_input_format = talent_format::UNCHANGED;
-  }
-  else if ( util::str_compare_ci( value, "armory" ) )
-  {
-    sim -> talent_input_format = talent_format::ARMORY;
-  }
-  else if ( util::str_compare_ci( value, "wowhead" ) )
-  {
-    sim -> talent_input_format = talent_format::WOWHEAD;
-  }
-  else if ( util::str_compare_ci( value, "blizzard" ) || util::str_compare_ci( value, "default" ) )
-  {
-    sim -> talent_input_format = talent_format::BLIZZARD;
-  }
-
-  return true;
-}
-
-
 // parse_armory =============================================================
 
 class names_and_options_t
@@ -1480,7 +1451,6 @@ sim_t::sim_t()
     default_region_str( "us" ),
     save_prefix_str( "save_" ),
     save_talent_str( false ),
-    talent_input_format( talent_format::UNCHANGED ),
     stat_cache( 1 ),
     max_aoe_enemies( 20 ),
     requires_regen_event( false ),
@@ -3849,7 +3819,6 @@ void sim_t::create_options()
   add_option( opt_string( "save_prefix", save_prefix_str ) );
   add_option( opt_string( "save_suffix", save_suffix_str ) );
   add_option( opt_bool( "save_talent_str", save_talent_str ) );
-  add_option( opt_func( "talent_format", parse_talent_format ) );
   add_option( opt_int( "armory_retries", armory_retries ) );
   add_option( opt_map( "override.item_slot.", item_slot_overrides ) );
 

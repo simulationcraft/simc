@@ -1492,6 +1492,7 @@ class SpellDataGenerator(DataGenerator):
          429273, # Arcanist's Edge Damage
          429377, # Slay Damage
          # 11.0 The War Within ================================================
+         451916, 451917, 451918, 451920, 451921, # earthen racial well fed buff
          206150, 461904, 461910, 462661, # new M+ affixes
          443585, # fateweaved needle
          452279, # aberrant spellforge
@@ -1513,6 +1514,11 @@ class SpellDataGenerator(DataGenerator):
          446234, # Spark of Beledar
          461957, 454137, 461939, 461943, 461925, 461924, 461922, 461927, 461947, 461948, 461949, 461946, 461861, 461860, 461859, 461858, 461857, 461856, 461855, 461854, 461853, 461845, # TWW Food Buffs
          457630, 455523, 457628, # Woven Dusk Tailoring Set
+         463059, # Darkmoon Deck: Ascension
+         463232, # Darkmoon Sigil: Symbiosis
+         441508, 441507, 441430, # Nerubian Phearomone Secreter
+         455441, 455454, 455455, 455456, #Unstable Power Core Mastery Crit Haste Vers
+         455521, 455522, 457627, # Woven Dawn Tailoring Set
         ),
 
         # Warrior:
@@ -1754,6 +1760,7 @@ class SpellDataGenerator(DataGenerator):
             ( 452562, 0 ),          # Lucky Coin buff
             ( 457236, 0 ),          # Singular Focus damage spell
             ( 459002, 0 ),          # Outlaw 11.0 Set Bonus damage spell
+            ( 467059, 0 ),          # Outlaw Crackshot Dispatch clone damage spell
         ),
 
         # Priest:
@@ -2055,6 +2062,7 @@ class SpellDataGenerator(DataGenerator):
           ( 464515, 0 ),                            # Arcane Echo ICD
           ( 449559, 0 ), ( 449560, 0 ), ( 449562, 0 ), ( 449569, 0 ), # Meteorite (Glorious Incandescence)
           ( 450499, 0 ),                            # Arcane Barrage (Arcane Phoenix)
+          ( 450461, 0 ),                            # Pyroblast (Arcane Phoenix)
           ( 450462, 0 ),                            # Flamestrike (Arcane Phoenix)
           ( 453326, 0 ),                            # Arcane Surge (Arcane Phoenix)
           ( 450421, 0 ),                            # Greater Pyroblast (Arcane Phoenix)
@@ -4026,7 +4034,12 @@ class SetBonusListGenerator(DataGenerator):
         {
             'name'   : 'woven_dusk',
             'bonuses': [ 1697 ],
-            'tier'   : 'TWW_WD'
+            'tier'   : 'TWW_WDusk'
+        },
+        {
+            'name'   : 'woven_dawn',
+            'bonuses': [ 1683 ],
+            'tier'   : 'TWW_WDawn'
         },
     ]
 
