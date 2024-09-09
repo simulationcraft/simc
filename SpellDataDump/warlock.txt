@@ -19795,7 +19795,7 @@ Effects          :
 Description      : Shadow damage dealt by your spells and abilities is increased by $s3% and your Shadow spells gain $s1% more critical strike chance from all sources.
 
 Name             : Blackened Soul (id=440043) [Spell Family (5), Passive, Hidden] 
-Hotfixed         : Internal Cooldown (0 -> 5000)
+Hotfixed         : Internal Cooldown (0 -> 500)
 Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=2, col=2, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
@@ -19803,7 +19803,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Internal Cooldown: 5 seconds
+Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
 Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
                  : Cast Successful
