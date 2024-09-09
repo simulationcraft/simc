@@ -6604,9 +6604,14 @@ struct lava_burst_t : public shaman_spell_t
       p()->trigger_primordial_wave_damage( this );
     }
 
-    if ( p()->specialization() == SHAMAN_ELEMENTAL )
+    if ( !p()->is_ptr() )
     {
-      p()->trigger_deeply_rooted_elements( execute_state );
+      // Lava Burst no longer procs DRE on the PTR
+
+      if ( exec_type == spell_variant::NORMAL && p()->specialization() == SHAMAN_ELEMENTAL )
+      {
+        p()->trigger_deeply_rooted_elements( execute_state );
+      }
     }
 
     // Rolls on execute and on impact
@@ -7108,6 +7113,12 @@ struct elemental_blast_t : public shaman_spell_t
       {
         p()->buff.surge_of_power->trigger();
       }
+
+      if ( p()->is_ptr() )
+      {
+        // Elemental Blast can trigger DRE on PTR
+        p()->trigger_deeply_rooted_elements( execute_state );
+      }
     }
 
     // [BUG] 2024-08-23 Supercharge works on Elemental Blast in-game
@@ -7605,6 +7616,12 @@ struct earthquake_t : public earthquake_base_t
     if ( exec_type == spell_variant::NORMAL )
     {
       p()->buff.storm_frenzy->trigger();
+
+      if ( p()->is_ptr() )
+      {
+        // Earthquake can trigger DRE on PTR
+        p()->trigger_deeply_rooted_elements( execute_state );
+      }
     }
   }
 };
@@ -7836,6 +7853,12 @@ struct earth_shock_t : public shaman_spell_t
     p()->track_magma_chamber();
     p()->buff.magma_chamber->expire();
     p()->buff.storm_frenzy->trigger();
+
+    if ( p()->is_ptr() )
+    {
+      // Earth Shock can trigger DRE on PTR
+      p()->trigger_deeply_rooted_elements( execute_state );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -11325,11 +11348,9 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
 
   if ( specialization() == SHAMAN_ELEMENTAL )
   {
-    auto lvb = debug_cast<lava_burst_t*>( state->action );
-    if ( lvb->exec_type != spell_variant::NORMAL )
-    {
-      return;
-    }
+    // We can no longer assume this is only a Lava Burst entering on state
+    // So we check if spell_variant::NORMAL at the call site instead of
+    // doing reflection on the state here
 
     proc_chance = talent.deeply_rooted_elements->effectN( 2 ).percent();
   }
