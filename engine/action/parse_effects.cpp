@@ -1584,6 +1584,9 @@ void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os )
     auto timespan_fn = []( double v ) { return fmt::format( "{}s", timespan_t::from_millis( v ) ); };
     auto flat_fn = []( double v ) { return fmt::to_string( v ); };
     auto empty_fn = []( double ) { return ""; };
+    auto disabled_fn = [ this ]( uint32_t ) {
+      return _action->snapshot_flags & ( STATE_TGT_MUL_DA | STATE_TGT_MUL_TA ) ? "" : "DISABLED";
+    };
 
     using VEC = parse_action_base_t;
     print_parsed_type( os, &VEC::da_multiplier_effects, "Direct Damage" );
@@ -1602,7 +1605,7 @@ void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os )
     print_parsed_type( os, &VEC::flat_cost_effects, "Flat Cost", nullptr, flat_fn );
     print_parsed_type( os, &VEC::cost_effects, "Percent Cost" );
     print_parsed_type( os, &VEC::spell_school_effects, "Spell School", &opt_strings::school, empty_fn );
-    print_parsed_type( os, &VEC::target_multiplier_effects, "Damage on Debuff" );
+    print_parsed_type( os, &VEC::target_multiplier_effects, "Damage on Debuff", disabled_fn );
     print_parsed_type( os, &VEC::target_crit_chance_effects, "Crit Chance on Debuff" );
     print_parsed_type( os, &VEC::target_crit_bonus_effects, "Critical Strike Bonus on Debuff" );
     print_parsed_custom_type( os );
