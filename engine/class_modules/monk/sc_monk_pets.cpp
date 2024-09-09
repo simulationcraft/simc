@@ -377,7 +377,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       base_t::callbacks = false;
     }
 
-    double base_cost() override
+    double base_cost() const override
     {
       return 0.0;
     }
@@ -387,10 +387,10 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       base_t::init();
 
       // Look up source action based on id, falling back to name if not found.
-      if ( action_t *action = find_action( base_t::id ) )
+      if ( action_t *action = base_t::o()->find_action( base_t::id ) )
         source_action = action;
       else
-        source_action = find_action( base_t::name_str );
+        source_action = base_t::o()->find_action( base_t::name_str );
 
       if ( !source_action )
         return;
@@ -479,6 +479,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct sef_melee_attack_t : public sef_action_base_t<melee_attack_t>
   {
+    using base_t = sef_action_base_t<melee_attack_t>;
     sef_melee_attack_t( util::string_view n, storm_earth_and_fire_pet_t *p,
                         const spell_data_t *data = spell_data_t::nil() )
       : base_t( n, p, data )
@@ -503,6 +504,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct sef_spell_t : public sef_action_base_t<spell_t>
   {
+    using base_t = sef_action_base_t<spell_t>;
     sef_spell_t( util::string_view n, storm_earth_and_fire_pet_t *p, const spell_data_t *data = spell_data_t::nil() )
       : base_t( n, p, data )
     {

@@ -843,16 +843,6 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
   monk_snapshot_stats_t( monk_t *player, util::string_view options ) : snapshot_stats_t( player, options )
   {
   }
-
-  void execute() override
-  {
-    snapshot_stats_t::execute();
-
-    // auto *monk                                              = debug_cast<monk_t *>( player );
-    // monk->stagger->sample_data->buffed_base_value           = monk->stagger->base_value();
-    // monk->stagger->sample_data->buffed_percent_player_level = monk->stagger->percent( monk->level() );
-    // monk->stagger->sample_data->buffed_percent_target_level = monk->stagger->percent( target->level() );
-  }
 };
 
 namespace pet_summon
@@ -945,13 +935,28 @@ struct storm_earth_and_fire_fixate_t : public monk_spell_t
 
 }  // namespace pet_summon
 
+enum sef_type_e
+{
+  SEF_TYPE_FIRE,
+  SEF_TYPE_EARTH
+};
+
 template <class base_t>
 struct sef_action_t : base_t
 {
   struct child_action_t : base_t
   {
-    template <class... Args>
-    child_action_t( Args &&...args ) : base_t( std::forward<Args>( args )... )
+    sef_type_e type;
+    bool is_fixated;
+    player_t *target;
+
+    child_action_t( sef_type_e type, monk_t *player, std::string_view name, const spell_data_t *spell_data )
+      : base_t( player,
+                fmt::format( "{}_{}", name,
+                             type == SEF_TYPE_FIRE    ? "sef_fire"
+                             : type == SEF_TYPE_EARTH ? "sef_earth"
+                                                      : "NONE" ),
+                spell_data )
     {
       base_t::background = true;
     }
@@ -987,6 +992,19 @@ struct sef_action_t : base_t
           return false;
       }
       return false;
+    }
+
+    void init_finished() override
+    {
+      base_t::init_finished();
+
+      switch ( type )
+      {
+        case SEF_TYPE_FIRE:
+          base_t::p()->find_action( "sef_fire_elemental" )->add_child( this );
+        case SEF_TYPE_EARTH:
+          base_t::p()->find_action( "sef_earth_elemental" )->add_child( this );
+      }
     }
 
     double composite_player_multiplier( const action_state_t * ) const override
@@ -1063,20 +1081,17 @@ struct sef_action_t : base_t
    * If all MotC debuffs >=10s, do not retarget.
    * If fixated, do not retarget.
    */
-  bool is_fixated;
-  player_t *sef_fire_target;
-  player_t *sef_earth_target;
 
   template <class... Args>
-  sef_action_t( monk_t *player, std::string_view name, Args &&...args )
-    : base_t( player, name, std::forward<Args>( args )... )
+  sef_action_t( monk_t *player, Args &&...args ) : base_t( player, std::forward<Args>( args )... )
   {
     if ( !player->talent.windwalker.storm_earth_and_fire->ok() )
       return;
 
-    sef_fire_action = new child_action_t( player, fmt::format( "{}_{}", name, "fire" ), std::forward<Args>( args )... );
+    sef_fire_action =
+        new child_action_t( player, fmt::format( "{}_{}", base_t::name_str, "fire" ), std::forward<Args>( args )... );
     sef_earth_action =
-        new child_action_t( player, fmt::format( "{}_{}", name, "earth" ), std::forward<Args>( args )... );
+        new child_action_t( player, fmt::format( "{}_{}", base_t::name_str, "earth" ), std::forward<Args>( args )... );
 
     // TODO: Set SEF actions as children of the parent SEF action for each elemental.
   }
@@ -1905,8 +1920,8 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
   action_t *bok_totm_proc;
   cooldown_t *keg_smash_cooldown;
 
-  blackout_kick_t( monk_t *p, std::string_view name, util::string_view options_str )
-    : base_t( p, name,
+  blackout_kick_t( monk_t *p, util::string_view options_str )
+    : base_t( p, "blackout_kick",
               ( p->specialization() == MONK_BREWMASTER ? p->baseline.brewmaster.blackout_kick
                                                        : p->baseline.monk.blackout_kick ) ),
       keg_smash_cooldown( nullptr )
@@ -6652,10 +6667,8 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
     return new crackling_jade_lightning_t( this, options_str );
   if ( name == "tiger_palm" )
     return new tiger_palm_t( this, options_str );
-  if ( name == "blackout_kick" && user_options.sef_beta )
-    return new sef_action_t<blackout_kick_t>( this, "blackout_kick", options_str );
   if ( name == "blackout_kick" )
-    return new blackout_kick_t( this, "blackout_kick", options_str );
+    return new blackout_kick_t( this, options_str );
   if ( name == "expel_harm" )
     return new expel_harm_t( this, options_str );
   if ( name == "leg_sweep" )
@@ -9009,10 +9022,18 @@ void monk_t::copy_from( player_t *source )
   user_options = source_p->user_options;
 }
 
-// monk_t::copy_from =========================================================
-action_t *monk_t::find_action( int id )
+template <class TAction, class... Args>
+TAction *monk_t::make_action( Args &&...args )
 {
-  for ( const action_t *action : action_list )
+  if ( talent.windwalker.storm_earth_and_fire->ok() && false )
+    return new actions::sef_action_t<TAction>( this, std::forward<Args>( args )... );
+  return new TAction( this, std::forward<Args>( args )... );
+}
+
+// monk_t::copy_from =========================================================
+action_t *monk_t::find_action( unsigned int id ) const
+{
+  for ( action_t *action : action_list )
     if ( id == action->id )
       return action;
   return nullptr;

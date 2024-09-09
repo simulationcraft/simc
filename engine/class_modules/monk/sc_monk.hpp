@@ -83,9 +83,14 @@ enum class sef_ability_e
   SEF_MAX
 };
 
+template <class base_t>
+struct sef_action_t;
+
 template <class Base>
 struct monk_action_t : public parse_action_effects_t<Base>
 {
+  using derived_t = Base;
+  using base_t    = parse_action_effects_t<Base>;
   sef_ability_e sef_ability;
   bool ww_mastery;
   bool may_combo_strike;
@@ -97,9 +102,6 @@ private:
   std::array<resource_e, MONK_MISTWEAVER + 1> _resource_by_stance;
 
 public:
-  using derived_t = Base;
-  using base_t    = parse_action_effects_t<Base>;
-
   template <typename... Args>
   monk_action_t( Args &&...args );
   std::string full_name() const;
@@ -498,6 +500,7 @@ public:
   int flurry_strikes_energy;
   double flurry_strikes_damage;
   bool freeze_expiration;
+  bool freeze_buffs;
 
   //==============================================
   // Monk Movement
@@ -1394,7 +1397,10 @@ public:
   void reset() override;
   void create_options() override;
   void copy_from( player_t * ) override;
-  action_t *find_action( int id );
+  template <class TAction, class... Args>
+  TAction *make_action( Args &&...args );
+  using player_t::find_action;
+  action_t *find_action( unsigned int id ) const;
   resource_e primary_resource() const override;
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
