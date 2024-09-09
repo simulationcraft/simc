@@ -2142,22 +2142,19 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
           timespan_t::from_millis( p()->talents.templar.lights_guidance->effectN( 4 ).base_value() ), true );
       if ( p()->talents.templar.shake_the_heavens->ok() )
       {
-        if ( !p()->bugs || !p()->buffs.templar.shake_the_heavens->up() )
-          p()->buffs.templar.shake_the_heavens->execute();
-        else
+        if ( p()->buffs.templar.shake_the_heavens->up() )
         {
-          // 2024-08-03 Shake the Heavens is only extended by 4s if it's already up
-          // Currently extend_duration ignores the pandemic limits, workaround for now, real fix later via PR
-          timespan_t maxDur      = p()->buffs.templar.shake_the_heavens->base_buff_duration * 1.3;
-          timespan_t extendedDur = p()->buffs.templar.shake_the_heavens->remains() + timespan_t::from_seconds( 4 );
-          double extension       = 4.0;
-          if ( maxDur < extendedDur )
-          {
-            extension -= ( extendedDur - maxDur ).total_seconds();
-          }
-          p()->buffs.templar.shake_the_heavens->extend_duration( p(), timespan_t::from_seconds( extension ) );
+          // While Shake the Heavens is up, 8 seconds are added to the duration, up to 10.4 seconds (Pandemic limit). If
+          // the current duration is above the Pandemic Limit, it's duration does not change.
+          if ( p()->buffs.templar.shake_the_heavens->remains() <
+               p()->buffs.templar.shake_the_heavens->base_buff_duration * 1.3 )
+            p()->buffs.templar.shake_the_heavens->refresh();
         }
+        else
+          p()->buffs.templar.shake_the_heavens->execute();
       }
+      // Since Hammer of Light's damage component is a background action, we need to call reset AA ourselves
+      p()->reset_auto_attacks( 0_ms, player->procs.reset_aa_cast );
     }
     void impact( action_state_t* s ) override
     {
