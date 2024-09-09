@@ -404,7 +404,7 @@ void bubbling_wax( special_effect_t& effect )
 
     auto damage_amount = effect.driver()->effectN( 1 ).average( effect );
 
-    auto damage         = create_proc_action<generic_aoe_proc_t>( "bubbling_wax", effect, damage_id );
+    auto damage         = create_proc_action<generic_aoe_proc_t>( "bubbling_wax", effect, damage_id, true );
     damage->base_dd_min = damage->base_dd_max = damage_amount;
     effect.execute_action                     = damage;
 
