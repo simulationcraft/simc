@@ -588,7 +588,8 @@ void pouch_of_pocket_grenades( special_effect_t& effect )
   auto grenade = create_proc_action<generic_aoe_proc_t>( "pocket_grenade", effect, damage );
   grenade->base_dd_min += amount;
   grenade->base_dd_max += amount;
-  grenade->base_multiplier *= role_mult( effect );
+  // We cannot use `*=`, as two copies of the embellishment would doubly apply role mult.
+  grenade->base_multiplier = role_mult( effect );
 
   if ( found )
     return;
@@ -646,6 +647,7 @@ void elemental_focusing_lens( special_effect_t& effect )
     auto dam = create_proc_action<generic_proc_t>( fmt::format( "elemental_focusing_lens_{}", name ), effect, id );
     dam->base_dd_min += amount;
     dam->base_dd_max += amount;
+    // We cannot use `*=`, as two copies of the embellishment would doubly apply role mult.
     dam->base_multiplier = multiplier;
     dam->name_str_reporting = util::inverse_tokenize( name );
     damages.push_back( dam );

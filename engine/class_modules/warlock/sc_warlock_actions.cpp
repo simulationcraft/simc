@@ -2716,7 +2716,7 @@ using namespace helpers;
         base_dd_multiplier = 1.0 + p->talents.spiteful_reconstitution->effectN( 1 ).percent();
       }
 
-      double action_multiplier() const override
+      double composite_da_multiplier( const action_state_t* ) const override
       {
         double m = warlock_spell_t::action_multiplier();
 
