@@ -1,29 +1,29 @@
-# demonhunter="TWW1_Demon_Hunter_Havoc"
-# level="60"
-# race="blood_elf"
-# role="attack"
-# position="back"
-# spec="havoc"
-# talents="1121121"
+demonhunter="TWW1_Demon_Hunter_Havoc"
+level=80
+race=blood_elf
+spec=havoc
+role=attack
+position=back
+talents=CEkAAAAAAAAAAAAAAAAAAAAAAYGMzMzYMzMjxMNzYGAAAAAAwsNMMMzYZmZ2mtZZMzwMLYZb2mZZWmZmZbb2mmmhZmxgN
 
-# head=mercurial_punishers_hood,id=188892,bonus_id=1498/7187/6935,gem_id=173127
-# neck=shadowghast_necklace,id=178927,bonus_id=6716/7043/6650/6649/1808/1588/6935,gem_id=173127
-# shoulders=mercurial_punishers_shoulderpads,id=188896,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-# chest=mercurial_punishers_jerkin,id=188894,bonus_id=1505/7187,enchant=eternal_skirmish
-# wrists=devourers_sandblown_hidebinders,id=189812,bonus_id=1524/7187/6935,gem_id=173127
-# hands=grasps_of_abducted_fate,id=189843,bonus_id=1524/7187
-# waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187/6935,gem_id=173127
-# legs=mercurial_punishers_breeches,id=188893,bonus_id=1498/7187
-# feet=mercurial_punishers_boots,id=188899,bonus_id=1505/7187,enchant=eternal_agility
-# finger1=shadowghast_ring,id=178926,bonus_id=6716/8120/6650/6649/1808/1588/6935,gem_id=173127,enchant=tenet_of_critical_strike
-# finger2=ritual_commanders_ring,id=178781,bonus_id=1592/6536/6646/6935,gem_id=173127,enchant=tenet_of_critical_strike
-# trinket1=cache_of_acquired_treasures,id=188265,bonus_id=1524/7187
-# trinket2=phial_of_putrefaction,id=178771,bonus_id=1592/6536/6646/6935
-# main_hand=alandiens_tortured_twinblades,id=189846,bonus_id=1524/7187,enchant=sinful_revelation
-# off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=1592/6536/6646,enchant=celestial_guidance
+head=impalers_of_the_hypogeal_nemesis,id=212065,bonus_id=1808,gem_id=213743,ilevel=639
+neck=trailspinner_pendant,id=178707,bonus_id=8781,gem_id=213473/213491,ilevel=639
+shoulder=warmantle_of_the_hypogeal_nemesis,id=212063,ilevel=639
+back=wings_of_shattered_sorrow,id=225574,enchant_id=7403,ilevel=639
+chest=chestguard_of_the_hypogeal_nemesis,id=212068,enchant_id=7364,ilevel=639
+wrist=polluted_spectres_wraps,id=212438,bonus_id=8780,enchant_id=7385,gem_id=213479,ilevel=639
+hands=runebranded_grasps,id=219333,bonus_id=10222/8791/11109/8960,ilevel=636
+waist=shadow_congregants_belt,id=221134,bonus_id=8780,gem_id=213482,ilevel=639
+legs=pantaloons_of_the_hypogeal_nemesis,id=212064,enchant_id=7601,ilevel=639
+feet=whisperers_echoing_steps,id=221169,enchant_id=7424,ilevel=639
+finger1=seal_of_the_city_watch,id=162542,bonus_id=8781,enchant_id=7346,gem_id=213482/213482,ilevel=639
+finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=8781,enchant_id=7346,gem_id=213482/213458,ilevel=639
+trinket1=treacherous_transmitter,id=221023,ilevel=639
+trinket2=mad_queens_mandate,id=212454,ilevel=639
+main_hand=void_reapers_warp_blade,id=219877,enchant_id=7463,ilevel=639
+off_hand=everforged_warglaive,id=222441,bonus_id=10222/11300/8960/8791,enchant_id=7463,ilevel=636
 
-# save=TWW1_Demon_Hunter_Havoc.simc
+save=TWW1_Demon_Hunter_Havoc.simc
 
 demonhunter="TWW1_Demon_Hunter_Vengeance"
 level=80
