@@ -608,7 +608,7 @@ void elemental_focusing_lens( special_effect_t& effect )
   if ( !gems.size() )
     return;
 
-  auto amount = effect.driver()->effectN( 1 ).average( effect );
+  auto amount = effect.driver()->effectN( 1 ).average( effect ) * role_mult( effect );
 
   effect.spell_id = effect.trigger()->id();
 
