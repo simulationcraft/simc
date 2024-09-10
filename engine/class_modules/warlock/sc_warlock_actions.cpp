@@ -2716,11 +2716,11 @@ using namespace helpers;
         base_dd_multiplier = 1.0 + p->talents.spiteful_reconstitution->effectN( 1 ).percent();
       }
 
-      double composite_da_multiplier( const action_state_t* ) const override
+      double action_multiplier() const override
       {
         double m = warlock_spell_t::action_multiplier();
 
-        if ( debug_cast<pets::demonology::wild_imp_pet_t*>( next_imp )->buffs.imp_gang_boss->check() )
+        if ( next_imp && debug_cast<pets::demonology::wild_imp_pet_t*>( next_imp )->buffs.imp_gang_boss->check() )
           m *= 1.0 + p()->talents.imp_gang_boss->effectN( 2 ).percent();
 
         return m;
