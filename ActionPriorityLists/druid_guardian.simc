@@ -44,17 +44,17 @@ actions.bear+=/thrash_bear,if=refreshable|dot.thrash_bear.stack<3+talent.flashin
 
 actions.bear+=/pulverize
 actions.bear+=/barkskin
-actions.bear+=/bristling_fur,if=cooldown.rage_of_the_sleeper.remains>8
+actions.bear+=/bristling_fur,if=(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains>8)
 
 actions.bear+=/heart_of_the_wild,if=!variable.ripweaving
 actions.bear+=/convoke_the_spirits,if=!variable.ripweaving
 actions.bear+=/incarnation
 actions.bear+=/berserk_bear
-actions.bear+=/lunar_beam,if=(cooldown.incarnation_guardian_of_ursoc.remains>10+5*talent.ursocs_guidance.enabled|cooldown.berserk_bear.remains>10)&(cooldown.rage_of_the_sleeper.ready|cooldown.rage_of_the_sleeper.remains>5)
+actions.bear+=/lunar_beam,if=(cooldown.incarnation_guardian_of_ursoc.remains>10+5*talent.ursocs_guidance.enabled|cooldown.berserk_bear.remains>10)&(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.ready|cooldown.rage_of_the_sleeper.remains>5)
 actions.bear+=/rage_of_the_sleeper,if=(cooldown.incarnation_guardian_of_ursoc.remains>10+5*talent.ursocs_guidance.enabled|cooldown.berserk_bear.remains>10)&rage>40&(!talent.lunar_beam.enabled|cooldown.lunar_beam.remains>5)
 actions.bear+=/berserking,if=buff.incarnation_guardian_of_ursoc.up|buff.berserk_bear.up
 
-actions.bear+=/ironfur,if=!buff.ravage.up&variable.ironfur_spam&(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains>2)
+actions.bear+=/ironfur,if=!buff.ravage.up&variable.ironfur_spam&(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains>1)
 actions.bear+=/ironfur,if=!buff.ravage.up&rage.deficit<=(12+4*buff.gore.up+5*talent.soul_of_the_forest.enabled)<?(talent.blood_frenzy.enabled*3*(spell_targets.swipe_bear>?5))
 
 actions.bear+=/maul,if=buff.ravage.up
@@ -69,25 +69,21 @@ actions.bear+=/thrash_bear,if=spell_targets.swipe_bear>=5&rage.deficit>talent.bl
 
 actions.bear+=/call_action_list,name=generator,if=talent.ravage.enabled
 
-actions.bear+=/raze,if=buff.tooth_and_claw.stack=2&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear>=2
-actions.bear+=/maul,if=buff.tooth_and_claw.stack=2&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear<=5
+actions.bear+=/raze,if=buff.tooth_and_claw.stack=2&(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains>1)&spell_targets.swipe_bear>=2
+actions.bear+=/maul,if=buff.tooth_and_claw.stack=2&(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains>1)&spell_targets.swipe_bear<=5
 
-# actions.bear+=/raze,if=buff.tooth_and_claw.stack=1&!(talent.ravage.enabled&variable.ironfur_spam)&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear>=2
-# actions.bear+=/maul,if=buff.tooth_and_claw.stack=1&!(talent.ravage.enabled&variable.ironfur_spam)&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear<=5
+actions.bear+=/raze,if=buff.vicious_cycle_maul.stack=3&(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains>1)&spell_targets.swipe_bear>=2
+actions.bear+=/maul,if=buff.vicious_cycle_maul.stack=3&(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains>1)&spell_targets.swipe_bear<=5
 
-actions.bear+=/raze,if=buff.vicious_cycle_maul.stack=3&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear>=2
-actions.bear+=/maul,if=buff.vicious_cycle_maul.stack=3&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear<=5
-
-actions.bear+=/raze,if=cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear>=2
-actions.bear+=/maul,if=cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear<=5&!(talent.ravage.enabled&variable.ironfur_spam)
+actions.bear+=/raze,if=(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains>1)&spell_targets.swipe_bear>=2
+actions.bear+=/maul,if=(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains>1)&spell_targets.swipe_bear<=5&!(talent.ravage.enabled&variable.ironfur_spam)
 
 actions.bear+=/call_action_list,name=generator,if=!talent.ravage.enabled
-#,if=buff.rage_of_the_sleeper.up
 
-actions.bear+=/rake,if=(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains<=52)&spell_targets.swipe_bear<=2&energy>60&refreshable&variable.use_cat_filler
-actions.bear+=/shred,if=(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains<=52)&spell_targets.swipe_bear<=2&energy>60&!dot.rake.refreshable&variable.use_cat_filler
+actions.bear+=/rake,if=variable.use_cat_filler&(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains<=52)&spell_targets.swipe_bear<=2&energy>60&refreshable
+actions.bear+=/shred,if=variable.use_cat_filler&(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains<=52)&spell_targets.swipe_bear<=2&energy>60&!dot.rake.refreshable
 
-# actions.bear+=/call_action_list,name=preweave,if=variable.use_cat_filler&!buff.ravage.up&spell_targets.swipe_bear<=2&energy>60&(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains<=52)
+# actions.bear+=/call_action_list,name=preweave,if=variable.use_cat_filler&!buff.ravage.up&(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains<=52)&spell_targets.swipe_bear<=2&energy>60
 
 actions.bear+=/starsurge,if=talent.starsurge.enabled&rage<20
 actions.bear+=/moonfire,if=talent.lunar_insight.enabled&spell_targets.swipe_bear>=2&spell_targets.swipe_bear<=4
