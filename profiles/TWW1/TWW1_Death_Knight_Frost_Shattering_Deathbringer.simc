@@ -219,16 +219,16 @@ feet=ballast_sinkers,id=159428,bonus_id=1514/3317/6646,ilevel=639
 finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213458/213458,enchant=radiant_mastery_3
 finger2=seal_of_the_city_watch,id=162542,bonus_id=1514/3317/6646/8781,ilevel=639,gem_id=213458/213458,enchant=radiant_mastery_3
 trinket1=treacherous_transmitter,id=221023,bonus_id=1540
-trinket2=mark_of_khardros,id=133300,bonus_id=9466/1514,ilevel=639
+trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
 main_hand=ansureks_final_judgment,id=212401,ilevel=639,enchant=rune_of_razorice
 off_hand=charged_slicer,id=222451,bonus_id=11144/9627/9633/8902/10222/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=49/32
 
 # Gear Summary
 # gear_ilvl=638.63
-# gear_strength=36181
+# gear_strength=32574
 # gear_stamina=237354
 # gear_crit_rating=18205
-# gear_haste_rating=5919
+# gear_haste_rating=7364
 # gear_mastery_rating=15102
 # gear_versatility_rating=147
 # gear_armor=56297
