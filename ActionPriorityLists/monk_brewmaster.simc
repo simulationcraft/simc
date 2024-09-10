@@ -26,15 +26,17 @@ actions+=/chi_burst
 actions+=/weapons_of_order
 actions+=/rising_sun_kick,if=!talent.fluidity_of_motion.enabled
 actions+=/tiger_palm,if=buff.blackout_combo.up
+actions+=/keg_smash,if=talent.scalding_brew.enabled
+actions+=/spinning_crane_kick,if=talent.charred_passions.enabled&talent.scalding_brew.enabled&buff.charred_passions.up&buff.charred_passions.remains<3&dot.breath_of_fire.remains<9&active_enemies>4
 actions+=/rising_sun_kick,if=talent.fluidity_of_motion.enabled
 actions+=/purifying_brew,if=buff.blackout_combo.down
-actions+=/breath_of_fire,if=buff.charred_passions.down
+actions+=/breath_of_fire,if=(buff.charred_passions.down&(!talent.scalding_brew.enabled|active_enemies<5))|!talent.charred_passions.enabled|(dot.breath_of_fire.remains<3&talent.scalding_brew.enabled)
 actions+=/exploding_keg
 actions+=/keg_smash
 actions+=/rushing_jade_wind
 actions+=/invoke_niuzao
-actions+=/tiger_palm
-actions+=/spinning_crane_kick
+actions+=/tiger_palm,if=energy>40-cooldown.keg_smash.remains*energy.regen
+actions+=/spinning_crane_kick,if=energy>40-cooldown.keg_smash.remains*energy.regen
 
 actions.item_actions=use_item,slot=trinket1
 actions.item_actions+=/use_item,slot=trinket2
