@@ -1420,6 +1420,8 @@ public:
     triggers_atonement = true;
 
     // Devour Matter gives you more Insanity and an extra amount of sp coeff
+    // TODO: Refactor this into an additional hit (same spell ID)
+    // This additional hit has an independet crit chance, gets the execute mod, and gets the deathspeaker mod
     if ( priest().options.force_devour_matter && priest().talents.voidweaver.devour_matter.enabled() )
     {
       energize_amount += priest().talents.voidweaver.devour_matter->effectN( 3 ).base_value();
