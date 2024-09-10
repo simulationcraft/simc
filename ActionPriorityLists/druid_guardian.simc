@@ -65,14 +65,17 @@ actions.bear+=/thrash_bear,if=spell_targets.swipe_bear>=5&rage.deficit>talent.bl
 
 actions.bear+=/call_action_list,name=generator,if=talent.ravage.enabled
 
-actions.bear+=/raze,if=(buff.tooth_and_claw.stack=2|buff.tooth_and_claw.remains<1+gcd.max)&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear>=2
-actions.bear+=/maul,if=(buff.tooth_and_claw.stack=2|buff.tooth_and_claw.remains<1+gcd.max)&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear<=5
+actions.bear+=/raze,if=buff.tooth_and_claw.stack=2&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear>=2
+actions.bear+=/maul,if=buff.tooth_and_claw.stack=2&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear<=5
+
+actions.bear+=/raze,if=buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1+gcd.max&spell_targets.swipe_bear>=2
+actions.bear+=/maul,if=buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1+gcd.max&spell_targets.swipe_bear<=5
 
 actions.bear+=/raze,if=buff.tooth_and_claw.stack=1&!(talent.ravage.enabled&variable.ironfur_spam)&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear>=2
 actions.bear+=/maul,if=buff.tooth_and_claw.stack=1&!(talent.ravage.enabled&variable.ironfur_spam)&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear<=5
 
-# actions.bear+=/raze,if=buff.vicious_cycle_maul.stack=3&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear>=2
-# actions.bear+=/maul,if=buff.vicious_cycle_maul.stack=3&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear<=5
+actions.bear+=/raze,if=buff.vicious_cycle_maul.stack=3&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear>=2
+actions.bear+=/maul,if=buff.vicious_cycle_maul.stack=3&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear<=5
 
 actions.bear+=/raze,if=cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear>=2&(talent.ravage.enabled)
 # actions.bear+=/maul,if=cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear<=5
@@ -107,8 +110,8 @@ actions.preweave+=/shred,if=!dot.rake.refreshable
 
 actions.cat+=/convoke_the_spirits,if=buff.feline_potential.up
 actions.cat+=/rip,if=buff.feline_potential.up&refreshable&target.time_to_die>12
-actions.cat+=/ferocious_bite,if=buff.feline_potential.up&(!dot.rip.refreshable|target.time_to_die<=12)&energy>50
-actions.cat+=/rip,if=!buff.feline_potential.up&variable.use_cat_filler&combo_points+buff.feline_potential_counter.stack<=6&!ticking
-actions.cat+=/ferocious_bite,if=!buff.feline_potential.up&variable.use_cat_filler&combo_points=5&energy>50
+actions.cat+=/ferocious_bite,if=buff.feline_potential.up&energy>50
+actions.cat+=/rip,if=!buff.feline_potential.up&!ticking&combo_points>=2&combo_points<=7-buff.feline_potential_counter.stack
+actions.cat+=/ferocious_bite,if=!buff.feline_potential.up&energy>50&combo_points=5
 actions.cat+=/mangle,if=!buff.feline_potential.up
 actions.cat+=/shred,if=energy>60
