@@ -4562,6 +4562,10 @@ void imperfect_ascendancy_serum( special_effect_t& effect )
 // 455827 Third Dig
 void excavation( special_effect_t& effect )
 {
+  // Currently does nothing if multiple of these are equipped at the same time
+  if ( buff_t::find( effect.player, "Uncommon Treasure" ) )
+    return;
+
   struct excavation_cb_t : public dbc_proc_callback_t
   {
     std::vector<buff_t*> buff_list;
@@ -4569,17 +4573,20 @@ void excavation( special_effect_t& effect )
 
     excavation_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), buff_list(), dig_count( 0 )
     {
-      static constexpr std::pair<unsigned, unsigned> buff_entries[] = { { 455820, 0 }, { 455826, 1 }, { 455827, 2 } };
+      auto uncommon = create_buff<stat_buff_t>( e.player, e.player->find_spell( 455820 ) )
+                          ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) * 0.9 );
 
-      for ( const auto& [ id, n ] : buff_entries )
-      {
-        auto s_data  = e.player->find_spell( id );
-        double value =  e.driver()->effectN( 1 ).average( e ) * ( 1.0 + ( 0.05 * n ) );
+      buff_list.push_back( uncommon );
 
-        auto buff = create_buff<stat_buff_t>( e.player, s_data )->add_stat_from_effect_type( A_MOD_STAT, value );
+      auto rare = create_buff<stat_buff_t>( e.player, e.player->find_spell( 455826 ) )
+                      ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) );
 
-        buff_list.push_back( buff );
-      }
+      buff_list.push_back( rare );
+
+      auto epic = create_buff<stat_buff_t>( e.player, e.player->find_spell( 455827 ) )
+                      ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) * 1.1 );
+
+      buff_list.push_back( epic );
     }
 
     void execute( action_t*, action_state_t* ) override
