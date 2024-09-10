@@ -578,14 +578,20 @@ void pouch_of_pocket_grenades( special_effect_t& effect )
   auto missile = driver->effectN( 1 ).trigger();
   auto damage = missile->effectN( 1 ).trigger();
   // TODO: determine which coeff is the correct one. assuming driver is correct.
-  auto amount = driver->effectN( 1 ).average( effect );
+  auto amount = driver->effectN( 1 ).average( effect ) * role_mult( effect );
 
   effect.spell_id = driver->id();
+
+  auto found = effect.player->find_action( "pocket_grenade" );
 
   // TODO: confirm damage doesn't increase per extra target
   auto grenade = create_proc_action<generic_aoe_proc_t>( "pocket_grenade", effect, damage );
   grenade->base_dd_min += amount;
   grenade->base_dd_max += amount;
+
+  if ( found )
+    return;
+
   grenade->travel_speed = missile->missile_speed();
 
   effect.execute_action = grenade;
