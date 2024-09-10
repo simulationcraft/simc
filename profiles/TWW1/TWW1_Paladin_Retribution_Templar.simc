@@ -1,3 +1,25 @@
+paladin="TWW1_Paladin_Retribution_Templar"
+source=default
+spec=retribution
+level=80
+race=human
+role=attack
+position=back
+talents=CYEAAAAAAAAAAAAAAAAAAAAAAAAAAwAAjpNLbzMbLbjx2YmttZ2AAAAAAwYimZ2MwMMjZZMMzwsMLzwwghZwyCbAAAIzMtNbz2MAgNA
+
+# Default consumables
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=the_sushi_special
+augmentation=crystallized
+temporary_enchant=main_hand:ironclaw_whetstone_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask
 actions.precombat+=/food
@@ -57,3 +79,32 @@ actions.generators+=/call_action_list,name=finishers
 actions.generators+=/hammer_of_wrath,if=holy_power<=3|target.health.pct>20|!talent.vanguards_momentum
 actions.generators+=/crusader_strike
 actions.generators+=/arcane_torrent
+
+head=entombed_seraphs_casque,id=211993,bonus_id=4800/4786/1540/10299/1808,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,bonus_id=4800/4786/1540/10299/8781,gem_id=213494/213494
+shoulders=entombed_seraphs_plumes,id=211991,bonus_id=4800/4786/1540/10299
+back=royal_emblem_of_nerubar,id=212446,bonus_id=4800/4786/1540/10299
+chest=entombed_seraphs_breastplate,id=211996,bonus_id=4800/4786/1540/10299,enchant=crystalline_radiance_3
+wrists=everforged_vambraces,id=222435,bonus_id=10421/1515/8793/523/11109/8960,gem_id=213494
+hands=entombed_seraphs_castigation,id=211994,bonus_id=4800/4786/1540/10299
+waist=crystalfissure_girdle,id=221079,bonus_id=4786/3131/10299/523,gem_id=213494
+legs=legplates_of_broken_trust,id=221092,bonus_id=4786/3131/10299,enchant=stormbound_armor_kit_3
+feet=entombed_seraphs_sabatons,id=211995,ilevel=639
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=4800/4786/1540/10299/8781,gem_id=213494/213458,enchant=radiant_mastery_3
+finger2=writhing_ringworm,id=225576,bonus_id=4800/4786/1540/10299/8781,gem_id=213482/213473,enchant=radiant_mastery_3
+trinket1=mark_of_khardros,id=133300,bonus_id=4786/11342/10299
+trinket2=arakara_sacbrood,id=219314,bonus_id=4786/3131/10299
+main_hand=everforged_greataxe,id=222443,bonus_id=10421/1515/11300/8960/8791,enchant=authority_of_the_depths_3
+
+# Gear Summary
+# gear_ilvl=638.60
+# gear_strength=36129
+# gear_stamina=236870
+# gear_attack_power=469
+# gear_crit_rating=9477
+# gear_haste_rating=11441
+# gear_mastery_rating=15239
+# gear_versatility_rating=2274
+# gear_armor=56297
+# set_bonus=thewarwithin_season_1_2pc=1
+# set_bonus=thewarwithin_season_1_4pc=1
