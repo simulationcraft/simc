@@ -2718,7 +2718,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Succulent Soul (449793 effects: #2, #3), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 86
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   x....... .x...... ........ ......x. 
@@ -5622,7 +5622,7 @@ Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Affecting spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Flames of Xoroth (429657 effects: #1, #2), Succulent Soul (449793 effects: #2, #3)
+Affecting spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Flames of Xoroth (429657 effects: #1, #2)
 Family Flags     : 86
 Attributes       : ........ x....... .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ ........ ........ ........ 
@@ -7052,7 +7052,7 @@ Duration         : 120 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Flames of Xoroth (429657 effects: #1, #2), Succulent Soul (449793 effects: #2, #3)
+Affecting spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Flames of Xoroth (429657 effects: #1, #2)
 Family Flags     : 86
 Attributes       : ........ x....... .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ ........ ........ ........ 
@@ -20849,12 +20849,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1149324)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Hand of Gul'dan (86040), Hand of Gul'dan (196282), Totem Mastery (226772), Malefic Rapture (324540), Malefic Touch (458131)
-                   Family Flags: 73, 86
-#3 (id=1149325)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+                   Affected Spells: Malefic Rapture (324540), Malefic Touch (458131)
+                   Family Flags: 73
+Hotfixed         : Affects Spells
+#3 (id=1149325)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Hand of Gul'dan (86040), Hand of Gul'dan (196282), Totem Mastery (226772)
-                   Family Flags: 86
+Hotfixed         : Sub Type (108 -> 4), Affects Spells
 #4 (id=1149326)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 Description      : $@spelldesc449614
