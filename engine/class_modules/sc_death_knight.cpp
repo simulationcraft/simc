@@ -14885,7 +14885,7 @@ void death_knight_t::parse_player_effects()
     // Tier Sets
     parse_effects( buffs.unbreakable_tww1_2pc, [ this ] { return buffs.bone_shield->check(); } );
     parse_effects( buffs.unbroken_tww1_2pc );
-    parse_effects( buffs.piledriver_tww1_4pc, buffs.piledriver_tww1_4pc->data().effectN( 1 ).base_value() / 10 );
+    parse_effects( buffs.piledriver_tww1_4pc, buffs.piledriver_tww1_4pc->data().effectN( 1 ).percent() / 10 );
   }
 
   // Frost
