@@ -213,7 +213,7 @@ custom_cb_t primary_food( unsigned id, stat_e stat, size_t primary_idx = 3, bool
     auto coeff = effect.player->find_spell( food_coeff_spell_id );
 
     auto buff = create_buff<consumable_buff_t<stat_buff_t>>( effect.player, effect.driver() );
-    
+
     if ( primary_idx )
     {
       auto _amt = coeff->effectN( primary_idx ).average( effect );
@@ -616,6 +616,7 @@ void elemental_focusing_lens( special_effect_t& effect )
     return;
 
   auto amount = effect.driver()->effectN( 1 ).average( effect );
+  auto multiplier = role_mult( effect );
 
   effect.spell_id = effect.trigger()->id();
 
@@ -645,7 +646,7 @@ void elemental_focusing_lens( special_effect_t& effect )
     auto dam = create_proc_action<generic_proc_t>( fmt::format( "elemental_focusing_lens_{}", name ), effect, id );
     dam->base_dd_min += amount;
     dam->base_dd_max += amount;
-    dam->base_multiplier *= role_mult( effect );
+    dam->base_multiplier = multiplier;
     dam->name_str_reporting = util::inverse_tokenize( name );
     damages.push_back( dam );
     proxy->add_child( dam );
@@ -996,7 +997,7 @@ void spymasters_web( special_effect_t& effect )
     void execute() override
     {
       generic_proc_t::execute();
-      
+
       use_buff->expire();
       use_buff->trigger( stacking_buff->check() );
       stacking_buff->expire();
@@ -1822,7 +1823,7 @@ void treacherous_transmitter( special_effect_t& effect )
       }
     }
   };
-  
+
   effect.disable_buff();
   effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
   effect.execute_action = create_proc_action<cryptic_instructions_t>( "cryptic_instructions", effect );
@@ -2276,7 +2277,7 @@ void skarmorak_shard( special_effect_t& e )
 void void_pactstone( special_effect_t& e )
 {
   auto buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 450962 ) )
-                  // Will Throw a warning currently, as the mod rating misc_value1 is empty. Does not work in game either. 
+                  // Will Throw a warning currently, as the mod rating misc_value1 is empty. Does not work in game either.
                   ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e ) );
 
   auto damage         = create_proc_action<generic_aoe_proc_t>( "void_pulse", e, 450960 );
@@ -2587,7 +2588,7 @@ void arakara_sacbrood( special_effect_t& e )
 
   // In game this buff seems to stack infinitely, while data suggests 1 max stack.
   auto spiderling_buff = create_buff<buff_t>( e.player, e.player->find_spell( 452226 ) )
-                         ->set_max_stack( 99 );  
+                         ->set_max_stack( 99 );
 
   auto spiderling      = new special_effect_t( e.player );
   spiderling->name_str = "spiderling";
@@ -3096,7 +3097,7 @@ void signet_of_the_priory( special_effect_t& effect )
   effect.disable_buff();
   auto signet = debug_cast<signet_of_the_priory_t*>(
     create_proc_action<signet_of_the_priory_t>( "signet_of_the_priory", effect, data ) );
-  effect.execute_action = signet;  
+  effect.execute_action = signet;
   effect.stat           = STAT_ANY_DPS;
 
   // TODO: determine reasonable default for party buff options
@@ -3139,7 +3140,7 @@ void harvesters_edict( special_effect_t& effect )
     effect.driver()->effectN( 1 ).average( effect );
   damage->base_multiplier *= role_mult( effect );
   // TODO: determine travel speed to hit target, assuming 5yd/s based on 443549 range/duration
-  damage->travel_speed = 5.0; 
+  damage->travel_speed = 5.0;
 
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 451303 ) )
     ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
@@ -3375,7 +3376,7 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
         magical_multi( nullptr )
     {
       auto values = e.player->find_spell( 454857 );
-      
+
       impact = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454862 ) )
         ->add_stat_from_effect( 1, values->effectN( 1 ).average( e ) )
         ->add_stat_from_effect( 2, values->effectN( 2 ).average( e ) );
@@ -3443,7 +3444,7 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
 
   effect.spell_id = 454859;
 
-  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;  
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
 
   new vivacity_cb_t( effect );
 }
@@ -4077,7 +4078,7 @@ void shining_arathor_insignia( special_effect_t& effect )
   // TODO: determine if this is affected by role mult
   auto damage_proc         = create_proc_action<generic_proc_t>( "shining_arathor_insignia_damage", effect, 455433 );
   damage_proc->base_dd_min = damage_proc->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
-  
+
   effect.execute_action = damage_proc;
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -4297,7 +4298,7 @@ void harvesters_interdiction( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// Siphoning Stilleto 
+// Siphoning Stilleto
 // 453573 Driver
 // Effect 1: Self Damage
 // Effect 2: Damage
@@ -4612,7 +4613,7 @@ void woven_dusk( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 457630 ) )
                   ->add_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 2 ).average( effect ) );
 
-  // Something *VERY* weird is going on here. It appears to work properly for Discipline Priest, but not Shadow.  
+  // Something *VERY* weird is going on here. It appears to work properly for Discipline Priest, but not Shadow.
   if ( effect.player->specialization() == PRIEST_DISCIPLINE )
   {
     buff->set_chance( 1.0 )->set_rppm( RPPM_DISABLE );
@@ -4871,8 +4872,8 @@ void register_special_effects()
   register_special_effect( 455419, items::spelunkers_waning_candle );
   register_special_effect( 455436, items::unstable_power_core );
   register_special_effect( 451742, items::stormrider_flight_badge );
-  register_special_effect( 451750, DISABLED_EFFECT );  // stormrider flight badge special effect 
-  register_special_effect( 435502, items::shadowbinding_ritual_knife );  
+  register_special_effect( 451750, DISABLED_EFFECT );  // stormrider flight badge special effect
+  register_special_effect( 435502, items::shadowbinding_ritual_knife );
   register_special_effect( 455432, items::shining_arathor_insignia );
 
   // Weapons

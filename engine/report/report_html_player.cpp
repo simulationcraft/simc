@@ -1036,13 +1036,13 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    "<li><span>spell_power_mod.direct:</span>{:.6f}</li>"
                    "<li><span>base_dd_min:</span>{:.2f}</li>"
                    "<li><span>base_dd_max:</span>{:.2f}</li>"
-                   "<li><span>base_dd_mult:</span>{:.2f}</li></ul></div>\n",
+                   "<li><span>base_mult:</span>{:.2f}</li></ul></div>\n",
                    a->may_crit ? "true" : "false",
                    a->attack_power_mod.direct,
                    a->spell_power_mod.direct,
                    a->base_dd_min,
                    a->base_dd_max,
-                   a->base_dd_multiplier );
+                   a->action_multiplier() * a->action_da_multiplier() );
       }
 
       if ( a->dot_duration > timespan_t::zero() )
@@ -1055,7 +1055,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    "<li><span>attack_power_mod.tick:</span>{:.6f}</li>"
                    "<li><span>spell_power_mod.tick:</span>{:.6f}</li>"
                    "<li><span>base_td:</span>{:.2f}</li>"
-                   "<li><span>base_td_mult:</span>{:.2f}</li>"
+                   "<li><span>base_mult:</span>{:.2f}</li>"
                    "<li><span>dot_duration:</span>{:.2f}</li>"
                    "<li><span>base_tick_time:</span>{:.2f}</li>"
                    "<li><span>hasted_ticks:</span>{}</li>"
@@ -1067,7 +1067,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    a->attack_power_mod.tick,
                    a->spell_power_mod.tick,
                    a->base_td,
-                   a->base_td_multiplier,
+                   a->action_multiplier() * a->action_ta_multiplier(),
                    a->dot_duration.total_seconds(),
                    a->base_tick_time.total_seconds(),
                    a->hasted_ticks ? "true" : "false",
