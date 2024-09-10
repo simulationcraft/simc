@@ -15149,7 +15149,7 @@ struct death_knight_module_t : public module_t
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
     unique_gear::register_special_effect( 326913, runeforge::hysteria );
   }
-  
+  /*
   void register_hotfixes() const override
   {
     hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Commander Nerfed by 50%", 1161082,
@@ -15193,7 +15193,7 @@ struct death_knight_module_t : public module_t
         .operation( hotfix::HOTFIX_SET )
         .modifier( -5 )
         .verification_value( -10 );
-  }
+  }*/
 
   void init( player_t* ) const override
   {
