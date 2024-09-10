@@ -8179,6 +8179,8 @@ struct starfire_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
     aoe = -1;
     reduced_aoe_targets = data().effectN( p->specialization() == DRUID_BALANCE ? 5 : 3 ).base_value();
 
+    base_aoe_multiplier = 1.0 / ( 1.0 + find_effect( p->talent.lunar_calling, &data() ).percent() );
+
     auto m_data = p->get_modified_spell( &data() )
       ->parse_effects( p->talent.wild_surges )
       ->parse_effects( p->buff.eclipse_lunar, p->talent.umbral_intensity )
