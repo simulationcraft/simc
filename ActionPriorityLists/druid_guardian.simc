@@ -58,6 +58,10 @@ actions.bear+=/ironfur,if=!buff.ravage.up&variable.ironfur_spam&(!talent.rage_of
 actions.bear+=/ironfur,if=!buff.ravage.up&rage.deficit<=(12+4*buff.gore.up+5*talent.soul_of_the_forest.enabled)<?(talent.blood_frenzy.enabled*3*(spell_targets.swipe_bear>?5))
 
 actions.bear+=/maul,if=buff.ravage.up
+
+actions.bear+=/raze,if=buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1+gcd.max&spell_targets.swipe_bear>=2
+actions.bear+=/maul,if=buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1+gcd.max&spell_targets.swipe_bear<=5
+
 actions.bear+=/call_action_list,name=preweave,if=variable.ripweaving&!buff.ravage.up&spell_targets.swipe_bear<=2&energy>60&(!talent.rage_of_the_sleeper.enabled|cooldown.rage_of_the_sleeper.remains<=52)&buff.feline_potential_counter.stack=6
 actions.bear+=/mangle,if=variable.ripweaving&spell_targets.swipe_bear<=2&buff.feline_potential_counter.stack<6&rage.deficit>12+4*buff.gore.up+5*talent.soul_of_the_forest.enabled
 
@@ -67,9 +71,6 @@ actions.bear+=/call_action_list,name=generator,if=talent.ravage.enabled
 
 actions.bear+=/raze,if=buff.tooth_and_claw.stack=2&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear>=2
 actions.bear+=/maul,if=buff.tooth_and_claw.stack=2&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear<=5
-
-actions.bear+=/raze,if=buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1+gcd.max&spell_targets.swipe_bear>=2
-actions.bear+=/maul,if=buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1+gcd.max&spell_targets.swipe_bear<=5
 
 # actions.bear+=/raze,if=buff.tooth_and_claw.stack=1&!(talent.ravage.enabled&variable.ironfur_spam)&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear>=2
 # actions.bear+=/maul,if=buff.tooth_and_claw.stack=1&!(talent.ravage.enabled&variable.ironfur_spam)&cooldown.rage_of_the_sleeper.remains>2&spell_targets.swipe_bear<=5
