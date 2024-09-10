@@ -71,9 +71,9 @@ back=wings_of_shattered_sorrow,id=225574,bonus_id=4800/4786/1540/10299,enchant_i
 chest=rainshadow_hauberk,id=178698,bonus_id=4786/9948/10299,enchant_id=7364
 wrists=great_links_of_the_greatlynx,id=212052,bonus_id=1540/10299/1808,gem_id=213479,enchant_id=7391
 hands=eviscerators_of_the_greatlynx,id=212057,bonus_id=4800/4786/10259/10299/1540
-waist=runebranded_waistband,id=219331,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960/1808,gem_id=213479,crafted_stats=32/36
+waist=adrenal_surge_clasp,id=219502,bonus_id=8960/10421/9633/8902/11144/10222/1485/1808,gem_id=213479,crafted_stats=32/36
 legs=leggings_of_the_greatlynx,id=212055,bonus_id=4800/4786/10258/10299/1540,enchant_id=7595
-feet=runebranded_kickers,id=219327,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960,enchant_id=7418,crafted_stats=32/36
+feet=runebranded_kickers,id=219327,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960,enchant_id=7418,crafted_stats=32/36
 finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=4800/4786/1540/10299/8781,gem_id=213479/213479,enchant_id=7340
 finger2=key_to_the_unseeming,id=212447,bonus_id=4800/4786/10260/10299/1540/8781,gem_id=213479/213455,enchant_id=7340
 trinket1=arakara_sacbrood,id=219314,bonus_id=4786/3131/10299
