@@ -578,14 +578,20 @@ void pouch_of_pocket_grenades( special_effect_t& effect )
   auto missile = driver->effectN( 1 ).trigger();
   auto damage = missile->effectN( 1 ).trigger();
   // TODO: determine which coeff is the correct one. assuming driver is correct.
-  auto amount = driver->effectN( 1 ).average( effect );
+  auto amount = driver->effectN( 1 ).average( effect ) * role_mult( effect );
 
   effect.spell_id = driver->id();
+
+  auto found = effect.player->find_action( "pocket_grenade" );
 
   // TODO: confirm damage doesn't increase per extra target
   auto grenade = create_proc_action<generic_aoe_proc_t>( "pocket_grenade", effect, damage );
   grenade->base_dd_min += amount;
   grenade->base_dd_max += amount;
+
+  if ( found )
+    return;
+
   grenade->travel_speed = missile->missile_speed();
 
   effect.execute_action = grenade;
@@ -608,7 +614,7 @@ void elemental_focusing_lens( special_effect_t& effect )
   if ( !gems.size() )
     return;
 
-  auto amount = effect.driver()->effectN( 1 ).average( effect );
+  auto amount = effect.driver()->effectN( 1 ).average( effect ) * role_mult( effect );
 
   effect.spell_id = effect.trigger()->id();
 
@@ -1304,6 +1310,7 @@ void sikrans_endless_arsenal( special_effect_t& effect )
             auto absorbed = s->result_mitigated - s->result_absorbed;
             if ( absorbed > 0 )
             {
+              // TODO: determine if this is affected by role mult
               d_shield->base_dd_min = d_shield->base_dd_max = mul * absorbed;
               d_shield->execute_on_target( s->target );
             }
@@ -2010,6 +2017,8 @@ void sigil_of_algari_concordance( special_effect_t& e )
         stats = ( *it )->stats;
       else
         proxy->add_child( this );
+
+      // TODO: determine if these are affected by role mult
     }
 
     player_t* p() const
@@ -3866,6 +3875,7 @@ void shadowed_essence( special_effect_t& effect )
       auto dark_embrace = create_buff<stat_buff_t>( e.player, e.player->find_spell( 455656 ) )
                               ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 3 ).average( e ) );
 
+      // TODO: determine if damage is affected by role mult
       auto damage         = create_proc_action<generic_proc_t>( "shadowed_essence_damage", e, 455654 );
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e );
 
@@ -4057,6 +4067,7 @@ void shadowbinding_ritual_knife( special_effect_t& effect )
 void shining_arathor_insignia( special_effect_t& effect )
 {
   // TODO: make it heal players as well
+  // TODO: determine if this is affected by role mult
   auto damage_proc         = create_proc_action<generic_proc_t>( "shining_arathor_insignia_damage", effect, 455433 );
   damage_proc->base_dd_min = damage_proc->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
   
@@ -4213,6 +4224,7 @@ void befoulers_syringe( special_effect_t& effect )
   // create on-next melee damage
   auto strike = create_proc_action<generic_proc_t>( "befouling_strike", effect, 442280 );
   strike->base_dd_min = strike->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
+  strike->base_multiplier *= role_mult( effect );
 
   // create on-next melee buff
   auto bloodlust = create_buff<buff_t>( effect.player, effect.player->find_spell( 442267 ) );
@@ -4550,6 +4562,10 @@ void imperfect_ascendancy_serum( special_effect_t& effect )
 // 455827 Third Dig
 void excavation( special_effect_t& effect )
 {
+  // Currently does nothing if multiple of these are equipped at the same time
+  if ( buff_t::find( effect.player, "Uncommon Treasure" ) )
+    return;
+
   struct excavation_cb_t : public dbc_proc_callback_t
   {
     std::vector<buff_t*> buff_list;
@@ -4557,17 +4573,20 @@ void excavation( special_effect_t& effect )
 
     excavation_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), buff_list(), dig_count( 0 )
     {
-      static constexpr std::pair<unsigned, unsigned> buff_entries[] = { { 455820, 0 }, { 455826, 1 }, { 455827, 2 } };
+      auto uncommon = create_buff<stat_buff_t>( e.player, e.player->find_spell( 455820 ) )
+                          ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) * 0.9 );
 
-      for ( const auto& [ id, n ] : buff_entries )
-      {
-        auto s_data  = e.player->find_spell( id );
-        double value =  e.driver()->effectN( 1 ).average( e ) * ( 1.0 + ( 0.05 * n ) );
+      buff_list.push_back( uncommon );
 
-        auto buff = create_buff<stat_buff_t>( e.player, s_data )->add_stat_from_effect_type( A_MOD_STAT, value );
+      auto rare = create_buff<stat_buff_t>( e.player, e.player->find_spell( 455826 ) )
+                      ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) );
 
-        buff_list.push_back( buff );
-      }
+      buff_list.push_back( rare );
+
+      auto epic = create_buff<stat_buff_t>( e.player, e.player->find_spell( 455827 ) )
+                      ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) * 1.1 );
+
+      buff_list.push_back( epic );
     }
 
     void execute( action_t*, action_state_t* ) override

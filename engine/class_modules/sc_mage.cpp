@@ -9415,7 +9415,7 @@ void mage_t::trigger_spellfire_spheres()
   };
 
   // For Arcane, casting Arcane Blast and Arcane Barrage together results in both stacks of spellfire_spheres
-  // being applied before they are consumed. This can be handled with a delay here. This does not work for Firek
+  // being applied before they are consumed. This can be handled with a delay here. This does not work for Fire
   // because Pyroblast will consume the Burden of Power that was applied by the Hot Streak that it just consumed.
   if ( specialization() == MAGE_FIRE )
     check_stacks();

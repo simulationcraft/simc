@@ -8179,6 +8179,8 @@ struct starfire_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
     aoe = -1;
     reduced_aoe_targets = data().effectN( p->specialization() == DRUID_BALANCE ? 5 : 3 ).base_value();
 
+    base_aoe_multiplier = 1.0 / ( 1.0 + find_effect( p->talent.lunar_calling, &data() ).percent() );
+
     auto m_data = p->get_modified_spell( &data() )
       ->parse_effects( p->talent.wild_surges )
       ->parse_effects( p->buff.eclipse_lunar, p->talent.umbral_intensity )
@@ -11493,10 +11495,10 @@ std::string druid_t::default_flask() const
 {
   switch ( specialization() )
   {
-    case DRUID_BALANCE:     return "tempered_mastery_3";
-    case DRUID_FERAL:       return "tempered_aggression_3";
-    case DRUID_GUARDIAN:    return "tempered_swiftness_3";
-    case DRUID_RESTORATION: return "tempered_swiftness_3";
+    case DRUID_BALANCE:     return "flask_of_alchemical_chaos_3";
+    case DRUID_FERAL:       return "flask_of_alchemical_chaos_3";
+    case DRUID_GUARDIAN:    return "flask_of_alchemical_chaos_3";
+    case DRUID_RESTORATION: return "flask_of_alchemical_chaos_3";
     default:                return "disabled";
   }
 }
@@ -11517,10 +11519,10 @@ std::string druid_t::default_food() const
 {
   switch ( specialization() )
   {
-    case DRUID_BALANCE:     return "stuffed_cave_peppers";
-    case DRUID_FERAL:       return "mycobloom_risotto";
-    case DRUID_GUARDIAN:    return "mycobloom_risotto";
-    case DRUID_RESTORATION: return "stuffed_cave_peppers";
+    case DRUID_BALANCE:     return "feast_of_the_midnight_masquerade";
+    case DRUID_FERAL:       return "beledars_bounty";
+    case DRUID_GUARDIAN:    return "feast_of_the_midnight_masquerade";
+    case DRUID_RESTORATION: return "feast_of_the_midnight_masquerade";
     default:                return "disabled";
   }
 }
@@ -11537,8 +11539,8 @@ std::string druid_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case DRUID_BALANCE:     return str + "algari_mana_oil_3";
-    case DRUID_FERAL:       return str + "algari_mana_oil_3";
-    case DRUID_GUARDIAN:    return str + "algari_mana_oil_3";
+    case DRUID_FERAL:       return str + "ironclaw_whetstone_3";
+    case DRUID_GUARDIAN:    return str + "ironclaw_whetstone_3";
     case DRUID_RESTORATION: return str + "algari_mana_oil_3";
     default:                return "disabled";
   }
@@ -13991,7 +13993,9 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( buff.balance_of_all_things_arcane, talent.balance_of_all_things );
   _a->parse_effects( buff.balance_of_all_things_arcane, effect_mask_t( false ).enable( 3 ),
                      talent.balance_of_all_things->effectN( 1 ).percent() );
-  _a->parse_effects( buff.balance_of_all_things_nature, talent.balance_of_all_things );
+  _a->parse_effects( buff.balance_of_all_things_nature, talent.balance_of_all_things,
+                     // nature boat applies to dream burst (433850) via hidden script
+                     affect_list_t( 1 ).add_spell( 433850 ) );
   _a->parse_effects( buff.balance_of_all_things_nature, effect_mask_t( false ).enable( 3 ),
                      talent.balance_of_all_things->effectN( 1 ).percent() );
 
@@ -14006,7 +14010,7 @@ void druid_t::parse_action_effects( action_t* action )
   // instead of data value
   _a->parse_effects( buff.eclipse_solar, effect_mask_t( true ).disable( 1, 8 ), talent.umbral_intensity );
   _a->parse_effects( buff.eclipse_solar, effect_mask_t( false ).enable( 1, 8 ), USE_CURRENT,
-                     // damage (eff#1) applies to orbital strike and goldrinn's fang (label 2391) and dream burst(433850)
+                     // damage (eff#1) applies to orbital strike and goldrinn's fang (label 2391) and dream burst (433850)
                      // via hidden script
                      affect_list_t( 1 ).add_label( 2391 ).add_spell( 433850 ) );
 

@@ -95,6 +95,8 @@ actions.combustion_phase+=/pyroblast,if=buff.combustion.down&buff.fury_of_the_su
 actions.combustion_phase+=/meteor,if=talent.isothermic_core&buff.combustion.down&cooldown.combustion.remains<cast_time
 actions.combustion_phase+=/fireball,if=buff.combustion.down&cooldown.combustion.remains<cast_time&active_enemies<2&!improved_scorch.active&!(talent.sun_kings_blessing&talent.flame_accelerant)
 actions.combustion_phase+=/scorch,if=buff.combustion.down&cooldown.combustion.remains<cast_time
+# If no precast was available, spend Frostfire Empowerment so that Fireball can be used as a precast.
+actions.combustion_phase+=/fireball,if=buff.combustion.down&buff.frostfire_empowerment.up
 # Combustion should be used when the precast is almost finished or when Meteor is about to land.
 actions.combustion_phase+=/combustion,use_off_gcd=1,use_while_casting=1,if=hot_streak_spells_in_flight=0&buff.combustion.down&variable.time_to_combustion<=0&(action.scorch.executing&action.scorch.execute_remains<variable.combustion_cast_remains|action.fireball.executing&action.fireball.execute_remains<variable.combustion_cast_remains|action.pyroblast.executing&action.pyroblast.execute_remains<variable.combustion_cast_remains|action.flamestrike.executing&action.flamestrike.execute_remains<variable.combustion_cast_remains|action.meteor.in_flight&action.meteor.in_flight_remains<variable.combustion_cast_remains)
 # Variable to determine which Fire Blast conditions are used.
@@ -121,7 +123,7 @@ actions.combustion_phase+=/scorch,if=buff.heat_shimmer.react&(talent.scald|talen
 actions.combustion_phase+=/phoenix_flames,if=(!talent.call_of_the_sun_king&travel_time<buff.combustion.remains|(talent.call_of_the_sun_king&buff.combustion.remains<4|buff.sun_kings_blessing.stack<8))&buff.heating_up.react+hot_streak_spells_in_flight<2
 actions.combustion_phase+=/fireball,if=buff.frostfire_empowerment.up&!buff.hot_streak.react
 actions.combustion_phase+=/scorch,if=buff.combustion.remains>cast_time&cast_time>=gcd.max
-actions.combustion_phase+=/fireball,if=buff.combustion.remains>cast_time
+actions.combustion_phase+=/fireball
 
 # Helper variable that contains the actual estimated time that the next Combustion will be ready.
 actions.combustion_timing=variable,use_off_gcd=1,use_while_casting=1,name=combustion_ready_time,value=cooldown.combustion.remains*expected_kindling_reduction
@@ -155,7 +157,7 @@ actions.standard_rotation+=/pyroblast,if=(buff.hyperthermia.react|buff.hot_strea
 actions.standard_rotation+=/flamestrike,if=active_enemies>=variable.skb_flamestrike&buff.fury_of_the_sun_king.up&buff.fury_of_the_sun_king.expiration_delay_remains=0
 actions.standard_rotation+=/scorch,if=improved_scorch.active&debuff.improved_scorch.remains<action.pyroblast.cast_time+5*gcd.max&buff.fury_of_the_sun_king.up&!action.scorch.in_flight
 actions.standard_rotation+=/pyroblast,if=buff.fury_of_the_sun_king.up&buff.fury_of_the_sun_king.expiration_delay_remains=0
-# During the standard rotation, only use Fire Blasts when they are not being pooled for  Combustion. Use Fire Blast either during a Fireball/Pyroblast cast when Heating Up is active or during execute with Searing Touch.
+# During the standard rotation, only use Fire Blasts when they are not being pooled for Combustion. Use Fire Blast either during a Fireball/Pyroblast cast when Heating Up is active or during execute with Searing Touch.
 actions.standard_rotation+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=!firestarter.active&(!variable.fire_blast_pooling|talent.spontaneous_combustion)&buff.fury_of_the_sun_king.down&(((action.fireball.executing&(action.fireball.execute_remains<0.5|!talent.hyperthermia)|action.pyroblast.executing&(action.pyroblast.execute_remains<0.5))&buff.heating_up.react)|(scorch_execute.active&(!improved_scorch.active|debuff.improved_scorch.stack=debuff.improved_scorch.max_stack|full_recharge_time<3)&(buff.heating_up.react&!action.scorch.executing|!buff.hot_streak.react&!buff.heating_up.react&action.scorch.executing&!hot_streak_spells_in_flight)))
 # We will munch Fireblasts during Hyperthermia, and use them after instant casts in filler.
 actions.standard_rotation+=/fire_blast,use_off_gcd=1,use_while_casting=1,if=!firestarter.active&(!variable.fire_blast_pooling|talent.spontaneous_combustion)&buff.fury_of_the_sun_king.down&(buff.heating_up.up&hot_streak_spells_in_flight<1&(prev_gcd.1.phoenix_flames|prev_gcd.1.scorch))|(((buff.bloodlust.up&charges_fractional>1.5)|charges_fractional>2.5|buff.feel_the_burn.remains<0.5|full_recharge_time*1-(0.5*cooldown.shifting_power.ready)<buff.hyperthermia.duration)&buff.heating_up.react)

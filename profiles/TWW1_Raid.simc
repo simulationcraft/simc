@@ -31,8 +31,8 @@ TWW1_Mage_Arcane.simc
 # TWW1_Monk_Windwalker.simc
 
 TWW1_Paladin_Protection.simc
-# TWW1_Paladin_Retribution.simc
-# TWW1_Paladin_Retribution_CS.simc
+TWW1_Paladin_Retribution.simc
+TWW1_Paladin_Retribution_Templar.simc
 
 TWW1_Priest_Shadow.simc
 
