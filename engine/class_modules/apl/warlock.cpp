@@ -90,7 +90,7 @@ void affliction( player_t* p )
   default_->add_action( "phantom_singularity,if=(!talent.soul_rot|cooldown.soul_rot.remains<4|fight_remains<cooldown.soul_rot.remains)&dot.agony.remains&(dot.corruption.remains|dot.wither.remains)&dot.unstable_affliction.remains" );
   default_->add_action( "malevolence,if=variable.vt_ps_up" );
   default_->add_action( "soul_rot,if=variable.vt_ps_up" );
-  default_->add_action( "summon_darkglare,if=variable.cd_dots_up" );
+  default_->add_action( "summon_darkglare,if=variable.cd_dots_up&(debuff.shadow_embrace.stack=debuff.shadow_embrace.max_stack)" );
   default_->add_action( "call_action_list,name=se_maintenance,if=talent.demonic_soul" );
   default_->add_action( "malefic_rapture,if=soul_shard>4&(talent.demonic_soul&buff.nightfall.react<2|!talent.demonic_soul)|buff.tormented_crescendo.react>1" );
   default_->add_action( "drain_soul,if=talent.demonic_soul&buff.nightfall.react&buff.tormented_crescendo.react<2&target.health.pct<20" );
@@ -180,7 +180,7 @@ void affliction( player_t* p )
   cleave_se_maintenance->add_action( "shadow_bolt,target_if=min:debuff.shadow_embrace.remains,if=talent.shadow_embrace&!talent.drain_soul&((debuff.shadow_embrace.stack+action.shadow_bolt.in_flight_to_target_count)<debuff.shadow_embrace.max_stack|debuff.shadow_embrace.remains<3&!action.shadow_bolt.in_flight_to_target)&fight_remains>15" );
 
   items->add_action( "use_item,name=aberrant_spellforge,use_off_gcd=1,if=gcd.remains>gcd.max*0.8" );
-  items->add_action( "use_item,name=spymasters_web,if=variable.cd_dots_up&(fight_remains<=80|talent.drain_soul&target.health.pct<20)|fight_remains<20" );
+  items->add_action( "use_item,name=spymasters_web,if=variable.cd_dots_up&(buff.spymasters_report.stack>=38|fight_remains<=80|talent.drain_soul&target.health.pct<20)|fight_remains<20" );
   items->add_action( "use_item,slot=trinket1,if=(variable.cds_active)&(variable.trinket_priority=1|variable.trinket_2_exclude|!trinket.2.has_cooldown|(trinket.2.cooldown.remains|variable.trinket_priority=2&cooldown.summon_darkglare.remains>20&!pet.darkglare.active&trinket.2.cooldown.remains<cooldown.summon_darkglare.remains))&variable.trinket_1_buffs&!variable.trinket_1_manual|(variable.trinket_1_buff_duration+1>=fight_remains)" );
   items->add_action( "use_item,slot=trinket2,if=(variable.cds_active)&(variable.trinket_priority=2|variable.trinket_1_exclude|!trinket.1.has_cooldown|(trinket.1.cooldown.remains|variable.trinket_priority=1&cooldown.summon_darkglare.remains>20&!pet.darkglare.active&trinket.1.cooldown.remains<cooldown.summon_darkglare.remains))&variable.trinket_2_buffs&!variable.trinket_2_manual|(variable.trinket_2_buff_duration+1>=fight_remains)" );
   items->add_action( "use_item,name=time_thiefs_gambit,if=variable.cds_active|fight_remains<15|((trinket.1.cooldown.duration<cooldown.summon_darkglare.remains_expected+5)&active_enemies=1)|(active_enemies>1&havoc_active)" );
@@ -188,12 +188,12 @@ void affliction( player_t* p )
   items->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|talent.summon_darkglare&cooldown.summon_darkglare.remains_expected>20|!talent.summon_darkglare)" );
   items->add_action( "use_item,use_off_gcd=1,slot=main_hand" );
 
-  ogcd->add_action( "potion,if=variable.cds_active|fight_remains<32|dot.soul_rot.ticking&time<20" );
-  ogcd->add_action( "berserking,if=variable.cds_active|fight_remains<14|dot.soul_rot.ticking&time<20" );
-  ogcd->add_action( "blood_fury,if=variable.cds_active|fight_remains<17|dot.soul_rot.ticking&time<20" );
+  ogcd->add_action( "potion,if=variable.cds_active|fight_remains<32|prev_gcd.1.soul_rot&time<20" );
+  ogcd->add_action( "berserking,if=variable.cds_active|fight_remains<14|prev_gcd.1.soul_rot&time<20" );
+  ogcd->add_action( "blood_fury,if=variable.cds_active|fight_remains<17|prev_gcd.1.soul_rot&time<20" );
   ogcd->add_action( "invoke_external_buff,name=power_infusion,if=variable.cds_active" );
-  ogcd->add_action( "fireblood,if=variable.cds_active|fight_remains<10|dot.soul_rot.ticking&time<20" );
-  ogcd->add_action( "ancestral_call,if=variable.cds_active|fight_remains<17|dot.soul_rot.ticking&time<20" );
+  ogcd->add_action( "fireblood,if=variable.cds_active|fight_remains<10|prev_gcd.1.soul_rot&time<20" );
+  ogcd->add_action( "ancestral_call,if=variable.cds_active|fight_remains<17|prev_gcd.1.soul_rot&time<20" );
 
   variables->add_action( "variable,name=ps_up,op=set,value=!talent.phantom_singularity|dot.phantom_singularity.remains" );
   variables->add_action( "variable,name=vt_up,op=set,value=!talent.vile_taint|dot.vile_taint_dot.remains" );
