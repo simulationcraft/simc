@@ -11493,10 +11493,10 @@ std::string druid_t::default_flask() const
 {
   switch ( specialization() )
   {
-    case DRUID_BALANCE:     return "tempered_mastery_3";
-    case DRUID_FERAL:       return "tempered_aggression_3";
-    case DRUID_GUARDIAN:    return "tempered_swiftness_3";
-    case DRUID_RESTORATION: return "tempered_swiftness_3";
+    case DRUID_BALANCE:     return "flask_of_alchemical_chaos_3";
+    case DRUID_FERAL:       return "flask_of_alchemical_chaos_3";
+    case DRUID_GUARDIAN:    return "flask_of_alchemical_chaos_3";
+    case DRUID_RESTORATION: return "flask_of_alchemical_chaos_3";
     default:                return "disabled";
   }
 }
@@ -11517,10 +11517,10 @@ std::string druid_t::default_food() const
 {
   switch ( specialization() )
   {
-    case DRUID_BALANCE:     return "stuffed_cave_peppers";
-    case DRUID_FERAL:       return "mycobloom_risotto";
-    case DRUID_GUARDIAN:    return "mycobloom_risotto";
-    case DRUID_RESTORATION: return "stuffed_cave_peppers";
+    case DRUID_BALANCE:     return "feast_of_the_midnight_masquerade";
+    case DRUID_FERAL:       return "beledars_bounty";
+    case DRUID_GUARDIAN:    return "feast_of_the_midnight_masquerade";
+    case DRUID_RESTORATION: return "feast_of_the_midnight_masquerade";
     default:                return "disabled";
   }
 }
@@ -11537,8 +11537,8 @@ std::string druid_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case DRUID_BALANCE:     return str + "algari_mana_oil_3";
-    case DRUID_FERAL:       return str + "algari_mana_oil_3";
-    case DRUID_GUARDIAN:    return str + "algari_mana_oil_3";
+    case DRUID_FERAL:       return str + "ironclaw_whetstone_3";
+    case DRUID_GUARDIAN:    return str + "ironclaw_whetstone_3";
     case DRUID_RESTORATION: return str + "algari_mana_oil_3";
     default:                return "disabled";
   }
