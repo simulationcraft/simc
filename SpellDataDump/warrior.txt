@@ -14829,8 +14829,9 @@ Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), No Proc Equip Requirement (97), Can Proc From Procs (122), Allow Proc While Sitting (147), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1018566)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
-                   Affected School(s): All
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+Hotfixed         : Misc Value (127 -> 126)
 Tooltip          : Magical damage taken reduced by $s1%.
 
 Name             : Storm of Swords (id=385512) [Spell Family (4), Passive] 
