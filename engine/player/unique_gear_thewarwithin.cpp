@@ -578,7 +578,7 @@ void pouch_of_pocket_grenades( special_effect_t& effect )
   auto missile = driver->effectN( 1 ).trigger();
   auto damage = missile->effectN( 1 ).trigger();
   // TODO: determine which coeff is the correct one. assuming driver is correct.
-  auto amount = driver->effectN( 1 ).average( effect ) * role_mult( effect );
+  auto amount = driver->effectN( 1 ).average( effect );
 
   effect.spell_id = driver->id();
 
@@ -588,6 +588,7 @@ void pouch_of_pocket_grenades( special_effect_t& effect )
   auto grenade = create_proc_action<generic_aoe_proc_t>( "pocket_grenade", effect, damage );
   grenade->base_dd_min += amount;
   grenade->base_dd_max += amount;
+  grenade->base_multiplier *= role_mult( effect );
 
   if ( found )
     return;
@@ -614,7 +615,7 @@ void elemental_focusing_lens( special_effect_t& effect )
   if ( !gems.size() )
     return;
 
-  auto amount = effect.driver()->effectN( 1 ).average( effect ) * role_mult( effect );
+  auto amount = effect.driver()->effectN( 1 ).average( effect );
 
   effect.spell_id = effect.trigger()->id();
 
@@ -644,6 +645,7 @@ void elemental_focusing_lens( special_effect_t& effect )
     auto dam = create_proc_action<generic_proc_t>( fmt::format( "elemental_focusing_lens_{}", name ), effect, id );
     dam->base_dd_min += amount;
     dam->base_dd_max += amount;
+    dam->base_multiplier *= role_mult( effect );
     dam->name_str_reporting = util::inverse_tokenize( name );
     damages.push_back( dam );
     proxy->add_child( dam );
@@ -813,7 +815,9 @@ void deepening_darkness( special_effect_t& effect )
     create_proc_action<generic_aoe_proc_t>( "deepening_darkness", effect, effect.player->find_spell( 446753 ), true );
 
   damage->base_dd_min = damage->base_dd_max =
-    effect.driver()->effectN( 2 ).average( effect ) * role_mult( effect ) * writhing_mul( effect.player );
+    effect.driver()->effectN( 2 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+  damage->base_multiplier *= writhing_mul( effect.player );
 
   auto buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 446743 ) )
                   ->set_expire_callback( [ damage ]( buff_t*, int, timespan_t d ) {
@@ -1860,7 +1864,7 @@ void mad_queens_mandate( special_effect_t& effect )
         heal_speed( e.trigger()->missile_speed() ),
         hp_mul( 0.5 ) // not present in spell data
     {
-      base_dd_min = base_dd_max = data->effectN( 1 ).average( e ) * role_mult( e );
+      base_dd_min = base_dd_max = data->effectN( 1 ).average( e );
       base_multiplier *= role_mult( e );
 
       heal = create_proc_action<generic_heal_t>( "abyssal_gluttony_heal", e, "abyssal_gluttony_heal",
@@ -2490,7 +2494,7 @@ void opressive_orators_larynx( special_effect_t& e )
     {
       background  = true;
       base_dd_min = base_dd_max = equip_driver->effectN( 2 ).average( e );
-      base_multiplier = role_mult( e );
+      base_multiplier *= role_mult( e );
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
@@ -2569,7 +2573,7 @@ void arakara_sacbrood( special_effect_t& e )
     {
       damage                 = create_proc_action<generic_proc_t>( "spidersting", e, e.player->find_spell( 452229 ) );
       damage->base_td        = e.player->find_spell( 443541 )->effectN( 2 ).average( e );
-      damage->base_multiplier = role_mult( e );
+      damage->base_multiplier *= role_mult( e );
       missile                = create_proc_action<generic_proc_t>( "spiderfling", e, e.player->find_spell( 452227 ) );
       missile->impact_action = damage;
     }
@@ -2624,7 +2628,7 @@ void skyterrors_corrosive_organ( special_effect_t& e )
       background       = true;
       aoe              = data().max_targets();
       split_aoe_damage = false;
-      base_dd_min = base_dd_max = equip_driver->effectN( 2 ).average( e ) * role_mult( e );
+      base_dd_min = base_dd_max = equip_driver->effectN( 2 ).average( e );
       base_multiplier *= role_mult( e );
     }
 
@@ -2925,7 +2929,8 @@ void mereldars_toll( special_effect_t& effect )
       target_debuff = e.trigger();
 
       impact_action = create_proc_action<generic_proc_t>( "mereldars_toll_damage", e, e.trigger() );
-      impact_action->base_dd_min = impact_action->base_dd_max = data->effectN( 2 ).average( e ) * role_mult( e );
+      impact_action->base_dd_min = impact_action->base_dd_max = data->effectN( 2 ).average( e );
+      impact_action->base_multiplier *= role_mult( e );
       // TODO: confirm 950ms delay in damage
       impact_action->travel_delay = e.driver()->effectN( 2 ).misc_value1() * 0.001;
       impact_action->stats = stats;
@@ -3131,7 +3136,8 @@ void harvesters_edict( special_effect_t& effect )
   // TODO: confirm damage doesn't increase per extra target
   auto damage = create_proc_action<generic_aoe_proc_t>( "volatile_blood_blast", effect, effect.driver() );
   damage->base_dd_min = damage->base_dd_max =
-    effect.driver()->effectN( 1 ).average( effect ) * role_mult( effect );
+    effect.driver()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
   // TODO: determine travel speed to hit target, assuming 5yd/s based on 443549 range/duration
   damage->travel_speed = 5.0; 
 
@@ -3878,6 +3884,7 @@ void shadowed_essence( special_effect_t& effect )
       // TODO: determine if damage is affected by role mult
       auto damage         = create_proc_action<generic_proc_t>( "shadowed_essence_damage", e, 455654 );
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e );
+      damage->base_multiplier *= role_mult( e );
 
       auto missile           = create_proc_action<generic_proc_t>( "shadowed_essence", e, 455653 );
       missile->add_child( damage );
@@ -4086,7 +4093,8 @@ void void_reapers_claw( special_effect_t& effect )
   effect.tick = effect.trigger()->effectN( 1 ).period();
   // TODO: confirm effect value is for the entire dot and not per tick
   effect.discharge_amount =
-    effect.driver()->effectN( 1 ).average( effect ) * effect.tick / effect.duration_ * role_mult( effect );
+    effect.driver()->effectN( 1 ).average( effect ) * effect.tick / effect.duration_;
+  effect.discharge_amount *= role_mult( effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -4211,16 +4219,6 @@ void befoulers_syringe( special_effect_t& effect )
     }
   };
 
-  struct befouling_strike_t : public generic_proc_t
-  {
-    befouling_strike_t( const special_effect_t& e )
-      : generic_proc_t( e, "befouling_strike", e.player->find_spell( 442280 ) )
-    {
-      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e );
-      base_multiplier *= role_mult( e );
-    }
-  };
-
   // create on-next melee damage
   auto strike = create_proc_action<generic_proc_t>( "befouling_strike", effect, 442280 );
   strike->base_dd_min = strike->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
@@ -4264,7 +4262,8 @@ void voltaic_stormcaller( special_effect_t& effect )
 
     voltaic_stormstrike_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "voltaic_stormstrike", 455910, true )
     {
-      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e ) * role_mult( e );
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+      base_multiplier *= role_mult( e );
 
       buff = create_buff<stat_buff_with_multiplier_t>( e.player, e.player->find_spell( 456652 ) );
       buff->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e ) );
@@ -4329,7 +4328,9 @@ void siphoning_stilleto( special_effect_t& effect )
 
       damage              = create_proc_action<generic_proc_t>( "siphoning_stilleto", e, 458624 );
       damage->base_dd_min = damage->base_dd_max =
-          e.driver()->effectN( 2 ).average( e ) * role_mult( e ) * writhing_mul( e.player );
+          e.driver()->effectN( 2 ).average( e );
+      damage->base_multiplier *= role_mult( e );
+      damage->base_multiplier *= writhing_mul( e.player );
     }
 
     void execute( action_t*, action_state_t* ) override
