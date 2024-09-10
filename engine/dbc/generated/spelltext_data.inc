@@ -1,5 +1,5 @@
-// Spell text, wow build 11.0.2.56461
-static const std::array<spelltext_data_t, 26338> __spelltext_data { {
+// Spell text, wow build 11.0.2.56513
+static const std::array<spelltext_data_t, 26337> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -22816,7 +22816,6 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 431715, "Casting an empower spell during Temporal Burst causes a nearby ally to gain a Thread of Fate for $431716d, granting them a chance to echo their damage or healing spells, dealing $431716s1% of the amount again.", 0, "Bronze" },
   { 431716, "$@spelldesc431715", "Abilities have a chance to echo at $s1% power.", "Bronze" },
   { 431730, "$?a137028[Eye of Tyr][Wake of Ashes] surrounds you with a Holy barrier for $?a137028[$s1][$s4]% of your maximum health.\r\n\r\nHammer of Light heals you for $?a137028[$s2][$s5]% of your maximum health, increased by $?a137028[$s3][$s6]% for each additional target hit. Any overhealing done with this effect gets converted into a Holy barrier instead.", 0, 0 },
-  { 431731, "$@spelldesc431730", 0, 0 },
   { 431752, "$@spelldesc431406", "Movement speed increased by $w1%.", 0 },
   { 431760, "Grants the following aura.\r\n\r\n$@spellicon440393 $@spellname440393\r\n\r\nThe threads of time you find will be woven into this cloak, permanently increasing its power.", 0, 0 },
   { 431777, "|CFFFFFFFF- Caster AoE|R\r\n|CFFFFFFFF- Forced movement|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nEngulf yourself in flames and rush forward, damaging enemies you pass through.", 0, "Offensive" },
@@ -24978,7 +24977,7 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 453627, "Vivify extends the duration of Renewing Mist and Enveloping Mist on its primary target by ${$s1/1000}.1 sec, up to ${$s2/1000}.1 sec.\r\n\r\n", 0, 0 },
   { 453628, "Enveloping Mist and Renewing Mist healing increased by $s1%.", 0, 0 },
   { 453629, "While you have one or more Boneshield charges, the damage you take is reduced by ${$abs($457468S1)}.1%. Losing a Boneshield charge has a chance to reduce the damage you take by an additional ${$abs($457473S1)}.1%, up to ${$abs($457473S1)*$457473U}.1% for $457473d.", 0, 0 },
-  { 453630, "Your damage is increased by $s1% per active Boneshield charge. Taking damage while below $s2 Boneshield charges has a chance to generate $s3-$s4 Boneshield charges.", 0, 0 },
+  { 453630, "Your damage is increased by ${$s1/10}.1% per active Boneshield charge. Taking damage while below $s2 Boneshield charges has a chance to generate $s3-$s4 Boneshield charges.", 0, 0 },
   { 453631, "Consuming Runic Power has a chance to increase your Strength by $457189s1% for $457189d.", 0, 0 },
   { 453632, "When you summon a minion, your Haste is increased by $456698s1%, up to ${$456698s1*$456698u}% for $456698d.", 0, 0 },
   { 453633, "Your minions deal $s1% increased damage.", 0, 0 },
@@ -25616,7 +25615,7 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 457489, "Taking damage greater than $s4% of your health grants you $s1 Avoidance and increases healing taken by $s2% for $457533d. This effect may only occur every $proccooldown sec.\r\n\r\nFalling damage reduced.", 0, 0 },
   { 457493, "$@spelldesc457481", "Your healing done is increased by $w1%.\r\n\r\n$?a157153[Cloudburst][Healing Stream] Totem lasts an additional ${$w2/1000} sec.", 0 },
   { 457496, "$@spelldesc457481", "Your healing done is increased by $w2%.\r\n\r\n$?a157153[Cloudburst][Healing Stream] Totem lasts an additional ${$w1/1000} sec.", 0 },
-  { 457506, 0, "Damage done increased by $w1%.", 0 },
+  { 457506, 0, "Damage done increased by ${$w1}.1%.", 0 },
   { 457507, "$@spelldesc452196", 0, 0 },
   { 457512, "Gain $s1 additional max combo point.\r\n\r\nYour finishing moves that consume more than $s3 combo points have increased effects, and your finishing moves deal $s4% increased damage.", 0, 0 },
   { 457521, "Arcane Surge damage increased by ${$s2/$s1}% per Arcane Charge.", 0, 0 },
@@ -26340,12 +26339,14 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 469995, "$@spelldesc452402", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.0.2.56461
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 11.0.2.56513
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
   {  441023,  0, "Your spells and abilities have a chance to secrete $<effectCount> different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.", "Your spells and abilities have a chance to secrete $?pc129946[][$<effectCount> ]different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.$?pc129945[][\r\n\r\nReach Accomplice reputation with each of the Severed Threads' pacts to secrete more pheromones.]" },
+  {  453630,  0, "Your damage is increased by $s1% per active Boneshield charge. Taking damage while below $s2 Boneshield charges has a chance to generate $s3-$s4 Boneshield charges.", "Your damage is increased by ${$s1/10}.1% per active Boneshield charge. Taking damage while below $s2 Boneshield charges has a chance to generate $s3-$s4 Boneshield charges." },
+  {  457506,  1, "Damage done increased by $w1%.", "Damage done increased by ${$w1}.1%." },
 } };
 
-// Spell description variables, wow build 11.0.2.56461
+// Spell description variables, wow build 11.0.2.56513
 static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26933,7 +26934,7 @@ static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {  462620, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.2.56461
+// spelldesc_vars hotfix entries, wow build 11.0.2.56513
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.2.56461 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.2.56513 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -19358,7 +19358,6 @@ $@spellicon432795 $@spellname432795
 $@spelldesc432795
 
 Name             : Ruination (id=433885) [Spell Family (5)] 
-Hotfixed         : Proc Flags 1 (0 -> 65536), Proc Flags 2 (4 -> 0)
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : None
@@ -22570,7 +22569,6 @@ Effects          :
 Description      : $@spelldesc455587
 
 Name             : Empowered Legion Strike (id=455647) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Spell Type       : None

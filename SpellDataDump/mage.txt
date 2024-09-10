@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.2.56461 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.2.56513 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -3925,7 +3925,6 @@ Effects          :
 Description      : Arcane Power now increases damage by ${$s4+$s1}% and reduces mana costs by ${$s4-$s2}%.
 
 Name             : Kindling (id=155148) [Spell Family (3), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Fire [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Mage
 School           : Physical
@@ -4041,7 +4040,6 @@ Effects          :
 Description      : $@spelldesc1463
 
 Name             : Pyrotechnics (id=157642) [Spell Family (3), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Fire [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
@@ -11330,7 +11328,6 @@ Description      : Reduces the cooldown of Alter Time by ${$s1/-1000} sec.
 Alter Time resets the cooldown of Blink and Shimmer when you return to your original location.
 
 Name             : From the Ashes (id=342344) [Spell Family (3), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Fire [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Mage
 School           : Fire
@@ -14217,7 +14214,6 @@ Description      : $@spelldesc383980
 Tooltip          : Haste increased by $w1%.
 
 Name             : Firefall (id=384033) [Spell Family (3), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Fire [tree=spec, row=9, col=6, max_rank=1, req_points=20]
 Class            : Mage
 School           : Physical
@@ -14270,7 +14266,6 @@ Description      : $@spelldesc384033
 Tooltip          : Building up a Meteor.
 
 Name             : Firefall (id=384038) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -15053,7 +15048,6 @@ Description      : $@spelldesc389713
 Tooltip          : Able to teleport back to where last Blinked from.
 
 Name             : Overflowing Energy (id=390218) [Spell Family (3), Passive] 
-Hotfixed         : Attributes
 Talent Entry     : Generic [tree=class, row=2, col=2, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
@@ -16184,7 +16178,6 @@ Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Unleashed Inferno (id=416506) [Spell Family (3), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Fire [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Mage
 School           : Physical
@@ -17057,7 +17050,6 @@ Description      : $@spelldesc422881
 Tooltip          : Empowering Arcane Missiles.
 
 Name             : Frostfire Mastery (id=431038) [Spell Family (3), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Frostfire (Fire, Frost) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Mage
 School           : Physical
@@ -17339,7 +17331,6 @@ Description      : You melt slightly out of your Ice Block and Ice Cold, allowin
 Ice Block and Ice Cold trigger a Blazing Barrier when they end.
 
 Name             : Frostfire Infusion (id=431166) [Spell Family (3), Passive, Hidden] 
-Hotfixed         : Attributes
 Talent Entry     : Frostfire (Fire, Frost) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
 Class            : Mage
 School           : Physical
@@ -17446,14 +17437,12 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1118783)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100000 | Scaled Value: 100000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (108 -> 4), Misc Value (7 -> 0), Affects Spells
 #2 (id=1118784)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Frostfire Bolt (431044), Frostfire Bolt (468655)
                    Family Flags: 108
 #3 (id=1169876)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (108 -> 4), Affects Spells
 Description      : $@spelldesc431176
 Tooltip          : Your next Frostfire Bolt always critically strikes, deals $s3% additional damage, explodes for $431176s2% of its damage to nearby enemies, and is instant cast.
 
@@ -20922,7 +20911,6 @@ Effects          :
 Description      : $@spelldesc450004
 
 Name             : Magi's Spark (id=453912) [Spell Family (3), Hidden] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : None
