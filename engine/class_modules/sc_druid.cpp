@@ -12487,6 +12487,9 @@ void druid_t::combat_begin()
     if ( !buff.dreamstate->check() )
         buff.dreamstate->trigger();
   }
+
+  buff.blooming_infusion_damage_counter->expire();
+  buff.blooming_infusion_heal_counter->expire();
 /*
   if ( talent.adaptive_swarm.ok() && !prepull_swarm.empty() && find_action( "adaptive_swarm" ) )
   {
