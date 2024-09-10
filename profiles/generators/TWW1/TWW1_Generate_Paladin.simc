@@ -22,7 +22,7 @@ trinket1=mark_of_khardros,id=133300,bonus_id=4786/11342/10299
 trinket2=arakara_sacbrood,id=219314,bonus_id=4786/3131/10299
 main_hand=everforged_greataxe,id=222443,bonus_id=10421/1515/11300/8960/8791,enchant=authority_of_the_depths_3
 
-save=TWW1_Paladin_Retribution_Herald.simc
+save=TWW1_Paladin_Retribution.simc
 
 paladin=TWW1_Paladin_Retribution_Templar
 level=80
