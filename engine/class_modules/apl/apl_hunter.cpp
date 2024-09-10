@@ -245,7 +245,7 @@ void marksmanship( player_t* p )
   st->add_action( "black_arrow" );
   st->add_action( "explosive_shot,if=active_enemies>1" );
   st->add_action( "volley" );
-  st->add_action( "rapid_fire,if=talent.lunar_storm&(!cooldown.lunar_storm.remains|cooldown.lunar_storm.remains>5|buff.wailing_arrow_override.up)|!talent.lunar_storm", "Hold Rapid Fire for up to 5s to proc Lunar Storm. Ignore Lunar Storm if Wailing Arrow is up." );
+  st->add_action( "rapid_fire,if=talent.lunar_storm&(!cooldown.lunar_storm.remains|cooldown.lunar_storm.remains>5|action.wailing_arrow.ready)|!talent.lunar_storm", "Hold Rapid Fire for up to 5s to proc Lunar Storm. Ignore Lunar Storm if Wailing Arrow is up." );
   st->add_action( "trueshot,if=variable.trueshot_ready" );
   st->add_action( "multishot,if=buff.salvo.up&!talent.volley", "Trigger Salvo if Volley isn't being used to trigger it." );
   st->add_action( "wailing_arrow", "Don't overwrite Precise Shots unless Trueshot is active or it can cleave." );
@@ -325,7 +325,7 @@ void marksmanship_ptr( player_t* p )
   st->add_action( "black_arrow" );
   st->add_action( "explosive_shot,if=active_enemies>1" );
   st->add_action( "volley" );
-  st->add_action( "rapid_fire,if=talent.lunar_storm&(!cooldown.lunar_storm.remains|cooldown.lunar_storm.remains>5|buff.wailing_arrow_override.up)|!talent.lunar_storm", "Hold Rapid Fire for up to 5s to proc Lunar Storm. Ignore Lunar Storm if Wailing Arrow is up." );
+  st->add_action( "rapid_fire,if=talent.lunar_storm&(!cooldown.lunar_storm.remains|cooldown.lunar_storm.remains>5|action.wailing_arrow.ready)|!talent.lunar_storm", "Hold Rapid Fire for up to 5s to proc Lunar Storm. Ignore Lunar Storm if Wailing Arrow is up." );
   st->add_action( "trueshot,if=variable.trueshot_ready" );
   st->add_action( "multishot,if=buff.salvo.up&!talent.volley", "Trigger Salvo if Volley isn't being used to trigger it." );
   st->add_action( "wailing_arrow", "Don't overwrite Precise Shots unless Trueshot is active or it can cleave." );

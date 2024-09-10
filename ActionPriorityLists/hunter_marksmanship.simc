@@ -45,7 +45,7 @@ actions.st+=/black_arrow
 actions.st+=/explosive_shot,if=active_enemies>1
 actions.st+=/volley
 # Hold Rapid Fire for up to 5s to proc Lunar Storm. Ignore Lunar Storm if Wailing Arrow is up.
-actions.st+=/rapid_fire,if=talent.lunar_storm&(!cooldown.lunar_storm.remains|cooldown.lunar_storm.remains>5|buff.wailing_arrow_override.up)|!talent.lunar_storm
+actions.st+=/rapid_fire,if=talent.lunar_storm&(!cooldown.lunar_storm.remains|cooldown.lunar_storm.remains>5|action.wailing_arrow.ready)|!talent.lunar_storm
 actions.st+=/trueshot,if=variable.trueshot_ready
 # Trigger Salvo if Volley isn't being used to trigger it.
 actions.st+=/multishot,if=buff.salvo.up&!talent.volley
