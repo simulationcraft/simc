@@ -1310,6 +1310,7 @@ void sikrans_endless_arsenal( special_effect_t& effect )
             auto absorbed = s->result_mitigated - s->result_absorbed;
             if ( absorbed > 0 )
             {
+              // TODO: determine if this is affected by role mult
               d_shield->base_dd_min = d_shield->base_dd_max = mul * absorbed;
               d_shield->execute_on_target( s->target );
             }
@@ -2016,6 +2017,8 @@ void sigil_of_algari_concordance( special_effect_t& e )
         stats = ( *it )->stats;
       else
         proxy->add_child( this );
+
+      // TODO: determine if these are affected by role mult
     }
 
     player_t* p() const
@@ -3872,6 +3875,7 @@ void shadowed_essence( special_effect_t& effect )
       auto dark_embrace = create_buff<stat_buff_t>( e.player, e.player->find_spell( 455656 ) )
                               ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 3 ).average( e ) );
 
+      // TODO: determine if damage is affected by role mult
       auto damage         = create_proc_action<generic_proc_t>( "shadowed_essence_damage", e, 455654 );
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e );
 
@@ -4063,6 +4067,7 @@ void shadowbinding_ritual_knife( special_effect_t& effect )
 void shining_arathor_insignia( special_effect_t& effect )
 {
   // TODO: make it heal players as well
+  // TODO: determine if this is affected by role mult
   auto damage_proc         = create_proc_action<generic_proc_t>( "shining_arathor_insignia_damage", effect, 455433 );
   damage_proc->base_dd_min = damage_proc->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
   
@@ -4219,6 +4224,7 @@ void befoulers_syringe( special_effect_t& effect )
   // create on-next melee damage
   auto strike = create_proc_action<generic_proc_t>( "befouling_strike", effect, 442280 );
   strike->base_dd_min = strike->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
+  strike->base_multiplier *= role_mult( effect );
 
   // create on-next melee buff
   auto bloodlust = create_buff<buff_t>( effect.player, effect.player->find_spell( 442267 ) );
