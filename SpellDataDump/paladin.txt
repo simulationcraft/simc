@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.2.56461 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.2.56513 Live
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -15171,7 +15171,6 @@ $@spellicon465 $@spellname465:
 $@spelldesc465
 
 Name             : Seal of the Crusader (id=385723) [Spell Family (10)] 
-Hotfixed         : Affecting Spells
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -22037,6 +22036,7 @@ Description      : You gain a stack of Light's Deliverance when you call down an
 While $?a137028[Eye of Tyr][Wake of Ashes] and Hammer of Light are unavailable, you consume $433674U stacks of Light's Deliverance, empowering yourself to cast Hammer of Light an additional time for free.
 
 Name             : Hammer of Light (id=427441) [Spell Family (10)] 
+Hotfixed         : Max stacks (0 -> 1), Proc Stacks (0 -> 1), Proc Flags 1 (65536 -> 0), Proc Flags 2 (0 -> 4)
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -22044,9 +22044,10 @@ Duration         : 12 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
+Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
-                 : Magic Hostile Spell
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Triggered by     : Light's Guidance (427445)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -22296,7 +22297,6 @@ Description      : Casting $?c1[Holy Prism or Barrier of Faith]?c3[Wake of Ashes
 $431581s1% of Dawnlight's damage and healing radiates to nearby allies or enemies, reduced beyond $431581s2 targets.
 
 Name             : Dawnlight (id=431380) [Spell Family (10)] 
-Hotfixed         : Attributes, Affecting Spells
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -22362,7 +22362,6 @@ Tooltip          : Healing $w1 and radiating $431581s1% of this healing to nearb
 Movement speed increased by $w3%.][]
 
 Name             : Dawnlight (id=431382) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holyfire
 Spell Type       : None
@@ -22414,7 +22413,6 @@ Effects          :
 Description      : A Holy Hammer called down from the skies to deal $s1 Holy damage to its target.
 
 Name             : Dawnlight (id=431399) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -23226,28 +23224,6 @@ Description      : $?a137028[Eye of Tyr][Wake of Ashes] surrounds you with a Hol
 
 Hammer of Light heals you for $?a137028[$s2][$s5]% of your maximum health, increased by $?a137028[$s3][$s6]% for each additional target hit. Any overhealing done with this effect gets converted into a Holy barrier instead.
 
-Name             : Sacrosanct Crusade (id=431731) [Spell Family (10), Passive] 
-Class            : Paladin
-School           : Physical
-Spell Type       : None
-Internal Cooldown: 5 seconds
-Proc Chance      : 100%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6)
-Effects          :
-#1 (id=1119700)  : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc431730
-
 Name             : Will of the Dawn (id=431752) [Spell Family (10)] 
 Class            : Paladin
 School           : Holyfire
@@ -23321,7 +23297,6 @@ Description      : $@spelldesc431425
 Tooltip          : Linked with an ally, causing $431911s1 damage to enemies or $431911s2 healing to allies who touch the link.
 
 Name             : Sun's Avatar (id=431911) [Spell Family (10)] 
-Hotfixed         : Attributes, Affecting Spells
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
@@ -26670,7 +26645,6 @@ Effects          :
 Description      : $@spelldesc431425
 
 Name             : Sun's Avatar (id=463075) [Spell Family (10)] 
-Hotfixed         : Attributes, Affecting Spells
 Class            : Paladin
 School           : Holyfire
 Spell Type       : Magic
