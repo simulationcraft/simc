@@ -2720,7 +2720,7 @@ using namespace helpers;
       {
         double m = warlock_spell_t::action_multiplier();
 
-        if ( next_imp && debug_cast<pets::demonology::wild_imp_pet_t*>( next_imp )->buffs.imp_gang_boss->check() )
+        if ( debug_cast<pets::demonology::wild_imp_pet_t*>( next_imp )->buffs.imp_gang_boss->check() )
           m *= 1.0 + p()->talents.imp_gang_boss->effectN( 2 ).percent();
 
         return m;
