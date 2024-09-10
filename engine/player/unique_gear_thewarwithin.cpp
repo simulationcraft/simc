@@ -1277,7 +1277,7 @@ void sikrans_endless_arsenal( special_effect_t& effect )
       // setup flourish
       auto f_dam = create_proc_action<generic_proc_t>( "surekian_flourish", e, 445434 );
       f_dam->base_td = data->effectN( 1 ).average( e ) * f_dam->base_tick_time / f_dam->dot_duration;
-      f_dam->base_multiplier *= role_mult( e );
+      f_dam->base_multiplier *= role_mult( e.player, e.player->find_spell( 445434 ) );
       add_child( f_dam );
 
       auto f_stance = create_buff<stat_buff_t>( e.player, e.player->find_spell( 447962 ) )
@@ -1290,7 +1290,7 @@ void sikrans_endless_arsenal( special_effect_t& effect )
       auto d_dam = create_proc_action<generic_aoe_proc_t>( "surekian_decimation", e, 448090 );
       // TODO: confirm there is no standard +15% per target up to five
       d_dam->base_dd_min = d_dam->base_dd_max = data->effectN( 4 ).average( e );
-      d_dam->base_multiplier *= role_mult( e );
+      d_dam->base_multiplier *= role_mult( e.player, e.player->find_spell( 448090 ) );
       add_child( d_dam );
 
       auto d_shield = create_proc_action<generic_proc_t>( "surekian_brutality", e, 448519 );
@@ -1331,7 +1331,7 @@ void sikrans_endless_arsenal( special_effect_t& effect )
       // TODO: confirm damage isn't split and has no diminishing returns
       b_dam->split_aoe_damage = false;
       b_dam->base_dd_min = b_dam->base_dd_max = data->effectN( 6 ).average( e );
-      b_dam->base_multiplier *= role_mult( e );
+      b_dam->base_multiplier *= role_mult( e.player, e.player->find_spell( 445475 ) );
       add_child( b_dam );
 
       auto b_speed = create_buff<buff_t>( e.player, e.player->find_spell( 448436 ) )
