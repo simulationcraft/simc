@@ -4918,7 +4918,8 @@ action_t* create_action( player_t* p, util::string_view n, util::string_view opt
 
 double role_mult( player_t* player, const spell_data_t* s_data )
 {
-  double mult = 1.0;
+  // default to rolemult used for `authority of radiant power` if unknown on spell
+  double mult = role_mult( player, player->find_spell( 448730 ) );
 
   if ( auto vars = player->dbc->spell_desc_vars( s_data->id() ).desc_vars() )
   {
