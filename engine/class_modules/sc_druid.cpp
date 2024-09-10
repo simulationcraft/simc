@@ -13993,7 +13993,9 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( buff.balance_of_all_things_arcane, talent.balance_of_all_things );
   _a->parse_effects( buff.balance_of_all_things_arcane, effect_mask_t( false ).enable( 3 ),
                      talent.balance_of_all_things->effectN( 1 ).percent() );
-  _a->parse_effects( buff.balance_of_all_things_nature, talent.balance_of_all_things );
+  _a->parse_effects( buff.balance_of_all_things_nature, talent.balance_of_all_things,
+                     // nature boat applies to dream burst (433850) via hidden script
+                     affect_list_t( 1 ).add_spell( 433850 ) );
   _a->parse_effects( buff.balance_of_all_things_nature, effect_mask_t( false ).enable( 3 ),
                      talent.balance_of_all_things->effectN( 1 ).percent() );
 
@@ -14008,7 +14010,7 @@ void druid_t::parse_action_effects( action_t* action )
   // instead of data value
   _a->parse_effects( buff.eclipse_solar, effect_mask_t( true ).disable( 1, 8 ), talent.umbral_intensity );
   _a->parse_effects( buff.eclipse_solar, effect_mask_t( false ).enable( 1, 8 ), USE_CURRENT,
-                     // damage (eff#1) applies to orbital strike and goldrinn's fang (label 2391) and dream burst(433850)
+                     // damage (eff#1) applies to orbital strike and goldrinn's fang (label 2391) and dream burst (433850)
                      // via hidden script
                      affect_list_t( 1 ).add_label( 2391 ).add_spell( 433850 ) );
 
