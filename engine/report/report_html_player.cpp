@@ -1036,7 +1036,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    "<li><span>spell_power_mod.direct:</span>{:.6f}</li>"
                    "<li><span>base_dd_min:</span>{:.2f}</li>"
                    "<li><span>base_dd_max:</span>{:.2f}</li>"
-                   "<li><span>base_dd_mult:</span>{:.2f}</li></ul></div>\n"
+                   "<li><span>base_dd_mult:</span>{:.2f}</li>\n"
                    "<li><span>base_multiplier:</span>{:.2f}</li></ul></div>\n",
                    a->may_crit ? "true" : "false",
                    a->attack_power_mod.direct,
