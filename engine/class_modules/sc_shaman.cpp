@@ -2707,6 +2707,10 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   void schedule_travel( action_state_t* s ) override
   {
     trigger_elemental_overload( s );
+    if (p()->talent.supercharge.ok() && s->chain_target==0)
+    {
+      trigger_elemental_overload( s, 0.5 );
+    }
 
     base_t::schedule_travel( s );
   }
@@ -5965,22 +5969,9 @@ struct chain_lightning_t : public chained_base_t
   {
     if ( s->chain_target == 0 && p()->buff.power_of_the_maelstrom->up() )
     {
-      if ( trigger_elemental_overload( s, 1.0 ) )
-      {
-        trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
-      }
-
       p()->buff.power_of_the_maelstrom->decrement();
     }
-
-    if ( trigger_elemental_overload( s ) )
-    {
-      trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
-    }
-
-    // Don't call shaman_spell_t::schedule_travel, because we need to override .. override behavior
-    // for this spell to support Supercharge.
-    base_t::schedule_travel( s );
+    chained_base_t::schedule_travel( s );
   }
 
 
@@ -6828,10 +6819,7 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( exec_type == spell_variant::NORMAL &&
          p()->buff.power_of_the_maelstrom->up() )
     {
-      if ( trigger_elemental_overload( s, 1.0 ) )
-      {
-        trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
-      }
+      trigger_elemental_overload( s, 1.0 );
 
       p()->buff.power_of_the_maelstrom->decrement();
     }
@@ -6848,22 +6836,14 @@ struct lightning_bolt_t : public shaman_spell_t
 
       for ( auto i = 0; i < as<int>( p()->talent.surge_of_power->effectN( 2 ).base_value() ); ++i )
       {
-        if ( trigger_elemental_overload( s, 1.0 ) )
-        {
-          trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
-        }
+        trigger_elemental_overload( s, 1.0 );
       }
       p()->buff.surge_of_power->decrement();
     }
 
-    if ( trigger_elemental_overload( s ) )
-    {
-      trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
-    }
 
-    // Don't call shaman_spell_t::schedule_travel, because we need to override .. override behavior
-    // for this spell to support Supercharge.
-    base_t::schedule_travel( s );
+
+    shaman_spell_t::schedule_travel( s );
   }
   //void reset_swing_timers()
   //{
@@ -9787,6 +9767,11 @@ struct tempest_t : public shaman_spell_t
 
     return shaman_spell_t::ready();
   }
+
+  void schedule_travel(action_state_t* state) override {
+    shaman_spell_t::schedule_travel( state );
+  }
+
 };
 
 // ==========================================================================
