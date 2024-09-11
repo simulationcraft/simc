@@ -2709,7 +2709,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     trigger_elemental_overload( s );
     if (p()->talent.supercharge.ok() && s->chain_target==0)
     {
-      trigger_elemental_overload( s, 0.5 );
+      trigger_elemental_overload( s,  p()->talent.supercharge->effectN(1).percent());
     }
 
     base_t::schedule_travel( s );
