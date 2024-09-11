@@ -13959,7 +13959,8 @@ void death_knight_t::create_buffs()
     buffs.unbreakable_tww1_2pc = make_buff( this, "unbreakable", spell.unbreakable_tww1_2pc );
     buffs.unbroken_tww1_2pc    = make_buff( this, "unbroken", spell.unbroken_tww1_2pc )
                                     ->set_chance( 0.15 );  // TODO Verify this number.  Was found through manual testing, not in spelldata
-    buffs.piledriver_tww1_4pc  = make_buff( this, "piledriver", spell.piledriver_tww1_4pc );
+    buffs.piledriver_tww1_4pc  = make_buff( this, "piledriver", spell.piledriver_tww1_4pc )
+                                    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   }
 
   // Frost
