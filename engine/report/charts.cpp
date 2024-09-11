@@ -1050,7 +1050,7 @@ bool chart::generate_heal_stats_sources( highchart::pie_chart_t& chart, const pl
   return true;
 }
 
-bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, std::string_view type )
+bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, std::string_view type, int& margin )
 {
   // Prepare list, based on the selected metric
   std::vector<const player_t*> player_list;
@@ -1229,8 +1229,12 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, std::
   // Maximum player name length. Longer characters will be cut off and replaced by ... via the formatter function (in
   // JS) set to xAxis.labels.formatter
   int max_name_length = 64;
+  int new_margin = 7 * std::min( max_name_length + 3, as<int>( longest_name ) ) + 10 * n_chars + 50;
 
-  bc.set( "chart.marginLeft", 7 * std::min( max_name_length + 3, as<int>( longest_name ) ) + 10 * n_chars + 50 );
+  if ( margin > -1 )
+    margin = std::max( margin, new_margin );
+  else
+    bc.set( "chart.marginLeft", new_margin );
 
   bc.set( "xAxis.lineWidth", 0 );
   bc.set( "xAxis.offset", 10 * n_chars );

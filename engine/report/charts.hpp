@@ -38,7 +38,7 @@ namespace chart
   // Highcharts stuff
   bool generate_raid_gear(highchart::bar_chart_t&, const sim_t&);
   bool generate_raid_downtime(highchart::bar_chart_t&, const sim_t&);
-  bool generate_raid_aps(highchart::bar_chart_t&, const sim_t&, std::string_view type);
+  bool generate_raid_aps(highchart::bar_chart_t&, const sim_t&, std::string_view type, int& margin);
   bool generate_distribution(highchart::histogram_chart_t&, const player_t* p, const std::vector<size_t>& dist_data,
     std::string_view distribution_name, double avg, double min, double max,
     bool percent = false);

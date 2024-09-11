@@ -558,37 +558,48 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
   }
   os << "</ul>\n";
 
+  int margin = 0;
+
   highchart::bar_chart_t raid_dps( "raid_dps", sim );
-  if ( chart::generate_raid_aps( raid_dps, sim, "dps" ) )
+  bool has_dps = chart::generate_raid_aps( raid_dps, sim, "dps", margin );
+
+  highchart::bar_chart_t priority_dps( "priority_dps", sim );
+  bool has_priority = sim.enemy_targets > 1 && chart::generate_raid_aps( priority_dps, sim, "prioritydps", margin );
+
+  highchart::bar_chart_t raid_dtps( "raid_dtps", sim );
+  bool has_dtps = chart::generate_raid_aps( raid_dtps, sim, "dtps", margin );
+
+  highchart::bar_chart_t raid_hps( "raid_hps", sim );
+  bool has_hps = chart::generate_raid_aps( raid_hps, sim, "hps", margin );
+
+  if ( has_dps )
   {
     raid_dps.width_ += raid_dps.width_ + 12;
+    raid_dps.set( "chart.marginLeft", margin );
     os << raid_dps.to_target_div();
     sim.add_chart_data( raid_dps );
   }
 
-  if ( sim.enemy_targets > 1 )
+  if ( has_priority )
   {
-    highchart::bar_chart_t priority_dps( "priority_dps", sim );
-    if ( chart::generate_raid_aps( priority_dps, sim, "prioritydps" ) )
-    {
-      priority_dps.width_ += priority_dps.width_ + 12;
-      os << priority_dps.to_target_div();
-      sim.add_chart_data( priority_dps );
-    }
+    priority_dps.width_ += priority_dps.width_ + 12;
+    priority_dps.set( "chart.marginLeft", margin );
+    os << priority_dps.to_target_div();
+    sim.add_chart_data( priority_dps );
   }
 
-  highchart::bar_chart_t raid_dtps( "raid_dtps", sim );
-  if ( chart::generate_raid_aps( raid_dtps, sim, "dtps" ) )
+  if ( has_dtps )
   {
     raid_dtps.width_ += raid_dtps.width_ + 12;
+    raid_dtps.set( "chart.marginLeft", margin );
     os << raid_dtps.to_target_div();
     sim.add_chart_data( raid_dtps );
   }
 
-  highchart::bar_chart_t raid_hps( "raid_hps", sim );
-  if ( chart::generate_raid_aps( raid_hps, sim, "hps" ) )
+  if ( has_hps )
   {
     raid_hps.width_ += raid_hps.width_ + 12;
+    raid_hps.set( "chart.marginLeft", margin );
     os << raid_hps.to_target_div();
     sim.add_chart_data( raid_hps );
   }
@@ -647,15 +658,16 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
   os << "</div>\n"
      << "</div>\n";
 
+  margin = -1;  // re-use as throwaway
   // Check if extra section is even needed
   highchart::bar_chart_t raid_apm( "raid_apm", sim );
-  bool has_aps = chart::generate_raid_aps( raid_apm, sim, "apm" );
+  bool has_aps = chart::generate_raid_aps( raid_apm, sim, "apm", margin );
 
   highchart::bar_chart_t raid_stddev( "raid_stddev", sim );
-  bool has_stddev = chart::generate_raid_aps( raid_stddev, sim, "stddev" );
+  bool has_stddev = chart::generate_raid_aps( raid_stddev, sim, "stddev", margin );
 
   highchart::bar_chart_t raid_tmi( "raid_tmi", sim );
-  bool has_tmi = chart::generate_raid_aps( raid_tmi, sim, "tmi" );
+  bool has_tmi = chart::generate_raid_aps( raid_tmi, sim, "tmi", margin );
 
   highchart::bar_chart_t raid_waiting( "raid_waiting", sim );
   bool has_waiting = chart::generate_raid_downtime( raid_waiting, sim );
