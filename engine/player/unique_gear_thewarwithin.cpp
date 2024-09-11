@@ -534,6 +534,17 @@ void culminating_blasphemite( special_effect_t& effect )
   effect.player->base.crit_healing_multiplier *= 1.0 + pct;
 }
 
+// 435488 driver
+void insightful_blasphemite( special_effect_t& effect )
+{
+  auto pct = effect.driver()->effectN( 1 ).percent() * unique_gem_list( effect ).size();
+  // check for prismatic null stone
+  if ( auto null_stone = find_special_effect( effect.player, 435992 ) )
+    pct *= 1.0 + null_stone->driver()->effectN( 1 ).percent();
+
+  effect.player->resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + pct;
+}
+
 void daybreak_spellthread( special_effect_t& effect )
 {
   effect.player->resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + effect.driver()->effectN( 1 ).percent();
@@ -4915,6 +4926,7 @@ void register_special_effects()
                              449112, 449113, 449114,                                          // stonebound artistry (mastery)
                              449120, 449118, 449117 }, enchants::secondary_weapon_enchant );  // oathsworn tenacity (vers)
   register_special_effect( 435500, enchants::culminating_blasphemite );
+  register_special_effect( 435488, enchants::insightful_blasphemite );
   register_special_effect( { 457615, 457616, 457617 }, enchants::daybreak_spellthread );
 
 
