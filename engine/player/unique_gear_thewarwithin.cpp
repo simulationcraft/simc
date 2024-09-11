@@ -84,17 +84,14 @@ void create_all_stat_buffs( const special_effect_t& effect, const spell_data_t* 
       continue;
 
     auto stats = util::translate_all_rating_mod( eff.misc_value1() );
-    if ( stats.size() != 1 )
-    {
-      effect.player->sim->error( "buff data {} effect {} has multiple stats", buff_data->id(), eff.index() );
-      continue;
-    }
 
-    auto stat_str = util::stat_type_abbrev( stats.front() );
+    std::vector<std::string_view> stat_strs;
+    range::transform( stats, std::back_inserter( stat_strs ), &util::stat_type_abbrev );
 
-    auto buff = create_buff<stat_buff_t>( effect.player, fmt::format( "{}_{}", buff_name, stat_str ), buff_data )
+    auto name = fmt::format( "{}_{}", buff_name, util::string_join( stat_strs, "_" ) );
+    auto buff = create_buff<stat_buff_t>( effect.player, name, buff_data )
       ->add_stat( stats.front(), amount ? amount : eff.average( effect ) )
-      ->set_name_reporting( stat_str );
+      ->set_name_reporting( util::string_join( stat_strs ) );
 
     add_fn( stats.front(), buff );
   }
@@ -4029,35 +4026,12 @@ void shadowbinding_ritual_knife( special_effect_t& effect )
 
   effect.player->register_combat_begin( [ primary_buff ]( player_t* ) { primary_buff->trigger(); } );
 
-  std::vector<buff_t*> negative_buffs = {};
+  std::vector<buff_t*> negative_buffs;
 
   auto buff_spell = effect.driver()->effectN( 2 ).trigger();
 
-  for ( const auto& e : buff_spell->effects() )
-  {
-    if ( e.type() == E_APPLY_AURA && ( e.subtype() == A_MOD_RATING ) )
-    {
-      auto mods = util::translate_all_rating_mod( e.misc_value1() );
-
-      std::vector<std::string> str_list;
-
-      for ( auto stat : mods )
-        str_list.emplace_back( util::stat_type_string( stat ) );
-
-      auto negative_buff = make_buff<stat_buff_t>(
-          effect.player, fmt::format( "shadowbinding_ritual_knife_{}", util::string_join( str_list ) ), buff_spell );
-
-      if ( !mods.empty() )
-      {
-        for ( const auto& s : mods )
-        {
-          negative_buff->add_stat( s, effect.driver()->effectN( 2 ).average( effect.item ) );
-        }
-        negative_buffs.push_back( negative_buff );
-      }
-
-    }
-  }
+  create_all_stat_buffs( effect, buff_spell, effect.driver()->effectN( 2 ).average( effect ),
+    [ &negative_buffs ]( stat_e, buff_t* b ) { negative_buffs.push_back( b ); } );
 
   if ( negative_buffs.size() > 0 )
   {
