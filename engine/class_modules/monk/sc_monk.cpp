@@ -1195,7 +1195,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
   {
     if ( p()->talent.brewmaster.press_the_advantage->ok() )
       return false;
-    return monk_melee_attack_t::ready();
+    return base_t::ready();
   }
 
   void execute() override
@@ -1215,10 +1215,10 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 
     //------------
 
-    monk_melee_attack_t::execute();
+    base_t::execute();
 
     if ( p()->talent.mistweaver.awakened_jadefire->ok() && p()->buff.jadefire_stomp->up() )
-      monk_melee_attack_t::execute();
+      base_t::execute();
 
     p()->buff.blackout_combo->expire();
 
@@ -1263,7 +1263,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 
   void impact( action_state_t *s ) override
   {
-    monk_melee_attack_t::impact( s );
+    base_t::impact( s );
 
     p()->buff.teachings_of_the_monastery->trigger();
 
