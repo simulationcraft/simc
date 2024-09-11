@@ -1707,6 +1707,7 @@ public:
 
     // Vengeance
     ab::parse_effects( p()->buff.soul_furnace_damage_amp );
+    ab::parse_effects( p()->buff.tww1_vengeance_4pc );
 
     // Aldrachi Reaver
     ab::parse_effects( p()->buff.warblades_hunger );
