@@ -6208,6 +6208,8 @@ void player_t::trigger_ready()
     return;
   if ( current.sleeping )
     return;
+  if ( !active_during_iteration )
+    return;
 
   if ( buffs.stunned->check() )
     return;
