@@ -355,6 +355,7 @@ public:
   double get_time_duration_multiplier() const { return base_time_duration_multiplier * dynamic_time_duration_multiplier; };
 
   rng::rng_t& rng();
+  rng::rng_t& rng() const;
 
   bool change_regen_rate;
 

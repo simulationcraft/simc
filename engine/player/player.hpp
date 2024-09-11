@@ -861,6 +861,9 @@ struct player_t : public actor_t
     // Allied Binding of Binding on you
     int binding_of_binding_on_you = 0;
     double binding_of_binding_ally_skip_chance = 0.8;
+    // Concoction: Kiss of Death buff remaining time before you re-use for antidote
+    timespan_t concoction_kiss_of_death_buff_remaining_min = 1_s;
+    timespan_t concoction_kiss_of_death_buff_remaining_max = 2_s;
   } thewarwithin_opts;
 
 private:

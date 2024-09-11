@@ -3031,6 +3031,11 @@ rng::rng_t& buff_t::rng()
   return sim->rng();
 }
 
+rng::rng_t& buff_t::rng() const
+{
+  return sim -> rng();
+}
+
 /**
  * Adjust the players dynamic effects affected by haste changes.
  */

@@ -4090,6 +4090,43 @@ void candle_confidant( special_effect_t& effect )
   effect.player->sim->error( "Candle Confidant is not implemented yet." );
 }
 
+// 435493 driver, buff
+// 453425 hidden, unused?
+// 440235 stun, NYI
+void concoction_kiss_of_death( special_effect_t& effect )
+{
+  struct concoction_kiss_of_death_buff_t : public stat_buff_t
+  {
+    concoction_kiss_of_death_buff_t( player_t* p, std::string_view n, const spell_data_t* s, const item_t* i )
+      : stat_buff_t( p, n, s, i )
+    {
+      if ( p->thewarwithin_opts.concoction_kiss_of_death_buff_remaining_max <
+           p->thewarwithin_opts.concoction_kiss_of_death_buff_remaining_min )
+      {
+        sim->error( "thewarwithin.concoction_kiss_of_death_buff_remaining_max must be greater than or equal to "
+                    "thewarwithin.concoction_kiss_of_death_buff_remaining_min." );
+
+        p->thewarwithin_opts.concoction_kiss_of_death_buff_remaining_max =
+          p->thewarwithin_opts.concoction_kiss_of_death_buff_remaining_min;
+      }
+    }
+
+    void start( int s, double v, timespan_t d ) override
+    {
+      if ( d < 0_ms )
+      {
+        d = ( buff_duration() * get_time_duration_multiplier() ) -
+            rng().range( player->thewarwithin_opts.concoction_kiss_of_death_buff_remaining_min,
+                         player->thewarwithin_opts.concoction_kiss_of_death_buff_remaining_max );
+      }
+
+      stat_buff_t::start( s, v, d );
+    }
+  };
+
+  effect.custom_buff = create_buff<concoction_kiss_of_death_buff_t>( effect.player, effect.driver(), effect.item );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -4890,6 +4927,7 @@ void register_special_effects()
   register_special_effect( 455432, items::shining_arathor_insignia );
   register_special_effect( 455451, items::quickwick_candlestick );
   register_special_effect( 455435, items::candle_confidant );
+  register_special_effect( 435493, items::concoction_kiss_of_death );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );

@@ -12703,27 +12703,52 @@ void player_t::create_options()
   add_option( opt_string( "dragonflight.windweaver_party_ilvls", dragonflight_opts.windweaver_party_ilvls ) );
 
   // The War Within options
-  add_option( opt_string( "thewarwithin.sikrans_endless_arsenal_stance", thewarwithin_opts.sikrans_endless_arsenal_stance ) );
-  add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_initial_primary_stacks", thewarwithin_opts.ovinaxs_mercurial_egg_initial_primary_stacks, 0, 30 ) );
-  add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_initial_secondary_stacks", thewarwithin_opts.ovinaxs_mercurial_egg_initial_secondary_stacks, 0, 30 ) );
-  add_option( opt_timespan( "thewarwithin.entropic_skardyn_core_pickup_delay", thewarwithin_opts.entropic_skardyn_core_pickup_delay, 0_ms, 30_s ) );
-  add_option( opt_timespan( "thewarwithin.entropic_skardyn_core_pickup_stddev", thewarwithin_opts.entropic_skardyn_core_pickup_stddev, 0_ms, 30_s ) );
-  add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_enter_light_delay", thewarwithin_opts.carved_blazikon_wax_enter_light_delay, 0_ms, 15_s ) );
-  add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_enter_light_stddev", thewarwithin_opts.carved_blazikon_wax_enter_light_stddev, 0_ms, 15_s ) );
-  add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_stay_in_light_duration", thewarwithin_opts.carved_blazikon_wax_stay_in_light_duration, 0_ms, 15_s ) );
-  add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_stay_in_light_stddev", thewarwithin_opts.carved_blazikon_wax_stay_in_light_stddev, 0_ms, 15_s ) );
-  add_option( opt_string( "thewarwithin.signet_of_the_priory_party_stats", thewarwithin_opts.signet_of_the_priory_party_stats ) );
-  add_option( opt_timespan( "thewarwithin.signet_of_the_priory_party_use_cooldown", thewarwithin_opts.signet_of_the_priory_party_use_cooldown, 120_s, 240_s ) );
-  add_option( opt_timespan( "thewarwithin.signet_of_the_priory_party_use_stddev", thewarwithin_opts.signet_of_the_priory_party_use_stddev, 0_ms, 120_s ) );
-  add_option( opt_float( "thewarwithin.harvesters_edict_intercept_chance", thewarwithin_opts.harvesters_edict_intercept_chance, 0.0, 1.0 ) );
-  add_option( opt_float( "thewarwithin.dawn_dusk_thread_lining_uptime", thewarwithin_opts.dawn_dusk_thread_lining_uptime, 0.0, 1.0 ) );
-  add_option( opt_timespan( "thewarwithin.dawn_dusk_thread_lining_update_interval", thewarwithin_opts.dawn_dusk_thread_lining_update_interval, 1_s, timespan_t::max() ) );
-  add_option( opt_timespan( "thewarwithin.dawn_dusk_thread_lining_update_interval_stddev", thewarwithin_opts.dawn_dusk_thread_lining_update_interval_stddev, 1_s, timespan_t::max() ) );
-  add_option( opt_timespan( "thewarwithin.embrace_of_the_cinderbee_timing", thewarwithin_opts.embrace_of_the_cinderbee_timing, 100_ms, 10_s ) );
-  add_option( opt_float( "thewarwithin.embrace_of_the_cinderbee_miss_chance", thewarwithin_opts.embrace_of_the_cinderbee_miss_chance, 0, 1 ) );
-  add_option( opt_int( "thewarwithin.nerubian_pheromone_secreter_pheromones", thewarwithin_opts.nerubian_pheromone_secreter_pheromones, 0, 3 ) );
-  add_option( opt_int( "thewarwithin.binding_of_binding_on_you", thewarwithin_opts.binding_of_binding_on_you, 0, 29 ) );
-  add_option( opt_float( "thewarwithin.binding_of_binding_ally_skip_chance", thewarwithin_opts.binding_of_binding_ally_skip_chance, 0, 1 ) );
+  add_option( opt_string( "thewarwithin.sikrans_endless_arsenal_stance",
+                          thewarwithin_opts.sikrans_endless_arsenal_stance ) );
+  add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_initial_primary_stacks",
+                       thewarwithin_opts.ovinaxs_mercurial_egg_initial_primary_stacks, 0, 30 ) );
+  add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_initial_secondary_stacks",
+                       thewarwithin_opts.ovinaxs_mercurial_egg_initial_secondary_stacks, 0, 30 ) );
+  add_option( opt_timespan( "thewarwithin.entropic_skardyn_core_pickup_delay",
+                            thewarwithin_opts.entropic_skardyn_core_pickup_delay, 0_ms, 30_s ) );
+  add_option( opt_timespan( "thewarwithin.entropic_skardyn_core_pickup_stddev",
+                            thewarwithin_opts.entropic_skardyn_core_pickup_stddev, 0_ms, 30_s ) );
+  add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_enter_light_delay",
+                            thewarwithin_opts.carved_blazikon_wax_enter_light_delay, 0_ms, 15_s ) );
+  add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_enter_light_stddev",
+                            thewarwithin_opts.carved_blazikon_wax_enter_light_stddev, 0_ms, 15_s ) );
+  add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_stay_in_light_duration",
+                            thewarwithin_opts.carved_blazikon_wax_stay_in_light_duration, 0_ms, 15_s ) );
+  add_option( opt_timespan( "thewarwithin.carved_blazikon_wax_stay_in_light_stddev",
+                            thewarwithin_opts.carved_blazikon_wax_stay_in_light_stddev, 0_ms, 15_s ) );
+  add_option( opt_string( "thewarwithin.signet_of_the_priory_party_stats",
+                          thewarwithin_opts.signet_of_the_priory_party_stats ) );
+  add_option( opt_timespan( "thewarwithin.signet_of_the_priory_party_use_cooldown",
+                            thewarwithin_opts.signet_of_the_priory_party_use_cooldown, 120_s, 240_s ) );
+  add_option( opt_timespan( "thewarwithin.signet_of_the_priory_party_use_stddev",
+                            thewarwithin_opts.signet_of_the_priory_party_use_stddev, 0_ms, 120_s ) );
+  add_option( opt_float( "thewarwithin.harvesters_edict_intercept_chance",
+                         thewarwithin_opts.harvesters_edict_intercept_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "thewarwithin.dawn_dusk_thread_lining_uptime",
+                         thewarwithin_opts.dawn_dusk_thread_lining_uptime, 0.0, 1.0 ) );
+  add_option( opt_timespan( "thewarwithin.dawn_dusk_thread_lining_update_interval",
+                            thewarwithin_opts.dawn_dusk_thread_lining_update_interval, 1_s, timespan_t::max() ) );
+  add_option( opt_timespan( "thewarwithin.dawn_dusk_thread_lining_update_interval_stddev",
+                            thewarwithin_opts.dawn_dusk_thread_lining_update_interval_stddev, 1_s, timespan_t::max() ) );
+  add_option( opt_timespan( "thewarwithin.embrace_of_the_cinderbee_timing",
+                            thewarwithin_opts.embrace_of_the_cinderbee_timing, 100_ms, 10_s ) );
+  add_option( opt_float( "thewarwithin.embrace_of_the_cinderbee_miss_chance",
+                         thewarwithin_opts.embrace_of_the_cinderbee_miss_chance, 0, 1 ) );
+  add_option( opt_int( "thewarwithin.nerubian_pheromone_secreter_pheromones",
+                       thewarwithin_opts.nerubian_pheromone_secreter_pheromones, 0, 3 ) );
+  add_option( opt_int( "thewarwithin.binding_of_binding_on_you",
+                       thewarwithin_opts.binding_of_binding_on_you, 0, 29 ) );
+  add_option( opt_float( "thewarwithin.binding_of_binding_ally_skip_chance",
+                         thewarwithin_opts.binding_of_binding_ally_skip_chance, 0, 1 ) );
+  add_option( opt_timespan( "thewarwithin.concoction_kiss_of_death_buff_remaining_min",
+                            thewarwithin_opts.concoction_kiss_of_death_buff_remaining_min, 0_ms, 30_s ) );
+  add_option( opt_timespan( "thewarwithin.concoction_kiss_of_death_buff_remaining_max",
+                            thewarwithin_opts.concoction_kiss_of_death_buff_remaining_max, 0_ms, 30_s ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )
