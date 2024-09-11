@@ -1490,7 +1490,6 @@ struct vilefiend_melee_t : public warlock_pet_melee_t
     : warlock_pet_melee_t( p, wm, name )
   {
     gloom = new gloom_slash_t( p );
-    add_child( gloom );
   }
 
   void execute() override
@@ -1536,8 +1535,22 @@ struct bile_spit_t : public warlock_pet_spell_t
 
 struct headbutt_t : public warlock_pet_melee_attack_t
 {
+  gloom_slash_t* gloom;
+
   headbutt_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Headbutt", p, p->o()->talents.headbutt )
-  { cooldown->duration = 5_s; }
+  {
+    cooldown->duration = 5_s;
+
+    gloom = new gloom_slash_t( p );
+  }
+
+  void execute() override
+  {
+    warlock_pet_melee_attack_t::execute();
+
+    if ( debug_cast<vilefiend_t*>( p() )->mark_of_shatug->check() )
+      gloom->execute_on_target( target );
+  }
 };
 
 struct infernal_presence_t : public warlock_pet_spell_t
