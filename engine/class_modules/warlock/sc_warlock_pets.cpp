@@ -487,25 +487,13 @@ struct felguard_melee_t : public warlock_pet_melee_t
       aoe = -1;
     }
 
-    double action_multiplier() const override
+    void init_finished() override
     {
-      double m = warlock_pet_melee_attack_t::action_multiplier();
+      warlock_pet_melee_attack_t::init_finished();
 
-      // Renormalize out these multipliers
-      m /= 1.0 + p()->o()->warlock_base.demonology_warlock->effectN( 5 ).percent();
-
-      m /= 1.0 + ( p()->o()->cache.mastery_value() ) * ( p()->o()->warlock_base.master_demonologist->effectN( 3 ).sp_coeff() / p()->o()->warlock_base.master_demonologist->effectN( 1 ).sp_coeff() );
-
-      if ( p()->o()->talents.annihilan_training.ok() )
-        m /= 1.0 + p()->buffs.annihilan_training->check_value();
-
-      if ( p()->o()->talents.antoran_armaments.ok() )
-        m /= 1.0 + p()->buffs.antoran_armaments->check_value();
-
-      if ( p()->o()->hero.flames_of_xoroth.ok() )
-        m /= 1.0 + p()->o()->hero.flames_of_xoroth->effectN( 3 ).percent();
-
-      return m;
+      snapshot_flags &= ~STATE_MUL_PET;
+      snapshot_flags &= ~STATE_TGT_MUL_PET;
+      snapshot_flags &= ~STATE_VERSATILITY;
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
