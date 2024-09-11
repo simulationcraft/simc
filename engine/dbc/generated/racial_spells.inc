@@ -1,5 +1,5 @@
 // Racial abilities, wow build 11.0.2.56513
-static const std::array<racial_spell_entry_t, 168> __racial_spell_data { {
+static const std::array<racial_spell_entry_t, 169> __racial_spell_data { {
   { 0x0000000000000001, 0x00000000, 458619, "No Place Like Home"                 },
   { 0x0000000000000001, 0x00000000,  20598, "The Human Spirit"                   },
   { 0x0000000000000001, 0x00000000,  59752, "Will to Survive"                    },
@@ -113,6 +113,7 @@ static const std::array<racial_spell_entry_t, 168> __racial_spell_data { {
   { 0x0000000000060000, 0x00000000, 436344, "Azerite Surge"                      },
   { 0x0000000000060000, 0x00000000, 436339, "Hyper Productive"                   },
   { 0x0000000000060000, 0x00000000, 436341, "Ingest Minerals"                    },
+  { 0x0000000000060000, 0x00000000, 461063, "Quiet Contemplation"                },
   { 0x0000000000060000, 0x00000000, 436340, "Titan-Wrought Frame"                },
   { 0x0000000000060000, 0x00000000, 448924, "Wide-Eyed Wonder"                   },
   { 0x0000000000200000, 0x000007df,  68976, "Aberration"                         },

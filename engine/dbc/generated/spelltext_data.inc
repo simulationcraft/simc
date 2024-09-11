@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56513
-static const std::array<spelltext_data_t, 26337> __spelltext_data { {
+static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26085,6 +26085,7 @@ static const std::array<spelltext_data_t, 26337> __spelltext_data { {
   { 460909, "$@spelldesc421373", 0, 0 },
   { 460927, "$@spelldesc319606", 0, 0 },
   { 460938, "$?s436341[Restores ${$m1/5*$d} health and ${$m3/5*$d} mana over $d and changes your permanent Well Fed effect. Must remain seated while ingesting.][]", 0, 0 },
+  { 461063, "Draws upon your inner energy, restoring ${$m1/5*$d} health and ${$m3/5*$d} mana over $d. Must remain seated during contemplation.", "Restores ${$w1/5} health and ${$w2/5} mana per second.", 0 },
   { 461130, "$@spelldesc434157", "Your Strength is increased by $w1%.", 0 },
   { 461135, "$@spelldesc49530", 0, 0 },
   { 461145, "Increases your spell damage by $?c1[$448604s1][$448604s6]%.", "Spell damage increased by $w1%.", 0 },
@@ -26340,10 +26341,11 @@ static const std::array<spelltext_data_t, 26337> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56513
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
   {  441023,  0, "Your spells and abilities have a chance to secrete $<effectCount> different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.", "Your spells and abilities have a chance to secrete $?pc129946[][$<effectCount> ]different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.$?pc129945[][\r\n\r\nReach Accomplice reputation with each of the Severed Threads' pacts to secrete more pheromones.]" },
   {  453630,  0, "Your damage is increased by $s1% per active Boneshield charge. Taking damage while below $s2 Boneshield charges has a chance to generate $s3-$s4 Boneshield charges.", "Your damage is increased by ${$s1/10}.1% per active Boneshield charge. Taking damage while below $s2 Boneshield charges has a chance to generate $s3-$s4 Boneshield charges." },
   {  457506,  1, "Damage done increased by $w1%.", "Damage done increased by ${$w1}.1%." },
+  {  461063,  0, "Restores ${$m1/5*$d} health and ${$m3/5*$d} mana over $d. Must remain seated while eating.", "Draws upon your inner energy, restoring ${$m1/5*$d} health and ${$m3/5*$d} mana over $d. Must remain seated during contemplation." },
 } };
 
 // Spell description variables, wow build 11.0.2.56513
