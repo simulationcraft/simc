@@ -4073,6 +4073,23 @@ void quickwick_candlestick( special_effect_t& effect )
   effect.custom_buff = buff;
 }
 
+// 455435 driver
+//  e1: weak light up (455443)
+//  e2: weak not so gentle flame (455447)
+//  e3: strong light up (455480)
+//  e4: strong not so gentle flame (455479)
+// 455445 summon waxx (weak light up)
+// 455448 summon wayne (weak not so gentle flame)
+// 455453 summon take (strong light up, strong not so gentle flame)
+// 455443 weak light up
+// 455447 weak not so gentle flame
+// 455479 strong not so gentle flame
+// 455480 strong light up
+void candle_confidant( special_effect_t& effect )
+{
+  effect.player->sim->error( "Candle Confidant is not implemented yet." );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -4872,6 +4889,7 @@ void register_special_effects()
   register_special_effect( 435502, items::shadowbinding_ritual_knife );
   register_special_effect( 455432, items::shining_arathor_insignia );
   register_special_effect( 455451, items::quickwick_candlestick );
+  register_special_effect( 455435, items::candle_confidant );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
