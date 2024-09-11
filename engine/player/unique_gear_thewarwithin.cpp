@@ -579,6 +579,7 @@ void pouch_of_pocket_grenades( special_effect_t& effect )
   auto damage = missile->effectN( 1 ).trigger();
   // TODO: determine which coeff is the correct one. assuming driver is correct.
   auto amount = driver->effectN( 1 ).average( effect );
+  auto multiplier = role_mult( effect );
 
   effect.spell_id = driver->id();
 
@@ -589,7 +590,7 @@ void pouch_of_pocket_grenades( special_effect_t& effect )
   grenade->base_dd_min += amount;
   grenade->base_dd_max += amount;
   // We cannot use `*=`, as two copies of the embellishment would doubly apply role mult.
-  grenade->base_multiplier = role_mult( effect );
+  grenade->base_multiplier = multiplier;
 
   if ( found )
     return;
@@ -1142,7 +1143,7 @@ void aberrant_spellforge( special_effect_t& effect )
       : generic_proc_t( e, "aberrant_shadows", 451866 ), stack( b )
     {
       base_dd_min = base_dd_max = data->effectN( 1 ).average( e );
-      base_multiplier *= role_mult( e );
+      base_multiplier *= role_mult( e.player, e.player->find_spell( 445593 ) );
 
       for ( auto a : player->action_list )
       {
@@ -2576,7 +2577,7 @@ void arakara_sacbrood( special_effect_t& e )
     {
       damage                 = create_proc_action<generic_proc_t>( "spidersting", e, e.player->find_spell( 452229 ) );
       damage->base_td        = e.player->find_spell( 443541 )->effectN( 2 ).average( e );
-      damage->base_multiplier *= role_mult( e );
+      damage->base_multiplier *= role_mult( e.player, e.player->find_spell( 443541 ) );
       missile                = create_proc_action<generic_proc_t>( "spiderfling", e, e.player->find_spell( 452227 ) );
       missile->impact_action = damage;
     }
@@ -3887,7 +3888,7 @@ void shadowed_essence( special_effect_t& effect )
       // TODO: determine if damage is affected by role mult
       auto damage         = create_proc_action<generic_proc_t>( "shadowed_essence_damage", e, 455654 );
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e );
-      damage->base_multiplier *= role_mult( e );
+      damage->base_multiplier *= role_mult( e.player );
 
       auto missile           = create_proc_action<generic_proc_t>( "shadowed_essence", e, 455653 );
       missile->add_child( damage );
@@ -4922,8 +4923,10 @@ action_t* create_action( player_t* p, util::string_view n, util::string_view opt
 double role_mult( player_t* player, const spell_data_t* s_data )
 {
   double mult = 1.0;
+  auto vars = player->dbc->spell_desc_vars( s_data->id() ).desc_vars();
 
-  if ( auto vars = player->dbc->spell_desc_vars( s_data->id() ).desc_vars() )
+  assert( vars && "No spell description variables found. role_mult( player_t* ) can provide a default value." );
+  if ( vars )
   {
     std::cmatch m;
     std::regex get_var( R"(\$rolemult=\$(.*))" );  // find the $rolemult= variable
@@ -4956,6 +4959,12 @@ double role_mult( player_t* player, const spell_data_t* s_data )
 double role_mult( const special_effect_t& effect )
 {
   return role_mult( effect.player, effect.driver() );
+}
+
+// Default role_mult if none can be found on any related spell.
+double role_mult( player_t *p )
+{
+  return role_mult( p, p->find_spell( 445339 ) );
 }
 
 // writhing armor banding embellishment, doubles nerubian embellishment values
