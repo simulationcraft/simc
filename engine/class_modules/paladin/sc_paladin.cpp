@@ -623,7 +623,7 @@ struct consecration_t : public paladin_spell_t
           healingAllies.push_back( friendly );
         else if ( friendly->health_percentage() < 100 ) // Allies are only healed when they're not full HP
           healingAllies.push_back( friendly );
-        if ( healingAllies.size() == p()->options.max_dg_heal_targets )
+        if ( healingAllies.size() == as<size_t>( p()->options.max_dg_heal_targets ) )
           break;
       }
       // If we hit less than 5 (max_dg_heal_targets) healing targets, we can fill the rest with damage targets

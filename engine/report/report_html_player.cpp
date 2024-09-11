@@ -1826,11 +1826,11 @@ int raidbots_talent_render_width( specialization_e spec, int height, bool mini =
   switch ( spec )
   {
     // narrower trees
-    case HUNTER_BEAST_MASTERY: return mini ? height * 1.45 : height * 1.60;
+    case HUNTER_BEAST_MASTERY: return static_cast<int>( mini ? height * 1.45 : height * 1.60 );
     // wider trees
-    case DRUID_RESTORATION:    return mini ? height * 1.80 : height * 1.95;
+    case DRUID_RESTORATION:    return static_cast<int>( mini ? height * 1.80 : height * 1.95 );
     // default size
-    default:                   return mini ? height * 1.60 : height * 1.75;
+    default:                   return static_cast<int>( mini ? height * 1.60 : height * 1.75 );
   }
 }
 

@@ -4105,7 +4105,7 @@ timespan_t action_t::tick_time_flat_modifier( const action_state_t* ) const
   return 0_ms;
 }
 
-double action_t::tick_time_pct_multiplier( const action_state_t* s ) const
+double action_t::tick_time_pct_multiplier( const action_state_t* ) const
 {
   return 1.0;
 }
@@ -4227,7 +4227,7 @@ timespan_t action_t::dot_duration_flat_modifier( const action_state_t* ) const
   return 0_ms;
 }
 
-double action_t::dot_duration_pct_multiplier( const action_state_t* s ) const
+double action_t::dot_duration_pct_multiplier( const action_state_t* ) const
 {
   return 1.0;
 }
@@ -5329,11 +5329,11 @@ void action_t::apply_affecting_aura( const spell_data_t* spell, const spell_data
 
         switch ( m_eff.property_type() )
         {
-          case P_EFFECT_1: if ( effect.index() == 0 ) break;
-          case P_EFFECT_2: if ( effect.index() == 1 ) break;
-          case P_EFFECT_3: if ( effect.index() == 2 ) break;
-          case P_EFFECT_4: if ( effect.index() == 3 ) break;
-          case P_EFFECT_5: if ( effect.index() == 4 ) break;
+          case P_EFFECT_1: if ( effect.index() == 0 ) break; else continue;
+          case P_EFFECT_2: if ( effect.index() == 1 ) break; else continue;
+          case P_EFFECT_3: if ( effect.index() == 2 ) break; else continue;
+          case P_EFFECT_4: if ( effect.index() == 3 ) break; else continue;
+          case P_EFFECT_5: if ( effect.index() == 4 ) break; else continue;
           default:         continue;
         }
 

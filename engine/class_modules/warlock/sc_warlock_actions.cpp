@@ -4723,7 +4723,7 @@ using namespace helpers;
     return nullptr;
   }
 
-  action_t* warlock_t::create_action_soul_harvester( util::string_view action_name, util::string_view options_str )
+  action_t* warlock_t::create_action_soul_harvester( util::string_view /* action_name */, util::string_view /* options_str */ )
   {
     return nullptr;
   }
