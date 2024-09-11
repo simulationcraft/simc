@@ -1254,7 +1254,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     base_t::execute();
 
     if ( p()->talent.mistweaver.awakened_jadefire->ok() && p()->buff.jadefire_stomp->up() )
-      monk_melee_attack_t::execute();
+      base_t::execute();
 
     p()->buff.blackout_combo->expire();
 
