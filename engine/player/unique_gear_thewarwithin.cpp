@@ -4127,6 +4127,62 @@ void concoction_kiss_of_death( special_effect_t& effect )
   effect.custom_buff = create_buff<concoction_kiss_of_death_buff_t>( effect.player, effect.driver(), effect.item );
 }
 
+// 435473 driver
+//  e1: coeff
+// 440635 stacking counter
+// 440645 damage driver
+// 440646 damage
+void everburning_lantern( special_effect_t& effect )
+{
+  // setup primary proc driver & counter buff
+  auto counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 440635 ) )
+    ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+  effect.custom_buff = counter;
+  auto cb = new dbc_proc_callback_t( effect.player, effect );
+
+  // setup damage proc callback driver & buff
+  auto fireflies = create_buff<buff_t>( effect.player, effect.player->find_spell( 440645 ) )
+    ->set_stack_change_callback( [ cb ]( buff_t* b, int, int new_ ) {
+      if ( new_ )
+        cb->deactivate();
+      else
+        cb->activate();
+    } );
+
+  counter->set_expire_callback( [ fireflies, cb ]( buff_t*, int s, timespan_t ) {
+    fireflies->trigger( -1, as<double>( s ) );
+  } );
+
+  auto on_next = new special_effect_t( effect.player );
+  on_next->name_str = fireflies->name();
+  on_next->spell_id = fireflies->data().id();
+  effect.player->special_effects.push_back( on_next );
+
+  auto damage_cb = new dbc_proc_callback_t( effect.player, *on_next );
+  damage_cb->activate_with_buff( fireflies );
+
+  // setup damage
+  auto damage = create_proc_action<generic_proc_t>( "fire_flies", effect, 440646 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  effect.player->callbacks.register_callback_execute_function( on_next->spell_id,
+    [ fireflies, damage ]( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) {
+      if ( !fireflies->check() )  // prevent extra procs from multi-part hits
+        return;
+
+      auto stacks = as<unsigned>( fireflies->check_value() );
+      fireflies->expire();
+
+      while ( stacks > 0 )
+      {
+        damage->execute_on_target( s->target );
+        stacks--;
+      }
+    } );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -4928,6 +4984,7 @@ void register_special_effects()
   register_special_effect( 455451, items::quickwick_candlestick );
   register_special_effect( 455435, items::candle_confidant );
   register_special_effect( 435493, items::concoction_kiss_of_death );
+  register_special_effect( 435473, items::everburning_lantern );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
