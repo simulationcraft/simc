@@ -572,6 +572,7 @@ struct player_t : public actor_t
     buff_t* ingest_mineral;  // earthen well fed racial
     buff_t* surekian_grace;  // sik'ran's shadow arsenal barrage movement speed buff
     buff_t* earthen_ire;     // sigil of algari concordance tank buff
+    buff_t* quickwicks_quick_trick_wick_walk;  // quickwick candlestick movement speed buff
   } buffs;
 
   struct debuffs_t

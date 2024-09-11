@@ -5140,6 +5140,9 @@ double player_t::non_stacking_movement_modifier() const
 
     if ( buffs.surekian_grace && buffs.surekian_grace->check() )
       speed = std::max( buffs.surekian_grace->check_value(), speed );
+
+    if ( buffs.quickwicks_quick_trick_wick_walk && buffs.quickwicks_quick_trick_wick_walk->check() )
+      speed = std::max( buffs.quickwicks_quick_trick_wick_walk->check_value(), speed );
   }
 
   return speed;

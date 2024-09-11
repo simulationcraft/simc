@@ -4061,6 +4061,18 @@ void shining_arathor_insignia( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 455451 buff
+//  e1: speed
+//  e2: haste
+void quickwick_candlestick( special_effect_t& effect )
+{
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.driver(), effect.item )
+    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
+
+  effect.player->buffs.quickwicks_quick_trick_wick_walk = buff;
+  effect.custom_buff = buff;
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -4859,6 +4871,7 @@ void register_special_effects()
   register_special_effect( 451750, DISABLED_EFFECT );  // stormrider flight badge special effect
   register_special_effect( 435502, items::shadowbinding_ritual_knife );
   register_special_effect( 455432, items::shining_arathor_insignia );
+  register_special_effect( 455451, items::quickwick_candlestick );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
