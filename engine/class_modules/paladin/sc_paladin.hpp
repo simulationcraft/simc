@@ -748,8 +748,6 @@ public:
   armament next_armament;
   double radiant_glory_accumulator;
 
-  bool lights_deliverance_triggered_during_ready;
-
   int holy_power_generators_used;
   int melee_swing_count;
 

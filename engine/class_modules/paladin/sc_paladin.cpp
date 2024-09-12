@@ -34,7 +34,6 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
     next_season( SUMMER ),
     next_armament( SACRED_WEAPON ),
     radiant_glory_accumulator( 0.0 ),
-    lights_deliverance_triggered_during_ready( false ),
     holy_power_generators_used( 0 ),
     melee_swing_count( 0 ),
     random_weapon_target( nullptr ),
@@ -2390,21 +2389,10 @@ void paladin_t::trigger_lights_deliverance(bool triggered_by_hol)
        ( specialization() == PALADIN_RETRIBUTION && cooldowns.wake_of_ashes->up() ) )
     return;
 
-  if ( !bugs && buffs.templar.hammer_of_light_ready->up() )
+  if ( buffs.templar.hammer_of_light_ready->up() )
     return;
-  // 2024-06-25 When we reach 60 stacks of Light's Deliverance while EoT/Wake is already used, but Hammer of Light isn't used yet, the hammer will cost 5 Holy Power
-  else if ( bugs && !triggered_by_hol && buffs.templar.hammer_of_light_ready->up() )
-  {
-    lights_deliverance_triggered_during_ready = true;
-    return;
-  }
-  auto cost_reduction = buffs.templar.hammer_of_light_free->default_value;
-  if ( lights_deliverance_triggered_during_ready )
-  {
-    cost_reduction = 0.0;
-    lights_deliverance_triggered_during_ready = false;
-  }
 
+  auto cost_reduction = buffs.templar.hammer_of_light_free->default_value;
   buffs.templar.hammer_of_light_free->execute(-1, cost_reduction, timespan_t::min());
   buffs.templar.lights_deliverance->expire();
 }
@@ -3666,7 +3654,6 @@ void paladin_t::reset()
   radiant_glory_accumulator = 0.0;
   holy_power_generators_used = 0;
   melee_swing_count = 0;
-  lights_deliverance_triggered_during_ready = false;
   random_weapon_target = nullptr;
   random_bulwark_target = nullptr;
   divine_inspiration_next = -1;
