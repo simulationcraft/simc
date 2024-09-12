@@ -1712,22 +1712,25 @@ void item_t::decode_stats()
   // since the missives system allows overriding of the "crafted stat system" through item
   // bonuses.
   auto crafted_stat_id = ITEM_MOD_BONUS_STAT_1;
-  range::for_each( parsed.crafted_stat_mod, [ this, &crafted_stat_id ]( int crafted_mod ) {
-    auto it = range::find_if( parsed.data.stat_type_e, [crafted_stat_id]( int item_mod ) {
-      return item_mod == crafted_stat_id;
-    } );
 
-    if ( it != parsed.data.stat_type_e.end() )
+  for ( auto crafted_mod : parsed.crafted_stat_mod )
+  {
+    // If multiple instances of the same crafted item mod is present, replace them all. It's unclear if this is
+    // what actually happens in game, as alternative possibility is that only those mods with non-zero stat
+    // allocations are processed. Refactor if necessary if we are able to confirm in game.
+    for ( size_t i = 0; i < parsed.data.stat_type_e.size(); i++ )
     {
-      auto stat_type = util::translate_item_mod( crafted_mod );
-      player->sim->print_debug( "Player {} item '{}' modifying crafted stat type {} to '{}' (index={})",
-          player->name(), name(), *it,  util::stat_type_string( stat_type ),
-          std::distance( parsed.data.stat_type_e.begin(), it ) );
-      (*it) = crafted_mod;
+      if ( auto& item_mod = parsed.data.stat_type_e[ i ]; item_mod == crafted_stat_id )
+      {
+        auto stat_type = util::translate_item_mod( crafted_mod );
+        player->sim->print_debug( "Player {} item '{}' modifying crafted stat type {} to '{}' (index={})",
+                                  player->name(), name(), item_mod, util::stat_type_string( stat_type ), i );
+        item_mod = crafted_mod;
+      }
     }
 
     crafted_stat_id++;
-  } );
+  }
 
   for ( size_t i = 0; i < parsed.data.stat_type_e.size(); i++ )
   {
