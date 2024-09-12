@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.5.56487 thewarwithin-BETA
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56572 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -1341,12 +1341,12 @@ Proc Flags       : ...x.x.x .x...x.. .x.x.... ........   ........ ........ .....
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Passive (6), Do Not Log (8), No Aura Icon (60), Can Proc From Procs (122), Not In Spellbook (143), No Aura Log (202), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : Is Ability (4), Passive (6), Do Not Log (8), No Aura Icon (60), Can Proc From Procs (122), Not In Spellbook (143), No Aura Log (202), Can Proc From Suppressed Target Procs (254), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=19369)    : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -6902,6 +6902,7 @@ Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
 Max Scaling Level: 80
+Min Scaling Level: 1
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -14826,8 +14827,8 @@ Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), No Proc Equip Requirement (97), Can Proc From Procs (122), Allow Proc While Sitting (147), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1018566)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
-                   Affected School(s): All
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 Tooltip          : Magical damage taken reduced by $s1%.
 
 Name             : Storm of Swords (id=385512) [Spell Family (4), Passive] 

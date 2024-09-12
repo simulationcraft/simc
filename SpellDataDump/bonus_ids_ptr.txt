@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.5.56487 thewarwithin-BETA
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56572 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -6116,8 +6116,8 @@ bonus_id={ 11055 }, quality={ epic }, ilevel={ 369 @plvl 55 - 554 @plvl 90 }
 bonus_id={ 11061 }, quality={ rare }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
 bonus_id={ 11062 }, quality={ epic }, ilevel={ 232 @plvl 45 - 353 @plvl 80 }
 bonus_id={ 11065 }, quality={ uncommon }
-bonus_id={ 11069 }, quality={ rare }, ilevel={ 21 @plvl 1 - 558 @plvl 80 }
-bonus_id={ 11070 }, quality={ rare }, ilevel={ 21 @plvl 1 - 558 @plvl 80 }
+bonus_id={ 11069 }, quality={ rare }, ilevel={ 21 @plvl 1 - 554 @plvl 80 }
+bonus_id={ 11070 }, quality={ rare }, ilevel={ 21 @plvl 1 - 554 @plvl 80 }
 bonus_id={ 11071 }, ilevel={ 5 @plvl 1 - 584 @plvl 80 }
 bonus_id={ 11072 }, desc={ Timewarped }, ilevel={ 21 @plvl 1 - 541 @plvl 80 }
 bonus_id={ 11073 }, ilevel={ 1 @plvl 1 - 467 @plvl 70 }
@@ -6297,7 +6297,7 @@ bonus_id={ 11297 }, base_ilevel={ 545 }
 bonus_id={ 11299 }, effects={ Radiant Focus (id=454558, index=0, type=equip) }
 bonus_id={ 11300 }, effects={ Ascendance (id=458573, index=0, type=equip) }
 bonus_id={ 11301 }, effects={ Vivacity (id=454857, index=0, type=equip) }
-bonus_id={ 11302 }, effects={ Symbiosis (id=463610, index=0, type=equip) }
+bonus_id={ 11302 }, effects={ Symbiosis (id=463232, index=0, type=equip) }
 bonus_id={ 11303 }, effects={ Dawnthread Lining (id=457665, index=0, type=equip) }
 bonus_id={ 11304 }, effects={ Duskthread Lining (id=457677, index=0, type=equip) }
 bonus_id={ 11306 }, ilevel={ 15 @plvl 10 - 554 @plvl 80 }

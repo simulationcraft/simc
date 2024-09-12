@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.5.56487 thewarwithin-BETA
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56572 PTR
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -1012,7 +1012,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
 Category Cooldown: 120 seconds
-Affecting spells : Sanctified Wrath (53376 effect#1), Retribution Paladin (137027 effect#21), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Avenging Wrath (384376 effects: #1, #2, #3), Avenging Wrath: Might (384442 effects: #1, #2), Divine Wrath (406872 effect#1)
+Affecting spells : Sanctified Wrath (53376 effect#1), Retribution Paladin (137027 effect#21), Holy Paladin (137029 effects: #23, #24, #25), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Avenging Wrath (384376 effects: #1, #2, #3), Avenging Wrath: Might (384442 effects: #1, #2), Divine Wrath (406872 effect#1)
 Family Flags     : 40
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1216,7 +1216,7 @@ $damage=${$s1*$<retribution>}
 
 Name             : Sanctified Wrath (id=53376) [Spell Family (10), Passive] 
 Talent Entry     : Holy [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=100]
-                 : Protection [tree=spec, row=8, col=4, max_rank=1, req_points=20, override="Avenging Wrath" (id=31884)]
+                 : Protection [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -1351,7 +1351,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 54149 | Target: Self (1)
 Description      : Your critical Holy Shocks empower your next spell cast:
 
-$@spellname19750: Mana cost reduced by $54149s1%
+$@spellname19750: Mana cost reduced by $54149s1%.
 $@spellname82326: healing increased by $54149s2%.
 $@spellname275773: Greater Judgment prevents an additional ${$54149s4-100}% damage dealt by the target.
 
@@ -3362,11 +3362,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179704)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Shifting Power (382445), Blast Wave (389631), Arcane Explosion (414381), Frostfire Bolt (431044), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Arcane Orb (440552), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Flamestrike (450462), Phoenix Flames (450506), Living Bomb (453251), Arcane Surge (453326), Magi's Spark (453925), Nether Munitions (454004), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Shifting Power (382445), Blast Wave (389631), Arcane Explosion (414381), Frostfire Bolt (431044), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Arcane Orb (440552), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Flamestrike (450462), Phoenix Flames (450506), Living Bomb (453251), Arcane Surge (453326), Magi's Spark (453925), Nether Munitions (454004), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostfire Burst (470596)
                    Family Flags: 3
 #2 (id=191116)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Shifting Power (382445), Blast Wave (389631), Arcane Explosion (414381), Frostfire Bolt (431044), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Arcane Orb (440552), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Flamestrike (450462), Phoenix Flames (450506), Living Bomb (453251), Arcane Surge (453326), Magi's Spark (453925), Nether Munitions (454004), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Shifting Power (382445), Blast Wave (389631), Arcane Explosion (414381), Frostfire Bolt (431044), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Arcane Orb (440552), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Flamestrike (450462), Phoenix Flames (450506), Living Bomb (453251), Arcane Surge (453326), Magi's Spark (453925), Nether Munitions (454004), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostfire Burst (470596)
                    Family Flags: 3
 #3 (id=191117)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3730,21 +3730,22 @@ Effects          :
 #20 (id=1083883)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1627 | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
-#21 (id=1083884)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2628 (Label) | Target: Self (1)
-                   Affected Spells (Label): Avenging Wrath (384376)
-#22 (id=1084642)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2628 (Label) | Target: Self (1)
-                   Affected Spells (Label): Avenging Wrath (384376)
-#23 (id=1084644)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 2628 (Label) | Target: Self (1)
-                   Affected Spells (Label): Avenging Wrath (384376)
-#24 (id=1084645)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2629 (Label) | Target: Self (1)
-                   Affected Spells (Label): Avenging Wrath: Might (384442)
-#25 (id=1084646)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2629 (Label) | Target: Self (1)
-                   Affected Spells (Label): Avenging Wrath: Might (384442)
+#21 (id=1083884)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#22 (id=1084642)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#23 (id=1084644)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Avenging Wrath (31884), Avenging Wrath (454351)
+                   Family Flags: 40
+#24 (id=1084645)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Avenging Wrath (31884), Avenging Wrath (454351)
+                   Family Flags: 40
+#25 (id=1084646)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Avenging Wrath (31884), Avenging Wrath (454351)
+                   Family Flags: 40
 #26 (id=1084647)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 332 | Scaled Value: 332 | PvP Coefficient: 1.00000 | Misc Value 2: 2704 (Label) | Target: Self (1)
 #27 (id=1084676)  : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
@@ -5913,7 +5914,6 @@ Description      : Judgment now has ${1+$s1} charges, and Grand Crusader now als
 
 Name             : Consecrated Ground (id=204054) [Spell Family (10), Passive] 
 Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8]
-                 : Retribution [tree=spec, row=5, col=6, max_rank=1, req_points=8, select_idx=100]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -7116,7 +7116,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value 2: 3084 (Label)
                    Affected Spells (Label): Hammer of Light (429826)
 Description      : $@spelldesc223817
-Tooltip          : Your next Holy Power ability is free and deals $s2% increased damage and healing.
+Tooltip          : Your next Holy Power spending ability is free and deals $s2% increased damage and healing.
 
 Name             : Divine Storm (id=224239) [Spell Family (10)] 
 Class            : Paladin
@@ -8111,6 +8111,7 @@ Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
 Max Scaling Level: 80
+Min Scaling Level: 1
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -13113,9 +13114,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: holy_power | Target: Self (1)
 #5 (id=1033601)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
-Description      : Instantly cast $?a137029[Holy Shock]?a137028[Avenger's Shield]?a137027[Judgment][Holy Shock, Avenger's Shield, or Judgment] on up to $s1 targets within $A2 yds.$?(a384027|a386738|a387893)[
-
-After casting Divine Toll, you instantly cast ][]$?(a387893&c1)[Holy Shock]?(a386738&c2)[Avenger's Shield]?(a384027&c3)[Judgment][]$?a387893[ every $387895t1 sec. This effect lasts $387895d.][]$?a384027[ every $384029t1 sec. This effect lasts $384029d.][]$?a386738[ every $386730t1 sec. This effect lasts $386730d.][]$?c3[
+Description      : Instantly cast $?a137029[Holy Shock]?a137028[Avenger's Shield]?a137027[Judgment][Holy Shock, Avenger's Shield, or Judgment] on up to $s1 targets within $A2 yds.$?c3[
 
 Divine Toll's Judgment deals $326011s1% increased damage.][]$?c2[
 
@@ -13198,8 +13197,7 @@ Effects          :
 Description      : Your $?s204019[Blessed Hammer]?s53595[Hammer of the Righteous][Crusader Strike] deals $s1% increased damage.
 
 Name             : Gift of the Golden Val'kyr (id=378279) [Spell Family (10), Passive] 
-Talent Entry     : Protection [tree=spec, row=8, col=2, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(500, 1000)]
+Talent Entry     : Protection [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -13220,7 +13218,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Include In Advanced Combat Log (72), Can Proc From Procs (122)
 Effects          :
 #1 (id=1006645)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
 #2 (id=1029951)  : Apply Aura (6) | Trigger Spell Based on Health% (468)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 393108 | Target: Self (1)
 #3 (id=1029952)  : Apply Aura (6) | Dummy (4)
@@ -13342,9 +13340,7 @@ Description      : $@spelldesc378405
 Tooltip          : Healing for $w1 every $t1 sec.
 
 Name             : Uther's Counsel (id=378425) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=8, col=3, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(-15, -30)]
-                 : Effect#2 [op=set, values=(-15, -30)]
+Talent Entry     : Protection [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -13363,11 +13359,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60)
 Effects          :
 #1 (id=1006821)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.67000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.67000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Lay on Hands (633), Divine Shield (642), Protection of the Fallen Dragons (392255)
                    Family Flags: 15, 22
 #2 (id=1012224)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.67000 | Misc Value: 1392 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.67000 | Misc Value: 1392 | Target: Self (1)
                    Affected Spells (Category): Blessing of Protection (1022), Blessing of Spellwarding (204018)
 Description      : Your Lay on Hands, Divine Shield, Blessing of Protection, and Blessing of Spellwarding have $s1% reduced cooldown.
 
@@ -14518,7 +14514,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-                 : 2628: Retribution Paladin (137027 effect#29), Retribution Paladin (137027 effect#30), Holy Paladin (137029 effect#21), Holy Paladin (137029 effect#22), Holy Paladin (137029 effect#23)
+                 : 2628: Retribution Paladin (137027 effect#29), Retribution Paladin (137027 effect#30)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14584,7 +14580,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-                 : 2629: Retribution Paladin (137027 effect#31), Retribution Paladin (137027 effect#32), Holy Paladin (137029 effect#24), Holy Paladin (137029 effect#25)
+                 : 2629: Retribution Paladin (137027 effect#31), Retribution Paladin (137027 effect#32)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15022,6 +15018,7 @@ Effects          :
 Description      : Speed increased by $s3% and damage taken from area of effect attacks reduced by $s2%.
 
 Name             : Sentinel (id=385438) [Spell Family (10), Passive, Hidden] 
+Talent Entry     : Protection [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200, override="Sentinel" (id=389539)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -15148,7 +15145,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Aura Is Debuff (26), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1019186)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc385728
 Tooltip          : $@spellaura385728
 
@@ -16014,39 +16011,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 4488 | Target: Unknown(87)
 Description      : $@spelldesc26573
 
-Name             : Divine Resonance (id=387893) [Spell Family (10), Passive] 
-Class            : Paladin
-School           : Arcane
-Spell Type       : None
-Range            : 30 yards
-Labels           : 16: Class Spells
-                 : 26: Paladin Spells
-                 : 292
-Internal Cooldown: 3 seconds
-Proc Chance      : 101%
-Proc Flags       : ........ ..x.x.x. x.x..x.. ........   ........ ........ ........ ........   
-                 : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display Range (126), Not In Spellbook (143)
-Effects          :
-#1 (id=1023010)  : Apply Aura (6) | Proc Trigger Spell (42): Divine Resonance
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 387895 | Target: Self (1)
-Description      : After casting Divine Toll, you instantly cast $?c2[Avenger's Shield]$?c1[Holy Shock][Judgment] every $387895t1 sec. This effect lasts $387895s2 sec.
-
 Name             : Divine Resonance (id=387895) 
 Class            : Paladin
 School           : Arcane
 Spell Type       : None
 Range            : 30 yards
 Duration         : 15 seconds
-Triggered by     : Divine Resonance (387893)
 Attributes       : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16452,7 +16422,6 @@ Tooltip          : Absorbs $w1 damage.
 
 Name             : Sentinel (id=389539) [Spell Family (10)] 
 Replaces         : Avenging Wrath (id=31884)
-Talent Entry     : Protection [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200, override="Sentinel" (id=389539)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -19317,7 +19286,6 @@ Description      : Enables Worgen to switch between Worgen and Human forms.
 
 Name             : Faith's Armor (id=406101) [Spell Family (10), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20]
-                 : Protection [tree=class, row=8, col=1, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -19430,7 +19398,8 @@ Effects          :
 Description      : Final Reckoning and Execution Sentence grant $408386s1 Holy Power.
 
 Name             : Lightforged Blessing (id=406468) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Holy [tree=class, row=8, col=1, max_rank=1, req_points=20]
+Talent Entry     : Protection [tree=class, row=8, col=1, max_rank=1, req_points=20]
+                 : Holy [tree=class, row=8, col=1, max_rank=1, req_points=20]
                  : Holy, Protection [tree=class, row=8, col=1, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
@@ -19829,7 +19798,7 @@ Description      : $@spelldesc407067
 Tooltip          : Haste increased by $s1%.
 
 Name             : Rush of Light (id=407067) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Retribution [tree=spec, row=5, col=6, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Retribution [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -20174,7 +20143,7 @@ Effects          :
                    Affected Spells: Divine Toll (304971), Divine Toll (375576), Divine Resonance (386731), Divine Resonance (387896)
                    Family Flags: 92
 Description      : $@spelldesc408459
-Tooltip          : Your next Holy Power ability is free and deals $s2% increased damage and healing.
+Tooltip          : Your next Holy Power spending ability is free and deals $s2% increased damage and healing.
 
 Name             : Divine Purpose (id=408459) [Spell Family (10), Passive] 
 Talent Entry     : Retribution [tree=class, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
@@ -21309,7 +21278,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
 #1 (id=1087832)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Self (18) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Self (18) -> At Friendly in Area (31)
 Description      : $@spelldesc416770
 Tooltip          : $@spellaura416770
 
@@ -21913,9 +21882,10 @@ Duration         : 12 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
+Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
-                 : Magic Hostile Spell
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Triggered by     : Light's Guidance (427445)
 Attributes       : ........ x....... ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -21972,10 +21942,10 @@ $@spelldesc427453
 Name             : Hammer of Light (id=427453) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
-Spell Type       : Magic
+Spell Type       : Melee
 Resource         : 5 Holy Power (9) (id=305690) w/ Retribution Paladin (id=137027)
 Resource         : 3 Holy Power (9) (id=307350) w/ Protection Paladin (id=137028)
-Range            : 12 yards
+Range            : 14 yards
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Labels           : 16: Class Spells
@@ -22107,7 +22077,7 @@ Name             : Hammer of Light (id=429826) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
-Range            : 14 yards
+Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -22116,14 +22086,14 @@ Affecting spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (
 Triggered by     : Hammer of Light (427453)
 Family Flags     : 27, 65, 112
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : x....... ........ ........ ........   ........ .x...... ........ ..x..... 
+                 : x....... ........ ........ ........   ........ .x...... ........ ..x...x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Dead Target (64), Not a Proc (105), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
+                 : Allow Dead Target (64), Not a Proc (105), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1114338)  : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 5.80645 | PvP Coefficient: 0.80000 | Target: Enemy (6)
@@ -23090,28 +23060,6 @@ Effects          :
 Description      : $?a137028[Eye of Tyr][Wake of Ashes] surrounds you with a Holy barrier for $?a137028[$s1][$s4]% of your maximum health.
 
 Hammer of Light heals you for $?a137028[$s2][$s5]% of your maximum health, increased by $?a137028[$s3][$s6]% for each additional target hit. Any overhealing done with this effect gets converted into a Holy barrier instead.
-
-Name             : Sacrosanct Crusade (id=431731) [Spell Family (10), Passive] 
-Class            : Paladin
-School           : Physical
-Spell Type       : None
-Internal Cooldown: 5 seconds
-Proc Chance      : 100%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6)
-Effects          :
-#1 (id=1119700)  : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc431730
 
 Name             : Will of the Dawn (id=431752) [Spell Family (10)] 
 Class            : Paladin
@@ -25397,7 +25345,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
                  : 3793: Divine Wrath (406872 effect#2)
-Affecting spells : Sanctified Wrath (53376 effect#1), Retribution Paladin (137027 effect#21), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Avenging Wrath (384376 effects: #1, #2, #3), Avenging Wrath: Might (384442 effects: #1, #2), Divine Wrath (406872 effect#1)
+Affecting spells : Sanctified Wrath (53376 effect#1), Retribution Paladin (137027 effect#21), Holy Paladin (137029 effects: #23, #24, #25), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Avenging Wrath (384376 effects: #1, #2, #3), Avenging Wrath: Might (384442 effects: #1, #2), Divine Wrath (406872 effect#1)
 Family Flags     : 40
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -26594,7 +26542,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1183571)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Divine Steed also grants Blessing of Freedom for ${$s1/1000} sec.
+Description      : Divine Steed also grants Blessing of Freedom for ${$s1/1000}.1 sec.
 
 $@spellicon1044 $@spellname1044:
 $@spelldesc1044
@@ -27253,14 +27201,14 @@ Proc Chance      : 101%
 Proc Flags       : ........ ....x... x....... ........   ........ ........ ........ ........   
                  : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Not In Spellbook (143)
+                 : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
 Effects          :
 #1 (id=1184537)  : Apply Aura (6) | Proc Trigger Spell (42): Refining Fire
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Trigger Spell: 469882 | Target: Self (1)
