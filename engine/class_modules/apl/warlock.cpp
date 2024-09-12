@@ -30,7 +30,7 @@ namespace warlock_apl{
 
   std::string temporary_enchant( const player_t* p )
   {
-    if ( p->true_level >= 80 ) return "main_hand:oil_of_deep_toxins_3";
+    if ( p->true_level >= 80 ) return "main_hand:algari_mana_oil_3";
     return ( p->true_level >= 70 ) ? "main_hand:howling_rune_3" : "disabled";
   }
 
