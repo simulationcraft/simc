@@ -27,7 +27,7 @@ def->add_action( "potion,if=buff.ca_inc.up|fight_remains<=30" );
 def->add_action( "berserking,if=buff.ca_inc.remains>=10|variable.no_cd_talent|fight_remains<15" );
 def->add_action( "variable,name=eclipse,value=buff.eclipse_lunar.up|buff.eclipse_solar.up","Variables + Eclipse" );
 def->add_action( "variable,name=eclipse_remains,value=buff.eclipse_lunar.remains<?buff.eclipse_solar.remains" );
-def->add_action( "variable,name=enter_lunar,value=talent.lunar_calling|spell_targets.starfire>2" );
+def->add_action( "variable,name=enter_lunar,value=talent.lunar_calling|spell_targets.starfire>2-(talent.umbral_intensity.rank+talent.soul_of_the_forest>1)" );
 def->add_action( "variable,name=boat_stacks,value=buff.balance_of_all_things_arcane.stack+buff.balance_of_all_things_nature.stack" );
 def->add_action( "warrior_of_elune,if=talent.lunar_calling|!talent.lunar_calling&variable.eclipse_remains>=7&cooldown.ca_inc.remains>20" );
 def->add_action( "wrath,if=variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)" );
