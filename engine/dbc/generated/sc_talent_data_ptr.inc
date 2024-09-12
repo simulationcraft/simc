@@ -1,5 +1,5 @@
-// 564 talents, wow build 11.0.5.56487
-static std::array<talent_data_t, 564> __ptr_talent_data { {
+// 565 talents, wow build 11.0.5.56572
+static std::array<talent_data_t, 565> __ptr_talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
   { "War Machine"                       , 15760, 0x00, 0x0001,   73,   0,   0,  316733,       0,  0 },
@@ -232,6 +232,7 @@ static std::array<talent_data_t, 564> __ptr_talent_data { {
   { "Feral Affinity"                    , 22156, 0x00, 0x0400,  104,   1,   2,  202155,       0,  0 },
   { "Guardian Affinity"                 , 22157, 0x00, 0x0400,  102,   1,   2,  197491,       0,  0 },
   { "Guardian Affinity"                 , 22158, 0x00, 0x0400,  103,   1,   2,  217615,       0,  0 },
+  { "Restoration Affinity"              , 22159, 0x00, 0x0400,    0,   2,   2,  197492,       0,  0 },
   { "Guardian Affinity"                 , 22160, 0x00, 0x0400,  105,   2,   2,  197491,       0,  0 },
   { "Balance Affinity"                  , 22163, 0x00, 0x0400,    0,   0,   2,  197488,       0,  0 },
   { "Stellar Flare"                     , 22165, 0x00, 0x0400,  102,   2,   5,  202347,       0,  0 },
