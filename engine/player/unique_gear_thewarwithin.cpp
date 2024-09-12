@@ -4200,6 +4200,75 @@ void everburning_lantern( special_effect_t& effect )
     } );
 }
 
+// 455484 driver
+//  e1: coeff
+//  e2: unknown
+// 455487 damage
+void detachable_fang( special_effect_t& effect )
+{
+  struct gnash_t : public generic_proc_t
+  {
+    player_t* gnash_target = nullptr;
+    unsigned count = 0;
+
+    gnash_t( const special_effect_t& e ) : generic_proc_t( e, "gnash", 455487 )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+      base_multiplier *= role_mult( e );
+    }
+
+    void reset() override
+    {
+      gnash_target = nullptr;
+      count = 1;
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+
+      if ( count == 3 )
+        count = 1;
+      else
+        count++;
+    }
+
+    void set_target( player_t* t ) override
+    {
+      generic_proc_t::set_target( t );
+
+      if ( !gnash_target || gnash_target != t )
+      {
+        gnash_target = t;
+        count = 1;
+      }
+    }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      auto ctm = generic_proc_t::composite_target_multiplier( t );
+
+      if ( count == 3 )
+      {
+        // These values are not in spell data and may be hard scripted or based on a curve id
+        auto hp = t->health_percentage();
+        if ( hp < 30 )
+          ctm *= 1.5;
+        else if ( hp < 60 )
+          ctm *= 1.25;
+        else if ( hp < 90 )
+          ctm *= 1.1;
+      }
+
+      return ctm;
+    }
+  };
+
+  effect.execute_action = create_proc_action<gnash_t>( "gnash", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -5004,6 +5073,7 @@ void register_special_effects()
   register_special_effect( 455435, items::candle_confidant );
   register_special_effect( 435493, items::concoction_kiss_of_death );
   register_special_effect( 435473, items::everburning_lantern );
+  register_special_effect( 455484, items::detachable_fang );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
