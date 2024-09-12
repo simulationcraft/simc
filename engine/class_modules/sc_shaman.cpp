@@ -2711,10 +2711,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   void schedule_travel( action_state_t* s ) override
   {
     trigger_elemental_overload( s );
-    if (p()->talent.supercharge.ok() && s->chain_target==0)
-    {
-      trigger_elemental_overload( s,  p()->talent.supercharge->effectN(1).percent());
-    }
 
     base_t::schedule_travel( s );
   }
@@ -5990,6 +5986,12 @@ struct chain_lightning_t : public chained_base_t
     {
       p()->buff.power_of_the_maelstrom->decrement();
     }
+
+    if ( s->chain_target == 0 && p()->talent.supercharge.ok() )
+    {
+      trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
+    }
+
     chained_base_t::schedule_travel( s );
   }
 
@@ -6058,6 +6060,11 @@ struct lava_beam_t : public chained_base_t
     {
       trigger_elemental_overload( s, 1.0 );
       p()->buff.power_of_the_maelstrom->decrement();
+    }
+
+    if ( s->chain_target == 0 && p()->talent.supercharge.ok() )
+    {
+      trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
     }
 
     chained_base_t::schedule_travel( s );
@@ -6867,7 +6874,10 @@ struct lightning_bolt_t : public shaman_spell_t
       p()->buff.surge_of_power->decrement();
     }
 
-
+    if ( p()->talent.supercharge.ok())
+    {
+      trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
+    }
 
     shaman_spell_t::schedule_travel( s );
   }
@@ -9798,8 +9808,13 @@ struct tempest_t : public shaman_spell_t
     return shaman_spell_t::ready();
   }
 
-  void schedule_travel(action_state_t* state) override {
-    shaman_spell_t::schedule_travel( state );
+  void schedule_travel(action_state_t* s) override {
+    if ( p()->talent.supercharge.ok() )
+    {
+      trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
+    }
+
+    shaman_spell_t::schedule_travel( s );
   }
 
 };
