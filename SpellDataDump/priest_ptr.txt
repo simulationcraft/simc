@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.5.56487 thewarwithin-BETA
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56572 PTR
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -7820,6 +7820,7 @@ Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
 Max Scaling Level: 80
+Min Scaling Level: 1
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -18926,9 +18927,9 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Holy Fire (14914)
                    Family Flags: 20
-Description      : $?a137032[Power Word: Shield absorbs $s1% additional damage.
+Description      : $?a137032[Power Word: Shield absorbs $s2% additional damage.
 
-All damage dealt by Penance, Smite and Holy Nova increased by $s3%.][Increases the healing done by Prayer of Mending by $s2%.
+All damage dealt by Penance, Smite and Holy Nova increased by $s3%.][Increases the healing done by Prayer of Mending by $s1%.
 
 All damage dealt by Smite, Holy Fire and Holy Nova increased by $s4%.]
 

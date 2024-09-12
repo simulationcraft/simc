@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.5.56487 thewarwithin-BETA
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56572 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1518,6 +1518,7 @@ Class            : Monk
 School           : Physical
 Spell Type       : Magic
 Max Scaling Level: 100
+Min Scaling Level: 1
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Labels           : 16: Class Spells
@@ -8155,6 +8156,7 @@ Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
 Max Scaling Level: 80
+Min Scaling Level: 1
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -8464,8 +8466,8 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........   ........ ........ ........ ........   
-                 : Yellow Melee
+Proc Flags       : ....x... ....x... x....... ........   ........ ........ ........ ........   
+                 : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -15324,7 +15326,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1024240)  : Apply Aura (6) | Unknown(285)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 388512 | Target: Self (1)
-Description      : Your Enveloping Mists heal the target for ${$s1}.1% of their maximum health each time they take damage.
+Description      : Your Enveloping Mists heal the target for ${$s1}.1% of their maximum health each time they take direct damage.
 
 Name             : Overflowing Mists (id=388512) [Spell Family (53), Hidden] 
 Class            : Monk
@@ -17092,7 +17094,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Strike of the Windlord grants you $s1 stacks of Thunderfist and an additional stack for each additional enemy struck. 
 
-Thunderfist discharges upon melee strikes, dealing $242390s1 Nature damage.
+Thunderfist discharges upon melee strikes, dealing $393566s1 Nature damage.
 
 Name             : Xuen's Bond (id=392986) [Spell Family (53), Passive, Hidden] 
 Talent Entry     : Windwalker [tree=spec, row=9, col=3, max_rank=1, req_points=20]
@@ -20199,7 +20201,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Proc Chance      : 101%
-Real PPM         : 4 (Haste multiplier)
+Real PPM         : 3 (Haste multiplier)
 Proc Flags       : ....x... x.x.x.x. x.x..x.. ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -20213,7 +20215,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1131061)  : Apply Aura (6) | Proc Trigger Spell (42): Dance of Chi-Ji
-                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Trigger Spell: 438443 | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Trigger Spell: 438443 | Target: Self (1)
 Description      : Your spells and abilities have a chance to make your next Spinning Crane Kick deal an additional $s1% damage.
 
 Name             : Dance of Chi-Ji (id=438443) [Spell Family (53)] 
@@ -20499,7 +20501,7 @@ Effects          :
                    Affected Spells: Vivify (116670)
                    Family Flags: 26
 Description      : $@spelldesc442818
-Tooltip          : The $?c2[damage of your next Rising Sun Kick is increased by $s1% or the healing of your next Vivify is increased by by $s2%]?c3[damage of your next Rising Sun Kick is increased by $s1%][].
+Tooltip          : The $?c2[damage of your next Rising Sun Kick is increased by $s1% or the healing of your next Vivify is increased by by $s2%][damage of your next Rising Sun Kick is increased by $s1%].
 
 Name             : Celestial Conduit (id=443028) [Spell Family (53)] 
 Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
@@ -20545,7 +20547,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=1160721)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 26 | Target: Self (1)
-Description      : $?c2[The August Celestials empower you, causing you to radiate ${$443039s1*$s7} healing onto up to $s3 injured allies and ${$443038s1*$s7} Nature damage onto enemies within $s6 yds over $d, split evenly among them. Healing and damage increased by $s1% per target, up to ${$s1*$s3}%.]?c3[The August Celestials empower you, causing you to radiate ${$443038s1*$s7} Nature damage onto enemies and ${$443039s1*$s7} healing onto up to $s3 injured allies within $443038A2 yds over $d, split evenly among them. Healing and damage increased by $s1% per enemy struck, up to ${$s1*$s3}%.][]
+Description      : $?c2[The August Celestials empower you, causing you to radiate ${$443039s1*$s7} healing onto up to $s3 injured allies and ${$443038s1*$s7} Nature damage onto enemies within $s6 yds over $d, split evenly among them. Healing and damage increased by $s1% per target, up to ${$s1*$s3}%.][The August Celestials empower you, causing you to radiate ${$443038s1*$s7} Nature damage onto enemies and ${$443039s1*$s7} healing onto up to $s3 injured allies within $443038A2 yds over $d, split evenly among them. Healing and damage increased by $s1% per enemy struck, up to ${$s1*$s3}%.]
 
 You may move while channeling, but casting other healing or damaging spells cancels this effect.
 
@@ -22278,7 +22280,7 @@ Attributes       : ....x... ........ x....... .......x   ........ ........ .....
 Effects          :
 #1 (id=1150538)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc450349
+Description      : $@spelldesc450553
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Jade Walk (id=450553) [Spell Family (53), Passive] 
@@ -26835,12 +26837,12 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Points On Client (268)
 Effects          :
-#1 (id=1180408)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+#1 (id=1180408)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17) | Attributes: Suppress Points Stacking (6)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
                    Family Flags: 32
-#2 (id=1180409)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+#2 (id=1180409)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 800 | Scaled Value: 800 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
                    Family Flags: 32
 Description      : $@spelldesc467316
@@ -26933,5 +26935,31 @@ $offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]
 $low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}
 $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
+
+Name             : Flurry Strikes (id=470670) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Spell Type       : None
+Spell Level      : 1
+Duration         : 30 seconds
+Labels           : 16: Class Spells
+                 : 22: Monk Spells
+                 : 292
+Stacks           : 30 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Points On Client (268)
+Effects          :
+#1 (id=1186195)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc450615
+Tooltip          : Spent $w1 Energy.
 
 

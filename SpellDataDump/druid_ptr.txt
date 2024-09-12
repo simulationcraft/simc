@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.5.56487 thewarwithin-BETA
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56572 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -191,7 +191,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
                  : 741
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2, #4, #5, #6), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Guardian Druid (137010 effect#17), Feral Druid (137011 effect#10), Restoration Druid (137012 effects: #1, #2, #15), Balance Druid (137013 effect#10), Germination (155675 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Overgrowth (203652 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Improved Rejuvenation (231040 effect#1), Photosynthesis (274906 effect#1), Autumn Leaves (287247 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Regenesis (383191 effect#1), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Druid Restoration Class Set 2pc (393639 effect#1), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Druid Restoration 10.1 Class Set 2pc (405516 effect#2), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Power of Nature (428866 effects: #1, #2), Root Network (439888 effects: #1, #2), Strategic Infusion (439893 effect#1), Wildstalker's Power (439926 effect#3), Lore of the Grove (449185 effects: #3, #4), Power of the Forest (455070 effects: #1, #2), Circle of Life and Death (469012 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2, #4, #5, #6), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Guardian Druid (137010 effect#17), Feral Druid (137011 effect#10), Restoration Druid (137012 effects: #1, #2, #15), Balance Druid (137013 effect#10), Germination (155675 effect#1), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #3, #4, #5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Overgrowth (203652 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Improved Rejuvenation (231040 effect#1), Photosynthesis (274906 effect#1), Autumn Leaves (287247 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Regenesis (383191 effect#1), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Druid Restoration Class Set 2pc (393639 effect#1), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Druid Restoration 10.1 Class Set 2pc (405516 effect#2), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Power of Nature (428866 effects: #1, #2), Root Network (439888 effects: #1, #2), Strategic Infusion (439893 effect#1), Wildstalker's Power (439926 effect#3), Lore of the Grove (449185 effects: #3, #4), Power of the Forest (455070 effects: #1, #2), Circle of Life and Death (469012 effects: #2, #4)
 Family Flags     : 4, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
@@ -1055,7 +1055,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 741
                  : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1), Devout Spirit (319919 effect#1)
-Affecting spells : Cat Form (3025 effect#4), Incarnation: Tree of Life (5420 effects: #1, #2), Clearcasting (16870 effects: #1, #2), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Predatory Swiftness (69369 effects: #1, #2, #3), Incarnation: Tree of Life (81097 effect#1), Ironbark (102342 effect#2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Nature's Swiftness (132158 effects: #1, #2, #3, #4), Guardian Druid (137010 effects: #3, #4), Feral Druid (137011 effects: #12, #13), Restoration Druid (137012 effects: #1, #2, #13, #14), Balance Druid (137013 effects: #4, #5, #6), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Abundance (207640 effects: #1, #2), Essence of G'Hanir (208253 effect#1), Power of Elune, the Moon Goddess (208284 effects: #2, #3), Ekowraith, Creator of Worlds (210667 effect#1), Temporal Shift (225766 effect#2), Photosynthesis (274906 effect#1), Rampant Growth (278515 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Dream of Cenarius (372152 effects: #1, #2, #3, #4, #5), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Rampant Growth (404521 effect#1), Druid Restoration 10.1 Class Set 2pc (405516 effect#3), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Grove's Inspiration (429402 effects: #2, #3), Blooming Infusion (429438 effect#1), Root Network (439888 effects: #1, #2), Strategic Infusion (439893 effect#1), Harmonious Constitution (440116 effect#1), Thriving Vegetation (447131 effect#2), Druid Restoration 11.0 Class Set 2pc (453669 effects: #1, #2), Power of the Forest (455070 effects: #1, #2), Circle of Life and Death (469012 effects: #2, #4)
+Affecting spells : Cat Form (3025 effect#4), Incarnation: Tree of Life (5420 effects: #1, #2), Clearcasting (16870 effects: #1, #2), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Predatory Swiftness (69369 effects: #1, #2, #3), Incarnation: Tree of Life (81097 effect#1), Ironbark (102342 effect#2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Nature's Swiftness (132158 effects: #1, #2, #3, #4), Guardian Druid (137010 effects: #3, #4), Feral Druid (137011 effects: #12, #13), Restoration Druid (137012 effects: #1, #2, #13, #14), Balance Druid (137013 effects: #4, #5, #6), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Abundance (207640 effects: #1, #2, #3), Essence of G'Hanir (208253 effect#1), Power of Elune, the Moon Goddess (208284 effects: #2, #3), Ekowraith, Creator of Worlds (210667 effect#1), Temporal Shift (225766 effect#2), Photosynthesis (274906 effect#1), Rampant Growth (278515 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Dream of Cenarius (372152 effects: #1, #2, #3, #4, #5), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Rampant Growth (404521 effect#1), Druid Restoration 10.1 Class Set 2pc (405516 effect#3), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Grove's Inspiration (429402 effects: #2, #3), Blooming Infusion (429438 effect#1), Root Network (439888 effects: #1, #2), Strategic Infusion (439893 effect#1), Harmonious Constitution (440116 effect#1), Thriving Vegetation (447131 effect#2), Druid Restoration 11.0 Class Set 2pc (453669 effects: #1, #2), Power of the Forest (455070 effects: #1, #2), Circle of Life and Death (469012 effects: #2, #4)
 Triggered by     : Dream of Cenarius (372152)
 Family Flags     : 6, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -1327,7 +1327,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 741
 Stance Mask      : 0x00000002
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Guardian Druid (137010 effect#16), Feral Druid (137011 effect#9), Restoration Druid (137012 effects: #1, #2, #29), Balance Druid (137013 effect#9), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Photosynthesis (274906 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4, #5), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4, #5), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Grove's Inspiration (429402 effects: #2, #3), Root Network (439888 effects: #1, #2), Druid Restoration 11.0 Class Set 2pc (453669 effects: #1, #2), Power of the Forest (455070 effects: #1, #2), Circle of Life and Death (469012 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Guardian Druid (137010 effect#16), Feral Druid (137011 effect#9), Restoration Druid (137012 effects: #1, #2, #29), Balance Druid (137013 effect#9), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #2, #4), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Photosynthesis (274906 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4, #5), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4, #5), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Grove's Inspiration (429402 effects: #2, #3), Root Network (439888 effects: #1, #2), Druid Restoration 11.0 Class Set 2pc (453669 effects: #1, #2), Power of the Forest (455070 effects: #1, #2), Circle of Life and Death (469012 effects: #2, #4)
 Family Flags     : 33, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2075,7 +2075,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
 Category Cooldown: 10 seconds
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Guardian Druid (137010 effect#17), Feral Druid (137011 effect#10), Restoration Druid (137012 effects: #1, #2, #22), Balance Druid (137013 effect#10), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Overgrowth (203652 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Photosynthesis (274906 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Improved Wild Growth (328025 effect#1), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Druid Restoration Class Set 2pc (393639 effect#1), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Grove's Inspiration (429402 effects: #2, #3), Root Network (439888 effects: #1, #2), Strategic Infusion (439893 effect#1), Lore of the Grove (449185 effects: #3, #4), Druid Restoration 11.0 Class Set 2pc (453669 effects: #1, #2), Power of the Forest (455070 effects: #1, #2), Circle of Life and Death (469012 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Guardian Druid (137010 effect#17), Feral Druid (137011 effect#10), Restoration Druid (137012 effects: #1, #2, #22), Balance Druid (137013 effect#10), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #5, #6), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Overgrowth (203652 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Photosynthesis (274906 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Improved Wild Growth (328025 effect#1), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Druid Restoration Class Set 2pc (393639 effect#1), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Grove's Inspiration (429402 effects: #2, #3), Root Network (439888 effects: #1, #2), Strategic Infusion (439893 effect#1), Lore of the Grove (449185 effects: #3, #4), Druid Restoration 11.0 Class Set 2pc (453669 effects: #1, #2), Power of the Forest (455070 effects: #1, #2), Circle of Life and Death (469012 effects: #2, #4)
 Family Flags     : 58, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   .......x ........ ........ ........ 
@@ -2477,7 +2477,7 @@ Tooltip          : Berserk. $?a377623[Haste increased by $s4%. ][]$?a343240|(a34
 Immune to effects that cause loss of control of your character.][]
 
 Name             : Nourish (id=50464) [Spell Family (7)] 
-Talent Entry     : Restoration [tree=spec, row=6, col=2, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Restoration [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -3692,7 +3692,7 @@ Allies protected by your Ironbark also receive $392116s1% of the healing from ea
 Tooltip          : All damage taken is reduced by $w1%$?<$w2>0>[ and healing over time from $@auracaster increased by $w2%][].
 
 Name             : Cenarion Ward (id=102351) [Spell Family (7)] 
-Talent Entry     : Restoration [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Restoration [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=200]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -3708,7 +3708,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.x .x.x.... .......x   ........ ........ ........ ........   
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting spells : Bear Form (5487 effect#8), Ironbark (102342 effect#2), Druid (137009 effect#4), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Adaptive Swarm (325748 effect#2), Adaptive Swarm (391891 effect#2), Tenacious Flourishing (408546 effect#1), Strategic Infusion (439893 effect#1)
+Affecting spells : Bear Form (5487 effect#8), Ironbark (102342 effect#2), Druid (137009 effect#4), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Adaptive Swarm (325748 effect#2), Adaptive Swarm (391891 effect#2), Tenacious Flourishing (408546 effect#1), Strategic Infusion (439893 effect#1), Wildwood Roots (470549 effects: #2, #3)
 Family Flags     : 106
 Attributes       : ....x... ...x.... x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
@@ -3736,7 +3736,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
                  : 741
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Bear Form (5487 effect#8), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Druid (137009 effect#4), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Photosynthesis (274906 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Root Network (439888 effects: #1, #2), Strategic Infusion (439893 effect#1), Power of the Forest (455070 effects: #1, #2), Circle of Life and Death (469012 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Bear Form (5487 effect#8), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Druid (137009 effect#4), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Photosynthesis (274906 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Root Network (439888 effects: #1, #2), Strategic Infusion (439893 effect#1), Power of the Forest (455070 effects: #1, #2), Circle of Life and Death (469012 effects: #2, #4), Wildwood Roots (470549 effects: #2, #3)
 Triggered by     : Cenarion Ward (102351)
 Family Flags     : 106, 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3750,7 +3750,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Ignore Line of Sight (66), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Not In Spellbook (143), Aura Never Bounces (148), Extra Initial Period (169), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=111087)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.94800 | PvP Coefficient: 1.00000 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.94800 | PvP Coefficient: 0.80000 | Target: Friendly (21)
 Description      : Heals the target for $m1 every $t1 sec for $d.
 Tooltip          : Heals $w1 damage every $t1 seconds.
 
@@ -4152,7 +4152,7 @@ Lasts $d. You may shapeshift in and out of this improved Moonkin Form for its du
 Tooltip          : Both Eclipses active. $?a429536[Arcane damage increased by $w6%, haste][Haste] increased by $w1% and critical strike chance by $w2%.
 
 Name             : Grove Guardians (id=102693) [Spell Family (7)] 
-Talent Entry     : Restoration [tree=spec, row=6, col=2, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Restoration [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -4770,10 +4770,10 @@ Effects          :
 Description      : Physical damage and Armor increased by $s1%.
 
 Name             : Omen of Clarity (id=113043) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=2, col=3, max_rank=1, req_points=0]
-Class            : Druid
+Class            : Restoration Druid
 School           : Physical
 Spell Type       : Magic
+Spell Level      : 12
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -5196,7 +5196,8 @@ Class            : Druid
 School           : Physical
 Spell Type       : Magic
 Duration         : Aura (infinite)
-Cooldown         : 60 seconds
+Charges          : 1 (60 seconds cooldown)
+Category         : 2336: Passing Seasons (382550 effect#1), Twinleaf (470540 effect#1)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -5204,7 +5205,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........   ........ ........ ........ ........   
                  : Magic Heal, Magic Hostile Spell
-Affecting spells : Starfall (191034 effect#2), Ailuro Pouncers (208209 effect#1), Ready for Anything (340550 effect#1), Passing Seasons (382550 effect#1), Nature's Splendor (392288 effect#1)
+Affecting spells : Starfall (191034 effect#2), Ailuro Pouncers (208209 effect#1), Ready for Anything (340550 effect#1), Nature's Splendor (392288 effect#1)
 Family Flags     : 51
 Attributes       : ........ ........ ..x..... .x......   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
@@ -5221,7 +5222,7 @@ Effects          :
                    Affected Spells: Entangling Roots (339), Regrowth (8936), Rebirth (20484)
                    Family Flags: 6, 9, 28
 #2 (id=170812)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.60000 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
 #3 (id=170813)   : Apply Aura (6) | Modify Stance Mask (275)
@@ -6220,7 +6221,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 741
 Stance Mask      : 0x00000002
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2, #4, #5, #6), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Guardian Druid (137010 effect#17), Feral Druid (137011 effect#10), Restoration Druid (137012 effects: #1, #2, #15), Balance Druid (137013 effect#10), Germination (155675 effect#1), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Overgrowth (203652 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Improved Rejuvenation (231040 effect#1), Photosynthesis (274906 effect#1), Autumn Leaves (287247 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Regenesis (383191 effect#1), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Druid Restoration Class Set 2pc (393639 effect#1), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Druid Restoration 10.1 Class Set 2pc (405516 effect#2), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Power of Nature (428866 effects: #1, #2), Root Network (439888 effects: #1, #2), Strategic Infusion (439893 effect#1), Wildstalker's Power (439926 effect#3), Lore of the Grove (449185 effects: #3, #4), Power of the Forest (455070 effects: #1, #2), Circle of Life and Death (469012 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2, #4, #5, #6), Bear Form (5487 effect#8), Nimble Healing Touch (24542 effect#2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Ironbark (102342 effect#2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Guardian Druid (137010 effect#17), Feral Druid (137011 effect#10), Restoration Druid (137012 effects: #1, #2, #15), Balance Druid (137013 effect#10), Germination (155675 effect#1), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #3, #4, #5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Overgrowth (203652 effect#1), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Improved Rejuvenation (231040 effect#1), Photosynthesis (274906 effect#1), Autumn Leaves (287247 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Regenesis (383191 effect#1), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Druid Restoration Class Set 2pc (393639 effect#1), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Druid Restoration 10.1 Class Set 2pc (405516 effect#2), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Power of Nature (428866 effects: #1, #2), Root Network (439888 effects: #1, #2), Strategic Infusion (439893 effect#1), Wildstalker's Power (439926 effect#3), Lore of the Grove (449185 effects: #3, #4), Power of the Forest (455070 effects: #1, #2), Circle of Life and Death (469012 effects: #2, #4)
 Family Flags     : 4, 118
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ......x.   .......x ........ ........ ........ 
@@ -6500,10 +6501,14 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Log (8), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=221552)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1144889)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While Heart of the Wild is active, Wrath and Shred transfer $s1% of their damage and Starfire and Swipe transfer $s2% of their damage into healing onto a nearby ally.
+                   Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1185835)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Wrath and Shred transfer $s1% of their damage and Starfire and Swipe transfer $s2% of their damage into healing onto a nearby ally. 
+
+This effect is increased by $s3% while Heart of the Wild is active.
 
 Name             : Thrash (id=158723) 
 Class            : Druid
@@ -7375,7 +7380,7 @@ Description      : Celestial bodies align, maintaining both Eclipses and grantin
 Tooltip          : Both Eclipses active. Haste increased by $w1%.
 
 Name             : Stonebark (id=197061) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Restoration [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=100]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -7399,7 +7404,7 @@ Effects          :
 Description      : Ironbark increases healing from your heal over time effects by $s1%.
 
 Name             : Inner Peace (id=197073) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Restoration [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -7527,6 +7532,60 @@ You also learn:
 $@spellicon77758 $@spellname77758
 $@spellicon22842 $@spellname22842
 $@spellicon99 $@spellname99
+
+Name             : Restoration Affinity (id=197492) [Spell Family (7), Passive] 
+Class            : Druid
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Labels           : 16: Class Spells
+                 : 21: Druid Spells
+                 : 292
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=290150)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=327252)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: 125 | Scaled Value: 125 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Swiftmend (18562), Swiftmend (422094)
+                   Family Flags: 33
+#3 (id=327253)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Rejuvenation (774), Rejuvenation (Germination) (155777)
+                   Family Flags: 4
+#4 (id=328242)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 96 | Scaled Value: 96 | PvP Coefficient: 0.40000 | Target: Self (1)
+                   Affected Spells: Rejuvenation (774), Swiftmend (18562), Rejuvenation (Germination) (155777), Swiftmend (422094)
+                   Family Flags: 4, 33
+#5 (id=344347)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 96 | Scaled Value: 96 | PvP Coefficient: 0.40000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Rejuvenation (774), Wild Growth (48438), Rejuvenation (Germination) (155777)
+                   Family Flags: 4, 58
+#6 (id=724344)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Wild Growth (48438)
+                   Family Flags: 58
+#7 (id=810217)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 108294 | Scaled Value: 108294 | PvP Coefficient: 1.00000 | Misc Value: 319454 | Target: Self (1)
+Description      : You gain:
+
+$@spellicon145108 $@spellname145108
+$@spelldesc145108
+
+You also learn:
+
+$@spellicon774 $@spellname774
+$@spellicon18562 $@spellname18562
+$@spellicon48438 $@spellname48438
+$@spellicon102793$@spellname102793
 
 Name             : Astral Influence (id=197524) [Spell Family (7), Passive] 
 Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
@@ -7908,7 +7967,7 @@ Description      : $@spelldesc200390
 Tooltip          : Heals $w1 damage every $t1 seconds.
 
 Name             : Cultivation (id=200390) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Restoration [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -8217,7 +8276,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Affecting spells : Starfall (191034 effect#2), Circle of Life and Death (338657 effect#1), Solstice (343648 effect#1), Circle of Life and Death (391969 effect#1), Cosmic Rapidity (400059 effect#1), Circle of Life and Death (400320 effects: #1, #3), Liveliness (426702 effect#1)
+Affecting spells : Starfall (191034 effect#2), Circle of Life and Death (338657 effect#1), Solstice (343648 effect#1), Circle of Life and Death (391969 effect#1), Cosmic Rapidity (400059 effect#1), Circle of Life and Death (400320 effects: #1, #3), Liveliness (426702 effect#1), Circle of Life and Death (469012 effect#1)
 Family Flags     : 124
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9011,7 +9070,7 @@ Description      : Summons a stand of $s1 Treants for $248280d which immediately
 Tooltip          : Granting ${$s5/10*$d} Astral Power over $d.
 
 Name             : Abundance (id=207383) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=4, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Restoration [tree=spec, row=3, col=4, max_rank=1, req_points=0, select_idx=100]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -9092,6 +9151,7 @@ Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
+                 : 4115: Wildwood Roots (470549 effect#1)
 Stacks           : 12 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ..x..... x..x...x   ........ ..x..... ........ ........ 
@@ -9112,8 +9172,14 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
+#3 (id=1185951)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cast Time (10)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Regrowth (8936)
+                   Family Flags: 6
 Description      : $@spelldesc207383
-Tooltip          : Regrowth cost reduced by $s1% and critical effect chance increased by $s2%.
+Tooltip          : Regrowth cost reduced by $s1% and critical effect chance increased by $s2%.$?a470549[
+
+Regrowth's cast time is reduced by $w3%.][]
 
 Name             : Essence of G'Hanir (desc=Artifact) (id=208253) [Spell Family (7)] 
 Class            : Druid
@@ -10583,6 +10649,7 @@ Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
 Max Scaling Level: 80
+Min Scaling Level: 1
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -12791,7 +12858,7 @@ Effects          :
 Description      : Barkskin's duration is increased by ${$s1/1000} sec.
 
 Name             : Improved Wild Growth (id=328025) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Restoration [tree=spec, row=6, col=6, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -16980,14 +17047,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Not In Spellbook (143)
 Effects          :
-#1 (id=1013940)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -12000 | Scaled Value: -12000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Nature's Swiftness (132158)
-                   Family Flags: 51
+#1 (id=1013940)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -12000 | Scaled Value: -12000 | PvP Coefficient: 1.00000 | Misc Value: 2336 | Target: Self (1)
+                   Affected Spells (Category): Nature's Swiftness (132158)
 Description      : Nature's Swiftness's cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Improved Ironbark (id=382552) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Restoration [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=200]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -17971,7 +18037,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1164302)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Ferocious Bite also deals $391710s1 damage per combo point spent to all nearby enemies affected by your Rip. Spending extra Energy on Ferocious Bite increases damage dealt by up to $s2%. Damage increased by Lion's Strength and Bloodtalons. Damage reduced beyond $s1 $Ltarget:targets;.
+Description      : Ferocious Bite also deals $391710s1 damage per combo point spent to all nearby enemies affect by your Rip. Spending extra Energy on Ferocious Bite increases damage dealt by up to $s2%. Damage reduced beyond $s1 $Ltarget:targets;.
 
 Name             : Rampant Ferocity (id=391710) [Spell Family (7)] 
 Class            : Druid
@@ -18554,7 +18620,7 @@ Effects          :
 Description      : Rip, Rake, and Thrash last $s1% longer.
 
 Name             : Nurturing Dormancy (id=392099) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=9, col=7, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=9, col=8, max_rank=1, req_points=20]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -18778,7 +18844,7 @@ Effects          :
 Description      : Refreshes the duration of your active Lifebloom and Rejuvenation effects on the target and causes them to complete $s1% faster.
 
 Name             : Dreamstate (id=392162) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=300]
+Talent Entry     : Restoration [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=300]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -18859,7 +18925,7 @@ Effects          :
 Description      : $@spelldesc392167
 
 Name             : Flash of Clarity (id=392220) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Talent Entry     : Restoration [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -18930,8 +18996,7 @@ Effects          :
 Description      : $@spelldesc392221
 
 Name             : Harmonious Blooming (id=392256) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=7, col=5, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(1, 2)]
+Talent Entry     : Restoration [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -18949,7 +19014,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1030319)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Lifebloom counts for ${$s1+1} stacks of Mastery: Harmony.
 
 Name             : Nature's Splendor (id=392288) [Spell Family (7), Passive] 
@@ -21324,7 +21389,7 @@ Description      : $@spelldesc371905
 Tooltip          : You will trigger a burst of restorative energy after spending $w1 more Rage.
 
 Name             : Tranquil Mind (id=403521) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Restoration [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -22131,6 +22196,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 100
+Min Scaling Level: 1
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 118
@@ -22154,6 +22220,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 100
+Min Scaling Level: 1
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 118
@@ -22178,6 +22245,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 100
+Min Scaling Level: 1
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 118
@@ -22578,7 +22646,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
                  : 741
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Guardian Druid (137010 effect#16), Feral Druid (137011 effect#9), Restoration Druid (137012 effects: #1, #2, #29), Balance Druid (137013 effect#9), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Photosynthesis (274906 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4, #5), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4, #5), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Grove's Inspiration (429402 effects: #2, #3), Root Network (439888 effects: #1, #2), Druid Restoration 11.0 Class Set 2pc (453669 effects: #1, #2), Power of the Forest (455070 effects: #1, #2), Circle of Life and Death (469012 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Nurturing Instinct (33873 effects: #1, #2), Blessing of Lower City (37878 effect#1), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Guardian Druid (137010 effect#16), Feral Druid (137011 effect#9), Restoration Druid (137012 effects: #1, #2, #29), Balance Druid (137013 effect#9), Starfall (191034 effect#2), Restoration Affinity (197492 effects: #2, #4), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Photosynthesis (274906 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4, #5), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4, #5), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Grove's Inspiration (429402 effects: #2, #3), Root Network (439888 effects: #1, #2), Druid Restoration 11.0 Class Set 2pc (453669 effects: #1, #2), Power of the Forest (455070 effects: #1, #2), Circle of Life and Death (469012 effects: #2, #4)
 Family Flags     : 33, 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -23688,7 +23756,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 741
                  : 3022
-Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Bear Form (5487 effect#8), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Druid (137009 effect#4), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Photosynthesis (274906 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Root Network (439888 effects: #1, #2), Strategic Infusion (439893 effect#1), Power of the Forest (455070 effects: #1, #2), Circle of Life and Death (469012 effects: #2, #4)
+Affecting spells : Incarnation: Tree of Life (5420 effects: #1, #2), Bear Form (5487 effect#8), Nurturing Instinct (33873 effects: #1, #2), Ironbark (102342 effect#2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108294 effects: #1, #2), Druid (137009 effect#4), Restoration Druid (137012 effects: #1, #2), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Photosynthesis (274906 effect#1), Heart of the Wild (319454 effects: #10, #11), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Adaptive Swarm (325748 effect#2), Circle of Life and Death (338657 effects: #2, #4), Ravenous Frenzy (355315 effects: #1, #4), Convoke the Spirits (391528 effects: #3, #4), Adaptive Swarm (391891 effect#2), Circle of Life and Death (391969 effects: #2, #4), Waning Twilight (393957 effect#2), Circle of Life and Death (400320 effects: #2, #4), Tenacious Flourishing (408546 effect#1), Blossoming Infusion (408571 effect#1), Initial Druid (417382 effects: #3, #4), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#2), Harmony of the Grove (428737 effects: #1, #2), Root Network (439888 effects: #1, #2), Strategic Infusion (439893 effect#1), Power of the Forest (455070 effects: #1, #2), Circle of Life and Death (469012 effects: #2, #4), Wildwood Roots (470549 effects: #2, #3)
 Family Flags     : 106, 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... x....... ........ ........   .......x ........ ........ ........ 
@@ -25424,7 +25492,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), No Level Up Toast (281), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1136153)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.88800 | PvP Coefficient: 0.60000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.55000 | PvP Coefficient: 0.60000 | Target: Enemy (6)
 #2 (id=1136154)  : Power Burn (62)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
 #3 (id=1137019)  : School Damage (2): physical
@@ -27213,7 +27281,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1157953)  : Apply Aura (6) | Proc Trigger Spell (42): Tiger's Strength
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 454943 | Target: Self (1)
-Description      : Tiger's Fury increases your chance to Critically Strike for $454943d, starting at $454943s1% and increasing by $s1% every $454943t2 sec.
+Description      : Tiger's Fury increases your chance to Critically Strike for $454943d, starting at $454943s1% and increasing by ${$s1}.1% every $454943t2 sec.
 
 Name             : Druid Feral 11.0 Class Set 4pc (id=454839) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -27968,8 +28036,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1183081)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
-                   Affected Spells: Moonfire (164812), Sunfire (164815), Starfall (191034), Stellar Flare (202347)
-                   Family Flags: 92, 105, 119, 127
+                   Affected Spells: Moonfire (164812), Sunfire (164815), Starfall (191034), Shooting Stars (202342), Stellar Flare (202347)
+                   Family Flags: 92, 105, 119, 124, 127
 #2 (id=1183082)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Early Harvest (287255), Adaptive Swarm (325748), Renewing Bloom (364686), Ephemeral Profusion (367330), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Nourish (422090), Swiftmend (422094), Wild Growth (422382), Nourish (423618), Minor Cenarion Ward (429222), Dream Bloom (434141), Symbiotic Blooms (439530), Bursting Growth (440121), Reactive Resin (468152)
@@ -27992,5 +28060,108 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 4084 (Label) | Target: Self (1)
                    Affected Spells (Label): Aetherial Kindling (327541)
 Description      : Moonfire, Sunfire, Stellar Flare, and Starfall deal their damage in $s1% less time, and your healing over time effects in $s2% less time.
+
+Name             : Twinleaf (id=470540) [Spell Family (7), Passive] 
+Talent Entry     : Restoration [tree=spec, row=3, col=3, max_rank=1, req_points=0]
+Class            : Druid
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 21: Druid Spells
+                 : 292
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143)
+Effects          :
+#1 (id=1185935)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 2336 | Target: Self (1)
+                   Affected Spells (Category): Nature's Swiftness (132158)
+Description      : Nature's Swiftness now has ${$s1+1} charges.
+
+Name             : Wildwood Roots (id=470549) [Spell Family (7), Passive] 
+Talent Entry     : Restoration [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Class            : Druid
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 21: Druid Spells
+                 : 292
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143)
+Effects          :
+#1 (id=1185949)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 4115 (Label) | Target: Self (1)
+                   Affected Spells (Label): Abundance (207640)
+#2 (id=1185961)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -10000 | Scaled Value: -10000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Cenarion Ward (102351), Cenarion Ward (102352), Minor Cenarion Ward (429222)
+                   Family Flags: 106
+#3 (id=1185962)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Cenarion Ward (102351), Cenarion Ward (102352), Minor Cenarion Ward (429222)
+                   Family Flags: 106
+Description      : Abundance now also reduces the cast time of Regrowth by $s1% per stack.
+
+Cenarion Ward's cooldown is reduced by ${$s2/-1000} sec and its duration is increased by ${$s3/1000} sec.
+
+Name             : Renewing Surge (id=470562) [Spell Family (7), Passive] 
+Talent Entry     : Restoration [tree=spec, row=6, col=2, max_rank=1, req_points=8]
+Class            : Druid
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 21: Druid Spells
+                 : 292
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143)
+Effects          :
+#1 (id=1185972)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.75000 | Target: Self (1)
+Description      : The cooldown of Swiftmend is reduced by up to $s1%, based on the current health of the target. Cooldown is reduced more when cast on a lower health target.
+
+Name             : Forest's Flow (id=470581) [Spell Family (7), Passive] 
+Talent Entry     : Restoration [tree=spec, row=9, col=7, max_rank=1, req_points=20]
+Class            : Druid
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 21: Druid Spells
+                 : 292
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Not In Spellbook (143)
+Effects          :
+#1 (id=1185997)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : Consuming Clearcasting now causes your Regrowth to also cast Nourish onto a nearby injured ally at $s1% effectiveness, preferring those with your heal over time effects.
+
+$@spellicon50464 $@spellname50464:
+$@spelldesc50464
 
 

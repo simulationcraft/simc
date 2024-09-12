@@ -1,4 +1,4 @@
-SimulationCraft 1100-01 for World of Warcraft 11.0.5.56487 thewarwithin-BETA
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56572 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -2607,7 +2607,7 @@ Effects          :
 #3 (id=1173872)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3545 (Label) | Target: Self (1)
                    Affected Spells (Label): Soul Anathema (450538)
-Description      : Increases damage done by Malefic Rapture, Agony, Corruption,$?s63106[ Siphon Life,][]$?s205179[ Phantom Singularity,][]$?s278350[ Vile Taint,][]$?s386997[ Soul Rot,][] Unstable Affliction, and Seed of Corruption by ${$77215s1}.1%.
+Description      : Increases damage done by Malefic Rapture, Agony, $?s445465[Wither][Corruption],$?s63106[ Siphon Life,][]$?s205179[ Phantom Singularity,][]$?s278350[ Vile Taint,][]$?s386997[ Soul Rot,][] Unstable Affliction, and Seed of Corruption by ${$77215s1}.1%.
 
 Name             : Mastery: Master Demonologist (id=77219) [Spell Family (5), Passive] 
 Class            : Demonology Warlock
@@ -2737,7 +2737,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Succulent Soul (449793 effects: #2, #3), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 86
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   x....... .x...... ........ ......x. 
@@ -5641,7 +5641,7 @@ Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Affecting spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Flames of Xoroth (429657 effects: #1, #2), Succulent Soul (449793 effects: #2, #3)
+Affecting spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Flames of Xoroth (429657 effects: #1, #2)
 Family Flags     : 86
 Attributes       : ........ x....... .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ ........ ........ ........ 
@@ -7071,7 +7071,7 @@ Duration         : 120 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Flames of Xoroth (429657 effects: #1, #2), Succulent Soul (449793 effects: #2, #3)
+Affecting spells : Norgannon's Foresight (236431 effect#1), Wicked Maw (270569 effect#1), Demonic Meteor (278737 effect#1), Flames of Xoroth (429657 effects: #1, #2)
 Family Flags     : 86
 Attributes       : ........ x....... .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ ........ ........ ........ 
@@ -7764,6 +7764,7 @@ Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
 Max Scaling Level: 80
+Min Scaling Level: 1
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -19391,8 +19392,8 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
+Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
+                 : Magic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -19826,6 +19827,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
+Internal Cooldown: 0.5 seconds
 Proc Chance      : 101%
 Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
                  : Cast Successful
@@ -20871,12 +20873,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1149324)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Hand of Gul'dan (86040), Hand of Gul'dan (196282), Totem Mastery (226772), Malefic Rapture (324540), Malefic Touch (458131)
-                   Family Flags: 73, 86
-#3 (id=1149325)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+                   Affected Spells: Malefic Rapture (324540), Malefic Touch (458131)
+                   Family Flags: 73
+#3 (id=1149325)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Hand of Gul'dan (86040), Hand of Gul'dan (196282), Totem Mastery (226772)
-                   Family Flags: 86
 #4 (id=1149326)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 Description      : $@spelldesc449614
@@ -23654,5 +23654,54 @@ Effects          :
 #1 (id=1176481)  : School Damage (2): shadowflame | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0.264 | Scaled Value: 0.264 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc196277
+
+Name             : Diabolic Ritual (id=470479) [Spell Family (5), Hidden] 
+Class            : Warlock
+School           : Shadow
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Attributes       : .......x ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Remove Entering Arena (162)
+Effects          :
+#1 (id=1185772)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc428514
+
+Name             : Wicked Throw (id=470489) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadowflame
+Spell Type       : None
+Range            : 100 yards
+Cast Time        : 1 seconds
+Velocity         : 30 yards/sec
+Cooldown         : 1 seconds
+Labels           : 16: Class Spells
+                 : 19: Warlock Spells
+                 : 292
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Ignore Line of Sight (66)
+Effects          :
+#1 (id=1185791)  : Trigger Missiles (32)
+                   Base Value: 432120 | Scaled Value: 432120 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Unknown(87) -> At Enemy in Area (16)
+Description      : $@spelldesc428514
 
 

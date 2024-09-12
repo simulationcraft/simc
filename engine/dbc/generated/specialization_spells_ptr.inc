@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 11.0.5.56487
-static const std::array<specialization_spell_entry_t, 506> __ptr_specialization_spell_data { {
+// Talent tree specialization abilities, wow build 11.0.5.56572
+static const std::array<specialization_spell_entry_t, 507> __ptr_specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -426,6 +426,7 @@ static const std::array<specialization_spell_entry_t, 506> __ptr_specialization_
   { 11,  105,  77495,      0, "Mastery: Harmony"                  , 0 },
   { 11,  105,  86093,      0, "Leather Specialization"            , 0 },
   { 11,  105,  88423, 440015, "Nature's Cure"                     , 0 },
+  { 11,  105, 113043,      0, "Omen of Clarity"                   , 0 },
   { 11,  105, 137012,      0, "Restoration Druid"                 , 0 },
   { 11,  105, 162701,      0, "Stat Negation Aura - Intellect Healer", 0 },
   { 11,  105, 197490,      0, "Feral Affinity"                    , 0 },
