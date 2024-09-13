@@ -12,7 +12,7 @@ potion=tempered_potion_3
 flask=flask_of_alchemical_chaos_3
 food=feast_of_the_divine_day
 augmentation=crystallized
-temporary_enchant=main_hand:oil_of_deep_toxins_3
+temporary_enchant=main_hand:algari_mana_oil_3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -203,8 +203,8 @@ off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/11144/10222/1485/113
 # gear_ilvl=638.63
 # gear_stamina=236689
 # gear_intellect=45357
-# gear_crit_rating=9770
-# gear_haste_rating=19271
+# gear_crit_rating=10002
+# gear_haste_rating=19503
 # gear_mastery_rating=7585
 # gear_versatility_rating=3265
 # gear_leech_rating=1020

@@ -13,7 +13,7 @@ potion=tempered_potion_3
 flask=flask_of_alchemical_chaos_3
 food=feast_of_the_divine_day
 augmentation=crystallized
-temporary_enchant=main_hand:oil_of_deep_toxins_3
+temporary_enchant=main_hand:algari_mana_oil_3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -210,8 +210,8 @@ off_hand=broodtwisters_grim_catalyst,id=212387,bonus_id=1540/10299/10376
 # gear_ilvl=638.63
 # gear_stamina=236446
 # gear_intellect=45439
-# gear_crit_rating=12400
-# gear_haste_rating=10181
+# gear_crit_rating=12632
+# gear_haste_rating=10413
 # gear_mastery_rating=8358
 # gear_versatility_rating=8947
 # gear_speed_rating=1000
