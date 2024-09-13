@@ -1009,7 +1009,7 @@ util::span<const effect_subtype_t> dbc::effect_category_subtypes()
     A_MOD_RECHARGE_TIME_CATEGORY,
     A_MOD_RECHARGE_TIME_PCT_CATEGORY,
     A_HASTED_CATEGORY,
-    A_MOD_RECHARGE_RATE_CATEGORY,
+    A_MOD_CHARGE_RECHARGE_RATE,
   };
   return util::make_span( subtypes );
 }
