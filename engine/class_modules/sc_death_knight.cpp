@@ -4414,6 +4414,7 @@ struct abomination_pet_t : public death_knight_pet_t
       background    = true;
       aoe           = 0;
       impact_action = dk()->active_spells.virulent_plague;
+      harmful       = false;
     }
   };
 
