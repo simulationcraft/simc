@@ -4357,6 +4357,48 @@ void wildfire_wick( special_effect_t& effect )
     } );
 }
 
+// 455452 equip
+// 455464 counter buff
+// 455467 on-use
+void kaheti_shadeweavers_emblem( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs( effect, { "kaheti_shadeweavers_dark_ritual" } ) )
+    return;
+
+  struct kaheti_shadeweavers_emblem_t : public generic_proc_t
+  {
+    buff_t* counter;
+
+    kaheti_shadeweavers_emblem_t( const special_effect_t& e )
+      : generic_proc_t( e, "kaheti_shadeweavers_emblem", 455467 )
+    {
+      base_multiplier *= role_mult( e );
+
+      unsigned equip_id = 455452;
+      auto equip = find_special_effect( e.player, equip_id );
+      assert( equip && "Kaheti Shadeweaver's Emblem missing equip effect" );
+
+      counter = create_buff<buff_t>( e.player, equip->trigger() );
+      equip->custom_buff = counter;
+
+      new dbc_proc_callback_t( e.player, *equip );
+    }
+
+    double action_multiplier() const override
+    {
+      return generic_proc_t::action_multiplier() * counter->check();
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      counter->expire();
+    }
+  };
+
+  effect.execute_action = create_proc_action<kaheti_shadeweavers_emblem_t>( "kaheti_shadeweavers_emblem", effect );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -5164,6 +5206,8 @@ void register_special_effects()
   register_special_effect( 455484, items::detachable_fang );
   register_special_effect( 459222, items::scroll_of_momentum );
   register_special_effect( 442429, items::wildfire_wick );
+  register_special_effect( 455467, items::kaheti_shadeweavers_emblem, true );
+  register_special_effect( 455452, DISABLED_EFFECT );  // kaheti shadeweaver's emblem
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
