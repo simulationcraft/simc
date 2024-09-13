@@ -2715,13 +2715,9 @@ struct eye_beam_base_t : public demon_hunter_spell_t
     {
       double m = demon_hunter_spell_t::action_multiplier();
 
-      // 2024-07-07 -- Isolated Prey's effect on Eye Beam does not work on live nor beta
-      if ( p()->talent.havoc.isolated_prey->ok() && !p()->bugs )
+      if ( p()->talent.havoc.isolated_prey->ok() && targets_in_range_list( target_list() ).size() == 1 )
       {
-        if ( targets_in_range_list( target_list() ).size() == 1 )
-        {
-          m *= 1.0 + p()->talent.havoc.isolated_prey->effectN( 2 ).percent();
-        }
+        m *= 1.0 + p()->talent.havoc.isolated_prey->effectN( 2 ).percent();
       }
 
       return m;
