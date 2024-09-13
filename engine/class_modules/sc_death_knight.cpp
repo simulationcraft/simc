@@ -2533,7 +2533,7 @@ std::function<void( death_knight_pet_t* )> parent_pet_action_fn( action_t* paren
         auto it = range::find( parent->child_action, a->name_str, &action_t::name_str );
         if ( it != parent->child_action.end() )
           a->stats = ( *it )->stats;
-        else
+        else if ( a->harmful )
           parent->add_child( a );
       }
     }
@@ -3988,6 +3988,7 @@ struct horseman_pet_t : public death_knight_pet_t
     {
       parse_options( options_str );
       trigger_gcd = 1_s;
+      harmful     = false;
     }
 
     void init_finished() override
