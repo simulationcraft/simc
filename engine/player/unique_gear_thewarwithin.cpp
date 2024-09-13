@@ -4084,7 +4084,8 @@ void shining_arathor_insignia( special_effect_t& effect )
 void quickwick_candlestick( special_effect_t& effect )
 {
   auto buff = create_buff<stat_buff_t>( effect.player, effect.driver(), effect.item )
-    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
+    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
+    ->add_invalidate( CACHE_RUN_SPEED );
 
   effect.player->buffs.quickwicks_quick_trick_wick_walk = buff;
   effect.custom_buff = buff;
@@ -4278,6 +4279,7 @@ void scroll_of_momentum( special_effect_t& effect )
   // setup stacking buff + driver
   auto counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 459224 ) )
     ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
+    ->add_invalidate( CACHE_RUN_SPEED )
     ->set_expire_at_max_stack( true );
 
   effect.player->buffs.building_momentum = counter;
@@ -4288,6 +4290,7 @@ void scroll_of_momentum( special_effect_t& effect )
   // setup max buff
   auto max = create_buff<buff_t>( effect.player, effect.player->find_spell( 459228 ) )
     ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
+    ->add_invalidate( CACHE_RUN_SPEED )
     ->set_stack_change_callback( [ cb ]( buff_t* b, int, int new_ ) {
       if ( new_ )
         cb->deactivate();
