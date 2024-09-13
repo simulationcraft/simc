@@ -3804,7 +3804,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Cast When Learned (63), Allow Aura While Dead (116), Obsolete (364), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=124613)   : Apply Aura (6) | Threat (10)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (250 -> 400)
 Description      : Intimidates any target the Voidwalker attacks, increasing threat generation.
 
 |cFFFFFFFFAuto-Cast:|r
@@ -4440,7 +4441,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow Aura While Dead (116), AutoCast Off By Default (305), Obsolete (364), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=175237)   : Apply Aura (6) | Threat (10)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (250 -> 400)
 Description      : Intimidates any target the Felguard attacks, increasing threat generation.
 
 |cFFFFFFFFAuto-Cast:|r
