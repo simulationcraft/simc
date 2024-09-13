@@ -4330,6 +4330,33 @@ void scroll_of_momentum( special_effect_t& effect )
   damage_cb->activate_with_buff( max );
 }
 
+// 442429 driver
+// 442801 damage
+void wildfire_wick( special_effect_t& effect )
+{
+  auto dot = create_proc_action<generic_proc_t>( "wildfire_wick", effect, effect.trigger() );
+  dot->base_td = effect.driver()->effectN( 1 ).average( effect );
+  dot->base_multiplier *= role_mult( effect.player );  // not found on spell desc
+
+  effect.execute_action = dot;
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  effect.player->callbacks.register_callback_execute_function( effect.driver()->id(),
+    [ p = effect.player ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
+      if ( cb->proc_action->get_dot( s->target )->is_ticking() )
+      {
+        if ( auto tnsl = p->sim->target_non_sleeping_list.data(); tnsl.size() > 1 )  // make a copy
+        {
+          range::erase_remove( tnsl, s->target );
+          cb->proc_action->execute_on_target( tnsl.at( p->rng().range( tnsl.size() ) ) );
+        }
+      }
+
+      cb->proc_action->execute_on_target( s->target );
+    } );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -5136,6 +5163,7 @@ void register_special_effects()
   register_special_effect( 435473, items::everburning_lantern );
   register_special_effect( 455484, items::detachable_fang );
   register_special_effect( 459222, items::scroll_of_momentum );
+  register_special_effect( 442429, items::wildfire_wick );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );
