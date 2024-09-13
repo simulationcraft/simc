@@ -364,7 +364,7 @@ void windwalker( player_t *p )
           "cooldown.invoke_xuen_the_white_tiger.remains>10|fight_remains<10" },
         // TWW Trinkets
         { "imperfect_ascendancy_serum", ",use_off_gcd=1,if=pet.xuen_the_white_tiger.active" },
-        { "treacherous_transmitter", "cooldown.invoke_xuen_the_white_tiger.remains<4|talent.xuens_bond&pet.xuen_the_white_tiger.active" },
+        { "treacherous_transmitter", ",if=cooldown.invoke_xuen_the_white_tiger.remains<4|talent.xuens_bond&pet.xuen_the_white_tiger.active" },
 
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=pet.xuen_the_white_tiger.active" },
