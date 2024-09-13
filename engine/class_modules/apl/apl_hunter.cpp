@@ -253,10 +253,12 @@ void marksmanship( player_t* p )
   st->add_action( "steady_shot,if=talent.steady_focus&buff.steady_focus.down&buff.trueshot.down" );
   st->add_action( "kill_shot" );
   st->add_action( "chimaera_shot,if=buff.precise_shots.up" );
+  st->add_action( "multishot,if=buff.precise_shots.up&active_enemies>1&(talent.symphonic_arsenal|talent.small_game_hunter)" );
   st->add_action( "arcane_shot,if=buff.precise_shots.up" );
   st->add_action( "barrage,if=talent.rapid_fire_barrage" );
   st->add_action( "explosive_shot" );
   st->add_action( "chimaera_shot,if=focus>cost+action.aimed_shot.cost" );
+  st->add_action( "multishot,if=focus>cost+action.aimed_shot.cost&active_enemies>1&(talent.symphonic_arsenal|talent.small_game_hunter)" );
   st->add_action( "arcane_shot,if=focus>cost+action.aimed_shot.cost" );
   st->add_action( "bag_of_tricks,if=buff.trueshot.down" );
   st->add_action( "steady_shot" );
@@ -333,10 +335,12 @@ void marksmanship_ptr( player_t* p )
   st->add_action( "steady_shot,if=talent.steady_focus&buff.steady_focus.down&buff.trueshot.down" );
   st->add_action( "kill_shot" );
   st->add_action( "chimaera_shot,if=buff.precise_shots.up" );
+  st->add_action( "multishot,if=buff.precise_shots.up&active_enemies>1&(talent.symphonic_arsenal|talent.small_game_hunter)" );
   st->add_action( "arcane_shot,if=buff.precise_shots.up" );
   st->add_action( "barrage,if=talent.rapid_fire_barrage" );
   st->add_action( "explosive_shot" );
   st->add_action( "chimaera_shot,if=focus>cost+action.aimed_shot.cost" );
+  st->add_action( "multishot,if=focus>cost+action.aimed_shot.cost&active_enemies>1&(talent.symphonic_arsenal|talent.small_game_hunter)" );
   st->add_action( "arcane_shot,if=focus>cost+action.aimed_shot.cost" );
   st->add_action( "bag_of_tricks,if=buff.trueshot.down" );
   st->add_action( "steady_shot" );

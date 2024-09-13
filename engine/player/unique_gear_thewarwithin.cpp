@@ -4276,6 +4276,9 @@ void detachable_fang( special_effect_t& effect )
 // 459231 damage
 void scroll_of_momentum( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "full_momentum" } ) )
+    return;
+
   // setup stacking buff + driver
   auto counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 459224 ) )
     ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
@@ -5204,7 +5207,7 @@ void register_special_effects()
   register_special_effect( 435493, items::concoction_kiss_of_death );
   register_special_effect( 435473, items::everburning_lantern );
   register_special_effect( 455484, items::detachable_fang );
-  register_special_effect( 459222, items::scroll_of_momentum );
+  register_special_effect( 459222, items::scroll_of_momentum, true );
   register_special_effect( 442429, items::wildfire_wick );
   register_special_effect( 455467, items::kaheti_shadeweavers_emblem, true );
   register_special_effect( 455452, DISABLED_EFFECT );  // kaheti shadeweaver's emblem

@@ -20990,10 +20990,10 @@ Effects          :
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Fists of Fury (113656), Thunder Focus Tea (116680), Life Cocoon (116849), Fists of Fury (120086), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Fists of Fury (232055), Glory of the Dawn (392959), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521), Whirling Dragon Punch (451767)
                    Family Flags: 31, 39, 55, 78, 118, 122
-#3 (id=1139300)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#3 (id=1139300)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Misc Value: 1517 | Target: Self (1)
                    Affected Spells (Category): Renewing Mist (115151)
-#4 (id=1142269)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#4 (id=1142269)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Misc Value: 2198 | Target: Self (1)
                    Affected Spells (Category): Life Cocoon (116849)
 #5 (id=1155443)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
@@ -21004,7 +21004,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Fists of Fury (113656), Fists of Fury (120086), Fists of Fury (232055)
                    Family Flags: 55
-#7 (id=1166052)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#7 (id=1166052)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Misc Value: 2294 | Target: Self (1)
                    Affected Spells (Category): Thunder Focus Tea (116680)
 Description      : $@spelldesc443294
@@ -21405,10 +21405,10 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Fists of Fury (113656), Thunder Focus Tea (116680), Life Cocoon (116849), Fists of Fury (120086), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Fists of Fury (232055), Glory of the Dawn (392959), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521), Whirling Dragon Punch (451767)
                    Family Flags: 31, 39, 55, 78, 118, 122
-#3 (id=1139675)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#3 (id=1139675)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: 1517 | Target: Self (1)
                    Affected Spells (Category): Renewing Mist (115151)
-#4 (id=1142268)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#4 (id=1142268)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: 2198 | Target: Self (1)
                    Affected Spells (Category): Life Cocoon (116849)
 #5 (id=1155445)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
@@ -21419,7 +21419,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Fists of Fury (113656), Fists of Fury (120086), Fists of Fury (232055)
                    Family Flags: 55
-#7 (id=1166053)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#7 (id=1166053)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: 2294 | Target: Self (1)
                    Affected Spells (Category): Thunder Focus Tea (116680)
 Description      : $@spelldesc443294

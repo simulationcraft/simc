@@ -2092,10 +2092,10 @@ struct crystalline_reflection_heal_t final : public priest_heal_t
     spell_power_mod.direct = p.talents.crystalline_reflection->effectN( 3 ).sp_coeff();
   }
 
-  void impact(action_state_t* s) override
+  void impact( action_state_t* s ) override
   {
     priest_heal_t::impact( s );
-    
+
     if ( priest().buffs.twist_of_fate_heal_ally_fake->check() )
     {
       priest().buffs.twist_of_fate->trigger();
@@ -2138,7 +2138,7 @@ struct power_word_shield_t final : public priest_absorb_t
 
     if ( p.talents.crystalline_reflection.enabled() )
     {
-      crystalline_reflection_heal = new crystalline_reflection_heal_t( p );
+      crystalline_reflection_heal   = new crystalline_reflection_heal_t( p );
       crystalline_reflection_damage = new crystalline_reflection_damage_t( p );
 
       add_child( crystalline_reflection_heal );
@@ -3490,7 +3490,7 @@ void priest_t::init_spells()
   talents.voidweaver.entropic_rift_aoe      = find_spell( 450193 );  // Contains AoE radius info
   talents.voidweaver.entropic_rift_damage   = find_spell( 447448 );  // Contains damage coeff
   talents.voidweaver.entropic_rift_driver   = find_spell( 459314 );  // Contains damage coeff
-  talents.voidweaver.entropic_rift_object   = find_spell( 447445 ); // Contains spell radius
+  talents.voidweaver.entropic_rift_object   = find_spell( 447445 );  // Contains spell radius
   talents.voidweaver.no_escape              = HT( "No Escape" );     // NYI
   talents.voidweaver.dark_energy            = HT( "Dark Energy" );
   talents.voidweaver.void_blast             = HT( "Void Blast" );
@@ -3972,7 +3972,8 @@ void priest_t::create_options()
   add_option( opt_int( "priest.cauterizing_shadows_allies", options.cauterizing_shadows_allies, 0, 3 ) );
   add_option( opt_bool( "priest.force_devour_matter", options.force_devour_matter ) );
   add_option( opt_float( "priest.entropic_rift_miss_percent", options.entropic_rift_miss_percent, 0.0, 1.0 ) );
-  add_option( opt_float( "priest.crystalline_reflection_damage_mult", options.crystalline_reflection_damage_mult, 0.0, 1.0 ) );
+  add_option(
+      opt_float( "priest.crystalline_reflection_damage_mult", options.crystalline_reflection_damage_mult, 0.0, 1.0 ) );
 }
 
 std::string priest_t::create_profile( save_e type )
@@ -4223,6 +4224,25 @@ struct priest_module_t final : public module_t
   }
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Priest", "2024-09-13", "Direct damage increased by 6%", 179717, hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 6 )
+        .verification_value( 0 );
+
+    hotfix::register_effect( "Priest", "2024-09-13", "Periodic damage increased by 6%", 191068,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 6 )
+        .verification_value( 0 );
+
+    hotfix::register_effect( "Priest", "2024-09-13", "Psychic Link coeff reduced to 25%", 293563,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 25 )
+        .verification_value( 30 );
   }
   void combat_begin( sim_t* ) const override
   {

@@ -1002,12 +1002,12 @@ enum effect_subtype_t : unsigned {
     A_MOD_RANGED_HASTE = 140,
     A_MOD_RANGED_AMMO_HASTE = 141,
     A_MOD_BASE_RESISTANCE_PCT = 142,
-    A_MOD_RECHARGE_RATE_LABEL = 143, // old A_MOD_RESISTANCE_EXCLUSIVE
+    A_MOD_RECHARGE_RATE_LABEL = 143, // Modifies recharge "rate" of a cooldown by label - rate /= (1 + pct)
     A_SAFE_FALL = 144,
     A_MOD_PET_TALENT_POINTS = 145,
     A_ALLOW_TAME_PET_TYPE = 146,
     A_MECHANIC_IMMUNITY_MASK = 147,
-    A_MOD_RECHARGE_RATE_CATEGORY = 148, // Modifies recharge "rate" of a cooldown - rate /= (1 + pct)
+    A_MOD_CHARGE_RECHARGE_RATE = 148, // recharge rate for all charges of a category
     A_REDUCE_PUSHBACK = 149, // Reduce Pushback
     A_MOD_SHIELD_BLOCKVALUE_PCT = 150,
     A_TRACK_STEALTHED = 151, // Track Stealthed
@@ -1032,7 +1032,7 @@ enum effect_subtype_t : unsigned {
     A_DETECT_AMORE = 170,
     A_MOD_SPEED_NOT_STACK = 171,
     A_MOD_MOUNTED_SPEED_NOT_STACK = 172,
-    A_173 = 173, // old A_ALLOW_CHAMPION_SPELLS
+    A_MOD_CHARGE_TYPE_RECHARGE_RATE = 173, // recharge rate for all charges of a category type
     A_MOD_SPELL_DAMAGE_OF_STAT_PERCENT = 174, // by defeult intelect, dependent from A_MOD_SPELL_HEALING_OF_STAT_PERCENT
     A_MOD_SPELL_HEALING_OF_STAT_PERCENT = 175,
     A_SPIRIT_OF_REDEMPTION = 176,
