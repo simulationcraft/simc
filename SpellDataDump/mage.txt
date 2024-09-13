@@ -11852,10 +11852,10 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=902915)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#1 (id=902915)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Misc Value: 1500 | Target: Self (1)
                    Affected Spells (Category): Fire Blast (108853), Fire Blast (319836)
-#2 (id=902917)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#2 (id=902917)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Misc Value: 1633 | Target: Self (1)
                    Affected Spells (Category): Phoenix's Flames (194466), Phoenix Flames (257541)
 Description      : $@spelldesc363500
@@ -13813,10 +13813,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1015685)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#1 (id=1015685)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Misc Value: 1500 | Target: Self (1)
                    Affected Spells (Category): Fire Blast (108853), Fire Blast (319836)
-#2 (id=1015686)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#2 (id=1015686)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Misc Value: 1633 | Target: Self (1)
                    Affected Spells (Category): Phoenix's Flames (194466), Phoenix Flames (257541)
 Description      : $@spelldesc383634

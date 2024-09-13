@@ -11408,7 +11408,7 @@ Effects          :
                    Family Flags: 118
 #2 (id=752442)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
-#3 (id=752449)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148) | Attributes: Unknown(23)
+#3 (id=752449)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148) | Attributes: Unknown(23)
                    Base Value: 235 | Scaled Value: 235 | PvP Coefficient: 1.00000 | Misc Value: 1715 | Target: Self (1)
                    Affected Spells (Category): Aimed Shot (19434)
 #4 (id=752452)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Unknown(23)
