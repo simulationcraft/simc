@@ -13812,8 +13812,8 @@ void death_knight_t::create_buffs()
   buffs.visceral_strength =
       make_fallback( talent.sanlayn.visceral_strength, this, "visceral_strength", spell.visceral_strength_buff )
           ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
-          ->add_invalidate( CACHE_STRENGTH);
-          // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );  // TODO bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
+          ->add_invalidate( CACHE_STRENGTH )
+          ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );  // TODO bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
 
   buffs.bloodsoaked_ground = make_fallback( talent.sanlayn.bloodsoaked_ground.ok(), this, "bloodsoaked_ground",
                                             spell.bloodsoaked_ground_buff );
@@ -14562,12 +14562,8 @@ double death_knight_t::composite_attribute( attribute_e attr ) const
           a += base.stats.attribute[ attr ] * buffs.bloodied_blade_stacks->check_stack_value();
         if ( buffs.bloodied_blade_final->check() )
           a += base.stats.attribute[ attr ] * buffs.bloodied_blade_final->check_value();
-        if ( buffs.visceral_strength->check() )
-          a += base.stats.attribute[ attr ] * buffs.visceral_strength->check_value();
         break;
       case DEATH_KNIGHT_UNHOLY:
-        if ( buffs.visceral_strength->check() )
-          a += base.stats.attribute[ attr ] * buffs.visceral_strength->check_value();
         if ( buffs.apocalyptic_conquest->check() )
           a += base.stats.attribute[ attr ] * buffs.apocalyptic_conquest->check_value();
         break;
