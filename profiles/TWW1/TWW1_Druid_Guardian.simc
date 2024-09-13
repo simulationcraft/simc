@@ -1,0 +1,119 @@
+druid="TWW1_Druid_Guardian"
+source=default
+spec=guardian
+level=80
+race=night_elf
+timeofday=night
+role=tank
+position=front
+talents=CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmxMzMzsMPwYGzwMW8ADzYxyAYAzMmMNzYMzMjlZYjBAAAAAAMmZAAAAQNz2sMzsMAAWYmB
+
+# Default consumables
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=feast_of_the_midnight_masquerade
+augmentation=crystallized
+temporary_enchant=main_hand:ironclaw_whetstone_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Guardian APL can be found at https://www.dreamgrove.gg/sims/bear/guardian.txt
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat+=/variable,name=If_build,value=1,value_else=0,if=talent.thorns_of_iron.enabled&talent.reinforced_fur.enabled
+actions.precombat+=/variable,name=ripweaving,value=1,value_else=0,if=talent.primal_fury.enabled&talent.fluid_form.enabled&talent.wildpower_surge.enabled
+actions.precombat+=/heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&!talent.rip.enabled
+actions.precombat+=/bear_form
+
+# Executed every time the actor is available.
+# Executed every time the actor is available.
+actions=auto_attack,if=!buff.prowl.up
+actions+=/use_item,slot=trinket1
+actions+=/use_item,slot=trinket2
+actions+=/potion,if=(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)
+actions+=/run_action_list,name=bear
+
+actions.bear=maul,if=buff.ravage.up&active_enemies>1
+actions.bear+=/heart_of_the_Wild,if=(talent.heart_of_the_wild.enabled&!talent.rip.enabled)|talent.heart_of_the_wild.enabled&buff.feline_potential_counter.stack=6&active_enemies<3
+actions.bear+=/moonfire,cycle_targets=1,if=buff.bear_form.up&(((!ticking&target.time_to_die>12)|(refreshable&target.time_to_die>12))&active_enemies<7&talent.fury_of_nature.enabled)|(((!ticking&target.time_to_die>12)|(refreshable&target.time_to_die>12))&active_enemies<4&!talent.fury_of_nature.enabled)
+actions.bear+=/thrash_bear,target_if=refreshable|(dot.thrash_bear.stack<5&talent.flashing_claws.rank=2|dot.thrash_bear.stack<4&talent.flashing_claws.rank=1|dot.thrash_bear.stack<3&!talent.flashing_claws.enabled)
+actions.bear+=/bristling_fur,if=!cooldown.pause_action.remains&cooldown.rage_of_the_sleeper.remains>8
+actions.bear+=/barkskin,if=buff.bear_form.up
+actions.bear+=/lunar_beam
+actions.bear+=/convoke_the_spirits,if=(talent.wildpower_surge.enabled&buff.cat_form.up&buff.feline_potential.up)|!talent.wildpower_surge.enabled
+actions.bear+=/berserk_bear
+actions.bear+=/incarnation
+actions.bear+=/rage_of_the_sleeper,if=(((buff.incarnation_guardian_of_ursoc.down&cooldown.incarnation_guardian_of_ursoc.remains>60)|buff.berserk_bear.down)&rage>40&(!talent.convoke_the_spirits.enabled)|(buff.incarnation_guardian_of_ursoc.up|buff.berserk_bear.up)&rage>40&(!talent.convoke_the_spirits.enabled)|(talent.convoke_the_spirits.enabled)&rage>40)
+actions.bear+=/berserking,if=(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)
+actions.bear+=/maul,if=buff.ravage.up&active_enemies<2
+actions.bear+=/raze,if=(buff.tooth_and_claw.stack>1|buff.tooth_and_claw.remains<1+gcd)&variable.If_build=1&active_enemies>1
+actions.bear+=/thrash_bear,if=active_enemies>=5&talent.lunar_calling.enabled
+actions.bear+=/ironfur,target_if=!debuff.tooth_and_claw.up,if=!buff.ironfur.up&rage>50&!cooldown.pause_action.remains&variable.If_build=0&!buff.rage_of_the_sleeper.up|rage>90&variable.If_build=0|!debuff.tooth_and_claw.up&!buff.ironfur.up&rage>50&!cooldown.pause_action.remains&variable.If_build=0&!buff.rage_of_the_sleeper.up
+actions.bear+=/ironfur,if=!buff.ravage.up&((rage>40&variable.If_build=1&cooldown.rage_of_the_sleeper.remains>3&talent.rage_of_the_sleeper.enabled|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1&cooldown.rage_of_the_sleeper.remains>3&talent.rage_of_the_sleeper.enabled|rage>90&variable.If_build=1&!talent.fount_of_strength.enabled|rage>110&variable.If_build=1&talent.fount_of_strength.enabled|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1&buff.rage_of_the_sleeper.up&talent.rage_of_the_sleeper.enabled))
+actions.bear+=/ironfur,if=!buff.ravage.up&((rage>40&variable.If_build=1&!talent.rage_of_the_sleeper.enabled|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1&!talent.rage_of_the_sleeper.enabled|(buff.incarnation.up|buff.berserk_bear.up)&rage>20&variable.If_build=1&!talent.rage_of_the_sleeper.enabled))
+actions.bear+=/ferocious_bite,if=(buff.cat_form.up&buff.feline_potential.up&active_enemies<3&(buff.incarnation.up|buff.berserk_bear.up)&!dot.rip.refreshable)
+actions.bear+=/rip,if=(buff.cat_form.up&buff.feline_potential.up&active_enemies<3&(!buff.incarnation.up|!buff.berserk_bear.up))|(buff.cat_form.up&buff.feline_potential.up&active_enemies<3&(buff.incarnation.up|buff.berserk_bear.up)&refreshable)
+actions.bear+=/raze,if=variable.If_build=1&buff.vicious_cycle_maul.stack=3&active_enemies>1&!talent.ravage.enabled
+actions.bear+=/mangle,if=buff.gore.up&active_enemies<11|buff.incarnation_guardian_of_ursoc.up&buff.feline_potential_counter.stack<6&talent.wildpower_surge.enabled
+actions.bear+=/raze,if=variable.If_build=0&(active_enemies>1|(buff.tooth_and_claw.up)&active_enemies>1|buff.vicious_cycle_maul.stack=3&active_enemies>1)
+actions.bear+=/shred,if=cooldown.rage_of_the_sleeper.remains<=52&buff.feline_potential_counter.stack=6&!buff.cat_form.up&!dot.rake.refreshable&active_enemies<3&talent.fluid_form.enabled
+actions.bear+=/rake,if=cooldown.rage_of_the_sleeper.remains<=52&buff.feline_potential_counter.stack=6&!buff.cat_form.up&active_enemies<3&talent.fluid_form.enabled
+actions.bear+=/mangle,if=buff.cat_form.up&talent.fluid_form.enabled
+actions.bear+=/maul,if=variable.If_build=1&(((buff.tooth_and_claw.stack>1|buff.tooth_and_claw.remains<1+gcd)&active_enemies<=5&!talent.raze.enabled)|((buff.tooth_and_claw.stack>1|buff.tooth_and_claw.remains<1+gcd)&active_enemies=1&talent.raze.enabled)|((buff.tooth_and_claw.stack>1|buff.tooth_and_claw.remains<1+gcd)&active_enemies<=5&!talent.raze.enabled))
+actions.bear+=/maul,if=variable.If_build=0&((buff.tooth_and_claw.up&active_enemies<=5&!talent.raze.enabled)|(buff.tooth_and_claw.up&active_enemies=1&talent.raze.enabled))
+actions.bear+=/maul,if=(active_enemies<=5&!talent.raze.enabled&variable.If_build=0)|(active_enemies=1&talent.raze.enabled&variable.If_build=0)|buff.vicious_cycle_maul.stack=3&active_enemies<=5&!talent.raze.enabled
+actions.bear+=/thrash_bear,if=active_enemies>=5
+actions.bear+=/mangle,if=(buff.incarnation.up&active_enemies<=4)|(buff.incarnation.up&talent.soul_of_the_forest.enabled&active_enemies<=5)|((rage<88)&active_enemies<11)|((rage<83)&active_enemies<11&talent.soul_of_the_forest.enabled)
+actions.bear+=/thrash_bear,if=active_enemies>1
+actions.bear+=/pulverize,target_if=dot.thrash_bear.stack>2
+actions.bear+=/thrash_bear
+actions.bear+=/moonfire,if=buff.galactic_guardian.up&buff.bear_form.up&talent.boundless_moonlight.enabled
+actions.bear+=/rake,if=cooldown.rage_of_the_sleeper.remains<=52&rage<40&active_enemies<3&!talent.lunar_insight.enabled&talent.fluid_form.enabled&energy>70&refreshable&variable.ripweaving=1
+actions.bear+=/shred,if=cooldown.rage_of_the_sleeper.remains<=52&rage<40&active_enemies<3&!talent.lunar_insight.enabled&talent.fluid_form.enabled&energy>70&!buff.rage_of_the_sleeper.up&variable.ripweaving=1
+actions.bear+=/rip,if=buff.cat_form.up&!dot.rip.ticking&active_enemies<3&variable.ripweaving=1
+actions.bear+=/ferocious_bite,if=dot.rip.ticking&combo_points>4&active_enemies<3&variable.ripweaving=1
+actions.bear+=/starsurge,if=talent.starsurge.enabled&rage<20
+actions.bear+=/swipe_bear,if=(talent.lunar_insight.enabled&active_enemies>4)|!talent.lunar_insight.enabled|talent.lunar_insight.enabled&active_enemies<2
+actions.bear+=/moonfire,if=(talent.lunar_insight.enabled&active_enemies>1)&buff.bear_form.up
+
+head=mask_of_the_greatlynx,id=212056,bonus_id=4800/4786/10257/10298/1537/1808,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,bonus_id=4800/4786/1540/10299/8781,gem_id=213467/213491
+shoulders=maw_of_the_greatlynx,id=212054,bonus_id=4800/4786/10259/10299/1540
+back=wings_of_shattered_sorrow,id=225574,bonus_id=4800/4786/1540/10299,enchant_id=7409
+chest=rainshadow_hauberk,id=178698,bonus_id=4786/9948/10299,enchant_id=7364
+wrists=great_links_of_the_greatlynx,id=212052,bonus_id=1540/10299/1808,gem_id=213479,enchant_id=7391
+hands=eviscerators_of_the_greatlynx,id=212057,bonus_id=4800/4786/10259/10299/1540
+waist=adrenal_surge_clasp,id=219502,bonus_id=8960/10421/9633/8902/11144/10222/1485/1808,gem_id=213479,crafted_stats=32/36
+legs=leggings_of_the_greatlynx,id=212055,bonus_id=4800/4786/10258/10299/1540,enchant_id=7595
+feet=runebranded_kickers,id=219327,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960,enchant_id=7418,crafted_stats=32/36
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=4800/4786/1540/10299/8781,gem_id=213479/213479,enchant_id=7340
+finger2=key_to_the_unseeming,id=212447,bonus_id=4800/4786/10260/10299/1540/8781,gem_id=213479/213455,enchant_id=7340
+trinket1=arakara_sacbrood,id=219314,bonus_id=4786/3131/10299
+trinket2=bottled_flayedwing_toxin,id=178742,bonus_id=4786/9948/10299
+main_hand=harvesters_interdiction,id=221159,bonus_id=3131/10299/10376,enchant_id=7460
+
+# Gear Summary
+# gear_ilvl=638.40
+# gear_agility=36029
+# gear_stamina=235067
+# gear_attack_power=469
+# gear_crit_rating=11840
+# gear_haste_rating=18136
+# gear_mastery_rating=5951
+# gear_versatility_rating=2481
+# gear_leech_rating=3060
+# gear_speed_rating=250
+# gear_armor=26236
+# gear_bonus_armor=980
+# set_bonus=thewarwithin_season_1_2pc=1
+# set_bonus=thewarwithin_season_1_4pc=1
