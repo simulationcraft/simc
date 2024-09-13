@@ -4010,7 +4010,7 @@ void unstable_power_core( special_effect_t& effect )
     } );
   }
 
-  effect.player->register_combat_begin( [ buffs ]( player_t* p ) {
+  effect.player->register_precombat_begin( [ buffs ]( player_t* p ) {
     auto buff_idx = p->sim->rng().range( buffs.size() );
     buffs[ buff_idx ]->trigger( p->rng().range( 10_s, 30_s ) );
   } );
