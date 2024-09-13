@@ -15152,51 +15152,37 @@ struct death_knight_module_t : public module_t
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
     unique_gear::register_special_effect( 326913, runeforge::hysteria );
   }
-  /*
+  
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Commander Nerfed by 50%", 1161082,
+    hotfix::register_effect( "Death Knight", "2024-09-13", "Vampiric Strike Proc chance increased to 25%", 1123520,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 1 )
-        .verification_value( 2 );
+        .modifier( 25 )
+        .verification_value( 10 );
 
-    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Commander Buff Nerfed by 50%", 1155631,
+    hotfix::register_effect( "Death Knight", "2024-09-13", "Frenzied Bloodthirst increased to 5%", 1123820,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 1 )
-        .verification_value( 2 );
+        .modifier( 5 )
+        .verification_value( 4 );
 
-    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Specilization Aura Direct Damage buffed by 5%", 179690,
+    hotfix::register_effect( "Death Knight", "2024-09-13", "Visceral Strength buffed to 8%", 1123972,
                              hotfix::HOTFIX_FLAG_LIVE )
         .field( "base_value" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( -5 )
-        .verification_value( -10 );
+        .modifier( 8 )
+        .verification_value( 6 );
 
-    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Specilization Periodic Aura buffed by 5%", 191170,
+    hotfix::register_effect( "Death Knight", "2024-09-13", "Vampiric Strike byuffed by 20%", 1124444,
                              hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
+        .field( "ap_coefficient" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( -5 )
-        .verification_value( -10 );
-
-    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Specilization Pet Aura buffed by 5%", 191171,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( -5 )
-        .verification_value( -10 );
-
-    hotfix::register_effect( "Death Knight", "2024-09-6", "Unholy Specilization Guardian Aura buffed by 5%", 1032341,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( -5 )
-        .verification_value( -10 );
-  }*/
+        .modifier( 0.5814504 )
+        .verification_value( 0.484542 );
+  }
 
   void init( player_t* ) const override
   {
