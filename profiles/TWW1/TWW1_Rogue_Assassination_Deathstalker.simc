@@ -10,7 +10,7 @@ talents=CMQAAAAAAAAAAAAAAAAAAAAAAMjZmhZmhZAAAAAAY2glZAAAAAAottZmhZmxYmZWmlZGjZww
 # Default consumables
 potion=tempered_potion_3
 flask=flask_of_alchemical_chaos_3
-food=feast_of_the_midnight_masquerade
+food=feast_of_the_divine_day
 augmentation=crystallized
 temporary_enchant=main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3
 
@@ -213,13 +213,13 @@ off_hand=everforged_stabber,id=222438,bonus_id=10421/9633/8902/11144/10222/1485/
 # Gear Summary
 # gear_ilvl=638.63
 # gear_agility=36160
-# gear_stamina=237172
+# gear_stamina=238067
 # gear_attack_power=938
 # gear_crit_rating=12624
 # gear_haste_rating=10885
 # gear_mastery_rating=12802
 # gear_versatility_rating=2130
-# gear_avoidance_rating=1635
+# gear_leech_rating=3060
 # gear_armor=26347
 # set_bonus=thewarwithin_season_1_2pc=1
 # set_bonus=thewarwithin_season_1_4pc=1
