@@ -5143,6 +5143,12 @@ double player_t::non_stacking_movement_modifier() const
 
     if ( buffs.quickwicks_quick_trick_wick_walk && buffs.quickwicks_quick_trick_wick_walk->check() )
       speed = std::max( buffs.quickwicks_quick_trick_wick_walk->check_value(), speed );
+
+    if ( buffs.building_momentum && buffs.building_momentum->check() )
+      speed = std::max( buffs.building_momentum->check_stack_value(), speed );
+
+    if ( buffs.full_momentum && buffs.full_momentum->check() )
+      speed = std::max( buffs.full_momentum->check_value(), speed );
   }
 
   return speed;

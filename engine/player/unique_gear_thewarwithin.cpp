@@ -4269,6 +4269,64 @@ void detachable_fang( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 459222 driver
+// 459224 stacking buff
+// 459228 max buff + driver
+// 459231 damage
+void scroll_of_momentum( special_effect_t& effect )
+{
+  // setup stacking buff + driver
+  auto counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 459224 ) )
+    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
+    ->set_expire_at_max_stack( true );
+
+  effect.player->buffs.building_momentum = counter;
+  effect.custom_buff = counter;
+
+  auto cb = new dbc_proc_callback_t( effect.player, effect );
+
+  // setup max buff
+  auto max = create_buff<buff_t>( effect.player, effect.player->find_spell( 459228 ) )
+    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
+    ->set_stack_change_callback( [ cb ]( buff_t* b, int, int new_ ) {
+      if ( new_ )
+        cb->deactivate();
+      else
+        cb->activate();
+    } );
+
+  effect.player->buffs.full_momentum = max;
+
+  counter->set_expire_callback( [ max ]( buff_t*, int, timespan_t ) {
+    max->trigger();
+  } );
+
+  // setup damage
+  struct high_velocity_impact_t : public generic_proc_t
+  {
+    high_velocity_impact_t( const special_effect_t& e ) : generic_proc_t( e, "highvelocity_impact", 459231 )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+      base_multiplier *= role_mult( e );
+    }
+
+    double action_multiplier() const override
+    {
+      // hard scripted values, not in spell data
+      return generic_proc_t::action_multiplier() * ( player->composite_movement_speed() + 17 ) * 0.04;
+    }
+  };
+
+  auto full_momentum = new special_effect_t( effect.player );
+  full_momentum->name_str = max->name();
+  full_momentum->spell_id = max->data().id();
+  full_momentum->execute_action = create_proc_action<high_velocity_impact_t>( "highvelocity_impact", effect );
+  effect.player->special_effects.push_back( full_momentum );
+
+  auto damage_cb = new dbc_proc_callback_t( effect.player, *full_momentum );
+  damage_cb->activate_with_buff( max );
+}
+
 // Weapons
 // 444135 driver
 // 448862 dot (trigger)
@@ -5074,6 +5132,7 @@ void register_special_effects()
   register_special_effect( 435493, items::concoction_kiss_of_death );
   register_special_effect( 435473, items::everburning_lantern );
   register_special_effect( 455484, items::detachable_fang );
+  register_special_effect( 459222, items::scroll_of_momentum );
 
   // Weapons
   register_special_effect( 444135, items::void_reapers_claw );

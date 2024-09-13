@@ -573,6 +573,8 @@ struct player_t : public actor_t
     buff_t* surekian_grace;  // sik'ran's shadow arsenal barrage movement speed buff
     buff_t* earthen_ire;     // sigil of algari concordance tank buff
     buff_t* quickwicks_quick_trick_wick_walk;  // quickwick candlestick movement speed buff
+    buff_t* building_momentum;  // scroll of momentum counter buff
+    buff_t* full_momentum;      // scroll of momentum max buff
   } buffs;
 
   struct debuffs_t
