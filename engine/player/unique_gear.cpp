@@ -17,6 +17,7 @@
 
 #include <cctype>
 #include <memory>
+#include <regex>
 
 #include "simulationcraft.hpp"
 
@@ -5289,3 +5290,48 @@ void unique_gear::sort_special_effects()
   range::sort( __fallback_effect_db, cmp_special_effect );
 }
 
+double unique_gear::role_mult( player_t* player, const spell_data_t* s_data )
+{
+  static constexpr const char* role_mult_str =
+    "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|"
+    "a356810|a137012[${0.66}.2][${1}]";
+
+  double mult = 1.0;
+  auto vars = s_data ? player->dbc->spell_desc_vars( s_data->id() ).desc_vars() : role_mult_str;
+
+  assert( vars && "No spell description variables found. role_mult( player_t* ) can provide a default value." );
+  if ( vars )
+  {
+    std::cmatch m;
+    std::regex get_var( R"(\$rolemult=\$(.*))" );  // find the $rolemult= variable
+    if ( std::regex_search( vars, m, get_var ) )
+    {
+      const auto var = m.str( 1 );
+      std::regex get_role( R"(\??((?:a\d+\|?)*)\[\$\{([\d\.]+)\}[\d\.]*\])" );  // find each role group
+      std::sregex_iterator role_it( var.begin(), var.end(), get_role );
+      for ( std::sregex_iterator i = role_it; i != std::sregex_iterator(); i++ )
+      {
+        mult = util::to_double( i->str( 2 ) );
+        const auto role = i->str( 1 );
+        std::regex get_spec( R"(a(\d+))" );  // find each spec spell id
+        std::sregex_iterator spec_it( role.begin(), role.end(), get_spec );
+        for ( std::sregex_iterator j = spec_it; j != std::sregex_iterator(); j++ )
+        {
+          if ( util::to_unsigned_ignore_error( j->str( 1 ), 0u ) == player->spec_spell->id() )
+          {
+            player->sim->print_debug( "parsed role multiplier for spell '{}': {}",
+                                      s_data ? s_data->name_cstr() : "none", mult );
+            return mult;
+          }
+        }
+      }
+    }
+  }
+
+  return mult;
+}
+
+double unique_gear::role_mult( const special_effect_t& effect )
+{
+  return role_mult( effect.player, effect.driver() );
+}

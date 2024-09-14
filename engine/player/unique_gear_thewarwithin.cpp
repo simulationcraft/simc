@@ -5253,53 +5253,6 @@ action_t* create_action( player_t* p, util::string_view n, util::string_view opt
   return nullptr;
 }
 
-double role_mult( player_t* player, const spell_data_t* s_data )
-{
-  double mult = 1.0;
-  auto vars = player->dbc->spell_desc_vars( s_data->id() ).desc_vars();
-
-  assert( vars && "No spell description variables found. role_mult( player_t* ) can provide a default value." );
-  if ( vars )
-  {
-    std::cmatch m;
-    std::regex get_var( R"(\$rolemult=\$(.*))" );  // find the $rolemult= variable
-    if ( std::regex_search( vars, m, get_var ) )
-    {
-      const auto var = m.str( 1 );
-      std::regex get_role( R"(\??((?:a\d+\|?)*)\[\$\{([\d\.]+)\}[\d\.]*\])" );  // find each role group
-      std::sregex_iterator role_it( var.begin(), var.end(), get_role );
-      for ( std::sregex_iterator i = role_it; i != std::sregex_iterator(); i++ )
-      {
-        mult = util::to_double( i->str( 2 ) );
-        const auto role = i->str( 1 );
-        std::regex get_spec( R"(a(\d+))" );  // find each spec spell id
-        std::sregex_iterator spec_it( role.begin(), role.end(), get_spec );
-        for ( std::sregex_iterator j = spec_it; j != std::sregex_iterator(); j++ )
-        {
-          if ( util::to_unsigned_ignore_error( j->str( 1 ), 0u ) == player->spec_spell->id() )
-          {
-            player->sim->print_debug( "parsed role multiplier for spell '{}': {}", s_data->name_cstr(), mult );
-            return mult;
-          }
-        }
-      }
-    }
-  }
-
-  return mult;
-}
-
-double role_mult( const special_effect_t& effect )
-{
-  return role_mult( effect.player, effect.driver() );
-}
-
-// Default role_mult if none can be found on any related spell.
-double role_mult( player_t *p )
-{
-  return role_mult( p, p->find_spell( 445339 ) );
-}
-
 // writhing armor banding embellishment, doubles nerubian embellishment values
 double writhing_mul( player_t* p )
 {
