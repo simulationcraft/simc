@@ -226,7 +226,6 @@ void brewmaster( player_t *p )
   item_actions->add_action( "use_item,slot=trinket2" );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "expel_harm,if=buff.gift_of_the_ox.stack>4" );
   default_->add_action( "potion" );
   default_->add_action( "call_action_list,name=race_actions" );
   default_->add_action( "call_action_list,name=item_actions" );
@@ -364,7 +363,8 @@ void windwalker( player_t *p )
           "cooldown.invoke_xuen_the_white_tiger.remains>10|fight_remains<10" },
         // TWW Trinkets
         { "imperfect_ascendancy_serum", ",use_off_gcd=1,if=pet.xuen_the_white_tiger.active" },
-        { "treacherous_transmitter", ",if=cooldown.invoke_xuen_the_white_tiger.remains<4|talent.xuens_bond&pet.xuen_the_white_tiger.active" },
+        { "treacherous_transmitter",
+          ",if=cooldown.invoke_xuen_the_white_tiger.remains<4|talent.xuens_bond&pet.xuen_the_white_tiger.active" },
 
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=pet.xuen_the_white_tiger.active" },
