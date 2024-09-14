@@ -27,28 +27,56 @@
 
 # save=TWW1_Monk_Brewmaster.simc
 
-# monk="TWW1_Monk_Windwalker"
-# spec=windwalker
-# level=70
-# race=mechagnome
-# role=dps
-# position=back
-# talents=1020012
+monk="TWW1_Monk_Windwalker"
+spec=windwalker
+level=80
+race=mechagnome
+role=attack
+position=back
+talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzsMzghZMLzAmBAAAAAAAAAAAssMjRwAzwwyMzYZGzwsNmZwyMBAw2MzwMzMz2MAA2AgmlZpZmZWAA
 
-# head=umbrahide_helm,id=172317,bonus_id=7082/1588/6650/6647/6935,gem_id=173129
-# neck=azurevenom_choker,id=180115,bonus_id=1592/6536/6646/6935,gem_id=173129
-# shoulders=tassels_of_the_grand_upwelling,id=188914,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=soul_vitality
-# chest=cuirass_of_the_grand_upwelling,id=188912,bonus_id=1505/7187,enchant=eternal_stats
-# wrists=demigaunts_of_the_grand_upwelling,id=188913,bonus_id=1498/7187/6935,gem_id=173129
-# hands=grips_of_the_grand_upwelling,id=188916,bonus_id=1498/7187
-# waist=umbrahide_waistguard,id=172320,bonus_id=8124/1588/6650/6647/6935,gem_id=173129
-# legs=legguards_of_the_grand_upwelling,id=188911,bonus_id=1498/7187
-# feet=treads_of_titanic_curiosity,id=189848,bonus_id=1524/7187,enchant=eternal_agility
-# finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173129,enchant=tenet_of_critical_strike
-# finger2=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant=tenet_of_critical_strike
-# trinket1=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
-# trinket2=earthbreakers_impact,id=188264,bonus_id=1524/7187
-# main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524/7187,enchant=sinful_revelation
+head=hood_of_the_hidden_path,id=178691,bonus_id=4786/3293/10336/11307,ilevel=639,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,bonus_id=10256/11086/10837/10832/1514/10255,ilevel=639,gem_id=213485/213485
+shoulders=gatecrashers_enduring_effigy,id=212045,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+back=consecrated_cloak,id=222817,bonus_id=3524/11109/8960,ilevel=636,crafted_stats=40/36
+chest=gatecrashers_gi,id=212050,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant=crystalline_radiance_3,enchant_id=7364
+wrists=risen_monstrosity_cuffs,id=178741,bonus_id=4786/3293/10336/11307,ilevel=639,gem_id=213470,enchant_id=7385
+hands=gatecrashers_protectors,id=212048,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+waist=sapgorger_belt,id=178699,bonus_id=4786/3293/10336/11307,ilevel=639,gem_id=213494
+legs=gatecrashers_kilt,id=212046,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant=stormbound_armor_kit_3,enchant_id=7601
+feet=chitinspiked_jackboots,id=212445,bonus_id=10256/11086/10375/1514/10255,ilevel=639,enchant_id=7424
+finger1=key_to_the_unseeming,id=212447,bonus_id=4800/4786/1524/10260/10879,ilevel=639,gem_id=213485/213485,enchant_id=7340
+finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=4800/4786/1540/10299/10879,ilevel=639,gem_id=213485/213455,enchant_id=7340
+trinket1=treacherous_transmitter,id=221023,bonus_id=4800/4786/1530/10258,ilevel=639
+trinket2=arakara_sacbrood,id=219314,bonus_id=4786/1557/10336,ilevel=639
+main_hand=void_reapers_warp_blade,id=219877,bonus_id=4800/4786/1537/10298,ilevel=639,enchant_id=7460
+off_hand=charged_facesmasher,id=222446,bonus_id=3524/11300/8960,ilevel=636,enchant_id=7460,crafted_stats=40/36
 
-# save=TWW1_Monk_Windwalker.simc
+save=TWW1_Monk_Windwalker.simc
+
+monk="TWW1_Monk_Windwalker_Celestial"
+spec=windwalker
+level=80
+race=mechagnome
+role=attack
+position=back
+talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzsMzghZMLzAmBAAAAAAAAAAAssMjRwAzwwyMzYZGzwsNmZwyMBAgZmZMjZmtZAAssMLLzyMzEEAMA
+
+head=hood_of_the_hidden_path,id=178691,bonus_id=4786/3293/10336/11307,ilevel=639,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,bonus_id=10256/11086/10837/10832/1514/10255,ilevel=639,gem_id=213485/213485
+shoulders=gatecrashers_enduring_effigy,id=212045,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+back=consecrated_cloak,id=222817,bonus_id=3524/11109/8960,ilevel=636,crafted_stats=40/36
+chest=gatecrashers_gi,id=212050,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant=crystalline_radiance_3,enchant_id=7364
+wrists=risen_monstrosity_cuffs,id=178741,bonus_id=4786/3293/10336/11307,ilevel=639,gem_id=213470,enchant_id=7385
+hands=gatecrashers_protectors,id=212048,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+waist=sapgorger_belt,id=178699,bonus_id=4786/3293/10336/11307,ilevel=639,gem_id=213494
+legs=gatecrashers_kilt,id=212046,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant=stormbound_armor_kit_3,enchant_id=7601
+feet=chitinspiked_jackboots,id=212445,bonus_id=10256/11086/10375/1514/10255,ilevel=639,enchant_id=7424
+finger1=key_to_the_unseeming,id=212447,bonus_id=4800/4786/1524/10260/10879,ilevel=639,gem_id=213485/213485,enchant_id=7340
+finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=4800/4786/1540/10299/10879,ilevel=639,gem_id=213485/213455,enchant_id=7340
+trinket1=treacherous_transmitter,id=221023,bonus_id=4800/4786/1530/10258,ilevel=639
+trinket2=mad_queens_mandate,id=212454,bonus_id=4800/4786/1533/10257,ilevel=639
+main_hand=void_reapers_warp_blade,id=219877,bonus_id=4800/4786/1537/10298,ilevel=639,enchant_id=7460
+off_hand=charged_facesmasher,id=222446,bonus_id=3524/11300/8960,ilevel=636,enchant_id=7460,crafted_stats=40/36
+
+save=TWW1_Monk_Windwalker_Celestial.simc
