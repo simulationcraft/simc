@@ -9327,9 +9327,8 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
   if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 )
     return;
 
-  // 2024-08-12 -- Currently when triggerd by an ER cast, only uses base combo points
   if ( p()->get_target_data( state->target )->debuffs.deathstalkers_mark->check() &&
-       cast_state( state )->get_combo_points( p()->bugs ) >= as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 2 ).base_value() ) )
+       cast_state( state )->get_combo_points() >= as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 2 ).base_value() ) )
   {
     p()->get_target_data( state->target )->debuffs.deathstalkers_mark->decrement();
     p()->buffs.deathstalkers_mark->trigger();
@@ -9351,9 +9350,8 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
     }
   }
 
-  // 2024-08-16 -- Currently when triggerd by an ER cast, only uses base combo points
   if ( ( affected_by.darkest_night || affected_by.darkest_night_crit ) && p()->buffs.darkest_night->check() &&
-       cast_state( state )->get_combo_points( p()->bugs ) >= p()->consume_cp_max() )
+       cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
   {
     trigger_deathstalkers_mark_debuff( state, true );
     p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
