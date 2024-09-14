@@ -87,7 +87,7 @@ actions.fel_barrage+=/variable,name=fury_gen,op=set,value=talent.demon_blades*(1
 actions.fel_barrage+=/variable,name=gcd_drain,op=set,value=gcd.max*32
 actions.fel_barrage+=/annihilation,if=buff.inner_demon.up
 actions.fel_barrage+=/eye_beam,if=buff.fel_barrage.down&(active_enemies>1&raid_event.adds.up|raid_event.adds.in>40)
-actions.fel_barrage+=/abyssal_gaze,if=buff.fel_barrage.down&(active_enemies>1&raid_event.adds.up|raid_event.adds.in>40)
+actions.fel_barrage+=/abyssal_gaze,if=buff.fel_barrage.down&(active_enemies>1&raid_event.adds.up|raid_event.adds.in>40)&buff.demonsurge_abyssal_gaze.up
 actions.fel_barrage+=/essence_break,if=buff.fel_barrage.down&buff.metamorphosis.up
 actions.fel_barrage+=/death_sweep,if=buff.fel_barrage.down
 actions.fel_barrage+=/immolation_aura,if=buff.unbound_chaos.down&(active_enemies>2|buff.fel_barrage.up)&(!talent.inertia|cooldown.eye_beam.remains>recharge_time+3)
@@ -122,8 +122,7 @@ actions.meta+=/immolation_aura,if=cooldown.blade_dance.remains&talent.inertia&bu
 actions.meta+=/sigil_of_doom,if=cooldown.blade_dance.remains&debuff.essence_break.down
 actions.meta+=/immolation_aura,if=buff.demonsurge.up&buff.demonsurge.remains<gcd.max*3&buff.demonsurge_consuming_fire.up
 actions.meta+=/immolation_aura,if=debuff.essence_break.down&cooldown.blade_dance.remains>gcd.max+0.5&buff.unbound_chaos.down&talent.inertia&buff.inertia.down&full_recharge_time+3<cooldown.eye_beam.remains&buff.metamorphosis.remains>5
-# actions.meta+=/death_sweep
-actions.meta+=/death_sweep,if=debuff.essence_break.up|cooldown.essence_break.remains>=gcd.max*2|(cooldown.metamorphosis.up&cooldown.eye_beam.remains&!talent.restless_hunter)
+actions.meta+=/death_sweep
 actions.meta+=/eye_beam,if=debuff.essence_break.down&buff.inner_demon.down
 actions.meta+=/abyssal_gaze,if=debuff.essence_break.down&buff.inner_demon.down&buff.demonsurge_abyssal_gaze.up
 actions.meta+=/glaive_tempest,if=debuff.essence_break.down&(cooldown.blade_dance.remains>gcd.max*2|fury>60)&(active_enemies>=desired_targets+raid_event.adds.count|raid_event.adds.in>10)
@@ -141,11 +140,8 @@ actions.meta+=/fel_rush,if=buff.unbound_chaos.down&recharge_time<cooldown.eye_be
 actions.meta+=/demons_bite
 
 actions.opener=potion
-# actions.opener+=/vengeful_retreat,use_off_gcd=1,if=(prev_gcd.1.death_sweep&buff.initiative.remains<2&buff.inner_demon.down|buff.initiative.remains<0.5&debuff.initiative_tracker.up&(!talent.inertia|buff.unbound_chaos.down))&((!talent.essence_break&talent.shattered_destiny)|(talent.essence_break&!talent.shattered_destiny)|(!talent.shattered_destiny&!talent.essence_break))|prev_gcd.2.death_sweep&prev_gcd.1.annihilation&!talent.shattered_destiny
+actions.opener+=/vengeful_retreat,use_off_gcd=1,if=(prev_gcd.1.death_sweep&buff.initiative.remains<2&buff.inner_demon.down|buff.initiative.remains<0.5&debuff.initiative_tracker.up&(!talent.inertia|buff.unbound_chaos.down))&((!talent.essence_break&talent.shattered_destiny)|(talent.essence_break&!talent.shattered_destiny)|(!talent.shattered_destiny&!talent.essence_break))|prev_gcd.2.death_sweep&prev_gcd.1.annihilation
 actions.opener+=/vengeful_retreat,use_off_gcd=1,if=buff.metamorphosis.up&cooldown.metamorphosis.remains&cooldown.essence_break.up&cooldown.eye_beam.remains&talent.shattered_destiny&talent.essence_break&(cooldown.sigil_of_spite.remains|!hero_tree.aldrachi_reaver)
-actions.opener+=/vengeful_retreat,use_off_gcd=1,if=(cooldown.blade_dance.up|buff.blade_rhapsody.up|cooldown.blade_dance.remains<=gcd.max)&buff.metamorphosis.remains>=gcd.max*2&buff.thrill_of_the_fight_damage.up&cooldown.essence_break.up&cooldown.metamorphosis.up
-# actions.opener+=/vengeful_retreat,use_off_gcd=1,if=cooldown.metamorphosis.remains&buff.demonsurge.stack=5&cooldown.eye_beam.remains&talent.initiative&(cooldown.essence_break.up|!talent.essence_break)
-actions.opener+=/vengeful_retreat,use_off_gcd=1,if=cooldown.metamorphosis.remains&buff.demonsurge.stack=4&cooldown.eye_beam.up&talent.initiative&(cooldown.essence_break.up|!talent.essence_break)
 # actions.opener+=/sigil_of_doom,if=talent.essence_break&prev_gcd.1.metamorphosis
 actions.opener+=/annihilation,if=hero_tree.felscarred&buff.demonsurge_annihilation.up&talent.restless_hunter,line_cd=10
 actions.opener+=/annihilation,if=!hero_tree.felscarred&buff.inner_demon.up&!talent.shattered_destiny,line_cd=10
@@ -153,18 +149,15 @@ actions.opener+=/fel_rush,if=talent.momentum&buff.momentum.remains<6
 actions.opener+=/fel_rush,if=talent.inertia&buff.unbound_chaos.up&talent.a_fire_inside&(buff.inertia.down&buff.metamorphosis.up&!hero_tree.felscarred|hero_tree.felscarred&(buff.metamorphosis.down&charges>1|prev_gcd.1.eye_beam|buff.demonsurge.stack>=5|charges=2&buff.unbound_chaos.down))&debuff.essence_break.down
 actions.opener+=/fel_rush,if=talent.inertia&buff.unbound_chaos.up&!talent.a_fire_inside&buff.metamorphosis.up&(cooldown.metamorphosis.up|cooldown.eye_beam.remains|talent.essence_break&cooldown.essence_break.remains)&(hero_tree.felscarred|buff.inner_demon.down)
 actions.opener+=/fel_rush,if=talent.inertia&buff.unbound_chaos.up&prev_gcd.1.sigil_of_doom&active_enemies>1
-actions.opener+=/fel_rush,if=talent.inertia&buff.unbound_chaos.up&cooldown.metamorphosis.remains&buff.demonsurge.stack=3
 actions.opener+=/the_hunt,if=(buff.metamorphosis.up|!talent.shattered_destiny)&(!talent.initiative|buff.initiative.up|time>5)
-actions.opener+=/death_sweep,if=hero_tree.felscarred&talent.chaos_theory&buff.metamorphosis.up&buff.demonsurge.stack=0&!talent.restless_hunter&(buff.out_of_range.up|buff.out_of_range.down)
+actions.opener+=/death_sweep,if=hero_tree.felscarred&talent.chaos_theory&buff.metamorphosis.up&buff.demonsurge.stack=0&!talent.restless_hunter
 actions.opener+=/annihilation,if=hero_tree.felscarred&buff.demonsurge_annihilation.up&!talent.essence_break,line_cd=10
 actions.opener+=/felblade,if=(buff.metamorphosis.down|fury<40)&(!talent.a_fire_inside|hero_tree.aldrachi_reaver)&action.felblade.cooldown_react
 actions.opener+=/reavers_glaive,if=debuff.reavers_mark.down&debuff.essence_break.down
 actions.opener+=/immolation_aura,if=talent.a_fire_inside&(talent.inertia|talent.ragefire|talent.burning_wound)&buff.metamorphosis.down&(buff.unbound_chaos.down|hero_tree.felscarred)
-actions.opener+=/immolation_aura,if=talent.inertia&buff.unbound_chaos.down&buff.metamorphosis.up&debuff.essence_break.down&(cooldown.blade_dance.remains|buff.demonsurge_death_sweep.down&buff.inertia.up)&(buff.inner_demon.down|hero_tree.felscarred&buff.demonsurge_annihilation.down)&buff.demonsurge.stack<5
+actions.opener+=/immolation_aura,if=talent.inertia&buff.unbound_chaos.down&buff.metamorphosis.up&debuff.essence_break.down&cooldown.blade_dance.remains&(buff.inner_demon.down|hero_tree.felscarred&buff.demonsurge_annihilation.down)&buff.demonsurge.stack<5
 actions.opener+=/blade_dance,if=buff.glaive_flurry.up&!talent.shattered_destiny
 actions.opener+=/chaos_strike,if=buff.rending_strike.up&!talent.shattered_destiny
-actions.opener+=/essence_break,if=cooldown.eye_beam.remains&cooldown.metamorphosis.up&buff.blade_rhapsody.up&buff.inner_demon.down&!hero_tree.felscarred&buff.metamorphosis.remains>=gcd.max
-actions.opener+=/metamorphosis,if=debuff.essence_break.up&cooldown.blade_dance.remains
 actions.opener+=/metamorphosis,if=buff.metamorphosis.up&cooldown.blade_dance.remains>gcd.max*2&buff.inner_demon.down&(!hero_tree.felscarred&(!talent.restless_hunter|prev_gcd.1.death_sweep)|buff.demonsurge.stack=2)&(cooldown.essence_break.remains|hero_tree.felscarred|talent.shattered_destiny|!talent.essence_break)
 actions.opener+=/sigil_of_spite,if=hero_tree.felscarred|debuff.reavers_mark.up&(!talent.cycle_of_hatred|cooldown.eye_beam.remains&cooldown.metamorphosis.remains)
 actions.opener+=/sigil_of_doom,if=buff.inner_demon.down&debuff.essence_break.down&cooldown.blade_dance.remains
