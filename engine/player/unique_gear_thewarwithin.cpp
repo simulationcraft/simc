@@ -1514,12 +1514,6 @@ void foul_behemoths_chelicera( special_effect_t& effect )
 // 449594 mastery buff
 // 449595 vers buff
 // TODO: confirm secondary precedence in case of tie is vers > mastery > haste > crit
-// TODO: confirm equip cycle continues ticking while on-use is active
-// TODO: confirm that stats swap at one stack per tick
-// TODO: determine what happens when your highest secondary changes
-// TODO: add options to control balancing stacks
-// TODO: add option to set starting stacks
-// TODO: confirm stat value truncation happens on final amount, and not per stack amount
 void ovinaxs_mercurial_egg( special_effect_t& effect )
 {
   unsigned equip_id = 445066;
@@ -1532,30 +1526,50 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
   {
     double cap_mul;
     int cap;
+    double original_amount;
 
     ovinax_stat_buff_t( player_t* p, std::string_view n, const spell_data_t* s, const spell_data_t* data )
       : stat_buff_t( p, n, s ),
-        cap_mul( data->effectN( 4 ).percent() ),
+        cap_mul( 1.0 - data->effectN( 4 ).percent() ),
         cap( as<int>( data->effectN( 5 ).base_value() ) )
     {}
 
-    double buff_stat_stack_amount( const buff_stat_t& stat, int s ) const override
+    void reset() override
     {
-      double val = std::max( 1.0, std::fabs( stat.amount ) );
-      double stack = s <= cap ? s : cap + ( s - cap ) * cap_mul;
-      // TODO: confirm truncation happens on final amount, and not per stack amount
-      return std::copysign( std::trunc( stack * val + 1e-3 ), stat.amount );
+      stat_buff_t::reset();
+      stats[ 0 ].amount = original_amount;
+    }
+
+    void _initialize()
+    {
+      // assume each buff has a single stat. refactor if this changes.
+      assert( stats.size() == 1 );
+      original_amount = stats[ 0 ].amount;
+    }
+
+    // values can be off by a +/-2 due to unknown rounding being performed by the in-game script
+    void recalculate_stat_amount( int stacks = 0 )
+    {
+      auto s = stacks ? stacks : check();
+      if ( !s )
+        return;
+
+      if ( s <= cap )
+        stats[ 0 ].amount = original_amount;
+      else
+        stats[ 0 ].amount = original_amount * ( cap + ( s - cap ) * cap_mul ) / s;
     }
   };
 
   // setup stat buffs
-  auto primary = create_buff<ovinax_stat_buff_t>( effect.player, effect.player->find_spell( 449578 ), data )
-    ->set_stat_from_effect_type( A_MOD_STAT, data->effectN( 1 ).average( effect ) )
-    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  auto primary = create_buff<ovinax_stat_buff_t>( effect.player, effect.player->find_spell( 449578 ), data );
+  primary->set_stat_from_effect_type( A_MOD_STAT, data->effectN( 1 ).average( effect ) )
+         ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  primary->_initialize();
 
   static constexpr std::array<unsigned, 4> buff_ids = { 449595, 449594, 449581, 449593 };
 
-  std::unordered_map<stat_e, buff_t*> secondaries;
+  std::unordered_map<stat_e, ovinax_stat_buff_t*> secondaries;
 
   for ( size_t i = 0; i < secondary_ratings.size(); i++ )
   {
@@ -1563,22 +1577,19 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
     auto spell = effect.player->find_spell( buff_ids[ i ] );
     auto name = fmt::format( "{}_{}", spell->name_cstr(), stat_str );
 
-    auto buff = create_buff<ovinax_stat_buff_t>( effect.player, name, spell, data )
-      ->set_stat_from_effect_type( A_MOD_RATING, data->effectN( 2 ).average( effect ) )
-      ->set_name_reporting( stat_str )
-      ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+    auto buff = create_buff<ovinax_stat_buff_t>( effect.player, name, spell, data );
+    buff->set_stat_from_effect_type( A_MOD_RATING, data->effectN( 2 ).average( effect ) )
+        ->set_name_reporting( stat_str )
+        ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+    buff->_initialize();
 
     secondaries[ secondary_ratings[ i ] ] = buff;
   }
 
   // proxy buff for on-use
-  // TODO: confirm equip cycle continues ticking while on-use is active
   auto halt = create_buff<buff_t>( effect.player, effect.driver() )->set_cooldown( 0_ms );
 
   // proxy buff for equip ticks
-  // TODO: confirm that stats swap at one stack per tick
-  // TODO: determine what happens when your highest secondary changes
-  // TODO: add options to control balancing stacks
   auto ticks = create_buff<buff_t>( effect.player, equip->driver() )
     ->set_quiet( true )
     ->set_tick_zero( true )
@@ -1586,37 +1597,67 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
       if ( halt->check() )
         return;
 
-      if ( p->is_moving() )
+      // recalculate stat amounts first before making stack adjustments. because recalculation changes the basic
+      // per-stack amount of the buff, this results in different post-adjustment total amounts depending if the stack is
+      // increasing or decreasing until the next tick.
+      primary->recalculate_stat_amount();
+      range::for_each( secondaries, []( const auto& b ) { b.second->recalculate_stat_amount(); } );
+
+      // if player is moving decrement stack. if player is above desired primary stack and not casting, assume player
+      // will sidestep to try to decrement.
+      auto desired = p->thewarwithin_opts.ovinaxs_mercurial_egg_desired_primary_stacks;
+      // randomly add leeway to desired to simulate player reaction
+      auto leeway = p->thewarwithin_opts.ovinaxs_mercurial_egg_desired_primary_stacks_leeway;
+      desired += p->rng().range( -leeway, leeway );
+
+      if ( p->is_moving() || ( primary->check() > desired && !p->debuffs.casting->check() ) )
       {
         primary->decrement();
-        secondaries.at( util::highest_stat( p, secondary_ratings ) )->trigger();
+
+        // stat selection only updates on increment
+        auto buff = secondaries.at( util::highest_stat( p, secondary_ratings ) );
+        int stack = 1;
+
+        if ( !buff->check() )  // new stat, expire all stats first
+        {
+          range::for_each( secondaries, [ &stack ]( const auto& b ) {
+            if ( b.second->check() )
+            {
+              stack = b.second->check();
+              b.second->expire();
+            }
+          } );
+        }
+
+        if ( !buff->at_max_stacks() )
+          buff->trigger( stack );
       }
       else
       {
         range::for_each( secondaries, []( const auto& b ) { b.second->decrement(); } );
-        primary->trigger();
+
+        if ( !primary->at_max_stacks() )
+          primary->trigger();
       }
     } );
 
-  int initial_primary_stacks   = effect.player->thewarwithin_opts.ovinaxs_mercurial_egg_initial_primary_stacks;
-  int initial_secondary_stacks = effect.player->thewarwithin_opts.ovinaxs_mercurial_egg_initial_secondary_stacks;
-  if ( initial_primary_stacks + initial_secondary_stacks > primary->max_stack() )
-  {
-    initial_secondary_stacks = primary->max_stack() - initial_primary_stacks;
-
-    effect.player->sim->error(
-      "Ovinax's Mercurial Egg initial stacks can not exceed '{}' combined. Primary stacks set to '{}', secondary "
-      "stacks set to '{}'.",
-      primary->max_stack(), initial_primary_stacks, initial_secondary_stacks );
-  }
-
   effect.player->register_precombat_begin(
-      [ ticks, primary, secondaries, initial_primary_stacks, initial_secondary_stacks ]( player_t* p ) {
-        if ( initial_primary_stacks )
-          primary->trigger( initial_primary_stacks );
+      [ ticks, primary, secondaries ]( player_t* p ) {
+        auto p_stacks = p->thewarwithin_opts.ovinaxs_mercurial_egg_initial_primary_stacks;
+        auto s_stacks = primary->max_stack() - p_stacks;
 
-        if ( initial_secondary_stacks )
-          secondaries.at( util::highest_stat( p, secondary_ratings ) )->trigger( initial_secondary_stacks );
+        if ( p_stacks )
+        {
+          primary->recalculate_stat_amount( p_stacks );
+          primary->trigger( p_stacks );
+        }
+
+        if ( s_stacks )
+        {
+          auto buff = secondaries.at( util::highest_stat( p, secondary_ratings ) );
+          buff->recalculate_stat_amount( s_stacks );
+          buff->trigger( s_stacks );
+        }
 
         make_event( *p->sim, p->rng().range( 1_ms, ticks->buff_period ), [ ticks ] { ticks->trigger(); } );
       } );

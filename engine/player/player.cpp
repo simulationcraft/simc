@@ -12713,8 +12713,10 @@ void player_t::create_options()
                           thewarwithin_opts.sikrans_endless_arsenal_stance ) );
   add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_initial_primary_stacks",
                        thewarwithin_opts.ovinaxs_mercurial_egg_initial_primary_stacks, 0, 30 ) );
-  add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_initial_secondary_stacks",
-                       thewarwithin_opts.ovinaxs_mercurial_egg_initial_secondary_stacks, 0, 30 ) );
+  add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_desired_primary_stacks",
+                       thewarwithin_opts.ovinaxs_mercurial_egg_desired_primary_stacks, 0, 30 ) );
+  add_option( opt_int( "thewarwithin.ovinaxs_mercurial_egg_desired_primary_stacks_leeway",
+                       thewarwithin_opts.ovinaxs_mercurial_egg_desired_primary_stacks_leeway, 0, 30 ) );
   add_option( opt_timespan( "thewarwithin.entropic_skardyn_core_pickup_delay",
                             thewarwithin_opts.entropic_skardyn_core_pickup_delay, 0_ms, 30_s ) );
   add_option( opt_timespan( "thewarwithin.entropic_skardyn_core_pickup_stddev",
