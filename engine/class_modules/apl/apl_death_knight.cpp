@@ -400,7 +400,7 @@ void unholy( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "raise_dead" );
   precombat->add_action( "army_of_the_dead,precombat_time=2" );
-  precombat->add_action( "variable,name=treacherous_transmitter_precombat_cast,value=6" );
+  precombat->add_action( "variable,name=treacherous_transmitter_precombat_cast,op=setif,value=7,value_else=11,condition=talent.gift_of_the_sanlayn" );
   precombat->add_action( "use_item,name=treacherous_transmitter" );
   precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|trinket.1.is.treacherous_transmitter" );
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|trinket.2.is.treacherous_transmitter" );
