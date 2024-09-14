@@ -3804,7 +3804,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Cast When Learned (63), Allow Aura While Dead (116), Obsolete (364), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=124613)   : Apply Aura (6) | Threat (10)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (250 -> 400)
 Description      : Intimidates any target the Voidwalker attacks, increasing threat generation.
 
 |cFFFFFFFFAuto-Cast:|r
@@ -4440,7 +4441,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow Aura While Dead (116), AutoCast Off By Default (305), Obsolete (364), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=175237)   : Apply Aura (6) | Threat (10)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (250 -> 400)
 Description      : Intimidates any target the Felguard attacks, increasing threat generation.
 
 |cFFFFFFFFAuto-Cast:|r
@@ -19090,6 +19092,7 @@ Effects          :
 Description      : $@spelldesc428517
 
 Name             : Wicked Cleave (id=432120) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Melee
@@ -19102,17 +19105,18 @@ Labels           : 16: Class Spells
 Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49
 Attributes       : ........ ........ ........ ........   ......x. ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Self Channelled (38)
+                 : Is Self Channelled (38), Allow Dead Target (64)
 Effects          :
 #1 (id=1120432)  : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 10.80530 | PvP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: Unknown(87) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 10.80530 | PvP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : Target 1 (87 -> 53)
 Description      : $@spelldesc428514
 
 Name             : Wicked Cleave (id=432220) [Spell Family (5), Hidden] 
