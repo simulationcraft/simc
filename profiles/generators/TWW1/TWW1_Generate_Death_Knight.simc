@@ -28,29 +28,29 @@
 deathknight="TWW1_Death_Knight_Frost_Breath_Deathbringer"
 spec=frost
 level=80
-race=blood_elf
+race=mechagnome
 role=attack
 position=back
 talents=CsPAAAAAAAAAAAAAAAAAAAAAAMGAzMjZmxYYGzMzMzMGmJzYMjBMzYMjZmZmZmZxMAAAAAAAAAAAAbmtBGwCYbYCZsgZYMDA
 deathknight.ams_absorb_percent=1
 deathknight.first_ams_cast=0
 
-head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213743
-neck=trailspinner_pendant,id=178707,bonus_id=1611/8781,ilevel=639,gem_id=213473/213482
-shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540
-back=wings_of_shattered_sorrow,id=225574,bonus_id=7187/1520,ilevel=639
-chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540,enchant=crystalline_radiance_3
-wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11109/8960/10878,gem_id=213491,crafted_stats=49/32
-hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
-waist=crystalfissure_girdle,id=221079,bonus_id=1611/6935,ilevel=639,gem_id=213458
-legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=stormbound_armor_kit_3
-feet=ballast_sinkers,id=159428,bonus_id=1514/3317/6646,ilevel=639
-finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213458/213458,enchant=radiant_critical_strike_3
-finger2=seal_of_the_city_watch,id=162542,bonus_id=1514/3317/6646/8781,ilevel=639,gem_id=213458/213458,enchant=radiant_critical_strike_3
-trinket1=treacherous_transmitter,id=221023,bonus_id=7187/1520,ilevel=639
-trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
-main_hand=ansureks_final_judgment,id=212401,ilevel=639,enchant=rune_of_the_stoneskin_gargoyle
-off_hand=charged_slicer,id=222451,bonus_id=11144/9627/9633/8902/10222/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=49/32
+head=everforged_helm,id=222433,bonus_id=10421/9633/8902/11144/10222/1485/1808/11109/8960,gem_id=213743,crafted_stats=32/49
+neck=trailspinner_pendant,id=178707,bonus_id=9948/10299/10376/8781,gem_id=213467/213491
+shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540/10299
+back=troggstitched_drape,id=157597,bonus_id=11342/10299/10376
+chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540/10299,enchant=crystalline_radiance_3
+wrists=devoted_offerings_irons,id=225587,bonus_id=1540/10299/10376/1808,gem_id=213479
+hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540/10299
+waist=crystalfissure_girdle,id=221079,bonus_id=3131/10299/10376/1808,gem_id=213458
+legs=exhumed_centurions_chausses,id=212001,bonus_id=1540/10299,enchant=stormbound_armor_kit_3
+feet=everforged_sabatons,id=222429,bonus_id=10421/9633/8902/11144/10222/1485,crafted_stats=32/49
+finger1=seal_of_the_city_watch,id=162542,bonus_id=10047/10299/10376/8781,gem_id=213458/213458,enchant=radiant_critical_strike_3
+finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10299/10376/8781,gem_id=213458/213458,enchant=radiant_critical_strike_3
+trinket1=arakara_sacbrood,id=219314,bonus_id=3131/10299/10376
+trinket2=treacherous_transmitter,id=221023,bonus_id=1540/10299/10376
+main_hand=ansureks_final_judgment,id=212401,bonus_id=1540/10299/10376,enchant=rune_of_the_stoneskin_gargoyle
+off_hand=charged_slicer,id=222451,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=32/49
 
 save="TWW1_Death_Knight_Frost.simc"
 
