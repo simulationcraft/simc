@@ -5408,6 +5408,7 @@ struct mangle_t final : public use_fluid_form_t<DRUID_GUARDIAN,
                                    trigger_aggravate_wounds_t<DRUID_GUARDIAN,
                                      trigger_wildpower_surge_t<DRUID_GUARDIAN, bear_attack_t>>>>
 {
+  action_t* strike = nullptr;
   int inc_targets = 0;
 
   DRUID_ABILITY( mangle_t, base_t, "mangle", p->find_class_spell( "Mangle" ) )
@@ -5431,9 +5432,9 @@ struct mangle_t final : public use_fluid_form_t<DRUID_GUARDIAN,
 
     if ( p->talent.strike_for_the_heart.ok() )
     {
-      impact_action = p->get_secondary_action<druid_heal_t>(
+      strike = p->get_secondary_action<druid_heal_t>(
         "strike_for_the_heart", "strike_for_the_heart", p, find_trigger( p->talent.strike_for_the_heart ).trigger() );
-      impact_action->background = true;
+      strike->background = true;
     }
   }
 
@@ -5462,6 +5463,9 @@ struct mangle_t final : public use_fluid_form_t<DRUID_GUARDIAN,
       p()->buff.killing_strikes_combat->expire( this );
       p()->buff.ravage_maul->trigger();
     }
+
+    if ( strike )
+      strike->execute();
   }
 };
 
