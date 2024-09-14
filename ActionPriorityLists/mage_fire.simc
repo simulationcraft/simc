@@ -33,7 +33,7 @@ actions.precombat+=/variable,name=overpool_fire_blasts,default=0,op=reset
 # The duration of a Sun King's Blessing Combustion.
 actions.precombat+=/variable,name=skb_duration,value=dbc.effect.1016075.base_value
 # Whether a usable item used to buff Combustion is equipped.
-actions.precombat+=/variable,name=combustion_on_use,value=equipped.gladiators_badge|equipped.moonlit_prism|equipped.irideus_fragment|equipped.spoils_of_neltharus|equipped.timebreaching_talon|equipped.horn_of_valor
+actions.precombat+=/variable,name=combustion_on_use,value=equipped.gladiators_badge|equipped.treacherous_transmitter|equipped.moonlit_prism|equipped.irideus_fragment|equipped.spoils_of_neltharus|equipped.timebreaching_talon|equipped.horn_of_valor
 # How long before Combustion should trinkets that trigger a shared category cooldown on other trinkets not be used?
 actions.precombat+=/variable,name=on_use_cutoff,value=20,if=variable.combustion_on_use
 actions.precombat+=/snapshot_stats
@@ -50,10 +50,11 @@ actions+=/potion,if=buff.potion.duration>variable.time_to_combustion+buff.combus
 # Variable that estimates whether Shifting Power will be used before the next Combustion.
 actions+=/variable,name=shifting_power_before_combustion,value=variable.time_to_combustion>cooldown.shifting_power.remains
 actions+=/variable,name=item_cutoff_active,value=(variable.time_to_combustion<variable.on_use_cutoff|buff.combustion.remains>variable.skb_duration&!cooldown.item_cd_1141.remains)&((trinket.1.has_cooldown&trinket.1.cooldown.remains<variable.on_use_cutoff)+(trinket.2.has_cooldown&trinket.2.cooldown.remains<variable.on_use_cutoff)>1)
+actions+=/use_item,effect_name=spymasters_web,if=(buff.combustion.remains>10&fight_remains<80)
 # The War Within S1 On-Use items with special use timings
-actions+=/use_item,effect_name=treacherous_transmitter,if=buff.combustion.remains>10|fight_remains<25
+actions+=/use_item,name=treacherous_transmitter,if=variable.time_to_combustion<10|fight_remains<25
+actions+=/do_treacherous_transmitter_task,use_off_gcd=1,if=buff.combustion.up|fight_remains<20
 actions+=/use_item,name=imperfect_ascendancy_serum,if=variable.time_to_combustion<3
-actions+=/use_item,effect_name=spymasters_web,if=(buff.combustion.remains>10&fight_remains<60)|fight_remains<25
 actions+=/use_item,effect_name=gladiators_badge,if=variable.time_to_combustion>cooldown-5
 actions+=/use_items,if=!variable.item_cutoff_active
 # Pool as many Fire Blasts as possible for Combustion.
