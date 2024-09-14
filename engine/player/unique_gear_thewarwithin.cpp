@@ -1025,76 +1025,6 @@ void spymasters_web( special_effect_t& effect )
   effect.execute_action = create_proc_action<spymasters_web_t>( "spymasters_web", effect, stacking_buff, use_buff );
 }
 
-// 444067 driver
-// 448643 unknown (0.2s duration, 6yd radius, outgoing aoe hit?)
-// 448621 unknown (0.125s duration, echo delay?)
-// 448669 damage
-// TODO: confirm if additional echoes are immediate, delayed, or staggered
-void void_reapers_chime( special_effect_t& effect )
-{
-  struct void_reapers_chime_cb_t : public dbc_proc_callback_t
-  {
-    action_t* major;
-    action_t* minor;
-    action_t* queensbane = nullptr;
-    double hp_pct;
-
-    void_reapers_chime_cb_t( const special_effect_t& e )
-      : dbc_proc_callback_t( e.player, e ), hp_pct( e.driver()->effectN( 2 ).base_value() )
-    {
-      auto damage_spell = effect.player->find_spell( 448669 );
-      auto damage_name = std::string( damage_spell->name_cstr() );
-      auto damage_amount = effect.driver()->effectN( 1 ).average( effect );
-
-      major = create_proc_action<generic_aoe_proc_t>( damage_name, effect, damage_spell );
-      major->base_dd_min = major->base_dd_max = damage_amount;
-      major->base_multiplier *= role_mult( effect );
-      major->base_aoe_multiplier = effect.driver()->effectN( 5 ).percent();
-
-      minor = create_proc_action<generic_aoe_proc_t>( damage_name + "_echo", effect, damage_spell );
-      minor->base_dd_min = minor->base_dd_max = damage_amount * effect.driver()->effectN( 3 ).percent();
-      minor->base_multiplier *= role_mult( effect );
-      minor->name_str_reporting = "Echo";
-      major->add_child( minor );
-    }
-
-    void initialize() override
-    {
-      dbc_proc_callback_t::initialize();
-
-      if ( listener->sets->has_set_bonus( listener->specialization(), TWW_KCI, B2 ) )
-        if ( auto claw = find_special_effect( listener, 444135 ) )
-          queensbane = claw->execute_action;
-    }
-
-    void execute( action_t*, action_state_t* s ) override
-    {
-      major->execute_on_target( s->target );
-
-      bool echo = false;
-
-      if ( queensbane )
-      {
-        auto dot = queensbane->find_dot( s->target );
-        if ( dot && dot->is_ticking() )
-          echo = true;
-      }
-
-      if ( !echo && s->target->health_percentage() < hp_pct )
-        echo = true;
-
-      if ( echo )
-      {
-          // TODO: are these immediate, delayed, or staggered?
-          minor->execute_on_target( s->target );
-          minor->execute_on_target( s->target );
-      }
-    }
-  };
-
-  new void_reapers_chime_cb_t( effect );
-}
-
 // 445593 equip
 //  e1: damage value
 //  e2: haste value
@@ -4742,21 +4672,6 @@ void kaheti_shadeweavers_emblem( special_effect_t& effect )
 }
 
 // Weapons
-// 444135 driver
-// 448862 dot (trigger)
-// TODO: confirm effect value is for the entire dot and not per tick
-void void_reapers_claw( special_effect_t& effect )
-{
-  effect.duration_ = effect.trigger()->duration();
-  effect.tick = effect.trigger()->effectN( 1 ).period();
-  // TODO: confirm effect value is for the entire dot and not per tick
-  effect.discharge_amount =
-    effect.driver()->effectN( 1 ).average( effect ) * effect.tick / effect.duration_;
-  effect.discharge_amount *= role_mult( effect );
-
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
 // 443384 driver
 // 443585 damage
 // 443515 unknown buff
@@ -5265,6 +5180,93 @@ void excavation( special_effect_t& effect )
 
 namespace sets
 {
+// 444067 driver
+// 448643 unknown (0.2s duration, 6yd radius, outgoing aoe hit?)
+// 448621 unknown (0.125s duration)
+// 448669 damage
+void void_reapers_contract( special_effect_t& effect )
+{
+  struct void_reapers_contract_cb_t : public dbc_proc_callback_t
+  {
+    action_t* major;
+    action_t* minor;
+    action_t* queensbane = nullptr;
+    double hp_pct;
+
+    void_reapers_contract_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), hp_pct( e.driver()->effectN( 2 ).base_value() )
+    {
+      auto damage_spell = effect.player->find_spell( 448669 );
+      auto damage_name = std::string( damage_spell->name_cstr() );
+      auto damage_amount = effect.driver()->effectN( 1 ).average( effect );
+
+      major = create_proc_action<generic_aoe_proc_t>( damage_name, effect, damage_spell );
+      major->base_dd_min = major->base_dd_max = damage_amount;
+      major->base_multiplier *= role_mult( effect );
+      major->base_aoe_multiplier = effect.driver()->effectN( 5 ).percent();
+
+      minor = create_proc_action<generic_aoe_proc_t>( damage_name + "_echo", effect, damage_spell );
+      minor->base_dd_min = minor->base_dd_max = damage_amount * effect.driver()->effectN( 3 ).percent();
+      minor->base_multiplier *= role_mult( effect );
+      major->base_aoe_multiplier = effect.driver()->effectN( 5 ).percent();
+      minor->name_str_reporting = "Echo";
+      major->add_child( minor );
+    }
+
+    void initialize() override
+    {
+      dbc_proc_callback_t::initialize();
+
+      if ( listener->sets->has_set_bonus( listener->specialization(), TWW_KCI, B2 ) )
+        if ( auto claw = find_special_effect( listener, 444135 ) )
+          queensbane = claw->execute_action;
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      major->execute_on_target( s->target );
+
+      bool echo = false;
+
+      if ( queensbane )
+      {
+        auto dot = queensbane->find_dot( s->target );
+        if ( dot && dot->is_ticking() )
+          echo = true;
+      }
+
+      if ( !echo && s->target->health_percentage() < hp_pct )
+        echo = true;
+
+      if ( echo )
+      {
+        // each echo delayed by 300ms
+        make_repeating_event( *listener->sim, 300_ms, [ this, s ] {
+          if ( !s->target->is_sleeping() )
+            minor->execute_on_target( s->target );
+        }, 2 );
+      }
+    }
+  };
+
+  new void_reapers_contract_cb_t( effect );
+}
+
+// 444135 driver
+// 448862 dot (trigger)
+void void_reapers_warp_blade( special_effect_t& effect )
+{
+  auto dot_data = effect.trigger();
+  auto dot = create_proc_action<generic_proc_t>( "queensbane", effect, dot_data );
+  dot->base_td =
+    effect.driver()->effectN( 1 ).average( effect ) * dot_data->effectN( 1 ).period() / dot_data->duration();
+  dot->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = dot;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Woven Dusk
 // 457655 Driver
 // 457630 Buff
@@ -5487,7 +5489,6 @@ void register_special_effects()
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
   register_special_effect( 444958, DISABLED_EFFECT );  // spymaster's web
-  register_special_effect( 444067, items::void_reapers_chime );
   register_special_effect( 445619, items::aberrant_spellforge, true );
   register_special_effect( 445593, DISABLED_EFFECT );  // aberrant spellforge
   register_special_effect( 447970, items::sikrans_endless_arsenal );
@@ -5552,7 +5553,6 @@ void register_special_effects()
   register_special_effect( 455452, DISABLED_EFFECT );  // kaheti shadeweaver's emblem
 
   // Weapons
-  register_special_effect( 444135, items::void_reapers_claw );
   register_special_effect( 443384, items::fateweaved_needle );
   register_special_effect( 442205, items::befoulers_syringe );
   register_special_effect( 455887, items::voltaic_stormcaller );
@@ -5565,7 +5565,9 @@ void register_special_effects()
   register_special_effect( 455799, items::excavation );
 
   // Sets
-  register_special_effect( 444166, DISABLED_EFFECT );  // kye'veza's cruel implements
+  register_special_effect( 444067, sets::void_reapers_contract );    // kye'veza's cruel implements trinket
+  register_special_effect( 444135, sets::void_reapers_warp_blade );  // kye'veza's cruel implements weapon
+  register_special_effect( 444166, DISABLED_EFFECT );                // kye'veza's cruel implements
   register_special_effect( 457655, sets::woven_dusk, true );
   register_special_effect( 455521, sets::woven_dawn, true );
   register_special_effect( 443764, sets::embrace_of_the_cinderbee, true );
