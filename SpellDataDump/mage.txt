@@ -17230,6 +17230,10 @@ Effects          :
 #5 (id=1163206)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 1588 | Target: Self (1)
                    Affected Spells (Category): Frost Nova (122)
+#6 (id=1186283)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1327 (Label) | Target: Self (1)
+                   Affected Spells (Label): Ice Wall (352278)
+Hotfixed         : NEW EFFECT
 Description      : $?c2[The cooldown of Frost spells with a base cooldown shorter than $s4 minutes is reduced by $s1%.]?c3[The cooldown of Fire spells is reduced by $s3%.][]
 
 Name             : Isothermic Core (id=431095) [Spell Family (3), Passive, Hidden] 
