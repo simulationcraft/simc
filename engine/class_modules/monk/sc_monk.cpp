@@ -6820,8 +6820,8 @@ void monk_t::init_spells()
     baseline.brewmaster.stagger                    = find_specialization_spell( "Stagger" );
     baseline.brewmaster.stagger_self_damage        = find_spell( 124255 );
     baseline.brewmaster.light_stagger              = find_spell( 124275 );
-    baseline.brewmaster.moderate_stagger           = find_spell( 124273 );
-    baseline.brewmaster.heavy_stagger              = find_spell( 124272 );
+    baseline.brewmaster.moderate_stagger           = find_spell( 124274 );
+    baseline.brewmaster.heavy_stagger              = find_spell( 124273 );
     baseline.brewmaster.spinning_crane_kick        = find_specialization_spell( "Spinning Crane Kick" );
     baseline.brewmaster.spinning_crane_kick_rank_2 = find_rank_spell( "Spinning Crane Kick", "Rank 2", current_spec );
     baseline.brewmaster.touch_of_death_rank_3      = find_rank_spell( "Touch of Death", "Rank 3", current_spec );

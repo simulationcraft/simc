@@ -1468,10 +1468,12 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // Calculated by computing (M / <difficulty>) pre-mitigation (U) melee swings for all difficulties from Kazzara - Aberrus.
   // A Normal Dungeon estimate was then added below LFR. Prior to this update, it was approximately 3.9, but the rest of the
   // values were a bit lower, so this one was also lowered.
-  std::array<double, numTankDummies> tank_dummy_index_scalar = { 0, 3.6, 2.8, 2.1, 1.5, 1};
-  double aa_damage_base        = 1500000;
-  double dummy_strike_base     = aa_damage_base * 2;
-  double background_spell_base = aa_damage_base * 0.04;
+  constexpr std::array<double, numTankDummies> tank_dummy_index_scalar = { 0, 6.5, 4.0, 2.5, 1.6, 1 };
+  // temporarily toned back a bit as this is an estimate from heroic
+  // double aa_damage_base        = 10'400'000;
+  constexpr double aa_damage_base        = 8'000'000;
+  constexpr double dummy_strike_base     = aa_damage_base * 1.5;
+  constexpr double background_spell_base = aa_damage_base * 0.1;
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
   als += "/auto_attack,damage=" + util::to_string( floor( aa_damage_base / tank_dummy_index_scalar[ tank_dummy_index ] ) ) +
@@ -1494,10 +1496,11 @@ void enemy_t::add_tank_heal_raid_event( tank_dummy_e tank_dummy )
 {
   constexpr size_t numTankDummies = static_cast<size_t>( tank_dummy_e::MAX );
   //                                           NONE, WEAK, DUNGEON, RAID,  HEROIC, MYTHIC
-  std::array<int, numTankDummies> heal_value = { 0, 12000, 24000, 36000, 48000, 60000 };
+  constexpr std::array<double, numTankDummies> tank_dummy_index_scalar = { 0, 6.5, 4.0, 2.5, 1.6, 1 };
+  constexpr int heal_value_base = 4'000'000;
   size_t tank_dummy_index                    = static_cast<size_t>( tank_dummy );
-  std::string heal_raid_event = fmt::format( "heal,name=tank_heal,amount={},cooldown=0.5,duration=0,player_if=role.tank",
-                                             heal_value[ tank_dummy_index ] );
+  std::string heal_raid_event = fmt::format( "heal,name=tank_heal,amount={},cooldown=5.0,duration=0,player_if=role.tank",
+                                             heal_value_base / tank_dummy_index_scalar[ tank_dummy_index ] );
   sim->raid_events_str += "/" + heal_raid_event;
   std::string::size_type cut_pt = heal_raid_event.find_first_of( ',' );
   auto heal_options             = heal_raid_event.substr( cut_pt + 1 );
