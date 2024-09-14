@@ -15,7 +15,6 @@ actions.precombat+=/chi_burst
 
 # Executed every time the actor is available.
 actions=auto_attack
-actions+=/expel_harm,if=buff.gift_of_the_ox.stack>4
 actions+=/potion
 actions+=/call_action_list,name=race_actions
 actions+=/call_action_list,name=item_actions
