@@ -1705,8 +1705,11 @@ void treacherous_transmitter( special_effect_t& effect )
     std::vector<buff_t*> tasks;
     buff_t* stat_buff;
     std::vector<action_t*> apl_actions;
+    action_t* use_action;
+    const special_effect_t& effect;
 
-    cryptic_instructions_t( const special_effect_t& e ) : generic_proc_t( e, "cryptic_instructions", e.driver() )
+    cryptic_instructions_t( const special_effect_t& e )
+      : generic_proc_t( e, "cryptic_instructions", e.driver() ), effect( e )
     {
       harmful            = false;
       cooldown->duration = 0_ms;  // Handled by the item
@@ -1721,9 +1724,15 @@ void treacherous_transmitter( special_effect_t& effect )
         {
           apl_actions.push_back( a );
         }
+        if ( a->action_list && a->action_list->name_str == "precombat" &&
+             a->name_str == "use_item_" + item->name_str )
+        {
+          a->harmful = harmful;
+          use_action = a;
+        }
       }
 
-      if ( apl_actions.size() > 0 )
+      if ( apl_actions.size() > 0 || use_action != nullptr )
       {
         buff_t* jump_task   = create_buff<buff_t>( e.player, e.player->find_spell( 449947 ) );
         buff_t* collect_orb = create_buff<buff_t>( e.player, e.player->find_spell( 449952 ) );
@@ -1751,9 +1760,81 @@ void treacherous_transmitter( special_effect_t& effect )
       }
     }
 
+    void precombat_buff()
+    {
+      // shared cd (other trinkets & on-use items)
+      auto cdgrp = player->get_cooldown( effect.cooldown_group_name() );
+
+      timespan_t time = 0_ms;
+
+      if ( time == 0_ms )  // No global override, check for an override from an APL variable
+      {
+        for ( auto v : player->variables )
+        {
+          if ( v->name_ == "treacherous_transmitter_precombat_cast" )
+          {
+            time = timespan_t::from_seconds( v->value() );
+            break;
+          }
+        }
+      }
+
+      const auto& apl = player->precombat_action_list;
+
+      auto it = range::find( apl, use_action );
+      if ( it == apl.end() )
+      {
+        sim->print_debug(
+            "WARNING: Precombat /use_item for Treacherous Transmitter exists but not found in precombat APL!" );
+        return;
+      }
+
+      cdgrp->start( 1_ms );  // tap the shared group cd so we can get accurate action_ready() checks
+
+      // total duration of the buff
+      auto total = tasks[ 0 ]->buff_duration();
+      // actual duration of the buff you'll get in combat
+      auto actual = total - time;
+      // cooldown on effect/trinket at start of combat
+      auto cd_dur = cooldown->duration - time;
+      // shared cooldown at start of combat
+      auto cdgrp_dur = std::max( 0_ms, effect.cooldown_group_duration() - time );
+
+      sim->print_debug( "PRECOMBAT: Treacherous Transmitter started {}s before combat via {}, {}s in-combat buff", time,
+                        "APL", actual );
+
+      tasks[ 0 ]->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, actual );
+
+      if ( use_action )  // from the apl, so cooldowns will be started by use_item_t. adjust. we are still in precombat.
+      {
+        make_event( *sim, [ this, time, cdgrp ] {  // make an event so we adjust after cooldowns are started
+          cooldown->adjust( -time );
+
+          if ( use_action )
+            use_action->cooldown->adjust( -time );
+
+          cdgrp->adjust( -time );
+        } );
+      }
+      if ( apl_actions.size() == 0 )
+      {
+        make_event( *sim, rng().range( 0_ms, actual - 1_ms ), [ this ] {
+          tasks[ 0 ]->expire();
+          stat_buff->trigger();
+        } );
+      }
+    }
+
     void execute() override
     {
+      if ( !player->in_combat && use_action )
+      {
+        precombat_buff();
+        return;
+      }
+
       generic_proc_t::execute();
+
       if ( apl_actions.size() > 0 )
       {
         rng().shuffle( tasks.begin(), tasks.end() );
