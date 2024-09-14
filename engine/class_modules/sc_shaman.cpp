@@ -6573,7 +6573,9 @@ struct lava_burst_t : public shaman_spell_t
 
   void execute() override
   {
+    bool had_ancestral_swiftness_buff = p()->buff.ancestral_swiftness->check();
     shaman_spell_t::execute();
+    bool ancestral_swiftness_consumed = had_ancestral_swiftness_buff && !p()->buff.ancestral_swiftness->check();
 
     if ( exec_type == spell_variant::NORMAL && p()->buff.surge_of_power->up() )
     {
@@ -6590,7 +6592,8 @@ struct lava_burst_t : public shaman_spell_t
 
     // Lava Surge buff does not get eaten, if the Lava Surge proc happened
     // during the Lava Burst cast
-    if ( exec_type == spell_variant::NORMAL && !p()->lava_surge_during_lvb && p()->buff.lava_surge->check() )
+    if (!ancestral_swiftness_consumed
+      && exec_type == spell_variant::NORMAL && !p()->lava_surge_during_lvb && p()->buff.lava_surge->check() )
     {
       p()->buff.lava_surge->decrement();
     }
