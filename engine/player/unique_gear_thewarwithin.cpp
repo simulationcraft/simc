@@ -4248,6 +4248,7 @@ void candle_confidant( special_effect_t& effect )
     {
       // Has the odd spell que delay where itll wait a bit before starting the next cast, about 2.75s on average.
       trigger_gcd = base_execute_time + rng().range( 500_ms, 1000_ms );
+      candle_confidant_pet_spell_t::execute();
     }
   };
 
