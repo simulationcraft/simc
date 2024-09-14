@@ -27,7 +27,7 @@
 
 # save=TWW1_Monk_Brewmaster.simc
 
-monk="TWW1_Monk_Windwalker_Shadopan"
+monk="TWW1_Monk_Windwalker"
 spec=windwalker
 level=80
 race=mechagnome
@@ -52,7 +52,7 @@ trinket2=arakara_sacbrood,id=219314,bonus_id=4786/1557/10336,ilevel=639
 main_hand=void_reapers_warp_blade,id=219877,bonus_id=4800/4786/1537/10298,ilevel=639,enchant_id=7460
 off_hand=charged_facesmasher,id=222446,bonus_id=3524/11300/8960,ilevel=636,enchant_id=7460,crafted_stats=40/36
 
-save=TWW1_Monk_Windwalker_Shadopan.simc
+save=TWW1_Monk_Windwalker.simc
 
 monk="TWW1_Monk_Windwalker_Celestial"
 spec=windwalker
