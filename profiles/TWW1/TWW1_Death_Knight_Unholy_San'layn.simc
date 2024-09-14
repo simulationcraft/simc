@@ -27,7 +27,7 @@ actions.precombat+=/augmentation
 actions.precombat+=/snapshot_stats
 actions.precombat+=/raise_dead
 actions.precombat+=/army_of_the_dead,precombat_time=2
-actions.precombat+=/variable,name=treacherous_transmitter_precombat_cast,value=6
+actions.precombat+=/variable,name=treacherous_transmitter_precombat_cast,op=setif,value=7,value_else=11,condition=talent.gift_of_the_sanlayn
 actions.precombat+=/use_item,name=treacherous_transmitter
 actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|trinket.1.is.treacherous_transmitter
 actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|trinket.2.is.treacherous_transmitter
