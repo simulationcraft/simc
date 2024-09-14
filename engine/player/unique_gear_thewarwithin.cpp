@@ -4170,8 +4170,6 @@ void candle_confidant( special_effect_t& effect )
     {
       npc_id = summon_spell->effectN( 1 ).misc_value1();
       use_auto_attack = false;
-      owner_coeff.ap_from_ap = 1;
-      owner_coeff.ap_from_sp = 1;
     }
 
     resource_e primary_resource() const override
@@ -4224,6 +4222,15 @@ void candle_confidant( special_effect_t& effect )
       }
     }
 
+    void arise() override
+    {
+      pet_t::arise();
+      if ( owner->base.distance > 8 )
+      {
+        trigger_movement( owner->base.distance, movement_direction_type::TOWARDS );
+      }
+    }
+
     action_t* create_action( util::string_view name, util::string_view options_str ) override
     {
       if ( name == "auto_attack" )
@@ -4254,6 +4261,8 @@ void candle_confidant( special_effect_t& effect )
       this->trigger_gcd                 = 0_ms;
       this->school                      = SCHOOL_PHYSICAL;
       this->stats->school               = SCHOOL_PHYSICAL;
+      this->base_dd_min = this->base_dd_max = p->dbc->expected_stat( p->true_level ).creature_auto_attack_dps;
+      this->base_multiplier = p->main_hand_weapon.swing_time.total_seconds();
 
       auto proxy = a;
       auto it    = range::find( proxy->child_action, name, &action_t::name );
