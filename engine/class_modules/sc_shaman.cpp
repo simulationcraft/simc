@@ -9655,13 +9655,6 @@ struct primordial_wave_t : public shaman_spell_t
 
       p()->buff.primordial_wave->trigger();
 
-      // On 11.0.5 PTR, the Primordial Wave projectile hitting the mob triggers
-      // a Lava Surge
-      if ( p()->is_ptr() )
-      {
-          p()->buff.lava_surge->trigger();
-      }
-
       p()->trigger_secondary_flame_shock( s );
     }
   };
@@ -9709,6 +9702,13 @@ struct primordial_wave_t : public shaman_spell_t
     {
       p()->action.feral_spirit_t31->set_target( execute_state->target );
       p()->action.feral_spirit_t31->execute();
+    }
+
+    // On 11.0.5 PTR, the Primordial Wave projectile hitting the mob triggers
+    // a Lava Surge
+    if ( p()->is_ptr() )
+    {
+        p()->buff.lava_surge->trigger();
     }
   }
 };
