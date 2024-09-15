@@ -7174,7 +7174,19 @@ struct icefury_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p()->buff.icefury_dmg->trigger( as<int>( p()->buff.icefury_dmg->data().effectN( 4 ).base_value() ) );
+    // on the 11.0.5 PTR, the icefury_dmg buff (the empowered frost shocks)
+    // only grants one stack on invocation, and this is no longer encoded
+    // in the effects table on the aura
+    // on 11.0.2 Live, the stack count still comes from the aura effect
+    // table
+    if ( p()->is_ptr() )
+    {
+        p()->buff.icefury_dmg->trigger( 1 );
+    }
+    else
+    {
+        p()->buff.icefury_dmg->trigger( as<int>( p()->buff.icefury_dmg->data().effectN( 4 ).base_value() ) );
+    }
 
     p()->buff.fusion_of_elements_nature->trigger();
     p()->buff.fusion_of_elements_fire->trigger();
@@ -8197,6 +8209,15 @@ struct frost_shock_t : public shaman_spell_t
   int n_targets() const override
   {
     int t = shaman_spell_t::n_targets();
+
+    // On 11.0.5 PTR, Icefury causes Frost Shock to cleave up to 4 additional targets.
+    if ( p()->is_ptr() )
+    {
+        if ( p()->buff.icefury_dmg->check() )
+        {
+            t += 1 + as<int>( p()->talent.icefury->effectN( 4 ).base_value() );
+        }
+    }
 
     if ( p()->buff.hailstorm->check() )
     {
