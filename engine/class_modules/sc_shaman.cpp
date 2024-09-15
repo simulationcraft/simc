@@ -1250,6 +1250,7 @@ public:
   void init_assessors() override;
   void init_rng() override;
   void init_items() override;
+  void init_special_effects() override;
   std::string create_profile( save_e ) override;
   void create_special_effects() override;
   void action_init_finished( action_t& action ) override;
@@ -12468,6 +12469,23 @@ void shaman_t::init_items()
   {
     sets->enable_set_bonus( specialization(), T31 , B4 );
   }
+}
+
+void shaman_t::init_special_effects()
+{
+  callbacks.register_callback_trigger_function(
+      452030, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ id = 51505 ]( const dbc_proc_callback_t*, action_t* a, action_state_t* state ) {
+        if ( a->data().id() == id )
+        {
+          lava_burst_t* lvb = debug_cast<lava_burst_t*>(a);
+          return lvb->exec_type == spell_variant::NORMAL;
+        }
+        return false;
+      } );
+
+    player_t::init_special_effects();
+
 }
 
 // shaman_t::apply_affecting_auras ==========================================
