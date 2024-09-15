@@ -1187,9 +1187,7 @@ void aberrant_spellforge( special_effect_t& effect )
 // TODO: confirm order is flourish->decimation->barrage
 // TODO: confirm stance can be changed pre-combat and does not reset on encounter start
 // TODO: confirm flourish damage value is for entire dot and not per tick
-// TODO: confirm decimation damage does not have standard +15% per target up to five
 // TODO: confirm decimation damage on crit to shield only counts the absorbed amount, instead of the full damage
-// TODO: confirm barrage damage isn't split and has no diminishing returns
 void sikrans_endless_arsenal( special_effect_t& effect )
 {
   unsigned equip_id = 445203;
@@ -1221,8 +1219,7 @@ void sikrans_endless_arsenal( special_effect_t& effect )
       stance.emplace_back( f_dam, f_stance );
 
       // setup decimation
-      auto d_dam = create_proc_action<generic_aoe_proc_t>( "surekian_decimation", e, 448090 );
-      // TODO: confirm there is no standard +15% per target up to five
+      auto d_dam = create_proc_action<generic_aoe_proc_t>( "surekian_decimation", e, 448090, true );
       d_dam->base_dd_min = d_dam->base_dd_max = data->effectN( 4 ).average( e );
       d_dam->base_multiplier *= role_mult( e.player, e.player->find_spell( 448090 ) );
       add_child( d_dam );
@@ -1262,7 +1259,6 @@ void sikrans_endless_arsenal( special_effect_t& effect )
 
       // setup barrage
       auto b_dam = create_proc_action<generic_aoe_proc_t>( "surekian_barrage", e, 445475 );
-      // TODO: confirm damage isn't split and has no diminishing returns
       b_dam->split_aoe_damage = false;
       b_dam->base_dd_min = b_dam->base_dd_max = data->effectN( 6 ).average( e );
       b_dam->base_multiplier *= role_mult( e.player, e.player->find_spell( 445475 ) );
