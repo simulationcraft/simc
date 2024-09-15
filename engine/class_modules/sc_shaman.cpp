@@ -2711,15 +2711,16 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
   void schedule_travel( action_state_t* s ) override
   {
-    if ( trigger_elemental_overload( s ) )
+    trigger_elemental_overload( s );
+
+    // On 11.0.5 PTR, Ascendance always guarantees 1 overload independent
+    // of existing overload chance
+    if ( p()->is_ptr() )
     {
-      if ( is_ptr() )
-      {
-        if ( p()->specialization() == SHAMAN_ELEMENTAL && p()->buff.ascendance->up() )
+        if ( p()->buff.ascendance->up() )
         {
           trigger_elemental_overload( s, 1.0 );
         }
-      }
     }
 
     base_t::schedule_travel( s );
