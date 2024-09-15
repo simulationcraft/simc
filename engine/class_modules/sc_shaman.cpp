@@ -7839,6 +7839,11 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
+    if ( p()->talent.earthshatter->ok() )
+    {
+      m *= 1.0 + p()->talent.earthshatter->effectN( 1 ).percent();
+    }
+
     m *= 1.0 + p()->buff.magma_chamber->check_stack_value();
 
     return m;
