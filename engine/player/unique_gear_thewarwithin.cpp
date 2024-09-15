@@ -961,8 +961,6 @@ struct stat_buff_with_multiplier_t : public stat_buff_t
 //  e2: on-use value
 // 444959 on-use driver & buff
 // 451199 proc projectile & buff
-// TODO: confirm there is an animation delay for the spiders to return before buff is applied
-// TODO: confirm you cannot use without stacking buff present
 void spymasters_web( special_effect_t& effect )
 {
   if ( unique_gear::create_fallback_buffs( effect, { "spymasters_web", "spymasters_report" } ) )
@@ -976,18 +974,10 @@ void spymasters_web( special_effect_t& effect )
   auto buff_data = equip->trigger();
 
   auto stacking_buff = create_buff<stat_buff_t>( effect.player, buff_data )
-    ->set_stat_from_effect_type( A_MOD_STAT, equip_data->effectN( 1 ).average( effect ) );
+    ->set_stat_from_effect_type( A_MOD_STAT, equip_data->effectN( 1 ).average( effect ) )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
-  // TODO: confirm there is an animation delay for the spiders to return before buff is applied
-  effect.player->callbacks.register_callback_execute_function( equip_id,
-      [ stacking_buff,
-        p = effect.player,
-        vel = buff_data->missile_speed() ]
-      ( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) {
-        auto delay = timespan_t::from_seconds( p->get_player_distance( *s->target ) / vel );
-
-        make_event( *p->sim, delay, [ stacking_buff ] { stacking_buff->trigger(); } );
-      } );
+  equip->custom_buff = stacking_buff;
 
   new dbc_proc_callback_t( effect.player, *equip );
 
@@ -1005,15 +995,12 @@ void spymasters_web( special_effect_t& effect )
       : generic_proc_t( e, "spymasters_web", e.driver() ), stacking_buff( stack ), use_buff( use )
     {}
 
-    // TODO: confirm you cannot use without stacking buff present
-    bool ready() override
-    {
-      return stacking_buff->check();
-    }
-
     void execute() override
     {
       generic_proc_t::execute();
+
+      if ( !stacking_buff->check() )
+        return;
 
       use_buff->expire();
       use_buff->trigger( stacking_buff->check() );
