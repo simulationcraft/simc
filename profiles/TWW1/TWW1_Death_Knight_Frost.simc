@@ -216,7 +216,7 @@ hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540/10299
 waist=crystalfissure_girdle,id=221079,bonus_id=3131/10299/10376/1808,gem_id=213458
 legs=exhumed_centurions_chausses,id=212001,bonus_id=1540/10299,enchant=stormbound_armor_kit_3
 feet=everforged_sabatons,id=222429,bonus_id=10421/9633/8902/11144/10222/1485,crafted_stats=32/49
-finger1=seal_of_the_city_watch,id=162542,bonus_id=10047/10299/10376/8781,gem_id=213458/213458,enchant=radiant_critical_strike_3
+finger1=band_of_the_roving_scalawag,id=162541,bonus_id=10047/10299/10376/8781,gem_id=213458/213458,enchant=radiant_critical_strike_3
 finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10299/10376/8781,gem_id=213458/213458,enchant=radiant_critical_strike_3
 trinket1=arakara_sacbrood,id=219314,bonus_id=3131/10299/10376
 trinket2=treacherous_transmitter,id=221023,bonus_id=1540/10299/10376
