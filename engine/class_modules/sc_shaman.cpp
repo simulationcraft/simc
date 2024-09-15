@@ -953,7 +953,7 @@ public:
     player_talent_t first_ascendant;
     player_talent_t preeminence;
     player_talent_t fury_of_the_storms;
-    player_talent_t skybreakers_fiery_demise;
+    player_talent_t skybreakers_fiery_demise; // Removed on PTR
     player_talent_t magma_chamber;
     // Row 10
     player_talent_t echoes_of_great_sundering;
@@ -8031,7 +8031,13 @@ public:
   {
     double m = shaman_spell_t::composite_crit_chance();
 
-    m += p()->talent.skybreakers_fiery_demise->effectN( 3 ).percent();
+    if ( !p()->is_ptr() )
+    {
+      if ( p()->talent.skybreakers_fiery_demise->ok() )
+      {
+        m += p()->talent.skybreakers_fiery_demise->effectN( 3 ).percent();
+      }
+    }
 
     return m;
   }
@@ -8098,10 +8104,13 @@ public:
       }
     }
 
-    if ( d->state->result == RESULT_CRIT && p()->talent.skybreakers_fiery_demise.ok() )
+    if ( !p()->is_ptr() )
     {
-      p()->cooldown.storm_elemental->adjust( -1.0 * p()->talent.skybreakers_fiery_demise->effectN( 1 ).time_value() );
-      p()->cooldown.fire_elemental->adjust( -1.0 * p()->talent.skybreakers_fiery_demise->effectN( 2 ).time_value() );
+      if ( d->state->result == RESULT_CRIT && p()->talent.skybreakers_fiery_demise.ok() )
+      {
+        p()->cooldown.storm_elemental->adjust( -1.0 * p()->talent.skybreakers_fiery_demise->effectN( 1 ).time_value() );
+        p()->cooldown.fire_elemental->adjust( -1.0 * p()->talent.skybreakers_fiery_demise->effectN( 2 ).time_value() );
+      }
     }
 
     if ( p()->talent.ashen_catalyst.ok() && d->state->result_amount > 0 )
@@ -10853,7 +10862,7 @@ void shaman_t::init_spells()
   talent.first_ascendant        = _ST( "First Ascendant" );
   talent.preeminence            = _ST( "Preeminence" );
   talent.fury_of_the_storms     = _ST( "Fury of the Storms" );
-  talent.skybreakers_fiery_demise = _ST( "Skybreaker's Fiery Demise" );
+  talent.skybreakers_fiery_demise = _ST( "Skybreaker's Fiery Demise" ); // Removed on PTR
   talent.magma_chamber          = _ST( "Magma Chamber" );
   // Row 10
   talent.echoes_of_great_sundering = _ST( "Echoes of Great Sundering" );
