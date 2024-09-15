@@ -4843,6 +4843,8 @@ void fateweaved_needle( special_effect_t& effect )
     void execute( action_t*, action_state_t* s ) override
     {
       get_debuff( s->target )->trigger();
+      // From logs whenever it triggers on an enemy/ally it also triggers on yourself
+      get_debuff( listener )->trigger();
     }
   };
 
