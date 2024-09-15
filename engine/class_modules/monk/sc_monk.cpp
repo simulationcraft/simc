@@ -2518,7 +2518,8 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
       int thunderfist_stacks = 1;
 
       if ( s->chain_target == 0 )
-        thunderfist_stacks += as<int>( p()->talent.windwalker.thunderfist->effectN( 1 ).base_value() );
+        // The first target will trigger the 4 stacks of the Thunderfist buff, all others will trigger 1 stack
+        thunderfist_stacks = as<int>( p()->talent.windwalker.thunderfist->effectN( 1 ).base_value() );
 
       p()->buff.thunderfist->trigger( thunderfist_stacks );
     }
