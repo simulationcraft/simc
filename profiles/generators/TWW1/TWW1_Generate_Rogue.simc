@@ -23,7 +23,7 @@ trinket2=skardyns_grace,id=133282,ilevel=639
 main_hand=regicide,id=225636,ilevel=639,enchant=authority_of_the_depths_3
 off_hand=everforged_stabber,id=222438,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960,enchant=authority_of_the_depths_3,crafted_stats=32/49
 
-save=TWW1_Rogue_Assassination_Deathstalker.simc
+save=TWW1_Rogue_Assassination.simc
 
 rogue="TWW1_Rogue_Assassination_Fatebound"
 level=80
