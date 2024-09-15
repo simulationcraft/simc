@@ -930,7 +930,7 @@ public:
     player_talent_t primordial_fury;
     player_talent_t flow_of_power; // Removed on PTR
     player_talent_t elemental_unity;
-    player_talent_t herald_of_the_storms;
+    player_talent_t herald_of_the_storms; // Added on 11.0.5 PTR
     // Row 6
     player_talent_t flux_melting;
     player_talent_t lightning_conduit;
@@ -956,6 +956,7 @@ public:
     player_talent_t skybreakers_fiery_demise;
     player_talent_t magma_chamber;
     // Row 10
+    player_talent_t charged_conduit; // Added on 11.0.5 PTR
     player_talent_t echoes_of_great_sundering;
     player_talent_t lightning_rod;
     player_talent_t primal_elementalist;
@@ -1477,8 +1478,13 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
   dot.flame_shock = target->get_dot( "flame_shock", p );
 
   // Elemental
-  debuff.lightning_rod      = make_buff( *this, "lightning_rod", p->find_spell( 197209 ) )
+  debuff.lightning_rod = make_buff( *this, "lightning_rod", p->find_spell( 197209 ) )
     ->set_default_value( p->constant.mul_lightning_rod )
+    ->set_duration(
+        p->talent.charged_conduit->ok() ?
+            p->find_spell( 197209 )->duration() + p->talent.charged_conduit->effectN( 1 ).time_value() :
+            p->find_spell( 197209 )->duration()
+    )
     ->set_stack_change_callback(
       [ p ]( buff_t*, int old, int new_ ) {
         if ( new_ - old > 0 )
@@ -10854,6 +10860,7 @@ void shaman_t::init_spells()
   talent.skybreakers_fiery_demise = _ST( "Skybreaker's Fiery Demise" );
   talent.magma_chamber          = _ST( "Magma Chamber" );
   // Row 10
+  talent.charged_conduit           = _ST( "Charged Conduit" );
   talent.echoes_of_great_sundering = _ST( "Echoes of Great Sundering" );
   talent.lightning_rod          = _ST( "Lightning Rod" );
   talent.primal_elementalist    = _ST( "Primal Elementalist" );
@@ -10952,8 +10959,21 @@ void shaman_t::init_spells()
 
   // Constants
   constant.mul_matching_gear = spec.mail_specialization->effectN( 1 ).percent();
-  constant.mul_lightning_rod = find_spell( 210689 )->effectN( 2 ).percent() +
-                               spec.enhancement_shaman->effectN( 27 ).percent();
+
+  constant.mul_lightning_rod = find_spell( 210689 )->effectN( 2 ).percent();
+
+  // On 11.0.5 PTR, Lightning Rod receives a multiplicative damage buff from Charged Conduit
+  if ( is_ptr() )
+  {
+      if ( talent.charged_conduit->ok() )
+      {
+            constant.mul_lightning_rod *= ( 1.0 + talent.charged_conduit->effectN( 2 ).percent() );
+      }
+  }
+
+  // Add enhancement Lightning Rod modifier
+  constant.mul_lightning_rod += spec.enhancement_shaman->effectN( 27 ).percent();
+
 
   player_t::init_spells();
 }
