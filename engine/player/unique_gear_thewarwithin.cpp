@@ -4903,8 +4903,11 @@ void befoulers_syringe( special_effect_t& effect )
     {
       generic_proc_t::trigger_dot( s );
 
+      // get dot refresh duration, as it accounts for the ongoing tick
+      auto duration = calculate_dot_refresh_duration( get_dot( s->target ), dot_duration );
+
       // execute() instead of trigger() to avoid proc delay
-      get_debuff( s->target )->execute( 1, buff_t::DEFAULT_VALUE(), dot_duration );
+      get_debuff( s->target )->execute( 1, buff_t::DEFAULT_VALUE(), duration );
     }
   };
 
