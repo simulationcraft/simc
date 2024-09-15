@@ -403,6 +403,7 @@ public:
   // Misc
   bool lava_surge_during_lvb;
   bool sk_during_cast;
+  bool ancestral_swiftness_consumed { false };
   /// Shaman ability cooldowns
   std::vector<cooldown_t*> ability_cooldowns;
   player_t* earthen_rage_target =
@@ -2146,6 +2147,7 @@ public:
 
   void execute() override
   {
+    p()->ancestral_swiftness_consumed = false;
     ab::execute();
 
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
@@ -2165,6 +2167,7 @@ public:
 
     if ( ( affected_by_xs_cast_time || affected_by_xs_cost ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()) && !ab::background)
     {
+      p()->ancestral_swiftness_consumed = p()->buff.ancestral_swiftness->check();
       p()->buff.ancestral_swiftness->decrement();
     }
 
@@ -6573,9 +6576,7 @@ struct lava_burst_t : public shaman_spell_t
 
   void execute() override
   {
-    bool had_ancestral_swiftness_buff = p()->buff.ancestral_swiftness->check();
     shaman_spell_t::execute();
-    bool ancestral_swiftness_consumed = had_ancestral_swiftness_buff && !p()->buff.ancestral_swiftness->check();
 
     if ( exec_type == spell_variant::NORMAL && p()->buff.surge_of_power->up() )
     {
@@ -6592,7 +6593,7 @@ struct lava_burst_t : public shaman_spell_t
 
     // Lava Surge buff does not get eaten, if the Lava Surge proc happened
     // during the Lava Burst cast
-    if (!ancestral_swiftness_consumed
+    if (!p()->ancestral_swiftness_consumed
       && exec_type == spell_variant::NORMAL && !p()->lava_surge_during_lvb && p()->buff.lava_surge->check() )
     {
       p()->buff.lava_surge->decrement();
@@ -6809,7 +6810,6 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( exec_type == spell_variant::NORMAL &&
          p()->specialization() == SHAMAN_ELEMENTAL )
     {
-
       if ( !p()->sk_during_cast )
       {
         p()->buff.stormkeeper->decrement();
@@ -13300,6 +13300,7 @@ void shaman_t::reset()
 {
   player_t::reset();
 
+  ancestral_swiftness_consumed = false;
   lava_surge_during_lvb = false;
   sk_during_cast        = false;
 
