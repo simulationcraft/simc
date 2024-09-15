@@ -933,6 +933,7 @@ public:
     player_talent_t elemental_unity;
     player_talent_t herald_of_the_storms; // Added on 11.0.5 PTR
     // Row 6
+    player_talent_t earthshatter; // Added on 11.0.5 PTR
     player_talent_t flux_melting;
     player_talent_t lightning_conduit;
     player_talent_t power_of_the_maelstrom;
@@ -7479,6 +7480,11 @@ struct earthquake_base_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_persistent_multiplier( state );
 
+    if ( p()->talent.earthshatter->ok() )
+    {
+      m *= 1.0 + p()->talent.earthshatter->effectN( 1 ).percent();
+    }
+
     if ( p()->buff.master_of_the_elements->up() )
     {
       m *= 1.0 + p()->buff.master_of_the_elements->default_value;
@@ -7833,6 +7839,11 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
+    if ( p()->talent.earthshatter->ok() )
+    {
+      m *= 1.0 + p()->talent.earthshatter->effectN( 1 ).percent();
+    }
+
     m *= 1.0 + p()->buff.magma_chamber->check_stack_value();
 
     return m;
@@ -7859,6 +7870,11 @@ struct earth_shock_t : public shaman_spell_t
   double action_multiplier() const override
   {
     double m = shaman_spell_t::action_multiplier();
+
+    if ( p()->talent.earthshatter->ok() )
+    {
+      m *= 1.0 + p()->talent.earthshatter->effectN( 1 ).percent();
+    }
 
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
 
@@ -10880,6 +10896,7 @@ void shaman_t::init_spells()
   talent.everlasting_elements   = _ST( "Everlasting Elements" );
   talent.flames_of_the_cauldron = _ST( "Flames of the Cauldron" );
   // Row 7
+  talent.earthshatter           = _ST( "Earthshatter" );
   talent.eye_of_the_storm       = _ST( "Eye of the Storm" );
   talent.thunderstrike_ward     = _ST( "Thunderstrike Ward" );
   talent.echo_chamber           = _ST( "Echo Chamber" );
@@ -12202,18 +12219,21 @@ void shaman_t::create_buffs()
   buff.elemental_blast_crit = make_buff<buff_t>( this, "elemental_blast_critical_strike", find_spell( 118522 ) )
     ->set_default_value_from_effect_type(A_MOD_ALL_CRIT_CHANCE)
     ->apply_affecting_aura(spec.elemental_shaman)
+    ->apply_affecting_aura(talent.earthshatter)
     ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.elemental_blast_haste = make_buff<buff_t>( this, "elemental_blast_haste", find_spell( 173183 ) )
     ->set_default_value_from_effect_type(A_HASTE_ALL)
     ->apply_affecting_aura(spec.elemental_shaman)
+    ->apply_affecting_aura(talent.earthshatter)
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.elemental_blast_mastery = make_buff<buff_t>( this, "elemental_blast_mastery", find_spell( 173184 ) )
     ->set_default_value_from_effect_type(A_MOD_MASTERY_PCT)
     ->apply_affecting_aura(spec.elemental_shaman)
+    ->apply_affecting_aura(talent.earthshatter)
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
