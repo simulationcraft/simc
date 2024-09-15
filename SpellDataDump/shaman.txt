@@ -21796,7 +21796,7 @@ Description      : Every $?s137040[$s1][$s2] $?s137040[Maelstrom][Maelstrom Weap
 $@spelltooltip452201
 
 Name             : Tempest (id=454015) [Spell Family (11)] 
-Hotfixed         : Max stacks (0 -> 2)
+Hotfixed         : Proc Flags 1 (69632 -> 0)
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -21807,8 +21807,6 @@ Labels           : 16: Class Spells
                  : 3022
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ ....x... x....... ........   ........ ........ ........ ........   
-                 : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
