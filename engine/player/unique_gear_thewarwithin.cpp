@@ -4945,15 +4945,17 @@ void befoulers_syringe( special_effect_t& effect )
 // 455888 vfx?
 // 455910 damage
 // 456652 buff
-// TODO: determine any delay in damage and if travel_delay needs to be implemented
 void voltaic_stormcaller( special_effect_t& effect )
 {
   struct voltaic_stormstrike_t : public generic_aoe_proc_t
   {
     stat_buff_with_multiplier_t* buff;
 
-    voltaic_stormstrike_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "voltaic_stormstrike", 455910, true )
+    voltaic_stormstrike_t( const special_effect_t& e ) : generic_aoe_proc_t( e, "voltaic_stormstrike", 455910 )
     {
+      travel_delay = 0.95;  // not in spell data, estimated from logs
+
+      split_aoe_damage = false;  // TODO: confirm this remains true in 11.1
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
       base_multiplier *= role_mult( e );
 
@@ -4961,16 +4963,16 @@ void voltaic_stormcaller( special_effect_t& effect )
       buff->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 2 ).average( e ) );
     }
 
-    void execute() override
+    void impact( action_state_t* s ) override
     {
-      generic_aoe_proc_t::execute();
+      generic_aoe_proc_t::impact( s );
 
       buff->stat_mul = generic_aoe_proc_t::composite_aoe_multiplier( execute_state );
-      buff->trigger();
+      // buff is delayed by ~250ms, not in spell data, estimated from logs
+      make_event( *sim, 250_ms, [ this ] { buff->trigger(); } );
     }
   };
 
-  // TODO: determine any delay in damage and if travel_delay needs to be implemented
   effect.execute_action = create_proc_action<voltaic_stormstrike_t>( "voltaic_stormstrike", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
