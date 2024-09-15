@@ -5321,13 +5321,15 @@ void void_reapers_contract( special_effect_t& effect )
 
       major = create_proc_action<generic_aoe_proc_t>( damage_name, effect, damage_spell );
       major->base_dd_min = major->base_dd_max = damage_amount;
+      major->split_aoe_damage = false;
       major->base_multiplier *= role_mult( effect );
       major->base_aoe_multiplier = effect.driver()->effectN( 5 ).percent();
 
       minor = create_proc_action<generic_aoe_proc_t>( damage_name + "_echo", effect, damage_spell );
       minor->base_dd_min = minor->base_dd_max = damage_amount * effect.driver()->effectN( 3 ).percent();
+      minor->split_aoe_damage = false;
       minor->base_multiplier *= role_mult( effect );
-      major->base_aoe_multiplier = effect.driver()->effectN( 5 ).percent();
+      minor->base_aoe_multiplier = effect.driver()->effectN( 5 ).percent();
       minor->name_str_reporting = "Echo";
       major->add_child( minor );
     }
