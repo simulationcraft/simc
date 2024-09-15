@@ -107,14 +107,15 @@ actions.ss_cleave+=/frostbolt
 actions.ss_cleave+=/call_action_list,name=movement
 
 actions.ss_st=flurry,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&(prev_gcd.1.frostbolt|prev_gcd.1.glacial_spike)
-actions.ss_st+=/ice_lance,if=buff.icy_veins.up&debuff.winters_chill.stack=2
+actions.ss_st+=/ice_lance,if=buff.icy_veins.up&(debuff.winters_chill.stack=2|debuff.winters_chill.stack=1&action.splinterstorm.in_flight)
 actions.ss_st+=/ray_of_frost,if=buff.icy_veins.down&buff.freezing_winds.down&remaining_winters_chill=1
 actions.ss_st+=/frozen_orb
 actions.ss_st+=/shifting_power
-actions.ss_st+=/ice_lance,if=remaining_winters_chill|buff.fingers_of_frost.react
+actions.ss_st+=/ice_lance,if=remaining_winters_chill
 actions.ss_st+=/comet_storm,if=prev_gcd.1.flurry|prev_gcd.1.cone_of_cold|action.splinterstorm.in_flight
 actions.ss_st+=/glacial_spike,if=buff.icicles.react=5
-actions.ss_st+=/flurry,if=cooldown_react&buff.icy_veins.up
+actions.ss_st+=/flurry,if=cooldown_react&buff.icy_veins.up&!action.splinterstorm.in_flight
+actions.ss_st+=/ice_lance,if=buff.fingers_of_frost.react
 actions.ss_st+=/frostbolt
 actions.ss_st+=/call_action_list,name=movement
 
