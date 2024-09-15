@@ -1979,15 +1979,16 @@ public:
       m *= 1.0 + p()->buff.amplification_core->value();
     }
 
-    if ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() && p()->buff.fire_elemental->check() ||
-         ( ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() &&
-             p()->buff.lesser_fire_elemental->check() ) ) )
+    if ( ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() &&
+           p()->buff.fire_elemental->check() ) ||
+         ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() &&
+           p()->buff.lesser_fire_elemental->check() ) )
     {
       m *= 1.0 + std::max( p()->buff.fire_elemental->data().effectN( 5 ).percent(),
                            p()->buff.lesser_fire_elemental->data().effectN( 5 ).percent() );
     }
 
-    if ( (affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() &&
+    if ( ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() &&
            p()->buff.storm_elemental->check() ) ||
          ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() &&
            p()->buff.lesser_storm_elemental->check() ) )
