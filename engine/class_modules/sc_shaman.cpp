@@ -9715,6 +9715,12 @@ struct primordial_wave_t : public shaman_spell_t
     // Spell data claims Maelstrom Weapon (still) affects Primordia Wave, however in-game
     // this is not true
     affected_by_maelstrom_weapon = false;
+
+    // On 11.0.5 PTR, casting Primordial Wave generates (3) Maelstrom
+    if ( p()->is_ptr() )
+    {
+        maelstrom_gain = p()->spec.maelstrom->effectN( 12 ).resource( RESOURCE_MAELSTROM );
+    }
   }
 
   void execute() override
@@ -9734,6 +9740,13 @@ struct primordial_wave_t : public shaman_spell_t
     {
       p()->action.feral_spirit_t31->set_target( execute_state->target );
       p()->action.feral_spirit_t31->execute();
+    }
+
+    // On 11.0.5 PTR, the Primordial Wave projectile hitting the mob triggers
+    // a Lava Surge
+    if ( p()->is_ptr() )
+    {
+        p()->buff.lava_surge->trigger();
     }
   }
 };
