@@ -2714,6 +2714,16 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   {
     trigger_elemental_overload( s );
 
+    // On 11.0.5 PTR, Ascendance always guarantees 1 overload independent
+    // of existing overload chance
+    if ( p()->is_ptr() )
+    {
+        if ( p()->buff.ascendance->up() )
+        {
+          trigger_elemental_overload( s, 1.0 );
+        }
+    }
+
     base_t::schedule_travel( s );
   }
 
@@ -4296,6 +4306,14 @@ struct elemental_overload_spell_t : public shaman_spell_t
         p->mastery.elemental_overload->effectN( 2 ).percent() +
         p->talent.echo_chamber->effectN( 1 ).percent();
 
+    if ( p->is_ptr() )
+    {
+      if ( p->buff.ascendance->up() )
+      {
+        base_multiplier *= 1.0 + p->talent.ascendance->effectN( 8 ).percent();
+      }
+    }
+
     // multiplier is used by Mountains Will Fall and is applied after
     // overload damage multiplier is calculated.
     if ( multiplier != -1.0 )
@@ -5858,8 +5876,13 @@ struct chain_lightning_t : public chained_base_t
 
   bool ready() override
   {
-    if ( p()->specialization() == SHAMAN_ELEMENTAL && p()->buff.ascendance->check() )
-      return false;
+    if ( !p()->is_ptr() )
+    {
+      if ( p()->specialization() == SHAMAN_ELEMENTAL && p()->buff.ascendance->check() )
+      {
+        return false;
+      }
+    }
 
     return shaman_spell_t::ready();
   }
@@ -5993,6 +6016,14 @@ struct chain_lightning_t : public chained_base_t
     if ( s->chain_target == 0 && p()->talent.supercharge.ok() )
     {
       trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
+
+      if ( p()->is_ptr() )
+      {
+        if ( p()->buff.ascendance->up() )
+        {
+          trigger_elemental_overload( s, 1.0 );
+        }
+      }
     }
 
     chained_base_t::schedule_travel( s );
@@ -6019,9 +6050,12 @@ struct lava_beam_t : public chained_base_t
 
   bool ready() override
   {
-    if ( !p()->buff.ascendance->check() )
+    if ( !p()->is_ptr() )
     {
-      return false;
+      if ( !p()->buff.ascendance->check() )
+      {
+        return false;
+      }
     }
 
     return shaman_spell_t::ready();
@@ -6151,9 +6185,12 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       }
     }
 
-    if ( p()->buff.ascendance->up() )
+    if ( !p()->is_ptr() )
     {
-      m *= 1.0 + p()->cache.spell_crit_chance();
+      if ( p()->buff.ascendance->up() )
+      {
+        m *= 1.0 + p()->cache.spell_crit_chance();
+      }
     }
 
     m *= 1.0 + p()->buff.flux_melting->value();
@@ -6534,9 +6571,12 @@ struct lava_burst_t : public shaman_spell_t
       }
     }
 
-    if ( p()->buff.ascendance->up() )
+    if ( !p()->is_ptr() )
     {
-      m *= 1.0 + p()->cache.spell_crit_chance();
+      if ( p()->buff.ascendance->up() )
+      {
+        m *= 1.0 + p()->cache.spell_crit_chance();
+      }
     }
 
     m *= 1.0 + p()->buff.flux_melting->value();
@@ -6563,9 +6603,12 @@ struct lava_burst_t : public shaman_spell_t
   {
     timespan_t d = cooldown->duration;
 
-    if ( p()->buff.ascendance->up() )
+    if ( !p()->is_ptr() )
     {
-      d = timespan_t::zero();
+      if ( p()->buff.ascendance->up() )
+      {
+        d = timespan_t::zero();
+      }
     }
 
     // Lava Surge has procced during the cast of Lava Burst, the cooldown
