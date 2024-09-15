@@ -362,14 +362,15 @@ void frost( player_t* p )
   movement->add_action( "ice_lance" );
 
   ss_st->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&(prev_gcd.1.frostbolt|prev_gcd.1.glacial_spike)" );
-  ss_st->add_action( "ice_lance,if=buff.icy_veins.up&debuff.winters_chill.stack=2" );
+  ss_st->add_action( "ice_lance,if=buff.icy_veins.up&(debuff.winters_chill.stack=2|debuff.winters_chill.stack=1&action.splinterstorm.in_flight" );
   ss_st->add_action( "ray_of_frost,if=buff.icy_veins.down&buff.freezing_winds.down&remaining_winters_chill=1" );
   ss_st->add_action( "frozen_orb" );
   ss_st->add_action( "shifting_power" );
-  ss_st->add_action( "ice_lance,if=remaining_winters_chill|buff.fingers_of_frost.react" );
+  ss_st->add_action( "ice_lance,if=remaining_winters_chill" );
   ss_st->add_action( "comet_storm,if=prev_gcd.1.flurry|prev_gcd.1.cone_of_cold|action.splinterstorm.in_flight" );
   ss_st->add_action( "glacial_spike,if=buff.icicles.react=5" );
-  ss_st->add_action( "flurry,if=cooldown_react&buff.icy_veins.up" );
+  ss_st->add_action( "flurry,if=cooldown_react&buff.icy_veins.up&!action.splinterstorm.in_flight" );
+  ss_st->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
   ss_st->add_action( "frostbolt" );
   ss_st->add_action( "call_action_list,name=movement" );
 
