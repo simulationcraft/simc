@@ -1994,7 +1994,7 @@ public:
     }
 
     if ( affected_by_lightning_elemental_ta && p()->buff.fury_of_the_storms->up() &&
-        !p()->buff.storm_elemental.up() && !p()->buff.lesser_storm_elemental.up())
+        !p()->buff.storm_elemental->up() && !p()->buff.lesser_storm_elemental->up())
     {
       m *= 1.0 + p()->buff.fury_of_the_storms->data().effectN( 3 ).percent();
     }
