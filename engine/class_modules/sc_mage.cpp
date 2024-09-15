@@ -8310,7 +8310,12 @@ void mage_t::init_spells()
 void mage_t::init_base_stats()
 {
   if ( base.distance < 1.0 )
-    base.distance = 10.0;
+     {
+    if ( specialization() == MAGE_FROST )
+      base.distance = 5.0;
+    else
+      base.distance = 10.0;
+  };
 
   player_t::init_base_stats();
 
