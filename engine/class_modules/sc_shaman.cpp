@@ -1826,11 +1826,6 @@ public:
       m *= 1.0 + p()->mastery.elemental_overload->effectN( 4 ).mastery_value() * p()->cache.mastery();
     }
 
-    if ( affected_by_lightning_elemental_da && p()->buff.fury_of_the_storms->up() )
-    {
-      m *= 1.0 + p()->buff.fury_of_the_storms->data().effectN( 2 ).percent();
-    }
-
     if ( affected_by_lotfw_da && p()->buff.legacy_of_the_frost_witch->check() )
     {
       m *= 1.0 + p()->buff.legacy_of_the_frost_witch->value();
@@ -1893,28 +1888,28 @@ public:
       m *= 1.0 + p()->talent.enhanced_imbues->effectN( 2 ).percent();
     }
 
-    if ( affected_by_elemental_unity_fe_da && p()->talent.elemental_unity.ok() &&
-         p()->buff.fire_elemental->check() )
+    if ( ( affected_by_elemental_unity_fe_da && p()->talent.elemental_unity.ok() &&
+           p()->buff.fire_elemental->check() ) ||
+         ( affected_by_elemental_unity_fe_da && p()->talent.elemental_unity.ok() &&
+           p()->buff.lesser_fire_elemental->check() ) )
     {
-      m *= 1.0 + p()->buff.fire_elemental->data().effectN( 4 ).percent();
+      m *= 1.0 + std::max( p()->buff.fire_elemental->data().effectN( 4 ).percent(),
+                           p()->buff.lesser_fire_elemental->data().effectN( 4 ).percent() );
     }
 
-    if ( affected_by_elemental_unity_fe_da && p()->talent.elemental_unity.ok() &&
-         p()->buff.lesser_fire_elemental->check() )
+    if ( ( affected_by_elemental_unity_se_da && p()->talent.elemental_unity.ok() &&
+           p()->buff.storm_elemental->check() ) ||
+         ( affected_by_elemental_unity_se_da && p()->talent.elemental_unity.ok() &&
+           p()->buff.lesser_storm_elemental->check()))
     {
-      m *= 1.0 + p()->buff.lesser_fire_elemental->data().effectN( 4 ).percent();
+      m *= 1.0 + std::max( p()->buff.storm_elemental->data().effectN( 4 ).percent(),
+                           p()->buff.lesser_storm_elemental->data().effectN( 4 ).percent() );
     }
 
-    if ( affected_by_elemental_unity_se_da && p()->talent.elemental_unity.ok() &&
-         p()->buff.storm_elemental->check() )
+    if ( affected_by_lightning_elemental_da && p()->buff.fury_of_the_storms->up() &&
+         !p()->buff.storm_elemental->check() && !p()->buff.lesser_storm_elemental->up())
     {
-      m *= 1.0 + p()->buff.storm_elemental->data().effectN( 4 ).percent();
-    }
-
-    if ( affected_by_elemental_unity_se_da && p()->talent.elemental_unity.ok() &&
-         p()->buff.lesser_storm_elemental->check() )
-    {
-      m *= 1.0 + p()->buff.lesser_storm_elemental->data().effectN( 4 ).percent();
+      m *= 1.0 + p()->buff.fury_of_the_storms->data().effectN( 2 ).percent();
     }
 
     return m;
@@ -1932,11 +1927,6 @@ public:
     if ( affected_by_ele_mastery_ta )
     {
       m *= 1.0 + p()->mastery.elemental_overload->effectN( 5 ).mastery_value() * p()->cache.mastery();
-    }
-
-    if ( affected_by_lightning_elemental_da && p()->buff.fury_of_the_storms->up() )
-    {
-      m *= 1.0 + p()->buff.fury_of_the_storms->data().effectN( 3 ).percent();
     }
 
     if ( affected_by_lotfw_ta && p()->buff.legacy_of_the_frost_witch->check() )
@@ -1986,28 +1976,27 @@ public:
       m *= 1.0 + p()->buff.amplification_core->value();
     }
 
-    if ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() &&
-         p()->buff.fire_elemental->check() )
+    if ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() && p()->buff.fire_elemental->check() ||
+         ( ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() &&
+             p()->buff.lesser_fire_elemental->check() ) ) )
     {
-      m *= 1.0 + p()->buff.fire_elemental->data().effectN( 5 ).percent();
+      m *= 1.0 + std::max( p()->buff.fire_elemental->data().effectN( 5 ).percent(),
+                           p()->buff.lesser_fire_elemental->data().effectN( 5 ).percent() );
     }
 
-    if ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() &&
-         p()->buff.lesser_fire_elemental->check() )
+    if ( (affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() &&
+           p()->buff.storm_elemental->check() ) ||
+         ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() &&
+           p()->buff.lesser_storm_elemental->check() ) )
     {
-      m *= 1.0 + p()->buff.lesser_fire_elemental->data().effectN( 5 ).percent();
+      m *= 1.0 + std::max( p()->buff.storm_elemental->data().effectN( 5 ).percent(),
+                           p()->buff.lesser_storm_elemental->data().effectN( 5 ).percent() );
     }
 
-    if ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() &&
-         p()->buff.storm_elemental->check() )
+    if ( affected_by_lightning_elemental_ta && p()->buff.fury_of_the_storms->up() &&
+        !p()->buff.storm_elemental->up() && !p()->buff.lesser_storm_elemental->up())
     {
-      m *= 1.0 + p()->buff.storm_elemental->data().effectN( 5 ).percent();
-    }
-
-    if ( affected_by_elemental_unity_se_ta && p()->talent.elemental_unity.ok() &&
-         p()->buff.lesser_storm_elemental->check() )
-    {
-      m *= 1.0 + p()->buff.lesser_storm_elemental->data().effectN( 5 ).percent();
+      m *= 1.0 + p()->buff.fury_of_the_storms->data().effectN( 3 ).percent();
     }
 
     return m;
