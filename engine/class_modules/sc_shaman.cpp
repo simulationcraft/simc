@@ -618,6 +618,7 @@ public:
     buff_t* tempest;
     buff_t* unlimited_power;
     buff_t* arc_discharge;
+    buff_t* storm_swell;
     buff_t* amplification_core;
 
     buff_t* whirling_air;
@@ -9834,17 +9835,29 @@ struct tempest_t : public shaman_spell_t
                                       as<int>( p()->talent.supercharge->effectN( 3 ).base_value() ) );
     }
 
-    if ( p()->talent.storm_swell.ok() && execute_state->n_targets == 1 )
+    // On 11.0.5 PTR, the existing Storm Swell has been entirely reworked to simply
+    // grant Mastery when Tempest is cast, and no longer restrict to single target
+    // Tempest use, and no longer generates resources.
+    if ( p()->talent.storm_swell.ok() )
     {
-      if ( p()->specialization() == SHAMAN_ENHANCEMENT )
-      {
-        p()->generate_maelstrom_weapon( this, as<int>( p()->talent.storm_swell->effectN( 1 ).base_value() ) );
-      }
-      else
-      {
-        p()->trigger_maelstrom_gain( p()->spell.storm_swell->effectN( 1 ).base_value(),
-                                     p()->gain.storm_swell );
-      }
+        if ( p()->is_ptr() )
+        {
+            p()->buff.storm_swell->trigger();
+        }
+        else
+        {
+            if ( execute_state->n_targets == 1 )
+            {
+                if ( p()->specialization() == SHAMAN_ENHANCEMENT )
+                {
+                    p()->generate_maelstrom_weapon( this, as<int>( p()->talent.storm_swell->effectN( 1 ).base_value() ) );
+                }
+                else
+                {
+                    p()->trigger_maelstrom_gain( p()->spell.storm_swell->effectN( 1 ).base_value(), p()->gain.storm_swell );
+                }
+            }
+        }
     }
 
     if ( p()->talent.arc_discharge.ok() && execute_state->n_targets >= 2 )
@@ -12225,6 +12238,9 @@ void shaman_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   buff.arc_discharge = make_buff( this, "arc_discharge", find_spell( 455097 ) )
     ->set_default_value_from_effect( 2 );
+  buff.storm_swell = make_buff( this, "storm_swell", find_spell( 455089 ) )
+    ->set_default_value_from_effect_type(A_MOD_MASTERY_PCT)
+    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
   buff.amplification_core = make_buff( this, "amplification_core", find_spell( 456369 ) )
     ->set_default_value_from_effect( 1 )
     ->set_trigger_spell( talent.amplification_core );
