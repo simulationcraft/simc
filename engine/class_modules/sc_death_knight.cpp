@@ -5197,6 +5197,8 @@ struct breath_of_sindragosa_buff_t : public death_knight_buff_t
       if ( current_tick == 0 )
       {
         bos_damage->execute_on_target( bos_target );
+        p->buffs.unleashed_frenzy->trigger();
+        p->buffs.icy_talons->trigger();
         p->replenish_rune( rune_gen, p->gains.breath_of_sindragosa );
         return;
       }
