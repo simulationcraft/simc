@@ -3004,7 +3004,6 @@ void empowering_crystal_of_anubikkaj( special_effect_t& effect )
 // 443539 debuff, damage, damage taken driver
 // 450551 buff
 // TODO: move vers buff to external/passive/custom buff system
-// TODO: confirm 950ms delay in damage
 // TODO: determine if attack needs to do damage to proc vers buff
 void mereldars_toll( special_effect_t& effect )
 {
@@ -3035,8 +3034,6 @@ void mereldars_toll( special_effect_t& effect )
       impact_action = create_proc_action<generic_proc_t>( "mereldars_toll_damage", e, e.trigger() );
       impact_action->base_dd_min = impact_action->base_dd_max = data->effectN( 2 ).average( e );
       impact_action->base_multiplier *= role_mult( e );
-      // TODO: confirm 950ms delay in damage
-      impact_action->travel_delay = e.driver()->effectN( 2 ).misc_value1() * 0.001;
       impact_action->stats = stats;
 
       // Pre-initialise the players own personal buff.
