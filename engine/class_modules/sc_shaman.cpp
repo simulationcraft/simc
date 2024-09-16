@@ -12301,7 +12301,7 @@ void shaman_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   buff.arc_discharge = make_buff( this, "arc_discharge", find_spell( 455097 ) )
     ->set_default_value_from_effect( 2 );
-  buff.storm_swell = make_buff( this, "storm_swell", find_spell( 455089 ) )
+  buff.storm_swell = make_buff( this, "storm_swell", is_ptr() ? find_spell( 455089 ) : spell_data_t::not_found() )
     ->set_default_value_from_effect_type(A_MOD_MASTERY_PCT)
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
   buff.amplification_core = make_buff( this, "amplification_core", find_spell( 456369 ) )
