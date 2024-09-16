@@ -2792,19 +2792,13 @@ void skyterrors_corrosive_organ( special_effect_t& e )
 }
 
 // 443415 driver
-//  e1: trigger damage with delay?
+//  e1: trigger damage with delay
 //  e2: damage coeff
 //  e3: buff coeff
 // 450921 damage
 // 450922 area trigger
 // 451247 buff return missile
 // 451248 buff
-// TODO: confirm damage increases by standard 15% per extra target
-// TODO: confirm buff increases by 15% per extra taget hit, up to 5.
-// TODO: confirm ticks once a second, not hasted
-// TODO: confirm buff return has 500ms delay
-// TODO: confirm 500ms delay before damage starts ticking (not including 1s tick time)
-// TODO: confirm buff procs even if no targets are hit
 void high_speakers_accretion( special_effect_t& effect )
 {
   struct high_speakers_accretion_t : public generic_proc_t
@@ -2834,31 +2828,27 @@ void high_speakers_accretion( special_effect_t& effect )
 
     high_speakers_accretion_t( const special_effect_t& e ) : generic_proc_t( e, "high_speakers_accretion", e.driver() )
     {
-      // TODO: confirm damage increases by standard 15% per extra target
       auto damage =
         create_proc_action<high_speakers_accretion_damage_t>( "high_speakers_accretion_damage", e, targets_hit );
       damage->stats = stats;
 
-      // TODO: confirm buff increases by 15% per extra target hit, up to 5.
       auto buff = create_buff<stat_buff_with_multiplier_t>( e.player, e.player->find_spell( 451248 ) );
       buff->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 3 ).average( e ) );
 
-      // TODO: confirm ticks once a second, not hasted
-      // TODO: confirm buff return has 500ms delay
       params.pulse_time( 1_s )
           .duration( e.trigger()->duration() )
           .action( damage )
           .expiration_callback(
               [ this, buff, delay = timespan_t::from_seconds( e.player->find_spell( 451247 )->missile_speed() ) ](
                   const action_state_t* ) {
-                // TODO: confirm buff procs even if no targets  are hit
-                if ( !targets_hit.empty() )
+                if ( targets_hit.empty() )
+                  buff->stat_mul = 1.0;
+                else
                   buff->stat_mul = 1.0 + 0.15 * ( as<unsigned>( targets_hit.size() ) - 1u );
 
                 make_event( *sim, delay, [ buff ] { buff->trigger(); } );
               } );
 
-      // TODO: confirm 500ms delay before damage starts ticking (not including 1s tick time)
       travel_delay = e.driver()->effectN( 1 ).misc_value1() * 0.001;
     }
 
@@ -2969,9 +2959,6 @@ void entropic_skardyn_core( special_effect_t& effect )
 // 443538 driver
 //  e1: trigger buff
 // 449275 buff
-// TODO: confirm refreshing proc can change stat
-// TODO: confirm refreshing proc can pick same stat
-// TODO: confirm refreshing proc doesn't stack stats (cannot be confirmed via tooltip)
 void empowering_crystal_of_anubikkaj( special_effect_t& effect )
 {
   std::vector<buff_t*> buffs;
@@ -2979,9 +2966,6 @@ void empowering_crystal_of_anubikkaj( special_effect_t& effect )
   create_all_stat_buffs( effect, effect.trigger(), 0,
     [ &buffs ]( stat_e, buff_t* b ) { buffs.push_back( b ); } );
 
-  // TODO: confirm refreshing proc can change stat
-  // TODO: confirm refreshing proc can pick same stat
-  // TODO: confirm refreshing proc doesn't stack stats (cannot be confirmed via tooltip)
   effect.player->callbacks.register_callback_execute_function(
     effect.spell_id, [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
       auto buff = buffs[ cb->listener->rng().range( 0U, as<unsigned>( buffs.size() ) ) ];
