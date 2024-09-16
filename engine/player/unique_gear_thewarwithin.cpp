@@ -1083,7 +1083,6 @@ void spymasters_web( special_effect_t& effect )
 // TODO: confirm cycle doesn't rest on combat start
 // TODO: replace with spec-specific driver id if possible
 // TODO: confirm damage procs off procs
-// TODO: confirm empowerment is not consumed by procs
 // TODO: determine when silence applies
 void aberrant_spellforge( special_effect_t& effect )
 {
@@ -1110,7 +1109,6 @@ void aberrant_spellforge( special_effect_t& effect )
 
   auto stack = create_buff<buff_t>( effect.player, effect.driver() )
                    ->set_cooldown( 0_ms )
-                   ->set_default_value( data->effectN( 3 ).percent() )
                    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   auto haste = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 451845 ) )
@@ -1120,9 +1118,10 @@ void aberrant_spellforge( special_effect_t& effect )
   struct aberrant_shadows_t : public generic_proc_t
   {
     buff_t* stack;
+    double mult;
 
     aberrant_shadows_t( const special_effect_t& e, const spell_data_t* data, buff_t* b )
-      : generic_proc_t( e, "aberrant_shadows", 451866 ), stack( b )
+      : generic_proc_t( e, "aberrant_shadows", 451866 ), stack( b ), mult( 1.0 + data->effectN( 3 ).percent() )
     {
       base_dd_min = base_dd_max = data->effectN( 1 ).average( e );
       base_multiplier *= role_mult( e.player, e.player->find_spell( 445593 ) );
@@ -1140,7 +1139,8 @@ void aberrant_spellforge( special_effect_t& effect )
 
     double action_multiplier() const override
     {
-      return generic_proc_t::action_multiplier() * ( 1.0 + stack->check_stack_value() );
+      // 125% per stack is applied exponentially
+      return generic_proc_t::action_multiplier() * std::pow( mult, stack->check() );
     }
   };
 
@@ -1169,7 +1169,6 @@ void aberrant_spellforge( special_effect_t& effect )
         return a->data().id() == id;
       } );
 
-  // TODO: confirm empowerment is not consumed by procs
   effect.player->callbacks.register_callback_execute_function( equip->spell_id,
       [ damage, empowerment ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) {
         damage->execute_on_target( s->target );
@@ -1457,7 +1456,6 @@ void swarmlords_authority( special_effect_t& effect )
 // 446805 heal
 // 446886 hp buff
 // 446887 shield, unknown use
-// TODO: confirm effect value is for the entire dot and not per tick
 // TODO: determine out of combat decay
 void foul_behemoths_chelicera( special_effect_t& effect )
 {
@@ -1503,7 +1501,6 @@ void foul_behemoths_chelicera( special_effect_t& effect )
     digestive_venom_t( const special_effect_t& e ) : generic_proc_t( e, "digestive_venom", e.driver() )
     {
       auto data = e.player->find_spell( 444258 );
-      // TODO: confirm effect value is for the entire dot and not per tick
       base_td = data->effectN( 1 ).average( e ) * ( base_tick_time / dot_duration );
 
       auto driver = new special_effect_t( e.player );
@@ -1944,8 +1941,6 @@ void treacherous_transmitter( special_effect_t& effect )
 // 455162 heal return
 //  e1: dummy
 //  e2: trigger heal
-// TODO: confirm heal coeff is for entire hot
-// TODO: determine magnitude of increase for missing health. currently assumed 100%
 // TODO: confirm cast time is hasted
 void mad_queens_mandate( special_effect_t& effect )
 {
@@ -1974,7 +1969,6 @@ void mad_queens_mandate( special_effect_t& effect )
       heal = create_proc_action<generic_heal_t>( "abyssal_gluttony_heal", e, "abyssal_gluttony_heal",
                                                  e.trigger()->effectN( 2 ).trigger() );
       heal->name_str_reporting = "abyssal_gluttony";
-      // TODO: confirm heal coeff is for entire hot
       heal->base_td = data->effectN( 2 ).average( e ) * ( heal->base_tick_time / heal->dot_duration );
     }
 
