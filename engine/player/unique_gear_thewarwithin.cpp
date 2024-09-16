@@ -933,6 +933,57 @@ void adrenal_surge( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Siphoning Stilleto
+// 453573 Driver
+// Effect 1: Self Damage
+// Effect 2: Damage
+// Effect 3: Duration
+// Effect 4: Range
+// 458630 Self Damage
+// 458624 Damage
+void siphoning_stilleto( special_effect_t& effect )
+{
+  struct siphoning_stilleto_cb_t : public dbc_proc_callback_t
+  {
+    action_t* self;
+    action_t* damage;
+    timespan_t duration;
+    siphoning_stilleto_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        self( nullptr ),
+        damage( nullptr ),
+        duration( timespan_t::from_seconds( e.driver()->effectN( 3 ).base_value() ) )
+    {
+      self              = create_proc_action<generic_proc_t>( "siphoning_stilleto_self", e, 458630 );
+      // TODO: Check if self damage is affected by the role multiplier
+      self->base_dd_min = self->base_dd_max = e.driver()->effectN( 1 ).average( e ) * writhing_mul( e.player );
+      self->stats->type = STATS_NEUTRAL;
+      // TODO: Check if self damage can trigger other effects
+      self->callbacks   = false;
+      self->target      = e.player;
+
+      damage              = create_proc_action<generic_proc_t>( "siphoning_stilleto", e, 458624 );
+      damage->base_dd_min = damage->base_dd_max =
+          e.driver()->effectN( 2 ).average( e );
+      damage->base_multiplier *= role_mult( e );
+      damage->base_multiplier *= writhing_mul( e.player );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      self->execute_on_target( listener );
+      // TODO: implement range check if it ever matters for specilizations that can use this.
+      make_event( *listener->sim, duration, [ & ] {
+        auto target = listener->sim
+          ->target_non_sleeping_list[ rng().range( listener->sim->target_non_sleeping_list.size() ) ];
+        damage->execute_on_target( target );
+      } );
+    }
+  };
+
+  new siphoning_stilleto_cb_t( effect );
+}
 }  // namespace embellishments
 
 namespace items
@@ -3262,10 +3313,7 @@ void charged_stormrook_plume( special_effect_t& effect )
 // 450340 ranged speed
 // 450162 can dual strike (3rd)
 // 450204 unknown
-// TODO: confirm can be reused instantly
-// TODO: confirm melee damage does not split
-// TODO: confirm range damage does not increase per extra target
-// TODO: fully implement triple-use if it goes live like that. for now we just cast all 3 at once
+// TODO: add APL action for 2nd & 3rd use if needed. for now assumed to be used asap.
 void twin_fang_instruments( special_effect_t& effect )
 {
   unsigned equip_id = 450044;
@@ -3278,6 +3326,7 @@ void twin_fang_instruments( special_effect_t& effect )
   {
     action_t* melee;
     action_t* range;
+    timespan_t delay = 2_s;  // not in spell data
 
     twin_fang_instruments_t( const special_effect_t& e, const spell_data_t* data )
       : generic_proc_t( e, "twin_fang_instruments", e.driver() )
@@ -3285,12 +3334,10 @@ void twin_fang_instruments( special_effect_t& effect )
       melee = create_proc_action<generic_aoe_proc_t>( "nxs_shadow_strike", e, e.player->find_spell( 450119 ) );
       melee->base_dd_min = melee->base_dd_max = data->effectN( 1 ).average( e ) * 0.5;
       melee->base_multiplier *= role_mult( e );
-      // TODO: confirm melee damage does not split
       melee->split_aoe_damage = false;
       add_child( melee );
 
-      // TODO: confirm range damage does not increase per extra target
-      range = create_proc_action<generic_aoe_proc_t>( "vxs_frost_slash", e, e.player->find_spell( 450158 ) );
+      range = create_proc_action<generic_aoe_proc_t>( "vxs_frost_slash", e, e.player->find_spell( 450158 ), true );
       range->base_dd_min = range->base_dd_max = data->effectN( 1 ).average( e );
       range->base_multiplier *= role_mult( e );
       range->travel_speed = range->data().effectN( 3 ).trigger()->missile_speed();
@@ -3301,12 +3348,17 @@ void twin_fang_instruments( special_effect_t& effect )
     {
       generic_proc_t::execute();
 
-      // TODO: fully implement triple-use if it goes live like that. for now we just cast all 3 at once
+      // TODO: add APL action for 2nd & 3rd use if needed. for now assumed to be used asap.
       melee->execute_on_target( target );
-      range->execute_on_target( target );
 
-      melee->execute_on_target( target );
-      range->execute_on_target( target );
+      make_event( *sim, delay, [ this ] {
+        range->execute_on_target( target );
+      } );
+
+      make_event( *sim, delay * 2, [ this ] {
+        melee->execute_on_target( target );
+        range->execute_on_target( target );
+      } );
     }
   };
 
@@ -3321,7 +3373,6 @@ void twin_fang_instruments( special_effect_t& effect )
 // 455536 buff
 // 455537 self damage
 // TODO: determine if self damage procs anything
-// TODO: confirm buff value once scaling is fixed
 void darkmoon_deck_symbiosis( special_effect_t& effect )
 {
   bool is_embellishment = effect.driver()->id() == 463232;
@@ -3571,7 +3622,6 @@ void darkmoon_deck_ascension( special_effect_t& effect )
       {
         auto s_data = e.player->find_spell( id );
         double value = 0;
-        // TODO: confirm that embellishment counts as a nerubian embellishement, but the card does not.
         if ( embellish )
           value = e.driver()->effectN( 2 ).average( e ) * writhing_mul( e.player );
         else
@@ -3934,7 +3984,6 @@ void shadowed_essence( special_effect_t& effect )
       auto dark_embrace = create_buff<stat_buff_t>( e.player, e.player->find_spell( 455656 ) )
                               ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 3 ).average( e ) );
 
-      // TODO: determine if damage is affected by role mult
       auto damage         = create_proc_action<generic_proc_t>( "shadowed_essence_damage", e, 455654 );
       damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 1 ).average( e );
       damage->base_multiplier *= role_mult( e.player );
@@ -4855,7 +4904,6 @@ void fateweaved_needle( special_effect_t& effect )
 // 442268 dot
 // 442267 on-next buff
 // 442280 on-next damage
-// TODO: confirm it uses psuedo-async behavior found in other similarly worded dots
 // TODO: confirm on-next buff/damage stacks per dot expired
 // TODO: determine if on-next buff ICD affects how often it can be triggered
 // TODO: determine if on-next buff ICD affects how often it can be consumed
@@ -4870,7 +4918,6 @@ void befoulers_syringe( special_effect_t& effect )
     {
       base_td = e.driver()->effectN( 1 ).average( e );
       base_multiplier *= role_mult( e );
-      // TODO: confirm it uses psuedo-async behavior found in other similarly worded dots
       dot_max_stack = 1;
       dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
       target_debuff = e.trigger();
@@ -4991,63 +5038,11 @@ void harvesters_interdiction( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// Siphoning Stilleto
-// 453573 Driver
-// Effect 1: Self Damage
-// Effect 2: Damage
-// Effect 3: Duration
-// Effect 4: Range
-// 458630 Self Damage
-// 458624 Damage
-void siphoning_stilleto( special_effect_t& effect )
-{
-  struct siphoning_stilleto_cb_t : public dbc_proc_callback_t
-  {
-    action_t* self;
-    action_t* damage;
-    timespan_t duration;
-    siphoning_stilleto_cb_t( const special_effect_t& e )
-      : dbc_proc_callback_t( e.player, e ),
-        self( nullptr ),
-        damage( nullptr ),
-        duration( timespan_t::from_seconds( e.driver()->effectN( 3 ).base_value() ) )
-    {
-      self              = create_proc_action<generic_proc_t>( "siphoning_stilleto_self", e, 458630 );
-      // TODO: Check if self damage is affected by the role multiplier
-      self->base_dd_min = self->base_dd_max = e.driver()->effectN( 1 ).average( e ) * writhing_mul( e.player );
-      self->stats->type = STATS_NEUTRAL;
-      // TODO: Check if self damage can trigger other effects
-      self->callbacks   = false;
-      self->target      = e.player;
-
-      damage              = create_proc_action<generic_proc_t>( "siphoning_stilleto", e, 458624 );
-      damage->base_dd_min = damage->base_dd_max =
-          e.driver()->effectN( 2 ).average( e );
-      damage->base_multiplier *= role_mult( e );
-      damage->base_multiplier *= writhing_mul( e.player );
-    }
-
-    void execute( action_t*, action_state_t* ) override
-    {
-      self->execute_on_target( listener );
-      // TODO: implement range check if it ever matters for specilizations that can use this.
-      make_event( *listener->sim, duration, [ & ] {
-        auto target = listener->sim
-          ->target_non_sleeping_list[ rng().range( listener->sim->target_non_sleeping_list.size() ) ];
-        damage->execute_on_target( target );
-      } );
-    }
-  };
-
-  new siphoning_stilleto_cb_t( effect );
-}
-
 // Armor
 // 457815 driver
 // 457918 nature damage driver
 // 457925 counter
 // 457928 dot
-// TODO: confirm coeff is for entire dot and not per tick
 void seal_of_the_poisoned_pact( special_effect_t& effect )
 {
   unsigned nature_id = 457918;
@@ -5055,7 +5050,6 @@ void seal_of_the_poisoned_pact( special_effect_t& effect )
   assert( nature && "Seal of the Poisoned Pact missing nature damage driver" );
 
   auto dot = create_proc_action<generic_proc_t>( "venom_shock", effect, 457928 );
-  // TODO: confirm coeff is for entire dot and not per tick
   dot->base_td = effect.driver()->effectN( 1 ).average( effect ) * dot->base_tick_time / dot->dot_duration;
   dot->base_multiplier *= role_mult( effect );
 
@@ -5635,6 +5629,7 @@ void register_special_effects()
   register_special_effect( 443902, DISABLED_EFFECT );  // writhing armor banding
   register_special_effect( 436132, embellishments::binding_of_binding );
   register_special_effect( 436085, DISABLED_EFFECT ); // Binding of Binding on use
+  register_special_effect( 453573, embellishments::siphoning_stilleto );
 
   // Trinkets
   register_special_effect( 444959, items::spymasters_web, true );
@@ -5707,7 +5702,6 @@ void register_special_effects()
   register_special_effect( 442205, items::befoulers_syringe );
   register_special_effect( 455887, items::voltaic_stormcaller );
   register_special_effect( 455819, items::harvesters_interdiction );
-  register_special_effect( 453573, items::siphoning_stilleto );
 
   // Armor
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );
