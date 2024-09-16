@@ -3283,21 +3283,23 @@ void conductors_wax_whistle( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// 443337 driver
+// 460469 on use
+// 443337 cast spell
 //  e1: damage coeff
-//  e2: cast time?
+//  e2: jump speed?
 //  e3: unknown
 // 448892 damage
-// TODO: determine if cast time changes
-// TODO: confirm damage does not increase per extra target
+// TODO: confirm lightning ball jump speed
 void charged_stormrook_plume( special_effect_t& effect )
 {
   // TODO: confirm damage does not increase per extra target
-  auto damage = create_proc_action<generic_aoe_proc_t>( "charged_stormrook_plume", effect, 448892 );
-  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
-  damage->base_multiplier *= role_mult( effect );
-  // TODO: determine if cast time changes
-  damage->base_execute_time = effect.driver()->cast_time();
+  auto damage = create_proc_action<generic_aoe_proc_t>( "charged_stormrook_plume", effect, 448892, true );
+  auto cast_spell = effect.player->find_spell( 443337 );
+  damage->base_dd_min = damage->base_dd_max = cast_spell->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect.player, cast_spell );
+  damage->base_execute_time = cast_spell->cast_time();
+  // TODO: confirm lightning ball jump speed
+  damage->travel_speed = cast_spell->effectN( 2 ).base_value();
 
   effect.execute_action = damage;
 }
@@ -5670,7 +5672,7 @@ void register_special_effects()
   register_special_effect( 450877, DISABLED_EFFECT );  // signet of the priory
   register_special_effect( 451055, items::harvesters_edict );
   register_special_effect( 443525, items::conductors_wax_whistle );
-  register_special_effect( 443337, items::charged_stormrook_plume );
+  register_special_effect( 460469, items::charged_stormrook_plume );
   register_special_effect( 443556, items::twin_fang_instruments );
   register_special_effect( 450044, DISABLED_EFFECT );  // twin fang instruments
   register_special_effect( { 463610, 463232 }, items::darkmoon_deck_symbiosis );
