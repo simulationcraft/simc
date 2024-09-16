@@ -3232,13 +3232,11 @@ void signet_of_the_priory( special_effect_t& effect )
 // 451303 buff
 // 443549 summon from back right?
 // 451991 summon from back left?
-// TODO: confirm damage doesn't increase per extra target
 // TODO: determine travel speed to hit target, assuming 5yd/s based on 443549 range/duration
 // TODO: determine reasonable delay to intercept
 void harvesters_edict( special_effect_t& effect )
 {
-  // TODO: confirm damage doesn't increase per extra target
-  auto damage = create_proc_action<generic_aoe_proc_t>( "volatile_blood_blast", effect, effect.driver() );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "volatile_blood_blast", effect, effect.driver(), true );
   damage->base_dd_min = damage->base_dd_max =
     effect.driver()->effectN( 1 ).average( effect );
   damage->base_multiplier *= role_mult( effect );
