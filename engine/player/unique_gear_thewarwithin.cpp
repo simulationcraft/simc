@@ -3267,12 +3267,11 @@ void harvesters_edict( special_effect_t& effect )
 // 450458 unknown, cart travel path?
 // 450459 unknown, cart travel path?
 // 450460 unknown, cart travel path?
-// TODO: confirm damage does not increase per extra target
 // TODO: determine travel speed/delay, assuming 7.5yd/s based on summed cart path(?) radius/duration
 void conductors_wax_whistle( special_effect_t& effect )
 {
   // TODO: confirm damage does not increase per extra target
-  auto damage = create_proc_action<generic_aoe_proc_t>( "collision", effect, 450429 );
+  auto damage = create_proc_action<generic_aoe_proc_t>( "collision", effect, 450429, true );
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
   damage->base_multiplier *= role_mult( effect );
   // TODO: determine travel speed/delay, assuming 7.5yd/s based on summed cart path(?) radius/duration
