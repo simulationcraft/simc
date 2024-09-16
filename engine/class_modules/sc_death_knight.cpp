@@ -784,6 +784,8 @@ public:
     propagate_const<buff_t*> dark_talons_icy_talons;
     propagate_const<buff_t*> exterminate;
     propagate_const<buff_t*> exterminate_painful_death;
+    propagate_const<buff_t*> rune_carved_plates_physical_buff;
+    propagate_const<buff_t*> rune_carved_plates_magical_buff;
 
   } buffs;
 
@@ -1464,6 +1466,8 @@ public:
     const spell_data_t* exterminate_aoe;
     const spell_data_t* exterminate_buff;
     const spell_data_t* exterminate_buff_painful_death;
+    const spell_data_t* rune_carved_plates_physical_buff;
+    const spell_data_t* rune_carved_plates_magical_buff;
 
   } spell;
 
@@ -11214,6 +11218,11 @@ double death_knight_t::resource_gain( resource_e resource_type, double amount, g
     actual_amount += player_t::resource_gain( resource_type, bonus_rp, gains.rune_of_hysteria, action );
   }
 
+  if ( resource_type == RESOURCE_RUNE && talent.deathbringer.rune_carved_plates.ok() && amount > 0 )
+  {
+    buffs.rune_carved_plates_physical_buff->trigger( amount );
+  }
+
   return actual_amount;
 }
 
@@ -11226,6 +11235,11 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     _runes.consume( as<int>( amount ) );
     // Ensure rune state is consistent with the actor resource state for runes
     assert( _runes.runes_full() == resources.current[ RESOURCE_RUNE ] );
+
+    if ( talent.deathbringer.rune_carved_plates.ok() && amount > 0 )
+    {
+      buffs.rune_carved_plates_magical_buff->trigger( amount );
+    }
   }
 
   // Procs from runes spent
@@ -13359,21 +13373,23 @@ void death_knight_t::init_spells()
   spell.bloodsoaked_ground_buff = conditional_spell_lookup( talent.sanlayn.bloodsoaked_ground.ok(), 434034 );
 
   // Deathbringer Spells
-  spell.reapers_mark_debuff            = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 434765 );
-  spell.reapers_mark_explosion         = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 436304 );
-  spell.grim_reaper                    = conditional_spell_lookup( talent.deathbringer.grim_reaper.ok(), 443761 );
-  spell.wave_of_souls_damage           = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 435802 );
-  spell.wave_of_souls_debuff           = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 443404 );
-  spell.blood_fever_damage             = conditional_spell_lookup( talent.deathbringer.blood_fever.ok(), 440005 );
-  spell.bind_in_darkness_buff          = conditional_spell_lookup( talent.deathbringer.bind_in_darkness.ok(), 443532 );
-  spell.dark_talons_shadowfrost_buff   = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443586 );
-  spell.dark_talons_icy_talons_buff    = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443595 );
-  spell.soul_rupture_damage            = conditional_spell_lookup( talent.deathbringer.soul_rupture.ok(), 439594 );
-  spell.grim_reaper_soul_reaper        = conditional_spell_lookup( talent.deathbringer.grim_reaper.ok(), 448229 );
-  spell.exterminate_damage             = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441424 );
-  spell.exterminate_aoe                = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441426 );
-  spell.exterminate_buff               = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441416 );
-  spell.exterminate_buff_painful_death = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 447954 );
+  spell.reapers_mark_debuff              = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 434765 );
+  spell.reapers_mark_explosion           = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 436304 );
+  spell.grim_reaper                      = conditional_spell_lookup( talent.deathbringer.grim_reaper.ok(), 443761 );
+  spell.wave_of_souls_damage             = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 435802 );
+  spell.wave_of_souls_debuff             = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 443404 );
+  spell.blood_fever_damage               = conditional_spell_lookup( talent.deathbringer.blood_fever.ok(), 440005 );
+  spell.bind_in_darkness_buff            = conditional_spell_lookup( talent.deathbringer.bind_in_darkness.ok(), 443532 );
+  spell.dark_talons_shadowfrost_buff     = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443586 );
+  spell.dark_talons_icy_talons_buff      = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443595 );
+  spell.soul_rupture_damage              = conditional_spell_lookup( talent.deathbringer.soul_rupture.ok(), 439594 );
+  spell.grim_reaper_soul_reaper          = conditional_spell_lookup( talent.deathbringer.grim_reaper.ok(), 448229 );
+  spell.exterminate_damage               = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441424 );
+  spell.exterminate_aoe                  = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441426 );
+  spell.exterminate_buff                 = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441416 );
+  spell.exterminate_buff_painful_death   = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 447954 );
+  spell.rune_carved_plates_physical_buff = conditional_spell_lookup( talent.deathbringer.rune_carved_plates.ok(), 440289 );
+  spell.rune_carved_plates_magical_buff  = conditional_spell_lookup( talent.deathbringer.rune_carved_plates.ok(), 440290 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -13790,6 +13806,16 @@ void death_knight_t::create_buffs()
 
   buffs.exterminate_painful_death = make_fallback( talent.deathbringer.painful_death.ok(), this, "exterminate_painful_death",
                                        spell.exterminate_buff_painful_death );
+
+  buffs.rune_carved_plates_physical_buff = make_fallback( talent.deathbringer.rune_carved_plates.ok(), this,
+                                                          "rune_carved_plates_physical",
+                                                          spell.rune_carved_plates_physical_buff )
+                                                          ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
+
+  buffs.rune_carved_plates_magical_buff  = make_fallback( talent.deathbringer.rune_carved_plates.ok(), this,
+                                                          "rune_carved_plates_magical",
+                                                          spell.rune_carved_plates_magical_buff )
+                                                          ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   // San'layn
   buffs.essence_of_the_blood_queen = make_fallback<essence_of_the_blood_queen_haste_buff_t>(
