@@ -1782,15 +1782,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
 
     if ( result_is_hit( execute_state->result ) )
     {
-      if ( p()->buff.bok_proc->up() )
-      {
-        if ( p()->rng().roll( p()->talent.windwalker.energy_burst->effectN( 1 ).percent() ) )
-          p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.energy_burst->effectN( 2 ).base_value(),
-                              p()->gain.energy_burst );
-
-        p()->buff.bok_proc->decrement();
-      }
-
       p()->buff.blackout_combo->trigger();
 
       if ( p()->baseline.windwalker.blackout_kick_rank_3->ok() )
@@ -1835,6 +1826,18 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
   void impact( action_state_t *s ) override
   {
     base_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      if ( p()->buff.bok_proc->up() )
+      {
+        if ( p()->rng().roll( p()->talent.windwalker.energy_burst->effectN( 1 ).percent() ) )
+          p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.energy_burst->effectN( 2 ).base_value(),
+                              p()->gain.energy_burst );
+
+        p()->buff.bok_proc->decrement();
+      }
+    }
 
     p()->buff.hit_scheme->trigger();
 
