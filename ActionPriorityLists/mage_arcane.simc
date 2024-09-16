@@ -14,31 +14,36 @@ actions.precombat+=/variable,name=aoe_target_count,op=reset,default=2
 actions.precombat+=/variable,name=aoe_target_count,op=set,value=9,if=!talent.arcing_cleave
 actions.precombat+=/variable,name=opener,op=set,value=1
 actions.precombat+=/variable,name=sunfury_aoe_list,default=0,op=reset
-actions.precombat+=/variable,name=steroid_trinket_equipped,op=set,value=equipped.gladiators_badge|equipped.signet_of_the_priory|equipped.high_speakers_accretion|equipped.spymasters_web|equipped.treacherous_transmitter|equipped.imperfect_ascendancy_serum
+actions.precombat+=/variable,name=steroid_trinket_equipped,op=set,value=equipped.gladiators_badge|equipped.signet_of_the_priory|equipped.high_speakers_accretion|equipped.spymasters_web|equipped.treacherous_transmitter|equipped.imperfect_ascendancy_serum|equipped.quickwick_candlestick
+actions.precombat+=/variable,name=transmitter_double_on_use,op=set,value=(equipped.gladiators_badge|equipped.signet_of_the_priory|equipped.high_speakers_accretion|equipped.spymasters_web|equipped.imperfect_ascendancy_serum|equipped.quickwick_candlestick)&equipped.treacherous_transmitter
 actions.precombat+=/snapshot_stats
+actions.precombat+=/variable,name=treacherous_transmitter_precombat_cast,value=11
+actions.precombat+=/use_item,name=treacherous_transmitter,if=!(talent.splintering_sorcery&variable.transmitter_double_on_use)
 actions.precombat+=/mirror_image
 actions.precombat+=/arcane_blast,if=!talent.evocation
+actions.precombat+=/use_item,name=imperfect_ascendancy_serum
 actions.precombat+=/evocation,if=talent.evocation
 
 # Executed every time the actor is available.
 actions=counterspell
-actions+=/potion,if=!equipped.spymasters_web&(buff.siphon_storm.up|(!talent.evocation&cooldown.arcane_surge.ready))|buff.spymasters_web.up
+actions+=/potion,if=!equipped.spymasters_web&(buff.siphon_storm.up|(!talent.evocation&cooldown.arcane_surge.ready))|equipped.spymasters_web&(buff.spymasters_web.up|(fight_remains>330&buff.siphon_storm.up))
 actions+=/lights_judgment,if=(buff.arcane_surge.down&debuff.touch_of_the_magi.down&active_enemies>=2)
-actions+=/berserking,if=(prev_gcd.1.arcane_surge&variable.opener)|((prev_gcd.1.arcane_surge&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment))|(prev_gcd.1.arcane_surge&!equipped.spymasters_web))
-actions+=/blood_fury,if=(prev_gcd.1.arcane_surge&variable.opener)|((prev_gcd.1.arcane_surge&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment))|(prev_gcd.1.arcane_surge&!equipped.spymasters_web))
-actions+=/fireblood,if=(prev_gcd.1.arcane_surge&variable.opener)|((prev_gcd.1.arcane_surge&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment))|(prev_gcd.1.arcane_surge&!equipped.spymasters_web))
-actions+=/ancestral_call,if=(prev_gcd.1.arcane_surge&variable.opener)|((prev_gcd.1.arcane_surge&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment))|(prev_gcd.1.arcane_surge&!equipped.spymasters_web))
+actions+=/berserking,if=(prev_gcd.1.arcane_surge&variable.opener)|((prev_gcd.1.arcane_surge&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment|buff.spymasters_web.up))|(prev_gcd.1.arcane_surge&!equipped.spymasters_web))
+actions+=/blood_fury,if=(prev_gcd.1.arcane_surge&variable.opener)|((prev_gcd.1.arcane_surge&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment|buff.spymasters_web.up))|(prev_gcd.1.arcane_surge&!equipped.spymasters_web))
+actions+=/fireblood,if=(prev_gcd.1.arcane_surge&variable.opener)|((prev_gcd.1.arcane_surge&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment|buff.spymasters_web.up))|(prev_gcd.1.arcane_surge&!equipped.spymasters_web))
+actions+=/ancestral_call,if=(prev_gcd.1.arcane_surge&variable.opener)|((prev_gcd.1.arcane_surge&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment|buff.spymasters_web.up))|(prev_gcd.1.arcane_surge&!equipped.spymasters_web))
 # Invoke Externals with cooldowns except Autumn which should come just after cooldowns
 actions+=/invoke_external_buff,name=power_infusion,if=(!equipped.spymasters_web&prev_gcd.1.arcane_surge)|(equipped.spymasters_web&prev_gcd.1.evocation)
 actions+=/invoke_external_buff,name=blessing_of_summer,if=prev_gcd.1.arcane_surge
 actions+=/invoke_external_buff,name=blessing_of_autumn,if=cooldown.touch_of_the_magi.remains>5
 # Trinket specific use cases vary, default is just with cooldowns
 actions+=/use_items,if=prev_gcd.1.arcane_surge|prev_gcd.1.evocation|fight_remains<20|!variable.steroid_trinket_equipped
-actions+=/use_item,name=spymasters_web,if=(prev_gcd.1.arcane_surge|prev_gcd.1.evocation)&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment|(buff.spymasters_report.stack=40&fight_remains>240))|fight_remains<20
+actions+=/use_item,name=spymasters_web,if=(prev_gcd.1.arcane_surge|prev_gcd.1.evocation|(buff.ethereal_powerlink.up&buff.siphon_storm.remains&talent.spellfire_spheres))&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment|(buff.spymasters_report.stack=40&fight_remains>240))|fight_remains<20
 actions+=/use_item,name=high_speakers_accretion,if=(prev_gcd.1.arcane_surge|prev_gcd.1.evocation)|cooldown.evocation.remains<4|fight_remains<20
 actions+=/use_item,name=imperfect_ascendancy_serum,if=cooldown.evocation.ready|cooldown.arcane_surge.ready|fight_remains<20
-actions+=/use_item,name=treacherous_transmitter,if=buff.arcane_surge.remains>13|prev_gcd.1.evocation|cooldown.arcane_surge.remains<10|fight_remains<20
-actions+=/do_treacherous_transmitter_task,use_off_gcd=1,if=buff.arcane_surge.remains>13|fight_remains<20
+actions+=/use_item,name=treacherous_transmitter,if=talent.spellfire_spheres&(prev_gcd.1.evocation|((cooldown.evocation.remains<10+(7*(equipped.spymasters_web&(buff.spymasters_report.stack=40|target.health.pct<35))))&cooldown.evocation.remains))|(talent.splintering_sorcery&(buff.arcane_surge.remains>13|prev_gcd.1.evocation|cooldown.arcane_surge.remains<10))|fight_remains<20
+actions+=/do_treacherous_transmitter_task,use_off_gcd=1,if=buff.siphon_storm.remains>15|fight_remains<20|(cooldown.touch_of_the_magi.remains<8&equipped.spymasters_web&talent.spellfire_spheres)|(buff.arcane_surge.remains>13&talent.splintering_sorcery)
+actions+=/use_item,name=concoction_kiss_of_death,if=(prev_gcd.1.arcane_surge|prev_gcd.1.evocation)&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment|(!equipped.spymasters_web|buff.spymasters_report.stack=40&fight_remains>240))|fight_remains<20|time<2
 actions+=/use_item,name=aberrant_spellforge,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down|(equipped.spymasters_web&target.health.pct>35)
 actions+=/use_item,name=mad_queens_mandate,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down
 actions+=/use_item,name=fearbreakers_echo,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down
@@ -101,8 +106,8 @@ actions.sunfury+=/wait,sec=0.05,if=buff.presence_of_mind.up&prev_gcd.1.arcane_bl
 actions.sunfury+=/arcane_barrage,if=((buff.arcane_charge.stack=4&(time-action.arcane_blast.last_used<0.015&buff.nether_precision.stack=1)&active_enemies>=(5-(2*(talent.arcane_bombardment&target.health.pct<35)))&talent.arcing_cleave&((talent.high_voltage&buff.clearcasting.react)|(cooldown.arcane_orb.remains<gcd.max|action.arcane_orb.charges>0))))|(buff.aether_attunement.up&talent.high_voltage&buff.clearcasting.react&buff.arcane_charge.stack>1&active_enemies>1)
 # Orb if you don't have High Voltage and a Clearcasting in AOE
 actions.sunfury+=/arcane_orb,if=buff.arcane_charge.stack<2&buff.arcane_soul.down&(!talent.high_voltage|buff.clearcasting.react=0)
-# Barrage whenever Intuition/Incandescence and NP is up, double dipping if 1 stack, or just sending it if you dont have Clearcasting; also Barrage during Arcane Soul as long as you don't cap on Clearcasting procs, or if Touch is ready
-actions.sunfury+=/arcane_barrage,if=((buff.glorious_incandescence.up|buff.intuition.react)&((time-action.arcane_blast.last_used<0.015&buff.nether_precision.stack=1)|(buff.nether_precision.down&buff.clearcasting.react=0)))|(buff.arcane_soul.up&((buff.clearcasting.react<3)|buff.arcane_soul.remains<gcd.max))|(buff.arcane_charge.stack=4&(cooldown.touch_of_the_magi.ready|(buff.burden_of_power.up&buff.nether_precision.up)))
+# Barrage whenever whenever you have a way to restore charges and Nether Precision, also Barrage during Arcane Soul as long as you don't cap on Clearcasting procs, or if Touch is ready
+actions.sunfury+=/arcane_barrage,if=(buff.arcane_charge.stack=4&(buff.burden_of_power.up|buff.glorious_incandescence.up|buff.intuition.react)&((time-action.arcane_blast.last_used<0.015&buff.nether_precision.stack=1)|(time-action.arcane_blast.last_used>0.015&buff.nether_precision.stack=2)|(buff.nether_precision.down&buff.clearcasting.react=0)))|(buff.arcane_soul.up&((buff.clearcasting.react<3)|buff.arcane_soul.remains<gcd.max))|(buff.arcane_charge.stack=4&cooldown.touch_of_the_magi.ready)
 # Missiles when it won't impact various Barrage conditions, interrupt the channel immediately after the GCD but not if you have Aether Attunement
 actions.sunfury+=/arcane_missiles,if=buff.clearcasting.react&((buff.nether_precision.down|(buff.clearcasting.react=3)|(talent.high_voltage&buff.arcane_charge.stack<3)|(buff.nether_precision.stack=1&time-action.arcane_blast.last_used<0.015))),interrupt_if=tick_time>gcd.remains&buff.aether_attunement.down,interrupt_immediate=1,interrupt_global=1,chain=1
 actions.sunfury+=/presence_of_mind,if=(buff.arcane_charge.stack=3|buff.arcane_charge.stack=2)&active_enemies>=3
