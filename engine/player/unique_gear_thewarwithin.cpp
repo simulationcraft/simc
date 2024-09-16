@@ -1335,8 +1335,6 @@ void sikrans_endless_arsenal( special_effect_t& effect )
 // 447097 'retrieval'?
 // 447134 shield
 // TODO: determine absorb priority
-// TODO: determine how shield behaves during on-use
-// TODO: confirm equip cycle restarts on combat
 // TODO: determine how scarabs select target
 // TODO: create proxy action if separate equip/on-use reporting is needed
 void swarmlords_authority( special_effect_t& effect )
@@ -1356,6 +1354,8 @@ void swarmlords_authority( special_effect_t& effect )
       ravenous_scarab_buff_t( const special_effect_t& e, const spell_data_t* s, const spell_data_t* data )
         : absorb_buff_t( e.player, "ravenous_scarab", s ), absorb_pct( s->effectN( 2 ).percent() )
       {
+        cumulative = true;
+
         // TODO: set high priority & add to player absorb priority if necessary
         set_default_value( data->effectN( 2 ).average( e ) );
       }
