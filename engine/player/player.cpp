@@ -12757,6 +12757,10 @@ void player_t::create_options()
                             thewarwithin_opts.concoction_kiss_of_death_buff_remaining_min, 0_ms, 30_s ) );
   add_option( opt_timespan( "thewarwithin.concoction_kiss_of_death_buff_remaining_max",
                             thewarwithin_opts.concoction_kiss_of_death_buff_remaining_max, 0_ms, 30_s ) );
+  add_option( opt_timespan( "thewarwithin.fury_of_the_stormrook_pickup_delay",
+                            thewarwithin_opts.fury_of_the_stormrook_pickup_delay, 0_ms, 10_s ) );
+  add_option( opt_timespan( "thewarwithin.fury_of_the_stormrook_pickup_stddev",
+                            thewarwithin_opts.fury_of_the_stormrook_pickup_stddev, 0_ms, 10_s ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

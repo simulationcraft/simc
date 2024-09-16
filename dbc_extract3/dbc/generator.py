@@ -1519,6 +1519,7 @@ class SpellDataGenerator(DataGenerator):
          441508, 441507, 441430, # Nerubian Phearomone Secreter
          455441, 455454, 455455, 455456, #Unstable Power Core Mastery Crit Haste Vers
          455521, 455522, 457627, # Woven Dawn Tailoring Set
+         449441, # Fury of the Stormrook Set
         ),
 
         # Warrior:

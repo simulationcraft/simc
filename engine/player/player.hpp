@@ -868,6 +868,9 @@ struct player_t : public actor_t
     // Concoction: Kiss of Death buff remaining time before you re-use for antidote
     timespan_t concoction_kiss_of_death_buff_remaining_min = 1_s;
     timespan_t concoction_kiss_of_death_buff_remaining_max = 2_s;
+    // time to pick up Fury of the Stormrook lightning orb
+    timespan_t fury_of_the_stormrook_pickup_delay = 3_s;
+    timespan_t fury_of_the_stormrook_pickup_stddev = 0.75_s;
   } thewarwithin_opts;
 
 private:

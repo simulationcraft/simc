@@ -5540,6 +5540,33 @@ void embrace_of_the_cinderbee( special_effect_t& effect )
 
   new embrace_of_the_cinderbee_t( effect );
 }
+
+// 443773 driver
+// 449440 buff
+// 449441 orb
+void fury_of_the_stormrook( special_effect_t& effect )
+{
+  struct fury_of_the_stormrook_cb_t : public dbc_proc_callback_t
+  {
+    rng::truncated_gauss_t pickup;
+    buff_t* buff;
+
+    fury_of_the_stormrook_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        pickup( e.player->thewarwithin_opts.fury_of_the_stormrook_pickup_delay,
+                e.player->thewarwithin_opts.fury_of_the_stormrook_pickup_stddev )
+    {
+      buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 449440 ) );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      make_event( *listener->sim, rng().gauss( pickup ), [ this ] { buff->trigger(); } );
+    }
+  };
+
+  new fury_of_the_stormrook_cb_t( effect );
+}
 }  // namespace sets
 
 void register_special_effects()
@@ -5694,6 +5721,7 @@ void register_special_effects()
   register_special_effect( 457655, sets::woven_dusk, true );
   register_special_effect( 455521, sets::woven_dawn, true );
   register_special_effect( 443764, sets::embrace_of_the_cinderbee, true );
+  register_special_effect( 443773, sets::fury_of_the_stormrook );
 }
 
 void register_target_data_initializers( sim_t& )
