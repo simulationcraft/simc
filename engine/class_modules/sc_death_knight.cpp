@@ -13808,12 +13808,12 @@ void death_knight_t::create_buffs()
   buffs.rune_carved_plates_physical_buff = make_fallback( talent.deathbringer.rune_carved_plates.ok(), this,
                                                           "rune_carved_plates_physical",
                                                           spell.rune_carved_plates_physical_buff )
-                                                          ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );;
+                                                          ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   buffs.rune_carved_plates_magical_buff  = make_fallback( talent.deathbringer.rune_carved_plates.ok(), this,
                                                           "rune_carved_plates_magical",
                                                           spell.rune_carved_plates_magical_buff )
-                                                          ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );;
+                                                          ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   // San'layn
   buffs.essence_of_the_blood_queen = make_fallback<essence_of_the_blood_queen_haste_buff_t>(
