@@ -73,7 +73,7 @@ wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11109/
 hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
 waist=crystalfissure_girdle,id=221079,bonus_id=1611/6935,ilevel=639,gem_id=213458
 legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=stormbound_armor_kit_3
-feet=ballast_sinkers,id=159428,bonus_id=1514/3317/6646,ilevel=639
+feet=everforged_sabatons,id=222429,bonus_id=10421/9633/8902/11144/10222/1485,crafted_stats=32/49
 finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213458/213458,enchant=radiant_mastery_3
 finger2=band_of_the_roving_scalawag,id=162541,bonus_id=1514/3317/6646/8781,ilevel=639,gem_id=213458/213458,enchant=radiant_mastery_3
 trinket1=treacherous_transmitter,id=221023,bonus_id=1540
@@ -103,11 +103,11 @@ wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11109/
 hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
 waist=crystalfissure_girdle,id=221079,bonus_id=1611/6935,ilevel=639,gem_id=213458
 legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=stormbound_armor_kit_3
-feet=boots_of_the_black_bulwark,id=225590,bonus_id=1540
+feet=ballast_sinkers,id=159428,bonus_id=1514/3317/6646,ilevel=639
 finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213491/213491,enchant=radiant_critical_strike_3
 finger2=band_of_the_roving_scalawag,id=162541,bonus_id=1514/3317/6646/8781,ilevel=639,gem_id=213458/213458,enchant=radiant_critical_strike_3
 trinket1=treacherous_transmitter,id=221023,bonus_id=7187/1520,ilevel=639
-trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
+trinket2=mark_of_khardros,id=133300,bonus_id=9466/1514,ilevel=639
 main_hand=ansureks_final_judgment,id=212401,ilevel=639,enchant=rune_of_the_stoneskin_gargoyle
 off_hand=charged_slicer,id=222451,bonus_id=11144/9627/9633/8902/10222/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=32/36
 
