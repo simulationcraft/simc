@@ -683,11 +683,11 @@ void binding_of_binding( special_effect_t& effect )
   struct binding_of_binding_cb_t : public dbc_proc_callback_t
    {
      target_specific_t<buff_t> buffs;
-     double binding_of_binding_ally_skip_chance;
+     double binding_of_binding_ally_trigger_chance;
      binding_of_binding_cb_t( const special_effect_t& e )
        : dbc_proc_callback_t( e.player, e ),
          buffs{ false },
-         binding_of_binding_ally_skip_chance( effect.player->thewarwithin_opts.binding_of_binding_ally_skip_chance )
+         binding_of_binding_ally_trigger_chance( effect.player->thewarwithin_opts.binding_of_binding_ally_trigger_chance )
      {
        get_buff( effect.player );
      }
@@ -747,7 +747,7 @@ void binding_of_binding( special_effect_t& effect )
              if ( p == effect.player || p->is_pet() )
                continue;
 
-             if ( rng().roll( binding_of_binding_ally_skip_chance ) )
+             if ( rng().roll( binding_of_binding_ally_trigger_chance ) )
                get_buff( p )->trigger();
 
              break;
@@ -3052,12 +3052,13 @@ void mereldars_toll( special_effect_t& effect )
 
       // TODO: determine if attack needs to do damage to proc vers buff
       t->callbacks.register_callback_execute_function(
-        toll->spell_id, [ this, debuff ]( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+        toll->spell_id, [ this, debuff ]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* ) {
           auto vers = get_buff( a->player );
           if ( vers && !vers->check() )
           {
             debuff->trigger();
-            vers->trigger();
+            if ( cb->listener->rng().roll( cb->listener->thewarwithin_opts.mereldars_toll_ally_trigger_chance ) )
+              vers->trigger();
           }
         } );
 

@@ -864,13 +864,16 @@ struct player_t : public actor_t
     int nerubian_pheromone_secreter_pheromones = 1;
     // Allied Binding of Binding on you
     int binding_of_binding_on_you = 0;
-    double binding_of_binding_ally_skip_chance = 0.8;
+    double binding_of_binding_ally_trigger_chance = 0.8;
     // Concoction: Kiss of Death buff remaining time before you re-use for antidote
     timespan_t concoction_kiss_of_death_buff_remaining_min = 1_s;
     timespan_t concoction_kiss_of_death_buff_remaining_max = 2_s;
     // time to pick up Fury of the Stormrook lightning orb
     timespan_t fury_of_the_stormrook_pickup_delay = 3_s;
     timespan_t fury_of_the_stormrook_pickup_stddev = 0.75_s;
+    // Chance that an ally is ignored for Mereldar's Toll Evaluation. This is set high becauee pets exist and its
+    // currently bugged to trigger on them.
+    double mereldars_toll_ally_trigger_chance = 0.7;
   } thewarwithin_opts;
 
 private:
