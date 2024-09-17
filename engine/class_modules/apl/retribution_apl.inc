@@ -40,6 +40,7 @@ actions.finishers+=/templars_verdict,if=(!talent.crusade|cooldown.crusade.remain
 
 actions.generators=call_action_list,name=finishers,if=holy_power=5|holy_power=4&buff.divine_resonance.up
 actions.generators+=/templar_slash,if=buff.templar_strikes.remains<gcd*2
+actions.generators+=/blade_of_justice,if=!dot.expurgation.ticking&talent.holy_flames
 actions.generators+=/wake_of_ashes,if=(!talent.lights_guidance|holy_power>=2&talent.lights_guidance)&(cooldown.avenging_wrath.remains>6|cooldown.crusade.remains>6|talent.radiant_glory)&(!talent.execution_sentence|cooldown.execution_sentence.remains>4|target.time_to_die<8)&(!raid_event.adds.exists|raid_event.adds.in>10|raid_event.adds.up)
 actions.generators+=/divine_toll,if=holy_power<=2&(!raid_event.adds.exists|raid_event.adds.in>10|raid_event.adds.up)&(cooldown.avenging_wrath.remains>15|cooldown.crusade.remains>15|talent.radiant_glory|fight_remains<8)
 actions.generators+=/call_action_list,name=finishers,if=holy_power>=3&buff.crusade.up&buff.crusade.stack<10

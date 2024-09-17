@@ -54,6 +54,7 @@ void retribution( player_t* p )
 
   generators->add_action( "call_action_list,name=finishers,if=holy_power=5|holy_power=4&buff.divine_resonance.up" );
   generators->add_action( "templar_slash,if=buff.templar_strikes.remains<gcd*2" );
+  generators->add_action( "blade_of_justice,if=!dot.expurgation.ticking&talent.holy_flames" );
   generators->add_action( "wake_of_ashes,if=(!talent.lights_guidance|holy_power>=2&talent.lights_guidance)&(cooldown.avenging_wrath.remains>6|cooldown.crusade.remains>6|talent.radiant_glory)&(!talent.execution_sentence|cooldown.execution_sentence.remains>4|target.time_to_die<8)&(!raid_event.adds.exists|raid_event.adds.in>10|raid_event.adds.up)" );
   generators->add_action( "divine_toll,if=holy_power<=2&(!raid_event.adds.exists|raid_event.adds.in>10|raid_event.adds.up)&(cooldown.avenging_wrath.remains>15|cooldown.crusade.remains>15|talent.radiant_glory|fight_remains<8)" );
   generators->add_action( "call_action_list,name=finishers,if=holy_power>=3&buff.crusade.up&buff.crusade.stack<10" );
