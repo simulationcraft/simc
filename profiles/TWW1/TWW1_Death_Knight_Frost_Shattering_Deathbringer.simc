@@ -136,11 +136,11 @@ actions.obliteration=obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.
 actions.obliteration+=/howling_blast,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&variable.rime_buffs
 actions.obliteration+=/glacial_advance,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!buff.death_and_decay.up&variable.ga_priority
 actions.obliteration+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!buff.death_and_decay.up
-actions.obliteration+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=debuff.razorice.stack=5&talent.shattering_blade&talent.a_feast_of_souls&buff.a_feast_of_souls.up&!talent.arctic_assault
+actions.obliteration+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=debuff.razorice.stack=5&talent.shattering_blade&talent.a_feast_of_souls&buff.a_feast_of_souls.up
 actions.obliteration+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react
 actions.obliteration+=/howling_blast,target_if=!dot.frost_fever.ticking,if=!buff.killing_machine.react
 actions.obliteration+=/glacial_advance,target_if=max:(debuff.razorice.stack),if=(variable.ga_priority|debuff.razorice.stack<5)&(!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<gcd*3)|((variable.rp_buffs|rune<2)&active_enemies>1))
-actions.obliteration+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=(rune<2|variable.rp_buffs|debuff.razorice.stack=5&talent.shattering_blade|hero_tree.rider_of_the_apocalypse)&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1|talent.shattered_frost)
+actions.obliteration+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=(rune<2|variable.rp_buffs|debuff.razorice.stack=5&talent.shattering_blade)&!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1|talent.shattered_frost)
 actions.obliteration+=/howling_blast,if=buff.rime.react
 actions.obliteration+=/frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=!variable.pooling_runic_power&(!talent.glacial_advance|active_enemies=1|talent.shattered_frost)
 actions.obliteration+=/glacial_advance,target_if=max:(debuff.razorice.stack),if=!variable.pooling_runic_power&variable.ga_priority
@@ -216,7 +216,7 @@ wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11109/
 hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
 waist=crystalfissure_girdle,id=221079,bonus_id=1611/6935,ilevel=639,gem_id=213458
 legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=stormbound_armor_kit_3
-feet=ballast_sinkers,id=159428,bonus_id=1514/3317/6646,ilevel=639
+feet=everforged_sabatons,id=222429,bonus_id=10421/9633/8902/11144/10222/1485,crafted_stats=32/49
 finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213458/213458,enchant=radiant_mastery_3
 finger2=band_of_the_roving_scalawag,id=162541,bonus_id=1514/3317/6646/8781,ilevel=639,gem_id=213458/213458,enchant=radiant_mastery_3
 trinket1=treacherous_transmitter,id=221023,bonus_id=1540
@@ -225,14 +225,14 @@ main_hand=ansureks_final_judgment,id=212401,ilevel=639,enchant=rune_of_razorice
 off_hand=charged_slicer,id=222451,bonus_id=11144/9627/9633/8902/10222/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=49/32
 
 # Gear Summary
-# gear_ilvl=638.63
-# gear_strength=32574
-# gear_stamina=237354
-# gear_crit_rating=18205
-# gear_haste_rating=7364
-# gear_mastery_rating=15102
+# gear_ilvl=638.44
+# gear_strength=32495
+# gear_stamina=236628
+# gear_crit_rating=18325
+# gear_haste_rating=6475
+# gear_mastery_rating=15851
 # gear_versatility_rating=147
-# gear_armor=56297
+# gear_armor=56185
 # set_bonus=thewarwithin_season_1_2pc=1
 # set_bonus=thewarwithin_season_1_4pc=1
 deathknight.ams_absorb_percent=1
