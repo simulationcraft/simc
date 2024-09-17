@@ -2069,6 +2069,7 @@ struct rite_of_adjuration_t : public weapon_enchant_t
   {
     enchant = p->buffs.lightsmith.rite_of_adjuration;
   }
+
   void execute() override
   {
     weapon_enchant_t::execute();
@@ -2121,10 +2122,12 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
           timespan_t::from_millis( p->spells.templar.hammer_of_light_driver->effectN( 1 ).misc_value1() );
       dual                       = true;
     }
+
     action_state_t* new_state() override
     {
       return new state_t( this, target );
     }
+
     double composite_da_multiplier( const action_state_t* s ) const override
     {
       auto da = paladin_melee_attack_t::composite_da_multiplier( s );
@@ -2132,6 +2135,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       da *= 1.0 + s_->divine_purpose_mult;
       return da;
     }
+
     void execute() override
     {
       snapshot_state( pre_execute_state, amount_type( pre_execute_state ) );
@@ -2152,9 +2156,15 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
         else
           p()->buffs.templar.shake_the_heavens->execute();
       }
-      // Since Hammer of Light's damage component is a background action, we need to call reset AA ourselves
-      p()->reset_auto_attacks( 0_ms, player->procs.reset_aa_cast );
+
+      // Since Hammer of Light's damage component is a background action, we need to call reset AA ourselves.
+      // This doesn't seem intentional, so gating behind bugs=1.
+      if ( p()->bugs )
+      {
+        p()->reset_auto_attacks( 0_ms, player->procs.reset_aa_cast );
+      }
     }
+
     void impact( action_state_t* s ) override
     {
       holy_power_consumer_t::impact( s );
@@ -3963,7 +3973,7 @@ void paladin_t::create_buffs()
   buffs.herald_of_the_sun.morning_star = make_buff( this, "morning_star", find_spell( 431539 ) )
     ->set_default_value_from_effect( 1 );
   buffs.herald_of_the_sun.gleaming_rays = make_buff( this, "gleaming_rays", spells.herald_of_the_sun.gleaming_rays )
-    ->set_duration( timespan_t::zero() ); // infinite duration
+    ->set_duration( bugs ? timespan_t::from_seconds( 30 ) : timespan_t::zero() ); // infinite duration, except it's bugged
   auto blessing_of_anshe_id = specialization() == PALADIN_RETRIBUTION ? 445206 : 445204;
   buffs.herald_of_the_sun.blessing_of_anshe = make_buff( this, "blessing_of_anshe", find_spell( blessing_of_anshe_id ) );
   buffs.herald_of_the_sun.solar_grace = make_buff( this, "solar_grace", find_spell( 439841 ) )
@@ -4624,7 +4634,7 @@ double paladin_t::composite_player_target_multiplier( player_t* target, school_e
       paladin_td_t* td = get_target_data( target );
       if ( td->dots.expurgation->is_ticking() )
       {
-        cptm *= 1.0 + talents.holy_flames->effectN( 2 ).percent();
+        cptm *= 1.0 + active.expurgation->data().effectN( 2 ).percent();
       }
     }
   }
