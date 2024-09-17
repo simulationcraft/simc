@@ -4302,9 +4302,22 @@ struct elemental_overload_spell_t : public shaman_spell_t
     background        = true;
     callbacks         = false;
 
-    base_multiplier *=
-        p->mastery.elemental_overload->effectN( 2 ).percent() +
-        p->talent.echo_chamber->effectN( 1 ).percent();
+    // On 11.0.5 PTR, Echo Chamber is multiplicative
+    // On 11.0.2 Live, Echo Chamber is additive
+    if ( p->is_ptr() )
+    {
+        base_multiplier *=
+            p->mastery.elemental_overload->effectN( 2 ).percent() *
+            ( 1.0 + p->talent.echo_chamber->effectN( 1 ).percent() );
+    }
+    else
+    {
+        base_multiplier *=
+            p->mastery.elemental_overload->effectN( 2 ).percent() +
+            p->talent.echo_chamber->effectN( 1 ).percent();
+    }
+
+
 
     if ( p->is_ptr() )
     {
