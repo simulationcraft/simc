@@ -26,6 +26,7 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/berserker_stance,toggle=on
 actions.precombat+=/variable,name=trinket_1_exclude,value=trinket.1.is.treacherous_transmitter
 actions.precombat+=/variable,name=trinket_2_exclude,value=trinket.2.is.treacherous_transmitter
 # Evaluates a trinkets cooldown, divided by avatar or odyns fury. If it's value has no remainder return 1, else return 0.5.
@@ -36,7 +37,8 @@ actions.precombat+=/variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(
 actions.precombat+=/variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync))
 actions.precombat+=/variable,name=trinket_1_manual,value=trinket.1.is.algethar_puzzle_box
 actions.precombat+=/variable,name=trinket_2_manual,value=trinket.2.is.algethar_puzzle_box
-actions.precombat+=/berserker_stance,toggle=on
+actions.precombat+=/variable,name=treacherous_transmitter_precombat_cast,value=2
+actions.precombat+=/use_item,name=treacherous_transmitter
 actions.precombat+=/recklessness,if=!equipped.fyralath_the_dreamrender
 actions.precombat+=/avatar,if=!talent.titans_torment
 
