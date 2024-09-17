@@ -32,6 +32,8 @@ actions.precombat+=/variable,name=combustion_cast_remains,default=0.3,op=reset
 actions.precombat+=/variable,name=overpool_fire_blasts,default=0,op=reset
 # The duration of a Sun King's Blessing Combustion.
 actions.precombat+=/variable,name=skb_duration,value=dbc.effect.1016075.base_value
+actions.precombat+=/variable,name=treacherous_transmitter_precombat_cast,value=12
+actions.precombat+=/use_item,name=treacherous_transmitter
 # Whether a usable item used to buff Combustion is equipped.
 actions.precombat+=/variable,name=combustion_on_use,value=equipped.gladiators_badge|equipped.treacherous_transmitter|equipped.moonlit_prism|equipped.irideus_fragment|equipped.spoils_of_neltharus|equipped.timebreaching_talon|equipped.horn_of_valor
 # How long before Combustion should trinkets that trigger a shared category cooldown on other trinkets not be used?
