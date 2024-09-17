@@ -1432,6 +1432,7 @@ struct denizen_of_the_dream_t final : public pet_t
       force_target_effect( d_fn( &druid_td_t::dots_t::sunfire ), o->spec.sunfire_dmg, 4,
                            o->mastery.astral_invocation );
 
+      o->apply_affecting_auras( *this );
       o->parse_action_effects( this );
       o->parse_action_target_effects( this );
     }
