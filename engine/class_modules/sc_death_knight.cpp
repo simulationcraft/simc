@@ -12057,6 +12057,10 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vam
   {
     timespan_t extension = timespan_t::from_seconds( talent.sanlayn.infliction_of_sorrow->effectN( 3 ).base_value() );
     mod                  = talent.sanlayn.infliction_of_sorrow->effectN( 2 ).percent();
+
+    if ( specialization() == DEATH_KNIGHT_BLOOD )
+      mod += spec.blood_death_knight->effectN( 17 ).percent();
+
     if ( disease_td->is_ticking() )
     {
       disease_td->adjust_duration( extension );
@@ -12072,8 +12076,6 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vam
     // mod = talent.sanlayn.infliction_of_sorrow->effectN( 1 ).percent();
     // However, the buff that is on the player still has 200% set, and in game testing shows the explosion to be 200%
     mod = spell.infliction_of_sorrow_buff->effectN( 1 ).percent();
-    if ( specialization() == DEATH_KNIGHT_BLOOD )
-      mod += spec.blood_death_knight->effectN( 17 ).base_value();
 
     buffs.infliction_of_sorrow->expire();
     if ( disease_td->is_ticking() )
@@ -13841,7 +13843,7 @@ void death_knight_t::create_buffs()
 
   buffs.visceral_strength =
       make_fallback( talent.sanlayn.visceral_strength, this, "visceral_strength", spell.visceral_strength_buff )
-          ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
+          ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
           ->add_invalidate( CACHE_STRENGTH )
           ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );  // TODO bugged should be A_MOD_TOTAL_STAT_PERCENTAGE (137)
 
@@ -13893,7 +13895,7 @@ void death_knight_t::create_buffs()
                                       ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
     buffs.bloodied_blade_final  = make_buff( this, "bloodied_blade_final", spell.bloodied_blade_final_buff )
-                                      ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
+                                      ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
                                       ->add_invalidate( CACHE_STRENGTH );
                                       // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
