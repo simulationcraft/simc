@@ -3577,11 +3577,9 @@ void darkmoon_deck_ascension( special_effect_t& effect )
     {
       add_stats( e, embellish );
       last_buff = buff_list[ 0 ];
+      // refreshes if in combat on tick, otherwise buff expires naturally
       set_tick_callback( [ & ]( buff_t*, int, timespan_t ) {
-        // Checks on tick if player is in combat, if not, expire the buff
-        if ( !in_combat )
-          make_event( *e.player->sim, 0_ms, [ & ] { expire(); } );
-        else
+        if ( in_combat )
           trigger_ascension();
       } );
     }
