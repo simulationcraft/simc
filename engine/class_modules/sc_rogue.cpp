@@ -5525,6 +5525,20 @@ struct secret_technique_t : public rogue_attack_t
       reduced_aoe_targets = p->talent.subtlety.secret_technique->effectN( 6 ).base_value();
     }
 
+    double composite_player_multiplier( const action_state_t* state ) const override
+    {
+      double m = rogue_attack_t::composite_player_multiplier( state );
+
+      // 2024-09-16 -- Lingering Darkness does not work on pet clone attacks
+      if ( p()->bugs && secondary_trigger_type == secondary_trigger::SECRET_TECHNIQUE_CLONE &&
+           p()->buffs.lingering_darkness->check() )
+      {
+        m /= 1.0 + p()->buffs.lingering_darkness->check_value();
+      }
+
+      return m;
+    }
+
     double composite_da_multiplier( const action_state_t* state ) const override
     {
       double m = rogue_attack_t::composite_da_multiplier( state );
