@@ -1094,6 +1094,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       : sef_tick_action_t( "celestial_conduit_tick", p, p->o()->talent.conduit_of_the_celestials.celestial_conduit_dmg )
     {
       base_dd_min = base_dd_max = 1.0;  // parse state flags
+      split_aoe_damage          = true;
 
       dot_duration = timespan_t::zero();
       trigger_gcd  = timespan_t::zero();
