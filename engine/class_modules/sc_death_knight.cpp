@@ -12056,10 +12056,9 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vam
   if ( is_vampiric )
   {
     timespan_t extension = timespan_t::from_seconds( talent.sanlayn.infliction_of_sorrow->effectN( 3 ).base_value() );
-    mod                  = talent.sanlayn.infliction_of_sorrow->effectN( 2 ).percent();
-
-    if ( specialization() == DEATH_KNIGHT_BLOOD )
-      mod += spec.blood_death_knight->effectN( 17 ).percent();
+    modified_spell_data_t* infliction = get_modified_spell( talent.sanlayn.infliction_of_sorrow );
+    infliction->parse_effects( spec.blood_death_knight );
+    mod = infliction->effectN( 2 ).percent();
 
     if ( disease_td->is_ticking() )
     {
