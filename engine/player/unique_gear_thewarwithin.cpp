@@ -1641,7 +1641,9 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
       auto leeway = p->thewarwithin_opts.ovinaxs_mercurial_egg_desired_primary_stacks_leeway;
       desired += p->rng().range( -leeway, leeway );
 
-      if ( p->is_moving() || ( primary->check() > desired && !p->debuffs.casting->check() ) )
+      if ( ( primary->check() > desired && ( !p->executing || p->executing->usable_moving() ) &&
+             ( !p->channeling || p->channeling->usable_moving() ) ) ||
+           p->is_moving() )
       {
         primary->decrement();
 
