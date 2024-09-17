@@ -3051,6 +3051,11 @@ struct dawnlight_t : public paladin_spell_t
 
   void execute() override
   {
+    bool target_already_has_dawnlight = false;
+    if ( target && td( target )->dots.dawnlight->is_ticking() )
+    {
+      target_already_has_dawnlight = true;
+    }
     paladin_spell_t::execute();
 
     if ( p()->talents.herald_of_the_sun.solar_grace->ok() )
@@ -3060,7 +3065,12 @@ struct dawnlight_t : public paladin_spell_t
       p()->buffs.herald_of_the_sun.morning_star->expire();
 
     if ( p()->talents.herald_of_the_sun.gleaming_rays->ok() )
-      p()->buffs.herald_of_the_sun.gleaming_rays->trigger();
+    {
+      if ( !( p()->bugs && target_already_has_dawnlight ) )
+      {
+        p()->buffs.herald_of_the_sun.gleaming_rays->trigger();
+      }
+    }
 
     if ( p()->talents.herald_of_the_sun.suns_avatar->ok() )
     {
