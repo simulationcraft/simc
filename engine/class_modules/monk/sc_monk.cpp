@@ -1624,10 +1624,8 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     // The initial hit along with each individual TotM hits has a chance to reset the cooldown
-    auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
-
-    if ( p()->specialization() == MONK_MISTWEAVER )
-      totmResetChance += p()->baseline.mistweaver.aura->effectN( 21 ).percent();
+    double totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
+    totmResetChance += p()->baseline.mistweaver.aura->effectN( 19 ).percent();
 
     if ( rng().roll( totmResetChance ) )
     {
@@ -1801,11 +1799,41 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
         p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
       }
 
+      if ( p()->buff.bok_proc->up() )
+      {
+        if ( p()->rng().roll( p()->talent.windwalker.energy_burst->effectN( 1 ).percent() ) )
+          p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.energy_burst->effectN( 2 ).base_value(),
+                              p()->gain.energy_burst );
+
+        p()->buff.bok_proc->decrement();
+      }
+
       p()->buff.transfer_the_power->trigger();
 
-      if ( p()->buff.teachings_of_the_monastery->up() )
+      // the `->up()` invocation is redundant logically, but incurs benefit tracking
+      if ( int totm_stacks = p()->buff.teachings_of_the_monastery->current_stack;
+           totm_stacks && p()->buff.teachings_of_the_monastery->up() )
       {
         p()->buff.teachings_of_the_monastery->expire();
+
+        // TODO: Confirm proper mechanics for this. Tested 17/06/2024 and behaviour has it expire previous stacks before
+        // triggering new which feels like a bug.
+        if ( p()->bugs )
+          p()->buff.memory_of_the_monastery->expire();
+
+        p()->buff.transfer_the_power->trigger( totm_stacks );
+        p()->buff.memory_of_the_monastery->trigger( totm_stacks );
+        for ( int i = 0; i < totm_stacks; ++i )
+          bok_totm_proc->execute_on_target( target );
+
+        double totm_reset_chance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
+        totm_reset_chance += p()->baseline.mistweaver.aura->effectN( 19 ).percent();
+
+        if ( rng().roll( totm_reset_chance ) )
+        {
+          p()->cooldown.rising_sun_kick->reset( true );
+          p()->proc.rsk_reset_totm->occur();
+        }
 
         if ( p()->rng().roll( p()->talent.conduit_of_the_celestials.xuens_guidance->effectN( 1 ).percent() ) )
           p()->buff.teachings_of_the_monastery->trigger();
@@ -1818,7 +1846,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
       }
 
       p()->buff.vigilant_watch->trigger();
-
       p()->buff.tigers_ferocity->trigger();
     }
   }
@@ -1827,60 +1854,7 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
   {
     base_t::impact( s );
 
-    if ( result_is_hit( s->result ) )
-    {
-      if ( p()->buff.bok_proc->up() )
-      {
-        if ( p()->rng().roll( p()->talent.windwalker.energy_burst->effectN( 1 ).percent() ) )
-          p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.energy_burst->effectN( 2 ).base_value(),
-                              p()->gain.energy_burst );
-
-        p()->buff.bok_proc->decrement();
-      }
-    }
-
     p()->buff.hit_scheme->trigger();
-
-    // Teachings of the Monastery
-    // Used by both Windwalker and Mistweaver
-    if ( p()->buff.teachings_of_the_monastery->up() )
-    {
-      int stacks = p()->buff.teachings_of_the_monastery->current_stack;
-
-      if ( p()->talent.windwalker.memory_of_the_monastery.enabled() && p()->bugs )
-      {
-        // TODO: Confirm proper mechanics for this. Tested 17/06/2024 and behaviour has it expire previous stacks before
-        // triggering new which feels like a bug.
-        p()->buff.memory_of_the_monastery->expire();
-      }
-
-      for ( int i = 0; i < stacks; i++ )
-      {
-        // Transfer the power and Memory of the Monastery triggers from ToTM hits but only on the primary target
-        if ( s->chain_target == 0 )
-        {
-          p()->buff.transfer_the_power->trigger();
-
-          if ( p()->talent.windwalker.memory_of_the_monastery.enabled() )
-            p()->buff.memory_of_the_monastery->trigger();
-        }
-
-        bok_totm_proc->execute_on_target( s->target );
-      }
-
-      // The initial hit along with each individual TotM hits has a chance to reset the cooldown
-      auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
-
-      if ( p()->specialization() == MONK_MISTWEAVER )
-        totmResetChance += p()->baseline.mistweaver.aura->effectN( 21 ).percent();
-
-      if ( rng().roll( totmResetChance ) )
-      {
-        p()->cooldown.rising_sun_kick->reset( true );
-        p()->proc.rsk_reset_totm->occur();
-      }
-    }
-
     p()->trigger_mark_of_the_crane( s );
 
     if ( p()->talent.brewmaster.elusive_footwork->ok() && s->result == RESULT_CRIT )
