@@ -4386,9 +4386,6 @@ struct ferocious_bite_base_t : public cat_finisher_t
       aoe = -1;
       reduced_aoe_targets = p->talent.rampant_ferocity->effectN( 1 ).base_value();
       name_str_reporting = "rampant_ferocity";
-
-      // bloodtalons is applied via script
-      force_effect( p->buff.bloodtalons, 2, IGNORE_STACKS );
     }
 
     action_state_t* new_state() override
