@@ -197,15 +197,16 @@ void augmentation( player_t* p )
   precombat->add_action( "variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl" );
   precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=trinket.1.is.nymues_unraveling_spindle&trinket.2.has_buff.intellect|trinket.2.is.nymues_unraveling_spindle&!trinket.1.has_buff.intellect,if=(trinket.1.is.nymues_unraveling_spindle|trinket.2.is.nymues_unraveling_spindle)&(variable.trinket_1_buffs&variable.trinket_2_buffs)", "Double on use - Priotize Intellect on use trinkets over Nymues, force overwriting the normal logic to guarantee it is correct." );
   precombat->add_action( "variable,name=hold_empower_for,op=reset,default=6" );
+  precombat->add_action( "variable,name=ebon_might_pandemic_threshold,op=reset,default=0.4" );
   precombat->add_action( "use_item,name=aberrant_spellforge" );
   precombat->add_action( "blistering_scales,target_if=target.role.tank" );
   precombat->add_action( "living_flame" );
 
   default_->add_action( "variable,name=temp_wound,value=debuff.temporal_wound.remains,target_if=max:debuff.temporal_wound.remains" );
   default_->add_action( "variable,name=pool_for_id,if=talent.imminent_destruction,default=0,op=set,value=cooldown.allied_virtual_cd_time.remains<8&essence.deficit>=1&!buff.essence_burst.up" );
-  default_->add_action( "prescience,target_if=min:debuff.prescience.remains+1000*(target=self&active_allies>2)+1000*target.spec.augmentation,if=(full_recharge_time<=gcd.max*3|cooldown.ebon_might.remains<=gcd.max*3&(buff.ebon_might_self.remains-gcd.max*3)<=buff.ebon_might_self.duration*0.4|variable.temp_wound>=(gcd.max+action.eruption.cast_time)|fight_remains<=30)&(buff.trembling_earth.stack+evoker.prescience_buffs)<=(5+(full_recharge_time<=gcd.max*3))" );
+  default_->add_action( "prescience,target_if=min:debuff.prescience.remains+1000*(target=self&active_allies>2)+1000*target.spec.augmentation,if=(full_recharge_time<=gcd.max*3|cooldown.ebon_might.remains<=gcd.max*3&(buff.ebon_might_self.remains-gcd.max*3)<=buff.ebon_might_self.duration*variable.ebon_might_pandemic_threshold|fight_remains<=30)" );
   default_->add_action( "potion,if=cooldown.allied_virtual_cd_time.up|fight_remains<=30" );
-  default_->add_action( "call_action_list,name=ebon_logic,if=(buff.ebon_might_self.remains-cast_time)<=buff.ebon_might_self.duration*0.4&(active_enemies>0|raid_event.adds.in<=3)" );
+  default_->add_action( "call_action_list,name=ebon_logic,if=(buff.ebon_might_self.remains-cast_time)<=buff.ebon_might_self.duration*variable.ebon_might_pandemic_threshold&(active_enemies>0|raid_event.adds.in<=3)" );
   default_->add_action( "run_action_list,name=opener_filler,if=variable.opener_delay>0&!fight_style.dungeonroute" );
   default_->add_action( "call_action_list,name=items" );
   default_->add_action( "deep_breath" );
@@ -256,6 +257,7 @@ void augmentation( player_t* p )
   opener_filler->add_action( "variable,name=opener_delay,value=variable.opener_delay>?variable.minimum_opener_delay,if=!variable.opener_cds_detected&evoker.allied_cds_up>0" );
   opener_filler->add_action( "variable,name=opener_delay,value=variable.opener_delay-1" );
   opener_filler->add_action( "variable,name=opener_cds_detected,value=1,if=!variable.opener_cds_detected&evoker.allied_cds_up>0" );
+  opener_filler->add_action( "eruption,if=variable.opener_delay>=3" );
   opener_filler->add_action( "living_flame,if=active_enemies=1|talent.pupil_of_alexstrasza" );
   opener_filler->add_action( "azure_strike" );
 }
