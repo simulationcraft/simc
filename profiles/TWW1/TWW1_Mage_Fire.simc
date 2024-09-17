@@ -47,6 +47,8 @@ actions.precombat+=/variable,name=combustion_cast_remains,default=0.3,op=reset
 actions.precombat+=/variable,name=overpool_fire_blasts,default=0,op=reset
 # The duration of a Sun King's Blessing Combustion.
 actions.precombat+=/variable,name=skb_duration,value=dbc.effect.1016075.base_value
+actions.precombat+=/variable,name=treacherous_transmitter_precombat_cast,value=12
+actions.precombat+=/use_item,name=treacherous_transmitter
 # Whether a usable item used to buff Combustion is equipped.
 actions.precombat+=/variable,name=combustion_on_use,value=equipped.gladiators_badge|equipped.treacherous_transmitter|equipped.moonlit_prism|equipped.irideus_fragment|equipped.spoils_of_neltharus|equipped.timebreaching_talon|equipped.horn_of_valor
 # How long before Combustion should trinkets that trigger a shared category cooldown on other trinkets not be used?
@@ -202,7 +204,7 @@ legs=coattails_of_violet_rebirth,id=212091,ilevel=639,enchant_id=7534
 feet=tainted_earthshard_walkers,id=221082,ilevel=639,enchant_id=7418
 finger1=key_to_the_unseeming,id=212447,bonus_id=10836,ilevel=639,gem_id=213494/213470,enchant_id=7340
 finger2=stitchfleshs_misplaced_signet,id=178736,bonus_id=10836,ilevel=639,gem_id=213485/213455,enchant_id=7340
-trinket1=arakara_sacbrood,id=219314,ilevel=639
+trinket1=treacherous_transmitter,id=221023,ilevel=639
 trinket2=spymasters_web,id=220202,ilevel=639
 main_hand=sovereigns_disdain,id=212394,ilevel=639,enchant_id=7460
 off_hand=vagabonds_torch,id=222566,bonus_id=11300,ilevel=636,crafted_stats=36/49

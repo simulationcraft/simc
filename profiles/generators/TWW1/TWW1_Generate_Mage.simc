@@ -47,17 +47,17 @@ temporary_enchant=main_hand:algari_mana_oil_3
 
 head=cocoonsilk_cowl,id=178693,bonus_id=10835,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213455/213494
-shoulders=beacons_of_violet_rebirth,id=212090,ilevel=639
+shoulder=beacons_of_violet_rebirth,id=212090,ilevel=639
 back=anvilhide_cape,id=221088,ilevel=639,enchant_id=7403
 chest=runecoat_of_violet_rebirth,id=212095,ilevel=639,enchant_id=7364
-wrists=consecrated_cuffs,id=222815,bonus_id=11109,ilevel=636,gem_id=213470,enchant_id=7385,crafted_stats=36/40
+wrist=consecrated_cuffs,id=222815,bonus_id=11109,ilevel=636,gem_id=213470,enchant_id=7385,crafted_stats=36/40
 hands=jeweled_gauntlets_of_violet_rebirth,id=212093,ilevel=639
 waist=cord_of_the_pious_warder,id=159245,ilevel=639,gem_id=213485
 legs=coattails_of_violet_rebirth,id=212091,ilevel=639,enchant_id=7534
 feet=tainted_earthshard_walkers,id=221082,ilevel=639,enchant_id=7418
 finger1=key_to_the_unseeming,id=212447,bonus_id=10836,ilevel=639,gem_id=213494/213470,enchant_id=7340
 finger2=stitchfleshs_misplaced_signet,id=178736,bonus_id=10836,ilevel=639,gem_id=213485/213455,enchant_id=7340
-trinket1=arakara_sacbrood,id=219314,ilevel=639
+trinket1=treacherous_transmitter,id=221023,ilevel=639
 trinket2=spymasters_web,id=220202,ilevel=639
 main_hand=sovereigns_disdain,id=212394,ilevel=639,enchant_id=7460
 off_hand=vagabonds_torch,id=222566,bonus_id=11300,ilevel=636,crafted_stats=36/49
