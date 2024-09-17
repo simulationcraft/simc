@@ -2086,7 +2086,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
     action_t* one_time_action;
     action_t* aoe_action;
 
-    sigil_of_algari_concordance_pet_t( util::string_view name, const special_effect_t& e, const spell_data_t* summon_spell )
+    sigil_of_algari_concordance_pet_t( std::string_view name, const special_effect_t& e, const spell_data_t* summon_spell )
       : pet_t( e.player->sim, e.player, name, true, true ),
         st_action( nullptr ),
         one_time_action( nullptr ),
@@ -2111,7 +2111,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
   {
     unsigned max_scaling_targets;
     bool scale_aoe_damage;
-    algari_concodance_pet_spell_t( util::string_view n, pet_t* p, const spell_data_t* s, action_t* a )
+    algari_concodance_pet_spell_t( std::string_view n, pet_t* p, const spell_data_t* s, action_t* a )
       : spell_t( n, p, s ), max_scaling_targets( 5 ), scale_aoe_damage( false )
     {
       background = true;
@@ -2144,7 +2144,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
   struct thunder_bolt_silvervein_t : public algari_concodance_pet_spell_t
   {
 
-    thunder_bolt_silvervein_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+    thunder_bolt_silvervein_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
       : algari_concodance_pet_spell_t( name, p, p->find_spell( 452335 ), a )
     {
       name_str_reporting = "thunder_bolt";
@@ -2154,7 +2154,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
   struct bolt_rain_t : public algari_concodance_pet_spell_t
   {
-    bolt_rain_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+    bolt_rain_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
       : algari_concodance_pet_spell_t( name, p, p->find_spell( 452334 ), a )
     {
       aoe = -1;
@@ -2166,7 +2166,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
   struct thundering_bolt_t : public algari_concodance_pet_spell_t
   {
-    thundering_bolt_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+    thundering_bolt_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
       : algari_concodance_pet_spell_t( name, p, p->find_spell( 452445 ), a )
     {
       aoe = -1;
@@ -2178,7 +2178,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
   struct mighty_smash_t : public algari_concodance_pet_spell_t
   {
-    mighty_smash_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+    mighty_smash_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
       : algari_concodance_pet_spell_t( name, p, p->find_spell( 452545 ), a )
     {
       aoe = -1;
@@ -2190,7 +2190,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
 
   struct earthen_ire_buff_t : public algari_concodance_pet_spell_t
   {
-    earthen_ire_buff_t( util::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
+    earthen_ire_buff_t( std::string_view name, pet_t* p, const special_effect_t& e, action_t* a )
       : algari_concodance_pet_spell_t( name, p, e.player->find_spell( 452518 ), a )
     {
       background = true;
@@ -3572,7 +3572,7 @@ void darkmoon_deck_ascension( special_effect_t& effect )
     unsigned stack;
     bool in_combat;
 
-    ascension_tick_t( const special_effect_t& e, util::string_view n, const spell_data_t* s, bool embellish )
+    ascension_tick_t( const special_effect_t& e, std::string_view n, const spell_data_t* s, bool embellish )
       : buff_t( e.player, n, s ), buff_list(), last_buff( nullptr ), stack( 0 ), in_combat( false )
     {
       add_stats( e, embellish );
@@ -3703,7 +3703,7 @@ void darkmoon_deck_radiance( special_effect_t& effect )
     double max_damage;
     buff_t* buff;
 
-    radiant_focus_debuff_t( actor_pair_t td, const special_effect_t& e, util::string_view n, const spell_data_t* s,
+    radiant_focus_debuff_t( actor_pair_t td, const special_effect_t& e, std::string_view n, const spell_data_t* s,
                             buff_t* b )
       : buff_t( td, n, s ), accumulated_damage( 0 ), max_damage( data().effectN( 1 ).average( e ) ), buff( b )
     {
@@ -4170,11 +4170,15 @@ void candle_confidant( special_effect_t& effect )
 {
   struct candle_confidant_pet_t : public pet_t
   {
+  protected:
+    using base_t = candle_confidant_pet_t;
+
+  public:
     bool use_auto_attack;
     const special_effect_t& effect;
     action_t* parent_action;
 
-    candle_confidant_pet_t( util::string_view name, const special_effect_t& e, const spell_data_t* summon_spell )
+    candle_confidant_pet_t( std::string_view name, const special_effect_t& e, const spell_data_t* summon_spell )
       : pet_t( e.player->sim, e.player, name, true, true ), effect( e ), parent_action( nullptr )
     {
       npc_id = summon_spell->effectN( 1 ).misc_value1();
@@ -4214,6 +4218,7 @@ void candle_confidant( special_effect_t& effect )
       {
         if ( player->is_moving() )
           return false;
+
         return ( player->main_hand_attack->execute_event == nullptr );
       }
     };
@@ -4231,16 +4236,28 @@ void candle_confidant( special_effect_t& effect )
       }
     }
 
+    void create_buffs() override
+    {
+      pet_t::create_buffs();
+
+      buffs.movement->set_quiet( true );
+    }
+
     void arise() override
     {
       pet_t::arise();
-      if ( owner->base.distance > 8 )
+
+      parent_action->stats->add_execute( 0_ms, owner );
+
+      if ( use_auto_attack && owner->base.distance > 8 )
       {
         trigger_movement( owner->base.distance, movement_direction_type::TOWARDS );
+        auto dur = time_to_move();
+        make_event( *sim, dur, [ this, dur ] { update_movement( dur ); } );
       }
     }
 
-    action_t* create_action( util::string_view name, util::string_view options_str ) override
+    action_t* create_action( std::string_view name, std::string_view options_str ) override
     {
       if ( name == "auto_attack" )
         return new auto_attack_t( this );
@@ -4260,7 +4277,7 @@ void candle_confidant( special_effect_t& effect )
 
   struct auto_attack_melee_t : public melee_attack_t
   {
-    auto_attack_melee_t( pet_t* p, util::string_view name = "main_hand", action_t* a = nullptr )
+    auto_attack_melee_t( pet_t* p, std::string_view name = "main_hand", action_t* a = nullptr )
       : melee_attack_t( name, p )
     {
       this->background = this->repeating = true;
@@ -4292,11 +4309,12 @@ void candle_confidant( special_effect_t& effect )
 
   struct candle_confidant_pet_spell_t : public spell_t
   {
-    candle_confidant_pet_spell_t( util::string_view n, pet_t* p, const spell_data_t* s, util::string_view options_str, action_t* a )
+    candle_confidant_pet_spell_t( std::string_view n, pet_t* p, const spell_data_t* s, std::string_view options_str,
+                                  action_t* a )
       : spell_t( n, p, s )
     {
       auto proxy = a;
-      auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
+      auto it = range::find( proxy->child_action, data().id(), &action_t::id );
       if ( it != proxy->child_action.end() )
         stats = ( *it )->stats;
       else
@@ -4308,10 +4326,11 @@ void candle_confidant( special_effect_t& effect )
 
   struct weak_light_up_t : public candle_confidant_pet_spell_t
   {
-    weak_light_up_t( const special_effect_t& e, candle_confidant_pet_t* p, util::string_view options_str, action_t* a )
+    weak_light_up_t( const special_effect_t& e, candle_confidant_pet_t* p, std::string_view options_str, action_t* a )
       : candle_confidant_pet_spell_t( "light_up_waxx", p, p->find_spell( 455443 ), options_str, a )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+      name_str_reporting = "light_up";
     }
 
     void execute() override
@@ -4324,10 +4343,12 @@ void candle_confidant( special_effect_t& effect )
 
   struct weak_not_so_gentle_flame_t : public candle_confidant_pet_spell_t
   {
-    weak_not_so_gentle_flame_t( const special_effect_t& e, candle_confidant_pet_t* p, util::string_view options_str, action_t* a )
+    weak_not_so_gentle_flame_t( const special_effect_t& e, candle_confidant_pet_t* p, std::string_view options_str,
+                                action_t* a )
       : candle_confidant_pet_spell_t( "notsogentle_flame_wayne", p, p->find_spell( 455447 ), options_str, a )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e );
+      name_str_reporting = "notsogentle_flame";
     }
 
     void execute() override
@@ -4340,10 +4361,11 @@ void candle_confidant( special_effect_t& effect )
 
   struct strong_light_up_t : public candle_confidant_pet_spell_t
   {
-    strong_light_up_t( const special_effect_t& e, candle_confidant_pet_t* p, util::string_view options_str, action_t* a )
+    strong_light_up_t( const special_effect_t& e, candle_confidant_pet_t* p, std::string_view options_str, action_t* a )
       : candle_confidant_pet_spell_t( "light_up_take", p, p->find_spell( 455480 ), options_str, a )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 3 ).average( e );
+      name_str_reporting = "light_up";
     }
 
     void execute() override
@@ -4358,10 +4380,12 @@ void candle_confidant( special_effect_t& effect )
 
   struct strong_not_so_gentle_flame_t : public candle_confidant_pet_spell_t
   {
-    strong_not_so_gentle_flame_t( const special_effect_t& e, candle_confidant_pet_t* p, util::string_view options_str, action_t* a )
+    strong_not_so_gentle_flame_t( const special_effect_t& e, candle_confidant_pet_t* p, std::string_view options_str,
+                                  action_t* a )
       : candle_confidant_pet_spell_t( "notsogentle_flame_take", p, p->find_spell( 455479 ), options_str, a )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e );
+      name_str_reporting = "notsogentle_flame";
     }
 
     void execute() override
@@ -4377,22 +4401,22 @@ void candle_confidant( special_effect_t& effect )
   struct waxx_pet_t : public candle_confidant_pet_t
   {
     waxx_pet_t( const special_effect_t& e, action_t* parent = nullptr )
-      : candle_confidant_pet_t( "Waxx", e, e.player->find_spell( 455445 ) )
+      : base_t( "Waxx", e, e.player->find_spell( 455445 ) )
     {
       parent_action = parent;
     }
 
-    action_t* create_action( util::string_view name, util::string_view options_str ) override
+    action_t* create_action( std::string_view name, std::string_view options_str ) override
     {
       if ( name == "light_up" )
         return new weak_light_up_t( effect, this, options_str, parent_action );
 
-      return candle_confidant_pet_t::create_action( name, options_str );
+      return base_t::create_action( name, options_str );
     }
 
     void init_action_list() override
     {
-      candle_confidant_pet_t::init_action_list();
+      base_t::init_action_list();
       action_priority_list_t* def = get_action_priority_list( "default" );
       def->add_action( "light_up" );
     }
@@ -4401,7 +4425,7 @@ void candle_confidant( special_effect_t& effect )
   struct wayne_pet_t : public candle_confidant_pet_t
   {
     wayne_pet_t( const special_effect_t& e, action_t* parent = nullptr )
-      : candle_confidant_pet_t( "Wayne", e, e.player->find_spell( 455448 ) )
+      : base_t( "Wayne", e, e.player->find_spell( 455448 ) )
     {
       parent_action = parent;
       use_auto_attack = true;
@@ -4411,20 +4435,22 @@ void candle_confidant( special_effect_t& effect )
 
     attack_t* create_auto_attack() override
     {
-      return new auto_attack_melee_t( this, "main_hand_wayne", parent_action );
+      auto a = new auto_attack_melee_t( this, "main_hand_wayne", parent_action );
+      a->name_str_reporting = "Melee";
+      return a;
     }
 
-    action_t* create_action( util::string_view name, util::string_view options_str ) override
+    action_t* create_action( std::string_view name, std::string_view options_str ) override
     {
       if ( name == "not_so_gentle_flame" )
         return new weak_not_so_gentle_flame_t( effect, this, options_str, parent_action );
 
-      return candle_confidant_pet_t::create_action( name, options_str );
+      return base_t::create_action( name, options_str );
     }
 
     void init_action_list() override
     {
-      candle_confidant_pet_t::init_action_list();
+      base_t::init_action_list();
       action_priority_list_t* def = get_action_priority_list( "default" );
       def->add_action( "not_so_gentle_flame" );
     }
@@ -4436,7 +4462,7 @@ void candle_confidant( special_effect_t& effect )
   struct take_pet_t : public candle_confidant_pet_t
   {
     take_pet_t( const special_effect_t& e, action_t* parent = nullptr )
-      : candle_confidant_pet_t( "Take", e, e.player->find_spell( 455453 ) )
+      : base_t( "Take", e, e.player->find_spell( 455453 ) )
     {
       parent_action = parent;
       use_auto_attack = true;
@@ -4446,22 +4472,24 @@ void candle_confidant( special_effect_t& effect )
 
     attack_t* create_auto_attack() override
     {
-      return new auto_attack_melee_t( this, "main_hand_take", parent_action );
+      auto a = new auto_attack_melee_t( this, "main_hand_take", parent_action );
+      a->name_str_reporting = "Melee";
+      return a;
     }
 
-    action_t* create_action( util::string_view name, util::string_view options_str ) override
+    action_t* create_action( std::string_view name, std::string_view options_str ) override
     {
       if ( name == "not_so_gentle_flame" )
         return new strong_not_so_gentle_flame_t( effect, this, options_str, parent_action );
       if ( name == "light_up" )
         return new strong_light_up_t( effect, this, options_str, parent_action );
 
-      return candle_confidant_pet_t::create_action( name, options_str );
+      return base_t::create_action( name, options_str );
     }
 
     void init_action_list() override
     {
-      candle_confidant_pet_t::init_action_list();
+      base_t::init_action_list();
       action_priority_list_t* def = get_action_priority_list( "default" );
       def->add_action( "not_so_gentle_flame" );
       def->add_action( "light_up" );
@@ -4474,23 +4502,32 @@ void candle_confidant( special_effect_t& effect )
     spawner::pet_spawner_t<wayne_pet_t> wayne_spawner;
     spawner::pet_spawner_t<take_pet_t> take_spawner;
 
-    candle_confidant_t( const special_effect_t& e, const spell_data_t* s )
-      : generic_proc_t( e, "candle_confidant", s ),
+    candle_confidant_t( const special_effect_t& e )
+      : generic_proc_t( e, "candle_confidant", e.driver() ),
         waxx_spawner( "waxx", e.player ),
         wayne_spawner( "wayne", e.player ),
         take_spawner( "take", e.player )
     {
       auto waxx_summon_spell = e.player->find_spell( 455445 );
-      waxx_spawner.set_creation_callback( [ & ]( player_t* ) { return new waxx_pet_t( e, this ); } );
+      auto waxx = new action_t( action_e::ACTION_OTHER, "waxx", e.player, waxx_summon_spell );
+      waxx->name_str_reporting = "Waxx";
+      waxx_spawner.set_creation_callback( [ &e, waxx ]( player_t* ) { return new waxx_pet_t( e, waxx ); } );
       waxx_spawner.set_default_duration( waxx_summon_spell->duration() );
+      add_child( waxx );
 
       auto wayne_summon_spell = e.player->find_spell( 455448 );
-      wayne_spawner.set_creation_callback( [ & ]( player_t* ) { return new wayne_pet_t( e, this ); } );
+      auto wayne = new action_t( action_e::ACTION_OTHER, "wayne", e.player, wayne_summon_spell );
+      wayne->name_str_reporting = "Wayne";
+      wayne_spawner.set_creation_callback( [ &e, wayne ]( player_t* ) { return new wayne_pet_t( e, wayne ); } );
       wayne_spawner.set_default_duration( wayne_summon_spell->duration() );
+      add_child( wayne );
 
       auto take_summon_spell = e.player->find_spell( 455453 );
-      take_spawner.set_creation_callback( [ & ]( player_t* ) { return new take_pet_t( e, this ); } );
+      auto take = new action_t( action_e::ACTION_OTHER, "take", e.player, take_summon_spell );
+      take->name_str_reporting = "Take";
+      take_spawner.set_creation_callback( [ &e, take ]( player_t* ) { return new take_pet_t( e, take ); } );
       take_spawner.set_default_duration( take_summon_spell->duration() );
+      add_child( take );
     }
 
     void execute() override
@@ -4499,20 +4536,15 @@ void candle_confidant( special_effect_t& effect )
       int pet_id = rng().range( 0, 3 );
       switch ( pet_id )
       {
-        case 0:
-          waxx_spawner.spawn();
-          break;
-        case 1:
-          wayne_spawner.spawn();
-          break;
-        case 2:
-          take_spawner.spawn();
-          break;
+        case 0:  waxx_spawner.spawn(); break;
+        case 1:  wayne_spawner.spawn(); break;
+        case 2:  take_spawner.spawn(); break;
+        default: break;
       }
     }
   };
 
-  effect.execute_action = create_proc_action<candle_confidant_t>( "candle_confidant", effect, effect.player->find_spell( 455435 ) );
+  effect.execute_action = create_proc_action<candle_confidant_t>( "candle_confidant", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -5721,7 +5753,7 @@ void register_hotfixes()
 {
 }
 
-action_t* create_action( player_t* p, util::string_view n, util::string_view options )
+action_t* create_action( player_t* p, std::string_view n, std::string_view options )
 {
   // Trinket Actions
   if ( n == "pickup_entropic_skardyn_core" ) return new items::pickup_entropic_skardyn_core_t( p, options );
