@@ -8476,39 +8476,69 @@ struct ascendance_t : public shaman_spell_t
       p()->buff.ascendance->trigger();
     }
 
-    if ( lvb )
-    {
-      lvb->set_target( player->target );
-      lvb->target_cache.is_valid = false;
-      if ( !lvb->target_list().empty() )
-      {
-        lvb->execute();
-      }
-    }
-
     if ( ascendance_damage )
     {
       ascendance_damage->set_target( target );
       ascendance_damage->execute();
     }
 
-    // Refresh Flame Shock to max duration
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
-      auto max_duration = p()->action.flame_shock->composite_dot_duration( execute_state );
-
-      // Apparently the Flame Shock durations get set to current Flame Shock max duration,
-      // bypassing normal dot refresh behavior.
-      range::for_each( sim->target_non_sleeping_list, [ this, max_duration ]( player_t* target ) {
-        auto fs_dot = td( target )->dot.flame_shock;
-        if ( fs_dot->is_ticking() )
+        // On 11.0.5 PTR, Asendance now casts Flame Shocks on up to 6 nearby targets
+        // as well as 6 Lava Bursts to those same nearby targets
+        // On 11.0.2 Live, Ascendance refreshes the duration of any active Flame Shocks
+        // while Lava Bursting each of those targets
+        if ( p()->is_ptr() )
         {
-          auto new_duration = max_duration < fs_dot->remains()
-                              ? -( fs_dot->remains() - max_duration )
-                              : max_duration - fs_dot->remains();
-          fs_dot->adjust_duration( new_duration, timespan_t::min(), -1, true );
+            // FIXME: this is a naive implementation that just picks the first (up to) 6 targets
+            // it can find, indiscriminately, and casts Flame Shock on them.
+            // I have no idea if it actually works like this on PTR as testing the logic
+            // is not as straightforward as "go to the training dummies".
+            // Logic largely cribbed from LMT
+            for ( size_t i = 0; i < std::min( target_list().size(), as<size_t>( p()->talent.ascendance->effectN( 7 ).base_value() ) ); ++i )
+            {
+                auto t = target_list()[ i ];
+
+                p()->trigger_secondary_flame_shock( t );
+
+                if ( lvb )
+                {
+                  lvb->set_target( t );
+                  lvb->target_cache.is_valid = false;
+                  if ( !lvb->target_list().empty() )
+                  {
+                    lvb->execute();
+                  }
+                }
+            }
         }
-      } );
+        else
+        {
+            auto max_duration = p()->action.flame_shock->composite_dot_duration( execute_state );
+
+            // Apparently the Flame Shock durations get set to current Flame Shock max duration,
+            // bypassing normal dot refresh behavior.
+            range::for_each( sim->target_non_sleeping_list, [ this, max_duration ]( player_t* target ) {
+              auto fs_dot = td( target )->dot.flame_shock;
+              if ( fs_dot->is_ticking() )
+              {
+                auto new_duration = max_duration < fs_dot->remains()
+                                    ? -( fs_dot->remains() - max_duration )
+                                    : max_duration - fs_dot->remains();
+                fs_dot->adjust_duration( new_duration, timespan_t::min(), -1, true );
+              }
+            } );
+
+            if ( lvb )
+            {
+              lvb->set_target( player->target );
+              lvb->target_cache.is_valid = false;
+              if ( !lvb->target_list().empty() )
+              {
+                lvb->execute();
+              }
+            }
+        }
     }
 
     if ( p()->talent.static_accumulation.ok() )
