@@ -36,7 +36,7 @@ aoe->add_action( "sunfire,target_if=refreshable&(target.time_to_die-remains)>6-(
 aoe->add_action( "moonfire,target_if=refreshable&(target.time_to_die-remains)>6&astral_power.deficit>variable.passive_asp+energize_amount,if=!fight_style.dungeonroute" );
 aoe->add_action( "stellar_flare,target_if=refreshable&(target.time_to_die-remains-target>7+spell_targets),if=spell_targets<(11-talent.umbral_intensity.rank-(2*talent.astral_smolder)-talent.lunar_calling)" );
 aoe->add_action( "force_of_nature,if=(talent.power_of_the_dream&talent.early_spring&talent.orbital_strike)|variable.eclipse_remains>=3" );
-aoe->add_action( "fury_of_elune,if=variable.eclipse|eclipse.in_both" );
+aoe->add_action( "fury_of_elune,if=variable.eclipse" );
 aoe->add_action( "celestial_alignment,if=fight_remains<15*(1+talent.greater_alignment*0.4)|(!hero_tree.keeper_of_the_grove|(buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>25))" );
 aoe->add_action( "incarnation,if=fight_remains<20*(1+talent.greater_alignment*0.4)|(!hero_tree.keeper_of_the_grove|(buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>25))" );
 aoe->add_action( "warrior_of_elune,if=!talent.lunar_calling&buff.eclipse_solar.remains<7|talent.lunar_calling" );
@@ -44,7 +44,7 @@ aoe->add_action( "starfire,if=(!talent.lunar_calling&spell_targets.starfire=1)&(
 aoe->add_action( "starfall,if=buff.starweavers_warp.up|buff.touch_the_cosmos_starfall.up" );
 aoe->add_action( "starsurge,if=buff.starweavers_weft.up|buff.touch_the_cosmos_starsurge.up" );
 aoe->add_action( "starfall" );
-aoe->add_action( "convoke_the_spirits" );
+aoe->add_action( "convoke_the_spirits,if=spell_targets.starfire<(7-talent.umbral_intensity-talent.umbral_embrace-talent.soul_of_the_forest)&(fight_remains<5|(buff.ca_inc.up|cooldown.ca_inc.remains>40)&(!hero_tree.keeper_of_the_grove|buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>15))" );
 aoe->add_action( "new_moon" );
 aoe->add_action( "half_moon" );
 aoe->add_action( "full_moon" );
