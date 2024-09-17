@@ -6016,6 +6016,7 @@ struct meteorite_impact_t final : public mage_spell_t
     aoe = -1;
     reduced_aoe_targets = 8; // TODO: Verify this
     background = triggers.ignite = true;
+    base_dd_multiplier *= 1.0 + p->spec.arcane_mage->effectN( 10 ).percent();
   }
 
   void execute() override
