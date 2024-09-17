@@ -13895,7 +13895,7 @@ void death_knight_t::create_buffs()
                                       ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
     buffs.bloodied_blade_final  = make_buff( this, "bloodied_blade_final", spell.bloodied_blade_final_buff )
-                                      ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+                                      ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
                                       ->add_invalidate( CACHE_STRENGTH );
                                       // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
