@@ -2699,12 +2699,14 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     bool tigers_fury;
     bool bloodtalons;
     bool clearcasting;
+    bool sudden_ambush;
   } snapshots;
 
   std::vector<player_effect_t> persistent_periodic_effects;
   std::vector<player_effect_t> persistent_direct_effects;
   snapshot_counter_t* bt_counter = nullptr;
   snapshot_counter_t* tf_counter = nullptr;
+  snapshot_counter_t* sa_counter = nullptr;
 
   cat_attack_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(), flag_e f = flag_e::NONE )
     : base_t( n, p, s, f ), snapshots()
@@ -2827,6 +2829,10 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
 
       if ( snapshots.tigers_fury && p()->talent.tigers_fury.ok() )
         tf_counter = get_counter( p()->buff.tigers_fury );
+
+      if ( snapshots.sudden_ambush && p()->talent.sudden_ambush.ok() )
+        sa_counter = get_counter( p()->buff.sudden_ambush );
+
     }
   }
 
@@ -2874,6 +2880,9 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
 
     if ( snapshots.tigers_fury && tf_counter )
       tf_counter->count_tick();
+
+    if ( snapshots.sudden_ambush && sa_counter )
+      sa_counter->count_tick();
   }
 
   void execute() override
@@ -2890,6 +2899,9 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
 
     if ( snapshots.tigers_fury && tf_counter && hit_any_target )
       tf_counter->count_execute();
+
+    if ( snapshots.sudden_ambush && sa_counter && hit_any_target )
+      sa_counter->count_execute();
 
     if ( !hit_any_target )
       player->resource_gain( RESOURCE_ENERGY, last_resource_cost * 0.80, p()->gain.energy_refund );
@@ -4705,6 +4717,7 @@ struct rake_t final : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
 
     dot_name = "rake";
     bt_buff = p->buff.bt_rake;
+    snapshots.sudden_ambush = true;
   }
 
   bool has_amount_result() const override { return bleed->has_amount_result(); }
@@ -4943,6 +4956,7 @@ struct shred_t final : public use_fluid_form_t<DRUID_FERAL,
     }
 
     bt_buff = p->buff.bt_shred;
+    snapshots.sudden_ambush = true;
   }
 
   void execute() override
@@ -14218,10 +14232,12 @@ private:
   struct feral_counter_data_t
   {
     action_t* action = nullptr;
-    double tf_exe = 0.0;
+    double tf_exec = 0.0;
     double tf_tick = 0.0;
-    double bt_exe = 0.0;
+    double bt_exec = 0.0;
     double bt_tick = 0.0;
+    double sa_exec = 0.0;
+    double sa_tick = 0.0;
   };
 
 public:
@@ -14250,7 +14266,7 @@ public:
   {
     if ( range::contains( counter->buffs, p.buff.tigers_fury ) )
     {
-      data.tf_exe += counter->execute.mean();
+      data.tf_exec += counter->execute.mean();
 
       if ( counter->tick.count() )
         data.tf_tick += counter->tick.mean();
@@ -14259,12 +14275,21 @@ public:
     }
     else if ( range::contains( counter->buffs, p.buff.bloodtalons ) )
     {
-      data.bt_exe += counter->execute.mean();
+      data.bt_exec += counter->execute.mean();
 
       if ( counter->tick.count() )
         data.bt_tick += counter->tick.mean();
       else
         data.bt_tick += counter->execute.mean();
+    }
+    else if ( range::contains( counter->buffs, p.buff.sudden_ambush ) )
+    {
+      data.sa_exec += counter->execute.mean();
+
+      if ( counter->tick.count() )
+        data.sa_tick += counter->tick.mean();
+      else
+        data.sa_tick += counter->execute.mean();
     }
   }
 
@@ -14277,14 +14302,20 @@ public:
     if ( p.talent.bloodtalons.ok() )
       os << R"(<th colspan="2">Bloodtalons</th>)";
 
+    if ( p.talent.sudden_ambush.ok() )
+      os << R"(<th colspan="2">Sudden Ambush</th>)";
+
     os << "</tr>\n";
 
     os << "<tr>\n"
        << R"(<th class="toggle-sort left" data-sortdir="asc" data-sorttype="alpha">Ability</th>)"
-       << R"(<th class="toggle-sort">Execute %</th><th class="toggle-sort">Benefit %</th>)";
+       << R"(<th class="toggle-sort">Execute</th><th class="toggle-sort">Benefit</th>)";
 
     if ( p.talent.bloodtalons.ok() )
-      os << R"(<th class="toggle-sort">Execute %</th><th class="toggle-sort">Benefit %</th>)";
+      os << R"(<th class="toggle-sort">Execute</th><th class="toggle-sort">Benefit</th>)";
+
+    if ( p.talent.sudden_ambush.ok() )
+      os << R"(<th class="toggle-sort">Execute</th><th class="toggle-sort">Benefit</th>)";
 
     os << "</tr></thead>\n";
 
@@ -14331,7 +14362,7 @@ public:
         }
       }
 
-      if ( data.tf_exe + data.tf_tick + data.bt_exe + data.bt_tick == 0.0 )
+      if ( data.tf_exec + data.tf_tick + data.bt_exec + data.bt_tick + data.sa_exec + data.sa_tick == 0.0 )
         continue;
 
       data_list.push_back( std::move( data ) );
@@ -14344,10 +14375,13 @@ public:
     for ( const auto& data : data_list )
     {
       os.format( R"(<tr class="right"><td class="left">{}</td><td>{:.2f}%</td><td>{:.2f}%</td>)",
-                 report_decorators::decorated_action( *data.action ), data.tf_exe * 100, data.tf_tick * 100 );
+                 report_decorators::decorated_action( *data.action ), data.tf_exec * 100, data.tf_tick * 100 );
 
       if ( p.talent.bloodtalons.ok() )
-        os.format( "<td>{:.2f}%</td><td>{:.2f}</td>", data.bt_exe * 100, data.bt_tick * 100 );
+        os.format( "<td>{:.2f}%</td><td>{:.2f}%</td>", data.bt_exec * 100, data.bt_tick * 100 );
+
+      if ( p.talent.sudden_ambush.ok() )
+        os.format( "<td>{:.2f}%</td><td>{:.2f}%</td>", data.sa_exec * 100, data.sa_tick * 100 );
 
       os << "</tr>\n";
     }
