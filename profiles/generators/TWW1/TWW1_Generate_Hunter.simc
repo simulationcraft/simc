@@ -1,56 +1,106 @@
-# hunter="TWW1_Hunter_Beast_Mastery"
-# level=70
-# race=orc
-# role=attack
-# position=ranged_back
-# spec=beast_mastery
-# talents=2102012
+hunter="TWW1_Hunter_Beast_Mastery_Dark_Ranger"
+level=80
+race=dwarf
+role=attack
+position=ranged_back
+spec=beast_mastery
+talents=C0PAAAAAAAAAAAAAAAAAAAAAAYsNDMgFwMsEyYBAAAAAADAAAAAAgZGDjZmZYmhZYYGzMGzMzkZYMjZmZMzwwYYmhZZMmlZwG
 
-# head=boneshatter_helm,id=172325,bonus_id=6649/6650/8122/1588/6935,gem_id=173128
-# neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
-# shoulders=godstalkers_pauldrons,id=188856,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-# chest=godstalkers_hauberk,id=188858,bonus_id=1505/7187,enchant=eternal_skirmish
-# wrists=interdimensional_manica,id=189849,bonus_id=1524/7187/6935,gem_id=173128
-# hands=godstalkers_gauntlets,id=188861,bonus_id=1505/7187
-# waist=godstalkers_fauld,id=188857,bonus_id=1498/7187/6935,gem_id=173128
-# legs=godstalkers_tassets,id=188860,bonus_id=1505/7187
-# feet=boneshatter_treads,id=172323,bonus_id=7010/6649/6650/1588,enchant=eternal_agility
-# finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-# finger2=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-# trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
-# trinket2=cache_of_acquired_treasures,id=188265,bonus_id=1524/7187
-# main_hand=astral_verdict,id=189853,bonus_id=1524/7187,enchant=optical_target_embiggener
+head=,id=212020,bonus_id=1808,gem_id=213743,ilevel=639
+neck=,id=225577,bonus_id=8781,gem_id=213479/213470,ilevel=639
+shoulder=,id=212018,bonus_id=4795,ilevel=639
+back=,id=225574,enchant_id=7403,ilevel=639
+chest=,id=212023,bonus_id=4795,enchant_id=7364,ilevel=639
+wrist=,id=219342,bonus_id=1808/11303/8960/8790,enchant_id=7385,gem_id=213494,ilevel=636
+hands=,id=219341,bonus_id=11303/8960/8790,ilevel=636
+waist=,id=212017,bonus_id=1808,gem_id=213455,ilevel=639
+legs=,id=212019,bonus_id=4795,enchant_id=7601,ilevel=639
+feet=,id=212022,bonus_id=4795,enchant_id=7418,ilevel=639
+finger1=,id=225578,bonus_id=8781,enchant_id=7340,gem_id=213455/213455,ilevel=639
+finger2=,id=212447,bonus_id=8781,enchant_id=7340,gem_id=213455/213455,ilevel=639
+trinket1=,id=133282,ilevel=639
+trinket2=,id=212454,bonus_id=1540/10299/10376
+main_hand=,id=212400,bonus_id=1540/10299,enchant_id=7460
 
-# save=TWW1_Hunter_Beast_Mastery.simc
+save=TWW1_Hunter_Beast_Mastery_Dark_Ranger.simc
 
+hunter="TWW1_Hunter_Beast_Mastery_Pack_Leader"
+level=80
+race=dwarf
+role=attack
+position=ranged_back
+spec=beast_mastery
+talents=C0PAAAAAAAAAAAAAAAAAAAAAAAMmxGDsAbjGaYDAAAAAADAAAAAAAzYYMzMzYmhZYGmlZGjZmZyMMmxMzMmZMDjhZGmlBzyMYD
 
-# hunter="TWW1_Hunter_Marksmanship"
-# level=70
-# race=troll
-# spec=marksmanship
-# role=attack
-# position=ranged_back
-# talents=1102032
+head=,id=212020,bonus_id=1808,gem_id=213743,ilevel=639
+neck=,id=225577,bonus_id=8781,gem_id=213467/213491,ilevel=639
+shoulder=,id=212018,bonus_id=4795,ilevel=639
+back=,id=212446,enchant_id=7403,ilevel=639
+chest=,id=212023,bonus_id=4795,enchant_id=7364,ilevel=639
+wrist=,id=219342,bonus_id=1808/11303/8960/8791,enchant_id=7385,gem_id=213491,ilevel=636
+hands=,id=219341,bonus_id=11303/8960/8791,ilevel=636
+waist=,id=221075,bonus_id=1808,gem_id=213491,ilevel=639
+legs=,id=212019,bonus_id=4795,enchant_id=7601,ilevel=639
+feet=,id=225586,enchant_id=7418,ilevel=639
+finger1=,id=225578,bonus_id=8781,enchant_id=7334,gem_id=213491/213491,ilevel=639
+finger2=,id=221136,bonus_id=8781,enchant_id=7334,gem_id=213479/213455,ilevel=639
+trinket1=,id=133282,ilevel=639
+trinket2=,id=212454,bonus_id=1540/10299/10376
+main_hand=,id=212400,bonus_id=1540/10299,enchant_id=7460
 
-# head=boneshatter_helm,id=172325,bonus_id=6647/6648/8122/1588/6935,gem_id=173130
-# neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173130
-# shoulders=godstalkers_pauldrons,id=188856,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-# chest=godstalkers_hauberk,id=188858,bonus_id=1505/7187,enchant=eternal_skirmish
-# wrists=boneshatter_armguards,id=172329,bonus_id=6647/6648/7014/1588/6935,gem_id=173130
-# hands=godstalkers_gauntlets,id=188861,bonus_id=1505/7187
-# waist=kings_wolfheart_waistband,id=189837,bonus_id=1524/7187/6935,gem_id=173130
-# legs=godstalkers_tassets,id=188860,bonus_id=1505/7187
-# feet=godstalkers_sabatons,id=188862,bonus_id=1498/7187,enchant=eternal_agility
-# finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173130,enchant=tenet_of_mastery
-# finger2=modified_defense_grid,id=189772,bonus_id=1524/7187/6935,gem_id=173130,enchant=tenet_of_mastery
-# trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
-# trinket2=cache_of_acquired_treasures,id=188265,bonus_id=1524/7187
-# main_hand=astral_verdict,id=189853,bonus_id=1524/7187,enchant=sinful_revelation
+save=TWW1_Hunter_Beast_Mastery_Pack_Leader.simc
 
-# save=TWW1_Hunter_Marksmanship.simc
+hunter="TWW1_Hunter_Marksmanship_Sentinel"
+level=80
+race=dwarf
+spec=marksmanship
+role=attack
+position=ranged_back
+talents=C4PAAAAAAAAAAAAAAAAAAAAAAwADsMGN2GQmFsBAAAAAAmxMzMDzMzwMzMMzMjxMjZAAAAAAAAmhxMMzMzMTzMGDzMMGmZbGsB
 
+head=,id=178738,bonus_id=1808,gem_id=213743,ilevel=639
+neck=,id=212448,bonus_id=8781,gem_id=213467/213491,ilevel=639
+shoulder=,id=212018,bonus_id=4795,ilevel=639
+back=,id=222817,bonus_id=8791/11303/8960,enchant_id=7403,ilevel=636
+chest=,id=212023,bonus_id=4795,enchant_id=7364,ilevel=639
+wrist=,id=219342,bonus_id=1808/11303/8960/8791,enchant_id=7385,gem_id=213479,ilevel=636
+hands=,id=212021,bonus_id=4795,ilevel=639
+waist=,id=225580,bonus_id=1808,gem_id=213458,ilevel=639
+legs=,id=212019,bonus_id=4795,enchant_id=7601,ilevel=639
+feet=,id=225586,enchant_id=7418,ilevel=639
+finger1=,id=225578,bonus_id=8781,enchant_id=7334,gem_id=213458/213458,ilevel=639
+finger2=,id=162542,bonus_id=8781,enchant_id=7334,gem_id=213458/213458,ilevel=639
+trinket1=,id=212456,ilevel=639
+trinket2=,id=212454,ilevel=639
+main_hand=,id=212399,enchant_id=7463,ilevel=639
+
+save=TWW1_Hunter_Marksmanship.simc
+
+hunter="TWW1_Hunter_Marksmanship_Dark_Ranger"
+level=80
+race=dwarf
+spec=marksmanship
+role=attack
+position=ranged_back
+talents=C4PAAAAAAAAAAAAAAAAAAAAAAYsNDMglgZYJwsAAAAAAAmxMzMDzMzgZmhZmZMmZMjHAAAAAAAAmhxMMzMzMTzMGDzMMGmZbGsB
+
+head=,id=133285,bonus_id=1808,gem_id=213743,ilevel=639
+neck=,id=212448,bonus_id=8781,gem_id=213455/213455,ilevel=639
+shoulder=,id=212018,bonus_id=4795,ilevel=639
+back=,id=225574,enchant_id=7403,ilevel=639
+chest=,id=212023,bonus_id=4795,enchant_id=7364,ilevel=639
+wrist=,id=219342,bonus_id=1808/11303/8960/8790,enchant_id=7385,gem_id=213455,ilevel=636
+hands=,id=212021,bonus_id=4795,ilevel=639
+waist=,id=212017,bonus_id=1808,gem_id=213455,ilevel=639
+legs=,id=212019,bonus_id=4795,enchant_id=7601,ilevel=639
+feet=,id=225586,enchant_id=7424,ilevel=639
+finger1=,id=225578,bonus_id=8781,enchant_id=7346,gem_id=213455/213455,ilevel=639
+finger2=,id=221136,bonus_id=8781,enchant_id=7340,gem_id=213455/213455,ilevel=639
+trinket1=,id=212454,bonus_id=1540/10299/10376
+trinket2=,id=133282,ilevel=639
+main_hand=,id=212399,bonus_id=1540/10299/10376,enchant_id=7460
+
+save=TWW1_Hunter_Marksmanship_Dark_Ranger.simc
 
 # hunter="TWW1_Hunter_Survival"
 # level=70
