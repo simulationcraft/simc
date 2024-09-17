@@ -19236,7 +19236,7 @@ Effects          :
 #4 (id=1124087)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #5 (id=1124444)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.58145 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.48454 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : A vampiric strike that deals $?a137007[$s1][$s5] Shadow damage and heals you for $?a137007[$434422s2][$434422s3]% of your maximum health.
 
 Additionally grants you Essence of the Blood Queen for $433925d.
@@ -19290,7 +19290,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1123520)  : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your Death Coil$?a137007[, Epidemic][] and Death Strike have a $s1% chance to make your next $?a137008[Heart Strike]?s207311[Clawing Shadows][Scourge Strike] become Vampiric Strike.
 
 Vampiric Strike heals you for $?a137008[$434422s2][$434422s3]% of your maximum health and grants you Essence of the Blood Queen, increasing your Haste by ${$433925s1/10}.1%, up to ${$433925s1*$433925u/10}.1% for $433925d.
@@ -19510,7 +19510,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 37 | Misc Value 2: 3134 (Label) | Target: Self (1)
                    Affected Spells (Label): Essence of the Blood Queen (433925)
 #2 (id=1123820)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3134 (Label) | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3134 (Label) | Target: Self (1)
                    Affected Spells (Label): Essence of the Blood Queen (433925)
 Description      : Essence of the Blood Queen stacks $s1 additional times and increases the damage of your Death Coil and Death Strike by $s2% per stack.
 
@@ -19801,7 +19801,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Aura Points On Client (268)
 Effects          :
 #1 (id=1123972)  : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc434157
 Tooltip          : Your Strength is increased by $w1%.
 
