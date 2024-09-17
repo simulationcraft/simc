@@ -5266,6 +5266,22 @@ void excavation( special_effect_t& effect )
   new excavation_cb_t( effect );
 }
 
+void sureki_zealots_insignia( special_effect_t& e )
+{
+  auto buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 457684 ) )
+                  ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) );
+
+  e.custom_buff = buff;
+
+  // The Drivers flags are for Healing Taken. Swap flags to damage flags to at least get personal valuation.
+  e.proc_flags_  = PF_ALL_DAMAGE | PF_PERIODIC;
+  e.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+
+  e.rppm_modifier_ = e.player->thewarwithin_opts.sureki_zealots_insignia_rppm_multiplier;
+
+  new dbc_proc_callback_t( e.player, e );
+}
+
 }  // namespace items
 
 namespace sets
@@ -5682,6 +5698,8 @@ void register_special_effects()
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );
   register_special_effect( 457918, DISABLED_EFFECT );  // seal of the poisoned pact
   register_special_effect( 455799, items::excavation );
+  register_special_effect( 457683, items::sureki_zealots_insignia );
+
 
   // Sets
   register_special_effect( 444067, sets::void_reapers_contract );    // kye'veza's cruel implements trinket

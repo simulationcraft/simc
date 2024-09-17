@@ -12763,6 +12763,8 @@ void player_t::create_options()
                             thewarwithin_opts.fury_of_the_stormrook_pickup_stddev, 0_ms, 10_s ) );
   add_option( opt_float( "thewarwithin.mereldars_toll_ally_trigger_chance",
                          thewarwithin_opts.mereldars_toll_ally_trigger_chance, 0, 1 ) );
+  add_option( opt_float( "thewarwithin.sureki_zealots_insignia_rppm_multiplier",
+                         thewarwithin_opts.sureki_zealots_insignia_rppm_multiplier, 0, 1 ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

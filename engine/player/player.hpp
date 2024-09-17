@@ -874,6 +874,7 @@ struct player_t : public actor_t
     // Chance that an ally is ignored for Mereldar's Toll Evaluation. This is set high becauee pets exist and its
     // currently bugged to trigger on them.
     double mereldars_toll_ally_trigger_chance = 0.7;
+    double sureki_zealots_insignia_rppm_multiplier = 0.9;
   } thewarwithin_opts;
 
 private:
