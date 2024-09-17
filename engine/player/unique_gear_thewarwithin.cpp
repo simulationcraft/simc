@@ -5271,7 +5271,7 @@ void excavation( special_effect_t& effect )
 void sureki_zealots_insignia( special_effect_t& e )
 {
   auto buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 457684 ) )
-                  ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) );
+                  ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) );
 
   e.custom_buff = buff;
 
