@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.2.56513 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.2.56625 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -1572,7 +1572,7 @@ Category         : 1873: Deadeye (321460 effect#1), Deadeye (321460 effect#2)
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7), Marksmanship Hunter (137016 effects: #1, #2, #8), Survival Hunter (137017 effects: #1, #2, #9), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Improved Kill Shot (343248 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Killer Accuracy (378765 effects: #1, #2), Deathblow (378770 effect#1), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Cornered Prey (452101 effect#1), Outland Venom (459941 effect#1), Sic' Em (461409 effects: #1, #2), Withering Fire (461762 effects: #1, #4)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7, #9), Marksmanship Hunter (137016 effects: #1, #2, #8), Survival Hunter (137017 effects: #1, #2, #9), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Improved Kill Shot (343248 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Killer Accuracy (378765 effects: #1, #2), Deathblow (378770 effect#1), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Cornered Prey (452101 effect#1), Outland Venom (459941 effect#1), Sic' Em (461409 effects: #1, #2), Withering Fire (461762 effects: #1, #4)
 Family Flags     : 1, 11, 106, 121
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -2258,7 +2258,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=83776)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.48000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.48000 | PvP Coefficient: 1.15000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.15)
 Description      : $@spelldesc34026
 
 Name             : Mail Specialization (desc=Passive) (id=86538) [Passive, Hidden] 
@@ -3459,13 +3460,19 @@ Effects          :
 #6 (id=1032354)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=1097992)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Kill Shot (53351), Kill Shot (320976)
                    Family Flags: 11
+Hotfixed         : Base Value (0 -> 40)
 #8 (id=1177611)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Vicious Hunt (445431)
                    Family Flags: 122
+#9 (id=1186893)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -28 | Scaled Value: -28 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Affected Spells: Kill Shot (53351), Kill Shot (320976)
+                   Family Flags: 11
+Hotfixed         : NEW EFFECT
 
 Name             : Marksmanship Hunter (id=137016) [Spell Family (9), Passive, Hidden] 
 Class            : Marksmanship Hunter
@@ -5108,7 +5115,8 @@ Effects          :
 #1 (id=283801)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=283802)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.56500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.56500 | PvP Coefficient: 1.15000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.15)
 #3 (id=481423)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 Description      : A quick shot causing ${$s2*$<mult>} Physical damage.
@@ -6489,7 +6497,8 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Extra Initial Period (169), Do Not Auto Select Target with Initiates Combat (220), Always Cast Log (255), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=323302)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.47500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.47500 | PvP Coefficient: 1.20000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=323303)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Fire a shot that tears through your enemy, causing them to bleed for ${$s1*$s2} damage over $d$?s257944[ and  increases your critical strike chance by $257946s1% for $257946d, stacking up to $257946u $Ltime:times;][].
@@ -11635,7 +11644,7 @@ Category         : 1226
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7), Marksmanship Hunter (137016 effects: #1, #2, #8), Survival Hunter (137017 effects: #1, #2, #9), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Improved Kill Shot (343248 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Killer Accuracy (378765 effects: #1, #2), Deathblow (378770 effect#1), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Cornered Prey (452101 effect#1), Outland Venom (459941 effect#1), Sic' Em (461409 effects: #1, #2), Withering Fire (461762 effects: #1, #4)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7, #9), Marksmanship Hunter (137016 effects: #1, #2, #8), Survival Hunter (137017 effects: #1, #2, #9), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Improved Kill Shot (343248 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Killer Accuracy (378765 effects: #1, #2), Deathblow (378770 effect#1), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Cornered Prey (452101 effect#1), Outland Venom (459941 effect#1), Sic' Em (461409 effects: #1, #2), Withering Fire (461762 effects: #1, #4)
 Family Flags     : 1, 11, 55, 106, 121
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
