@@ -106,11 +106,11 @@ actions.direct+=/mutilate,target_if=!dot.deadly_poison_dot.ticking&!debuff.ampli
 actions.direct+=/mutilate,if=variable.use_filler
 
 # Special Case Trinkets
-actions.items=variable,name=base_trinket_condition,value=dot.rupture.ticking&cooldown.deathmark.remains<2|fight_remains<=22
+actions.items=variable,name=base_trinket_condition,value=dot.rupture.ticking&cooldown.deathmark.remains<2&target.time_to_die>=12|fight_remains<=22
 actions.items+=/use_item,name=ashes_of_the_embersoul,use_off_gcd=1,if=(dot.kingsbane.ticking&dot.kingsbane.remains<=11)|fight_remains<=22
 actions.items+=/use_item,name=algethar_puzzle_box,use_off_gcd=1,if=variable.base_trinket_condition
 actions.items+=/use_item,name=treacherous_transmitter,use_off_gcd=1,if=variable.base_trinket_condition
-actions.items+=/do_treacherous_transmitter_task,use_off_gcd=1,if=dot.deathmark.ticking|fight_remains<=20
+actions.items+=/do_treacherous_transmitter_task,use_off_gcd=1,if=dot.deathmark.ticking|buff.realigning_nexus_convergence_divergence.remains<1|buff.cryptic_instructions.remains<1|buff.errant_manaforge_emission.remains<1|fight_remains<=15
 actions.items+=/use_item,name=imperfect_ascendancy_serum,use_off_gcd=1,if=variable.base_trinket_condition
 # Fallback case for using stat trinkets
 actions.items+=/use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(debuff.deathmark.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|!debuff.deathmark.up&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot)
