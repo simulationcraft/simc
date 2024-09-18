@@ -851,6 +851,7 @@ void bottled_flayedwing_toxin( special_effect_t& effect )
       tick_zero = true;
       // Tick damage value lives in a different spell for some reason
       base_td = e.player->find_spell( 345547 )->effectN( 1 ).average( e.item );
+      base_multiplier *= role_mult( e );
     }
   };
 
