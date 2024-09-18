@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.2.56625 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.2.56647 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -19039,7 +19039,7 @@ Each Meteorite's impact reduces the cooldown of Fire Blast by ${$s2/1000}.1 sec.
 Tooltip          : Your next $?c1[Arcane Barrage][Fire Blast] calls down a storm of $s1 Meteorites on its target.
 
 Name             : Spellfire Spheres (id=449400) [Spell Family (3)] 
-Hotfixed         : Max stacks (8 -> 6), Proc Chance (101 -> 100), Attributes, Proc Flags 2 (0 -> 4)
+Hotfixed         : Max stacks (8 -> 6), Proc Chance (101 -> 100), Proc Flags 1 (0 -> 4096), Attributes
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -19049,8 +19049,8 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 6 maximum
 Proc Chance      : 100%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
+Proc Flags       : ........ ....x... ........ ........   ........ ........ ........ ........   
+                 : Generic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
