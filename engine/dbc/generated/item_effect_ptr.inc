@@ -1,5 +1,5 @@
-// Item effects, wow build 11.0.5.56572
-static const std::array<item_effect_t, 9751> __ptr_item_effect_data { {
+// Item effects, wow build 11.0.5.56646
+static const std::array<item_effect_t, 9753> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -9751,9 +9751,11 @@ static const std::array<item_effect_t, 9751> __ptr_item_effect_data { {
   { 191754, 470645, 231498,   0,   0,    0,      -1,      -1 }, // Gift of Stone
   { 192376, 418948, 232066,   0,  10,    0,      -1,      -1 }, // Energy Projection Regulator
   { 192894, 470696, 232491,   1,   0,    0,      -1,      -1 }, // Jab
+  { 192928, 470970, 232521,   1,   0,    0,      -1,      -1 }, // Glyph of Arcane Familiar
+  { 192938, 470696, 232527,   1,   0,    0,      -1,      -1 }, // Jab
 } };
 
-static const std::array<uint16_t, 9751> __ptr_item_effect_id_index { {
+static const std::array<uint16_t, 9753> __ptr_item_effect_id_index { {
     841,   842,   843,   844,   845,   846,   847,   850,
     851,   852,   853,   854,   855,   856,   857,   858,
     859,   860,   861,   862,   865,   866,   867,   868,
@@ -10972,6 +10974,7 @@ static const std::array<uint16_t, 9751> __ptr_item_effect_id_index { {
     766,   767,  9520,  9547,  8376,  8391,  9726,  9727,
    9728,  9729,  9730,  9731,  9732,  9733,  9734,  9735,
    9736,  9737,  9739,  9745,  9746,  9747,  9748,  9749,
-   9741,  9740,  9742,  9743,  9744,  9738,  9750,
+   9741,  9740,  9742,  9743,  9744,  9738,  9750,  9751,
+   9752,
 } };
 

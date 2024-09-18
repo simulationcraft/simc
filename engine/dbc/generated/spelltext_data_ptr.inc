@@ -1,5 +1,5 @@
-// Spell text, wow build 11.0.5.56572
-static const std::array<spelltext_data_t, 26508> __ptr_spelltext_data { {
+// Spell text, wow build 11.0.5.56646
+static const std::array<spelltext_data_t, 26509> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16043,9 +16043,9 @@ static const std::array<spelltext_data_t, 26508> __ptr_spelltext_data { {
   { 345539, "Fire $s1 Empyreal Ordnance at up to $s2 targets. Targets suffer ${$345542s1*6*(1+$@versadmg)} Arcane damage over $345540d for each ordnance that hits them. As the ordnance expires on the target they return, each granting $345543s1 Intellect for $345541d. ", 0, 0 },
   { 345540, "$@spelldesc345539", "Taking $w Arcane damage every $t sec.", 0 },
   { 345541, "$@spelldesc345539", "Intellect increased by $w1.", 0 },
-  { 345545, "Coat your weapons in Flayedwing Toxin for $d, giving your attacks a high chance to deal $<ChimericPoison> Nature damage over $345546d.", "Your attacks have a high chance to deal Nature damage over $345546d.", 0 },
+  { 345545, "Coat your weapons in Flayedwing Toxin for $d, giving your attacks a high chance to inflict ${$<rolemult>*$345547s1*3} Nature damage over $345546d.", "Your attacks have a high chance to  inflict ${$<rolemult>*$345547s1*3} Nature damage over $345546d.", 0 },
   { 345546, "$@spelldesc345545", "Suffering $w1 Nature damage every $t1 sec.", 0 },
-  { 345548, "Hook an enemy who is within $r yds, causing them to bleed for $s1 Physical damage every $t1 sec and reducing their movement speed by $s2%. Lasts $d, or until they move more than $s3 yds away from you.", "Bleeding for $s1 Physical damage every $t1 sec as long as you are within $s3 yds of $@auracaster.", 0 },
+  { 345548, "Hook an enemy who is within $r yds, causing them to bleed for ${$<rolemult>*$s1} Physical damage every $t1 sec and reducing their movement speed by $s2%. Lasts $d, or until they move more than $s3 yds away from you.", "Bleeding for ${$<rolemult>*$s1} Physical damage every $t1 sec as long as you are within $s3 yds of $@auracaster.", 0 },
   { 345549, "Sacrifice $345551s2 health to charge the phylactery.\r\n\r\nHealing a target below $s3% health expends the phylactery's charge to amplify your spell, restoring $345551s1 additional health to the target.", "Healing a target below $s3% health will restore $345551w1 additional health to the target.", 0 },
   { 345550, "$@spelldesc345549", 0, 0 },
   { 345567, "Your damaging spells have a chance to draw a minion from the satchel, sending it running at your target where it explodes, dealing $s1 Shadow damage split between all nearby enemies.\r\n\r\nDamage is increased for each enemy struck, up to $s2 enemies.", 0, 0 },
@@ -18875,7 +18875,7 @@ static const std::array<spelltext_data_t, 26508> __ptr_spelltext_data { {
   { 384434, "$@spelldesc384382", 0, 0 },
   { 384437, "$@spelldesc384411", "Generating $384411s1 $lstack:stacks; of Maelstrom Weapon every $t1 sec.", 0 },
   { 384442, "Call upon the Light and become an avatar of retribution, increasing your critical strike chance by $s1% for $31884d.\r\n\r\n|cFFFFFFFFCombines with other Avenging Wrath abilities.|r", 0, 0 },
-  { 384444, "$?a378270[Deeply Rooted Elements lasts ${$s2/1000} sec longer]?s114051[Reduces the cooldown of Ascendance by ${$s4/-1000} sec][], and increases the damage of Lightning Bolt and Chain Lightning by $s5%.\r\n\r\nWhile Ascendance is active, Windstrike automatically consumes up to $s1 Maelstrom Weapon stacks to discharge a Lightning Bolt or Chain Lightning at $s3% effectiveness at your enemy, whichever you most recently used.", 0, 0 },
+  { 384444, "Increases the damage of Lightning Bolt and Chain Lightning by $s5%$?a378270[, and Deeply Rooted Elements lasts ${$s2/1000} sec longer]?s114051[, and reduces the cooldown of Ascendance by ${$s4/-1000} sec][, reduces the cooldown of Ascendance by ${$s4/-1000} sec, and causes Deeply Rooted Elements to last ${$s2/1000} sec longer].\r\n\r\nWhile Ascendance is active, Windstrike automatically consumes up to $s1 Maelstrom Weapon stacks to discharge a Lightning Bolt or Chain Lightning at $s3% effectiveness at your enemy, whichever you most recently used.", 0, 0 },
   { 384447, "Increases the chance to gain a stack of Maelstrom Weapon by $s1%, and whenever you gain a stack of Maelstrom Weapon, the cooldown of Feral Spirits is reduced by ${$m2/1000}.1 sec.", 0, 0 },
   { 384450, "Consuming $s2 stacks of Maelstrom Weapon will reset the cooldown of Stormstrike and increases the damage of your Physical and Frost abilities by $s1% for $384451d.", 0, 0 },
   { 384451, "$@spelldesc335899", "Damage dealt by your Physical and Frost abilities increased by $w1%.", 0 },
@@ -26406,7 +26406,7 @@ static const std::array<spelltext_data_t, 26508> __ptr_spelltext_data { {
   { 469701, "When you or an ally wielding a Holy Bulwark are healed above maximum health, transfer $s1% of the overhealing to your ally.\r\n\r\nWhen you or an ally wielding a Sacred Weapon drop below $432502s4% health, redistribute your health immediately and every $469703t sec for $469703d.", 0, 0 },
   { 469703, "$@spelldesc469701", "Redistributing health with your ally.", 0 },
   { 469704, "$@spelldesc469701", "Redistributing health with your ally.", 0 },
-  { 469762, "Your heals have a chance to release Living Magma that will travel to the lowest health ally within $s2yds and heal them for $s1. ", 0, 0 },
+  { 469762, "Your heals have a chance to release Living Magma that will travel to the lowest health ally within $s2 yds and heal them for $s1. ", 0, 0 },
   { 469764, "$@spelldesc469762", 0, 0 },
   { 469765, "$@spelldesc469762", 0, 0 },
   { 469768, "Your melee and ranged attacks grant $469769s1 Strength. Lasts $469769d, stacking up to $469769u times. ", 0, 0 },
@@ -26414,7 +26414,7 @@ static const std::array<spelltext_data_t, 26508> __ptr_spelltext_data { {
   { 469770, "Allies affected by your Blessings have $s1% increased movement speed.", 0, 0 },
   { 469779, "$@spelldesc381623", 0, 0 },
   { 469780, "Divine Steed reduces the cooldown of $s1 nearby ally's major movement ability by ${$s2/-1000}.1 sec.\r\n\r\nYour movement speed is increased by $s4%.", 0, 0 },
-  { 469813, "Absorbs $s2% of the damage you take up to $s1 total damage. Every ${$s1/$s4} damage absorbed you release a wave of heat dealing $s3 Fire damage split amongst enemies within $469815a yds.", "Absorbs up to $w1 damage. Blasts nearby enemies with $s3  Fire damage each time ${$s1/$s4} damage is absorbed.", 0 },
+  { 469813, "Absorbs $s2% of the damage you take up to $s1 total damage. For every ${$s1/$s4} damage absorbed, you release a wave of heat dealing $s3 Fire damage split amongst enemies within $469815a yds.", "Absorbs up to $w1 damage. Blasts nearby enemies with $s3  Fire damage each time ${$s1/$s4} damage is absorbed.", 0 },
   { 469814, "$@spelldesc469701", "Redistributing health with your ally.", 0 },
   { 469815, "Deals $469813s4 Fire damage split amongst enemies within $ryrds.", 0, 0 },
   { 469822, "$@spelldesc469701", 0, 0 },
@@ -26428,7 +26428,7 @@ static const std::array<spelltext_data_t, 26508> __ptr_spelltext_data { {
   { 469915, "The gearbox is Wound each time you cause a non-periodic critical strike.  When Wound $s1 times , unleash a Torrent of Flames dealing $s2 Fire damage. The gearbox cannot be Wound more than once every 2.5 sec.", 0, 0 },
   { 469922, "Your spells have a chance to call on Dope'rel to Backstab your target dealing $s1 Physical damage.", 0, 0 },
   { 469924, "$@spelldesc469922", 0, 0 },
-  { 469925, "Each spell cast within 20 seconds will grant a stacking bonus of $35095s1 Intellect. Expires after $d.  Abilities with no mana cost will not trigger this trinket.", "Chance to gain Intellect.", 0 },
+  { 469925, "Each spell cast within 20 seconds will grant a stacking bonus of $469926s1 Intellect up to $469926u stacks. Expires after $d. Abilities with no mana cost will not trigger this trinket.", "Chance to gain Intellect.", 0 },
   { 469926, "Intellect increased by $s1.", "Intellect increased by $s1.", 0 },
   { 469927, "Chance on melee or ranged attack to deal an extra Quick Strike attack dealing $s1 Physical damage.", 0, 0 },
   { 469928, "$@spelldesc469927", 0, 0 },
@@ -26436,7 +26436,7 @@ static const std::array<spelltext_data_t, 26508> __ptr_spelltext_data { {
   { 469930, "Restores $s1 mana every $t1 sec for $d.", "Restores $s1 mana every $t1 sec.", 0 },
   { 469931, "$@spelldesc15594", "Damage taken reduced by $s1.", 0 },
   { 469932, "When struck you have a chance to reduce all damage taken by $469931s1 for $469931d.", 0, 0 },
-  { 469933, "Chance on melee or ranged attack to unleash a Molten Strike dealing $s1 Fire  damage.", 0, 0 },
+  { 469933, "Chance on melee or ranged attack to unleash a Molten Strike dealing $s1 Fire damage.", 0, 0 },
   { 469934, "$@spelldesc469933", 0, 0 },
   { 469935, "$@spelldesc469933", 0, 0 },
   { 469936, "Your spell casts have a chance to grant you $s1 of a random secondary stat for $469937d. Each proc in combat will cycle to the next secondary stat.", 0, 0 },
@@ -26492,7 +26492,7 @@ static const std::array<spelltext_data_t, 26508> __ptr_spelltext_data { {
   { 470638, "$@spelldesc470637", 0, 0 },
   { 470639, "Your melee attacks have a chance to increase your Strength or Agility by $470640s1 for $470640d.", "Primary stat increased by $470640s3.", 0 },
   { 470640, "$@spelldesc470639", "$@spellaura470639", 0 },
-  { 470641, "Your melee attacks have a chance to deal $4706421 Fire damage split amongst enemies within $4706421A yds and envelop you in a Flame Shield for $470643d that deals $7470643s1 Fire damage to enemies that hit you. ", 0, 0 },
+  { 470641, "Your melee attacks have a chance to deal $470642s1 Fire damage split amongst enemies within $470642A yds and envelop you in a Flame Shield for $470643d that deals $470643s1 Fire damage to enemies that hit you. ", 0, 0 },
   { 470642, "$@spelldesc470641", 0, 0 },
   { 470643, "Inflicts $s1 Fire damage to attackers for $d.", "Inflicts $s1 Fire damage to attackers for $d.", 0 },
   { 470645, "Gain a shield that absorbs $s3% Physical damage up to $s1 total damage for $d1 but cannot cast spells or attack for the duration of the shield.", "Absorbs $s3% of Physical damage but cannot attack or cast spells. $w1 shield remaining.", 0 },
@@ -26508,14 +26508,15 @@ static const std::array<spelltext_data_t, 26508> __ptr_spelltext_data { {
   { 470678, "$@spelldesc382505", "The duration of your next Shadow Dance is increased by ${$s1/1000} sec.", 0 },
   { 470679, "$@spelldesc453457", 0, 0 },
   { 470680, "$@spelldesc453457", 0, 0 },
+  { 471078, "$@spelldesc371806", "Able to travel back in time to your takeoff location.", "Bronze" },
 } };
 
-// spelltext hotfix entries, wow build 11.0.5.56572
+// spelltext hotfix entries, wow build 11.0.5.56646
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.0.5.56572
-static const std::array<spelldesc_vars_data_t, 585> __ptr_spelldesc_vars_data { {
+// Spell description variables, wow build 11.0.5.56646
+static const std::array<spelldesc_vars_data_t, 586> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26851,7 +26852,8 @@ static const std::array<spelldesc_vars_data_t, 585> __ptr_spelldesc_vars_data { 
   {  343355, "$ext=${$231688s1/1000} sec" },
   {  343527, "$Mastery=$?a267316[${1+$267316s1/100}][${1}]\r\n$DP=$?a223819[${1+$223819s2/100}][${1}]\r\n$mult=${$<Mastery>*$<DP>}" },
   {  343655, "$shield=${($SP*11)*(1+$@versadmg)}\r\n$newshield=${$MHP*$406139s2/100*(1+$@versadmg)}" },
-  {  345545, "$ChimericPoison=${$345547s1*3}" },
+  {  345545, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
+  {  345548, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  345549, "$phylacteryhealth=$s2*15" },
   {  346396, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$serrated=$?s389882[${1+($389882s1)/100}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*$<serrated>*(1+$@versadmg)*(1+($137015s1/100))}" },
   {  351093, "$shield=${$MHP*$s1/100}" },
@@ -27103,7 +27105,7 @@ static const std::array<spelldesc_vars_data_t, 585> __ptr_spelldesc_vars_data { 
   {  469330, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.5.56572
+// spelldesc_vars hotfix entries, wow build 11.0.5.56646
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

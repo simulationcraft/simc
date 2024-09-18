@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 11.0.5.56572
+// Player trait definitions, wow build 11.0.5.56646
 static const std::array<trait_data_t, 3203> __ptr_trait_data_data { {
   { 1,  1, 112108,  90258, 2, 20, 117113, 384124,      0,      0,  8,  5,  -1,                   "Armored to the Teeth", {   72,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
   { 1,  1, 112109,  90259, 2, 20, 117114, 394855,      0,      0,  8,  5,  -1,                   "Armored to the Teeth", {   73,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
@@ -3205,7 +3205,7 @@ static const std::array<trait_data_t, 3203> __ptr_trait_data_data { {
   { 4, 13, 123336,  99827, 1,  0,      0,      0,      0,      0,  1,  1,  -1,                                      "0", {    0, 1467,    0,    0 }, {    0,    0,    0,    0 }, 37, 3 },
 } };
 
-// Player trait definition effect entries, wow build 11.0.5.56572
+// Player trait definition effect entries, wow build 11.0.5.56646
 static const std::array<trait_definition_effect_entry_t, 379> __ptr_trait_definition_effect_data { {
   { 85156, 0, 0, 60989 },
   { 85156, 1, 0, 60988 },
@@ -3992,7 +3992,7 @@ static const std::array<uint16_t, 3203> __ptr_trait_spell_id_index { {
    2328,   213,   214,
 } };
 
-// Hero trees, wow build 11.0.5.56572
+// Hero trees, wow build 11.0.5.56646
 static const std::array<std::pair<unsigned, std::string>, 39> __ptr_trait_sub_tree_data { {
   { 18, "Voidweaver" },
   { 19, "Archon" },
