@@ -1523,6 +1523,12 @@ public:
     const spell_data_t* abomination_disease_cloud;
   } pet_spell;
 
+  struct modified_spells_t
+  {
+    modified_spell_data_t* infliction_of_sorrow;
+    modified_spell_data_t* essence_of_the_blood_queen;
+  } modified_spell;
+
   // RPPM
   struct rppm_t
   {
@@ -1797,6 +1803,9 @@ public:
   unsigned replenish_rune( unsigned n, gain_t* gain = nullptr );
   // Shared
   modified_spell_data_t* get_modified_spell( const spell_data_t* );
+  void spell_lookups();
+  void set_icds();
+  void apply_effect_modifying_effects();
   bool in_death_and_decay() const;
   void parse_player_effects();
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
@@ -5474,7 +5483,7 @@ public:
   int nazgrims_conquest;
 };
 
-// Essence of the Blood Queen ================================================
+// Essence of the Blood Queen =============================================
 struct essence_of_the_blood_queen_haste_buff_t final : public death_knight_buff_t
 {
   essence_of_the_blood_queen_haste_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
@@ -5495,45 +5504,48 @@ struct essence_of_the_blood_queen_haste_buff_t final : public death_knight_buff_
   // Override the value of the buff to properly capture Essence of the Blood Queens's buff behavior
   double value() override
   {
-    return ( p()->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
+    return ( p()->modified_spell.essence_of_the_blood_queen->effectN( 1 ).percent() / 10 ) *
            ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
   }
 
   double check_value() const override
   {
-    return ( p()->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 ) *
+    return ( p()->modified_spell.essence_of_the_blood_queen->effectN( 1 ).percent() / 10 ) *
            ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
   }
 };
 
 struct essence_of_the_blood_queen_damage_buff_t final : public death_knight_buff_t
 {
-  modified_spell_data_t* m_data;
   essence_of_the_blood_queen_damage_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
-    : death_knight_buff_t( p, name, spell ), m_data( p->get_modified_spell( &data() ) )
+    : death_knight_buff_t( p, name, spell )
   {
-    m_data->parse_effects( p->talent.sanlayn.frenzied_bloodthirst );
-    set_default_value( m_data->effectN( 2 ).percent() );
+    set_default_value( p->modified_spell.essence_of_the_blood_queen->effectN( 2 ).percent() );
     set_duration( 0_ms );  // Handled by the haste buff
+    set_quiet( true );
   }
 
   // Override the value of the buff to properly capture Essence of the Blood Queens's buff behavior
   double value() override
   {
-    return ( m_data->effectN( 2 ).percent() ) * ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
+    return ( p()->modified_spell.essence_of_the_blood_queen->effectN( 2 ).percent() ) *
+           ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
   }
 
   double check_value() const override
   {
-    return ( m_data->effectN( 2 ).percent() ) * ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
+    return ( p()->modified_spell.essence_of_the_blood_queen->effectN( 2 ).percent() ) *
+           ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
   }
 };
 
+// Gift of the San'layn ===================================================
 struct gift_of_the_sanlayn_buff_t final : public death_knight_buff_t
 {
   gift_of_the_sanlayn_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
-    : death_knight_buff_t( p, name, spell ), idx( p->specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1 )
+    : death_knight_buff_t( p, name, spell )
   {
+    unsigned idx = p->specialization() == DEATH_KNIGHT_BLOOD ? 4 : 1;
     set_default_value_from_effect( idx );
     set_duration( 0_ms );  // Handled by DT and VB
     add_invalidate( CACHE_HASTE );
@@ -5556,9 +5568,6 @@ struct gift_of_the_sanlayn_buff_t final : public death_knight_buff_t
       }
     } );
   }
-
-private:
-  unsigned idx;
 };
 
 // Death and Decay ==========================================================
@@ -11220,7 +11229,7 @@ double death_knight_t::resource_gain( resource_e resource_type, double amount, g
 
   if ( resource_type == RESOURCE_RUNE && talent.deathbringer.rune_carved_plates.ok() && amount > 0 )
   {
-    buffs.rune_carved_plates_physical_buff->trigger( amount );
+    buffs.rune_carved_plates_physical_buff->trigger( as<int>( amount ) );
   }
 
   return actual_amount;
@@ -11238,7 +11247,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
     if ( talent.deathbringer.rune_carved_plates.ok() && amount > 0 )
     {
-      buffs.rune_carved_plates_magical_buff->trigger( amount );
+      buffs.rune_carved_plates_magical_buff->trigger( as<int>( amount ) );
     }
   }
 
@@ -12056,9 +12065,7 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vam
   if ( is_vampiric )
   {
     timespan_t extension = timespan_t::from_seconds( talent.sanlayn.infliction_of_sorrow->effectN( 3 ).base_value() );
-    modified_spell_data_t* infliction = get_modified_spell( talent.sanlayn.infliction_of_sorrow );
-    infliction->parse_effects( spec.blood_death_knight );
-    mod = infliction->effectN( 2 ).percent();
+    mod                  = modified_spell.infliction_of_sorrow->effectN( 2 ).percent();
 
     if ( disease_td->is_ticking() )
     {
@@ -13218,6 +13225,13 @@ void death_knight_t::init_spells()
   mastery.frozen_heart = find_mastery_spell( DEATH_KNIGHT_FROST );
   mastery.dreadblade   = find_mastery_spell( DEATH_KNIGHT_UNHOLY );
 
+  spell_lookups();
+  set_icds();
+  apply_effect_modifying_effects();
+}
+
+void death_knight_t::spell_lookups()
+{
   // Generic spells
   // Shared
   spell.unholy_strength_buff = find_spell( 53365 );
@@ -13235,13 +13249,13 @@ void death_knight_t::init_spells()
   spell.sacrificial_pact_damage = conditional_spell_lookup( talent.sacrificial_pact.ok(), 327611 );
   spell.soul_reaper_execute =
       conditional_spell_lookup( talent.soul_reaper.ok() || talent.deathbringer.grim_reaper.ok(), 343295 );
-  spell.anti_magic_zone_buff    = conditional_spell_lookup( talent.antimagic_zone.ok(), 396883 );
-  spell.frost_shield_buff       = conditional_spell_lookup( talent.permafrost.ok(), 207203 );
-  spell.blood_draw_damage       = conditional_spell_lookup( talent.blood_draw.ok(), 374606 );
-  spell.blood_draw_cooldown     = conditional_spell_lookup( talent.blood_draw.ok(), 374609 );
-  spell.razorice_debuff         = find_spell( 51714 );
-  spell.razorice_damage         = find_spell( 50401 );
-  spell.rune_of_hysteria_buff   = find_spell( 326918 );
+  spell.anti_magic_zone_buff  = conditional_spell_lookup( talent.antimagic_zone.ok(), 396883 );
+  spell.frost_shield_buff     = conditional_spell_lookup( talent.permafrost.ok(), 207203 );
+  spell.blood_draw_damage     = conditional_spell_lookup( talent.blood_draw.ok(), 374606 );
+  spell.blood_draw_cooldown   = conditional_spell_lookup( talent.blood_draw.ok(), 374609 );
+  spell.razorice_debuff       = find_spell( 51714 );
+  spell.razorice_damage       = find_spell( 50401 );
+  spell.rune_of_hysteria_buff = find_spell( 326918 );
 
   // Diseases
   spell.blood_plague =
@@ -13313,7 +13327,7 @@ void death_knight_t::init_spells()
   spell.rime_buff                = conditional_spell_lookup( spec.rime->ok(), 59052 );
   spell.hyperpyrexia_damage      = conditional_spell_lookup( talent.frost.hyperpyrexia.ok(), 458169 );
   // Tier Sets
-  spell.icy_vigor       = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ), 457189 );
+  spell.icy_vigor = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ), 457189 );
 
   // Unholy
   spell.runic_corruption_chance        = conditional_spell_lookup( spec.unholy_death_knight->ok(), 51462 );
@@ -13344,7 +13358,7 @@ void death_knight_t::init_spells()
   spell.festering_scythe_buff          = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 458123 );
   spell.festering_scythe_stacking_buff = conditional_spell_lookup( talent.unholy.festering_scythe.ok(), 459238 );
   // Set Bonuses
-  spell.unholy_commander  = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ), 456698 );
+  spell.unholy_commander = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ), 456698 );
 
   // Rider of the Apocalypse Spells
   spell.a_feast_of_souls_buff = conditional_spell_lookup( talent.rider.a_feast_of_souls.ok(), 440861 );
@@ -13370,29 +13384,31 @@ void death_knight_t::init_spells()
   spell.blood_beast_summon              = conditional_spell_lookup( talent.sanlayn.the_blood_is_life.ok(), 434237 );
   spell.vampiric_strike_clawing_shadows =
       conditional_spell_lookup( talent.sanlayn.vampiric_strike.ok() && talent.unholy.clawing_shadows.ok(), 445669 );
-  spell.incite_terror_debuff   = conditional_spell_lookup( talent.sanlayn.incite_terror.ok(), 458478 );
-  spell.visceral_strength_buff = conditional_spell_lookup( talent.sanlayn.visceral_strength.ok(),
+  spell.incite_terror_debuff    = conditional_spell_lookup( talent.sanlayn.incite_terror.ok(), 458478 );
+  spell.visceral_strength_buff  = conditional_spell_lookup( talent.sanlayn.visceral_strength.ok(),
                                                            specialization() == DEATH_KNIGHT_BLOOD ? 461130 : 434159 );
   spell.bloodsoaked_ground_buff = conditional_spell_lookup( talent.sanlayn.bloodsoaked_ground.ok(), 434034 );
 
   // Deathbringer Spells
-  spell.reapers_mark_debuff              = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 434765 );
-  spell.reapers_mark_explosion           = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 436304 );
-  spell.grim_reaper                      = conditional_spell_lookup( talent.deathbringer.grim_reaper.ok(), 443761 );
-  spell.wave_of_souls_damage             = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 435802 );
-  spell.wave_of_souls_debuff             = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 443404 );
-  spell.blood_fever_damage               = conditional_spell_lookup( talent.deathbringer.blood_fever.ok(), 440005 );
-  spell.bind_in_darkness_buff            = conditional_spell_lookup( talent.deathbringer.bind_in_darkness.ok(), 443532 );
-  spell.dark_talons_shadowfrost_buff     = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443586 );
-  spell.dark_talons_icy_talons_buff      = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443595 );
-  spell.soul_rupture_damage              = conditional_spell_lookup( talent.deathbringer.soul_rupture.ok(), 439594 );
-  spell.grim_reaper_soul_reaper          = conditional_spell_lookup( talent.deathbringer.grim_reaper.ok(), 448229 );
-  spell.exterminate_damage               = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441424 );
-  spell.exterminate_aoe                  = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441426 );
-  spell.exterminate_buff                 = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441416 );
-  spell.exterminate_buff_painful_death   = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 447954 );
-  spell.rune_carved_plates_physical_buff = conditional_spell_lookup( talent.deathbringer.rune_carved_plates.ok(), 440289 );
-  spell.rune_carved_plates_magical_buff  = conditional_spell_lookup( talent.deathbringer.rune_carved_plates.ok(), 440290 );
+  spell.reapers_mark_debuff            = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 434765 );
+  spell.reapers_mark_explosion         = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 436304 );
+  spell.grim_reaper                    = conditional_spell_lookup( talent.deathbringer.grim_reaper.ok(), 443761 );
+  spell.wave_of_souls_damage           = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 435802 );
+  spell.wave_of_souls_debuff           = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 443404 );
+  spell.blood_fever_damage             = conditional_spell_lookup( talent.deathbringer.blood_fever.ok(), 440005 );
+  spell.bind_in_darkness_buff          = conditional_spell_lookup( talent.deathbringer.bind_in_darkness.ok(), 443532 );
+  spell.dark_talons_shadowfrost_buff   = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443586 );
+  spell.dark_talons_icy_talons_buff    = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443595 );
+  spell.soul_rupture_damage            = conditional_spell_lookup( talent.deathbringer.soul_rupture.ok(), 439594 );
+  spell.grim_reaper_soul_reaper        = conditional_spell_lookup( talent.deathbringer.grim_reaper.ok(), 448229 );
+  spell.exterminate_damage             = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441424 );
+  spell.exterminate_aoe                = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441426 );
+  spell.exterminate_buff               = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441416 );
+  spell.exterminate_buff_painful_death = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 447954 );
+  spell.rune_carved_plates_physical_buff =
+      conditional_spell_lookup( talent.deathbringer.rune_carved_plates.ok(), 440289 );
+  spell.rune_carved_plates_magical_buff =
+      conditional_spell_lookup( talent.deathbringer.rune_carved_plates.ok(), 440290 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -13447,7 +13463,10 @@ void death_knight_t::init_spells()
   pet_spell.blood_eruption  = conditional_spell_lookup( talent.sanlayn.the_blood_is_life.ok(), 434246 );
   // Abomination Spells
   pet_spell.abomination_disease_cloud = conditional_spell_lookup( talent.unholy.raise_abomination.ok(), 290577 );
+}
 
+void death_knight_t::set_icds()
+{
   // Custom/Internal cooldowns default durations
   cooldown.bone_shield_icd->duration = spell.bone_shield->internal_cooldown();
 
@@ -13461,7 +13480,7 @@ void death_knight_t::init_spells()
   if ( talent.frost.frigid_executioner.ok() )
     cooldown.frigid_executioner_icd->duration = talent.frost.frigid_executioner->internal_cooldown();
 
-  if( talent.rider.whitemanes_famine.ok() )
+  if ( talent.rider.whitemanes_famine.ok() )
     cooldown.undeath_spread->base_duration = pet_spell.undeath_dot->internal_cooldown();
 }
 
@@ -13824,11 +13843,10 @@ void death_knight_t::create_buffs()
   buffs.essence_of_the_blood_queen = make_fallback<essence_of_the_blood_queen_haste_buff_t>(
       talent.sanlayn.vampiric_strike.ok(), this, "essence_of_the_blood_queen", spell.essence_of_the_blood_queen_buff );
 
-  buffs.essence_of_the_blood_queen_damage =
-      make_fallback<essence_of_the_blood_queen_damage_buff_t>( talent.sanlayn.vampiric_strike.ok(), this,
-                                                               "essence_of_the_blood_queen_damage",
-                                                               spell.essence_of_the_blood_queen_buff )
-          ->set_quiet( true );
+  buffs.essence_of_the_blood_queen_damage = make_fallback<essence_of_the_blood_queen_damage_buff_t>(
+      talent.sanlayn.vampiric_strike.ok(), this, "essence_of_the_blood_queen_damage",
+      spell.essence_of_the_blood_queen_buff );
+
 
   buffs.gift_of_the_sanlayn = make_fallback<gift_of_the_sanlayn_buff_t>( talent.sanlayn.gift_of_the_sanlayn.ok(), this, "gift_of_the_sanlayn",
                                              spell.gift_of_the_sanlayn_buff );
@@ -14168,6 +14186,13 @@ void death_knight_t::create_buffs()
   buffs.unholy_commander = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ), this,
                                           "unholy_commander", spell.unholy_commander );
 
+  for ( auto& b : buff_list )
+  {
+    if ( b->data().ok() )
+      apply_affecting_auras( *b );
+  }
+
+  parse_player_effects();
 }
 
 // death_knight_t::init_gains ===============================================
@@ -14274,14 +14299,6 @@ void death_knight_t::init_procs()
 
 void death_knight_t::init_finished()
 {
-  for ( auto& b : buff_list )
-  {
-    if ( b->data().ok() )
-      apply_affecting_auras( *b );
-  }
-
-  parse_player_effects();
-
   player_t::init_finished();
 
   if ( deprecated_dnd_expression )
@@ -14795,6 +14812,15 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_target_effects()
   // San'layn
 }
 
+void death_knight_t::apply_effect_modifying_effects()
+{
+  modified_spell.infliction_of_sorrow =
+      get_modified_spell( talent.sanlayn.infliction_of_sorrow )->parse_effects( spec.blood_death_knight );
+
+  modified_spell.essence_of_the_blood_queen =
+      get_modified_spell( spell.essence_of_the_blood_queen_buff )->parse_effects( talent.sanlayn.frenzied_bloodthirst );
+}
+
 template <class Base>
 void death_knight_action_t<Base>::apply_action_effects()
 {
@@ -14834,7 +14860,7 @@ void death_knight_action_t<Base>::apply_action_effects()
   parse_effects( p()->buffs.exterminate_painful_death, effect_mask_t( true ).disable( 2 ) );
 
   // San'layn
-  parse_effects( p()->buffs.essence_of_the_blood_queen_damage, USE_CURRENT, p()->talent.sanlayn.frenzied_bloodthirst );
+  parse_effects( p()->buffs.essence_of_the_blood_queen_damage, USE_CURRENT );
 }
 
 template <class Base>
