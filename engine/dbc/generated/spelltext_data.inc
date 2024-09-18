@@ -1,4 +1,4 @@
-// Spell text, wow build 11.0.2.56625
+// Spell text, wow build 11.0.2.56647
 static const std::array<spelltext_data_t, 26337> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -26339,7 +26339,7 @@ static const std::array<spelltext_data_t, 26337> __spelltext_data { {
   { 469995, "$@spelldesc452402", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.0.2.56625
+// spelltext hotfix entries, wow build 11.0.2.56647
 static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
   {  345545,  0, "Coat your weapons in Flayedwing Toxin for $d, giving your attacks a high chance to deal $<ChimericPoison> Nature damage over $345546d.", "Coat your weapons in Flayedwing Toxin for $d, giving your attacks a high chance to inflict ${$<rolemult>*$345547s1*3} Nature damage over $345546d." },
   {  345545,  1, "Your attacks have a high chance to deal Nature damage over $345546d.", "Your attacks have a high chance to  inflict ${$<rolemult>*$345547s1*3} Nature damage over $345546d." },
@@ -26347,7 +26347,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix
   {  345548,  1, "Bleeding for $s1 Physical damage every $t1 sec as long as you are within $s3 yds of $@auracaster.", "Bleeding for ${$<rolemult>*$s1} Physical damage every $t1 sec as long as you are within $s3 yds of $@auracaster." },
 } };
 
-// Spell description variables, wow build 11.0.2.56625
+// Spell description variables, wow build 11.0.2.56647
 static const std::array<spelldesc_vars_data_t, 585> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26936,7 +26936,7 @@ static const std::array<spelldesc_vars_data_t, 585> __spelldesc_vars_data { {
   {  462620, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.2.56625
+// spelldesc_vars hotfix entries, wow build 11.0.2.56647
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
