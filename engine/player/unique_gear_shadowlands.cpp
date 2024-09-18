@@ -1919,6 +1919,14 @@ void instructors_divine_bell( special_effect_t& effect )
   effect.cooldown_category_ = 1141;
 }
 
+void spare_meat_hook( special_effect_t& effect )
+{
+  auto dot = create_proc_action<generic_proc_t>( "spare_meat_hook", effect, effect.driver() );
+  dot->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = dot;
+}
+
 // 9.1 Trinkets
 
 // id=356029 buff
@@ -6064,6 +6072,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 336219, items::dueling_form );
     unique_gear::register_special_effect( 348139, items::instructors_divine_bell );
     unique_gear::register_special_effect( 367896, items::instructors_divine_bell );
+    unique_gear::register_special_effect( 345548, items::spare_meat_hook );
 
     // 9.1 Trinkets
     unique_gear::register_special_effect( 353492, items::forbidden_necromantic_tome );
