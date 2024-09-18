@@ -16038,9 +16038,9 @@ static const std::array<spelltext_data_t, 26337> __spelltext_data { {
   { 345539, "Fire $s1 Empyreal Ordnance at up to $s2 targets. Targets suffer ${$345542s1*6*(1+$@versadmg)} Arcane damage over $345540d for each ordnance that hits them. As the ordnance expires on the target they return, each granting $345543s1 Intellect for $345541d. ", 0, 0 },
   { 345540, "$@spelldesc345539", "Taking $w Arcane damage every $t sec.", 0 },
   { 345541, "$@spelldesc345539", "Intellect increased by $w1.", 0 },
-  { 345545, "Coat your weapons in Flayedwing Toxin for $d, giving your attacks a high chance to deal $<ChimericPoison> Nature damage over $345546d.", "Your attacks have a high chance to deal Nature damage over $345546d.", 0 },
+  { 345545, "Coat your weapons in Flayedwing Toxin for $d, giving your attacks a high chance to inflict ${$<rolemult>*$345547s1*3} Nature damage over $345546d.", "Your attacks have a high chance to  inflict ${$<rolemult>*$345547s1*3} Nature damage over $345546d.", 0 },
   { 345546, "$@spelldesc345545", "Suffering $w1 Nature damage every $t1 sec.", 0 },
-  { 345548, "Hook an enemy who is within $r yds, causing them to bleed for $s1 Physical damage every $t1 sec and reducing their movement speed by $s2%. Lasts $d, or until they move more than $s3 yds away from you.", "Bleeding for $s1 Physical damage every $t1 sec as long as you are within $s3 yds of $@auracaster.", 0 },
+  { 345548, "Hook an enemy who is within $r yds, causing them to bleed for ${$<rolemult>*$s1} Physical damage every $t1 sec and reducing their movement speed by $s2%. Lasts $d, or until they move more than $s3 yds away from you.", "Bleeding for ${$<rolemult>*$s1} Physical damage every $t1 sec as long as you are within $s3 yds of $@auracaster.", 0 },
   { 345549, "Sacrifice $345551s2 health to charge the phylactery.\r\n\r\nHealing a target below $s3% health expends the phylactery's charge to amplify your spell, restoring $345551s1 additional health to the target.", "Healing a target below $s3% health will restore $345551w1 additional health to the target.", 0 },
   { 345550, "$@spelldesc345549", 0, 0 },
   { 345567, "Your damaging spells have a chance to draw a minion from the satchel, sending it running at your target where it explodes, dealing $s1 Shadow damage split between all nearby enemies.\r\n\r\nDamage is increased for each enemy struck, up to $s2 enemies.", 0, 0 },
@@ -26340,11 +26340,15 @@ static const std::array<spelltext_data_t, 26337> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56625
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
+  {  345545,  0, "Coat your weapons in Flayedwing Toxin for $d, giving your attacks a high chance to deal $<ChimericPoison> Nature damage over $345546d.", "Coat your weapons in Flayedwing Toxin for $d, giving your attacks a high chance to inflict ${$<rolemult>*$345547s1*3} Nature damage over $345546d." },
+  {  345545,  1, "Your attacks have a high chance to deal Nature damage over $345546d.", "Your attacks have a high chance to  inflict ${$<rolemult>*$345547s1*3} Nature damage over $345546d." },
+  {  345548,  0, "Hook an enemy who is within $r yds, causing them to bleed for $s1 Physical damage every $t1 sec and reducing their movement speed by $s2%. Lasts $d, or until they move more than $s3 yds away from you.", "Hook an enemy who is within $r yds, causing them to bleed for ${$<rolemult>*$s1} Physical damage every $t1 sec and reducing their movement speed by $s2%. Lasts $d, or until they move more than $s3 yds away from you." },
+  {  345548,  1, "Bleeding for $s1 Physical damage every $t1 sec as long as you are within $s3 yds of $@auracaster.", "Bleeding for ${$<rolemult>*$s1} Physical damage every $t1 sec as long as you are within $s3 yds of $@auracaster." },
 } };
 
 // Spell description variables, wow build 11.0.2.56625
-static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
+static const std::array<spelldesc_vars_data_t, 585> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26681,7 +26685,8 @@ static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {  343355, "$ext=${$231688s1/1000} sec" },
   {  343527, "$Mastery=$?a267316[${1+$267316s1/100}][${1}]\r\n$DP=$?a223819[${1+$223819s2/100}][${1}]\r\n$mult=${$<Mastery>*$<DP>}" },
   {  343655, "$shield=${($SP*11)*(1+$@versadmg)}\r\n$newshield=${$MHP*$406139s2/100*(1+$@versadmg)}" },
-  {  345545, "$ChimericPoison=${$345547s1*3}" },
+  {  345545, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
+  {  345548, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  345549, "$phylacteryhealth=$s2*15" },
   {  346396, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$serrated=$?s389882[${1+($389882s1)/100}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*$<serrated>*(1+$@versadmg)*(1+($137015s1/100))}" },
   {  351093, "$shield=${$MHP*$s1/100}" },
