@@ -20988,7 +20988,7 @@ Name             : Exterminate (id=441416) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
-Duration         : Aura (infinite)
+Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -22585,7 +22585,7 @@ Name             : Exterminate (id=447954) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
-Duration         : Aura (infinite)
+Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
