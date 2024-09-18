@@ -832,8 +832,8 @@ struct player_t : public actor_t
     // Starting stance for Sik'rans Shadow Arsenal
     player_option_t<std::string> sikrans_endless_arsenal_stance = "";
     // starting & desired stacks for Ovinax's Mercurial Egg
-    int ovinaxs_mercurial_egg_initial_primary_stacks = 30;
-    int ovinaxs_mercurial_egg_desired_primary_stacks = 20;
+    player_option_t<int> ovinaxs_mercurial_egg_initial_primary_stacks = 20;
+    player_option_t<int> ovinaxs_mercurial_egg_desired_primary_stacks = 20;
     // how close to desired stacks you can be before potentially adjusting
     int ovinaxs_mercurial_egg_desired_primary_stacks_leeway = 3;
     // time to pick up Entropic Skardyn Core fragment
