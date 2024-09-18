@@ -14186,11 +14186,6 @@ void death_knight_t::create_buffs()
   buffs.unholy_commander = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ), this,
                                           "unholy_commander", spell.unholy_commander );
 
-  for ( auto& b : buff_list )
-  {
-    if ( b->data().ok() )
-      apply_affecting_auras( *b );
-  }
 }
 
 // death_knight_t::init_gains ===============================================
@@ -14297,6 +14292,12 @@ void death_knight_t::init_procs()
 
 void death_knight_t::init_finished()
 {
+  for ( auto& b : buff_list )
+  {
+    if ( b->data().ok() )
+      apply_affecting_auras( *b );
+  }
+
   parse_player_effects();
 
   player_t::init_finished();
