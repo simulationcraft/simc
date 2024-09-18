@@ -1334,6 +1334,7 @@ Other enemies hit by this explosion also become a Living Bomb, but this effect c
 Tooltip          : Causes $w1 Fire damage every $t1 sec. After $d, the target explodes, causing $w2 Fire damage to the target and all other enemies within $44461A2 yards$?$w3>0[, and spreading Living Bomb][].
 
 Name             : Living Bomb (id=44461) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -1346,14 +1347,14 @@ Labels           : 16: Class Spells
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #6), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Excess Fire (438595 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Explosive Ingenuity (451760 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3, 48
 Attributes       : ........ ........ x.x....x x..x....   ........ ........ ........ ........ 
-                 : x.x..... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ .xx..... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ x.....x. ........   ........ ........ .....x.. ........ 
                  : ....x... ........ ........ ........   xx...... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Defend Against Friendly Cast (336), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Treat Self Cast As Reflect (388), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Defend Against Friendly Cast (336), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Treat Self Cast As Reflect (388), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=36375)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -17846,6 +17847,7 @@ Description      : The target becomes a Living Bomb, taking $438672o1 Fire damag
 Other enemies hit by this explosion also become a Living Bomb, but this effect cannot spread further.
 
 Name             : Living Bomb (id=438674) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -17859,14 +17861,14 @@ Labels           : 16: Class Spells
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #6), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Excess Fire (438595 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Explosive Ingenuity (451760 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3, 48
 Attributes       : ........ ........ x.x....x x..x....   ........ ........ ........ ........ 
-                 : x.x..... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ .xx..... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ x.....x. ........   ........ ........ .....x.. ........ 
                  : ....x... ........ ........ ........   xx...... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Defend Against Friendly Cast (336), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Treat Self Cast As Reflect (388), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Defend Against Friendly Cast (336), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Treat Self Cast As Reflect (388), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1131422)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -18673,6 +18675,7 @@ Effects          :
 Description      : Direct damage from $?c1[Arcane][Frost] Splinters has a small chance to $?c1[launch an Arcane Orb at $s1% effectiveness][reset the cooldown of Frozen Orb] and increase all damage dealt by $?c1[Arcane Orb by $458411s1][Frozen Orb by $458411s2]% for $458411d.
 
 Name             : Spellfire Spheres (id=448601) [Spell Family (3), Passive, Hidden] 
+Hotfixed         : Proc Flags 1 (0 -> 65536), Proc Flags 2 (4 -> 0)
 Talent Entry     : Sunfury (Arcane, Fire) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Mage
 School           : Physical
@@ -18682,8 +18685,8 @@ Labels           : 16: Class Spells
                  : 292
                  : 3512
 Proc Chance      : 100%
-Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
-                 : Cast Successful
+Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
+                 : Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -19036,6 +19039,7 @@ Each Meteorite's impact reduces the cooldown of Fire Blast by ${$s2/1000}.1 sec.
 Tooltip          : Your next $?c1[Arcane Barrage][Fire Blast] calls down a storm of $s1 Meteorites on its target.
 
 Name             : Spellfire Spheres (id=449400) [Spell Family (3)] 
+Hotfixed         : Max stacks (8 -> 6), Proc Chance (101 -> 100), Attributes, Proc Flags 2 (0 -> 4)
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -19043,16 +19047,19 @@ Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Stacks           : 8 maximum
-Proc Chance      : 101%
+Stacks           : 6 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ ........   ..x..... ........ ........ ........   
+                 : Cast Successful
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
                  : ........ ........ ........ ........   
+                 : Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1148480)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -20319,6 +20326,7 @@ Description      : $@spelldesc450716
 Tooltip          : Your next Fire Blast turns up to $450716s2 struck $Ltarget:targets; into a Living Bomb.
 
 Name             : Living Bomb (id=453251) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -20331,14 +20339,14 @@ Labels           : 16: Class Spells
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #6), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Excess Fire (438595 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Explosive Ingenuity (451760 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3, 48
 Attributes       : ........ ........ x.x....x x..x....   ........ ........ ........ ........ 
-                 : x.x..... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ .xx..... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ x.....x. ........   ........ ........ .....x.. ........ 
                  : ....x... ........ ........ ........   xx...... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Defend Against Friendly Cast (336), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Treat Self Cast As Reflect (388), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Defend Against Friendly Cast (336), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Treat Self Cast As Reflect (388), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1154942)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
@@ -22342,6 +22350,7 @@ Effects          :
 Description      : Direct damage you deal to enemies affected by Touch of the Magi, causes an explosion that deals $342232s1 Arcane damage to all nearby enemies. Deals reduced damage beyond $s1 targets.
 
 Name             : Living Bomb (id=464884) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -22355,14 +22364,14 @@ Labels           : 16: Class Spells
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #6), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Excess Fire (438595 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Explosive Ingenuity (451760 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3, 48
 Attributes       : ........ ........ x.x....x x..x....   ........ ........ ........ ........ 
-                 : x.x..... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ .xx..... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ x.....x. ........   ........ ........ .....x.. ........ 
                  : ....x... ........ ........ ........   xx...... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Defend Against Friendly Cast (336), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Treat Self Cast As Reflect (388), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Defend Against Friendly Cast (336), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Treat Self Cast As Reflect (388), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1176445)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
