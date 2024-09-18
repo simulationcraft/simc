@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56572 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56646 PTR
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -4424,16 +4424,16 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179717)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Spike (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Echoing Void (373304), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Mind Spike: Insanity (407466), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Shadow Crash (465522)
                    Family Flags: 72
 #2 (id=191068)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Spike (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Echoing Void (373304), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Mind Spike: Insanity (407466), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Shadow Crash (465522)
                    Family Flags: 72
-#3 (id=191069)   : Apply Aura (6) | Modify Pet Damage Done% (429)
+#3 (id=191069)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=191070)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
+#4 (id=191070)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=191071)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 98 | Scaled Value: 98 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5838,7 +5838,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=293563)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your direct damage spells inflict $s1% of their damage on all other targets afflicted by your Vampiric Touch within $199486A2 yards.
 
 Does not apply to damage from Shadowy Apparitions, Shadow Word: Pain, and Vampiric Touch.
@@ -8007,13 +8007,13 @@ Effects          :
 #2 (id=759288)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Misc Value: 1284 | Radius: 40 yards | Target: Raid in Area (56)
                    Affected Spells (Label): Divine Protection (498), Shield Wall (871), Desperate Prayer (19236), Barkskin (22812), Ardent Defender (31850), Icebound Fortitude (48792), Vampiric Blood (55233), Mirror Image (55342), Unending Resolve (104773), Astral Shift (108271), Exhilaration (109304), Fortifying Brew (115203), Die by the Sword (118038), Enraged Regeneration (184364), Crimson Vial (185311), Blur (198589), Fiery Brand (204021), Blur (212800), Obsidian Scales (363916), Divine Protection (403876)
-#3 (id=888372)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#3 (id=888372)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Misc Value: 1929 | Radius: 40 yards | Target: Raid in Area (56)
                    Affected Spells (Category): Shield Wall (871)
-#4 (id=1041993)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#4 (id=1041993)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Misc Value: 2100 | Radius: 40 yards | Target: Raid in Area (56)
                    Affected Spells (Category): Obsidian Scales (363916)
-#5 (id=1083835)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#5 (id=1083835)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Misc Value: 1541 | Radius: 40 yards | Target: Raid in Area (56)
                    Affected Spells (Category): Fiery Brand (204021)
 Description      : $@spelldesc64901
@@ -9391,19 +9391,19 @@ Effects          :
 #1 (id=819312)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 690 | Target: Any Target (25)
                    Affected Spells (Label): Tranquility (740), Summon Infernal (1122), Icy Veins (12472), Adrenaline Rush (13750), Avenging Wrath (31884), Rapture (47536), Dancing Rune Weapon (49028), Berserk (50334), Pillar of Frost (51271), Feral Spirit (51533), Vampiric Blood (55233), Divine Hymn (64843), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Avatar (107574), Healing Tide Totem (108280), Spirit Shell (109964), Revival (115310), Shadow Blades (121471), Invoke Niuzao, the Black Ox (132578), Storm, Earth, and Fire (137639), Metamorphosis (187827), Combustion (190319), Metamorphosis (191427), Storm Elemental (192249), Celestial Alignment (194223), Voidform (194249), Fire Elemental (198067), Ice Form (198144), Summon Darkglare (205180), Avenging Crusader (216331), Void Eruption (228260), Crusade (231895), Summon Demonic Tyrant (265187), Apocalypse (275699), Trueshot (288613), Revival (297850), Call of the Wild (359844), Deathmark (360194), Coordinated Assault (360952), Arcane Surge (365350), Arcane Surge (365362), Summon Blasphemy (367679), Dragonrage (375087), Celestial Alignment (383410), Restoral (388615), Sentinel (389539), Incarnation: Chosen of Elune (390414), Dark Ascension (391109), Invoke Niuzao, the Black Ox (395267), Avatar (401150), Breath of Eons (403631), Arcane Surge (453326), Avenging Wrath (454351), Crusade (454373)
-#2 (id=868651)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#2 (id=868651)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1550 | Target: Any Target (25)
                    Affected Spells (Category): Avenging Wrath (31884), Crusade (231895), Sentinel (389539)
-#3 (id=868652)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#3 (id=868652)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1592 | Target: Any Target (25)
                    Affected Spells (Category): Storm, Earth, and Fire (137639)
-#4 (id=868655)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#4 (id=868655)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1572 | Target: Any Target (25)
                    Affected Spells (Category): Storm Elemental (192249), Fire Elemental (198067)
-#5 (id=868656)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#5 (id=868656)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1614 | Target: Any Target (25)
                    Affected Spells (Category): Empower Rune Weapon (47568), Hungering Rune Weapon (207127)
-#6 (id=913133)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#6 (id=913133)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1933 | Target: Any Target (25)
                    Affected Spells (Category): Revival (115310), Restoral (388615)
 Description      : $@spelldesc327661

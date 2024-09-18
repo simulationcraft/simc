@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56572 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56646 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -20965,10 +20965,10 @@ Effects          :
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Fists of Fury (113656), Thunder Focus Tea (116680), Life Cocoon (116849), Fists of Fury (120086), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Fists of Fury (232055), Glory of the Dawn (392959), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521), Whirling Dragon Punch (451767), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
                    Family Flags: 31, 39, 55, 78, 118, 122
-#3 (id=1139300)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#3 (id=1139300)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Misc Value: 1517 | Target: Self (1)
                    Affected Spells (Category): Renewing Mist (115151)
-#4 (id=1142269)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#4 (id=1142269)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Misc Value: 2198 | Target: Self (1)
                    Affected Spells (Category): Life Cocoon (116849)
 #5 (id=1155443)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
@@ -20979,7 +20979,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Fists of Fury (113656), Fists of Fury (120086), Fists of Fury (232055)
                    Family Flags: 55
-#7 (id=1166052)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#7 (id=1166052)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Misc Value: 2294 | Target: Self (1)
                    Affected Spells (Category): Thunder Focus Tea (116680)
 Description      : $@spelldesc443294
@@ -21380,10 +21380,10 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Fists of Fury (113656), Thunder Focus Tea (116680), Life Cocoon (116849), Fists of Fury (120086), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Fists of Fury (232055), Glory of the Dawn (392959), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521), Whirling Dragon Punch (451767), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
                    Family Flags: 31, 39, 55, 78, 118, 122
-#3 (id=1139675)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#3 (id=1139675)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: 1517 | Target: Self (1)
                    Affected Spells (Category): Renewing Mist (115151)
-#4 (id=1142268)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#4 (id=1142268)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: 2198 | Target: Self (1)
                    Affected Spells (Category): Life Cocoon (116849)
 #5 (id=1155445)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
@@ -21394,7 +21394,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Fists of Fury (113656), Fists of Fury (120086), Fists of Fury (232055)
                    Family Flags: 55
-#7 (id=1166053)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#7 (id=1166053)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: 2294 | Target: Self (1)
                    Affected Spells (Category): Thunder Focus Tea (116680)
 Description      : $@spelldesc443294
@@ -23992,7 +23992,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1151723)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.60000 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.60000 | PvP Coefficient: 0.50000 | Radius: 0 - 6 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : Deals $s1 Shadow damage to all enemies within $a yds.
 
 Name             : Mantra of Purity (id=451253) [Spell Family (53)] 
@@ -24651,7 +24651,7 @@ Effects          :
                    Affected Spells: Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521)
                    Family Flags: 118
 #2 (id=1152267)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521)
                    Family Flags: 118
 Description      : Strike of the Windlord's cooldown is reduced by ${$s1/-1000} sec and its damage is increased by $s2%.
@@ -26317,7 +26317,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Proc Chance      : 101%
-Real PPM         : 4 (Haste multiplier)
+Real PPM         : 2 (Haste multiplier)
 Proc Flags       : ....x... x...x... x....... ........   ........ ........ ........ ........   
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......xx ........ .......x .......x   ........ ..x..... ........ ........ 
