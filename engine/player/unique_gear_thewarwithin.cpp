@@ -1606,7 +1606,7 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
   {
     auto stat_str = util::stat_type_abbrev( secondary_ratings[ i ] );
     auto spell = effect.player->find_spell( buff_ids[ i ] );
-    auto name = fmt::format( "{}_{}", spell->name_cstr(), stat_str );
+    auto name = fmt::format( "{}_{}", util::tokenize_fn( spell->name_cstr() ), stat_str );
 
     auto buff = create_buff<ovinax_stat_buff_t>( effect.player, name, spell, data );
     buff->set_stat_from_effect_type( A_MOD_RATING, data->effectN( 2 ).average( effect ) )
