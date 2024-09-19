@@ -23190,7 +23190,7 @@ static const std::array<spelltext_data_t, 26337> __spelltext_data { {
   { 435479, "Spells and abilities have a chance to unearth a Colourful Fungal Friend to heal allies for $s2, grant you $s3 mana, or deal ${$s4*($438685d/$438685t)} Nature damage over $438685d to a nearby enemy.", 0, 0 },
   { 435482, "Unfurl a myriad of grasping webs in front of you entangling your enemies, reducing damage they deal to you by $s3% up to $s2 total damage and reducing their Attack Speed by $s1% for $d.\r\n\r\n$?$pl>80[Attack Speed reduction is less effective against enemies above level $s4.][]", "Absorbing up to $w2 damage from webbed attackers.", 0 },
   { 435488, "Increases maximum mana by $s1% per unique Khaz Algar gem color currently socketed.", "$?{$w2>0}[Maximum mana is increased by $W2%.][$@spellaura437034]", 0 },
-  { 435493, "Drink from the vial and let the toxins course through your veins increasing all secondary stats by $s1 for $d.\r\n\r\nUse again to administer yourself the antidote to end the effect.\r\n\r\nIf the Antidote is not administered before the end of the effect you will be stunned for $440235d.", "All secondary stats increased by $w1.", 0 },
+  { 435493, "Drink from the vial and let the toxins course through your veins increasing all secondary stats by $s1 for $d.\r\n\r\nJump to administer yourself the antidote to end the effect.\r\n\r\nIf the Antidote is not administered before the end of the effect you will be stunned for $440235d.", "All secondary stats increased by $w1.", 0 },
   { 435500, "Increases the effect of critical strikes by ${$M1}.1% per unique Khaz Algar gem color currently socketed.", "$?{$w2>0}[Critical strike effectiveness increased by ${$w2}.1%.][$@spellaura437034]", 0 },
   { 435501, "Increases the effect of critical strikes by $s1% per unique Khaz Algar gem color currently socketed.", "$?{$w2>0}[Movement speed increased by $w2%.][$@spellaura437034]", 0 },
   { 435502, "Engrave a ritual seal into your skin binding you to the shadows, granting yourself $s1 $pri.\r\n\r\nYour spells and abilities have a low chance to reduce one of your secondary stats by $s2 for $440389d during combat.", 0, 0 },
@@ -26340,11 +26340,12 @@ static const std::array<spelltext_data_t, 26337> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56647
-static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
   {  345545,  0, "Coat your weapons in Flayedwing Toxin for $d, giving your attacks a high chance to deal $<ChimericPoison> Nature damage over $345546d.", "Coat your weapons in Flayedwing Toxin for $d, giving your attacks a high chance to inflict ${$<rolemult>*$345547s1*3} Nature damage over $345546d." },
   {  345545,  1, "Your attacks have a high chance to deal Nature damage over $345546d.", "Your attacks have a high chance to  inflict ${$<rolemult>*$345547s1*3} Nature damage over $345546d." },
   {  345548,  0, "Hook an enemy who is within $r yds, causing them to bleed for $s1 Physical damage every $t1 sec and reducing their movement speed by $s2%. Lasts $d, or until they move more than $s3 yds away from you.", "Hook an enemy who is within $r yds, causing them to bleed for ${$<rolemult>*$s1} Physical damage every $t1 sec and reducing their movement speed by $s2%. Lasts $d, or until they move more than $s3 yds away from you." },
   {  345548,  1, "Bleeding for $s1 Physical damage every $t1 sec as long as you are within $s3 yds of $@auracaster.", "Bleeding for ${$<rolemult>*$s1} Physical damage every $t1 sec as long as you are within $s3 yds of $@auracaster." },
+  {  435493,  0, "Drink from the vial and let the toxins course through your veins increasing all secondary stats by $s1 for $d.\r\n\r\nUse again to administer yourself the antidote to end the effect.\r\n\r\nIf the Antidote is not administered before the end of the effect you will be stunned for $440235d.", "Drink from the vial and let the toxins course through your veins increasing all secondary stats by $s1 for $d.\r\n\r\nJump to administer yourself the antidote to end the effect.\r\n\r\nIf the Antidote is not administered before the end of the effect you will be stunned for $440235d." },
 } };
 
 // Spell description variables, wow build 11.0.2.56647
