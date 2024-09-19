@@ -4224,7 +4224,7 @@ void candle_confidant( special_effect_t& effect )
     void update_stats() override
     {
       pet_t::update_stats();
-      // Current doesnt seem to scale with haste
+      // Currently doesnt seem to scale with haste
       if ( owner->bugs )
       {
         current_pet_stats.composite_melee_haste             = 1;
@@ -4294,6 +4294,12 @@ void candle_confidant( special_effect_t& effect )
         stats = ( *it )->stats;
       else
         proxy->add_child( this );
+    }
+
+    double composite_crit_chance() const override
+    {
+      // Currently their auto attacks dont seem to scale with player crit chance. 
+      return this->player->base.attack_crit_chance;
     }
 
     void execute() override
