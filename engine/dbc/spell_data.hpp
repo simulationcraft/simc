@@ -618,8 +618,7 @@ struct spell_data_t
 
   bool has_scaling_effects() const
   {
-    auto _effects = effects();
-    return range::any_of( _effects, []( const spelleffect_data_t& e ) {
+    return range::any_of( effects(), []( const spelleffect_data_t& e ) {
       return e.scaling_class() != PLAYER_NONE;
     } );
   }

@@ -1045,9 +1045,8 @@ struct movement_ticker_t : public event_t
       p->update_movement( duration );
     }
 
-    timespan_t next = next_execute( players );
-    if ( next > timespan_t::zero() )
-      make_event<movement_ticker_t>( sim(), sim(), players, next );
+    if ( auto next_time = next_execute( players ); next_time > 0_ms )
+      make_event<movement_ticker_t>( sim(), sim(), players, next_time );
   }
 };
 

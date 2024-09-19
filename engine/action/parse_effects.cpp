@@ -925,10 +925,10 @@ double parse_player_effects_t::matching_gear_multiplier( attribute_e attr ) cons
   return mg;
 }
 
-double parse_player_effects_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+double parse_player_effects_t::composite_player_target_multiplier( player_t* t, school_e school ) const
 {
-  auto tm = player_t::composite_player_target_multiplier( target, school );
-  auto td = get_target_data( target );
+  auto tm = player_t::composite_player_target_multiplier( t, school );
+  auto td = get_target_data( t );
 
   for ( const auto& i : target_multiplier_effects )
     if ( i.opt_enum & dbc::get_school_mask( school ) )
@@ -937,10 +937,10 @@ double parse_player_effects_t::composite_player_target_multiplier( player_t* tar
   return tm;
 }
 
-double parse_player_effects_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+double parse_player_effects_t::composite_player_target_pet_damage_multiplier( player_t* t, bool guardian ) const
 {
-  auto tm = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
-  auto td = get_target_data( target );
+  auto tm = player_t::composite_player_target_pet_damage_multiplier( t, guardian );
+  auto td = get_target_data( t );
 
   for ( const auto& i : target_pet_multiplier_effects )
     if ( static_cast<bool>( i.opt_enum ) == guardian )

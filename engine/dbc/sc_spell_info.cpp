@@ -1707,8 +1707,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   if ( e->type() == E_APPLY_AURA &&
        ( e->subtype() == A_ADD_PCT_LABEL_MODIFIER || e->subtype() == A_ADD_FLAT_LABEL_MODIFIER ) )
   {
-    auto str = label_str( e->misc_value2(), dbc );
-    if ( str != "" )
+    if ( auto str = label_str( e->misc_value2(), dbc ); str != "" )
       s << "                   Affected Spells (Label): " << str << std::endl;
   }
 
@@ -1716,18 +1715,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
        ( e->subtype() == A_MOD_RECHARGE_RATE_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_SPELLS_LABEL ||
          e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL ) )
   {
-    auto str = label_str( e->misc_value1(), dbc );
-    if ( str != "" )
+    if ( auto str = label_str( e->misc_value1(), dbc ); str != "" )
       s << "                   Affected Spells (Label): " << str << std::endl;
   }
 
   if ( e->type() == E_APPLY_AURA && range::contains( dbc::effect_category_subtypes(), e->subtype() ) )
   {
-    auto affected_spells = dbc.spells_by_category( e->misc_value1() );
-    if ( !affected_spells.empty() )
+    if ( auto affected = dbc.spells_by_category( e->misc_value1() ); !affected.empty() )
     {
       s << "                   Affected Spells (Category): ";
-      s << concatenate( affected_spells, []( std::stringstream& s, const spell_data_t* spell ) {
+      s << concatenate( affected, []( std::stringstream& s, const spell_data_t* spell ) {
         fmt::print( s, "{} ({})", spell->name_cstr(), spell->id() );
       } );
       s << std::endl;
@@ -1830,21 +1827,20 @@ static std::string trait_data_to_str( const dbc_t& dbc, const spell_data_t* spel
     }
 
     std::vector<std::string> spec_strs;
-    for ( auto spec_idx : trait->id_spec )
+    for ( auto s_idx : trait->id_spec )
     {
-      if ( spec_idx == 0 )
+      if ( s_idx == 0 )
         continue;
 
-      auto specialization_str =
-          util::inverse_tokenize( dbc::specialization_string( static_cast<specialization_e>( spec_idx ) ) );
+      auto spec_str = util::inverse_tokenize( dbc::specialization_string( static_cast<specialization_e>( s_idx ) ) );
 
-      if ( util::str_compare_ci( specialization_str, "Unknown" ) )
+      if ( util::str_compare_ci( spec_str, "Unknown" ) )
       {
-        spec_strs.emplace_back( fmt::format( "{} ({})", specialization_str, spec_idx ) );
+        spec_strs.emplace_back( fmt::format( "{} ({})", spec_str, s_idx ) );
       }
       else
       {
-        spec_strs.emplace_back( fmt::format( "{}", specialization_str ) );
+        spec_strs.emplace_back( fmt::format( "{}", spec_str ) );
       }
     }
 
@@ -2062,13 +2058,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( pd.aura_id() > 0 && dbc.spell( pd.aura_id() )->id() == pd.aura_id() )
       s << " w/ " << dbc.spell( pd.aura_id() )->name_cstr() << " (id=" << pd.aura_id() << ")";
 
-    const auto hotfixes = spellpower_data_t::hotfixes( pd, dbc.ptr );
-    if ( !hotfixes.empty() )
+    if ( const auto power_hotfixes = spellpower_data_t::hotfixes( pd, dbc.ptr ); !power_hotfixes.empty() )
     {
-      if ( hotfixes.front().field_id == hotfix::NEW_ENTRY )
+      if ( power_hotfixes.front().field_id == hotfix::NEW_ENTRY )
         fmt::print( s, "[Hotfixed: NEW POWER]" );
       else
-        fmt::print( s, "[Hotfixed: {}]", hotfix_map_str( hotfixes, _hotfix_power_map ) );
+        fmt::print( s, "[Hotfixed: {}]", hotfix_map_str( power_hotfixes, _hotfix_power_map ) );
     }
 
     s << std::endl;

@@ -133,20 +133,20 @@ class tooltip_parser_t
       s_max += power;
       show_scale_factor = false;
     }
-    std::string result = util::to_string( util::round( multiplier * s_min ) );
+    std::string result_str = util::to_string( util::round( multiplier * s_min ) );
     if ( s_max != s_min )
     {
-      result += " to ";
-      result += util::to_string( util::round( multiplier * s_max ) );
+      result_str += " to ";
+      result_str += util::to_string( util::round( multiplier * s_max ) );
     }
     if ( show_scale_factor && effect.sp_coeff() )
     {
-      result += " + ";
-      result += util::to_string( 100 * multiplier * effect.sp_coeff(), 1 );
-      result += '%';
+      result_str += " + ";
+      result_str += util::to_string( 100 * multiplier * effect.sp_coeff(), 1 );
+      result_str += '%';
     }
 
-    return result;
+    return result_str;
   }
 
 public:

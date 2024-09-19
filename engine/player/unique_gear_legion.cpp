@@ -366,12 +366,12 @@ struct flame_wreath_t : public proc_spell_t
     school = SCHOOL_FIRE;
     base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
 
-    for ( const auto& item : effect.player -> items )
+    for ( const auto& item_ : effect.player -> items )
     {
-      if ( item.name_str ==  "robes_of_the_ancient_chronicle" ||
-           item.name_str ==  "harness_of_smoldering_betrayal" ||
-           item.name_str ==  "hauberk_of_warped_intuition"    ||
-           item.name_str ==  "chestplate_of_impenetrable_darkness" )
+      if ( item_.name_str ==  "robes_of_the_ancient_chronicle" ||
+           item_.name_str ==  "harness_of_smoldering_betrayal" ||
+           item_.name_str ==  "hauberk_of_warped_intuition"    ||
+           item_.name_str ==  "chestplate_of_impenetrable_darkness" )
         //FIXME: Don't hardcode the 30% damage bonus
         base_dd_min = base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item ) * 1.3;
     }
@@ -1537,14 +1537,14 @@ struct personnel_decimator_t : public proc_spell_t
     aoe = -1;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  double composite_target_multiplier( player_t* t ) const override
   {
-    double m = proc_spell_t::composite_target_multiplier( target );
+    double m = proc_spell_t::composite_target_multiplier( t );
 
     double distance = 0;
-    if ( target != this -> target )
+    if ( t != target )
     {
-      distance = this -> target -> get_player_distance( *target );
+      distance = target->get_player_distance( *t );
     }
 
     // TODO: Do something fancy based on the distance. Copy Pharamere's Forbidden Grimoire system
@@ -1784,11 +1784,11 @@ struct shadow_blade_t : public proc_spell_t
       ->set_default_value_from_effect( 2, 0.01 );
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  double composite_target_multiplier( player_t* t ) const override
   {
-    double ctm = proc_spell_t::composite_target_multiplier( target );
+    double ctm = proc_spell_t::composite_target_multiplier( t );
 
-    if ( auto debuff = find_debuff( target ) )
+    if ( auto debuff = find_debuff( t ) )
       ctm *= 1.0 + debuff->check_stack_value();
 
     return ctm;
@@ -2860,16 +2860,16 @@ struct ceaseless_toxin_t : public proc_spell_t
   {
     proc_spell_t::activate();
 
-    range::for_each( sim -> actor_list, [ this ]( player_t* target ) {
-      if ( ! target -> is_enemy() )
+    range::for_each( sim->actor_list, [ this ]( player_t* t ) {
+      if ( !t->is_enemy() )
       {
         return;
       }
 
-      target -> register_on_demise_callback( player, [ this ]( player_t* actor ) {
-        if ( get_dot( actor ) -> is_ticking() )
+      t->register_on_demise_callback( player, [ this ]( player_t* actor ) {
+        if ( get_dot( actor )->is_ticking() )
         {
-          cooldown -> adjust( -timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
+          cooldown->adjust( -timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
         }
       } );
     } );
@@ -4900,9 +4900,9 @@ struct convergence_of_fates_callback_t : public dbc_proc_callback_t
   {
     assert( !cooldowns.empty() );
 
-    for ( auto* cooldown : cooldowns )
+    for ( auto cd : cooldowns )
     {
-      cooldown -> adjust( amount );
+      cd->adjust( amount );
     }
   }
 };
@@ -5447,15 +5447,15 @@ struct spawn_of_serpentrix_t : public pet_t
 
       if ( ! sim -> report_pets_separately )
       {
-        player_t* owner = player -> cast_pet() -> owner;
+        player_t* owner_ = player->cast_pet()->owner;
 
-        auto it = range::find_if( owner -> pet_list, [ this ]( pet_t* pet ) {
-          return this -> player -> name_str == pet -> name_str;
+        auto it = range::find_if( owner_->pet_list, [ this ]( pet_t* pet ) {
+          return this->player->name_str == pet->name_str;
         } );
 
-        if ( it != owner -> pet_list.end() && player != *it )
+        if ( it != owner_->pet_list.end() && player != *it )
         {
-          stats = ( *it ) -> get_stats( name(), this );
+          stats = ( *it )->get_stats( name(), this );
         }
       }
     }

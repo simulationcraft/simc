@@ -535,7 +535,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
 
     if ( slot_data.HasMember( "bonus_list" ) )
     {
-      for ( auto bonus_idx = 0U, end = slot_data[ "bonus_list" ].Size(); bonus_idx < end; ++bonus_idx )
+      for ( auto bonus_idx = 0U, bonus_end = slot_data[ "bonus_list" ].Size(); bonus_idx < bonus_end; ++bonus_idx )
       {
         item.parsed.bonus_id.push_back( slot_data[ "bonus_list" ][ bonus_idx ].GetInt() );
       }
@@ -543,7 +543,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
 
     if ( slot_data.HasMember( "enchantments" ) )
     {
-      for ( auto ench_idx = 0U, end = slot_data[ "enchantments" ].Size(); ench_idx < end; ++ench_idx )
+      for ( auto ench_idx = 0U, ench_end = slot_data[ "enchantments" ].Size(); ench_idx < ench_end; ++ench_idx )
       {
         const auto& ench_data = slot_data[ "enchantments" ][ ench_idx ];
 
@@ -556,7 +556,8 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
           throw std::runtime_error( "Unable to parse enchant data: Missing enchantment slot data" );
         }
 
-        switch (ench_data[ "enchantment_slot" ][ "id" ].GetInt()) {
+        switch ( ench_data[ "enchantment_slot" ][ "id" ].GetInt() )
+        {
           // PERMANENT
           case 0:
             item.parsed.enchant_id = ench_data[ "enchantment_id" ].GetInt();
@@ -574,7 +575,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
 
     if ( slot_data.HasMember( "sockets" ) )
     {
-      for ( auto gem_idx = 0U, end = slot_data[ "sockets" ].Size(); gem_idx < end; ++gem_idx )
+      for ( auto gem_idx = 0U, gem_end = slot_data[ "sockets" ].Size(); gem_idx < gem_end; ++gem_idx )
       {
         const auto& socket_data = slot_data[ "sockets" ][ gem_idx ];
         if ( !socket_data.HasMember( "item" ) )
@@ -591,7 +592,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
 
         if ( socket_data.HasMember( "bonus_list" ) )
         {
-          for ( auto gbonus_idx = 0U, end = socket_data[ "bonus_list" ].Size(); gbonus_idx < end; ++gbonus_idx )
+          for ( auto gbonus_idx = 0U, gb_end = socket_data[ "bonus_list" ].Size(); gbonus_idx < gb_end; ++gbonus_idx )
           {
             item.parsed.gem_bonus_id[ gem_idx ].push_back( socket_data[ "bonus_list" ][ gbonus_idx ].GetInt() );
           }
@@ -601,9 +602,9 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
 
     if ( slot_data.HasMember( "modified_crafting_stat" ) )
     {
-      for ( auto idx = 0U, end = slot_data[ "modified_crafting_stat" ].Size(); idx < end; ++idx )
+      for ( auto craft_idx = 0U, cr_end = slot_data[ "modified_crafting_stat" ].Size(); craft_idx < cr_end; ++idx )
       {
-        const auto& stat_data = slot_data[ "modified_crafting_stat" ][ idx ];
+        const auto& stat_data = slot_data[ "modified_crafting_stat" ][ craft_idx ];
         item.parsed.crafted_stat_mod.push_back( stat_data[ "id" ].GetInt() );
       }
     }

@@ -735,7 +735,7 @@ public:
 
   timespan_t shortest_travel_event() const;
 
-  bool has_travel_events_for( const player_t* target ) const;
+  bool has_travel_events_for( const player_t* ) const;
 
   /** Determine if the action can have a resulting damage/heal amount > 0 */
   virtual bool has_amount_result() const
@@ -975,16 +975,16 @@ public:
 
   virtual double composite_total_spell_power() const;
 
-  virtual double composite_target_armor( player_t* t ) const;
+  virtual double composite_target_armor( player_t* ) const;
 
-  virtual double composite_target_crit_chance( player_t* target ) const;
+  virtual double composite_target_crit_chance( player_t* ) const;
 
   virtual double composite_target_crit_damage_bonus_multiplier( player_t* ) const
   { return 1.0; }
 
-  virtual double composite_target_multiplier( player_t* target ) const;
+  virtual double composite_target_multiplier( player_t* ) const;
 
-  virtual double composite_target_damage_vulnerability( player_t* target ) const;
+  virtual double composite_target_damage_vulnerability( player_t* ) const;
 
   virtual double composite_versatility( const action_state_t* ) const
   { return 1.0; }
@@ -1002,12 +1002,12 @@ public:
   virtual double composite_total_corruption() const;
 
   /// Direct amount multiplier due to debuffs on the target
-  virtual double composite_target_da_multiplier( player_t* target ) const
-  { return composite_target_multiplier( target ); }
+  virtual double composite_target_da_multiplier( player_t* t ) const
+  { return composite_target_multiplier( t ); }
 
   /// Tick amount multiplier due to debuffs on the target
-  virtual double composite_target_ta_multiplier( player_t* target ) const
-  { return composite_target_multiplier( target ); }
+  virtual double composite_target_ta_multiplier( player_t* t ) const
+  { return composite_target_multiplier( t ); }
 
   /// School-based generic damage multipliers that affect all player damage
   virtual double composite_player_multiplier( const action_state_t* ) const;
@@ -1134,7 +1134,7 @@ public:
   // becomes active.
   virtual void activate();
 
-  virtual std::unique_ptr<expr_t> create_expression(util::string_view name);
+  virtual std::unique_ptr<expr_t> create_expression( std::string_view );
 
   virtual action_state_t* new_state();
 
@@ -1178,7 +1178,7 @@ public:
 
   virtual player_t* get_expression_target();
 
-  virtual void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain );
+  virtual void gain_energize_resource( resource_e resource_type, double amount, gain_t* g );
 
   virtual void html_customsection( report::sc_html_stream& );
 

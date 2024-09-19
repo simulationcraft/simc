@@ -201,48 +201,48 @@ const spell_data_t* special_effect_t::trigger() const
  */
 stat_e special_effect_t::stat_buff_type( const spelleffect_data_t& effect ) const
 {
-  stat_e stat = STAT_NONE;
+  stat_e stat_ = STAT_NONE;
 
   // All stat buffs in game client data are "auras"
   if ( effect.type() != E_APPLY_AURA )
-    return stat;
+    return stat_;
 
   switch ( effect.subtype() )
   {
     case A_MOD_STAT:
       if ( effect.misc_value1() == -1 )
-        stat = STAT_ALL;  // Primary stats only, ratings are A_MOD_RATING
+        stat_ = STAT_ALL;  // Primary stats only, ratings are A_MOD_RATING
       else if ( effect.misc_value1() == -2 )
-        stat = STAT_STR_AGI_INT;
+        stat_ = STAT_STR_AGI_INT;
       else
-        stat = static_cast<stat_e>( effect.misc_value1() + 1 );
+        stat_ = static_cast<stat_e>( effect.misc_value1() + 1 );
       break;
     case A_MOD_RATING:
-      stat = util::translate_rating_mod( effect.misc_value1() );
+      stat_ = util::translate_rating_mod( effect.misc_value1() );
       break;
     case A_MOD_INCREASE_HEALTH_2:
     case A_MOD_INCREASE_HEALTH:
-      stat = STAT_MAX_HEALTH;
+      stat_ = STAT_MAX_HEALTH;
       break;
     case A_MOD_RESISTANCE:
-      stat = STAT_BONUS_ARMOR;
+      stat_ = STAT_BONUS_ARMOR;
       break;
     case A_MOD_ATTACK_POWER:
     case A_MOD_RANGED_ATTACK_POWER:
-      stat = STAT_ATTACK_POWER;
+      stat_ = STAT_ATTACK_POWER;
       break;
     case A_MOD_DAMAGE_DONE:
       if ( effect.misc_value1() & 0x7E )
-        stat = STAT_SPELL_POWER;
+        stat_ = STAT_SPELL_POWER;
       break;
     case A_465:
-      stat = STAT_BONUS_ARMOR;
+      stat_ = STAT_BONUS_ARMOR;
       break;
     default:
       break;
   }
 
-  return stat;
+  return stat_;
 }
 
 bool special_effect_t::is_stat_buff() const
@@ -278,9 +278,9 @@ stat_e special_effect_t::stat_type() const
     if ( effect.id() == 0 )
       continue;
 
-    stat_e type = stat_buff_type( effect );
-    if ( type != STAT_NONE )
-      return type;
+    stat_e stat_ = stat_buff_type( effect );
+    if ( stat_ != STAT_NONE )
+      return stat_;
   }
 
   return STAT_NONE;
