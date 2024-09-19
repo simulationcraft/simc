@@ -11011,6 +11011,8 @@ void druid_t::create_buffs()
     ->set_cooldown( 0_ms )
     ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+  if ( bugs && talent.lunar_beam.ok() && talent.the_eternal_moon.ok() )
+    buff.lunar_beam->modify_default_value( 0.5 );  // modify mastery% (318) seems to round
 
   buff.rage_of_the_sleeper =
     make_fallback<rage_of_the_sleeper_buff_t>( talent.rage_of_the_sleeper.ok(), this, "rage_of_the_sleeper" );
