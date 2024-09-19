@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56572 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56646 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -44,7 +44,7 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #5, #6, #15), Destruction Warlock (137046 effect#13), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Sacrolash's Dark Strike (337111 effect#1), Sacrolash's Dark Strike (386986 effect#1), Haunted Soul (387310 effect#1), Kindled Malice (405330 effects: #2, #3), Xalan's Cruelty (440040 effects: #1, #3, #4), Mark of Peroth'arn (440045 effect#1), Wither (445465 effect#1), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Umbral Lattice (455679 effects: #1, #2)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #5, #6), Destruction Warlock (137046 effect#13), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Sacrolash's Dark Strike (337111 effect#1), Sacrolash's Dark Strike (386986 effect#1), Haunted Soul (387310 effect#1), Kindled Malice (405330 effects: #2, #3), Xalan's Cruelty (440040 effects: #1, #3, #4), Mark of Peroth'arn (440045 effect#1), Wither (445465 effect#1), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Umbral Lattice (455679 effects: #1, #2)
 Family Flags     : 1
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -144,7 +144,7 @@ Velocity         : 20 yards/sec
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Affecting spells : Affliction Warlock (137043 effects: #1, #2, #14), Demonology Warlock (137044 effects: #1, #2, #4), Destruction Warlock (137046 effects: #1, #2, #14), Shadowy Inspiration (196606 effect#1), Norgannon's Foresight (236431 effect#1), Nightfall (264571 effect#1), Sacrificed Souls (272591 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Decimating Bolt (325299 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Malefic Wrath (337125 effects: #1, #2), Wrath of Consumption (337130 effect#1), Shard of Annihilation (356342 effects: #1, #2), Ruin (387103 effect#1), Drain Soul (388667 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Dark Virtuosity (405327 effect#1), Sargerei Technique (405955 effect#1), Infirmity (409765 effect#1), Infernal Bolt (433891 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Necrolyte Teachings (449620 effect#2), Improved Shadow Bolt (453080 effects: #1, #2), Summoner's Embrace (453105 effects: #1, #3), Warlock Demonology 11.0 Class Set 2pc (453644 effect#2), Rune of Shadows (453744 effects: #2, #3), Devastation (454735 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Affliction Warlock (137043 effects: #1, #2, #14, #15), Demonology Warlock (137044 effects: #1, #2, #4), Destruction Warlock (137046 effects: #1, #2, #14), Shadowy Inspiration (196606 effect#1), Norgannon's Foresight (236431 effect#1), Nightfall (264571 effect#1), Sacrificed Souls (272591 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Decimating Bolt (325299 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Malefic Wrath (337125 effects: #1, #2), Wrath of Consumption (337130 effect#1), Shard of Annihilation (356342 effects: #1, #2), Ruin (387103 effect#1), Drain Soul (388667 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Dark Virtuosity (405327 effect#1), Sargerei Technique (405955 effect#1), Infirmity (409765 effect#1), Infernal Bolt (433891 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Necrolyte Teachings (449620 effect#2), Improved Shadow Bolt (453080 effects: #1, #2), Summoner's Embrace (453105 effects: #1, #3), Warlock Demonology 11.0 Class Set 2pc (453644 effect#2), Rune of Shadows (453744 effects: #2, #3), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 0, 49
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -845,7 +845,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Discount Power On Miss (59), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=2210)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 4.76280 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 4.76280 | PvP Coefficient: 1.15000 | Target: Enemy (6)
 #2 (id=740054)   : Dummy (3)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000
 #3 (id=831295)   : Dummy (3)
@@ -1634,7 +1634,7 @@ Effects          :
 #1 (id=19297)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=288276)   : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.50235 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.50235 | PvP Coefficient: 1.15000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #3 (id=371982)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
@@ -3823,7 +3823,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Cast When Learned (63), Allow Aura While Dead (116), Obsolete (364), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=124613)   : Apply Aura (6) | Threat (10)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 Description      : Intimidates any target the Voidwalker attacks, increasing threat generation.
 
 |cFFFFFFFFAuto-Cast:|r
@@ -4081,7 +4081,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Discount Power On Miss (59), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=132079)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.62394 | PvP Coefficient: 1.70000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.62394 | PvP Coefficient: 1.95500 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=283496)   : Energize Power% (137)
@@ -4459,7 +4459,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow Aura While Dead (116), AutoCast Off By Default (305), Obsolete (364), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=175237)   : Apply Aura (6) | Threat (10)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 Description      : Intimidates any target the Felguard attacks, increasing threat generation.
 
 |cFFFFFFFFAuto-Cast:|r
@@ -4532,11 +4532,11 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1166 (Label) | Target: Self (1)
                    Affected Spells (Label): Demon Armor (285933)
 #5 (id=191034)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 22 | Scaled Value: 22 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Corruption (172), Corruption (146739), Deliberate Corruption (367831), Wither (445468), Wither (445474)
                    Family Flags: 1
 #6 (id=261077)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -16 | Scaled Value: -16 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -7 | Scaled Value: -7 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Corruption (172), Corruption (146739), Deliberate Corruption (367831), Wither (445468), Wither (445474)
                    Family Flags: 1
 #7 (id=261078)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
@@ -4556,15 +4556,18 @@ Effects          :
 #13 (id=261084)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #14 (id=1045984)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 51 | Scaled Value: 51 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 28 | Scaled Value: 28 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506)
                    Family Flags: 0
-#15 (id=1046968)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 26 | Scaled Value: 26 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Corruption (172), Corruption (146739), Deliberate Corruption (367831), Wither (445468), Wither (445474)
-                   Family Flags: 1
+#15 (id=1046968)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Affected Spells: Shadow Bolt (686), Infernal Bolt (434506)
+                   Family Flags: 0
 #16 (id=1174952)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
+                   Base Value: -28 | Scaled Value: -28 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
+                   Affected Spells (Label): Wither (445474)
+#17 (id=1187050)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
+                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 0.00000 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445474)
 
 Name             : Demonology Warlock (id=137044) [Spell Family (5), Passive, Hidden] 
@@ -4643,24 +4646,24 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179730)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Bilescourge Bombers (267213), Umbral Blaze (273526), Pandemic Invocation (289367), Conflagrate (290644), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Withered Ground (325673), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072), Soul Rot (331623), Deliberate Corruption (367831), Implosion (370371), Vile Taint (386931), Soul Rot (386997), Chaos Barrage (387985), Shadow Bolt (394238), Chaos Bolt (394246), Umbral Blaze (405802), Channel Demonfire (409890), Oblivion (417537), Searing Bolt (423886), Wicked Cleave (432120), Chaos Salvo (432596), Felseeker (434404), Infernal Bolt (434506), Chaos Bolt (434589), Ruination (434636), Felseeker (438973), Wither (445468), Wither (445474), Blackened Soul (445736), Malevolence (446285), Demonic Soul (449801), Wicked Reaping (449826), Soul Anathema (450538), Shadowbolt Volley (453176), Doom (453567), Summon Overfiend (457578), Malefic Touch (458131), Perpetual Unstability (459461), Doom (460553), Doom (460555)
                    Family Flags: 49
 #2 (id=191023)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Bilescourge Bombers (267213), Umbral Blaze (273526), Pandemic Invocation (289367), Conflagrate (290644), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Withered Ground (325673), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072), Soul Rot (331623), Deliberate Corruption (367831), Implosion (370371), Vile Taint (386931), Soul Rot (386997), Chaos Barrage (387985), Shadow Bolt (394238), Chaos Bolt (394246), Umbral Blaze (405802), Channel Demonfire (409890), Oblivion (417537), Searing Bolt (423886), Wicked Cleave (432120), Chaos Salvo (432596), Felseeker (434404), Infernal Bolt (434506), Chaos Bolt (434589), Ruination (434636), Felseeker (438973), Wither (445468), Wither (445474), Blackened Soul (445736), Malevolence (446285), Demonic Soul (449801), Wicked Reaping (449826), Soul Anathema (450538), Shadowbolt Volley (453176), Doom (453567), Summon Overfiend (457578), Malefic Touch (458131), Perpetual Unstability (459461), Doom (460553), Doom (460555)
                    Family Flags: 49
 #3 (id=191024)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191025)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=191026)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=261057)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 3444 (Label) | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value 2: 3444 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445468)
 #7 (id=261058)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445474)
 #8 (id=261059)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Misc Value 2: 3456 (Label) | Target: Self (1)
@@ -4682,6 +4685,12 @@ Effects          :
                    Base Value: 29722 | Scaled Value: 29722 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506)
                    Family Flags: 0
+#15 (id=1187048)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 43 | Scaled Value: 43 | PvP Coefficient: 0.00000 | Misc Value 2: 3444 (Label) | Target: Self (1)
+                   Affected Spells (Label): Wither (445468)
+#16 (id=1187049)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
+                   Base Value: 43 | Scaled Value: 43 | PvP Coefficient: 0.00000 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
+                   Affected Spells (Label): Wither (445474)
 
 Name             : Corruption (id=146739) [Spell Family (5)] 
 Class            : Warlock
@@ -4693,7 +4702,7 @@ Duration         : 14 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6, #15), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2, #13), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effects: #2, #3), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Mark of Peroth'arn (440045 effect#1), Wither (445465 effect#1), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2, #13), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effects: #2, #3), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Mark of Peroth'arn (440045 effect#1), Wither (445465 effect#1), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
 Triggered by     : Corruption (172)
 Family Flags     : 1, 49
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -5882,9 +5891,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a Proc (105), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=288343)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.28111 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.39355 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=739648)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.13975 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.19566 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc196447
 
 Name             : Channel Demonfire (id=196449) [Spell Family (5), Hidden] 
@@ -8029,7 +8038,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=707419)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.04104 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.44925 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1049817)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=1173941)  : Trigger Missiles (32)
@@ -10376,9 +10385,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Limit N (165), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=800325)   : Dummy (3)
-                   Base Value: 2758 | Scaled Value: 2758 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 3447 | Scaled Value: 3447 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=800326)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.44389 | PvP Coefficient: 1.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.44389 | PvP Coefficient: 1.95000 | Target: Enemy (6)
 #3 (id=800327)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #4 (id=1087592)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
@@ -13127,7 +13136,7 @@ Duration         : 0.1 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6, #15), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2, #13), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effects: #2, #3), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Mark of Peroth'arn (440045 effect#1), Wither (445465 effect#1), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2, #13), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effects: #2, #3), Infirmity (409765 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Mark of Peroth'arn (440045 effect#1), Wither (445465 effect#1), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
 Family Flags     : 1, 49
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ....x... 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
@@ -16095,7 +16104,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023291)  : School Damage (2): magic
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.18837 | PvP Coefficient: 1.00000 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.26372 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : Deals $s1 Chaos damage.
 
 Name             : Chaos Barrage (id=387986) [Spell Family (5), Hidden] 
@@ -16725,7 +16734,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1033724)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75348 | PvP Coefficient: 1.00000 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.05487 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.
 
 Name             : Chaos Tear (id=394243) [Spell Family (5)] 
@@ -16797,7 +16806,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1033732)  : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.33220 | PvP Coefficient: 1.00000 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.26508 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : Fires a Chaos Bolt, dealing $s1 Chaos damage. This Chaos Bolt always critically strikes and your critical strike chance increases its damage.
 
 Name             : Cruel Epiphany (id=394253) [Spell Family (5)] 
@@ -19127,17 +19136,17 @@ Labels           : 16: Class Spells
 Affecting spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49
 Attributes       : ........ ........ ........ ........   ......x. ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Self Channelled (38)
+                 : Is Self Channelled (38), Allow Dead Target (64)
 Effects          :
 #1 (id=1120432)  : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 10.80530 | PvP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: Unknown(87) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 10.80530 | PvP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc428514
 
 Name             : Wicked Cleave (id=432220) [Spell Family (5), Hidden] 
@@ -19530,7 +19539,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 4045: Destruction Warlock (137046 effect#9)
-Affecting spells : Backdraft (117828 effects: #1, #2, #4), Affliction Warlock (137043 effects: #1, #2, #14), Demonology Warlock (137044 effects: #1, #2, #4), Destruction Warlock (137046 effects: #1, #2, #14), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Shadowy Inspiration (196606 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Nightfall (264571 effect#1), Conflagrate (265931 effect#1), Sacrificed Souls (272591 effect#1), Chaotic Inferno (279673 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1), Soul Fire (335004 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Malefic Wrath (337125 effects: #1, #2), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Shard of Annihilation (356342 effects: #1, #2), Ruin (387103 effect#1), Burn to Ashes (387154 effect#1), Backlash (387385 effect#1), Drain Soul (388667 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Dark Virtuosity (405327 effect#1), Sargerei Technique (405955 effects: #1, #2), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Infernal Bolt (433891 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Wither (445474 effect#2), Necrolyte Teachings (449620 effect#2), Improved Shadow Bolt (453080 effects: #1, #2), Summoner's Embrace (453105 effects: #1, #3), Warlock Demonology 11.0 Class Set 2pc (453644 effect#2), Warlock Destruction 11.0 Class Set 2pc (453647 effect#1), Rune of Shadows (453744 effects: #2, #3), Devastation (454735 effect#1), Emberstorm (454744 effects: #1, #2), Echo of the Azj'Aqir (455674 effect#1), Infirmity (458219 effect#1)
+Affecting spells : Backdraft (117828 effects: #1, #2, #4), Affliction Warlock (137043 effects: #1, #2, #14, #15), Demonology Warlock (137044 effects: #1, #2, #4), Destruction Warlock (137046 effects: #1, #2, #14), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Shadowy Inspiration (196606 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Nightfall (264571 effect#1), Conflagrate (265931 effect#1), Sacrificed Souls (272591 effect#1), Chaotic Inferno (279673 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Chaos Shards (287637 effect#2), Decimating Bolt (325299 effect#1), Soul Fire (335004 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Malefic Wrath (337125 effects: #1, #2), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Shard of Annihilation (356342 effects: #1, #2), Ruin (387103 effect#1), Burn to Ashes (387154 effect#1), Backlash (387385 effect#1), Drain Soul (388667 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Dark Virtuosity (405327 effect#1), Sargerei Technique (405955 effects: #1, #2), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Infernal Bolt (433891 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Wither (445474 effect#2), Necrolyte Teachings (449620 effect#2), Improved Shadow Bolt (453080 effects: #1, #2), Summoner's Embrace (453105 effects: #1, #3), Warlock Demonology 11.0 Class Set 2pc (453644 effect#2), Warlock Destruction 11.0 Class Set 2pc (453647 effect#1), Rune of Shadows (453744 effects: #2, #3), Devastation (454735 effect#1), Emberstorm (454744 effects: #1, #2), Echo of the Azj'Aqir (455674 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 0, 38, 49, 118
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -19694,7 +19703,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1124757)  : School Damage (2): chaos | Attributes: Is Harmful (12), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 11.27960 | PvP Coefficient: 0.50000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 11.27960 | PvP Coefficient: 0.57500 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc434635
 
 Name             : Diabolic Imp (id=438822) [Spell Family (5)] 
@@ -20340,8 +20349,8 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-                 : 3444: Affliction Warlock (137043 effect#8), Destruction Warlock (137046 effect#6), Bleakheart Tactics (440051 effect#1)
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6, #15), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2, #13), Epidemic (184922 effects: #1, #2), Flamelicked (185229 effect#1), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Scalding Flames (388832 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effects: #2, #3), Socrethar's Guile (405936 effect#3), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#4), Wither (445465 effects: #1, #2), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
+                 : 3444: Affliction Warlock (137043 effect#8), Destruction Warlock (137046 effect#6), Destruction Warlock (137046 effect#15), Bleakheart Tactics (440051 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2, #13), Epidemic (184922 effects: #1, #2), Flamelicked (185229 effect#1), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effect#1), Haunted Soul (387310 effect#1), Scalding Flames (388832 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effects: #2, #3), Socrethar's Guile (405936 effect#3), Umbrafire Embers (409652 effect#1), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#4), Wither (445465 effects: #1, #2), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Emberstorm (454744 effect#1), Echo of the Azj'Aqir (455674 effect#1), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
 Family Flags     : 1, 2, 49, 118
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -20376,10 +20385,10 @@ Duration         : 18 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-                 : 3445: Affliction Warlock (137043 effect#9), Affliction Warlock (137043 effect#16), Destruction Warlock (137046 effect#7), Hatefury Rituals (440048 effect#1), Hatefury Rituals (440048 effect#2), Bleakheart Tactics (440051 effect#2)
+                 : 3445: Affliction Warlock (137043 effect#9), Affliction Warlock (137043 effect#16), Affliction Warlock (137043 effect#17), Destruction Warlock (137046 effect#7), Destruction Warlock (137046 effect#16), Hatefury Rituals (440048 effect#1), Hatefury Rituals (440048 effect#2), Bleakheart Tactics (440051 effect#2)
 Stacks           : 99 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6, #15), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2, #13), Epidemic (184922 effects: #1, #2), Flamelicked (185229 effect#1), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ashen Remains (339892 effect#1), Combusting Engine (339986 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effect#1), Ashen Remains (387252 effect#1), Haunted Soul (387310 effect#1), Scalding Flames (388832 effects: #2, #3), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effects: #2, #3), Socrethar's Guile (405936 effect#5), Umbrafire Embers (409652 effect#2), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#2), Wither (445465 effect#1), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Emberstorm (454744 effect#3), Echo of the Azj'Aqir (455674 effect#2), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2, #13), Epidemic (184922 effects: #1, #2), Flamelicked (185229 effect#1), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ashen Remains (339892 effect#1), Combusting Engine (339986 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effect#1), Ashen Remains (387252 effect#1), Haunted Soul (387310 effect#1), Scalding Flames (388832 effects: #2, #3), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effects: #2, #3), Socrethar's Guile (405936 effect#5), Umbrafire Embers (409652 effect#2), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#2), Wither (445465 effect#1), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Emberstorm (454744 effect#3), Echo of the Azj'Aqir (455674 effect#2), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1)
 Triggered by     : Wither (445468)
 Family Flags     : 1, 4, 49, 118
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -20552,13 +20561,13 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.20000 | Misc Value: 12 | Misc Value 2: 3537 (Label) | Target: Self (1)
                    Affected Spells (Label): Nightfall (264571)
 #2 (id=1150565)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Drain Soul (198590), Infernal Bolt (434506)
                    Family Flags: 0, 23
 #3 (id=1150566)  : Apply Party Aura (35) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3684 (Label) | Target: Self (1)
 #4 (id=1151695)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Drain Soul (198590)
                    Family Flags: 23
 Description      : $?s137043[Shadow Bolt and Drain Soul damage increased by $s2%. Nightfall increases the damage of Shadow Bolt and Drain Soul by an additional $s1%.][Shadow Bolt damage increased by $s2%. Power Siphon increases the damage of Demonbolt by an additional $s3%.]
@@ -21767,7 +21776,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow Harmful on Friendly (373), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1155611)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.49089 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.16179 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1155612)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 #3 (id=1155613)  : Dummy (3)
@@ -23004,7 +23013,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1162858)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
-                   Base Value: -80 | Scaled Value: -80 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Base Value: -80 | Scaled Value: -80 | PvP Coefficient: 0.75000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Soul Fire (6353)
                    Family Flags: 65
 Description      : $@spelldesc456985

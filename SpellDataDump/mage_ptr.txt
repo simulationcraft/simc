@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56572 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56646 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -1356,7 +1356,7 @@ Effects          :
 #1 (id=36375)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=324006)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.19500 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.24375 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc44457
 
 Name             : Fingers of Frost (id=44544) [Spell Family (3)] 
@@ -3328,24 +3328,23 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179702)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Shifting Power (382445), Blast Wave (389631), Arcane Explosion (414381), Frostfire Bolt (431044), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Arcane Orb (440552), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Flamestrike (450462), Phoenix Flames (450506), Living Bomb (453251), Arcane Surge (453326), Magi's Spark (453925), Nether Munitions (454004), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostfire Burst (470596)
                    Family Flags: 3
 #2 (id=191125)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Glacial Assault (379029), Shifting Power (382445), Blast Wave (389631), Arcane Explosion (414381), Frostfire Bolt (431044), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438674), Arcane Orb (440552), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Flamestrike (450462), Phoenix Flames (450506), Living Bomb (453251), Arcane Surge (453326), Magi's Spark (453925), Nether Munitions (454004), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostfire Burst (470596)
                    Family Flags: 3
 #3 (id=191126)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191127)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#5 (id=191128)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: -75 | Scaled Value: -75 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3992 (Label) | Target: Self (1)
-                   Affected Spells (Label): Excess Fire (438595)
-#6 (id=260857)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#5 (id=191128)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Frostfire Bolt (431044), Frostfire Bolt (468655)
                    Family Flags: 108
+#6 (id=260857)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=260858)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=260859)   : Apply Aura (6) | Dummy (4)
@@ -3366,17 +3365,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #16 (id=360480)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#17 (id=723527)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#18 (id=1122158)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+#17 (id=723527)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Blast Wave (157981), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Blast Wave (389631)
                    Family Flags: 38
-#19 (id=1122159)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+#18 (id=1122158)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Blast Wave (157981), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Blast Wave (389631)
                    Family Flags: 38
-#20 (id=1131586)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+#19 (id=1122159)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3210 (Label) | Target: Self (1)
                    Affected Spells (Label): Excess Frost (438600)
 
@@ -3431,9 +3428,8 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Cone of Cold (120)
                    Family Flags: 9
-#11 (id=260852)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 175 | Scaled Value: 175 | PvP Coefficient: 1.00000 | Misc Value 2: 3996 (Label) | Target: Self (1)
-                   Affected Spells (Label): Living Bomb (438674), Living Bomb (464884)
+#11 (id=260852)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #12 (id=260853)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #13 (id=260854)   : Apply Aura (6) | Dummy (4)
@@ -3443,8 +3439,6 @@ Effects          :
 #15 (id=260856)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #16 (id=723524)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#17 (id=1121979)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Arcane Mage (id=137021) [Spell Family (3), Passive, Hidden] 
@@ -3494,6 +3488,9 @@ Effects          :
 #9 (id=1184258)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Family Flags: 109
+#10 (id=1187019)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value 2: 4137 (Label) | Target: Self (1)
+                   Affected Spells (Label): Meteorite (449569)
 
 Name             : Arcane Missiles (id=139678) 
 Class            : Mage
@@ -4243,7 +4240,7 @@ Cooldown         : 30 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #18, #19), Frost Mage (137020 effects: #1, #2, #8, #9), Arcane Mage (137021 effects: #1, #2, #7, #8), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#7), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Volatile Detonation (389627 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Elemental Affinity (431067 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #17, #18), Frost Mage (137020 effects: #1, #2, #8, #9), Arcane Mage (137021 effects: #1, #2, #7, #8), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#7), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Volatile Detonation (389627 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Elemental Affinity (431067 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3, 38
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8100,7 +8097,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
 Mechanic         : Knockback
-Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #18, #19), Frost Mage (137020 effects: #1, #2, #8, #9), Arcane Mage (137021 effects: #1, #2, #7, #8), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#7), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Volatile Detonation (389627 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Elemental Affinity (431067 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #17, #18), Frost Mage (137020 effects: #1, #2, #8, #9), Arcane Mage (137021 effects: #1, #2, #7, #8), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#7), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Volatile Detonation (389627 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Elemental Affinity (431067 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3, 38
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8126,7 +8123,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
 Mechanic         : Knockback
-Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #18, #19), Frost Mage (137020 effects: #1, #2, #8, #9), Arcane Mage (137021 effects: #1, #2, #7, #8), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#7), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Volatile Detonation (389627 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Elemental Affinity (431067 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #17, #18), Frost Mage (137020 effects: #1, #2, #8, #9), Arcane Mage (137021 effects: #1, #2, #7, #8), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#7), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Volatile Detonation (389627 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Elemental Affinity (431067 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3, 38
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8152,7 +8149,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
 Mechanic         : Knockback
-Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #18, #19), Frost Mage (137020 effects: #1, #2, #8, #9), Arcane Mage (137021 effects: #1, #2, #7, #8), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#7), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Volatile Detonation (389627 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Elemental Affinity (431067 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #17, #18), Frost Mage (137020 effects: #1, #2, #8, #9), Arcane Mage (137021 effects: #1, #2, #7, #8), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#7), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Volatile Detonation (389627 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Elemental Affinity (431067 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3, 38
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8178,7 +8175,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
 Mechanic         : Knockback
-Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #18, #19), Frost Mage (137020 effects: #1, #2, #8, #9), Arcane Mage (137021 effects: #1, #2, #7, #8), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#7), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Volatile Detonation (389627 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Elemental Affinity (431067 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #17, #18), Frost Mage (137020 effects: #1, #2, #8, #9), Arcane Mage (137021 effects: #1, #2, #7, #8), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#7), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Volatile Detonation (389627 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Elemental Affinity (431067 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3, 38
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -11852,10 +11849,10 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=902915)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#1 (id=902915)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Misc Value: 1500 | Target: Self (1)
                    Affected Spells (Category): Fire Blast (108853), Fire Blast (319836)
-#2 (id=902917)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#2 (id=902917)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Misc Value: 1633 | Target: Self (1)
                    Affected Spells (Category): Phoenix's Flames (194466), Phoenix Flames (257541)
 Description      : $@spelldesc363500
@@ -13813,10 +13810,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1015685)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#1 (id=1015685)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Misc Value: 1500 | Target: Self (1)
                    Affected Spells (Category): Fire Blast (108853), Fire Blast (319836)
-#2 (id=1015686)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
+#2 (id=1015686)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Misc Value: 1633 | Target: Self (1)
                    Affected Spells (Category): Phoenix's Flames (194466), Phoenix Flames (257541)
 Description      : $@spelldesc383634
@@ -14978,7 +14975,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 588
 Mechanic         : Knockback
-Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #18, #19), Frost Mage (137020 effects: #1, #2, #8, #9), Arcane Mage (137021 effects: #1, #2, #7, #8), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#7), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Volatile Detonation (389627 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Elemental Affinity (431067 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #17, #18), Frost Mage (137020 effects: #1, #2, #8, #9), Arcane Mage (137021 effects: #1, #2, #7, #8), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#7), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Volatile Detonation (389627 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Elemental Affinity (431067 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3, 38
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -17147,7 +17144,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #6), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Pyrotechnics (157644 effect#1), Combustion (190319 effects: #1, #4), Ice Form (198144 effect#1), Flame Accelerant (203275 effects: #1, #2), Flame Accelerant (203278 effects: #1, #2), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#9), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Duplicative Incineration (278538 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #3, #5, #7), Slick Ice (327509 effects: #1, #2, #3), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wintertide (378406 effect#1), Fractured Frost (378445 effects: #1, #3), Piercing Cold (378919 effect#1), Slick Ice (382148 effects: #1, #2, #3), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Mage Fire Class Set 4pc (393656 effects: #1, #2, #3), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Thermal Conditioning (431117 effect#1), Frostfire Empowerment (431177 effect#2), Severe Temperatures (431190 effect#1), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Flame Accelerant (453283 effect#2), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #5), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Pyrotechnics (157644 effect#1), Combustion (190319 effects: #1, #4), Ice Form (198144 effect#1), Flame Accelerant (203275 effects: #1, #2), Flame Accelerant (203278 effects: #1, #2), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#9), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Duplicative Incineration (278538 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #3, #5, #7), Slick Ice (327509 effects: #1, #2, #3), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wintertide (378406 effect#1), Fractured Frost (378445 effects: #1, #3), Piercing Cold (378919 effect#1), Slick Ice (382148 effects: #1, #2, #3), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Mage Fire Class Set 4pc (393656 effects: #1, #2, #3), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Thermal Conditioning (431117 effect#1), Frostfire Empowerment (431177 effect#2), Severe Temperatures (431190 effect#1), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Flame Accelerant (453283 effect#2), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 0, 3, 5, 57, 108
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17560,7 +17557,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-                 : 3992: Fire Mage (137019 effect#5)
+                 : 3992
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17587,7 +17584,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-                 : 3210: Fire Mage (137019 effect#20)
+                 : 3210: Fire Mage (137019 effect#19)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -17838,23 +17835,23 @@ Max Targets      : 8
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-                 : 3996: Frost Mage (137020 effect#11)
+                 : 3996
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #6), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Explosive Ingenuity (451760 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3, 48
 Attributes       : ........ ........ x.x....x x..x....   ........ ........ ........ ........ 
-                 : x.x..... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ .xx..... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ x.....x. ........   ........ ........ .....x.. ........ 
                  : ....x... ........ ........ ........   xx...... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Defend Against Friendly Cast (336), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Treat Self Cast As Reflect (388), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Defend Against Friendly Cast (336), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Treat Self Cast As Reflect (388), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1131422)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1131423)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.14625 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.18300 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc438673
 
 Name             : Arcane Orb (id=440552) [Spell Family (3)] 
@@ -17908,7 +17905,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1139820)  : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Conjure raw Frost magic into a sharp projectile that deals $s1 Frost damage.
 
 Frost Splinters embed themselves into their target, dealing $443740o1 Frost damage over $443740d. This effect stacks.
@@ -17970,7 +17967,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Aura Is Debuff (26), Ignore Line of Sight (66), DoT Stacking Rule (103), Can Proc From Procs (122), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1139841)  : Apply Aura (6) | Periodic Damage (3): frost every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc443722
 Tooltip          : Dealing $s1 Frost damage every $t1 sec.
 
@@ -18058,7 +18055,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1139848)  : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc443722
 
 Name             : Arcane Splinter (id=443763) [Spell Family (3)] 
@@ -18085,7 +18082,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1139865)  : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.23200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Conjure raw Arcane magic into a sharp projectile that deals $s1 Arcane damage.
 
 Arcane Splinters embed themselves into their target, dealing $444735o1 Arcane damage over $444735d. This effect stacks.
@@ -18159,7 +18156,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=1140588)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1141267)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
 #3 (id=1141870)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -18274,7 +18271,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1141282)  : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.28000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.31000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc443763
 
 Name             : Force of Will (id=444719) [Spell Family (3), Passive, Hidden] 
@@ -18352,7 +18349,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Aura Is Debuff (26), Ignore Line of Sight (66), DoT Stacking Rule (103), Can Proc From Procs (122), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1141320)  : Apply Aura (6) | Periodic Damage (3): arcane every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.00920 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01600 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc443763
 Tooltip          : Dealing $s1 Arcane damage every $t1 sec.
 
@@ -19062,16 +19059,20 @@ Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Stacks           : 8 maximum
-Proc Chance      : 101%
+Internal Cooldown: 0.2 seconds
+Stacks           : 6 maximum
+Proc Chance      : 100%
+Proc Flags       : ........ ........ x....... ........   ........ ........ ........ ........   
+                 : Magic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
                  : ........ ........ ........ ........   
+                 : Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1148480)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -19274,6 +19275,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 52
                  : 292
+                 : 4137: Arcane Mage (137021 effect#10)
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Deep Impact (416719 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Triggered by     : Meteorite (449560)
 Family Flags     : 3, 96, 122
@@ -20392,7 +20394,7 @@ Effects          :
 #1 (id=1154942)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1154943)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.19500 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.24375 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc44457
 
 Name             : Controlled Destruction (id=453268) [Spell Family (3)] 
@@ -21589,11 +21591,11 @@ Effects          :
                    Affected Spells: Arcane Orb (153640), Arcane Orb (440552), Arcane Orb (463357)
                    Family Flags: 83
 #2 (id=1164374)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Frozen Orb (84721)
                    Family Flags: 78
 #3 (id=1172991)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Frozen Orb (84721)
                    Family Flags: 78
 Description      : $@spelldesc444986
@@ -21845,14 +21847,14 @@ Labels           : 16: Class Spells
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Can Proc From Procs (122), Can Proc from Suppressed Caster Procs (385)
+                 : Ignore Line of Sight (66), Can Proc From Procs (122), Always AOE Line of Sight (186), Can Proc from Suppressed Caster Procs (385)
 Effects          :
 #1 (id=1168454)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: At Enemy in Area (16)
@@ -22376,23 +22378,23 @@ Max Targets      : 8
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-                 : 3996: Frost Mage (137020 effect#11)
+                 : 3996
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #6), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Explosive Ingenuity (451760 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3, 48
 Attributes       : ........ ........ x.x....x x..x....   ........ ........ ........ ........ 
-                 : x.x..... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ........ ........ .xx..... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
                  : ........ ........ x.....x. ........   ........ ........ .....x.. ........ 
                  : ....x... ........ ........ ........   xx...... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Defend Against Friendly Cast (336), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Treat Self Cast As Reflect (388), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Ignore Line of Sight (66), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Defend Against Friendly Cast (336), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Treat Self Cast As Reflect (388), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1176445)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1176446)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.14625 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.18300 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc44457
 
 Name             : Aethervision (id=467633) [Spell Family (3), Passive] 
@@ -22481,7 +22483,7 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #6), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Pyrotechnics (157644 effect#1), Combustion (190319 effects: #1, #4), Ice Form (198144 effect#1), Flame Accelerant (203275 effects: #1, #2), Flame Accelerant (203278 effects: #1, #2), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#9), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Duplicative Incineration (278538 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #3, #7), Slick Ice (327509 effect#3), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wintertide (378406 effect#1), Fractured Frost (378445 effects: #1, #3), Piercing Cold (378919 effect#1), Slick Ice (382148 effect#3), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Mage Fire Class Set 4pc (393656 effects: #1, #2, #3), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Thermal Conditioning (431117 effect#1), Frostfire Empowerment (431177 effect#2), Severe Temperatures (431190 effect#1), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Flame Accelerant (453283 effect#2), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #5), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Pyrotechnics (157644 effect#1), Combustion (190319 effects: #1, #4), Ice Form (198144 effect#1), Flame Accelerant (203275 effects: #1, #2), Flame Accelerant (203278 effects: #1, #2), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#9), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Duplicative Incineration (278538 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #3, #7), Slick Ice (327509 effect#3), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wintertide (378406 effect#1), Fractured Frost (378445 effects: #1, #3), Piercing Cold (378919 effect#1), Slick Ice (382148 effect#3), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Mage Fire Class Set 4pc (393656 effects: #1, #2, #3), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Thermal Conditioning (431117 effect#1), Frostfire Empowerment (431177 effect#2), Severe Temperatures (431190 effect#1), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Flame Accelerant (453283 effect#2), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Triggered by     : Frostfire Bolt (431044)
 Family Flags     : 0, 3, 5, 108
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -22547,9 +22549,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=1186028)  : School Damage (2): frostfire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #2 (id=1186029)  : School Damage (2): frostfire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+#3 (id=1187095)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc438595
 
 
