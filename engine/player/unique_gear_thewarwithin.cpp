@@ -4587,6 +4587,9 @@ void concoction_kiss_of_death( special_effect_t& effect )
     }
   };
 
+  // TODO: the driver has two cooldown categories, 1141 for the on-use and 2338 for the charge. currently the generation
+  // script prioritizes the charge category so we manually set it here until the script can be adjusted.
+  effect.cooldown_category_ = 1141;
   effect.custom_buff = create_buff<concoction_kiss_of_death_buff_t>( effect.player, effect.driver(), effect.item );
 }
 
