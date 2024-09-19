@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.2.56625 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.2.56647 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -20746,6 +20746,7 @@ Description      : $@spelldesc457052
 Tooltip          : Marked by $@auracaster, suffering additional Plague damage from their abilities.
 
 Name             : Corrupt the Blood (id=457133) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Melee
@@ -20762,14 +20763,14 @@ Proc Chance      : 101%
 Affecting spells : Master of Subtlety (31665 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2)
 Family Flags     : 54
 Attributes       : ........ ........ ........ ........   .....x.. ........ ........ ........ 
-                 : ........ ........ ........ ....x...   .......x ........ ........ ......x. 
+                 : ........ ........ ........ ....x...   .......x ........ ........ .x....x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow While Stealthed (37), Not an Action (92), DoT Stacking Rule (103), Do Not Display Range (126), Not In Spellbook (143), Not an Attack (194), Aura Points On Client (268), Do Not Log on Learn (355)
+                 : Allow While Stealthed (37), Not an Action (92), DoT Stacking Rule (103), Treat As Periodic (121), Do Not Display Range (126), Not In Spellbook (143), Not an Attack (194), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1161858)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
