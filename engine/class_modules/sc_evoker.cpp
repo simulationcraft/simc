@@ -6834,7 +6834,7 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
     : e_buff_t( td, name, s ),
       gauss( p()->option.simulate_bombardments_time_between_procs_mean,
              p()->option.simulate_bombardments_time_between_procs_stddev,
-             std::min( p()->option.simulate_bombardments_time_between_procs_stddev / 2, 0_s ) )
+             std::max( p()->option.simulate_bombardments_time_between_procs_stddev / 2, 0.033_s ) )
   {
     buff_period = 0_s;
 
@@ -6872,7 +6872,7 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
       auto damage_action    = cb->get_bombardments_action( p() );
       damage_action->evoker = p();
       damage_action->execute_on_target( player );
-      cb->cooldown->start();
+      cd->start();
     }
   }
 
