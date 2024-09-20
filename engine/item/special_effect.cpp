@@ -155,6 +155,8 @@ void special_effect_t::reset()
 
   action_disabled = false;
   buff_disabled = false;
+  has_use_buff_override = false;
+  has_use_damage_override = false;
 
   cooldown_group_name_override.clear();
   cooldown_group_duration_override = 0_ms;

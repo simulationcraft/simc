@@ -4398,6 +4398,13 @@ struct item_has_use_expr_t : public item_effect_expr_t
     {
       for ( auto e : effects )
       {
+        // Check has_use_buff override
+        if ( e->has_use_buff_override )
+        {
+          has_buff = true;
+          break;
+        }
+
         // Check if there is a stat set on the special effect
         if ( stat_fits_criteria( e->stat, STAT_ANY_DPS ) )
         {
@@ -4453,6 +4460,13 @@ struct item_has_use_expr_t : public item_effect_expr_t
     {
       for ( auto e : effects )
       {
+        // check has_use_damage override
+        if ( e->has_use_damage_override )
+        {
+          has_damage = true;
+          break;
+        }
+
         // check if action name exists
         action_t* a = player.find_action( e->name() );
         if ( action_has_damage( a ) )
