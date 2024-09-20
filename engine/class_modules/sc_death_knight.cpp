@@ -6671,7 +6671,7 @@ struct reapers_mark_explosion_t final : public death_knight_spell_t
     {
       if ( p()->talent.deathbringer.exterminate->ok() )
       {
-        p()->buffs.exterminate->trigger();
+        p()->buffs.exterminate->trigger( p()->talent.deathbringer.exterminate->effectN( 3 ).base_value() );
       }
     }
   }
@@ -9622,7 +9622,7 @@ struct marrowrend_t final : public death_knight_melee_attack_t
 
     if ( p()->buffs.exterminate->up() )
     {
-      p()->buffs.exterminate->expire();
+      p()->buffs.exterminate->decrement();
       make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, execute_state->target, 500_ms );
       if ( !p()->is_ptr() && p()->talent.deathbringer.painful_death->ok() )
       {
@@ -9909,7 +9909,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
 
     if ( p()->buffs.exterminate->up() )
     {
-      p()->buffs.exterminate->expire();
+      p()->buffs.exterminate->decrement();
       make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, execute_state->target, 500_ms );
       if ( !p()->is_ptr() && p()->talent.deathbringer.painful_death->ok() )
       {
