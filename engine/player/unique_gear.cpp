@@ -4705,18 +4705,18 @@ namespace unique_gear
     may_miss = may_dodge = may_parry = may_block = harmful = false;
     target = player;
 
-    for (size_t i = 1; i <= data().effect_count(); i++)
+    for ( size_t i = 1; i <= data().effect_count(); i++ )
     {
-      const spelleffect_data_t& effect = data().effectN(i);
-      if (effect.type() == E_ENERGIZE)
+      const spelleffect_data_t& eff = data().effectN( i );
+      if ( eff.type() == E_ENERGIZE )
       {
-        gain_da = effect.average(item);
-        gain_resource = effect.resource_gain_type();
+        gain_da = eff.average( item );
+        gain_resource = eff.resource_gain_type();
       }
-      else if (effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_ENERGIZE)
+      else if ( eff.type() == E_APPLY_AURA && eff.subtype() == A_PERIODIC_ENERGIZE )
       {
-        gain_ta = effect.average(item);
-        gain_resource = effect.resource_gain_type();
+        gain_ta = eff.average( item );
+        gain_resource = eff.resource_gain_type();
       }
     }
 

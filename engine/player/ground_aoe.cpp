@@ -228,11 +228,11 @@ void ground_aoe_event_t::execute()
   {
     // Don't clamp the pulse time here, since we need to figure out the fractional multiplier for
     // the last pulse.
-    auto time = pulse_time( false );
+    auto pulse = pulse_time( false );
     auto time_left = _time_left( params, player() );
-    if ( time > time_left )
+    if ( pulse > time_left )
     {
-      double multiplier = time_left / time;
+      double multiplier = time_left / pulse;
       pulse_state->da_multiplier *= multiplier;
       pulse_state->ta_multiplier *= multiplier;
     }

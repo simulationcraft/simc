@@ -2926,10 +2926,10 @@ void entropic_skardyn_core( special_effect_t& effect )
 
       for ( auto a : e.player->action_list )
       {
-        if ( auto pickup = dynamic_cast<pickup_entropic_skardyn_core_t*>( a ) )
+        if ( auto pickup_action = dynamic_cast<pickup_entropic_skardyn_core_t*>( a ) )
         {
-          pickup->buff = buff;
-          pickup->tracker = tracker;
+          pickup_action->buff = buff;
+          pickup_action->tracker = tracker;
         }
       }
     }
@@ -2995,7 +2995,6 @@ void mereldars_toll( special_effect_t& effect )
 
   struct mereldars_toll_t : public generic_proc_t
   {
-    buff_t* vers;
     int allies;
     target_specific_t<buff_t> buffs;
     const spell_data_t* equip_data;

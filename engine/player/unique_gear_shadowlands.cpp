@@ -1170,14 +1170,14 @@ void infinitely_divisible_ooze( special_effect_t& effect )
       return RESOURCE_ENERGY;
     }
 
-    action_t* create_action( util::string_view name, util::string_view options ) override
+    action_t* create_action( util::string_view name, util::string_view opt_str ) override
     {
       if ( name == "noxious_bolt" )
       {
         return new noxious_bolt_t( this, effect );
       }
 
-      return pet_t::create_action( name, options );
+      return pet_t::create_action( name, opt_str );
     }
 
     void init_action_list() override
@@ -5456,10 +5456,10 @@ void winds_of_winter( special_effect_t& effect )
       base_dd_min = base_dd_max = 1.0; // Ensure that the correct snapshot flags are set.
     }
 
-    double composite_target_multiplier( player_t* target ) const override
+    double composite_target_multiplier( player_t* t ) const override
     {
       // Ignore Positive Damage Taken Modifiers (321)
-      return std::min( proc_spell_t::composite_target_multiplier( target ), 1.0 );
+      return std::min( proc_spell_t::composite_target_multiplier( t ), 1.0 );
     }
   };
 

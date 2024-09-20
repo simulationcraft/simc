@@ -114,21 +114,23 @@ double pet_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double pet_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+double pet_t::composite_player_target_multiplier( player_t* t, school_e school ) const
 {
-  double m = player_t::composite_player_target_multiplier( target, school );
+  double m = player_t::composite_player_target_multiplier( t, school );
 
   // Same logic as in player_t::composite_player_target_multiplier() above
   // As the Covenant buff isn't created on pets, we need to check the owner
   // Testing shows this appears to work on all pets, even trinkets and such
   if ( owner->buffs.wild_hunt_tactics )
   {
-    double health_threshold = 100.0 - ( 100.0 - owner->buffs.wild_hunt_tactics->data().effectN( 5 ).base_value() ) * sim->shadowlands_opts.wild_hunt_tactics_duration_multiplier;
-    if ( target->health_percentage() > health_threshold )
+    double health_threshold = 100.0 - ( 100.0 - owner->buffs.wild_hunt_tactics->data().effectN( 5 ).base_value() ) *
+                                        sim->shadowlands_opts.wild_hunt_tactics_duration_multiplier;
+
+    if ( t->health_percentage() > health_threshold )
       m *= 1.0 + owner->buffs.wild_hunt_tactics->default_value;
   }
 
-  if ( auto td = owner->find_target_data( target ) )
+  if ( auto td = owner->find_target_data( t ) )
   {
     m *= 1.0 + td->debuff.condensed_lifeforce->check_value();
     m *= 1 + td->debuff.adversary->check_value();
@@ -376,23 +378,21 @@ void pet_t::adjust_duration( timespan_t adjustment )
   }
 }
 
-void pet_t::assess_damage( school_e       school,
-                           result_amount_type          type,
-                           action_state_t* s )
+void pet_t::assess_damage( school_e school, result_amount_type rt, action_state_t* s )
 {
-  if ( ! is_add() && ( ! s -> action || s -> action -> aoe ) )
-    s -> result_amount *= 0.10;
+  if ( !is_add() && ( !s->action || s->action->aoe ) )
+    s->result_amount *= 0.10;
 
-  return base_t::assess_damage( school, type, s );
+  return base_t::assess_damage( school, rt, s );
 }
 
-void pet_t::trigger_callbacks( proc_types type, proc_types2 type2, action_t* action, action_state_t* state )
+void pet_t::trigger_callbacks( proc_types pt, proc_types2 pt2, action_t* action, action_state_t* state )
 {
-  player_t::trigger_callbacks( type, type2, action, state );
+  player_t::trigger_callbacks( pt, pt2, action, state );
 
   // currently only works for pets and guardians.
-  if ( this->type == PLAYER_GUARDIAN || this->type == PLAYER_PET )
-    action_callback_t::trigger( owner->callbacks.pet_procs[ type ][ type2 ], action, state );
+  if ( type == PLAYER_GUARDIAN || type == PLAYER_PET )
+    action_callback_t::trigger( owner->callbacks.pet_procs[ pt ][ pt2 ], action, state );
 }
 
 void pet_t::init_finished()
@@ -491,9 +491,9 @@ double pet_t::composite_melee_haste() const
   return current_pet_stats.composite_melee_haste;
 }
 
-void pet_t::adjust_auto_attack( gcd_haste_type type ) 
+void pet_t::adjust_auto_attack( gcd_haste_type ht ) 
 {
-  player_t::adjust_auto_attack( type );
+  player_t::adjust_auto_attack( ht );
   current_auto_attack_speed = current_pet_stats.composite_melee_auto_attack_speed;
 }
 

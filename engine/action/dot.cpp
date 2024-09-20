@@ -335,14 +335,14 @@ void dot_t::copy( player_t* destination, dot_copy_e copy_type, action_t* copy_ac
     // tick, we just use the remaining tick time of the source for the tick
     // time. Tick time will be recalculated on the next tick, implicitly
     // syncing it to the source's tick time.
-    timespan_t tick_time;
+    timespan_t new_tick_time;
     if ( tick_event )
-      tick_time = tick_event->remains();
+      new_tick_time = tick_event->remains();
     else
-      tick_time = other_dot->tick_time = other_dot->current_action->tick_time( other_dot->state );
+      new_tick_time = other_dot->tick_time = other_dot->current_action->tick_time( other_dot->state );
 
     other_dot->tick_event =
-        make_event<dot_tick_event_t>( sim, other_dot, tick_time );
+        make_event<dot_tick_event_t>( sim, other_dot, new_tick_time );
   }
 }
 

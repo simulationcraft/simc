@@ -330,8 +330,8 @@ struct proc_action_t : public T_ACTION
     }
 
     // Reparse effect data for any item-dependent variables.
-    for ( const auto& effect : this->data().effects() )
-      this->parse_effect_data( effect );
+    for ( const auto& eff : this->data().effects() )
+      this->parse_effect_data( eff );
   }
 
   proc_action_t( const special_effect_t& e ) : super( e.name(), e.player, e.trigger() ), effect( &e )

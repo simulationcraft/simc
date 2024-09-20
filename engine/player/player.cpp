@@ -1719,9 +1719,9 @@ void player_t::parse_temporary_enchants()
   {
     std::string expr_str, options_str, value_str;
     std::unique_ptr<expr_t> if_expr;
-    std::vector<std::unique_ptr<option_t>> options;
+    std::vector<std::unique_ptr<option_t>> temp_options;
 
-    options.emplace_back( opt_string( "if", expr_str ) );
+    temp_options.emplace_back( opt_string( "if", expr_str ) );
 
     auto cut_pt = token.find_first_of( ',' );
     if ( cut_pt != std::string::npos )
@@ -1736,7 +1736,7 @@ void player_t::parse_temporary_enchants()
 
     try
     {
-      opts::parse( sim, value_str, options, options_str );
+      opts::parse( sim, value_str, temp_options, options_str );
 
       if ( !expr_str.empty() )
       {
@@ -1776,15 +1776,15 @@ void player_t::parse_temporary_enchants()
       }
     }
 
-    const auto& enchant = temporary_enchant_entry_t::find( enchant_str, rank, dbc->ptr );
-    if ( slot == SLOT_INVALID || enchant.enchant_id == 0 )
+    const auto& temp_enchant = temporary_enchant_entry_t::find( enchant_str, rank, dbc->ptr );
+    if ( slot == SLOT_INVALID || temp_enchant.enchant_id == 0 )
     {
       sim->error( "Player {} unknown temporary enchant token '{}' (slot={}, enchant_id={})",
-        name(), token, util::slot_type_string( slot ), enchant.enchant_id );
+        name(), token, util::slot_type_string( slot ), temp_enchant.enchant_id );
       continue;
     }
 
-    items[ slot ].parsed.temporary_enchants.emplace_back( enchant.enchant_id, if_expr );
+    items[ slot ].parsed.temporary_enchants.emplace_back( temp_enchant.enchant_id, if_expr );
   }
 }
 
@@ -1820,9 +1820,9 @@ void player_t::init_items()
         return;
       }
 
-      for ( const auto& gear : character_loadout_data_t::data( class_, spec_, is_ptr() ) )
+      for ( const auto& equipment : character_loadout_data_t::data( class_, spec_, is_ptr() ) )
       {
-        const auto& item = dbc->item( gear.id_item );
+        const auto& item = dbc->item( equipment.id_item );
         auto inv_type = static_cast<inventory_type>( item.inventory_type );
         auto slot = util::translate_invtype( inv_type );
 
@@ -1838,8 +1838,8 @@ void player_t::init_items()
             continue;
         }
 
-        items[ slot ].options_str =
-            fmt::format( ",id={},ilevel={}", gear.id_item, character_loadout_data_t::default_item_level( is_ptr() ) );
+        items[ slot ].options_str = fmt::format( ",id={},ilevel={}", equipment.id_item,
+                                                 character_loadout_data_t::default_item_level( is_ptr() ) );
       }
     }
 
@@ -2348,9 +2348,9 @@ std::vector<std::string> player_t::get_racial_actions()
  * and check if that spell data is ok()
  * returns true if spell data is ok(), false otherwise
  */
-bool player_t::add_action( util::string_view action, util::string_view options, util::string_view alist )
+bool player_t::add_action( util::string_view action, util::string_view opt_str, util::string_view alist )
 {
-  return add_action( find_class_spell( action ), options, alist );
+  return add_action( find_class_spell( action ), opt_str, alist );
 }
 
 /**
@@ -2359,7 +2359,7 @@ bool player_t::add_action( util::string_view action, util::string_view options, 
  * Helper function to add actions to the action list if given spell data is ok()
  * returns true if spell data is ok(), false otherwise
  */
-bool player_t::add_action( const spell_data_t* s, util::string_view options, util::string_view alist )
+bool player_t::add_action( const spell_data_t* s, util::string_view opt_str, util::string_view alist )
 {
   if ( s->ok() )
   {
@@ -2367,10 +2367,10 @@ bool player_t::add_action( const spell_data_t* s, util::string_view options, uti
         ( alist == "default" ) ? action_list_str : ( get_action_priority_list( alist )->action_list_str );
     auto name = util::tokenize_fn( s->name_cstr() );
     str += "/" + name;
-    if ( !options.empty() )
+    if ( !opt_str.empty() )
     {
       str += ",";
-      str.append( options.data(), options.size() );
+      str.append( opt_str.data(), opt_str.size() );
     }
     return true;
   }
@@ -2386,11 +2386,11 @@ void player_t::add_option( std::unique_ptr<option_t> o )
 /**
  * Adds all on use item actions for all items with their on use effect not excluded in the exclude_effects string.
  */
-void player_t::activate_action_list( action_priority_list_t* a, execute_type type )
+void player_t::activate_action_list( action_priority_list_t* a, execute_type et )
 {
-  if ( type == execute_type::OFF_GCD )
+  if ( et == execute_type::OFF_GCD )
     active_off_gcd_list = a;
-  else if ( type == execute_type::CAST_WHILE_CASTING )
+  else if ( et == execute_type::CAST_WHILE_CASTING )
     active_cast_while_casting_list = a;
   else
     active_action_list = a;
@@ -3211,12 +3211,18 @@ void player_t::init_scaling()
   {
     invert_scaling = 0;
 
-    role_e role = primary_role();
+    bool attack = false, spell = false, tank = false, heal = false;
 
-    bool attack = ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK || role == ROLE_DPS );
-    bool spell  = ( role == ROLE_SPELL || role == ROLE_HYBRID || role == ROLE_HEAL || role == ROLE_DPS );
-    bool tank   = ( role == ROLE_TANK );
-    bool heal   = ( role == ROLE_HEAL );
+    switch ( primary_role() )
+    {
+      case ROLE_ATTACK: attack = true;               break;
+      case ROLE_SPELL:  spell = true;                break;
+      case ROLE_HYBRID:
+      case ROLE_DPS:    attack = true; spell = true; break;
+      case ROLE_TANK:   attack = true; tank = true;  break;
+      case ROLE_HEAL:   spell = true;  heal = true;  break;
+      default:          break;
+    }
 
     scaling->set( STAT_STRENGTH, attack );
     scaling->set( STAT_AGILITY, attack );
@@ -3797,10 +3803,10 @@ void player_t::init_finished()
         continue;
       }
 
-      auto type = splits[ 0 ];
+      auto type_str = splits[ 0 ];
       auto name = splits[ 1 ];
 
-      if ( type == "buff" )
+      if ( type_str == "buff" )
       {
         if ( splits.size() != 3 )
         {
@@ -3810,7 +3816,7 @@ void player_t::init_finished()
 
         update_buff_state( name, splits[ 2 ], v.second );
       }
-      else if ( type == "cooldown" )
+      else if ( type_str == "cooldown" )
       {
         if ( splits.size() != 2 )
         {
@@ -3831,7 +3837,7 @@ void player_t::init_finished()
       else
       {
         throw std::invalid_argument(
-            fmt::format( "Invalid type '{}' for 'override.precombat_state' option.", type ) );
+            fmt::format( "Invalid type '{}' for 'override.precombat_state' option.", type_str ) );
       }
     }
 
@@ -4370,13 +4376,13 @@ double player_t::composite_melee_attack_power() const
   return ap;
 }
 
-double player_t::composite_weapon_attack_power_by_type( attack_power_type type ) const
+double player_t::composite_weapon_attack_power_by_type( attack_power_type ap_type ) const
 {
   double wdps = 0;
   bool has_mh = main_hand_weapon.type != WEAPON_NONE;
   bool has_oh = off_hand_weapon.type != WEAPON_NONE;
 
-  switch ( type )
+  switch ( ap_type )
   {
     case attack_power_type::WEAPON_MAINHAND:
       if ( has_mh )
@@ -4415,15 +4421,15 @@ double player_t::composite_weapon_attack_power_by_type( attack_power_type type )
   //               Aura type 530 does not apply to this, as it is only added to the result of white hits
   if ( auto_attack_base_modifier > 0 )
   {
-    if ( type == attack_power_type::WEAPON_MAINHAND )
+    if ( ap_type == attack_power_type::WEAPON_MAINHAND )
     {
       wdps += auto_attack_base_modifier / main_hand_weapon.swing_time.total_seconds();
     }
-    else if ( type == attack_power_type::WEAPON_OFFHAND )
+    else if ( ap_type == attack_power_type::WEAPON_OFFHAND )
     {
       wdps += auto_attack_base_modifier / off_hand_weapon.swing_time.total_seconds();
     }
-    else if ( type == attack_power_type::WEAPON_BOTH )
+    else if ( ap_type == attack_power_type::WEAPON_BOTH )
     {
       wdps += ( auto_attack_base_modifier / main_hand_weapon.swing_time.total_seconds()
               + auto_attack_base_modifier / off_hand_weapon.swing_time.total_seconds() * 0.5 ) * ( 2.0 / 3.0 );
@@ -4434,7 +4440,7 @@ double player_t::composite_weapon_attack_power_by_type( attack_power_type type )
   return static_cast<int>( wdps * WEAPON_POWER_COEFFICIENT );
 }
 
-double player_t::composite_total_attack_power_by_type( attack_power_type type ) const
+double player_t::composite_total_attack_power_by_type( attack_power_type ap_type ) const
 {
   // duplicate code to prevent recursion
   if ( current.attack_power_per_spell_power > 0 )
@@ -4448,7 +4454,7 @@ double player_t::composite_total_attack_power_by_type( attack_power_type type ) 
   auto mul = composite_attack_power_multiplier();
 
   // total attack power is rounded to integer
-  return std::round( cache.attack_power() * mul + cache.weapon_attack_power( type ) * mul );
+  return std::round( cache.attack_power() * mul + cache.weapon_attack_power( ap_type ) * mul );
 }
 
 double player_t::composite_attack_power_multiplier() const
@@ -4983,18 +4989,18 @@ double player_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double player_t::composite_player_target_multiplier( player_t* target, school_e /* school */ ) const
+double player_t::composite_player_target_multiplier( player_t* t, school_e /* school */ ) const
 {
   double m = 1.0;
 
-  if ( target->race == RACE_DEMON && buffs.demon_damage_buff && buffs.demon_damage_buff->check() )
+  if ( t->race == RACE_DEMON && buffs.demon_damage_buff && buffs.demon_damage_buff->check() )
   {
     // Bad idea to hardcode the effect number, but it'll work for now. The buffs themselves are
     // stat buffs.
     m *= 1.0 + buffs.demon_damage_buff->data().effectN( 2 ).percent();
   }
 
-  if ( target->race == RACE_ABERRATION && buffs.damage_to_aberrations && buffs.damage_to_aberrations->check() )
+  if ( t->race == RACE_ABERRATION && buffs.damage_to_aberrations && buffs.damage_to_aberrations->check() )
     m *= 1.0 + buffs.damage_to_aberrations->stack_value();
 
   if ( buffs.wild_hunt_tactics )
@@ -5002,7 +5008,7 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     double health_threshold = 100.0 - ( 100.0 - buffs.wild_hunt_tactics->data().effectN( 5 ).base_value() ) *
                                         sim->shadowlands_opts.wild_hunt_tactics_duration_multiplier;
     // This buff is never triggered so use default_value.
-    if ( target->health_percentage() > health_threshold )
+    if ( t->health_percentage() > health_threshold )
     {
       // WHS is triggered when you cast something that gets the damage benefit from WHT
       if ( buffs.wild_hunt_strategem_tracking )
@@ -5014,7 +5020,7 @@ double player_t::composite_player_target_multiplier( player_t* target, school_e 
     }
   }
 
-  auto td = find_target_data( target );
+  auto td = find_target_data( t );
   if ( td )
   {
     // Always created debuffs, TODO: move to target_specific_debuffs
@@ -5057,11 +5063,11 @@ double player_t::composite_player_absorb_multiplier( const action_state_t* ) con
   return 1.0;
 }
 
-double player_t::composite_player_target_crit_chance( player_t* target ) const
+double player_t::composite_player_target_crit_chance( player_t* t ) const
 {
   double c = 0.0;
 
-  if ( const actor_target_data_t* td = get_owner_or_self()->find_target_data( target ) )
+  if ( const actor_target_data_t* td = get_owner_or_self()->find_target_data( t ) )
   {
     // Essence: Blood of the Enemy Major debuff
     c += td->debuff.blood_of_the_enemy->check_stack_value();
@@ -5366,9 +5372,9 @@ double player_t::composite_player_vulnerability( school_e school ) const
   return m;
 }
 
-double player_t::composite_player_target_armor( player_t* target ) const
+double player_t::composite_player_target_armor( player_t* t ) const
 {
-  return target->cache.armor();
+  return t->cache.armor();
 }
 
 double player_t::composite_mitigation_multiplier( school_e /* school */ ) const
@@ -5520,7 +5526,7 @@ void player_t::sequence_add_wait( timespan_t amount, timespan_t ts )
   }
 }
 
-void player_t::sequence_add( const action_t* a, const player_t* target, timespan_t ts )
+void player_t::sequence_add( const action_t* a, const player_t* t, timespan_t ts )
 {
   // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
   if ( ( a->sim->iterations <= 1 && a->sim->current_iteration == 0 ) ||
@@ -5529,9 +5535,9 @@ void player_t::sequence_add( const action_t* a, const player_t* target, timespan
     if ( collected_data.action_sequence.size() <= sim->expected_max_time() * 2.0 + 3.0 )
     {
       if ( a->is_precombat )
-        collected_data.action_sequence_precombat.emplace_back( a, target, ts, this );
+        collected_data.action_sequence_precombat.emplace_back( a, t, ts, this );
       else
-        collected_data.action_sequence.emplace_back( a, target, ts, this );
+        collected_data.action_sequence.emplace_back( a, t, ts, this );
     }
     else
     {
@@ -5767,8 +5773,8 @@ void player_t::datacollection_end()
     arise_time = sim->current_time();
   }
 
-  range::for_each( spawners, []( spawner::base_actor_spawner_t* spawner ) {
-    spawner->datacollection_end();
+  range::for_each( spawners, []( spawner::base_actor_spawner_t* spawn ) {
+    spawn->datacollection_end();
   } );
 
   sim->print_debug( "Data collection ends for {} (id={}) at time {} fight_length={}", *this, index,
@@ -6846,18 +6852,20 @@ action_t* player_t::execute_action()
 void player_t::regen( timespan_t periodicity )
 {
   if (resource_regeneration == regen_type::DYNAMIC&& sim->debug )
-    sim->out_debug.printf( "%s dynamic regen, last=%.3f interval=%.3f", name(), last_regen.total_seconds(),
-                           periodicity.total_seconds() );
+  {
+    sim->print_debug( "{} dynamic regen, last={:.3f} interval={:.3f}", name(), last_regen.total_seconds(),
+                      periodicity.total_seconds() );
+  }
 
   for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; r++ )
   {
     if ( resources.is_active( r ) )
     {
-      double base  = resource_regen_per_second( r );
+      double regen  = resource_regen_per_second( r );
       gain_t* gain = gains.resource_regen[ r ];
 
-      if ( gain && base )
-        resource_gain( r, base * periodicity.total_seconds(), gain );
+      if ( gain && regen )
+        resource_gain( r, regen * periodicity.total_seconds(), gain );
     }
   }
 }
@@ -6924,8 +6932,9 @@ double player_t::resource_loss( resource_e resource_type, double amount, gain_t*
   double actual_amount;
   double previous_amount;
   double previous_pct_points;
-  bool has_active_resource_callbacks = this -> has_active_resource_callbacks;
-  if (has_active_resource_callbacks)
+  bool check_callbacks = has_active_resource_callbacks;
+
+  if ( check_callbacks )
   {
     previous_amount = resources.current[ resource_type ];
     previous_pct_points = resources.current[ resource_type ] / resources.max[ resource_type ] * 100.0;
@@ -6954,9 +6963,9 @@ double player_t::resource_loss( resource_e resource_type, double amount, gain_t*
     last_cast = sim->current_time();
   }
 
-  if (has_active_resource_callbacks)
+  if ( check_callbacks )
   {
-    check_resource_change_for_callback(resource_type, previous_amount, previous_pct_points);
+    check_resource_change_for_callback( resource_type, previous_amount, previous_pct_points );
   }
 
   if ( sim->debug )
@@ -7098,18 +7107,33 @@ stat_e player_t::normalize_by() const
 
   const scale_metric_e sm = this->sim->scaling->scaling_metric;
 
-  role_e role = primary_role();
-  if ( role == ROLE_SPELL || role == ROLE_HEAL )
-    return STAT_INTELLECT;
-  else if ( role == ROLE_TANK && sm == SCALE_METRIC_DEATHS &&
-            scaling->scaling[ sm ].get_stat( STAT_STAMINA ) != 0.0 )
-    return STAT_STAMINA;
-  else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE || type == MONK || type == DEMON_HUNTER )
-    return STAT_AGILITY;
-  else if ( type == DEATH_KNIGHT || type == PALADIN || type == WARRIOR )
-    return STAT_STRENGTH;
-
-  return STAT_ATTACK_POWER;
+  switch ( primary_role() )
+  {
+    case ROLE_SPELL:
+    case ROLE_HEAL:
+      return STAT_INTELLECT;
+    case ROLE_TANK:
+      if ( sm == SCALE_METRIC_DEATHS && scaling->scaling[ sm ].get_stat( STAT_STAMINA ) != 0.0 )
+        return STAT_STAMINA;
+      SC_FALLTHROUGH;
+    default:
+      switch ( type )
+      {
+        case DRUID:
+        case HUNTER:
+        case SHAMAN:
+        case ROGUE:
+        case MONK:
+        case DEMON_HUNTER:
+          return STAT_AGILITY;
+        case DEATH_KNIGHT:
+        case PALADIN:
+        case WARRIOR:
+          return STAT_STRENGTH;
+        default:
+          return STAT_ATTACK_POWER;
+      }
+  }
 }
 
 double player_t::health_percentage() const
@@ -7782,7 +7806,7 @@ bool try_guardian_spirit( player_t& p, double actual_amount )
 
 }
 
-void player_t::assess_damage( school_e school, result_amount_type type, action_state_t* s )
+void player_t::assess_damage( school_e school, result_amount_type rt, action_state_t* s )
 {
   using namespace assess_dmg_helper_functions;
 
@@ -7791,7 +7815,7 @@ void player_t::assess_damage( school_e school, result_amount_type type, action_s
   if ( s->result_amount <= 0.0 )
     return;
 
-  target_mitigation( school, type, s );
+  target_mitigation( school, rt, s );
 
   // store post-mitigation, pre-absorb value
   s->result_mitigated = s->result_amount;
@@ -7801,11 +7825,11 @@ void player_t::assess_damage( school_e school, result_amount_type type, action_s
 
   account_blessing_of_sacrifice( *this, s );
 
-  assess_damage_imminent_pre_absorb( school, type, s );
+  assess_damage_imminent_pre_absorb( school, rt, s );
 
   account_absorb_buffs( *this, s, school );
 
-  assess_damage_imminent( school, type, s );
+  assess_damage_imminent( school, rt, s );
 }
 
 void player_t::do_damage( action_state_t* incoming_state )
@@ -7981,9 +8005,9 @@ void player_t::assess_heal( school_e, result_amount_type, action_state_t* s )
   iteration_heal_taken += s->result_amount;
 }
 
-void player_t::trigger_callbacks( proc_types type, proc_types2 type2, action_t* action, action_state_t* state )
+void player_t::trigger_callbacks( proc_types pt, proc_types2 pt2, action_t* action, action_state_t* state )
 {
-  action_callback_t::trigger( callbacks.procs[ type ][ type2 ], action, state );
+  action_callback_t::trigger( callbacks.procs[ pt ][ pt2 ], action, state );
 }
 
 void player_t::summon_pet( util::string_view pet_name, const timespan_t duration )
@@ -9459,15 +9483,15 @@ struct use_item_t : public action_t
     return std::make_unique<use_item_buff_type_expr_t>( e->stat_type() == stat );
   }
 
-  std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override
+  std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
-    auto split = util::string_split<util::string_view>( name_str, "." );
+    auto split = util::string_split<util::string_view>( name, "." );
     if ( auto e = create_special_effect_expr( split ) )
     {
       return e;
     }
 
-    return action_t::create_expression( name_str );
+    return action_t::create_expression( name );
   }
 };
 
@@ -9657,7 +9681,7 @@ struct use_items_t : public action_t
         return;
 
       // Find out if the item is worn
-      auto it = range::find_if( player->items, [action]( const item_t& item ) {
+      auto it = range::find_if( player->items, [ action ]( const item_t& item ) {
         return util::str_compare_ci( item.name(), action->item_name );
       } );
 
@@ -9685,8 +9709,10 @@ struct use_items_t : public action_t
         return;
 
       // Find out if the item is worn
-      auto it = range::find_if( player->items, [action]( const item_t& item ) {
-        return item.has_use_special_effect() && util::str_compare_ci( item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE)->name(), action->effect_name );
+      auto it = range::find_if( player->items, [ action ]( const item_t& item ) {
+        return item.has_use_special_effect() &&
+               util::str_compare_ci( item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE )->name(),
+                                     action->effect_name );
       } );
 
       // Worn item, remove slot if necessary
@@ -11514,16 +11540,16 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   if ( splits.size() >= 2 && splits[ 0 ] == "pet" )
   {
     pet_t* pet = find_pet( splits[ 1 ] );
-    spawner::base_actor_spawner_t* spawner = nullptr;
+    spawner::base_actor_spawner_t* pet_spawner = nullptr;
 
-    if ( ! pet )
+    if ( !pet )
     {
-      spawner = find_spawner( splits[ 1 ] );
+      pet_spawner = find_spawner( splits[ 1 ] );
     }
 
-    if ( ! pet && ! spawner )
+    if ( !pet && !pet_spawner )
     {
-      throw std::invalid_argument(fmt::format("Cannot find pet or pet spawner '{}'.", splits[ 1 ]));
+      throw std::invalid_argument( fmt::format( "Cannot find pet or pet spawner '{}'.", splits[ 1 ] ) );
     }
 
     if ( pet )
@@ -11537,11 +11563,11 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
       {
         if ( splits[ 2 ] == "active" )
         {
-          return make_fn_expr(expression_str, [pet] {return !pet->is_sleeping();});
+          return make_fn_expr( expression_str, [ pet ] { return !pet->is_sleeping(); } );
         }
         else if ( splits[ 2 ] == "remains" )
         {
-          return make_fn_expr(expression_str, [pet] {
+          return make_fn_expr( expression_str, [ pet ] {
             if ( pet->expiration && pet->expiration->remains() > timespan_t::zero() )
             {
               return pet->expiration->remains().total_seconds();
@@ -11549,7 +11575,8 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
             else
             {
               return 0.0;
-            };});
+            };
+          } );
         }
 
         // build player/pet expression from the tail of the expression string.
@@ -11559,14 +11586,14 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
           return e;
         }
 
-        throw std::invalid_argument(fmt::format("Unsupported pet expression '{}'.", tail));
+        throw std::invalid_argument( fmt::format( "Unsupported pet expression '{}'.", tail ) );
       }
     }
     // No pet found, but a pet spawner was found. Make a pet-spawner based expression out of the
     // rest of the info
     else
     {
-      auto expr = spawner -> create_expression( util::make_span( splits ).subspan( 2 ), expression_str );
+      auto expr = pet_spawner->create_expression( util::make_span( splits ).subspan( 2 ), expression_str );
       if ( expr )
       {
         return expr;
@@ -13624,7 +13651,7 @@ void player_collected_data_t::collect_data( const player_t& p )
 
 // Note, root call needs to set player_t::visited_apls_ to 0
 action_t* player_t::select_action( const action_priority_list_t& list,
-                                   execute_type                  type,
+                                   execute_type                  et,
                                    const action_t*               context )
 {
   // Mark this action list as visited with the APL internal id
@@ -13635,37 +13662,37 @@ action_t* player_t::select_action( const action_priority_list_t& list,
   uint64_t _visited       = visited_apls_;
   size_t attempted_random = 0;
 
-  util::span<action_t* const> action_list;
-  switch ( type )
+  util::span<action_t* const> a_list;
+  switch ( et )
   {
     case execute_type::OFF_GCD:
-      action_list = list.off_gcd_actions;
+      a_list = list.off_gcd_actions;
       break;
     case execute_type::CAST_WHILE_CASTING:
-      action_list = list.cast_while_casting_actions;
+      a_list = list.cast_while_casting_actions;
       break;
     default:
-      action_list = list.foreground_action_list;
+      a_list = list.foreground_action_list;
       break;
   }
 
-  for ( action_t* a : action_list )
+  for ( action_t* a : a_list )
   {
     visited_apls_ = _visited;
 
     if ( list.random == 1 )
     {
-      size_t random = rng().range( action_list.size() );
-      a             = action_list[ random ];
+      size_t random = rng().range( a_list.size() );
+      a             = a_list[ random ];
     }
     else
     {
       double skill = list.player->current.skill - list.player->current.skill_debuff;
       if ( skill != 1 && rng().roll( ( 1 - skill ) * 0.5 ) )
       {
-        size_t max_random_attempts = static_cast<size_t>( action_list.size() * ( skill * 0.5 ) );
-        size_t random              = rng().range( action_list.size() );
-        a                          = action_list[ random ];
+        size_t max_random_attempts = static_cast<size_t>( a_list.size() * ( skill * 0.5 ) );
+        size_t random              = rng().range( a_list.size() );
+        a                          = a_list[ random ];
         attempted_random++;
         // Limit the amount of attempts to select a random action based on skill, then bail out and try again in 100
         // ms.
@@ -13706,7 +13733,7 @@ action_t* player_t::select_action( const action_priority_list_t& list,
         }
 
         // We get an action from the call, return it
-        if ( action_t* real_a = select_action( *call->alist, type, context ) )
+        if ( action_t* real_a = select_action( *call->alist, et, context ) )
         {
           if ( context == nullptr && real_a->action_list )
             real_a->action_list->used = true;
@@ -13753,14 +13780,13 @@ player_t* player_t::actor_by_name_str( util::string_view name ) const
 
 slot_e player_t::parent_item_slot( const item_t& item ) const
 {
-  unsigned parent = dbc->parent_item( item.parsed.data.id );
-  if ( parent == 0 )
+  unsigned parent_id = dbc->parent_item( item.parsed.data.id );
+  if ( parent_id == 0 )
   {
     return SLOT_INVALID;
   }
 
-  auto it = range::find_if( items, [parent]( const item_t& item ) { return parent == item.parsed.data.id; } );
-
+  auto it = range::find_if( items, [ parent_id ]( const item_t& item ) { return parent_id == item.parsed.data.id; } );
   if ( it != items.end() )
   {
     return ( *it ).slot;
@@ -13771,14 +13797,13 @@ slot_e player_t::parent_item_slot( const item_t& item ) const
 
 slot_e player_t::child_item_slot( const item_t& item ) const
 {
-  unsigned child = dbc->child_item( item.parsed.data.id );
-  if ( child == 0 )
+  unsigned child_id = dbc->child_item( item.parsed.data.id );
+  if ( child_id == 0 )
   {
     return SLOT_INVALID;
   }
 
-  auto it = range::find_if( items, [child]( const item_t& item ) { return child == item.parsed.data.id; } );
-
+  auto it = range::find_if( items, [ child_id ]( const item_t& item ) { return child_id == item.parsed.data.id; } );
   if ( it != items.end() )
   {
     return ( *it ).slot;
@@ -13846,16 +13871,16 @@ void player_t::adjust_dynamic_cooldowns()
 }
 
 // TODO: This currently does not take minimum GCD into account, should it?
-void player_t::adjust_global_cooldown( gcd_haste_type gcd_type )
+void player_t::adjust_global_cooldown( gcd_haste_type ht )
 {
   // Don't adjust if the current gcd isnt hasted
-  if ( gcd_type == gcd_haste_type::NONE )
+  if ( ht == gcd_haste_type::NONE )
   {
     return;
   }
 
   // Don't adjust if the changed haste type isnt current GCD haste scaling type
-  if ( gcd_type != gcd_haste_type::HASTE && gcd_type != this ->gcd_type )
+  if ( ht != gcd_haste_type::HASTE && ht != gcd_type )
   {
     return;
   }
@@ -13867,7 +13892,7 @@ void player_t::adjust_global_cooldown( gcd_haste_type gcd_type )
   }
 
   double new_haste = 0;
-  switch ( gcd_type )
+  switch ( ht )
   {
     case gcd_haste_type::SPELL_HASTE:
       new_haste = cache.spell_haste();
@@ -13932,10 +13957,10 @@ void player_t::adjust_global_cooldown( gcd_haste_type gcd_type )
   gcd_current_haste_value = new_haste;
 }
 
-void player_t::adjust_auto_attack( gcd_haste_type type )
+void player_t::adjust_auto_attack( gcd_haste_type ht )
 {
   // Don't adjust autoattacks on spell-derived haste
-  if ( type == gcd_haste_type::SPELL_CAST_SPEED || type == gcd_haste_type::SPELL_HASTE )
+  if ( ht == gcd_haste_type::SPELL_CAST_SPEED || ht == gcd_haste_type::SPELL_HASTE )
   {
     return;
   }
@@ -14417,19 +14442,17 @@ double player_t::mastery_coefficient() const
   return _mastery->mastery_value();
 }
 
-double player_t::get_player_distance(const player_t& target) const
+double player_t::get_player_distance( const player_t& t ) const
 {
-  if (sim->distance_targeting_enabled)
-  {
-    return get_position_distance(target.x_position, target.y_position);
-  }
+  if ( sim->distance_targeting_enabled )
+    return get_position_distance( t.x_position, t.y_position );
   else
     return current.distance;
 }
 
-double player_t::get_ground_aoe_distance(const action_state_t& a) const
+double player_t::get_ground_aoe_distance( const action_state_t& a ) const
 {
-  return get_position_distance(a.original_x, a.original_y);
+  return get_position_distance( a.original_x, a.original_y );
 }
 
 void player_t::init_distance_targeting()

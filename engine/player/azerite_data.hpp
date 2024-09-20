@@ -312,7 +312,7 @@ void register_azerite_powers();
 /// Register generic azerite and azerite essence powers target data initializers
 void register_azerite_target_data_initializers( sim_t* );
 /// Create major Azerite Essence actions
-action_t* create_action( player_t* p, util::string_view name, util::string_view options );
+action_t* create_action( player_t* p, std::string_view name, std::string_view opt_str );
 
 /// Compute the <min, avg, max> value of the spell effect given, based on the azerite power
 std::tuple<int, int, int> compute_value( const azerite_power_t& power,
