@@ -119,6 +119,9 @@ actions.builder+=/moonfire_cat,if=variable.need_bt&buff.bt_moonfire.down
 actions.builder+=/thrash_cat,if=variable.need_bt&buff.bt_thrash.down
 
 actions.cooldown=use_item,name=imperfect_ascendancy_serum,if=cooldown.bs_inc.remains<=1
+# non-stat on use trinkets get used on cooldown, so long as it wont interfere with a stat on-use trinket
+actions.cooldown+=/use_item,slot=trinket2,if=(trinket.2.has_use_damage|trinket.2.is.twin_fang_instruments|trinket.2.is.sikrans_endless_arsenal)&(trinket.1.cooldown.remains>20|!variable.trinket_1_buffs|trinket.1.cooldown.remains&cooldown.tigers_fury.remains>20)
+actions.cooldown+=/use_item,slot=trinket1,if=(trinket.1.has_use_damage|trinket.1.is.twin_fang_instruments|trinket.1.is.sikrans_endless_arsenal)&(trinket.2.cooldown.remains>20|!variable.trinket_2_buffs|trinket.2.cooldown.remains&cooldown.tigers_fury.remains>20)
 actions.cooldown+=/incarnation,if=target.time_to_die>17|target.time_to_die=fight_remains
 # berserk with tigers fury
 actions.cooldown+=/berserk,if=buff.tigers_fury.up&(target.time_to_die>12|target.time_to_die=fight_remains)
@@ -132,9 +135,6 @@ actions.cooldown+=/use_item,name=concoction_kiss_of_death,if=buff.bs_inc.up
 # stat on-use trinkets, prefers trinket with higher priority. reads like this: berserk is up OR if tigers fury up & convoke is either ready, wont be for the next tf, or the other trinket will be ready in time for convoke. If we dont have convoke, then we use if berserk wont be up for next tf or other trinket will be up for berserk.
 actions.cooldown+=/use_item,slot=trinket1,if=variable.trinket_1_buffs&(buff.bs_inc.up|((buff.tigers_fury.up&cooldown.tigers_fury.remains>20)&(cooldown.convoke_the_spirits.remains<4|cooldown.convoke_the_spirits.remains>45|(variable.trinket_2_buffs&cooldown.convoke_the_spirits.remains-trinket.2.cooldown.remains>0)|!talent.convoke_the_spirits&(cooldown.bs_inc.remains>40|cooldown.bs_inc.remains-trinket.2.cooldown.remains>0))))&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains
 actions.cooldown+=/use_item,slot=trinket2,if=variable.trinket_2_buffs&(buff.bs_inc.up|((buff.tigers_fury.up&cooldown.tigers_fury.remains>20)&(cooldown.convoke_the_spirits.remains<4|cooldown.convoke_the_spirits.remains>45|(variable.trinket_1_buffs&cooldown.convoke_the_spirits.remains-trinket.1.cooldown.remains>0)|!talent.convoke_the_spirits&(cooldown.bs_inc.remains>40|cooldown.bs_inc.remains-trinket.1.cooldown.remains>0))))&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains
-# non-stat on use trinkets get used on cooldown, so long as it wont interfere with a stat on-use trinket
-actions.cooldown+=/use_item,slot=trinket1,if=(trinket.1.has_use_damage|trinket.1.is.twin_fang_instruments)&(trinket.2.cooldown.remains>20|!variable.trinket_2_buffs|trinket.2.cooldown.remains&cooldown.tigers_fury.remains>20)
-actions.cooldown+=/use_item,slot=trinket2,if=(trinket.2.has_use_damage|trinket.2.is.twin_fang_instruments)&(trinket.1.cooldown.remains>20|!variable.trinket_1_buffs|trinket.1.cooldown.remains&cooldown.tigers_fury.remains>20)
 actions.cooldown+=/do_treacherous_transmitter_task,if=buff.tigers_fury.up|fight_remains<22
 actions.cooldown+=/feral_frenzy,if=combo_points<=1|buff.bs_inc.up&combo_points<=2
 # always line up convoke with berserk if you can
