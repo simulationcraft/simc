@@ -3211,7 +3211,7 @@ void player_t::init_scaling()
   {
     invert_scaling = 0;
 
-    bool attack, spell, tank, heal = false;
+    bool attack = false, spell = false, tank = false, heal = false;
 
     switch ( primary_role() )
     {
