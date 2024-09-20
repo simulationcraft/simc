@@ -602,7 +602,7 @@ void parse_items( player_t* p, const player_spec_t& spec, const std::string& url
 
     if ( slot_data.HasMember( "modified_crafting_stat" ) )
     {
-      for ( auto craft_idx = 0U, cr_end = slot_data[ "modified_crafting_stat" ].Size(); craft_idx < cr_end; ++idx )
+      for ( auto craft_idx = 0U, cr_end = slot_data[ "modified_crafting_stat" ].Size(); craft_idx < cr_end; ++craft_idx )
       {
         const auto& stat_data = slot_data[ "modified_crafting_stat" ][ craft_idx ];
         item.parsed.crafted_stat_mod.push_back( stat_data[ "id" ].GetInt() );
