@@ -1275,6 +1275,9 @@ public:
       player_talent_t deaths_messenger;
       player_talent_t expelling_shield;  // NYI
       player_talent_t exterminate;
+      player_talent_t reapers_onslaught;
+      player_talent_t swift_and_painful;
+      player_talent_t reaper_of_souls;
     } deathbringer;
 
     // San'layn
@@ -6196,7 +6199,7 @@ struct blood_plague_t final : public death_knight_disease_t
       if ( p->bugs )
         base_multiplier *= 0.75;
     }
-    if ( p->talent.deathbringer.blood_fever->ok() )
+    if ( !p->is_ptr() && p->talent.deathbringer.blood_fever->ok() )
     {
       blood_fever = get_action<blood_fever_t>( "blood_fever", p );
       add_child( blood_fever );
@@ -6215,7 +6218,7 @@ struct blood_plague_t final : public death_knight_disease_t
       heal->execute();
     }
 
-    if ( blood_fever && p()->rng().roll( p()->talent.deathbringer.blood_fever->proc_chance() ) )
+    if ( !p()->is_ptr() && blood_fever && p()->rng().roll( p()->talent.deathbringer.blood_fever->proc_chance() ) )
     {
       blood_fever->execute_on_target(
           d->target, d->state->result_amount * p()->talent.deathbringer.blood_fever->effectN( 1 ).percent() );
@@ -6245,7 +6248,7 @@ struct frost_fever_t final : public death_knight_disease_t
       base_multiplier *= 0.98;
     }
 
-    if ( p->talent.deathbringer.blood_fever.ok() )
+    if ( !p->is_ptr() && p->talent.deathbringer.blood_fever.ok() )
     {
       blood_fever = get_action<blood_fever_t>( "blood_fever", p );
       add_child( blood_fever );
@@ -6271,7 +6274,7 @@ struct frost_fever_t final : public death_knight_disease_t
       p()->resource_gain( RESOURCE_RUNIC_POWER, rp_generation, p()->gains.frost_fever, this );
     }
 
-    if ( blood_fever && p()->rng().roll( p()->talent.deathbringer.blood_fever->proc_chance() ) )
+    if ( !p()->is_ptr() && blood_fever && p()->rng().roll( p()->talent.deathbringer.blood_fever->proc_chance() ) )
     {
       blood_fever->execute_on_target(
           d->target,
@@ -9619,7 +9622,7 @@ struct marrowrend_t final : public death_knight_melee_attack_t
     double c = death_knight_melee_attack_t::cost();
     if ( p()->buffs.exterminate->up() )
     {
-      double m = p()->talent.deathbringer.painful_death.ok()
+      double m = !p()->is_ptr() && p()->talent.deathbringer.painful_death.ok()
                      ? p()->buffs.exterminate_painful_death->data().effectN( 2 ).percent()
                      : p()->buffs.exterminate->data().effectN( 2 ).percent();
       c += c * m;
@@ -9655,12 +9658,12 @@ struct marrowrend_t final : public death_knight_melee_attack_t
     {
       p()->buffs.exterminate->expire();
       make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, execute_state->target, 500_ms );
-      if ( p()->talent.deathbringer.painful_death->ok() )
+      if ( !p()->is_ptr() && p()->talent.deathbringer.painful_death->ok() )
       {
         p()->buffs.exterminate_painful_death->trigger();
       }
     }
-    else if ( p()->buffs.exterminate_painful_death->up() )
+    else if ( !p()->is_ptr() && p()->buffs.exterminate_painful_death->up() )
     {
       p()->buffs.exterminate_painful_death->expire();
       make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, execute_state->target, 500_ms );
@@ -9895,7 +9898,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
     double c = death_knight_melee_attack_t::cost();
     if ( p()->buffs.exterminate->up() )
     {
-      double m = p()->talent.deathbringer.painful_death.ok()
+      double m = !p()->is_ptr() && p()->talent.deathbringer.painful_death.ok()
                      ? p()->buffs.exterminate_painful_death->data().effectN( 2 ).percent()
                      : p()->buffs.exterminate->data().effectN( 2 ).percent();
       c += c * m;
@@ -9942,12 +9945,12 @@ struct obliterate_t final : public death_knight_melee_attack_t
     {
       p()->buffs.exterminate->expire();
       make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, execute_state->target, 500_ms );
-      if ( p()->talent.deathbringer.painful_death->ok() )
+      if ( !p()->is_ptr() && p()->talent.deathbringer.painful_death->ok() )
       {
         p()->buffs.exterminate_painful_death->trigger();
       }
     }
-    else if ( p()->buffs.exterminate_painful_death->up() )
+    else if ( !p()->is_ptr() && p()->buffs.exterminate_painful_death->up() )
     {
       p()->buffs.exterminate_painful_death->expire();
       make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.exterminate, execute_state->target, 500_ms );
@@ -13188,19 +13191,28 @@ void death_knight_t::init_spells()
   //////// Deathbringer
   talent.deathbringer.reapers_mark              = find_talent_spell( talent_tree::HERO, "Reaper's Mark" );
   talent.deathbringer.wave_of_souls             = find_talent_spell( talent_tree::HERO, "Wave of Souls" );
-  talent.deathbringer.blood_fever               = find_talent_spell( talent_tree::HERO, "Blood Fever" );
   talent.deathbringer.bind_in_darkness          = find_talent_spell( talent_tree::HERO, "Bind in Darkness" );
   talent.deathbringer.soul_rupture              = find_talent_spell( talent_tree::HERO, "Soul Rupture" );
   talent.deathbringer.grim_reaper               = find_talent_spell( talent_tree::HERO, "Grim Reaper" );
   talent.deathbringer.pact_of_the_deathbringer  = find_talent_spell( talent_tree::HERO, "Pact of the Deathbringer" );
   talent.deathbringer.rune_carved_plates        = find_talent_spell( talent_tree::HERO, "Rune Carved Plates" );
-  talent.deathbringer.swift_end                 = find_talent_spell( talent_tree::HERO, "Swift End" );
-  talent.deathbringer.painful_death             = find_talent_spell( talent_tree::HERO, "Painful Death" );
   talent.deathbringer.dark_talons               = find_talent_spell( talent_tree::HERO, "Dark Talons" );
   talent.deathbringer.wither_away               = find_talent_spell( talent_tree::HERO, "Wither Away" );
   talent.deathbringer.deaths_messenger          = find_talent_spell( talent_tree::HERO, "Death's Messenger" );
   talent.deathbringer.expelling_shield          = find_talent_spell( talent_tree::HERO, "Expelling Shield" );
   talent.deathbringer.exterminate               = find_talent_spell( talent_tree::HERO, "Exterminate" );
+  talent.deathbringer.painful_death             = find_talent_spell( talent_tree::HERO, "Painful Death" );
+  if ( is_ptr() )
+  {
+    talent.deathbringer.reapers_onslaught = find_talent_spell( talent_tree::HERO, "Reaper's Onslaught" );
+    talent.deathbringer.reaper_of_souls = find_talent_spell( talent_tree::HERO, "Reaper of Souls" );
+    talent.deathbringer.swift_and_painful = find_talent_spell( talent_tree::HERO, "Swift and Painful" );
+  }
+  else
+  {
+    talent.deathbringer.swift_end = find_talent_spell( talent_tree::HERO, "Swift End" );
+    talent.deathbringer.blood_fever   = find_talent_spell( talent_tree::HERO, "Blood Fever" );
+  }
 
   ///////// San'layn
   talent.sanlayn.vampiric_strike      = find_talent_spell( talent_tree::HERO, "Vampiric Strike" );
@@ -13826,8 +13838,12 @@ void death_knight_t::create_buffs()
 
   buffs.exterminate = make_fallback( talent.deathbringer.exterminate.ok(), this, "exterminate", spell.exterminate_buff );
 
-  buffs.exterminate_painful_death = make_fallback( talent.deathbringer.painful_death.ok(), this, "exterminate_painful_death",
-                                       spell.exterminate_buff_painful_death );
+  if ( is_ptr() )
+  {
+    buffs.exterminate_painful_death =
+        make_fallback( talent.deathbringer.painful_death.ok(), this, "exterminate_painful_death",
+                       spell.exterminate_buff_painful_death );
+  }
 
   buffs.rune_carved_plates_physical_buff = make_fallback( talent.deathbringer.rune_carved_plates.ok(), this,
                                                           "rune_carved_plates_physical",
@@ -15086,8 +15102,11 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.deathbringer.bind_in_darkness );
   action.apply_affecting_aura( talent.deathbringer.wither_away );
   action.apply_affecting_aura( talent.deathbringer.deaths_messenger );
-  action.apply_affecting_aura( talent.deathbringer.swift_end );
-  action.apply_affecting_aura( talent.deathbringer.painful_death );
+  if ( !is_ptr() )
+  {
+    action.apply_affecting_aura( talent.deathbringer.swift_end );
+    action.apply_affecting_aura( talent.deathbringer.painful_death );
+  }
 }
 
 /* Report Extension Class
