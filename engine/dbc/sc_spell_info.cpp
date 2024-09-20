@@ -98,7 +98,7 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::
   { 51, "Min Travel Time" },
   { 52, "Proc Flags 2" },
   { 53, "Min Scaling Level" },
-  { 53, "Scale from ilevel" },
+  { 54, "Scale from ilevel" },
 } );
 
 static constexpr auto _hotfix_spelltext_map = util::make_static_map<unsigned, util::string_view>( {
