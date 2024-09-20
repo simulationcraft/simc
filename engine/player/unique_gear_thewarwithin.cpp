@@ -4557,6 +4557,9 @@ void candle_confidant( special_effect_t& effect )
 // 440235 stun, NYI
 void concoction_kiss_of_death( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "concoction_kiss_of_death" } ) )
+    return;
+
   struct concoction_kiss_of_death_buff_t : public stat_buff_t
   {
     concoction_kiss_of_death_buff_t( player_t* p, std::string_view n, const spell_data_t* s, const item_t* i )
@@ -5720,7 +5723,7 @@ void register_special_effects()
   register_special_effect( 455432, items::shining_arathor_insignia );
   register_special_effect( 455451, items::quickwick_candlestick );
   register_special_effect( 455435, items::candle_confidant );
-  register_special_effect( 435493, items::concoction_kiss_of_death );
+  register_special_effect( 435493, items::concoction_kiss_of_death, true );
   register_special_effect( 435473, items::everburning_lantern );
   register_special_effect( 455484, items::detachable_fang );
   register_special_effect( 459222, items::scroll_of_momentum, true );
