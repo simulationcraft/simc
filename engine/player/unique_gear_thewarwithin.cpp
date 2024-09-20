@@ -1060,6 +1060,7 @@ void spymasters_web( special_effect_t& effect )
   };
 
   effect.disable_buff();
+  effect.has_use_buff_override = true;
   effect.execute_action = create_proc_action<spymasters_web_t>( "spymasters_web", effect, stacking_buff, use_buff );
 }
 
@@ -1373,6 +1374,7 @@ void sikrans_endless_arsenal( special_effect_t& effect )
     }
   };
 
+  effect.has_use_damage_override = true;
   effect.execute_action = create_proc_action<sikrans_endless_arsenal_t>( "sikrans_endless_arsenal", effect, data );
 }
 
@@ -2858,6 +2860,7 @@ void high_speakers_accretion( special_effect_t& effect )
     }
   };
 
+  effect.has_use_damage_override = true;
   effect.execute_action = create_proc_action<high_speakers_accretion_t>( "high_speakers_accretion", effect );
 }
 
@@ -3077,6 +3080,7 @@ void mereldars_toll( special_effect_t& effect )
     }
   };
 
+  effect.has_use_damage_override = true;
   effect.execute_action = create_proc_action<mereldars_toll_t>( "mereldars_toll", effect, data );
 }
 
@@ -3338,6 +3342,7 @@ void twin_fang_instruments( special_effect_t& effect )
     }
   };
 
+  effect.has_use_damage_override = true;
   effect.execute_action = create_proc_action<twin_fang_instruments_t>( "twin_fang_instruments", effect, data );
 }
 
