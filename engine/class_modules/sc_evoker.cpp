@@ -146,6 +146,8 @@ struct evoker_td_t : public actor_target_data_t
     time_t last_accessed_second          = 0;
   } chrono_tracker;
 
+  double molten_embers_multiplier = std::numeric_limits<double>::lowest();
+
   evoker_td_t( player_t* target, evoker_t* source );
 };
 
@@ -1257,7 +1259,7 @@ struct evoker_t : public player_t
   // Augmentation Helpers
   void spawn_mote_of_possibility( player_t* = nullptr, timespan_t = timespan_t::zero() );
   void extend_ebon( timespan_t );
-  double get_molten_embers_multiplier( player_t* ) const;
+  double get_molten_embers_multiplier( player_t*, bool = false) const;
   void apply_bombardments( player_t* );
 
   // Utility functions
@@ -1912,14 +1914,6 @@ public:
           },
           p()->spec.fire_breath_damage );
     }
-
-    if ( p()->talent.molten_embers.ok() && spell_color == SPELL_BLACK )
-    {
-      add_parse_entry( ab::target_multiplier_effects )
-          .set_func( d_fn( &evoker_td_t::dots_t::fire_breath ) )
-          .set_value( p()->talent.molten_embers->effectN( 1 ).percent() )
-          .set_eff( &p()->talent.molten_embers->effectN( 1 ) );
-    }
   }
 
   template <typename... Ts>
@@ -1955,6 +1949,18 @@ public:
       return Base::cost_pct_multiplier();
 
     return ab::cost_pct_multiplier();
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    auto mul = ab::composite_target_multiplier( t );
+
+    if ( p()->talent.molten_embers.ok() && spell_color == SPELL_BLACK )
+    {
+      mul *= p()->get_molten_embers_multiplier( t );
+    }
+
+    return mul;
   }
 
   void init() override
@@ -3728,6 +3734,15 @@ struct fire_breath_t : public empowered_charge_spell_t
     {
       base_t::trigger_dot( state );
       p()->get_target_data( state->target )->dots.fire_breath_traveling_flame->cancel();
+
+      if ( p()->talent.molten_embers.enabled() )
+      {
+        auto td = p()->get_target_data( state->target );
+        if ( td )
+        {
+          td->molten_embers_multiplier = p()->get_molten_embers_multiplier( state->target, true );
+        }
+      }
     }
 
     double calculate_tick_amount( action_state_t* s, double m ) const override
@@ -3746,6 +3761,20 @@ struct fire_breath_t : public empowered_charge_spell_t
       // TODO: confirm this doesn't have a target # based DR, or exhibit previously bugged behavior where icd is
       // triggered on check, not success
       p()->buff.burnout->trigger();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      empowered_release_spell_t::last_tick( d );
+
+      if ( p()->talent.molten_embers.enabled() )
+      {
+        auto td = p()->get_target_data( d->target );
+        if ( td )
+        {
+          td->molten_embers_multiplier = 1.0;
+        }
+      }
     }
 
     void impact( action_state_t* s ) override
@@ -8438,6 +8467,17 @@ void evoker_t::reset()
       }
     }
   }
+
+  if ( talent.molten_embers.enabled() )
+  {
+    for ( evoker_td_t* td : target_data.get_entries() )
+    {
+      if ( !td )
+        continue;
+
+      td->molten_embers_multiplier = std::numeric_limits<double>::lowest();
+    }
+  }
 }
 
 void evoker_t::copy_from( player_t* source )
@@ -8878,12 +8918,15 @@ void evoker_t::extend_ebon( timespan_t extend )
   }
 }
 
-double evoker_t::get_molten_embers_multiplier( player_t* target ) const
+double evoker_t::get_molten_embers_multiplier( player_t* target, bool recalculate ) const
 {
   if ( !talent.molten_embers.enabled() )
     return 1.0;
 
   auto td = get_target_data( target );
+
+  if ( td->molten_embers_multiplier > 0 && !recalculate )
+    return td->molten_embers_multiplier;
 
   double mul = 1;
 
@@ -8898,6 +8941,8 @@ double evoker_t::get_molten_embers_multiplier( player_t* target ) const
 
     mul *= 1 + 2.4_s / firebreath_duration;
   }
+
+  td->molten_embers_multiplier = mul;
 
   return mul;
 }
