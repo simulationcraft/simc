@@ -838,6 +838,7 @@ static constexpr auto _attribute_strings = util::make_static_map<unsigned, util:
   {  446, "Recompute Aura On Level Scale"                                        },
   {  447, "Update Fall Speed After Aura Removal"                                 },
   {  448, "Prevent Jumping During Precast"                                       },
+  {  468, "Private Aura"                                                         },
 } );
 
 static constexpr auto _property_type_strings = util::make_static_map<int, util::string_view>( {
@@ -2531,35 +2532,20 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     {
       if ( spell->attribute( i ) & ( 1 << flag ) )
       {
-        s << "x";
         size_t attr_idx = i * 32 + flag;
         auto it = _attribute_strings.find( static_cast<unsigned int>( attr_idx ) );
-        if ( it != _attribute_strings.end() )
-        {
-          fmt::format_to( std::back_inserter( attr_str ), "{}{} ({})", attr_str.empty() ? "" : ", ", it->second,
-                          attr_idx );
-        }
+        fmt::format_to( std::back_inserter( attr_str ), "{}{} ({})", attr_str.empty() ? "" : ", ",
+                        it == _attribute_strings.end() ? "Unknown" : it->second, attr_idx );
       }
-      else
-        s << ".";
-
-      if ( ( flag + 1 ) % 8 == 0 )
-        s << " ";
-
-      if ( flag == 31 && i % 2 == 0 )
-        s << "  ";
     }
-
-    if ( ( i + 1 ) % 2 == 0 && i < NUM_SPELL_FLAGS - 1 )
-      s << std::endl << "                 : ";
   }
 
   if ( !attr_str.empty() )
-    s << std::endl << "                 : " + attr_str;
+    s << attr_str;
+
   s << std::endl;
 
   s << "Effects          :" << std::endl;
-
   for ( const spelleffect_data_t& e : spell->effects() )
   {
     if ( e.id() == 0 )
