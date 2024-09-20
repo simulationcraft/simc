@@ -3740,6 +3740,7 @@ struct fire_breath_t : public empowered_charge_spell_t
         auto td = p()->get_target_data( state->target );
         if ( td )
         {
+          auto mul_before = td->molten_embers_multiplier;
           td->molten_embers_multiplier = p()->get_molten_embers_multiplier( state->target, true );
         }
       }
@@ -3772,6 +3773,8 @@ struct fire_breath_t : public empowered_charge_spell_t
         auto td = p()->get_target_data( d->target );
         if ( td )
         {
+          sim->print_debug( "{} set molten_embers_multiplier on {} to 1.0 from {}", this->name_str, target->name_str,
+                            td->molten_embers_multiplier );
           td->molten_embers_multiplier = 1.0;
         }
       }
@@ -8940,9 +8943,12 @@ double evoker_t::get_molten_embers_multiplier( player_t* target, bool recalculat
     auto firebreath_duration = 20_s + timespan_t::from_seconds( talent.blast_furnace->effectN( 1 ).base_value() ) - ( static_cast<int>( empower ) - 1 ) * 6_s;
 
     mul *= 1 + 2.4_s / firebreath_duration;
-  }
 
-  td->molten_embers_multiplier = mul;
+    sim->print_debug( "{} set molten_embers_multiplier on {} to {} from {}", this->name_str, target->name_str, mul,
+                      td->molten_embers_multiplier );
+
+    td->molten_embers_multiplier = mul;
+  }
 
   return mul;
 }
