@@ -896,11 +896,11 @@ static constexpr auto _aura_interrupt_strings = util::make_static_map<unsigned, 
   { 50, "Touch Ground"                     },
   { 51, "Chromie Time"                     },
   { 52, "Spline or Free Flight"            },
-  { 52, "Proc or Periodic Attack"          },
-  { 53, "Challenge Mode Start"             },
-  { 54, "Encounter Start"                  },
-  { 55, "Ecnounter End"                    },
-  { 56, "Release Empower"                  },
+  { 53, "Proc or Periodic Attack"          },
+  { 54, "Challenge Mode Start"             },
+  { 55, "Encounter Start"                  },
+  { 56, "Ecnounter End"                    },
+  { 57, "Release Empower"                  },
 } );
 
 static constexpr auto _property_type_strings = util::make_static_map<int, std::string_view>( {
