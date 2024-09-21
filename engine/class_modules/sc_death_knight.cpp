@@ -1701,7 +1701,7 @@ public:
       procs(),
       options(),
       _runes( this ),
-      last_summoned_rider(),
+      last_summoned_rider( rider_of_the_apocalypse::ALL_RIDERS ),
       dk_active_pets()
   {
     cooldown.apocalypse          = get_cooldown( "apocalypse" );
@@ -2473,7 +2473,7 @@ struct death_knight_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( s );
 
-    if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.commander_of_the_dead->up() &&
+    if ( dk()->specialization() == DEATH_KNIGHT_UNHOLY && dk()->buffs.commander_of_the_dead->check() &&
          affected_by_commander_of_the_dead )
     {
       m *= 1.0 + dk()->pet_spell.commander_of_the_dead->effectN( 1 ).percent();
@@ -2805,20 +2805,23 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
   // Override a bunch of stuff that attack_t overrides to prevent multiple cache hits
   double composite_hit() const override
   {
-    return action_t::composite_hit() + dk()->cache.attack_hit();
-  };
+    return 1.0;
+  }
+
   double composite_crit_chance() const override
   {
     return action_t::composite_crit_chance() + pet()->current_pet_stats.composite_melee_crit;
-  };
+  }
+
   double composite_haste() const override
   {
     return action_t::composite_haste() + pet()->current_pet_stats.composite_melee_haste;
-  };
+  }
+
   double composite_versatility( const action_state_t* state ) const override
   {
     return action_t::composite_versatility( state ) + dk()->cache.damage_versatility();
-  };
+  }
 };
 
 // ==========================================================================
@@ -11865,7 +11868,7 @@ void death_knight_t::chill_streak_bounce( player_t& t )
 
 int death_knight_t::get_random_rider()
 {
-  int n = rng().range( 0, rider_of_the_apocalypse::ALL_RIDERS );
+  int n = static_cast<int>( rng().range( 0, rider_of_the_apocalypse::ALL_RIDERS ) );
   if ( n == last_summoned_rider )
   {
     n = get_random_rider();
