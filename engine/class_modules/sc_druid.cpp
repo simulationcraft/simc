@@ -13904,6 +13904,7 @@ void druid_t::apply_affecting_auras( action_t& a )
   a.apply_affecting_aura( talent.berserk_heart_of_the_lion );
   a.apply_affecting_aura( talent.circle_of_life_and_death_cat );
   a.apply_affecting_aura( talent.dreadful_bleeding );
+  a.apply_affecting_aura( spec.feral_overrides );
   a.apply_affecting_aura( talent.infected_wounds_cat );
   a.apply_affecting_aura( talent.lions_strength );
   a.apply_affecting_aura( talent.taste_for_blood );
@@ -14080,7 +14081,6 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( buff.predatory_swiftness, CONSUME_BUFF );
   _a->parse_effects( talent.taste_for_blood, [ this ] { return buff.tigers_fury->check();},
                      talent.taste_for_blood->effectN( 2 ).percent() );
-  _a->parse_effects( spec.feral_overrides, [ this ] { return !buff.moonkin_form->check(); } );
   _a->parse_effects( buff.fell_prey, CONSUME_BUFF, effect_mask_t( true ).disable( 2 ) );
   // applies 15% to rampant ferocity (label 2740) via hidden script
   _a->parse_effects( buff.fell_prey, effect_mask_t( false ).enable( 2 ),
