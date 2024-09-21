@@ -11865,7 +11865,7 @@ void death_knight_t::chill_streak_bounce( player_t& t )
 
 int death_knight_t::get_random_rider()
 {
-  int n = as<int>( rng().range( 0, rider_of_the_apocalypse::ALL_RIDERS ) );
+  int n = rng().range( 0, rider_of_the_apocalypse::ALL_RIDERS );
   if ( n == last_summoned_rider )
   {
     n = get_random_rider();
