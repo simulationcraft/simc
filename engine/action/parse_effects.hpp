@@ -51,7 +51,7 @@ struct player_effect_t
   { value = v; return *this; }
 
   player_effect_t& set_use_stacks( bool s )
-  { use_stacks = s; return *this; }
+  { use_stacks = s; simple = false; return *this; }
 
   player_effect_t& set_func( std::function<bool()> f )
   { func = std::move( f ); simple = false; return *this; }

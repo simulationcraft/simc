@@ -654,8 +654,11 @@ void parse_effects_t::parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, 
 
   if constexpr ( is_detected_v<detect_simple, U> )
   {
-    if ( tmp.data.func || tmp.data.value_func || tmp.data.type & USE_CURRENT || tmp.data.idx || tmp.data.mastery )
+    if ( tmp.data.func || tmp.data.value_func || tmp.data.type & USE_CURRENT || tmp.data.idx || tmp.data.mastery ||
+         !tmp.data.use_stacks )
+    {
       tmp.data.simple = false;
+    }
   }
 
   vec->push_back( tmp.data );
@@ -681,8 +684,7 @@ double parse_effects_t::get_effect_value( const player_effect_t& i, bool benefit
     if ( !stack )
       return 0.0;
 
-    if ( i.use_stacks )
-      return i.value * stack;
+    return i.value * stack;
   }
 
   return i.value;
