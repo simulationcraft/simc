@@ -592,7 +592,7 @@ void monk_action_t<Base>::execute()
 
   base_t::execute();
 
-  trigger_storm_earth_and_fire( this );
+  // trigger_storm_earth_and_fire( this );
 }
 
 template <class Base>
@@ -764,6 +764,30 @@ monk_buff_t::monk_buff_t( monk_td_t *target_data, std::string_view name, const s
 {
 }
 
+void monk_buff_t::expire( timespan_t delay )
+{
+  if ( !p().freeze_expiration )
+    base_t::expire( delay );
+}
+
+void monk_buff_t::expire( action_t *action, timespan_t delay )
+{
+  if ( !p().freeze_expiration )
+    base_t::expire( action, delay );
+}
+
+void monk_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
+{
+  if ( !p().freeze_expiration )
+    base_t::expire_override( expiration_stacks, remaining_duration );
+}
+
+void monk_buff_t::decrement( int stacks, double value )
+{
+  if ( !p().freeze_expiration )
+    base_t::decrement( stacks, value );
+}
+
 monk_td_t &monk_buff_t::get_td( player_t *t )
 {
   return *( p().get_target_data( t ) );
@@ -822,16 +846,6 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
   monk_snapshot_stats_t( monk_t *player, util::string_view options ) : snapshot_stats_t( player, options )
   {
   }
-
-  void execute() override
-  {
-    snapshot_stats_t::execute();
-
-    // auto *monk                                              = debug_cast<monk_t *>( player );
-    // monk->stagger->sample_data->buffed_base_value           = monk->stagger->base_value();
-    // monk->stagger->sample_data->buffed_percent_player_level = monk->stagger->percent( monk->level() );
-    // monk->stagger->sample_data->buffed_percent_target_level = monk->stagger->percent( target->level() );
-  }
 };
 
 namespace pet_summon
@@ -842,6 +856,9 @@ namespace pet_summon
 
 struct storm_earth_and_fire_t : public monk_spell_t
 {
+  action_t *fire_sef;
+  action_t *earth_sef;
+
   storm_earth_and_fire_t( monk_t *p, util::string_view options_str )
     : monk_spell_t( p, "storm_earth_and_fire", p->talent.windwalker.storm_earth_and_fire )
   {
@@ -851,6 +868,9 @@ struct storm_earth_and_fire_t : public monk_spell_t
     trigger_gcd      = timespan_t::zero();
     may_combo_strike = true;
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
+
+    fire_sef  = new monk_spell_t( p, "sef_fire_elemental", spell_data_t::nil() );
+    earth_sef = new monk_spell_t( p, "sef_earth_elemental", spell_data_t::nil() );
   }
 
   bool ready() override
@@ -864,8 +884,6 @@ struct storm_earth_and_fire_t : public monk_spell_t
   void execute() override
   {
     monk_spell_t::execute();
-
-    p()->summon_storm_earth_and_fire( data().duration() );
 
     if ( p()->talent.windwalker.ordered_elements.ok() )
     {
@@ -908,9 +926,225 @@ struct storm_earth_and_fire_fixate_t : public monk_spell_t
 
 }  // namespace pet_summon
 
+enum sef_type_e
+{
+  SEF_TYPE_FIRE,
+  SEF_TYPE_EARTH
+};
+
+template <class TBase>
+struct sef_action_t : monk_spell_t
+{
+  struct child_action_t : TBase
+  {
+    using base_t = TBase;
+    sef_type_e type;
+    bool is_fixated;
+    player_t *target;
+
+    template <class... Args>
+    child_action_t( sef_type_e type, Args &&...args ) : base_t( std::forward<Args>( args )... ), type( type )
+    {
+      base_t::background = true;
+
+      // Action name must be amended after construction, requiring changing out
+      // several members of `action_t` as well.
+      switch ( type )
+      {
+        case SEF_TYPE_FIRE:
+          base_t::name_str += "_sef_fire";
+          break;
+        case SEF_TYPE_EARTH:
+          base_t::name_str += "_sef_earth";
+          break;
+      }
+      base_t::internal_id       = base_t::p()->get_action_id( base_t::name_str );
+      base_t::gain              = base_t::p()->get_gain( base_t::name_str );
+      base_t::cooldown          = base_t::p()->get_cooldown( base_t::name_str, this );
+      base_t::internal_cooldown = base_t::p()->get_cooldown( base_t::name_str + "_internal", this );
+      base_t::stats             = base_t::p()->get_stats( base_t::name_str, this );
+    }
+
+    bool from_caster_spells( const spelleffect_data_t *eff ) const
+    {
+      switch ( eff->subtype() )
+      {
+        case A_MOD_DAMAGE_FROM_CASTER:
+        case A_MOD_DAMAGE_FROM_CASTER_SPELLS:
+        case A_MOD_CRIT_CHANCE_FROM_CASTER:
+        case A_MOD_CRIT_CHANCE_FROM_CASTER_SPELLS:
+        case A_MOD_AUTO_ATTACK_FROM_CASTER:
+        case A_MOD_CRIT_DAMAGE_PCT_FROM_CASTER_SPELLS:
+        case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:
+          return true;
+        default:
+          return false;
+      }
+      return false;
+    }
+
+    bool add_mod( const spelleffect_data_t *eff ) const
+    {
+      switch ( eff->subtype() )
+      {
+        case A_ADD_FLAT_MODIFIER:
+        case A_ADD_PCT_MODIFIER:
+        case A_ADD_PCT_LABEL_MODIFIER:
+        case A_ADD_FLAT_LABEL_MODIFIER:
+          return true;
+        default:
+          return false;
+      }
+      return false;
+    }
+
+    void init_finished() override
+    {
+      base_t::init_finished();
+
+      switch ( type )
+      {
+        case SEF_TYPE_FIRE:
+          base_t::p()->find_action( "sef_fire_elemental" )->add_child( this );
+          break;
+        case SEF_TYPE_EARTH:
+          base_t::p()->find_action( "sef_earth_elemental" )->add_child( this );
+          break;
+      }
+    }
+
+    double composite_player_multiplier( const action_state_t * ) const override
+    {
+      // Composite Player Multiplier is strictly school mods, which get skipped.
+      return 1.0;
+    }
+
+    double composite_crit_chance() const override
+    {
+      auto cc = base_t::derived_t::composite_crit_chance();
+
+      for ( const auto &i : base_t::crit_chance_effects )
+        if ( !from_caster_spells( i.eff ) )
+          cc += base_t::get_effect_value( i );
+
+      return cc;
+    }
+
+    double composite_crit_damage_bonus_multiplier() const override
+    {
+      // Crit Damage Bonus Multipliers double dip.
+      auto cd = std::pow( base_t::derived_t::composite_crit_damage_bonus_multiplier(), 2 );
+
+      // If non-A_ADD, apply again.
+      for ( const auto &i : base_t::crit_bonus_effects )
+        if ( !add_mod( i.eff ) )
+          cd *= 1.0 + base_t::get_effect_value( i, false );
+
+      return cd;
+    }
+
+    double composite_target_crit_damage_bonus_multiplier( player_t *target ) const override
+    {
+      auto cd = base_t::derived_t::composite_target_crit_damage_bonus_multiplier( target );
+      auto td = base_t::p()->get_target_data( target );
+
+      for ( const auto &i : base_t::target_crit_bonus_effects )
+        if ( !from_caster_spells( i.eff ) )
+          cd *= 1.0 + base_t::get_effect_value( i, td );
+
+      return cd;
+    }
+
+    double composite_da_multiplier( const action_state_t *state ) const override
+    {
+      auto da = base_t::derived_t::composite_da_multiplier( state );
+
+      for ( const auto &i : base_t::da_multiplier_effects )
+        if ( !from_caster_spells( i.eff ) )
+          da *= 1.0 + base_t::get_effect_value( i, false );
+
+      return da;
+    }
+
+    double composite_ta_multiplier( const action_state_t *state ) const override
+    {
+      auto ta = base_t::derived_t::composite_ta_multiplier( state );
+
+      for ( const auto &i : base_t::ta_multiplier_effects )
+        if ( !from_caster_spells( i.eff ) )
+          ta *= 1.0 + base_t::get_effect_value( i, false );
+
+      return ta;
+    }
+  };
+
+  action_t *parent_action;
+  action_t *sef_fire_action;
+  action_t *sef_earth_action;
+
+  template <class... Args>
+  sef_action_t( TBase *parent, Args &&...args )
+    : monk_spell_t( parent->p(), parent->name_str + "_sef_composite" ),
+      parent_action( parent ),
+      sef_fire_action( new child_action_t( SEF_TYPE_FIRE, parent->p(), std::forward<Args>( args )... ) ),
+      sef_earth_action( new child_action_t( SEF_TYPE_EARTH, parent->p(), std::forward<Args>( args )... ) )
+  {
+  }
+
+  void execute() override
+  {
+    p()->freeze_expiration = true;
+    sef_fire_action->execute();
+    sef_earth_action->execute();
+    p()->freeze_expiration = false;
+
+    parent_action->execute();
+    base_t::execute();
+  }
+};
+
+// struct sef_action_t : base_t
+// {
+//   action_t *sef_fire_action;
+//   action_t *sef_earth_action;
+
+//   // TODO: Target Fire/Earth actions
+//   /*
+//    * If a non-sleeping target exists with MotC debuff <10s, target that.
+//    * If it is already targeted by another elemental, do not retarget.
+//    * If all MotC debuffs >=10s, do not retarget.
+//    * If fixated, do not retarget.
+//    */
+
+//   template <class... Args>
+//   sef_action_t( monk_t *player, Args &&...args ) : base_t( player, std::forward<Args>( args )... )
+//   {
+//     if ( !player->talent.windwalker.storm_earth_and_fire->ok() )
+//       return;
+
+//     sef_fire_action =
+//         new child_action_t( player, fmt::format( "{}_{}", base_t::name_str, "fire" ), std::forward<Args>( args )...
+//         );
+//     sef_earth_action =
+//         new child_action_t( player, fmt::format( "{}_{}", base_t::name_str, "earth" ), std::forward<Args>( args )...
+//         );
+
+//     // TODO: Set SEF actions as children of the parent SEF action for each elemental.
+//   }
+
+//   void execute() override
+//   {
+//     base_t::p()->freeze_expiration = true;
+//     sef_fire_action->execute_on_target( base_t::p()->target );
+//     sef_earth_action->execute_on_target( base_t::p()->target );
+
+//     base_t::p()->freeze_expiration = false;
+//     base_t::execute();
+//   }
+// };
+
 namespace attacks
 {
-
 // ==========================================================================
 // Windwalking Aura Toggle
 // ==========================================================================
@@ -1706,7 +1940,7 @@ struct charred_passions_t : base_action_t
 // Blackout Kick Baseline ability =======================================
 struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_attack_t>>
 {
-  blackout_kick_totm_proc_t *bok_totm_proc;
+  action_t *bok_totm_proc;
   cooldown_t *keg_smash_cooldown;
 
   blackout_kick_t( monk_t *p, util::string_view options_str )
@@ -1737,8 +1971,13 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
 
     if ( p->shared.teachings_of_the_monastery->ok() )
     {
-      bok_totm_proc = new blackout_kick_totm_proc_t( p );
-      add_child( bok_totm_proc );
+      if ( action_t *totm = p->find_action( "blackout_kick_totm_proc" ); totm )
+        bok_totm_proc = totm;
+      else
+      {
+        bok_totm_proc = new blackout_kick_totm_proc_t( p );
+        add_child( bok_totm_proc );
+      }
     }
 
     if ( p->baseline.windwalker.blackout_kick_rank_2->ok() )
@@ -1846,8 +2085,8 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
 
       if ( p()->talent.windwalker.memory_of_the_monastery.enabled() && p()->bugs )
       {
-        // TODO: Confirm proper mechanics for this. Tested 17/06/2024 and behaviour has it expire previous stacks before
-        // triggering new which feels like a bug.
+        // TODO: Confirm proper mechanics for this. Tested 17/06/2024 and behaviour has it expire previous stacks
+        // before triggering new which feels like a bug.
         p()->buff.memory_of_the_monastery->expire();
       }
 
@@ -4250,7 +4489,7 @@ struct celestial_conduit_t : public monk_spell_t
   struct celestial_conduit_dmg_t : public monk_spell_t
   {
     celestial_conduit_dmg_t( monk_t *p )
-      : monk_spell_t( p, "celestial_conduit_dmg", p->talent.conduit_of_the_celestials.celestial_conduit_dmg )
+      : monk_spell_t( p, "celestial_conduit_damage", p->talent.conduit_of_the_celestials.celestial_conduit_dmg )
     {
       background       = true;
       aoe              = -1;
@@ -6292,6 +6531,7 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
     efficient_training_energy( 0 ),
     flurry_strikes_energy( 0 ),
     flurry_strikes_damage( 0 ),
+    freeze_expiration( false ),
     buff(),
     gain(),
     proc(),
@@ -6339,9 +6579,9 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   }
   user_options.initial_chi =
       talent.windwalker.combat_wisdom.ok() ? (int)talent.windwalker.combat_wisdom->effectN( 1 ).base_value() : 0;
-  user_options.chi_burst_healing_targets = 8;
-  user_options.motc_override             = 0;
-  user_options.squirm_frequency          = 15;
+  user_options.motc_override    = 0;
+  user_options.squirm_frequency = 15;
+  user_options.sef_beta         = false;
 }
 
 void monk_t::parse_player_effects()
@@ -6449,121 +6689,117 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
   if ( name == "auto_attack" )
     return new auto_attack_t( this, options_str );
   if ( name == "crackling_jade_lightning" )
-    return new crackling_jade_lightning_t( this, options_str );
+    return make_action<crackling_jade_lightning_t>( options_str );
   if ( name == "tiger_palm" )
-    return new tiger_palm_t( this, options_str );
+    return make_action<tiger_palm_t>( options_str );
   if ( name == "blackout_kick" )
-    return new blackout_kick_t( this, options_str );
+    return make_action<blackout_kick_t>( options_str );
   if ( name == "expel_harm" )
-    return new expel_harm_t( this, options_str );
+    return make_action<expel_harm_t>( options_str );
   if ( name == "leg_sweep" )
-    return new leg_sweep_t( this, options_str );
+    return make_action<leg_sweep_t>( options_str );
   if ( name == "paralysis" )
-    return new paralysis_t( this, options_str );
+    return make_action<paralysis_t>( options_str );
   if ( name == "rising_sun_kick" )
-    return new rising_sun_kick_t( this, options_str );
+    return make_action<rising_sun_kick_t>( options_str );
   if ( name == "roll" )
-    return new roll_t( this, options_str );
+    return make_action<roll_t>( options_str );
   if ( name == "spear_hand_strike" )
-    return new spear_hand_strike_t( this, options_str );
+    return make_action<spear_hand_strike_t>( options_str );
   if ( name == "spinning_crane_kick" )
-    return new spinning_crane_kick_t( this, options_str );
+    return make_action<spinning_crane_kick_t>( options_str );
   if ( name == "vivify" )
-    return new vivify_t( this, options_str );
+    return make_action<vivify_t>( options_str );
 
   // Brewmaster
   if ( name == "breath_of_fire" )
-    return new breath_of_fire_t( this, options_str );
+    return make_action<breath_of_fire_t>( options_str );
   if ( name == "celestial_brew" )
-    return new celestial_brew_t( this, options_str );
+    return make_action<celestial_brew_t>( options_str );
   if ( name == "exploding_keg" )
-    return new exploding_keg_t( this, options_str );
+    return make_action<exploding_keg_t>( options_str );
   if ( name == "fortifying_brew" )
-    return new fortifying_brew_t( this, options_str );
+    return make_action<fortifying_brew_t>( options_str );
   if ( name == "invoke_niuzao" )
-    return new niuzao_spell_t( this, options_str );
+    return make_action<niuzao_spell_t>( options_str );
   if ( name == "invoke_niuzao_the_black_ox" )
-    return new niuzao_spell_t( this, options_str );
+    return make_action<niuzao_spell_t>( options_str );
   if ( name == "keg_smash" )
-    return new press_the_advantage_t<keg_smash_t>( this, options_str );
+    return make_action<press_the_advantage_t<keg_smash_t>>( options_str );
   if ( name == "purifying_brew" )
-    return new purifying_brew_t( this, options_str );
+    return make_action<purifying_brew_t>( options_str );
   if ( name == "provoke" )
-    return new provoke_t( this, options_str );
+    return make_action<provoke_t>( options_str );
 
   // Mistweaver
   if ( name == "enveloping_mist" )
-    return new enveloping_mist_t( this, options_str );
+    return make_action<enveloping_mist_t>( options_str );
   if ( name == "invoke_chiji" )
-    return new chiji_spell_t( this, options_str );
+    return make_action<chiji_spell_t>( options_str );
   if ( name == "invoke_chiji_the_red_crane" )
-    return new chiji_spell_t( this, options_str );
+    return make_action<chiji_spell_t>( options_str );
   if ( name == "invoke_yulon" )
-    return new yulon_spell_t( this, options_str );
+    return make_action<yulon_spell_t>( options_str );
   if ( name == "invoke_yulon_the_jade_serpent" )
-    return new yulon_spell_t( this, options_str );
+    return make_action<yulon_spell_t>( options_str );
   if ( name == "life_cocoon" )
-    return new life_cocoon_t( this, options_str );
+    return make_action<life_cocoon_t>( options_str );
   if ( name == "mana_tea" )
-    return new mana_tea_t( this, options_str );
-  // if ( name == "renewing_mist" )
-  //   return new renewing_mist_t( this, options_str );
+    return make_action<mana_tea_t>( options_str );
   if ( name == "revival" )
-    return new revival_t( this, options_str );
+    return make_action<revival_t>( options_str );
   if ( name == "thunder_focus_tea" )
-    return new thunder_focus_tea_t( this, options_str );
-  // if ( name == "zen_pulse" )
-  //   return new zen_pulse_t( this, options_str );
+    return make_action<thunder_focus_tea_t>( options_str );
 
   // Windwalker
   if ( name == "fists_of_fury" )
-    return new fists_of_fury_t( this, options_str );
+    return make_action<fists_of_fury_t>( options_str );
   if ( name == "flying_serpent_kick" )
-    return new flying_serpent_kick_t( this, options_str );
+    return make_action<flying_serpent_kick_t>( options_str );
   if ( name == "touch_of_karma" )
-    return new touch_of_karma_t( this, options_str );
+    return make_action<touch_of_karma_t>( options_str );
   if ( name == "touch_of_death" )
-    return new touch_of_death_t( this, options_str );
+    return make_action<touch_of_death_t>( options_str );
   if ( name == "storm_earth_and_fire" )
-    return new storm_earth_and_fire_t( this, options_str );
+    return make_action<storm_earth_and_fire_t>( options_str );
   if ( name == "storm_earth_and_fire_fixate" )
-    return new storm_earth_and_fire_fixate_t( this, options_str );
+    return make_action<storm_earth_and_fire_fixate_t>( options_str );
 
   // Talents
   if ( name == "chi_burst" )
-    return new chi_burst_t( this, options_str );
+    return make_action<chi_burst_t>( options_str );
   if ( name == "chi_torpedo" )
-    return new chi_torpedo_t( this, options_str );
+    return make_action<chi_torpedo_t>( options_str );
   if ( name == "black_ox_brew" )
-    return new black_ox_brew_t( this, options_str );
+    return make_action<black_ox_brew_t>( options_str );
   if ( name == "dampen_harm" )
-    return new dampen_harm_t( this, options_str );
+    return make_action<dampen_harm_t>( options_str );
   if ( name == "diffuse_magic" )
-    return new diffuse_magic_t( this, options_str );
+    return make_action<diffuse_magic_t>( options_str );
   if ( name == "strike_of_the_windlord" )
-    return new strike_of_the_windlord_t( this, options_str );
+    return make_action<strike_of_the_windlord_t>( options_str );
   if ( name == "invoke_xuen" )
-    return new xuen_spell_t( this, options_str );
+    return make_action<xuen_spell_t>( options_str );
   if ( name == "invoke_xuen_the_white_tiger" )
-    return new xuen_spell_t( this, options_str );
+    return make_action<xuen_spell_t>( options_str );
   if ( name == "refreshing_jade_wind" )
-    return new refreshing_jade_wind_t( this, options_str );
+    return make_action<refreshing_jade_wind_t>( options_str );
   if ( name == "rushing_jade_wind" )
-    return new rushing_jade_wind_t( this, options_str );
+    return make_action<rushing_jade_wind_t>( options_str );
   if ( name == "whirling_dragon_punch" )
-    return new whirling_dragon_punch_t( this, options_str );
+    return make_action<whirling_dragon_punch_t>( options_str );
 
   // Covenant Abilities
   if ( name == "jadefire_stomp" )
-    return new jadefire_stomp_t( this, options_str );
+    return make_action<jadefire_stomp_t>( options_str );
   if ( name == "weapons_of_order" )
-    return new weapons_of_order_t( this, options_str );
+    return make_action<weapons_of_order_t>( options_str );
 
   // Hero Talents
   if ( name == "celestial_conduit" )
-    return new celestial_conduit_t( this, options_str );
+    return make_action<celestial_conduit_t>( options_str );
   if ( name == "unity_within" )
-    return new unity_within_t( this, options_str );
+    return make_action<unity_within_t>( options_str );
 
   return base_t::create_action( name, options_str );
 }
@@ -8791,9 +9027,9 @@ void monk_t::create_options()
   base_t::create_options();
 
   add_option( opt_int( "monk.initial_chi", user_options.initial_chi, 0, 6 ) );
-  add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
   add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
   add_option( opt_float( "monk.squirm_frequency", user_options.squirm_frequency, 0, 30 ) );
+  add_option( opt_bool( "monk.sef_beta", user_options.sef_beta ) );
 }
 
 // monk_t::copy_from =========================================================
@@ -8805,6 +9041,32 @@ void monk_t::copy_from( player_t *source )
   auto *source_p = debug_cast<monk_t *>( source );
 
   user_options = source_p->user_options;
+}
+
+template <class TAction, class... Args>
+action_t *monk_t::make_action( Args &&...args )
+{
+  // 1. create action A no matter what
+  // 2. if the action should not be replicated (channeled, repeated action), return action A
+  // 3. if action A is affected by sef, create sef composite action B using action A
+  // 4. when executing, use sef composite action B execute as to override necessary behaviour
+
+  TAction *parent = new TAction( this, std::forward<Args>( args )... );
+  if ( parent->channeled )
+    return parent;
+  if ( talent.windwalker.storm_earth_and_fire->ok() &&
+       parent->data().affected_by( talent.windwalker.storm_earth_and_fire ) )
+    return new actions::sef_action_t<TAction>( parent, std::forward<Args>( args )... );
+  return parent;
+}
+
+// monk_t::copy_from =========================================================
+action_t *monk_t::find_action( unsigned int id ) const
+{
+  for ( action_t *action : action_list )
+    if ( id == action->id )
+      return action;
+  return nullptr;
 }
 
 // monk_t::primary_resource =================================================

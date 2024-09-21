@@ -349,20 +349,6 @@ public:
     return p().o();
   };
 };
-
-// ===============================================================================
-// Tier 28 Primordial Power Buff
-// ===============================================================================
-
-struct primordial_power_buff_t : public monk_pet_buff_t<buff_t>
-{
-  primordial_power_buff_t( monk_pet_t &p, util::string_view n, const spell_data_t *s ) : monk_pet_buff_t( p, n, s )
-  {
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    set_reverse( true );
-    set_reverse_stack_count( s->max_stacks() );
-  }
-};
 }  // namespace buffs
 
 // ==========================================================================
@@ -376,58 +362,42 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   template <typename BASE>
   struct sef_action_base_t : public pet_action_base_t<BASE, storm_earth_and_fire_pet_t>
   {
-    using super_t = pet_action_base_t<BASE, storm_earth_and_fire_pet_t>;
-    using base_t  = sef_action_base_t<BASE>;
+    using base_t = pet_action_base_t<BASE, storm_earth_and_fire_pet_t>;
 
     const action_t *source_action;
 
-    // Windwalker Tier 28 4-piece info
-    // Currently Primordial Power is only a visual buff and not tied to any direct damage buff
-    // the buff is pulled from the player
-    // Currently the buff appears if SEF is summoned before Primordial Potential becomes Primordial Power
-    // buff does not appear if SEF is summoned after Primordial Power is active.
-
-    sef_action_base_t( util::string_view n, storm_earth_and_fire_pet_t *p,
-                       const spell_data_t *data = spell_data_t::nil() )
-      : super_t( n, p, data ), source_action( nullptr )
+    sef_action_base_t( std::string_view name, storm_earth_and_fire_pet_t *p,
+                       const spell_data_t *spell_data = spell_data_t::nil() )
+      : base_t( name, p, spell_data ), source_action( nullptr )
     {
-      // Make SEF attacks always background, so they do not consume resources
-      // or do anything associated with "foreground actions".
-      this->background = this->may_crit = true;
-      this->callbacks                   = false;
+      base_t::background         = true;
+      base_t::cooldown->duration = timespan_t::zero();
 
-      // Cooldowns are handled automatically by the mirror abilities, the SEF specific ones need none.
-      this->cooldown->duration = timespan_t::zero();
+      // TODO: Is this correct?
+      base_t::callbacks = false;
+    }
 
-      // No costs are needed either
-      this->base_costs[ RESOURCE_ENERGY ] = 0;
-      this->base_costs[ RESOURCE_CHI ]    = 0;
+    double base_cost() const override
+    {
+      return 0.0;
     }
 
     void init() override
     {
-      super_t::init();
+      base_t::init();
 
-      // Find source_action from the owner by matching the action name and
-      // spell id with eachother. This basically means that by default, any
-      // spell-data driven ability with 1:1 mapping of name/spell id will
-      // always be chosen as the source action. In some cases this needs to be
-      // overridden (see sef_zen_sphere_t for example).
-      for ( const action_t *a : this->o()->action_list )
-      {
-        if ( ( this->id > 0 && this->id == a->id ) || util::str_compare_ci( this->name_str, a->name_str ) )
-        {
-          source_action = a;
-          break;
-        }
-      }
+      // Look up source action based on id, falling back to name if not found.
+      if ( action_t *action = base_t::o()->find_action( base_t::id ) )
+        source_action = action;
+      else
+        source_action = base_t::o()->find_action( base_t::name_str );
 
-      if ( source_action )
-      {
-        this->update_flags           = source_action->update_flags;
-        auto pet_multiplier_snapshot = this->snapshot_flags & STATE_MUL_PET;
-        this->snapshot_flags         = source_action->snapshot_flags | pet_multiplier_snapshot;
-      }
+      if ( !source_action )
+        return;
+
+      base_t::update_flags = source_action->update_flags;
+      // isn't base_t::snapshot_flags == source_action->snapshot_flags or 0?
+      base_t::snapshot_flags = source_action->snapshot_flags | ( base_t::snapshot_flags & STATE_MUL_PET );
     }
 
     void snapshot_internal( action_state_t *state, unsigned flags, result_amount_type rt ) override
@@ -509,6 +479,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct sef_melee_attack_t : public sef_action_base_t<melee_attack_t>
   {
+    using base_t = sef_action_base_t<melee_attack_t>;
     sef_melee_attack_t( util::string_view n, storm_earth_and_fire_pet_t *p,
                         const spell_data_t *data = spell_data_t::nil() )
       : base_t( n, p, data )
@@ -533,6 +504,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   struct sef_spell_t : public sef_action_base_t<spell_t>
   {
+    using base_t = sef_action_base_t<spell_t>;
     sef_spell_t( util::string_view n, storm_earth_and_fire_pet_t *p, const spell_data_t *data = spell_data_t::nil() )
       : base_t( n, p, data )
     {
@@ -739,7 +711,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_glory_of_the_dawn_t *glory_of_the_dawn;
 
     sef_rising_sun_kick_dmg_t( storm_earth_and_fire_pet_t *player )
-      : sef_melee_attack_t( "rising_sun_kick_dmg", player,
+      : sef_melee_attack_t( "rising_sun_kick_damage", player,
                             player->o()->talent.monk.rising_sun_kick->effectN( 1 ).trigger() )
     {
       background = true;
@@ -1136,8 +1108,6 @@ public:
     propagate_const<buff_t *> bok_proc_sef          = nullptr;
     propagate_const<buff_t *> pressure_point_sef    = nullptr;
     propagate_const<buff_t *> rushing_jade_wind_sef = nullptr;
-    // Tier 28 Buff
-    propagate_const<buff_t *> primordial_power = nullptr;
   } buff;
 
   storm_earth_and_fire_pet_t( util::string_view name, monk_t *owner, bool dual_wield, weapon_e weapon_type )

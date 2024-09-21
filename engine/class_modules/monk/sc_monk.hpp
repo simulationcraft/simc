@@ -83,9 +83,14 @@ enum class sef_ability_e
   SEF_MAX
 };
 
+template <class base_t>
+struct sef_action_t;
+
 template <class Base>
 struct monk_action_t : public parse_action_effects_t<Base>
 {
+  using derived_t = Base;
+  using base_t    = parse_action_effects_t<Base>;
   sef_ability_e sef_ability;
   bool ww_mastery;
   bool may_combo_strike;
@@ -97,8 +102,6 @@ private:
   std::array<resource_e, MONK_MISTWEAVER + 1> _resource_by_stance;
 
 public:
-  using base_t = parse_action_effects_t<Base>;
-
   template <typename... Args>
   monk_action_t( Args &&...args );
   std::string full_name() const;
@@ -176,6 +179,8 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
 struct monk_buff_t : public buff_t
 {
+  using base_t = buff_t;
+
   monk_buff_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil(),
                const item_t *item = nullptr );
   monk_buff_t( monk_td_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil(),
@@ -184,6 +189,11 @@ struct monk_buff_t : public buff_t
   const monk_td_t *find_td( player_t *target ) const;
   monk_t &p();
   const monk_t &p() const;
+
+  void expire( timespan_t delay = timespan_t::zero() ) override;
+  void expire( action_t *action, timespan_t delay = timespan_t::zero() );
+  void decrement( int stacks = 1, double value = DEFAULT_VALUE() ) override;
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
 };
 
 struct summon_pet_t : public monk_spell_t
@@ -489,6 +499,8 @@ public:
   int efficient_training_energy;
   int flurry_strikes_energy;
   double flurry_strikes_damage;
+  bool freeze_expiration;
+  bool freeze_buffs;
 
   //==============================================
   // Monk Movement
@@ -1302,9 +1314,10 @@ public:
     int initial_chi;
     double expel_harm_effectiveness;
     double jadefire_stomp_uptime;
-    int chi_burst_healing_targets;
     int motc_override;
     double squirm_frequency;
+
+    bool sef_beta;
   } user_options;
 
   // exterminate these structs
@@ -1384,6 +1397,10 @@ public:
   void reset() override;
   void create_options() override;
   void copy_from( player_t * ) override;
+  template <class TAction, class... Args>
+  action_t *make_action( Args &&...args );
+  using player_t::find_action;
+  action_t *find_action( unsigned int id ) const;
   resource_e primary_resource() const override;
   role_e primary_role() const override;
   stat_e convert_hybrid_stat( stat_e s ) const override;
