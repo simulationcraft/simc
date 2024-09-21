@@ -375,6 +375,7 @@ jobs:
 
       - name: Upload APL
         if: steps.dump_apl.outcome == 'success'
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: apl-${{ github.sha }}-${{ matrix.spec }}
