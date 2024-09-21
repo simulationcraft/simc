@@ -216,7 +216,7 @@ struct proc_map_entry_t
   uint64_t flag;
   std::string_view proc;
 };
-static constexpr std::array<proc_map_entry_t, 35> _proc_flag_map { {
+static constexpr std::array<proc_map_entry_t, 39> _proc_flag_map { {
   { PF_HEARTBEAT,              "Heartbeat"                   },
   { PF_KILLING_BLOW,           "Killing Blow"                },
   { PF_MELEE,                  "White Melee"                 },
@@ -239,10 +239,10 @@ static constexpr std::array<proc_map_entry_t, 35> _proc_flag_map { {
   { PF_PERIODIC_TAKEN,         "Periodic Taken"              },
   { PF_ANY_DAMAGE_TAKEN,       "Any Damage Taken"            },
   { PF_HELPFUL_PERIODIC,       "Helpful Periodic"            },
-  { PF_JUMP,                   "Proc on jump"                },
   { PF_MAINHAND,               "Melee Main-Hand"             },
   { PF_OFFHAND,                "Melee Off-Hand"              },
   { PF_DEATH,                  "Death"                       },
+  { PF_JUMP,                   "Proc on jump"                },
   { PF_CLONE_SPELL,            "Proc Clone Spell"            },
   { PF_ENTER_COMBAT,           "Enter Combat"                },
   { PF_ENCOUNTER_START,        "Encounter Start"             },
@@ -252,6 +252,10 @@ static constexpr std::array<proc_map_entry_t, 35> _proc_flag_map { {
   { PF_TARGET_DIES,            "Target Dies"                 },
   { PF_KNOCKBACK,              "Knockback"                   },
   { PF_CAST_SUCCESSFUL,        "Cast Successful"             },
+  { PF_UNKNOWN_36,             "Unknown 36"                  },
+  { PF_UNKNOWN_37,             "Unknown 37"                  },
+  { PF_UNKNOWN_38,             "Unknown 38"                  },
+  { PF_UNKNOWN_39,             "Unknown 39"                  },
 } };
 
 struct class_map_entry_t
@@ -2495,35 +2499,13 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell->proc_flags() > 0 )
   {
-    s << "Proc Flags       : ";
-    for ( unsigned flag = 0; flag < 64; flag++ )
-    {
-      if ( spell->proc_flags() & ( static_cast<uint64_t>( 1 ) << flag ) )
-        s << "x";
-      else
-        s << ".";
-
-      if ( ( flag + 1 ) % 8 == 0 )
-        s << " ";
-
-      if ( ( flag + 1 ) % 32 == 0 )
-        s << "  ";
-    }
-    s << std::endl;
-    s << "                 : ";
+    std::vector<std::string_view> proc_str;
     for ( const auto& info : _proc_flag_map )
-    {
       if ( spell->proc_flags() & info.flag )
-      {
-        fmt::print( s, "{}, ", info.proc );
-      }
-    }
-    std::streampos x = s.tellp();
-    s.seekp( x - std::streamoff( 2 ) );
-    s << std::endl;
-  }
+        proc_str.emplace_back( info.proc );
 
-  s << "                 :" << std::endl;  // empty line
+    fmt::print( s, "Proc Flags       : {}\n", fmt::join( proc_str, ", " ) );
+  }
 
   if ( spell->class_family() > 0 )
   {
