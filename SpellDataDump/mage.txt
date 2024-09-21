@@ -5632,7 +5632,7 @@ Name             : Contained Infernal Core (id=248099) [Spell Family (3), Passiv
 Class            : Mage
 School           : Fire
 Spell Type       : None
-Req. Max Level   : 49
+Max Aura Level   : 49
 Labels           : 187
                  : 294
 Proc Chance      : 101%
@@ -5648,7 +5648,7 @@ Name             : Shattered Fragments of Sindragosa (id=248100) [Spell Family (
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 49
+Max Aura Level   : 49
 Labels           : 187
                  : 294
 Proc Chance      : 101%
@@ -11248,7 +11248,7 @@ Name             : Mage Arcane Class Set 2pc (id=393653) [Spell Family (3), Pass
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 17: Mage Spells
                  : 292
                  : 295
@@ -11266,7 +11266,7 @@ Name             : Mage Arcane Class Set 4pc (id=393654) [Spell Family (3), Pass
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 17: Mage Spells
                  : 292
                  : 295
@@ -11284,7 +11284,7 @@ Name             : Mage Fire Class Set 2pc (id=393655) [Spell Family (3), Passiv
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 17: Mage Spells
                  : 292
                  : 295
@@ -11300,7 +11300,7 @@ Name             : Mage Fire Class Set 4pc (id=393656) [Spell Family (3), Passiv
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 17: Mage Spells
                  : 292
                  : 295
@@ -11326,7 +11326,7 @@ Name             : Mage Frost Class Set 2pc (id=393657) [Spell Family (3), Passi
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -11343,7 +11343,7 @@ Name             : Mage Frost Class Set 4pc (id=393658) [Spell Family (3), Passi
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -11465,7 +11465,7 @@ Name             : Mage Arcane 10.1 Class Set 2pc (id=405532) [Spell Family (3),
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -11488,7 +11488,7 @@ Name             : Mage Arcane 10.1 Class Set 4pc (id=405533) [Spell Family (3),
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -11508,7 +11508,7 @@ Name             : Mage Fire 10.1 Class Set 2pc (id=405534) [Spell Family (3), P
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -11524,7 +11524,7 @@ Name             : Mage Fire 10.1 Class Set 4pc (id=405535) [Spell Family (3), P
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -11542,7 +11542,7 @@ Name             : Mage Frost 10.1 Class Set 2pc (id=405536) [Spell Family (3), 
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -11566,7 +11566,7 @@ Name             : Mage Frost 10.1 Class Set 4pc (id=405538) [Spell Family (3), 
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -12423,7 +12423,7 @@ Name             : Mage Arcane 10.2 Class Set 2pc (id=422880) [Spell Family (3),
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -12440,7 +12440,7 @@ Name             : Mage Arcane 10.2 Class Set 4pc (id=422881) [Spell Family (3),
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -12456,7 +12456,7 @@ Name             : Mage Fire 10.2 Class Set 2pc (id=422882) [Spell Family (3), P
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -12476,7 +12476,7 @@ Name             : Mage Fire 10.2 Class Set 4pc (id=422883) [Spell Family (3), P
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -12494,7 +12494,7 @@ Name             : Mage Frost 10.2 Class Set 2pc (id=422884) [Spell Family (3), 
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -12518,7 +12518,7 @@ Name             : Mage Frost 10.2 Class Set 4pc (id=422885) [Spell Family (3), 
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -12578,7 +12578,7 @@ Name             : Mage Fire 10.2 Class Set 4pc (id=424289) [Spell Family (3), H
 Class            : Mage
 School           : Fire
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Duration         : 12 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells

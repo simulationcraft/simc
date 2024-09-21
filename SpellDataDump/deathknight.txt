@@ -5613,7 +5613,7 @@ Name             : Koltira's Newfound Will (id=208782) [Spell Family (15), Passi
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 49
+Max Aura Level   : 49
 Labels           : 143
                  : 187
                  : 294
@@ -11067,7 +11067,7 @@ Name             : Remnant's Despair (id=368690) [Spell Family (15)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 60
+Max Aura Level   : 60
 Range            : 40 yards
 Duration         : 12 seconds
 Stacks           : 1 maximum
@@ -13414,7 +13414,7 @@ Name             : Death Knight Blood Class Set 2pc (id=393621) [Spell Family (1
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -13432,7 +13432,7 @@ Name             : Death Knight Blood Class Set 4pc (id=393622) [Passive, Hidden
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -13449,7 +13449,7 @@ Name             : Death Knight Frost Class Set 2pc (id=393623) [Spell Family (1
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 27: Death Knight Spells
                  : 292
                  : 2317
@@ -13468,7 +13468,7 @@ Name             : Death Knight Frost Class Set 4pc (id=393624) [Spell Family (1
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -13486,7 +13486,7 @@ Name             : Death Knight Unholy Class Set 2pc (id=393626) [Spell Family (
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -13506,7 +13506,7 @@ Name             : Death Knight Unholy Class Set 4pc (id=393627) [Passive, Hidde
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -13630,7 +13630,7 @@ Name             : Death Knight Unholy Class Set 4pc (id=394896) [Spell Family (
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -13694,7 +13694,7 @@ Name             : Death Knight Blood 10.1 Class Set 2pc (id=405499) [Spell Fami
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -13718,7 +13718,7 @@ Name             : Death Knight Blood 10.1 Class Set 4pc (id=405500) [Spell Fami
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -13736,7 +13736,7 @@ Name             : Death Knight Frost 10.1 Class Set 2pc (id=405501) [Spell Fami
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -13758,7 +13758,7 @@ Name             : Death Knight Frost 10.1 Class Set 4pc (id=405502) [Spell Fami
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -13774,7 +13774,7 @@ Name             : Death Knight Unholy 10.1 Class Set 2pc (id=405503) [Spell Fam
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -13794,7 +13794,7 @@ Name             : Death Knight Unholy 10.1 Class Set 4pc (id=405504) [Spell Fam
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -14052,7 +14052,7 @@ Name             : Death Knight Blood 10.2 Class Set 2pc (id=422850) [Passive, H
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -14070,7 +14070,7 @@ Name             : Death Knight Blood 10.2 Class Set 4pc (id=422851) [Spell Fami
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -14090,7 +14090,7 @@ Name             : Death Knight Frost 10.2 Class Set 2pc (id=422852) [Spell Fami
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -14109,7 +14109,7 @@ Name             : Death Knight Frost 10.2 Class Set 4pc (id=422853) [Spell Fami
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -14134,7 +14134,7 @@ Name             : Death Knight Unholy 10.2 Class Set 2pc (id=422854) [Passive, 
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -14153,7 +14153,7 @@ Name             : Death Knight Unholy 10.2 Class Set 4pc (id=422855) [Spell Fam
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -14197,7 +14197,7 @@ Name             : Death Knight Frost 10.2 Class Set 4pc (id=424350) [Spell Fami
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292

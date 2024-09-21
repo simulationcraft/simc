@@ -5134,7 +5134,7 @@ Name             : Archbishop Benedictus' Restitution (id=211317) [Spell Family 
 Class            : Priest
 School           : Holy
 Spell Type       : None
-Req. Max Level   : 49
+Max Aura Level   : 49
 Labels           : 140
                  : 187
                  : 294
@@ -12226,7 +12226,7 @@ Name             : Priest Discipline Class Set 2pc (id=393679) [Spell Family (6)
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12243,7 +12243,7 @@ Name             : Priest Discipline Class Set 4pc (id=393681) [Spell Family (6)
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12262,7 +12262,7 @@ Name             : Priest Holy Class Set 2pc (id=393682) [Spell Family (6), Pass
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12281,7 +12281,7 @@ Name             : Priest Holy Class Set 4pc (id=393683) [Passive, Hidden]
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12296,7 +12296,7 @@ Name             : Priest Shadow Class Set 2pc (id=393684) [Spell Family (6), Pa
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12313,7 +12313,7 @@ Name             : Priest Shadow Class Set 4pc (id=393685) [Spell Family (6), Pa
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12687,7 +12687,7 @@ Name             : Priest Discipline 10.1 Class Set 2pc (id=405551) [Spell Famil
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -12713,7 +12713,7 @@ Name             : Priest Discipline 10.1 Class Set 4pc (id=405553) [Spell Famil
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -12731,7 +12731,7 @@ Name             : Priest Holy 10.1 Class Set 2pc (id=405554) [Spell Family (6),
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -12749,7 +12749,7 @@ Name             : Priest Holy 10.1 Class Set 4pc (id=405556) [Spell Family (6),
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -12765,7 +12765,7 @@ Name             : Priest Shadow 10.1 Class Set 2pc (id=405557) [Spell Family (6
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -12787,7 +12787,7 @@ Name             : Priest Shadow 10.1 Class Set 4pc (id=405558) [Spell Family (6
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -13184,7 +13184,7 @@ Name             : Priest Holy 10.1 Class Set 2pc (id=411097) [Spell Family (6),
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -13533,7 +13533,7 @@ Name             : Priest Discipline 10.2 Class Set 2pc (id=422899) [Spell Famil
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -13555,7 +13555,7 @@ Name             : Priest Discipline 10.2 Class Set 4pc (id=422900) [Spell Famil
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -13575,7 +13575,7 @@ Name             : Priest Holy 10.2 Class Set 2pc (id=422901) [Spell Family (6),
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -13595,7 +13595,7 @@ Name             : Priest Holy 10.2 Class Set 4pc (id=422902) [Spell Family (6),
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -13613,7 +13613,7 @@ Name             : Priest Shadow 10.2 Class Set 2pc (id=422903) [Spell Family (6
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -13635,7 +13635,7 @@ Name             : Priest Shadow 10.2 Class Set 4pc (id=422904) [Spell Family (6
 Class            : Priest
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292

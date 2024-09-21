@@ -12542,7 +12542,7 @@ Name             : Warrior Arms Set 2pc (id=393705) [Spell Family (4), Passive, 
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12563,7 +12563,7 @@ Name             : Warrior Arms Set 4pc (id=393706) [Spell Family (4), Passive, 
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12581,7 +12581,7 @@ Name             : Warrior Fury Set 2pc (id=393708) [Spell Family (4), Passive, 
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12598,7 +12598,7 @@ Name             : Warrior Fury Set 4pc (id=393709) [Spell Family (4), Passive, 
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12613,7 +12613,7 @@ Name             : Warrior Protection Class Set 2pc (id=393710) [Spell Family (4
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12630,7 +12630,7 @@ Name             : Warrior Protection Class Set 4pc (id=393711) [Spell Family (4
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -13406,7 +13406,7 @@ Name             : Warrior Arms 10.1 Class Set 2pc (id=405577) [Spell Family (4)
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -13422,7 +13422,7 @@ Name             : Warrior Arms 10.1 Class Set 4pc (id=405578) [Spell Family (4)
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -13447,7 +13447,7 @@ Name             : Warrior Fury 10.1 Class Set 2pc (id=405579) [Spell Family (4)
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -13469,7 +13469,7 @@ Name             : Warrior Fury 10.1 Class Set 4pc (id=405580) [Spell Family (4)
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -13487,7 +13487,7 @@ Name             : Warrior Protection 10.1 Class Set 2pc (id=405581) [Spell Fami
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -13509,7 +13509,7 @@ Name             : Warrior Protection 10.1 Class Set 4pc (id=405582) [Spell Fami
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -13718,7 +13718,7 @@ Name             : Warrior Arms 10.1 Class Set 4pc (id=410191) [Spell Family (4)
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
@@ -13839,7 +13839,7 @@ Name             : Warrior Arms 10.2 Class Set 2pc (id=422923) [Spell Family (4)
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -13864,7 +13864,7 @@ Name             : Warrior Arms 10.2 Class Set 4pc (id=422924) [Spell Family (4)
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -13885,7 +13885,7 @@ Name             : Warrior Fury 10.2 Class Set 2pc (id=422925) [Spell Family (4)
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -13911,7 +13911,7 @@ Name             : Warrior Fury 10.2 Class Set 4pc (id=422926) [Spell Family (4)
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -13938,7 +13938,7 @@ Name             : Warrior Protection 10.2 Class Set 2pc (id=422927) [Spell Fami
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -13962,7 +13962,7 @@ Name             : Warrior Protection 10.2 Class Set 4pc (id=422928) [Spell Fami
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292

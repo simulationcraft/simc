@@ -11277,7 +11277,7 @@ Name             : Rogue Assassination Class Set 2pc (id=393724) [Spell Family (
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -11292,7 +11292,7 @@ Name             : Rogue Assassination Class Set 4pc (id=393725) [Spell Family (
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -11309,7 +11309,7 @@ Name             : Rogue Outlaw Class Set 2pc (id=393727) [Spell Family (8), Pas
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -11326,7 +11326,7 @@ Name             : Rogue Outlaw Class Set 4pc (id=393728) [Spell Family (8), Pas
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -11341,7 +11341,7 @@ Name             : Rogue Subtlety Class Set 2pc (id=393729) [Spell Family (8), P
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -11358,7 +11358,7 @@ Name             : Rogue Subtlety Class Set 4pc (id=393730) [Spell Family (8), P
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12407,7 +12407,7 @@ Name             : Rogue Assassination 10.1 Class Set 2pc (id=405559) [Spell Fam
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -12428,7 +12428,7 @@ Name             : Rogue Assassination 10.1 Class Set 4pc (id=405560) [Spell Fam
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -12445,7 +12445,7 @@ Name             : Rogue Outlaw 10.1 Class Set 2pc (id=405561) [Spell Family (8)
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -12464,7 +12464,7 @@ Name             : Rogue Outlaw 10.1 Class Set 4pc (id=405562) [Spell Family (8)
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -12483,7 +12483,7 @@ Name             : Rogue Subtlety 10.1 Class Set 2pc (id=405563) [Spell Family (
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -12505,7 +12505,7 @@ Name             : Rogue Subtlety 10.1 Class Set 4pc (id=405564) [Spell Family (
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -12817,7 +12817,7 @@ Name             : Rogue Assassination 10.2 Class Set 2pc (id=422905) [Passive, 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -12840,7 +12840,7 @@ Name             : Rogue Assassination 10.2 Class Set 4pc (id=422906) [Spell Fam
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -12865,7 +12865,7 @@ Name             : Rogue Outlaw 10.2 Class Set 2pc (id=422907) [Spell Family (8)
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -12884,7 +12884,7 @@ Name             : Rogue Outlaw 10.2 Class Set 4pc (id=422908) [Passive, Hidden]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -12901,7 +12901,7 @@ Name             : Rogue Subtlety 10.2 Class Set 4pc (id=422909) [Passive, Hidde
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -12919,7 +12919,7 @@ Name             : Rogue Subtlety 10.2 Class Set 2pc (id=422910) [Spell Family (
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292

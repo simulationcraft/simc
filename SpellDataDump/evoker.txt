@@ -7259,7 +7259,7 @@ Name             : Evoker Devastation Class Set 2pc (id=393642) [Spell Family (2
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -7277,7 +7277,7 @@ Name             : Evoker Devastation Class Set 4pc (id=393643) [Spell Family (2
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -7294,7 +7294,7 @@ Name             : Evoker Preservation Class Set 2pc (id=393644) [Spell Family (
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -7311,7 +7311,7 @@ Name             : Evoker Preservation Class Set 4pc (id=393645) [Spell Family (
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -8188,7 +8188,7 @@ Name             : Evoker Devastation 10.1 Class Set 2pc (id=405518) [Spell Fami
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
@@ -8207,7 +8207,7 @@ Name             : Evoker Devastation 10.1 Class Set 4pc (id=405519) [Spell Fami
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
@@ -8231,7 +8231,7 @@ Name             : Evoker Preservation 10.1 Class Set 2pc (id=405520) [Spell Fam
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
@@ -8258,7 +8258,7 @@ Name             : Evoker Preservation 10.1 Class Set 4pc (id=405522) [Spell Fam
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
@@ -10237,7 +10237,7 @@ Name             : Evoker Augmentation 10.1 Class Set 2pc (id=414877) [Spell Fam
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
@@ -10259,7 +10259,7 @@ Name             : Evoker Augmentation 10.1 Class Set 4pc (id=414878) [Spell Fam
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
@@ -10308,7 +10308,7 @@ Name             : Evoker Augmentation 10.0 Class Set 4pc (id=415221) [Spell Fam
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
@@ -10330,7 +10330,7 @@ Name             : Evoker Augmentation 10.0 Class Set 2pc (id=415222) [Spell Fam
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
@@ -10425,7 +10425,7 @@ Name             : Evoker Augmentation 10.2 Class Set 2pc (id=422868) [Passive, 
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
@@ -10441,7 +10441,7 @@ Name             : Evoker Augmentation 10.2 Class Set 4pc (id=422869) [Passive, 
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
@@ -10457,7 +10457,7 @@ Name             : Evoker Devastation 10.2 Class Set 2pc (id=422870) [Spell Fami
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
@@ -10476,7 +10476,7 @@ Name             : Evoker Devastation 10.2 Class Set 4pc (id=422871) [Spell Fami
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
@@ -10492,7 +10492,7 @@ Name             : Evoker Preservation 10.2 Class Set 2pc (id=422872) [Spell Fam
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
@@ -10512,7 +10512,7 @@ Name             : Evoker Preservation 10.2 Class Set 4pc (id=422873) [Spell Fam
 Class            : Evoker
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)

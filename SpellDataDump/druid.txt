@@ -2111,7 +2111,7 @@ Name             : Maim Damage (id=61252) [Spell Family (7), Passive, Hidden]
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 49
+Max Aura Level   : 49
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Redirection (35), No Reflection (39), Item Passive On Client (314), Not in Mythic+ Mode (Challenge Mode) (368), Check Required Target Aura By Caster (382), Not In Proving Grounds (401)
                  :
 Effects          :
@@ -7225,7 +7225,7 @@ Name             : Oneth's Intuition (id=209405) [Spell Family (7), Passive]
 Class            : Druid
 School           : Nature
 Spell Type       : None
-Req. Max Level   : 49
+Max Aura Level   : 49
 Labels           : 153
                  : 187
                  : 294
@@ -14918,7 +14918,7 @@ Name             : Druid Balance Class Set 2pc (id=393632) [Spell Family (7), Pa
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -14935,7 +14935,7 @@ Name             : Druid Balance Class Set 4pc (id=393633) [Spell Family (7), Pa
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -14952,7 +14952,7 @@ Name             : Druid Feral Class Set 2pc (id=393635) [Spell Family (7), Pass
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -14973,7 +14973,7 @@ Name             : Druid Feral Class Set 4pc (id=393636) [Spell Family (7), Pass
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -14992,7 +14992,7 @@ Name             : Druid Guardian Class Set 2pc (id=393637) [Spell Family (7), P
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -15011,7 +15011,7 @@ Name             : Druid Guardian Class Set 4pc (id=393638) [Spell Family (7), P
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -15026,7 +15026,7 @@ Name             : Druid Restoration Class Set 2pc (id=393639) [Spell Family (7)
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 2317
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
                  :
@@ -15041,7 +15041,7 @@ Name             : Druid Restoration Class Set 4pc (id=393641) [Spell Family (7)
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 2317
 Internal Cooldown: 1.5 seconds
 Proc Chance      : 101%
@@ -16376,7 +16376,7 @@ Name             : Druid Balance 10.1 Class Set 2pc (id=405510) [Spell Family (7
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -16402,7 +16402,7 @@ Name             : Druid Balance 10.1 Class Set 4pc (id=405511) [Spell Family (7
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -16418,7 +16418,7 @@ Name             : Druid Feral 10.1 Class Set 2pc (id=405512) [Spell Family (7),
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -16441,7 +16441,7 @@ Name             : Druid Feral 10.1 Class Set 4pc (id=405513) [Spell Family (7),
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -16457,7 +16457,7 @@ Name             : Druid Guardian 10.1 Class Set 2pc (id=405514) [Spell Family (
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -16475,7 +16475,7 @@ Name             : Druid Guardian 10.1 Class Set 4pc (id=405515) [Spell Family (
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -16497,7 +16497,7 @@ Name             : Druid Restoration 10.1 Class Set 2pc (id=405516) [Spell Famil
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -16523,7 +16523,7 @@ Name             : Druid Restoration 10.1 Class Set 4pc (id=405517) [Spell Famil
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -17205,7 +17205,7 @@ Name             : Druid Feral 10.2 Class Set 2pc (id=422747) [Spell Family (7),
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -17223,7 +17223,7 @@ Name             : Druid Feral 10.2 Class Set 4pc (id=422748) [Spell Family (7),
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -17294,7 +17294,7 @@ Name             : Druid Balance 10.2 Class Set 2pc (id=422862) [Passive, Hidden
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -17314,7 +17314,7 @@ Name             : Druid Balance 10.2 Class Set 4pc (id=422863) [Spell Family (7
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -17334,7 +17334,7 @@ Name             : Druid Guardian 10.2 Class Set 2pc (id=422864) [Passive, Hidde
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -17352,7 +17352,7 @@ Name             : Druid Guardian 10.2 Class Set 4pc (id=422865) [Passive, Hidde
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -17374,7 +17374,7 @@ Name             : Druid Restoration 10.2 Class Set 2pc (id=422866) [Spell Famil
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -17392,7 +17392,7 @@ Name             : Druid Restoration 10.2 Class Set 4pc (id=422867) [Spell Famil
 Class            : Druid
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292

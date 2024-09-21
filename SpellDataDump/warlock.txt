@@ -5091,7 +5091,7 @@ Name             : Varo'then's Restraint (id=213014) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
-Req. Max Level   : 49
+Max Aura Level   : 49
 Labels           : 130
                  : 187
                  : 294
@@ -12251,7 +12251,7 @@ Name             : Warlock Affliction Class Set 2pc (id=393698) [Spell Family (5
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12266,7 +12266,7 @@ Name             : Warlock Affliction Class Set 4pc (id=393699) [Spell Family (5
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12281,7 +12281,7 @@ Name             : Warlock Demonology Class Set 2pc (id=393701) [Spell Family (5
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12298,7 +12298,7 @@ Name             : Warlock Demonology Class Set 4pc (id=393702) [Spell Family (5
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12315,7 +12315,7 @@ Name             : Warlock Destruction Class Set 2pc (id=393703) [Spell Family (
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12332,7 +12332,7 @@ Name             : Warlock Destruction Class Set 4pc (id=393704) [Spell Family (
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 292
                  : 295
                  : 2317
@@ -12635,7 +12635,7 @@ Name             : Warlock Affliction 10.1 Class Set 2pc (id=405571) [Spell Fami
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -12665,7 +12665,7 @@ Name             : Warlock Affliction 10.1 Class Set 4pc (id=405572) [Spell Fami
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -12682,7 +12682,7 @@ Name             : Warlock Demonology 10.1 Class Set 2pc (id=405573) [Spell Fami
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -12702,7 +12702,7 @@ Name             : Warlock Demonology 10.1 Class Set 4pc (id=405574) [Spell Fami
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -12718,7 +12718,7 @@ Name             : Warlock Destruction 10.1 Class Set 2pc (id=405575) [Spell Fam
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -12736,7 +12736,7 @@ Name             : Warlock Destruction 10.1 Class Set 4pc (id=405576) [Spell Fam
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -13356,7 +13356,7 @@ Name             : Warlock Affliction 10.2 Class Set 2pc (id=422917) [Spell Fami
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -13378,7 +13378,7 @@ Name             : Warlock Affliction 10.2 Class Set 4pc (id=422918) [Spell Fami
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -13398,7 +13398,7 @@ Name             : Warlock Demonology 10.2 Class Set 2pc (id=422919) [Spell Fami
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -13418,7 +13418,7 @@ Name             : Warlock Demonology 10.2 Class Set 4pc (id=422920) [Spell Fami
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -13439,7 +13439,7 @@ Name             : Warlock Destruction 10.2 Class Set 2pc (id=422921) [Spell Fam
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -13457,7 +13457,7 @@ Name             : Warlock Destruction 10.2 Class Set 4pc (id=422922) [Spell Fam
 Class            : Warlock
 School           : Physical
 Spell Type       : None
-Req. Max Level   : 79
+Max Aura Level   : 79
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
