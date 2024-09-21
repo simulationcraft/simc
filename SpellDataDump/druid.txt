@@ -6455,6 +6455,7 @@ Description      : Deals $m1 Arcane damage to the target and empowers Half Moon 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
 
 Name             : Fury of Elune (id=202770) [Spell Family (7)] 
+Hotfixed         : Attributes
 Talent Entry     : Balance [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
 School           : Astral
@@ -6470,7 +6471,7 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x40000000
 Affecting spells : Eclipse (Solar) (48517 effects: #1, #3, #4, #8), Eclipse (Lunar) (48518 effects: #1, #3, #4, #7), Moonfire (164812 effects: #3, #4), Sunfire (164815 effects: #3, #4), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Adaptive Swarm (325733 effect#2), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Mastery: Astral Invocation (393014 effects: #1, #2, #3, #4), Balance of All Things (394049 effect#1), Balance of All Things (394050 effect#1), Radiant Moonlight (394121 effects: #1, #3), Arcane Affinity (429540 effects: #1, #2), Stellar Command (429668 effect#1)
 Family Flags     : 23
-Attributes       : Not Shapeshifted (16), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Force Dest Location (288), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=298967)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
