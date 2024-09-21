@@ -12672,6 +12672,7 @@ Travel Delay     : 1 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
+                 : 1218
                  : 3408: Mastery: Savant (190740 effect#7), Mastery: Icicles (321684 effect#4)
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3
@@ -12797,6 +12798,7 @@ Travel Delay     : 1 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
+                 : 1218
                  : 3408: Mastery: Savant (190740 effect#7), Mastery: Icicles (321684 effect#4)
 Affecting spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 3
@@ -12834,6 +12836,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
+                 : 1218
 Stacks           : 999 maximum
 Proc Chance      : 101%
 Attributes       : Allow Cast While Dead (23), Can't Crit (93), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), Allow While Fleeing (177), Allow While Confused (178), Ignore Caster Damage Modifiers (221), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Allow While Feared By Fear Mechanic (417)
@@ -13002,6 +13005,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
+                 : 1218
 Stacks           : 999 maximum
 Proc Chance      : 101%
 Attributes       : Allow Cast While Dead (23), Can't Crit (93), Allow Cast While Casting (135), Ignore Damage Taken Modifiers (136), Allow While Fleeing (177), Allow While Confused (178), Ignore Caster Damage Modifiers (221), Allow While Charmed (261), Aura Points On Client (268), Allow Cast While Channeling (308), Allow While Feared By Fear Mechanic (417)
