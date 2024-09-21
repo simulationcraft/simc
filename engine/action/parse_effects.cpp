@@ -113,6 +113,9 @@ void player_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
   if ( type & AFFECTED_OVERRIDE )
     notes.emplace_back( "Value-override" );
 
+  if ( type & MANUAL_ENTRY )
+    notes.emplace_back( "Manual-entry" );
+
   if ( value_func )
     notes.emplace_back( "Value-function" );
 
@@ -163,6 +166,9 @@ void target_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
 
   if ( type & AFFECTED_OVERRIDE )
     notes.emplace_back( "Scripted" );
+
+  if ( type & MANUAL_ENTRY )
+    notes.emplace_back( "Manual" );
 
   if ( note_fn )
   {
