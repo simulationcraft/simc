@@ -4885,15 +4885,6 @@ struct primal_wrath_t final : public cat_finisher_t
       rip->base_costs[ RESOURCE_ENERGY ] = 0;
       // mods are parsed on construction so set to false so the rip execute doesn't decrement
       rip->snapshots.bloodtalons = false;
-
-      if ( p->talent.adaptive_swarm.ok() )
-      {
-        const auto& eff = p->spec.adaptive_swarm_damage->effectN( 2 );
-        add_parse_entry( target_multiplier_effects )
-          .set_func( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage ) )
-          .set_value( eff.percent() )
-          .set_eff( &eff );
-      }
     }
   }
 
@@ -14189,7 +14180,7 @@ void druid_t::parse_action_target_effects( action_t* action )
   }
 
   _a->parse_target_effects( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage, false ),
-                            spec.adaptive_swarm_damage, spec_spell );
+                            spec.adaptive_swarm_damage, spec_spell, affect_list_t( 2 ).add_spell( 285381 ) );
 
   _a->parse_target_effects( d_fn( &druid_td_t::debuffs_t::sabertooth ),
                             spec.sabertooth, talent.sabertooth->effectN( 2 ).percent() );
