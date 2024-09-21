@@ -771,7 +771,6 @@ public:
     // San'layn
     propagate_const<buff_t*> bloodsoaked_ground;
     propagate_const<buff_t*> essence_of_the_blood_queen;
-    propagate_const<buff_t*> essence_of_the_blood_queen_damage;
     buff_t* gift_of_the_sanlayn;
     propagate_const<buff_t*> vampiric_strike;
     propagate_const<buff_t*> infliction_of_sorrow;
@@ -1526,7 +1525,6 @@ public:
   struct modified_spells_t
   {
     modified_spell_data_t* infliction_of_sorrow;
-    modified_spell_data_t* essence_of_the_blood_queen;
   } modified_spell;
 
   // RPPM
@@ -5481,62 +5479,6 @@ struct apocalyptic_conquest_buff_t final : public death_knight_buff_t
 
 public:
   int nazgrims_conquest;
-};
-
-// Essence of the Blood Queen =============================================
-struct essence_of_the_blood_queen_haste_buff_t final : public death_knight_buff_t
-{
-  essence_of_the_blood_queen_haste_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
-    : death_knight_buff_t( p, name, spell )
-  {
-    set_default_value( p->spell.essence_of_the_blood_queen_buff->effectN( 1 ).percent() / 10 );
-    set_stack_change_callback( [ p ]( buff_t*, int old_, int new_ ) {
-      if ( new_ > old_ )
-      {
-        p->buffs.essence_of_the_blood_queen_damage->increment();
-      }
-    } );
-    set_expire_callback(
-        [ p ]( buff_t*, double, timespan_t ) { p->buffs.essence_of_the_blood_queen_damage->expire(); } );
-    set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-  }
-
-  // Override the value of the buff to properly capture Essence of the Blood Queens's buff behavior
-  double value() override
-  {
-    return ( p()->modified_spell.essence_of_the_blood_queen->effectN( 1 ).percent() / 10 ) *
-           ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
-  }
-
-  double check_value() const override
-  {
-    return ( p()->modified_spell.essence_of_the_blood_queen->effectN( 1 ).percent() / 10 ) *
-           ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
-  }
-};
-
-struct essence_of_the_blood_queen_damage_buff_t final : public death_knight_buff_t
-{
-  essence_of_the_blood_queen_damage_buff_t( death_knight_t* p, util::string_view name, const spell_data_t* spell )
-    : death_knight_buff_t( p, name, spell )
-  {
-    set_default_value( p->modified_spell.essence_of_the_blood_queen->effectN( 2 ).percent() );
-    set_duration( 0_ms );  // Handled by the haste buff
-    set_quiet( true );
-  }
-
-  // Override the value of the buff to properly capture Essence of the Blood Queens's buff behavior
-  double value() override
-  {
-    return ( p()->modified_spell.essence_of_the_blood_queen->effectN( 2 ).percent() ) *
-           ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
-  }
-
-  double check_value() const override
-  {
-    return ( p()->modified_spell.essence_of_the_blood_queen->effectN( 2 ).percent() ) *
-           ( 1.0 + p()->buffs.gift_of_the_sanlayn->check_value() );
-  }
 };
 
 // Gift of the San'layn ===================================================
@@ -13840,12 +13782,8 @@ void death_knight_t::create_buffs()
                                                           ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   // San'layn
-  buffs.essence_of_the_blood_queen = make_fallback<essence_of_the_blood_queen_haste_buff_t>(
+  buffs.essence_of_the_blood_queen = make_fallback(
       talent.sanlayn.vampiric_strike.ok(), this, "essence_of_the_blood_queen", spell.essence_of_the_blood_queen_buff );
-
-  buffs.essence_of_the_blood_queen_damage = make_fallback<essence_of_the_blood_queen_damage_buff_t>(
-      talent.sanlayn.vampiric_strike.ok(), this, "essence_of_the_blood_queen_damage",
-      spell.essence_of_the_blood_queen_buff );
 
 
   buffs.gift_of_the_sanlayn = make_fallback<gift_of_the_sanlayn_buff_t>( talent.sanlayn.gift_of_the_sanlayn.ok(), this, "gift_of_the_sanlayn",
@@ -14817,9 +14755,6 @@ void death_knight_t::apply_effect_modifying_effects()
 {
   modified_spell.infliction_of_sorrow =
       get_modified_spell( talent.sanlayn.infliction_of_sorrow )->parse_effects( spec.blood_death_knight );
-
-  modified_spell.essence_of_the_blood_queen =
-      get_modified_spell( spell.essence_of_the_blood_queen_buff )->parse_effects( talent.sanlayn.frenzied_bloodthirst );
 }
 
 template <class Base>
@@ -14861,7 +14796,11 @@ void death_knight_action_t<Base>::apply_action_effects()
   parse_effects( p()->buffs.exterminate_painful_death, effect_mask_t( true ).disable( 2 ) );
 
   // San'layn
-  parse_effects( p()->buffs.essence_of_the_blood_queen_damage, USE_CURRENT );
+  parse_effects( p()->buffs.essence_of_the_blood_queen, [ this ] ( double v ) {
+    if ( p()->buffs.gift_of_the_sanlayn->check() )
+      v *= 1.0 + p()->buffs.gift_of_the_sanlayn->check_value();
+    return v;
+  }, p()->talent.sanlayn.frenzied_bloodthirst );
 }
 
 template <class Base>
@@ -14981,6 +14920,12 @@ void death_knight_t::parse_player_effects()
                         pet_spell.trollbanes_chains_of_ice_debuff );
 
   // San'layn
+  parse_effects( buffs.essence_of_the_blood_queen, [ this ]( double v ) {
+    v *= 0.1; // Divides by 10 in spell data
+    if ( buffs.gift_of_the_sanlayn->check() )
+      v *= 1.0 + buffs.gift_of_the_sanlayn->check_value();
+    return v;
+  } );
   parse_target_effects( d_fn( &death_knight_td_t::debuffs_t::incite_terror ), spell.incite_terror_debuff );
 }
 
