@@ -176,6 +176,15 @@ enum runeforge_apocalypse
   MAX
 };
 
+enum rider_of_the_apocalypse
+{
+  WHITEMANE,
+  TROLLBANE,
+  NAZGRIM,
+  MOGRAINE,
+  ALL_RIDERS
+};
+
 // ==========================================================================
 // Death Knight Runes ( part 1 )
 // ==========================================================================
@@ -863,8 +872,6 @@ public:
     action_t* summon_trollbane;
     action_t* summon_nazgrim;
     action_t* summon_mograine;
-    action_t* last_rider_summoned;
-    std::vector<action_t*> rider_summon_spells;
     propagate_const<action_t*> undeath_dot;
     propagate_const<action_t*> trollbanes_icy_fury;
     propagate_const<action_t*> mograines_death_and_decay;
@@ -1666,7 +1673,7 @@ public:
 
   // Runes
   runes_t _runes;
-
+  int last_summoned_rider;
   auto_dispose<std::vector<modified_spell_data_t*>> modified_spells;
   std::vector<pets::death_knight_pet_t*> dk_active_pets;
 
@@ -1694,6 +1701,7 @@ public:
       procs(),
       options(),
       _runes( this ),
+      last_summoned_rider(),
       dk_active_pets()
   {
     cooldown.apocalypse          = get_cooldown( "apocalypse" );
@@ -1809,6 +1817,7 @@ public:
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   // Rider of the Apocalypse
+  int get_random_rider();
   void summon_rider( timespan_t duration, bool random );
   void extend_rider( double amount, pets::horseman_pet_t* rider );
   void trigger_whitemanes_famine( player_t* target );
@@ -11854,28 +11863,56 @@ void death_knight_t::chill_streak_bounce( player_t& t )
   make_event<cs_bounce_t>( *sim, this, &t );
 }
 
+int death_knight_t::get_random_rider()
+{
+  int n = as<int>( rng().range( 0, rider_of_the_apocalypse::ALL_RIDERS ) );
+  if ( n == last_summoned_rider )
+  {
+    n = get_random_rider();
+  }
+  last_summoned_rider = n;
+  return n;
+}
+
 void death_knight_t::summon_rider( timespan_t duration, bool random )
 {
-  std::vector<action_t*> random_rider_spells = active_spells.rider_summon_spells;
-  // Can not randomly summon the same rider twice in a row
-  if ( random && active_spells.last_rider_summoned != nullptr &&
-       active_spells.last_rider_summoned == random_rider_spells[ 0 ] )
+  int n = 0;
+  if ( random )
   {
-    auto it = std::find( random_rider_spells.begin(), random_rider_spells.end(), active_spells.last_rider_summoned );
-    random_rider_spells.erase( it );
+    n = get_random_rider();
+  }
+  else
+    n = rider_of_the_apocalypse::ALL_RIDERS;
+
+  std::vector<action_t*> summon_riders;
+
+  switch ( n )
+  {
+    case rider_of_the_apocalypse::MOGRAINE:
+      summon_riders.push_back( active_spells.summon_mograine );
+      break;
+    case rider_of_the_apocalypse::NAZGRIM:
+      summon_riders.push_back( active_spells.summon_nazgrim );
+      break;
+    case rider_of_the_apocalypse::TROLLBANE:
+      summon_riders.push_back( active_spells.summon_trollbane );
+      break;
+    case rider_of_the_apocalypse::WHITEMANE:
+      summon_riders.push_back( active_spells.summon_whitemane );
+      break;
+    case rider_of_the_apocalypse::ALL_RIDERS:
+      summon_riders.push_back( active_spells.summon_mograine );
+      summon_riders.push_back( active_spells.summon_nazgrim );
+      summon_riders.push_back( active_spells.summon_trollbane );
+      summon_riders.push_back( active_spells.summon_whitemane );
+      break;
   }
 
-  for ( auto& rider : random_rider_spells )
+  for ( auto& rider : summon_riders )
   {
     debug_cast<summon_rider_t*>( rider )->duration = duration;
     debug_cast<summon_rider_t*>( rider )->random   = random;
     rider->execute();
-    if ( random )
-    {
-      active_spells.last_rider_summoned = rider;
-      rng().shuffle( active_spells.rider_summon_spells.begin(), active_spells.rider_summon_spells.end() );
-      return;
-    }
   }
 }
 
@@ -12168,18 +12205,14 @@ void death_knight_t::create_actions()
   if ( talent.rider.riders_champion.ok() )
   {
     active_spells.summon_whitemane = get_action<summon_whitemane_t>( "summon_whitemane", this );
-    active_spells.rider_summon_spells.push_back( active_spells.summon_whitemane );
     active_spells.undeath_dot = get_action<undeath_dot_t>( "undeath", this );
 
     active_spells.summon_mograine = get_action<summon_mograine_t>( "summon_mograine", this );
-    active_spells.rider_summon_spells.push_back( active_spells.summon_mograine );
 
     active_spells.summon_trollbane = get_action<summon_trollbane_t>( "summon_trollbane", this );
-    active_spells.rider_summon_spells.push_back( active_spells.summon_trollbane );
     active_spells.trollbanes_icy_fury = get_action<trollbanes_icy_fury_t>( "trollbanes_icy_fury", this );
 
     active_spells.summon_nazgrim = get_action<summon_nazgrim_t>( "summon_nazgrim", this );
-    active_spells.rider_summon_spells.push_back( active_spells.summon_nazgrim );
   }
 
   // San'layn
@@ -14676,11 +14709,6 @@ void death_knight_t::arise()
 
   start_inexorable_assault();
   start_cold_heart();
-
-  if ( talent.rider.riders_champion.ok() )
-  {
-    rng().shuffle( active_spells.rider_summon_spells.begin(), active_spells.rider_summon_spells.end() );
-  }
 
   if ( talent.rider.a_feast_of_souls.ok() )
   {
