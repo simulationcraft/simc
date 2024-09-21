@@ -2165,9 +2165,9 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
-  if ( spell->req_max_level() > 0 )
+  if ( spell->max_aura_level() > 0 )
   {
-    s << "Req. Max Level   : " << spell->req_max_level();
+    s << "Max Aura Level   : " << spell->max_aura_level();
     s << std::endl;
   }
 

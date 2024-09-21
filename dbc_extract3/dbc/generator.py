@@ -3448,8 +3448,8 @@ class SpellDataGenerator(DataGenerator):
             req_level = max(level_entry.base_level, level_entry.spell_level)
             fields += [level_entry.field_format('base_level')[0] % req_level]
 
-            fields += level_entry.field('max_level', 'req_max_level')
-            hotfix.add(level_entry, ('base_level', 9), ('max_level', 10), ('req_max_level', 46), ('spell_level', 49))
+            fields += level_entry.field('max_level', 'max_aura_level')
+            hotfix.add(level_entry, ('base_level', 9), ('max_level', 10), ('max_aura_level', 46), ('spell_level', 49))
 
             range_entry = misc.ref('id_range')
             fields += range_entry.field('min_range_1', 'max_range_1')

@@ -110,7 +110,7 @@ static constexpr auto spell_data_fields = std::make_tuple(
   data_field( "school",            &spell_data_t::_school ),
   data_field( "spell_level",       &spell_data_t::_spell_level ),
   data_field( "max_level",         &spell_data_t::_max_level ),
-  data_field( "req_max_level",     &spell_data_t::_req_max_level ),
+  data_field( "max_aura_level",    &spell_data_t::_max_aura_level ),
   data_field( "max_scaling_level", &spell_data_t::_max_scaling_level ),
   data_field( "min_scaling_level", &spell_data_t::_min_scaling_level ),
   data_field( "scale_from_ilevel", &spell_data_t::_scale_from_ilevel ),
