@@ -459,9 +459,11 @@ struct spell_data_t
   // SpellScaling.dbc
   int         _cast_time;          // Casting time in milliseconds
   // Spell.dbc flags
-  unsigned    _attributes[NUM_SPELL_FLAGS]; // SpellMisc.dbc "flags"
-  unsigned    _class_flags[NUM_CLASS_FAMILY_FLAGS]; // SpellClassOptions.dbc flags
-  unsigned    _class_flags_family; // SpellClassOptions.dbc spell family
+  unsigned    _attributes[ NUM_SPELL_FLAGS ];  // SpellMisc.dbc "flags"
+  unsigned    _class_flags[ NUM_CLASS_FAMILY_FLAGS ];  // SpellClassOptions.dbc flags
+  unsigned    _class_flags_family;                     // SpellClassOptions.dbc spell family
+  unsigned    _aura_interrupt[ 2 ];     // SpellInterupts.dbc AuraInterruptFlags
+  unsigned    _channel_interrupt[ 2 ];  // SpellInterupts.dbc ChannelInterruptFlags
   // SpellShapeshift.db2
   unsigned    _stance_mask;        // Stance mask (used only for druid form restrictions?)
   // SpellMechanic.db2

@@ -3407,7 +3407,7 @@ class SpellDataGenerator(DataGenerator):
             spell = self.db('SpellName')[id]
 
             # Unused hotfix IDs: 5, 6, 7
-            # MAX hotfix id: 54
+            # MAX hotfix id: 56
             hotfix = HotfixDataRecord()
             power_count = 0
 
@@ -3514,6 +3514,12 @@ class SpellDataGenerator(DataGenerator):
             fields += class_opt_entry.field('family')
             hotfix.add(class_opt_entry,
                 (('flags_1', 'flags_2', 'flags_3', 'flags_4'), 36), ('family', 37))
+
+            interrupt = spell.child('SpellInterrupts')
+            fields += [ '{ %s }' % ', '.join(interrupt.field('aura_interrupt_flags_1', 'aura_interrupt_flags_2')) ]
+            hotfix.add(interrupt, (('aura_interrupt_flags_1', 'aura_interrupt_flags_2'), 55))
+            fields += [ '{ %s }' % ', '.join(interrupt.field('channel_interrupt_flags_1', 'channel_interrupt_flags_2')) ]
+            hotfix.add(interrupt, (('channel_interrupt_flags_1', 'channel_interrupt_flags_2'), 56))
 
             shapeshif_entry = spell.child_ref('SpellShapeshift')
             fields += shapeshif_entry.field('flags_1')

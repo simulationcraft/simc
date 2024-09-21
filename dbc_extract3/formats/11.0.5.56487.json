@@ -1572,8 +1572,8 @@
     "fields": [
       { "data_type": "B", "field": "difficulty" },
       { "data_type": "h", "field": "interrupt_flags" },
-      { "data_type": "i", "field": "aura_interrupt_flags", "elements": 2 },
-      { "data_type": "i", "field": "channel_interrupt_flags", "elements": 2 }
+      { "data_type": "I", "field": "aura_interrupt_flags", "elements": 2 },
+      { "data_type": "I", "field": "channel_interrupt_flags", "elements": 2 }
     ]
   },
   "SpellItemEnchantment": {
