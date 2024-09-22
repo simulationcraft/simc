@@ -358,6 +358,16 @@ void dbc_proc_callback_t::initialize()
   // Initialize proc action
   proc_action = effect.create_action();
 
+  if ( proc_action && &proc_action->data() == spell_data_t::not_found() )
+  {
+    listener->sim->error(
+      "Effect {} for Player {} attempting to use action {} without the required talent, spec, class, race, or level; "
+      "ignoring.\n",
+      listener->name(), effect.name(), proc_action->name() );
+
+    proc_action = nullptr;
+  }
+
   // Initialize the potential proc buff through special_effect_t. Can return 0,
   // in which case the proc does not trigger a buff.
   proc_buff = effect.create_buff();

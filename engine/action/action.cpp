@@ -529,9 +529,12 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
   {
     // this is super-spammy, may just want to disable this after we're sure this section is working as intended.
     if ( sim->debug )
-      sim->errorf(
-          "Player %s attempting to use action %s without the required talent, spec, class, or race; ignoring.\n",
-          player->name(), name() );
+    {
+      sim->error(
+        "Player {} attempting to use action {} without the required talent, spec, class, race, or level; ignoring.\n",
+        player->name(), name() );
+    }
+
     background = true;
   }
 
