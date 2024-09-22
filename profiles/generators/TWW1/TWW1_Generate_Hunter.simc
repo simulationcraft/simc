@@ -22,7 +22,7 @@ trinket1=,id=133282,ilevel=639
 trinket2=,id=212454,bonus_id=1540/10299/10376
 main_hand=,id=212400,bonus_id=1540/10299,enchant_id=7460
 
-save=TWW1_Hunter_Beast_Mastery_Dark_Ranger.simc
+save=TWW1_Hunter_Beast_Mastery.simc
 
 hunter="TWW1_Hunter_Beast_Mastery_Pack_Leader"
 level=80
@@ -126,7 +126,7 @@ trinket1=skardyns_grace,id=133282,bonus_id=11342/10299
 trinket2=void_reapers_contract,id=212456,ilevel=639
 main_hand=harvesters_interdiction,id=221159,bonus_id=3131/10299,enchant_id=7463
 
-save=TWW1_Hunter_Survival_Sentinel.simc
+save=TWW1_Hunter_Survival.simc
 
 
 hunter="TWW1_Hunter_Survival_Pack_Leader"

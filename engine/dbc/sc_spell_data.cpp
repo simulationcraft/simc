@@ -215,7 +215,7 @@ static constexpr std::array<sdata_field_t, 43> _spell_data_fields { {
   { "tooltip",           nontype< spell_text_field< &spelltext_data_t::tooltip > > },
   { "rank",              nontype< spell_text_field< &spelltext_data_t::rank > > },
   { "desc_vars",         nontype< spell_desc_vars > },
-  { "req_max_level",     nontype< &spell_data_t::_req_max_level > },
+  { "max_aura_level",    nontype< &spell_data_t::_max_aura_level > },
   { "dmg_class",         nontype< &spell_data_t::_dmg_class > },
   { "max_targets",       nontype< &spell_data_t::_max_targets > },
   { "covenant",          nontype< spell_covenant_id > },

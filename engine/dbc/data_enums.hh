@@ -206,6 +206,11 @@ enum proc_flag : uint64_t
   PF_KNOCKBACK              = 0x200000000, // unused
   PF_CAST_SUCCESSFUL        = 0x400000000, // TODO: This is relatively commonly used and should be supported.
 
+  PF_UNKNOWN_36             = 0x800000000,
+  PF_UNKNOWN_37             = 0x1000000000,
+  PF_UNKNOWN_38             = 0x2000000000,
+  PF_UNKNOWN_39             = 0x4000000000,
+
   // Helper types
   PF_ALL_DAMAGE             = PF_MELEE | PF_MELEE_ABILITY |
                               PF_RANGED | PF_RANGED_ABILITY |

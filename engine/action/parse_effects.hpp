@@ -21,7 +21,8 @@ enum parse_flag_e : uint8_t
   CONSUME_BUFF      = 0x10,
   // internal flags that should not be used in parse_effects()
   VALUE_OVERRIDE    = 0x20,
-  AFFECTED_OVERRIDE = 0x40
+  AFFECTED_OVERRIDE = 0x40,
+  MANUAL_ENTRY      = 0x80
 };
 
 // effects dependent on player state
@@ -50,7 +51,7 @@ struct player_effect_t
   { value = v; return *this; }
 
   player_effect_t& set_use_stacks( bool s )
-  { use_stacks = s; return *this; }
+  { use_stacks = s; simple = false; return *this; }
 
   player_effect_t& set_func( std::function<bool()> f )
   { func = std::move( f ); simple = false; return *this; }
@@ -268,7 +269,8 @@ static inline bool has_parse_entry( std::vector<U>& vec, const spelleffect_data_
 { return !eff->ok() || range::contains( vec, eff, &U::eff ); }
 
 template <typename U>
-static inline U& add_parse_entry( std::vector<U>& vec ) { return vec.emplace_back(); }
+static inline U& add_parse_entry( std::vector<U>& vec )
+{ U& tmp = vec.emplace_back(); tmp.type = MANUAL_ENTRY; return tmp; }
 
 // input interface framework
 struct parse_base_t

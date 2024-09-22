@@ -3871,19 +3871,18 @@ const special_effect_t* item_targetdata_initializer_t::effect( actor_target_data
  * proc callback, and relevant actions/buffs, or call a custom function to
  * perform the initialization.
  */
-void unique_gear::initialize_special_effect( special_effect_t& effect,
-                                             unsigned          spell_id )
+void unique_gear::initialize_special_effect( special_effect_t& effect, unsigned spell_id )
 {
   player_t* p = effect.player;
 
   // Perform max level checking on the driver before anything
-  const spell_data_t* spell = p -> find_spell( spell_id );
-  if ( spell -> req_max_level() > 0 && as<unsigned>( p -> level() ) > spell -> req_max_level() )
+  const spell_data_t* spell = p->find_spell( spell_id );
+  if ( spell->max_aura_level() > 0 && as<unsigned>( p->level() ) > spell->max_aura_level() )
   {
-    if ( p -> sim -> debug )
+    if ( p->sim->debug )
     {
-      p -> sim -> out_debug.printf( "%s disabled effect %s, player level %d higher than maximum effect level %u",
-        p -> name(), spell -> name_cstr(), p -> level(), spell -> req_max_level() );
+      p->sim->out_debug.printf( "%s disabled effect %s, player level %d higher than maximum effect level %u", p->name(),
+                                spell->name_cstr(), p->level(), spell->max_aura_level() );
     }
     effect.type = SPECIAL_EFFECT_NONE;
     return;

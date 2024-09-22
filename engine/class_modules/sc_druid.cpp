@@ -4885,15 +4885,6 @@ struct primal_wrath_t final : public cat_finisher_t
       rip->base_costs[ RESOURCE_ENERGY ] = 0;
       // mods are parsed on construction so set to false so the rip execute doesn't decrement
       rip->snapshots.bloodtalons = false;
-
-      if ( p->talent.adaptive_swarm.ok() )
-      {
-        const auto& eff = p->spec.adaptive_swarm_damage->effectN( 2 );
-        add_parse_entry( target_multiplier_effects )
-          .set_func( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage ) )
-          .set_value( eff.percent() )
-          .set_eff( &eff );
-      }
     }
   }
 
@@ -13913,6 +13904,7 @@ void druid_t::apply_affecting_auras( action_t& a )
   a.apply_affecting_aura( talent.berserk_heart_of_the_lion );
   a.apply_affecting_aura( talent.circle_of_life_and_death_cat );
   a.apply_affecting_aura( talent.dreadful_bleeding );
+  a.apply_affecting_aura( spec.feral_overrides );
   a.apply_affecting_aura( talent.infected_wounds_cat );
   a.apply_affecting_aura( talent.lions_strength );
   a.apply_affecting_aura( talent.taste_for_blood );
@@ -14089,8 +14081,10 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( buff.predatory_swiftness, CONSUME_BUFF );
   _a->parse_effects( talent.taste_for_blood, [ this ] { return buff.tigers_fury->check();},
                      talent.taste_for_blood->effectN( 2 ).percent() );
-  _a->parse_effects( spec.feral_overrides, [ this ] { return !buff.moonkin_form->check(); } );
-  _a->parse_effects( buff.fell_prey, CONSUME_BUFF );
+  _a->parse_effects( buff.fell_prey, CONSUME_BUFF, effect_mask_t( true ).disable( 2 ) );
+  // applies 15% to rampant ferocity (label 2740) via hidden script
+  _a->parse_effects( buff.fell_prey, effect_mask_t( false ).enable( 2 ),
+                     buff.fell_prey->data().effectN( 1 ).percent() );
 
   // Guardian
   _a->parse_effects( buff.bear_form );
@@ -14186,7 +14180,7 @@ void druid_t::parse_action_target_effects( action_t* action )
   }
 
   _a->parse_target_effects( d_fn( &druid_td_t::dots_t::adaptive_swarm_damage, false ),
-                            spec.adaptive_swarm_damage, spec_spell );
+                            spec.adaptive_swarm_damage, spec_spell, affect_list_t( 2 ).add_spell( 285381 ) );
 
   _a->parse_target_effects( d_fn( &druid_td_t::debuffs_t::sabertooth ),
                             spec.sabertooth, talent.sabertooth->effectN( 2 ).percent() );

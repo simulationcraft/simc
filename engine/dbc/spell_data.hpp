@@ -428,7 +428,7 @@ struct spell_data_t
   // SpellLevels.dbc
   unsigned    _spell_level;        // Spell learned on level. NOTE: Only accurate for "class abilities"
   unsigned    _max_level;          // Maximum level for scaling
-  unsigned    _req_max_level;
+  unsigned    _max_aura_level;     // Maximum player level aura can apply to
   // SpellRange.dbc
   double      _min_range;          // Minimum range in yards
   double      _max_range;          // Maximum range in yards
@@ -459,9 +459,11 @@ struct spell_data_t
   // SpellScaling.dbc
   int         _cast_time;          // Casting time in milliseconds
   // Spell.dbc flags
-  unsigned    _attributes[NUM_SPELL_FLAGS]; // SpellMisc.dbc "flags"
-  unsigned    _class_flags[NUM_CLASS_FAMILY_FLAGS]; // SpellClassOptions.dbc flags
-  unsigned    _class_flags_family; // SpellClassOptions.dbc spell family
+  unsigned    _attributes[ NUM_SPELL_FLAGS ];  // SpellMisc.dbc "flags"
+  unsigned    _class_flags[ NUM_CLASS_FAMILY_FLAGS ];  // SpellClassOptions.dbc flags
+  unsigned    _class_flags_family;                     // SpellClassOptions.dbc spell family
+  unsigned    _aura_interrupt[ 2 ];     // SpellInterupts.dbc AuraInterruptFlags
+  unsigned    _channel_interrupt[ 2 ];  // SpellInterupts.dbc ChannelInterruptFlags
   // SpellShapeshift.db2
   unsigned    _stance_mask;        // Stance mask (used only for druid form restrictions?)
   // SpellMechanic.db2
@@ -539,8 +541,8 @@ struct spell_data_t
   uint32_t max_level() const
   { return _max_level; }
 
-  unsigned req_max_level() const
-  { return _req_max_level; }
+  unsigned max_aura_level() const
+  { return _max_aura_level; }
 
   uint32_t max_stacks() const
   { return _max_stack; }

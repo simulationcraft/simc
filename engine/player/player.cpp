@@ -10931,7 +10931,8 @@ const spell_data_t* player_t::find_spell( unsigned int id ) const
   if ( id )
   {
     auto spell = dbc::find_spell( this, id );
-    if ( spell->id() && as<int>( spell->level() ) <= true_level )
+    if ( spell->id() && as<int>( spell->level() ) <= true_level &&
+         ( spell->max_aura_level() == 0 || as<int>( spell->max_aura_level() ) >= true_level ) )
     {
       return spell;
     }
