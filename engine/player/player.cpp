@@ -4173,21 +4173,29 @@ void player_t::create_buffs()
           buffs.tome_of_unstable_power = buff;
       }
 
+      // Potion Bomb of Power Primary Stat
+      // Assuming that buffs cannot stack on players
+      // Does not take into account the fire damage on enemies
       if ( !external_buffs.potion_bomb_of_power.empty() )
       {
           auto buff_spell = find_spell(453245);
 
           auto buff = make_buff<stat_buff_t>(this, "potion_bomb_of_power_external", buff_spell);
 
-          auto ilevel = 610;
-          auto coeff_main_stat = buff_spell->effectN( 1 ).m_coefficient();
-          auto points = dbc->random_property(ilevel).p_epic[0];
-          auto mult = dbc->combat_rating_multiplier(ilevel, CR_MULTIPLIER_TRINKET);
+          // TODO: pull this from data instead of hard-coding
+          // tooltip: 632
+          // actual: 663
+
+          // auto ilevel = 610;
+          // auto coeff_main_stat = buff_spell->effectN( 1 ).m_coefficient();
+          // auto points = dbc->random_property( ilevel ).p_epic[ 0 ];
+          // auto mult   = dbc->combat_rating_multiplier( ilevel, CR_MULTIPLIER_TRINKET );
 
           buff->set_duration(buff_spell->duration());
           buff->manual_stats_added = false;
           // This is currently scaling class -1, change if this ever changes
-          buff->add_stat(convert_hybrid_stat(STAT_STR_AGI_INT), coeff_main_stat * points);
+          // buff->add_stat(convert_hybrid_stat(STAT_STR_AGI_INT), coeff_main_stat * points * mult);
+          buff->add_stat(convert_hybrid_stat(STAT_STR_AGI_INT), 632);
 
           buffs.potion_bomb_of_power = buff;
       }
