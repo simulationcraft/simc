@@ -1166,14 +1166,17 @@ void aberrant_spellforge( special_effect_t& effect )
   // all proccing abilities.
   effect.player->callbacks.register_callback_trigger_function( equip->spell_id,
       dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ id = empowered->id() ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
-        return a->data().id() == id;
+      [ id = empowered->id() ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) {
+        return s->result_amount && a->data().id() == id;
       } );
 
   effect.player->callbacks.register_callback_execute_function( equip->spell_id,
       [ damage, empowerment ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) {
-        damage->execute_on_target( s->target );
-        empowerment->expire( a );
+        if ( empowerment->check() )
+        {
+          damage->execute_on_target( s->target );
+          empowerment->expire( a );
+        }
       } );
 
   auto cb = new dbc_proc_callback_t( effect.player, *equip );
