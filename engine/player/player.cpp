@@ -4174,7 +4174,7 @@ void player_t::create_buffs()
       }
 
       // Potion Bomb of Power Primary Stat
-      // Assuming that buffs cannot stack on players
+      // Buff cannot stack
       // Does not take into account the fire damage on enemies
       if ( !external_buffs.potion_bomb_of_power.empty() )
       {
