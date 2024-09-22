@@ -4178,26 +4178,15 @@ void player_t::create_buffs()
       // Does not take into account the fire damage on enemies
       if ( !external_buffs.potion_bomb_of_power.empty() )
       {
-          auto buff_spell = find_spell(453245);
+        auto driver_spell = find_spell( 453205 );
+        auto buff_spell   = find_spell( 453245 );
 
-          auto buff = make_buff<stat_buff_t>(this, "potion_bomb_of_power_external", buff_spell);
+        // Value in buff data is for 5 people, need to split based on targets for a single player
+        auto main_stat_amount = buff_spell->effectN( 1 ).average( this ) / driver_spell->effectN( 4 ).base_value();
 
-          // TODO: pull this from data instead of hard-coding
-          // tooltip: 632
-          // actual: 663
-
-          // auto ilevel = 610;
-          // auto coeff_main_stat = buff_spell->effectN( 1 ).m_coefficient();
-          // auto points = dbc->random_property( ilevel ).p_epic[ 0 ];
-          // auto mult   = dbc->combat_rating_multiplier( ilevel, CR_MULTIPLIER_TRINKET );
-
-          buff->set_duration(buff_spell->duration());
-          buff->manual_stats_added = false;
-          // This is currently scaling class -1, change if this ever changes
-          // buff->add_stat(convert_hybrid_stat(STAT_STR_AGI_INT), coeff_main_stat * points * mult);
-          buff->add_stat(convert_hybrid_stat(STAT_STR_AGI_INT), 632);
-
-          buffs.potion_bomb_of_power = buff;
+        auto buff = make_buff<stat_buff_t>( this, "potion_bomb_of_power_external", buff_spell )
+                        ->add_stat_from_effect_type( A_MOD_STAT, main_stat_amount );
+        buffs.potion_bomb_of_power = buff;
       }
 
       // 9.2 Jailer raid buff
