@@ -575,6 +575,7 @@ struct player_t : public actor_t
     buff_t* quickwicks_quick_trick_wick_walk;  // quickwick candlestick movement speed buff
     buff_t* building_momentum;  // scroll of momentum counter buff
     buff_t* full_momentum;      // scroll of momentum max buff
+    buff_t* potion_bomb_of_power; // potion bomb of power primary stat
   } buffs;
 
   struct debuffs_t
@@ -617,6 +618,7 @@ struct player_t : public actor_t
     std::vector<timespan_t> boon_of_azeroth;
     std::vector<timespan_t> boon_of_azeroth_mythic;
     std::vector<timespan_t> tome_of_unstable_power;
+    std::vector<timespan_t> potion_bomb_of_power;
     int tome_of_unstable_power_ilevel;
     int soleahs_secret_technique;
     std::string elegy_of_the_eternals;
