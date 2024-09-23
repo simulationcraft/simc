@@ -2357,62 +2357,70 @@ struct ravage_base_t : public BASE
   }
 };
 
-// Proc chance after X failures:
-//   0.6 - 1.13 ^ ( -A * ( X - B ) )
+// Proc chance:
+//   0.6 - 1.13 ^ ( A * B - C )
 // where:
 //   A = percent value of corresponding effect index on the talent spell data
 //   B = 3 - base_tick_time in seconds
-//
+//   C = cumulative count value where each failure adds A to the value
 // via community testing (~257k ticks)
 // https://docs.google.com/spreadsheets/d/1lPDhmfqe03G_eFetGJEbSLbXMcfkzjhzyTaQ8mdxADM/edit?gid=385734241
-//
-// TODO: confirm any AOE diminishing returns
-// TODO: add manual adjustment for early checks with <0 value:
-//   Rake: 3 ticks = 1.25%, 4 ticks = 7%
-//   Rip: 5 ticks = 1.75%
-template <size_t IDX, typename BASE>
+template <typename BASE>
 struct trigger_thriving_growth_t : public BASE
 {
-private:
-  target_specific_t<accumulated_rng_t> vine_rng;
-  double scale = 0.0;
-  double shift = 0.0;
+  struct bloodseeker_vine_rng_t : public proc_rng_t
+  {
+    static constexpr rng_type_e rng_type = RNG_CUSTOM;
+    double count = 0.0;
+
+    bloodseeker_vine_rng_t( std::string_view n, player_t* p ) : proc_rng_t( rng_type, n, p ) {}
+
+    int trigger() override { return 0; }
+    void reset() override { count = 0.0; }
+
+    bool trigger( double scale, unsigned shift )
+    {
+      count += scale;
+      auto chance = std::max( 0.0, 0.6 - std::pow( 1.13, scale * shift - count ) );
+      auto result = player->rng().roll( chance );
+
+      if ( player->sim->debug )
+        player->sim->print_debug( "{} RNG: count={} scale={} chance={:.5f}%", name(), count, scale, chance * 100.0 );
+
+      if ( result )
+        reset();
+
+      return result;
+    }
+  };
+
+protected:
+  target_specific_t<bloodseeker_vine_rng_t> vine_rng;
+  double vine_scale = 0.0;
+  unsigned vine_shift = 0;
+
+  using base_t = trigger_thriving_growth_t<BASE>;
 
 public:
-  using base_t = trigger_thriving_growth_t<IDX, BASE>;
-
   trigger_thriving_growth_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
     : BASE( n, p, s, f ), vine_rng( false )
-  {
-    if ( p->talent.thriving_growth.ok() )
-    {
-      scale = p->talent.thriving_growth->effectN( IDX ).percent();
-      shift = 3 - BASE::base_tick_time.total_seconds();
-    }
-  }
-
-  double rng_fn( unsigned c ) const
-  {
-    return std::max( 0.0, 0.6 - std::pow( 1.13, -scale * ( c - shift ) ) );
-  }
+  {}
 
   void tick( dot_t* d ) override
   {
     BASE::tick( d );
 
-    if ( !scale )
+    if ( !vine_scale )
       return;
 
     auto& _rng = vine_rng[ d->target ];
     if ( !_rng )
     {
-      _rng = BASE::p()->get_accumulated_rng( fmt::format( "{}_vines_{}", BASE::name(), d->target->actor_index ), scale,
-                                             [ this ]( double, unsigned c ) { return rng_fn( c ); } );
-
-      d->target->register_on_demise_callback( d->target, [ _rng ]( player_t* ) { _rng->reset(); } );
+      _rng = BASE::p()->get_rng<bloodseeker_vine_rng_t>( fmt::format( "bloodseeker_vine_{}", d->target->actor_index ) );
+      d->target->register_on_demise_callback( BASE::p(), [ _rng ]( player_t* ) { _rng->reset(); } );
     }
 
-    if ( _rng->trigger() )
+    if ( _rng->trigger( vine_scale, vine_shift ) )
     {
       BASE::p()->active.bloodseeker_vines->execute_on_target( d->target );
 
@@ -4673,7 +4681,7 @@ struct maim_t final : public cat_finisher_t
 // Rake =====================================================================
 struct rake_t final : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
 {
-  struct rake_bleed_t final : public trigger_thriving_growth_t<2, trigger_waning_twilight_t<cat_attack_t>>
+  struct rake_bleed_t final : public trigger_thriving_growth_t<trigger_waning_twilight_t<cat_attack_t>>
   {
     rake_bleed_t( druid_t* p, std::string_view n, flag_e f, rake_t* r ) : base_t( n, p, find_trigger( r ).trigger(), f )
     {
@@ -4682,6 +4690,7 @@ struct rake_t final : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
       form_mask = 0;
 
       dot_name = "rake";
+      vine_scale = p->talent.thriving_growth->effectN( 2 ).percent();
     }
   };
 
@@ -4769,7 +4778,7 @@ struct rake_t final : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
 };
 
 // Rip ======================================================================
-struct rip_t final : public trigger_thriving_growth_t<1, trigger_waning_twilight_t<cat_finisher_t>>
+struct rip_t final : public trigger_thriving_growth_t<trigger_waning_twilight_t<cat_finisher_t>>
 {
   struct tear_t final : public druid_residual_action_t<cat_attack_t, true>
   {
@@ -4788,6 +4797,8 @@ struct rip_t final : public trigger_thriving_growth_t<1, trigger_waning_twilight
     apex_pct( find_trigger( p->talent.apex_predators_craving ).percent() * 0.1 )
   {
     dot_name = "rip";
+    vine_scale = p->talent.thriving_growth->effectN( 1 ).percent();
+    vine_shift = 1;
 
     if ( p->talent.rip_and_tear.ok() )
     {

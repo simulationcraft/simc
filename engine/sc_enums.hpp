@@ -1402,7 +1402,8 @@ enum rng_type_e
   RNG_RPPM,
   RNG_SHUFFLE,
   RNG_ACCUMULATE,
-  RNG_THRESHOLD
+  RNG_THRESHOLD,
+  RNG_CUSTOM
 };
 
 /// Real PPM scale stats
