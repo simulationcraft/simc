@@ -2365,35 +2365,35 @@ struct ravage_base_t : public BASE
 //   C = cumulative count value where each failure adds A to the value
 // via community testing (~257k ticks)
 // https://docs.google.com/spreadsheets/d/1lPDhmfqe03G_eFetGJEbSLbXMcfkzjhzyTaQ8mdxADM/edit?gid=385734241
+struct bloodseeker_vine_rng_t : public proc_rng_t
+{
+  static constexpr rng_type_e rng_type = RNG_CUSTOM;
+  double count = 0.0;
+
+  bloodseeker_vine_rng_t( std::string_view n, player_t* p ) : proc_rng_t( rng_type, n, p ) {}
+
+  int trigger() override { return 0; }
+  void reset() override { count = 0.0; }
+
+  bool trigger( double scale, unsigned shift )
+  {
+    count += scale;
+    auto chance = std::max( 0.0, 0.6 - std::pow( 1.13, scale * shift - count ) );
+    auto result = player->rng().roll( chance );
+
+    if ( player->sim->debug )
+      player->sim->print_debug( "{} RNG: count={} scale={} chance={:.5f}%", name(), count, scale, chance * 100.0 );
+
+    if ( result )
+      reset();
+
+    return result;
+  }
+};
+
 template <typename BASE>
 struct trigger_thriving_growth_t : public BASE
 {
-  struct bloodseeker_vine_rng_t : public proc_rng_t
-  {
-    static constexpr rng_type_e rng_type = RNG_CUSTOM;
-    double count = 0.0;
-
-    bloodseeker_vine_rng_t( std::string_view n, player_t* p ) : proc_rng_t( rng_type, n, p ) {}
-
-    int trigger() override { return 0; }
-    void reset() override { count = 0.0; }
-
-    bool trigger( double scale, unsigned shift )
-    {
-      count += scale;
-      auto chance = std::max( 0.0, 0.6 - std::pow( 1.13, scale * shift - count ) );
-      auto result = player->rng().roll( chance );
-
-      if ( player->sim->debug )
-        player->sim->print_debug( "{} RNG: count={} scale={} chance={:.5f}%", name(), count, scale, chance * 100.0 );
-
-      if ( result )
-        reset();
-
-      return result;
-    }
-  };
-
 protected:
   target_specific_t<bloodseeker_vine_rng_t> vine_rng;
   double vine_scale = 0.0;
