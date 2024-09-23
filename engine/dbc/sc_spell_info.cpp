@@ -1200,6 +1200,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 247, "Copy Appearance"                              },
   { 250, "Increase Max Health (Stacking)"               },
   { 253, "Modify Critical Block Chance"                 },
+  { 255, "Modify Damage Taken% from Mechanic"           },
   { 259, "Modify Periodic Healing Recevied%"            },
   { 263, "Disable Abilities"                            },
   { 268, "Modify Armor by Primary Stat%"                },
@@ -1669,6 +1670,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     range::transform( util::translate_all_rating_mod( e->misc_value1() ), std::back_inserter( tmp ),
                       &util::stat_type_abbrev );
     s << " | Rating: " << util::string_join( tmp );
+  }
+  else if ( e->subtype() == A_MOD_MECHANIC_RESISTANCE || e->subtype() == A_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT )
+  {
+    s << " | Mechanic: " << mechanic_str( e->misc_value1() );
   }
   else if ( e->misc_value1() != 0 )
   {
