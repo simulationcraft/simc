@@ -536,7 +536,8 @@ bool chart::generate_raid_downtime( highchart::bar_chart_t& bc,
 {
   std::vector<const player_t*> players;
   range::copy_if( sim.players_by_name, std::back_inserter( players ), []( const player_t* player ) {
-    return ( player->collected_data.waiting_time.mean() / player->collected_data.fight_length.mean() ) > 0.01;
+    auto downtime = player->collected_data.waiting_time.mean() + player->collected_data.pooling_time.mean();
+    return ( downtime / player->collected_data.fight_length.mean() ) > 0.01;
   } );
 
   if ( players.empty() )
@@ -545,19 +546,21 @@ bool chart::generate_raid_downtime( highchart::bar_chart_t& bc,
   }
 
   range::sort( players, []( const player_t* l, const player_t* r ) {
-    if ( l->collected_data.waiting_time.mean() == r->collected_data.waiting_time.mean() )
+    auto l_downtime = l->collected_data.waiting_time.mean() + l->collected_data.pooling_time.mean();
+    auto r_downtime = r->collected_data.waiting_time.mean() + r->collected_data.pooling_time.mean();
+    if ( l_downtime == r_downtime )
     {
       return l->actor_index < r->actor_index;
     }
 
-    return l->collected_data.waiting_time.mean() >
-           r->collected_data.waiting_time.mean();
+    return l_downtime > r_downtime;
   } );
 
   for ( const auto p : players )
   {
-    const auto& c      = color::class_color( p->type );
-    double waiting_pct = ( 100.0 * p->collected_data.waiting_time.mean() / p->collected_data.fight_length.mean() );
+    const auto& c = color::class_color( p->type );
+    auto downtime = p->collected_data.waiting_time.mean() + p->collected_data.pooling_time.mean();
+    double waiting_pct = ( 100.0 * downtime / p->collected_data.fight_length.mean() );
     sc_js_t e;
     e.set( "name", report_decorators::decorate_html_string( util::encode_html( p->name_str ), c ) );
     e.set( "color", c.str() );
