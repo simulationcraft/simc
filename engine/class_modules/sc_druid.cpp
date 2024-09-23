@@ -2416,7 +2416,7 @@ public:
     auto& _rng = vine_rng[ d->target ];
     if ( !_rng )
     {
-      _rng = BASE::p()->get_rng<bloodseeker_vine_rng_t>( fmt::format( "bloodseeker_vine_{}", d->target->actor_index ) );
+      _rng = BASE::p()->template get_rng<bloodseeker_vine_rng_t>( fmt::format( "bloodseeker_vine_{}", d->target->actor_index ) );
       d->target->register_on_demise_callback( BASE::p(), [ _rng ]( player_t* ) { _rng->reset(); } );
     }
 
