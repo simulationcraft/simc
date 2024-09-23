@@ -466,7 +466,7 @@ public:
     double arcane_missiles_chain_relstddev = 0.1;
     timespan_t glacial_spike_delay = 100_ms;
     bool treat_bloodlust_as_time_warp = false;
-    unsigned initial_spellfire_spheres = 3;
+    unsigned initial_spellfire_spheres = 5;
     arcane_phoenix_rotation arcane_phoenix_rotation_override = arcane_phoenix_rotation::DEFAULT;
   } options;
 
