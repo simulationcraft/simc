@@ -3720,7 +3720,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
 
   os << "<div class=\"toggle-content\">\n";
 
-  if ( p.sim->players_by_name.size() == 1 )
+  if ( p.sim->players_by_name.size() == 1 && p.is_player() )
   {
     auto w_ = raidbots_talent_render_width( p.specialization(), 125, true );
     os.format(
