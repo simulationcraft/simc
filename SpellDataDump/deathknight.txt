@@ -17395,6 +17395,7 @@ Effects          :
 Description      : Casting Anti-Magic Shell grants $454863i nearby allies a Lesser Anti-Magic Shell that Absorbs up to $454863s1 magic damage and reduces the duration of harmful Magic effects against them by $454863s2%. 
 
 Name             : Lesser Anti-Magic Shell (id=454863) [Spell Family (15)] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
@@ -17408,7 +17409,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Affecting spells : Anti-Magic Barrier (205727 effects: #1, #2), Volatile Shielding (207188 effect#1), Spell Eater (207321 effects: #1, #2), Acherus Drapes (210852 effect#1), Runic Barrier (280010 effect#3), Runic Barrier (280132 effect#1), Death's Embrace (334728 effect#1), Osmosis (454835 effect#1), Unyielding Will (457574 effect#2)
 Family Flags     : 17
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Exclude Caster (51), Allow While Not Shapeshifted (caster form) (83), Cannot Be Stolen (134), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Exclude Caster (51), Allow While Not Shapeshifted (caster form) (83), Cannot Be Stolen (134), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1157813)  : Apply Aura (6) | Absorb Damage (69)
