@@ -5028,7 +5028,12 @@ struct frostbolt_t final : public frost_mage_spell_t
 
       if ( frostfire )
       {
-        p()->buffs.severe_temperatures->expire();
+        // Severe Temperatures can affect multiple impacts, though this is probably only
+        // an artifact of the way the cleave was implemented: rather than having each impact
+        // cast a single target spell (like Frostbolt does), the first impact casts an AoE
+        // spell. There are some other minor considerations that might require redoing our
+        // FFB implementation, like Fractured Frost applying to projectiles in flight.
+        p()->buffs.severe_temperatures->expire( 15_ms );
 
         if ( p()->state.trigger_ff_empowerment )
         {
