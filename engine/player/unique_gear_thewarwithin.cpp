@@ -2410,13 +2410,6 @@ void ravenous_honey_buzzer( special_effect_t& e )
         movement_dur( timespan_t::from_seconds( e.trigger()->missile_speed() ) )
     {
       base_multiplier *= role_mult( e );
-
-      // TODO: doesn't split damage at all
-      if ( e.player->bugs )
-      {
-        split_aoe_damage = false;
-        aoe_damage_increase = false;
-      }
     }
 
     void execute() override
