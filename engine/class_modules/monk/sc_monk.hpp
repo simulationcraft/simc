@@ -1371,6 +1371,7 @@ public:
   double composite_player_target_armor( player_t *target ) const override;
   void create_pets() override;
   void init_spells() override;
+  void init_background_actions() override;
   void init_base_stats() override;
   void init_scaling() override;
   void create_buffs() override;
