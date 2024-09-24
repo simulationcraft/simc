@@ -7400,8 +7400,13 @@ struct splinterstorm_event_t final : public mage_event_t
   {
     mage->events.splinterstorm = nullptr;
 
-    if ( mage->target && !mage->target->is_sleeping() && mage->target->is_enemy()
-      && mage->state.embedded_splinters >= as<int>( mage->talents.splinterstorm->effectN( 1 ).base_value() ) )
+    player_t* t = nullptr;
+    if ( mage->target && !mage->target->is_sleeping() && mage->target->is_enemy() )
+      t = mage->target;
+    else if ( const auto& tl = sim().target_non_sleeping_list; !tl.empty() )
+      t = tl[ rng().range( tl.size() ) ];
+
+    if ( t && mage->state.embedded_splinters >= as<int>( mage->talents.splinterstorm->effectN( 1 ).base_value() ) )
     {
       [[maybe_unused]] int splinters_state = mage->state.embedded_splinters;
       int splinters = 0;
@@ -7425,7 +7430,7 @@ struct splinterstorm_event_t final : public mage_event_t
       assert( mage->state.embedded_splinters == 0 );
       assert( splinters == splinters_state );
 
-      make_repeating_event( sim(), 100_ms, [ a = mage->action.splinterstorm, t = mage->target ] { a->execute_on_target( t ); }, splinters );
+      make_repeating_event( sim(), 100_ms, [ a = mage->action.splinterstorm, t ] { a->execute_on_target( t ); }, splinters );
     }
 
     mage->events.splinterstorm = make_event<splinterstorm_event_t>(
