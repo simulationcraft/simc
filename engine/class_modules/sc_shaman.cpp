@@ -956,6 +956,7 @@ public:
     player_talent_t preeminence;
     player_talent_t fury_of_the_storms;
     player_talent_t skybreakers_fiery_demise; // Removed on PTR
+    player_talent_t erupting_lava;
     player_talent_t magma_chamber;
     // Row 10
     player_talent_t charged_conduit; // Added on 11.0.5 PTR
@@ -6121,6 +6122,49 @@ struct lava_beam_t : public chained_base_t
   }
 };
 
+  struct erupting_lava_t : public shaman_spell_t
+{
+  erupting_lava_t( shaman_t* player ) : shaman_spell_t( ( "erupting_lava" ), player, player->find_spell( 468574 ) )
+  {
+    background = dual = true;
+  }
+
+  void init() override
+  {
+    shaman_spell_t::init();
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+  }
+
+  void execute( bool is_overload )
+  {
+    dot_t* dot = td( target )->dot.flame_shock;
+    assert( dot->current_action );
+
+    action_state_t* state = dot->current_action->get_state( dot->state );
+    dot->current_action->calculate_tick_amount( state, 1.0 );
+
+    double tick_base_damage = state->result_raw;
+
+    timespan_t consumed_time =
+        std::min( dot->remains(), timespan_t::from_seconds( p()->talent.erupting_lava->effectN( 2 ).base_value() ) );
+    if ( is_overload )
+    {
+      consumed_time *= p()->talent.erupting_lava->effectN( 3 ).percent();
+    }
+    timespan_t dot_tick_time = dot->current_action->tick_time( state );
+    double ticks_consumed    = consumed_time / dot_tick_time;
+    double total_damage      = ticks_consumed * tick_base_damage;
+
+    action_state_t::release( state );
+
+    base_dd_min = base_dd_max = total_damage;
+
+    shaman_spell_t::execute();
+
+    dot->adjust_duration( -consumed_time );
+  }
+};
+
 // Lava Burst Spell =========================================================
 
 struct lava_burst_state_t : public shaman_action_state_t
@@ -6134,6 +6178,7 @@ struct lava_burst_state_t : public shaman_action_state_t
 struct lava_burst_overload_t : public elemental_overload_spell_t
 {
   unsigned impact_flags;
+  erupting_lava_t* erupting_lava;
 
   lava_burst_overload_t( shaman_t* player, spell_variant type, shaman_spell_t* parent_ )
     : elemental_overload_spell_t( player, ::action_name( "lava_burst_overload", type ),
@@ -6143,6 +6188,12 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     maelstrom_gain = player->spec.maelstrom->effectN( 4 ).resource( RESOURCE_MAELSTROM );
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
     travel_speed = player->find_spell( 77451 )->missile_speed();
+
+    if ( player->talent.erupting_lava.ok() )
+    {
+      erupting_lava = new erupting_lava_t( player );
+      add_child( erupting_lava );
+    }
   }
 
   static lava_burst_state_t* cast_state( action_state_t* s )
@@ -6184,6 +6235,11 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     s->result_amount = elemental_overload_spell_t::calculate_direct_amount( s );
 
     elemental_overload_spell_t::impact( s );
+    if ( p()->talent.erupting_lava.ok() && result_is_hit( s->result ) && td( s->target )->dot.flame_shock->is_ticking() )
+    {
+      erupting_lava->set_target( s->target );
+      erupting_lava->execute( true );
+    }
   }
 
   double action_multiplier() const override
@@ -6448,6 +6504,7 @@ struct fire_nova_t : public shaman_spell_t
 struct lava_burst_t : public shaman_spell_t
 {
   unsigned impact_flags;
+  erupting_lava_t* erupting_lava;
 
   lava_burst_t( shaman_t* player, spell_variant type_, util::string_view options_str = {} )
     : shaman_spell_t( ::action_name( "lava_burst", type_ ), player, player->talent.lava_burst, type_ ),
@@ -6473,6 +6530,12 @@ struct lava_burst_t : public shaman_spell_t
     if ( player->mastery.elemental_overload->ok() )
     {
       overload = new lava_burst_overload_t( player, exec_type, this );
+    }
+
+    if (player->talent.erupting_lava.ok())
+    {
+      erupting_lava = new erupting_lava_t( player );
+      add_child(erupting_lava);
     }
 
     spell_power_mod.direct = player->find_spell( 285452 )->effectN( 1 ).sp_coeff();
@@ -6568,6 +6631,12 @@ struct lava_burst_t : public shaman_spell_t
     s->result_amount = shaman_spell_t::calculate_direct_amount( s );
 
     shaman_spell_t::impact( s );
+
+    if (p()->talent.erupting_lava.ok() && result_is_hit(s->result) && td(s->target)->dot.flame_shock->is_ticking())
+    {
+      erupting_lava->set_target( s->target );
+      erupting_lava->execute( false );
+    }
   }
 
   double action_multiplier() const override
@@ -10977,6 +11046,7 @@ void shaman_t::init_spells()
   talent.preeminence            = _ST( "Preeminence" );
   talent.fury_of_the_storms     = _ST( "Fury of the Storms" );
   talent.skybreakers_fiery_demise = _ST( "Skybreaker's Fiery Demise" ); // Removed on PTR
+  talent.erupting_lava            = _ST( "Erupting Lava" );
   talent.magma_chamber          = _ST( "Magma Chamber" );
   // Row 10
   talent.charged_conduit           = _ST( "Charged Conduit" );
