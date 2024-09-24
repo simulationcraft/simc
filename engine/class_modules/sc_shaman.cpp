@@ -9991,12 +9991,16 @@ struct tempest_t : public shaman_spell_t
   }
 
   void schedule_travel(action_state_t* s) override {
-    if ( p()->talent.supercharge.ok() )
+    if ( s->chain_target == 0 )
     {
-      trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
+      trigger_elemental_overload( s );
+      if ( p()->talent.supercharge.ok() )
+      {
+        trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
+      }
     }
 
-    shaman_spell_t::schedule_travel( s );
+    base_t::schedule_travel( s );
   }
 
 };
