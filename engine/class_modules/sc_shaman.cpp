@@ -5856,9 +5856,10 @@ struct chain_lightning_t : public chained_base_t
   double execute_time_pct_multiplier() const override
   {
     auto mul = chained_base_t::execute_time_pct_multiplier();
-
-    mul *= 1.0 + p()->buff.wind_gust->stack_value();
-
+    if ( !p()->is_ptr() )
+    {
+      mul *= 1.0 + p()->buff.wind_gust->stack_value();
+    }
     return mul;
   }
 
@@ -5878,12 +5879,15 @@ struct chain_lightning_t : public chained_base_t
   timespan_t gcd() const override
   {
     timespan_t t = chained_base_t::gcd();
-    t *= 1.0 + p()->buff.wind_gust->stack_value();
-
-    // testing shows the min GCD is 0.6 sec
-    if ( t < timespan_t::from_millis( 600 ) )
+    if ( !p()->is_ptr() )
     {
-      t = timespan_t::from_millis( 600 );
+      t *= 1.0 + p()->buff.wind_gust->stack_value();
+
+      // testing shows the min GCD is 0.6 sec
+      if ( t < timespan_t::from_millis( 600 ) )
+      {
+        t = timespan_t::from_millis( 600 );
+      }
     }
     return t;
   }
@@ -6915,21 +6919,25 @@ struct lightning_bolt_t : public shaman_spell_t
   double execute_time_pct_multiplier() const override
   {
     auto mul = shaman_spell_t::execute_time_pct_multiplier();
-
-    mul *= 1.0 + p()->buff.wind_gust->stack_value();
-
+    if ( !p()->is_ptr() )
+    {
+      mul *= 1.0 + p()->buff.wind_gust->stack_value();
+    }
     return mul;
   }
 
   timespan_t gcd() const override
   {
     timespan_t t = shaman_spell_t::gcd();
-    t *= 1.0 + p()->buff.wind_gust->stack_value();
-
-    // testing shows the min GCD is 0.6 sec
-    if ( t < timespan_t::from_millis( 600 ) )
+    if ( !p()->is_ptr() )
     {
-      t = timespan_t::from_millis( 600 );
+      t *= 1.0 + p()->buff.wind_gust->stack_value();
+
+      // testing shows the min GCD is 0.6 sec
+      if ( t < timespan_t::from_millis( 600 ) )
+      {
+        t = timespan_t::from_millis( 600 );
+      }
     }
     return t;
   }
