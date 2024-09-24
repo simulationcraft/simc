@@ -642,7 +642,7 @@ Cooldown         : 10 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-                 : 3861: Kodo Tranquilizer (459983 effect#1), Kodo Tranquilizer (459983 effect#2), Kodo Tranquilizer (459983 effect#4)
+                 : 3861: Kodo Tranquilizer (459983 effect#2), Kodo Tranquilizer (459983 effect#4)
 Affecting spells : Mastery: Sniper Training (193468 effect#1)
 Family Flags     : 121
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Taps immediately (215), Allow Class Ability Procs (416)
@@ -17170,9 +17170,9 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
                  :
 Effects          :
-#1 (id=1167229)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3861 (Label) | Target: Self (1)
-                   Affected Spells (Label): Tranquilizing Shot (19801)
+#1 (id=1167229)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Sub Type (219 -> 4), Misc Value (12 -> 0), Misc Value 2 (3861 -> 0)
 #2 (id=1167230)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Targets (17)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 17 | Misc Value 2: 3861 (Label) | Target: Self (1)
                    Affected Spells (Label): Tranquilizing Shot (19801)
