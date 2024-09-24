@@ -55,6 +55,7 @@ public:
 
   timespan_t saved_duration;
   timespan_t saved_cooldown;
+  std::vector<timespan_t> timestamps;  // stored as cooldown time between events
   std::vector<player_t*> affected_players;
   std::unordered_map<size_t, std::unique_ptr<expr_t>> player_expressions;
   std::vector<std::unique_ptr<option_t>> options;
@@ -66,13 +67,11 @@ public:
   virtual bool filter_player( const player_t* );
 
   void add_option( std::unique_ptr<option_t> new_option )
-  {
-    options.insert( options.begin(), std::move( new_option ) );
-  }
+  { options.insert( options.begin(), std::move( new_option ) ); }
+
   const char* log_name() const
-  {
-    return name.empty() ? type.c_str() : name.c_str();
-  }
+  { return name.empty() ? type.c_str() : name.c_str(); }
+
   timespan_t cooldown_time();
   virtual timespan_t duration_time();
   timespan_t next_time() const;
@@ -84,13 +83,13 @@ public:
   virtual void reset();
   virtual void combat_begin();
   void parse_options( util::string_view options_str );
+  bool parse_timestamps( std::string_view );
+
   static std::unique_ptr<raid_event_t> create( sim_t* sim, util::string_view name, util::string_view options_str );
   static void init( sim_t* );
   static void reset( sim_t* );
   static void combat_begin( sim_t* );
-  static void combat_end( sim_t* )
-  {
-  }
+  static void combat_end( sim_t* ) {}
   static void merge( sim_t* sim, sim_t* other );
   static void analyze( sim_t* sim );
   static void report( sim_t* sim, report::sc_html_stream& os );
