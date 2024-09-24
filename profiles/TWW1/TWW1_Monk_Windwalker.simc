@@ -191,7 +191,7 @@ actions.normal_opener=tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,
 actions.normal_opener+=/rising_sun_kick,target_if=max:debuff.acclamation.stack,if=talent.ordered_elements
 
 actions.trinkets=use_item,name=treacherous_transmitter,if=!fight_style.dungeonslice&(cooldown.invoke_xuen_the_white_tiger.remains<4|talent.xuens_bond&pet.xuen_the_white_tiger.active)|fight_style.dungeonslice&((fight_style.DungeonSlice&active_enemies=1&(time<10|talent.xuens_bond&talent.celestial_conduit)|!fight_style.dungeonslice|active_enemies>1)&cooldown.storm_earth_and_fire.ready&(target.time_to_die>14&!fight_style.dungeonroute|target.time_to_die>22)&(active_enemies>2|debuff.acclamation.up|!talent.ordered_elements&time<5)&(chi>2&talent.ordered_elements|chi>5|chi>3&energy<50|energy<50&active_enemies=1|prev.tiger_palm&!talent.ordered_elements&time<5)|fight_remains<30)|buff.invokers_delight.up
-actions.trinkets+=/do_treacherous_transmitter_task,if=pet.xuen_the_white_tiger.active
+actions.trinkets+=/do_treacherous_transmitter_task,if=pet.xuen_the_white_tiger.active|fight_remains<20
 
 head=hood_of_the_hidden_path,id=178691,bonus_id=4786/3293/10336/11307,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,bonus_id=10256/11086/10837/10832/1514/10255,ilevel=639,gem_id=213485/213485
