@@ -466,7 +466,7 @@ public:
     double arcane_missiles_chain_relstddev = 0.1;
     timespan_t glacial_spike_delay = 100_ms;
     bool treat_bloodlust_as_time_warp = false;
-    unsigned initial_spellfire_spheres = 3;
+    unsigned initial_spellfire_spheres = 5;
     arcane_phoenix_rotation arcane_phoenix_rotation_override = arcane_phoenix_rotation::DEFAULT;
   } options;
 
@@ -5028,7 +5028,12 @@ struct frostbolt_t final : public frost_mage_spell_t
 
       if ( frostfire )
       {
-        p()->buffs.severe_temperatures->expire();
+        // Severe Temperatures can affect multiple impacts, though this is probably only
+        // an artifact of the way the cleave was implemented: rather than having each impact
+        // cast a single target spell (like Frostbolt does), the first impact casts an AoE
+        // spell. There are some other minor considerations that might require redoing our
+        // FFB implementation, like Fractured Frost applying to projectiles in flight.
+        p()->buffs.severe_temperatures->expire( 15_ms );
 
         if ( p()->state.trigger_ff_empowerment )
         {
@@ -7395,8 +7400,13 @@ struct splinterstorm_event_t final : public mage_event_t
   {
     mage->events.splinterstorm = nullptr;
 
-    if ( mage->target && !mage->target->is_sleeping() && mage->target->is_enemy()
-      && mage->state.embedded_splinters >= as<int>( mage->talents.splinterstorm->effectN( 1 ).base_value() ) )
+    player_t* t = nullptr;
+    if ( mage->target && !mage->target->is_sleeping() && mage->target->is_enemy() )
+      t = mage->target;
+    else if ( const auto& tl = sim().target_non_sleeping_list; !tl.empty() )
+      t = tl[ rng().range( tl.size() ) ];
+
+    if ( t && mage->state.embedded_splinters >= as<int>( mage->talents.splinterstorm->effectN( 1 ).base_value() ) )
     {
       [[maybe_unused]] int splinters_state = mage->state.embedded_splinters;
       int splinters = 0;
@@ -7420,7 +7430,7 @@ struct splinterstorm_event_t final : public mage_event_t
       assert( mage->state.embedded_splinters == 0 );
       assert( splinters == splinters_state );
 
-      make_repeating_event( sim(), 100_ms, [ a = mage->action.splinterstorm, t = mage->target ] { a->execute_on_target( t ); }, splinters );
+      make_repeating_event( sim(), 100_ms, [ a = mage->action.splinterstorm, t ] { a->execute_on_target( t ); }, splinters );
     }
 
     mage->events.splinterstorm = make_event<splinterstorm_event_t>(

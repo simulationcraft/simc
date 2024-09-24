@@ -52,9 +52,9 @@ struct item_set_bonus_t
     }
   }
 
-  bool has_spec( specialization_e spec ) const
+  bool has_spec( specialization_e s ) const
   {
-    return has_spec( static_cast<int>( spec ) );
+    return has_spec( static_cast<int>( s ) );
   }
 
   bool has_item( unsigned item_id ) const

@@ -68,25 +68,32 @@ void sequence_t::init_finished()
 
 // sequence_t::schedule_execute =============================================
 
-void sequence_t::schedule_execute( action_state_t* execute_state )
+void sequence_t::schedule_execute( action_state_t* state )
 {
   assert( 0 <= current_action && as<std::size_t>( current_action ) < sub_actions.size() );
 
   if ( waiting )
   {
-    timespan_t available = player -> available();
-    if ( sim -> log )
-      sim -> out_log.printf( "Player %s is waiting for %.3f, since action #%d (%s) is not ready", player -> name(), available.total_seconds(), current_action, sub_actions[ current_action ] -> name() );
-    player -> schedule_ready( available, true );
+    timespan_t available = player->available();
+
+    if ( sim->log )
+    {
+      sim->print_log( "Player {} is waiting for {:.3f}, since action #{} ({}) is not ready", player->name(),
+                      available.total_seconds(), current_action, sub_actions[ current_action ]->name() );
+    }
+
+    player->schedule_ready( available, true );
     waiting = false;
     return;
   }
 
-  if ( sim -> log )
-    sim -> out_log.printf( "Player %s executes Schedule %s action #%d \"%s\"",
-                   player -> name(), name(), current_action, sub_actions[ current_action ] -> name() );
+  if ( sim->log )
+  {
+    sim->print_log( "Player {} executes Schedule {} action #{} '{}'", player->name(), name(), current_action,
+                    sub_actions[ current_action ]->name() );
+  }
 
-  sub_actions[ current_action++ ] -> schedule_execute( execute_state );
+  sub_actions[ current_action++ ]->schedule_execute( state );
 
   // No longer restarted
   restarted = false;

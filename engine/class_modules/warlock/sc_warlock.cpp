@@ -289,9 +289,6 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
 
     if ( talents.shadow_embrace.ok() )
       m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
-
-    if ( talents.infirmity.ok() )
-      m *= 1.0 + td->debuffs_infirmity->check_stack_value();
   }
 
   if ( specialization() == WARLOCK_DESTRUCTION )

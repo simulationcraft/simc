@@ -340,9 +340,9 @@ public:
   {
   }
 
-  void change_mode( bool simple )
+  void change_mode( bool s )
   {
-    this->simple = simple;
+    simple = s;
 
     clear();
   }

@@ -1040,10 +1040,10 @@ void item_t::parse_options()
         else
         {
           auto stat_type = util::parse_stat_type( stat_str );
-          auto item_mod = util::translate_stat( stat_type );
-          if ( item_mod != ITEM_MOD_NONE )
+          auto stat_mod = util::translate_stat( stat_type );
+          if ( stat_mod != ITEM_MOD_NONE )
           {
-            parsed.crafted_stat_mod.push_back( item_mod );
+            parsed.crafted_stat_mod.push_back( stat_mod );
           }
           else
           {
@@ -1417,10 +1417,10 @@ std::string item_t::encoded_addon() const
 
 std::string item_t::encoded_stats() const
 {
-  if ( ! option_stats_str.empty() )
+  if ( !option_stats_str.empty() )
     return option_stats_str;
 
-  std::vector<std::string> stats;
+  std::vector<std::string> enc_stats;
 
   for ( size_t i = 0; i < std::size( parsed.data.stat_type_e ); i++ )
   {
@@ -1428,10 +1428,11 @@ std::string item_t::encoded_stats() const
       continue;
 
     std::string stat_str = item_database::stat_to_str( parsed.data.stat_type_e[ i ], stat_value( i ) );
-    if ( ! stat_str.empty() ) stats.push_back( stat_str );
+    if ( !stat_str.empty() )
+      enc_stats.push_back( stat_str );
   }
 
-  return util::string_join( stats, "_" );
+  return util::string_join( enc_stats, "_" );
 }
 
 // item_t::encoded_weapon ===================================================

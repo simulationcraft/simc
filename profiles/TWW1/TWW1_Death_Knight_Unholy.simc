@@ -5,7 +5,7 @@ level=80
 race=troll
 role=attack
 position=back
-talents=CwPAAAAAAAAAAAAAAAAAAAAAAAAzMjZMDDzYmZmphZmZGzYAAAAAAAAAMzMzwYwMAgZzMMbzYmZmxMDwiZxwQGY2YoxCAMDA
+talents=CwPAAAAAAAAAAAAAAAAAAAAAAAAzMjZMGDzYmZmphZmZGzYAAAAAAAAAMzMzwYwMAgZzMMbzYmZmxMDwiZxwQGY2YoxCAMDA
 
 # Default consumables
 potion=tempered_potion_3
@@ -192,7 +192,7 @@ actions.variables+=/variable,name=pooling_runic_power,op=setif,value=1,value_els
 actions.variables+=/variable,name=spend_rp,op=setif,value=1,value_else=0,condition=(!talent.rotten_touch|talent.rotten_touch&!debuff.rotten_touch.up|runic_power.deficit<20)&((talent.improved_death_coil&(active_enemies=2|talent.coil_of_devastation)|rune<3|pet.gargoyle.active|buff.sudden_doom.react|!variable.pop_wounds&debuff.festering_wound.stack>=4))
 
 head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213743
-neck=emergency_stop_keychain,id=221077,bonus_id=1611/10879,ilevel=639,gem_id=213494/213494
+neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1540/10255/10394/10879,gem_id=213494/213494
 shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540
 back=consecrated_cloak,id=221667,bonus_id=11144/9627/9633/8902/8793/10222/11109/8960,crafted_stats=49/36
 chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540,enchant=crystalline_radiance_3
@@ -201,7 +201,7 @@ hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
 waist=girdle_of_somber_ploys,id=221133,bonus_id=1611/6935,ilevel=639,gem_id=213494
 legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=stormbound_armor_kit_3
 feet=boots_of_the_black_bulwark,id=225590,bonus_id=1540,enchant=defenders_march_3
-finger1=key_to_the_unseeming,id=212447,bonus_id=1540/10879,gem_id=213494/213494,enchant=cursed_haste_3
+finger1=writhing_ringworm,id=225576,bonus_id=1540/10879,gem_id=213494/213494,enchant=cursed_haste_3
 finger2=circle_of_bone,id=133299,bonus_id=9466/1514/10879,ilevel=639,gem_id=213494/213494,enchant=cursed_haste_3
 trinket1=treacherous_transmitter,id=221023,bonus_id=1540
 trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
@@ -212,8 +212,8 @@ main_hand=charged_claymore,id=222447,bonus_id=11144/9627/9633/8902/8793/10222/11
 # gear_strength=32522
 # gear_stamina=237765
 # gear_crit_rating=3094
-# gear_haste_rating=21592
-# gear_mastery_rating=15803
+# gear_haste_rating=21154
+# gear_mastery_rating=16240
 # gear_armor=56354
 # set_bonus=thewarwithin_season_1_2pc=1
 # set_bonus=thewarwithin_season_1_4pc=1

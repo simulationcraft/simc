@@ -1060,6 +1060,7 @@ void spymasters_web( special_effect_t& effect )
   };
 
   effect.disable_buff();
+  effect.has_use_buff_override = true;
   effect.execute_action = create_proc_action<spymasters_web_t>( "spymasters_web", effect, stacking_buff, use_buff );
 }
 
@@ -1165,14 +1166,17 @@ void aberrant_spellforge( special_effect_t& effect )
   // all proccing abilities.
   effect.player->callbacks.register_callback_trigger_function( equip->spell_id,
       dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ id = empowered->id() ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
-        return a->data().id() == id;
+      [ id = empowered->id() ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) {
+        return s->result_amount && a->data().id() == id;
       } );
 
   effect.player->callbacks.register_callback_execute_function( equip->spell_id,
       [ damage, empowerment ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* s ) {
-        damage->execute_on_target( s->target );
-        empowerment->expire( a );
+        if ( empowerment->check() )
+        {
+          damage->execute_on_target( s->target );
+          empowerment->expire( a );
+        }
       } );
 
   auto cb = new dbc_proc_callback_t( effect.player, *equip );
@@ -1373,6 +1377,7 @@ void sikrans_endless_arsenal( special_effect_t& effect )
     }
   };
 
+  effect.has_use_damage_override = true;
   effect.execute_action = create_proc_action<sikrans_endless_arsenal_t>( "sikrans_endless_arsenal", effect, data );
 }
 
@@ -1606,7 +1611,7 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
   {
     auto stat_str = util::stat_type_abbrev( secondary_ratings[ i ] );
     auto spell = effect.player->find_spell( buff_ids[ i ] );
-    auto name = fmt::format( "{}_{}", spell->name_cstr(), stat_str );
+    auto name = fmt::format( "{}_{}", util::tokenize_fn( spell->name_cstr() ), stat_str );
 
     auto buff = create_buff<ovinax_stat_buff_t>( effect.player, name, spell, data );
     buff->set_stat_from_effect_type( A_MOD_RATING, data->effectN( 2 ).average( effect ) )
@@ -2405,13 +2410,6 @@ void ravenous_honey_buzzer( special_effect_t& e )
         movement_dur( timespan_t::from_seconds( e.trigger()->missile_speed() ) )
     {
       base_multiplier *= role_mult( e );
-
-      // TODO: doesn't split damage at all
-      if ( e.player->bugs )
-      {
-        split_aoe_damage = false;
-        aoe_damage_increase = false;
-      }
     }
 
     void execute() override
@@ -2858,6 +2856,7 @@ void high_speakers_accretion( special_effect_t& effect )
     }
   };
 
+  effect.has_use_damage_override = true;
   effect.execute_action = create_proc_action<high_speakers_accretion_t>( "high_speakers_accretion", effect );
 }
 
@@ -2926,10 +2925,10 @@ void entropic_skardyn_core( special_effect_t& effect )
 
       for ( auto a : e.player->action_list )
       {
-        if ( auto pickup = dynamic_cast<pickup_entropic_skardyn_core_t*>( a ) )
+        if ( auto pickup_action = dynamic_cast<pickup_entropic_skardyn_core_t*>( a ) )
         {
-          pickup->buff = buff;
-          pickup->tracker = tracker;
+          pickup_action->buff = buff;
+          pickup_action->tracker = tracker;
         }
       }
     }
@@ -2995,7 +2994,6 @@ void mereldars_toll( special_effect_t& effect )
 
   struct mereldars_toll_t : public generic_proc_t
   {
-    buff_t* vers;
     int allies;
     target_specific_t<buff_t> buffs;
     const spell_data_t* equip_data;
@@ -3078,6 +3076,7 @@ void mereldars_toll( special_effect_t& effect )
     }
   };
 
+  effect.has_use_damage_override = true;
   effect.execute_action = create_proc_action<mereldars_toll_t>( "mereldars_toll", effect, data );
 }
 
@@ -3339,6 +3338,7 @@ void twin_fang_instruments( special_effect_t& effect )
     }
   };
 
+  effect.has_use_damage_override = true;
   effect.execute_action = create_proc_action<twin_fang_instruments_t>( "twin_fang_instruments", effect, data );
 }
 
@@ -4224,7 +4224,7 @@ void candle_confidant( special_effect_t& effect )
     void update_stats() override
     {
       pet_t::update_stats();
-      // Current doesnt seem to scale with haste
+      // Currently doesnt seem to scale with haste
       if ( owner->bugs )
       {
         current_pet_stats.composite_melee_haste             = 1;
@@ -4294,6 +4294,12 @@ void candle_confidant( special_effect_t& effect )
         stats = ( *it )->stats;
       else
         proxy->add_child( this );
+    }
+
+    double composite_crit_chance() const override
+    {
+      // Currently their auto attacks dont seem to scale with player crit chance. 
+      return this->player->base.attack_crit_chance;
     }
 
     void execute() override
@@ -4552,6 +4558,9 @@ void candle_confidant( special_effect_t& effect )
 // 440235 stun, NYI
 void concoction_kiss_of_death( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "concoction_kiss_of_death" } ) )
+    return;
+
   struct concoction_kiss_of_death_buff_t : public stat_buff_t
   {
     concoction_kiss_of_death_buff_t( player_t* p, std::string_view n, const spell_data_t* s, const item_t* i )
@@ -4581,6 +4590,9 @@ void concoction_kiss_of_death( special_effect_t& effect )
     }
   };
 
+  // TODO: the driver has two cooldown categories, 1141 for the on-use and 2338 for the charge. currently the generation
+  // script prioritizes the charge category so we manually set it here until the script can be adjusted.
+  effect.cooldown_category_ = 1141;
   effect.custom_buff = create_buff<concoction_kiss_of_death_buff_t>( effect.player, effect.driver(), effect.item );
 }
 
@@ -5712,7 +5724,7 @@ void register_special_effects()
   register_special_effect( 455432, items::shining_arathor_insignia );
   register_special_effect( 455451, items::quickwick_candlestick );
   register_special_effect( 455435, items::candle_confidant );
-  register_special_effect( 435493, items::concoction_kiss_of_death );
+  register_special_effect( 435493, items::concoction_kiss_of_death, true );
   register_special_effect( 435473, items::everburning_lantern );
   register_special_effect( 455484, items::detachable_fang );
   register_special_effect( 459222, items::scroll_of_momentum, true );

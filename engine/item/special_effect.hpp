@@ -82,6 +82,7 @@ public:
   buff_t* custom_buff; // Allows custom action
 
   bool action_disabled, buff_disabled;
+  bool has_use_buff_override, has_use_damage_override;
 
   std::string cooldown_group_name_override;
   timespan_t cooldown_group_duration_override;

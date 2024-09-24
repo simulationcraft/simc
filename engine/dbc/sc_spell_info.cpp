@@ -11,7 +11,6 @@
 #include "dbc/trait_data.hpp"
 #include "player/covenant.hpp"
 #include "util/static_map.hpp"
-#include "util/string_view.hpp"
 #include "util/util.hpp"
 #include "util/xml.hpp"
 
@@ -23,11 +22,11 @@
 
 namespace {
 
-static constexpr std::array<util::string_view, 4> _spell_type_map { {
+static constexpr std::array<std::string_view, 4> _spell_type_map { {
   "None", "Magic", "Melee", "Ranged"
 } };
 
-static constexpr auto _hotfix_effect_map = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _hotfix_effect_map = util::make_static_map<unsigned, std::string_view>( {
   {  3, "Index" },
   {  4, "Type" },
   {  5, "Sub Type" },
@@ -57,7 +56,7 @@ static constexpr auto _hotfix_effect_map = util::make_static_map<unsigned, util:
   { 29, "Attribute" },
 } );
 
-static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, std::string_view>( {
   {  0, "Name" },
   {  3, "Velocity" },
   {  4, "School" },
@@ -97,19 +96,21 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::
   { 50, "Travel Delay" },
   { 51, "Min Travel Time" },
   { 52, "Proc Flags 2" },
+  { 53, "Min Scaling Level" },
+  { 54, "Scale from ilevel" },
 } );
 
-static constexpr auto _hotfix_spelltext_map = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _hotfix_spelltext_map = util::make_static_map<unsigned, std::string_view>( {
   { 0, "Description" },
   { 1, "Tooltip" },
   { 2, "Rank" },
 } );
 
-static constexpr auto _hotfix_spelldesc_vars_map = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _hotfix_spelldesc_vars_map = util::make_static_map<unsigned, std::string_view>( {
   { 0, "Variables" },
 } );
 
-static constexpr auto _hotfix_power_map = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _hotfix_power_map = util::make_static_map<unsigned, std::string_view>( {
   {  2, "Aura Id" },
   {  4, "Power Type" },
   {  5, "Cost" },
@@ -121,7 +122,7 @@ static constexpr auto _hotfix_power_map = util::make_static_map<unsigned, util::
 } );
 
 template <typename T, size_t N>
-std::string map_string( const util::static_map<T, util::string_view, N>& map, T key )
+std::string map_string( const util::static_map<T, std::string_view, N>& map, T key )
 {
   auto it = map.find( key );
   if ( it != map.end() )
@@ -130,7 +131,7 @@ std::string map_string( const util::static_map<T, util::string_view, N>& map, T 
 }
 
 void print_hotfixes( fmt::memory_buffer& buf, util::span<const hotfix::client_hotfix_entry_t> hotfixes,
-                     util::static_map_view<unsigned, util::string_view> map )
+                     util::static_map_view<unsigned, std::string_view> map )
 {
   for ( const auto& hotfix : hotfixes )
   {
@@ -165,7 +166,7 @@ void print_hotfixes( fmt::memory_buffer& buf, util::span<const hotfix::client_ho
 }
 
 std::string hotfix_map_str( util::span<const hotfix::client_hotfix_entry_t> hotfixes,
-                            util::static_map_view<unsigned, util::string_view> map )
+                            util::static_map_view<unsigned, std::string_view> map )
 {
   fmt::memory_buffer s;
   print_hotfixes( s, hotfixes, map );
@@ -213,9 +214,9 @@ std::streamsize real_ppm_decimals( const spell_data_t* spell, const rppm_modifie
 struct proc_map_entry_t
 {
   uint64_t flag;
-  util::string_view proc;
+  std::string_view proc;
 };
-static constexpr std::array<proc_map_entry_t, 35> _proc_flag_map { {
+static constexpr std::array<proc_map_entry_t, 39> _proc_flag_map { {
   { PF_HEARTBEAT,              "Heartbeat"                   },
   { PF_KILLING_BLOW,           "Killing Blow"                },
   { PF_MELEE,                  "White Melee"                 },
@@ -238,10 +239,10 @@ static constexpr std::array<proc_map_entry_t, 35> _proc_flag_map { {
   { PF_PERIODIC_TAKEN,         "Periodic Taken"              },
   { PF_ANY_DAMAGE_TAKEN,       "Any Damage Taken"            },
   { PF_HELPFUL_PERIODIC,       "Helpful Periodic"            },
-  { PF_JUMP,                   "Proc on jump"                },
   { PF_MAINHAND,               "Melee Main-Hand"             },
   { PF_OFFHAND,                "Melee Off-Hand"              },
   { PF_DEATH,                  "Death"                       },
+  { PF_JUMP,                   "Proc on jump"                },
   { PF_CLONE_SPELL,            "Proc Clone Spell"            },
   { PF_ENTER_COMBAT,           "Enter Combat"                },
   { PF_ENCOUNTER_START,        "Encounter Start"             },
@@ -251,6 +252,10 @@ static constexpr std::array<proc_map_entry_t, 35> _proc_flag_map { {
   { PF_TARGET_DIES,            "Target Dies"                 },
   { PF_KNOCKBACK,              "Knockback"                   },
   { PF_CAST_SUCCESSFUL,        "Cast Successful"             },
+  { PF_UNKNOWN_36,             "Unknown 36"                  },
+  { PF_UNKNOWN_37,             "Unknown 37"                  },
+  { PF_UNKNOWN_38,             "Unknown 38"                  },
+  { PF_UNKNOWN_39,             "Unknown 39"                  },
 } };
 
 struct class_map_entry_t
@@ -276,7 +281,7 @@ static constexpr std::array<class_map_entry_t, 15> _class_map { {
   { nullptr, PLAYER_NONE },
 } };
 
-static constexpr auto _race_map = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _race_map = util::make_static_map<unsigned, std::string_view>( {
   {  0, "Human"               },
   {  1, "Orc"                 },
   {  2, "Dwarf"               },
@@ -304,7 +309,7 @@ static constexpr auto _race_map = util::make_static_map<unsigned, util::string_v
   { 31, "Kul Tiran"           },
 } );
 
-static constexpr auto _targeting_strings = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _targeting_strings = util::make_static_map<unsigned, std::string_view>( {
   { 1,   "Self"                   },
   { 2,   "Nearby Enemy"           },
   { 3,   "Nearby Party"           },
@@ -363,7 +368,7 @@ static constexpr auto _targeting_strings = util::make_static_map<unsigned, util:
   { 136, "Cone to Friendly"       },
 } );
 
-static constexpr auto _resource_strings = util::make_static_map<int, util::string_view>( {
+static constexpr auto _resource_strings = util::make_static_map<int, std::string_view>( {
   { -2, "Health",        },
   {  0, "Base Mana",     },
   {  1, "Rage",          },
@@ -386,7 +391,7 @@ static constexpr auto _resource_strings = util::make_static_map<int, util::strin
 } );
 
 // Mappings from Classic EnumeratedString.db2
-static constexpr auto _attribute_strings = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _attribute_strings = util::make_static_map<unsigned, std::string_view>( {
   {    0, "Proc Failure Burns Charge"                                            },
   {    1, "Uses Ranged Slot"                                                     },
   {    2, "On Next Swing (No Damage)"                                            },
@@ -836,9 +841,73 @@ static constexpr auto _attribute_strings = util::make_static_map<unsigned, util:
   {  446, "Recompute Aura On Level Scale"                                        },
   {  447, "Update Fall Speed After Aura Removal"                                 },
   {  448, "Prevent Jumping During Precast"                                       },
+  {  449, "Reagent Consumes Charges"                                             },
+  {  451, "Hide Passive From Tooltip"                                            },
+  {  468, "Private Aura"                                                         },
 } );
 
-static constexpr auto _property_type_strings = util::make_static_map<int, util::string_view>( {
+static constexpr auto _aura_interrupt_strings = util::make_static_map<unsigned, std::string_view>( {
+  {  0, "Hostile Action Received"          },
+  {  1, "Damage"                           },
+  {  2, "Action"                           },
+  {  3, "Moving"                           },
+  {  4, "Turning"                          },
+  {  5, "Animation"                        },
+  {  6, "Dismount"                         },
+  {  7, "Under Water"                      },
+  {  8, "Above Water"                      },
+  {  9, "Sheathing"                        },
+  { 10, "Interacting"                      },
+  { 11, "Looting"                          },
+  { 12, "Attacking"                        },
+  { 13, "Use Item"                         },
+  { 14, "Damage Channel Duration"          },
+  { 15, "Shapeshifting"                    },
+  { 16, "Action (Delayed)"                 },
+  { 17, "Mount"                            },
+  { 18, "Standing"                         },
+  { 19, "Leave World"                      },
+  { 20, "Stealth or Invisible"             },
+  { 21, "Invulnerability"                  },
+  { 22, "Enter World"                      },
+  { 23, "PVP Active"                       },
+  { 24, "Direct Damage"                    },
+  { 25, "Landing"                          },
+  { 26, "Release"                          },
+  { 27, "Damage (Script)"                  },
+  { 28, "Enter Combat"                     },
+  { 29, "Login"                            },
+  { 30, "Summon"                           },
+  { 31, "Leave Combat"                     },
+  { 32, "Falling"                          },
+  { 33, "Swimming"                         },
+  { 34, "Not Moving"                       },
+  { 35, "Ground"                           },
+  { 36, "Transform"                        },
+  { 37, "Jump"                             },
+  { 38, "Change Specialization"            },
+  { 39, "Exit Vehicle"                     },
+  { 40, "Raid Encounter Start or M+ Start" },
+  { 41, "Raid Encounter End or M+ Start"   },
+  { 42, "Disconnect"                       },
+  { 43, "Enter Instance"                   },
+  { 44, "Duel End"                         },
+  { 45, "Leave Arena or Battleground"      },
+  { 46, "Change Talent"                    },
+  { 47, "Change Glyph"                     },
+  { 48, "Seamless Transfer"                },
+  { 49, "Leave War Mode"                   },
+  { 50, "Touch Ground"                     },
+  { 51, "Chromie Time"                     },
+  { 52, "Spline or Free Flight"            },
+  { 53, "Proc or Periodic Attack"          },
+  { 54, "Challenge Mode Start"             },
+  { 55, "Encounter Start"                  },
+  { 56, "Ecnounter End"                    },
+  { 57, "Release Empower"                  },
+} );
+
+static constexpr auto _property_type_strings = util::make_static_map<int, std::string_view>( {
   {  0, "Spell Direct Amount"             },
   {  1, "Spell Duration"                  },
   {  2, "Spell Generated Threat"          },
@@ -881,7 +950,7 @@ static constexpr auto _property_type_strings = util::make_static_map<int, util::
   { 39, "Spell Resource Cost 3"           },
 } );
 
-static constexpr auto _effect_type_strings = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _effect_type_strings = util::make_static_map<unsigned, std::string_view>( {
   {   0, "None"                     },
   {   1, "Instant Kill"             },
   {   2, "School Damage"            },
@@ -980,7 +1049,7 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, uti
   { 290, "Reduce Remaining Cooldown"},
 } );
 
-static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, std::string_view>( {
   {   0, "None"                                         },
   {   2, "Possess"                                      },
   {   3, "Periodic Damage"                              },
@@ -1131,6 +1200,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 247, "Copy Appearance"                              },
   { 250, "Increase Max Health (Stacking)"               },
   { 253, "Modify Critical Block Chance"                 },
+  { 255, "Modify Damage Taken% from Mechanic"           },
   { 259, "Modify Periodic Healing Recevied%"            },
   { 263, "Disable Abilities"                            },
   { 268, "Modify Armor by Primary Stat%"                },
@@ -1226,7 +1296,7 @@ static constexpr auto _effect_attribute_strings = util::make_static_map<unsigned
   { 26, "Damage Only Affects Absorbs"                  },
 } );
 
-static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _mechanic_strings = util::make_static_map<unsigned, std::string_view>( {
   { 1,  "Charm"        },
   { 2,  "Disorient"    },
   { 3,  "Disarm"       },
@@ -1265,7 +1335,7 @@ static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::
   { 36, "Taunt"        },
 } );
 
-static constexpr auto _label_strings = util::make_static_map<int, util::string_view>( {
+static constexpr auto _label_strings = util::make_static_map<int, std::string_view>( {
   { 16, "Class Spells"        },
   { 17, "Mage Spells"         },
   { 18, "Priest Spells"       },
@@ -1601,6 +1671,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
                       &util::stat_type_abbrev );
     s << " | Rating: " << util::string_join( tmp );
   }
+  else if ( e->subtype() == A_MOD_MECHANIC_RESISTANCE || e->subtype() == A_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT )
+  {
+    s << " | Mechanic: " << mechanic_str( e->misc_value1() );
+  }
   else if ( e->misc_value1() != 0 )
   {
     if ( e->affected_schools() != 0U )
@@ -1707,8 +1781,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   if ( e->type() == E_APPLY_AURA &&
        ( e->subtype() == A_ADD_PCT_LABEL_MODIFIER || e->subtype() == A_ADD_FLAT_LABEL_MODIFIER ) )
   {
-    auto str = label_str( e->misc_value2(), dbc );
-    if ( str != "" )
+    if ( auto str = label_str( e->misc_value2(), dbc ); str != "" )
       s << "                   Affected Spells (Label): " << str << std::endl;
   }
 
@@ -1716,18 +1789,16 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
        ( e->subtype() == A_MOD_RECHARGE_RATE_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_SPELLS_LABEL ||
          e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL ) )
   {
-    auto str = label_str( e->misc_value1(), dbc );
-    if ( str != "" )
+    if ( auto str = label_str( e->misc_value1(), dbc ); str != "" )
       s << "                   Affected Spells (Label): " << str << std::endl;
   }
 
   if ( e->type() == E_APPLY_AURA && range::contains( dbc::effect_category_subtypes(), e->subtype() ) )
   {
-    auto affected_spells = dbc.spells_by_category( e->misc_value1() );
-    if ( !affected_spells.empty() )
+    if ( auto affected = dbc.spells_by_category( e->misc_value1() ); !affected.empty() )
     {
       s << "                   Affected Spells (Category): ";
-      s << concatenate( affected_spells, []( std::stringstream& s, const spell_data_t* spell ) {
+      s << concatenate( affected, []( std::stringstream& s, const spell_data_t* spell ) {
         fmt::print( s, "{} ({})", spell->name_cstr(), spell->id() );
       } );
       s << std::endl;
@@ -1830,21 +1901,20 @@ static std::string trait_data_to_str( const dbc_t& dbc, const spell_data_t* spel
     }
 
     std::vector<std::string> spec_strs;
-    for ( auto spec_idx : trait->id_spec )
+    for ( auto s_idx : trait->id_spec )
     {
-      if ( spec_idx == 0 )
+      if ( s_idx == 0 )
         continue;
 
-      auto specialization_str =
-          util::inverse_tokenize( dbc::specialization_string( static_cast<specialization_e>( spec_idx ) ) );
+      auto spec_str = util::inverse_tokenize( dbc::specialization_string( static_cast<specialization_e>( s_idx ) ) );
 
-      if ( util::str_compare_ci( specialization_str, "Unknown" ) )
+      if ( util::str_compare_ci( spec_str, "Unknown" ) )
       {
-        spec_strs.emplace_back( fmt::format( "{} ({})", specialization_str, spec_idx ) );
+        spec_strs.emplace_back( fmt::format( "{} ({})", spec_str, s_idx ) );
       }
       else
       {
-        spec_strs.emplace_back( fmt::format( "{}", specialization_str ) );
+        spec_strs.emplace_back( fmt::format( "{}", spec_str ) );
       }
     }
 
@@ -1981,7 +2051,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell->race_mask() )
   {
-    std::vector<util::string_view> races;
+    std::vector<std::string_view> races;
     for ( unsigned int i = 0; i < sizeof( spell->race_mask() ) * 8; i++ )
     {
       uint64_t mask = uint64_t( 1 ) << i;
@@ -2062,13 +2132,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( pd.aura_id() > 0 && dbc.spell( pd.aura_id() )->id() == pd.aura_id() )
       s << " w/ " << dbc.spell( pd.aura_id() )->name_cstr() << " (id=" << pd.aura_id() << ")";
 
-    const auto hotfixes = spellpower_data_t::hotfixes( pd, dbc.ptr );
-    if ( !hotfixes.empty() )
+    if ( const auto power_hotfixes = spellpower_data_t::hotfixes( pd, dbc.ptr ); !power_hotfixes.empty() )
     {
-      if ( hotfixes.front().field_id == hotfix::NEW_ENTRY )
+      if ( power_hotfixes.front().field_id == hotfix::NEW_ENTRY )
         fmt::print( s, "[Hotfixed: NEW POWER]" );
       else
-        fmt::print( s, "[Hotfixed: {}]", hotfix_map_str( hotfixes, _hotfix_power_map ) );
+        fmt::print( s, "[Hotfixed: {}]", hotfix_map_str( power_hotfixes, _hotfix_power_map ) );
     }
 
     s << std::endl;
@@ -2101,9 +2170,9 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
-  if ( spell->req_max_level() > 0 )
+  if ( spell->max_aura_level() > 0 )
   {
-    s << "Req. Max Level   : " << spell->req_max_level();
+    s << "Max Aura Level   : " << spell->max_aura_level();
     s << std::endl;
   }
 
@@ -2435,32 +2504,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell->proc_flags() > 0 )
   {
-    s << "Proc Flags       : ";
-    for ( unsigned flag = 0; flag < 64; flag++ )
-    {
-      if ( spell->proc_flags() & ( static_cast<uint64_t>( 1 ) << flag ) )
-        s << "x";
-      else
-        s << ".";
-
-      if ( ( flag + 1 ) % 8 == 0 )
-        s << " ";
-
-      if ( ( flag + 1 ) % 32 == 0 )
-        s << "  ";
-    }
-    s << std::endl;
-    s << "                 : ";
+    std::vector<std::string_view> proc_str;
     for ( const auto& info : _proc_flag_map )
-    {
       if ( spell->proc_flags() & info.flag )
-      {
-        fmt::print( s, "{}, ", info.proc );
-      }
-    }
-    std::streampos x = s.tellp();
-    s.seekp( x - std::streamoff( 2 ) );
-    s << std::endl;
+        proc_str.emplace_back( info.proc );
+
+    fmt::print( s, "Proc Flags       : {}\n", fmt::join( proc_str, ", " ) );
   }
 
   if ( spell->class_family() > 0 )
@@ -2526,7 +2575,6 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       fmt::print( s, "Family Flags     : {}\n", fmt::join( flags, ", " ) );
   }
 
-  s << "Attributes       : ";
   std::string attr_str;
   for ( unsigned i = 0; i < NUM_SPELL_FLAGS; i++ )
   {
@@ -2534,35 +2582,49 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     {
       if ( spell->attribute( i ) & ( 1 << flag ) )
       {
-        s << "x";
         size_t attr_idx = i * 32 + flag;
         auto it = _attribute_strings.find( static_cast<unsigned int>( attr_idx ) );
-        if ( it != _attribute_strings.end() )
-        {
-          fmt::format_to( std::back_inserter( attr_str ), "{}{} ({})", attr_str.empty() ? "" : ", ", it->second,
-                          attr_idx );
-        }
+        fmt::format_to( std::back_inserter( attr_str ), "{}{} ({})", attr_str.empty() ? "" : ", ",
+                        it == _attribute_strings.end() ? "Unknown" : it->second, attr_idx );
       }
-      else
-        s << ".";
-
-      if ( ( flag + 1 ) % 8 == 0 )
-        s << " ";
-
-      if ( flag == 31 && i % 2 == 0 )
-        s << "  ";
     }
-
-    if ( ( i + 1 ) % 2 == 0 && i < NUM_SPELL_FLAGS - 1 )
-      s << std::endl << "                 : ";
   }
-
   if ( !attr_str.empty() )
-    s << std::endl << "                 : " + attr_str;
-  s << std::endl;
+    s << "Attributes       : " << attr_str << std::endl;
+
+  std::string aura_int_str;
+  for ( unsigned flag = 0; flag < 64; flag++ )
+  {
+    auto byte = static_cast<unsigned>( flag / 32 );
+    auto bit = flag % 32;
+    if ( spell->_aura_interrupt[ byte ] & ( 1 << bit ) )
+    {
+      auto it = _aura_interrupt_strings.find( flag );
+      fmt::format_to( std::back_inserter( aura_int_str ), "{}{} ({})", aura_int_str.empty() ? "" : ", ",
+                      it == _aura_interrupt_strings.end() ? "Unknown" : it->second, flag );
+    }
+  }
+  if ( !aura_int_str.empty() )
+    s << "Aura Interrupt   : " << aura_int_str << std::endl;
+
+  std::string channel_int_sr;
+  for ( unsigned flag = 0; flag < 64; flag++ )
+  {
+    auto byte = static_cast<unsigned>( flag / 32 );
+    auto bit = flag % 32;
+    if ( spell->_channel_interrupt[ byte ] & ( 1 << bit ) )
+    {
+      auto it = _aura_interrupt_strings.find( flag );
+      fmt::format_to( std::back_inserter( channel_int_sr ), "{}{} ({})", channel_int_sr.empty() ? "" : ", ",
+                      it == _aura_interrupt_strings.end() ? "Unknown" : it->second, flag );
+    }
+  }
+  if ( !channel_int_sr.empty() )
+    s << "Channel Interrupt: " << channel_int_sr << std::endl;
+
+  s << "                 :" << std::endl;  // empty line
 
   s << "Effects          :" << std::endl;
-
   for ( const spelleffect_data_t& e : spell->effects() )
   {
     if ( e.id() == 0 )

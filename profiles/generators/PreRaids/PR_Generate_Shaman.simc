@@ -28,34 +28,7 @@
 
 # save=PR_Shaman_Elemental.simc
 
-shaman="PR_Shaman_Enhancement_Storm²"
-level=80
-race=goblin
-spec=enhancement
-role=attack
-position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMDMzYmZmZmBLzMmhBAAAAAAAAAwCsgZZGzMzmmlthlxMz0gFAMLTmBzyiZmZGDzMbYbmZCMWGzMAAzA
-
-head=cryptbound_headpiece,id=221156,ilevel=593
-neck=emergency_stop_keychain,id=221077,ilevel=593
-shoulders=wintersnap_shoulderguards,id=178695,ilevel=593
-back=anvilhide_cape,id=221088,ilevel=593
-chest=goliaths_chitinous_chainmail,id=221147,ilevel=593,enchant=crystalline_radiance_2
-wrists=hiveswarm_bracers,id=178703,ilevel=593
-hands=claws_of_tainted_ichor,id=221162,ilevel=593
-waist=reinforced_antiintruder_chainmail,id=221075,ilevel=593
-legs=entwined_chimeric_legguards,id=221186,ilevel=593,enchant=stormbound_armor_kit_2
-feet=silksteel_striders,id=221152,ilevel=593
-finger1=circle_of_bone,id=133299,ilevel=593,enchant=radiant_haste_2
-finger2=stitchfleshs_misplaced_signet,id=178736,ilevel=593,enchant=radiant_haste_2
-trinket1=arakara_sacbrood,id=219314,ilevel=593
-trinket2=empowering_crystal_of_anubikkaj,id=219312,ilevel=593
-main_hand=eirichs_fist_of_deception,id=221090,ilevel=593,enchant=authority_of_the_depths_2
-off_hand=bainbridges_blackjack,id=159648,ilevel=593,enchant=authority_of_the_depths_2
-
-save=PR_Shaman_Enhancement_Storm.simc
-
-shaman="PR_Shaman_Enhancement_Hybrid"
+shaman="PR_Shaman_Enhancement_DRE"
 level=80
 race=goblin
 spec=enhancement
@@ -80,7 +53,7 @@ trinket2=empowering_crystal_of_anubikkaj,id=219312,ilevel=593
 main_hand=eirichs_fist_of_deception,id=221090,ilevel=593,enchant=authority_of_the_depths_2
 off_hand=bainbridges_blackjack,id=159648,ilevel=593,enchant=authority_of_the_depths_2
 
-save=PR_Shaman_Enhancement_Hybrid.simc
+save=PR_Shaman_Enhancement_DRE.simc
 
 shaman="PR_Shaman_Enhancement"
 level=80
@@ -88,7 +61,7 @@ race=goblin
 spec=enhancement
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzyMzMYmZYGmNzsMDAAAAAAAAAAsBwYGDDZBWGGawCAmlJzgZZhZmZMmZmNjtZmJLYswYAAmB
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzCmhZmZmZGmtZmlZAAAAAAAAAAgNAGzYYILwywQDWAwsMZGMLLmZmZMMzsglZmJwYZMzAAMD
 
 head=cryptbound_headpiece,id=221156,ilevel=593
 neck=emergency_stop_keychain,id=221077,ilevel=593

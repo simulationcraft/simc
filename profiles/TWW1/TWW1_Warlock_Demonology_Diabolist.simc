@@ -5,7 +5,7 @@ level=80
 race=Orc
 role=spell
 position=ranged_back
-talents=CoQAAAAAAAAAAAAAAAAAAAAAAAMzMzMjhZxwY2mZmhZZAAAAAAAAAAMDYMjhFYgtRL0wCzMzYMmZzMzMzYMzAzMzMMzMAAA
+talents=CoQAAAAAAAAAAAAAAAAAAAAAAAMzMzMjYWMMmtZmZYWGAAAAAAAAAAzAGzYYBGYb0CNswYmxsNmZzMzMzYMjBzMzMYmZAAA
 
 # Default consumables
 potion=tempered_potion_3
@@ -75,16 +75,14 @@ actions+=/invoke_external_buff,name=power_infusion,if=fight_remains<20|pet.demon
 actions+=/call_action_list,name=fight_end,if=fight_remains<30
 actions+=/call_action_list,name=opener,if=time<variable.first_tyrant_time
 actions+=/call_action_list,name=tyrant,if=cooldown.summon_demonic_tyrant.remains<gcd.max*14
-actions+=/hand_of_guldan,if=time<0.5&(fight_remains%%95>40|fight_remains%%95<15)&(talent.reign_of_tyranny|active_enemies>2)
 actions+=/call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains>25|variable.next_tyrant_cd>25
-actions+=/summon_demonic_tyrant,if=buff.vilefiend.up|buff.grimoire_felguard.up|cooldown.grimoire_felguard.remains>60
 actions+=/summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>30
 actions+=/demonbolt,target_if=(!debuff.doom.up|!action.demonbolt.in_flight&debuff.doom.remains<=2),if=buff.demonic_core.up&(((!talent.soul_strike|cooldown.soul_strike.remains>gcd.max*2&talent.fel_invocation)&soul_shard<4)|soul_shard<(4-(active_enemies>2)))&!prev_gcd.1.demonbolt&talent.doom&cooldown.summon_demonic_tyrant.remains>15
 actions+=/demonbolt,if=buff.demonic_core.stack>=3&soul_shard<=3&!variable.pool_cores_for_tyrant
 actions+=/power_siphon,if=buff.demonic_core.stack<3&cooldown.summon_demonic_tyrant.remains>25
-actions+=/demonic_strength,if=!(raid_event.adds.in<45-raid_event.add.duration)
-actions+=/bilescourge_bombers
-actions+=/guillotine,if=(cooldown.demonic_strength.remains|!talent.demonic_strength)&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>6)
+actions+=/demonic_strength,,if=active_enemies>1
+actions+=/bilescourge_bombers,if=active_enemies>1
+actions+=/guillotine,if=active_enemies>1&(cooldown.demonic_strength.remains|!talent.demonic_strength)&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>6)
 actions+=/ruination
 actions+=/infernal_bolt,if=soul_shard<3&cooldown.summon_demonic_tyrant.remains>20
 actions+=/implosion,if=two_cast_imps>0&variable.impl&!prev_gcd.1.implosion&!raid_event.adds.exists|two_cast_imps>0&variable.impl&!prev_gcd.1.implosion&raid_event.adds.exists&(active_enemies>3|active_enemies<=3&last_cast_imps>0)

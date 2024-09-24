@@ -575,6 +575,7 @@ struct player_t : public actor_t
     buff_t* quickwicks_quick_trick_wick_walk;  // quickwick candlestick movement speed buff
     buff_t* building_momentum;  // scroll of momentum counter buff
     buff_t* full_momentum;      // scroll of momentum max buff
+    buff_t* potion_bomb_of_power; // potion bomb of power primary stat
   } buffs;
 
   struct debuffs_t
@@ -617,6 +618,7 @@ struct player_t : public actor_t
     std::vector<timespan_t> boon_of_azeroth;
     std::vector<timespan_t> boon_of_azeroth_mythic;
     std::vector<timespan_t> tome_of_unstable_power;
+    std::vector<timespan_t> potion_bomb_of_power;
     int tome_of_unstable_power_ilevel;
     int soleahs_secret_technique;
     std::string elegy_of_the_eternals;
@@ -832,8 +834,8 @@ struct player_t : public actor_t
     // Starting stance for Sik'rans Shadow Arsenal
     player_option_t<std::string> sikrans_endless_arsenal_stance = "";
     // starting & desired stacks for Ovinax's Mercurial Egg
-    int ovinaxs_mercurial_egg_initial_primary_stacks = 30;
-    int ovinaxs_mercurial_egg_desired_primary_stacks = 20;
+    player_option_t<int> ovinaxs_mercurial_egg_initial_primary_stacks = 20;
+    player_option_t<int> ovinaxs_mercurial_egg_desired_primary_stacks = 20;
     // how close to desired stacks you can be before potentially adjusting
     int ovinaxs_mercurial_egg_desired_primary_stacks_leeway = 3;
     // time to pick up Entropic Skardyn Core fragment
@@ -1143,8 +1145,8 @@ public:
   virtual double composite_melee_haste() const;
   virtual double composite_melee_auto_attack_speed() const;
   virtual double composite_melee_attack_power() const;
-  virtual double composite_weapon_attack_power_by_type( attack_power_type type ) const;
-  virtual double composite_total_attack_power_by_type( attack_power_type type ) const;
+  virtual double composite_weapon_attack_power_by_type( attack_power_type ) const;
+  virtual double composite_total_attack_power_by_type( attack_power_type ) const;
   virtual double composite_melee_hit() const;
   virtual double composite_melee_crit_chance() const;
   virtual double composite_melee_crit_chance_multiplier() const
@@ -1187,17 +1189,17 @@ public:
   virtual double composite_player_multiplier( school_e ) const;
   /// Persistent multipliers that are snapshot at the beginning of the spell application/execution
   virtual double composite_persistent_multiplier( school_e ) const { return 1.0; }
-  virtual double composite_player_target_multiplier( player_t* target, school_e school ) const;
+  virtual double composite_player_target_multiplier( player_t*, school_e school ) const;
   virtual double composite_player_heal_multiplier( const action_state_t* s ) const;
   virtual double composite_player_dh_multiplier( school_e ) const { return 1.0; }
   virtual double composite_player_th_multiplier( school_e ) const;
   virtual double composite_player_absorb_multiplier( const action_state_t* s ) const;
   virtual double composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const;
-  virtual double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const;
-  virtual double composite_player_target_crit_chance( player_t* target ) const;
+  virtual double composite_player_target_pet_damage_multiplier( player_t*, bool guardian ) const;
+  virtual double composite_player_target_crit_chance( player_t* ) const;
   virtual double composite_player_critical_damage_multiplier( const action_state_t* s ) const;
   virtual double composite_player_critical_healing_multiplier() const;
-  virtual double composite_player_target_armor( player_t* target ) const;
+  virtual double composite_player_target_armor( player_t* ) const;
   virtual double composite_mitigation_multiplier( school_e ) const;
   virtual double non_stacking_movement_modifier() const;
   virtual double stacking_movement_modifier() const;
@@ -1413,13 +1415,14 @@ public:
 
 private:
   std::vector<unsigned> active_dots;
+
 public:
   void add_active_dot( const dot_t* dot );
   void remove_active_dot( const dot_t* dot );
   unsigned get_active_dots( const dot_t* dot ) const;
   virtual void adjust_dynamic_cooldowns();
-  virtual void adjust_global_cooldown(gcd_haste_type type );
-  virtual void adjust_auto_attack(gcd_haste_type type );
+  virtual void adjust_global_cooldown( gcd_haste_type );
+  virtual void adjust_auto_attack( gcd_haste_type );
 
   // 8.2 Vision of Perfection essence
   virtual void vision_of_perfection_proc();
@@ -1428,10 +1431,9 @@ private:
   void do_update_movement( double yards );
   void check_resource_callback_deactivation();
   void reset_resource_callbacks();
-  void check_resource_change_for_callback(resource_e resource, double previous_amount, double previous_pct_points);
+  void check_resource_change_for_callback( resource_e resource, double previous_amount, double previous_pct_points );
+
 public:
-
-
   // Figure out another actor, by name. Prioritizes pets > harmful targets >
   // other players. Used by "actor.<name>" expression currently.
   virtual player_t* actor_by_name_str( util::string_view ) const;

@@ -21,5 +21,5 @@ public:
   double miss_chance( double hit, player_t* t ) const override;
   double composite_hit() const override;
   double composite_versatility( const action_state_t* state ) const override;
-  double composite_target_multiplier( player_t* target ) const override;
+  double composite_target_multiplier( player_t* ) const override;
 };

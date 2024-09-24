@@ -494,11 +494,10 @@ struct potion_t : public dbc_consumable_base_t
       // fallback to spell cooldown group & duration if item effect data doesn't contain it
       if ( cd_grp <= 0 && cd_dur <= 0 )
       {
-        auto s_data = player->find_spell( effect.spell_id );
-        if ( s_data->ok() )
+        if ( auto spell = player->find_spell( effect.spell_id ); spell->ok() )
         {
-          cd_grp = s_data->_category;
-          cd_dur = s_data->_category_cooldown;
+          cd_grp = spell->_category;
+          cd_dur = spell->_category_cooldown;
         }
       }
 
@@ -838,16 +837,16 @@ dbc_consumable_base_t::dbc_consumable_base_t( player_t* p, std::string_view name
   target = player;
 }
 
-std::unique_ptr<expr_t> dbc_consumable_base_t::create_expression( std::string_view name_str )
+std::unique_ptr<expr_t> dbc_consumable_base_t::create_expression( std::string_view name )
 {
-  auto split = util::string_split<util::string_view>( name_str, "." );
+  auto split = util::string_split<util::string_view>( name, "." );
   if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "consumable" ) )
   {
     auto match = util::str_compare_ci( consumable_name, split[ 1 ] );
-    return expr_t::create_constant( name_str, match );
+    return expr_t::create_constant( name, match );
   }
 
-  return action_t::create_expression( name_str );
+  return action_t::create_expression( name );
 }
 
 void dbc_consumable_base_t::execute()

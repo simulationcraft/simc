@@ -3871,19 +3871,18 @@ const special_effect_t* item_targetdata_initializer_t::effect( actor_target_data
  * proc callback, and relevant actions/buffs, or call a custom function to
  * perform the initialization.
  */
-void unique_gear::initialize_special_effect( special_effect_t& effect,
-                                             unsigned          spell_id )
+void unique_gear::initialize_special_effect( special_effect_t& effect, unsigned spell_id )
 {
   player_t* p = effect.player;
 
   // Perform max level checking on the driver before anything
-  const spell_data_t* spell = p -> find_spell( spell_id );
-  if ( spell -> req_max_level() > 0 && as<unsigned>( p -> level() ) > spell -> req_max_level() )
+  const spell_data_t* spell = p->find_spell( spell_id );
+  if ( spell->max_aura_level() > 0 && as<unsigned>( p->level() ) > spell->max_aura_level() )
   {
-    if ( p -> sim -> debug )
+    if ( p->sim->debug )
     {
-      p -> sim -> out_debug.printf( "%s disabled effect %s, player level %d higher than maximum effect level %u",
-        p -> name(), spell -> name_cstr(), p -> level(), spell -> req_max_level() );
+      p->sim->out_debug.printf( "%s disabled effect %s, player level %d higher than maximum effect level %u", p->name(),
+                                spell->name_cstr(), p->level(), spell->max_aura_level() );
     }
     effect.type = SPECIAL_EFFECT_NONE;
     return;
@@ -4398,6 +4397,13 @@ struct item_has_use_expr_t : public item_effect_expr_t
     {
       for ( auto e : effects )
       {
+        // Check has_use_buff override
+        if ( e->has_use_buff_override )
+        {
+          has_buff = true;
+          break;
+        }
+
         // Check if there is a stat set on the special effect
         if ( stat_fits_criteria( e->stat, STAT_ANY_DPS ) )
         {
@@ -4453,6 +4459,13 @@ struct item_has_use_expr_t : public item_effect_expr_t
     {
       for ( auto e : effects )
       {
+        // check has_use_damage override
+        if ( e->has_use_damage_override )
+        {
+          has_damage = true;
+          break;
+        }
+
         // check if action name exists
         action_t* a = player.find_action( e->name() );
         if ( action_has_damage( a ) )
@@ -4705,18 +4718,18 @@ namespace unique_gear
     may_miss = may_dodge = may_parry = may_block = harmful = false;
     target = player;
 
-    for (size_t i = 1; i <= data().effect_count(); i++)
+    for ( size_t i = 1; i <= data().effect_count(); i++ )
     {
-      const spelleffect_data_t& effect = data().effectN(i);
-      if (effect.type() == E_ENERGIZE)
+      const spelleffect_data_t& eff = data().effectN( i );
+      if ( eff.type() == E_ENERGIZE )
       {
-        gain_da = effect.average(item);
-        gain_resource = effect.resource_gain_type();
+        gain_da = eff.average( item );
+        gain_resource = eff.resource_gain_type();
       }
-      else if (effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_ENERGIZE)
+      else if ( eff.type() == E_APPLY_AURA && eff.subtype() == A_PERIODIC_ENERGIZE )
       {
-        gain_ta = effect.average(item);
-        gain_resource = effect.resource_gain_type();
+        gain_ta = eff.average( item );
+        gain_resource = eff.resource_gain_type();
       }
     }
 

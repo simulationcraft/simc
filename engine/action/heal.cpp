@@ -380,7 +380,7 @@ std::vector<player_t*> heal_t::find_lowest_players( int num_players ) const
 player_t* heal_t::smart_target() const
 {
   std::vector<player_t*> injured_targets;
-  player_t* target;
+
   // First check non-pet target
   for ( const auto& p : sim->healing_no_pet_list )
   {
@@ -406,8 +406,7 @@ player_t* heal_t::smart_target() const
     injured_targets = sim->healing_no_pet_list.data();
   }
   // Choose a random member of injured_targets
-  target = injured_targets[ static_cast<size_t>( rng().real() * injured_targets.size() ) ];
-  return target;
+  return injured_targets[ static_cast<size_t>( rng().real() * injured_targets.size() ) ];
 }
 
 int heal_t::num_targets() const

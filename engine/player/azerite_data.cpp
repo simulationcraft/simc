@@ -637,30 +637,28 @@ bool azerite_state_t::parse_override( sim_t* sim, util::string_view, util::strin
 size_t azerite_state_t::rank( unsigned id ) const
 {
   // All azerite-related effects disabled
-  if ( m_player -> sim -> azerite_status == azerite_control::DISABLED_ALL )
+  if ( m_player->sim->azerite_status == azerite_control::DISABLED_ALL )
   {
     return 0U;
   }
 
-  auto it = m_overrides.find( id );
   // Override found, figure enable status from it
-  if ( it != m_overrides.end() )
+  if ( auto it = m_overrides.find( id ); it != m_overrides.end() )
   {
-    if ( it -> second.size() == 1 && it -> second[ 0 ] == 0 )
+    if ( it->second.size() == 1 && it->second[ 0 ] == 0 )
     {
       return 0U;
     }
 
-    return it -> second.size();
+    return it->second.size();
   }
 
   // Only look at item-based azerite, if all azerite is enabled
-  if ( m_player -> sim -> azerite_status == azerite_control::ENABLED )
+  if ( m_player->sim->azerite_status == azerite_control::ENABLED )
   {
-    auto it = m_items.find( id );
-    if ( it != m_items.end() )
+    if ( auto it = m_items.find( id ); it != m_items.end() )
     {
-      return it -> second.size();
+      return it->second.size();
     }
   }
 
@@ -4518,20 +4516,20 @@ struct guardian_of_azeroth_t : public azerite_essence_major_t
         ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
     }
 
-    action_t* create_action(util::string_view name, util::string_view options) override
+    action_t* create_action( std::string_view name, std::string_view opt_str ) override
     {
-      if (name == "azerite_spike")
-        return new azerite_spike_t(name, this, options, essence, guardian);
+      if ( name == "azerite_spike" )
+        return new azerite_spike_t( name, this, opt_str, essence, guardian );
 
-      return pet_t::create_action(name, options);
+      return pet_t::create_action( name, opt_str );
     }
 
     void init_action_list() override
     {
       pet_t::init_action_list();
 
-      if (action_list_str.empty())
-        get_action_priority_list("default")->add_action("azerite_spike");
+      if ( action_list_str.empty() )
+        get_action_priority_list( "default" )->add_action( "azerite_spike" );
     }
 
     void create_buffs() override
@@ -4727,11 +4725,11 @@ void purification_protocol(special_effect_t& effect)
       school = SCHOOL_FIRE;
     }
 
-    double composite_target_multiplier( player_t* target ) const override
+    double composite_target_multiplier( player_t* t ) const override
     {
-      double m = proc_spell_t::composite_target_multiplier( target );
+      double m = proc_spell_t::composite_target_multiplier( t );
 
-      if ( target->race == RACE_ABERRATION )
+      if ( t->race == RACE_ABERRATION )
       {
         m *= 1.0 + data().effectN( 2 ).percent();
       }
@@ -5691,12 +5689,12 @@ struct reaping_flames_t : public azerite_essence_major_t
       damage_buff = make_buff( player, "reaping_flames", player->find_spell( 311202 ) )
         ->set_default_value( essence.spell_ref( 3U, essence_spell::UPGRADE, essence_type::MAJOR ).effectN( 1 ).percent() );
 
-      range::for_each( sim->actor_list, [ this ] ( player_t* target )
+      range::for_each( sim->actor_list, [ this ] ( player_t* t )
       {
-        if ( !target->is_enemy() )
+        if ( !t->is_enemy() )
           return;
 
-        target->register_on_demise_callback( player, [ this ] ( player_t* enemy )
+        t->register_on_demise_callback( player, [ this ] ( player_t* enemy )
         {
           if ( get_debuff( enemy )->check() )
           {

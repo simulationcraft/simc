@@ -56,34 +56,7 @@ off_hand=crest_of_the_caustic_despot,id=225579,ilevel=639
 
 save=TWW1_Shaman_Elemental_Storm.simc
 
-shaman="TWW1_Shaman_Enhancement_Storm²"
-level=80
-race=goblin
-spec=enhancement
-role=attack
-position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMDMzYmZmZmBLzMmhBAAAAAAAAAwCsgZZGzMzmmlthlxMz0gFAMLTmBzyiZmZGDzMbYbmZCMWGzMAAzA
-
-head=noetic_of_the_forgotten_reservoir,id=212011,ilevel=639,gem_id=213743
-neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213482/213482
-shoulders=concourse_of_the_forgotten_reservoir,id=212009,ilevel=639
-back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960,crafted_stats=49/36
-chest=goresplattered_membrane,id=212421,ilevel=639,enchant=crystalline_radiance_3
-wrists=throne_defenders_bangles,id=212415,ilevel=639,gem_id=213482
-hands=covenant_of_the_forgotten_reservoir,id=212012,ilevel=639
-waist=cinch_of_lingering_influence,id=221168,ilevel=639,gem_id=213482
-legs=sarong_of_the_forgotten_reservoir,id=212010,ilevel=639,enchant=stormbound_armor_kit_3
-feet=silksteel_striders,id=221152,ilevel=639
-finger1=key_to_the_unseeming,id=212447,ilevel=639,gem_id=213482/213482,enchant=radiant_haste_3
-finger2=writhing_ringworm,id=225576,ilevel=639,gem_id=213482/213482,enchant=radiant_haste_3
-trinket1=skardyns_grace,id=133282,bonus_id=4786/11342/10299,ilevel=639
-trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/6652/10383/1632/10255,ilevel=639
-main_hand=void_reapers_warp_blade,id=219877,bonus_id=1540/10299/10376,enchant=authority_of_the_depths_3
-off_hand=everforged_mace,id=222442,bonus_id=10421/9633/8902/9627/8793/10222/11144/11300/8960,enchant=authority_of_the_depths_3,crafted_stats=36/32
-
-save=TWW1_Shaman_Enhancement_Storm.simc
-
-shaman="TWW1_Shaman_Enhancement_Hybrid"
+shaman="TWW1_Shaman_Enhancement_DRE"
 level=80
 race=goblin
 spec=enhancement
@@ -108,7 +81,7 @@ trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/6652/10383/1632/10255,i
 main_hand=void_reapers_warp_blade,id=219877,bonus_id=1540/10299/10376,enchant=authority_of_the_depths_3
 off_hand=everforged_mace,id=222442,bonus_id=10421/9633/8902/9627/8793/10222/11144/11300/8960,enchant=authority_of_the_depths_3,crafted_stats=36/32
 
-save=TWW1_Shaman_Enhancement_Hybrid.simc
+save=TWW1_Shaman_Enhancement_DRE.simc
 
 shaman="TWW1_Shaman_Enhancement"
 level=80
@@ -116,7 +89,7 @@ race=goblin
 spec=enhancement
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzyMzMYmZYGmNzsMDAAAAAAAAAAsBwYGDDZBWGGawCAmlJzgZZhZmZMmZmNjtZmJLYswYAAmB
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzCmhZmZmZGmtZmlZAAAAAAAAAAgNAGzYYILwywQDWAwsMZGMLLmZmZMMzsglZmJwYZMzAAMD
 
 head=noetic_of_the_forgotten_reservoir,id=212011,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213482/213482

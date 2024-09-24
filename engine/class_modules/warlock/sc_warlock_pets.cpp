@@ -880,8 +880,8 @@ void felguard_pet_t::init_base_stats()
   melee_attack = new felguard_melee_t( this, 1.0, "melee" );
 
   // 2023-09-20: Validated coefficients
-  owner_coeff.ap_from_sp = 0.741;
-  owner_coeff.sp_from_sp = 1.15;
+  owner_coeff.ap_from_sp = 0.862;
+  owner_coeff.sp_from_sp = 1.322;
 
   melee_attack->base_dd_multiplier *= 1.42;
 

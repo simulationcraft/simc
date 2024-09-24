@@ -21,6 +21,7 @@ using namespace helpers;
       bool creeping_death = false;
       bool summoners_embrace_dd = false;
       bool summoners_embrace_td = false;
+      bool infirmity = false;
       bool malediction = false;
       bool contagion = false;
       bool deaths_embrace = false;
@@ -95,6 +96,7 @@ using namespace helpers;
       affected_by.creeping_death = data().affected_by( p->talents.creeping_death->effectN( 1 ) );
       affected_by.summoners_embrace_dd = data().affected_by( p->talents.summoners_embrace->effectN( 1 ) );
       affected_by.summoners_embrace_td = data().affected_by( p->talents.summoners_embrace->effectN( 3 ) );
+      affected_by.infirmity = data().affected_by( p->talents.infirmity_debuff->effectN( 1 ) );
       affected_by.malediction = data().affected_by( p->talents.malediction->effectN( 1 ) );
       affected_by.contagion = data().affected_by( p->talents.contagion->effectN( 1 ) );
       affected_by.umbral_lattice_dd = data().affected_by( p->tier.umbral_lattice->effectN( 1 ) );
@@ -392,6 +394,9 @@ using namespace helpers;
     double composite_target_multiplier( player_t* t ) const override
     {
       double m = spell_t::composite_target_multiplier( t );
+
+      if ( affliction() && affected_by.infirmity )
+        m *= 1.0 + td( t )->debuffs_infirmity->check_stack_value();
 
       if ( demonology() && affected_by.wicked_maw )
         m *= 1.0 + td( t )->debuffs_wicked_maw->check_value();

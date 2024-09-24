@@ -215,7 +215,7 @@ static constexpr std::array<sdata_field_t, 43> _spell_data_fields { {
   { "tooltip",           nontype< spell_text_field< &spelltext_data_t::tooltip > > },
   { "rank",              nontype< spell_text_field< &spelltext_data_t::rank > > },
   { "desc_vars",         nontype< spell_desc_vars > },
-  { "req_max_level",     nontype< &spell_data_t::_req_max_level > },
+  { "max_aura_level",    nontype< &spell_data_t::_max_aura_level > },
   { "dmg_class",         nontype< &spell_data_t::_dmg_class > },
   { "max_targets",       nontype< &spell_data_t::_max_targets > },
   { "covenant",          nontype< spell_covenant_id > },
@@ -870,6 +870,14 @@ struct spell_class_expr_t : public spell_list_expr_t
     // Other types will not be allowed, e.g. you cannot do class=list
     if ( other.result_tok != expression::TOK_STR )
       return {};
+
+    // special handling for "spell.class=none" to filter out all spells that would be in class txt dumps
+    if ( data_type == DATA_SPELL && util::str_compare_ci( other.result_str, "none" ) )
+    {
+      return filter_spells( [ & ]( const spell_data_t& spell ) {
+        return spell.class_mask() == 0 && ( !check_spell_class_family( spell ) || spell.class_family() == 0 );
+      } );
+    }
 
     const uint32_t class_mask = class_str_to_mask( other.result_str );
 

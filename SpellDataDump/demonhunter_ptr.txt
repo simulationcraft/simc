@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56572 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56646 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -10629,7 +10629,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Is Ability (4), Do Not Sheath (18), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=982578)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 5.08500 | PvP Coefficient: 0.72000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 5.08500 | PvP Coefficient: 0.85000 | Target: Enemy (6)
 #2 (id=982579)   : Apply Aura (6) | Dummy (4) | Attributes: Always Hit (22)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=982580)   : Trigger Spell (64): The Hunt
@@ -10722,7 +10722,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Spell Haste Affects Periodic (173), Always Line of Sight (185), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=982586)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.20418 | PvP Coefficient: 0.72000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.20418 | PvP Coefficient: 0.85000 | Target: Enemy (6)
 Description      : $@spelldesc370965
 Tooltip          : Suffering $w1 $@spelldesc395042 damage every $t1 sec.
 

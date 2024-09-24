@@ -7200,7 +7200,12 @@ struct elemental_blast_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
-    if ( p()->talent.lightning_rod.ok() )
+    if ( p()->bugs && p()->specialization() == SHAMAN_ENHANCEMENT && p()->talent.conductive_energy.ok() )
+    {
+        accumulate_lightning_rod_damage( state );
+    }
+
+    if ( p()->talent.lightning_rod.ok() || p()->talent.conductive_energy.ok() )
     {
       trigger_lightning_rod_debuff( state->target );
     }
@@ -13041,7 +13046,7 @@ void shaman_t::init_action_list_enhancement()
     single->add_action( "doom_winds,if=raid_event.adds.in>=action.doom_winds.cooldown&talent.elemental_spirits.enabled&talent.ascendance.enabled&talent.tempest.enabled" );
     single->add_action( "lava_lash,if=talent.tempest.enabled&(buff.hot_hand.up|(talent.molten_assault.enabled&talent.elemental_spirits.enabled&!talent.deeply_rooted_elements.enabled&dot.flame_shock.remains<=3))" );
     single->add_action( "stormstrike,if=talent.elemental_spirits.enabled&(buff.doom_winds.up|talent.deeply_rooted_elements.enabled|talent.ascendance.enabled|(talent.stormblast.enabled&buff.stormbringer.up))" );
-    single->add_action( "frost_shock,if=buff.hailstorm.up&buff.ice_strike.up&talent.swirling_maelstrom.enabled&talent.tempest.enabled&talent.ascendance.enabled&talent.tempest.enabled" );
+    single->add_action( "frost_shock,if=buff.hailstorm.up&buff.ice_strike.up&talent.swirling_maelstrom.enabled&talent.tempest.enabled&talent.ascendance.enabled" );
     single->add_action( "elemental_blast,if=buff.maelstrom_weapon.stack>=5&feral_spirit.active>=4&talent.deeply_rooted_elements.enabled&(charges_fractional>=1.8|(buff.icy_edge.stack+buff.molten_weapon.stack>=4))" );
     single->add_action( "lightning_bolt,if=((buff.maelstrom_weapon.stack>=8)|(talent.static_accumulation.enabled&buff.maelstrom_weapon.stack>=5))&buff.primordial_wave.down" );
     single->add_action( "crash_lightning,if=talent.alpha_wolf.enabled&feral_spirit.active&alpha_wolf_min_remains=0" );

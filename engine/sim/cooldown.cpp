@@ -515,11 +515,11 @@ timespan_t cooldown_t::cooldown_duration( const cooldown_t* cd )
     return cd->duration;
 }
 
-std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_str )
+std::unique_ptr<expr_t> cooldown_t::create_expression( std::string_view name )
 {
-  if ( name_str == "remains" )
+  if ( name == "remains" )
     return make_mem_fn_expr( "cooldown_remains", *this, &cooldown_t::remains );
-  else if ( name_str == "base_duration" )
+  else if ( name == "base_duration" )
   {
     return make_fn_expr( "cooldown_base_duration", [ this ]
     {
@@ -531,18 +531,18 @@ std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_st
         return duration.total_seconds();
     } );
   }
-  else if ( name_str == "duration" )
+  else if ( name == "duration" )
   {
     return make_fn_expr( "cooldown_duration", [ this ]
     {
       return cooldown_duration( this );
     } );
   }
-  else if ( name_str == "up" || name_str == "ready" )
+  else if ( name == "up" || name == "ready" )
     return make_mem_fn_expr( "cooldown_up", *this, &cooldown_t::up );
-  else if ( name_str == "charges" )
+  else if ( name == "charges" )
   {
-    return make_fn_expr( name_str, [ this ]
+    return make_fn_expr( name, [ this ]
     {
       if ( charges <= 1 )
       {
@@ -554,9 +554,9 @@ std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_st
       }
     } );
   }
-  else if ( name_str == "charges_fractional" )
+  else if ( name == "charges_fractional" )
     return make_mem_fn_expr( "cooldown_charges_fractional", *this, &cooldown_t::charges_fractional );
-  else if ( name_str == "recharge_time" )
+  else if ( name == "recharge_time" )
   {
     return make_fn_expr( "cooldown_recharge_time", [ this ]
     {
@@ -568,7 +568,7 @@ std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_st
         return 0.0;
     } );
   }
-  else if ( name_str == "full_recharge_time" )
+  else if ( name == "full_recharge_time" )
   {
     return make_fn_expr( "cooldown_full_recharge_time", [ this ]
     {
@@ -585,12 +585,12 @@ std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_st
         return 0.0;
     } );
   }
-  else if ( name_str == "max_charges" )
+  else if ( name == "max_charges" )
     return make_ref_expr( "cooldown_max_charges", charges );
 
   // For cooldowns that can be reduced through various means, _guess and _expected will return an approximate
   // duration based on a comparison between time since last start and the current remaining cooldown
-  else if ( name_str == "remains_guess" || name_str == "remains_expected" )
+  else if ( name == "remains_guess" || name == "remains_expected" )
   {
     return make_fn_expr( "cooldown_remains_guess", [ this ]
     {
@@ -605,7 +605,7 @@ std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_st
     } );
   }
 
-  else if ( name_str == "duration_guess" || name_str == "duration_expected" )
+  else if ( name == "duration_guess" || name == "duration_expected" )
   {
     return make_fn_expr( "cooldown_duration_guess", [ this ]
     {
@@ -621,7 +621,7 @@ std::unique_ptr<expr_t> cooldown_t::create_expression( util::string_view name_st
     } );
    }
 
-  throw std::invalid_argument( fmt::format( "Unsupported cooldown expression '{}'.", name_str ) );
+  throw std::invalid_argument( fmt::format( "Unsupported cooldown expression '{}'.", name ) );
 }
 
 void cooldown_t::update_ready_thresholds()

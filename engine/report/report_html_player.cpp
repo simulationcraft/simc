@@ -3370,19 +3370,31 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                    util::stat_type_string( stat.stat ),
                    stat.amount );
       }
+      os << "</ul>\n";
+    }
+    else  // assume static stat_buff_t will never register to stat_pct_buff
+    {
+      bool show_header = false;
 
-      for ( int stat_pct_buff_value = STAT_PCT_BUFF_CRIT; stat_pct_buff_value != STAT_PCT_BUFF_MAX; stat_pct_buff_value++ )
+      for ( auto stat = STAT_PCT_BUFF_CRIT; stat < STAT_PCT_BUFF_MAX; stat++ )
       {
-        stat_pct_buff_type stat_pct_buff = static_cast<stat_pct_buff_type>( stat_pct_buff_value );
-        if ( range::contains( p.buffs.stat_pct_buffs[ static_cast<stat_pct_buff_type>( stat_pct_buff_value ) ], stat_buff ) )
+        if ( range::contains( p.buffs.stat_pct_buffs[ stat ], &b ) )
         {
+          if ( !show_header )
+          {
+            os << R"(<h4>Stat Details</h4><ul class="label">)";
+            show_header = true;
+          }
+
           os.format( "<li><span>stat:</span>{}</li>"
-                     "<li><span>default:</span>{:.2f}%</li>",
-                     util::stat_pct_buff_type_string( stat_pct_buff ),
-                     stat_buff->default_value * 100.0 );
+                     "<li><span>amount:</span>{:.2f}%</li>",
+                     util::stat_pct_buff_type_string( stat ),
+                     b.default_value * ( stat == STAT_PCT_BUFF_MASTERY ? 1.0 : 100.0 ) );
         }
       }
-      os << "</ul>\n";
+
+      if ( show_header )
+        os << "</ul>\n";
     }
 
     if ( damage_buff )
@@ -3417,7 +3429,6 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
 
     if ( !constant_buffs )
     {
-
       if ( b.rppm )
       {
         os.format( R"(<h4>RPPM Details</h4><ul class="label">)"
@@ -3709,7 +3720,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
 
   os << "<div class=\"toggle-content\">\n";
 
-  if ( p.sim->players_by_name.size() == 1 )
+  if ( p.sim->players_by_name.size() == 1 && p.is_player() )
   {
     auto w_ = raidbots_talent_render_width( p.specialization(), 125, true );
     os.format(
