@@ -132,7 +132,8 @@ actions.items=variable,name=base_trinket_condition,value=dot.rupture.ticking&coo
 actions.items+=/use_item,name=ashes_of_the_embersoul,use_off_gcd=1,if=(dot.kingsbane.ticking&dot.kingsbane.remains<=11)|fight_remains<=22
 actions.items+=/use_item,name=algethar_puzzle_box,use_off_gcd=1,if=variable.base_trinket_condition
 actions.items+=/use_item,name=treacherous_transmitter,use_off_gcd=1,if=variable.base_trinket_condition
-actions.items+=/do_treacherous_transmitter_task,use_off_gcd=1,if=dot.deathmark.ticking|fight_remains<=20
+actions.items+=/use_item,name=mad_queens_mandate,use_off_gcd=1,if=cooldown.deathmark.remains>=50|fight_remains<=3
+actions.items+=/do_treacherous_transmitter_task,use_off_gcd=1,if=dot.deathmark.ticking&variable.single_target|buff.realigning_nexus_convergence_divergence.up&buff.realigning_nexus_convergence_divergence.remains<=2|buff.cryptic_instructions.up&buff.cryptic_instructions.remains<=2|buff.errant_manaforge_emission.up&buff.errant_manaforge_emission.remains<=2|fight_remains<=15
 actions.items+=/use_item,name=imperfect_ascendancy_serum,use_off_gcd=1,if=variable.base_trinket_condition
 # Fallback case for using stat trinkets
 actions.items+=/use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(debuff.deathmark.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|!debuff.deathmark.up&cooldown.deathmark.remains>20))|!variable.trinket_sync_slot)
@@ -190,8 +191,6 @@ actions.vanish+=/vanish,if=!talent.master_assassin&talent.indiscriminate_carnage
 actions.vanish+=/vanish,if=!talent.improved_garrote&talent.master_assassin&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.deathmark.up&(debuff.shiv.up|debuff.deathmark.remains<4)
 # Vanish fallback for Improved Garrote during Deathmark if no add waves are expected
 actions.vanish+=/vanish,if=talent.improved_garrote&cooldown.garrote.up&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&(debuff.deathmark.up|cooldown.deathmark.remains<4)&raid_event.adds.in>30
-# Vanish for slightly more mark uptime since you can apply mark and have darkest night at the same time
-actions.vanish+=/vanish,if=!talent.improved_garrote&buff.darkest_night.up&combo_points.deficit>=3&variable.single_target
 
 head=kareshi_phantoms_emptiness,id=212038,bonus_id=1808,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,bonus_id=8781,ilevel=639,gem_id=213467/213491
