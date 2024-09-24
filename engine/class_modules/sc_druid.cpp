@@ -13232,28 +13232,27 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     make_debuff( source.talent.thriving_growth.ok(), *this, "bloodseeker_vines", source.spec.bloodseeker_vines )
       ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
       ->apply_affecting_aura( source.talent.resilient_flourishing );
-  if ( source.talent.bursting_growth.ok() || source.talent.root_network.ok() )
+  // bursting growth needs to be executed first so it benefits from the expiring root network. note that in-game logs
+  // show root network expiring first, but bursting growth damage is calculated before buff expiration.
+  if ( source.talent.bursting_growth.ok() )
   {
-    debuff.bloodseeker_vines->set_stack_change_callback( [ & ]( buff_t* b, int old_, int new_ ) {
+    debuff.bloodseeker_vines->add_stack_change_callback( [ &target, &source ]( buff_t*, int old_, int new_ ) {
       auto diff = new_ - old_;
-
+      while ( diff < 0 )
+      {
+        source.active.bursting_growth->execute_on_target( &target );
+        diff++;
+      }
+    } );
+  }
+  if ( source.talent.root_network.ok() )
+  {
+    debuff.bloodseeker_vines->add_stack_change_callback( [ &source ]( buff_t*, int old_, int new_ ) {
+      auto diff = new_ - old_;
       if ( diff > 0 )
-      {
         source.buff.root_network->trigger( diff );
-      }
       else if ( diff < 0 )
-      {
         source.buff.root_network->decrement( -diff );
-
-        if ( source.active.bursting_growth )
-        {
-          while ( diff < 0 )
-          {
-            source.active.bursting_growth->execute_on_target( b->player );
-            diff++;
-          }
-        }
-      }
     } );
   }
 
