@@ -14559,7 +14559,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 3886: Discipline Priest (137032 effect#29), Discipline Priest (137032 effect#30), Shadow Priest (137033 effect#21)
-Triggered by     :  (0), Shadow Priest (137033)
+Triggered by     : Discipline Priest (137032), Shadow Priest (137033)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
                  :
 Effects          :
