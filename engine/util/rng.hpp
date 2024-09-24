@@ -115,6 +115,19 @@ public:
     return range<T>( T{}, max );
   }
 
+  // Uniform distribution in the range [first element..last element]
+  template <typename T, typename U = typename T::value_type>
+  U& range( T& container )
+  {
+    return container.at( range( container.size() ) );
+  }
+
+  template <typename T, typename U = typename T::value_type>
+  const U& range( const T& container )
+  {
+    return container.at( range( container.size() ) );
+  }
+
   /// Gaussian Distribution, Non-truncated
   double gauss( double mean, double stddev );
 
