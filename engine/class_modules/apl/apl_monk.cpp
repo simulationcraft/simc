@@ -484,7 +484,7 @@ void windwalker( player_t *p )
       trinkets->add_action( "use_item,name=" + item.name_str + _WW_ON_USE( item ) );
   }
 
-  trinkets->add_action( "do_treacherous_transmitter_task,if=pet.xuen_the_white_tiger.active" );
+  trinkets->add_action( "do_treacherous_transmitter_task,if=pet.xuen_the_white_tiger.active|fight_remains<20" );
 
   // Cooldowns
   cooldowns->add_action(
