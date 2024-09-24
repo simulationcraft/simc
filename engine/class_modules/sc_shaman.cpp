@@ -6265,6 +6265,13 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
         m *= 1.0 + p()->cache.spell_crit_chance();
       }
     }
+    else
+    {
+      if ( exec_type == spell_variant::ASCENDANCE )
+      {
+        m *= p()->talent.ascendance->effectN( 10 ).percent();
+      }
+    }
 
     m *= 1.0 + p()->buff.flux_melting->value();
 
@@ -8571,6 +8578,34 @@ struct ascendance_t : public shaman_spell_t
       p()->buff.ascendance->trigger();
     }
 
+    // Refresh Flame Shock to max duration
+    if ( p()->specialization() == SHAMAN_ELEMENTAL )
+    {
+      auto max_duration = p()->action.flame_shock->composite_dot_duration( execute_state );
+
+      // Apparently the Flame Shock durations get set to current Flame Shock max duration,
+      // bypassing normal dot refresh behavior.
+      if ( !p()->is_ptr() )
+      {
+        range::for_each( sim->target_non_sleeping_list, [ this, max_duration ]( player_t* target ) {
+          auto fs_dot = td( target )->dot.flame_shock;
+          if ( fs_dot->is_ticking() )
+          {
+            auto new_duration = max_duration < fs_dot->remains() ? -( fs_dot->remains() - max_duration )
+                                                                 : max_duration - fs_dot->remains();
+            fs_dot->adjust_duration( new_duration, timespan_t::min(), -1, true );
+          }
+        } );
+      }
+      else
+      {
+        for ( size_t i = 0; i < std::min( target_list().size(), as<size_t>( data().effectN( 7 ).base_value() ) ); ++i )
+        {
+          p()->trigger_secondary_flame_shock( target_list()[ i ] );
+        }
+      }
+    }
+
     if ( lvb )
     {
       lvb->set_target( player->target );
@@ -8585,25 +8620,6 @@ struct ascendance_t : public shaman_spell_t
     {
       ascendance_damage->set_target( target );
       ascendance_damage->execute();
-    }
-
-    // Refresh Flame Shock to max duration
-    if ( p()->specialization() == SHAMAN_ELEMENTAL )
-    {
-      auto max_duration = p()->action.flame_shock->composite_dot_duration( execute_state );
-
-      // Apparently the Flame Shock durations get set to current Flame Shock max duration,
-      // bypassing normal dot refresh behavior.
-      range::for_each( sim->target_non_sleeping_list, [ this, max_duration ]( player_t* target ) {
-        auto fs_dot = td( target )->dot.flame_shock;
-        if ( fs_dot->is_ticking() )
-        {
-          auto new_duration = max_duration < fs_dot->remains()
-                              ? -( fs_dot->remains() - max_duration )
-                              : max_duration - fs_dot->remains();
-          fs_dot->adjust_duration( new_duration, timespan_t::min(), -1, true );
-        }
-      } );
     }
 
     if ( p()->talent.static_accumulation.ok() )
@@ -12831,6 +12847,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.totemic_surge );
   action.apply_affecting_aura( talent.unrelenting_calamity ); // Removed on PTR
   action.apply_affecting_aura( talent.swelling_maelstrom );
+  action.apply_affecting_aura( talent.erupting_lava );
   action.apply_affecting_aura( talent.crashing_storms );
   action.apply_affecting_aura( talent.healing_stream_totem );
   action.apply_affecting_aura( talent.stormkeeper );
