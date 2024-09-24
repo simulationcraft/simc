@@ -240,8 +240,8 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables
                  :
 Effects          :
 #1 (id=390)      : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.29290 | PvP Coefficient: 1.15000 | Mechanic: Bleed | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.2763 -> 0.2929)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.29290 | PvP Coefficient: 1.25000 | Mechanic: Bleed | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.15 -> 1.25)
 #2 (id=117625)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=117626)   : Dummy (3)
@@ -333,7 +333,8 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Require All Targets (58),
                  :
 Effects          :
 #1 (id=559)      : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.28000 | PvP Coefficient: 1.15000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.28000 | PvP Coefficient: 1.25000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.15 -> 1.25)
 #2 (id=560)      : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #3 (id=561)      : Trigger Spell (64): Rake
@@ -4506,15 +4507,15 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
                  :
 Effects          :
 #1 (id=179695)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Early Harvest (287255), Adaptive Swarm (325748), Renewing Bloom (364686), Ephemeral Profusion (367330), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Nourish (422090), Swiftmend (422094), Wild Growth (422382), Nourish (423618), Minor Cenarion Ward (429222), Dream Bloom (434141), Symbiotic Blooms (439530), Bursting Growth (440121)
                    Family Flags: 118
-Hotfixed         : Base Value (0 -> 8), PvP Coefficient (1 -> 0)
+Hotfixed         : Base Value (8 -> 12)
 #2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Early Harvest (287255), Adaptive Swarm (325748), Renewing Bloom (364686), Ephemeral Profusion (367330), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Nourish (422090), Swiftmend (422094), Wild Growth (422382), Nourish (423618), Minor Cenarion Ward (429222), Dream Bloom (434141), Symbiotic Blooms (439530), Bursting Growth (440121)
                    Family Flags: 118
-Hotfixed         : Base Value (0 -> 8), PvP Coefficient (1 -> 0)
+Hotfixed         : Base Value (8 -> 12)
 #3 (id=191151)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191152)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -4961,7 +4962,8 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), I
                  :
 Effects          :
 #1 (id=216427)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.28280 | PvP Coefficient: 0.94300 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.28280 | PvP Coefficient: 1.10000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (0.943 -> 1.1)
 #2 (id=1095738)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Adaptive Swarm (325733), Adaptive Swarm (325748), Sickle of the Lion (363830), Rampant Ferocity (391710), Adaptive Swarm (391889), Adaptive Swarm (391891), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812)
@@ -6457,11 +6459,13 @@ Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143
                  :
 Effects          :
 #1 (id=297731)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.67000 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568), Ravage (441591)
                    Family Flags: 108
+Hotfixed         : PvP Coefficient (1 -> 0.67)
 #2 (id=753677)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.67000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.67)
 Description      : Ferocious Bite deals $s1% increased damage.
 
 For each Combo Point spent, Ferocious Bite's primary target takes $s2% increased damage from your Cat Form bleed and other periodic abilities for $391722d.
@@ -13222,9 +13226,10 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
                  :
 Effects          :
 #1 (id=1017416)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568), Ravage (441591)
                    Family Flags: 108
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1149687)  : Apply Aura (6) | Dummy (4)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Ferocious Bite deals $s1% increased damage and an additional $s2% during Tiger's Fury.

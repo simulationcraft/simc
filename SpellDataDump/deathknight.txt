@@ -16639,7 +16639,8 @@ Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Allow Whi
                  :
 Effects          :
 #1 (id=1141445)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Snare | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Snare | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : Base Value (-70 -> -40)
 #2 (id=1141446)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Snare
 #3 (id=1141447)  : School Damage (2): frost

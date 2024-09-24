@@ -643,7 +643,8 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sittin
                  :
 Effects          :
 #1 (id=15852)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.26600 | PvP Coefficient: 1.00000 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.26600 | PvP Coefficient: 1.15000 | Target: Friendly (21)
+Hotfixed         : PvP Coefficient (1 -> 1.15)
 Description      : $@spelldesc20473
 
 Name             : Consecration (id=26573) [Spell Family (10)] 
@@ -1593,7 +1594,8 @@ Attributes       : Not Shapeshifted (16), Heal Prediction (280), Allow Class Abi
                  :
 Effects          :
 #1 (id=81809)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.80000 | PvP Coefficient: 1.00000 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.80000 | PvP Coefficient: 1.20000 | Target: Friendly (21)
+Hotfixed         : PvP Coefficient (1 -> 1.2)
 Description      : A powerful but expensive spell, healing a friendly target for $s1.
 
 Name             : Grand Crusader (id=85043) [Spell Family (10), Passive] 
@@ -2906,9 +2908,10 @@ Hotfixed         : Base Value (0 -> -6), PvP Coefficient (1 -> 0)
 #13 (id=1032420)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 #14 (id=1032421)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 58 | Scaled Value: 58 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 58 | Scaled Value: 58 | PvP Coefficient: 1.41000 | Target: Self (1)
                    Affected Spells: Word of Glory (85673), Eternal Flame (156322), Afterimage (391309), Eternal Flame (461432)
                    Family Flags: 78, 89
+Hotfixed         : PvP Coefficient (1 -> 1.41)
 #15 (id=1039315)  : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Divine Toll (304971), Divine Toll (375576), Divine Resonance (386731), Divine Resonance (387896)
