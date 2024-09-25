@@ -3421,7 +3421,8 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
 }
 
 // 454859 rppm data
-// 454857 driver/values
+// 454857 card driver/values
+// 463611 embellish values (11.0.5 only)
 // 454862 fire
 // 454975 shadow
 // 454976 nature
@@ -3443,7 +3444,7 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
     buff_t* force;
     buff_t* magical_multi;
 
-    vivacity_cb_t( const special_effect_t& e )
+    vivacity_cb_t( const special_effect_t& e, const spell_data_t* values )
       : dbc_proc_callback_t( e.player, e ),
         impact( nullptr ),
         shadow( nullptr ),
@@ -3454,8 +3455,6 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
         force( nullptr ),
         magical_multi( nullptr )
     {
-      auto values = e.player->find_spell( 454857 );
-
       impact = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454862 ) )
         ->add_stat_from_effect( 1, values->effectN( 1 ).average( e ) )
         ->add_stat_from_effect( 2, values->effectN( 2 ).average( e ) );
@@ -3521,11 +3520,12 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
     }
   };
 
+  auto data = effect.driver();
   effect.spell_id = 454859;
 
   effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
 
-  new vivacity_cb_t( effect );
+  new vivacity_cb_t( effect, data );
 }
 
 void algari_alchemist_stone( special_effect_t& e )
@@ -5710,7 +5710,7 @@ void register_special_effects()
   register_special_effect( 450044, DISABLED_EFFECT );  // twin fang instruments
   register_special_effect( { 463610, 463232 }, items::darkmoon_deck_symbiosis );
   register_special_effect( 455482, items::imperfect_ascendancy_serum );
-  register_special_effect( 454857, items::darkmoon_deck_vivacity );
+  register_special_effect( { 454857, 463611 }, items::darkmoon_deck_vivacity );
   register_special_effect( 432421, items::algari_alchemist_stone );
   register_special_effect( { 458573, 463095 }, items::darkmoon_deck_ascension );
   register_special_effect( { 454558, 463108 }, items::darkmoon_deck_radiance );
