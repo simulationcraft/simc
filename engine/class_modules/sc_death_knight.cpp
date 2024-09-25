@@ -9509,9 +9509,16 @@ struct howling_blast_t final : public death_knight_spell_t
   {
     double m = death_knight_spell_t::composite_target_multiplier( t );
 
-    if ( p()->talent.frost.icebreaker.ok() && p()->buffs.rime->check() && this->target == t )
+    if ( p()->buffs.rime->check() && this->target == t )
     {
-      m *= 1.0 + p()->talent.frost.icebreaker->effectN( 1 ).percent();
+      if ( p()->talent.frost.icebreaker.ok() )
+      {
+        m *= 1.0 + p()->talent.frost.icebreaker->effectN( 1 ).percent();
+      }
+      if ( p()->buffs.bind_in_darkness->check() )
+      {
+        m *= 1.0 + p()->talent.deathbringer.bind_in_darkness->effectN( 4 ).percent();
+      }
     }
 
     return m;
@@ -15035,6 +15042,7 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.deathbringer.bind_in_darkness );
   action.apply_affecting_aura( talent.deathbringer.wither_away );
   action.apply_affecting_aura( talent.deathbringer.deaths_messenger );
+  action.apply_affecting_aura( talent.deathbringer.bind_in_darkness );
   if ( !is_ptr() )
   {
     action.apply_affecting_aura( talent.deathbringer.swift_end );
