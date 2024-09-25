@@ -115,17 +115,21 @@ public:
     return range<T>( T{}, max );
   }
 
-  // Uniform distribution in the range [first element..last element]
+  // Uniform distribution in the range [first iterator..last iterator)
+  template <
+    typename T,
+    typename std::enable_if_t<
+      std::is_base_of_v<std::forward_iterator_tag, typename std::iterator_traits<T>::iterator_category>, int> = 0>
+  T range( T first, T last )
+  {
+    return first + range( std::distance( first, last ) );
+  }
+
+  // Uniform distribution across [container.front()..container.back()]
   template <typename T, typename U = std::remove_reference_t<decltype( *std::begin( std::declval<T&>() ) )>>
   U& range( T& container )
   {
-    return container[ range( container.size() ) ];
-  }
-
-  template <typename T, typename U = std::remove_reference_t<decltype( *std::begin( std::declval<T&>() ) )>>
-  const U& range( const T& container )
-  {
-    return container[ range( container.size() ) ];
+    return *range( container.begin(), container.end() );
   }
 
   /// Gaussian Distribution, Non-truncated
