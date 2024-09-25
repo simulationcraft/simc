@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56646 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56749 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -12557,8 +12557,7 @@ Effects          :
 Description      : Pet damage increased by $s1%.
 
 Name             : Training Expert (id=378209) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Beast Mastery [tree=spec, row=6, col=4, max_rank=2, req_points=8]
-                 : Effect#1 [op=mul, values=(0.5, 1)]
+Talent Entry     : Beast Mastery [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Hunter, Death Knight
 School           : Physical
 Spell Type       : None
@@ -15643,7 +15642,7 @@ Name             : Exterminate (id=441416) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
-Duration         : Aura (infinite)
+Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -15654,7 +15653,7 @@ Stacks           : 1 initial, 2 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : Not In Spellbook (143), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
                  :
 Effects          :
 #1 (id=1135858)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -16292,6 +16291,7 @@ School           : Shadow
 Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
+Cooldown         : 1 seconds
 Charges          : 1 (45 seconds cooldown)
 Category         : 1941: Death's Echo (356367 effect#3), Time Spiral (375226 effect#1), Blessing of the Bronze (381732 effect#1)
 Labels           : 16: Class Spells
@@ -16556,7 +16556,7 @@ Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Allow Whi
                  :
 Effects          :
 #1 (id=1141445)  : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Snare | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Snare | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=1141446)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Snare
 #3 (id=1141447)  : School Damage (2): frost
@@ -17324,7 +17324,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Affecting spells : Anti-Magic Barrier (205727 effects: #1, #2), Volatile Shielding (207188 effect#1), Spell Eater (207321 effects: #1, #2), Acherus Drapes (210852 effect#1), Runic Barrier (280010 effect#3), Runic Barrier (280132 effect#1), Death's Embrace (334728 effect#1), Osmosis (454835 effect#1), Unyielding Will (457574 effect#2)
 Family Flags     : 17
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Exclude Caster (51), Allow While Not Shapeshifted (caster form) (83), Cannot Be Stolen (134), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Exclude Caster (51), Allow While Not Shapeshifted (caster form) (83), Cannot Be Stolen (134), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1157813)  : Apply Aura (6) | Absorb Damage (69)
