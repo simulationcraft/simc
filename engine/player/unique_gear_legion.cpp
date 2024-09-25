@@ -1595,8 +1595,7 @@ struct injector_proc_cb_t : public dbc_proc_callback_t
 
   void execute( action_t* /* a */, action_state_t* /* state */ ) override
   {
-    auto buff_index = static_cast<size_t>( rng().range( size_t(0), small_buffs.size() ) );
-    auto buff = small_buffs[ buff_index ];
+    auto buff = rng().range( small_buffs );
 
     buff -> trigger();
     if ( buff -> check() == buff -> max_stack() )
@@ -2849,7 +2848,7 @@ struct ceaseless_toxin_t : public proc_spell_t
     // Remove targets randomly until thre's only one left.
     while ( tl.size() > 1 )
     {
-      size_t index = static_cast<size_t>( rng().range( 0.0, as<double>( tl.size() ) ) );
+      size_t index = rng().range( tl.size() );
       tl.erase( tl.begin() + index );
     }
 
@@ -3186,8 +3185,7 @@ struct dreadstone_proc_cb_t : public dbc_proc_callback_t
 
   void execute( action_t* /* a */, action_state_t* /* state */ ) override
   {
-    size_t buff_index = rng().range( size_t(), buffs.size() );
-    buffs[ buff_index ] -> trigger();
+    rng().range( buffs )->trigger();
   }
 };
 
@@ -3735,13 +3733,11 @@ void item::draught_of_souls( special_effect_t& effect )
           }
         } );
 
-        auto random_idx = rng().range(size_t(), targets.size() );
-        return !targets.empty() ? targets[ random_idx ] : nullptr;
+        return !targets.empty() ? rng().range( targets ) : nullptr;
       }
       else
       {
-        auto random_idx = rng().range( size_t(), sim -> target_non_sleeping_list.size() );
-        return sim -> target_non_sleeping_list[ random_idx ];
+        return rng().range( sim->target_non_sleeping_list );
       }
     }
 

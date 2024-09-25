@@ -2471,7 +2471,7 @@ struct felmouth_frenzy_driver_t : public spell_t
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
-    size_t ticks = n_ticks[ rng().range( n_ticks.size() ) ];
+    size_t ticks = rng().range( n_ticks );
     assert( ticks >= 4 && ticks <= 6 );
     return base_tick_time * ticks;
   }

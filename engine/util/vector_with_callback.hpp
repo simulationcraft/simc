@@ -21,6 +21,7 @@ struct vector_with_callback
 public:
   using callback_type = std::function<void(const T&)>;
   using iterator = typename std::vector<T>::const_iterator;
+  using value_type = const T;
 
   /* Register your custom callback, which will be called when the vector is modified
    */
@@ -56,6 +57,9 @@ public:
 
   const T& operator[]( size_t i ) const
   { return _data[ i ]; }
+
+  const T& at( size_t i ) const
+  { return _data.at( i );}
 
   size_t size() const
   { return _data.size(); }
