@@ -359,8 +359,6 @@ struct player_t : public actor_t
   int iteration_executed_foreground_actions;
   std::array< double, RESOURCE_MAX > iteration_resource_lost, iteration_resource_gained, iteration_resource_overflowed;
   double rps_gain, rps_loss;
-  std::string tmi_debug_file_str;
-  double tmi_window;
 
   auto_dispose<std::vector<buff_t*>> buff_list;
   // buff_t::find( player, name, source ) will return pointer to sim.auras.fallback

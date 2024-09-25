@@ -566,12 +566,6 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
   highchart::bar_chart_t priority_dps( "priority_dps", sim );
   bool has_priority = sim.enemy_targets > 1 && chart::generate_raid_aps( priority_dps, sim, "prioritydps", margin );
 
-  highchart::bar_chart_t raid_dtps( "raid_dtps", sim );
-  bool has_dtps = chart::generate_raid_aps( raid_dtps, sim, "dtps", margin );
-
-  highchart::bar_chart_t raid_hps( "raid_hps", sim );
-  bool has_hps = chart::generate_raid_aps( raid_hps, sim, "hps", margin );
-
   if ( has_dps )
   {
     raid_dps.width_ += raid_dps.width_ + 12;
@@ -586,22 +580,6 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
     priority_dps.set( "chart.marginLeft", margin );
     os << priority_dps.to_target_div();
     sim.add_chart_data( priority_dps );
-  }
-
-  if ( has_dtps )
-  {
-    raid_dtps.width_ += raid_dtps.width_ + 12;
-    raid_dtps.set( "chart.marginLeft", margin );
-    os << raid_dtps.to_target_div();
-    sim.add_chart_data( raid_dtps );
-  }
-
-  if ( has_hps )
-  {
-    raid_hps.width_ += raid_hps.width_ + 12;
-    raid_hps.set( "chart.marginLeft", margin );
-    os << raid_hps.to_target_div();
-    sim.add_chart_data( raid_hps );
   }
 
   if ( !sim.raid_events_str.empty() )
@@ -663,13 +641,20 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
   highchart::bar_chart_t raid_apm( "raid_apm", sim );
   bool has_aps = chart::generate_raid_aps( raid_apm, sim, "apm", margin );
 
-  highchart::bar_chart_t raid_stddev( "raid_stddev", sim );
-  bool has_stddev = chart::generate_raid_aps( raid_stddev, sim, "stddev", margin );
-
   highchart::bar_chart_t raid_waiting( "raid_waiting", sim );
   bool has_waiting = chart::generate_raid_downtime( raid_waiting, sim );
 
-  if ( has_aps || has_stddev || has_waiting )
+  highchart::bar_chart_t raid_stddev( "raid_stddev", sim );
+  bool has_stddev = chart::generate_raid_aps( raid_stddev, sim, "stddev", margin );
+
+  highchart::bar_chart_t raid_dtps( "raid_dtps", sim );
+  bool has_dtps = chart::generate_raid_aps( raid_dtps, sim, "dtps", margin );
+
+  highchart::bar_chart_t raid_hps( "raid_hps", sim );
+  bool has_hps = chart::generate_raid_aps( raid_hps, sim, "hps", margin );
+
+
+  if ( has_aps || has_waiting || has_stddev || has_dtps || has_hps )
   {
     os << "<div id=\"apm-summary\" class=\"section\">\n"
        << "<h2 class=\"toggle\" id=\"apm-summary-toggle\">Additional Raid Information</h2>\n"
@@ -682,6 +667,13 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
       sim.add_chart_data( raid_apm );
     }
 
+    if ( has_waiting )
+    {
+      raid_waiting.set_toggle_id( "apm-summary-toggle" );
+      os << raid_waiting.to_target_div();
+      sim.add_chart_data( raid_waiting );
+    }
+
     if ( has_stddev )
     {
       raid_stddev.set_toggle_id( "apm-summary-toggle" );
@@ -689,11 +681,18 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
       sim.add_chart_data( raid_stddev );
     }
 
-    if ( has_waiting )
+    if ( has_dtps )
     {
-      raid_waiting.set_toggle_id( "apm-summary-toggle" );
-      os << raid_waiting.to_target_div();
-      sim.add_chart_data( raid_waiting );
+      raid_dtps.set_toggle_id( "apm-summary-toggle" );
+      os << raid_dtps.to_target_div();
+      sim.add_chart_data( raid_dtps );
+    }
+
+    if ( has_hps )
+    {
+      raid_hps.set_toggle_id( "apm-summary-toggle" );
+      os << raid_hps.to_target_div();
+      sim.add_chart_data( raid_hps );
     }
 
     os << "</div>\n"
