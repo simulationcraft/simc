@@ -5856,7 +5856,12 @@ struct chain_lightning_t : public chained_base_t
   {
     auto mul = chained_base_t::execute_time_pct_multiplier();
 
-    mul *= 1.0 + p()->buff.wind_gust->stack_value();
+    // On 11.0.5 PTR, Wind Gust no longer scales spell cast speed for Chain Lightning
+    // or Lightning Bolt, and instead applies a stacking haste buff
+    if ( !p()->is_ptr() )
+    {
+        mul *= 1.0 + p()->buff.wind_gust->stack_value();
+    }
 
     return mul;
   }
@@ -5877,13 +5882,20 @@ struct chain_lightning_t : public chained_base_t
   timespan_t gcd() const override
   {
     timespan_t t = chained_base_t::gcd();
-    t *= 1.0 + p()->buff.wind_gust->stack_value();
+
+    // On 11.0.5 PTR, Wind Gust no longer scales spell cast speed for Chain Lightning
+    // or Lightning Bolt, and instead applies a stacking haste buff
+    if ( !p()->is_ptr() )
+    {
+        t *= 1.0 + p()->buff.wind_gust->stack_value();
+    }
 
     // testing shows the min GCD is 0.6 sec
     if ( t < timespan_t::from_millis( 600 ) )
     {
-      t = timespan_t::from_millis( 600 );
+        t = timespan_t::from_millis( 600 );
     }
+
     return t;
   }
 
@@ -6847,7 +6859,12 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     auto mul = shaman_spell_t::execute_time_pct_multiplier();
 
-    mul *= 1.0 + p()->buff.wind_gust->stack_value();
+    // On 11.0.5 PTR, Wind Gust no longer scales spell cast speed for Chain Lightning
+    // or Lightning Bolt, and instead applies a stacking haste buff
+    if ( !p()->is_ptr() )
+    {
+        mul *= 1.0 + p()->buff.wind_gust->stack_value();
+    }
 
     return mul;
   }
@@ -6855,7 +6872,13 @@ struct lightning_bolt_t : public shaman_spell_t
   timespan_t gcd() const override
   {
     timespan_t t = shaman_spell_t::gcd();
-    t *= 1.0 + p()->buff.wind_gust->stack_value();
+
+    // On 11.0.5 PTR, Wind Gust no longer scales spell cast speed for Chain Lightning
+    // or Lightning Bolt, and instead applies a stacking haste buff
+    if ( !p()->is_ptr() )
+    {
+        t *= 1.0 + p()->buff.wind_gust->stack_value();
+    }
 
     // testing shows the min GCD is 0.6 sec
     if ( t < timespan_t::from_millis( 600 ) )
@@ -8494,39 +8517,69 @@ struct ascendance_t : public shaman_spell_t
       p()->buff.ascendance->trigger();
     }
 
-    if ( lvb )
-    {
-      lvb->set_target( player->target );
-      lvb->target_cache.is_valid = false;
-      if ( !lvb->target_list().empty() )
-      {
-        lvb->execute();
-      }
-    }
-
     if ( ascendance_damage )
     {
       ascendance_damage->set_target( target );
       ascendance_damage->execute();
     }
 
-    // Refresh Flame Shock to max duration
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
-      auto max_duration = p()->action.flame_shock->composite_dot_duration( execute_state );
-
-      // Apparently the Flame Shock durations get set to current Flame Shock max duration,
-      // bypassing normal dot refresh behavior.
-      range::for_each( sim->target_non_sleeping_list, [ this, max_duration ]( player_t* target ) {
-        auto fs_dot = td( target )->dot.flame_shock;
-        if ( fs_dot->is_ticking() )
+        // On 11.0.5 PTR, Asendance now casts Flame Shocks on up to 6 nearby targets
+        // as well as 6 Lava Bursts to those same nearby targets
+        // On 11.0.2 Live, Ascendance refreshes the duration of any active Flame Shocks
+        // while Lava Bursting each of those targets
+        if ( p()->is_ptr() )
         {
-          auto new_duration = max_duration < fs_dot->remains()
-                              ? -( fs_dot->remains() - max_duration )
-                              : max_duration - fs_dot->remains();
-          fs_dot->adjust_duration( new_duration, timespan_t::min(), -1, true );
+            // FIXME: this is a naive implementation that just picks the first (up to) 6 targets
+            // it can find, indiscriminately, and casts Flame Shock on them.
+            // I have no idea if it actually works like this on PTR as testing the logic
+            // is not as straightforward as "go to the training dummies".
+            // Logic largely cribbed from LMT
+            for ( size_t i = 0; i < std::min( target_list().size(), as<size_t>( p()->talent.ascendance->effectN( 7 ).base_value() ) ); ++i )
+            {
+                auto t = target_list()[ i ];
+
+                p()->trigger_secondary_flame_shock( t );
+
+                if ( lvb )
+                {
+                  lvb->set_target( t );
+                  lvb->target_cache.is_valid = false;
+                  if ( !lvb->target_list().empty() )
+                  {
+                    lvb->execute();
+                  }
+                }
+            }
         }
-      } );
+        else
+        {
+            auto max_duration = p()->action.flame_shock->composite_dot_duration( execute_state );
+
+            // Apparently the Flame Shock durations get set to current Flame Shock max duration,
+            // bypassing normal dot refresh behavior.
+            range::for_each( sim->target_non_sleeping_list, [ this, max_duration ]( player_t* target ) {
+              auto fs_dot = td( target )->dot.flame_shock;
+              if ( fs_dot->is_ticking() )
+              {
+                auto new_duration = max_duration < fs_dot->remains()
+                                    ? -( fs_dot->remains() - max_duration )
+                                    : max_duration - fs_dot->remains();
+                fs_dot->adjust_duration( new_duration, timespan_t::min(), -1, true );
+              }
+            } );
+
+            if ( lvb )
+            {
+              lvb->set_target( player->target );
+              lvb->target_cache.is_valid = false;
+              if ( !lvb->target_list().empty() )
+              {
+                lvb->execute();
+              }
+            }
+        }
     }
 
     if ( p()->talent.static_accumulation.ok() )
@@ -12366,8 +12419,17 @@ void shaman_t::create_buffs()
   buff.master_of_the_elements = make_buff( this, "master_of_the_elements", talent.master_of_the_elements->effectN(1).trigger() )
           ->set_default_value( talent.master_of_the_elements->effectN( 2 ).percent() );
 
+  // On 11.0.5 PTR, Wind Gust applies a stacking Haste buff of 4% up to 4 times
+  // On 11.0.2 Live, Wind Gust applies a stacking 3% GCD + Cast Speed reduction to Lightning Bolt and Chain Lightning
+  // In both cases, this value is stored in effect 1.
   buff.wind_gust = make_buff( this, "wind_gust", find_spell( 263806 ) )
-                       ->set_default_value( find_spell( 263806 )->effectN( 1 ).percent() );
+        ->set_default_value( find_spell( 263806 )->effectN( 1 ).percent() );
+
+  if ( is_ptr() )
+  {
+      buff.wind_gust->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+      buff.wind_gust->set_default_value_from_effect_type( A_HASTE_ALL );
+  }
 
   buff.echoes_of_great_sundering_es =
       make_buff( this, "echoes_of_great_sundering_es", find_spell( 336217 ) )

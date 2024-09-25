@@ -1655,8 +1655,7 @@ struct waycrest_legacy_damage_t : public generic_proc_t
   }
   void execute() override
   {
-    size_t target_index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
-    set_target( target_list()[ target_index ] );
+    set_target( rng().range( target_list() ) );
 
     generic_proc_t::execute();
   }
@@ -1672,8 +1671,7 @@ struct waycrest_legacy_heal_t : public base_generic_proc_t<proc_heal_t>
   }
   void execute() override
   {
-    size_t target_index = static_cast<size_t>( rng().range( 0, as<double>( sim->player_no_pet_list.data().size() ) ) );
-    set_target( sim->player_list.data()[ target_index ] );
+    set_target( rng().range( sim->player_no_pet_list ) );
 
     base_generic_proc_t<proc_heal_t>::execute();
   }
@@ -1700,8 +1698,7 @@ void items::lady_waycrests_music_box( special_effect_t& effect )
     // Pick a random active target from the range
     void execute() override
     {
-      size_t target_index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
-      set_target( target_list()[ target_index ] );
+      set_target( rng().range( target_list() ) );
 
       generic_proc_t::execute();
       if ( waycrests_legacy_heal != nullptr )
@@ -1739,9 +1736,7 @@ void items::lady_waycrests_music_box_heal( special_effect_t& effect )
 
     void execute() override
     {
-      size_t target_index =
-          static_cast<size_t>( rng().range( 0, as<double>( sim->player_no_pet_list.data().size() ) ) );
-      set_target( sim->player_list.data()[ target_index ] );
+      set_target( rng().range( sim->player_no_pet_list ) );
 
       base_generic_proc_t<proc_heal_t>::execute();
 
@@ -3125,8 +3120,7 @@ void items::storm_of_the_eternal_arcane_damage( special_effect_t& effect )
 
     void execute() override
     {
-      size_t index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
-      set_target( target_list()[ index ] );
+      set_target( rng().range( target_list() ) );
 
       generic_proc_t::execute();
     }
@@ -5191,8 +5185,7 @@ void items::shorting_bit_band( special_effect_t& effect )
       const auto& targets = targets_in_range_list( target_list() );
       if ( targets.size() != 0 ) // Skip action_t::execute if no targets are in range.
       {
-        size_t index = rng().range( targets.size() );
-        set_target( targets[ index ] );
+        set_target( rng().range( targets ) );
 
         generic_proc_t::execute();
       }

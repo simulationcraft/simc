@@ -3909,7 +3909,7 @@ void prismatic_brilliance( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_execute_function(
       effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
-        buffs[ cb->rng().range( buffs.size() ) ]->trigger();
+        cb->rng().range( buffs )->trigger();
       } );
 }
 

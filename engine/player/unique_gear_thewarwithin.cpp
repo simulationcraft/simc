@@ -671,7 +671,7 @@ void elemental_focusing_lens( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_execute_function(
     effect.spell_id, [ damages ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
-      damages.at( cb->rng().range( damages.size() ) )->execute_on_target( s->target );
+      cb->rng().range( damages )->execute_on_target( s->target );
     } );
 }
 
@@ -974,10 +974,9 @@ void siphoning_stilleto( special_effect_t& effect )
     {
       self->execute_on_target( listener );
       // TODO: implement range check if it ever matters for specilizations that can use this.
-      make_event( *listener->sim, duration, [ & ] {
-        auto target = listener->sim
-          ->target_non_sleeping_list[ rng().range( listener->sim->target_non_sleeping_list.size() ) ];
-        damage->execute_on_target( target );
+      make_event( *listener->sim, duration, [ this ] {
+        if ( !listener->sim->target_non_sleeping_list.empty() )
+          damage->execute_on_target( rng().range( listener->sim->target_non_sleeping_list ) );
       } );
     }
   };
@@ -2963,7 +2962,7 @@ void empowering_crystal_of_anubikkaj( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_execute_function(
     effect.spell_id, [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
-      auto buff = buffs[ cb->listener->rng().range( 0U, as<unsigned>( buffs.size() ) ) ];
+      auto buff = cb->listener->rng().range( buffs );
       for ( auto b : buffs )
       {
         if ( b == buff )
@@ -4064,14 +4063,12 @@ void unstable_power_core( special_effect_t& effect )
       if ( remains > 0_ms )
         return;
 
-      auto buff_idx = effect.player->sim->rng().range( buffs.size() );
-      buffs[ buff_idx ]->trigger( effect.player->rng().range( 10_s, 30_s ) );
+      effect.player->rng().range( buffs )->trigger( effect.player->rng().range( 10_s, 30_s ) );
     } );
   }
 
   effect.player->register_precombat_begin( [ buffs ]( player_t* p ) {
-    auto buff_idx = p->sim->rng().range( buffs.size() );
-    buffs[ buff_idx ]->trigger( p->rng().range( 10_s, 30_s ) );
+    p->rng().range( buffs )->trigger( p->rng().range( 10_s, 30_s ) );
   } );
 }
 
@@ -4112,9 +4109,9 @@ void shadowbinding_ritual_knife( special_effect_t& effect )
   if ( negative_buffs.size() > 0 )
   {
     effect.player->callbacks.register_callback_execute_function(
-        effect.driver()->id(), [ negative_buffs ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* ) {
-          negative_buffs[ cb->listener->rng().range( negative_buffs.size() ) ]->trigger();
-        } );
+      effect.driver()->id(), [ negative_buffs ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* ) {
+        cb->listener->rng().range( negative_buffs )->trigger();
+      } );
   }
 
   effect.buff_disabled = true;
@@ -4619,7 +4616,7 @@ void everburning_lantern( special_effect_t& effect )
         cb->activate();
     } );
 
-  counter->set_expire_callback( [ fireflies, cb ]( buff_t*, int s, timespan_t ) {
+  counter->set_expire_callback( [ fireflies ]( buff_t*, int s, timespan_t ) {
     fireflies->trigger( -1, as<double>( s ) );
   } );
 
@@ -4803,7 +4800,7 @@ void wildfire_wick( special_effect_t& effect )
         if ( auto tnsl = p->sim->target_non_sleeping_list.data(); tnsl.size() > 1 )  // make a copy
         {
           range::erase_remove( tnsl, s->target );
-          cb->proc_action->execute_on_target( tnsl.at( p->rng().range( tnsl.size() ) ) );
+          cb->proc_action->execute_on_target( p->rng().range( tnsl ) );
         }
       }
 

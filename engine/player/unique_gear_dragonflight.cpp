@@ -178,7 +178,7 @@ void phial_of_elemental_chaos( special_effect_t& effect )
 
     buff = make_buff( effect.player, effect.name(), effect.driver() )
       ->set_tick_callback( [ buff_list ]( buff_t* b, int, timespan_t ) {
-        buff_list[ b->rng().range( buff_list.size() ) ]->trigger();
+        b->rng().range( buff_list )->trigger();
       } );
   }
 
@@ -3628,8 +3628,7 @@ void bushwhackers_compass(special_effect_t& effect)
     {
       dbc_proc_callback_t::execute( a, s );
 
-      auto buff = effect.player -> sim -> rng().range( buffs.size() );
-      buffs[ buff ] -> trigger();
+      effect.player->sim->rng().range( buffs )->trigger();
     }
   };
   effect.buff_disabled = true;
@@ -3908,8 +3907,7 @@ void ruby_whelp_shell( special_effect_t& effect )
       }
       else
       {
-        size_t choice = rng().range( whelp_types.size() );
-        trigger_whelp_proc( whelp_types[ choice ], s );
+        trigger_whelp_proc( rng().range( whelp_types ), s );
       }
     }
 
@@ -6019,7 +6017,7 @@ void pips_emerald_friendship_badge( special_effect_t& e )
   }
 
   e.player->register_combat_begin( [ buffs ]( player_t* p ) {
-    buffs.at( p->rng().range( buffs.size() ) ).first->trigger();
+    p->rng().range( buffs ).first->trigger();
   } );
 
   struct pips_cb_t : public dbc_proc_callback_t
@@ -6429,7 +6427,7 @@ void pinch_of_dream_magic( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_execute_function(
       effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
-        buffs[ cb->rng().range( buffs.size() ) ]->trigger();
+        cb->rng().range( buffs )->trigger();
       } );
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -8296,8 +8294,7 @@ void thorncaller_claw( special_effect_t& effect ) {
         if ( targets.size() != 0 )
         {
           // Choose a random new target to spread to
-          player_t* new_target =
-              targets[ static_cast<int>( effect.player->rng().range( 0, static_cast<double>( targets.size() ) ) ) ];
+          auto new_target = effect.player->rng().range( targets );
           effect.player->sim->print_debug( "{} demised with Thorn Spirit active. Spreading to new target {}.", t->name(), new_target->name() );
           thorn_spirit->execute_on_target( new_target );
         }
@@ -8724,7 +8721,7 @@ void elemental_lariat( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_execute_function(
       effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
-        buffs[ cb->rng().range( buffs.size() ) ]->trigger();
+        cb->rng().range( buffs )->trigger();
       } );
 }
 
@@ -9530,7 +9527,7 @@ void verdant_conduit( special_effect_t& effect )
   {
     effect.player->callbacks.register_callback_execute_function(
         effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
-          buffs[ cb->rng().range( buffs.size() ) ]->trigger();
+          cb->rng().range( buffs )->trigger();
         } );
   }
 }
@@ -10593,8 +10590,7 @@ void obscure_pastel_stone( special_effect_t& effect )
       if ( result_is_hit( s->result ) )
       {
         // TODO: If heal and absorb procs are implemented, they should target the player.
-        auto action = stone_actions[ rng().range( stone_actions.size() ) ];
-        if ( action )
+        if ( auto action = rng().range( stone_actions ) )
           action->execute_on_target( s->target );
       }
     }
@@ -10823,8 +10819,8 @@ void explosive_barrage( special_effect_t& effect )
           if ( tl.empty() )
             return;
 
-          barrage->execute_on_target( tl[ rng().range( tl.size() ) ] );
-          barrage->execute_on_target( tl[ rng().range( tl.size() ) ] );
+          barrage->execute_on_target( rng().range( tl ) );
+          barrage->execute_on_target( rng().range( tl ) );
         } );
       }
     }
@@ -10887,7 +10883,7 @@ void wildfire( special_effect_t& effect )
         else
         {
           const auto& tl = target_list();
-          target  = tl[ rng().range( tl.size() ) ];
+          target = rng().range( tl );
         }
       }
 
@@ -11128,7 +11124,7 @@ void arcanists_edge( special_effect_t& effect )
         else
         {
           const auto& tl = target_list();
-          target  = tl[ rng().range( tl.size() ) ];
+          target = rng().range( tl );
         }
       }
 
@@ -11355,7 +11351,7 @@ void sunstriders_flourish( special_effect_t& effect )
         else
         {
           const auto& tl = target_list();
-          target  = tl[ rng().range( tl.size() ) ];
+          target = rng().range( tl );
         }
       }
 

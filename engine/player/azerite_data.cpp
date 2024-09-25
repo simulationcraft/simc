@@ -1566,8 +1566,7 @@ void elemental_whirl( special_effect_t& effect )
 
     void execute( action_t* /* a */, action_state_t* /* state */ ) override
     {
-      size_t buff_index = rng().range( buffs.size() );
-      buffs[ buff_index ] -> trigger();
+      rng().range( buffs )->trigger();
     }
   };
 
@@ -2503,7 +2502,7 @@ void wandering_soul( special_effect_t& effect )
         const auto& tl = action -> target_list();
         if ( tl.empty() )
           return;
-        action -> set_target( tl[ action -> rng().range( tl.size() ) ] );
+        action->set_target( action->rng().range( tl ) );
         action -> execute();
       } );
     }
@@ -2720,8 +2719,7 @@ void combined_might( special_effect_t& effect )
 
     void execute( action_t*, action_state_t* ) override
     {
-      size_t index =  rng().range( buffs.size() );
-      buffs[ index ]->trigger();
+      rng().range( buffs )->trigger();
     }
   };
 
