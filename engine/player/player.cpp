@@ -8840,7 +8840,8 @@ struct ancestral_call_t : public racial_spell_t
   {
     racial_spell_t::execute();
 
-    rng().range( player->buffs.ancestral_call )->trigger();
+    auto& buffs = player->buffs.ancestral_call;
+    buffs[ rng().range( buffs.size() ) ] -> trigger();
   }
 };
 
@@ -13700,7 +13701,8 @@ action_t* player_t::select_action( const action_priority_list_t& list,
 
     if ( list.random == 1 )
     {
-      a = rng().range( a_list );
+      size_t random = rng().range( a_list.size() );
+      a             = a_list[ random ];
     }
     else
     {
@@ -13708,7 +13710,8 @@ action_t* player_t::select_action( const action_priority_list_t& list,
       if ( skill != 1 && rng().roll( ( 1 - skill ) * 0.5 ) )
       {
         size_t max_random_attempts = static_cast<size_t>( a_list.size() * ( skill * 0.5 ) );
-        a = rng().range( a_list );
+        size_t random              = rng().range( a_list.size() );
+        a                          = a_list[ random ];
         attempted_random++;
         // Limit the amount of attempts to select a random action based on skill, then bail out and try again in 100
         // ms.
