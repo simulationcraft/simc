@@ -6582,13 +6582,16 @@ struct exterminate_aoe_t final : public death_knight_spell_t
     const int effect_idx    = p->specialization() == DEATH_KNIGHT_FROST ? 2 : 1;
     attack_power_mod.direct = data().effectN( effect_idx ).ap_coeff();
 
-    if ( p->specialization() == DEATH_KNIGHT_FROST )
+    if ( p->talent.deathbringer.wither_away->ok() )
     {
-      impact_action = get_action<frost_fever_t>( "frost_fever", p );
-    }
-    if ( p->specialization() == DEATH_KNIGHT_BLOOD )
-    {
-      impact_action = get_action<blood_plague_t>( "blood_plague", p );
+      if ( p->specialization() == DEATH_KNIGHT_FROST )
+      {
+        impact_action = get_action<frost_fever_t>( "frost_fever", p );
+      }
+      if ( p->specialization() == DEATH_KNIGHT_BLOOD )
+      {
+        impact_action = get_action<blood_plague_t>( "blood_plague", p );
+      }
     }
   }
 };
