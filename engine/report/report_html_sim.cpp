@@ -666,13 +666,10 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
   highchart::bar_chart_t raid_stddev( "raid_stddev", sim );
   bool has_stddev = chart::generate_raid_aps( raid_stddev, sim, "stddev", margin );
 
-  highchart::bar_chart_t raid_tmi( "raid_tmi", sim );
-  bool has_tmi = chart::generate_raid_aps( raid_tmi, sim, "tmi", margin );
-
   highchart::bar_chart_t raid_waiting( "raid_waiting", sim );
   bool has_waiting = chart::generate_raid_downtime( raid_waiting, sim );
 
-  if ( has_aps || has_stddev || has_tmi || has_waiting )
+  if ( has_aps || has_stddev || has_waiting )
   {
     os << "<div id=\"apm-summary\" class=\"section\">\n"
        << "<h2 class=\"toggle\" id=\"apm-summary-toggle\">Additional Raid Information</h2>\n"
@@ -690,13 +687,6 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
       raid_stddev.set_toggle_id( "apm-summary-toggle" );
       os << raid_stddev.to_target_div();
       sim.add_chart_data( raid_stddev );
-    }
-
-    if ( has_tmi )
-    {
-      raid_tmi.set_toggle_id( "apm-summary-toggle" );
-      os << raid_tmi.to_target_div();
-      sim.add_chart_data( raid_tmi );
     }
 
     if ( has_waiting )
@@ -862,10 +852,6 @@ const help_box_t help_boxes[] = {
   { "Dodge%", "Percentage of executes that resulted in dodges." },
   { "DPS%", "Percentage of total DPS contributed by a particular action." },
   { "HPS%", "Percentage of total HPS (including absorb) contributed by a particular action." },
-  { "Theck-Meloree Index",
-    "Measure of damage smoothness, calculated over entire fight length. Related to max spike damage, 1k TMI is roughly "
-    "equivalent to 1% of your health. TMI ignores external healing and absorbs. Lower is better." },
-  { "TMI bin size", "Time bin size used to calculate TMI and MSD, in seconds." },
   { "Type", "Direct or Periodic damage." },
   { "Dynamic Buffs", "Temporary buffs received during combat, perhaps multiple times." },
   { "Buff Benefit", "The percentage of times the buff had a actual benefit for its mainly intended purpose, eg. damage "
@@ -928,21 +914,6 @@ void print_html_help_boxes( report::sc_html_stream& os, const sim_t& sim )
   }
 
   // From here on go special help boxes with dynamic text / etc.
-
-  os << "<div id=\"help-tmirange\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>TMI Range</h3>\n"
-     << "<p>This is the range of TMI values containing " << sim.confidence * 100
-     << "% of the data, roughly centered on the mean.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
-
-  os << "<div id=\"help-tmiwin\">\n"
-     << "<div class=\"help-box\">\n"
-     << "<h3>TMI/MSD Window</h3>\n"
-     << "<p>Window length used to calculate TMI and MSD, in seconds.</p>\n"
-     << "</div>\n"
-     << "</div>\n";
 
   os << "<div id=\"help-msd\">\n"
      << "<div class=\"help-box\">\n"
