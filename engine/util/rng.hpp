@@ -116,16 +116,16 @@ public:
   }
 
   // Uniform distribution in the range [first element..last element]
-  template <typename T, typename U = typename T::value_type>
+  template <typename T, typename U = std::remove_reference_t<decltype( *std::begin( std::declval<T&>() ) )>>
   U& range( T& container )
   {
-    return container.at( range( container.size() ) );
+    return container[ range( container.size() ) ];
   }
 
-  template <typename T, typename U = typename T::value_type>
+  template <typename T, typename U = std::remove_reference_t<decltype( *std::begin( std::declval<T&>() ) )>>
   const U& range( const T& container )
   {
-    return container.at( range( container.size() ) );
+    return container[ range( container.size() ) ];
   }
 
   /// Gaussian Distribution, Non-truncated
