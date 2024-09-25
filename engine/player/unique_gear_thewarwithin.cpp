@@ -3580,6 +3580,9 @@ void darkmoon_deck_ascension( special_effect_t& effect )
       set_tick_callback( [ & ]( buff_t*, int, timespan_t ) {
         if ( in_combat )
           trigger_ascension();
+        // Ticking stops if out of combat
+        else
+          make_event( *player->sim, 0_ms, [ & ] { expire(); } );
       } );
     }
 
