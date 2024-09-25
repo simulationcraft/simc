@@ -705,8 +705,7 @@ T* pet_spawner_t<T, O>::replacement_pet()
     case pet_replacement_strategy::REPLACE_OLDEST:
       return active_pet_min_remains();
     case pet_replacement_strategy::REPLACE_RANDOM:
-      return m_active_pets[ static_cast<unsigned>(
-          m_owner->rng().range( 0.0, as<double>( m_active_pets.size() ) ) ) ];
+      return m_owner->rng().range( m_active_pets );
     default:
       return nullptr;
   }
