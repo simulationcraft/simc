@@ -9089,6 +9089,10 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
       // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
       base_multiplier *= 0.98;
     }
+    if ( is_arctic_assault )
+    {
+      base_multiplier *= p->talent.frost.arctic_assault->effectN( 1 ).percent();
+    }
   }
 
   void execute() override
