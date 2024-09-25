@@ -1,11 +1,11 @@
-shaman="PR_Shaman_Enhancement_Storm²"
+shaman="PR_Shaman_Enhancement_DRE"
 source=default
 spec=enhancement
 level=80
 race=goblin
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMDMzYmZmZmBLzMmhBAAAAAAAAAwCsgZZGzMzmmlthlxMz0gFAMLTmBzyiZmZGDzMbYbmZCMWGzMAAzA
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzCm5BMzMzMzgtZmlZAAAAAAAAAAgFAGzYYILwywQDWAwsMZGMLLmZmZMMzsglZmJwYZMzAAMD
 
 # Default consumables
 potion=tempered_potion_3

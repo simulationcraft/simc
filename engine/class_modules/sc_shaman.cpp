@@ -5856,10 +5856,14 @@ struct chain_lightning_t : public chained_base_t
   double execute_time_pct_multiplier() const override
   {
     auto mul = chained_base_t::execute_time_pct_multiplier();
+
+    // On 11.0.5 PTR, Wind Gust no longer scales spell cast speed for Chain Lightning
+    // or Lightning Bolt, and instead applies a stacking haste buff
     if ( !p()->is_ptr() )
     {
-      mul *= 1.0 + p()->buff.wind_gust->stack_value();
+        mul *= 1.0 + p()->buff.wind_gust->stack_value();
     }
+
     return mul;
   }
 
@@ -5879,16 +5883,20 @@ struct chain_lightning_t : public chained_base_t
   timespan_t gcd() const override
   {
     timespan_t t = chained_base_t::gcd();
+
+    // On 11.0.5 PTR, Wind Gust no longer scales spell cast speed for Chain Lightning
+    // or Lightning Bolt, and instead applies a stacking haste buff
     if ( !p()->is_ptr() )
     {
-      t *= 1.0 + p()->buff.wind_gust->stack_value();
-
-      // testing shows the min GCD is 0.6 sec
-      if ( t < timespan_t::from_millis( 600 ) )
-      {
-        t = timespan_t::from_millis( 600 );
-      }
+        t *= 1.0 + p()->buff.wind_gust->stack_value();
     }
+
+    // testing shows the min GCD is 0.6 sec
+    if ( t < timespan_t::from_millis( 600 ) )
+    {
+        t = timespan_t::from_millis( 600 );
+    }
+
     return t;
   }
 
@@ -6128,7 +6136,8 @@ struct lava_beam_t : public chained_base_t
 
   struct erupting_lava_t : public shaman_spell_t
 {
-  erupting_lava_t( shaman_t* player ) : shaman_spell_t( ( "erupting_lava" ), player, player->find_spell( 468574 ) )
+    erupting_lava_t( shaman_t* player )
+      : shaman_spell_t( ( "erupting_lava" ), player, player->find_spell( 468574 ) )
   {
     background = dual = true;
   }
@@ -6196,7 +6205,6 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     if ( player->talent.erupting_lava.ok() )
     {
       erupting_lava = new erupting_lava_t( player );
-      add_child( erupting_lava );
     }
   }
 
@@ -6546,7 +6554,6 @@ struct lava_burst_t : public shaman_spell_t
     if (player->talent.erupting_lava.ok())
     {
       erupting_lava = new erupting_lava_t( player );
-      add_child(erupting_lava);
     }
 
     spell_power_mod.direct = player->find_spell( 285452 )->effectN( 1 ).sp_coeff();
@@ -6926,26 +6933,34 @@ struct lightning_bolt_t : public shaman_spell_t
   double execute_time_pct_multiplier() const override
   {
     auto mul = shaman_spell_t::execute_time_pct_multiplier();
+
+    // On 11.0.5 PTR, Wind Gust no longer scales spell cast speed for Chain Lightning
+    // or Lightning Bolt, and instead applies a stacking haste buff
     if ( !p()->is_ptr() )
     {
-      mul *= 1.0 + p()->buff.wind_gust->stack_value();
+        mul *= 1.0 + p()->buff.wind_gust->stack_value();
     }
+
     return mul;
   }
 
   timespan_t gcd() const override
   {
     timespan_t t = shaman_spell_t::gcd();
+
+    // On 11.0.5 PTR, Wind Gust no longer scales spell cast speed for Chain Lightning
+    // or Lightning Bolt, and instead applies a stacking haste buff
     if ( !p()->is_ptr() )
     {
-      t *= 1.0 + p()->buff.wind_gust->stack_value();
-
-      // testing shows the min GCD is 0.6 sec
-      if ( t < timespan_t::from_millis( 600 ) )
-      {
-        t = timespan_t::from_millis( 600 );
-      }
+        t *= 1.0 + p()->buff.wind_gust->stack_value();
     }
+
+    // testing shows the min GCD is 0.6 sec
+    if ( t < timespan_t::from_millis( 600 ) )
+    {
+      t = timespan_t::from_millis( 600 );
+    }
+
     return t;
   }
 
@@ -8159,7 +8174,7 @@ private:
 
 public:
   flame_shock_t( shaman_t* player, util::string_view options_str = {} )
-    : shaman_spell_t( "flame_shock", player, player->find_class_spell( "Flame Shock" ) ),
+    : shaman_spell_t( "flame_shock", player, player->find_spell( 188389 ) ),
       spreader( player->talent.surge_of_power->ok() ? new flame_shock_spreader_t( player ) : nullptr ),
     elemental_resource( player->find_spell( 263819 ) )
   {
@@ -8578,6 +8593,12 @@ struct ascendance_t : public shaman_spell_t
       p()->buff.ascendance->trigger();
     }
 
+    if ( ascendance_damage )
+    {
+      ascendance_damage->set_target( target );
+      ascendance_damage->execute();
+    }
+
     // Refresh Flame Shock to max duration
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
@@ -8599,9 +8620,10 @@ struct ascendance_t : public shaman_spell_t
       }
       else
       {
-        for ( size_t i = 0; i < std::min( target_list().size(), as<size_t>( data().effectN( 7 ).base_value() ) ); ++i )
+        auto tl = target_list();
+        for ( size_t i = 0; i < std::min( tl.size(), as<size_t>( data().effectN( 7 ).base_value() ) ); ++i )
         {
-          p()->trigger_secondary_flame_shock( target_list()[ i ] );
+          p()->trigger_secondary_flame_shock( tl[ i ] );
         }
       }
     }
@@ -12464,8 +12486,17 @@ void shaman_t::create_buffs()
   buff.master_of_the_elements = make_buff( this, "master_of_the_elements", talent.master_of_the_elements->effectN(1).trigger() )
           ->set_default_value( talent.master_of_the_elements->effectN( 2 ).percent() );
 
+  // On 11.0.5 PTR, Wind Gust applies a stacking Haste buff of 4% up to 4 times
+  // On 11.0.2 Live, Wind Gust applies a stacking 3% GCD + Cast Speed reduction to Lightning Bolt and Chain Lightning
+  // In both cases, this value is stored in effect 1.
   buff.wind_gust = make_buff( this, "wind_gust", find_spell( 263806 ) )
-                       ->set_default_value( find_spell( 263806 )->effectN( 1 ).percent() );
+        ->set_default_value( find_spell( 263806 )->effectN( 1 ).percent() );
+
+  if ( is_ptr() )
+  {
+      buff.wind_gust->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+      buff.wind_gust->set_default_value_from_effect_type( A_HASTE_ALL );
+  }
 
   buff.echoes_of_great_sundering_es =
       make_buff( this, "echoes_of_great_sundering_es", find_spell( 336217 ) )
@@ -12850,7 +12881,10 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.erupting_lava );
   action.apply_affecting_aura( talent.crashing_storms );
   action.apply_affecting_aura( talent.healing_stream_totem );
-  action.apply_affecting_aura( talent.stormkeeper );
+  if ( !is_ptr() )
+  {
+    action.apply_affecting_aura( talent.stormkeeper );
+  }
   action.apply_affecting_aura( talent.fire_and_ice );
   action.apply_affecting_aura( talent.thorims_invocation );
   action.apply_affecting_aura( talent.flash_of_lightning );

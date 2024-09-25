@@ -3389,7 +3389,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
           os.format( "<li><span>stat:</span>{}</li>"
                      "<li><span>amount:</span>{:.2f}%</li>",
                      util::stat_pct_buff_type_string( stat ),
-                     b.default_value * 100.0 );
+                     b.default_value * ( stat == STAT_PCT_BUFF_MASTERY ? 1.0 : 100.0 ) );
         }
       }
 

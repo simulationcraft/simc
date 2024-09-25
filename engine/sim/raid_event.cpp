@@ -1686,6 +1686,7 @@ raid_event_t::raid_event_t( sim_t* s, util::string_view type )
   add_option( opt_bool( "force_stop", force_stop ) );
   add_option( opt_int( "pull", pull ) );
   add_option( opt_string( "pull_target", pull_target_str ) );
+  add_option( opt_func( "timestamps", std::bind( &raid_event_t::parse_timestamps, this, std::placeholders::_3 ) ) );
 }
 
 timespan_t raid_event_t::cooldown_time()
@@ -1926,7 +1927,7 @@ void raid_event_t::combat_begin()
 
   if ( first_pct == -1 )
   {
-    timespan_t start_time = std::max( first, timespan_t::zero() );
+    timespan_t start_time = timestamps.size() ? timestamps.front() : std::max( first, timespan_t::zero() );
     start_event = make_event<start_event_t>( *sim, *sim, this, start_time, "first reached" );
   }
   if ( first_pct != -1 )
@@ -1993,7 +1994,10 @@ void raid_event_t::schedule()
       raid_event->saved_duration = raid_event->duration_time();
       raid_event->start();
 
-      timespan_t ct = raid_event->cooldown_time();
+      timespan_t ct = raid_event->timestamps.empty() ? raid_event->cooldown_time()
+                      : raid_event->num_starts < as<int>( raid_event->timestamps.size() )
+                        ? raid_event->timestamps.at( raid_event->num_starts )
+                        : 0_ms;
 
       if ( ct <= raid_event->saved_duration )
         ct = raid_event->saved_duration + timespan_t::from_seconds( 0.01 );
@@ -2001,12 +2005,13 @@ void raid_event_t::schedule()
       if ( raid_event->saved_duration > timespan_t::zero() )
       {
         raid_event->duration_event =
-            make_event<duration_event_t>( sim(), sim(), raid_event, raid_event->saved_duration );
+          make_event<duration_event_t>( sim(), sim(), raid_event, raid_event->saved_duration );
       }
       else
         raid_event->finish();
 
-      if ( raid_event->activation_status == activation_status_e::activated )
+      if ( raid_event->activation_status == activation_status_e::activated &&
+           raid_event->timestamps.size() != raid_event->num_starts )
       {
         raid_event->saved_cooldown = ct;
         raid_event->cooldown_event = make_event<cooldown_event_t>( sim(), sim(), raid_event, ct );
@@ -2074,9 +2079,15 @@ void raid_event_t::parse_options( util::string_view options_str )
   {
     throw std::invalid_argument( "first= and first_pct= cannot be used together." );
   }
+
   if ( last_pct != -1 && last >= timespan_t::zero() )
   {
     throw std::invalid_argument( "last= and last_pct= cannot be used together." );
+  }
+
+  if ( timestamps.size() && ( first_pct != -1 || last_pct != -1 || first >= 0_ms || last >= 0_ms ) )
+  {
+    throw std::invalid_argument( "timestamps= cannot be used with first=, first_pct=, last= or last_pct=." );
   }
 
   // Register later on mob spawn for pull events
@@ -2106,6 +2117,30 @@ void raid_event_t::parse_options( util::string_view options_str )
         throw std::invalid_argument( "pull_target= is required for DungeonRoute events with last_pct/first_pct." );
     }
   }
+}
+
+bool raid_event_t::parse_timestamps( std::string_view value )
+{
+  timestamps.clear();
+
+  auto splits = util::string_split<std::string_view>( value, ":" );
+  for ( size_t i = 0; i < splits.size(); i++ )
+  {
+    auto t = util::to_double( splits[ i ] );
+    if ( t < 0 )
+      throw std::invalid_argument( "Raid event timestamps must be positive." );
+
+    if ( i )
+    {
+      t -= util::to_double( splits[ i - 1 ] );
+      if ( t < 0 )
+        throw std::invalid_argument( "Raid event timestamps must be in increasing order." );
+    }
+
+    timestamps.push_back( timespan_t::from_seconds( t ) );
+  }
+
+  return true;
 }
 
 // raid_event_t::create =====================================================
@@ -2178,18 +2213,17 @@ void raid_event_t::init( sim_t* sim )
     {
       auto raid_event = create( sim, name, options );
 
-      if ( raid_event->cooldown.mean <= 0_ms && raid_event->type != "pull" )
+      if ( raid_event->type != "pull" && raid_event->timestamps.empty() )
       {
-        throw std::invalid_argument( "Cooldown not set or negative." );
+        if ( raid_event->cooldown.mean <= 0_ms )
+          throw std::invalid_argument( "Cooldown not set or negative." );
+
+        if ( raid_event->cooldown.mean <= raid_event->cooldown.stddev )
+          throw std::invalid_argument( "Cooldown lower than cooldown standard deviation." );
       }
-      if ( raid_event->cooldown.mean <= raid_event->cooldown.stddev && raid_event->type != "pull" )
-      {
-        throw std::invalid_argument( "Cooldown lower than cooldown standard deviation." );
-      }
+
       if ( raid_event->type == "pull" && sim->fight_style != FIGHT_STYLE_DUNGEON_ROUTE )
-      {
         throw std::invalid_argument( "DungeonRoute fight style is required for pull events." );
-      }
 
       if ( raid_event->cooldown.min == 0_ms )
         raid_event->cooldown.min = raid_event->cooldown.mean * 0.5;

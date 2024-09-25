@@ -41,9 +41,8 @@ actions+=/use_items,if=prev_gcd.1.arcane_surge|prev_gcd.1.evocation|fight_remain
 actions+=/use_item,name=spymasters_web,if=(prev_gcd.1.arcane_surge|prev_gcd.1.evocation|(buff.ethereal_powerlink.up&buff.siphon_storm.remains&talent.spellfire_spheres))&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment|(buff.spymasters_report.stack=40&fight_remains>240))|fight_remains<20
 actions+=/use_item,name=high_speakers_accretion,if=(prev_gcd.1.arcane_surge|prev_gcd.1.evocation)|cooldown.evocation.remains<4|fight_remains<20
 actions+=/use_item,name=imperfect_ascendancy_serum,if=cooldown.evocation.ready|cooldown.arcane_surge.ready|fight_remains<20
-actions+=/use_item,name=treacherous_transmitter,if=talent.spellfire_spheres&(prev_gcd.1.evocation|((cooldown.evocation.remains<10+(7*(equipped.spymasters_web&(buff.spymasters_report.stack=40|target.health.pct<35))))&cooldown.evocation.remains))|(talent.splintering_sorcery&(buff.arcane_surge.remains>13|prev_gcd.1.evocation|cooldown.arcane_surge.remains<10))|fight_remains<20
-actions+=/do_treacherous_transmitter_task,use_off_gcd=1,if=buff.siphon_storm.remains>15|fight_remains<20|(cooldown.touch_of_the_magi.remains<8&equipped.spymasters_web&talent.spellfire_spheres)|(buff.arcane_surge.remains>13&talent.splintering_sorcery)
-actions+=/use_item,name=concoction_kiss_of_death,if=(prev_gcd.1.arcane_surge|prev_gcd.1.evocation)&(fight_remains<80|target.health.pct<35|!talent.arcane_bombardment|(!equipped.spymasters_web|buff.spymasters_report.stack=40&fight_remains>240))|fight_remains<20|time<2
+actions+=/use_item,name=treacherous_transmitter,if=(cooldown.evocation.remains<7&cooldown.evocation.remains)|fight_remains<20
+actions+=/do_treacherous_transmitter_task,use_off_gcd=1,if=buff.siphon_storm.up|fight_remains<20
 actions+=/use_item,name=aberrant_spellforge,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down|(equipped.spymasters_web&target.health.pct>35)
 actions+=/use_item,name=mad_queens_mandate,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down
 actions+=/use_item,name=fearbreakers_echo,if=!variable.steroid_trinket_equipped|buff.siphon_storm.down

@@ -1535,8 +1535,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     attack_power_mod.direct = 0;
 
-    execute_action        = new press_the_advantage_t<rising_sun_kick_dmg_t>( p, options_str );
-    execute_action->stats = stats;
+    execute_action = new press_the_advantage_t<rising_sun_kick_dmg_t>( p, options_str );
 
     if ( p->talent.windwalker.glory_of_the_dawn->ok() )
     {
@@ -5019,8 +5018,7 @@ struct chi_wave_t : public monk_spell_t
 
     damage->sef_ability = sef_ability_e::SEF_CHI_WAVE;
 
-    stats = damage->stats;
-
+    add_child( damage );
     add_child( heal );
   }
 
@@ -5617,13 +5615,21 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
   action_t *rushing_jade_wind_tick;
 
   rushing_jade_wind_buff_t( monk_t *player )
-    : monk_buff_t( player, "rushing_jade_wind", player->passives.rushing_jade_wind ),
-      rushing_jade_wind_tick( new tick_action_t( player ) )
+    : monk_buff_t( player, "rushing_jade_wind", player->passives.rushing_jade_wind ), rushing_jade_wind_tick( nullptr )
   {
     set_tick_time_behavior( buff_tick_time_behavior::CUSTOM );
     set_tick_time_callback( [ this ]( const buff_t *, unsigned int ) { return _period; } );
 
-    set_tick_callback( [ this ]( buff_t *, int, timespan_t ) { rushing_jade_wind_tick->execute(); } );
+    set_tick_callback( [ this ]( buff_t *, int, timespan_t ) {
+      if ( rushing_jade_wind_tick )
+        rushing_jade_wind_tick->execute();
+
+      if ( action_t *rjw = p().find_action( "rushing_jade_wind_tick" ); rjw )
+      {
+        rushing_jade_wind_tick = rjw;
+        rjw->execute();
+      }
+    } );
     set_tick_behavior( buff_tick_behavior::REFRESH );
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
@@ -7300,8 +7306,15 @@ void monk_t::init_spells()
 
   shared.teachings_of_the_monastery =
       _priority( talent.windwalker.teachings_of_the_monastery, talent.mistweaver.teachings_of_the_monastery );
+}
 
-  // Active Action Spells
+void monk_t::init_background_actions()
+{
+  base_t::init_background_actions();
+
+  // we just look it up via `find_action` anyway, so it doesn't need to explicitly
+  // be set anywhere (for now)
+  new buffs::rushing_jade_wind_buff_t::tick_action_t( this );
 
   // General
   active_actions.chi_wave = new actions::chi_wave_t( this );

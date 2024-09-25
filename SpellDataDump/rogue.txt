@@ -12037,10 +12037,10 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
                  :
 Effects          :
 #1 (id=1033885)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.70000 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Echoing Reprimand (354835), Echoing Reprimand (354838), Echoing Reprimand (385616), Echoing Reprimand (394136), Echoing Reprimand (394138), Echoing Reprimand (394140)
                    Family Flags: 82
-Hotfixed         : PvP Coefficient (1 -> 0.7)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Echoing Reprimand's damage is increased by $s1%.
 
 Name             : Shrouded Suffocation (id=394664) 

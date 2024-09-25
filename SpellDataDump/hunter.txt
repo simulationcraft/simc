@@ -2130,7 +2130,8 @@ Attributes       : Is Ability (4), Passive (6), Not In Spellbook (143), Do Not L
                  :
 Effects          :
 #1 (id=130467)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
+                   Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
+Hotfixed         : Base Value (80 -> 90)
 #2 (id=1021255)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Beast Cleave (115939), Beast Cleave (118455), Beast Cleave (118459), Kill Cleave (389448)
@@ -11454,7 +11455,8 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
                  :
 Effects          :
 #1 (id=1006524)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (80 -> 90)
 Description      : While Beast Cleave is active, Kill Command now also strikes nearby enemies for $s1% of damage dealt. Deals reduced damage beyond $389448s2 targets.
 
 Name             : Training Expert (id=378209) [Spell Family (9), Passive, Hidden] 

@@ -8879,10 +8879,12 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = death_knight_melee_attack_t::composite_da_multiplier( state );
+    const auto ri = get_td( state->target )->debuff.razorice;
 
     if ( sb )
     {
       m *= 1.0 + p()->talent.frost.shattering_blade->effectN( 1 ).percent();
+      m *= 1.0 + ri->default_value * ri->max_stack();
     }
 
     return m;
@@ -8913,13 +8915,8 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
       {
         if ( weapon_hand->slot == SLOT_MAIN_HAND )
         {
-          trigger_shattered_frost( s->result_amount,
-                                   true /* TODO-TWW check if still bugged p()->off_hand_weapon.type == WEAPON_NONE */ );
-        }
-        /*if ( weapon_hand->slot == SLOT_OFF_HAND )
-        {
           trigger_shattered_frost( s->result_amount, true );
-        }*/
+        }
       }
     }
 
