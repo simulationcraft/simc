@@ -9226,10 +9226,11 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
       p()->buffs.heartrend->trigger();
     }
 
-    if ( p()->talent.deathbringer.dark_talons.ok() && p()->buffs.icy_talons->check() &&
+    if ( p()->talent.deathbringer.dark_talons.ok() && p()->talent.icy_talons->ok() &&
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
-      p()->buffs.dark_talons_icy_talons->trigger();
+      p()->buffs.dark_talons_icy_talons->trigger( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
+      p()->buffs.icy_talons->trigger( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
     }
 
     p()->trigger_sanlayn_execute_talents( this->data().id() == p()->spell.vampiric_strike->id() );
@@ -9562,10 +9563,11 @@ struct howling_blast_t final : public death_knight_spell_t
                           p()->gains.rage_of_the_frozen_champion );
     }
 
-    if ( p()->talent.deathbringer.dark_talons.ok() && p()->buffs.rime->check() && p()->buffs.icy_talons->check() &&
+    if ( p()->talent.deathbringer.dark_talons.ok() && p()->talent.icy_talons->ok() &&
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
-      p()->buffs.dark_talons_icy_talons->trigger();
+      p()->buffs.dark_talons_icy_talons->trigger( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
+      p()->buffs.icy_talons->trigger( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
     }
 
     p()->buffs.rime->decrement();
@@ -9617,10 +9619,11 @@ struct marrowrend_t final : public death_knight_melee_attack_t
       }
     }
 
-    if ( p()->talent.deathbringer.dark_talons.ok() && p()->buffs.icy_talons->check() &&
+    if ( p()->talent.deathbringer.dark_talons.ok() && p()->talent.icy_talons->ok() &&
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
-      p()->buffs.dark_talons_icy_talons->trigger();
+      p()->buffs.dark_talons_icy_talons->trigger( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
+      p()->buffs.icy_talons->trigger( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
     }
 
     if ( p()->buffs.exterminate->up() )
@@ -11611,10 +11614,11 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
       cooldown.frostscythe->adjust( timespan_t::from_millis( -talent.frost.frostscythe->effectN( 1 ).base_value() ) );
     }
 
-    if ( talent.deathbringer.dark_talons.ok() && buffs.icy_talons->check() &&
+    if ( talent.deathbringer.dark_talons.ok() && talent.icy_talons->ok() &&
          rng().roll( talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
-      buffs.dark_talons_icy_talons->trigger();
+      buffs.dark_talons_icy_talons->trigger( talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
+      buffs.icy_talons->trigger( talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
     }
   } );
 }
