@@ -9094,7 +9094,7 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
       type_ = CAST_SPEC;
 
     if ( type_ == CAST_OFFSPEC && !offspec_list.empty() )
-      type_ = offspec_list.at( rng().range( offspec_list.size() ) );
+      type_ = rng().range( offspec_list );
     else if ( type_ == CAST_SPEC )
     {
       auto dist = chances;  // local copy of distribution
@@ -9110,11 +9110,11 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
       type_ = get_cast_from_dist( dist );
 
       if ( type_ == CAST_MOONFIRE )
-        conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );  // mf has it's own target list
+        conv_tar = rng().range( mf_tl );  // mf has it's own target list
     }
 
     if ( !conv_tar )
-      conv_tar = tl.at( rng().range( tl.size() ) );
+      conv_tar = rng().range( tl );
 
     if ( type_ == CAST_RAKE && td( conv_tar )->dots.rake->is_ticking() )
       type_ = CAST_WRATH;
@@ -9152,7 +9152,7 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
 
     if ( base_type == CAST_OFFSPEC && !offspec_list.empty() )
     {
-      type_ = offspec_list.at( rng().range( offspec_list.size() ) );
+      type_ = rng().range( offspec_list );
     }
     else if ( base_type == CAST_MAIN )
     {
@@ -9170,7 +9170,7 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
     }
 
     if ( !conv_tar )
-      conv_tar = tl.at( rng().range( tl.size() ) );
+      conv_tar = rng().range( tl );
 
     auto target_data = td( conv_tar );
 
@@ -9245,7 +9245,7 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
       if ( type_ == CAST_STARSURGE )
         conv_tar = p()->target;
       else if ( type_ == CAST_MOONFIRE )
-        conv_tar = mf_tl.at( rng().range( mf_tl.size() ) );
+        conv_tar = rng().range( mf_tl );
     }
     else if ( type_ == CAST_FULL_MOON )
     {
@@ -9253,7 +9253,7 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
     }
 
     if ( !conv_tar )
-      conv_tar = tl.at( rng().range( tl.size() ) );
+      conv_tar = rng().range( tl );
 
     if ( type_ == CAST_STARSURGE )
       main_count++;
@@ -9300,7 +9300,7 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
     player_t* conv_tar  = nullptr;
 
     // pick random spell and remove it
-    std::swap( cast_list.at( rng().range( cast_list.size() ) ), cast_list.back() );
+    std::swap( rng().range( cast_list ), cast_list.back() );
     auto conv_type = cast_list.back();
     cast_list.pop_back();
 
@@ -9325,7 +9325,7 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
     if ( conv_type == convoke_cast_e::CAST_HEAL )
     {
       const auto& heal_tl = conv_cast->target_list();
-      conv_tar = heal_tl.at( rng().range( heal_tl.size() ) );
+      conv_tar = rng().range( heal_tl );
     }
 
     conv_cast->execute_on_target( conv_tar );
