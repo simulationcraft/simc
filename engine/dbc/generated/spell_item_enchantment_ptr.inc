@@ -1,4 +1,4 @@
-// Item enchantment data, wow build 11.0.5.56646
+// Item enchantment data, wow build 11.0.5.56749
 static const std::array<item_enchantment_data_t, 5042> __ptr_spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },      0, "Sharpened III"                     },
@@ -4969,7 +4969,7 @@ static const std::array<item_enchantment_data_t, 5042> __ptr_spell_item_ench_dat
   { 7464,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "11.0.0 FX Testing - Enchant Visual - Holyfire" },
   { 7465,      0, -1,   0,   0, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11134,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Funeral Pyre"                      },
   { 7466,      0, -1,   0,   0, 0, 0,   0,   0, {  11,   0,   0 }, {    0,    0,    0 }, {  11135,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },      0, "Bulwark of the Black Ox"           },
-  { 7467,      0, -8,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 448000,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Bubbling Wax"                      },
+  { 7467,      0, -9,   1,  70, 1, 610,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 448000,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Bubbling Wax"                      },
   { 7468,      0, -7,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 448337,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Cursed Critical Strike |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
   { 7469,      0, -7,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 448338,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Cursed Critical Strike |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
   { 7470,      0, -7,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 448339,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },      0, "Cursed Critical Strike |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },

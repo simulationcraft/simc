@@ -1,5 +1,5 @@
-// Spell text, wow build 11.0.5.56646
-static const std::array<spelltext_data_t, 26509> __ptr_spelltext_data { {
+// Spell text, wow build 11.0.5.56749
+static const std::array<spelltext_data_t, 26513> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -18045,6 +18045,8 @@ static const std::array<spelltext_data_t, 26509> __ptr_spelltext_data { {
   { 377101, "$@spelldesc377098", "Critical Strike chance increased by $s1%.", 0 },
   { 377102, "$@spelldesc377100", "Critical healing increased by $w1%.", 0 },
   { 377103, "$@spelldesc377098", "Frost damage increased by $s1%.", 0 },
+  { 377128, "Consecration heals you and $s2 allies within it for $<points> every $26573t1 sec.", 0, 0 },
+  { 377129, "$@spelldesc377128", 0, 0 },
   { 377143, 0, "Haste increased by $w1.\r\n$?a377146[Speed increased  by $377146w1.][]", 0 },
   { 377146, 0, "Speed increased by $w1.", 0 },
   { 377190, "When Pillar of Frost expires, your Strength is increased by $377195s1% for $377195d. This effect lasts ${$s2/1000} sec longer for each Obliterate and Frostscythe critical strike during Pillar of Frost.", 0, 0 },
@@ -22017,7 +22019,6 @@ static const std::array<spelltext_data_t, 26509> __ptr_spelltext_data { {
   { 418783, "$@spelldesc413710", 0, 0 },
   { 418999, "You grant yourself an absorb shield, lasting $d.", "Absorbing $w1 damage.", 0 },
   { 419052, "$@spelldesc419162", 0, 0 },
-  { 419168, "Combine $M2 Splintered Spark of Dreams with $M3 Flightstones to create a Spark of Dreams.", 0, 0 },
   { 419262, "Striking a demon with melee abilities has a chance to rend their flesh, dealing Physical damage over $d.", "Bleeding for $w1 every $t sec.", 0 },
   { 419268, "Striking an undead with a melee ability has a chance to smite them with righteous fury, dealing Holy damage.", 0, 0 },
   { 419278, "Attempt to finish off a weakened opponent, dealing $s1 Nature damage to an enemy below $s2% health. Dealing damage to enemies below $s2% health reduces the cooldown of this effect by $s3 sec.", 0, 0 },
@@ -23142,7 +23143,7 @@ static const std::array<spelltext_data_t, 26509> __ptr_spelltext_data { {
   { 435479, "Spells and abilities have a chance to unearth a Colourful Fungal Friend to heal allies for $s2, grant you $s3 mana, or deal ${$s4*($438685d/$438685t)} Nature damage over $438685d to a nearby enemy.", 0, 0 },
   { 435482, "Unfurl a myriad of grasping webs in front of you entangling your enemies, reducing damage they deal to you by $s3% up to $s2 total damage and reducing their Attack Speed by $s1% for $d.\r\n\r\n$?$pl>80[Attack Speed reduction is less effective against enemies above level $s4.][]", "Absorbing up to $w2 damage from webbed attackers.", 0 },
   { 435488, "Increases maximum mana by $s1% per unique Khaz Algar gem color currently socketed.", "$?{$w2>0}[Maximum mana is increased by $W2%.][$@spellaura437034]", 0 },
-  { 435493, "Drink from the vial and let the toxins course through your veins increasing all secondary stats by $s1 for $d.\r\n\r\nUse again to administer yourself the antidote to end the effect.\r\n\r\nIf the Antidote is not administered before the end of the effect you will be stunned for $440235d.", "All secondary stats increased by $w1.", 0 },
+  { 435493, "Drink from the vial and let the toxins course through your veins increasing all secondary stats by $s1 for $d.\r\n\r\nJump to administer yourself the antidote to end the effect.\r\n\r\nIf the Antidote is not administered before the end of the effect you will be stunned for $440235d.", "All secondary stats increased by $w1.", 0 },
   { 435500, "Increases the effect of critical strikes by ${$M1}.1% per unique Khaz Algar gem color currently socketed.", "$?{$w2>0}[Critical strike effectiveness increased by ${$w2}.1%.][$@spellaura437034]", 0 },
   { 435501, "Increases the effect of critical strikes by $s1% per unique Khaz Algar gem color currently socketed.", "$?{$w2>0}[Movement speed increased by $w2%.][$@spellaura437034]", 0 },
   { 435502, "Engrave a ritual seal into your skin binding you to the shadows, granting yourself $s1 $pri.\r\n\r\nYour spells and abilities have a low chance to reduce one of your secondary stats by $s2 for $440389d during combat.", 0, 0 },
@@ -23700,7 +23701,7 @@ static const std::array<spelltext_data_t, 26509> __ptr_spelltext_data { {
   { 443378, "Your abilities have a chance to call an earthen ally to your aid, supporting you in combat.", "Your abilities have a chance to call an earthen ally to your aid, supporting you in combat.", 0 },
   { 443380, "Your spells have a chance to destabilize the void energy, releasing a corrupted fragment. Retrieving a fragment briefly infuses you with its power, increasing your Intellect by $s1 for $11790d.", 0, 0 },
   { 443381, "$@spelldesc446648", "$pri increased by $w1.$?e1[\r\nAbsorbing $w2 damage.][]", 0 },
-  { 443384, "Your harmful and helpful spells have a chance to weave a Thread of Fate between you and your target for $443590d. Tethered allies gain $s2 bonus primary stat while the Thread holds and enemies take ${$<rolemult>*$s1} Cosmic Damage when the Thread breaks.", 0, 0 },
+  { 443384, "Your harmful and helpful spells have a chance to weave a Thread of Fate between you and your target for $443590d. Tethered allies gain $s2 bonus primary while the Thread holds and enemies take ${$<rolemult>*$s1} Cosmic Damage when the Thread breaks.", 0, 0 },
   { 443389, "Channel arcane power for $443389d. Every ${$443389t1}.2 sec, infuse yourself and $443413i allies within $443413A1 yards with Haste, Critical Strike, and Mastery for $443410d.", 0, 0 },
   { 443393, "Your spells have a chance to charge the device and request a Backfill Barrel near your target's location. Damaging the barrel causes it to explode, inflicting ${$<rolemult>*$s1} Fire damage split between nearby enemies.", 0, 0 },
   { 443404, "$@spelldesc434711", "Taking $w1% increased Shadowfrost damage from $@auracaster.", 0 },
@@ -26425,7 +26426,7 @@ static const std::array<spelltext_data_t, 26509> __ptr_spelltext_data { {
   { 469882, "Enemies struck by Avenger's Shield burn with holy fire, suffering $o1 damage over $d.", "Suffering $w1 Radiant damage every $t sec.", 0 },
   { 469883, "$@spelldesc469882", 0, 0 },
   { 469886, "Successfully interrupting an enemy spellcast reduces your Rebuke's cooldown by ${$s1/1000}.1 sec. Effect increased by $s2% while wielding a Holy Armament.", 0, 0 },
-  { 469915, "The gearbox is Wound each time you cause a non-periodic critical strike.  When Wound $s1 times , unleash a Torrent of Flames dealing $s2 Fire damage. The gearbox cannot be Wound more than once every 2.5 sec.", 0, 0 },
+  { 469915, "The gearbox is Wound each time you cause a non-periodic critical strike.  When Wound $s1 times, unleash a Torrent of Flames dealing $s2 Fire damage. The gearbox cannot be Wound more than once every 2.5 sec.", 0, 0 },
   { 469922, "Your spells have a chance to call on Dope'rel to Backstab your target dealing $s1 Physical damage.", 0, 0 },
   { 469924, "$@spelldesc469922", 0, 0 },
   { 469925, "Each spell cast within 20 seconds will grant a stacking bonus of $469926s1 Intellect up to $469926u stacks. Expires after $d. Abilities with no mana cost will not trigger this trinket.", "Chance to gain Intellect.", 0 },
@@ -26509,14 +26510,17 @@ static const std::array<spelltext_data_t, 26509> __ptr_spelltext_data { {
   { 470679, "$@spelldesc453457", 0, 0 },
   { 470680, "$@spelldesc453457", 0, 0 },
   { 471078, "$@spelldesc371806", "Able to travel back in time to your takeoff location.", "Bronze" },
+  { 471195, "Heals a friendly target for an amount equal to $s2% your maximum health.$?a387791[\r\n\r\nGrants the target $387792s1% increased armor for $387792d.][]\r\n\r\nCannot be used on a target with Forbearance. Causes Forbearance for $25771d.", 0, 0 },
+  { 471531, "$@spelldesc469936", "Versatility increased by $w1.", 0 },
+  { 471536, "$@spelldesc260285", "Your next Explosive Shot deals $s1% increased damage.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.0.5.56646
+// spelltext hotfix entries, wow build 11.0.5.56749
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.0.5.56646
-static const std::array<spelldesc_vars_data_t, 586> __ptr_spelldesc_vars_data { {
+// Spell description variables, wow build 11.0.5.56749
+static const std::array<spelldesc_vars_data_t, 587> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26906,6 +26910,7 @@ static const std::array<spelldesc_vars_data_t, 586> __ptr_spelldesc_vars_data { 
   {  376079, "$cap=${5}" },
   {  376207, "$base=${50}" },
   {  376600, "$wave=${$397693s1*12}" },
+  {  377128, "$points=${$377129s1}" },
   {  377192, "$duration=${$377195d+(($w2-1)*$377190s~2/1000)}" },
   {  378285, "$dmg=${$378286s1*(1+($378285s2/100))}" },
   {  378986, "$cap=${$SP*3}\r\n$cap2=${$SP*5}" },
@@ -27105,7 +27110,7 @@ static const std::array<spelldesc_vars_data_t, 586> __ptr_spelldesc_vars_data { 
   {  469330, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.5.56646
+// spelldesc_vars hotfix entries, wow build 11.0.5.56749
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
