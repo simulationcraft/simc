@@ -1,1 +1,1 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.2.56625 Live (hotfix 2024-09-18/56625)
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56749 PTR (hotfix 2024-09-25/56749)
