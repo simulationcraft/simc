@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56646 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56749 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -2091,7 +2091,7 @@ Attributes       : Not Shapeshifted (16), Allow Harmful on Friendly (373), Allow
                  :
 Effects          :
 #1 (id=87009)    : School Damage (2): shadow
-                   Base Value: 9 | Scaled Value: 9 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.68750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.68750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=155200)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage. Deals $s2% additional damage to targets below 20% health.
@@ -3518,10 +3518,10 @@ Effects          :
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506)
                    Family Flags: 0
 #16 (id=1174952)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
-                   Base Value: -28 | Scaled Value: -28 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445474)
 #17 (id=1187050)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
-                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 0.00000 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.00000 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445474)
 
 Name             : Demonology Warlock (id=137044) [Spell Family (5), Passive, Hidden] 
@@ -10706,7 +10706,7 @@ Name             : Tormented Crescendo (id=387077) [Spell Family (5), Hidden]
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not a Proc (105), Suppress Target Procs (113)
                  :
 Effects          :
 #1 (id=1021628)  : Dummy (3)

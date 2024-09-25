@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56646 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56749 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -300,7 +300,7 @@ Effects          :
 #1 (id=800)      : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #2 (id=101372)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.12600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.37800 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : Fires several missiles, hitting all nearby enemies within $A2 yds of your current target for $s2 Physical damage$?s115939[ and triggering Beast Cleave][]. Deals reduced damage beyond $s1 targets.$?s19434[
 
 |cFFFFFFFFGenerates $213363s1 Focus per target hit.|r][]
@@ -642,7 +642,7 @@ Cooldown         : 10 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-                 : 3861: Kodo Tranquilizer (459983 effect#1), Kodo Tranquilizer (459983 effect#2), Kodo Tranquilizer (459983 effect#4)
+                 : 3861: Kodo Tranquilizer (459983 effect#2), Kodo Tranquilizer (459983 effect#4)
 Affecting spells : Mastery: Sniper Training (193468 effect#1)
 Family Flags     : 121
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Taps immediately (215), Allow Class Ability Procs (416)
@@ -926,7 +926,7 @@ Effects          :
 #1 (id=23978)    : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=83780)    : Dummy (3)
-                   Base Value: 129 | Scaled Value: 129 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 177.6 | Scaled Value: 177.6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Give the command to kill, causing your pet to savagely deal $<damage> Physical damage to the enemy.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $lowNerf=${0.5+$min($pl,20)*0.025}
@@ -1709,7 +1709,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
                  :
 Effects          :
 #1 (id=83776)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.48000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.77600 | PvP Coefficient: 1.15000 | Target: Enemy (6)
 Description      : $@spelldesc34026
 
 Name             : Mail Specialization (desc=Passive) (id=86538) [Passive, Hidden] 
@@ -2126,7 +2126,7 @@ Attributes       : Is Ability (4), Passive (6), Not In Spellbook (143), Do Not L
                  :
 Effects          :
 #1 (id=130467)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
+                   Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 #2 (id=1021255)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Beast Cleave (115939), Beast Cleave (118455), Beast Cleave (118459), Kill Cleave (389448)
@@ -2749,7 +2749,7 @@ Effects          :
 
 Name             : Ancient Zandalari Knowledge (id=138430) [Hidden] 
 Class            : Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffa07fff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Earthen, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffa67fff)
 School           : Nature
 Spell Type       : None
 Labels           : 16: Class Spells
@@ -3874,7 +3874,7 @@ Effects          :
 #1 (id=283801)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=283802)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.56500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.56500 | PvP Coefficient: 1.15000 | Target: Enemy (6)
 #3 (id=481423)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 Description      : A quick shot causing ${$s2*$<mult>} Physical damage.
@@ -4372,7 +4372,7 @@ Range            : 8 yards
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Ruthless Marauder (470068 effect#2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Ruthless Marauder (470068 effect#2), Tip of the Spear (471536 effect#1)
 Triggered by     : Fury of the Eagle (203415)
 Family Flags     : 101, 106
 Attributes       : Active Threat (94), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Do Not Display Duration (170), Area Effects Use Target Radius (328), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416)
@@ -4395,7 +4395,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
                  : 2452
-Affecting spells : Tip of the Spear (260286 effect#1), Ruthless Marauder (470068 effect#2)
+Affecting spells : Tip of the Spear (260286 effect#1), Ruthless Marauder (470068 effect#2), Tip of the Spear (471536 effect#1)
 Family Flags     : 101
 Attributes       : Is Channelled (34), Is Self Channelled (38), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), No Pushback (207), Delay Combat Timer During Cast (211), Aura Points On Client (268), Haste Affects Duration (273), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13)
@@ -4911,7 +4911,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enab
                  :
 Effects          :
 #1 (id=323302)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.95000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.95000 | PvP Coefficient: 1.20000 | Target: Enemy (6)
 #2 (id=323303)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Fire a shot that tears through your enemy, causing them to bleed for ${$s1*$s2} damage over $d$?s257944[ and  increases your critical strike chance by $257946s1% for $257946d, stacking up to $257946u $Ltime:times;][].
@@ -6274,11 +6274,11 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=485366)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Tip of the Spear (260286), Tip of the Spear (460852)
+                   Affected Spells: Tip of the Spear (260286), Tip of the Spear (460852), Tip of the Spear (471536)
                    Family Flags: 61
 #2 (id=1166674)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Tip of the Spear (260286), Tip of the Spear (460852)
+                   Affected Spells: Tip of the Spear (260286), Tip of the Spear (460852), Tip of the Spear (471536)
                    Family Flags: 61
 Description      : Kill Command increases the direct damage of your other spells by $s1%, stacking up to $260286u times.
 
@@ -7467,6 +7467,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 52
                  : 292
+                 : 3993: Unnatural Causes (459527 effect#5)
 Mechanic         : Bleed
 Attributes       : Aura Is Debuff (26), Can't Crit (93), DoT Stacking Rule (103), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Positive Damage Taken Modifiers (321), Rolling Periodic (334), Allow Class Ability Procs (416)
                  :
@@ -11425,12 +11426,11 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
                  :
 Effects          :
 #1 (id=1006524)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 90 | Scaled Value: 90 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : While Beast Cleave is active, Kill Command now also strikes nearby enemies for $s1% of damage dealt. Deals reduced damage beyond $389448s2 targets.
 
 Name             : Training Expert (id=378209) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Beast Mastery [tree=spec, row=6, col=4, max_rank=2, req_points=8]
-                 : Effect#1 [op=mul, values=(0.5, 1)]
+Talent Entry     : Beast Mastery [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Hunter, Death Knight
 School           : Physical
 Spell Type       : None
@@ -12074,7 +12074,7 @@ Labels           : 16: Class Spells
 Mechanic         : Bleed
 Affecting spells : Black Arrow (466932 effect#2)
 Family Flags     : 49
-Attributes       : Can't Crit (93), DoT Stacking Rule (103), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
+Attributes       : Can't Crit (93), DoT Stacking Rule (103), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Positive Damage Taken Modifiers (321), Rolling Periodic (334), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1019048)  : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds | Attributes: Compute Points Only At Cast Time (15)
@@ -14127,7 +14127,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Ignore Line of Sight (
                  :
 Effects          :
 #1 (id=1140607)  : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.75000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc430714
 
 Name             : Shadow Lash (id=444354) [Spell Family (9), Hidden] 
@@ -15159,7 +15159,7 @@ Attributes       : Is Ability (4), Not an Action (92), Do Not Display Range (126
 Effects          :
 #1 (id=1153011)  : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Auto Shot (75), Mend Pet (136), Revive Pet (982), Scare Beast (1513), Tame Beast (1515), Multi-Shot (2643), Concussive Shot (5116), Intimidation (19577), Kill Command (34026), Misdirection (34477), Master's Call (53271), Kill Shot (53351), Master's Call (54216), Steady Shot (56641), Kill Command (83381), Binding Shot (109248), Barrage (120360), Barrage (120361), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Muzzle (187707), Harpoon (190925), Cobra Shot (193455), Lock and Load (194594), Lock and Load (194595), Wing Clip (195645), Stampede (201594), Stomp (201754), Bullseye (204090), Explosive Shot (212431), Butchery (212436), Explosive Shot (212680), Scatter Shot (213691), Barbed Shot (217200), Frenzy (217207), Dire Beast (219199), Rapid Fire (257044), Rapid Fire (257045), Hunter's Mark (257284), Multi-Shot (257620), Trick Shots (257622), Kill Command (259277), Mongoose Bite (259387), Mongoose Fury (259388), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259495), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Precise Shots (260242), Tip of the Spear (260286), Survival of the Fittest (264735), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270323), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270335), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271045), Volatile Bomb (271048), Volatile Bomb (271049), Serpent Sting (271788), Master's Call (272682), Frenzy (272790), Frenzy (272795), Dire Beast (281036), Kill Command (291369), Resonating Arrow (308491), Resonating Arrow (308498), Kill Shot (320976), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121), Spearhead (360966), Murloc Stampede (388719), Greater Mrgrglhjorn (396968), Kill Command (426703), Hunter's Mark (428402), Summon Fenryr (459735), Summon Hati (459738), Barrage (459796), Rapid Fire (460496), Tip of the Spear (460852), Black Arrow (466930), Bleak Arrows (467718), Bleak Powder (467914)
+                   Affected Spells: Auto Shot (75), Mend Pet (136), Revive Pet (982), Scare Beast (1513), Tame Beast (1515), Multi-Shot (2643), Concussive Shot (5116), Intimidation (19577), Kill Command (34026), Misdirection (34477), Master's Call (53271), Kill Shot (53351), Master's Call (54216), Steady Shot (56641), Kill Command (83381), Binding Shot (109248), Barrage (120360), Barrage (120361), Dire Beast (120679), A Murder of Crows (131894), A Murder of Crows (131900), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Muzzle (187707), Harpoon (190925), Cobra Shot (193455), Lock and Load (194594), Lock and Load (194595), Wing Clip (195645), Stampede (201594), Stomp (201754), Bullseye (204090), Explosive Shot (212431), Butchery (212436), Explosive Shot (212680), Scatter Shot (213691), Barbed Shot (217200), Frenzy (217207), Dire Beast (219199), Rapid Fire (257044), Rapid Fire (257045), Hunter's Mark (257284), Multi-Shot (257620), Trick Shots (257622), Kill Command (259277), Mongoose Bite (259387), Mongoose Fury (259388), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259495), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Precise Shots (260242), Tip of the Spear (260286), Survival of the Fittest (264735), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270323), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270335), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271045), Volatile Bomb (271048), Volatile Bomb (271049), Serpent Sting (271788), Master's Call (272682), Frenzy (272790), Frenzy (272795), Dire Beast (281036), Kill Command (291369), Resonating Arrow (308491), Resonating Arrow (308498), Kill Shot (320976), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121), Spearhead (360966), Murloc Stampede (388719), Greater Mrgrglhjorn (396968), Kill Command (426703), Hunter's Mark (428402), Summon Fenryr (459735), Summon Hati (459738), Barrage (459796), Rapid Fire (460496), Tip of the Spear (460852), Black Arrow (466930), Bleak Arrows (467718), Bleak Powder (467914), Tip of the Spear (471536)
                    Family Flags: 0, 3, 6, 9, 11, 12, 14, 16, 22, 24, 25, 26, 28, 31, 32, 33, 37, 38, 39, 42, 43, 44, 50, 51, 56, 61, 62, 63, 64, 66, 67, 71, 72, 73, 78, 79, 80, 83, 86, 88, 94, 96, 97, 98, 99, 100, 102, 104, 105, 112, 113, 114, 115, 118, 119, 125
 Description      : $@spelldesc445702
 Tooltip          : Range of attacks increased by $s1 yds.
@@ -15309,7 +15309,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
                  : 3617
-Stacks           : 2 maximum
+Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Ranged, Magic Hostile Spell
 Attributes       : Can Proc From Procs (122)
@@ -15317,7 +15317,7 @@ Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start 
                  :
 Effects          :
 #1 (id=1161812)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Aimed Shot (19434), Wailing Arrow (392058), Wailing Arrow (392060)
                    Family Flags: 17
 Tooltip          : The damage of your next Aimed Shot is increased by $s1%.
@@ -15585,7 +15585,7 @@ Effects          :
                    Family Flags: 14, 22, 34, 68, 78, 91, 99
 #5 (id=1166411)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 3993 (Label) | Target: Self (1)
-                   Affected Spells (Label): Spearhead (378957), Razor Fragments (385638), Cull the Herd (449233), Sentinel (450412), Laceration (459560), Ravenous Leap (459753), Merciless Blow (459870), Black Arrow (468572)
+                   Affected Spells (Label): Master Marksman (269576), Spearhead (378957), Razor Fragments (385638), Cull the Herd (449233), Sentinel (450412), Laceration (459560), Ravenous Leap (459753), Merciless Blow (459870), Black Arrow (468572)
 Description      : Your damage over time effects deal $s1% increased damage.
 
 This effect is increased by $s2% on targets below $s3% health.
@@ -15608,7 +15608,7 @@ Effects          :
                    Family Flags: 14, 22, 34, 68, 78, 91, 99
 #2 (id=1166409)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3993 (Label) | Target: Enemy (6)
-                   Affected Spells (Label): Spearhead (378957), Razor Fragments (385638), Cull the Herd (449233), Sentinel (450412), Laceration (459560), Ravenous Leap (459753), Merciless Blow (459870), Black Arrow (468572)
+                   Affected Spells (Label): Master Marksman (269576), Spearhead (378957), Razor Fragments (385638), Cull the Herd (449233), Sentinel (450412), Laceration (459560), Ravenous Leap (459753), Merciless Blow (459870), Black Arrow (468572)
 #3 (id=1166413)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc459527
@@ -15824,10 +15824,10 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
                  :
 Effects          :
 #1 (id=1166485)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3858 (Label) | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3858 (Label) | Target: Self (1)
                    Affected Spells (Label): Basilisk Collar (459575)
 #2 (id=1167212)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3858 (Label) | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3858 (Label) | Target: Self (1)
                    Affected Spells (Label): Basilisk Collar (459575)
 Description      : Each damage over time effect on a target increases the damage they receive from your pet's attacks by $s1%.
 
@@ -16756,11 +16756,11 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1167181)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Tip of the Spear (260286), Tip of the Spear (460852)
+                   Affected Spells: Tip of the Spear (260286), Tip of the Spear (460852), Tip of the Spear (471536)
                    Family Flags: 61
 #3 (id=1167182)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Tip of the Spear (260286), Tip of the Spear (460852)
+                   Affected Spells: Tip of the Spear (260286), Tip of the Spear (460852), Tip of the Spear (471536)
                    Family Flags: 61
 #4 (id=1167185)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -16786,11 +16786,11 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1167190)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Tip of the Spear (260286), Tip of the Spear (460852)
+                   Affected Spells: Tip of the Spear (260286), Tip of the Spear (460852), Tip of the Spear (471536)
                    Family Flags: 61
 #4 (id=1167191)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Tip of the Spear (260286), Tip of the Spear (460852)
+                   Affected Spells: Tip of the Spear (260286), Tip of the Spear (460852), Tip of the Spear (471536)
                    Family Flags: 61
 #5 (id=1167192)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -16827,9 +16827,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
                  :
 Effects          :
-#1 (id=1167229)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3861 (Label) | Target: Self (1)
-                   Affected Spells (Label): Tranquilizing Shot (19801)
+#1 (id=1167229)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1167230)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Targets (17)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 17 | Misc Value 2: 3861 (Label) | Target: Self (1)
                    Affected Spells (Label): Tranquilizing Shot (19801)
@@ -17177,7 +17176,7 @@ Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), 
                  :
 Effects          :
 #1 (id=1179817)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.59200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.33280 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1179818)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=1179819)  : Dummy (3)
@@ -17423,6 +17422,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
                  : 3022
+Internal Cooldown: 0.7 seconds
 Proc Chance      : 100%
 Proc Flags       : Yellow Ranged
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
@@ -17463,7 +17463,7 @@ Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line
                  :
 Effects          :
 #1 (id=1181302)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc467911
 
 Name             : Bleak Powder (id=467922) [Spell Family (9)] 
@@ -17513,13 +17513,14 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
                  : 3022
+                 : 4156
 Proc Chance      : 100%
 Proc Flags       : Yellow Ranged
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
                  :
 Effects          :
 #1 (id=1181349)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When $?c1[Kill Command][Aimed Shot] damages a target affected by Black Arrow, $s1% of the damage dealt is replicated to each other unit affected by Black Arrow.
 
 Name             : Phantom Pain (id=468019) [Spell Family (9)] 
@@ -17640,7 +17641,7 @@ Labels           : 16: Class Spells
 Affecting spells : Mastery: Sniper Training (193468 effects: #2, #4), Shadow Lash (444354 effect#1), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1)
 Triggered by     : Black Arrow (466930)
 Family Flags     : 91
-Attributes       : Do Not Display Range (126)
+Attributes       : Do Not Display Range (126), Nameplate Personal Buffs/Debuffs (423)
                  :
 Effects          :
 #1 (id=1182349)  : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
@@ -17695,14 +17696,14 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 117
                  : 292
-Stacks           : 6 maximum
+Stacks           : 4 maximum
 Proc Chance      : 101%
 Attributes       : Not In Spellbook (143), Do Not Log on Learn (355)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Ecnounter End (56)
                  :
 Effects          :
 #1 (id=1182585)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Cobra Shot (193455)
                    Family Flags: 86
 Description      : $@spelldesc378210
@@ -17712,7 +17713,7 @@ Name             : Serpentine Blessing (id=468704) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
-Duration         : 10 seconds
+Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 117
@@ -17722,7 +17723,7 @@ Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38
                  :
 Effects          :
 #1 (id=1182588)  : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc468701
 Tooltip          : Your pet damage is increased by $s1%.
 
@@ -17877,5 +17878,27 @@ Effects          :
                    Family Flags: 63
 Description      : $@spelldesc459843
 Tooltip          : The cooldown of Explosive Shot has been reset.
+
+Name             : Tip of the Spear (id=471536) [Spell Family (9), Hidden] 
+Class            : Hunter
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Labels           : 16: Class Spells
+                 : 23: Hunter Spells
+                 : 292
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Affecting spells : Tip of the Spear (260285 effects: #1, #2), Cornered Prey (452101 effect#1), Relentless Primal Ferocity (459962 effects: #2, #3), Flanker's Advantage (459964 effects: #3, #4)
+Family Flags     : 61
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Can Proc From Procs (122), Allow Cast While Casting (135), Suppress Weapon Procs (151), Aura Points On Client (268), Allow Cast While Channeling (308), Unknown (467)
+                 :
+Effects          :
+#1 (id=1189123)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Fury of the Eagle (203413), Fury of the Eagle (203415)
+                   Family Flags: 101
+Description      : $@spelldesc260285
+Tooltip          : Your next Explosive Shot deals $s1% increased damage.
 
 

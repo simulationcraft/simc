@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56646 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56749 PTR
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -456,8 +456,8 @@ School           : Physical
 Spell Type       : Melee
 Resource         : 35 Energy (3) (id=148)
 Spell Level      : 12
-GCD              : 1 seconds
 Duration         : 6 seconds
+Cooldown         : 1 seconds
 Charges          : 1 (15 seconds cooldown)
 Category         : 2190: Graceful Guile (423647 effect#1)
 Labels           : 16: Class Spells
@@ -14029,7 +14029,7 @@ Effects          :
 #1 (id=1153785)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1153793)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 3 yards | Target: At Random (72)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 3 yards | Target: At Random (72) -> Unknown(50)
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452544) [Spell Family (8)] 
@@ -14062,7 +14062,7 @@ Effects          :
 #1 (id=1153832)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1153833)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 3 yards | Target: At Random (72)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 3 yards | Target: At Random (72) -> Unknown(49)
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452557) [Spell Family (8)] 
@@ -14111,7 +14111,7 @@ Effects          :
 #1 (id=1153838)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1153839)  : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 452544 | Radius: 3 yards | Target: At Random (72)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 452544 | Radius: 3 yards | Target: At Random (72) -> Unknown(48)
 Description      : $@spelldesc452536
 
 Name             : Lucky Coin (id=452562) [Spell Family (8)] 
@@ -14256,7 +14256,7 @@ Effects          :
 #1 (id=1154537)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1154538)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 3 yards | Target: At Random (72)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 3 yards | Target: At Random (72) -> Unknown(50)
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=453012) [Spell Family (8)] 
@@ -14273,7 +14273,7 @@ Effects          :
 #1 (id=1154540)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1154541)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 3 yards | Target: At Random (72)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 3 yards | Target: At Random (72) -> Unknown(49)
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=453014) [Spell Family (8)] 
@@ -14307,7 +14307,7 @@ Effects          :
 #1 (id=1154546)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1154547)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 3 yards | Target: At Random (72)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 3 yards | Target: At Random (72) -> Unknown(48)
 Description      : $@spelldesc452536
 
 Name             : Mean Streak (id=453428) [Spell Family (8), Passive] 
@@ -15202,7 +15202,7 @@ Stacks           : 10 maximum
 Proc Chance      : 101%
 Affecting spells : Master of Subtlety (31665 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Master Assassin (470676 effect#1)
 Family Flags     : 54
-Attributes       : Allow While Stealthed (37), Not an Action (92), DoT Stacking Rule (103), Do Not Display Range (126), Not In Spellbook (143), Not an Attack (194), Aura Points On Client (268), Do Not Log on Learn (355)
+Attributes       : Allow While Stealthed (37), Not an Action (92), DoT Stacking Rule (103), Treat As Periodic (121), Do Not Display Range (126), Not In Spellbook (143), Not an Attack (194), Aura Points On Client (268), Do Not Log on Learn (355)
                  :
 Effects          :
 #1 (id=1161858)  : Apply Aura (6) | Dummy (4)

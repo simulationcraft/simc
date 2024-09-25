@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56646 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56749 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -240,7 +240,7 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables
                  :
 Effects          :
 #1 (id=390)      : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.29290 | PvP Coefficient: 1.15000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.29290 | PvP Coefficient: 1.25000 | Mechanic: Bleed | Target: Enemy (6)
 #2 (id=117625)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=117626)   : Dummy (3)
@@ -332,7 +332,7 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Require All Targets (58),
                  :
 Effects          :
 #1 (id=559)      : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.28000 | PvP Coefficient: 1.15000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.28000 | PvP Coefficient: 1.25000 | Target: Enemy (6)
 #2 (id=560)      : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: combo_points | Target: Self (1)
 #3 (id=561)      : Trigger Spell (64): Rake
@@ -2436,7 +2436,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
 Stance Mask      : 0x40000000
-Affecting spells : Moonkin Form (24858 effects: #9, #10), Nurturing Instinct (33873 effects: #1, #2), Eclipse (Solar) (48517 effects: #1, #3, #4, #8), Eclipse (Lunar) (48518 effects: #1, #3, #4, #7), Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7, #14, #15), Incarnation: Chosen of Elune (102560 effects: #2, #3, #6, #7), Cat Form (106840 effects: #3, #4), Heart of the Wild (108291 effects: #1, #2, #3), Restoration Druid (137012 effects: #4, #5, #30), Balance Druid (137013 effects: #1, #2), Moonfire (164812 effects: #3, #4), Sunfire (164815 effects: #3, #4), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Moonkin Form (197625 effects: #7, #8), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Arcanic Pulsar (287773 effect#2), Heart of the Wild (319454 effects: #1, #2, #3, #13, #15), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Oneth's Clear Vision (339797 effect#1), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Timeworn Dreambinder (340049 effects: #1, #2), Ravenous Frenzy (355315 effects: #1, #4), Umbral Infusion (363497 effect#2), Umbral Embrace (365473 effects: #2, #5), Incarnation: Chosen of Elune (390414 effects: #2, #3, #6, #7), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Mastery: Astral Invocation (393014 effects: #1, #2, #3, #4), Starweaver's Weft (393944 effect#1), Rattle the Stars (393954 effects: #1, #2), Waning Twilight (393957 effect#1), Balance of All Things (394049 effect#1), Balance of All Things (394050 effect#1), Touch the Cosmos (394414 effects: #1, #2), Circle of Life and Death (400320 effects: #1, #3), Initial Druid (417382 effects: #1, #2), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#1), Harmony of the Grove (428735 effects: #1, #2), Arcane Affinity (429540 effects: #1, #2), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Touch the Cosmos (450360 effect#1), Astral Communion (450599 effect#1), Starlight Conduit (451211 effects: #1, #2), Druid Guardian 11.0 Class Set 4pc (453664 effects: #1, #3), Druid Balance 11.0 Class Set 2pc (453666 effect#1), Guardian's Tenacity (455011 effects: #1, #2), Astronomical Impact (468960 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Nurturing Instinct (33873 effects: #1, #2), Eclipse (Solar) (48517 effects: #1, #3, #4, #8), Eclipse (Lunar) (48518 effects: #1, #3, #4, #7), Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7, #14, #15), Incarnation: Chosen of Elune (102560 effects: #2, #3, #6, #7), Cat Form (106840 effects: #3, #4), Heart of the Wild (108291 effects: #1, #2, #3), Restoration Druid (137012 effects: #4, #5, #30), Balance Druid (137013 effects: #1, #2), Moonfire (164812 effects: #3, #4), Sunfire (164815 effects: #3, #4), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Moonkin Form (197625 effects: #7, #8), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Arcanic Pulsar (287773 effect#2), Heart of the Wild (319454 effects: #1, #2, #3, #13, #15), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Oneth's Clear Vision (339797 effect#1), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Timeworn Dreambinder (340049 effects: #1, #2), Ravenous Frenzy (355315 effects: #1, #4), Umbral Infusion (363497 effect#2), Umbral Embrace (365473 effects: #2, #5), Incarnation: Chosen of Elune (390414 effects: #2, #3, #6, #7), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Mastery: Astral Invocation (393014 effects: #1, #2, #3, #4), Starweaver's Weft (393944 effect#1), Rattle the Stars (393954 effects: #1, #2), Waning Twilight (393957 effect#1), Balance of All Things (394049 effect#1), Balance of All Things (394050 effect#1), Touch the Cosmos (394414 effects: #1, #2), Circle of Life and Death (400320 effects: #1, #3), Initial Druid (417382 effects: #1, #2), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#1), Harmony of the Grove (428735 effects: #1, #2), Arcane Affinity (429540 effects: #1, #2), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Touch the Cosmos (450360 effect#1), Astral Communion (450599 effect#2), Starlight Conduit (451211 effects: #1, #2), Druid Guardian 11.0 Class Set 4pc (453664 effects: #1, #3), Druid Balance 11.0 Class Set 2pc (453666 effect#1), Guardian's Tenacity (455011 effects: #1, #2), Astronomical Impact (468960 effect#1)
 Family Flags     : 18, 89
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
                  :
@@ -4502,11 +4502,11 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
                  :
 Effects          :
 #1 (id=179695)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Early Harvest (287255), Adaptive Swarm (325748), Renewing Bloom (364686), Ephemeral Profusion (367330), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Nourish (422090), Swiftmend (422094), Wild Growth (422382), Nourish (423618), Minor Cenarion Ward (429222), Dream Bloom (434141), Symbiotic Blooms (439530), Bursting Growth (440121), Reactive Resin (468152)
                    Family Flags: 118
 #2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Early Harvest (287255), Adaptive Swarm (325748), Renewing Bloom (364686), Ephemeral Profusion (367330), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Nourish (422090), Swiftmend (422094), Wild Growth (422382), Nourish (423618), Minor Cenarion Ward (429222), Dream Bloom (434141), Symbiotic Blooms (439530), Bursting Growth (440121), Reactive Resin (468152)
                    Family Flags: 118
 #3 (id=191151)   : Apply Aura (6) | Modify Mana Regen% (379)
@@ -4949,7 +4949,7 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), I
                  :
 Effects          :
 #1 (id=216427)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.28280 | PvP Coefficient: 0.94300 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.28280 | PvP Coefficient: 1.10000 | Target: Enemy (6)
 #2 (id=1095738)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Adaptive Swarm (325733), Adaptive Swarm (325748), Sickle of the Lion (363830), Rampant Ferocity (391710), Adaptive Swarm (391889), Adaptive Swarm (391891), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812)
@@ -5665,7 +5665,7 @@ Labels           : 16: Class Spells
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Stance Mask      : 0x40000000
-Affecting spells : Eclipse (Solar) (48517 effects: #1, #3, #4, #8), Eclipse (Lunar) (48518 effects: #1, #3, #4, #7), Incarnation: Guardian of Ursoc (102558 effects: #14, #15), Incarnation: Chosen of Elune (102560 effects: #4, #6, #7), Moonfire (164812 effects: #3, #4), Sunfire (164815 effects: #3, #4), Astral Influence (197524 effect#3), Oneth's Overconfidence (209407 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Power of the Moon (288216 effect#1), Adaptive Swarm (325733 effect#2), Oneth's Perception (339800 effects: #1, #2), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Timeworn Dreambinder (340049 effects: #1, #2), Umbral Infusion (363497 effect#2), Umbral Embrace (365473 effects: #2, #5), Incarnation: Chosen of Elune (390414 effects: #4, #6, #7), Mastery: Astral Invocation (393014 effects: #1, #2, #3, #4), Starweaver's Warp (393942 effects: #1, #2), Rattle the Stars (393954 effects: #1, #2), Balance of All Things (394049 effect#1), Balance of All Things (394050 effect#1), Touch the Cosmos (394414 effect#1), Arcane Affinity (429540 effects: #1, #2), Stellar Amplification (450214 effect#1), Touch the Cosmos (450360 effect#1), Umbral Inspiration (450419 effects: #1, #2), Astral Communion (450599 effect#1), Druid Guardian 11.0 Class Set 4pc (453664 effects: #1, #3), Druid Balance 11.0 Class Set 2pc (453666 effect#2), Astronomical Impact (468960 effect#1), Circle of Life and Death (469012 effects: #1, #3)
+Affecting spells : Eclipse (Solar) (48517 effects: #1, #3, #4, #8), Eclipse (Lunar) (48518 effects: #1, #3, #4, #7), Incarnation: Guardian of Ursoc (102558 effects: #14, #15), Incarnation: Chosen of Elune (102560 effects: #4, #6, #7), Moonfire (164812 effects: #3, #4), Sunfire (164815 effects: #3, #4), Astral Influence (197524 effect#3), Oneth's Overconfidence (209407 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Power of the Moon (288216 effect#1), Adaptive Swarm (325733 effect#2), Oneth's Perception (339800 effects: #1, #2), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Timeworn Dreambinder (340049 effects: #1, #2), Umbral Infusion (363497 effect#2), Umbral Embrace (365473 effects: #2, #5), Incarnation: Chosen of Elune (390414 effects: #4, #6, #7), Mastery: Astral Invocation (393014 effects: #1, #2, #3, #4), Starweaver's Warp (393942 effects: #1, #2), Rattle the Stars (393954 effects: #1, #2), Balance of All Things (394049 effect#1), Balance of All Things (394050 effect#1), Touch the Cosmos (394414 effect#1), Arcane Affinity (429540 effects: #1, #2), Stellar Amplification (450214 effect#1), Touch the Cosmos (450360 effect#1), Umbral Inspiration (450419 effects: #1, #2), Astral Communion (450599 effect#2), Druid Guardian 11.0 Class Set 4pc (453664 effects: #1, #3), Druid Balance 11.0 Class Set 2pc (453666 effect#2), Astronomical Impact (468960 effect#1), Circle of Life and Death (469012 effects: #1, #3)
 Family Flags     : 55, 119
 Attributes       : Not Shapeshifted (16), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
                  :
@@ -6119,7 +6119,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
                  : 3558: Starlight Conduit (451211 effect#3)
-Affecting spells : Moonkin Form (24858 effects: #9, #10), Nurturing Instinct (33873 effects: #1, #2), Eclipse (Solar) (48517 effects: #1, #3, #4, #8), Eclipse (Lunar) (48518 effects: #1, #3, #4, #7), Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7, #14, #15), Incarnation: Chosen of Elune (102560 effects: #2, #3, #6, #7), Cat Form (106840 effects: #3, #4), Heart of the Wild (108291 effects: #1, #2, #3), Restoration Druid (137012 effects: #4, #5, #30), Balance Druid (137013 effects: #1, #2), Moonfire (164812 effects: #3, #4), Sunfire (164815 effects: #3, #4), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Moonkin Form (197625 effects: #7, #8), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Arcanic Pulsar (287773 effect#2), Heart of the Wild (319454 effects: #1, #2, #3, #13, #15), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Oneth's Clear Vision (339797 effect#1), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Timeworn Dreambinder (340049 effects: #1, #2), Ravenous Frenzy (355315 effects: #1, #4), Umbral Infusion (363497 effect#2), Umbral Embrace (365473 effects: #2, #5), Incarnation: Chosen of Elune (390414 effects: #2, #3, #6, #7), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Mastery: Astral Invocation (393014 effects: #1, #2, #3, #4), Starweaver's Weft (393944 effect#1), Rattle the Stars (393954 effects: #1, #2), Waning Twilight (393957 effect#1), Balance of All Things (394049 effect#1), Balance of All Things (394050 effect#1), Touch the Cosmos (394414 effects: #1, #2), Circle of Life and Death (400320 effects: #1, #3), Initial Druid (417382 effects: #1, #2), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#1), Harmony of the Grove (428735 effects: #1, #2), Arcane Affinity (429540 effects: #1, #2), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Touch the Cosmos (450360 effect#1), Astral Communion (450599 effect#1), Starlight Conduit (451211 effects: #1, #2), Druid Guardian 11.0 Class Set 4pc (453664 effects: #1, #3), Druid Balance 11.0 Class Set 2pc (453666 effect#1), Guardian's Tenacity (455011 effects: #1, #2), Astronomical Impact (468960 effect#1)
+Affecting spells : Moonkin Form (24858 effects: #9, #10), Nurturing Instinct (33873 effects: #1, #2), Eclipse (Solar) (48517 effects: #1, #3, #4, #8), Eclipse (Lunar) (48518 effects: #1, #3, #4, #7), Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7, #14, #15), Incarnation: Chosen of Elune (102560 effects: #2, #3, #6, #7), Cat Form (106840 effects: #3, #4), Heart of the Wild (108291 effects: #1, #2, #3), Restoration Druid (137012 effects: #4, #5, #30), Balance Druid (137013 effects: #1, #2), Moonfire (164812 effects: #3, #4), Sunfire (164815 effects: #3, #4), Starfall (191034 effect#2), Thrash (192090 effect#2), Astral Influence (197524 effect#1), Moonkin Form (197625 effects: #7, #8), Oneth's Intuition (209406 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), The Emerald Dreamcatcher (224706 effect#1), Arcanic Pulsar (287773 effect#2), Heart of the Wild (319454 effects: #1, #2, #3, #13, #15), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Oneth's Clear Vision (339797 effect#1), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Timeworn Dreambinder (340049 effects: #1, #2), Ravenous Frenzy (355315 effects: #1, #4), Umbral Infusion (363497 effect#2), Umbral Embrace (365473 effects: #2, #5), Incarnation: Chosen of Elune (390414 effects: #2, #3, #6, #7), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Mastery: Astral Invocation (393014 effects: #1, #2, #3, #4), Starweaver's Weft (393944 effect#1), Rattle the Stars (393954 effects: #1, #2), Waning Twilight (393957 effect#1), Balance of All Things (394049 effect#1), Balance of All Things (394050 effect#1), Touch the Cosmos (394414 effects: #1, #2), Circle of Life and Death (400320 effects: #1, #3), Initial Druid (417382 effects: #1, #2), Rising Light, Falling Night - Day (417714 effects: #1, #2), Liveliness (426702 effect#1), Harmony of the Grove (428735 effects: #1, #2), Arcane Affinity (429540 effects: #1, #2), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Touch the Cosmos (450360 effect#1), Astral Communion (450599 effect#2), Starlight Conduit (451211 effects: #1, #2), Druid Guardian 11.0 Class Set 4pc (453664 effects: #1, #3), Druid Balance 11.0 Class Set 2pc (453666 effect#1), Guardian's Tenacity (455011 effects: #1, #2), Astronomical Impact (468960 effect#1)
 Family Flags     : 18, 89
 Attributes       : Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
                  :
@@ -6500,11 +6500,11 @@ Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143
                  :
 Effects          :
 #1 (id=297731)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.67000 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568), Ravage (441591)
                    Family Flags: 108
 #2 (id=753677)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.67000 | Target: Self (1)
 Description      : Ferocious Bite deals $s1% increased damage.
 
 For each Combo Point spent, Ferocious Bite's primary target takes $s2% increased damage from your Cat Form bleed and other periodic abilities for $391722d.
@@ -6587,7 +6587,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Proc Flags       : Magic Heal, Magic Hostile Spell
-Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
                  :
 Effects          :
 #1 (id=298293)   : Apply Aura (6) | Dummy (4)
@@ -6783,7 +6783,7 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x40000000
 Affecting spells : Eclipse (Solar) (48517 effects: #1, #3, #4, #8), Eclipse (Lunar) (48518 effects: #1, #3, #4, #7), Moonfire (164812 effects: #3, #4), Sunfire (164815 effects: #3, #4), Starfall (191034 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Adaptive Swarm (325733 effect#2), Balance of All Things (339943 effect#1), Balance of All Things (339946 effect#1), Mastery: Astral Invocation (393014 effects: #1, #2, #3, #4), Balance of All Things (394049 effect#1), Balance of All Things (394050 effect#1), Radiant Moonlight (394121 effects: #1, #3), Arcane Affinity (429540 effects: #1, #2), Stellar Command (429668 effect#1), Astronomical Impact (468960 effect#1)
 Family Flags     : 23
-Attributes       : Not Shapeshifted (16), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Periodic Can Crit (265), Aura Points On Client (268), Force Dest Location (288), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=298967)   : Apply Aura (6) | Dummy (4)
@@ -13270,7 +13270,7 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
                  :
 Effects          :
 #1 (id=1017416)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568), Ravage (441591)
                    Family Flags: 108
 #2 (id=1149687)  : Apply Aura (6) | Dummy (4)
@@ -15270,6 +15270,9 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Starfall (50286), Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626), Starfall (359399)
                    Family Flags: 55, 89
+#3 (id=1189263)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 4160 (Label) | Target: Self (1)
+                   Affected Spells (Label): Astral Communion (450599)
 Description      : Starsurge and Starfall deal $s1% increased damage and their cost is reduced by $s2%.
 
 Name             : Waning Twilight (id=393956) [Spell Family (7), Passive] 
@@ -18380,7 +18383,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Heal, Magic Heal, Magic Hostile Spell
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Range (126), Do Not Display Cast Time (441)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Display Range (126), Do Not Display Cast Time (441)
                  :
 Effects          :
 #1 (id=1113842)  : Apply Aura (6) | Dummy (4)
@@ -20459,13 +20462,16 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
+                 : 4160: Rattle the Stars (393954 effect#3)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Magic Heal, Magic Hostile Spell
 Attributes       : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
                  :
 Effects          :
-#1 (id=1150605)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
+#1 (id=1150605)  : Apply Aura (6) | Dummy (4)
+                   Base Value: -150 | Scaled Value: -150 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1189265)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: -150 | Scaled Value: -150 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Starsurge (78674), Starfall (191034), Starsurge (197626)
                    Family Flags: 89, 119
@@ -21144,7 +21150,7 @@ Effects          :
                    Affected Spells: Starfall (50286), Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Fury of Elune (211545), New Moon (274281), Half Moon (274282), Full Moon (274283), Fury of Elune (281871), Star Burst (356474), Starfall (359399), Fury of Elune (365640), Fury of Elune (394111), Star Burst (406430), Crashing Star (408310), Star Burst (421072), Crashing Star (468981)
                    Family Flags: 19, 23, 34, 55, 63, 89, 105, 116
 #2 (id=1183001)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Bonus Multiplier (15)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 15 | Misc Value 2: 2391 (Label)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 15 | Misc Value 2: 2391 (Label)
                    Affected Spells (Label): Orbital Strike (361237), Goldrinn's Fang (394047)
 Description      : The critical strike damage of your Astral spells is increased by $s1%.
 
