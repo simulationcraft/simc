@@ -1867,33 +1867,62 @@ public:
       p()->buffs.shadowmeld->expire();
     }
 
-    if ( ab::harmful )
+    // TODO: confirm what can and cannot trigger or consume lunar amplificiation
+    if ( ab::harmful && p()->talent.lunar_amplification.ok() && !ab::background )
     {
-      // TODO: confirm what can and cannot trigger or consume lunar amplificiation
-      if ( p()->talent.lunar_amplification.ok() && !ab::background )
+      if ( dbc::has_common_school( _get_school(), SCHOOL_ARCANE ) )
       {
-        if ( dbc::has_common_school( _get_school(), SCHOOL_ARCANE ) )
-        {
-          // schedule expiration to wait for complete action resolution
-          if ( p()->buff.lunar_amplification->check() && p()->buff.lunar_amplification->can_expire( this ) )
-            make_event( *ab::sim, [ this ] { p()->buff.lunar_amplification->expire(); } );
-        }
-        else
-        {
-          p()->buff.lunar_amplification->trigger( this );
-        }
+        // schedule expiration to wait for complete action resolution
+        if ( p()->buff.lunar_amplification->check() && p()->buff.lunar_amplification->can_expire( this ) )
+          make_event( *ab::sim, [ this ] { p()->buff.lunar_amplification->expire(); } );
       }
-
-      // TODO: confirm what can and cannot trigger lunation
-      if ( p()->talent.lunation.ok() && has_flag( flag_e::FOREGROUND ) &&
-           dbc::has_common_school( _get_school(), SCHOOL_ARCANE ) )
+      else
       {
-        assert( p()->talent.lunation->effects().size() == 3 );
-        auto eff = p()->talent.lunation->effects().begin();
-
-        for ( auto cd : { p()->cooldown.fury_of_elune, p()->cooldown.moon_cd, p()->cooldown.lunar_beam } )
-          cd->adjust( ( *eff++ ).time_value() );
+        p()->buff.lunar_amplification->trigger( this );
       }
+    }
+
+    if ( can_trigger_lunation() )
+    {
+      assert( p()->talent.lunation->effects().size() == 3 );
+      auto eff = p()->talent.lunation->effects().begin();
+
+      for ( auto cd : { p()->cooldown.fury_of_elune, p()->cooldown.moon_cd, p()->cooldown.lunar_beam } )
+        cd->adjust( ( *eff++ ).time_value() );
+    }
+  }
+
+  bool can_trigger_lunation() const
+  {
+    if ( !p()->talent.lunation.ok() || ab::background )
+      return false;
+
+    if ( !p()->is_ptr() && ab::proc )
+      return false;
+
+    switch ( ab::id )
+    {
+      case 202770:  // fury of elune
+      case 204066:  // lunar beam
+      case 274281:  // new moon
+      case 274282:  // half moon
+      case 274283:  // full moon
+        return !p()->is_ptr();
+      case 77758:   // thrash bear
+      case 106830:  // thrash cat
+        return p()->talent.lunar_calling.ok();
+      case 8921:    // moonfire
+      case 78674:   // starsurge
+      case 191034:  // starfall
+      case 194153:  // starfire
+      case 197626:  // starsurge offspec
+      case 197628:  // starfire offspec
+      case 202347:  // stellar flare
+      case 383410:  // celestial alignment orbital strike
+      case 390414:  // incarnation orbital strike
+        return true;
+      default:
+        return false;
     }
   }
 
@@ -8564,6 +8593,7 @@ struct orbital_strike_t final : public druid_spell_t
     travel_speed = 75.0;  // guesstimate
 
     flare = p->get_secondary_action<stellar_flare_t>( "stellar_flare_orbital_strike", p->find_spell( 202347 ) );
+    flare->proc = true;
     flare->name_str_reporting = "stellar_flare";
     flare->dot_duration += p->talent.potent_enchantments->effectN( 1 ).time_value();
     add_child( flare );
@@ -11451,6 +11481,7 @@ void druid_t::create_actions()
   if ( talent.flashing_claws.ok() )
   {
     auto flash = get_secondary_action<thrash_bear_t>( "flashing_claws", flag_e::FLASHING );
+    flash->proc = true;
     flash->s_data_reporting = talent.flashing_claws;
     flash->name_str_reporting = "flashing_claws";
     active.thrash_bear_flashing = flash;
@@ -11504,6 +11535,7 @@ void druid_t::create_actions()
   if ( talent.treants_of_the_moon.ok() )
   {
     auto mf = get_secondary_action<moonfire_t>( "moonfire_treants", flag_e::TREANT );
+    mf->proc = true;
     mf->name_str_reporting = "moonfire";
     active.treants_of_the_moon_mf = mf;
   }
