@@ -1605,6 +1605,7 @@ public:
     propagate_const<proc_t*> km_from_obliteration_hb;  // Howling Blast during Obliteration
     propagate_const<proc_t*> km_from_obliteration_ga;  // Glacial Advance during Obliteration
     propagate_const<proc_t*> km_from_obliteration_sr;  // Soul Reaper during Obliteration
+    propagate_const<proc_t*> km_from_grim_reaper;
 
     // Killing machine refreshed by
     propagate_const<proc_t*> km_from_crit_aa_wasted;
@@ -1612,6 +1613,7 @@ public:
     propagate_const<proc_t*> km_from_obliteration_hb_wasted;  // Howling Blast during Obliteration
     propagate_const<proc_t*> km_from_obliteration_ga_wasted;  // Glacial Advance during Obliteration
     propagate_const<proc_t*> km_from_obliteration_sr_wasted;  // Soul Reaper during Obliteration
+    propagate_const<proc_t*> km_from_grim_reaper_wasted;
 
     // Razorice applied by
     propagate_const<proc_t*> razorice_from_arctic_assault;
@@ -6780,7 +6782,7 @@ struct reapers_mark_t final : public death_knight_spell_t
     {
       if ( p()->specialization() == DEATH_KNIGHT_FROST )
       {
-        p()->buffs.killing_machine->trigger();
+        p()->trigger_killing_machine( 1.0, p()->procs.km_from_grim_reaper, p()->procs.km_from_grim_reaper_wasted );
       }
       else
       {
@@ -13782,7 +13784,7 @@ void death_knight_t::create_buffs()
 
   buffs.exterminate = make_fallback( talent.deathbringer.exterminate.ok(), this, "exterminate", spell.exterminate_buff );
 
-  if ( is_ptr() )
+  if ( !is_ptr() )
   {
     buffs.exterminate_painful_death =
         make_fallback( talent.deathbringer.painful_death.ok(), this, "exterminate_painful_death",
@@ -14203,12 +14205,14 @@ void death_knight_t::init_procs()
   procs.km_from_obliteration_hb = get_proc( "Killing Machine: Howling Blast" );
   procs.km_from_obliteration_ga = get_proc( "Killing Machine: Glacial Advance" );
   procs.km_from_obliteration_sr = get_proc( "Killing Machine: Soul Reaper" );
+  procs.km_from_grim_reaper     = get_proc( "Killing Machine: Grim Reaper" );
 
   procs.km_from_crit_aa_wasted         = get_proc( "Killing Machine wasted: Critical auto attacks" );
   procs.km_from_obliteration_fs_wasted = get_proc( "Killing Machine wasted: Frost Strike" );
   procs.km_from_obliteration_hb_wasted = get_proc( "Killing Machine wasted: Howling Blast" );
   procs.km_from_obliteration_ga_wasted = get_proc( "Killing Machine wasted: Glacial Advance" );
   procs.km_from_obliteration_sr_wasted = get_proc( "Killing Machine wasted: Soul Reaper" );
+  procs.km_from_grim_reaper_wasted     = get_proc( "Killing Machine wasted: Grim Reaper" );
 
   procs.razorice_from_arctic_assault  = get_proc( "Razorice from Arctic Assault" );
   procs.razorice_from_avalanche       = get_proc( "Razorice from Avalanche" );
@@ -14818,7 +14822,10 @@ void death_knight_action_t<Base>::apply_action_effects()
   parse_effects( p()->buffs.dark_talons_shadowfrost, p()->talent.deathbringer.dark_talons );
   parse_effects( p()->buffs.bind_in_darkness, p()->talent.deathbringer.bind_in_darkness );
   parse_effects( p()->buffs.exterminate, effect_mask_t( true ).disable( 2 ) );
-  parse_effects( p()->buffs.exterminate_painful_death, effect_mask_t( true ).disable( 2 ) );
+  if ( !p()->is_ptr() )
+  {
+    parse_effects( p()->buffs.exterminate_painful_death, effect_mask_t( true ).disable( 2 ) );
+  }
 
   // San'layn
   parse_effects( p()->buffs.essence_of_the_blood_queen_damage, USE_CURRENT );
