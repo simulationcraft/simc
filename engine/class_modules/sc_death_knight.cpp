@@ -6616,7 +6616,7 @@ struct exterminate_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    double chance = p()->talent.deathbringer.painful_death->ok()
+    double chance = !p()->is_ptr() && p()->talent.deathbringer.painful_death->ok()
                         ? p()->talent.deathbringer.painful_death->effectN( 2 ).percent()
                         : p()->talent.deathbringer.exterminate->effectN( 2 ).percent();
 
@@ -9602,9 +9602,9 @@ struct marrowrend_t final : public death_knight_melee_attack_t
   double cost() const override
   {
     double c = death_knight_melee_attack_t::cost();
-    if ( p()->buffs.exterminate->up() )
+    if ( !p()->is_ptr() && p()->buffs.exterminate->up() )
     {
-      double m = !p()->is_ptr() && p()->talent.deathbringer.painful_death.ok()
+      double m = !p()->talent.deathbringer.painful_death.ok()
                      ? p()->buffs.exterminate_painful_death->data().effectN( 2 ).percent()
                      : p()->buffs.exterminate->data().effectN( 2 ).percent();
       c += c * m;
@@ -9878,9 +9878,9 @@ struct obliterate_t final : public death_knight_melee_attack_t
   double cost() const override
   {
     double c = death_knight_melee_attack_t::cost();
-    if ( p()->buffs.exterminate->up() )
+    if ( !p()->is_ptr() && p()->buffs.exterminate->up() )
     {
-      double m = !p()->is_ptr() && p()->talent.deathbringer.painful_death.ok()
+      double m = !p()->talent.deathbringer.painful_death.ok()
                      ? p()->buffs.exterminate_painful_death->data().effectN( 2 ).percent()
                      : p()->buffs.exterminate->data().effectN( 2 ).percent();
       c += c * m;
@@ -14818,11 +14818,15 @@ void death_knight_action_t<Base>::apply_action_effects()
 
   // Deathbringer
   parse_effects( p()->buffs.dark_talons_shadowfrost, p()->talent.deathbringer.dark_talons );
-  parse_effects( p()->buffs.bind_in_darkness, p()->talent.deathbringer.bind_in_darkness );
-  parse_effects( p()->buffs.exterminate, effect_mask_t( true ).disable( 2 ) );
-  if ( !p()->is_ptr() )
+  parse_effects( p()->buffs.bind_in_darkness, p()->talent.deathbringer.bind_in_darkness );  
+  if ( p()->is_ptr() )
+  {
+    parse_effects( p()->buffs.exterminate);
+  }
+  else
   {
     parse_effects( p()->buffs.exterminate_painful_death, effect_mask_t( true ).disable( 2 ) );
+    parse_effects( p()->buffs.exterminate, effect_mask_t( true ).disable( 2 ) );
   }
 
   // San'layn
@@ -14982,6 +14986,7 @@ void death_knight_t::apply_affecting_auras( buff_t& buff )
   buff.apply_affecting_aura( talent.sanlayn.frenzied_bloodthirst );
 
   // Deathbringer
+  buff.apply_affecting_aura( talent.deathbringer.reapers_onslaught );
 }
 
 void death_knight_t::apply_affecting_auras( action_t& action )
@@ -15051,11 +15056,14 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.deathbringer.bind_in_darkness );
   action.apply_affecting_aura( talent.deathbringer.wither_away );
   action.apply_affecting_aura( talent.deathbringer.deaths_messenger );
-  action.apply_affecting_aura( talent.deathbringer.bind_in_darkness );
   if ( !is_ptr() )
   {
     action.apply_affecting_aura( talent.deathbringer.swift_end );
     action.apply_affecting_aura( talent.deathbringer.painful_death );
+  }
+  else
+  {
+    action.apply_affecting_aura( talent.deathbringer.reapers_onslaught );
   }
 }
 
