@@ -2937,20 +2937,22 @@ class SpellDataGenerator(DataGenerator):
                 mask_class = util.class_mask(class_id=talent.class_id)
                 self.process_spell(talent.id_spell, ids, mask_class, 0, False)
 
+        # No longer in game, but kept for reference.
+        # If MinorTalent.db2 is ever used again, make sure to double check the format json for any field changes.
         # Get all perks
-        for _, perk_data in self.db('MinorTalent').items():
-            if self._options.build < 25600:
-                spell_id = perk_data.id_spell
-            else:
-                spell_id = perk_data.id_parent
-            if spell_id == 0:
-                continue
-
-            spec_data = self.db('ChrSpecialization')[perk_data.id_parent]
-            if spec_data.id == 0:
-                continue
-
-            self.process_spell(spell_id, ids, util.class_mask(class_id=spec_data.class_id), 0, False)
+        # for _, perk_data in self.db('MinorTalent').items():
+        #    if self._options.build < 25600:
+        #        spell_id = perk_data.id_spell
+        #    else:
+        #        spell_id = perk_data.id_parent
+        #    if spell_id == 0:
+        #        continue
+        #
+        #    spec_data = self.db('ChrSpecialization')[perk_data.id_parent]
+        #    if spec_data.id == 0:
+        #        continue
+        #
+        #    self.process_spell(spell_id, ids, util.class_mask(class_id=spec_data.class_id), 0, False)
 
         # Get base skills from SkillLineAbility
         for ability in self.db('SkillLineAbility').values():

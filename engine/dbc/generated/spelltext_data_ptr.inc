@@ -1,9 +1,8 @@
 // Spell text, wow build 11.0.5.56749
-static const std::array<spelltext_data_t, 26513> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 26512> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
-  {     65, "Increases your melee haste by $s1 for $d.", 0, 0 },
   {     66, "Turns you invisible over $66d, reducing threat each second. While invisible, you are untargetable by enemies. Lasts $32612d. Taking any action cancels the effect.$?a382293[\r\n\r\nIncreases your movement speed by $382293s1% for $337278d.][]", "Fading.", 0 },
   {     71, "Hardened by battle, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength.", 0, 0 },
   {     75, "Automatically shoots the target until cancelled.", "Firing at the target.", 0 },

@@ -1,6 +1,6 @@
 SimulationCraft 1100-02 for World of Warcraft 11.0.5.56749 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
-Class            : Paladin, Mage
+Class            : Mage
 School           : Arcane
 Spell Type       : Magic
 Resource         : 3% Base Mana (0) (id=16)
@@ -849,7 +849,7 @@ Effects          :
 Description      : Deals $sw1 Frost damage to the target.
 
 Name             : Invisibility (id=32612) [Spell Family (3)] 
-Class            : Paladin, Mage
+Class            : Mage
 School           : Arcane
 Spell Type       : None
 Duration         : 20 seconds
@@ -1814,7 +1814,7 @@ Description      : $@spelldesc86949
 Tooltip          : You have recently benefited from Cauterize and cannot benefit from it again.
 
 Name             : Invisibility Speed (id=87833) [Spell Family (3), Hidden] 
-Class            : Paladin, Mage
+Class            : Mage
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -2040,7 +2040,7 @@ Tooltip          : Altering Time. Returning to past location and health when dur
 
 Name             : Greater Invisibility (id=110959) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=9, col=6, max_rank=1, req_points=20, replace="Invisibility" (id=66)]
-Class            : Paladin, Mage
+Class            : Mage
 School           : Arcane
 Spell Type       : Magic
 Spell Level      : 47
@@ -2064,7 +2064,7 @@ You take $113862s1% reduced damage while invisible and for 3 sec after reappeari
 Increases your movement speed by ${$382293s1*0.40}% for $337278d.][]
 
 Name             : Greater Invisibility (id=110960) [Spell Family (3)] 
-Class            : Paladin, Mage
+Class            : Mage
 School           : Arcane
 Spell Type       : None
 Duration         : 20 seconds
@@ -2149,7 +2149,7 @@ Description      : Summons a Ring of Frost for $d at the target location. Enemie
 When the incapacitate expires, enemies are slowed by $321329s1% for $321329d.
 
 Name             : Greater Invisibility (id=113862) [Spell Family (3)] 
-Class            : Paladin, Mage
+Class            : Mage
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
@@ -2384,7 +2384,7 @@ Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Greater Invisibility (id=122293) [Spell Family (3), Hidden] 
-Class            : Paladin, Mage
+Class            : Mage
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
@@ -2689,7 +2689,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Arcane Mage (id=137021) [Spell Family (3), Passive, Hidden] 
-Class            : Arcane Mage, Paladin
+Class            : Arcane Mage
 School           : Physical
 Spell Type       : None
 Spell Level      : 10 (max 30)
@@ -4740,7 +4740,7 @@ Effects          :
 Description      : Deals $228599s1 Shadowfrost damage and causes Brain Freeze.
 
 Name             : Invisibility (id=216173) 
-Class            : Paladin, Mage
+Class            : Mage
 School           : Arcane
 Spell Type       : None
 Duration         : 20 seconds
@@ -8252,7 +8252,7 @@ Effects          :
 Description      : Your Arcane Barrage has a |cFFFFFFFF${$s1/10}.1%|r chance to grant $337244s1 Arcane Charges.
 
 Name             : Incantation of Swiftness (id=337275) [Spell Family (3), Passive, Hidden] 
-Class            : Paladin, Mage
+Class            : Mage
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -8271,7 +8271,7 @@ Effects          :
 Description      : $?s110959[Greater ][]Invisibility increases your movement speed by |cFFFFFFFF$?a137021[${$s1*0.40}][$s1]%|r for $337278d.
 
 Name             : Incantation of Swiftness (id=337278) 
-Class            : Paladin, Mage
+Class            : Mage
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -9735,7 +9735,7 @@ Description      : While inside Ice Block, you heal for ${$s1*10}% of your maxim
 Name             : Incantation of Swiftness (id=382293) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=3, col=4, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(40, 80)]
-Class            : Paladin, Mage
+Class            : Mage
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
@@ -9751,7 +9751,7 @@ Effects          :
 Description      : $?s110959[Greater ][]Invisibility increases your movement speed by $s1% for $337278d.
 
 Name             : Incantation of Swiftness (id=382294) 
-Class            : Paladin, Mage
+Class            : Mage
 School           : Arcane
 Spell Type       : None
 Duration         : 6 seconds
