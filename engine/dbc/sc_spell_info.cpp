@@ -1964,7 +1964,6 @@ static std::string trait_data_to_str( const dbc_t& dbc, const spell_data_t* spel
 std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int level )
 {
   std::ostringstream s;
-  player_e pt = PLAYER_NONE;
 
   if ( spell->has_scaling_effects() && spell->level() > static_cast<unsigned>( level ) )
   {
@@ -2012,8 +2011,10 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell->class_mask() )
   {
+    std::vector<std::string> class_str;
+    std::vector<player_e> exclude;
+    std::vector<int> unknown;
     bool pet_ability = false;
-    s << "Class            : ";
 
     if ( dbc.is_specialization_ability( spell->id() ) )
     {
@@ -2023,30 +2024,50 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       for ( const specialization_e spec : spec_list )
       {
         if ( spec == PET_FEROCITY || spec == PET_CUNNING || spec == PET_TENACITY )
-          pet_ability = true;
+        {
+          class_str.emplace_back(
+            fmt::format( "{} Hunter Pet", util::inverse_tokenize( dbc::specialization_string( spec ) ) ) );
 
-        auto specialization_str = util::inverse_tokenize( dbc::specialization_string( spec ) );
+          exclude.emplace_back( player_e::HUNTER );
+          continue;
+        }
+
+        auto specialization_str = util::specialization_string( spec );
         if ( util::str_compare_ci( specialization_str, "Unknown" ) )
-          fmt::print( s, "{} ({}) ", specialization_str, static_cast<int>( spec ) );
+        {
+          unknown.emplace_back( static_cast<int>( spec ) );
+        }
         else
-          fmt::print( s, "{} ", specialization_str );
+        {
+          class_str.emplace_back( specialization_str );
+          exclude.emplace_back( dbc::get_class_from_spec( spec ) );
+        }
       }
     }
 
-    for ( unsigned int i = 1; i < std::size( _class_map ); i++ )
+    for ( size_t i = 1; i < std::size( _class_map ); i++ )
     {
       if ( ( spell->class_mask() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
       {
-        s << _class_map[ i ].name << ", ";
-        if ( !pt )
-          pt = _class_map[ i ].pt;
+        if ( unknown.size() )
+        {
+          for ( auto u : unknown )
+            class_str.emplace_back( fmt::format( "Unknown {} ({})", _class_map[ i ].name, u ) );
+
+          unknown.clear();
+        }
+        else if ( range::contains( exclude, _class_map[ i ].pt ) )
+        {
+          continue;
+        }
+        else
+        {
+          class_str.emplace_back( _class_map[ i ].name );
+        }
       }
     }
 
-    s.seekp( -2, std::ios_base::cur );
-    if ( pet_ability )
-      s << " Pet";
-    s << std::endl;
+    s << "Class            : " << util::string_join( class_str ) << std::endl;
   }
 
   if ( spell->race_mask() )
@@ -2418,7 +2439,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
           }
 
           s.precision( real_ppm_decimals( spell, modifier ) );
-          mods.emplace_back( fmt::format( "{}: {}", util::string_join( class_str, ", " ),
+          mods.emplace_back( fmt::format( "{}: {}", util::string_join( class_str ),
                                           ( spell->real_ppm() * ( 1.0 + modifier.coefficient ) ) ) );
           break;
         }
@@ -2442,7 +2463,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
           }
 
           s.precision( real_ppm_decimals( spell, modifier ) );
-          mods.emplace_back( fmt::format( "{}: {}", util::string_join( race_str, ", " ),
+          mods.emplace_back( fmt::format( "{}: {}", util::string_join( race_str ),
                                           ( spell->real_ppm() * ( 1.0 + modifier.coefficient ) ) ) );
           break;
         }
@@ -2453,7 +2474,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     if ( !mods.empty() )
     {
-      s << " (" << util::string_join( mods, ", " ) << ")";
+      s << " (" << util::string_join( mods ) << ")";
     }
     s << std::endl;
   }

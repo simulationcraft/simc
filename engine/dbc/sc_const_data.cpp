@@ -939,7 +939,6 @@ const spell_data_t* dbc::get_class_passive( const player_t& p, specialization_e 
 
 std::vector<const spell_data_t*> dbc::class_passives( const player_t* p )
 {
-
   std::vector<const spell_data_t*> spells;
 
   range::for_each( _class_passives, [ &spells, p ]( const class_passives_entry_t& entry ) {
@@ -951,6 +950,15 @@ std::vector<const spell_data_t*> dbc::class_passives( const player_t* p )
   } );
 
   return spells;
+}
+
+player_e dbc::get_class_from_spec( specialization_e spec )
+{
+  for ( const auto& entry : _class_passives )
+    if ( entry.spec == spec )
+      return entry.type;
+
+  return PLAYER_NONE;
 }
 
 double dbc::item_level_squish( unsigned source_ilevel, bool ptr )

@@ -875,7 +875,9 @@ struct spell_class_expr_t : public spell_list_expr_t
     if ( data_type == DATA_SPELL && util::str_compare_ci( other.result_str, "none" ) )
     {
       return filter_spells( [ & ]( const spell_data_t& spell ) {
-        return spell.class_mask() == 0 && ( !check_spell_class_family( spell ) || spell.class_family() == 0 );
+        return !( spell.class_mask() & 0b1111111111111 ) &&
+               ( !check_spell_class_family( spell ) ||
+                 !range::contains( _class_info, spell.class_family(), &class_info_t::spell_family ) );
       } );
     }
 
