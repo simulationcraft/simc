@@ -15232,6 +15232,7 @@ Effects          :
 Description      : Shadow Word: Death consumes absorb shields from your target, dealing up to $s1% extra damage to them and granting you $?c3[$s3 Insanity][$s2% mana] if a shield was present.
 
 Name             : Void Leech (id=451963) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -15241,7 +15242,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1218
                  : 3022
-Attributes       : Can't Crit (93), Ignore Damage Taken Modifiers (136), Not an Attack (194), Ignore Caster Damage Modifiers (221), Ignore Sanctuary (263), Cannot Kill Target (316)
+Attributes       : Not an Action (92), Can't Crit (93), Treat As Periodic (121), Ignore Damage Taken Modifiers (136), Not an Attack (194), Ignore Caster Damage Modifiers (221), Ignore Sanctuary (263), Cannot Kill Target (316)
                  :
 Effects          :
 #1 (id=1152783)  : School Damage (2): shadow
