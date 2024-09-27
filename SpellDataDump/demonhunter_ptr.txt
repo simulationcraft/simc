@@ -1,6 +1,6 @@
 SimulationCraft 1100-02 for World of Warcraft 11.0.5.56749 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
-Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
+Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
 Spell Type       : Magic
 Attributes       : Is Ability (4), Passive (6), Not In Spellbook (143)
@@ -165,7 +165,7 @@ Versatility increased by $w5%.][]$?s204909[
 Leech increased by $w3%.][]
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Havoc Hunter, Rogue, Shaman, Monk, Druid, Demon Hunter
+Class            : Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter, Assassination Rogue, Outlaw Rogue, Subtlety Rogue, Enhancement Shaman, Windwalker Monk, Feral Druid, Havoc Demon Hunter
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
@@ -182,7 +182,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Stat Negation Aura - Agility Tank (id=162700) [Passive, Hidden] 
-Class            : Brewmaster Guardian Vengeance Monk, Druid, Demon Hunter
+Class            : Brewmaster Monk, Guardian Druid, Vengeance Demon Hunter
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
@@ -2052,7 +2052,7 @@ Deals $204598s1 Fire damage, and an additional $204598o3 Fire damage over $20459
 |CFFffffffGenerates $389787s1 Fury.|R
 
 Name             : Sigil of Flame (id=204596) [Spell Family (107)] 
-Class            : Havoc Vengeance Demon Hunter
+Class            : Havoc Demon Hunter, Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Spell Level      : 10
@@ -13073,7 +13073,7 @@ Tooltip          : Suffering $w2 $@spelldesc395020 damage every $t2 sec.$?$w4>0[
 Variables        : $pord=$@switch<$s5>[ $@auracaster has $s4% increased chance to parry your attacks.][ $@auracaster has $s4% increased chance to dodge your attacks.]
 
 Name             : Demon Hunter (id=462065) [Spell Family (107), Passive, Hidden] 
-Class            : Havoc Vengeance Demon Hunter
+Class            : Havoc Demon Hunter, Vengeance Demon Hunter
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells

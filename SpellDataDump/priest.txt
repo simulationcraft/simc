@@ -86,7 +86,7 @@ Tooltip          : Reduced distance at which target will attack.
 
 Name             : Purify (id=527) [Spell Family (6)] 
 Replaces         : Purify Disease (id=440006)
-Class            : Discipline Holy Priest
+Class            : Discipline Priest, Holy Priest
 School           : Holy
 Spell Type       : Magic
 Resource         : 1.3% Base Mana (0) (id=56)
@@ -3730,7 +3730,7 @@ Description      : Ascend into the air, keeping you out of harm's way. Lasts $d.
 Tooltip          : Flying.
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
+Class            : Shadow Priest, Elemental Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Balance Druid
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
@@ -3747,7 +3747,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
-Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
+Class            : Holy Paladin, Discipline Priest, Holy Priest, Restoration Shaman, Mistweaver Monk, Restoration Druid
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
@@ -5189,7 +5189,7 @@ Description      : $@spelldesc211317
 Tooltip          : After Spirit of Redemption expires, you will be revived at $s1% health.
 
 Name             : Mass Resurrection (id=212036) [Spell Family (6)] 
-Class            : Discipline Holy Priest
+Class            : Discipline Priest, Holy Priest
 School           : Holy
 Spell Type       : Magic
 Resource         : 0.8% Base Mana (0) (id=11135)
@@ -13342,7 +13342,7 @@ Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Initial Priest (id=417191) [Spell Family (6), Passive, Hidden] 
-Class            : Unknown (1452) Priest
+Class            : Unknown Priest (1452)
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
@@ -14100,7 +14100,7 @@ Effects          :
 Description      : $@spelldesc372835
 
 Name             : Purify Disease (id=440006) [Spell Family (6)] 
-Class            : Discipline Holy Priest
+Class            : Discipline Priest, Holy Priest
 School           : Holy
 Spell Type       : Magic
 Spell Level      : 18
@@ -16070,7 +16070,7 @@ Effects          :
 Description      : $@spelldesc459990
 
 Name             : Priest (id=462097) [Spell Family (6), Passive, Hidden] 
-Class            : Discipline Holy Shadow Priest
+Class            : Discipline Priest, Holy Priest, Shadow Priest
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells

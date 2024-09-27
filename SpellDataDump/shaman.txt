@@ -1968,7 +1968,7 @@ Effects          :
 Description      : $@spelldesc61882
 
 Name             : Lava Surge (id=77756) [Spell Family (11), Passive] 
-Class            : Elemental Restoration Shaman
+Class            : Elemental Shaman, Restoration Shaman
 School           : Physical
 Spell Type       : None
 Spell Level      : 12
@@ -3820,7 +3820,7 @@ Tooltip          : Cloudburst Totem is collecting ${$157503s2*(1+$w3/100)}% of h
 Healing Collected: $w1
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
-Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Havoc Hunter, Rogue, Shaman, Monk, Druid, Demon Hunter
+Class            : Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter, Assassination Rogue, Outlaw Rogue, Subtlety Rogue, Enhancement Shaman, Windwalker Monk, Feral Druid, Havoc Demon Hunter
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
@@ -3837,7 +3837,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
+Class            : Shadow Priest, Elemental Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Balance Druid
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
@@ -3854,7 +3854,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
-Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
+Class            : Holy Paladin, Discipline Priest, Holy Priest, Restoration Shaman, Mistweaver Monk, Restoration Druid
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
@@ -14667,7 +14667,7 @@ Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Initial Shaman (id=417374) [Spell Family (11), Passive, Hidden] 
-Class            : Unknown (1444) Shaman
+Class            : Unknown Shaman (1444)
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
@@ -17191,7 +17191,7 @@ Description      : $@spelldesc445034
 Tooltip          : Searing Totem is hurling Searing Bolts at nearby enemies.
 
 Name             : Shaman (id=462106) [Spell Family (11), Passive, Hidden] 
-Class            : Elemental Enhancement Restoration Shaman
+Class            : Elemental Shaman, Enhancement Shaman, Restoration Shaman
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells

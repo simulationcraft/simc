@@ -1,6 +1,6 @@
 SimulationCraft 1100-02 for World of Warcraft 11.0.5.56749 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
-Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
+Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
 Spell Type       : Magic
 Attributes       : Is Ability (4), Passive (6), Not In Spellbook (143)
@@ -3539,7 +3539,7 @@ Effects          :
 Description      : You gain Parry equal to $s1% of your Critical Strike from gear.
 
 Name             : Stat Negation Aura - Strength DPS (id=162698) [Passive, Hidden] 
-Class            : Arms Fury Retribution Frost Unholy Warrior, Paladin, Death Knight
+Class            : Arms Warrior, Fury Warrior, Retribution Paladin, Frost Death Knight, Unholy Death Knight
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
@@ -3556,7 +3556,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Stat Negation Aura - Strength Tank (id=162702) [Passive, Hidden] 
-Class            : Protection Protection Blood Warrior, Paladin, Death Knight
+Class            : Protection Warrior, Protection Paladin, Blood Death Knight
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
@@ -3647,7 +3647,7 @@ Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
 
 Name             : Dark Succor (id=178819) [Spell Family (15), Passive] 
-Class            : Frost Unholy Death Knight
+Class            : Frost Death Knight, Unholy Death Knight
 School           : Physical
 Spell Type       : None
 Spell Level      : 18
@@ -4293,7 +4293,7 @@ Effects          :
 Description      : Grants the Death Knight $s2 runic power.
 
 Name             : Frost Fever (id=195621) [Spell Family (15), Passive, Hidden] 
-Class            : Blood Frost Unholy Death Knight
+Class            : Blood Death Knight, Frost Death Knight, Unholy Death Knight
 School           : Frost
 Spell Type       : Melee
 Spell Level      : 23
@@ -18276,7 +18276,7 @@ Effects          :
                    Affected Spells (Label): Rethu's Incessant Courage (242597)
 
 Name             : Death Knight (id=462062) [Spell Family (15), Passive, Hidden] 
-Class            : Blood Frost Unholy Death Knight
+Class            : Blood Death Knight, Frost Death Knight, Unholy Death Knight
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells

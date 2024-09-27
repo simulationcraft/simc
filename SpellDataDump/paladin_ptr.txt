@@ -2591,7 +2591,7 @@ Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
 Damage taken increased by $w2.][]
 
 Name             : Arcane Mage (id=137021) [Spell Family (3), Passive, Hidden] 
-Class            : Arcane Paladin, Mage
+Class            : Arcane Mage, Paladin
 School           : Physical
 Spell Type       : None
 Spell Level      : 10 (max 30)
@@ -3356,7 +3356,7 @@ Description      : Stuns the target Player for $d. If the judgment holds for $d,
 Tooltip          : Teleporting.
 
 Name             : Stat Negation Aura - Strength DPS (id=162698) [Passive, Hidden] 
-Class            : Arms Fury Retribution Frost Unholy Warrior, Paladin, Death Knight
+Class            : Arms Warrior, Fury Warrior, Retribution Paladin, Frost Death Knight, Unholy Death Knight
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
@@ -3373,7 +3373,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
-Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
+Class            : Holy Paladin, Discipline Priest, Holy Priest, Restoration Shaman, Mistweaver Monk, Restoration Druid
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
@@ -3390,7 +3390,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Stat Negation Aura - Strength Tank (id=162702) [Passive, Hidden] 
-Class            : Protection Protection Blood Warrior, Paladin, Death Knight
+Class            : Protection Warrior, Protection Paladin, Blood Death Knight
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
@@ -7012,7 +7012,7 @@ Effects          :
 Description      : $@spelldesc304971
 
 Name             : Judgment (desc=Rank 3) (id=315867) [Spell Family (10), Passive] 
-Class            : Holy Protection Retribution Paladin
+Class            : Holy Paladin, Protection Paladin, Retribution Paladin
 School           : Holy
 Spell Type       : None
 Labels           : 16: Class Spells
@@ -9086,7 +9086,7 @@ Description      : $@spelldesc339570
 Tooltip          : Your Light of Dawn healing is increased by $w1%.
 
 Name             : Crusader Strike (desc=Rank 2) (id=342348) [Spell Family (10), Passive] 
-Class            : Protection Retribution Paladin
+Class            : Protection Paladin, Retribution Paladin
 School           : Holy
 Spell Type       : None
 Spell Level      : 11
@@ -9946,7 +9946,7 @@ Effects          :
 Description      : $@spelldesc304971
 
 Name             : Seasoned Warhorse (id=376996) [Spell Family (10), Passive] 
-Class            : Holy Protection Retribution Paladin
+Class            : Holy Paladin, Protection Paladin, Retribution Paladin
 School           : Physical
 Spell Type       : None
 Spell Level      : 40
@@ -10977,7 +10977,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 
 Name             : Avenging Wrath (id=384376) [Spell Family (10), Passive, Hidden] 
-Class            : Protection Retribution Paladin
+Class            : Protection Paladin, Retribution Paladin
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
@@ -16042,7 +16042,7 @@ Effects          :
 Description      : Your allies with Glimmer of Light take $s1% reduced damage, split evenly among them.
 
 Name             : Initial Paladin (id=417383) [Spell Family (10), Passive, Hidden] 
-Class            : Unknown (1451) Paladin
+Class            : Unknown Paladin (1451)
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
@@ -19721,7 +19721,7 @@ Description      : Wake of Ashes activates $?s384392[Crusade for $454373d][Aveng
 Each Holy Power spent has a chance to activate $?s384392[Crusade for ${$454373d/2} sec][Avenging Wrath for ${$454351d/2} sec].
 
 Name             : Paladin (id=462092) [Spell Family (10), Passive, Hidden] 
-Class            : Holy Protection Retribution Paladin
+Class            : Holy Paladin, Protection Paladin, Retribution Paladin
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
