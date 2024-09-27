@@ -9236,7 +9236,6 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
       p()->buffs.dark_talons_icy_talons->trigger( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
-      p()->buffs.icy_talons->trigger( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
     }
 
     p()->trigger_sanlayn_execute_talents( this->data().id() == p()->spell.vampiric_strike->id() );
@@ -9580,7 +9579,6 @@ struct howling_blast_t final : public death_knight_spell_t
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
       p()->buffs.dark_talons_icy_talons->trigger( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
-      p()->buffs.icy_talons->trigger( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
     }
 
     p()->buffs.rime->decrement();
@@ -9636,7 +9634,6 @@ struct marrowrend_t final : public death_knight_melee_attack_t
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
       p()->buffs.dark_talons_icy_talons->trigger( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
-      p()->buffs.icy_talons->trigger( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
     }
 
     if ( p()->buffs.exterminate->up() )
@@ -11631,7 +11628,6 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
          rng().roll( talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
       buffs.dark_talons_icy_talons->trigger( talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
-      buffs.icy_talons->trigger( talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
     }
   } );
 }
@@ -13774,11 +13770,13 @@ void death_knight_t::create_buffs()
             if ( new_ > old_ )
             {
               buffs.icy_talons->set_max_stack( buffs.icy_talons->max_stack() + it_stack_modifier );
+              buffs.icy_talons->increment( it_stack_modifier );
             }
             else if ( new_ < old_ )
             {
               buffs.icy_talons->set_max_stack( buffs.icy_talons->max_stack() -
                                                ( ( old_ - new_ ) * it_stack_modifier ) );
+              buffs.icy_talons->decrement( it_stack_modifier );
             }
           } );
 
