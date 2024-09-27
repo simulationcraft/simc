@@ -6036,6 +6036,7 @@ struct chain_lightning_t : public chained_base_t
   {
     if ( s->chain_target == 0 && p()->buff.power_of_the_maelstrom->up() )
     {
+      trigger_elemental_overload( s, 1.0 );
       p()->buff.power_of_the_maelstrom->decrement();
     }
 
@@ -8409,7 +8410,7 @@ struct frost_shock_t : public shaman_spell_t
     {
         if ( p()->buff.icefury_dmg->check() )
         {
-            t += 1 + as<int>( p()->talent.icefury->effectN( 4 ).base_value() );
+          t += 1 + as<int>( p()->find_spell( 210714 )->effectN( 4 ).base_value() );
         }
     }
 
@@ -10108,6 +10109,22 @@ struct tempest_t : public shaman_spell_t
   void schedule_travel(action_state_t* s) override {
     if ( s->chain_target == 0 )
     {
+      if (p()->buff.power_of_the_maelstrom->up() )
+      {
+        trigger_elemental_overload( s, 1.0 );
+        p()->buff.power_of_the_maelstrom->decrement();
+      }
+
+      if (p()->buff.surge_of_power->up())
+      {
+        for ( auto i = 0; i < as<int>( p()->talent.surge_of_power->effectN( 2 ).base_value() ); ++i )
+        {
+          trigger_elemental_overload( s, 1.0 );
+        }
+        p()->buff.surge_of_power->decrement();
+          
+      }
+
       trigger_elemental_overload( s );
       if ( p()->talent.supercharge.ok() )
       {
