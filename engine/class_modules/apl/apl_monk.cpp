@@ -685,8 +685,7 @@ void windwalker( player_t *p )
       "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&energy.time_to_max<=gcd.max*3&talent."
       "flurry_strikes&active_enemies<5&buff.wisdom_of_the_wall_flurry.up&active_enemies<4" );
   default_cleave->add_action(
-      "fists_of_fury,target_if=max:target.time_to_die,if=buff.ordered_elements.remains>execute_time|!buff.ordered_"
-      "elements.up|buff.ordered_elements.remains<=gcd.max|active_enemies>2" );
+      "fists_of_fury,target_if=max:target.time_to_die" );
   default_cleave->add_action(
       "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&energy.time_to_max<=gcd.max*3&talent."
       "flurry_strikes&active_enemies<5&buff.wisdom_of_the_wall_flurry.up" );
@@ -800,7 +799,7 @@ void windwalker( player_t *p )
       "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack>7&talent."
       "memory_of_the_monastery&!buff.memory_of_the_monastery.up&cooldown.fists_of_fury.remains" );
   default_st->add_action(
-      "fists_of_fury,if=(talent.flurry_strikes|!buff.heart_of_the_jade_serpent.up|buff.heart_of_the_jade_serpent.up&cooldown.strike_of_the_windlord.remains>3)&buff.ordered_elements.remains>execute_time|!buff.ordered_elements.up|buff.ordered_elements.remains<=gcd.max|buff.heart_of_the_jade_serpent_cdr.up|buff.heart_of_the_jade_serpent_cdr_celestial.up" );
+      "fists_of_fury" );
   default_st->add_action(
       "spinning_crane_kick,if=(buff.dance_of_chiji.stack=2|buff.dance_of_chiji.remains<2&buff.dance_of_chiji.up)&combo_"
       "strike&!buff.ordered_elements.up" );
