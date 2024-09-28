@@ -594,17 +594,15 @@ void monk_action_t<Base>::execute()
 
   trigger_storm_earth_and_fire( this );
 
-  // TWW1 Windwalker 2PC
+  // TWW S1 Windwalker 2PC
   if ( p()->buff.tiger_strikes->up() )
   {
     // These spells are not listed in the spell effect data but are affected
     std::vector<unsigned int> missing_tiger_strikes_spells = {
-      p()->baseline.monk.spinning_crane_kick->effectN( 1 ).trigger()->id(),
-      p()->passives.fists_of_fury_tick->id(),
-      p()->passives.whirling_dragon_punch_aoe_tick->id(),
-      p()->passives.whirling_dragon_punch_st_tick->id(),
-      p()->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger()->id(),  // mainhand
-      p()->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger()->id()   // offhand
+      p()->baseline.monk.spinning_crane_kick->id(),
+      p()->talent.windwalker.fists_of_fury->id(),
+      p()->talent.windwalker.whirling_dragon_punch->id(),
+      p()->talent.windwalker.strike_of_the_windlord->id(),
     };
 
     if ( base_t::data().affected_by( p()->buff.tiger_strikes->data().effectN( 1 ) ) ||
