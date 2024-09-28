@@ -602,7 +602,7 @@ void monk_action_t<Base>::execute()
       p()->baseline.monk.spinning_crane_kick->id(),
       p()->talent.windwalker.fists_of_fury->id(),
       p()->talent.windwalker.whirling_dragon_punch->id(),
-      p()->talent.windwalker.strike_of_the_windlord->id(),
+      p()->talent.windwalker.strike_of_the_windlord->id()
     };
 
     if ( base_t::data().affected_by( p()->buff.tiger_strikes->data().effectN( 1 ) ) ||
