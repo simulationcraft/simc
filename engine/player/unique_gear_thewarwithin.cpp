@@ -1068,7 +1068,7 @@ void spymasters_web( special_effect_t& effect )
 //  e2: haste value
 //  e3: mult per use stack
 //  e4: unknown, damage cap? self damage?
-//  e5: post-combat duration
+//  e5: post-combat duration?
 //  e6: unknown, chance to be silenced?
 // 451895 is empowered buff
 // 445619 on-use
@@ -1207,16 +1207,17 @@ void aberrant_spellforge( special_effect_t& effect )
 
   effect.custom_buff = stack;
 
-  effect.player->register_on_combat_state_callback(
-      [ stack, dur = timespan_t::from_seconds( data->effectN( 5 ).base_value() ) ]( player_t* p, bool c ) {
-        if ( !c )
-        {
-          make_event( *p->sim, dur, [ p, stack ] {
-            if ( !p->in_combat )
-              stack->expire();
-          } );
-        }
+  // TODO: unknown if this is hardcoded to 15s or based off the dummy data
+  auto expire_delay = timespan_t::from_seconds( data->effectN( 5 ).base_value() ) * 2;
+  effect.player->register_on_combat_state_callback( [ stack, expire_delay ]( player_t* p, bool c ) {
+    if ( !c )
+    {
+      make_event( *p->sim, expire_delay, [ p, stack ] {
+        if ( !p->in_combat )
+          stack->expire();
       } );
+    }
+  } );
 }
 
 // 445203 data
