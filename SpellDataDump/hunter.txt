@@ -11942,7 +11942,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
                  : 3839: Deadly Duo (378962 effect#2)
-                 : 3993: Unnatural Causes (459527 effect#5)
+                 : 3993: Unnatural Causes (459527 effect#5), Unnatural Causes (459529 effect#2)
 Mechanic         : Bleed
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Withering Fire (461762 effects: #1, #4)
 Family Flags     : 106
@@ -12076,7 +12076,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-                 : 3993: Unnatural Causes (459527 effect#5)
+                 : 3993: Unnatural Causes (459527 effect#5), Unnatural Causes (459529 effect#2)
 Mechanic         : Bleed
 Attributes       : Can't Crit (93), DoT Stacking Rule (103), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
                  :
@@ -14918,7 +14918,7 @@ Labels           : 16: Class Spells
                  : 52
                  : 292
                  : 3833
-                 : 3993: Unnatural Causes (459527 effect#5)
+                 : 3993: Unnatural Causes (459527 effect#5), Unnatural Causes (459529 effect#2)
 Mechanic         : Bleed
 Attributes       : Aura Is Debuff (26), DoT Stacking Rule (103), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Positive Damage Taken Modifiers (321), Rolling Periodic (334), Allow Class Ability Procs (416)
                  :
@@ -15197,7 +15197,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 3557
-                 : 3993: Unnatural Causes (459527 effect#5)
+                 : 3993: Unnatural Causes (459527 effect#5), Unnatural Causes (459529 effect#2)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Withering Fire (461762 effects: #1, #4)
 Family Flags     : 74, 106
 Attributes       : Ignore Line of Sight (66), Not a Proc (105), Treat As Periodic (121), Not In Spellbook (143), Aura Points On Client (268)
@@ -16135,7 +16135,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-                 : 3993: Unnatural Causes (459527 effect#5)
+                 : 3993: Unnatural Causes (459527 effect#5), Unnatural Causes (459529 effect#2)
 Attributes       : Can't Crit (93), DoT Stacking Rule (103), Do Not Display Range (126), Not In Spellbook (143), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Positive Damage Taken Modifiers (321), Rolling Periodic (334), Do Not Log on Learn (355)
                  :
 Effects          :
@@ -16525,7 +16525,7 @@ Cooldown         : 30 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-                 : 3993: Unnatural Causes (459527 effect#5)
+                 : 3993: Unnatural Causes (459527 effect#5), Unnatural Causes (459529 effect#2)
 Mechanic         : Bleed
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Always Hit (114), Aura Never Bounces (148), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416)
                  :

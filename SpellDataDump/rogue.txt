@@ -1025,7 +1025,7 @@ Labels           : 16: Class Spells
                  : 184
                  : 292
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
-                 : 2887
+                 : 2887: Underhanded Upper Hand (Adrenaline Rush) (424081 effect#1)
 Affecting spells : Celerity (340087 effect#1)
 Family Flags     : 39
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Extra Initial Period (169), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
@@ -1067,7 +1067,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 184
                  : 292
-                 : 2886
+                 : 2886: Underhanded Upper Hand (Blade Flurry) (424080 effect#1)
 Proc Chance      : 100%
 Proc Flags       : White Melee, Yellow Melee, Yellow Ranged
 Affecting spells : Adrenaline Rush (13750 effect#3), Grand Melee (193358 effect#2), Dancing Steel (272026 effect#2), Ambidexterity (341542 effect#1), Ambidexterity (381822 effect#1)
@@ -6210,7 +6210,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-                 : 2880
+                 : 2880: Underhanded Upper Hand (SnD) (424066 effect#1)
 Affecting spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Recuperator (341312 effect#1), Tight Spender (381621 effect#1), Swift Slasher (381988 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effect#1), Devious Stratagem (394321 effect#1), Goremaw's Bite (426593 effect#2), Thousand Cuts (441346 effect#1), Sanguine Stratagem (457512 effect#1)
 Family Flags     : 18, 89
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Allow While Stealthed (37), No Threat (42), Finishing Move - Duration (54), Do Not Display Range (126), Not an Attack (194), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442)
@@ -13111,8 +13111,9 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
                  :
 Effects          :
-#1 (id=1100497)  : Apply Aura (6) | Unknown(470)
-                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2880 | Target: Self (1)
+#1 (id=1100497)  : Apply Aura (6) | Modify Time Rate (Label) (470)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2880 (Label) | Target: Self (1)
+                   Affected Spells (Label): Slice and Dice (315496)
 Description      : $@spelldesc424044
 
 Name             : Underhanded Upper Hand (Blade Flurry) (id=424080) [Spell Family (8), Hidden] 
@@ -13126,8 +13127,9 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
                  :
 Effects          :
-#1 (id=1100520)  : Apply Aura (6) | Unknown(470)
-                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2886 | Target: Self (1)
+#1 (id=1100520)  : Apply Aura (6) | Modify Time Rate (Label) (470)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2886 (Label) | Target: Self (1)
+                   Affected Spells (Label): Blade Flurry (13877)
 Description      : $@spelldesc424044
 
 Name             : Underhanded Upper Hand (Adrenaline Rush) (id=424081) [Spell Family (8), Hidden] 
@@ -13141,8 +13143,9 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
                  :
 Effects          :
-#1 (id=1100521)  : Apply Aura (6) | Unknown(470)
-                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2887 | Target: Self (1)
+#1 (id=1100521)  : Apply Aura (6) | Modify Time Rate (Label) (470)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 2887 (Label) | Target: Self (1)
+                   Affected Spells (Label): Adrenaline Rush (13750)
 Description      : $@spelldesc424044
 
 Name             : Crackshot (id=424254) [Spell Family (8), Hidden] 
@@ -15493,7 +15496,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1387
                  : 3022
-                 : 3936: Mastery: Potent Assassin (76803 effect#4), Veiltouched (382017 effect#5), Veiltouched (382017 effect#6), Dark Brew (382504 effect#6), Dark Brew (382504 effect#7), Deeper Daggers (383405 effect#5), Deeper Daggers (383405 effect#6)
+                 : 3936: Mastery: Potent Assassin (76803 effect#4), Shiv (319504 effect#4), Veiltouched (382017 effect#5), Veiltouched (382017 effect#6), Dark Brew (382504 effect#6), Dark Brew (382504 effect#7), Deeper Daggers (383405 effect#5), Deeper Daggers (383405 effect#6)
 Stacks           : 10 maximum
 Proc Chance      : 101%
 Affecting spells : Master of Subtlety (31665 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2)
@@ -15517,7 +15520,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 3022
-                 : 3936: Mastery: Potent Assassin (76803 effect#4), Veiltouched (382017 effect#5), Veiltouched (382017 effect#6), Dark Brew (382504 effect#6), Dark Brew (382504 effect#7), Deeper Daggers (383405 effect#5), Deeper Daggers (383405 effect#6)
+                 : 3936: Mastery: Potent Assassin (76803 effect#4), Shiv (319504 effect#4), Veiltouched (382017 effect#5), Veiltouched (382017 effect#6), Dark Brew (382504 effect#6), Dark Brew (382504 effect#7), Deeper Daggers (383405 effect#5), Deeper Daggers (383405 effect#6)
 Affecting spells : Master of Subtlety (31665 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2)
 Family Flags     : 54
                  :
@@ -15599,7 +15602,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 3022
-                 : 3936: Mastery: Potent Assassin (76803 effect#4), Veiltouched (382017 effect#5), Veiltouched (382017 effect#6), Dark Brew (382504 effect#6), Dark Brew (382504 effect#7), Deeper Daggers (383405 effect#5), Deeper Daggers (383405 effect#6)
+                 : 3936: Mastery: Potent Assassin (76803 effect#4), Shiv (319504 effect#4), Veiltouched (382017 effect#5), Veiltouched (382017 effect#6), Dark Brew (382504 effect#6), Dark Brew (382504 effect#7), Deeper Daggers (383405 effect#5), Deeper Daggers (383405 effect#6)
 Affecting spells : Master of Subtlety (31665 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2)
 Family Flags     : 54
                  :
@@ -15617,7 +15620,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 3022
-                 : 3936: Mastery: Potent Assassin (76803 effect#4), Veiltouched (382017 effect#5), Veiltouched (382017 effect#6), Dark Brew (382504 effect#6), Dark Brew (382504 effect#7), Deeper Daggers (383405 effect#5), Deeper Daggers (383405 effect#6)
+                 : 3936: Mastery: Potent Assassin (76803 effect#4), Shiv (319504 effect#4), Veiltouched (382017 effect#5), Veiltouched (382017 effect#6), Dark Brew (382504 effect#6), Dark Brew (382504 effect#7), Deeper Daggers (383405 effect#5), Deeper Daggers (383405 effect#6)
 Proc Chance      : 101%
 Proc Flags       : White Melee
 Affecting spells : Master of Subtlety (31665 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2)
@@ -15637,7 +15640,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 3022
-                 : 3936: Mastery: Potent Assassin (76803 effect#4), Veiltouched (382017 effect#5), Veiltouched (382017 effect#6), Dark Brew (382504 effect#6), Dark Brew (382504 effect#7), Deeper Daggers (383405 effect#5), Deeper Daggers (383405 effect#6)
+                 : 3936: Mastery: Potent Assassin (76803 effect#4), Shiv (319504 effect#4), Veiltouched (382017 effect#5), Veiltouched (382017 effect#6), Dark Brew (382504 effect#6), Dark Brew (382504 effect#7), Deeper Daggers (383405 effect#5), Deeper Daggers (383405 effect#6)
 Affecting spells : Master of Subtlety (31665 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2)
 Family Flags     : 54
 Attributes       : Allow Cast While Dead (23), Can't Crit (93), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221)
@@ -15978,7 +15981,7 @@ Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Magic
 Range            : 50000 yards
-Labels           : 3936: Mastery: Potent Assassin (76803 effect#4), Veiltouched (382017 effect#5), Veiltouched (382017 effect#6), Dark Brew (382504 effect#6), Dark Brew (382504 effect#7), Deeper Daggers (383405 effect#5), Deeper Daggers (383405 effect#6)
+Labels           : 3936: Mastery: Potent Assassin (76803 effect#4), Shiv (319504 effect#4), Veiltouched (382017 effect#5), Veiltouched (382017 effect#6), Dark Brew (382504 effect#6), Dark Brew (382504 effect#7), Deeper Daggers (383405 effect#5), Deeper Daggers (383405 effect#6)
 Affecting spells : Master of Subtlety (31665 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2)
 Family Flags     : 54
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Allow While Stunned by Stun Mechanic (378), Active Passive (393), Allow during spell override (404), Allow While Feared By Fear Mechanic (417)

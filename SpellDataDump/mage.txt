@@ -1650,7 +1650,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Radius: 50000 yards | Target: Raid in Area (56)
 #3 (id=809126)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=809236)   : Apply Aura (6) | Unknown(399)
+#4 (id=809236)   : Apply Aura (6) | Modify Time Rate (399)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Warp the flow of time, increasing haste by $s1% $?a320919[and time rate by $s4% ][]for all party and raid members for $d.
 

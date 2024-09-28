@@ -178,24 +178,26 @@ static void generate_indices( bool ptr )
     {
       if ( range::contains( dbc::effect_category_subtypes(), effect.subtype() ) )
       {
-        const unsigned value = as<unsigned>( effect.misc_value1() );
-        if ( value != 0 )
+        if ( const auto value = as<unsigned>( effect.misc_value1() ) )
           spell_categories_index.add_effect( value, &effect, ptr );
       }
 
-      if ( effect.subtype() == A_ADD_PCT_LABEL_MODIFIER ||
-           effect.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
+      switch ( effect.subtype() )
       {
-        const short value = as<short>( effect.misc_value2() );
-        if ( value != 0 )
-          spell_label_index.add_effect( value, &effect, ptr );
-      }
-
-      if ( effect.subtype() == A_MOD_RECHARGE_RATE_LABEL )
-      {
-        const short value = as<short>( effect.misc_value1() );
-        if ( value != 0 )
-          spell_label_index.add_effect( value, &effect, ptr );
+        case A_MOD_RECHARGE_RATE_LABEL:
+        case A_MOD_TIME_RATE_BY_SPELL_LABEL:
+        case A_MOD_DAMAGE_FROM_SPELLS_LABEL:
+        case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:
+          if ( const short value = as<short>( effect.misc_value1() ) )
+            spell_label_index.add_effect( value, &effect, ptr );
+          break;
+        case A_ADD_PCT_LABEL_MODIFIER:
+        case A_ADD_FLAT_LABEL_MODIFIER:
+          if ( const auto value = as<short>( effect.misc_value2() ) )
+            spell_label_index.add_effect( value, &effect, ptr );
+          break;
+        default:
+          break;
       }
     }
   }

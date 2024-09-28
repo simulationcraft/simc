@@ -14366,7 +14366,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 2557
-                 : 2650
+                 : 2650: Shadowflame Vulnerability (411376 effect#1)
 Attributes       : Do Not Display Range (126)
                  :
 Effects          :

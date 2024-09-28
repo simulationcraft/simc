@@ -1240,6 +1240,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 380, "Modify Damage Taken% from Caster Guardian"    },
   { 381, "Modify Damage Taken% from Caster Pet"         },
   { 383, "Ignore Spell Cooldown"                        },
+  { 399, "Modify Time Rate"                             },
   { 404, "Override Attack Power per Spell Power%"       },
   { 405, "Modify Combat Rating Multiplier"              },
   { 409, "Slow Fall"                                    },
@@ -1259,6 +1260,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 457, "Hasted Cooldown Duration (Category)"          },
   { 465, "Increase Armor"                               },
   { 468, "Trigger Spell Based on Health%"               },
+  { 470, "Modify Time Rate (Label)"                     },
   { 471, "Modify Versatility%"                          },
   { 485, "Resist Forced Movement%"                      },
   { 493, "Hunter Animal Companion"                      },
@@ -1678,11 +1680,19 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   else if ( e->misc_value1() != 0 )
   {
     if ( e->affected_schools() != 0U )
+    {
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%#.x", e->misc_value1() );
-    else if ( e->subtype() == A_MOD_DAMAGE_FROM_SPELLS_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
+    }
+    else if ( e->subtype() == A_MOD_RECHARGE_RATE_LABEL || e->subtype() == A_MOD_TIME_RATE_BY_SPELL_LABEL ||
+              e->subtype() == A_MOD_DAMAGE_FROM_SPELLS_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
+    {
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d (Label)", e->misc_value1() );
+    }
     else
+    {
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d", e->misc_value1() );
+    }
+
     s << " | Misc Value: " << tmp_buffer.data();
   }
 
@@ -1778,30 +1788,36 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     s << std::endl;
   }
 
-  if ( e->type() == E_APPLY_AURA &&
-       ( e->subtype() == A_ADD_PCT_LABEL_MODIFIER || e->subtype() == A_ADD_FLAT_LABEL_MODIFIER ) )
+  if ( e->type() == E_APPLY_AURA || e->type() == E_APPLY_AREA_AURA_PARTY || e->type() == E_APPLY_AREA_AURA_RAID )
   {
-    if ( auto str = label_str( e->misc_value2(), dbc ); str != "" )
-      s << "                   Affected Spells (Label): " << str << std::endl;
-  }
-
-  if ( e->type() == E_APPLY_AURA &&
-       ( e->subtype() == A_MOD_RECHARGE_RATE_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_SPELLS_LABEL ||
-         e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL ) )
-  {
-    if ( auto str = label_str( e->misc_value1(), dbc ); str != "" )
-      s << "                   Affected Spells (Label): " << str << std::endl;
-  }
-
-  if ( e->type() == E_APPLY_AURA && range::contains( dbc::effect_category_subtypes(), e->subtype() ) )
-  {
-    if ( auto affected = dbc.spells_by_category( e->misc_value1() ); !affected.empty() )
+    switch ( e->subtype() )
     {
-      s << "                   Affected Spells (Category): ";
-      s << concatenate( affected, []( std::stringstream& s, const spell_data_t* spell ) {
-        fmt::print( s, "{} ({})", spell->name_cstr(), spell->id() );
-      } );
-      s << std::endl;
+        case A_MOD_RECHARGE_RATE_LABEL:
+        case A_MOD_TIME_RATE_BY_SPELL_LABEL:
+        case A_MOD_DAMAGE_FROM_SPELLS_LABEL:
+        case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:
+          if ( auto str = label_str( e->misc_value1(), dbc ); !str.empty() )
+            s << "                   Affected Spells (Label): " << str << std::endl;
+          break;
+        case A_ADD_PCT_LABEL_MODIFIER:
+        case A_ADD_FLAT_LABEL_MODIFIER:
+          if ( auto str = label_str( e->misc_value2(), dbc ); !str.empty() )
+            s << "                   Affected Spells (Label): " << str << std::endl;
+          break;
+        default:
+          break;
+    }
+
+    if ( range::contains( dbc::effect_category_subtypes(), e->subtype() ) )
+    {
+      if ( auto affected = dbc.spells_by_category( e->misc_value1() ); !affected.empty() )
+      {
+        s << "                   Affected Spells (Category): ";
+        s << concatenate( affected, []( std::stringstream& s, const spell_data_t* spell ) {
+          fmt::print( s, "{} ({})", spell->name_cstr(), spell->id() );
+        } );
+        s << std::endl;
+      }
     }
   }
 

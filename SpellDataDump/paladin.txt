@@ -7453,7 +7453,7 @@ Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), A
                  :
 Effects          :
 #1 (id=821267)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 16 | Target: Friendly (21)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 16 (Label) | Target: Friendly (21)
                    Affected Spells (Label): Class Spells (16)
 #2 (id=821268)   : Apply Aura (6) | Modify Charge Cooldown Type Recharge Rate% (173)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friendly (21)
@@ -8740,7 +8740,7 @@ Cooldown         : 30 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-                 : 2511: Penitence (403026 effect#1)
+                 : 2511: Penitence (403026 effect#1), Truth's Wake (403695 effect#5)
                  : 2564
                  : 2578: Executioner's Will (406940 effect#1)
 Proc Chance      : 100%
@@ -10243,7 +10243,7 @@ Duration         : 9 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-                 : 2511: Penitence (403026 effect#1)
+                 : 2511: Penitence (403026 effect#1), Truth's Wake (403695 effect#5)
                  : 2901: Paladin Retribution 10.2 Class Set 2pc (424513 effect#1), Paladin Retribution 10.2 Class Set 2pc (424513 effect#2)
 Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Triggered by     : Expurgation (383344)
@@ -11952,7 +11952,7 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46)
                  :
 Effects          :
 #1 (id=1023426)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 16 | Misc Value 2: 0xb90 | Target: Friendly (21)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 16 (Label) | Misc Value 2: 0xb90 | Target: Friendly (21)
                    Affected Spells (Label): Class Spells (16)
 #2 (id=1023427)  : Apply Aura (6) | Modify Charge Cooldown Type Recharge Rate% (173)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friendly (21)
@@ -13408,7 +13408,7 @@ Duration         : 9 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
-                 : 2511: Penitence (403026 effect#1)
+                 : 2511: Penitence (403026 effect#1), Truth's Wake (403695 effect#5)
                  : 3460
 Proc Chance      : 101%
 Proc Flags       : Periodic Taken
@@ -16464,7 +16464,7 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-                 : 2511: Penitence (403026 effect#1)
+                 : 2511: Penitence (403026 effect#1), Truth's Wake (403695 effect#5)
 Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Holy Paladin (428076 effect#18), Sun's Avatar (431425 effect#1), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 1, 27, 65
 Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320)
@@ -16665,7 +16665,7 @@ Duration         : 4 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-                 : 2511: Penitence (403026 effect#1)
+                 : 2511: Penitence (403026 effect#1), Truth's Wake (403695 effect#5)
                  : 3022
                  : 3461
 Affecting spells : Avenging Wrath (31884 effects: #2, #11), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
@@ -18362,7 +18362,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 189
                  : 292
-                 : 2511: Penitence (403026 effect#1)
+                 : 2511: Penitence (403026 effect#1), Truth's Wake (403695 effect#5)
                  : 3462
 Affecting spells : Mastery: Highlord's Judgment (267316 effects: #1, #2), Retribution Paladin (412314 effects: #14, #15)
 Family Flags     : 27

@@ -1683,7 +1683,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 2618
+                 : 2618: Fiery Brand (207744 effect#5), Fiery Brand (207771 effect#4)
 Affecting spells : Demon Soul (163073 effects: #1, #2), Metamorphosis (187827 effect#4), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #1, #2, #3, #4, #9), Fiery Demise (212818 effect#2), Frailty (247456 effect#4), Mark of the Ogre (326486 effect#3), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Shear Fury (389997 effect#1), Demon Hunter Vengeance Class Set 2pc (393630 effects: #1, #2), Demon Hunter Vengeance 10.1 Class Set 4pc (405509 effect#3), Fires of Fel (409645 effect#2), Fiery Resolve (425653 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2)
 Family Flags     : 22, 32, 70, 85
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
@@ -3856,7 +3856,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 2618
+                 : 2618: Fiery Brand (207744 effect#5), Fiery Brand (207771 effect#4)
 Affecting spells : Demon Soul (163073 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2, #9), Fiery Demise (212818 effect#2), Frailty (247456 effect#4), Mark of the Ogre (326486 effect#3), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Demon Hunter Vengeance Class Set 2pc (393630 effect#1), Demon Hunter Vengeance 10.1 Class Set 4pc (405509 effect#3), Fires of Fel (409645 effect#2), Fiery Resolve (425653 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2)
 Triggered by     : Fracture (263642)
 Family Flags     : 69, 70
@@ -3878,7 +3878,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 2618
+                 : 2618: Fiery Brand (207744 effect#5), Fiery Brand (207771 effect#4)
 Affecting spells : Demon Soul (163073 effects: #1, #2), Vengeance Demon Hunter (212613 effects: #1, #2, #9), Fiery Demise (212818 effect#2), Frailty (247456 effect#4), Mark of the Ogre (326486 effect#3), Half-Giant Empowerment (345871 effect#3), Demon Soul (347765 effects: #1, #2), Demon Hunter Vengeance Class Set 2pc (393630 effect#1), Demon Hunter Vengeance 10.1 Class Set 4pc (405509 effect#3), Fires of Fel (409645 effect#2), Fiery Resolve (425653 effects: #1, #2), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2)
 Triggered by     : Fracture (263642)
 Family Flags     : 69, 70
@@ -4722,7 +4722,7 @@ Category         : 1552: Vengeance Demon Hunter (212613 effect#6)
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-                 : 2618
+                 : 2618: Fiery Brand (207744 effect#5), Fiery Brand (207771 effect#4)
 Affecting spells : Metamorphosis (187827 effects: #9, #10), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Fiery Demise (212818 effect#2), Mark of the Ogre (326486 effect#3), Half-Giant Empowerment (345871 effect#3), Demon Hunter Vengeance Class Set 2pc (393630 effect#3), Demon Hunter Vengeance 10.1 Class Set 4pc (405509 effect#3), Fires of Fel (409645 effect#2)
 Family Flags     : 32, 73
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Requires Off-Hand Weapon (120), Allow Class Ability Procs (416)
@@ -5924,7 +5924,7 @@ Attributes       : Do Not Sheath (18), Allow While Sitting (27), Allow While Ste
                  :
 Effects          :
 #1 (id=824806)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 66 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 66 (Label) | Target: Self (1)
                    Affected Spells (Label): Demon Hunter Spells (66)
 Description      : $@spelldesc329554
 Tooltip          : Your spells and abilities cool down $w1% faster.
