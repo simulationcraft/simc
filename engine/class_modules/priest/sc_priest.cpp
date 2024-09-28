@@ -1191,6 +1191,7 @@ struct echoing_void_demise_t final : public priest_spell_t
     proc                = false;
     callbacks           = true;
     may_miss            = false;
+    harmful             = false;
     aoe                 = -1;
     range               = data().effectN( 1 ).radius_max();
     reduced_aoe_targets = data().effectN( 2 ).base_value();
