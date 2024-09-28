@@ -593,6 +593,23 @@ void monk_action_t<Base>::execute()
   base_t::execute();
 
   trigger_storm_earth_and_fire( this );
+
+  // TWW S1 Windwalker 2PC
+  if ( p()->buff.tiger_strikes->up() )
+  {
+    // These spells are not listed in the spell effect data but are affected
+    std::vector<unsigned int> missing_tiger_strikes_spells = {
+      p()->baseline.monk.spinning_crane_kick->id(),
+      p()->talent.windwalker.fists_of_fury->id(),
+      p()->talent.windwalker.whirling_dragon_punch->id(),
+      p()->talent.windwalker.strike_of_the_windlord->id()
+    };
+
+    if ( base_t::data().affected_by( p()->buff.tiger_strikes->data().effectN( 1 ) ) ||
+      std::find( missing_tiger_strikes_spells.begin(), missing_tiger_strikes_spells.end(), base_t::data().id() ) !=
+      missing_tiger_strikes_spells.end() )
+      p()->buff.tiger_strikes->decrement();
+  }
 }
 
 template <class Base>
@@ -636,10 +653,6 @@ void monk_action_t<Base>::impact( action_state_t *s )
         p()->active_actions.gale_force->execute_on_target( s->target );
       }
     }
-
-    // TWW1 Windwalker 2PC
-    if ( p()->buff.tiger_strikes->up() && base_t::data().affected_by( p()->buff.tiger_strikes->data().effectN( 1 ) ) )
-      p()->buff.tiger_strikes->decrement();
   }
 }
 
@@ -5932,7 +5945,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
