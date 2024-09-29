@@ -1668,7 +1668,7 @@ public:
       return false;
     }
 
-    if ( a->proc )
+    if ( a->proc && !a->not_a_proc )
     {
       // allow if the driver can proc from procs
       if ( Base::get_trigger_data()->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
@@ -1700,7 +1700,7 @@ public:
     if ( Base::data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) && !a->allow_class_ability_procs )
       return false;
 
-    if ( a->proc )
+    if ( a->proc && !a->not_a_proc )
     {
       // allow if either the buff or the driver can proc from procs
       if ( Base::data().flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) ||
@@ -1760,9 +1760,6 @@ public:
 
       if ( ab::type == action_e::ACTION_SPELL || ab::type == action_e::ACTION_ATTACK )
         p->parse_action_target_effects( this );
-
-      if ( ab::data().flags( spell_attribute::SX_ABILITY ) || ab::trigger_gcd > 0_ms )
-        ab::not_a_proc = true;
 
       if ( p->spec.ursine_adept->ok() &&
            ab::data().affected_by( find_effect( p->buff.bear_form, A_MOD_IGNORE_SHAPESHIFT ) ) )
@@ -2325,7 +2322,7 @@ struct ravage_base_t : public BASE
   {
     dreadful_wound_t( druid_t* p, std::string_view n, flag_e f ) : DOT_BASE( n, p, p->spec.dreadful_wound, f )
     {
-      DOT_BASE::background = true;
+      DOT_BASE::background = DOT_BASE::proc = true;
 
       DOT_BASE::name_str_reporting = "dreadful_wound";
       DOT_BASE::dot_name = "dreadful_wound";
@@ -3929,7 +3926,7 @@ struct adaptive_swarm_t final : public cat_attack_t
       : BASE( n, p, s ),
         tf_mul( find_effect( p->talent.tigers_fury, this, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE ).percent() )
     {
-      BASE::dual = BASE::background = true;
+      BASE::dual = BASE::background = BASE::proc = true;
       BASE::dot_behavior = dot_behavior_e::DOT_CLIP;
     }
 
@@ -4350,7 +4347,7 @@ struct bursting_growth_t final : public cat_attack_t
 {
   bursting_growth_t( druid_t* p ) : cat_attack_t( "bursting_growth", p, p->find_spell( 440122 ) )
   {
-    background = true;
+    background = proc = true;
     aoe = -1;
     reduced_aoe_targets = 5;  // TODO: not in data, from tooltip
   }
@@ -4432,6 +4429,7 @@ struct ferocious_bite_base_t : public cat_finisher_t
 
     rampant_ferocity_t( druid_t* p, std::string_view n ) : cat_attack_t( n, p, p->find_spell( 391710 ) )
     {
+      background = proc = true;
       aoe = -1;
       reduced_aoe_targets = p->talent.rampant_ferocity->effectN( 1 ).base_value();
       name_str_reporting = "rampant_ferocity";
@@ -4489,7 +4487,6 @@ struct ferocious_bite_base_t : public cat_finisher_t
     if ( p->talent.rampant_ferocity.ok() )
     {
       rampant_ferocity = p->get_secondary_action<rampant_ferocity_t>( "rampant_ferocity_" + name_str );
-      rampant_ferocity->background = true;
       add_child( rampant_ferocity );
     }
   }
@@ -4714,7 +4711,7 @@ struct rake_t final : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
   {
     rake_bleed_t( druid_t* p, std::string_view n, flag_e f, rake_t* r ) : base_t( n, p, find_trigger( r ).trigger(), f )
     {
-      background = dual = true;
+      background = dual = proc = true;
       // override for convoke. since this is only ever executed from rake_t, form checking is unnecessary.
       form_mask = 0;
 
@@ -4920,7 +4917,7 @@ struct primal_wrath_t final : public cat_finisher_t
     {
       rip = p->get_secondary_action<rip_t>( "rip_primal", p->find_spell( 1079 ), f );
       rip->dot_duration = timespan_t::from_seconds( m_data->effectN( 2 ).base_value() );
-      rip->dual = rip->background = true;
+      rip->dual = rip->background = rip->proc = true;
       replace_stats( rip );
       rip->base_costs[ RESOURCE_ENERGY ] = 0;
       // mods are parsed on construction so set to false so the rip execute doesn't decrement
@@ -5072,7 +5069,7 @@ struct thrash_cat_t final : public trigger_claw_rampage_t<DRUID_FERAL, cp_genera
   {
     thrash_cat_bleed_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->spec.thrash_cat_bleed, f )
     {
-      dual = background = true;
+      dual = background = proc = true;
 
       dot_name = "thrash_cat";
 
@@ -5401,7 +5398,7 @@ struct lunar_beam_t final : public bear_attack_t
   {
     lunar_beam_heal_t( druid_t* p, flag_e f ) : druid_heal_t( "lunar_beam_heal", p, p->find_spell( 204069 ), f )
     {
-      background = true;
+      background = proc = true;
       name_str_reporting = "Heal";
 
       target = p;
@@ -5412,7 +5409,7 @@ struct lunar_beam_t final : public bear_attack_t
   {
     lunar_beam_tick_t( druid_t* p, flag_e f ) : base_t( "lunar_beam_tick", p, p->find_spell( 414613 ), f )
     {
-      background = dual = ground_aoe = true;
+      background = proc = dual = ground_aoe = true;
       aoe = -1;
 
       execute_action = p->get_secondary_action<lunar_beam_heal_t>( "lunar_beam_heal", f );
@@ -5485,7 +5482,7 @@ struct mangle_t final : public use_fluid_form_t<DRUID_GUARDIAN,
     {
       strike = p->get_secondary_action<druid_heal_t>(
         "strike_for_the_heart", "strike_for_the_heart", p, find_trigger( p->talent.strike_for_the_heart ).trigger() );
-      strike->background = true;
+      strike->background = strike->proc = true;
     }
   }
 
@@ -5719,7 +5716,7 @@ struct thrash_bear_t final : public trigger_claw_rampage_t<DRUID_GUARDIAN,
   {
     thrash_bear_bleed_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->spec.thrash_bear_bleed, f )
     {
-      dual = background = true;
+      dual = background = proc = true;
 
       dot_name = "thrash_bear";
       dot_list = &p->dot_lists.thrash_bear;
@@ -5793,7 +5790,7 @@ struct trigger_lethal_preservation_t : public BASE
       : druid_heal_t( "lethal_preservation_heal", p, p->find_spell( 455470 ) ),
         mul( p->talent.lethal_preservation->effectN( 1 ).percent() )
     {
-      background = true;
+      background = proc = true;
     }
 
     void execute() override
@@ -7110,7 +7107,7 @@ struct dream_burst_t final : public druid_spell_t
 {
   dream_burst_t( druid_t* p ) : druid_spell_t( "dream_burst", p, p->find_spell( 433850 ) )
   {
-    background = true;
+    background = proc = true;
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
   }
@@ -7205,7 +7202,7 @@ struct fury_of_elune_t final : public druid_spell_t
   {
     fury_of_elune_tick_t( druid_t* p, std::string_view n, const spell_data_t* s, flag_e f ) : base_t( n, p, s, f )
     {
-      background = dual = ground_aoe = true;
+      background = proc = dual = ground_aoe = true;
       aoe = -1;
       reduced_aoe_targets = 1.0;
       full_amount_targets = 1;
@@ -7224,7 +7221,7 @@ struct fury_of_elune_t final : public druid_spell_t
     boundless_moonlight_t( druid_t* p, std::string_view n, flag_e f )
       : druid_spell_t( n, p, p->find_spell( 428682 ), f )
     {
-      background = true;
+      background = proc = true;
       aoe = -1;  // TODO: aoe DR?
       name_str_reporting = "boundless_moonlight";
 
@@ -7376,7 +7373,7 @@ struct moon_base_t : public druid_spell_t
   {
     minor_moon_t( druid_t* p, std::string_view n, flag_e f ) : druid_spell_t( n, p, p->find_spell( 424588 ), f )
     {
-      background = true;
+      background = proc = true;
       aoe = -1;
       reduced_aoe_targets = 1.0;
       full_amount_targets = 1;
@@ -7651,7 +7648,7 @@ struct moonfire_t final : public druid_spell_t
     moonfire_damage_t( druid_t* p, std::string_view n, flag_e f ) : base_t( n, p, p->spec.moonfire_dmg, f )
     {
       may_miss = false;
-      dual = background = true;
+      dual = background = proc = true;
 
       dot_name = "moonfire";
       dot_list = &p->dot_lists.moonfire;
@@ -8128,7 +8125,7 @@ struct starfall_t final : public ap_spender_t
   {
     starfall_damage_t( druid_t* p, std::string_view n, flag_e f ) : druid_spell_t( n, p, p->find_spell( 191037 ), f )
     {
-      background = dual = true;
+      background = proc = dual = true;
 
       if ( !p->buff.lunar_amplification->is_fallback )
       {
@@ -8157,7 +8154,7 @@ struct starfall_t final : public ap_spender_t
     starfall_driver_t( druid_t* p, std::string_view n, flag_e f )
       : druid_spell_t( n, p, find_trigger( p->buff.starfall ).trigger(), f )
     {
-      background = dual = true;
+      background = proc = dual = true;
 
       auto pre = name_str.substr( 0, name_str.find_last_of( '_' ) );
       damage = p->get_secondary_action<starfall_damage_t>( pre + "_damage", f );
@@ -8414,7 +8411,7 @@ struct starsurge_t final : public ap_spender_t
     goldrinns_fang_t( druid_t* p, std::string_view n, flag_e f )
       : druid_spell_t( n, p, find_trigger( p->talent.power_of_goldrinn ).trigger(), f )
     {
-      background = true;
+      background = proc = true;
       name_str_reporting = "goldrinns_fang";
     }
   };
@@ -8509,7 +8506,7 @@ struct sunfire_t final : public druid_spell_t
 
     sunfire_damage_t( druid_t* p, flag_e f ) : base_t( "sunfire_dmg", p, p->spec.sunfire_dmg, f )
     {
-      dual = background = true;
+      dual = background = proc = true;
       aoe = p->talent.improved_sunfire.ok() ? -1 : 0;
       base_aoe_multiplier = 0;
 
@@ -8699,7 +8696,7 @@ struct wild_mushroom_t final : public druid_spell_t
     wild_mushroom_damage_t( druid_t* p, std::string_view n, const spell_data_t* s, flag_e f )
       : druid_spell_t( n, p, s, f ), ap_max( data().effectN( 2 ).base_value() )
     {
-      background = dual = true;
+      background = proc = dual = true;
       aoe = -1;
     }
 
@@ -12011,7 +12008,7 @@ void druid_t::init_special_effects()
       {
         natures_guardian_t( druid_t* p ) : druid_heal_t( "natures_guardian", p, p->find_spell( 227034 ) )
         {
-          background = true;
+          background = proc = true;
           callbacks = false;
           target = p;
         }
