@@ -2381,8 +2381,8 @@ struct ravage_base_t : public BASE
   {
     BASE::execute();
 
-    BASE::p()->buff.killing_strikes->trigger();
-    BASE::p()->buff.ruthless_aggression->trigger();
+    BASE::p()->buff.killing_strikes->trigger( this );
+    BASE::p()->buff.ruthless_aggression->trigger( this );
   }
 };
 
@@ -6652,6 +6652,10 @@ void druid_action_t<Base>::init()
 
   if ( !ab::harmful && !dynamic_cast<druid_heal_t*>( this ) )
     ab::target = ab::player;
+
+  // ensure secondary actions from convoke actions are also procs
+  if ( has_flag( flag_e::CONVOKE ) )
+    ab::proc = true;
 
   if ( dbc::is_school( ab::school, SCHOOL_ARCANE ) && p()->buff.lunar_amplification->can_expire( this ) )
   {
@@ -11202,6 +11206,7 @@ void druid_t::create_buffs()
 
   buff.killing_strikes = make_fallback( talent.killing_strikes.ok(),
     this, "killing_strikes", find_trigger( talent.killing_strikes ).trigger() )
+      ->set_trigger_spell( talent.killing_strikes )
       ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
       ->add_invalidate( CACHE_ARMOR );
 
@@ -11236,6 +11241,7 @@ void druid_t::create_buffs()
 
   buff.ruthless_aggression = make_fallback( talent.ruthless_aggression.ok(),
     this, "ruthless_aggression", find_trigger( talent.ruthless_aggression ).trigger() )
+      ->set_trigger_spell( talent.ruthless_aggression )
       ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
 
   buff.strategic_infusion = make_fallback( talent.strategic_infusion.ok() && talent.tigers_fury.ok(),
