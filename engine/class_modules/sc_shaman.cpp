@@ -11709,11 +11709,9 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
 
 void shaman_t::trigger_secondary_flame_shock( player_t* target, spell_variant variant = spell_variant::NORMAL ) const
 {
-  if ( variant == spell_variant::LIQUID_MAGMA_TOTEM )
-  {
-    flame_shock_t* fs                               = (flame_shock_t*) action.flame_shock;
-    fs->variant = spell_variant::LIQUID_MAGMA_TOTEM;
-  }
+  flame_shock_t* fs = (flame_shock_t*)action.flame_shock;
+  fs->variant       = variant;
+
   action.flame_shock->set_target( target );
   action.flame_shock->execute();
 }
@@ -11725,7 +11723,7 @@ void shaman_t::trigger_secondary_flame_shock( const action_state_t* state, spell
     return;
   }
 
-  trigger_secondary_flame_shock( state->target );
+  trigger_secondary_flame_shock( state->target, variant );
 }
 
 void shaman_t::regenerate_flame_shock_dependent_target_list( const action_t* action ) const
