@@ -87,7 +87,8 @@ enum class spell_variant : unsigned
   DEEPLY_ROOTED_ELEMENTS,
   PRIMORDIAL_WAVE,
   THORIMS_INVOCATION,
-  FUSION_OF_ELEMENTS
+  FUSION_OF_ELEMENTS,
+  LIQUID_MAGMA_TOTEM
 };
 
 enum class strike_variant : unsigned
@@ -1235,8 +1236,8 @@ public:
   void trigger_elemental_equilibrium( const action_state_t* state );
   void trigger_deeply_rooted_elements( const action_state_t* state );
 
-  void trigger_secondary_flame_shock( player_t* target ) const;
-  void trigger_secondary_flame_shock( const action_state_t* state ) const;
+  void trigger_secondary_flame_shock( player_t* target, spell_variant variant ) const;
+  void trigger_secondary_flame_shock( const action_state_t* state, spell_variant variant ) const;
   void regenerate_flame_shock_dependent_target_list( const action_t* action ) const;
 
   void generate_maelstrom_weapon( const action_t* action, int stacks = 1 );
@@ -4796,7 +4797,7 @@ struct lava_lash_t : public shaman_attack_t
     if ( actual_spread_targets == 0 )
     {
       // Always trigger Flame Shock on main target
-      p()->trigger_secondary_flame_shock( state->target );
+      p()->trigger_secondary_flame_shock( state->target, spell_variant::NORMAL );
       return;
     }
 
@@ -4902,10 +4903,10 @@ struct lava_lash_t : public shaman_attack_t
     }
 
     // Always trigger Flame Shock on main target
-    p()->trigger_secondary_flame_shock( state->target );
+    p()->trigger_secondary_flame_shock( state->target, spell_variant::NORMAL );
 
     range::for_each( targets, [ shaman = p() ]( player_t* target ) {
-      shaman->trigger_secondary_flame_shock( target );
+      shaman->trigger_secondary_flame_shock( target, spell_variant::NORMAL );
     } );
   }
 };
@@ -6036,6 +6037,7 @@ struct chain_lightning_t : public chained_base_t
   {
     if ( s->chain_target == 0 && p()->buff.power_of_the_maelstrom->up() )
     {
+      trigger_elemental_overload( s, 1.0 );
       p()->buff.power_of_the_maelstrom->decrement();
     }
 
@@ -8174,12 +8176,11 @@ private:
 
 public:
   flame_shock_t( shaman_t* player, util::string_view options_str = {} )
-    : shaman_spell_t( "flame_shock", player, player->find_spell( 188389 ) ),
+    : shaman_spell_t( "flame_shock", player, player->find_spell( 188389 )),
       spreader( player->talent.surge_of_power->ok() ? new flame_shock_spreader_t( player ) : nullptr ),
-    elemental_resource( player->find_spell( 263819 ) )
+      elemental_resource( player->find_spell( 263819 ) )
   {
     parse_options( options_str );
-
     affected_by_master_of_the_elements = true;
 
     // Ensure Flame Shock is single target, since Simulationcraft naively interprets a
@@ -8197,7 +8198,7 @@ public:
       cooldown->duration = data().cooldown() + p()->talent.flames_of_the_cauldron->effectN( 2 ).time_value();
     }
   }
-
+  spell_variant variant = spell_variant::NORMAL;
   void trigger_dot( action_state_t* state ) override
   {
     if ( !get_dot( state->target )->is_ticking() )
@@ -8332,36 +8333,37 @@ public:
   void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
-
-    if ( p()->buff.surge_of_power->up() && sim->target_non_sleeping_list.size() == 1 )
+    if ( this->variant != spell_variant::LIQUID_MAGMA_TOTEM )
     {
-      p()->proc.surge_of_power_wasted->occur();
-      p()->buff.surge_of_power->decrement();
-    }
-
-    if ( p()->buff.surge_of_power->up() && sim->target_non_sleeping_list.size() > 1 )
-    {
-      shaman_td_t* source_td = td( target );
-      player_t* additional_target = nullptr;
-
-      spreader->set_target( state->target );
-      // If all targets have flame shock, pick the shortest remaining time
-      if ( player->get_active_dots( source_td->dot.flame_shock ) ==
-           sim->target_non_sleeping_list.size() )
+      if ( p()->buff.surge_of_power->up() && sim->target_non_sleeping_list.size() == 1 )
       {
-        additional_target = spreader->shortest_duration_target();
-      }
-      // Pick closest target without Flame Shock
-      else
-      {
-        additional_target = spreader->closest_target();
-      }
-      if ( additional_target )
-      {
-        // expire first to prevent infinity
-        p()->proc.surge_of_power_flame_shock->occur();
+        p()->proc.surge_of_power_wasted->occur();
         p()->buff.surge_of_power->decrement();
-        p()->trigger_secondary_flame_shock( additional_target );
+      }
+
+      if ( p()->buff.surge_of_power->up() && sim->target_non_sleeping_list.size() > 1 )
+      {
+        shaman_td_t* source_td      = td( target );
+        player_t* additional_target = nullptr;
+
+        spreader->set_target( state->target );
+        // If all targets have flame shock, pick the shortest remaining time
+        if ( player->get_active_dots( source_td->dot.flame_shock ) == sim->target_non_sleeping_list.size() )
+        {
+          additional_target = spreader->shortest_duration_target();
+        }
+        // Pick closest target without Flame Shock
+        else
+        {
+          additional_target = spreader->closest_target();
+        }
+        if ( additional_target )
+        {
+          // expire first to prevent infinity
+          p()->proc.surge_of_power_flame_shock->occur();
+          p()->buff.surge_of_power->decrement();
+          p()->trigger_secondary_flame_shock( additional_target, spell_variant::NORMAL );
+        }
       }
     }
   }
@@ -8409,7 +8411,7 @@ struct frost_shock_t : public shaman_spell_t
     {
         if ( p()->buff.icefury_dmg->check() )
         {
-            t += 1 + as<int>( p()->talent.icefury->effectN( 4 ).base_value() );
+          t += 1 + as<int>( p()->find_spell( 210714 )->effectN( 4 ).base_value() );
         }
     }
 
@@ -8623,7 +8625,7 @@ struct ascendance_t : public shaman_spell_t
         auto tl = target_list();
         for ( size_t i = 0; i < std::min( tl.size(), as<size_t>( data().effectN( 7 ).base_value() ) ); ++i )
         {
-          p()->trigger_secondary_flame_shock( tl[ i ] );
+          p()->trigger_secondary_flame_shock( tl[ i ], spell_variant::NORMAL );
         }
       }
     }
@@ -9407,14 +9409,14 @@ struct magma_eruption_t : public shaman_spell_t
       // TODO: make more clever if ingame behaviour improves too.
       for ( size_t i = 0; i < std::min( target_list().size(), as<size_t>( data().effectN( 2 ).base_value() ) ); ++i )
       {
-        p()->trigger_secondary_flame_shock( target_list()[ i ] );
+        p()->trigger_secondary_flame_shock( target_list()[ i ], spell_variant::LIQUID_MAGMA_TOTEM );
       }
     }
     else
     {
       for ( size_t i = 0; i < std::min( tl.size(), as<size_t>( data().effectN( 2 ).base_value() ) ); ++i )
       {
-        p()->trigger_secondary_flame_shock( tl[ i ] );
+        p()->trigger_secondary_flame_shock( tl[ i ], spell_variant::LIQUID_MAGMA_TOTEM );
       }
     }
   }
@@ -9886,7 +9888,7 @@ struct primordial_wave_t : public shaman_spell_t
 
       p()->buff.primordial_wave->trigger();
 
-      p()->trigger_secondary_flame_shock( s );
+      p()->trigger_secondary_flame_shock( s, spell_variant::NORMAL );
     }
   };
 
@@ -10108,6 +10110,22 @@ struct tempest_t : public shaman_spell_t
   void schedule_travel(action_state_t* s) override {
     if ( s->chain_target == 0 )
     {
+      if (p()->buff.power_of_the_maelstrom->up() )
+      {
+        trigger_elemental_overload( s, 1.0 );
+        p()->buff.power_of_the_maelstrom->decrement();
+      }
+
+      if (p()->buff.surge_of_power->up())
+      {
+        for ( auto i = 0; i < as<int>( p()->talent.surge_of_power->effectN( 2 ).base_value() ); ++i )
+        {
+          trigger_elemental_overload( s, 1.0 );
+        }
+        p()->buff.surge_of_power->decrement();
+          
+      }
+
       trigger_elemental_overload( s );
       if ( p()->talent.supercharge.ok() )
       {
@@ -11687,13 +11705,18 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   proc.deeply_rooted_elements->occur();
 }
 
-void shaman_t::trigger_secondary_flame_shock( player_t* target ) const
+void shaman_t::trigger_secondary_flame_shock( player_t* target, spell_variant variant = spell_variant::NORMAL ) const
 {
+  if ( variant == spell_variant::LIQUID_MAGMA_TOTEM )
+  {
+    flame_shock_t* fs                               = (flame_shock_t*) action.flame_shock;
+    fs->variant = spell_variant::LIQUID_MAGMA_TOTEM;
+  }
   action.flame_shock->set_target( target );
   action.flame_shock->execute();
 }
 
-void shaman_t::trigger_secondary_flame_shock( const action_state_t* state ) const
+void shaman_t::trigger_secondary_flame_shock( const action_state_t* state, spell_variant variant = spell_variant::NORMAL ) const
 {
   if ( !state->action->result_is_hit( state->result ) )
   {
