@@ -5167,7 +5167,7 @@ public:
       }
     }
 
-    if ( p_->talent.ursocs_guidance.ok() && p_->talent.incarnation_bear.ok() )
+    if ( p_->talent.ursocs_guidance.ok() )
     {
       p_->cooldown.incarnation_bear->adjust( timespan_t::from_seconds( BASE::last_resource_cost / -ug_cdr ) );
       p_->cooldown.berserk_bear->adjust( timespan_t::from_seconds( BASE::last_resource_cost / -ug_cdr ) );
