@@ -11709,7 +11709,7 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
 
 void shaman_t::trigger_secondary_flame_shock( player_t* target, spell_variant variant = spell_variant::NORMAL ) const
 {
-  flame_shock_t* fs = (flame_shock_t*)action.flame_shock;
+  flame_shock_t* fs = debug_cast<flame_shock_t*>(action.flame_shock);
   fs->variant       = variant;
 
   action.flame_shock->set_target( target );
