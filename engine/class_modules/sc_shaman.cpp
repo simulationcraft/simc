@@ -10110,20 +10110,22 @@ struct tempest_t : public shaman_spell_t
   void schedule_travel(action_state_t* s) override {
     if ( s->chain_target == 0 )
     {
-      if (p()->buff.power_of_the_maelstrom->up() )
+      if ( p()->is_ptr() )
       {
-        trigger_elemental_overload( s, 1.0 );
-        p()->buff.power_of_the_maelstrom->decrement();
-      }
-
-      if (p()->buff.surge_of_power->up())
-      {
-        for ( auto i = 0; i < as<int>( p()->talent.surge_of_power->effectN( 2 ).base_value() ); ++i )
+        if ( p()->buff.power_of_the_maelstrom->up() )
         {
           trigger_elemental_overload( s, 1.0 );
+          p()->buff.power_of_the_maelstrom->decrement();
         }
-        p()->buff.surge_of_power->decrement();
-          
+
+        if ( p()->buff.surge_of_power->up() )
+        {
+          for ( auto i = 0; i < as<int>( p()->talent.surge_of_power->effectN( 2 ).base_value() ); ++i )
+          {
+            trigger_elemental_overload( s, 1.0 );
+          }
+          p()->buff.surge_of_power->decrement();
+        }
       }
 
       trigger_elemental_overload( s );
