@@ -1068,7 +1068,7 @@ void spymasters_web( special_effect_t& effect )
 //  e2: haste value
 //  e3: mult per use stack
 //  e4: unknown, damage cap? self damage?
-//  e5: post-combat duration
+//  e5: post-combat duration?
 //  e6: unknown, chance to be silenced?
 // 451895 is empowered buff
 // 445619 on-use
@@ -1207,16 +1207,17 @@ void aberrant_spellforge( special_effect_t& effect )
 
   effect.custom_buff = stack;
 
-  effect.player->register_on_combat_state_callback(
-      [ stack, dur = timespan_t::from_seconds( data->effectN( 5 ).base_value() ) ]( player_t* p, bool c ) {
-        if ( !c )
-        {
-          make_event( *p->sim, dur, [ p, stack ] {
-            if ( !p->in_combat )
-              stack->expire();
-          } );
-        }
+  // TODO: unknown if this is hardcoded to 15s or based off the dummy data
+  auto expire_delay = timespan_t::from_seconds( data->effectN( 5 ).base_value() ) * 2;
+  effect.player->register_on_combat_state_callback( [ stack, expire_delay ]( player_t* p, bool c ) {
+    if ( !c )
+    {
+      make_event( *p->sim, expire_delay, [ p, stack ] {
+        if ( !p->in_combat )
+          stack->expire();
       } );
+    }
+  } );
 }
 
 // 445203 data
@@ -1561,7 +1562,6 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
   {
     double cap_mul;
     int cap;
-    double original_amount;
 
     ovinax_stat_buff_t( player_t* p, std::string_view n, const spell_data_t* s, const spell_data_t* data )
       : stat_buff_t( p, n, s ),
@@ -1569,30 +1569,13 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
         cap( as<int>( data->effectN( 5 ).base_value() ) )
     {}
 
-    void reset() override
-    {
-      stat_buff_t::reset();
-      stats[ 0 ].amount = original_amount;
-    }
-
-    void _initialize()
-    {
-      // assume each buff has a single stat. refactor if this changes.
-      assert( stats.size() == 1 );
-      original_amount = stats[ 0 ].amount;
-    }
-
     // values can be off by a +/-2 due to unknown rounding being performed by the in-game script
-    void recalculate_stat_amount( int stacks = 0 )
+    double buff_stat_stack_amount( const buff_stat_t& stat, int s ) const override
     {
-      auto s = stacks ? stacks : check();
-      if ( !s )
-        return;
-
-      if ( s <= cap )
-        stats[ 0 ].amount = original_amount;
-      else
-        stats[ 0 ].amount = original_amount * ( cap + ( s - cap ) * cap_mul ) / s;
+      double val = std::max( 1.0, std::fabs( stat.amount ) );
+      double stack = s <= cap ? s : cap + ( s - cap ) * cap_mul;
+      // TODO: confirm truncation happens on final amount, and not per stack amount
+      return std::copysign( std::trunc( stack * val + 1e-3 ), stat.amount );
     }
   };
 
@@ -1600,7 +1583,6 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
   auto primary = create_buff<ovinax_stat_buff_t>( effect.player, effect.player->find_spell( 449578 ), data );
   primary->set_stat_from_effect_type( A_MOD_STAT, data->effectN( 1 ).average( effect ) )
          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  primary->_initialize();
 
   static constexpr std::array<unsigned, 4> buff_ids = { 449595, 449594, 449581, 449593 };
 
@@ -1616,7 +1598,6 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
     buff->set_stat_from_effect_type( A_MOD_RATING, data->effectN( 2 ).average( effect ) )
         ->set_name_reporting( stat_str )
         ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-    buff->_initialize();
 
     secondaries[ secondary_ratings[ i ] ] = buff;
   }
@@ -1631,12 +1612,6 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
     ->set_tick_callback( [ primary, secondaries, halt, p = effect.player ]( buff_t*, int, timespan_t ) {
       if ( halt->check() )
         return;
-
-      // recalculate stat amounts first before making stack adjustments. because recalculation changes the basic
-      // per-stack amount of the buff, this results in different post-adjustment total amounts depending if the stack is
-      // increasing or decreasing until the next tick.
-      primary->recalculate_stat_amount();
-      range::for_each( secondaries, []( const auto& b ) { b.second->recalculate_stat_amount(); } );
 
       // if player is moving decrement stack. if player is above desired primary stack and not casting, assume player
       // will sidestep to try to decrement.
@@ -1685,14 +1660,12 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
 
         if ( p_stacks )
         {
-          primary->recalculate_stat_amount( p_stacks );
           primary->trigger( p_stacks );
         }
 
         if ( s_stacks )
         {
           auto buff = secondaries.at( util::highest_stat( p, secondary_ratings ) );
-          buff->recalculate_stat_amount( s_stacks );
           buff->trigger( s_stacks );
         }
 

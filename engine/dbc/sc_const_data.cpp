@@ -178,24 +178,26 @@ static void generate_indices( bool ptr )
     {
       if ( range::contains( dbc::effect_category_subtypes(), effect.subtype() ) )
       {
-        const unsigned value = as<unsigned>( effect.misc_value1() );
-        if ( value != 0 )
+        if ( const auto value = as<unsigned>( effect.misc_value1() ) )
           spell_categories_index.add_effect( value, &effect, ptr );
       }
 
-      if ( effect.subtype() == A_ADD_PCT_LABEL_MODIFIER ||
-           effect.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
+      switch ( effect.subtype() )
       {
-        const short value = as<short>( effect.misc_value2() );
-        if ( value != 0 )
-          spell_label_index.add_effect( value, &effect, ptr );
-      }
-
-      if ( effect.subtype() == A_MOD_RECHARGE_RATE_LABEL )
-      {
-        const short value = as<short>( effect.misc_value1() );
-        if ( value != 0 )
-          spell_label_index.add_effect( value, &effect, ptr );
+        case A_MOD_RECHARGE_RATE_LABEL:
+        case A_MOD_TIME_RATE_BY_SPELL_LABEL:
+        case A_MOD_DAMAGE_FROM_SPELLS_LABEL:
+        case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:
+          if ( const short value = as<short>( effect.misc_value1() ) )
+            spell_label_index.add_effect( value, &effect, ptr );
+          break;
+        case A_ADD_PCT_LABEL_MODIFIER:
+        case A_ADD_FLAT_LABEL_MODIFIER:
+          if ( const auto value = as<short>( effect.misc_value2() ) )
+            spell_label_index.add_effect( value, &effect, ptr );
+          break;
+        default:
+          break;
       }
     }
   }
@@ -939,7 +941,6 @@ const spell_data_t* dbc::get_class_passive( const player_t& p, specialization_e 
 
 std::vector<const spell_data_t*> dbc::class_passives( const player_t* p )
 {
-
   std::vector<const spell_data_t*> spells;
 
   range::for_each( _class_passives, [ &spells, p ]( const class_passives_entry_t& entry ) {
@@ -951,6 +952,15 @@ std::vector<const spell_data_t*> dbc::class_passives( const player_t* p )
   } );
 
   return spells;
+}
+
+player_e dbc::get_class_from_spec( specialization_e spec )
+{
+  for ( const auto& entry : _class_passives )
+    if ( entry.spec == spec )
+      return entry.type;
+
+  return PLAYER_NONE;
 }
 
 double dbc::item_level_squish( unsigned source_ilevel, bool ptr )

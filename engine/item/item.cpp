@@ -1085,6 +1085,7 @@ bool item_t::initialize_data()
 std::string item_t::encoded_item() const
 {
   std::ostringstream s;
+  s.imbue( std::locale("C") );  // ensure item strings are locale-independent
 
   s << name_str;
 

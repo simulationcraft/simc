@@ -86,7 +86,7 @@ Tooltip          : Reduced distance at which target will attack.
 
 Name             : Purify (id=527) [Spell Family (6)] 
 Replaces         : Purify Disease (id=440006)
-Class            : Discipline Holy Priest
+Class            : Discipline Priest, Holy Priest
 School           : Holy
 Spell Type       : Magic
 Resource         : 1.3% Base Mana (0) (id=56)
@@ -3730,7 +3730,7 @@ Description      : Ascend into the air, keeping you out of harm's way. Lasts $d.
 Tooltip          : Flying.
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
-Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
+Class            : Shadow Priest, Elemental Shaman, Arcane Mage, Fire Mage, Frost Mage, Affliction Warlock, Demonology Warlock, Destruction Warlock, Balance Druid
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
@@ -3747,7 +3747,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
-Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
+Class            : Holy Paladin, Discipline Priest, Holy Priest, Restoration Shaman, Mistweaver Monk, Restoration Druid
 Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Spell Type       : None
@@ -5189,7 +5189,7 @@ Description      : $@spelldesc211317
 Tooltip          : After Spirit of Redemption expires, you will be revived at $s1% health.
 
 Name             : Mass Resurrection (id=212036) [Spell Family (6)] 
-Class            : Discipline Holy Priest
+Class            : Discipline Priest, Holy Priest
 School           : Holy
 Spell Type       : Magic
 Resource         : 0.8% Base Mana (0) (id=11135)
@@ -6064,12 +6064,14 @@ Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attac
 Effects          :
 #1 (id=651860)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.28544 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=651861)   : Apply Aura (6) | Unknown(470)
-                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 3678 | Target: Self (1)
+#2 (id=651861)   : Apply Aura (6) | Modify Time Rate (Label) (470)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 3678 (Label) | Target: Self (1)
+                   Affected Spells (Label): Entropic Rift (447445), Voidheart (449887)
 #3 (id=754067)   : Trigger Spell (64): Void Torrent
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 289577 | Target: Self (1)
-#4 (id=1158790)  : Apply Aura (6) | Unknown(470)
-                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 3678 | Target: Self (1)
+#4 (id=1158790)  : Apply Aura (6) | Modify Time Rate (Label) (470)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 3678 (Label) | Target: Self (1)
+                   Affected Spells (Label): Entropic Rift (447445), Voidheart (449887)
 Description      : Channel a torrent of void energy into the target, dealing $o Shadow damage over $d.
 
 |cFFFFFFFFGenerates ${$289577s1*$289577s2/100} Insanity over the duration.|r
@@ -6127,7 +6129,7 @@ Effects          :
 #1 (id=709098)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Resource: mana | Radius: 40 yards | Target: Raid in Area (56)
 #2 (id=759288)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
-                   Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Misc Value: 1284 | Radius: 40 yards | Target: Raid in Area (56)
+                   Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Misc Value: 1284 (Label) | Radius: 40 yards | Target: Raid in Area (56)
                    Affected Spells (Label): Divine Protection (498), Shield Wall (871), Desperate Prayer (19236), Barkskin (22812), Ardent Defender (31850), Icebound Fortitude (48792), Vampiric Blood (55233), Mirror Image (55342), Unending Resolve (104773), Astral Shift (108271), Exhilaration (109304), Fortifying Brew (115203), Die by the Sword (118038), Enraged Regeneration (184364), Crimson Vial (185311), Blur (198589), Fiery Brand (204021), Blur (212800), Obsidian Scales (363916), Divine Protection (403876)
 #3 (id=888372)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Misc Value: 1929 | Radius: 40 yards | Target: Raid in Area (56)
@@ -7193,7 +7195,7 @@ Aura Interrupt   : Leave World (19)
                  :
 Effects          :
 #1 (id=819312)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 690 | Target: Any Target (25)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 690 (Label) | Target: Any Target (25)
                    Affected Spells (Label): Tranquility (740), Summon Infernal (1122), Icy Veins (12472), Adrenaline Rush (13750), Avenging Wrath (31884), Rapture (47536), Dancing Rune Weapon (49028), Berserk (50334), Pillar of Frost (51271), Feral Spirit (51533), Vampiric Blood (55233), Divine Hymn (64843), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Berserk (106951), Avatar (107574), Healing Tide Totem (108280), Spirit Shell (109964), Revival (115310), Shadow Blades (121471), Invoke Niuzao, the Black Ox (132578), Storm, Earth, and Fire (137639), Metamorphosis (187827), Combustion (190319), Metamorphosis (191427), Storm Elemental (192249), Celestial Alignment (194223), Voidform (194249), Fire Elemental (198067), Ice Form (198144), Summon Darkglare (205180), Avenging Crusader (216331), Void Eruption (228260), Crusade (231895), Summon Demonic Tyrant (265187), Apocalypse (275699), Trueshot (288613), Revival (297850), Call of the Wild (359844), Deathmark (360194), Coordinated Assault (360952), Arcane Surge (365350), Arcane Surge (365362), Summon Blasphemy (367679), Dragonrage (375087), Celestial Alignment (383410), Restoral (388615), Sentinel (389539), Incarnation: Chosen of Elune (390414), Dark Ascension (391109), Invoke Niuzao, the Black Ox (395267), Avatar (401150), Breath of Eons (403631), Arcane Surge (453326), Avenging Wrath (454351), Crusade (454373)
 #2 (id=868651)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1550 | Target: Any Target (25)
@@ -13342,7 +13344,7 @@ Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Initial Priest (id=417191) [Spell Family (6), Passive, Hidden] 
-Class            : Unknown (1452) Priest
+Class            : Unknown Priest (1452)
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
@@ -14100,7 +14102,7 @@ Effects          :
 Description      : $@spelldesc372835
 
 Name             : Purify Disease (id=440006) [Spell Family (6)] 
-Class            : Discipline Holy Priest
+Class            : Discipline Priest, Holy Priest
 School           : Holy
 Spell Type       : Magic
 Spell Level      : 18
@@ -14521,7 +14523,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3022
-                 : 3678
+                 : 3678: Void Torrent (263165 effect#2), Void Torrent (263165 effect#4)
 Affecting spells : Discipline Priest (137032 effect#31), Shadow Priest (137033 effect#8), Shadow Covenant (322105 effect#1), Dark Ascension (391109 effect#1)
 Family Flags     : 44
 Attributes       : Allow Client Targeting (133), No Jump Pathing (208), Force Dest Location (288), Do Not Log on Learn (355)
@@ -14699,7 +14701,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3022
-                 : 3678
+                 : 3678: Void Torrent (263165 effect#2), Void Torrent (263165 effect#4)
 Attributes       : Do Not Log on Learn (355), Nameplate Personal Buffs/Debuffs (423)
                  :
 Effects          :
@@ -15232,6 +15234,7 @@ Effects          :
 Description      : Shadow Word: Death consumes absorb shields from your target, dealing up to $s1% extra damage to them and granting you $?c3[$s3 Insanity][$s2% mana] if a shield was present.
 
 Name             : Void Leech (id=451963) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -15241,7 +15244,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1218
                  : 3022
-Attributes       : Can't Crit (93), Ignore Damage Taken Modifiers (136), Not an Attack (194), Ignore Caster Damage Modifiers (221), Ignore Sanctuary (263), Cannot Kill Target (316)
+Attributes       : Not an Action (92), Can't Crit (93), Treat As Periodic (121), Ignore Damage Taken Modifiers (136), Not an Attack (194), Ignore Caster Damage Modifiers (221), Ignore Sanctuary (263), Cannot Kill Target (316)
                  :
 Effects          :
 #1 (id=1152783)  : School Damage (2): shadow
@@ -16069,7 +16072,7 @@ Effects          :
 Description      : $@spelldesc459990
 
 Name             : Priest (id=462097) [Spell Family (6), Passive, Hidden] 
-Class            : Discipline Holy Shadow Priest
+Class            : Discipline Priest, Holy Priest, Shadow Priest
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
