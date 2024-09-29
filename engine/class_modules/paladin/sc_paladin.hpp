@@ -541,6 +541,7 @@ public:
     const spell_data_t* lightbearer;
     const spell_data_t* lights_revocation;
 
+    const spell_data_t* avenging_wrath;  // Keeping this because it still contains all the spell data needed
 
     // Stuff that may come back
     const spell_data_t* seraphim;  // It'll come back :copium:
@@ -759,7 +760,6 @@ public:
     // Remove after 11.0.5
     const spell_data_t* auras_of_swift_vengeance;
     const spell_data_t* seasoned_warhorse;
-    const spell_data_t* avenging_wrath;  // Spell
     const spell_data_t* justification;
     const spell_data_t* seal_of_mercy;
     const spell_data_t* crusaders_reprieve;
