@@ -786,6 +786,7 @@ public:
     propagate_const<buff_t*> exterminate_painful_death;
     propagate_const<buff_t*> rune_carved_plates_physical_buff;
     propagate_const<buff_t*> rune_carved_plates_magical_buff;
+    propagate_const<buff_t*> swift_and_painful;
 
   } buffs;
 
@@ -1470,6 +1471,7 @@ public:
     const spell_data_t* exterminate_buff_painful_death;
     const spell_data_t* rune_carved_plates_physical_buff;
     const spell_data_t* rune_carved_plates_magical_buff;
+    const spell_data_t* swift_and_painful_buff;
 
   } spell;
 
@@ -6714,6 +6716,18 @@ struct wave_of_souls_t final : public death_knight_spell_t
       get_td( state->target )->debuff.wave_of_souls->trigger();
     }
   }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_spell_t::composite_da_multiplier( state );
+
+    if ( state->chain_target == 0 )
+    {
+      m *= 1.0 + p()->talent.deathbringer.swift_and_painful->effectN( 2 ).percent();
+    }
+
+    return m;
+  }
 };
 
 struct soul_rupture_t final : public death_knight_spell_t
@@ -6737,6 +6751,15 @@ struct soul_rupture_t final : public death_knight_spell_t
     }
 
     return tl.size();
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+    if ( p()->talent.deathbringer.swift_and_painful->ok() && target_list().empty() )
+    {
+      p()->buffs.swift_and_painful->trigger();
+    }
   }
 };
 
@@ -13363,6 +13386,7 @@ void death_knight_t::spell_lookups()
       conditional_spell_lookup( talent.deathbringer.rune_carved_plates.ok(), 440289 );
   spell.rune_carved_plates_magical_buff =
       conditional_spell_lookup( talent.deathbringer.rune_carved_plates.ok(), 440290 );
+  spell.swift_and_painful_buff = conditional_spell_lookup( talent.deathbringer.swift_and_painful.ok(), 469169 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -13798,6 +13822,9 @@ void death_knight_t::create_buffs()
                                                           "rune_carved_plates_magical",
                                                           spell.rune_carved_plates_magical_buff )
                                                           ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
+
+  buffs.swift_and_painful = make_fallback( talent.deathbringer.swift_and_painful.ok(), this, "swift_and_painful",
+                                           spell.swift_and_painful_buff );
 
   // San'layn
   buffs.essence_of_the_blood_queen = make_fallback<essence_of_the_blood_queen_haste_buff_t>(
@@ -14920,6 +14947,10 @@ void death_knight_t::parse_player_effects()
     parse_effects( buffs.enduring_strength, talent.frost.enduring_strength );
     parse_effects( buffs.unleashed_frenzy, talent.frost.unleashed_frenzy );
     parse_effects( buffs.icy_vigor );
+    if ( is_ptr() )
+    {
+      parse_effects( buffs.swift_and_painful );
+    }
   }
 
   // Unholy
