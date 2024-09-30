@@ -149,7 +149,7 @@ void shadow( player_t* p )
   heal_for_tof->add_action( "holy_nova,if=buff.rhapsody.stack=20&talent.rhapsody", "Use Holy Nova when Rhapsody is fully stacked to acquire Twist of Fate if an ally can be healed for it and it is not currently up." );
 
   trinkets->add_action( "use_item,use_off_gcd=1,name=aberrant_spellforge,if=gcd.remains>0&buff.aberrant_spellforge.stack<=4" );
-  trinkets->add_action( "use_item,name=spymasters_web,if=buff.spymasters_report.stack=1&buff.power_infusion.up&!buff.spymasters_web.up|buff.power_infusion.up&(fight_remains<120)|(fight_remains<=20|buff.dark_ascension.up&fight_remains<=60|buff.entropic_rift.up&talent.entropic_rift&fight_remains<=30)&!buff.spymasters_web.up" );
+  trinkets->add_action( "use_item,name=spymasters_web,if=(buff.power_infusion.up&buff.spymasters_report.stack>=40&fight_remains>240)|(buff.power_infusion.up&buff.bloodlust.up)|buff.power_infusion.up&(fight_remains<120)|(fight_remains<=20|buff.dark_ascension.up&fight_remains<=60|buff.entropic_rift.up&talent.entropic_rift&fight_remains<=30)&!buff.spymasters_web.up" );
   trinkets->add_action( "use_items,if=(buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60))|fight_remains<20" );
 }
 //shadow_apl_end
@@ -266,7 +266,7 @@ void shadow_ptr( player_t* p )
   heal_for_tof->add_action( "holy_nova,if=buff.rhapsody.stack=20&talent.rhapsody", "Use Holy Nova when Rhapsody is fully stacked to acquire Twist of Fate if an ally can be healed for it and it is not currently up." );
 
   trinkets->add_action( "use_item,use_off_gcd=1,name=aberrant_spellforge,if=gcd.remains>0&buff.aberrant_spellforge.stack<=4" );
-  trinkets->add_action( "use_item,name=spymasters_web,if=buff.spymasters_report.stack=1&buff.power_infusion.up&!buff.spymasters_web.up|buff.power_infusion.up&(fight_remains<120)|(fight_remains<=20|buff.dark_ascension.up&fight_remains<=60|buff.entropic_rift.up&talent.entropic_rift&fight_remains<=30)&!buff.spymasters_web.up" );
+  trinkets->add_action( "use_item,name=spymasters_web,if=(buff.power_infusion.up&buff.spymasters_report.stack>=40&fight_remains>240)|(buff.power_infusion.up&buff.bloodlust.up)|buff.power_infusion.up&(fight_remains<120)|(fight_remains<=20|buff.dark_ascension.up&fight_remains<=60|buff.entropic_rift.up&talent.entropic_rift&fight_remains<=30)&!buff.spymasters_web.up" );
   trinkets->add_action( "use_items,if=(buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60))|fight_remains<20" );
 }
 //shadow_ptr_apl_end
