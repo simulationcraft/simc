@@ -1839,7 +1839,7 @@ public:
   void chill_streak_bounce( player_t& target );
   // Unholy
   void trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
-  void burst_festering_wound( player_t* target, unsigned n = 1, proc_t* action = nullptr );
+  void burst_festering_wound( player_t* target, unsigned n = 1, proc_t* action = nullptr, bool apoc = false );
   void trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance = -1.0,
                                  bool death_trigger = false );
   void trigger_bursting_sores( player_t* target, unsigned n = 1 );
@@ -3225,6 +3225,11 @@ struct gargoyle_pet_t : public death_knight_pet_t
     }
   };
 
+  resource_e primary_resource() const override
+  {
+    return RESOURCE_NONE;
+  }
+
   void arise() override
   {
     death_knight_pet_t::arise();
@@ -3368,6 +3373,11 @@ struct risen_skulker_pet_t : public death_knight_pet_t
 
     if ( !skulker_shot->execute_event )
       trigger_ready();
+  }
+
+  resource_e primary_resource() const override
+  {
+    return RESOURCE_NONE;
   }
 
   void init_base_stats() override
@@ -3714,6 +3724,11 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     }
   }
 
+  resource_e primary_resource() const override
+  {
+    return RESOURCE_NONE;
+  }
+
   void arise() override
   {
     death_knight_pet_t::arise();
@@ -3745,6 +3760,11 @@ struct bloodworm_pet_t : public death_knight_pet_t
 
     owner_coeff.ap_from_ap = 0.25;
     resource_regeneration  = regen_type::DISABLED;
+  }
+
+  resource_e primary_resource() const override
+  {
+    return RESOURCE_NONE;
   }
 
   attack_t* create_main_hand_auto_attack() override
@@ -3829,6 +3849,11 @@ struct magus_pet_t : public death_knight_pet_t
     {
       ruptured_viscera = new ruptured_viscera_t<magus_pet_t>( this, true );
     }
+  }
+
+  resource_e primary_resource() const override
+  {
+    return RESOURCE_NONE;
   }
 
   void dismiss( bool expired = false ) override
@@ -3936,6 +3961,11 @@ struct blood_beast_pet_t : public death_knight_pet_t
     }
 
     pet_t::dismiss( expired );
+  }
+
+  resource_e primary_resource() const override
+  {
+    return RESOURCE_NONE;
   }
 
   void arise() override
@@ -4088,6 +4118,11 @@ struct horseman_pet_t : public death_knight_pet_t
     death_knight_pet_t::reset();
     rp_spent     = 0;
     current_pool = 0;
+  }
+
+  resource_e primary_resource() const override
+  {
+    return RESOURCE_NONE;
   }
 
   void init_action_list() override
@@ -4468,6 +4503,11 @@ struct abomination_pet_t : public death_knight_pet_t
     tww1_4pc_proc                     = true;
     owner_coeff.ap_from_ap            = 2.4;
     resource_regeneration             = regen_type::DISABLED;
+  }
+
+  resource_e primary_resource() const override
+  {
+    return RESOURCE_NONE;
   }
 
   void arise() override
@@ -6842,9 +6882,13 @@ struct apocalypse_t final : public death_knight_melee_attack_t
     const death_knight_td_t* td = get_td( state->target );
     assert( td && "apocalypse impacting without any target data" );  // td should should exist because the debuff is a
     // condition of target_ready()
-    auto n_wounds = std::min( as<int>( data().effectN( 2 ).base_value() ), td->debuff.festering_wound->check() );
+    
+    // Currently bugged, always acts as if it popped 4 festering wounds, even if there are less on the target.
+    auto n_wounds = 4;
+    if( !p()->bugs )
+      n_wounds = std::min( as<int>( data().effectN( 2 ).base_value() ), td->debuff.festering_wound->check() );
 
-    p()->burst_festering_wound( state->target, n_wounds, p()->procs.fw_apocalypse );
+    p()->burst_festering_wound( state->target, n_wounds, p()->procs.fw_apocalypse, true );
     p()->pets.apoc_ghouls.spawn( as<int>( data().effectN( 2 ).base_value() ) );
 
     if ( p()->talent.unholy.magus_of_the_dead.ok() )
@@ -11715,7 +11759,7 @@ void death_knight_t::trigger_bursting_sores( player_t* target, unsigned n )
   make_event<bs_event_t>( *sim, this, target, n );
 }
 
-void death_knight_t::burst_festering_wound( player_t* target, unsigned n, proc_t* proc )
+void death_knight_t::burst_festering_wound( player_t* target, unsigned n, proc_t* proc, bool apoc )
 {
   struct fs_burst_t : public event_t
   {
@@ -11723,9 +11767,10 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n, proc_t
     player_t* target;
     player_t* dk;
     proc_t* proc;
+    bool apocalypse;
 
-    fs_burst_t( player_t* p, player_t* target, unsigned n, proc_t* proc )
-      : event_t( *p, 0_ms ), n( n ), target( target ), dk( p ), proc( proc )
+    fs_burst_t( player_t* p, player_t* target, unsigned n, proc_t* proc, bool apoc )
+      : event_t( *p, 0_ms ), n( n ), target( target ), dk( p ), proc( proc ), apocalypse( apoc )
     {
     }
 
@@ -11744,6 +11789,13 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n, proc_t
       death_knight_td_t* td = p()->get_target_data( target );
 
       unsigned n_executes = std::min( n, as<unsigned>( td->debuff.festering_wound->check() ) );
+
+      // Apocalypse is currently bugged, acting as if it popped 4 wounds even if there are less on the target.
+      if ( apocalypse && p()->bugs )
+      {
+        n_executes = n;
+      }
+
       for ( unsigned i = 0; i < n_executes; ++i )
       {
         p()->active_spells.festering_wound->execute_on_target( target );
@@ -11765,6 +11817,10 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n, proc_t
         }
       }
 
+      // Revert back to actual number of wounds before decrementing the debuff
+      if( apocalypse && p()->bugs )
+        n_executes = std::min( n, as<unsigned>( td->debuff.festering_wound->check() ) );
+
       td->debuff.festering_wound->decrement( n_executes );
     }
   };
@@ -11777,7 +11833,7 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n, proc_t
     return;
   }
 
-  make_event<fs_burst_t>( *sim, this, target, n, proc );
+  make_event<fs_burst_t>( *sim, this, target, n, proc, apoc );
 }
 
 // Launches the repeating event for the Inexorable Assault talent
