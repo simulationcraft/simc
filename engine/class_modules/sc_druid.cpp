@@ -7758,8 +7758,8 @@ struct moonfire_t final : public druid_spell_t
 
   void execute() override
   {
-    // 2nd moonfire executes first
-    if ( twin )
+    // 2nd moonfire executes first for normal moonfire, but 2nd for galactic guardian
+    if ( twin && !has_flag( flag_e::GALACTIC ) )
     {
       const auto& tl = target_list();
       if ( auto twin_target = p()->get_smart_target( tl, &druid_td_t::dots_t::moonfire, target, twin_range ) )
@@ -7772,6 +7772,14 @@ struct moonfire_t final : public druid_spell_t
     damage->target = state->target = target;
     damage->snapshot_state( state, result_amount_type::DMG_DIRECT );
     damage->schedule_execute( state );
+
+    // 2nd moonfire executes first for normal moonfire, but 2nd for galactic guardian
+    if ( twin && has_flag( flag_e::GALACTIC ) )
+    {
+      const auto& tl = target_list();
+      if ( auto twin_target = p()->get_smart_target( tl, &druid_td_t::dots_t::moonfire, target, twin_range ) )
+        twin->execute_on_target( twin_target );
+    }
 
     p()->buff.galactic_guardian->expire( this );
   }
