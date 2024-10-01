@@ -205,7 +205,7 @@ feet=boots_of_the_black_bulwark,id=225590,bonus_id=1540,enchant=defenders_march_
 finger1=circle_of_bone,id=133299,bonus_id=9466/1514/10879,ilevel=639,gem_id=213482/213482,enchant=cursed_haste_3
 finger2=writhing_ringworm,id=225576,bonus_id=1540/10879,gem_id=213482/213482,enchant=cursed_haste_3
 trinket1=treacherous_transmitter,id=221023,bonus_id=1540
-trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
+trinket2=ovinaxs_mercurial_egg,id=220305,bonus_id=7981/11143/5878/10299
 main_hand=charged_claymore,id=222447,bonus_id=11144/9627/9633/8902/8793/10222/11300/8960,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
@@ -213,7 +213,7 @@ main_hand=charged_claymore,id=222447,bonus_id=11144/9627/9633/8902/8793/10222/11
 # gear_strength=32522
 # gear_stamina=237765
 # gear_crit_rating=3094
-# gear_haste_rating=21840
+# gear_haste_rating=20395
 # gear_mastery_rating=15554
 # gear_armor=56354
 # set_bonus=thewarwithin_season_1_2pc=1

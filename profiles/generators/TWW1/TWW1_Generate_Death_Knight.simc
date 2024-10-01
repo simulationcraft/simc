@@ -121,6 +121,8 @@ role=attack
 position=back
 talents=CwPAAAAAAAAAAAAAAAAAAAAAAAAzMjZMGDzYmZmphZmZGzYAAAAAAAAAMzMzwYwMAgZzMMbzYmZmxMDwiZxwQGY2YoxCAMDA
 
+thewarwithin.ovinaxs_mercurial_egg_desired_primary_stacks=15
+
 head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1540/10255/10394/10879,gem_id=213494/213494
 shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540
@@ -134,7 +136,7 @@ feet=boots_of_the_black_bulwark,id=225590,bonus_id=1540,enchant=defenders_march_
 finger1=writhing_ringworm,id=225576,bonus_id=1540/10879,gem_id=213494/213494,enchant=cursed_haste_3
 finger2=circle_of_bone,id=133299,bonus_id=9466/1514/10879,ilevel=639,gem_id=213494/213494,enchant=cursed_haste_3
 trinket1=treacherous_transmitter,id=221023,bonus_id=1540
-trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
+trinket2=ovinaxs_mercurial_egg,id=220305,bonus_id=7981/11143/5878/10299
 main_hand=charged_claymore,id=222447,bonus_id=11144/9627/9633/8902/8793/10222/11300/8960,enchant=rune_of_the_fallen_crusader
 
 save=TWW1_Death_Knight_Unholy.simc
@@ -160,7 +162,7 @@ feet=boots_of_the_black_bulwark,id=225590,bonus_id=1540,enchant=defenders_march_
 finger1=circle_of_bone,id=133299,bonus_id=9466/1514/10879,ilevel=639,gem_id=213482/213482,enchant=cursed_haste_3
 finger2=writhing_ringworm,id=225576,bonus_id=1540/10879,gem_id=213482/213482,enchant=cursed_haste_3
 trinket1=treacherous_transmitter,id=221023,bonus_id=1540
-trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
+trinket2=ovinaxs_mercurial_egg,id=220305,bonus_id=7981/11143/5878/10299
 main_hand=charged_claymore,id=222447,bonus_id=11144/9627/9633/8902/8793/10222/11300/8960,enchant=rune_of_the_fallen_crusader
 
 save=TWW1_Death_Knight_Unholy_San'layn.simc
