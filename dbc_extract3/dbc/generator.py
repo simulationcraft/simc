@@ -3408,7 +3408,7 @@ class SpellDataGenerator(DataGenerator):
         for id in id_keys:
             spell = self.db('SpellName')[id]
 
-            # Unused hotfix IDs: 5, 6, 7
+            # Unused hotfix IDs: 1, 2, 5, 6, 7
             # MAX hotfix id: 56
             hotfix = HotfixDataRecord()
             power_count = 0
