@@ -145,19 +145,27 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
     healing_modifier( 0.0 ),
     crit_bonus( 0.0 )
 {
-  // Map modifiers appropriately based on spec
-  healing_modifier = p->talents.avenging_wrath->effectN( 2 ).percent();
-  crit_bonus       = 0;
-  damage_modifier  = p->talents.avenging_wrath->effectN( 2 ).percent();
+  if ( !p->is_ptr() )
+  {
+    // Map modifiers appropriately based on spec
+    healing_modifier = p->talents.avenging_wrath->effectN( 2 ).percent();
+    crit_bonus       = 0;
+    damage_modifier  = p->talents.avenging_wrath->effectN( 2 ).percent();
+  }
+  else
+  {
+    healing_modifier = p->talents.avenging_wrath->effectN( 1 ).percent();
+    damage_modifier  = p->talents.avenging_wrath->effectN( 1 ).percent();
+    crit_bonus       = p->talents.avenging_wrath->ok() ? p->talents.avenging_wrath->effectN( 3 ).percent() : 0;
+  }
+
+  if ( !p->is_ptr() && p->talents.avenging_wrath_might->ok() )
+    crit_bonus = p->talents.avenging_wrath_might->effectN( 1 ).percent();
 
   if ( p->talents.sanctified_wrath->ok() )
   {
-    // the tooltip doesn't say this, but the spelldata does
     base_buff_duration *= 1.0 + p->talents.sanctified_wrath->effectN( 1 ).percent();
   }
-
-  if ( p->talents.avenging_wrath_might->ok() )
-    crit_bonus = p->talents.avenging_wrath_might->effectN( 1 ).percent();
 
   if ( p->talents.divine_wrath->ok() )
   {
@@ -742,7 +750,7 @@ struct divine_shield_t : public paladin_spell_t
 
   bool ready() override
   {
-    if ( player->debuffs.forbearance->check() )
+    if ( p()->debuffs.forbearance->check() || !( p()->is_ptr() && p()->talents.lights_revocation->ok() ) )
       return false;
 
     return paladin_spell_t::ready();
@@ -4327,8 +4335,8 @@ void paladin_t::init_spells()
   if (is_ptr()) talents.lightbearer      = find_talent_spell( talent_tree::CLASS, "Lightbearer" );
   if (is_ptr()) talents.lights_revocation               = find_talent_spell( talent_tree::CLASS, "Light's Revocation" );
 
-  // This is not in the Talents anymore, but still contains all the Spell data
-  talents.avenging_wrath = find_spell( 31884 );
+  // This is now in the Spec Tree for every Paladin
+  talents.avenging_wrath = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath" );
 
 
   if ( !is_ptr() )

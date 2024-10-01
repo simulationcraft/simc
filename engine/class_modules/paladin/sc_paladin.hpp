@@ -1418,7 +1418,7 @@ public:
 
     // Class talent's Avenging Wrath damage multiplier affects only if base talent is talented (Could still use AW with
     // only Sentinel/AWM/Crusade/AC talented)
-    if ( affected_by.avenging_wrath && p()->talents.avenging_wrath->ok() &&
+    if ( affected_by.avenging_wrath && ( p()->is_ptr() || p()->talents.avenging_wrath->ok() ) &&
          ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
     {
       am *= 1.0 + p()->buffs.avenging_wrath->get_damage_mod();
