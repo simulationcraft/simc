@@ -1897,7 +1897,7 @@ void treacherous_transmitter( special_effect_t& effect )
       }
       else
       {
-        make_event( *sim, rng().range( 3_s, player->find_spell( 449947 )->duration() - 250_ms ),
+        make_event( *sim, rng().gauss_ab( 6_s, 3_s, 3_s, player->find_spell( 449947 )->duration() - 250_ms ),
                     [ this ] { stat_buff->trigger(); } );
       }
     }
