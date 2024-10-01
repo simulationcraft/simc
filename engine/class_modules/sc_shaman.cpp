@@ -735,6 +735,7 @@ public:
     proc_t* surge_of_power_lava_burst;
     proc_t* surge_of_power_frost_shock;
     proc_t* surge_of_power_flame_shock;
+    proc_t* surge_of_power_tempest;
     proc_t* surge_of_power_wasted;
 
     proc_t* elemental_blast_haste;
@@ -10125,6 +10126,7 @@ struct tempest_t : public shaman_spell_t
             trigger_elemental_overload( s, 1.0 );
           }
           p()->buff.surge_of_power->decrement();
+          p()->proc.surge_of_power_tempest->occur();
         }
       }
 
@@ -12744,6 +12746,7 @@ void shaman_t::init_procs()
   proc.surge_of_power_lava_burst     = get_proc( "Surge of Power: Lava Burst" );
   proc.surge_of_power_frost_shock    = get_proc( "Surge of Power: Frost Shock" );
   proc.surge_of_power_flame_shock    = get_proc( "Surge of Power: Flame Shock" );
+  proc.surge_of_power_tempest    = get_proc( "Surge of Power: Tempest" );
   proc.surge_of_power_wasted    = get_proc( "Surge of Power: Wasted" );
 
   proc.aftershock           = get_proc( "Aftershock" );
