@@ -1,11 +1,11 @@
-shaman="TWW1_Shaman_Elemental_Storm²"
+shaman="TWW1_Shaman_Elemental_PTR"
 source=default
 spec=elemental
 level=80
 race=tauren
 role=spell
 position=ranged_back
-talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAMbzy2MjZGmZjxMDmZGAAAAAAGzYYgFYZ0QjNAwYaGY2WYmJGzMz2wyMmBzywsMzMzMjhZYA
+talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAMLz2yMjxMzysMzMjBzMDAAAAAWMzGMgBMbMhMLAAbTzAz2CjpxYmZMsMzMDLzywsMmZAmZjB
 
 # Default consumables
 potion=tempered_potion_3
