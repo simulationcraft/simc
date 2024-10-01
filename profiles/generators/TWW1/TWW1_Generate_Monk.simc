@@ -1,29 +1,29 @@
-monk="TWW1_Monk_Brewmaster_2H"
+monk="TWW1_Monk_Brewmaster"
 source=default
 spec=brewmaster
 level=80
 race=tauren
 role=tank
 position=front
-talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAAGjxMMjlZsNzMzYAAAAAAAssATYGYGmZxMYbmZGmlhZsNLm2WsYbmZMzCAAshAAAY2mlmZmZjZwC
+talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAAGjxMMsMjtZmZGAAAAAAAssAiZGYGmhZwyMzMMLDzYbWmptlHYb2mZGmFAAYbWmWmlZWGAAz2s0MzMLMDWA
 
-head=gatecrashers_horns,id=212047,bonus_id=7981/11143/5878/10299/10397,gem_id=213743
-neck=silken_advisors_favor,id=225575,bonus_id=7981/11143/5878/10299/10397/10878,gem_id=213461/213461
-shoulders=gatecrashers_enduring_effigy,id=212045,bonus_id=7981/11143/5878/10299
-back=wings_of_shattered_sorrow,id=225574,bonus_id=7981/11143/5878/10299,enchant=chant_of_burrowing_rapidity_3
-chest=gatecrashers_gi,id=212050,bonus_id=7981/11143/5878/10299,enchant=crystalline_radiance_3
-wrists=sanguine_experiments_bandages,id=225588,bonus_id=7981/11143/5878/10299/10397,gem_id=213461,enchant=chant_of_armored_speed_3
-hands=runebranded_grasps,id=219333,bonus_id=10222/9627/11144/8795/11109
-waist=adrenal_surge_clasp,id=219502,bonus_id=9627/11144/10222/10397,gem_id=213461
-legs=gatecrashers_kilt,id=212046,bonus_id=7981/11143/5878/10299,enchant=stormbound_armor_kit_3
-feet=fleeting_massacre_footpads,id=225591,bonus_id=7981/11143/5878/10299,enchant=defenders_march_3
-finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=7981/11143/5878/10299/10397/10878,gem_id=213461/213461,enchant=cursed_critical_strike_3
-finger2=ritual_commanders_ring,id=178781,bonus_id=657/11143/5878/7981/10299/10397/10878,gem_id=213461/213461,enchant=cursed_critical_strike_3
-trinket1=void_reapers_contract,id=212456,bonus_id=7981/11143/5878/10299
-trinket2=mad_queens_mandate,id=212454,bonus_id=7981/11143/5878/10299
-main_hand=harvesters_interdiction,id=221159,bonus_id=657/11143/5878/7981/10299,enchant=authority_of_the_depths_3
+head=,id=212047,bonus_id=1540/10299/1808,gem_id=213743
+neck=,id=225575,bonus_id=1540/10299/10376/8781,gem_id=213467/213497
+shoulder=,id=212045,bonus_id=1540/10299
+back=,id=225574,bonus_id=1540/10299/10376,enchant_id=7409
+chest=,id=212050,bonus_id=1540/10299,enchant_id=7364
+wrist=,id=225588,bonus_id=1540/10299/10376/1808,enchant_id=7391,gem_id=213479
+hands=,id=219333,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960,crafted_stats=32/40
+waist=,id=219331,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960/1808,gem_id=213461,crafted_stats=32/40
+legs=,id=212046,bonus_id=1540/10299,enchant_id=7595
+feet=,id=159320,bonus_id=10047/10299/10376,enchant_id=7424
+finger1=,id=225578,bonus_id=1540/10299/10376/8781,enchant_id=7470,gem_id=213461/213461
+finger2=,id=178781,bonus_id=9948/10299/10376/8781,enchant_id=7470,gem_id=213461/213461
+trinket1=,id=212456,bonus_id=1540/10299/10376
+trinket2=,id=212454,bonus_id=1540/10299/10376
+main_hand=,id=221159,bonus_id=3131/10299/10376,enchant_id=7460
 
-save=TWW1_Monk_Brewmaster_2H.simc
+save=TWW1_Monk_Brewmaster.simc
 
 monk="TWW1_Monk_Brewmaster_DW"
 source=default
