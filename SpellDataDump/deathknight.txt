@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.2.56647 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.2.56819 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1536,7 +1536,6 @@ Attributes       : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66
 Effects          :
 #1 (id=48025)    : Apply Aura (6) | Periodic Damage (3): frost every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21400 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Any Target (25)
-Hotfixed         : PvP Coefficient (1.25 -> 1)
 #2 (id=1026999)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313), Glacial Advance (394500), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501)
@@ -3290,7 +3289,6 @@ Effects          :
 #17 (id=1187090)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 4138 (Label) | Target: Self (1)
                    Affected Spells (Label): Infliction of Sorrow (434143)
-Hotfixed         : NEW EFFECT
 
 Name             : Anti-Magic Zone (desc=PvP Talent) (id=145629) [Spell Family (15)] 
 Class            : Death Knight
@@ -6858,7 +6856,6 @@ Description      : $@spelldesc273952
 Tooltip          : Death and Decay snare amount reduced by $s1%.
 
 Name             : Voracious (id=274009) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -14336,7 +14333,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #5 (id=1124444)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.58145 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.484542 -> 0.58145)
 Description      : A vampiric strike that deals $?a137007[$s1][$s5] Shadow damage and heals you for $?a137007[$434422s2][$434422s3]% of your maximum health.
 
 Additionally grants you Essence of the Blood Queen for $433925d.
@@ -14376,7 +14372,6 @@ Attributes       : Passive (6), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1123520)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 25)
 Description      : Your Death Coil$?a137007[, Epidemic][] and Death Strike have a $s1% chance to make your next $?a137008[Heart Strike]?s207311[Clawing Shadows][Scourge Strike] become Vampiric Strike.
 
 Vampiric Strike heals you for $?a137008[$434422s2][$434422s3]% of your maximum health and grants you Essence of the Blood Queen, increasing your Haste by ${$433925s1/10}.1%, up to ${$433925s1*$433925u/10}.1% for $433925d.
@@ -14542,7 +14537,6 @@ Effects          :
 #2 (id=1123820)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 3134 (Label) | Target: Self (1)
                    Affected Spells (Label): Essence of the Blood Queen (433925)
-Hotfixed         : Base Value (4 -> 5)
 Description      : Essence of the Blood Queen stacks $s1 additional times and increases the damage of your Death Coil and Death Strike by $s2% per stack.
 
 Name             : Vampiric Aura (id=434100) [Spell Family (15), Passive] 
@@ -14758,7 +14752,6 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1123972)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
-Hotfixed         : Sub Type (80 -> 137), Base Value (6 -> 8), Misc Value 2 (0 -> 1)
 Description      : $@spelldesc434157
 Tooltip          : Your Strength is increased by $w1%.
 
@@ -15638,7 +15631,6 @@ Description      : After Reaper's Mark explodes, your next $?a443564[$s3 ][]$?a1
 The first scythe strikes your target for $?a137008[$441424s1][$441424s2] Shadowfrost damage and has a $?a443564[${$s2*1.5}][$s2]% chance to apply Reaper's Mark, the second scythe strikes all enemies around your target for $?a137008[$441426s1][$441426s2] Shadowfrost damage$?(a441894&a137008)[ and applies Blood Plague]?(a441894&$a137006)[ and applies Frost Fever][]. Deals reduced damage beyond $s5 targets.
 
 Name             : Exterminate (id=441416) [Spell Family (15)] 
-Hotfixed         : Unknown(55)
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
@@ -16640,7 +16632,6 @@ Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Allow Whi
 Effects          :
 #1 (id=1141445)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Mechanic: Snare | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : Base Value (-70 -> -40)
 #2 (id=1141446)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Mechanic: Snare
 #3 (id=1141447)  : School Damage (2): frost
@@ -16846,7 +16837,6 @@ Effects          :
                    Family Flags: 0
 
 Name             : Exterminate (id=447954) [Spell Family (15)] 
-Hotfixed         : Unknown(55)
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
@@ -17396,7 +17386,6 @@ Effects          :
 Description      : Casting Anti-Magic Shell grants $454863i nearby allies a Lesser Anti-Magic Shell that Absorbs up to $454863s1 magic damage and reduces the duration of harmful Magic effects against them by $454863s2%. 
 
 Name             : Lesser Anti-Magic Shell (id=454863) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
@@ -18303,7 +18292,6 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1169307)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
-Hotfixed         : Sub Type (80 -> 137), Base Value (6 -> 8), Misc Value 2 (0 -> 1)
 Description      : $@spelldesc434157
 Tooltip          : Your Strength is increased by $w1%.
 

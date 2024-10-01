@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.2.56647 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.2.56819 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -3052,14 +3052,12 @@ Attributes       : Not Shapeshifted (16), Allow Low Level Buff (67), Include In 
 Effects          :
 #1 (id=157840)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.52000 | PvP Coefficient: 1.20000 | Target: Friendly (21)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=290817)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Friendly (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Ancient Teachings (388024), Ancient Teachings (388025), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48, 102
 #3 (id=874900)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.12000 | PvP Coefficient: 1.20000 | Radius: 0 - 60 yards | Target: At Friendly (132) -> At Friendly in Area (31)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 Description      : Wraps the target in healing mists, healing for $o1 over $d, and increasing healing received from your other spells by $m2%. $?a388847[
 
 Applies Renewing Mist for $388847s1 seconds to an ally within $388847r yds.][]
@@ -3691,12 +3689,10 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48
-Hotfixed         : Base Value (0 -> 3)
 #2 (id=191104)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48
-Hotfixed         : Base Value (0 -> 3)
 #3 (id=191105)   : Apply Aura (6) | Unknown(312)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 117 | Target: Self (1)
 #4 (id=191106)   : Apply Aura (6) | Override Attack Power per Spell Power% (404)
@@ -3724,7 +3720,6 @@ Hotfixed         : Base Value (0 -> 3)
                    Base Value: 106 | Scaled Value: 106 | PvP Coefficient: 0.44700
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959)
                    Family Flags: 39
-Hotfixed         : Base Value (79 -> 106), PvP Coefficient (0.62 -> 0.447)
 #12 (id=260833)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
@@ -3733,7 +3728,6 @@ Hotfixed         : Base Value (79 -> 106), PvP Coefficient (0.62 -> 0.447)
                    Base Value: 297 | Scaled Value: 297 | PvP Coefficient: 0.32500
                    Affected Spells: Tiger Palm (100780), Tiger Palm (331433)
                    Family Flags: 10
-Hotfixed         : Base Value (245 -> 297), PvP Coefficient (0.343 -> 0.325)
 #14 (id=260835)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 184 | Scaled Value: 184 | PvP Coefficient: 1.00000
                    Affected Spells: Spinning Crane Kick (107270)
@@ -3757,7 +3751,6 @@ Hotfixed         : Base Value (245 -> 297), PvP Coefficient (0.343 -> 0.325)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 2.20000 | Target: Self (1)
                    Affected Spells: Vivify (116670)
                    Family Flags: 26
-Hotfixed         : PvP Coefficient (1 -> 2.2)
 #21 (id=1041449)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2430 (Label) | Target: Self (1)
 #22 (id=1041505)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
@@ -6377,12 +6370,10 @@ Attributes       : Do Not Display Range (126), Allow Cast While Channeling (308)
 Effects          :
 #1 (id=726171)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 3.12000 | PvP Coefficient: 1.20000 | Target: Friendly (21)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=893187)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 #3 (id=893188)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.12000 | PvP Coefficient: 1.20000 | Radius: 0 - 60 yards | Target: At Friendly (132) -> At Friendly in Area (31)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 Description      : $@spelldesc116680
 
 Name             : Invigorating Mists (id=274586) [Spell Family (53), Passive] 
@@ -17824,7 +17815,6 @@ Labels           : 16: Class Spells
 Effects          :
 #1 (id=1151723)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.60000 | PvP Coefficient: 0.50000 | Radius: 0 - 6 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Deals $s1 Shadow damage to all enemies within $a yds.
 
 Name             : Mantra of Purity (id=451253) [Spell Family (53)] 
@@ -18310,7 +18300,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521)
                    Family Flags: 118
-Hotfixed         : PvP Coefficient (0.5 -> 1)
 Description      : Strike of the Windlord's cooldown is reduced by ${$s1/-1000} sec and its damage is increased by $s2%.
 
 Name             : Gale Force (id=451580) [Spell Family (53), Passive] 
@@ -19538,7 +19527,6 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Tiger Palm (331433)
                    Family Flags: 10
-Hotfixed         : Base Value (-50 -> -25)
 #2 (id=1183510)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Tiger Palm (331433)
