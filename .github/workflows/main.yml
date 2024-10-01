@@ -382,8 +382,8 @@ jobs:
           path: ${{ matrix.spec }}.simc
           retention-days: 1
 
-  apl-dump:
-    name: Action Priority List Dump
+  apl-profile:
+    name: Action Priority List Dump / Regenerate Profiles
     runs-on: ${{ matrix.os }}
     needs: [ spec-test, spelldata-dump ]
     if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc'
@@ -398,6 +398,16 @@ jobs:
             os: ubuntu-22.04
 
     steps:
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ${{ runner.workspace }}/b/ninja/simc
+            profiles
+            tests
+            generate_profiles_ci.sh
+            .git
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+
       - uses: actions/checkout@v4
 
       - name: Download APLs
@@ -410,11 +420,17 @@ jobs:
       - name: Setup
         run: echo "SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
 
+      - name: Run
+        env:
+          UBSAN_OPTIONS: print_stacktrace=1
+          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
+        run: ${{ github.workspace }}/generate_profiles_ci.sh
+
       - name: Commit APLs
         continue-on-error: true
         uses: EndBug/add-and-commit@v9
         with:
-          message: 'Update APL Dump ${{ env.SHORT_SHA }}'
+          message: 'Update APL Dump / Regenerate Profiles ${{ env.SHORT_SHA }}'
           default_author: github_actions
           fetch: --no-tags --force --prune --no-recurse-submodules --depth=1 origin ${{ github.ref_name }}
           add: '*.simc'
@@ -477,49 +493,6 @@ jobs:
         env:
           UBSAN_OPTIONS: print_stacktrace=1
         run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null ${{ matrix.simc_flags }}
-
-  simc-profiles:
-    name: Regenerate profiles
-    runs-on: ${{ matrix.os }}
-    needs: [ ubuntu-clang-build ]
-    if: github.event_name == 'push'
-
-    strategy:
-      fail-fast: false
-      matrix:
-        cppVersion: [17]
-        compiler: [clang++-15]
-        include:
-          - compiler: clang++-15
-            os: ubuntu-22.04
-
-    steps:
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ${{ runner.workspace }}/b/ninja/simc
-            profiles
-            tests
-            generate_profiles_ci.sh
-            .git
-          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
-
-      - uses: actions/checkout@v4
-
-      - name: Run
-        env:
-          UBSAN_OPTIONS: print_stacktrace=1
-          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
-        run: ${{ github.workspace }}/generate_profiles_ci.sh
-
-      - name: Commit Profiles
-        continue-on-error: true
-        uses: EndBug/add-and-commit@v9.1.4
-        with:
-          message: 'Regenerate profiles'
-          default_author: github_actions
-          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1 origin ${{ github.ref_name }}
-          add: '*.simc'
 
   build-osx:
     name: macos-latest
