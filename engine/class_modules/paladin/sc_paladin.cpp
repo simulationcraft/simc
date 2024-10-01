@@ -864,7 +864,7 @@ struct lay_on_hands_t : public paladin_heal_t
     // Uther's Counsel also reduces cooldown
     if ( p->talents.uthers_counsel->ok())
     {
-      cooldown->duration *= 1.0 + p->talents.uthers_counsel->effectN( 2 ).percent();
+      cooldown->duration *= 1.0 + p->talents.uthers_counsel->effectN( 1 ).percent();
     }
 
     may_crit    = false;
