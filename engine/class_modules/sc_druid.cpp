@@ -3348,6 +3348,60 @@ struct brambles_buff_t final : public druid_absorb_buff_t
   }
 };
 
+// Celestial Alignment ======================================================
+struct celestial_alignment_buff_t final : public druid_buff_t
+{
+  eclipse_handler_t& eclipse_handler;
+
+  celestial_alignment_buff_t( druid_t* p, std::string_view n, const spell_data_t* s )
+    : base_t( p, n, s ), eclipse_handler( p->eclipse_handler )
+  {
+    set_cooldown( 0_ms );
+
+    if ( p->talent.celestial_alignment.ok() )
+    {
+      set_default_value_from_effect_type( A_HASTE_ALL );
+      set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    }
+  }
+
+  bool trigger( int s, double v, double c, timespan_t d ) override
+  {
+    auto ret = base_t::trigger( s, v, c, d );
+    if ( !ret )
+      return false;
+
+    auto dur_ = remains();
+
+    // advance eclipse manually if refreshing as eclipse->stack_change_callback is not called
+    auto in_lunar = eclipse_handler.in_lunar();
+    auto in_solar = eclipse_handler.in_solar();
+
+    p()->buff.eclipse_lunar->trigger( dur_ );
+    if ( in_lunar )
+      eclipse_handler.advance_eclipse<eclipse_e::LUNAR>( true );
+    eclipse_handler.update_eclipse<eclipse_e::LUNAR>();
+
+    p()->buff.eclipse_solar->trigger( dur_ );
+    if ( in_solar )
+      eclipse_handler.advance_eclipse<eclipse_e::SOLAR>( true );
+    eclipse_handler.update_eclipse<eclipse_e::SOLAR>();
+
+    if ( p()->active.orbital_strike )
+      p()->active.orbital_strike->execute_on_target( p()->target );
+
+    return true;
+  }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    base_t::expire_override( s, d );
+
+    p()->buff.eclipse_lunar->expire();
+    p()->buff.eclipse_solar->expire();
+  }
+};
+
 // Earthwarden ==============================================================
 struct earthwarden_buff_t final : public druid_absorb_buff_t
 {
@@ -10643,48 +10697,14 @@ void druid_t::create_buffs()
       ->set_name_reporting( "Nature" );
 
   buff.celestial_alignment =
-    make_fallback( talent.celestial_alignment.ok(), this, "celestial_alignment", spec.celestial_alignment );
+    make_fallback<celestial_alignment_buff_t>( talent.celestial_alignment.ok() && !talent.incarnation_moonkin.ok(),
+      this, "celestial_alignment", spec.celestial_alignment );
 
   buff.incarnation_moonkin =
-    make_fallback( talent.incarnation_moonkin.ok(), this, "incarnation_chosen_of_elune", spec.incarnation_moonkin );
+    make_fallback<celestial_alignment_buff_t>( talent.incarnation_moonkin.ok(),
+      this, "incarnation_chosen_of_elune", spec.incarnation_moonkin );
 
   buff.ca_inc = talent.incarnation_moonkin.ok() ? buff.incarnation_moonkin : buff.celestial_alignment;
-  buff.ca_inc->set_cooldown( 0_ms )
-    ->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
-      if ( !old_ )
-      {
-        // cannot use remains() here as expiration is not yet set when stack change callbacks are run
-        auto d = b->buff_duration();
-
-        // advance eclipse manually if refreshing as stack_change_callback is not called
-        auto in_lunar = eclipse_handler.in_lunar();
-        auto in_solar = eclipse_handler.in_solar();
-
-        buff.eclipse_lunar->trigger( d );
-        if ( in_lunar )
-          eclipse_handler.advance_eclipse<eclipse_e::LUNAR>( true );
-        eclipse_handler.update_eclipse<eclipse_e::LUNAR>();
-
-        buff.eclipse_solar->trigger( d );
-        if ( in_solar )
-          eclipse_handler.advance_eclipse<eclipse_e::SOLAR>( true );
-        eclipse_handler.update_eclipse<eclipse_e::SOLAR>();
-
-        if ( active.orbital_strike )
-          active.orbital_strike->execute_on_target( target );
-      }
-      else if ( !new_ )
-      {
-        buff.eclipse_lunar->expire();
-        buff.eclipse_solar->expire();
-      }
-    } );
-
-  if ( talent.celestial_alignment.ok() )
-  {
-    buff.ca_inc->set_default_value_from_effect_type( A_HASTE_ALL )
-      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-  }
 
   buff.denizen_of_the_dream =
     make_fallback( talent.denizen_of_the_dream.ok(), this, "denizen_of_the_dream", find_spell( 394076 ) )
