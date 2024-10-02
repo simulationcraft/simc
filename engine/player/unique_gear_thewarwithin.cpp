@@ -1635,10 +1635,10 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
           range::for_each( secondaries, [ &stack ]( const auto& b ) {
             if ( b.second->check() )
             {
-              stack = b.second->check();
               b.second->expire();
             }
           } );
+          stack = primary->max_stack() - primary->check();
         }
 
         if ( !buff->at_max_stacks() )
@@ -1763,7 +1763,7 @@ void treacherous_transmitter( special_effect_t& effect )
     cryptic_instructions_t( const special_effect_t& e )
       : generic_proc_t( e, "cryptic_instructions", e.driver() ),
         effect( e ),
-        task_dur( e.player->find_spell( 449947 )->duration() )
+        task_dur( 0_ms )
     {
       harmful            = false;
       cooldown->duration = 0_ms;  // Handled by the item
@@ -1811,6 +1811,8 @@ void treacherous_transmitter( special_effect_t& effect )
           debug_cast<do_treacherous_transmitter_task_t*>( a )->task = tasks[ 0 ];
         }
       }
+
+      task_dur = e.player->find_spell( 449947 )->duration();
     }
 
     void precombat_buff()
