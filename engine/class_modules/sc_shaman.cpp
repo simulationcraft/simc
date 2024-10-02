@@ -10056,7 +10056,8 @@ struct tempest_t : public shaman_spell_t
         }
     }
 
-    if ( p()->talent.arc_discharge.ok() && execute_state->n_targets >= 2 )
+    // TODO: Remove target restriction once 11.0.5 is live.
+    if ( p()->talent.arc_discharge.ok() && ( execute_state->n_targets >= 2 || p()->is_ptr() ) )
     {
       p()->buff.arc_discharge->trigger( p()->buff.arc_discharge->max_stack() );
     }
