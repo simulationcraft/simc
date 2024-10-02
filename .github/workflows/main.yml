@@ -272,9 +272,6 @@ jobs:
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} log=1 debug=1 ${{ matrix.style_arg }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          ${{ runner.workspace}}/b/ninja/simc ${{ env.SIMC_ARGS }} log=1 debug=1 ptr=1  ${{ matrix.style_arg }} \
-            ${{ env.CLASS_STR }}=shaman spec=elemental ${{ env.PLAYER_ARGS }} \
-
 
       - name: "HTML JSON"
         if: always()
@@ -284,16 +281,12 @@ jobs:
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} html=test.html json=test.json ${{ matrix.style_arg }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} html=test.html json=test.json ptr=1 ${{ matrix.style_arg }} \
-            ${{ env.CLASS_STR }}=shaman spec=elemental ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, No Effects, No Sets"
         if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ptr=1 ${{ matrix.style_arg }} \
-            ${{ env.CLASS_STR }}=shaman spec=elemental ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, No Effects, All Sets"
         if: always()
@@ -301,9 +294,6 @@ jobs:
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ptr=1 ${{ matrix.style_arg }} \
-            enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=shaman spec=elemental ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, All Effects, No Sets"
         if: always()
@@ -311,9 +301,6 @@ jobs:
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_item_effects=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ptr=1 ${{ matrix.style_arg }} \
-            enable_all_item_effects=1 \
-            ${{ env.CLASS_STR }}=shaman spec=elemental ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, All Effects, All Sets"
         if: always()
@@ -321,17 +308,12 @@ jobs:
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ptr=1 ${{ matrix.style_arg }} \
-            enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=shaman spec=elemental ${{ env.PLAYER_ARGS }}
 
       - name: "Starter Talents, No Effects, No Sets"
         if: always()
         run: |
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ptr=1 ${{ matrix.style_arg }} \
-            ${{ env.CLASS_STR }}=shaman spec=elemental ${{ env.PLAYER_ARGS }} load_default_talents=1
 
       - name: "Starter Talents, No Effects, All Sets"
         if: always()
@@ -339,9 +321,6 @@ jobs:
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ptr=1 ${{ matrix.style_arg }} \
-            enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=shaman spec=elemental ${{ env.PLAYER_ARGS }} load_default_talents=1
 
       - name: "Starter Talents, All Effects, No Sets"
         if: always()
@@ -349,9 +328,6 @@ jobs:
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_item_effects=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ptr=1 ${{ matrix.style_arg }} \
-            enable_all_item_effects=1 \
-            ${{ env.CLASS_STR }}=shaman spec=elemental ${{ env.PLAYER_ARGS }} load_default_talents=1
 
       - name: "Starter Talents, All Effects, All Sets"
         if: always()
@@ -359,9 +335,6 @@ jobs:
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ptr=1 ${{ matrix.style_arg }} \
-            enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=shaman spec=elemental ${{ env.PLAYER_ARGS }} load_default_talents=1
 
       - name: "All Talents, No Effects, No Sets"
         if: always()
@@ -369,9 +342,6 @@ jobs:
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_talents=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ptr=1 ${{ matrix.style_arg }} \
-            enable_all_talents=1 \
-            ${{ env.CLASS_STR }}=shaman spec=elemental ${{ env.PLAYER_ARGS }}
 
       - name: "All Talents, No Effects, All Sets"
         if: always()
@@ -379,9 +349,6 @@ jobs:
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ptr=1 ${{ matrix.style_arg }} \
-            enable_all_talents=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=shaman spec=elemental ${{ env.PLAYER_ARGS }}
 
       - name: "All Talents, All Effects, No Sets"
         if: always()
@@ -389,9 +356,6 @@ jobs:
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ptr=1 ${{ matrix.style_arg }} \
-            enable_all_talents=1 enable_all_item_effects=1 \
-            ${{ env.CLASS_STR }}=shaman spec=elemental ${{ env.PLAYER_ARGS }}
 
       - name: "All Talents, All Effects, All Sets"
         if: always()
@@ -399,9 +363,6 @@ jobs:
           ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ptr=1 ${{ matrix.style_arg }} \
-            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=shaman spec=elemental ${{ env.PLAYER_ARGS }}
 
       - name: Dump APL
         id: dump_apl
@@ -420,6 +381,127 @@ jobs:
           name: apl-${{ github.sha }}-${{ matrix.spec }}
           path: ${{ matrix.spec }}.simc
           retention-days: 1
+
+  ele-ptr-test:
+    name: spec-test-ele-ptr
+    runs-on: ${{ matrix.os }}
+    needs: [ ubuntu-clang-build ]
+
+    env:
+      UBSAN_OPTIONS: print_stacktrace=1
+      SIMC_ARGS: output=/dev/null threads=2 iterations=10 cleanup_threads=1
+      PLAYER_ARGS: load_default_gear=1
+
+    steps:
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ${{ runner.workspace }}/b/ninja/simc
+            profiles
+            tests
+            generate_profiles_ci.sh
+            .git
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+
+      - name: "Log Debug"
+        if: always()
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} log=1 debug=1 \
+            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
+            class=shaman spec=elemental ${{ env.PLAYER_ARGS }}
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} log=1 debug=1 \
+            class=shaman spec=elemental ${{ env.PLAYER_ARGS }}
+
+      - name: "HTML JSON"
+        if: always()
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} html=test.html json=test.json \
+            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
+            class=shaman spec=elemental ${{ env.PLAYER_ARGS }}
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} html=test.html json=test.json \
+            class=shaman spec=elemental ${{ env.PLAYER_ARGS }}
+
+      - name: "No Talents, No Effects, No Sets"
+        if: always()
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} \
+            class=shaman spec=elemental ${{ env.PLAYER_ARGS }}
+
+      - name: "No Talents, No Effects, All Sets"
+        if: always()
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} \
+            enable_all_sets=1 \
+            class=shaman spec=elemental ${{ env.PLAYER_ARGS }}
+
+      - name: "No Talents, All Effects, No Sets"
+        if: always()
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} \
+            enable_all_item_effects=1 \
+            class=shaman spec=elemental ${{ env.PLAYER_ARGS }}
+
+      - name: "No Talents, All Effects, All Sets"
+        if: always()
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} \
+            enable_all_item_effects=1 enable_all_sets=1 \
+            class=shaman spec=elemental ${{ env.PLAYER_ARGS }}
+
+      - name: "Starter Talents, No Effects, No Sets"
+        if: always()
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} \
+            class=shaman spec=elemental ${{ env.PLAYER_ARGS }} load_default_talents=1
+
+      - name: "Starter Talents, No Effects, All Sets"
+        if: always()
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} \
+            enable_all_sets=1 \
+            class=shaman spec=elemental ${{ env.PLAYER_ARGS }} load_default_talents=1
+
+      - name: "Starter Talents, All Effects, No Sets"
+        if: always()
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} \
+            enable_all_item_effects=1 \
+            class=shaman spec=elemental ${{ env.PLAYER_ARGS }} load_default_talents=1
+
+      - name: "Starter Talents, All Effects, All Sets"
+        if: always()
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} \
+            enable_all_item_effects=1 enable_all_sets=1 \
+            class=shaman spec=elemental ${{ env.PLAYER_ARGS }} load_default_talents=1
+
+      - name: "All Talents, No Effects, No Sets"
+        if: always()
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} \
+            enable_all_talents=1 \
+            class=shaman spec=elemental ${{ env.PLAYER_ARGS }}
+
+      - name: "All Talents, No Effects, All Sets"
+        if: always()
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} \
+            enable_all_talents=1 enable_all_sets=1 \
+            class=shaman spec=elemental ${{ env.PLAYER_ARGS }}
+
+      - name: "All Talents, All Effects, No Sets"
+        if: always()
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} \
+            enable_all_talents=1 enable_all_item_effects=1 \
+            class=shaman spec=elemental ${{ env.PLAYER_ARGS }}
+
+      - name: "All Talents, All Effects, All Sets"
+        if: always()
+        run: |
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} \
+            enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
+            class=shaman spec=elemental ${{ env.PLAYER_ARGS }}
 
   apl-profile:
     name: Action Priority List Dump / Regenerate Profiles
