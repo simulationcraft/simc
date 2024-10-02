@@ -1415,7 +1415,8 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
                  :
 Effects          :
 #1 (id=129901)   : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.50000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 Description      : Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
 
@@ -9562,7 +9563,7 @@ Labels           : 16: Class Spells
 Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Suppress Caster Procs (112), Do Not Display Range (126), No Cast Log (128), No Caster Aura Icon (187), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Enforce Shapeshift Requirements (434)
                  :
 Effects          :
-#1 (id=890815)   : Apply Aura (6) | Modify Healing Taken% from Caster' (504)
+#1 (id=890815)   : Apply Aura (6) | Modify Healing Taken% from Caster (504)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Friendly (21)
 Description      : $@spelldesc356705
 Tooltip          : Healing taken from $@auracaster increased by $s1%
@@ -11983,7 +11984,8 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
                  :
 Effects          :
 #1 (id=1024730)  : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Increases all healing taken by $s1%.
 Tooltip          : Increases all healing taken  by $w1%.
 
@@ -12364,7 +12366,8 @@ Aura Interrupt   : Leave World (19)
                  :
 Effects          :
 #1 (id=1026080)  : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friendly (21)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friendly (21)
+                   Affected School(s): All
 Description      : $@spelldesc389574
 Tooltip          : Increases all healing taken by $w1%.
 
@@ -16685,7 +16688,8 @@ Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (
                  :
 Effects          :
 #1 (id=1150564)  : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc450569
 Tooltip          : Increases all healing taken by $w1%.
 

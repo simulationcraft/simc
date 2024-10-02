@@ -4645,7 +4645,7 @@ Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allo
                  :
 Effects          :
 #1 (id=312855)   : Apply Raid Aura (65) | Modify Healing Received% (118)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 40 yards | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 40 yards | Target: Self (1)
 Description      : $@spelldesc200430
 Tooltip          : Healing received increased by $s1%.
 
@@ -7343,7 +7343,8 @@ Effects          :
 #1 (id=820438)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friendly (21)
 #2 (id=821028)   : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friendly (21)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friendly (21)
+                   Affected School(s): All
 #3 (id=823067)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Rating: Mastery | Target: Friendly (21)
 #4 (id=834166)   : Cancel Aura (164)
@@ -12046,7 +12047,8 @@ Effects          :
 #1 (id=1023440)  : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friendly (21)
 #2 (id=1023441)  : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friendly (21)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friendly (21)
+                   Affected School(s): All
 #3 (id=1023442)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Rating: Mastery | Target: Friendly (21)
 #4 (id=1023443)  : Cancel Aura (164)
@@ -13812,7 +13814,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 50000 yards | Target: Raid in Area (56)
                    Affected School(s): All
 #2 (id=1053584)  : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 50000 yards | Target: Raid in Area (56)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 50000 yards | Target: Raid in Area (56)
+                   Affected School(s): All
 #3 (id=1055960)  : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 50000 yards | Target: Raid in Area (56)
 #4 (id=1072387)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds

@@ -967,7 +967,8 @@ Effects          :
 #1 (id=3617)     : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.04070 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=133966)   : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 0.50000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 #3 (id=870471)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc8679
@@ -6449,7 +6450,8 @@ Effects          :
                    Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Shiv (5938), Wound Poison (8679), Wound Poison (8680), Envenom (32645), Deadly Poison (113780), Toxic Blade (245388), Poison Bomb (255546), Double Dose (273009), Nothing Personal (286581), Instant Poison (315584), Instant Poison (315585), Slaughter Poison (323660), Sepsis (328305), Sepsis (328306), Dreadblades (343142), Amplifying Poison (381664), Amplifying Poison (383414), Kingsbane (385627), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Envenomous Explosion (426581), Fatebound Coin (Tails) (452538), Fatebound Coin (452559), Lucky Coin (461818)
                    Family Flags: 16, 28, 29, 35, 36, 68, 85, 86, 97, 118, 119
 #2 (id=886415)   : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 #3 (id=1046107)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Garrote (703), Rupture (1943), Crimson Tempest (121411), Internal Bleeding (154953), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Serrated Bone Spike (385424), Mutilated Flesh (394021), Rupture (394031), Serrated Bone Spike (394036), Deathmark (394331), Deathmark (470679)
@@ -11683,7 +11685,8 @@ Effects          :
 #1 (id=1033874)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.04070 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1033875)  : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 0.50000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 #3 (id=1033876)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc8679
@@ -12082,7 +12085,8 @@ Effects          :
 #1 (id=1046117)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1046118)  : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 #3 (id=1046119)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
                    Affected Spells: Garrote (703), Rupture (1943), Crimson Tempest (121411), Internal Bleeding (154953), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Serrated Bone Spike (328547), Deathmark (360194), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Serrated Bone Spike (385424), Mutilated Flesh (394021), Rupture (394031), Serrated Bone Spike (394036), Deathmark (394331), Deathmark (470679)
@@ -13018,7 +13022,8 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
                  :
 Effects          :
 #1 (id=1105137)  : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 #2 (id=1115206)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 3057 (Label) | Target: Self (1)
                    Affected Spells (Label): Soothing Darkness (393970), Soothing Darkness (393971)
