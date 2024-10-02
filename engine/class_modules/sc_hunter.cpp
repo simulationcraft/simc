@@ -4244,7 +4244,8 @@ struct kill_shot_t : hunter_ranged_attack_t
 
     if ( p()->talents.cull_the_herd.ok() )
     {
-      double amount = s -> result_amount * p()->talents.cull_the_herd->effectN( 1 ).percent();
+      double percent = p()->talents.cull_the_herd->effectN( 1 ).percent() + p()->specs.survival_hunter->effectN( 16 ).percent();
+      double amount = s -> result_amount * percent;
       if ( amount > 0 )
         residual_action::trigger( p()->actions.cull_the_herd, s -> target, amount );
     }
@@ -4771,8 +4772,11 @@ struct barbed_shot_t: public hunter_ranged_attack_t
   {
     double m = hunter_ranged_attack_t::composite_ta_multiplier( s );
 
-    m *= 1 + p()->buffs.furious_assault->value();
-
+    if( p()->buffs.furious_assault->check() )
+    {
+      m *= 1 + p()->buffs.furious_assault->data().effectN( 4 ).percent();
+    }
+    
     return m;
   }
 
@@ -8194,7 +8198,8 @@ void hunter_t::create_buffs()
 
   buffs.howl_of_the_pack
     = make_buff( this, "howl_of_the_pack", find_spell( 462515 ) )
-      -> set_default_value_from_effect( 1 );
+      -> set_default_value_from_effect( 1 )
+      -> apply_affecting_aura( specs.survival_hunter );
 
   buffs.frenzied_tear 
     = make_buff( this, "frenzied_tear", find_spell( 447262 ) )
@@ -8202,11 +8207,13 @@ void hunter_t::create_buffs()
 
   buffs.scattered_prey
     = make_buff( this, "scattered_prey", find_spell( 461866 ) )
-      -> set_default_value_from_effect( 1 );
+      -> set_default_value_from_effect( 1 )
+      -> apply_affecting_aura( specs.survival_hunter);
 
   buffs.furious_assault
     = make_buff( this, "furious_assault", find_spell( 448814 ) )
-      -> set_default_value_from_effect( 4 );
+      -> set_default_value_from_effect( 2 )
+      -> apply_affecting_aura( specs.survival_hunter );
 
   buffs.beast_of_opportunity
     = make_buff( this, "beast_of_opportunity", find_spell( 450143 ) )
