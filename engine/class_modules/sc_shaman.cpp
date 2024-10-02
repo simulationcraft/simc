@@ -7694,7 +7694,22 @@ struct earthquake_overload_damage_t : public earthquake_damage_base_t
           coeff = get_spell_power_coefficient_from_sdb();
       }
 
-      spell_power_mod.direct = coeff * player->talent.mountains_will_fall->effectN( 1 ).percent();
+      if ( player->is_ptr() )
+      {
+        coeff *=
+            player->mastery.elemental_overload->effectN( 2 ).percent() *
+            ( 1.0 + player->talent.echo_chamber->effectN( 1 ).percent() );
+      }
+      else
+      {
+        coeff *=
+            player->mastery.elemental_overload->effectN( 2 ).percent() +
+            player->talent.echo_chamber->effectN( 1 ).percent();
+      }
+
+      coeff = coeff * player->talent.mountains_will_fall->effectN( 1 ).percent();
+
+      spell_power_mod.direct = coeff;
   }
 };
 
