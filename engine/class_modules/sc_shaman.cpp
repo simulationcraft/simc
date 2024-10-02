@@ -938,6 +938,7 @@ public:
     player_talent_t earthshatter; // Added on 11.0.5 PTR
     player_talent_t flux_melting;
     player_talent_t lightning_conduit;
+    player_talent_t lightning_capacitor; // Renamed lightning_conduit on 11.0.5 PTR
     player_talent_t power_of_the_maelstrom;
     player_talent_t improved_flametongue_weapon;
     player_talent_t everlasting_elements;
@@ -11093,6 +11094,7 @@ void shaman_t::init_spells()
   // Row 6
   talent.flux_melting           = _ST( "Flux Melting" );
   talent.lightning_conduit      = _ST( "Lightning Conduit" );
+  talent.lightning_capacitor    = _ST( "Lightning Capacitor" );
   talent.power_of_the_maelstrom = _ST( "Power of the Maelstrom" );
   talent.improved_flametongue_weapon = _ST( "Improved Flametongue Weapon" );
   talent.everlasting_elements   = _ST( "Everlasting Elements" );
@@ -13596,6 +13598,11 @@ double shaman_t::composite_player_multiplier( school_e school ) const
        talent.lightning_conduit.ok() )
   {
     m *= 1.0 + talent.lightning_conduit->effectN( 3 ).percent();
+  }
+  if ( dbc::is_school( school, SCHOOL_NATURE ) && buff.lightning_shield->up() &&
+       talent.lightning_capacitor.ok() )
+  {
+    m *= 1.0 + talent.lightning_capacitor->effectN( 3 ).percent();
   }
 
   return m;
