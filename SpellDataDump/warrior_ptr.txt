@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56749 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56865 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -934,7 +934,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
                  :
 Effects          :
 #1 (id=14120)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.55250 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.94062 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=134421)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Resource: rage | Target: Self (1)
 Description      : Assault the target in a bloodthirsty craze, dealing $s1 Physical damage and restoring $117313s1% of your health.
@@ -1780,7 +1780,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
                  :
 Effects          :
 #1 (id=86555)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.19790 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.49738 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc85288
 Variables        : $damage=${$96103s1+$85384s1}
 
@@ -1928,7 +1928,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
                  :
 Effects          :
 #1 (id=101983)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.19790 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.49738 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc85288
 Variables        : $damage=${$96103s1+$85384s1}
 
@@ -7487,7 +7487,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Siegebreaker (280773 effect#3), Unnerving Focus (337155 effect#3), Swift Strikes (383459 effect#2)
 Family Flags     : 8, 106
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Requires Off-Hand Weapon (120), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Requires Off-Hand Weapon (120), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=831437)   : Dummy (3)
@@ -14304,7 +14304,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
                  :
 Effects          :
 #1 (id=1114019)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Total damage prevented by Ignore Pain increased by $s1%.
 
 Name             : Practiced Strikes (id=429647) [Spell Family (4), Passive, Hidden] 
@@ -15149,7 +15149,7 @@ Effects          :
                    Affected Spells: Demolish (436358), Demolish (440884), Demolish (440886), Demolish (440888)
                    Family Flags: 126
 #2 (id=1135579)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Deep Wounds (115767), Deep Wounds (262115), Rend (388539), Rend (394062), Rend (394063)
                    Family Flags: 5, 19, 86
 #3 (id=1135588)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -15456,7 +15456,7 @@ Aura Interrupt   : Change Specialization (38)
                  :
 Effects          :
 #1 (id=1141376)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Each strike of Bladestorm deals an additional $s1% damage evenly split across all targets.
 
 Name             : Slayer's Malice (id=444779) [Spell Family (4), Passive, Hidden] 
@@ -15597,7 +15597,7 @@ Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
-Stacks           : 12 maximum
+Stacks           : 10 maximum
 Proc Chance      : 101%
 Attributes       : DoT Stacking Rule (103), Aura Icon Only For Caster (Limit 10) (212), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Change Specialization (38)
@@ -16038,19 +16038,19 @@ Aura Interrupt   : Change Specialization (38)
                  :
 Effects          :
 #1 (id=1160095)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Raging Blow (85384), Raging Blow (96103), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 45
 #2 (id=1160096)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Raging Blow (85384), Raging Blow (96103), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 45
 #3 (id=1170847)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Overpower (7384), Dreadnaught (315961)
                    Family Flags: 2, 85
 #4 (id=1170848)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Overpower (7384), Dreadnaught (315961)
                    Family Flags: 2, 85
 Description      : $@spelldesc444774

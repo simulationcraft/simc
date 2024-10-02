@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56749 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56865 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -113,7 +113,7 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effects: #1, #4, #5), Healing Trance (60515 effect#1), Unleash Life (73685 effects: #4, #7), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #24, #28, #29), Elemental Shaman (137040 effect#23), Enhancement Shaman (137041 effect#19), Maelstrom Weapon (187881 effects: #3, #5), Elemental Rebalancers (208777 effect#1), Jonat's Focus (210607 effect#1), Tidebringer (236502 effects: #1, #2), Ancestral Reach (263790 effect#1), Flash Flood (280615 effect#1), High Tide (288675 effects: #1, #2), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Jonat's Natural Focus (335894 effect#1), Chains of Devastation (336737 effects: #1, #2), Elemental Fury (343190 effect#1), Heal the Soul (366779 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Nature's Fury (381655 effect#1), Flow of the Tides (382039 effect#2), Ancestral Reach (382732 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Stormweaver (410681 effects: #1, #2), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #4, #5, #6), Whirling Air (453409 effect#1), Surging Currents (454376 effect#1), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
+Affecting spells : Earth Shield (974 effect#1), Tidal Waves (53390 effects: #1, #4, #5), Healing Trance (60515 effect#1), Unleash Life (73685 effects: #4, #7), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #24, #28, #29), Elemental Shaman (137040 effect#23), Enhancement Shaman (137041 effect#19), Maelstrom Weapon (187881 effects: #3, #5), Elemental Rebalancers (208777 effect#1), Jonat's Focus (210607 effect#1), Tidebringer (236502 effects: #1, #2), Ancestral Reach (263790 effect#1), Flash Flood (280615 effect#1), High Tide (288675 effects: #1, #2), Spiritwalker's Tidal Totem (335892 effects: #1, #2), Jonat's Natural Focus (335894 effect#1), Chains of Devastation (336737 effects: #1, #2), Elemental Fury (343190 effect#1), Heal the Soul (366779 effect#1), Nature's Swiftness (378081 effects: #1, #2, #4, #5), Nature's Fury (381655 effect#1), Flow of the Tides (382039 effect#2), Ancestral Reach (382732 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Stormweaver (410681 effects: #1, #2), Initial Shaman (417374 effects: #3, #4), Maelstrom Supremacy (443447 effect#2), Ancestral Swiftness (443454 effects: #1, #2, #4, #5, #6), Whirling Air (453409 effect#1), Surging Currents (454376 effect#1), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Coalescing Water (470076 effect#1)
 Family Flags     : 8, 41
 Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217), Heal Prediction (280), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Chain by Most Hit (440)
                  :
@@ -1558,7 +1558,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 741
-Affecting spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Torrent (200072 effect#1), Elemental Rebalancers (208777 effect#1), Nature's Fury (381655 effect#1), Wavespeaker's Blessing (381946 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Shaman Restoration 10.2 Class Set 4pc (422916 effects: #1, #2), Elemental Reverb (443418 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
+Affecting spells : Earth Shield (974 effect#1), Healing Trance (60515 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Torrent (200072 effect#1), Elemental Rebalancers (208777 effect#1), Nature's Fury (381655 effect#1), Wavespeaker's Blessing (381946 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Shaman Restoration 10.2 Class Set 4pc (422916 effects: #1, #2), Elemental Reverb (443418 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1), Coalescing Water (470077 effect#1)
 Family Flags     : 41, 68
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
                  :
@@ -12663,7 +12663,7 @@ Description      : $@spelldesc382215
 Tooltip          : Movement speed increased by $w1%.
 
 Name             : Ancestral Awakening (id=382309) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=9, col=5, max_rank=2, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=9, col=6, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(25, 50)]
 Class            : Shaman
 School           : Physical
@@ -12702,7 +12702,7 @@ Effects          :
 Description      : $@spelldesc382309
 
 Name             : Improved Earthliving Weapon (id=382315) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=9, col=7, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=9, col=8, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -15395,7 +15395,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Real PPM         : 10 (Haste multiplier)
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1141750)  : Apply Aura (6) | Dummy (4)
@@ -15457,7 +15457,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1141753)  : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
@@ -15591,7 +15591,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1141759)  : Apply Aura (6) | Dummy (4)
@@ -15613,7 +15613,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1141760)  : Apply Aura (6) | Dummy (4)
@@ -16176,7 +16176,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Only Proc From Class Abilities (415)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Only Proc From Class Abilities (415)
                  :
 Effects          :
 #1 (id=1156269)  : Apply Aura (6) | Proc Trigger Spell (42): Electroshock
@@ -16233,7 +16233,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1156276)  : Apply Aura (6) | Dummy (4)
@@ -16275,7 +16275,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Generic Hostile Spell, Magic Hostile Spell
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1156859)  : Apply Aura (6) | Proc Trigger Spell (42): Surging Currents
@@ -16316,7 +16316,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Generic Hostile Spell, Magic Hostile Spell
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1156895)  : Apply Aura (6) | Dummy (4)
@@ -16371,7 +16371,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1157912)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -16391,7 +16391,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1158270)  : Apply Aura (6) | Proc Trigger Spell (42): Storm Swell
@@ -16426,7 +16426,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1158280)  : Apply Aura (6) | Dummy (4)
@@ -17320,7 +17320,7 @@ Effects          :
 Description      : Your haste is increased by $s2% while Ascendance is active and its duration is increased by ${$s1/1000} sec.
 
 Name             : Reactive Warding (id=462454) [Spell Family (11), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=9, col=6, max_rank=1, req_points=20]
+Talent Entry     : Restoration [tree=spec, row=9, col=7, max_rank=1, req_points=20]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -18371,7 +18371,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1180387)  : Apply Aura (6) | Dummy (4)
@@ -18466,7 +18466,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Only Proc From Class Abilities (415)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Only Proc From Class Abilities (415)
                  :
 Effects          :
 #1 (id=1181105)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 5 seconds
@@ -18869,6 +18869,50 @@ Effects          :
                    Base Value: 470057 | Scaled Value: 470057 | PvP Coefficient: 1.00000 | Misc Value: 470411 | Target: Self (1)
 Description      : $@spelldesc470053
 Tooltip          : Your next Flame Shock is Voltaic Blaze.
+
+Name             : Coalescing Water (id=470076) [Spell Family (11), Passive, Hidden] 
+Talent Entry     : Restoration [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+Internal Cooldown: 1 seconds
+Proc Chance      : 100%
+Proc Flags       : Magic Heal
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
+                 :
+Effects          :
+#1 (id=1184909)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Chain Heal (1064)
+                   Family Flags: 8
+#2 (id=1184912)  : Apply Aura (6) | Proc Trigger Spell (42): Coalescing Water
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 470077 | Target: Self (1)
+Description      : Chain Heal's mana cost is reduced by $s1% and Chain Heal increases the initial healing of your next Riptide by $470077s1%, stacking up to $470077u times.
+
+Name             : Coalescing Water (id=470077) [Spell Family (11)] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Duration         : 20 seconds
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+Stacks           : 2 maximum
+Proc Chance      : 100%
+Proc Flags       : Magic Heal
+Triggered by     : Coalescing Water (470076)
+Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
+                 :
+Effects          :
+#1 (id=1184910)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Riptide (61295)
+                   Family Flags: 68
+Description      : $@spelldesc470076
+Tooltip          : The initial healing of your next Riptide is increased by $w1%.
 
 Name             : Ice Strike (id=470194) [Spell Family (11)] 
 Talent Entry     : Enhancement [tree=spec, row=4, col=4, max_rank=1, req_points=0, select_idx=200]
