@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56749 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56865 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -11730,7 +11730,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-Attributes       : Passive (6), Aura Points On Client (268)
+Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268)
                  :
 Effects          :
 #1 (id=1004694)  : Dummy (3)
@@ -14988,7 +14988,8 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-Attributes       : Passive (6), Allow Class Ability Procs (416)
+                 : 3022
+Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1125191)  : Apply Aura (6) | Dummy (4)
@@ -15091,10 +15092,11 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
+                 : 3022
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1128151)  : Apply Aura (6) | Dummy (4)
@@ -15113,7 +15115,8 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-Attributes       : Passive (6), Allow Class Ability Procs (416)
+                 : 3022
+Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1128872)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
@@ -15131,7 +15134,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 3022
-Attributes       : Passive (6), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1128925)  : Apply Aura (6) | Dummy (4)
@@ -15243,7 +15246,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 3022
-Attributes       : Passive (6), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1133388)  : Apply Aura (6) | Dummy (4)
@@ -15260,7 +15263,8 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-Attributes       : Passive (6), Allow Class Ability Procs (416)
+                 : 3022
+Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1133560)  : Apply Aura (6) | Dummy (4)
@@ -15280,7 +15284,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 3022
-Attributes       : Passive (6), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1133630)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -15321,7 +15325,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1133684)  : Apply Aura (6) | Proc Trigger Spell (42): Bind in Darkness
@@ -15368,7 +15372,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal, Generic Heal Taken, Generic Hostile Spell, Generic Hostile Spell Taken, Magic Heal, Magic Heal Taken, Magic Hostile Spell, Magic Hostile Spell Taken, Periodic, Periodic Taken, Helpful Periodic, Helpful Periodic Taken
-Attributes       : Passive (6), Aura Points On Client (268), Update Passives on Apply/Remove (344), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Update Passives on Apply/Remove (344), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1134061)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
@@ -15509,9 +15513,10 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
+                 : 3022
 Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : Passive (6), Can Proc From Procs (122), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1134381)  : Apply Aura (6) | Dummy (4)
@@ -15624,7 +15629,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Proc Flags       : Cast Ended
-Attributes       : Passive (6), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1135790)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
@@ -15733,7 +15738,8 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-Attributes       : Passive (6), Allow Class Ability Procs (416)
+                 : 3022
+Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1136668)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
@@ -15831,7 +15837,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 3022
-Attributes       : Passive (6), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1139556)  : Apply Aura (6) | Dummy (4)
@@ -15850,7 +15856,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 3022
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1139565)  : Apply Aura (6) | Dummy (4)
@@ -15930,7 +15936,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1140240)  : Apply Aura (6) | Dummy (4)
@@ -15959,7 +15965,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 3022
-Attributes       : Passive (6), Spellcast Override In Spellbook (310), Displayed Outside Of Spellbook (432)
+Attributes       : Passive (6), Not In Spellbook (143), Spellcast Override In Spellbook (310), Displayed Outside Of Spellbook (432)
                  :
 Effects          :
 #1 (id=1140253)  : Apply Aura (6) | Dummy (4)
@@ -15977,7 +15983,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 3022
-Attributes       : Passive (6), Spellcast Override In Spellbook (310)
+Attributes       : Passive (6), Not In Spellbook (143), Spellcast Override In Spellbook (310)
                  :
 Effects          :
 #1 (id=1140259)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
@@ -15995,7 +16001,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 3022
-Attributes       : Passive (6), Aura Points On Client (268)
+Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268)
                  :
 Effects          :
 #1 (id=1140290)  : Apply Aura (6) | Dummy (4)
@@ -16011,7 +16017,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 3022
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1140296)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -16036,7 +16042,7 @@ Labels           : 16: Class Spells
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1140302)  : Apply Aura (6) | Proc Trigger Spell (42): Apocalypse Now
@@ -16052,7 +16058,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 3022
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1140317)  : Apply Aura (6) | Dummy (4)
@@ -16068,7 +16074,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 3022
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1140322)  : Apply Aura (6) | Dummy (4)
@@ -16088,7 +16094,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 3022
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1140355)  : Apply Aura (6) | Dummy (4)
@@ -16126,7 +16132,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 3022
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1140361)  : Apply Aura (6) | Dummy (4)
@@ -16144,7 +16150,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 3022
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1140374)  : Apply Aura (6) | Dummy (4)
@@ -16160,7 +16166,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 3022
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1140397)  : Apply Aura (6) | Dummy (4)
@@ -16176,7 +16182,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 3022
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1140400)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
@@ -18407,7 +18413,8 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
-Attributes       : Passive (6), Allow Class Ability Procs (416)
+                 : 3022
+Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1184516)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Cooldown (11)

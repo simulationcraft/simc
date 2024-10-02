@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56749 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56865 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1731,7 +1731,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
-#3 (id=196421)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#3 (id=196421)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
@@ -1963,7 +1963,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3566: Balanced Stratagem (451508 effect#1)
 Proc Chance      : 100%
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #14), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effects: #1, #2, #12), Storm, Earth, and Fire (137639 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Emperor's Capacitor (235054 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), The Emperor's Capacitor (337291 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), The Emperor's Capacitor (393039 effects: #1, #2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Press the Advantage (418361 effect#1), Mistweaver Monk (428200 effects: #24, #25, #26), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Efficient Training (450989 effects: #1, #2), Wisdom of the Wall (452684 effect#1), Flow of Battle (457257 effect#1), Power of the Thunder King (459809 effects: #1, #2, #3), Jade Empowerment (467317 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #14), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effects: #1, #2, #12), Storm, Earth, and Fire (137639 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Emperor's Capacitor (235054 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), The Emperor's Capacitor (337291 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), The Emperor's Capacitor (393039 effects: #1, #2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Press the Advantage (418361 effect#1), Mistweaver Monk (428200 effects: #24, #25, #26), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Efficient Training (450989 effects: #1, #2), Wisdom of the Wall (452684 effect#1), Flow of Battle (457257 effect#1), Power of the Thunder King (459809 effects: #1, #2, #3), Jade Empowerment (467317 effects: #2, #3)
 Family Flags     : 32, 70, 103
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Discount Power On Miss (59), Name in Channel Bar (61), No Target Per-Second Costs (75), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Do Not Chain To Crowd-Controlled Targets (200), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Chain by Most Hit (440)
 Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13), Damage Channel Duration (14)
@@ -3872,7 +3872,7 @@ Effects          :
                    Base Value: -4 | Scaled Value: -4 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2917 (Label) | Target: Self (1)
                    Affected Spells (Label): Yu'lon's Grace (414131)
 #24 (id=1080993)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 32 | Scaled Value: 32 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
 #25 (id=1082767)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
@@ -5234,7 +5234,7 @@ Spell Level      : 45
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=298653)   : Apply Aura (6) | Dummy (4)
@@ -11602,9 +11602,10 @@ Cooldown         : 30 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
+Internal Cooldown: 1 seconds
 Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee
+Proc Flags       : Yellow Melee, Magic Hostile Spell
 Attributes       : Cooldown On Event (25), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Allow Cast While Casting (135), Aura Points On Client (268), Heal Prediction (280)
                  :
 Effects          :
@@ -16834,13 +16835,13 @@ Effects          :
 #1 (id=1150629)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1151332)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 240 | Scaled Value: 240 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1167368)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=1167369)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=1167370)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 425 | Scaled Value: 425 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 625 | Scaled Value: 625 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Every $<value> damage you deal generates a Flurry Charge. For each $s2 energy you spend, unleash all Flurry Charges, dealing $450617s1 Physical damage per charge. 
 Variables        : $value=${($AP*($450615s5/100)*(1+$@versadmg))}
 
@@ -16858,7 +16859,7 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), No Threat (42), Aura P
                  :
 Effects          :
 #1 (id=1150633)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Deals $s1 Physical damage.
 
 Name             : Swift Art (id=450622) [Spell Family (53), Passive] 
@@ -17465,14 +17466,14 @@ Class            : Monk
 School           : Nature
 Spell Type       : None
 Spell Level      : 1
-Duration         : 30 seconds
+Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Attributes       : Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Encounter Start (55)
+Attributes       : No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40)
                  :
 Effects          :
 #1 (id=1151328)  : Apply Aura (6) | Dummy (4)
@@ -17620,7 +17621,7 @@ Name             : Against All Odds (id=451061) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Duration         : 6 seconds
+Duration         : 5 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -17778,7 +17779,7 @@ Name             : Wisdom of the Wall (id=451242) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Duration         : 20 seconds
+Duration         : 16 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -18565,7 +18566,7 @@ Attributes       : Suppress Weapon Procs (151), Aura Points On Client (268), Are
                  :
 Effects          :
 #1 (id=1153059)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Cone to Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.28000 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Cone to Enemy (104)
 Description      : $@spelldesc452137
 
 Name             : Flurry of Xuen (id=452137) [Spell Family (53), Passive, Hidden] 
@@ -18641,7 +18642,7 @@ Name             : Wisdom of the Wall (id=452684) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Duration         : 20 seconds
+Duration         : 16 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -18659,7 +18660,7 @@ Name             : Wisdom of the Wall (id=452685) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Duration         : 20 seconds
+Duration         : 16 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -19883,12 +19884,14 @@ Attributes       : Aura Points On Client (268)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
                  :
 Effects          :
-#1 (id=1180408)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Crackling Jade Lightning (117952)
-                   Family Flags: 32
+#1 (id=1180408)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1180409)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 800 | Scaled Value: 800 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Crackling Jade Lightning (117952)
+                   Family Flags: 32
+#3 (id=1190455)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
                    Family Flags: 32
 Description      : $@spelldesc467316
@@ -19966,13 +19969,13 @@ Class            : Monk
 School           : Nature
 Spell Type       : None
 Spell Level      : 1
-Duration         : 30 seconds
+Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Stacks           : 30 maximum
+Stacks           : 300 maximum
 Proc Chance      : 101%
-Attributes       : Aura Points On Client (268)
+Attributes       : No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Encounter Start (55)
                  :
 Effects          :
