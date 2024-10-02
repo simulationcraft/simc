@@ -931,7 +931,6 @@ public:
     player_talent_t astronomical_impact;
     player_talent_t balance_of_all_things;
     player_talent_t celestial_alignment;
-    player_talent_t circle_of_life_and_death_owl;
     player_talent_t cosmic_rapidity;
     player_talent_t crashing_star;
     player_talent_t denizen_of_the_dream;
@@ -8259,15 +8258,6 @@ struct starfall_t final : public ap_spender_t
       assert( driver->damage );
       replace_stats( driver, false );
       replace_stats( driver->damage );
-
-      if ( p->talent.aetherial_kindling.ok() )
-      {
-        auto m_data = p->get_modified_spell( p->talent.aetherial_kindling )
-          ->parse_effects( p->talent.circle_of_life_and_death_owl );
-
-        dot_ext = timespan_t::from_seconds( m_data->effectN( 1 ).base_value() );
-        max_ext = timespan_t::from_seconds( m_data->effectN( 2 ).base_value() );
-      }
     }
 
     weaver_buff = p->buff.starweaver_starfall;
@@ -10069,7 +10059,6 @@ void druid_t::init_spells()
   talent.astronomical_impact            = ST( "Astronomical Impact" );
   talent.balance_of_all_things          = ST( "Balance of All Things" );
   talent.celestial_alignment            = ST( "Celestial Alignment" );
-  talent.circle_of_life_and_death_owl   = STS( "Circle of Life and Death", DRUID_BALANCE );
   talent.cosmic_rapidity                = ST( "Cosmic Rapidity" );
   talent.crashing_star                  = ST( "Crashing Star" );
   talent.denizen_of_the_dream           = ST( "Denizen of the Dream" );
@@ -13960,7 +13949,6 @@ void druid_t::apply_affecting_auras( action_t& a )
 
   // Balance
   a.apply_affecting_aura( talent.astronomical_impact );
-  a.apply_affecting_aura( talent.circle_of_life_and_death_owl );
   a.apply_affecting_aura( talent.cosmic_rapidity );
   a.apply_affecting_aura( talent.elunes_guidance );
   a.apply_affecting_aura( talent.lunar_shrapnel );
@@ -14042,7 +14030,6 @@ void druid_t::apply_affecting_auras( buff_t& b )
   b.apply_affecting_aura( talent.oakskin );
 
   // Balance
-  b.apply_affecting_aura( talent.circle_of_life_and_death_owl );
   b.apply_affecting_aura( talent.cosmic_rapidity );
   b.apply_affecting_aura( talent.greater_alignment );
   b.apply_affecting_aura( talent.whirling_stars );
