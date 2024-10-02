@@ -3173,15 +3173,15 @@ Attributes       : No Threat (42), Combo on Block (Mainline: Dispel All Stacks) 
 Effects          :
 #1 (id=133885)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Soul Fire (6353), Incinerate (29722), Chaos Bolt (116858), Incinerate (244670), Infernal Bolt (434506), Ruination (434635)
+                   Affected Spells: Soul Fire (6353), Incinerate (29722), Chaos Bolt (116858), Incinerate (244670), Infernal Bolt (434506)
                    Family Flags: 38, 45, 65
 #2 (id=288652)   : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Soul Fire (6353), Incinerate (29722), Chaos Bolt (116858), Incinerate (244670), Infernal Bolt (434506), Ruination (434635)
+                   Affected Spells: Soul Fire (6353), Incinerate (29722), Chaos Bolt (116858), Incinerate (244670), Infernal Bolt (434506)
                    Family Flags: 38, 45, 65
 #3 (id=1162765)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
 #4 (id=1162766)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
@@ -3710,7 +3710,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40674 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=839431)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Shadowburn (17877), Incinerate (29722), Chaos Bolt (116858), Incinerate (244670), Infernal Bolt (434506), Ruination (434635)
+                   Affected Spells: Shadowburn (17877), Incinerate (29722), Chaos Bolt (116858), Incinerate (244670), Infernal Bolt (434506)
                    Family Flags: 7, 38, 45
 Description      : $@spelldesc348
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.$?a339892[ 
@@ -7492,7 +7492,7 @@ Effects          :
                    Family Flags: 49
 #2 (id=739944)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
 Description      : $@spelldesc6353
 Tooltip          : Critical strike chance increased by $s1%.
@@ -8688,7 +8688,7 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=834996)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Immolate (348), Soul Fire (6353), Mortal Coil (6789), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Chaos Bolt (116858), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Drain Life (234153), Incinerate (244670), Summon Vilefiend (264119), Conflagrate (265931), Conflagrate (290644), Channel Demonfire (409890), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Summon Gloomhound (455465), Summon Charhound (455476)
+                   Affected Spells: Immolate (348), Soul Fire (6353), Mortal Coil (6789), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Chaos Bolt (116858), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Drain Life (234153), Incinerate (244670), Summon Vilefiend (264119), Conflagrate (265931), Conflagrate (290644), Channel Demonfire (409890), Infernal Bolt (434506), Wither (445468), Wither (445474), Summon Gloomhound (455465), Summon Charhound (455476)
                    Family Flags: 2, 3, 4, 7, 15, 19, 38, 45, 55, 65, 87, 114
 Description      : $@spelldesc337163
 Tooltip          : Damage taken from the warlock's single target spells increased by $s1%.
@@ -8732,11 +8732,11 @@ Attributes       : No Aura Cancel (31), No Threat (42), Not an Action (92), Supp
 Effects          :
 #1 (id=835003)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
 #2 (id=835004)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
 Description      : $@spelldesc337169
 Tooltip          : Chaos Bolt damage increased by $s1%.
@@ -9563,15 +9563,15 @@ Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=904277)   : Apply Aura (6) | Ignore Spell Cooldown (383)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
 #2 (id=904278)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
 #3 (id=904634)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
 #4 (id=907279)   : Apply Aura (6) | Ignore Spell Cooldown (383)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -10926,11 +10926,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1021763)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
 #3 (id=1021764)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
 #4 (id=1021765)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -11211,7 +11211,7 @@ Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
 Effects          :
 #1 (id=1022098)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14) | Attributes: Suppress Points Stacking (6)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Rain of Fire (5740), Shadowburn (17877), Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Rain of Fire (5740), Shadowburn (17877), Chaos Bolt (116858)
                    Family Flags: 7, 45, 124
 Description      : $@spelldesc387355
 Tooltip          : The Soul Shard cost of Chaos Bolt $?s17877[,Shadowburn, ][]and Rain of Fire is reduced by 1.
@@ -11399,11 +11399,11 @@ Attributes       : No Aura Cancel (31), No Threat (42), Not an Action (92), Supp
 Effects          :
 #1 (id=1022178)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
 #2 (id=1022179)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
 Description      : $@spelldesc387400
 Tooltip          : Chaos Bolt damage is increased by $w1% and its cast time is reduced by $w2%.
@@ -12520,7 +12520,7 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.50000 | Target: Self (1)
 #2 (id=1034734)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Hand of Gul'dan (105174), Ruination (434635)
+                   Affected Spells: Hand of Gul'dan (105174)
                    Family Flags: 21
 Description      : $@spelldesc393702
 Tooltip          : Your next Hand of Gul'dan is instant cast and deals $s1% increased damage.
@@ -12970,7 +12970,7 @@ Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (
 Effects          :
 #1 (id=1074663)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Target: Self (1)
-                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Incinerate (244670), Infernal Bolt (434506), Ruination (434635), Wither (445468)
+                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Incinerate (244670), Infernal Bolt (434506), Wither (445468)
                    Family Flags: 2, 7, 38, 45, 55, 65, 72, 92
 #2 (id=1076658)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Misc Value: 22 | Target: Self (1)
@@ -13223,7 +13223,7 @@ Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1088757)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.20000 | Target: Self (1)
-                   Affected Spells: Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
 #2 (id=1088758)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 0.21430 | Target: Self (1)
@@ -13874,7 +13874,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1124475)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Hand of Gul'dan (105174), Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Hand of Gul'dan (105174), Chaos Bolt (116858)
                    Family Flags: 21, 45
 Description      : Your next Soul Shard spent summons an Overlord that unleashes a devastating attack.
 Tooltip          : Your next Soul Shard spent summons an Overlord that unleashes a devastating attack.
@@ -14015,11 +14015,11 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1114039)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Hand of Gul'dan (86040), Chaos Bolt (116858), Immolate (157736), Immolate (193540), Implosion (196277), Implosion (196278), Hand of Gul'dan (196282), Channel Demonfire (196448), Totem Mastery (226772), Immolate (228312), Incinerate (244670), Demonbolt (264178), Implosion (370371), Channel Demonfire (409890), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474)
+                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Hand of Gul'dan (86040), Chaos Bolt (116858), Immolate (157736), Immolate (193540), Implosion (196277), Implosion (196278), Hand of Gul'dan (196282), Channel Demonfire (196448), Totem Mastery (226772), Immolate (228312), Incinerate (244670), Demonbolt (264178), Implosion (370371), Channel Demonfire (409890), Infernal Bolt (434506), Wither (445468), Wither (445474)
                    Family Flags: 2, 4, 7, 15, 38, 45, 46, 55, 65, 70, 86, 92
 #2 (id=1124640)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Hand of Gul'dan (86040), Chaos Bolt (116858), Immolate (157736), Immolate (193540), Implosion (196277), Implosion (196278), Hand of Gul'dan (196282), Channel Demonfire (196448), Totem Mastery (226772), Immolate (228312), Incinerate (244670), Demonbolt (264178), Implosion (370371), Channel Demonfire (409890), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474)
+                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Hand of Gul'dan (86040), Chaos Bolt (116858), Immolate (157736), Immolate (193540), Implosion (196277), Implosion (196278), Hand of Gul'dan (196282), Channel Demonfire (196448), Totem Mastery (226772), Immolate (228312), Incinerate (244670), Demonbolt (264178), Implosion (370371), Channel Demonfire (409890), Infernal Bolt (434506), Wither (445468), Wither (445474)
                    Family Flags: 2, 4, 7, 15, 38, 45, 46, 55, 65, 70, 86, 92
 #3 (id=1124641)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -14281,7 +14281,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1124473)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Hand of Gul'dan (105174), Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Hand of Gul'dan (105174), Chaos Bolt (116858)
                    Family Flags: 21, 45
 Description      : Your next Soul Shard spent summons a Mother of Chaos that unleashes a devastating attack.
 Tooltip          : Your next Soul Shard spent summons a Mother of Chaos that unleashes a devastating attack.
@@ -14306,7 +14306,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1124476)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Hand of Gul'dan (105174), Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Hand of Gul'dan (105174), Chaos Bolt (116858)
                    Family Flags: 21, 45
 Description      : Your next Soul Shard spent summons a Pit Lord that unleashes a devastating attack.
 Tooltip          : Your next Soul Shard spent summons a Pit Lord that unleashes a devastating attack.
@@ -14373,7 +14373,7 @@ Attributes       : Aura Points On Client (268), Spellcast Override In Spellbook 
 Effects          :
 #1 (id=1123497)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 434635 | Scaled Value: 434635 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Hand of Gul'dan (105174), Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Hand of Gul'dan (105174), Chaos Bolt (116858)
                    Family Flags: 21, 45
 #2 (id=1123498)  : None (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
@@ -14544,6 +14544,7 @@ Effects          :
 Description      : $@spelldesc116858
 
 Name             : Ruination (id=434635) [Spell Family (5)] 
+Hotfixed         : Affecting Spells
 Class            : Warlock
 School           : Chaos
 Spell Type       : None
@@ -14555,8 +14556,6 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 3840
-Affecting spells : Backdraft (117828 effects: #1, #2, #3), Immolate (157736 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2), Soul Fire (281440 effect#2), Odr, Shawl of the Ymirjar (337164 effect#1), Madness of the Azj'Aqir (337170 effects: #1, #2), Soul Tithe (340238 effect#1), Ritual of Ruin (364349 effects: #1, #2, #3), Ritual of Ruin (387157 effects: #2, #3), Crashing Chaos (387356 effect#1), Madness of the Azj'Aqir (387409 effects: #1, #2), Blazing Meteor (394776 effect#2), Umbrafire Embers (409652 effect#1), Crashing Chaos (417282 effect#1), Demonic Art: Overlord (428524 effect#2), Flames of Xoroth (429657 effects: #1, #2), Demonic Art: Mother of Chaos (432794 effect#2), Demonic Art: Pit Lord (432795 effect#2), Ruination (433885 effect#1), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Wither (445474 effect#2), Emberstorm (454744 effect#1), Improved Chaos Bolt (456951 effects: #1, #2)
-Family Flags     : 21, 45
 Attributes       : Missile Speed is Delay (in sec) (292)
                  :
 Effects          :
@@ -14665,17 +14664,17 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1133699)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Grimoire of Sacrifice (196100), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Summon Darkglare (205180), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Oblivion (417537), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Malefic Touch (458131)
+                   Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Grimoire of Sacrifice (196100), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Summon Darkglare (205180), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Oblivion (417537), Infernal Bolt (434506), Wither (445468), Wither (445474), Malefic Touch (458131)
                    Family Flags: 0, 1, 3, 7, 8, 9, 10, 19, 23, 40, 43, 45, 47, 64, 72, 73, 84, 85, 88, 101, 112, 116
 #2 (id=1137484)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Misc Value 2: 3844 (Label) | Radius: 60 yards | Target: Self (1)
 #3 (id=1166858)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Malefic Touch (458131)
+                   Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Infernal Bolt (434506), Wither (445468), Wither (445474), Malefic Touch (458131)
                    Family Flags: 0, 1, 3, 7, 8, 10, 19, 23, 40, 43, 45, 47, 73, 84, 85, 101, 112
 #4 (id=1166859)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Malefic Touch (458131)
+                   Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Infernal Bolt (434506), Wither (445468), Wither (445474), Malefic Touch (458131)
                    Family Flags: 0, 1, 3, 7, 8, 10, 19, 23, 40, 43, 45, 47, 73, 84, 85, 101, 112
 #5 (id=1166860)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -14723,18 +14722,18 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1133703)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Incinerate (244670), Malefic Rapture (324540), Channel Demonfire (409890), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Malefic Touch (458131)
+                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Incinerate (244670), Malefic Rapture (324540), Channel Demonfire (409890), Infernal Bolt (434506), Wither (445468), Wither (445474), Malefic Touch (458131)
                    Family Flags: 2, 4, 7, 15, 38, 45, 55, 65, 72, 73, 92
 #2 (id=1136088)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Incinerate (244670), Malefic Rapture (324540), Channel Demonfire (409890), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Malefic Touch (458131)
+                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Incinerate (244670), Malefic Rapture (324540), Channel Demonfire (409890), Infernal Bolt (434506), Wither (445468), Wither (445474), Malefic Touch (458131)
                    Family Flags: 2, 4, 7, 15, 38, 45, 55, 65, 72, 73, 92
 #3 (id=1139023)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Hotfixed         : Type (174 -> 6), Sub Type (79 -> 429), Misc Value (4 -> 0)
 #4 (id=1139024)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Incinerate (244670), Malefic Rapture (324540), Channel Demonfire (409890), Infernal Bolt (434506), Ruination (434635), Wither (445468), Wither (445474), Malefic Touch (458131)
+                   Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Incinerate (244670), Malefic Rapture (324540), Channel Demonfire (409890), Infernal Bolt (434506), Wither (445468), Wither (445474), Malefic Touch (458131)
                    Family Flags: 2, 4, 7, 15, 38, 45, 55, 65, 72, 73, 92
 #5 (id=1166683)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Misc Value 2: 3843 (Label) | Radius: 60 yards | Target: Self (1)
@@ -15122,7 +15121,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.26359 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1142389)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Shadowburn (17877), Incinerate (29722), Chaos Bolt (116858), Incinerate (244670), Infernal Bolt (434506), Ruination (434635)
+                   Affected Spells: Shadowburn (17877), Incinerate (29722), Chaos Bolt (116858), Incinerate (244670), Infernal Bolt (434506)
                    Family Flags: 7, 38, 45
 Description      : $@spelldesc445468
 Tooltip          : Suffering $w1 Shadowflame damage every $t1 sec.$?a339892[ 
@@ -16404,7 +16403,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1157601)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Immolate (348), Soul Fire (6353), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Channel Demonfire (196448), Incinerate (244670), Channel Demonfire (409890), Infernal Bolt (434506), Ruination (434635), Wither (445468)
+                   Affected Spells: Immolate (348), Soul Fire (6353), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Channel Demonfire (196448), Incinerate (244670), Channel Demonfire (409890), Infernal Bolt (434506), Wither (445468)
                    Family Flags: 2, 15, 38, 45, 55, 65, 72, 92
 #2 (id=1157602)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
@@ -16916,11 +16915,11 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1161562)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
 #2 (id=1162751)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cast Time (10)
                    Base Value: -500 | Scaled Value: -500 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Chaos Bolt (116858), Ruination (434635)
+                   Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
 Description      : Increases the damage of Chaos Bolt by $s1% and reduces its cast time by ${$s2/-1000}.1 sec.
 
