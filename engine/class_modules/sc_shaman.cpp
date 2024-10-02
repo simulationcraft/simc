@@ -6163,7 +6163,7 @@ struct lava_beam_t : public chained_base_t
     double tick_base_damage = state->result_raw;
 
     timespan_t consumed_time =
-        std::min( dot->remains(), timespan_t::from_seconds( p()->talent.erupting_lava->effectN( 2 ).base_value() ) );
+        std::min( dot->remains(), p()->talent.erupting_lava->effectN( 2 ).time_value() );
     if ( is_overload )
     {
       consumed_time *= p()->talent.erupting_lava->effectN( 3 ).percent();
