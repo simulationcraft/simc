@@ -15540,17 +15540,25 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Resource: soul_shard | Target: Self (1)
 Description      : $@spelldesc449638
 
-Name             : Shadow of Death (id=449961) [Spell Family (5)] 
+Name             : Shadow of Death (id=449961) [Spell Family (5), Hidden] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
+Range            : 100 yards
+Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
                  :
 Effects          :
-#1 (id=1149645)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#1 (id=1149645)  : Apply Aura (6) | Modify Critical Strike% (290)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
+Hotfixed         : Type (3 -> 6), Sub Type (0 -> 290), Target 1 (1 -> 25)
+#2 (id=1190628)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Any Target (25)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc449638
 
 Name             : Demonic Soul (id=450510) [Spell Family (5), Hidden] 
@@ -16314,16 +16322,16 @@ Talent Entry     : Demonology [tree=spec, row=9, col=5, max_rank=1, req_points=2
 Class            : Warlock
 School           : Physical
 Spell Type       : None
+Range            : 100 yards
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
                  :
 Effects          :
-#1 (id=1155845)  : Apply Aura (6) | Unknown(382)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 4 | Misc Value 2: 0x4364 | Target: Self (1)
-#2 (id=1155887)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
+#1 (id=1155845)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Sub Type (382 -> 4), Base Value (0 -> 30), Misc Value (4 -> 0), Misc Value 2 (17252 -> 0)
 Description      : Increases your primary Felguard's critical strike chance equal to $s2% of your critical strike chance.
 
 Name             : Demonic Brutality (id=453908) [Spell Family (5), Passive, Hidden] 
@@ -16337,8 +16345,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
                  :
 Effects          :
-#1 (id=1156060)  : Apply Aura Pet (174) | Modify Crit Damage Done% (163)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 100 yards | Target: Self (1)
+#1 (id=1156060)  : Apply Aura (6) | Modify Crit Damage Done% (163)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 100 yards | Target: Unknown(120)
+                   Affected School(s): All
+Hotfixed         : Type (174 -> 6), Target 1 (1 -> 120)
 Description      : Critical strikes from your spells and your demons deal $s1% increased damage.
 
 Name             : Improved Malefic Rapture (id=454378) [Spell Family (5), Passive, Hidden] 
@@ -16648,7 +16658,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases the damage of Doom by $s1% and Doom summons $s2 Wild Imp when it expires.
 
-Name             : The Houndmaster's Gambit (id=455611) [Spell Family (5), Hidden] 
+Name             : The Houndmaster's Gambit (id=455611) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Physical
 Spell Type       : None
@@ -16657,7 +16668,7 @@ Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not On Player (167)
+Attributes       : Not On Player (167)
                  :
 Effects          :
 #1 (id=1159200)  : Apply Aura (6) | Modify Damage Done% (79)
