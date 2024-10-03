@@ -3612,7 +3612,12 @@ void paladin_t::trigger_forbearance( player_t* target )
   auto buff = debug_cast<buffs::forbearance_t*>( target->debuffs.forbearance );
 
   buff->paladin = this;
-  buff->trigger();
+
+  timespan_t dur = buff->base_buff_duration;
+  if ( is_ptr() && talents.holy_reprieve->ok() )
+    dur += timespan_t::from_millis( talents.holy_reprieve->effectN( 1 ).base_value() );
+
+  buff->trigger( dur );
 }
 
 int paladin_t::get_local_enemies( double distance ) const
