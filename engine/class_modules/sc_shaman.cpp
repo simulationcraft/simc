@@ -8221,6 +8221,10 @@ public:
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
       cooldown->duration = data().cooldown() + p()->talent.flames_of_the_cauldron->effectN( 2 ).time_value();
+
+      if ( player->is_ptr() ) {
+        maelstrom_gain = player->spec.maelstrom->effectN( 11 ).resource( RESOURCE_MAELSTROM );
+      }
     }
   }
   spell_variant variant = spell_variant::NORMAL;
@@ -8406,6 +8410,10 @@ struct frost_shock_t : public shaman_spell_t
     maelstrom_gain_per_target = false;
     ancestor_trigger = ancestor_cast::LAVA_BURST;
 
+    if ( player->is_ptr() && player->specialization() == SHAMAN_ELEMENTAL ) {
+      maelstrom_gain = player->spec.maelstrom->effectN( 10 ).resource( RESOURCE_MAELSTROM );
+    }
+
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
       cooldown->duration = p()->spec.enhancement_shaman->effectN( 7 ).time_value();
@@ -8455,9 +8463,10 @@ struct frost_shock_t : public shaman_spell_t
 
   void execute() override
   {
+    auto start_maelstrom_gain = maelstrom_gain;
     if ( p()->buff.icefury_dmg->up() )
     {
-      maelstrom_gain = p()->spec.maelstrom->effectN( 7 ).resource( RESOURCE_MAELSTROM );
+      maelstrom_gain += p()->spec.maelstrom->effectN( 7 ).resource( RESOURCE_MAELSTROM );
     }
 
     shaman_spell_t::execute();
@@ -8475,7 +8484,11 @@ struct frost_shock_t : public shaman_spell_t
 
     p()->buff.flux_melting->trigger();
 
-    p()->buff.icefury_dmg->decrement();
+    if ( p()->buff.icefury_dmg->up() )
+    {
+      maelstrom_gain = start_maelstrom_gain;
+      p()->buff.icefury_dmg->decrement();
+    }
 
     p()->buff.hailstorm->expire();
     p()->buff.ice_strike->expire();
@@ -8485,8 +8498,6 @@ struct frost_shock_t : public shaman_spell_t
       p()->proc.surge_of_power_wasted->occur();
       p()->buff.surge_of_power->decrement();
     }
-
-    maelstrom_gain = 0.0;
   }
 
   bool ready() override
@@ -9926,6 +9937,10 @@ struct primordial_wave_t : public shaman_spell_t
     add_child( impact_action );
 
     ancestor_trigger = ancestor_cast::LAVA_BURST;
+
+    if ( player->is_ptr() && player->specialization() == SHAMAN_ELEMENTAL ) {
+      maelstrom_gain = player->spec.maelstrom->effectN( 12 ).resource( RESOURCE_MAELSTROM );
+    }
   }
 
   void init() override
