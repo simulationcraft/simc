@@ -765,6 +765,8 @@ struct divine_steed_t : public paladin_spell_t
     : paladin_spell_t( "divine_steed", p, p->find_class_spell( "Divine Steed" ) )
   {
     parse_options( options_str );
+    if ( p->talents.cavalier->ok() )
+      cooldown->charges += p->talents.cavalier->effectN( 1 ).base_value();
   }
 
   void execute() override
