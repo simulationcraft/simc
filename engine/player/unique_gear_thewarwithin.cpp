@@ -4695,6 +4695,12 @@ void detachable_fang( special_effect_t& effect )
   effect.execute_action = create_proc_action<gnash_t>( "gnash", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
+
+  effect.player->callbacks.register_callback_execute_function( effect.driver()->id(),
+    []( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
+      if ( cb->listener->get_player_distance( *s->target ) <= cb->proc_action->range )
+        cb->proc_action->execute_on_target( s->target );
+    } );
 }
 
 // 459222 driver
