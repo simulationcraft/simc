@@ -216,7 +216,7 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.strength_of_the_black_ox );
 
   // Master of Harmony
-  // TODO: parse_effects implementation for A_MOD_HEALING_RECEIVED (283)
+  // TODO: parse_effects implementation for A_MOD_HEALING_RECEIVED_FROM_SPELL (283)
   parse_effects( p()->talent.master_of_harmony.aspect_of_harmony_heal, p()->talent.master_of_harmony.coalescence,
                  [ & ] { return p()->buff.aspect_of_harmony.heal_ticking(); } );
   parse_effects( p()->buff.balanced_stratagem_physical, CONSUME_BUFF );

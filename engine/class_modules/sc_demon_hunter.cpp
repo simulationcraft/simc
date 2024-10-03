@@ -2102,13 +2102,16 @@ struct demon_hunter_sigil_t : public demon_hunter_spell_t
     }
     if ( hit_any_target && p()->talent.vengeance.cycle_of_binding->ok() )
     {
-      std::vector<cooldown_t*> sigils_on_cooldown;
-      range::copy_if( sigil_cooldowns, std::back_inserter( sigils_on_cooldown ),
-                      []( cooldown_t* c ) { return c->down(); } );
-      for ( auto sigil_cooldown : sigils_on_cooldown )
-      {
-        sigil_cooldown->adjust( sigil_cooldown_adjust );
-      }
+      // this is an event so that cooldown tracking occurs correctly
+      make_event( *p()->sim, 0_ms, [this]() {
+        std::vector<cooldown_t*> sigils_on_cooldown;
+        range::copy_if( this->sigil_cooldowns, std::back_inserter( sigils_on_cooldown ),
+                        []( cooldown_t* c ) { return c->down(); } );
+        for ( auto sigil_cooldown : sigils_on_cooldown )
+        {
+          sigil_cooldown->adjust( this->sigil_cooldown_adjust );
+        }
+      });
     }
   }
 

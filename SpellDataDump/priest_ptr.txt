@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56749 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56865 PTR
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -1525,7 +1525,8 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (
                  :
 Effects          :
 #1 (id=40042)    : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friendly (21)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friendly (21)
+                   Affected School(s): All
 #2 (id=40043)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000
 #3 (id=188025)   : Apply Aura (6) | Unknown(316)
@@ -1894,7 +1895,8 @@ Effects          :
 #1 (id=59165)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.80440 | PvP Coefficient: 1.30000 | Radius: 0 - 40 yards | Target: At Self (22) -> Friendly in Area (30)
 #2 (id=59166)    : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 0 - 40 yards | Target: At Self (22) -> Friendly in Area (30)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 0 - 40 yards | Target: At Self (22) -> Friendly in Area (30)
+                   Affected School(s): All
 Description      : $@spelldesc64843
 Tooltip          : Healing received increased by $w2%.
 
@@ -15237,7 +15239,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1218
                  : 3022
-Attributes       : Can't Crit (93), Ignore Damage Taken Modifiers (136), Not an Attack (194), Ignore Caster Damage Modifiers (221), Ignore Sanctuary (263), Cannot Kill Target (316)
+Attributes       : Not an Action (92), Can't Crit (93), Treat As Periodic (121), Ignore Damage Taken Modifiers (136), Not an Attack (194), Ignore Caster Damage Modifiers (221), Ignore Sanctuary (263), Cannot Kill Target (316)
                  :
 Effects          :
 #1 (id=1152783)  : School Damage (2): shadow

@@ -1494,6 +1494,7 @@ class SpellDataGenerator(DataGenerator):
          # 11.0 The War Within ================================================
          451916, 451917, 451918, 451920, 451921, # earthen racial well fed buff
          206150, 461904, 461910, 462661, # new M+ affixes
+         462513, # severed strands weekly raid buff
          443585, # fateweaved needle
          452279, # aberrant spellforge
          448621, 448643, # void reaper's chime
@@ -2280,6 +2281,7 @@ class SpellDataGenerator(DataGenerator):
 
           # Shado-Pan
           ( 451021, 0 ), # Flurry Charge (Buff)
+          ( 470670, 0 ), # Flurry Strikes Energy Tracker (Buff)
 
           # Conduit of the Celestials
           ( 443616, 0 ), # Heart of the Jade Serpent (Buff)
@@ -3408,7 +3410,7 @@ class SpellDataGenerator(DataGenerator):
         for id in id_keys:
             spell = self.db('SpellName')[id]
 
-            # Unused hotfix IDs: 5, 6, 7
+            # Unused hotfix IDs: 1, 2, 5, 6, 7
             # MAX hotfix id: 56
             hotfix = HotfixDataRecord()
             power_count = 0

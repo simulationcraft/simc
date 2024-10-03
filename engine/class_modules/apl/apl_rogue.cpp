@@ -296,6 +296,7 @@ void subtlety( player_t* p )
   precombat->add_action( "variable,name=priority_rotation,value=priority_rotation", "Swap to priority rotation if the variable is enabled" );
   precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)", "Check to see if theres on-use trinkets with stats and syncs them" );
   precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)" );
+  precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.is.treacherous_transmitter" );
   precombat->add_action( "stealth" );
 
   default_->add_action( "stealth" );
@@ -342,9 +343,10 @@ void subtlety( player_t* p )
   cds->add_action( "ancestral_call,if=variable.racial_sync" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.shadow_dance.up" );
 
-  items->add_action( "use_item,name=treacherous_transmitter,if=buff.shadow_blades.up|fight_remains<=15" );
+  items->add_action( "use_item,name=treacherous_transmitter,if=buff.flagellation_buff.up|fight_remains<=15" );
   items->add_action( "do_treacherous_transmitter_task,if=buff.shadow_blades.up|fight_remains<=15" );
   items->add_action( "use_item,name=imperfect_ascendancy_serum,use_off_gcd=1,if=dot.rupture.ticking&buff.flagellation_buff.up" );
+  items->add_action( "use_item,name=mad_queens_mandate,if=(!talent.lingering_darkness|buff.lingering_darkness.up)&(!equipped.treacherous_transmitter|trinket.treacherous_transmitter.cooldown.remains>20)|fight_remains<=15" );
   items->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.shadow_blades.up|(1+cooldown.shadow_blades.remains)>=trinket.1.cooldown.duration|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready&!buff.shadow_blades.up&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
   items->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.shadow_blades.up|(1+cooldown.shadow_blades.remains)>=trinket.2.cooldown.duration|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready&!buff.shadow_blades.up&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
 
@@ -352,13 +354,13 @@ void subtlety( player_t* p )
   finish->add_action( "rupture,if=!dot.rupture.ticking&target.time_to_die-remains>6" );
   finish->add_action( "variable,name=skip_rupture,value=buff.thistle_tea.up&spell_targets.shuriken_storm=1|buff.shadow_dance.up&(spell_targets.shuriken_storm=1|dot.rupture.ticking&spell_targets.shuriken_storm>=2)|buff.darkest_night.up" );
   finish->add_action( "rupture,if=(!variable.skip_rupture|variable.priority_rotation)&target.time_to_die-remains>6&refreshable" );
-  finish->add_action( "coup_de_grace,if=debuff.fazed.up&(buff.shadow_dance.up|(buff.symbols_of_death.up&cooldown.shadow_dance.charges_fractional<=0.85))" );
+  finish->add_action( "coup_de_grace,if=debuff.fazed.up&buff.shadow_dance.up" );
   finish->add_action( "cold_blood,if=variable.secret_condition&cooldown.secret_technique.ready" );
   finish->add_action( "secret_technique,if=variable.secret_condition&(!talent.cold_blood|cooldown.cold_blood.remains>buff.shadow_dance.remains-2|!talent.improved_shadow_dance)" );
   finish->add_action( "rupture,cycle_targets=1,if=!variable.skip_rupture&!variable.priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(2*combo_points)&refreshable" );
   finish->add_action( "rupture,if=!variable.skip_rupture&buff.finality_rupture.up&(cooldown.symbols_of_death.remains<=3|buff.symbols_of_death.up)" );
   finish->add_action( "black_powder,if=!variable.priority_rotation&talent.deathstalkers_mark&spell_targets>=3&!buff.darkest_night.up", "deathstalker bp" );
-  finish->add_action( "black_powder,if=!variable.priority_rotation&talent.unseen_blade&((buff.escalating_blade.stack=4&!buff.shadow_dance.up)|spell_targets>=3&!buff.flawless_form.up|(!used_for_danse&buff.shadow_dance.up&talent.shuriken_tornado&spell_targets>=3))", "Trickster bp, also gets used on singletarget when at max escalating blade stacks to preserve coup for dance" );
+  finish->add_action( "black_powder,if=!variable.priority_rotation&talent.unseen_blade&((buff.escalating_blade.stack=4&!buff.shadow_dance.up&cooldown.shadow_blades.remains<25)|spell_targets>=3&!buff.flawless_form.up|(!used_for_danse&buff.shadow_dance.up&talent.shuriken_tornado&spell_targets>=3))", "Trickster bp, also gets used on singletarget when at max escalating blade stacks to preserve coup for dance" );
   finish->add_action( "coup_de_grace,if=debuff.fazed.up" );
   finish->add_action( "eviscerate" );
 
