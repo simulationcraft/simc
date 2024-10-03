@@ -4835,6 +4835,24 @@ void kaheti_shadeweavers_emblem( special_effect_t& effect )
   effect.execute_action = create_proc_action<kaheti_shadeweavers_emblem_t>( "kaheti_shadeweavers_emblem", effect );
 }
 
+// 469927 driver
+// 469928 damage
+// TODO: confirm if rolemult gets implemented in-game
+void hand_of_justice( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto damage = create_proc_action<generic_proc_t>( "quick_strike", effect, 469928 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  // TODO: currently not implemented in-game
+  // damage->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 // 443384 driver
 // 443585 damage
@@ -5773,6 +5791,7 @@ void register_special_effects()
   register_special_effect( 442429, items::wildfire_wick );
   register_special_effect( 455467, items::kaheti_shadeweavers_emblem, true );
   register_special_effect( 455452, DISABLED_EFFECT );  // kaheti shadeweaver's emblem
+  register_special_effect( 469927, items::hand_of_justice );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );
