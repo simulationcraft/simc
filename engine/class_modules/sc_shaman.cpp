@@ -3575,18 +3575,18 @@ struct fire_elemental_t : public primal_elemental_t
 
 struct storm_elemental_t : public primal_elemental_t
 {
-  struct tempest_aoe_t : public pet_spell_t<storm_elemental_t>
+  struct stormfury_aoe_t : public pet_spell_t<storm_elemental_t>
   {
     int tick_number   = 0;
     double damage_amp = 0.0;
 
-    tempest_aoe_t( storm_elemental_t* player, util::string_view options )
-      : super( player, "tempest_aoe", player->find_spell( 269005 ), options )
+    stormfury_aoe_t( storm_elemental_t* player, util::string_view options )
+      : super( player, "stormfury_aoe", player->find_spell( 269005 ), options )
     {
       aoe        = -1;
       background = true;
 
-      // parent spell (tempest_t) has the damage increase percentage
+      // parent spell (stormfury_t) has the damage increase percentage
       damage_amp = player->o()->find_spell( 157375 )->effectN( 2 ).percent();
     }
 
@@ -3598,15 +3598,15 @@ struct storm_elemental_t : public primal_elemental_t
     }
   };
 
-  struct tempest_t : public pet_spell_t<storm_elemental_t>
+  struct stormfury_t : public pet_spell_t<storm_elemental_t>
   {
-    tempest_aoe_t* breeze = nullptr;
+    stormfury_aoe_t* breeze = nullptr;
 
-    tempest_t( storm_elemental_t* player, util::string_view options )
-      : super( player, "tempest", player->find_spell( 157375 ), options )
+    stormfury_t( storm_elemental_t* player, util::string_view options )
+      : super( player, "stormfury", player->find_spell( 157375 ), options )
     {
       channeled   = true;
-      tick_action = breeze = new tempest_aoe_t( player, options );
+      tick_action = breeze = new stormfury_aoe_t( player, options );
     }
 
     void tick( dot_t* d ) override
@@ -3647,7 +3647,7 @@ struct storm_elemental_t : public primal_elemental_t
   };
 
   buff_t* call_lightning;
-  cooldown_t* tempest_cd;
+  cooldown_t* stormfury_cd;
 
   storm_elemental_t( shaman_t* owner, elemental type_, elemental_variant variant_ )
     : primal_elemental_t( owner, type_, variant_ ), call_lightning( nullptr )
@@ -3665,7 +3665,7 @@ struct storm_elemental_t : public primal_elemental_t
         break;
     }
 
-    tempest_cd = get_cooldown( "tempest" );
+    stormfury_cd = get_cooldown( "stormfury" );
   }
 
   void create_default_apl() override
@@ -3675,7 +3675,7 @@ struct storm_elemental_t : public primal_elemental_t
     action_priority_list_t* def = get_action_priority_list( "default" );
     if ( type == elemental::PRIMAL_STORM )
     {
-      def->add_action( "tempest,if=buff.call_lightning.remains>=10" );
+      def->add_action( "stormfury,if=buff.call_lightning.remains>=10" );
     }
     def->add_action( "call_lightning" );
     def->add_action( "wind_gust" );
@@ -3703,8 +3703,8 @@ struct storm_elemental_t : public primal_elemental_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    if ( name == "tempest" )
-      return new tempest_t( this, options_str );
+    if ( name == "stormfury" )
+      return new stormfury_t( this, options_str );
     if ( name == "call_lightning" )
       return new call_lightning_t( this, options_str );
     if ( name == "wind_gust" )
@@ -3719,10 +3719,13 @@ struct storm_elemental_t : public primal_elemental_t
 
     if ( type == elemental::PRIMAL_STORM )
     {
-      tempest_cd->reset( false );
+      stormfury_cd->reset( false );
     }
 
-    o()->buff.wind_gust->reset();
+    if ( !o()->is_ptr() || variant == elemental_variant::GREATER )
+    {
+      o()->buff.wind_gust->reset();
+    }
   }
 
   void dismiss( bool expired ) override
@@ -11477,7 +11480,11 @@ void shaman_t::summon_lesser_elemental( elemental type, timespan_t override_dura
       elemental_buff = buff.lesser_storm_elemental;
       spawner_ptr = &( pet.lesser_storm_elemental );
 
-      buff.wind_gust->expire();
+      if ( !is_ptr() )
+      {
+        // starting in 11.0.5 stacks no longer drop if the lesser elemental of Echo of the Elementals is summoned
+        buff.wind_gust->expire();
+      }
       pet.lesser_fire_elemental.despawn();
       buff.lesser_fire_elemental->expire();
       break;
