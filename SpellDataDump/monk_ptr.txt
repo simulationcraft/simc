@@ -16819,6 +16819,7 @@ Description      : $@spelldesc450595
 Tooltip          : Movement slowed by $w1%.
 
 Name             : Flurry Strikes (id=450615) [Spell Family (53), Passive] 
+Hotfixed         : Proc Flags 1 (332116 -> 2446676)
 Talent Entry     : Shado-Pan (Brewmaster, Windwalker) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Monk
 School           : Nature
@@ -16828,7 +16829,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Proc Chance      : 101%
-Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), Not Shapeshifted (16), No Threat (42), Can't Crit (93), Can Proc From Procs (122), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Aura Points On Client (268), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
                  :
 Effects          :
