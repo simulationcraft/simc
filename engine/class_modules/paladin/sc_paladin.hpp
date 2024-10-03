@@ -1164,7 +1164,7 @@ public:
   struct affected_by_t
   {
     bool avenging_wrath, judgment, blessing_of_dawn, seal_of_reprisal, seal_of_order, divine_purpose,
-      divine_purpose_cost;                                                               // Shared
+      divine_purpose_cost, sacred_strength;                                                // Shared
     bool crusade, highlords_judgment, highlords_judgment_hidden, final_reckoning_st, final_reckoning_aoe,
       blades_of_light, divine_hammer, ret_t29_2p, ret_t29_4p, rise_from_ash; // Ret
     bool avenging_crusader;                                                                // Holy
@@ -1245,6 +1245,7 @@ public:
     this->affected_by.divine_purpose      = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 2 ) );
     this->affected_by.seal_of_reprisal    = this->data().affected_by( p->talents.seal_of_reprisal->effectN( 1 ) );
     this->affected_by.blessing_of_dawn    = this->data().affected_by( p->find_spell( 385127 )->effectN( 1 ) );
+    this->affected_by.sacred_strength     = this->data().affected_by( p->talents.sacred_strength->effectN( 1 ) );
 
     if ( p->talents.penitence->ok() )
     {
@@ -1445,6 +1446,10 @@ public:
     if ( affected_by.divine_purpose && p()->buffs.divine_purpose->up() )
     {
       am *= 1.0 + p()->spells.divine_purpose_buff->effectN( 2 ).percent();
+    }
+    if (affected_by.sacred_strength && p()->talents.sacred_strength->ok())
+    {
+      am *= 1.0 + p()->talents.sacred_strength->effectN( 1 ).percent();
     }
 
     if ( affected_by.seal_of_reprisal && p()->talents.seal_of_reprisal->ok() )
