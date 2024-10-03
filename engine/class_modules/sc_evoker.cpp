@@ -1967,7 +1967,7 @@ public:
   {
     ab::init();
 
-    if ( p()->specialization() == EVOKER_AUGMENTATION )
+    if ( p()->specialization() == EVOKER_AUGMENTATION && p()->talent.time_skip.ok() )
     {
       auto time_skip = static_cast<buffs::time_skip_t*>( p()->buff.time_skip.get() );
       if ( p()->find_spelleffect( &time_skip->data(), A_MAX, 0, &ab::data() )->ok() )
