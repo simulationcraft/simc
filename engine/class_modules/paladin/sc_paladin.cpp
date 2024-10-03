@@ -765,6 +765,7 @@ struct divine_steed_t : public paladin_spell_t
     : paladin_spell_t( "divine_steed", p, p->find_class_spell( "Divine Steed" ) )
   {
     parse_options( options_str );
+    background  = false;
     if ( p->talents.cavalier->ok() )
       cooldown->charges += p->talents.cavalier->effectN( 1 ).base_value();
   }
@@ -4343,7 +4344,7 @@ void paladin_t::init_spells()
   if (is_ptr()) talents.lights_revocation               = find_talent_spell( talent_tree::CLASS, "Light's Revocation" );
 
   // This is now in the Spec Tree for every Paladin
-  talents.avenging_wrath = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath" );
+  talents.avenging_wrath = find_talent_spell( is_ptr() ? talent_tree::SPECIALIZATION : talent_tree::CLASS , "Avenging Wrath" );
 
 
   if ( !is_ptr() )
