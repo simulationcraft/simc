@@ -1246,7 +1246,8 @@ public:
     this->affected_by.divine_purpose      = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 2 ) );
     this->affected_by.seal_of_reprisal    = this->data().affected_by( p->talents.seal_of_reprisal->effectN( 1 ) );
     this->affected_by.blessing_of_dawn    = this->data().affected_by( p->find_spell( 385127 )->effectN( 1 ) );
-    this->affected_by.sacred_strength     = this->data().affected_by( p->talents.sacred_strength->effectN( 1 ) );
+    if ( p->is_ptr() )
+      this->affected_by.sacred_strength     = this->data().affected_by( p->talents.sacred_strength->effectN( 1 ) );
 
     if ( p->talents.penitence->ok() )
     {

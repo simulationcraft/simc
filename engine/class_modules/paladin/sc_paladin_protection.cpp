@@ -178,7 +178,7 @@ struct avengers_shield_base_t : public paladin_spell_t
       td( s->target )->debuff.crusaders_resolve->trigger();
     }
 
-    if ( p()->talents.refining_fire->ok() )
+    if ( p()->is_ptr() && p()->talents.refining_fire->ok() )
     {
       p()->active.refining_fire->target = s->target;
       p()->active.refining_fire->execute();

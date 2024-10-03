@@ -296,7 +296,7 @@ struct blessing_of_protection_t : public paladin_spell_t
 // Most of this can be found in buffs::avenging_wrath_buff_t, this spell just triggers the buff
 
 avenging_wrath_t::avenging_wrath_t( paladin_t* p, util::string_view options_str )
-  : paladin_spell_t( "avenging_wrath", p, p->talents.avenging_wrath )
+  : paladin_spell_t( "avenging_wrath", p, p->find_spell( 31884 ) )
 {
   parse_options( options_str );
   if ( !p->talents.avenging_wrath->ok() )
