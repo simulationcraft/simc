@@ -1635,10 +1635,10 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
           range::for_each( secondaries, [ &stack ]( const auto& b ) {
             if ( b.second->check() )
             {
-              stack = b.second->check();
               b.second->expire();
             }
           } );
+          stack = primary->max_stack() - primary->check();
         }
 
         if ( !buff->at_max_stacks() )
@@ -1758,9 +1758,12 @@ void treacherous_transmitter( special_effect_t& effect )
     std::vector<action_t*> apl_actions;
     action_t* use_action;
     const special_effect_t& effect;
+    timespan_t task_dur;
 
     cryptic_instructions_t( const special_effect_t& e )
-      : generic_proc_t( e, "cryptic_instructions", e.driver() ), effect( e )
+      : generic_proc_t( e, "cryptic_instructions", e.driver() ),
+        effect( e ),
+        task_dur( 0_ms )
     {
       harmful            = false;
       cooldown->duration = 0_ms;  // Handled by the item
@@ -1775,8 +1778,7 @@ void treacherous_transmitter( special_effect_t& effect )
         {
           apl_actions.push_back( a );
         }
-        if ( a->action_list && a->action_list->name_str == "precombat" &&
-             a->name_str == "use_item_" + item->name_str )
+        if ( a->action_list && a->action_list->name_str == "precombat" && a->name_str == "use_item_" + item->name_str )
         {
           a->harmful = harmful;
           use_action = a;
@@ -1809,6 +1811,8 @@ void treacherous_transmitter( special_effect_t& effect )
           debug_cast<do_treacherous_transmitter_task_t*>( a )->task = tasks[ 0 ];
         }
       }
+
+      task_dur = e.player->find_spell( 449947 )->duration();
     }
 
     void precombat_buff()
@@ -1897,14 +1901,13 @@ void treacherous_transmitter( special_effect_t& effect )
       }
       else
       {
-        make_event( *sim, rng().range( 3_s, player->find_spell( 449947 )->duration() - 250_ms ),
-                    [ this ] { stat_buff->trigger(); } );
+        make_event( *sim, rng().gauss_ab( 6_s, 3_s, 3_s, task_dur ), [ this ] { stat_buff->trigger(); } );
       }
     }
   };
 
   effect.disable_buff();
-  effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
+  effect.stat           = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
   effect.execute_action = create_proc_action<cryptic_instructions_t>( "cryptic_instructions", effect );
 }
 

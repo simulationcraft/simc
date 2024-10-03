@@ -982,7 +982,7 @@ enum effect_subtype_t : unsigned {
     A_MOD_HEALING = 115,
     A_MOD_REGEN_DURING_COMBAT = 116,
     A_MOD_MECHANIC_RESISTANCE = 117,
-    A_MOD_HEALING_PCT = 118,
+    A_MOD_HEALING_RECEIVED_PCT = 118,
     A_119 = 119, // old A_SHARE_PET_TRACKING
     A_UNTRACKABLE = 120,
     A_EMPATHY = 121,
@@ -1147,7 +1147,7 @@ enum effect_subtype_t : unsigned {
     A_MOD_TARGET_ARMOR_PCT = 280,
     A_MOD_HONOR_GAIN = 281,
     A_MOD_BASE_HEALTH_PCT = 282,
-    A_MOD_HEALING_RECEIVED = 283, // Possibly only for some spell family class spells
+    A_MOD_HEALING_RECEIVED_FROM_SPELL = 283, // Possibly only for some spell family class spells
     A_284 = 284,
     A_285 = 285, // Some type of trigger buff, possibly on equip/learn
     A_MOD_RECHARGE_RATE = 286,

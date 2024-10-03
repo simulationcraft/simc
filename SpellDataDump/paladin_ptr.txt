@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56749 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56865 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -56,7 +56,8 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.50000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=1183800)  : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Reduces all damage you take by $s1% for $d. Usable while stunned.
 Tooltip          : Damage taken reduced by $w1%.$?a469439[
 
@@ -324,13 +325,13 @@ Effects          :
 #5 (id=1183597)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Raid Target (57)
 #6 (id=1183598)  : Dispel (38)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Raid Target (57)
 #7 (id=1183599)  : Dispel (38)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Raid Target (57)
 #8 (id=1183600)  : Apply Aura (6) | Disable Stealth (41)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Raid Target (57)
 #9 (id=1184416)  : Apply Aura (6) | Disable Stealth (41)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Raid Target (57)
 Description      : Blesses a party or raid member, reducing their damage taken by $s1%, but you suffer ${100*$e1}% of damage prevented.
 
 Last $d, or until transferred damage would cause you to fall below $s3% health.
@@ -750,7 +751,8 @@ Effects          :
 #3 (id=728128)   : Apply Aura (6) | Unknown(316)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Misc Value 2: 0x14 | Target: Self (1)
 #4 (id=1183798)  : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Reduces all damage you take by $s1% for $d.
 
 While Ardent Defender is active, the next attack that would otherwise kill you will instead bring you to $s2% of your maximum health.
@@ -4766,7 +4768,7 @@ Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allo
                  :
 Effects          :
 #1 (id=312855)   : Apply Raid Aura (65) | Modify Healing Received% (118)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 40 yards | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 40 yards | Target: Self (1)
 Description      : $@spelldesc200430
 Tooltip          : Healing received increased by $s1%.
 
@@ -7459,7 +7461,8 @@ Effects          :
 #1 (id=820438)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friendly (21)
 #2 (id=821028)   : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friendly (21)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friendly (21)
+                   Affected School(s): All
 #3 (id=823067)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Rating: Mastery | Target: Friendly (21)
 #4 (id=834166)   : Cancel Aura (164)
@@ -11058,7 +11061,6 @@ Effects          :
 Description      : Speed increased by $s3% and damage taken from area of effect attacks reduced by $s2%.
 
 Name             : Sentinel (id=385438) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200, override="Sentinel" (id=389539)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -12023,7 +12025,8 @@ Effects          :
 #1 (id=1023440)  : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friendly (21)
 #2 (id=1023441)  : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friendly (21)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friendly (21)
+                   Affected School(s): All
 #3 (id=1023442)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Rating: Mastery | Target: Friendly (21)
 #4 (id=1023443)  : Cancel Aura (164)
@@ -12106,6 +12109,7 @@ Description      : $@spelldesc148039
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Sentinel (id=389539) [Spell Family (10)] 
+Talent Entry     : Protection [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200, override="Sentinel" (id=389539)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -12127,21 +12131,21 @@ Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38
                  :
 Effects          :
 #1 (id=1025850)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Crusader Strike (132331), Eternal Flame (156322), Holy Shield (157122), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Holy Ritual (199423), Tyr's Deliverance (200654), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Merciful Auras (210291), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Glimmer of Light (287286), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Seal of Charity (384810), Recompense (384914), Seal of the Crusader (385723), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Execution Sentence (387200), Blessing of Winter (388012), Barrier of Faith (395180), Lightforged Blessing (403460), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Lightforged Blessing (407467), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Glimmer of Light (416619), Seal of the Crusader (416771), Holy Reverberation (423377), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Dawnlight (431381), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun Sear (431415), Sun's Avatar (431911), Sun's Avatar (431939), Sacred Weapon (432616), Rite of Adjuration (433682), Hammer and Anvil (433717), Hammer and Anvil (433722), Divine Guidance (433807), Divine Guidance (433808), Sacred Weapon (441590), Sacred Word (447246), Forge's Reckoning (447258), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), Sun's Avatar (463075), Eye for an Eye (469311), A Just Reward (469413)
                    Family Flags: 46, 65
 #2 (id=1025851)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Crusader Strike (132331), Eternal Flame (156322), Holy Shield (157122), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Holy Ritual (199423), Tyr's Deliverance (200654), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Merciful Auras (210291), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Glimmer of Light (287286), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Seal of Charity (384810), Recompense (384914), Seal of the Crusader (385723), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Execution Sentence (387200), Blessing of Winter (388012), Barrier of Faith (395180), Lightforged Blessing (403460), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Lightforged Blessing (407467), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Glimmer of Light (416619), Seal of the Crusader (416771), Holy Reverberation (423377), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Dawnlight (431381), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun Sear (431415), Sun's Avatar (431911), Sun's Avatar (431939), Sacred Weapon (432616), Rite of Adjuration (433682), Hammer and Anvil (433717), Hammer and Anvil (433722), Divine Guidance (433807), Divine Guidance (433808), Sacred Weapon (441590), Sacred Word (447246), Forge's Reckoning (447258), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), Sun's Avatar (463075), Eye for an Eye (469311), A Just Reward (469413)
                    Family Flags: 46, 65
 #3 (id=1026054)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Crusader Strike (132331), Eternal Flame (156322), Holy Shield (157122), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Holy Ritual (199423), Tyr's Deliverance (200654), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Merciful Auras (210291), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Glimmer of Light (287286), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Seal of Charity (384810), Recompense (384914), Seal of the Crusader (385723), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Execution Sentence (387200), Blessing of Winter (388012), Barrier of Faith (395180), Lightforged Blessing (403460), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Lightforged Blessing (407467), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Glimmer of Light (416619), Seal of the Crusader (416771), Holy Reverberation (423377), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Dawnlight (431381), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun Sear (431415), Sun's Avatar (431911), Sun's Avatar (431939), Sacred Weapon (432616), Rite of Adjuration (433682), Hammer and Anvil (433717), Hammer and Anvil (433722), Divine Guidance (433807), Divine Guidance (433808), Sacred Weapon (441590), Sacred Word (447246), Forge's Reckoning (447258), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), Sun's Avatar (463075), Eye for an Eye (469311), A Just Reward (469413)
                    Family Flags: 46, 65
 #4 (id=1033290)  : Apply Aura (6) | Modify Auto Attack Critical Chance (334)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=1033316)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=1033317)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=1033318)  : Apply Aura (6) | Unknown(262)
@@ -13497,7 +13501,8 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=1183802)  : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Reduces all damage you take by $s1% for $d. Usable while stunned.
 Tooltip          : Damage taken reduced by $w1%.$?a469439[
 
@@ -13795,7 +13800,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 50000 yards | Target: Raid in Area (56)
                    Affected School(s): All
 #2 (id=1053584)  : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 50000 yards | Target: Raid in Area (56)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 50000 yards | Target: Raid in Area (56)
+                   Affected School(s): All
 #3 (id=1055960)  : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 50000 yards | Target: Raid in Area (56)
 #4 (id=1072387)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
@@ -16147,7 +16153,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee
-Attributes       : Passive (6), Can Proc From Procs (122)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1103397)  : Apply Aura (6) | Proc Trigger Spell (42): Light's Deliverance
@@ -16874,7 +16880,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1119381)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -16924,7 +16930,7 @@ School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee
-Attributes       : Passive (6), Can Proc From Procs (122)
+Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1119408)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -17013,7 +17019,7 @@ School           : Physical
 Spell Type       : None
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1119613)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -17172,7 +17178,7 @@ Spell Type       : None
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1121178)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -17329,7 +17335,7 @@ Spell Type       : None
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1121463)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -17361,10 +17367,11 @@ Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=4, col=3, m
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Labels           : 3022
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1121476)  : Apply Aura (6) | Proc Trigger Spell (42): Undisputed Ruling
@@ -17516,10 +17523,11 @@ Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=2, col=1, m
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Labels           : 3022
 Internal Cooldown: 30 seconds
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1121950)  : Apply Aura (6) | Proc Trigger Spell (42)
@@ -17586,7 +17594,8 @@ Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=3, col=3, m
 Class            : Paladin
 School           : Physical
 Spell Type       : None
-Attributes       : Passive (6)
+Labels           : 3022
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1122028)  : Apply Aura (6) | Dummy (4)
@@ -18787,7 +18796,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Spellcast Override In Spellbook (310)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Spellcast Override In Spellbook (310)
                  :
 Effects          :
 #1 (id=1156829)  : Apply Aura (6) | Dummy (4)
@@ -19006,7 +19015,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6), Spellcast Override In Spellbook (310)
+Attributes       : Passive (6), Not In Spellbook (143), Spellcast Override In Spellbook (310)
                  :
 Effects          :
 #1 (id=1164292)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
@@ -19407,7 +19416,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Attributes       : Passive (6), Spellcast Override In Spellbook (310)
+Attributes       : Passive (6), Not In Spellbook (143), Spellcast Override In Spellbook (310)
                  :
 Effects          :
 #1 (id=1171272)  : Apply Aura (6) | Dummy (4)
@@ -19631,7 +19640,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Proc Chance      : 100%
-Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken
+Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416)
                  :
 Effects          :
@@ -19639,7 +19648,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Melee and ranged attackers receive $469311s1 Holy damage each time they strike you during $?c2[Ardent Defender][Divine Protection] and Divine Shield.
 
-Name             : Eye for an Eye (id=469311) [Spell Family (10), Hidden] 
+Name             : Eye for an Eye (id=469311) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -19649,7 +19658,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 65
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Attributes       : No Redirection (35), No Reflection (39), Can Proc From Procs (122), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1183581)  : School Damage (2): holy
@@ -19759,6 +19768,9 @@ Effects          :
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Divine Steed (190784), Divine Steed (221883), Divine Steed (221885), Divine Steed (221886), Divine Steed (221887), Divine Steed (254471), Divine Steed (254472), Divine Steed (254473), Divine Steed (254474), Divine Steed (276111), Divine Steed (276112), Divine Steed (294133), Divine Steed (363608), Divine Steed (453804)
                    Family Flags: 36
+#3 (id=1190388)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Duration (1)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 4172 (Label) | Target: Self (1)
+                   Affected Spells (Label): Steed of Glory (199544), Steed of Glory (199545)
 Description      : Divine Steed's cooldown is reduced by $s1%, but its duration is reduced by $s2%.
 
 Name             : A Just Reward (id=469411) [Spell Family (10), Passive, Hidden] 

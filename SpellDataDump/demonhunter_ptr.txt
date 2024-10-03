@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56749 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.56865 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -57,7 +57,8 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
                  :
 Effects          :
 #1 (id=129901)   : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.50000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 Description      : Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
 
@@ -513,6 +514,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 104712 | Misc Value 2: 0x6 | Target: Self (1)
 #12 (id=1179663)  : Direct Heal% (136)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#13 (id=1189554)  : Apply Aura (6) | Unknown(312)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 692 | Target: Self (1)
 Description      : Transform to demon form for $d, increasing current health by $s2%, healing for that amount, and increasing Armor by $s8%$?s235893[. Versatility increased by $s5%][]$?s321067[. While transformed, Shear and Fracture generate one additional Lesser Soul Fragment][]$?s321068[ and $s4 additional Fury][].
 Tooltip          : Maximum health increased by $w2%.
 Armor increased by $w8%.
@@ -7583,7 +7586,8 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
                  :
 Effects          :
 #1 (id=890573)   : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.50000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 Description      : Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
 
@@ -12024,7 +12028,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3022
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1153547)  : Apply Aura (6) | Dummy (4)
@@ -12040,7 +12044,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3022
-Attributes       : Passive (6), Aura Points On Client (268)
+Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268)
                  :
 Effects          :
 #1 (id=1153548)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
@@ -12083,7 +12087,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1153550)  : Apply Aura (6) | Modify Damage Taken% (87)
@@ -12107,7 +12111,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3022
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1153551)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -12147,7 +12151,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1153553)  : Apply Aura (6) | Dummy (4)
@@ -12179,7 +12183,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3022
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1153555)  : Apply Aura (6) | Modify Max Resource (418)
@@ -12195,7 +12199,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3022
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1153556)  : Apply Aura (6) | Dummy (4)
@@ -12233,7 +12237,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3022
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1153558)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
@@ -12249,7 +12253,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3022
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=1153559)  : Apply Aura (6) | Dummy (4)
@@ -12694,8 +12698,8 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Cancel (31), Not In Spellbook (143), Aura Points On Client (268)
                  :
 Effects          :
-#1 (id=1153826)  : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+#1 (id=1153826)  : Apply Aura (6) | Modify Total Stat% (137)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : $@spelldesc452414
 Tooltip          : Agility increased by $w1%.
 

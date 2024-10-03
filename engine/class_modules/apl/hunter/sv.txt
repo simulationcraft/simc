@@ -31,6 +31,7 @@ actions.cds+=/muzzle
 actions.cds+=/potion,if=target.time_to_die<25|buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault
 actions.cds+=/use_item,name=imperfect_ascendancy_serum,use_off_gcd=1,if=gcd.remains>gcd.max-0.1
 actions.cds+=/use_items,if=cooldown.coordinated_assault.remains|cooldown.spearhead.remains
+actions.cds+=/use_item,name=mad_queens_mandate,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&(time_to_die<10|time_to_die>120)&(trinket.skardyns_grace.cooldown.remains|!equipped.skardyns_grace)|time_to_die<10
 actions.cds+=/aspect_of_the_eagle,if=target.distance>=6
 
 
