@@ -4853,6 +4853,44 @@ void hand_of_justice( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 469915 driver
+//  e1: counter threshold
+//  e2: damage coeff
+// 469917 counter
+// 469918 unknown
+// 469919 missile, trigger damage
+// 469920 damage
+//  e1: damage coeff (unused?)
+void golem_gearbox( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 469917 ) )
+    ->set_max_stack( as<int>( effect.driver()->effectN( 1 ).base_value() ) );
+
+  auto missile = create_proc_action<generic_proc_t>( "torrent_of_flames", effect, 469919 );
+  auto damage =
+    create_proc_action<generic_proc_t>( "torrent_of_flames_damage", effect, missile->data().effectN( 1 ).trigger() );
+  damage->dual = damage->background = true;
+  // TODO: confirm driver coeff is used and not damage spell coeff
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
+  // TODO: currently not implemented in-game
+  // damage->base_multiplier *= role_mult( effect );
+
+  missile->impact_action = damage;
+  // use missile stat obj and remove unused damage stats obj
+  range::erase_remove( effect.player->stats_list, damage->stats );
+  delete damage->stats;
+  damage->stats = missile->stats;
+
+  effect.proc_flags2_ = PF2_CRIT;
+  effect.custom_buff = counter;
+  effect.execute_action = missile;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 // 443384 driver
 // 443585 damage
@@ -5792,6 +5830,7 @@ void register_special_effects()
   register_special_effect( 455467, items::kaheti_shadeweavers_emblem, true );
   register_special_effect( 455452, DISABLED_EFFECT );  // kaheti shadeweaver's emblem
   register_special_effect( 469927, items::hand_of_justice );
+  register_special_effect( 469915, items::golem_gearbox );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );
