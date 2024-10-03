@@ -7365,6 +7365,8 @@ struct icefury_t : public shaman_spell_t
         p()->buff.icefury_dmg->trigger( as<int>( p()->buff.icefury_dmg->data().effectN( 4 ).base_value() ) );
     }
 
+    p()->buff.flux_melting->trigger();
+
     p()->buff.fusion_of_elements_nature->trigger();
     p()->buff.fusion_of_elements_fire->trigger();
 
