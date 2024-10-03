@@ -5033,6 +5033,44 @@ void harvesters_interdiction( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 469936 driver
+// 469937 crit buff
+// 469938 haste buff
+// 469941 mastery buff
+// 469942 versatility buff
+// TODO: confirm buff cycle doesn't reset during middle of dungeon
+void guiding_stave_of_wisdom( special_effect_t& effect )
+{
+  struct guiding_stave_of_wisdom_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<buff_t*> buffs;
+
+    guiding_stave_of_wisdom_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      for ( auto id : { 469937, 469938, 469941, 469942 } )
+      {
+        auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( id ) )
+          ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+        buffs.push_back( buff );
+      }
+    }
+
+    void reset() override
+    {
+      std::rotate( buffs.begin(), buffs.begin() + effect.player->rng().range( 4 ), buffs.end() );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      buffs.front()->trigger();
+      std::rotate( buffs.begin(), buffs.begin() + 1, buffs.end() );
+    }
+  };
+
+  new guiding_stave_of_wisdom_cb_t( effect );
+}
+
 // Armor
 // 457815 driver
 // 457918 nature damage driver
@@ -5713,6 +5751,7 @@ void register_special_effects()
   register_special_effect( 442205, items::befoulers_syringe );
   register_special_effect( 455887, items::voltaic_stormcaller );
   register_special_effect( 455819, items::harvesters_interdiction );
+  register_special_effect( 469936, items::guiding_stave_of_wisdom );
 
   // Armor
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );
