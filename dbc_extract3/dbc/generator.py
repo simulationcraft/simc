@@ -2281,6 +2281,7 @@ class SpellDataGenerator(DataGenerator):
 
           # Shado-Pan
           ( 451021, 0 ), # Flurry Charge (Buff)
+          ( 470670, 0 ), # Flurry Strikes Energy Tracker (Buff)
 
           # Conduit of the Celestials
           ( 443616, 0 ), # Heart of the Jade Serpent (Buff)
