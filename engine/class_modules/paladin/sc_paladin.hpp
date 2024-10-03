@@ -149,6 +149,7 @@ public:
     action_t* armament[ NUM_ARMAMENT ];
     action_t* sacred_weapon_proc_damage;
     action_t* sacred_weapon_proc_heal;
+    action_t* refining_fire;
   } active;
 
   // Buffs

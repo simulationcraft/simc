@@ -177,6 +177,12 @@ struct avengers_shield_base_t : public paladin_spell_t
     {
       td( s->target )->debuff.crusaders_resolve->trigger();
     }
+
+    if ( p()->talents.refining_fire->ok() )
+    {
+      p()->active.refining_fire->target = s->target;
+      p()->active.refining_fire->execute();
+    }
   }
 
 double recharge_multiplier( const cooldown_t& cd ) const override
@@ -797,6 +803,15 @@ struct redoubt_buff_t : public buff_t
     }
   }
 };
+
+struct refining_fire_t : public paladin_spell_t
+{
+  refining_fire_t( paladin_t* p ) : paladin_spell_t( "refining_fire", p, p->find_spell( 469882 ) )
+  {
+
+  }
+};
+
 // Sentinel
 struct sentinel_t : public paladin_spell_t
 {
@@ -1110,6 +1125,7 @@ void paladin_t::create_prot_actions()
 {
   active.divine_toll = new avengers_shield_dt_t( this );
   active.divine_resonance = new avengers_shield_dr_t( this );
+  active.refining_fire    = new refining_fire_t( this );
 }
 
 action_t* paladin_t::create_action_protection( util::string_view name, util::string_view options_str )
