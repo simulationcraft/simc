@@ -663,6 +663,10 @@ public:
     unsigned ancient_fellowship_positive = 0U;
     unsigned ancient_fellowship_total = 0U;
 
+    // Routine Communication Deck-of-Cards RNG parametrization
+    unsigned routine_communication_positive = 0U;
+    unsigned routine_communication_total = 0U;
+
     // Thunderstrike Ward Uniform RNG proc chance
     // TODO: Double check for CL. A ~5h LB test resulted in a ~30% chance.
     double thunderstrike_ward_proc_chance = 0.3;
@@ -1069,6 +1073,7 @@ public:
 
     shuffled_rng_t* icefury;
     shuffled_rng_t* ancient_fellowship;
+    shuffled_rng_t* routine_communication;
   } rng_obj;
 
   // Cached pointer for ascendance / normal white melee
@@ -5931,6 +5936,11 @@ struct chain_lightning_t : public chained_base_t
         {
           p()->buff.icefury_cast->trigger();
         }
+
+        if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
+        {
+          p()->summon_ancestor();
+        }
       }
     }
 
@@ -6791,9 +6801,9 @@ struct lava_burst_t : public shaman_spell_t
       p()->buff.icefury_cast->trigger();
     }
 
-    if ( p()->talent.routine_communication.ok() && exec_type == spell_variant::NORMAL )
+    if ( p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() && exec_type == spell_variant::NORMAL )
     {
-      p()->summon_ancestor( p()->talent.routine_communication->effectN( 2 ).percent() );
+      p()->summon_ancestor();
     }
 
     // [BUG] 2024-08-23 Supercharge works on Lava Burst in-game
@@ -7004,6 +7014,11 @@ struct lightning_bolt_t : public shaman_spell_t
         {
           p()->buff.icefury_cast->trigger();
         }
+      }
+
+      if ( p()->is_ptr() && p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
+      {
+        p()->summon_ancestor();
       }
     }
 
@@ -7365,8 +7380,15 @@ struct icefury_t : public shaman_spell_t
         p()->buff.icefury_dmg->trigger( as<int>( p()->buff.icefury_dmg->data().effectN( 4 ).base_value() ) );
     }
 
+    p()->buff.flux_melting->trigger();
+
     p()->buff.fusion_of_elements_nature->trigger();
     p()->buff.fusion_of_elements_fire->trigger();
+
+    if ( p()->is_ptr() && p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
+    {
+      p()->summon_ancestor();
+    }
 
     p()->buff.icefury_cast->decrement();
   }
@@ -8500,6 +8522,11 @@ struct frost_shock_t : public shaman_spell_t
     {
       p()->proc.surge_of_power_wasted->occur();
       p()->buff.surge_of_power->decrement();
+    }
+
+    if ( p()->is_ptr() && p()->talent.routine_communication.ok() && p()->rng_obj.routine_communication->trigger() )
+    {
+      p()->summon_ancestor();
     }
   }
 
@@ -10765,6 +10792,9 @@ void shaman_t::create_options()
   add_option( opt_uint( "shaman.ancient_fellowship_positive", options.ancient_fellowship_positive, 0U, 100U ) );
   add_option( opt_uint( "shaman.ancient_fellowship_total", options.ancient_fellowship_total, 0U, 100U ) );
 
+  add_option( opt_uint( "shaman.routine_communication_positive", options.routine_communication_positive, 0U, 100U ) );
+  add_option( opt_uint( "shaman.routine_communication_total", options.routine_communication_total, 0U, 100U ) );
+
   add_option( opt_float( "shaman.thunderstrike_ward_proc_chance", options.thunderstrike_ward_proc_chance,
                          0.0, 1.0 ) );
 
@@ -12860,20 +12890,30 @@ void shaman_t::init_rng()
   if ( options.ancient_fellowship_positive == 0 ) {
     options.ancient_fellowship_positive = as<unsigned>( talent.ancient_fellowship->effectN( 3 ).base_value() );
   }
-
   if ( options.ancient_fellowship_total == 0 ) {
     options.ancient_fellowship_total = as<unsigned>( talent.ancient_fellowship->effectN( 2 ).base_value() );
   }
   rng_obj.ancient_fellowship =
     get_shuffled_rng( "ancient_fellowship", options.ancient_fellowship_positive, options.ancient_fellowship_total );
+
   if ( options.icefury_positive == 0 ) {
     options.icefury_positive = as<unsigned>( talent.icefury->effectN( 1 ).base_value() );
   }
-
   if ( options.icefury_total == 0 ) {
     options.icefury_total = as<unsigned>( talent.icefury->effectN( 2 ).base_value() );
   }
   rng_obj.icefury = get_shuffled_rng( "icefury", options.icefury_positive, options.icefury_total );
+
+  if ( options.routine_communication_positive == 0 ) {
+    options.routine_communication_positive = as<unsigned>( talent.routine_communication->effectN( 5 ).base_value() );
+  }
+  if ( options.routine_communication_total == 0 ) {
+    // This is effect 6 based on live data. PTR data is confusing in comparison.
+    options.routine_communication_total = as<unsigned>( talent.routine_communication->effectN( 6 ).base_value() );
+  }
+  rng_obj.routine_communication =
+    get_shuffled_rng( "routine_communication", options.routine_communication_positive, options.routine_communication_total );
+
 }
 
 // shaman_t::init_items =====================================================

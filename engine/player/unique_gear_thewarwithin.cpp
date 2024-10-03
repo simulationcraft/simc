@@ -4695,6 +4695,12 @@ void detachable_fang( special_effect_t& effect )
   effect.execute_action = create_proc_action<gnash_t>( "gnash", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
+
+  effect.player->callbacks.register_callback_execute_function( effect.driver()->id(),
+    []( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
+      if ( cb->listener->get_player_distance( *s->target ) <= cb->proc_action->range )
+        cb->proc_action->execute_on_target( s->target );
+    } );
 }
 
 // 459222 driver
@@ -4827,6 +4833,77 @@ void kaheti_shadeweavers_emblem( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<kaheti_shadeweavers_emblem_t>( "kaheti_shadeweavers_emblem", effect );
+}
+
+// 469927 driver
+// 469928 damage
+// TODO: confirm if rolemult gets implemented in-game
+void hand_of_justice( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto damage = create_proc_action<generic_proc_t>( "quick_strike", effect, 469928 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  // TODO: currently not implemented in-game
+  // damage->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 469915 driver
+//  e1: counter threshold
+//  e2: damage coeff
+// 469917 counter
+// 469918 unknown
+// 469919 missile, trigger damage
+// 469920 damage
+//  e1: damage coeff (unused?)
+void golem_gearbox( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 469917 ) )
+    ->set_max_stack( as<int>( effect.driver()->effectN( 1 ).base_value() ) );
+
+  auto missile = create_proc_action<generic_proc_t>( "torrent_of_flames", effect, 469919 );
+  auto damage =
+    create_proc_action<generic_proc_t>( "torrent_of_flames_damage", effect, missile->data().effectN( 1 ).trigger() );
+  damage->dual = damage->background = true;
+  // TODO: confirm driver coeff is used and not damage spell coeff
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
+  // TODO: currently not implemented in-game
+  // damage->base_multiplier *= role_mult( effect );
+
+  missile->impact_action = damage;
+  // use missile stat obj and remove unused damage stats obj
+  range::erase_remove( effect.player->stats_list, damage->stats );
+  delete damage->stats;
+  damage->stats = missile->stats;
+
+  effect.proc_flags2_ = PF2_CRIT;
+  effect.custom_buff = counter;
+  effect.execute_action = missile;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 469922 driver, trigger damage
+// 469924 damage
+void doperels_calling_rune( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto damage = create_proc_action<generic_proc_t>( "ghostly_ambush", effect, effect.trigger() );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  // TODO: currently not implemented in-game
+  // damage->base_multiplier *= role_mult( effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Weapons
@@ -5031,6 +5108,66 @@ void harvesters_interdiction( special_effect_t& effect )
   effect.execute_action = dot;
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 469936 driver
+// 469937 crit buff
+// 469938 haste buff
+// 469941 mastery buff
+// 469942 versatility buff
+// TODO: confirm buff cycle doesn't reset during middle of dungeon
+void guiding_stave_of_wisdom( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  struct guiding_stave_of_wisdom_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<buff_t*> buffs;
+
+    guiding_stave_of_wisdom_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      for ( auto id : { 469937, 469938, 469941, 469942 } )
+      {
+        auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( id ) )
+          ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+        buffs.push_back( buff );
+      }
+    }
+
+    void reset() override
+    {
+      std::rotate( buffs.begin(), buffs.begin() + effect.player->rng().range( 4 ), buffs.end() );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      buffs.front()->trigger();
+      std::rotate( buffs.begin(), buffs.begin() + 1, buffs.end() );
+    }
+  };
+
+  new guiding_stave_of_wisdom_cb_t( effect );
+}
+
+// 470641 driver, trigger damage
+// 470642 damage, trigger reflect
+// 470643 reflect
+void flame_wrath( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+  // TODO: damage does not match tooltip, split damage is inconsistent. waiting for blizz to fix before implementing.
+  // current value per target vs tooltip:
+  //  1t: (4140/7200) 57.5%
+  //  2t: (3120/7200) 43.3333..%
+  //  3t: (2610/7200) 36.25%
+  //  4t: (2304/7200) 32%
+  //  5t: (2100/7200) 29.1666..%
+  //  6t: (1800/7200) 25%
+  //  7t: (1575/7200) 21.875%
+  //  8t: (1400/7200) 19.4444..%
 }
 
 // Armor
@@ -5707,12 +5844,17 @@ void register_special_effects()
   register_special_effect( 442429, items::wildfire_wick );
   register_special_effect( 455467, items::kaheti_shadeweavers_emblem, true );
   register_special_effect( 455452, DISABLED_EFFECT );  // kaheti shadeweaver's emblem
+  register_special_effect( 469927, items::hand_of_justice );
+  register_special_effect( 469915, items::golem_gearbox );
+  register_special_effect( 469922, items::doperels_calling_rune );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );
   register_special_effect( 442205, items::befoulers_syringe );
   register_special_effect( 455887, items::voltaic_stormcaller );
   register_special_effect( 455819, items::harvesters_interdiction );
+  register_special_effect( 469936, items::guiding_stave_of_wisdom );
+  register_special_effect( 470641, items::flame_wrath );
 
   // Armor
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );

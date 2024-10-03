@@ -5273,23 +5273,24 @@ struct eruption_t : public essence_spell_t
           ->buffs.blistering_scales->bump( as<int>( p()->talent.regenerative_chitin->effectN( 3 ).base_value() ) );
     }
 
-    if ( p()->talent.scalecommander.mass_eruption.enabled() && p()->buff.mass_eruption_stacks->check() && execute_state )
-    {
-      int eruptions = 1;
-      for ( auto potential_target : target_list() )
-      {
-        if ( potential_target == execute_state->target )
-          continue;
-
-        mass_eruption->execute_on_target( potential_target );
-
-        if ( ++eruptions >= mass_eruption_max_targets )
-          break;
-      }
-    }
-
     if ( !is_overlord )
     {
+      if ( p()->talent.scalecommander.mass_eruption.enabled() && p()->buff.mass_eruption_stacks->check() &&
+           execute_state )
+      {
+        int eruptions = 1;
+        for ( auto potential_target : target_list() )
+        {
+          if ( potential_target == execute_state->target )
+            continue;
+
+          mass_eruption->execute_on_target( potential_target );
+
+          if ( ++eruptions >= mass_eruption_max_targets )
+            break;
+        }
+      }
+
       p()->buff.volcanic_upsurge->decrement();
       p()->buff.mass_eruption_stacks->decrement();
     }

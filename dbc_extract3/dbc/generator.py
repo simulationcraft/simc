@@ -1521,6 +1521,7 @@ class SpellDataGenerator(DataGenerator):
          455441, 455454, 455455, 455456, #Unstable Power Core Mastery Crit Haste Vers
          455521, 455522, 457627, # Woven Dawn Tailoring Set
          449441, # Fury of the Stormrook Set
+         469917, 469920, # golem gearbox
         ),
 
         # Warrior:
