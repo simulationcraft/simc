@@ -227,7 +227,7 @@ jobs:
             paladin_protection, paladin_retribution,
             priest_shadow,
             rogue_assassination, rogue_outlaw, rogue_subtlety,
-            shaman_elemental,
+            shaman_elemental, shaman_enhancement,
             warlock_affliction, warlock_demonology, warlock_destruction,
             warrior_arms, warrior_fury, warrior_protection
           ]
