@@ -1230,7 +1230,7 @@ struct melee_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( s );
 
-    if ( p()->talents.seal_of_the_crusader->ok() )
+    if ( !p()->is_ptr() && p()->talents.seal_of_the_crusader->ok() )
     {
       seal_of_the_crusader->execute_on_target( s->target );
     }
