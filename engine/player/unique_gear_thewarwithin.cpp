@@ -5047,6 +5047,9 @@ void harvesters_interdiction( special_effect_t& effect )
 // TODO: confirm buff cycle doesn't reset during middle of dungeon
 void guiding_stave_of_wisdom( special_effect_t& effect )
 {
+  if ( !effect.player->is_ptr() )
+    return;
+
   struct guiding_stave_of_wisdom_cb_t : public dbc_proc_callback_t
   {
     std::vector<buff_t*> buffs;
@@ -5082,6 +5085,8 @@ void guiding_stave_of_wisdom( special_effect_t& effect )
 // 470643 reflect
 void flame_wrath( special_effect_t& effect )
 {
+  if ( !effect.player->is_ptr() )
+    return;
   // TODO: damage does not match tooltip, split damage is inconsistent. waiting for blizz to fix before implementing.
   // current value per target vs tooltip:
   //  1t: (4140/7200) 57.5%
