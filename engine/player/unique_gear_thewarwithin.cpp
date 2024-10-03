@@ -4891,6 +4891,21 @@ void golem_gearbox( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 469922 driver, trigger damage
+// 469924 damage
+void doperels_calling_rune( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto damage = create_proc_action<generic_proc_t>( "ghostly_ambush", effect, effect.trigger() );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  // TODO: currently not implemented in-game
+  // damage->base_multiplier *= role_mult( effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 // 443384 driver
 // 443585 damage
@@ -5831,6 +5846,7 @@ void register_special_effects()
   register_special_effect( 455452, DISABLED_EFFECT );  // kaheti shadeweaver's emblem
   register_special_effect( 469927, items::hand_of_justice );
   register_special_effect( 469915, items::golem_gearbox );
+  register_special_effect( 469922, items::doperels_calling_rune );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );
