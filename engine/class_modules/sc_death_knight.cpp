@@ -577,6 +577,9 @@ struct death_knight_td_t : public actor_target_data_t
 
     // Rider of the Apocalypse
     propagate_const<dot_t*> undeath;
+
+    // Deathbringer
+    propagate_const<dot_t*> soul_reaper_reaper_of_souls;
   } dot;
 
   struct debuffs_t
@@ -787,6 +790,7 @@ public:
     propagate_const<buff_t*> rune_carved_plates_physical_buff;
     propagate_const<buff_t*> rune_carved_plates_magical_buff;
     propagate_const<buff_t*> swift_and_painful;
+    propagate_const<buff_t*> reaper_of_souls;
 
   } buffs;
 
@@ -813,6 +817,7 @@ public:
         death_and_decay_dynamic;  // Shared cooldown object for death and decay, defile and death's due
     propagate_const<cooldown_t*> death_grip;
     propagate_const<cooldown_t*> mind_freeze;
+    propagate_const<cooldown_t*> soul_reaper;
 
     // Blood
     cooldown_t* bone_shield_icd;  // internal cooldown between bone shield stack consumption
@@ -1464,7 +1469,7 @@ public:
     const spell_data_t* dark_talons_shadowfrost_buff;
     const spell_data_t* dark_talons_icy_talons_buff;
     const spell_data_t* soul_rupture_damage;
-    const spell_data_t* grim_reaper_soul_reaper;
+    const spell_data_t* soul_reaper_reaper_of_souls;
     const spell_data_t* exterminate_damage;
     const spell_data_t* exterminate_aoe;
     const spell_data_t* exterminate_buff;
@@ -1472,6 +1477,7 @@ public:
     const spell_data_t* rune_carved_plates_physical_buff;
     const spell_data_t* rune_carved_plates_magical_buff;
     const spell_data_t* swift_and_painful_buff;
+    const spell_data_t* reapers_of_souls_buff;
 
   } spell;
 
@@ -1725,6 +1731,7 @@ public:
     cooldown.chill_streak           = get_cooldown( "chill_streak" );
     cooldown.empower_rune_weapon    = get_cooldown( "empower_rune_weapon" );
     cooldown.frostscythe            = get_cooldown( "frostscythe" );
+    cooldown.soul_reaper            = get_cooldown( "soul_reaper" );
 
     // Target Specific
     cooldown.undeath_spread = get_target_specific_cooldown( "undeath_spread" );
@@ -3594,20 +3601,36 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       dot_behavior = DOT_EXTEND;
     }
 
+    dot_t* get_dot( player_t* t )
+    {
+      dot_t* d           = melee_attack_t::get_dot( t );
+      is_reaper_of_souls = false;
+
+      if ( dk()->is_ptr() && dk()->buffs.reaper_of_souls->up() )
+      {
+        d                  = t->get_dot( "soul_reaper_reaper_of_souls", pet() );
+        is_reaper_of_souls = true;
+      }
+
+      return d;
+    }
+
     void tick( dot_t* dot ) override
     {
-      if( dot->target->health_percentage() < data().effectN( 3 ).base_value() )
+      if ( is_reaper_of_souls || dot->target->health_percentage() < data().effectN( 3 ).base_value() )
       {
         // If DRW is still up, fire drw soul reaper execute, otherwise fire from the DK, with full DK damage mods
         if ( dk()->buffs.dancing_rune_weapon->up() )
           soul_reaper_execute->execute_on_target( dot->target );
         else
           dk()->active_spells.soul_reaper_execute_expired_drw->execute_on_target( dot->target );
+        is_reaper_of_souls = false;
       }
     }
 
   private:
     propagate_const<action_t*> soul_reaper_execute;
+    bool is_reaper_of_souls;
   };
 
   struct abilities_t
@@ -9543,7 +9566,7 @@ struct howling_blast_t final : public death_knight_spell_t
       {
         m *= 1.0 + p()->talent.frost.icebreaker->effectN( 1 ).percent();
       }
-      if ( p()->buffs.bind_in_darkness->check() )
+      if ( p()->is_ptr() && p()->buffs.bind_in_darkness->check() )
       {
         m *= 1.0 + p()->talent.deathbringer.bind_in_darkness->effectN( 4 ).percent();
       }
@@ -10584,7 +10607,8 @@ struct soul_reaper_t : public death_knight_melee_attack_t
 {
   soul_reaper_t( util::string_view name, death_knight_t* p, const spell_data_t* data )
     : death_knight_melee_attack_t( name, p, data ),
-      soul_reaper_execute( get_action<soul_reaper_execute_t>( name_str + "_execute", p ) )
+      soul_reaper_execute( get_action<soul_reaper_execute_t>( name_str + "_execute", p ) ),
+      is_reaper_of_souls( false )
   {
     if ( p->talent.soul_reaper.ok() )
     {
@@ -10608,10 +10632,27 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     return m;
   }
 
+  dot_t* get_dot( player_t* t )
+  {
+    dot_t* d           = melee_attack_t::get_dot( t );
+    is_reaper_of_souls = false;
+
+    if ( p()->is_ptr() && p()->buffs.reaper_of_souls->up() )
+    {
+      d                  = t->get_dot( "soul_reaper_reaper_of_souls", p() );
+      is_reaper_of_souls = true;
+    }
+
+    return d;
+  }
+
   void tick( dot_t* dot ) override
   {
-    if ( dot->target->health_percentage() < data().effectN( 3 ).base_value() )
+    if ( is_reaper_of_souls || dot->target->health_percentage() < data().effectN( 3 ).base_value() )
+    {
       soul_reaper_execute->execute_on_target( dot->target );
+      is_reaper_of_souls = false;
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -10635,6 +10676,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
 
 private:
   propagate_const<action_t*> soul_reaper_execute;
+  bool is_reaper_of_souls;
 };
 
 struct soul_reaper_action_t final : public soul_reaper_t
@@ -10663,6 +10705,17 @@ struct soul_reaper_action_t final : public soul_reaper_t
         }
       }
     }
+  }
+
+  double cost() const override
+  {
+    double c = death_knight_melee_attack_t::cost();
+    if ( p()->is_ptr() && p()->talent.deathbringer.reaper_of_souls.ok() && p()->buffs.reaper_of_souls->up() )
+    {
+      c = 0.0;
+    }
+
+    return c;
   }
 };
 
@@ -11432,7 +11485,7 @@ void death_knight_t::trigger_soul_reaper_death( player_t* target )
     return;
   }
 
-  if ( get_target_data( target )->dot.soul_reaper->is_ticking() )
+  if ( get_target_data( target )->dot.soul_reaper->is_ticking() || ( is_ptr() && get_target_data( target)->dot.soul_reaper_reaper_of_souls->is_ticking() ))
   {
     sim->print_log( "Target {} died while affected by Soul Reaper, player {} gains Runic Corruption buff.",
                     target->name(), name() );
@@ -13387,6 +13440,11 @@ void death_knight_t::spell_lookups()
   spell.rune_carved_plates_magical_buff =
       conditional_spell_lookup( talent.deathbringer.rune_carved_plates.ok(), 440290 );
   spell.swift_and_painful_buff = conditional_spell_lookup( talent.deathbringer.swift_and_painful.ok(), 469169 );
+  if ( is_ptr() )
+  {
+    spell.soul_reaper_reaper_of_souls = conditional_spell_lookup( talent.deathbringer.reaper_of_souls.ok(), 469180 );
+    spell.reapers_of_souls_buff       = conditional_spell_lookup( talent.deathbringer.reaper_of_souls.ok(), 469172 );
+  }
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -13544,6 +13602,13 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
   // Rider of the Apocalypse
   dot.undeath = target.get_dot( "undeath", &p );
 
+  // Deathbringer
+  if ( p.is_ptr() )
+  {
+    dot.soul_reaper_reaper_of_souls = target.get_dot( "soul_reaper_reaper_of_souls", &p );
+
+  }
+
   using namespace debuffs;
   // General Talents
   debuff.brittle = make_debuff( p.talent.brittle.ok(), *this, "brittle", p.spell.brittle_debuff )
@@ -13654,6 +13719,15 @@ inline death_knight_td_t::death_knight_td_t( player_t& target, death_knight_t& p
               p.sim->print_debug( "reapers_mark go boom" );
               p.buffs.reapers_mark_grim_reaper->trigger();
               make_event( p.sim, 0_ms, [ buff ]() { buff->expire(); } );
+            }
+          } )
+          ->set_stack_change_callback( [ & ]( buff_t*, int, int new_ ) {
+            if ( p.is_ptr() && p.talent.deathbringer.reaper_of_souls.ok() && new_ == 1 )
+            {
+              if ( new_ == 1 )
+              {
+                p.buffs.reaper_of_souls->trigger();
+              }
             }
           } );
 
@@ -13806,7 +13880,18 @@ void death_knight_t::create_buffs()
 
   buffs.exterminate = make_fallback( talent.deathbringer.exterminate.ok(), this, "exterminate", spell.exterminate_buff );
 
-  if ( !is_ptr() )
+  if ( is_ptr() )
+  {
+    buffs.reaper_of_souls =
+        make_fallback( talent.deathbringer.reapers_mark.ok(), this, "reaper_of_souls", spell.reapers_of_souls_buff )
+            ->set_stack_change_callback( [ this ]( buff_t*, int old_, int new_ ) {
+              if ( new_ > old_ )
+              {
+                this->cooldown.soul_reaper->reset( false );
+              }
+            } );
+  }
+  else
   {
     buffs.exterminate_painful_death =
         make_fallback( talent.deathbringer.painful_death.ok(), this, "exterminate_painful_death",
@@ -15017,7 +15102,11 @@ void death_knight_t::apply_affecting_auras( buff_t& buff )
   buff.apply_affecting_aura( talent.sanlayn.frenzied_bloodthirst );
 
   // Deathbringer
-  buff.apply_affecting_aura( talent.deathbringer.reapers_onslaught );
+  if ( is_ptr() )
+  {
+    buff.apply_affecting_aura( talent.deathbringer.reapers_onslaught );
+    buff.apply_affecting_aura( talent.deathbringer.bind_in_darkness );
+  }
 }
 
 void death_knight_t::apply_affecting_auras( action_t& action )
@@ -15095,6 +15184,7 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   else
   {
     action.apply_affecting_aura( talent.deathbringer.reapers_onslaught );
+    action.apply_affecting_aura( talent.deathbringer.reaper_of_souls );
   }
 }
 
