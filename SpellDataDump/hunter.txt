@@ -16698,7 +16698,7 @@ Stacks           : 20 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : No Aura Cancel (31), Not In Spellbook (143), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Ecnounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
                  :
 Effects          :
 #1 (id=1166879)  : Apply Aura (6) | Dummy (4)
@@ -16737,7 +16737,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Not In Spellbook (143), Spellcast Override In Spellbook (310), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Ecnounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
                  :
 Effects          :
 #1 (id=1166885)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
