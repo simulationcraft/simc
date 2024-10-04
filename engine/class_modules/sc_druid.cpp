@@ -7205,8 +7205,6 @@ struct force_of_nature_t final : public trigger_control_of_the_dream_t<druid_spe
   DRUID_ABILITY( force_of_nature_t, base_t, "force_of_nature", p->talent.force_of_nature ),
     num( as<unsigned>( p->talent.force_of_nature->effectN( 1 ).base_value() ) )
   {
-    harmful = false;
-
     if ( data().ok() )
     {
       p->pets.force_of_nature.set_default_duration( find_trigger( p->talent.force_of_nature ).trigger()->duration() + 1_ms );
