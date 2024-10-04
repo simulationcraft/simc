@@ -4906,6 +4906,35 @@ void doperels_calling_rune( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 469925 on-use, buff, driver, trigger int buff
+// 469925 int buff
+// TODO: determine what can and cannot proc the int buff. mana cost does not seem to be a determining factor, as it will
+// proc from harmful actions with no mana or resource cost, and buffs that reduce resource cost to 0 still allow the
+// ability to proc the int buff. on the other hand, some mana cost non-harmful spell will not proc.
+void burst_of_knowledge( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto int_buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item );
+
+  auto buff = create_buff<buff_t>( effect.player, effect.driver() )
+    ->set_cooldown( 0_ms );
+
+  effect.has_use_buff_override = true;
+  effect.custom_buff = buff;
+
+  auto on_use_cb = new special_effect_t( effect.player );
+  on_use_cb->name_str = effect.name() + "_cb";
+  on_use_cb->spell_id = effect.driver()->id();
+  on_use_cb->cooldown_ = 0_ms;
+  on_use_cb->custom_buff = int_buff;
+  effect.player->special_effects.push_back( on_use_cb );
+
+  auto cb = new dbc_proc_callback_t( effect.player, *on_use_cb );
+  cb->activate_with_buff( buff );
+}
+
 // Weapons
 // 443384 driver
 // 443585 damage
@@ -5847,6 +5876,7 @@ void register_special_effects()
   register_special_effect( 469927, items::hand_of_justice );
   register_special_effect( 469915, items::golem_gearbox );
   register_special_effect( 469922, items::doperels_calling_rune );
+  register_special_effect( 469925, items::burst_of_knowledge );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );
