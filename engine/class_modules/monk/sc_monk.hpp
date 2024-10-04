@@ -1305,6 +1305,8 @@ public:
     int chi_burst_healing_targets;
     int motc_override;
     double squirm_frequency;
+
+    int shado_pan_initial_charge_accumulator;
   } user_options;
 
   // exterminate these structs

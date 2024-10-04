@@ -996,7 +996,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
 
     flurry_strike_t( monk_t *p )
       : monk_melee_attack_t( p, "flurry_strike", p->talent.shado_pan.flurry_strikes_hit ),
-        flurry_strikes_counter( 0 ),
+        flurry_strikes_counter( p->user_options.shado_pan_initial_charge_accumulator ),
         flurry_strikes_threshold( as<int>( p->talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value() ) ),
         deck( p->get_shuffled_rng( "wisdom_of_the_wall", { { WISDOM_OF_THE_WALL_CRIT, 1 },
                                                            { WISDOM_OF_THE_WALL_DODGE, 1 },
@@ -1040,7 +1040,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
               p()->buff.wisdom_of_the_wall_mastery->trigger();
               break;
             default:
-              break;
+              assert( false );
           }
         }
       }
@@ -1051,10 +1051,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
         target_data->debuff.high_impact->trigger();
 
       if ( p()->buff.wisdom_of_the_wall_flurry->up() )
-      {
-        wisdom_flurry->set_target( s->target );
-        wisdom_flurry->execute();
-      }
+        wisdom_flurry->execute_on_target( s->target );
     }
   };
 
@@ -8779,6 +8776,9 @@ void monk_t::create_options()
   add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
   add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
   add_option( opt_float( "monk.squirm_frequency", user_options.squirm_frequency, 0, 30 ) );
+
+  // shado-pan options
+  add_option( opt_int( "monk.shado_pan.initial_charge_accumulator", user_options.shado_pan_initial_charge_accumulator, 0, as<int>( talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value() ) ) );
 }
 
 // monk_t::copy_from =========================================================
