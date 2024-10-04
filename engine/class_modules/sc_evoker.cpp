@@ -4034,7 +4034,7 @@ struct deep_breath_t : public evoker_spell_t
         add_child( melt_armor_dot );
       }
 
-      if ( p->specialization() == EVOKER_AUGMENTATION )
+      if ( p->specialization() == EVOKER_AUGMENTATION && p->talent.ebon_might.ok() )
         ebon = p->get_secondary_action<ebon_might_t>(
             "ebon_might_deep_breath", p->talent.sands_of_time->effectN( 3 ).time_value(), "ebon_might_deep_breath" );
     }
