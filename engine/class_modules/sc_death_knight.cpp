@@ -891,6 +891,7 @@ public:
     action_t* reapers_mark_explosion;
     action_t* wave_of_souls;
     action_t* soul_rupture;
+    action_t* grim_reaper_soul_reaper;
     action_t* exterminate;
 
     // Frost
@@ -1469,6 +1470,7 @@ public:
     const spell_data_t* dark_talons_shadowfrost_buff;
     const spell_data_t* dark_talons_icy_talons_buff;
     const spell_data_t* soul_rupture_damage;
+    const spell_data_t* grim_reaper_soul_reaper;
     const spell_data_t* soul_reaper_reaper_of_souls;
     const spell_data_t* exterminate_damage;
     const spell_data_t* exterminate_aoe;
@@ -3633,6 +3635,36 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     bool is_reaper_of_souls;
   };
 
+  struct soul_reaper_grim_reaper_t : public drw_action_t<melee_attack_t>
+  {
+    soul_reaper_grim_reaper_t( util::string_view n, dancing_rune_weapon_pet_t* p )
+      : drw_action_t<melee_attack_t>( p, n, p->dk()->spell.grim_reaper_soul_reaper ),
+        soul_reaper_execute( get_action<soul_reaper_execute_t>( "soul_reaper_grim_reaper_execute", p ) )
+    {
+      if ( dk()->options.individual_pet_reporting )
+      {
+        add_child( soul_reaper_execute );
+      }
+      hasted_ticks = false;
+      dot_behavior = DOT_EXTEND;
+    }
+
+    void tick( dot_t* dot ) override
+    {
+      if ( dot->target->health_percentage() < data().effectN( 3 ).base_value() )
+      {
+        // If DRW is still up, fire drw soul reaper execute, otherwise fire from the DK, with full DK damage mods
+        if ( dk()->buffs.dancing_rune_weapon->up() )
+          soul_reaper_execute->execute_on_target( dot->target );
+        else
+          dk()->active_spells.soul_reaper_execute_expired_drw->execute_on_target( dot->target );
+      }
+    }
+
+  private:
+    propagate_const<action_t*> soul_reaper_execute;
+  };
+
   struct abilities_t
   {
     action_t* blood_plague;
@@ -3642,6 +3674,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     action_t* heart_strike;
     action_t* marrowrend;
     action_t* soul_reaper;
+    action_t* grim_reaper_soul_reaper;
     action_t* consumption;
     action_t* vampiric_strike;
   } ability;
@@ -3686,6 +3719,10 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     if ( dk()->talent.soul_reaper.ok() )
     {
       ability.soul_reaper = get_action<soul_reaper_t>( "soul_reaper", this );
+    }
+    if ( !dk()->is_ptr() && dk()->talent.deathbringer.grim_reaper.ok() )
+    {
+      ability.grim_reaper_soul_reaper = get_action<soul_reaper_grim_reaper_t>( "soul_reaper_grim_reaper", this );
     }
     if ( dk()->talent.blood.consumption.ok() )
     {
@@ -6609,7 +6646,7 @@ struct exterminate_aoe_t final : public death_knight_spell_t
     const int effect_idx    = p->specialization() == DEATH_KNIGHT_FROST ? 2 : 1;
     attack_power_mod.direct = data().effectN( effect_idx ).ap_coeff();
 
-    if ( p->talent.deathbringer.wither_away->ok() )
+    if ( p->talent.deathbringer.wither_away->ok() || !p->is_ptr() )
     {
       if ( p->specialization() == DEATH_KNIGHT_FROST )
       {
@@ -6699,9 +6736,14 @@ struct reapers_mark_explosion_t final : public death_knight_spell_t
 
     if ( target != nullptr )
     {
+      if ( !p()->is_ptr() && p()->talent.deathbringer.grim_reaper->ok() &&
+           target->health_percentage() < p()->talent.deathbringer.grim_reaper->effectN( 2 ).base_value() )
+      {
+        p()->active_spells.grim_reaper_soul_reaper->execute_on_target( target );
+      }
       if ( p()->talent.deathbringer.exterminate->ok() )
       {
-        p()->buffs.exterminate->trigger( p()->talent.deathbringer.exterminate->effectN( 3 ).base_value() );
+        p()->buffs.exterminate->trigger( p()->buffs.exterminate->max_stack() );
       }
     }
   }
@@ -6744,7 +6786,7 @@ struct wave_of_souls_t final : public death_knight_spell_t
   {
     double m = death_knight_spell_t::composite_da_multiplier( state );
 
-    if ( state->chain_target == 0 )
+    if ( p()->is_ptr() && state->chain_target == 0 )
     {
       m *= 1.0 + p()->talent.deathbringer.swift_and_painful->effectN( 2 ).percent();
     }
@@ -6779,7 +6821,7 @@ struct soul_rupture_t final : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
-    if ( p()->talent.deathbringer.swift_and_painful->ok() && target_list().empty() )
+    if ( p()->is_ptr() && p()->talent.deathbringer.swift_and_painful->ok() && target_list().empty() )
     {
       p()->buffs.swift_and_painful->trigger();
     }
@@ -6807,6 +6849,10 @@ struct reapers_mark_t final : public death_knight_spell_t
     {
       add_child( p->active_spells.soul_rupture );
     }
+    if ( !p->is_ptr() && p->talent.deathbringer.grim_reaper.ok() )
+    {
+      add_child( p->active_spells.grim_reaper_soul_reaper );
+    }
     if ( p->talent.deathbringer.exterminate.ok() )
     {
       add_child( p->active_spells.exterminate );
@@ -6824,7 +6870,7 @@ struct reapers_mark_t final : public death_knight_spell_t
     }
     rm->trigger();
 
-    if ( p()->talent.deathbringer.grim_reaper.ok() )
+    if ( p()->is_ptr() && p()->talent.deathbringer.grim_reaper.ok() )
     {
       if ( p()->specialization() == DEATH_KNIGHT_FROST )
       {
@@ -9137,7 +9183,7 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
       // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
       base_multiplier *= 0.98;
     }
-    if ( is_arctic_assault )
+    if ( p->is_ptr() && is_arctic_assault )
     {
       base_multiplier *= p->talent.frost.arctic_assault->effectN( 1 ).percent();
     }
@@ -9650,7 +9696,7 @@ struct marrowrend_t final : public death_knight_melee_attack_t
     double c = death_knight_melee_attack_t::cost();
     if ( !p()->is_ptr() && p()->buffs.exterminate->up() )
     {
-      double m = !p()->talent.deathbringer.painful_death.ok()
+      double m = p()->talent.deathbringer.painful_death.ok()
                      ? p()->buffs.exterminate_painful_death->data().effectN( 2 ).percent()
                      : p()->buffs.exterminate->data().effectN( 2 ).percent();
       c += c * m;
@@ -9926,7 +9972,7 @@ struct obliterate_t final : public death_knight_melee_attack_t
     double c = death_knight_melee_attack_t::cost();
     if ( !p()->is_ptr() && p()->buffs.exterminate->up() )
     {
-      double m = !p()->talent.deathbringer.painful_death.ok()
+      double m = p()->talent.deathbringer.painful_death.ok()
                      ? p()->buffs.exterminate_painful_death->data().effectN( 2 ).percent()
                      : p()->buffs.exterminate->data().effectN( 2 ).percent();
       c += c * m;
@@ -10610,7 +10656,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
       soul_reaper_execute( get_action<soul_reaper_execute_t>( name_str + "_execute", p ) ),
       is_reaper_of_souls( false )
   {
-    if ( p->talent.soul_reaper.ok() )
+    if ( p->talent.soul_reaper.ok() || ( !p->is_ptr() && p->talent.deathbringer.grim_reaper.ok() ))
     {
       add_child( soul_reaper_execute );
     }
@@ -10716,6 +10762,42 @@ struct soul_reaper_action_t final : public soul_reaper_t
     }
 
     return c;
+  }
+};
+
+struct grim_reaper_soul_reaper_t final : public soul_reaper_t
+{
+  grim_reaper_soul_reaper_t( util::string_view name, death_knight_t* p )
+    : soul_reaper_t( name, p, p->spell.grim_reaper_soul_reaper )
+  {
+    background                         = true;
+    base_costs[ RESOURCE_RUNIC_POWER ] = 0;
+    base_costs[ RESOURCE_RUNE ]        = 0;
+    trigger_gcd                        = 0_ms;
+    cooldown->duration                 = 0_ms;
+    energize_amount                    = 0;
+  }
+
+  void execute() override
+  {
+    soul_reaper_t::execute();
+    if ( p()->specialization() == DEATH_KNIGHT_BLOOD )
+    {
+      if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
+      {
+        p()->pets.dancing_rune_weapon_pet.active_pet()->ability.grim_reaper_soul_reaper->execute_on_target(
+            execute_state->target );
+      }
+
+      if ( p()->talent.blood.everlasting_bond.ok() )
+      {
+        if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
+        {
+          p()->pets.everlasting_bond_pet.active_pet()->ability.grim_reaper_soul_reaper->execute_on_target(
+              execute_state->target );
+        }
+      }
+    }
   }
 };
 
@@ -12304,6 +12386,10 @@ void death_knight_t::create_actions()
   {
     active_spells.soul_rupture = get_action<soul_rupture_t>( "reapers_mark_soul_rupture", this );
   }
+  if ( !is_ptr() && talent.deathbringer.grim_reaper.ok() )
+  {
+    active_spells.grim_reaper_soul_reaper = get_action<grim_reaper_soul_reaper_t>( "soul_reaper_grim_reaper", this );
+  }
   if ( talent.deathbringer.exterminate.ok() )
   {
     active_spells.exterminate = get_action<exterminate_t>( "exterminate", this );
@@ -12324,7 +12410,7 @@ void death_knight_t::create_actions()
     {
       active_spells.heart_strike_bloodied_blade = get_action<heart_strike_bloodied_blade_t>( "heart_strike_bloodied_blade", this );
     }
-    if ( talent.soul_reaper.ok() )
+    if ( talent.soul_reaper.ok() || ( !is_ptr() && talent.deathbringer.grim_reaper.ok() ))
     {
       active_spells.soul_reaper_execute_expired_drw = get_action<soul_reaper_execute_t>( "soul_reaper_execute_expired_drw", this );
     }
@@ -13209,29 +13295,29 @@ void death_knight_t::init_spells()
   talent.rider.apocalypse_now         = find_talent_spell( talent_tree::HERO, "Apocalypse Now" );
 
   //////// Deathbringer
-  talent.deathbringer.reapers_mark              = find_talent_spell( talent_tree::HERO, "Reaper's Mark" );
-  talent.deathbringer.wave_of_souls             = find_talent_spell( talent_tree::HERO, "Wave of Souls" );
-  talent.deathbringer.bind_in_darkness          = find_talent_spell( talent_tree::HERO, "Bind in Darkness" );
-  talent.deathbringer.soul_rupture              = find_talent_spell( talent_tree::HERO, "Soul Rupture" );
-  talent.deathbringer.grim_reaper               = find_talent_spell( talent_tree::HERO, "Grim Reaper" );
-  talent.deathbringer.pact_of_the_deathbringer  = find_talent_spell( talent_tree::HERO, "Pact of the Deathbringer" );
-  talent.deathbringer.rune_carved_plates        = find_talent_spell( talent_tree::HERO, "Rune Carved Plates" );
-  talent.deathbringer.dark_talons               = find_talent_spell( talent_tree::HERO, "Dark Talons" );
-  talent.deathbringer.wither_away               = find_talent_spell( talent_tree::HERO, "Wither Away" );
-  talent.deathbringer.deaths_messenger          = find_talent_spell( talent_tree::HERO, "Death's Messenger" );
-  talent.deathbringer.expelling_shield          = find_talent_spell( talent_tree::HERO, "Expelling Shield" );
-  talent.deathbringer.exterminate               = find_talent_spell( talent_tree::HERO, "Exterminate" );
-  talent.deathbringer.painful_death             = find_talent_spell( talent_tree::HERO, "Painful Death" );
+  talent.deathbringer.reapers_mark             = find_talent_spell( talent_tree::HERO, "Reaper's Mark" );
+  talent.deathbringer.wave_of_souls            = find_talent_spell( talent_tree::HERO, "Wave of Souls" );
+  talent.deathbringer.bind_in_darkness         = find_talent_spell( talent_tree::HERO, "Bind in Darkness" );
+  talent.deathbringer.soul_rupture             = find_talent_spell( talent_tree::HERO, "Soul Rupture" );
+  talent.deathbringer.grim_reaper              = find_talent_spell( talent_tree::HERO, "Grim Reaper" );
+  talent.deathbringer.pact_of_the_deathbringer = find_talent_spell( talent_tree::HERO, "Pact of the Deathbringer" );
+  talent.deathbringer.rune_carved_plates       = find_talent_spell( talent_tree::HERO, "Rune Carved Plates" );
+  talent.deathbringer.dark_talons              = find_talent_spell( talent_tree::HERO, "Dark Talons" );
+  talent.deathbringer.wither_away              = find_talent_spell( talent_tree::HERO, "Wither Away" );
+  talent.deathbringer.deaths_messenger         = find_talent_spell( talent_tree::HERO, "Death's Messenger" );
+  talent.deathbringer.expelling_shield         = find_talent_spell( talent_tree::HERO, "Expelling Shield" );
+  talent.deathbringer.exterminate              = find_talent_spell( talent_tree::HERO, "Exterminate" );
   if ( is_ptr() )
   {
     talent.deathbringer.reapers_onslaught = find_talent_spell( talent_tree::HERO, "Reaper's Onslaught" );
-    talent.deathbringer.reaper_of_souls = find_talent_spell( talent_tree::HERO, "Reaper of Souls" );
+    talent.deathbringer.reaper_of_souls   = find_talent_spell( talent_tree::HERO, "Reaper of Souls" );
     talent.deathbringer.swift_and_painful = find_talent_spell( talent_tree::HERO, "Swift and Painful" );
   }
   else
   {
-    talent.deathbringer.swift_end = find_talent_spell( talent_tree::HERO, "Swift End" );
+    talent.deathbringer.swift_end     = find_talent_spell( talent_tree::HERO, "Swift End" );
     talent.deathbringer.blood_fever   = find_talent_spell( talent_tree::HERO, "Blood Fever" );
+    talent.deathbringer.painful_death = find_talent_spell( talent_tree::HERO, "Painful Death" );
   }
 
   ///////// San'layn
@@ -13279,7 +13365,8 @@ void death_knight_t::spell_lookups()
   spell.death_coil_damage       = conditional_spell_lookup( spec.death_coil->ok(), 47632 );
   spell.death_strike_heal       = conditional_spell_lookup( talent.death_strike.ok(), 45470 );
   spell.sacrificial_pact_damage = conditional_spell_lookup( talent.sacrificial_pact.ok(), 327611 );
-  spell.soul_reaper_execute     = conditional_spell_lookup( talent.soul_reaper.ok(), 343295 );
+  spell.soul_reaper_execute     = conditional_spell_lookup(
+      talent.soul_reaper.ok() || ( !is_ptr() && talent.deathbringer.grim_reaper.ok() ), 343295 );
   spell.anti_magic_zone_buff    = conditional_spell_lookup( talent.antimagic_zone.ok(), 396883 );
   spell.frost_shield_buff       = conditional_spell_lookup( talent.permafrost.ok(), 207203 );
   spell.blood_draw_damage       = conditional_spell_lookup( talent.blood_draw.ok(), 374606 );
@@ -13421,29 +13508,30 @@ void death_knight_t::spell_lookups()
   spell.bloodsoaked_ground_buff = conditional_spell_lookup( talent.sanlayn.bloodsoaked_ground.ok(), 434034 );
 
   // Deathbringer Spells
-  spell.reapers_mark_debuff            = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 434765 );
-  spell.reapers_mark_explosion         = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 436304 );
-  spell.reapers_mark_grim_reaper                    = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 443761 );
-  spell.wave_of_souls_damage           = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 435802 );
-  spell.wave_of_souls_debuff           = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 443404 );
-  spell.blood_fever_damage             = conditional_spell_lookup( talent.deathbringer.blood_fever.ok(), 440005 );
-  spell.bind_in_darkness_buff          = conditional_spell_lookup( talent.deathbringer.bind_in_darkness.ok(), 443532 );
-  spell.dark_talons_shadowfrost_buff   = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443586 );
-  spell.dark_talons_icy_talons_buff    = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443595 );
-  spell.soul_rupture_damage            = conditional_spell_lookup( talent.deathbringer.soul_rupture.ok(), 439594 );
-  spell.exterminate_damage             = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441424 );
-  spell.exterminate_aoe                = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441426 );
-  spell.exterminate_buff               = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441416 );
+  spell.reapers_mark_debuff          = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 434765 );
+  spell.reapers_mark_explosion       = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 436304 );
+  spell.reapers_mark_grim_reaper     = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 443761 );
+  spell.wave_of_souls_damage         = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 435802 );
+  spell.wave_of_souls_debuff         = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 443404 );
+  spell.blood_fever_damage           = conditional_spell_lookup( talent.deathbringer.blood_fever.ok(), 440005 );
+  spell.bind_in_darkness_buff        = conditional_spell_lookup( talent.deathbringer.bind_in_darkness.ok(), 443532 );
+  spell.dark_talons_shadowfrost_buff = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443586 );
+  spell.dark_talons_icy_talons_buff  = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443595 );
+  spell.soul_rupture_damage          = conditional_spell_lookup( talent.deathbringer.soul_rupture.ok(), 439594 );
+  spell.grim_reaper_soul_reaper = conditional_spell_lookup( !is_ptr() && talent.deathbringer.grim_reaper.ok(), 448229 );
+  spell.exterminate_damage      = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441424 );
+  spell.exterminate_aoe         = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441426 );
+  spell.exterminate_buff        = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 441416 );
   spell.exterminate_buff_painful_death = conditional_spell_lookup( talent.deathbringer.exterminate.ok(), 447954 );
   spell.rune_carved_plates_physical_buff =
       conditional_spell_lookup( talent.deathbringer.rune_carved_plates.ok(), 440289 );
   spell.rune_carved_plates_magical_buff =
       conditional_spell_lookup( talent.deathbringer.rune_carved_plates.ok(), 440290 );
-  spell.swift_and_painful_buff = conditional_spell_lookup( talent.deathbringer.swift_and_painful.ok(), 469169 );
   if ( is_ptr() )
   {
     spell.soul_reaper_reaper_of_souls = conditional_spell_lookup( talent.deathbringer.reaper_of_souls.ok(), 469180 );
     spell.reapers_of_souls_buff       = conditional_spell_lookup( talent.deathbringer.reaper_of_souls.ok(), 469172 );
+    spell.swift_and_painful_buff      = conditional_spell_lookup( talent.deathbringer.swift_and_painful.ok(), 469169 );
   }
 
   // Pet abilities
@@ -13890,6 +13978,9 @@ void death_knight_t::create_buffs()
                 this->cooldown.soul_reaper->reset( false );
               }
             } );
+
+    buffs.swift_and_painful = make_fallback( talent.deathbringer.swift_and_painful.ok(), this, "swift_and_painful",
+                                             spell.swift_and_painful_buff );
   }
   else
   {
@@ -13907,9 +13998,6 @@ void death_knight_t::create_buffs()
                                                           "rune_carved_plates_magical",
                                                           spell.rune_carved_plates_magical_buff )
                                                           ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
-
-  buffs.swift_and_painful = make_fallback( talent.deathbringer.swift_and_painful.ok(), this, "swift_and_painful",
-                                           spell.swift_and_painful_buff );
 
   // San'layn
   buffs.essence_of_the_blood_queen = make_fallback<essence_of_the_blood_queen_haste_buff_t>(
