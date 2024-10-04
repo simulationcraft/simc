@@ -908,7 +908,7 @@ static constexpr auto _aura_interrupt_strings = util::make_static_map<unsigned, 
   { 53, "Proc or Periodic Attack"          },
   { 54, "Challenge Mode Start"             },
   { 55, "Encounter Start"                  },
-  { 56, "Ecnounter End"                    },
+  { 56, "Encounter End"                    },
   { 57, "Release Empower"                  },
 } );
 
