@@ -220,7 +220,7 @@ jobs:
             deathknight_blood, deathknight_unholy, deathknight_frost,
             demonhunter_vengeance, demonhunter_havoc,
             druid_balance, druid_feral, druid_guardian, druid_restoration,
-            evoker_devastation,
+            evoker_devastation, evoker_augmentation,
             hunter_beast_mastery, hunter_marksmanship, hunter_survival,
             mage_arcane, mage_fire, mage_frost,
             monk_brewmaster, monk_windwalker,
