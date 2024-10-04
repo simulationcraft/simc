@@ -8778,7 +8778,7 @@ void monk_t::create_options()
   add_option( opt_float( "monk.squirm_frequency", user_options.squirm_frequency, 0, 30 ) );
 
   // shado-pan options
-  add_option( opt_int( "monk.shado_pan.initial_charge_accumulator", user_options.shado_pan_initial_charge_accumulator, 0, as<int>( talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value() ) ) );
+  add_option( opt_int( "monk.shado_pan.initial_charge_accumulator", user_options.shado_pan_initial_charge_accumulator, 0, as<int>( talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value() ) - 1 ) );
 }
 
 // monk_t::copy_from =========================================================
