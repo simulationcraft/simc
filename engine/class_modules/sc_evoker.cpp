@@ -146,6 +146,8 @@ struct evoker_td_t : public actor_target_data_t
     time_t last_accessed_second          = 0;
   } chrono_tracker;
 
+  double molten_embers_multiplier = std::numeric_limits<double>::lowest();
+
   evoker_td_t( player_t* target, evoker_t* source );
 };
 
@@ -333,7 +335,7 @@ struct simplified_player_t : public player_t
   // Options
   struct options_t
   {
-    int item_level = 613;
+    int item_level = 626;
     std::string variant = "default";
   } option;
 
@@ -777,8 +779,8 @@ struct evoker_t : public player_t
     bool remove_precombat_ancient_flame                        = true;
     int simplified_actor_ilevel                                = -1;
     bool simulate_bombardments                                 = true;
-    timespan_t simulate_bombardments_time_between_procs_mean   = 2.0_s;
-    timespan_t simulate_bombardments_time_between_procs_stddev = 0.15_s;
+    timespan_t simulate_bombardments_time_between_procs_mean   = 0.2_s;
+    timespan_t simulate_bombardments_time_between_procs_stddev = 0.10_s;
     timespan_t allied_virtual_cd_time = 118_s;
   } option;
 
@@ -1257,6 +1259,8 @@ struct evoker_t : public player_t
   // Augmentation Helpers
   void spawn_mote_of_possibility( player_t* = nullptr, timespan_t = timespan_t::zero() );
   void extend_ebon( timespan_t );
+  double get_molten_embers_multiplier( player_t*, bool = false) const;
+  void apply_bombardments( player_t* );
 
   // Utility functions
   const spelleffect_data_t* find_spelleffect( const spell_data_t* spell, effect_subtype_t subtype = A_MAX,
@@ -1910,14 +1914,6 @@ public:
           },
           p()->spec.fire_breath_damage );
     }
-
-    if ( p()->talent.molten_embers.ok() && spell_color == SPELL_BLACK )
-    {
-      add_parse_entry( ab::target_multiplier_effects )
-          .set_func( d_fn( &evoker_td_t::dots_t::fire_breath ) )
-          .set_value( p()->talent.molten_embers->effectN( 1 ).percent() )
-          .set_eff( &p()->talent.molten_embers->effectN( 1 ) );
-    }
   }
 
   template <typename... Ts>
@@ -1953,6 +1949,18 @@ public:
       return Base::cost_pct_multiplier();
 
     return ab::cost_pct_multiplier();
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    auto mul = ab::composite_target_multiplier( t );
+
+    if ( p()->talent.molten_embers.ok() && spell_color == SPELL_BLACK )
+    {
+      mul *= p()->get_molten_embers_multiplier( t );
+    }
+
+    return mul;
   }
 
   void init() override
@@ -3726,6 +3734,16 @@ struct fire_breath_t : public empowered_charge_spell_t
     {
       base_t::trigger_dot( state );
       p()->get_target_data( state->target )->dots.fire_breath_traveling_flame->cancel();
+
+      if ( p()->talent.molten_embers.enabled() )
+      {
+        auto td = p()->get_target_data( state->target );
+        if ( td )
+        {
+          auto mul_before = td->molten_embers_multiplier;
+          td->molten_embers_multiplier = p()->get_molten_embers_multiplier( state->target, true );
+        }
+      }
     }
 
     double calculate_tick_amount( action_state_t* s, double m ) const override
@@ -3744,6 +3762,22 @@ struct fire_breath_t : public empowered_charge_spell_t
       // TODO: confirm this doesn't have a target # based DR, or exhibit previously bugged behavior where icd is
       // triggered on check, not success
       p()->buff.burnout->trigger();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      empowered_release_spell_t::last_tick( d );
+
+      if ( p()->talent.molten_embers.enabled() )
+      {
+        auto td = p()->get_target_data( d->target );
+        if ( td )
+        {
+          sim->print_debug( "{} set molten_embers_multiplier on {} to 1.0 from {}", this->name_str, target->name_str,
+                            td->molten_embers_multiplier );
+          td->molten_embers_multiplier = 1.0;
+        }
+      }
     }
 
     void impact( action_state_t* s ) override
@@ -4182,10 +4216,10 @@ struct disintegrate_t : public essence_spell_t
   {
     essence_spell_t::impact( s );
 
-    if ( p()->talent.scalecommander.bombardments.ok() && p()->buff.mass_disintegrate_stacks->check() && s->chain_target == 0 )
+    if ( p()->talent.scalecommander.bombardments.ok() && p()->buff.mass_disintegrate_stacks->check() &&
+         s->chain_target == 0 )
     {
-      auto td = p()->get_target_data( s->target );
-      td->debuffs.bombardments->trigger();
+      p()->apply_bombardments( s->target );
     }
 
     if ( s->chain_target == 0 )
@@ -5135,6 +5169,7 @@ struct eruption_t : public essence_spell_t
   double mass_eruption_mult;
   int mass_eruption_max_targets;
   double motes_chance;
+  bool is_overlord;
 
   eruption_t( evoker_t* p, std::string_view name ) : eruption_t( p, name, {} )
   {
@@ -5148,7 +5183,8 @@ struct eruption_t : public essence_spell_t
       mass_eruption( nullptr ),
       mass_eruption_mult( p->talent.scalecommander.mass_eruption->effectN( 2 ).percent() ),
       mass_eruption_max_targets( as<int>( p->talent.scalecommander.mass_eruption_buff->effectN( 1 ).base_value() ) ),
-      motes_chance( p->talent.motes_of_possibility->proc_chance() )
+      motes_chance( p->talent.motes_of_possibility->proc_chance() ),
+      is_overlord( false )
   {
     aoe              = -1;
     split_aoe_damage = true;
@@ -5198,10 +5234,10 @@ struct eruption_t : public essence_spell_t
   {
     essence_spell_t::impact( s );
 
-    if ( p()->talent.scalecommander.bombardments.enabled() && p()->buff.mass_eruption_stacks->check() && s->chain_target == 0 )
+    if ( p()->talent.scalecommander.bombardments.enabled() && p()->buff.mass_eruption_stacks->check() && !is_overlord &&
+         s->chain_target == 0 )
     {
-      auto td = p()->get_target_data( s->target );
-      td->debuffs.bombardments->trigger();
+      p()->apply_bombardments( s->target );
     }
   }
 
@@ -5252,8 +5288,11 @@ struct eruption_t : public essence_spell_t
       }
     }
 
-    p()->buff.volcanic_upsurge->decrement();
-    p()->buff.mass_eruption_stacks->decrement();
+    if ( !is_overlord )
+    {
+      p()->buff.volcanic_upsurge->decrement();
+      p()->buff.mass_eruption_stacks->decrement();
+    }
   }
 };
 
@@ -5714,7 +5753,7 @@ struct breath_of_eons_t : public evoker_spell_t
     if ( p->talent.overlord.ok() )
     {
       eruption               = p->get_secondary_action<eruption_t>( "eruption_overlord", "eruption_overlord" );
-      eruption->proc         = true;
+      eruption->is_overlord  = true;
       eruption->motes_chance = p->talent.overlord->effectN( 2 ).percent();
       add_child( eruption );
     }
@@ -6200,9 +6239,14 @@ public:
         tm *= 1 + td->debuffs.melt_armor->check_value();
       }
 
-      if ( td && td->dots.fire_breath->is_ticking() )
+      if ( td && evoker->talent.molten_embers.enabled() && td->dots.fire_breath->is_ticking() )
       {
-        tm *= 1 + evoker->talent.molten_embers->effectN( 1 ).percent();
+        tm *= evoker->get_molten_embers_multiplier( t );
+      }
+
+      if ( evoker->buff.ebon_might_self_buff->check() )
+      {
+        tm *= 1 + evoker->buff.ebon_might_self_buff->data().effectN( 1 ).percent();
       }
 
       if ( evoker->talent.scalecommander.might_of_the_black_dragonflight->ok() )
@@ -6789,7 +6833,8 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
   bombardments_buff_t( evoker_td_t& td, util::string_view name, const spell_data_t* s, const spell_data_t* driver_spell )
     : e_buff_t( td, name, s ),
       gauss( p()->option.simulate_bombardments_time_between_procs_mean,
-             p()->option.simulate_bombardments_time_between_procs_stddev, driver_spell->internal_cooldown() + 1_ms )
+             p()->option.simulate_bombardments_time_between_procs_stddev,
+             std::max( p()->option.simulate_bombardments_time_between_procs_stddev / 2, 0.033_s ) )
   {
     buff_period = 0_s;
 
@@ -6827,7 +6872,7 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
       auto damage_action    = cb->get_bombardments_action( p() );
       damage_action->evoker = p();
       damage_action->execute_on_target( player );
-      cb->cooldown->start();
+      cd->start();
     }
   }
 
@@ -8425,6 +8470,17 @@ void evoker_t::reset()
       }
     }
   }
+
+  if ( talent.molten_embers.enabled() )
+  {
+    for ( evoker_td_t* td : target_data.get_entries() )
+    {
+      if ( !td )
+        continue;
+
+      td->molten_embers_multiplier = std::numeric_limits<double>::lowest();
+    }
+  }
 }
 
 void evoker_t::copy_from( player_t* source )
@@ -8862,6 +8918,57 @@ void evoker_t::extend_ebon( timespan_t extend )
   if ( background_actions.ebon_might )
   {
     static_cast<spells::ebon_might_t*>( background_actions.ebon_might.get() )->extend_ebon( extend );
+  }
+}
+
+double evoker_t::get_molten_embers_multiplier( player_t* target, bool recalculate ) const
+{
+  if ( !talent.molten_embers.enabled() )
+    return 1.0;
+
+  auto td = get_target_data( target );
+
+  if ( td->molten_embers_multiplier > 0 && !recalculate )
+    return td->molten_embers_multiplier;
+
+  double mul = 1;
+
+  if ( td && td->dots.fire_breath->is_ticking() )
+  {
+    auto fb = td->dots.fire_breath;
+
+    auto fb_state = debug_cast<evoker_action_state_t<empower_data_t>*>( fb->state );
+    auto empower  = fb_state->empower;
+
+    auto firebreath_duration = 20_s + timespan_t::from_seconds( talent.blast_furnace->effectN( 1 ).base_value() ) - ( static_cast<int>( empower ) - 1 ) * 6_s;
+
+    mul *= 1 + 2.4_s / firebreath_duration;
+
+    sim->print_debug( "{} set molten_embers_multiplier on {} to {} from {}", this->name_str, target->name_str, mul,
+                      td->molten_embers_multiplier );
+
+    td->molten_embers_multiplier = mul;
+  }
+
+  return mul;
+}
+
+void evoker_t::apply_bombardments( player_t* target )
+{
+  auto td = get_target_data( target );
+  td->debuffs.bombardments->trigger();
+
+  auto bombardments_buff = debug_cast<buffs::bombardments_buff_t*>( td->debuffs.bombardments );
+
+  auto callback = bombardments_buff->cb;
+
+  if ( callback )
+  {
+    auto cd = callback->get_cooldown( this );
+    assert( cd && "Bombardments CD Must Exist" );
+    cd->reset( false );
+    sim->print_debug( "{} resets cooldown of bombardments on target {} as bombardments is applied.", this->name_str,
+                      target->name_str );
   }
 }
 

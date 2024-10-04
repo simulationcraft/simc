@@ -580,7 +580,6 @@ struct sim_t : private sc_thread_t
   std::vector<player_t*> players_by_hps;
   std::vector<player_t*> players_by_hps_plus_aps;
   std::vector<player_t*> players_by_dtps;
-  std::vector<player_t*> players_by_tmi;
   std::vector<player_t*> players_by_name;
   std::vector<player_t*> players_by_apm;
   std::vector<player_t*> players_by_variance;

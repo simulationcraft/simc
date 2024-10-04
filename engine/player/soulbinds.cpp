@@ -866,7 +866,7 @@ void party_favors( special_effect_t& effect )
   }
 
   if ( buffs.size() > 0 )
-    effect.player->register_combat_begin( [ buffs ] ( player_t* p ) { buffs[ p->rng().range( buffs.size() ) ]->trigger(); } );
+    effect.player->register_combat_begin( [ buffs ] ( player_t* p ) { p->rng().range( buffs )->trigger(); } );
   else
     effect.player->sim->error( "Warning: Invalid type '{}' for Party Favors, ignoring.", opt_str );
 }

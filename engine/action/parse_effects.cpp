@@ -111,10 +111,19 @@ void player_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
     notes.emplace_back( "Consume" );
 
   if ( type & AFFECTED_OVERRIDE )
-    notes.emplace_back( "Scripted" );
+    notes.emplace_back( "Value-override" );
+
+  if ( type & MANUAL_ENTRY )
+    notes.emplace_back( "Manual-entry" );
+
+  if ( value_func )
+    notes.emplace_back( "Value-function" );
 
   if ( note_fn )
-    notes.emplace_back( note_fn( opt_enum ) );
+  {
+    if ( auto str = note_fn( opt_enum ); !str.empty() )
+      notes.emplace_back( str );
+  }
 
   range::for_each( notes, []( auto& s ) { s[ 0 ] = std::toupper( s[ 0 ] ); } );
 
@@ -158,8 +167,14 @@ void target_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
   if ( type & AFFECTED_OVERRIDE )
     notes.emplace_back( "Scripted" );
 
+  if ( type & MANUAL_ENTRY )
+    notes.emplace_back( "Manual" );
+
   if ( note_fn )
-    notes.emplace_back( note_fn( opt_enum ) );
+  {
+    if ( auto str = note_fn( opt_enum ); !str.empty() )
+      notes.emplace_back( str );
+  }
 
   range::for_each( notes, []( auto& s ) { s[ 0 ] = std::toupper( s[ 0 ] ); } );
 
@@ -606,7 +621,7 @@ void parse_effects_t::parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, 
                                 : fmt::format( "{:.1f}%", val * ( 1 / val_mul ) );
 
   if ( tmp.data.value != 0.0 )
-    val_str = val_str + " (overridden)";
+    val_str = val_str + " (value override)";
 
   if constexpr ( is_detected_v<detect_use_stacks, U> )
   {
@@ -625,11 +640,27 @@ void parse_effects_t::parse_effect( pack_t<U>& tmp, const spell_data_t* s_data, 
     }
   }
 
+  if constexpr ( is_detected_v<detect_value_func, U> )
+  {
+    if ( tmp.data.value_func )
+      val_str += " (value function)";
+  }
+
   debug_message( tmp.data, type_str, val_str, mastery, s_data, i );
 
   tmp.data.value = val;
   tmp.data.mastery = mastery;
   tmp.data.eff = &eff;
+
+  if constexpr ( is_detected_v<detect_simple, U> )
+  {
+    if ( tmp.data.func || tmp.data.value_func || tmp.data.type & USE_CURRENT || tmp.data.idx || tmp.data.mastery ||
+         !tmp.data.use_stacks )
+    {
+      tmp.data.simple = false;
+    }
+  }
+
   vec->push_back( tmp.data );
 
   if ( tmp.copy )
@@ -644,10 +675,27 @@ template void parse_effects_t::parse_effect<target_effect_t>( pack_t<target_effe
 
 double parse_effects_t::get_effect_value( const player_effect_t& i, bool benefit ) const
 {
+  if ( !i.simple )
+    return get_effect_value_full( i, benefit );
+
+  if ( i.buff )
+  {
+    auto stack = benefit ? i.buff->stack() : i.buff->check();
+    if ( !stack )
+      return 0.0;
+
+    return i.value * stack;
+  }
+
+  return i.value;
+}
+
+double parse_effects_t::get_effect_value_full( const player_effect_t& i, bool benefit ) const
+{
   if ( i.func && !i.func() )
     return 0.0;
 
-  double eff_val = i.value;
+  double eff_val = i.value_func ? i.value_func( i.value ) : i.value;
 
   if ( i.buff )
   {
@@ -925,10 +973,10 @@ double parse_player_effects_t::matching_gear_multiplier( attribute_e attr ) cons
   return mg;
 }
 
-double parse_player_effects_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+double parse_player_effects_t::composite_player_target_multiplier( player_t* t, school_e school ) const
 {
-  auto tm = player_t::composite_player_target_multiplier( target, school );
-  auto td = get_target_data( target );
+  auto tm = player_t::composite_player_target_multiplier( t, school );
+  auto td = get_target_data( t );
 
   for ( const auto& i : target_multiplier_effects )
     if ( i.opt_enum & dbc::get_school_mask( school ) )
@@ -937,10 +985,10 @@ double parse_player_effects_t::composite_player_target_multiplier( player_t* tar
   return tm;
 }
 
-double parse_player_effects_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+double parse_player_effects_t::composite_player_target_pet_damage_multiplier( player_t* t, bool guardian ) const
 {
-  auto tm = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
-  auto td = get_target_data( target );
+  auto tm = player_t::composite_player_target_pet_damage_multiplier( t, guardian );
+  auto td = get_target_data( t );
 
   for ( const auto& i : target_pet_multiplier_effects )
     if ( static_cast<bool>( i.opt_enum ) == guardian )

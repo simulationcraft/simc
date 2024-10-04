@@ -264,7 +264,7 @@ public:
   virtual int stack_react();
   // NOTE: If you need to override behavior on buff expire, use expire_override. Override "expire"
   // method only if you _REALLY_ know what you are doing.
-  virtual void expire( timespan_t delay = timespan_t::zero() );
+  virtual void expire( timespan_t d = timespan_t::zero() );
   // TODO: are these the same checks and can be combined?
   // check if the action matches the trigger spell's proc flags
   virtual bool can_trigger( action_t* action ) const;
@@ -274,7 +274,7 @@ public:
   bool trigger( action_t* action, int stacks = -1, double value = DEFAULT_VALUE(), double chance = -1.0,
                 timespan_t duration = timespan_t::min() );
   // expire if the action match the buff's proc flags
-  void expire( action_t* action, timespan_t delay = timespan_t::zero() );
+  void expire( action_t* action, timespan_t d = timespan_t::zero() );
   // Completely remove the buff, including any delayed applications and expirations.
   void cancel();
 
@@ -513,12 +513,12 @@ struct cost_reduction_buff_t : public buff_t
   double amount;
   school_e school;
 
-  cost_reduction_buff_t(actor_pair_t q, util::string_view name);
+  cost_reduction_buff_t( actor_pair_t q, util::string_view name) ;
   cost_reduction_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* spell, const item_t* item = nullptr );
   void bump     ( int stacks = 1, double value = -1.0 ) override;
   void decrement( int stacks = 1, double value = -1.0 ) override;
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
-  cost_reduction_buff_t* set_reduction(school_e school, double amount);
+  cost_reduction_buff_t* set_reduction(school_e s, double a);
 };
 
 struct movement_buff_t : public buff_t

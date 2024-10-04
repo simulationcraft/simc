@@ -24,11 +24,17 @@ do
 done
 
 FILE=SpellDataDump/allspells_ptr.txt
-./engine/simc display_build="0" $PTR spell_query="spell" > $FILE.unix
+echo "WARNING: allspells_ptr.txt will be deprecated in the future. Please refer to the class files or nonclass_ptr.txt for non-class spells." > $FILE.unix
+echo >> $FILE.unix
+./engine/simc display_build="0" $PTR spell_query="spell" >> $FILE.unix
+convert_line_ending $FILE
+
+FILE=SpellDataDump/nonclass_ptr.txt
+./engine/simc display_build="0" $PTR spell_query="spell.class=none" > $FILE.unix
 convert_line_ending $FILE
 
 FILE=SpellDataDump/build_info_ptr.txt
-./engine/simc display_build="2" > $FILE.unix
+./engine/simc display_build="2" $PTR > $FILE.unix
 convert_line_ending $FILE
 
 FILE=SpellDataDump/bonus_ids_ptr.txt

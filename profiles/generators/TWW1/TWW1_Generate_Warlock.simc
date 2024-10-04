@@ -91,7 +91,7 @@ level=80
 race=Orc
 role=spell
 position=ranged_back
-talents=CoQAAAAAAAAAAAAAAAAAAAAAAAMzMzMjhZxwY2mZmhZZAAAAAAAAAAMDYMjhFYgtRL0wCzMzYMmZzMzMzYMzAzMzMMzMAAA
+talents=CoQAAAAAAAAAAAAAAAAAAAAAAAMzMzMjYWMMmtZmZYWGAAAAAAAAAAzAGzYYBGYb0CNswYmxsNmZzMzMzYMjBzMzMYmZAAA
 
 head=devotees_discarded_headdress,id=212440,bonus_id=1540/10299/523,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1511/10255/10395/8781,ilevel=639,gem_id=213473/213485

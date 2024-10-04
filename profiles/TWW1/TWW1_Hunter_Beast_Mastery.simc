@@ -1,0 +1,119 @@
+hunter="TWW1_Hunter_Beast_Mastery_Dark_Ranger"
+source=default
+spec=beast_mastery
+level=80
+race=dwarf
+role=attack
+position=ranged_back
+talents=C0PAAAAAAAAAAAAAAAAAAAAAAYsNDMgFwMsEyYBAAAAAADAAAAAAgZGDjZmZYmhZYYGzMGzMzkZYMjZmZMzwwYYmhZZMmlZwG
+
+# Default consumables
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=the_sushi_special
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+actions.precombat+=/summon_pet
+actions.precombat+=/snapshot_stats
+actions.precombat+=/variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))
+actions.precombat+=/variable,name=trinket_2_stronger,value=!variable.trinket_1_stronger
+actions.precombat+=/bestial_wrath
+
+# Executed every time the actor is available.
+actions=auto_shot
+actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=trinkets
+actions+=/call_action_list,name=st,if=active_enemies<2|!talent.beast_cleave&active_enemies<3
+actions+=/call_action_list,name=cleave,if=active_enemies>2|talent.beast_cleave&active_enemies>1
+
+actions.cds=invoke_external_buff,name=power_infusion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains<30)|fight_remains<16
+actions.cds+=/berserking,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<13
+actions.cds+=/blood_fury,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<16
+actions.cds+=/ancestral_call,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<16
+actions.cds+=/fireblood,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<9
+actions.cds+=/potion,if=buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up|fight_remains<31
+
+actions.cleave=barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready&(!pet.main.buff.frenzy.up|talent.scent_of_blood)|talent.call_of_the_wild&cooldown.call_of_the_wild.ready)
+actions.cleave+=/black_arrow
+actions.cleave+=/multishot,if=pet.main.buff.beast_cleave.remains<0.25+gcd&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)
+actions.cleave+=/dire_beast
+actions.cleave+=/call_of_the_wild
+actions.cleave+=/bestial_wrath
+actions.cleave+=/bloodshed
+actions.cleave+=/kill_command,target_if=max:(target.health.pct<35|!talent.killer_instinct)*2+dot.a_murder_of_crows.refreshable
+actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.call_of_the_wild.up|fight_remains<9|talent.wild_call&charges_fractional>1.2|talent.savagery
+actions.cleave+=/cobra_shot,if=buff.bestial_wrath.up&talent.killer_cobra
+actions.cleave+=/kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.refreshable
+actions.cleave+=/explosive_shot
+actions.cleave+=/lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5
+actions.cleave+=/cobra_shot,if=focus.time_to_max<gcd*2
+actions.cleave+=/bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5
+actions.cleave+=/arcane_torrent,if=(focus+focus.regen+30)<focus.max
+
+actions.st=dire_beast,if=!pet.main.buff.frenzy.up
+actions.st+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready&(!pet.main.buff.frenzy.up|talent.scent_of_blood)|talent.call_of_the_wild&cooldown.call_of_the_wild.ready)
+actions.st+=/dire_beast
+actions.st+=/kill_command,if=talent.call_of_the_wild&cooldown.call_of_the_wild.remains<gcd+0.25
+actions.st+=/black_arrow
+actions.st+=/kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.refreshable&talent.bloodshed
+actions.st+=/call_of_the_wild
+actions.st+=/bloodshed
+actions.st+=/bestial_wrath
+actions.st+=/kill_command
+actions.st+=/kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.refreshable&talent.call_of_the_wild|talent.cull_the_herd
+actions.st+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_call&charges_fractional>1.4|buff.call_of_the_wild.up|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|talent.savagery|fight_remains<9
+actions.st+=/cobra_shot,if=buff.bestial_wrath.up&talent.killer_cobra
+actions.st+=/explosive_shot,if=!buff.bestial_wrath.up&talent.killer_cobra|!talent.killer_cobra
+actions.st+=/kill_shot,if=buff.hunters_prey.remains<gcd*2&talent.venoms_bite|target.health.pct<20
+actions.st+=/lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5
+actions.st+=/cobra_shot
+actions.st+=/bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5
+actions.st+=/arcane_pulse,if=buff.bestial_wrath.down|target.time_to_die<5
+actions.st+=/arcane_torrent,if=(focus+focus.regen+15)<focus.max
+
+actions.trinkets=variable,name=sync_ready,value=talent.call_of_the_wild&(prev_gcd.1.call_of_the_wild)|!talent.call_of_the_wild&(buff.bestial_wrath.up|cooldown.bestial_wrath.remains_guess<5)
+actions.trinkets+=/variable,name=sync_active,value=talent.call_of_the_wild&buff.call_of_the_wild.up|!talent.call_of_the_wild&buff.bestial_wrath.up
+actions.trinkets+=/variable,name=sync_remains,op=setif,value=cooldown.bestial_wrath.remains_guess,value_else=cooldown.call_of_the_wild.remains,condition=!talent.call_of_the_wild
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=trinket.1.has_use_buff&(variable.sync_ready&(variable.trinket_1_stronger|trinket.2.cooldown.remains)|!variable.sync_ready&(variable.trinket_1_stronger&(variable.sync_remains>trinket.1.cooldown.duration%3&fight_remains>trinket.1.cooldown.duration+20|trinket.2.has_use_buff&trinket.2.cooldown.remains>variable.sync_remains-15&trinket.2.cooldown.remains-5<variable.sync_remains&variable.sync_remains+45>fight_remains)|variable.trinket_2_stronger&(trinket.2.cooldown.remains&(trinket.2.cooldown.remains-5<variable.sync_remains&variable.sync_remains>=20|trinket.2.cooldown.remains-5>=variable.sync_remains&(variable.sync_remains>trinket.1.cooldown.duration%3|trinket.1.cooldown.duration<fight_remains&(variable.sync_remains+trinket.1.cooldown.duration>fight_remains)))|trinket.2.cooldown.ready&variable.sync_remains>20&variable.sync_remains<trinket.2.cooldown.duration%3)))|!trinket.1.has_use_buff&(trinket.1.cast_time=0|!variable.sync_active)&(!trinket.2.has_use_buff&(variable.trinket_1_stronger|trinket.2.cooldown.remains)|trinket.2.has_use_buff&(!variable.sync_active&variable.sync_remains>20|trinket.2.cooldown.remains>20))|fight_remains<25&(variable.trinket_1_stronger|trinket.2.cooldown.remains)
+actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=trinket.2.has_use_buff&(variable.sync_ready&(variable.trinket_2_stronger|trinket.1.cooldown.remains)|!variable.sync_ready&(variable.trinket_2_stronger&(variable.sync_remains>trinket.2.cooldown.duration%3&fight_remains>trinket.2.cooldown.duration+20|trinket.1.has_use_buff&trinket.1.cooldown.remains>variable.sync_remains-15&trinket.1.cooldown.remains-5<variable.sync_remains&variable.sync_remains+45>fight_remains)|variable.trinket_1_stronger&(trinket.1.cooldown.remains&(trinket.1.cooldown.remains-5<variable.sync_remains&variable.sync_remains>=20|trinket.1.cooldown.remains-5>=variable.sync_remains&(variable.sync_remains>trinket.2.cooldown.duration%3|trinket.2.cooldown.duration<fight_remains&(variable.sync_remains+trinket.2.cooldown.duration>fight_remains)))|trinket.1.cooldown.ready&variable.sync_remains>20&variable.sync_remains<trinket.1.cooldown.duration%3)))|!trinket.2.has_use_buff&(trinket.2.cast_time=0|!variable.sync_active)&(!trinket.1.has_use_buff&(variable.trinket_2_stronger|trinket.1.cooldown.remains)|trinket.1.has_use_buff&(!variable.sync_active&variable.sync_remains>20|trinket.1.cooldown.remains>20))|fight_remains<25&(variable.trinket_2_stronger|trinket.1.cooldown.remains)
+
+head=lightless_scavengers_skull,id=212020,bonus_id=1808,ilevel=639,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,bonus_id=8781,ilevel=639,gem_id=213479/213470
+shoulders=lightless_scavengers_taxidermy,id=212018,bonus_id=4795,ilevel=639
+back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant_id=7403
+chest=lightless_scavengers_tunic,id=212023,bonus_id=4795,ilevel=639,enchant_id=7364
+wrists=glyphetched_vambraces,id=219342,bonus_id=1808/11303/8960/8790,ilevel=636,gem_id=213494,enchant_id=7385
+hands=glyphetched_gauntlets,id=219341,bonus_id=11303/8960/8790,ilevel=636
+waist=lightless_scavengers_bonegirdle,id=212017,bonus_id=1808,ilevel=639,gem_id=213455
+legs=lightless_scavengers_stalkings,id=212019,bonus_id=4795,ilevel=639,enchant_id=7601
+feet=lightless_scavengers_footpads,id=212022,bonus_id=4795,ilevel=639,enchant_id=7418
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=8781,ilevel=639,gem_id=213455/213455,enchant_id=7340
+finger2=key_to_the_unseeming,id=212447,bonus_id=8781,ilevel=639,gem_id=213455/213455,enchant_id=7340
+trinket1=skardyns_grace,id=133282,ilevel=639
+trinket2=mad_queens_mandate,id=212454,bonus_id=1540/10299/10376
+main_hand=shadetouched_silencer,id=212400,bonus_id=1540/10299,enchant_id=7460
+
+# Gear Summary
+# gear_ilvl=638.60
+# gear_agility=36154
+# gear_stamina=237111
+# gear_crit_rating=14168
+# gear_haste_rating=19076
+# gear_mastery_rating=5074
+# gear_versatility_rating=588
+# gear_speed_rating=250
+# gear_avoidance_rating=1635
+# gear_armor=37951
+# set_bonus=thewarwithin_season_1_2pc=1
+# set_bonus=thewarwithin_season_1_4pc=1

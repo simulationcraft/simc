@@ -512,6 +512,7 @@ unsigned spelleffect_data_t::affected_schools() const
     case A_REFLECT_SPELLS_SCHOOL:
     case A_MOD_DAMAGE_PERCENT_DONE:
     case A_MOD_DAMAGE_PERCENT_TAKEN:
+    case A_MOD_HEALING_RECEIVED_PCT:
     case A_MOD_DAMAGE_TO_CASTER:
     case A_MOD_DAMAGE_FROM_CASTER:
     case A_MOD_CRIT_DAMAGE_BONUS:

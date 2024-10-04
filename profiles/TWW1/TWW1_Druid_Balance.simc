@@ -33,8 +33,8 @@ actions.precombat+=/snapshot_stats
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune|druid.no_cds
 actions.precombat+=/variable,name=on_use_trinket,value=0
-actions.precombat+=/variable,name=on_use_trinket,op=add,value=(trinket.1.has_proc.any&trinket.1.cooldown.duration|trinket.1.is.spymasters_web|trinket.1.is.signet_of_the_priory)&!trinket.1.is.arakara_sacbrood
-actions.precombat+=/variable,name=on_use_trinket,op=add,value=((trinket.2.has_proc.any&trinket.2.cooldown.duration|trinket.2.is.spymasters_web|trinket.2.is.signet_of_the_priory)*2&!trinket.2.is.arakara_sacbrood)
+actions.precombat+=/variable,name=on_use_trinket,op=add,value=trinket.1.has_use_buff&!trinket.1.is.ovinaxs_mercurial_egg
+actions.precombat+=/variable,name=on_use_trinket,op=add,value=(trinket.2.has_use_buff&!trinket.2.is.ovinaxs_mercurial_egg)*2
 actions.precombat+=/moonkin_form
 actions.precombat+=/wrath
 actions.precombat+=/wrath
@@ -44,14 +44,19 @@ actions.precombat+=/stellar_flare
 
 # Executed every time the actor is available.
 actions=variable,name=passive_asp,value=6%spell_haste+talent.natures_balance+talent.orbit_breaker*dot.moonfire.ticking*(buff.orbit_breaker.stack>(27-2*buff.solstice.up))*24
-# TRINKETS
-actions+=/use_item,name=spymasters_web,if=buff.ca_inc.up&buff.spymasters_report.stack>29|fight_remains<20
-actions+=/use_items,slots=trinket1,if=variable.on_use_trinket!=1&!trinket.2.ready_cooldown|(variable.on_use_trinket=1|variable.on_use_trinket=3)&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0
-actions+=/use_items,slots=trinket2,if=variable.on_use_trinket!=2&!trinket.1.ready_cooldown|variable.on_use_trinket=2&buff.ca_inc.up|variable.no_cd_talent|fight_remains<20|variable.on_use_trinket=0
-actions+=/use_items,if=buff.ca_inc.up
-actions+=/potion,if=buff.ca_inc.up|fight_remains<=30
-actions+=/berserking,if=buff.ca_inc.remains>=10|variable.no_cd_talent|fight_remains<15
-# Variables + Eclipse
+actions+=/variable,name=ca_effective_cd,value=cooldown.ca_inc.remains<?cooldown.force_of_nature.remains
+actions+=/variable,name=last_ca_inc,value=fight_remains<cooldown.ca_inc.duration+variable.ca_effective_cd
+actions+=/variable,name=cd_condition,value=(fight_remains<(15+5*talent.incarnation_chosen_of_elune)*(1+talent.greater_alignment*0.4)|!hero_tree.keeper_of_the_grove|(buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>25))&cooldown.ca_inc.ready&dot.sunfire.ticking&(dot.moonfire.ticking|talent.treants_of_the_moon&(cooldown.force_of_nature.remains<3|buff.harmony_of_the_grove.up))
+actions+=/use_item,name=aberrant_spellforge
+actions+=/do_treacherous_transmitter_task
+actions+=/use_item,name=spymasters_web,if=variable.cd_condition&(buff.spymasters_report.stack>29|fight_remains<cooldown.ca_inc.duration)|fight_remains<20
+actions+=/use_item,name=imperfect_ascendancy_serum,if=dot.sunfire.remains>4&(dot.moonfire.remains>4|talent.treants_of_the_moon&(cooldown.force_of_nature.remains<3|buff.harmony_of_the_grove.up)&variable.ca_effective_cd<1|fight_remains<20|fight_remains<variable.ca_effective_cd&(buff.harmony_of_the_grove.up|cooldown.convoke_the_spirits.ready))&buff.spymasters_report.stack<=29
+actions+=/use_item,name=treacherous_transmitter,if=(variable.ca_effective_cd<3|fight_remains<20|fight_remains<variable.ca_effective_cd&(buff.harmony_of_the_grove.up|cooldown.convoke_the_spirits.ready))&buff.spymasters_report.stack<=29
+actions+=/variable,name=generic_trinket_condition,value=variable.no_cd_talent|fight_remains<variable.ca_effective_cd&(buff.harmony_of_the_grove.up|cooldown.convoke_the_spirits.ready)|((buff.spymasters_report.stack+variable.ca_effective_cd%6)>29|fight_remains<cooldown.ca_inc.duration+variable.ca_effective_cd)&variable.ca_effective_cd>20|variable.on_use_trinket=0
+actions+=/use_items,slots=trinket1,if=variable.on_use_trinket!=1&trinket.2.cooldown.remains>20|(variable.on_use_trinket=1|variable.on_use_trinket=3)&variable.cd_condition|fight_remains<(20+20*(trinket.2.cooldown.remains<25))|variable.generic_trinket_condition
+actions+=/use_items,slots=trinket2,if=variable.on_use_trinket!=2&trinket.1.cooldown.remains>20|variable.on_use_trinket=2&variable.cd_condition|fight_remains<(20+20*(trinket.1.cooldown.remains<25))|variable.generic_trinket_condition
+actions+=/potion,if=variable.cd_condition|fight_remains<=30
+actions+=/berserking,if=variable.cd_condition|variable.no_cd_talent|fight_remains<15
 actions+=/variable,name=eclipse,value=buff.eclipse_lunar.up|buff.eclipse_solar.up
 actions+=/variable,name=eclipse_remains,value=buff.eclipse_lunar.remains<?buff.eclipse_solar.remains
 actions+=/variable,name=enter_lunar,value=talent.lunar_calling|spell_targets.starfire>2-(talent.umbral_intensity.rank+talent.soul_of_the_forest>1)
@@ -59,24 +64,23 @@ actions+=/variable,name=boat_stacks,value=buff.balance_of_all_things_arcane.stac
 actions+=/warrior_of_elune,if=talent.lunar_calling|!talent.lunar_calling&variable.eclipse_remains>=7&cooldown.ca_inc.remains>20
 actions+=/wrath,if=variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
 actions+=/starfire,if=!variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
-actions+=/call_action_list,name=aoe,if=spell_targets>1
-actions+=/call_action_list,name=st
+actions+=/run_action_list,name=aoe,if=spell_targets>1
+actions+=/run_action_list,name=st
 
-# AoE APL
 actions.aoe=moonfire,target_if=refreshable&(target.time_to_die-remains)>6&astral_power.deficit>variable.passive_asp+energize_amount,if=fight_style.dungeonroute
 actions.aoe+=/sunfire,target_if=refreshable&(target.time_to_die-remains)>6-(spell_targets%2)&astral_power.deficit>variable.passive_asp+energize_amount
 actions.aoe+=/moonfire,target_if=refreshable&(target.time_to_die-remains)>6&astral_power.deficit>variable.passive_asp+energize_amount,if=!fight_style.dungeonroute
 actions.aoe+=/stellar_flare,target_if=refreshable&(target.time_to_die-remains-target>7+spell_targets),if=spell_targets<(11-talent.umbral_intensity.rank-(2*talent.astral_smolder)-talent.lunar_calling)
 actions.aoe+=/force_of_nature,if=(talent.power_of_the_dream&talent.early_spring&talent.orbital_strike)|variable.eclipse_remains>=3
 actions.aoe+=/fury_of_elune,if=variable.eclipse
-actions.aoe+=/celestial_alignment,if=fight_remains<15*(1+talent.greater_alignment*0.4)|(!hero_tree.keeper_of_the_grove|(buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>25))
-actions.aoe+=/incarnation,if=fight_remains<20*(1+talent.greater_alignment*0.4)|(!hero_tree.keeper_of_the_grove|(buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>25))
+actions.aoe+=/celestial_alignment,if=variable.cd_condition
+actions.aoe+=/incarnation,if=variable.cd_condition
 actions.aoe+=/warrior_of_elune,if=!talent.lunar_calling&buff.eclipse_solar.remains<7|talent.lunar_calling
 actions.aoe+=/starfire,if=(!talent.lunar_calling&spell_targets.starfire=1)&(buff.eclipse_solar.up&buff.eclipse_solar.remains<action.starfire.cast_time|eclipse.in_none)
 actions.aoe+=/starfall,if=buff.starweavers_warp.up|buff.touch_the_cosmos_starfall.up
 actions.aoe+=/starsurge,if=buff.starweavers_weft.up|buff.touch_the_cosmos_starsurge.up
 actions.aoe+=/starfall
-actions.aoe+=/convoke_the_spirits,if=spell_targets.starfire<(7-talent.umbral_intensity-talent.umbral_embrace-talent.soul_of_the_forest)&(fight_remains<5|(buff.ca_inc.up|cooldown.ca_inc.remains>40)&(!hero_tree.keeper_of_the_grove|buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>15))
+actions.aoe+=/convoke_the_spirits,if=(!buff.dreamstate.up&!buff.umbral_embrace.up&spell_targets.starfire<7|spell_targets.starfire=1)&(fight_remains<5|(buff.ca_inc.up|cooldown.ca_inc.remains>40)&(!hero_tree.keeper_of_the_grove|buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>15))
 actions.aoe+=/new_moon
 actions.aoe+=/half_moon
 actions.aoe+=/full_moon
@@ -84,11 +88,10 @@ actions.aoe+=/wild_mushroom
 actions.aoe+=/starfire,if=talent.lunar_calling|buff.eclipse_lunar.up&spell_targets.starfire>1
 actions.aoe+=/wrath
 
-# ST APL
 actions.st=sunfire,target_if=remains<3
 actions.st+=/moonfire,target_if=remains<3&(!talent.treants_of_the_moon|cooldown.force_of_nature.remains>3&!buff.harmony_of_the_grove.up)
-actions.st+=/celestial_alignment,if=fight_remains<15*(1+talent.greater_alignment*0.4)|!hero_tree.keeper_of_the_grove|(buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>25)
-actions.st+=/incarnation,if=fight_remains<20*(1+talent.greater_alignment*0.4)|!hero_tree.keeper_of_the_grove|(buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>25)
+actions.st+=/celestial_alignment,if=variable.cd_condition
+actions.st+=/incarnation,if=variable.cd_condition
 actions.st+=/force_of_nature,if=cooldown.ca_inc.remains<gcd.max&(!talent.natures_grace|!variable.eclipse|variable.eclipse_remains>6)|variable.eclipse_remains>=3&cooldown.ca_inc.remains>10+15*talent.control_of_the_dream&(fight_remains>cooldown+5|cooldown.ca_inc.remains>fight_remains)
 actions.st+=/fury_of_elune,if=5+variable.passive_asp<astral_power.deficit
 actions.st+=/starsurge,if=talent.starlord&buff.starlord.stack<3

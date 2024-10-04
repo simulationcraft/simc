@@ -100,6 +100,8 @@ const dbc_item_data_t& find_gem( std::string_view gem, bool ptr, bool tokenized 
 const spell_data_t* get_class_passive( const player_t&, specialization_e );
 std::vector<const spell_data_t*> class_passives( const player_t* );
 
+player_e get_class_from_spec( specialization_e );
+
 // Retuns a list of all effect subtypes affecting the spell through categories
 util::span<const effect_subtype_t> effect_category_subtypes();
 

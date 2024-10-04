@@ -21,21 +21,28 @@ enum parse_flag_e : uint8_t
   CONSUME_BUFF      = 0x10,
   // internal flags that should not be used in parse_effects()
   VALUE_OVERRIDE    = 0x20,
-  AFFECTED_OVERRIDE = 0x40
+  AFFECTED_OVERRIDE = 0x40,
+  MANUAL_ENTRY      = 0x80
 };
 
 // effects dependent on player state
 struct player_effect_t
 {
+  // simple processing
+  bool simple = true;
   buff_t* buff = nullptr;
   double value = 0.0;
-  uint8_t type = USE_DATA;
   bool use_stacks = true;
-  bool mastery = false;
+  // full processing
   std::function<bool()> func = nullptr;
-  const spelleffect_data_t* eff = &spelleffect_data_t::nil();
-  uint32_t opt_enum = UINT32_MAX;
+  std::function<double( double )> value_func = nullptr;
+  uint8_t type = USE_DATA;
+  bool mastery = false;
   uint32_t idx = 0;  // used for consume_buff linkage during init_finished()
+  // effect linkback
+  const spelleffect_data_t* eff = &spelleffect_data_t::nil();
+  // optional enum identifier
+  uint32_t opt_enum = UINT32_MAX;
 
   player_effect_t& set_buff( buff_t* b )
   { buff = b; return *this; }
@@ -43,17 +50,23 @@ struct player_effect_t
   player_effect_t& set_value( double v )
   { value = v; return *this; }
 
-  player_effect_t& set_type( uint8_t t )
-  { type = t; return *this; }
-
   player_effect_t& set_use_stacks( bool s )
-  { use_stacks = s; return *this; }
-
-  player_effect_t& set_mastery( bool m )
-  { mastery = m; return *this; }
+  { use_stacks = s; simple = false; return *this; }
 
   player_effect_t& set_func( std::function<bool()> f )
-  { func = std::move( f ); return *this; }
+  { func = std::move( f ); simple = false; return *this; }
+
+  player_effect_t& set_value_func( std::function<double( double )> f )
+  { value_func = std::move( f ); simple = false; return *this; }
+
+  player_effect_t& set_type( uint8_t t )
+  { type = t; simple = false; return *this; }
+
+  player_effect_t& set_mastery( bool m )
+  { mastery = m; simple = false; return *this; }
+
+  player_effect_t& set_idx( uint32_t i )
+  { idx = i; simple = false; return *this; }
 
   player_effect_t& set_eff( const spelleffect_data_t* e )
   { eff = e; return *this; }
@@ -61,13 +74,11 @@ struct player_effect_t
   player_effect_t& set_opt_enum( uint32_t o )
   { opt_enum = o; return *this; }
 
-  player_effect_t& set_idx( uint32_t i )
-  { idx = i; return *this; }
-
   bool operator==( const player_effect_t& other )
   {
-    return buff == other.buff && value == other.value && type == other.type && use_stacks == other.use_stacks &&
-           mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
+    return simple == other.simple && buff == other.buff && value == other.value && use_stacks == other.use_stacks &&
+           type == other.type && mastery == other.mastery && idx == other.idx && eff == other.eff &&
+           opt_enum == other.opt_enum;
   }
 
   std::string value_type_name( uint8_t ) const;
@@ -258,7 +269,8 @@ static inline bool has_parse_entry( std::vector<U>& vec, const spelleffect_data_
 { return !eff->ok() || range::contains( vec, eff, &U::eff ); }
 
 template <typename U>
-static inline U& add_parse_entry( std::vector<U>& vec ) { return vec.emplace_back(); }
+static inline U& add_parse_entry( std::vector<U>& vec )
+{ U& tmp = vec.emplace_back(); tmp.type = MANUAL_ENTRY; return tmp; }
 
 // input interface framework
 struct parse_base_t
@@ -267,8 +279,10 @@ struct parse_base_t
   virtual ~parse_base_t() = default;
 
   // detectors for is_detected_v<>
+  template <typename T> using detect_simple = decltype( T::simple );
   template <typename T> using detect_buff = decltype( T::buff );
   template <typename T> using detect_func = decltype( T::func );
+  template <typename T> using detect_value_func = decltype( T::value_func );
   template <typename T> using detect_use_stacks = decltype( T::use_stacks );
   template <typename T> using detect_type = decltype( T::type );
   template <typename T> using detect_value = decltype( T::value );
@@ -330,6 +344,11 @@ struct parse_base_t
     if constexpr ( std::is_invocable_v<decltype( &spell_data_t::ok ), T> )
     {
       tmp.list.push_back( mod );
+    }
+    else if constexpr ( std::is_convertible_v<T, std::function<double( double )>> &&
+                        is_detected_v<detect_value_func, U> )
+    {
+      tmp.data.value_func = std::move( mod );
     }
     else if constexpr ( ( std::is_convertible_v<T, std::function<bool()>> ||
                           std::is_convertible_v<T, std::function<bool( const action_t*, const action_state_t* )>> ) &&
@@ -661,6 +680,7 @@ public:
                               bool /* mastery */, const spell_data_t* s_data, size_t i ) = 0;
 
   double get_effect_value( const player_effect_t&, bool benefit = false ) const;
+  double get_effect_value_full( const player_effect_t&, bool benefit ) const;
   double get_effect_value( const target_effect_t&, actor_target_data_t* ) const;
 
   virtual bool can_force( const spelleffect_data_t& ) const { return true; }

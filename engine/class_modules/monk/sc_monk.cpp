@@ -216,7 +216,7 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.strength_of_the_black_ox );
 
   // Master of Harmony
-  // TODO: parse_effects implementation for A_MOD_HEALING_RECEIVED (283)
+  // TODO: parse_effects implementation for A_MOD_HEALING_RECEIVED_FROM_SPELL (283)
   parse_effects( p()->talent.master_of_harmony.aspect_of_harmony_heal, p()->talent.master_of_harmony.coalescence,
                  [ & ] { return p()->buff.aspect_of_harmony.heal_ticking(); } );
   parse_effects( p()->buff.balanced_stratagem_physical, CONSUME_BUFF );
@@ -593,6 +593,23 @@ void monk_action_t<Base>::execute()
   base_t::execute();
 
   trigger_storm_earth_and_fire( this );
+
+  // TWW S1 Windwalker 2PC
+  if ( p()->buff.tiger_strikes->up() )
+  {
+    // These spells are not listed in the spell effect data but are affected
+    std::vector<unsigned int> missing_tiger_strikes_spells = {
+      p()->baseline.monk.spinning_crane_kick->id(),
+      p()->talent.windwalker.fists_of_fury->id(),
+      p()->talent.windwalker.whirling_dragon_punch->id(),
+      p()->talent.windwalker.strike_of_the_windlord->id()
+    };
+
+    if ( base_t::data().affected_by( p()->buff.tiger_strikes->data().effectN( 1 ) ) ||
+      std::find( missing_tiger_strikes_spells.begin(), missing_tiger_strikes_spells.end(), base_t::data().id() ) !=
+      missing_tiger_strikes_spells.end() )
+      p()->buff.tiger_strikes->decrement();
+  }
 }
 
 template <class Base>
@@ -636,10 +653,6 @@ void monk_action_t<Base>::impact( action_state_t *s )
         p()->active_actions.gale_force->execute_on_target( s->target );
       }
     }
-
-    // TWW1 Windwalker 2PC
-    if ( p()->buff.tiger_strikes->up() && base_t::data().affected_by( p()->buff.tiger_strikes->data().effectN( 1 ) ) )
-      p()->buff.tiger_strikes->decrement();
   }
 }
 
@@ -1535,8 +1548,8 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     attack_power_mod.direct = 0;
 
-    execute_action        = new press_the_advantage_t<rising_sun_kick_dmg_t>( p, options_str );
-    execute_action->stats = stats;
+    execute_action = new press_the_advantage_t<rising_sun_kick_dmg_t>( p, options_str );
+    add_child( execute_action );
 
     if ( p->talent.windwalker.glory_of_the_dawn->ok() )
     {
@@ -1619,20 +1632,27 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
     return 0;
   }
 
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+    p()->buff.transfer_the_power->trigger();
+    p()->buff.memory_of_the_monastery->trigger();
+  }
+
   void impact( action_state_t *s ) override
   {
     monk_melee_attack_t::impact( s );
 
-    // The initial hit along with each individual TotM hits has a chance to reset the cooldown
-    auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
-
-    if ( p()->specialization() == MONK_MISTWEAVER )
-      totmResetChance += p()->baseline.mistweaver.aura->effectN( 21 ).percent();
-
-    if ( rng().roll( totmResetChance ) )
+    if ( p()->shared.teachings_of_the_monastery->ok() )
     {
-      p()->cooldown.rising_sun_kick->reset( true );
-      p()->proc.rsk_reset_totm->occur();
+      double totm_reset_chance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
+      totm_reset_chance += p()->baseline.mistweaver.aura->effectN( 19 ).percent();
+
+      if ( rng().roll( totm_reset_chance ) )
+      {
+        p()->cooldown.rising_sun_kick->reset( true );
+        p()->proc.rsk_reset_totm->occur();
+      }
     }
 
     // Mark of the Crane is only triggered on the initial target
@@ -1771,6 +1791,7 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
 
     p()->buff.shuffle->trigger( timespan_t::from_seconds( p()->talent.brewmaster.shuffle->effectN( 1 ).base_value() ) );
 
+    p()->buff.blackout_combo->trigger();
     p()->buff.flow_of_battle_damage->trigger();
     // 08-18-2024: Sampling of a large number of logs strongly suggests a proc rate of 0.33.
     // Reproducible via running https://github.com/renanthera/crunch/tree/ec850f8b37b922f177d88b0c1626271a382ce771
@@ -1780,55 +1801,61 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
       p()->buff.flow_of_battle_free_keg_smash->trigger();
     }
 
-    if ( result_is_hit( execute_state->result ) )
+    if ( !result_is_hit( execute_state->result ) )
+      return;
+
+    p()->buff.transfer_the_power->trigger();
+    p()->buff.vigilant_watch->trigger();
+    p()->buff.tigers_ferocity->trigger();
+
+    if ( p()->baseline.windwalker.blackout_kick_rank_3->ok() )
     {
-      if ( p()->buff.bok_proc->up() )
+      // Reduce the cooldown of Rising Sun Kick and Fists of Fury
+      timespan_t cd_reduction = p()->baseline.monk.blackout_kick->effectN( 3 ).time_value();
+
+      if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
       {
-        if ( p()->rng().roll( p()->talent.windwalker.energy_burst->effectN( 1 ).percent() ) )
-          p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.energy_burst->effectN( 2 ).base_value(),
-                              p()->gain.energy_burst );
-
-        p()->buff.bok_proc->decrement();
+        cd_reduction += ( p()->talent.windwalker.ordered_elements->effectN( 1 ).time_value() );
+        p()->proc.blackout_kick_cdr_oe->occur();
       }
+      else
+        p()->proc.blackout_kick_cdr->occur();
 
-      p()->buff.blackout_combo->trigger();
+      p()->cooldown.rising_sun_kick->adjust( -1 * cd_reduction, true );
+      p()->cooldown.fists_of_fury->adjust( -1 * cd_reduction, true );
+    }
 
-      if ( p()->baseline.windwalker.blackout_kick_rank_3->ok() )
-      {
-        // Reduce the cooldown of Rising Sun Kick and Fists of Fury
-        timespan_t cd_reduction = -1 * p()->baseline.monk.blackout_kick->effectN( 3 ).time_value();
+    if ( p()->buff.bok_proc->up() )
+    {
+      if ( p()->rng().roll( p()->talent.windwalker.energy_burst->effectN( 1 ).percent() ) )
+        p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.energy_burst->effectN( 2 ).base_value(),
+                            p()->gain.energy_burst );
 
-        if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
-        {
-          cd_reduction += ( -1 * p()->talent.windwalker.ordered_elements->effectN( 1 ).time_value() );
-          p()->proc.blackout_kick_cdr_oe->occur();
-        }
-        else
-          p()->proc.blackout_kick_cdr->occur();
+      p()->buff.bok_proc->decrement();
+    }
 
-        p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
-        p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
-      }
+    // the `->up()` invocation is redundant logically, but incurs benefit tracking
+    if ( int totm_stacks = p()->buff.teachings_of_the_monastery->current_stack;
+         totm_stacks && p()->buff.teachings_of_the_monastery->up() )
+    {
+      p()->buff.teachings_of_the_monastery->expire();
 
-      p()->buff.transfer_the_power->trigger();
+      // TODO: Confirm proper mechanics for this. Tested 17/06/2024 and behaviour has it expire previous stacks before
+      // triggering new which feels like a bug.
+      if ( p()->bugs )
+        p()->buff.memory_of_the_monastery->expire();
 
-      if ( p()->buff.teachings_of_the_monastery->up() )
-      {
-        p()->buff.teachings_of_the_monastery->expire();
+      for ( int i = 0; i < totm_stacks; ++i )
+        bok_totm_proc->execute_on_target( target );
 
-        if ( p()->rng().roll( p()->talent.conduit_of_the_celestials.xuens_guidance->effectN( 1 ).percent() ) )
-          p()->buff.teachings_of_the_monastery->trigger();
-      }
+      if ( p()->rng().roll( p()->talent.conduit_of_the_celestials.xuens_guidance->effectN( 1 ).percent() ) )
+        p()->buff.teachings_of_the_monastery->trigger();
+    }
 
-      if ( p()->specialization() == MONK_WINDWALKER )
-      {
-        p()->buff.strength_of_the_black_ox->expire();
-        p()->buff.inner_compass_ox_stance->trigger();
-      }
-
-      p()->buff.vigilant_watch->trigger();
-
-      p()->buff.tigers_ferocity->trigger();
+    if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      p()->buff.strength_of_the_black_ox->expire();
+      p()->buff.inner_compass_ox_stance->trigger();
     }
   }
 
@@ -1837,47 +1864,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     base_t::impact( s );
 
     p()->buff.hit_scheme->trigger();
-
-    // Teachings of the Monastery
-    // Used by both Windwalker and Mistweaver
-    if ( p()->buff.teachings_of_the_monastery->up() )
-    {
-      int stacks = p()->buff.teachings_of_the_monastery->current_stack;
-
-      if ( p()->talent.windwalker.memory_of_the_monastery.enabled() && p()->bugs )
-      {
-        // TODO: Confirm proper mechanics for this. Tested 17/06/2024 and behaviour has it expire previous stacks before
-        // triggering new which feels like a bug.
-        p()->buff.memory_of_the_monastery->expire();
-      }
-
-      for ( int i = 0; i < stacks; i++ )
-      {
-        // Transfer the power and Memory of the Monastery triggers from ToTM hits but only on the primary target
-        if ( s->chain_target == 0 )
-        {
-          p()->buff.transfer_the_power->trigger();
-
-          if ( p()->talent.windwalker.memory_of_the_monastery.enabled() )
-            p()->buff.memory_of_the_monastery->trigger();
-        }
-
-        bok_totm_proc->execute_on_target( s->target );
-      }
-
-      // The initial hit along with each individual TotM hits has a chance to reset the cooldown
-      auto totmResetChance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
-
-      if ( p()->specialization() == MONK_MISTWEAVER )
-        totmResetChance += p()->baseline.mistweaver.aura->effectN( 21 ).percent();
-
-      if ( rng().roll( totmResetChance ) )
-      {
-        p()->cooldown.rising_sun_kick->reset( true );
-        p()->proc.rsk_reset_totm->occur();
-      }
-    }
-
     p()->trigger_mark_of_the_crane( s );
 
     if ( p()->talent.brewmaster.elusive_footwork->ok() && s->result == RESULT_CRIT )
@@ -1892,6 +1878,18 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
           ->purify_flat(
               s->composite_attack_power() * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent(),
               "staggering_strikes" );
+
+    if ( p()->shared.teachings_of_the_monastery->ok() )
+    {
+      double totm_reset_chance = p()->shared.teachings_of_the_monastery->effectN( 1 ).percent();
+      totm_reset_chance += p()->baseline.mistweaver.aura->effectN( 19 ).percent();
+
+      if ( rng().roll( totm_reset_chance ) )
+      {
+        p()->cooldown.rising_sun_kick->reset( true );
+        p()->proc.rsk_reset_totm->occur();
+      }
+    }
 
     // Martial Mixture triggers from each BoK impact
     p()->buff.martial_mixture->trigger();
@@ -5034,8 +5032,7 @@ struct chi_wave_t : public monk_spell_t
 
     damage->sef_ability = sef_ability_e::SEF_CHI_WAVE;
 
-    stats = damage->stats;
-
+    add_child( damage );
     add_child( heal );
   }
 
@@ -5632,13 +5629,21 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
   action_t *rushing_jade_wind_tick;
 
   rushing_jade_wind_buff_t( monk_t *player )
-    : monk_buff_t( player, "rushing_jade_wind", player->passives.rushing_jade_wind ),
-      rushing_jade_wind_tick( new tick_action_t( player ) )
+    : monk_buff_t( player, "rushing_jade_wind", player->passives.rushing_jade_wind ), rushing_jade_wind_tick( nullptr )
   {
     set_tick_time_behavior( buff_tick_time_behavior::CUSTOM );
     set_tick_time_callback( [ this ]( const buff_t *, unsigned int ) { return _period; } );
 
-    set_tick_callback( [ this ]( buff_t *, int, timespan_t ) { rushing_jade_wind_tick->execute(); } );
+    set_tick_callback( [ this ]( buff_t *, int, timespan_t ) {
+      if ( rushing_jade_wind_tick )
+        rushing_jade_wind_tick->execute();
+
+      if ( action_t *rjw = p().find_action( "rushing_jade_wind_tick" ); rjw )
+      {
+        rushing_jade_wind_tick = rjw;
+        rjw->execute();
+      }
+    } );
     set_tick_behavior( buff_tick_behavior::REFRESH );
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
@@ -5941,7 +5946,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
@@ -7315,8 +7320,15 @@ void monk_t::init_spells()
 
   shared.teachings_of_the_monastery =
       _priority( talent.windwalker.teachings_of_the_monastery, talent.mistweaver.teachings_of_the_monastery );
+}
 
-  // Active Action Spells
+void monk_t::init_background_actions()
+{
+  base_t::init_background_actions();
+
+  // we just look it up via `find_action` anyway, so it doesn't need to explicitly
+  // be set anywhere (for now)
+  new buffs::rushing_jade_wind_buff_t::tick_action_t( this );
 
   // General
   active_actions.chi_wave = new actions::chi_wave_t( this );

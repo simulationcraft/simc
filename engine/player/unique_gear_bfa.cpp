@@ -1655,8 +1655,7 @@ struct waycrest_legacy_damage_t : public generic_proc_t
   }
   void execute() override
   {
-    size_t target_index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
-    set_target( target_list()[ target_index ] );
+    set_target( rng().range( target_list() ) );
 
     generic_proc_t::execute();
   }
@@ -1672,8 +1671,7 @@ struct waycrest_legacy_heal_t : public base_generic_proc_t<proc_heal_t>
   }
   void execute() override
   {
-    size_t target_index = static_cast<size_t>( rng().range( 0, as<double>( sim->player_no_pet_list.data().size() ) ) );
-    set_target( sim->player_list.data()[ target_index ] );
+    set_target( rng().range( sim->player_no_pet_list ) );
 
     base_generic_proc_t<proc_heal_t>::execute();
   }
@@ -1700,8 +1698,7 @@ void items::lady_waycrests_music_box( special_effect_t& effect )
     // Pick a random active target from the range
     void execute() override
     {
-      size_t target_index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
-      set_target( target_list()[ target_index ] );
+      set_target( rng().range( target_list() ) );
 
       generic_proc_t::execute();
       if ( waycrests_legacy_heal != nullptr )
@@ -1739,9 +1736,7 @@ void items::lady_waycrests_music_box_heal( special_effect_t& effect )
 
     void execute() override
     {
-      size_t target_index =
-          static_cast<size_t>( rng().range( 0, as<double>( sim->player_no_pet_list.data().size() ) ) );
-      set_target( sim->player_list.data()[ target_index ] );
+      set_target( rng().range( sim->player_no_pet_list ) );
 
       base_generic_proc_t<proc_heal_t>::execute();
 
@@ -1996,10 +1991,10 @@ void items::berserkers_juju( special_effect_t& effect )
     berserkers_juju_t( const special_effect_t& effect )
       : proc_spell_t( "berserkers_juju", effect.player, effect.driver(), effect.item )
     {
-      const spell_data_t* spell = effect.item->player->find_spell( 274472 );
-      std::string buff_name     = util::tokenized_name( spell );
+      const spell_data_t* buff_spell = effect.item->player->find_spell( 274472 );
+      std::string buff_name     = util::tokenized_name( buff_spell );
 
-      buff = make_buff<stat_buff_t>( effect.player, buff_name, spell );
+      buff = make_buff<stat_buff_t>( effect.player, buff_name, buff_spell );
     }
 
     void init() override
@@ -3125,8 +3120,7 @@ void items::storm_of_the_eternal_arcane_damage( special_effect_t& effect )
 
     void execute() override
     {
-      size_t index = static_cast<size_t>( rng().range( 0, as<double>( target_list().size() ) ) );
-      set_target( target_list()[ index ] );
+      set_target( rng().range( target_list() ) );
 
       generic_proc_t::execute();
     }
@@ -4739,10 +4733,10 @@ void items::subroutine_optimization( special_effect_t& effect )
           continue;
         }
 
-        auto stats   = ::util::translate_all_rating_mod( stat_spell->effectN( i ).misc_value1() );
+        auto stat = ::util::translate_all_rating_mod( stat_spell->effectN( i ).misc_value1() );
         double value = stat_spell->effectN( i ).m_coefficient();
 
-        punchcard_stats.emplace_back( stats.front(), value );
+        punchcard_stats.emplace_back( stat.front(), value );
       }
 
       // Find out which stat has the bigger coefficient.
@@ -5191,8 +5185,7 @@ void items::shorting_bit_band( special_effect_t& effect )
       const auto& targets = targets_in_range_list( target_list() );
       if ( targets.size() != 0 ) // Skip action_t::execute if no targets are in range.
       {
-        size_t index = rng().range( targets.size() );
-        set_target( targets[ index ] );
+        set_target( rng().range( targets ) );
 
         generic_proc_t::execute();
       }
@@ -5341,9 +5334,9 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
     // This is somewhat of a misuse of action_t::create_expression, but for an item that
     // is probably going away in a few months it is not worth significantly restructuring
     // things to make spell_tracker_cb_t and hyperthread_reduction_t accessible elsewhere.
-    std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override
+    std::unique_ptr<expr_t> create_expression( std::string_view name ) override
     {
-      auto splits = ::util::string_split<std::string_view>( name_str, "." );
+      auto splits = ::util::string_split<std::string_view>( name, "." );
 
       if ( splits[ 0 ] == "hyperthread_wristwraps" )
       {
@@ -5351,16 +5344,16 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
         {
           if ( splits.size() == 2 || ( splits.size() == 3 && splits[ 2 ] == "count" ) )
           {
-            return make_fn_expr( name_str, [ this, a ] { return tracked_count( a ); } );
+            return make_fn_expr( name, [ this, a ] { return tracked_count( a ); } );
           }
           else if ( splits.size() == 3 && splits[ 2 ] == "first_remains" )
           {
-            return make_fn_expr( name_str, [ this, a ] { return tracked_first_remains( a ); } );
+            return make_fn_expr( name, [ this, a ] { return tracked_first_remains( a ); } );
           }
         }
       }
 
-      return proc_spell_t::create_expression( name_str );
+      return proc_spell_t::create_expression( name );
     }
   };
 

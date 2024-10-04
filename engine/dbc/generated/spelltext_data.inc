@@ -1,9 +1,8 @@
-// Spell text, wow build 11.0.2.56625
-static const std::array<spelltext_data_t, 26337> __spelltext_data { {
+// Spell text, wow build 11.0.2.56819
+static const std::array<spelltext_data_t, 26336> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
-  {     65, "Increases your melee haste by $s1 for $d.", 0, 0 },
   {     66, "Turns you invisible over $66d, reducing threat each second. While invisible, you are untargetable by enemies. Lasts $32612d. Taking any action cancels the effect.$?a382293[\r\n\r\nIncreases your movement speed by $382293s1% for $337278d.][]", "Fading.", 0 },
   {     71, "Hardened by battle, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength.", 0, 0 },
   {     75, "Automatically shoots the target until cancelled.", "Firing at the target.", 0 },
@@ -23190,7 +23189,7 @@ static const std::array<spelltext_data_t, 26337> __spelltext_data { {
   { 435479, "Spells and abilities have a chance to unearth a Colourful Fungal Friend to heal allies for $s2, grant you $s3 mana, or deal ${$s4*($438685d/$438685t)} Nature damage over $438685d to a nearby enemy.", 0, 0 },
   { 435482, "Unfurl a myriad of grasping webs in front of you entangling your enemies, reducing damage they deal to you by $s3% up to $s2 total damage and reducing their Attack Speed by $s1% for $d.\r\n\r\n$?$pl>80[Attack Speed reduction is less effective against enemies above level $s4.][]", "Absorbing up to $w2 damage from webbed attackers.", 0 },
   { 435488, "Increases maximum mana by $s1% per unique Khaz Algar gem color currently socketed.", "$?{$w2>0}[Maximum mana is increased by $W2%.][$@spellaura437034]", 0 },
-  { 435493, "Drink from the vial and let the toxins course through your veins increasing all secondary stats by $s1 for $d.\r\n\r\nUse again to administer yourself the antidote to end the effect.\r\n\r\nIf the Antidote is not administered before the end of the effect you will be stunned for $440235d.", "All secondary stats increased by $w1.", 0 },
+  { 435493, "Drink from the vial and let the toxins course through your veins increasing all secondary stats by $s1 for $d.\r\n\r\nJump to administer yourself the antidote to end the effect.\r\n\r\nIf the Antidote is not administered before the end of the effect you will be stunned for $440235d.", "All secondary stats increased by $w1.", 0 },
   { 435500, "Increases the effect of critical strikes by ${$M1}.1% per unique Khaz Algar gem color currently socketed.", "$?{$w2>0}[Critical strike effectiveness increased by ${$w2}.1%.][$@spellaura437034]", 0 },
   { 435501, "Increases the effect of critical strikes by $s1% per unique Khaz Algar gem color currently socketed.", "$?{$w2>0}[Movement speed increased by $w2%.][$@spellaura437034]", 0 },
   { 435502, "Engrave a ritual seal into your skin binding you to the shadows, granting yourself $s1 $pri.\r\n\r\nYour spells and abilities have a low chance to reduce one of your secondary stats by $s2 for $440389d during combat.", 0, 0 },
@@ -26222,7 +26221,7 @@ static const std::array<spelltext_data_t, 26337> __spelltext_data { {
   { 462587, "Your critical heals have ${$s2+$s1}% effectiveness instead of the usual $s2%.", 0, 0 },
   { 462603, "$@spelldesc207778", 0, 0 },
   { 462620, "Causes the earth within $a1 yards of your target to tremble and break, dealing $<damage> Physical damage over $d and has a $77478s2% chance to knock the enemy down. Multiple uses of Earthquake may overlap.\r\n\r\n|cFFFFFFFFThis spell is cast at your target.|r", 0, 0 },
-  { 462661, "Blessed by the void, $s2% increased spell and ability cool down rate and increases healing received by $s1% for $d.", "$w1% increased spell and ability cool down rate.\r\n\r\nHealing received increased by $s1%.", 0 },
+  { 462661, "Blessed by the void, $s2% increased spell and ability cool down rate and increases healing received by $s1% for $d.", "$s2% increased spell and ability cool down rate.\r\n\r\nHealing received increased by $s1%.", 0 },
   { 462695, "Your next Chain Lightning$?s454009[, Tempest,][] or Lightning Bolt has $462725s1% reduced cast time after casting Earth Shock, Elemental Blast, or Earthquake. Can accumulate up to $462725u charges.", 0, 0 },
   { 462725, "$@spelldesc462695", "Reduces the cast time of your next Lightning Bolt$?s454009[, Tempest,][] or Chain Lightning by $s1%.", 0 },
   { 462742, "$@spelldesc462757", 0, 0 },
@@ -26339,15 +26338,12 @@ static const std::array<spelltext_data_t, 26337> __spelltext_data { {
   { 469995, "$@spelldesc452402", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.0.2.56625
-static constexpr std::array<hotfix::client_hotfix_entry_t, 4> __spelltext_hotfix_data { {
-  {  345545,  0, "Coat your weapons in Flayedwing Toxin for $d, giving your attacks a high chance to deal $<ChimericPoison> Nature damage over $345546d.", "Coat your weapons in Flayedwing Toxin for $d, giving your attacks a high chance to inflict ${$<rolemult>*$345547s1*3} Nature damage over $345546d." },
-  {  345545,  1, "Your attacks have a high chance to deal Nature damage over $345546d.", "Your attacks have a high chance to  inflict ${$<rolemult>*$345547s1*3} Nature damage over $345546d." },
-  {  345548,  0, "Hook an enemy who is within $r yds, causing them to bleed for $s1 Physical damage every $t1 sec and reducing their movement speed by $s2%. Lasts $d, or until they move more than $s3 yds away from you.", "Hook an enemy who is within $r yds, causing them to bleed for ${$<rolemult>*$s1} Physical damage every $t1 sec and reducing their movement speed by $s2%. Lasts $d, or until they move more than $s3 yds away from you." },
-  {  345548,  1, "Bleeding for $s1 Physical damage every $t1 sec as long as you are within $s3 yds of $@auracaster.", "Bleeding for ${$<rolemult>*$s1} Physical damage every $t1 sec as long as you are within $s3 yds of $@auracaster." },
+// spelltext hotfix entries, wow build 11.0.2.56819
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  462661,  1, "$w1% increased spell and ability cool down rate.\r\n\r\nHealing received increased by $s1%.", "$s2% increased spell and ability cool down rate.\r\n\r\nHealing received increased by $s1%." },
 } };
 
-// Spell description variables, wow build 11.0.2.56625
+// Spell description variables, wow build 11.0.2.56819
 static const std::array<spelldesc_vars_data_t, 585> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26936,7 +26932,7 @@ static const std::array<spelldesc_vars_data_t, 585> __spelldesc_vars_data { {
   {  462620, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.2.56625
+// spelldesc_vars hotfix entries, wow build 11.0.2.56819
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

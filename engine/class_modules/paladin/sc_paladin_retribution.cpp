@@ -1368,12 +1368,13 @@ struct templar_slash_dot_t : public paladin_spell_t
   {
     background = true;
     hasted_ticks = false;
+    affected_by.crusade = affected_by.avenging_wrath = affected_by.highlords_judgment = false;
   }
 
   void init() override
   {
     paladin_spell_t::init();
-    snapshot_flags = update_flags = 0;
+    snapshot_flags = update_flags = STATE_MUL_SPELL_TA | STATE_TGT_MUL_TA;
   }
 };
 

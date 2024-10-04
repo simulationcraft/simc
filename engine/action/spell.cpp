@@ -95,9 +95,9 @@ void spell_base_t::execute()
     player->debuffs.casting->expire();
 }
 
-void spell_base_t::schedule_execute( action_state_t* execute_state )
+void spell_base_t::schedule_execute( action_state_t* state )
 {
-  action_t::schedule_execute( execute_state );
+  action_t::schedule_execute( state );
 
   if ( !background && time_to_execute > timespan_t::zero() )
     player->debuffs.casting->trigger();
@@ -222,11 +222,11 @@ double spell_t::composite_versatility( const action_state_t* state ) const
   return spell_base_t::composite_versatility( state ) + player->cache.damage_versatility();
 }
 
-double spell_t::composite_target_multiplier( player_t* target ) const
+double spell_t::composite_target_multiplier( player_t* t ) const
 {
-  double mul = action_t::composite_target_multiplier( target );
+  double mul = action_t::composite_target_multiplier( t );
 
-  mul *= composite_target_damage_vulnerability( target );
+  mul *= composite_target_damage_vulnerability( t );
 
   return mul;
 }

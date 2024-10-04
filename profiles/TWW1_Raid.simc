@@ -18,16 +18,18 @@ TWW1_Druid_Guardian.simc
 
 TWW1_Evoker_Devastation.simc
 
-# TWW1_Hunter_Beast_Mastery.simc
-# TWW1_Hunter_Marksmanship.simc
-# TWW1_Hunter_Survival.simc
+TWW1_Hunter_Beast_Mastery.simc
+TWW1_Hunter_Marksmanship.simc
+TWW1_Hunter_Survival.simc
+TWW1_Hunter_Beast_Mastery_Pack_Leader.simc
+TWW1_Hunter_Marksmanship_Dark_Ranger.simc
+TWW1_Hunter_Survival_Pack_Leader.simc
 
 TWW1_Mage_Fire.simc
 TWW1_Mage_Frost.simc
 TWW1_Mage_Arcane.simc
 
-# TWW1_Monk_Brewmaster.simc
-# TWW1_Monk_Brewmaster_Niuzao.simc
+TWW1_Monk_Brewmaster.simc
 TWW1_Monk_Windwalker.simc
 TWW1_Monk_Windwalker_Celestial.simc
 
@@ -46,8 +48,7 @@ TWW1_Rogue_Subtlety.simc
 TWW1_Shaman_Elemental.simc
 TWW1_Shaman_Elemental_Storm.simc
 TWW1_Shaman_Enhancement.simc
-TWW1_Shaman_Enhancement_Storm.simc
-TWW1_Shaman_Enhancement_Hybrid.simc
+TWW1_Shaman_Enhancement_DRE.simc
 
 TWW1_Warlock_Affliction_Hellcaller.simc
 TWW1_Warlock_Affliction.simc

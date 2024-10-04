@@ -2618,13 +2618,13 @@ bool buff_t::can_expire( action_t* action ) const
   return true;
 }
 
-void buff_t::expire( action_t* action, timespan_t delay )
+void buff_t::expire( action_t* action, timespan_t d )
 {
   if ( can_expire( action ) )
-    expire( delay );
+    expire( d );
 }
 
-void buff_t::expire( timespan_t delay )
+void buff_t::expire( timespan_t d )
 {
   if ( current_stack <= 0 )
   {
@@ -2632,11 +2632,11 @@ void buff_t::expire( timespan_t delay )
     return;
   }
 
-  if ( delay > timespan_t::zero() )  // Expiration Delay
+  if ( d > timespan_t::zero() )  // Expiration Delay
   {
     if ( !expiration_delay )  // Don't reschedule already existing expiration delay
     {
-      expiration_delay = make_event<expiration_delay_t>( *sim, this, delay );
+      expiration_delay = make_event<expiration_delay_t>( *sim, this, d );
     }
     return;
   }
@@ -3491,10 +3491,10 @@ void cost_reduction_buff_t::expire_override( int expiration_stacks, timespan_t r
   buff_t::expire_override( expiration_stacks, remaining_duration );
 }
 
-cost_reduction_buff_t* cost_reduction_buff_t::set_reduction( school_e school, double amount )
+cost_reduction_buff_t* cost_reduction_buff_t::set_reduction( school_e s, double a )
 {
-  this->amount = amount;
-  this->school = school;
+  amount = a;
+  school = s;
   return this;
 }
 

@@ -35,7 +35,7 @@ struct attack_t : public action_t
   double bonus_da( const action_state_t* ) const override;
   double action_multiplier() const override;
 
-  double composite_target_multiplier( player_t* target ) const override;
+  double composite_target_multiplier( player_t* ) const override;
   double composite_hit() const override;
   double composite_crit_chance() const override;
   double composite_crit_chance_multiplier() const override;

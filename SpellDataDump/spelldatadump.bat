@@ -5,7 +5,11 @@ for %%i in (%classes%) do (
 simc display_build="0" spell_query="spell.class=%%i">spelldatadump/%%i.txt
 )
 
-simc display_build="0" spell_query="spell">spelldatadump/allspells.txt
+echo WARNING: allspells.txt will be deprecated in the future. Please refer to the class files or nonclass.txt for non-class spells.>spelldatadump/allspells.txt
+echo:>>spelldatadump/allspells.txt
+simc display_build="0" spell_query="spell">>spelldatadump/allspells.txt
+
+simc display_build="0" spell_query="spell.class=none">spelldatadump/nonclass.txt
 
 simc display_build="2">spelldatadump/build_info.txt
 

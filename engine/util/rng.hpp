@@ -115,6 +115,23 @@ public:
     return range<T>( T{}, max );
   }
 
+  // Uniform distribution in the range [first iterator..last iterator)
+  template <
+    typename T,
+    typename std::enable_if_t<
+      std::is_base_of_v<std::forward_iterator_tag, typename std::iterator_traits<T>::iterator_category>, int> = 0>
+  T range( T first, T last )
+  {
+    return first + range( std::distance( first, last ) );
+  }
+
+  // Uniform distribution across [container.front()..container.back()]
+  template <typename T, typename U = std::remove_reference_t<decltype( *std::begin( std::declval<T&>() ) )>>
+  U& range( T& container )
+  {
+    return *range( container.begin(), container.end() );
+  }
+
   /// Gaussian Distribution, Non-truncated
   double gauss( double mean, double stddev );
 
@@ -437,20 +454,24 @@ template <typename Engine>
 template <unsigned MEAN, unsigned STDDEV>
 timespan_t basic_rng_t<Engine>::gauss()
 {
-  if ( STDDEV == 0 )
+  if constexpr ( STDDEV == 0 )
+  {
     return timespan_t::from_native( MEAN );
+  }
+  else
+  {
+    static constexpr auto mean = timespan_t::to_native( timespan_t::from_millis( MEAN ) );
+    static constexpr auto stddev = timespan_t::to_native( timespan_t::from_millis( STDDEV ) );
 
-  static constexpr auto mean = timespan_t::to_native( timespan_t::from_millis( MEAN ) );
-  static constexpr auto stddev = timespan_t::to_native( timespan_t::from_millis( STDDEV ) );
+    static const double min_cdf = stdnormal_cdf( ( 0.0 - mean ) / stddev );
+    static const double max_cdf = stdnormal_cdf( ( std::numeric_limits<double>::infinity() - mean ) / stddev );
 
-  static const double min_cdf = stdnormal_cdf( ( 0.0 - mean ) / stddev );
-  static const double max_cdf = stdnormal_cdf( ( std::numeric_limits<double>::infinity() - mean ) / stddev );
+    assert( min_cdf == stdnormal_cdf( ( 0.0 - mean ) / stddev ) );
+    assert( max_cdf == stdnormal_cdf( ( std::numeric_limits<double>::infinity() - mean ) / stddev ) );
 
-  assert( min_cdf == stdnormal_cdf( ( 0.0 - mean ) / stddev ) );
-  assert( max_cdf == stdnormal_cdf( ( std::numeric_limits<double>::infinity() - mean ) / stddev ) );
-
-  double rescaled = min_cdf + real() * ( max_cdf - min_cdf );
-  return timespan_t::from_native( mean + stddev * stdnormal_inv( rescaled ) );
+    double rescaled = min_cdf + real() * ( max_cdf - min_cdf );
+    return timespan_t::from_native( mean + stddev * stdnormal_inv( rescaled ) );
+  }
 }
 
 /// RNG Engines
