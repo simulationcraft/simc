@@ -63,7 +63,7 @@ actions.cds+=/call_action_list,name=trinkets
 actions.cds+=/desperate_prayer,if=health.pct<=75
 
 actions.empowered_filler=mind_spike_insanity,target_if=max:dot.devouring_plague.remains
-actions.empowered_filler+=/mind_flay,target_if=max:dot.devouring_plague.remains,if=buff.mind_flay_insanity.up
+actions.empowered_filler+=/mind_flay_insanity,target_if=max:dot.devouring_plague.remains
 
 # Cast Vampiric Touch to consume Unfurling Darkness, prefering the target with the lowest DoT duration active
 actions.filler=vampiric_touch,target_if=min:remains,if=buff.unfurling_darkness.up
