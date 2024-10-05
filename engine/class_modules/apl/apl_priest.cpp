@@ -133,7 +133,7 @@ void shadow( player_t* p )
   filler->add_action( "call_action_list,name=empowered_filler" );
   filler->add_action( "call_action_list,name=heal_for_tof,if=equipped.rashoks_molten_heart&(active_allies-(10-buff.molten_radiance.value))>=10&buff.molten_radiance.up,line_cd=5" );
   filler->add_action( "mind_spike,target_if=max:dot.devouring_plague.remains" );
-  filler->add_action( "mind_flay,target_if=max:dot.devouring_plague.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2" );
+  filler->add_action( "mind_flay,target_if=max:dot.devouring_plague.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2,interrupt_global=1" );
   filler->add_action( "divine_star" );
   filler->add_action( "shadow_crash,if=raid_event.adds.in>20&!set_bonus.tier31_4pc", "Use Shadow Crash while moving as a low-priority action when adds will not come in 20 seconds." );
   filler->add_action( "shadow_word_death,target_if=target.health.pct<20", "Use Shadow Word: Death while moving as a low-priority action in execute" );
