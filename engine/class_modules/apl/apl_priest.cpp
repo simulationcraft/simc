@@ -142,7 +142,7 @@ void shadow( player_t* p )
   filler->add_action( "shadow_word_pain,target_if=min:remains,if=!set_bonus.tier31_4pc", "Use Shadow Word: Pain while moving as a low-priority action without T31 4pc" );
 
   empowered_filler->add_action( "mind_spike_insanity,target_if=max:dot.devouring_plague.remains" );
-  empowered_filler->add_action( "mind_flay,target_if=max:dot.devouring_plague.remains,if=buff.mind_flay_insanity.up" );
+  empowered_filler->add_action( "mind_flay_insanity,target_if=max:dot.devouring_plague.remains" );
 
   heal_for_tof->add_action( "halo", "Use Halo to acquire Twist of Fate if an ally can be healed for it and it is not currently up." );
   heal_for_tof->add_action( "divine_star", "Use Divine Star to acquire Twist of Fate if an ally can be healed for it and it is not currently up." );
