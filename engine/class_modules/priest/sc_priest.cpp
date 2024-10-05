@@ -1797,6 +1797,28 @@ struct entropic_rift_damage_t final : public priest_spell_t
     affected_by_shadow_weaving = true;
   }
 
+  double miss_chance( double hit, player_t* t ) const override
+  {
+    double m = priest_spell_t::miss_chance( hit, t );
+
+    if ( priest().options.entropic_rift_miss_percent > 0.0 )
+    {
+      // Double miss_percent when fighting more than 2 targets
+      double miss_percent = priest().options.entropic_rift_miss_percent;
+      if ( target_list().size() > 2 )
+      {
+        miss_percent = miss_percent * 2;
+      }
+
+      sim->print_debug( "entropic_rift_damage sets miss_chance to {} with target count: {}", miss_percent,
+                        target_list().size() );
+
+      m = miss_percent;
+    }
+
+    return m;
+  }
+
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = priest_spell_t::composite_da_multiplier( s );
@@ -3582,7 +3604,7 @@ void priest_t::create_buffs()
           // time.
           // TODO: Check if this works fine on secondary targets, if so, rewrite this to have state passing to allow it
           // to miss the main target.
-          if ( b->current_tick >= 2 && rng().roll( 1.0 - options.entropic_rift_miss_percent ) )
+          if ( b->current_tick >= 2 )
           {
             background_actions.entropic_rift_damage->execute_on_target( state.last_entropic_rift_target );
           }

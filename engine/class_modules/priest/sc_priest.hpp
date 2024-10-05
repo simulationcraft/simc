@@ -845,7 +845,7 @@ public:
 
     // Chance for Entropic Rift ticks to miss all targets and deal no damage
     // Can be used to account for boss movement
-    double entropic_rift_miss_percent = 0.00;
+    double entropic_rift_miss_percent = 0.05;
 
     // Additional Crystalline Reflection Damage Multiplier (Because its bugged and doesnt always do full damage)
     double crystalline_reflection_damage_mult = 0.5;
