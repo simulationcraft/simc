@@ -3975,6 +3975,7 @@ void priest_t::create_options()
   add_option( opt_float( "priest.entropic_rift_miss_percent", options.entropic_rift_miss_percent, 0.0, 1.0 ) );
   add_option(
       opt_float( "priest.crystalline_reflection_damage_mult", options.crystalline_reflection_damage_mult, 0.0, 1.0 ) );
+  add_option( opt_bool( "priest.no_channel_macro_mfi", options.no_channel_macro_mfi ) );
 }
 
 std::string priest_t::create_profile( save_e type )

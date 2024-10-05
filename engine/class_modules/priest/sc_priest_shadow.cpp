@@ -78,6 +78,9 @@ struct mind_flay_insanity_t final : public mind_flay_base_t
     : mind_flay_base_t( "mind_flay_insanity", p, p.talents.shadow.mind_flay_insanity_spell )
   {
     parse_options( options_str );
+
+    // We spell queue out of MFI.
+    ability_lag = p.options.no_channel_macro_mfi ? p.world_lag : p.sim->queue_lag;
   }
 
   void execute() override
