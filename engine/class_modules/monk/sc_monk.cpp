@@ -184,11 +184,12 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.jadefire_brand, p()->talent.windwalker.jadefire_brand_heal );
 
   // Windwalker
-  if ( const auto &effect = p()->baseline.windwalker.mastery->effectN( 1 ); effect.ok() && ww_mastery )
+  if ( const auto &effect = p()->baseline.windwalker.mastery->effectN( 1 ); effect.ok() )
   {
     auto mastery_parse_entry = [ & ]( std::vector<player_effect_t> &effect_list ) {
       add_parse_entry( effect_list )
           .set_buff( p()->buff.combo_strikes )
+          .set_func( [ & ] { return ww_mastery; } )
           .set_value( effect.mastery_value() )
           .set_mastery( true )
           .set_eff( &effect );
