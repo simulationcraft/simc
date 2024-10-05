@@ -134,7 +134,7 @@ void protection( player_t* p )
   standard->add_action( "blessed_hammer" );
   standard->add_action( "hammer_of_the_righteous" );
   standard->add_action( "crusader_strike" );
-  standard->add_action( "word_of_glory,if=buff.shining_light_free.up&talent.lights_guidance.enabled&cooldown.hammerfall_icd.remains=0" );
+  standard->add_action( "word_of_glory,if=buff.shining_light_free.up&(talent.blessed_assurance.enabled|(talent.lights_guidance.enabled&cooldown.hammerfall_icd.remains=0))" );
   standard->add_action( "avengers_shield" );
   standard->add_action( "eye_of_tyr,if=!talent.lights_deliverance.enabled" );
   standard->add_action( "word_of_glory,if=buff.shining_light_free.up" );
