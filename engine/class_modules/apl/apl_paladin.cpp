@@ -120,6 +120,7 @@ void protection( player_t* p )
   standard->add_action( "avengers_shield,if=!buff.bulwark_of_righteous_fury.up&talent.bulwark_of_righteous_fury.enabled&spell_targets.shield_of_the_righteous>=3", "The following line has been edited for your own sanity, it is technically a dps gain to only use AS to refresh barricade of faith and strength in adversary as templar in large aoe However, it is very cursed, and nobody should actually do this, but if you REALLY wanted to, uncomment this line and comment out the next avenger's shield line. actions.standard+=/avengers_shield,if=!buff.bulwark_of_righteous_fury.up&talent.bulwark_of_righteous_fury.enabled&spell_targets.shield_of_the_righteous>=3&!((talent.lights_guidance.enabled&spell_targets.shield_of_the_righteous>=10)|!buff.barricade_of_faith.up)" );
   standard->add_action( "hammer_of_wrath" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=charges>=2|full_recharge_time<=gcd.max" );
+  standard->add_action( "consecration,if=buff.divine_guidance.stack=5");
   standard->add_action( "holy_armaments,if=next_armament=holy_bulwark&charges=2" );
   standard->add_action( "divine_toll,if=(!raid_event.adds.exists|raid_event.adds.in>10)" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains" );
