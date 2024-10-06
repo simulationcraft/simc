@@ -22,7 +22,7 @@ namespace buffs {
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
     // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
     //  values
-    if ( p->talents.avenging_wrath->ok() )
+    if ( p->is_ptr() || ( !p->is_ptr() && p->talents.avenging_wrath->ok() ) )
       damage_modifier = data().effectN( 1 ).percent() / 10.0;
     haste_bonus = data().effectN( 3 ).percent() / 10.0;
 
@@ -1663,7 +1663,7 @@ void paladin_t::init_spells_retribution()
   talents.crusade                     = find_talent_spell( talent_tree::SPECIALIZATION, "Crusade" );
   talents.radiant_glory               = find_talent_spell( talent_tree::SPECIALIZATION, "Radiant Glory" );
   talents.empyrean_power              = find_talent_spell( talent_tree::SPECIALIZATION, "Empyrean Power" );
-  talents.consecrated_ground_ret      = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Ground", PALADIN_RETRIBUTION );
+  if ( !is_ptr() ) talents.consecrated_ground_ret      = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Ground", PALADIN_RETRIBUTION );
   talents.tempest_of_the_lightbringer = find_talent_spell( talent_tree::SPECIALIZATION, "Tempest of the Lightbringer" );
   talents.justicars_vengeance         = find_talent_spell( talent_tree::SPECIALIZATION, "Justicar's Vengeance" );
   talents.execution_sentence          = find_talent_spell( talent_tree::SPECIALIZATION, "Execution Sentence" );
@@ -1705,6 +1705,7 @@ void paladin_t::init_spells_retribution()
   talents.burn_to_ash                 = find_talent_spell( talent_tree::SPECIALIZATION, "Burn to Ash" );
 
   talents.vengeful_wrath = find_talent_spell( talent_tree::CLASS, "Vengeful Wrath" );
+  talents.healing_hands  = find_talent_spell( talent_tree::CLASS, "Healing Hands" );
   // Spec passives and useful spells
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
   spec.retribution_paladin_2 = find_spell( 412314 );
