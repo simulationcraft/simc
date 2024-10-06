@@ -91,5 +91,5 @@ pre_cd->add_action( "use_item,name=spymasters_web,if=variable.cd_condition&(buff
 pre_cd->add_action( "do_treacherous_transmitter_task,if=variable.cd_condition" );
 pre_cd->add_action( "berserking,if=variable.cd_condition" );
 pre_cd->add_action( "potion,if=variable.cd_condition" );
-pre_cd->add_action( "use_item,slot=trinket1,if=(variable.on_use_trinket=1|variable.on_use_trinket=3)&variable.cd_condition" );
-pre_cd->add_action( "use_item,slot=trinket2,if=variable.on_use_trinket=2&variable.cd_condition" );
+pre_cd->add_action( "use_item,slot=trinket1,if=!trinket.1.is.spymasters_web&!trinket.1.is.imperfect_ascendancy_serum&!trinket.1.is.treacherous_transmitter&(variable.on_use_trinket=1|variable.on_use_trinket=3)&variable.cd_condition" );
+pre_cd->add_action( "use_item,slot=trinket2,if=!trinket.2.is.spymasters_web&!trinket.2.is.imperfect_ascendancy_serum&!trinket.2.is.treacherous_transmitter&variable.on_use_trinket=2&variable.cd_condition" );
