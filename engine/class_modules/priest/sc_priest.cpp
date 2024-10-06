@@ -2917,6 +2917,91 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
         else
           return expr_t::create_constant( "cthun_last_trigger_attempt", -1 );
       }
+      
+      if ( util::str_compare_ci( splits[ 1 ], "next_tick_si_proc_chance" ) )
+      {
+        if ( talents.shadow.shadowy_insight.enabled() )
+        {
+          return make_fn_expr( "next_tick_si_proc_chance", [ this ] {
+            double proc_chance = std::max( threshold_rng.shadowy_insight->get_accumulated_chance() +
+                                               threshold_rng.shadowy_insight->get_increment_max() - 1.0,
+                                           0.0 ) /
+                                 threshold_rng.shadowy_insight->get_increment_max();
+
+            return proc_chance;
+          } );
+        }
+        else
+        {
+          return expr_t::create_constant( "next_tick_si_proc_chance", 0 );
+        }
+      }
+
+      if ( util::str_compare_ci( splits[ 1 ], "avg_time_until_si_proc" ) )
+      {
+        if ( talents.shadow.shadowy_insight.enabled() )
+        {
+          return make_fn_expr( "avg_time_until_si_proc", [ this ] {
+
+            auto td           = get_target_data( target );
+            dot_t* swp        = td->dots.shadow_word_pain;
+
+            double active_swp = get_active_dots( swp );
+
+            if ( active_swp == 0 || !swp->current_action )
+            {
+              return std::numeric_limits<double>::infinity();
+            }
+
+            action_state_t* swp_state = swp->current_action->get_state( swp->state );
+            double dot_tick_time      = ( swp->current_action->tick_time( swp_state ) ).total_seconds();
+
+            double time_til_next_proc = ( 1 - threshold_rng.shadowy_insight->get_accumulated_chance() ) /
+                                        threshold_rng.shadowy_insight->get_increment_max() * 2 * dot_tick_time;
+
+            action_state_t::release( swp_state );
+
+            return time_til_next_proc;
+          } );
+        }
+        else
+        {
+          return expr_t::create_constant( "avg_time_until_si_proc", std::numeric_limits<double>::infinity() );
+        }
+      }
+
+      if ( util::str_compare_ci( splits[ 1 ], "min_time_until_si_proc" ) )
+      {
+        if ( talents.shadow.shadowy_insight.enabled() )
+        {
+          return make_fn_expr( "min_time_until_si_proc", [ this ] {
+            auto td    = get_target_data( target );
+            dot_t* swp = td->dots.shadow_word_pain;
+
+            double active_swp = get_active_dots( swp );
+
+            if ( active_swp == 0 || !swp->current_action )
+            {
+              return std::numeric_limits<double>::infinity();
+            }
+
+            action_state_t* swp_state = swp->current_action->get_state( swp->state );
+            double dot_tick_time      = ( swp->current_action->tick_time( swp_state ) ).total_seconds();
+
+            double time_til_next_proc = ( 1 - threshold_rng.shadowy_insight->get_accumulated_chance() ) /
+                                        threshold_rng.shadowy_insight->get_increment_max() * dot_tick_time;
+
+            action_state_t::release( swp_state );
+
+            return time_til_next_proc;
+          } );
+        }
+        else
+        {
+          return expr_t::create_constant( "min_time_until_si_proc", std::numeric_limits<double>::infinity() );
+        }
+      }
+
       throw std::invalid_argument( fmt::format( "Unsupported priest expression '{}'.", splits[ 1 ] ) );
     }
   }
