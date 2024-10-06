@@ -150,6 +150,7 @@ public:
     action_t* sacred_weapon_proc_damage;
     action_t* sacred_weapon_proc_heal;
     action_t* refining_fire;
+    action_t* eye_for_an_eye;
   } active;
 
   // Buffs

@@ -2693,6 +2693,14 @@ void paladin_t::trigger_laying_down_arms()
   cooldowns.lay_on_hands->adjust( -talents.lightsmith.laying_down_arms->effectN( 1 ).time_value() );
 };
 
+struct eye_for_an_eye_t : public paladin_spell_t
+{
+  eye_for_an_eye_t( paladin_t* p ) : paladin_spell_t( "eye_for_an_eye", p, p->find_spell( 469311 ) )
+  {
+    background = true;
+  }
+};
+
 // Hammer of Wrath
 
 struct hammer_of_wrath_t : public paladin_melee_attack_t
@@ -3528,6 +3536,10 @@ void paladin_t::create_actions()
   else
   {
     active.incandescence = nullptr;
+  }
+  if ( is_ptr() && talents.eye_for_an_eye->ok() )
+  {
+    active.eye_for_an_eye = new eye_for_an_eye_t( this );
   }
 
   active.background_cons = new consecration_t( this, "blade_of_justice", BLADE_OF_JUSTICE );
@@ -5006,6 +5018,15 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
     active.inner_light_damage->set_target( s->action->player );
     active.inner_light_damage->schedule_execute();
     cooldowns.inner_light_icd->start();
+  }
+
+  if (is_ptr() && s->action->harmful && talents.eye_for_an_eye->ok())
+  {
+    if (buffs.ardent_defender->up() || buffs.divine_protection->up() || buffs.divine_shield->up())
+    {
+      active.eye_for_an_eye->set_target( s->action->player );
+      active.eye_for_an_eye->schedule_execute();
+    }
   }
 
   // Trigger Grand Crusader on an avoidance event (TODO: test if it triggers on misses)

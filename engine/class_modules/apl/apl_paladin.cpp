@@ -81,6 +81,7 @@ void protection( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
+  action_priority_list_t* defensives = p->get_action_priority_list( "defensives" );
   action_priority_list_t* standard = p->get_action_priority_list( "standard" );
   action_priority_list_t* hammer_of_light = p->get_action_priority_list( "hammer_of_light" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
@@ -100,6 +101,7 @@ void protection( player_t* p )
 
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=cooldowns" );
+  default_->add_action( "call_action_list,name=defensives" );
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=standard" );
 
@@ -111,6 +113,8 @@ void protection( player_t* p )
   cooldowns->add_action( "bastion_of_light,if=buff.avenging_wrath.up|cooldown.avenging_wrath.remains<=30" );
   cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=buff.avenging_wrath.up" );
   cooldowns->add_action( "fireblood,if=buff.avenging_wrath.remains>8" );
+
+  defensives->add_action( "ardent_defender" );
 
   standard->add_action( "call_action_list,name=hammer_of_light,if=talent.lights_guidance.enabled&(cooldown.eye_of_tyr.remains<2|buff.hammer_of_light_ready.up)&(!talent.redoubt.enabled|buff.redoubt.stack>=2|!talent.bastion_of_light.enabled)" );
   standard->add_action( "hammer_of_light,if=(!talent.redoubt.enabled|buff.redoubt.stack=3)&(buff.blessing_of_dawn.stack>=1|!talent.of_dusk_and_dawn.enabled)" );
