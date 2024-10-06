@@ -22,6 +22,7 @@ actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_coo
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=defensives
 actions+=/call_action_list,name=trinkets
 actions+=/call_action_list,name=standard
 
@@ -33,6 +34,8 @@ actions.cooldowns+=/divine_toll,if=spell_targets.shield_of_the_righteous>=3
 actions.cooldowns+=/bastion_of_light,if=buff.avenging_wrath.up|cooldown.avenging_wrath.remains<=30
 actions.cooldowns+=/invoke_external_buff,name=power_infusion,if=buff.avenging_wrath.up
 actions.cooldowns+=/fireblood,if=buff.avenging_wrath.remains>8
+
+actions.defensives=ardent_defender
 
 actions.hammer_of_light=hammer_of_light,if=(buff.blessing_of_dawn.stack>0|!talent.of_dusk_and_dawn.enabled)|spell_targets.shield_of_the_righteous>=5
 actions.hammer_of_light+=/eye_of_tyr,if=hpg_to_2dawn=5|!talent.of_dusk_and_dawn.enabled
