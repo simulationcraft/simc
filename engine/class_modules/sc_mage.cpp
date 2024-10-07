@@ -2152,7 +2152,7 @@ public:
   {
     double fm = 1.0;
 
-    if ( get_school() == SCHOOL_FROST && cast_state( s )->frozen & FF_ROOT )
+    if ( dbc::is_school( get_school(), SCHOOL_FROST ) && cast_state( s )->frozen & FF_ROOT )
       fm *= 1.0 + p()->talents.subzero->effectN( 1 ).percent();
 
     return fm;
