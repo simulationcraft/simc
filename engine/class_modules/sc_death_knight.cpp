@@ -6408,8 +6408,7 @@ public:
 struct undeath_dot_t final : public death_knight_spell_t
 {
   undeath_dot_t( std::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->pet_spell.undeath_dot ),
-      sqrt_targets( p->pet_spell.undeath_dot->effectN( 2 ).base_value() )
+    : death_knight_spell_t( name, p, p->pet_spell.undeath_dot )
   {
     background = true;
     may_miss = may_dodge = may_parry = false;
@@ -6422,12 +6421,12 @@ struct undeath_dot_t final : public death_knight_spell_t
     auto td = p()->get_target_data( d->target );
     auto cd = p()->cooldown.undeath_spread->get_cooldown( d->target );
 
-    if( !cd->down() )
+    if ( !cd->down() )
+    {
       td->dot.undeath->increment( 1 );
+      cd->start();
+    }
   }
-
-private:
-  double sqrt_targets;
 };
 
 struct trollbanes_icy_fury_t final : public death_knight_spell_t
@@ -12009,6 +12008,8 @@ void death_knight_t::trigger_whitemanes_famine( player_t* main_target )
   if ( !cd->down() )
   {
     td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
+    cd->start();
+
     if ( sim->target_non_sleeping_list.size() > 1 )
     {
       std::vector<player_t*> tl = undeath_tl;
@@ -12030,8 +12031,6 @@ void death_knight_t::trigger_whitemanes_famine( player_t* main_target )
       {
         td->dot.undeath->copy( undeath_target, DOT_COPY_CLONE );
       }
-
-      cd->start();
 
       std::rotate( undeath_tl.begin(), undeath_tl.begin() + 1, undeath_tl.end() );
     }
