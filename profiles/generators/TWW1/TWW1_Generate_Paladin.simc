@@ -71,7 +71,7 @@ feet=everforged_sabatons,id=222429,bonus_id=10520,ilevel=636,enchant_id=7418,cra
 finger1=key_to_the_unseeming,id=212447,bonus_id=10879,ilevel=639,gem_id=213470/213455,enchant_id=7340
 finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,ilevel=639,gem_id=213494/213485,enchant_id=7340
 trinket1=arakara_sacbrood,id=219314,ilevel=639
-trinket2=spare_meat_hook,id=178751,ilevel=639
+trinket2=skyterrors_corrosive_organ,id=212453,ilevel=639
 main_hand=engorged_worm_smasher,id=178730,ilevel=639,enchant_id=7460
 off_hand=oldblood_hielaman,id=221177,ilevel=639
 
