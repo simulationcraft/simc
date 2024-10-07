@@ -4984,7 +4984,8 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     double fm = frost_mage_spell_t::frozen_multiplier( s );
 
-    fm *= 1.0 + p()->talents.deep_shatter->effectN( 1 ).percent();
+    if ( s->result_type == result_amount_type::DMG_DIRECT )
+      fm *= 1.0 + p()->talents.deep_shatter->effectN( 1 ).percent();
 
     return fm;
   }
