@@ -381,7 +381,6 @@ void unholy( player_t* p )
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* aoe_burst = p->get_action_priority_list( "aoe_burst" );
   action_priority_list_t* aoe_setup = p->get_action_priority_list( "aoe_setup" );
-  action_priority_list_t* aoe_setuo = p->get_action_priority_list( "aoe_setuo" );
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
   action_priority_list_t* cds_aoe = p->get_action_priority_list( "cds_aoe" );
   action_priority_list_t* cds_aoe_san = p->get_action_priority_list( "cds_aoe_san" );
@@ -446,9 +445,7 @@ void unholy( player_t* p )
 
   aoe_setup->add_action( "any_dnd,if=!death_and_decay.ticking&(!talent.bursting_sores&!talent.vile_contagion|death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets>=8|raid_event.adds.exists&raid_event.adds.remains<=11&raid_event.adds.remains>5|!buff.death_and_decay.up&talent.defile)", "AoE Setup" );
   aoe_setup->add_action( "wound_spender,target_if=debuff.chains_of_ice_trollbane_slow.up" );
-
-  aoe_setuo->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!talent.vile_contagion|buff.festering_scythe.react" );
-
+  aoe_setup->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!talent.vile_contagion|buff.festering_scythe.react" );
   aoe_setup->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=cooldown.vile_contagion.remains<5|death_knight.fwounded_targets=active_enemies&debuff.festering_wound.stack<=4" );
   aoe_setup->add_action( "epidemic,if=!variable.pooling_runic_power&buff.sudden_doom.react" );
   aoe_setup->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=cooldown.apocalypse.remains<gcd&debuff.festering_wound.stack=0|death_knight.fwounded_targets<active_enemies" );
