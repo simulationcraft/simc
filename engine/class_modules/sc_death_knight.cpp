@@ -9650,7 +9650,7 @@ struct howling_blast_t final : public death_knight_spell_t
                           p()->gains.rage_of_the_frozen_champion );
     }
 
-    if ( p()->talent.deathbringer.dark_talons.ok() && p()->talent.icy_talons->ok() &&
+    if ( p()->talent.deathbringer.dark_talons.ok() && p()->buffs.rime->check() && p()->talent.icy_talons->ok() &&
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
       p()->buffs.dark_talons_icy_talons->trigger( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
@@ -10739,7 +10739,7 @@ struct soul_reaper_action_t final : public soul_reaper_t
   double cost() const override
   {
     double c = death_knight_melee_attack_t::cost();
-    if ( p()->is_ptr() && p()->talent.deathbringer.reaper_of_souls.ok() && p()->buffs.reaper_of_souls->up() )
+    if ( !p()->bugs && p()->is_ptr() && p()->talent.deathbringer.reaper_of_souls.ok() && p()->buffs.reaper_of_souls->up() )
     {
       c = 0.0;
     }
@@ -15224,7 +15224,6 @@ void death_knight_t::apply_affecting_auras( buff_t& buff )
   if ( is_ptr() )
   {
     buff.apply_affecting_aura( talent.deathbringer.reapers_onslaught );
-    buff.apply_affecting_aura( talent.deathbringer.bind_in_darkness );
   }
 }
 
