@@ -428,24 +428,26 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=san_st,if=active_enemies=1&talent.vampiric_strike" );
   default_->add_action( "call_action_list,name=st,if=active_enemies=1&!talent.vampiric_strike" );
 
-  aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1&buff.death_and_decay.up&talent.bursting_sores&cooldown.apocalypse.remains>variable.apoc_timing", "AOE" );
+  aoe->add_action( "festering_strike,if=buff.festering_scythe.react", "AOE" );
+  aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1&buff.death_and_decay.up&talent.bursting_sores&cooldown.apocalypse.remains>variable.apoc_timing" );
   aoe->add_action( "epidemic,if=!variable.pooling_runic_power" );
   aoe->add_action( "wound_spender,target_if=debuff.chains_of_ice_trollbane_slow.up" );
   aoe->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=cooldown.apocalypse.remains<variable.apoc_timing|buff.festering_scythe.react" );
   aoe->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=debuff.festering_wound.stack<2" );
   aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1&cooldown.apocalypse.remains>gcd|buff.vampiric_strike.react&dot.virulent_plague.ticking" );
 
-  aoe_burst->add_action( "epidemic,if=!buff.vampiric_strike.react&(!talent.bursting_sores|talent.bursting_sores&death_knight.fwounded_targets<active_enemies&death_knight.fwounded_targets<active_enemies*0.4&buff.sudden_doom.react|buff.sudden_doom.react&(buff.a_feast_of_souls.up|debuff.death_rot.remains<gcd|debuff.death_rot.stack<10))", "AoE Burst" );
+  aoe_burst->add_action( "festering_strike,if=buff.festering_scythe.react", "AoE Burst" );
+  aoe_burst->add_action( "epidemic,if=!buff.vampiric_strike.react&(!talent.bursting_sores|talent.bursting_sores&death_knight.fwounded_targets<active_enemies&death_knight.fwounded_targets<active_enemies*0.4&buff.sudden_doom.react|buff.sudden_doom.react&(buff.a_feast_of_souls.up|debuff.death_rot.remains<gcd|debuff.death_rot.stack<10))" );
   aoe_burst->add_action( "wound_spender,target_if=debuff.chains_of_ice_trollbane_slow.up" );
-  aoe_burst->add_action( "festering_strike,if=buff.festering_scythe.react" );
   aoe_burst->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1|buff.vampiric_strike.react" );
   aoe_burst->add_action( "epidemic" );
   aoe_burst->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=debuff.festering_wound.stack<=2" );
   aoe_burst->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack" );
 
-  aoe_setup->add_action( "any_dnd,if=!death_and_decay.ticking&(!talent.bursting_sores&!talent.vile_contagion|death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets>=8|raid_event.adds.exists&raid_event.adds.remains<=11&raid_event.adds.remains>5|!buff.death_and_decay.up&talent.defile)", "AoE Setup" );
+  aoe_setup->add_action( "festering_strike,if=buff.festering_scythe.react", "AoE Setup" );
+  aoe_setup->add_action( "any_dnd,if=!death_and_decay.ticking&(!talent.bursting_sores&!talent.vile_contagion|death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets>=8|raid_event.adds.exists&raid_event.adds.remains<=11&raid_event.adds.remains>5|!buff.death_and_decay.up&talent.defile)" );
   aoe_setup->add_action( "wound_spender,target_if=debuff.chains_of_ice_trollbane_slow.up" );
-  aoe_setup->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!talent.vile_contagion|buff.festering_scythe.react" );
+  aoe_setup->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!talent.vile_contagion" );
   aoe_setup->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=cooldown.vile_contagion.remains<5|death_knight.fwounded_targets=active_enemies&debuff.festering_wound.stack<=4" );
   aoe_setup->add_action( "epidemic,if=!variable.pooling_runic_power&buff.sudden_doom.react" );
   aoe_setup->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=cooldown.apocalypse.remains<gcd&debuff.festering_wound.stack=0|death_knight.fwounded_targets<active_enemies" );
