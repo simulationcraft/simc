@@ -31,7 +31,7 @@ level=80
 race=mechagnome
 role=attack
 position=back
-talents=CsPAAAAAAAAAAAAAAAAAAAAAAMGAzMjZmxYYGzMzMzMGmJzYMjBMzYMjZmZmZmZxMAAAAAAAAAAAAbmtBGwCYbYCZsgZYMDA
+talents=CsPAAAAAAAAAAAAAAAAAAAAAAMGAzMjZmxYYGzMzMzMGmJzYMjBMzYMjZmZmZmZZmBAAAAAAAAAAAYzsNwAWAbDTIjFMYMDA
 deathknight.ams_absorb_percent=1
 deathknight.first_ams_cast=0
 
@@ -47,7 +47,7 @@ legs=exhumed_centurions_chausses,id=212001,bonus_id=1540/10299,enchant=stormboun
 feet=everforged_sabatons,id=222429,bonus_id=10421/9633/8902/11144/10222/1485,crafted_stats=32/49
 finger1=band_of_the_roving_scalawag,id=162541,bonus_id=10047/10299/10376/8781,gem_id=213458/213458,enchant=radiant_critical_strike_3
 finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10299/10376/8781,gem_id=213458/213458,enchant=radiant_critical_strike_3
-trinket1=arakara_sacbrood,id=219314,bonus_id=3131/10299/10376
+trinket1=ovinaxs_mercurial_egg,id=220305,bonus_id=7981/11143/5878/10299
 trinket2=treacherous_transmitter,id=221023,bonus_id=1540/10299/10376
 main_hand=ansureks_final_judgment,id=212401,bonus_id=1540/10299/10376,enchant=rune_of_the_stoneskin_gargoyle
 off_hand=charged_slicer,id=222451,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=32/49
@@ -77,7 +77,7 @@ feet=everforged_sabatons,id=222429,bonus_id=10421/9633/8902/11144/10222/1485,cra
 finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213458/213458,enchant=radiant_mastery_3
 finger2=band_of_the_roving_scalawag,id=162541,bonus_id=1514/3317/6646/8781,ilevel=639,gem_id=213458/213458,enchant=radiant_mastery_3
 trinket1=treacherous_transmitter,id=221023,bonus_id=1540
-trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
+trinket2=ovinaxs_mercurial_egg,id=220305,bonus_id=7981/11143/5878/10299
 main_hand=ansureks_final_judgment,id=212401,ilevel=639,enchant=rune_of_razorice
 off_hand=charged_slicer,id=222451,bonus_id=11144/9627/9633/8902/10222/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=49/32
 
@@ -90,26 +90,26 @@ level=80
 race=blood_elf
 role=attack
 position=back
-talents=CsPAAAAAAAAAAAAAAAAAAAAAAMAYmZMzMGDzYmZmZmxwMZGjZMgZGjZMzMzMzMLzMAAAAAAAAAAAAgNzihBGY20QDbYMGzAA
+talents=CsPAAAAAAAAAAAAAAAAAAAAAAAAzMjZmxYYGzMzMzMGmJzYYwgZGzMMzMzMzMLzMAAAAAAAAAAAAgFzihBGY20QDbYmZGzMA
 deathknight.ams_absorb_percent=1
 deathknight.first_ams_cast=0
 
 head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213743
-neck=locket_of_broken_memories,id=212448,bonus_id=6652/10354/10269/1540/10255/10394/10879,gem_id=213473/213482
+neck=trailspinner_pendant,id=178707,bonus_id=1611/8781,ilevel=639,gem_id=213473/213482
 shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540
 back=wings_of_shattered_sorrow,id=225574,bonus_id=7187/1520,ilevel=639
 chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540,enchant=crystalline_radiance_3
-wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11109/8960/10878,gem_id=213455,crafted_stats=32/36
+wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11109/8960/10878,gem_id=213491,crafted_stats=49/32
 hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
-waist=crystalfissure_girdle,id=221079,bonus_id=1611/6935,ilevel=639,gem_id=213458
+waist=nether_bountys_greatbelt,id=225589,bonus_id=7187/1520/6935,ilevel=639,gem_id=213458
 legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=stormbound_armor_kit_3
-feet=ballast_sinkers,id=159428,bonus_id=1514/3317/6646,ilevel=639
-finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213491/213491,enchant=radiant_critical_strike_3
-finger2=band_of_the_roving_scalawag,id=162541,bonus_id=1514/3317/6646/8781,ilevel=639,gem_id=213458/213458,enchant=radiant_critical_strike_3
+feet=boots_of_the_black_bulwark,id=225590,bonus_id=1540
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213458/213458,enchant=radiant_critical_strike_3
+finger2=band_of_the_roving_scalawag,id=162541,bonus_id=1514/3317/6646/8781,ilevel=639,gem_id=213482/213482,enchant=radiant_critical_strike_3
 trinket1=treacherous_transmitter,id=221023,bonus_id=7187/1520,ilevel=639
-trinket2=mark_of_khardros,id=133300,bonus_id=9466/1514,ilevel=639
-main_hand=ansureks_final_judgment,id=212401,ilevel=639,enchant=rune_of_the_stoneskin_gargoyle
-off_hand=charged_slicer,id=222451,bonus_id=11144/9627/9633/8902/10222/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=32/36
+trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
+main_hand=ansureks_final_judgment,id=212401,ilevel=639,enchant=rune_of_razorice
+off_hand=charged_slicer,id=222451,bonus_id=11144/9627/9633/8902/10222/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=49/32
 
 save="TWW1_Death_Knight_Frost_Rider.simc"
 
