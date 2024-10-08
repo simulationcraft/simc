@@ -5836,7 +5836,8 @@ Effects          :
                    Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 1.00000 | Misc Value: 1602 | Target: Self (1)
                    Affected Spells (Category): Mind Blast (8092), Void Blast (450983)
 #7 (id=469750)   : Apply Aura (6) | Modify Healing% Done (136) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 126 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
+                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 #8 (id=469751)   : Apply Aura (6) | Modify Absorb% Done (421) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #9 (id=469752)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
