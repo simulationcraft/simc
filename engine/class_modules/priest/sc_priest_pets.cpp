@@ -406,6 +406,14 @@ struct base_fiend_pet_t : public priest_pet_t
     owner_coeff.health = 0.3;
   }
 
+  void init_base_stats() override
+  {
+    priest_pet_t::init_base_stats();
+
+    owner_coeff.ap_from_sp = direct_power_mod;
+    owner_coeff.sp_from_sp = direct_power_mod;
+  }
+
   virtual double mana_return_percent() const = 0;
   virtual double insanity_gain() const       = 0;
 
@@ -510,17 +518,20 @@ struct void_flay_t final : public priest_pet_spell_t
     damage_mul = data().effectN( 2 ).percent();
 
     // TODO: check if this is working
+    apply_affecting_aura( p.o().specs.shadow_priest );
     apply_affecting_aura( p.o().specs.discipline_priest );
 
+
+
     // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1288
-    if ( p.o().bugs )
+    /*if ( p.o().bugs )
     {
       spell_power_mod.direct = 0.9;
     }
     else
     {
       apply_affecting_aura( p.o().specs.shadow_priest );
-    }
+    }*/
   }
 
   void init() override
@@ -701,7 +712,7 @@ struct fiend_melee_t : public priest_pet_melee_t
     weapon_multiplier       = 0.0;
     base_dd_min             = weapon->min_dmg;
     base_dd_max             = weapon->max_dmg;
-    attack_power_mod.direct = p.direct_power_mod;
+    attack_power_mod.direct = 1.0;
   }
 
   base_fiend_pet_t& p()
@@ -788,7 +799,7 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
 
     // This is hard coded in the spell
     // spcoeff * $?a137032[${0.326139}][${0.442}]
-    spell_power_mod.direct *= p.direct_power_mod;
+    // spell_power_mod.direct *= p.direct_power_mod;
 
     // Negative modifier used for point scaling
     // Effect#4 [op=set, values=(-50, 0)]
