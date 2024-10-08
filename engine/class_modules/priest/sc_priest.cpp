@@ -3065,6 +3065,13 @@ double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
   // Certain modifiers are only for Guardians, otherwise just give the Pet Modifier
+
+  if ( specialization() == PRIEST_SHADOW )
+  {
+    // Seems to apply to all pets/guardians. Unknown if it applies to non shadow ones currently. 08/10/2024
+    m *= 1.296;
+  }
+
   if ( guardian )
   {
     m *= ( 1.0 + specs.shadow_priest->effectN( 4 ).percent() );

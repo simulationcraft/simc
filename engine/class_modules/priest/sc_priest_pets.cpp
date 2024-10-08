@@ -233,13 +233,6 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
       apply_affecting_aura( p.o().specs.shadow_priest );
       apply_affecting_aura( p.o().specs.discipline_priest );
 
-      if ( p.o().specialization() == PRIEST_SHADOW )
-      {
-        // Unknown Multiplier applying to all (?) pet damage (Seems to be all shadow, maybe trinkets?)
-        base_td_multiplier *= 1.296;
-        base_dd_multiplier *= 1.296;
-      }
-
       apply_buff_effects();
       apply_debuffs_effects();
     }
