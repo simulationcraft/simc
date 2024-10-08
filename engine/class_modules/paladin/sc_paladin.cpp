@@ -2296,6 +2296,12 @@ struct empyrean_hammer_wd_t : public paladin_spell_t
     background          = true;
     may_crit            = false;
     aoe                 = -1;
+
+    if (p->specialization() == PALADIN_RETRIBUTION)
+    {
+      base_dd_multiplier += p->spec.retribution_paladin_2->effectN( 20 ).percent();
+    }
+
     // ToDo (Fluttershy)
     // This spell currently deals full damage to all targets, even above 20.
     // SimC automatically reduces AoE damage above 20 targets, so may need custom execute, if this behaviour stays
@@ -4025,6 +4031,14 @@ void paladin_t::create_buffs()
   buffs.rising_wrath = make_buff( this, "rising_wrath", find_spell( 456700 ) )
     ->set_default_value_from_effect(1);
   buffs.heightened_wrath = make_buff( this, "heightened_wrath", find_spell( 456759 ) );
+
+  if ( specialization() == PALADIN_RETRIBUTION )
+  {
+    buffs.templar.shake_the_heavens->apply_affecting_aura( spec.retribution_paladin_2 );
+    buffs.templar.lights_deliverance->apply_affecting_aura( spec.retribution_paladin_2 );
+    buffs.templar.undisputed_ruling->apply_affecting_aura( spec.retribution_paladin_2 );
+    buffs.templar.sanctification->apply_affecting_aura( spec.retribution_paladin_2 );
+  }
 }
 
 // paladin_t::default_potion ================================================
