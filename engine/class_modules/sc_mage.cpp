@@ -6880,11 +6880,10 @@ struct frostfire_empowerment_t final : public spell_t
   }
 };
 
-// TODO: Doesn't have the usual mage family flags, so it isn't affected by most mage effects
-struct volatile_magic_t final : public spell_t
+struct volatile_magic_t final : public mage_spell_t
 {
   volatile_magic_t( std::string_view n, mage_t* p ) :
-    spell_t( n, p, p->find_spell( p->specialization() == MAGE_FROST ? 444967 : 444966 ) )
+    mage_spell_t( n, p, p->find_spell( p->specialization() == MAGE_FROST ? 444967 : 444966 ) )
   {
     background = true;
     aoe = -1;
