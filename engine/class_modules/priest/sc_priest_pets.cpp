@@ -519,20 +519,6 @@ struct void_flay_t final : public priest_pet_spell_t
     trigger_gcd = 1.5_s;
 
     damage_mul = data().effectN( 2 ).percent();
-
-    // TODO: check if this is working
-
-
-
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1288
-    /*if ( p.o().bugs )
-    {
-      spell_power_mod.direct = 0.9;
-    }
-    else
-    {
-      apply_affecting_aura( p.o().specs.shadow_priest );
-    }*/
   }
 
   void init() override
