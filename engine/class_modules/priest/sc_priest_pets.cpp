@@ -508,6 +508,9 @@ struct void_flay_t final : public priest_pet_spell_t
     trigger_gcd = 1.5_s;
 
     damage_mul = data().effectN( 2 ).percent();
+
+    apply_affecting_aura( p.o().specs.shadow_priest );
+    apply_affecting_aura( p.o().specs.discipline_priest );
   }
 
   void init() override
