@@ -9363,7 +9363,8 @@ Attributes       : Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=818435)   : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Enemy (6)
+                   Affected School(s): All
 Description      : Reduces healing done by $m1%.
 Tooltip          : Reduces healing done by $m1%.
 

@@ -1,11 +1,11 @@
-priest="TWW1_Priest_Shadow_Voidweaver"
+priest="TWW1_Priest_Shadow_Archon"
 source=default
 spec=shadow
 level=80
 race=orc
 role=spell
 position=ranged_back
-talents=CIQAAAAAAAAAAAAAAAAAAAAAAYAGPAAAAAAAAAAAAAwMzsNGzMzyYmZmxYmZWGMbMzMzY2YgxYYWMbTNzgFYMzAABY2mllgZjN
+talents=CIQAAAAAAAAAAAAAAAAAAAAAAAMmZAAAAAAAAAAAAAGmFPwYmZ2GjZmZGzMzygZjZmZGzGDMGDziZbqZGsADgZ2sMaWMAkxYB
 
 # Default consumables
 potion=tempered_potion_3

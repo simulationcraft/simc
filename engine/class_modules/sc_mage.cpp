@@ -2152,7 +2152,7 @@ public:
   {
     double fm = 1.0;
 
-    if ( get_school() == SCHOOL_FROST && cast_state( s )->frozen & FF_ROOT )
+    if ( dbc::is_school( get_school(), SCHOOL_FROST ) && cast_state( s )->frozen & FF_ROOT )
       fm *= 1.0 + p()->talents.subzero->effectN( 1 ).percent();
 
     return fm;
@@ -4984,7 +4984,8 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     double fm = frost_mage_spell_t::frozen_multiplier( s );
 
-    fm *= 1.0 + p()->talents.deep_shatter->effectN( 1 ).percent();
+    if ( s->result_type == result_amount_type::DMG_DIRECT )
+      fm *= 1.0 + p()->talents.deep_shatter->effectN( 1 ).percent();
 
     return fm;
   }

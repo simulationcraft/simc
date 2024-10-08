@@ -37,6 +37,7 @@ actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_coo
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=defensives
 actions+=/call_action_list,name=trinkets
 actions+=/call_action_list,name=standard
 
@@ -49,6 +50,8 @@ actions.cooldowns+=/bastion_of_light,if=buff.avenging_wrath.up|cooldown.avenging
 actions.cooldowns+=/invoke_external_buff,name=power_infusion,if=buff.avenging_wrath.up
 actions.cooldowns+=/fireblood,if=buff.avenging_wrath.remains>8
 
+actions.defensives=ardent_defender
+
 actions.hammer_of_light=hammer_of_light,if=(buff.blessing_of_dawn.stack>0|!talent.of_dusk_and_dawn.enabled)|spell_targets.shield_of_the_righteous>=5
 actions.hammer_of_light+=/eye_of_tyr,if=hpg_to_2dawn=5|!talent.of_dusk_and_dawn.enabled
 actions.hammer_of_light+=/shield_of_the_righteous,if=hpg_to_2dawn=4
@@ -60,9 +63,9 @@ actions.hammer_of_light+=/hammer_of_the_righteous
 actions.hammer_of_light+=/crusader_strike
 actions.hammer_of_light+=/divine_toll
 
-actions.standard=call_action_list,name=hammer_of_light,if=talent.lights_guidance.enabled&(cooldown.eye_of_tyr.remains<2|buff.hammer_of_light_ready.up)&(!talent.redoubt.enabled|buff.redoubt.stack>=2|!talent.bastion_of_light.enabled)
-actions.standard+=/hammer_of_light,if=(!talent.redoubt.enabled|buff.redoubt.stack=3)&(buff.blessing_of_dawn.stack>=1|!talent.of_dusk_and_dawn.enabled)
-actions.standard+=/shield_of_the_righteous,if=(((!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&holy_power>2)|buff.bastion_of_light.up|buff.divine_purpose.up)&!((buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up))
+actions.standard=call_action_list,name=hammer_of_light,if=talent.lights_guidance.enabled&(cooldown.eye_of_tyr.remains<2|buff.hammer_of_light_ready.up)&(!talent.redoubt.enabled|buff.redoubt.stack>=2|!talent.bastion_of_light.enabled)&!buff.hammer_of_light_free.up
+actions.standard+=/hammer_of_light,if=buff.hammer_of_light_free.remains<2|buff.shake_the_heavens.duration<1|!buff.shake_the_heavens.up|cooldown.eye_of_tyr.remains<1.5|fight_remains<2
+actions.standard+=/shield_of_the_righteous,if=(!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&!buff.hammer_of_light_ready.up
 actions.standard+=/holy_armaments,if=next_armament=sacred_weapon&(!buff.sacred_weapon.up|(buff.sacred_weapon.remains<6&!buff.avenging_wrath.up&cooldown.avenging_wrath.remains<=30))
 actions.standard+=/judgment,target_if=min:debuff.judgment.remains,if=spell_targets.shield_of_the_righteous>3&buff.bulwark_of_righteous_fury.stack>=3&holy_power<3
 # The following line has been edited for your own sanity, it is technically a dps gain to only use AS to refresh barricade of faith and strength in adversary as templar in large aoe However, it is very cursed, and nobody should actually do this, but if you REALLY wanted to, uncomment this line and comment out the next avenger's shield line. actions.standard+=/avengers_shield,if=!buff.bulwark_of_righteous_fury.up&talent.bulwark_of_righteous_fury.enabled&spell_targets.shield_of_the_righteous>=3&!((talent.lights_guidance.enabled&spell_targets.shield_of_the_righteous>=10)|!buff.barricade_of_faith.up)
@@ -106,7 +109,7 @@ feet=everforged_sabatons,id=222429,bonus_id=10520,ilevel=636,enchant_id=7418,cra
 finger1=key_to_the_unseeming,id=212447,bonus_id=10879,ilevel=639,gem_id=213470/213455,enchant_id=7340
 finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,ilevel=639,gem_id=213494/213485,enchant_id=7340
 trinket1=arakara_sacbrood,id=219314,ilevel=639
-trinket2=spare_meat_hook,id=178751,ilevel=639
+trinket2=skyterrors_corrosive_organ,id=212453,ilevel=639
 main_hand=engorged_worm_smasher,id=178730,ilevel=639,enchant_id=7460
 off_hand=oldblood_hielaman,id=221177,ilevel=639
 

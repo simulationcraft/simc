@@ -5,7 +5,7 @@ level=80
 race=blood_elf
 role=attack
 position=back
-talents=CsPAAAAAAAAAAAAAAAAAAAAAAMAYmZMzMGDzYmZmZmxwMZGjZMgZGjZMzMzMzMLzMAAAAAAAAAAAAgNzihBGY20QDbYMGzAA
+talents=CsPAAAAAAAAAAAAAAAAAAAAAAAAzMjZmxYYGzMzMzMGmJzYYwgZGzMMzMzMzMLzMAAAAAAAAAAAAgFzihBGY20QDbYmZGzMA
 
 # Default consumables
 potion=tempered_potion_3
@@ -182,8 +182,8 @@ actions.trinkets=use_item,use_off_gcd=1,name=treacherous_transmitter,if=cooldown
 # When to complete the Tracherous Transmitter task given.
 actions.trinkets+=/do_treacherous_transmitter_task,use_off_gcd=1,if=buff.pillar_of_frost.up|fight_remains<15
 # Trinkets The trinket with the highest estimated value, will be used first and paired with Pillar of Frost.
-actions.trinkets+=/use_item,slot=trinket1,if=!trinket.1.cast_time>0&variable.trinket_1_buffs&!variable.trinket_1_manual&(!talent.breath_of_sindragosa|buff.breath_of_sindragosa.up|cooldown.breath_of_sindragosa.remains>trinket.1.cooldown.remains%2)&(buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa&buff.pillar_of_frost.remains>10)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)
-actions.trinkets+=/use_item,slot=trinket2,if=!trinket.2.cast_time>0&variable.trinket_2_buffs&!variable.trinket_2_manual&(!talent.breath_of_sindragosa|buff.breath_of_sindragosa.up|cooldown.breath_of_sindragosa.remains>trinket.2.cooldown.remains%2)&(buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa&buff.pillar_of_frost.remains>10)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)
+actions.trinkets+=/use_item,slot=trinket1,if=!trinket.1.cast_time>0&variable.trinket_1_buffs&!variable.trinket_1_manual&(buff.pillar_of_frost.remains>variable.trinket_1_duration%2)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)
+actions.trinkets+=/use_item,slot=trinket2,if=!trinket.2.cast_time>0&variable.trinket_2_buffs&!variable.trinket_2_manual&(buff.pillar_of_frost.remains>variable.trinket_2_duration%2)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)
 # Channeled buff trinkets will be used before cooldowns
 actions.trinkets+=/use_item,slot=trinket1,use_off_gcd=1,if=trinket.1.cast_time>0&variable.trinket_1_buffs&!variable.trinket_1_manual&!buff.pillar_of_frost.up&(!talent.breath_of_sindragosa|!buff.breath_of_sindragosa.up&runic_power>variable.breath_rp_threshold&(cooldown.pillar_of_frost.ready&variable.sending_cds))&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|variable.trinket_1_duration>=fight_remains
 actions.trinkets+=/use_item,slot=trinket2,use_off_gcd=1,if=trinket.2.cast_time>0&variable.trinket_2_buffs&!variable.trinket_2_manual&!buff.pillar_of_frost.up&(!talent.breath_of_sindragosa|!buff.breath_of_sindragosa.up&runic_power>variable.breath_rp_threshold&(cooldown.pillar_of_frost.ready&variable.sending_cds))&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|variable.trinket_2_duration>=fight_remains
@@ -203,34 +203,34 @@ actions.variables+=/variable,name=true_breath_cooldown,op=setif,value=cooldown.b
 actions.variables+=/variable,name=oblit_pooling_time,op=setif,value=((cooldown.pillar_of_frost.remains+1)%gcd.max)%((rune+1)*((runic_power+5)))*100,value_else=3,condition=runic_power<35&rune<2&cooldown.pillar_of_frost.remains<10
 actions.variables+=/variable,name=breath_pooling_time,op=setif,value=((variable.true_breath_cooldown+1)%gcd.max)%((rune+1)*(runic_power+20))*100,value_else=2,condition=runic_power.deficit>10&variable.true_breath_cooldown<10
 actions.variables+=/variable,name=pooling_runes,value=rune<variable.oblit_rune_pooling&talent.obliteration&(!talent.breath_of_sindragosa|variable.true_breath_cooldown)&cooldown.pillar_of_frost.remains<variable.oblit_pooling_time
-actions.variables+=/variable,name=pooling_runic_power,value=talent.breath_of_sindragosa&(variable.true_breath_cooldown<variable.breath_pooling_time|fight_remains<30&!cooldown.breath_of_sindragosa.remains)|talent.obliteration&runic_power<35&cooldown.pillar_of_frost.remains<variable.oblit_pooling_time
+actions.variables+=/variable,name=pooling_runic_power,value=talent.breath_of_sindragosa&(variable.true_breath_cooldown<variable.breath_pooling_time|fight_remains<30&!cooldown.breath_of_sindragosa.remains)|talent.obliteration&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>30)&runic_power<35&cooldown.pillar_of_frost.remains<variable.oblit_pooling_time
 actions.variables+=/variable,name=ga_priority,value=(!talent.shattered_frost&talent.shattering_blade&active_enemies>=4)|(!talent.shattered_frost&!talent.shattering_blade&active_enemies>=2)
 actions.variables+=/variable,name=breath_dying,value=runic_power<variable.breath_rp_cost*2*gcd.max&rune.time_to_2>runic_power%variable.breath_rp_cost
 
 head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213743
-neck=locket_of_broken_memories,id=212448,bonus_id=6652/10354/10269/1540/10255/10394/10879,gem_id=213473/213482
+neck=trailspinner_pendant,id=178707,bonus_id=1611/8781,ilevel=639,gem_id=213473/213482
 shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540
 back=wings_of_shattered_sorrow,id=225574,bonus_id=7187/1520,ilevel=639
 chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540,enchant=crystalline_radiance_3
-wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11109/8960/10878,gem_id=213455,crafted_stats=32/36
+wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11109/8960/10878,gem_id=213491,crafted_stats=49/32
 hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
-waist=crystalfissure_girdle,id=221079,bonus_id=1611/6935,ilevel=639,gem_id=213458
+waist=nether_bountys_greatbelt,id=225589,bonus_id=7187/1520/6935,ilevel=639,gem_id=213458
 legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=stormbound_armor_kit_3
-feet=ballast_sinkers,id=159428,bonus_id=1514/3317/6646,ilevel=639
-finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213491/213491,enchant=radiant_critical_strike_3
-finger2=band_of_the_roving_scalawag,id=162541,bonus_id=1514/3317/6646/8781,ilevel=639,gem_id=213458/213458,enchant=radiant_critical_strike_3
+feet=boots_of_the_black_bulwark,id=225590,bonus_id=1540
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213458/213458,enchant=radiant_critical_strike_3
+finger2=band_of_the_roving_scalawag,id=162541,bonus_id=1514/3317/6646/8781,ilevel=639,gem_id=213482/213482,enchant=radiant_critical_strike_3
 trinket1=treacherous_transmitter,id=221023,bonus_id=7187/1520,ilevel=639
-trinket2=mark_of_khardros,id=133300,bonus_id=9466/1514,ilevel=639
-main_hand=ansureks_final_judgment,id=212401,ilevel=639,enchant=rune_of_the_stoneskin_gargoyle
-off_hand=charged_slicer,id=222451,bonus_id=11144/9627/9633/8902/10222/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=32/36
+trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
+main_hand=ansureks_final_judgment,id=212401,ilevel=639,enchant=rune_of_razorice
+off_hand=charged_slicer,id=222451,bonus_id=11144/9627/9633/8902/10222/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=49/32
 
 # Gear Summary
 # gear_ilvl=638.63
-# gear_strength=36181
+# gear_strength=32574
 # gear_stamina=237354
-# gear_crit_rating=21364
-# gear_haste_rating=8254
-# gear_mastery_rating=9608
+# gear_crit_rating=17541
+# gear_haste_rating=8834
+# gear_mastery_rating=14296
 # gear_versatility_rating=147
 # gear_armor=56297
 # set_bonus=thewarwithin_season_1_2pc=1
