@@ -3122,7 +3122,7 @@ struct frost_mage_spell_t : public mage_spell_t
         if ( consumes_winters_chill && td->debuffs.winters_chill->check() )
         {
           td->debuffs.winters_chill->decrement();
-          p()->trigger_splinter( p()->target );
+          p()->trigger_splinter( s->target );
 
           proc_winters_chill_consumed->occur();
           p()->procs.winters_chill_consumed->occur();
