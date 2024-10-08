@@ -667,7 +667,7 @@ public:
     player_talent_t charged_orb;
     player_talent_t arcane_tempo;
     player_talent_t concentrated_power;
-    player_talent_t consortiums_bauble;
+    player_talent_t aethervision;
     player_talent_t arcing_cleave;
 
     // Row 4
@@ -681,7 +681,7 @@ public:
     player_talent_t presence_of_mind;
     player_talent_t surging_urge;
     player_talent_t slipstream;
-    player_talent_t static_cloud;
+    player_talent_t consortiums_bauble;
     player_talent_t resonance;
 
     // Row 6
@@ -690,7 +690,7 @@ public:
     player_talent_t dematerialize;
 
     // Row 7
-    player_talent_t resonant_orbs;
+    player_talent_t static_cloud;
     player_talent_t illuminated_thoughts;
     player_talent_t evocation;
     player_talent_t improved_touch_of_the_magi;
@@ -898,6 +898,7 @@ public:
 
     // Row 4
     player_talent_t shifting_shards;
+    player_talent_t signature_spell;
     player_talent_t force_of_will;
     player_talent_t spellfrost_teachings;
 
@@ -3270,7 +3271,6 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
   {
     background = true;
     affected_by.savant = true;
-    base_multiplier *= 1.0 + p->talents.resonant_orbs->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->talents.splintering_orbs->effectN( 3 ).percent();
   }
 
@@ -7954,7 +7954,7 @@ void mage_t::init_spells()
   talents.charged_orb                = find_talent_spell( talent_tree::SPECIALIZATION, "Charged Orb"                );
   talents.arcane_tempo               = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Tempo"               );
   talents.concentrated_power         = find_talent_spell( talent_tree::SPECIALIZATION, "Concentrated Power"         );
-  talents.consortiums_bauble         = find_talent_spell( talent_tree::SPECIALIZATION, "Consortium's Bauble"        );
+  talents.aethervision               = find_talent_spell( talent_tree::SPECIALIZATION, "Aethervision"               );
   talents.arcing_cleave              = find_talent_spell( talent_tree::SPECIALIZATION, "Arcing Cleave"              );
   // Row 4
   talents.arcane_familiar            = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Familiar"            );
@@ -7966,14 +7966,14 @@ void mage_t::init_spells()
   talents.presence_of_mind           = find_talent_spell( talent_tree::SPECIALIZATION, "Presence of Mind"           );
   talents.surging_urge               = find_talent_spell( talent_tree::SPECIALIZATION, "Surging Urge"               );
   talents.slipstream                 = find_talent_spell( talent_tree::SPECIALIZATION, "Slipstream"                 );
-  talents.static_cloud               = find_talent_spell( talent_tree::SPECIALIZATION, "Static Cloud"               );
+  talents.consortiums_bauble         = find_talent_spell( talent_tree::SPECIALIZATION, "Consortium's Bauble"        );
   talents.resonance                  = find_talent_spell( talent_tree::SPECIALIZATION, "Resonance"                  );
   // Row 6
   talents.impetus                    = find_talent_spell( talent_tree::SPECIALIZATION, "Impetus"                    );
   talents.touch_of_the_magi          = find_talent_spell( talent_tree::SPECIALIZATION, "Touch of the Magi"          );
   talents.dematerialize              = find_talent_spell( talent_tree::SPECIALIZATION, "Dematerialize"              );
   // Row 7
-  talents.resonant_orbs              = find_talent_spell( talent_tree::SPECIALIZATION, "Resonant Orbs"              );
+  talents.static_cloud               = find_talent_spell( talent_tree::SPECIALIZATION, "Static Cloud"               );
   talents.illuminated_thoughts       = find_talent_spell( talent_tree::SPECIALIZATION, "Illuminated Thoughts"       );
   talents.evocation                  = find_talent_spell( talent_tree::SPECIALIZATION, "Evocation"                  );
   talents.improved_touch_of_the_magi = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Touch of the Magi" );
@@ -8149,6 +8149,7 @@ void mage_t::init_spells()
   talents.volatile_magic       = find_talent_spell( talent_tree::HERO, "Volatile Magic"       );
   // Row 4
   talents.shifting_shards      = find_talent_spell( talent_tree::HERO, "Shifting Shards"      );
+  talents.signature_spell      = find_talent_spell( talent_tree::HERO, "Signature Spell"      );
   talents.force_of_will        = find_talent_spell( talent_tree::HERO, "Force of Will"        );
   talents.spellfrost_teachings = find_talent_spell( talent_tree::HERO, "Spellfrost Teachings" );
   // Row 5
