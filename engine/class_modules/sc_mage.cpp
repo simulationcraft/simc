@@ -3336,9 +3336,10 @@ struct arcane_orb_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::impact( s );
 
-    // TODO: AO still seems to give 4 splinters, but needs to hit 2 targets now
-    if ( s->chain_target == 0 || ( p()->bugs && s->chain_target == 1 ) )
-      p()->trigger_splinter( s->target, as<int>( p()->talents.splintering_orbs->effectN( 4 ).base_value() ) );
+    int count = as<int>( p()->talents.splintering_orbs->effectN( 4 ).base_value() );
+    int max_count = as<int>( p()->talents.splintering_orbs->effectN( 1 ).base_value() );
+    if ( s->chain_target < max_count / count )
+      p()->trigger_splinter( s->target, count );
   }
 };
 
@@ -5194,7 +5195,7 @@ struct frozen_orb_t final : public frost_mage_spell_t
     if ( p()->talents.splintering_orbs.ok() )
     {
       p()->trigger_splinter( nullptr );
-      int count = as<int>( p()->talents.splintering_orbs->effectN( 1 ).base_value() ) - 1;
+      int count = as<int>( p()->talents.splintering_orbs->effectN( 6 ).base_value() ) - 1;
       make_repeating_event( *sim, pulse_time, [ this ] { p()->trigger_splinter( nullptr ); }, count );
     }
   }
