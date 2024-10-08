@@ -5282,6 +5282,10 @@ struct glacial_spike_t final : public frost_mage_spell_t
 
   void impact( action_state_t* s ) override
   {
+    bool consumed_wc = false;
+    if ( auto td = find_td( s->target ) )
+      consumed_wc = td->debuffs.winters_chill->check() != 0;
+
     frost_mage_spell_t::impact( s );
 
     if ( !result_is_hit( s->result ) )
@@ -5294,6 +5298,9 @@ struct glacial_spike_t final : public frost_mage_spell_t
 
     if ( s->chain_target != 0 )
       record_shatter_source( s, cleave_source );
+
+    if ( consumed_wc )
+      p()->trigger_splinter( s->target, as<int>( p()->talents.signature_spell->effectN( 2 ).base_value() ) );
   }
 };
 
@@ -6716,6 +6723,14 @@ struct magis_spark_t final : public arcane_mage_spell_t
   {
     aoe = -1;
     background = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    arcane_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) && s->chain_target == 0 )
+      p()->trigger_splinter( s->target, as<int>( p()->talents.signature_spell->effectN( 1 ).base_value() ) );
   }
 };
 
