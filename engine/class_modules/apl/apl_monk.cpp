@@ -231,8 +231,17 @@ void brewmaster( player_t *p )
   default_->add_action( "call_action_list,name=item_actions" );
   default_->add_action( "black_ox_brew,if=energy<40" );
   default_->add_action(
-      "celestial_brew,if=buff.aspect_of_harmony_accumulator.value>0.98*health.max|(target.time_to_die<20&target.time_"
-      "to_die>14&buff.aspect_of_harmony_accumulator.value>0.2*health.max)" );
+      "celestial_brew,if=(buff.aspect_of_harmony_accumulator.value>0.3*health.max&buff.weapons_of_order.up&!dot.aspect_"
+      "of_harmony_damage.ticking)" );
+  default_->add_action(
+      "celestial_brew,if=(buff.aspect_of_harmony_accumulator.value>0.3*health.max&!talent.weapons_of_order.enabled&!"
+      "dot.aspect_of_harmony_damage.ticking)" );
+  default_->add_action(
+      "celestial_brew,if=(target.time_to_die<20&target.time_to_die>14&buff.aspect_of_harmony_accumulator.value>0.2*"
+      "health.max)" );
+  default_->add_action(
+      "celestial_brew,if=(buff.aspect_of_harmony_accumulator.value>0.3*health.max&cooldown.weapons_of_order.remains>20&"
+      "!dot.aspect_of_harmony_damage.ticking)" );
   default_->add_action( "blackout_kick" );
   default_->add_action( "chi_burst" );
   default_->add_action( "weapons_of_order" );
@@ -363,9 +372,17 @@ void windwalker( player_t *p )
           "cooldown.invoke_xuen_the_white_tiger.remains>10|fight_remains<10" },
         // TWW Trinkets
         { "imperfect_ascendancy_serum", ",use_off_gcd=1,if=pet.xuen_the_white_tiger.active" },
-        { "mad_queens_mandate", ",target_if=min:time_to_die,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>30" },
+        { "mad_queens_mandate",
+          ",target_if=min:time_to_die,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|"
+          "trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>30" },
         { "treacherous_transmitter",
-          ",if=!fight_style.dungeonslice&(cooldown.invoke_xuen_the_white_tiger.remains<4|talent.xuens_bond&pet.xuen_the_white_tiger.active)|fight_style.dungeonslice&((fight_style.DungeonSlice&active_enemies=1&(time<10|talent.xuens_bond&talent.celestial_conduit)|!fight_style.dungeonslice|active_enemies>1)&cooldown.storm_earth_and_fire.ready&(target.time_to_die>14&!fight_style.dungeonroute|target.time_to_die>22)&(active_enemies>2|debuff.acclamation.up|!talent.ordered_elements&time<5)&(chi>2&talent.ordered_elements|chi>5|chi>3&energy<50|energy<50&active_enemies=1|prev.tiger_palm&!talent.ordered_elements&time<5)|fight_remains<30)|buff.invokers_delight.up" },
+          ",if=!fight_style.dungeonslice&(cooldown.invoke_xuen_the_white_tiger.remains<4|talent.xuens_bond&pet.xuen_"
+          "the_white_tiger.active)|fight_style.dungeonslice&((fight_style.DungeonSlice&active_enemies=1&(time<10|"
+          "talent.xuens_bond&talent.celestial_conduit)|!fight_style.dungeonslice|active_enemies>1)&cooldown.storm_"
+          "earth_and_fire.ready&(target.time_to_die>14&!fight_style.dungeonroute|target.time_to_die>22)&(active_"
+          "enemies>2|debuff.acclamation.up|!talent.ordered_elements&time<5)&(chi>2&talent.ordered_elements|chi>5|chi>3&"
+          "energy<50|energy<50&active_enemies=1|prev.tiger_palm&!talent.ordered_elements&time<5)|fight_remains<30)|"
+          "buff.invokers_delight.up" },
 
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=pet.xuen_the_white_tiger.active" },
@@ -498,9 +515,21 @@ void windwalker( player_t *p )
       "target.time_to_die>22)&!cooldown.invoke_xuen_the_white_tiger.remains&(chi<5&!talent.ordered_elements|chi<3)&("
       "combo_strike|!talent.hit_combo)" );
   cooldowns->add_action(
-      "invoke_xuen_the_white_tiger,target_if=max:target.time_to_die,if=(fight_style.DungeonSlice&active_enemies=1&(time<10|talent.xuens_bond&talent.celestial_conduit)|!fight_style.dungeonslice|active_enemies>1)&cooldown.storm_earth_and_fire.ready&(target.time_to_die>14&!fight_style.dungeonroute|target.time_to_die>22)&(active_enemies>2|debuff.acclamation.up|!talent.ordered_elements&time<5)&(chi>2&talent.ordered_elements|chi>5|chi>3&energy<50|energy<50&active_enemies=1|prev.tiger_palm&!talent.ordered_elements&time<5)|fight_remains<30" );
+      "invoke_xuen_the_white_tiger,target_if=max:target.time_to_die,if=(fight_style.DungeonSlice&active_enemies=1&("
+      "time<10|talent.xuens_bond&talent.celestial_conduit)|!fight_style.dungeonslice|active_enemies>1)&cooldown.storm_"
+      "earth_and_fire.ready&(target.time_to_die>14&!fight_style.dungeonroute|target.time_to_die>22)&(active_enemies>2|"
+      "debuff.acclamation.up|!talent.ordered_elements&time<5)&(chi>2&talent.ordered_elements|chi>5|chi>3&energy<50|"
+      "energy<50&active_enemies=1|prev.tiger_palm&!talent.ordered_elements&time<5)|fight_remains<30" );
   cooldowns->add_action(
-      "storm_earth_and_fire,target_if=max:target.time_to_die,if=(target.time_to_die>14&!fight_style.dungeonroute|target.time_to_die>22)&(active_enemies>2|cooldown.rising_sun_kick.remains|!talent.ordered_elements)&((buff.invokers_delight.remains>10&!buff.bloodlust.up|buff.bloodlust.up&cooldown.storm_earth_and_fire.full_recharge_time<1)|cooldown.storm_earth_and_fire.full_recharge_time<cooldown.invoke_xuen_the_white_tiger.remains&!buff.bloodlust.up&(active_enemies>1|cooldown.strike_of_the_windlord.remains<2&(talent.flurry_strikes|buff.heart_of_the_jade_serpent.up))&(chi>3|chi>1&talent.ordered_elements)|cooldown.storm_earth_and_fire.full_recharge_time<10&(chi>3|chi>1&talent.ordered_elements))|fight_remains<30|prev.invoke_xuen_the_white_tiger|buff.invokers_delight.remains>10&fight_style.dungeonslice&(cooldown.rising_sun_kick.remains|!talent.ordered_elements|active_enemies>2)" );
+      "storm_earth_and_fire,target_if=max:target.time_to_die,if=(target.time_to_die>14&!fight_style.dungeonroute|"
+      "target.time_to_die>22)&(active_enemies>2|cooldown.rising_sun_kick.remains|!talent.ordered_elements)&((buff."
+      "invokers_delight.remains>10&!buff.bloodlust.up|buff.bloodlust.up&cooldown.storm_earth_and_fire.full_recharge_"
+      "time<1)|cooldown.storm_earth_and_fire.full_recharge_time<cooldown.invoke_xuen_the_white_tiger.remains&!buff."
+      "bloodlust.up&(active_enemies>1|cooldown.strike_of_the_windlord.remains<2&(talent.flurry_strikes|buff.heart_of_"
+      "the_jade_serpent.up))&(chi>3|chi>1&talent.ordered_elements)|cooldown.storm_earth_and_fire.full_recharge_time<10&"
+      "(chi>3|chi>1&talent.ordered_elements))|fight_remains<30|prev.invoke_xuen_the_white_tiger|buff.invokers_delight."
+      "remains>10&fight_style.dungeonslice&(cooldown.rising_sun_kick.remains|!talent.ordered_elements|active_enemies>"
+      "2)" );
   cooldowns->add_action( "touch_of_karma" );
 
   // Racials
@@ -684,8 +713,7 @@ void windwalker( player_t *p )
   default_cleave->add_action(
       "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&energy.time_to_max<=gcd.max*3&talent."
       "flurry_strikes&active_enemies<5&buff.wisdom_of_the_wall_flurry.up&active_enemies<4" );
-  default_cleave->add_action(
-      "fists_of_fury,target_if=max:target.time_to_die" );
+  default_cleave->add_action( "fists_of_fury,target_if=max:target.time_to_die" );
   default_cleave->add_action(
       "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&energy.time_to_max<=gcd.max*3&talent."
       "flurry_strikes&active_enemies<5&buff.wisdom_of_the_wall_flurry.up" );
@@ -754,7 +782,9 @@ void windwalker( player_t *p )
       "ordered_elements.up&chi<5&combo_strike|(!buff.heart_of_the_jade_serpent_cdr.up|!buff.heart_of_the_jade_serpent_"
       "cdr_celestial.up)&combo_strike&chi.deficit>=2&!buff.ordered_elements.up" );
   default_st->add_action( "touch_of_death" );
-  default_st->add_action( "rising_sun_kick,target_if=max:debuff.acclamation.stack,if=buff.invokers_delight.up&!buff.storm_earth_and_fire.up&talent.ordered_elements" );
+  default_st->add_action(
+      "rising_sun_kick,target_if=max:debuff.acclamation.stack,if=buff.invokers_delight.up&!buff.storm_earth_and_fire."
+      "up&talent.ordered_elements" );
   default_st->add_action(
       "celestial_conduit,if=buff.storm_earth_and_fire.up&(!talent.ordered_elements|buff.ordered_elements.up)&cooldown."
       "strike_of_the_windlord.remains&(talent.xuens_bond|!talent.xuens_bond&buff.invokers_delight.up)|fight_remains<"
@@ -798,8 +828,7 @@ void windwalker( player_t *p )
   default_st->add_action(
       "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack>7&talent."
       "memory_of_the_monastery&!buff.memory_of_the_monastery.up&cooldown.fists_of_fury.remains" );
-  default_st->add_action(
-      "fists_of_fury" );
+  default_st->add_action( "fists_of_fury" );
   default_st->add_action(
       "spinning_crane_kick,if=(buff.dance_of_chiji.stack=2|buff.dance_of_chiji.remains<2&buff.dance_of_chiji.up)&combo_"
       "strike&!buff.ordered_elements.up" );
