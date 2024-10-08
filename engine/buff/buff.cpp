@@ -3771,11 +3771,11 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
       sim->print_debug( "{} damage debuff direct multiplier initialized to {}", *this, direct_mod.multiplier );
       sim->print_debug( "{} damage debuff periodic multiplier initialized to {}", *this, periodic_mod.multiplier );
     }
-    else if ( e.subtype() == A_ADD_PCT_LABEL_MODIFIER && multiplier != 0.0 )
+    else if ( e.subtype() == A_ADD_PCT_LABEL_MODIFIER )
     {
       if ( e.property_type() == P_GENERIC )
       {
-        if ( direct_mod.multiplier == 1.0 && direct_mod.effect_idx == 0 )
+        if ( multiplier != 0.0 && direct_mod.multiplier == 1.0 && direct_mod.effect_idx == 0 )
           set_direct_mod( spell, idx, multiplier );
 
         assert( direct_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier ) 
@@ -3785,7 +3785,7 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
       }
       else if ( e.property_type() == P_TICK_DAMAGE )
       {
-        if ( periodic_mod.multiplier == 1.0 && periodic_mod.effect_idx == 0 )
+        if ( multiplier != 0.0 && periodic_mod.multiplier == 1.0 && periodic_mod.effect_idx == 0 )
           set_periodic_mod( spell, idx, multiplier );
 
         assert( periodic_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier )
