@@ -495,6 +495,7 @@ public:
 
     proc_t* brain_freeze;
     proc_t* brain_freeze_excess_fire;
+    proc_t* brain_freeze_splinterstorm;
     proc_t* brain_freeze_time_anomaly;
     proc_t* brain_freeze_water_jet;
     proc_t* fingers_of_frost;
@@ -7023,30 +7024,6 @@ struct splinter_t final : public mage_spell_t
     return am;
   }
 
-  void execute() override
-  {
-    mage_spell_t::execute();
-
-    if ( splinterstorm && p()->specialization() == MAGE_FROST )
-    {
-      // Update remaining_winters_chill exactly when the remaining
-      // travel time matches that of Flurry.
-      double distance = player->get_player_distance( *target );
-      if ( execute_state && execute_state->target )
-        distance += execute_state->target->height;
-      timespan_t delay = travel_time();
-      delay -= timespan_t::from_seconds( std::max( distance, 0.0 ) / 50.0 );
-      make_event( *sim, std::max( delay, 0_ms ), [ this, t = target ]
-      {
-        int wc = 2;
-        // TODO: Only consider spells that impact after the splinter does
-        for ( auto a : p()->winters_chill_consumers )
-          wc -= as<int>( a->has_travel_events_for( t ) );
-        p()->expression_support.remaining_winters_chill = std::max( 0, wc );
-      } );
-    }
-  }
-
   void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
@@ -7071,9 +7048,6 @@ struct splinter_t final : public mage_spell_t
       if ( p()->specialization() == MAGE_FROST )
         p()->buffs.spellfrost_teachings->trigger();
     }
-
-    if ( splinterstorm && p()->specialization() == MAGE_FROST )
-      trigger_winters_chill( s );
   }
 
   timespan_t travel_time() const override
@@ -7432,6 +7406,13 @@ struct splinterstorm_event_t final : public mage_event_t
       assert( splinters == splinters_state );
 
       make_repeating_event( sim(), 100_ms, [ a = mage->action.splinterstorm, t ] { a->execute_on_target( t ); }, splinters );
+
+      if ( mage->specialization() == MAGE_FROST )
+        mage->trigger_brain_freeze( mage->talents.splinterstorm->effectN( 5 ).percent(), mage->procs.brain_freeze_splinterstorm, 0_ms );
+      else
+        // Doesn't seem to be affected by Illuminated Thoughts.
+        // TODO: get more data and double check
+        mage->trigger_clearcasting( mage->talents.splinterstorm->effectN( 4 ).percent(), 0_ms );
     }
 
     mage->events.splinterstorm = make_event<splinterstorm_event_t>(
@@ -8540,6 +8521,7 @@ void mage_t::init_procs()
     case MAGE_FROST:
       procs.brain_freeze                    = get_proc( "Brain Freeze" );
       procs.brain_freeze_excess_fire        = get_proc( "Brain Freeze from Excess Fire" );
+      procs.brain_freeze_splinterstorm      = get_proc( "Brain Freeze from Splinterstorm" );
       procs.brain_freeze_time_anomaly       = get_proc( "Brain Freeze from Time Anomaly" );
       procs.brain_freeze_water_jet          = get_proc( "Brain Freeze from Water Jet" );
       procs.fingers_of_frost                = get_proc( "Fingers of Frost" );
