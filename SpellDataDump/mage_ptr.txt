@@ -16674,7 +16674,8 @@ Attributes       : Not Shapeshifted (16), Allow While Mounted (24), Allow While 
                  :
 Effects          :
 #1 (id=1182508)  : School Damage (2): frostfire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.10000 | PvP Coefficient: 1.75000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.10000 | PvP Coefficient: 2.00000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.75 -> 2)
 #2 (id=1182509)  : Apply Aura (6) | Periodic Damage (3): frostfire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #3 (id=1182510)  : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Suppress Points Stacking (6)
