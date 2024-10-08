@@ -7459,16 +7459,13 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs()
 {
   // Baseline
-  // TODO: For some reason, the debuff has a base value of 0.5 and then the talent modifies the
-  // effect by adding 0.5/1.0 on top (depending on the rank). The value is then rounded, resulting
-  // in 1% damage increase with 1 rank and 2% damage increase with 2 ranks.
+  // TODO: the first talent point might not actually do anything, double check
   debuffs.arcane_debilitation    = make_buff( *this, "arcane_debilitation", mage->find_spell( 453599 ) )
-                                     ->set_default_value( ( mage->bugs ? 2.0 : 1.0 ) * mage->talents.arcane_debilitation->effectN( 2 ).percent() )
+                                     ->set_default_value( mage->talents.arcane_debilitation->effectN( 2 ).percent() )
                                      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                      ->set_chance( mage->talents.arcane_debilitation.ok() );
-  // TODO: The 0.5 from the talent is rounded to 1, increasing Ignite damage by 50% at max stacks.
   debuffs.controlled_destruction = make_buff( *this, "controlled_destruction", mage->find_spell( 453268 ) )
-                                     ->set_default_value( util::round( mage->talents.controlled_destruction->effectN( 1 ).percent(), mage->bugs ? 2 : 3 ) )
+                                     ->set_default_value( 0.1 * mage->talents.controlled_destruction->effectN( 1 ).percent() )
                                      ->set_chance( mage->talents.controlled_destruction.ok() );
   debuffs.controlled_instincts   = make_buff( *this, "controlled_instincts", mage->find_spell( mage->specialization() == MAGE_FROST ? 463192 : 454214 ) )
                                      ->set_chance( mage->talents.controlled_instincts.ok() );
