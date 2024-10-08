@@ -3285,6 +3285,15 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
     if ( result_is_hit( s->result ) && p()->talents.controlled_instincts.ok() )
       get_td( s->target )->debuffs.controlled_instincts->trigger();
   }
+
+  double action_multiplier() const override
+  {
+    double am = arcane_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.spellfrost_teachings->check_value();
+
+    return am;
+  }
 };
 
 struct arcane_orb_t final : public arcane_mage_spell_t
