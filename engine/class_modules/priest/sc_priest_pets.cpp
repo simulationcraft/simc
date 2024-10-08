@@ -230,6 +230,16 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
 
     if ( data().ok() )
     {
+      apply_affecting_aura( p.o().specs.shadow_priest );
+      apply_affecting_aura( p.o().specs.discipline_priest );
+
+      if ( p.o().specialization() == PRIEST_SHADOW )
+      {
+        // Unknown Multiplier applying to all (?) pet damage (Seems to be all shadow, maybe trinkets?)
+        base_td_multiplier *= 1.296;
+        base_dd_multiplier *= 1.296;
+      }
+
       apply_buff_effects();
       apply_debuffs_effects();
     }
@@ -518,8 +528,6 @@ struct void_flay_t final : public priest_pet_spell_t
     damage_mul = data().effectN( 2 ).percent();
 
     // TODO: check if this is working
-    apply_affecting_aura( p.o().specs.shadow_priest );
-    apply_affecting_aura( p.o().specs.discipline_priest );
 
 
 
@@ -806,8 +814,6 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
     spell_power_mod.direct *= ( 1 + p.o().talents.shared.inescapable_torment->effectN( 3 ).percent() );
 
     // Tuning modifier effect
-    apply_affecting_aura( p.o().specs.shadow_priest );
-    apply_affecting_aura( p.o().specs.discipline_priest );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
