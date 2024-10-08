@@ -4333,66 +4333,6 @@ struct priest_module_t final : public module_t
   }
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Priest", "2024-10-04", "Mind Blast damage increased by 10%", 3283,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "sp_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.861696 )
-        .verification_value( 0.78336 );
-    hotfix::register_effect( "Priest", "2024-10-04", "Shadow Word: Death damage increased by 10%", 165318,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "sp_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.935 )
-        .verification_value( 0.85000 );
-    hotfix::register_effect( "Priest", "2024-10-04", "Void Bolt damage increased by 10%", 303383,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "sp_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 3.509748 )
-        .verification_value( 3.19068 );
-    hotfix::register_effect( "Priest", "2024-10-04", "Shadowy Apparition damage increased by 10%", 1081317,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "sp_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.2959616 )
-        .verification_value( 0.269056 );
-    hotfix::register_effect( "Priest", "2024-10-04", "Entropic Rift damage increased by 10%", 1145412,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "sp_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 0.66 )
-        .verification_value( 0.60000 );
-    hotfix::register_effect( "Priest", "2024-10-04", "Void Blast damage increased by 20%", 1151263,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "sp_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 2.016 )
-        .verification_value( 1.68000 );
-    hotfix::register_effect( "Priest", "2024-10-04", "Collapsing Void damage increased by 10%", 1146867,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "sp_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 4.84 )
-        .verification_value( 4.40000 );
-    hotfix::register_effect( "Priest", "2024-10-04", "Void Flay damage increased by 10%", 1152036,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "sp_coefficient" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 1.1 )
-        .verification_value( 1.00000 );
-    hotfix::register_effect( "Priest", "2024-10-04", "Inner Quietus Direct Damage changed to 25%", 1146665,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 25 )
-        .verification_value( 20 );
-    hotfix::register_effect( "Priest", "2024-10-04", "Inner Quietus Periodic Damage changed to 25%", 1158795,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 25 )
-        .verification_value( 20 );
   }
   void combat_begin( sim_t* ) const override
   {
