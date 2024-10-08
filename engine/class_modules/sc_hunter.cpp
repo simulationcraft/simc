@@ -3364,7 +3364,8 @@ int hunter_t::ticking_dots( hunter_td_t* td )
 
   auto pet_dots = pets.main->get_target_data( td->target )->dots;
   dots += pet_dots.bloodshed->is_ticking();
-  dots += pet_dots.laceration->is_ticking();
+  //2024-10-08 - Laceration isn't counting for Basilisk Collar since some earlier point in time
+  //dots += pet_dots.laceration->is_ticking();
   dots += pet_dots.ravenous_leap->is_ticking();
   dots += pet_dots.bloodseeker->is_ticking();
   dots += pet_dots.spearhead->is_ticking();
