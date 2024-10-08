@@ -4479,7 +4479,7 @@ struct fireball_t final : public fire_mage_spell_t
     if ( frostfire )
     {
       base_execute_time *= 1.0 + p->talents.thermal_conditioning->effectN( 1 ).percent();
-      base_dd_multiplier *= 1.0 + p->spec.fire_mage->effectN( 6 ).percent();
+      base_dd_multiplier *= 1.0 + p->spec.fire_mage->effectN( 5 ).percent();
       enable_calculate_on_impact( 468655 );
     }
   }
@@ -5739,11 +5739,6 @@ struct living_bomb_explosion_t final : public fire_mage_spell_t
     full_amount_targets = 1;
     background = triggers.ignite = true;
     base_dd_multiplier *= 1.0 + p->talents.explosive_ingenuity->effectN( 2 ).percent();
-    if ( excess )
-      base_dd_multiplier *= 1.0 + p->spec.frost_mage->effectN( 11 ).percent();
-    // TODO: This is scripted to only apply to Frost, keep an eye on it
-    if ( p->specialization() == MAGE_FROST )
-      base_dd_multiplier *= 1.0 + p->talents.excess_fire->effectN( 3 ).percent();
   }
 
   void init() override
