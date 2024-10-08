@@ -1,17 +1,4 @@
 // ==========================================================================
-// Dedmonwakeen's DPS-DPM Simulator.
-// Send questions to natehieter@gmail.com
-// ==========================================================================
-
-#include "simulationcraft.hpp"
-#include "util/util.hpp"
-#include "class_modules/apl/mage.hpp"
-#include "report/charts.hpp"
-#include "report/highchart.hpp"
-
-namespace {
-
-// ==========================================================================
 // Mage
 // ==========================================================================
 
@@ -9753,68 +9740,3 @@ public:
 private:
   mage_t& p;
 };
-
-namespace live_mage {
-#include "class_modules/sc_mage_live.inc"
-};
-
-// MAGE MODULE INTERFACE ====================================================
-
-struct mage_module_t final : public module_t
-{
-public:
-  mage_module_t() :
-    module_t( MAGE )
-  { }
-
-  player_t* create_player( sim_t* sim, std::string_view name, race_e r = RACE_NONE ) const override
-  {
-    // TODO: Remove PTR check and the live mage file
-    if ( sim->dbc->ptr )
-    {
-      auto p = new mage_t( sim, name, r );
-      p->report_extension = std::make_unique<mage_report_t>( *p );
-      return p;
-    }
-    else
-    {
-      auto p = new live_mage::mage_t( sim, name, r );
-      p->report_extension = std::make_unique<live_mage::mage_report_t>( *p );
-      return p;
-    }
-  }
-
-  void register_hotfixes() const override
-  {
-    hotfix::register_spell( "Mage", "2017-03-20", "Manually set Frozen Orb's travel speed.", 84714 )
-      .field( "prj_speed" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 20.0 )
-      .verification_value( 0.0 );
-
-    hotfix::register_spell( "Mage", "2017-06-21", "Ice Lance is slower than spell data suggests.", 30455 )
-      .field( "prj_speed" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 47.0 )
-      .verification_value( 50.0 );
-
-    hotfix::register_spell( "Mage", "2018-12-28", "Manually set Arcane Orb's travel speed.", 153626 )
-      .field( "prj_speed" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 20.0 )
-      .verification_value( 0.0 );
-  }
-
-  bool valid() const override { return true; }
-  void init( player_t* ) const override {}
-  void combat_begin( sim_t* ) const override {}
-  void combat_end( sim_t* ) const override {}
-};
-
-}  // UNNAMED NAMESPACE
-
-const module_t* module_t::mage()
-{
-  static mage_module_t m;
-  return &m;
-}
