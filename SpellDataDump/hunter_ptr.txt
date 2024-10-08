@@ -1,5 +1,6 @@
 SimulationCraft 1100-02 for World of Warcraft 11.0.5.56865 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -13,7 +14,7 @@ Labels           : 16: Class Spells
                  : 1194
 Affecting spells : Bestial Wrath (19574 effects: #1, #4), Survival Hunter (137017 effect#6), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effect#1), Bullseye (204090 effect#1), Thrill of the Hunt (257946 effect#1), Heaven's Nemesis (397118 effect#1), Cornered Prey (452101 effect#1)
 Family Flags     : 0, 121
-Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Auto Repeat (69), Normal Ranged Attack (111), No Cast Log (128), Auto Ranged Combat (152), AI Primary Ranged Attack (206), Allow Class Ability Procs (416)
+Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Auto Repeat (69), Normal Ranged Attack (111), No Cast Log (128), Auto Ranged Combat (152), AI Primary Ranged Attack (206), Do Not Log on Learn (355), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=46)       : Weapon Damage% (31)

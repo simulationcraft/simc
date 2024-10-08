@@ -340,13 +340,14 @@ Tooltip          : $?$w1>0[$w1% of damage taken is redirected to $@auracaster.][
 Movement speed increased by $w5%.][]
 
 Name             : Turn Evil (id=10326) [Spell Family (10)] 
+Hotfixed         : Max Targets (1 -> 6)
 Talent Entry     : Generic [tree=class, row=2, col=5, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
 Resource         : 2.1% Base Mana (0) (id=400)
 Range            : 20 yards
-Max Targets      : 1
+Max Targets      : 6
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 40 seconds
@@ -357,7 +358,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Mechanic         : Turn
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting spells : Wrench Evil (339292 effects: #1, #2), Wrench Evil (460720 effect#1), Stand Against Evil (469317 effect#1)
+Affecting spells : Wrench Evil (339292 effects: #1, #2), Wrench Evil (460720 effect#1), Stand Against Evil (469317 effect#2)
 Family Flags     : 96
 Attributes       : Not Shapeshifted (16), Heartbeat Resist (30), Can Proc From Procs (122), Limit N (165), Taps immediately (215), Doesn't Reset Swing Timer if Instant (217), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Damage (Script) (27)
@@ -2718,9 +2719,10 @@ Effects          :
 #13 (id=1032420)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
 #14 (id=1032421)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 66 | Scaled Value: 66 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 66 | Scaled Value: 66 | PvP Coefficient: 1.24000 | Target: Self (1)
                    Affected Spells: Word of Glory (85673), Eternal Flame (156322), Afterimage (391309), Eternal Flame (461432)
                    Family Flags: 78, 89
+Hotfixed         : PvP Coefficient (1 -> 1.24)
 #15 (id=1039315)  : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Divine Toll (304971), Divine Toll (375576), Divine Resonance (386731), Divine Resonance (387896)
@@ -19691,10 +19693,14 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416)
                  :
 Effects          :
-#1 (id=1183592)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
+#1 (id=1183592)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Sub Type (107 -> 4), Misc Value (17 -> 0), Affects Spells
+#2 (id=1191494)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Turn Evil (10326)
                    Family Flags: 96
+Hotfixed         : NEW EFFECT
 Description      : Turn Evil now affects $s1 additional enemies.
 
 Name             : Righteous Protection (id=469321) [Spell Family (10), Passive, Hidden] 
@@ -19791,8 +19797,9 @@ Effects          :
 Description      : After $?c1[Cleanse][Cleanse Toxins] successfully removes an effect from an ally, they are healed for $469413s1.
 
 Name             : A Just Reward (id=469413) [Spell Family (10)] 
+Hotfixed         : School (1 -> 2)
 Class            : Paladin
-School           : Physical
+School           : Holy
 Spell Type       : None
 Range            : 100 yards
 Labels           : 16: Class Spells
