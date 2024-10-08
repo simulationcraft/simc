@@ -4483,9 +4483,21 @@ struct abomination_pet_t : public death_knight_pet_t
     {
     }
 
+    void execute() override
+    {
+      // Does not check for Frost Fever or Blood Plauge if Superstrain is talented, only reapplies if VP isnt ticking.
+      for ( auto& t : dk()->sim->target_non_sleeping_list )
+      {
+        death_knight_td_t* td = dk()->get_target_data( t );
+        if ( !td->dot.virulent_plague->is_ticking() )
+          pet()->disease_cloud->execute_on_target( t );
+      }
+      auto_attack_melee_t::execute();
+    }
+
     void impact( action_state_t* state ) override
     {
-      pet_melee_attack_t::impact( state );
+      auto_attack_melee_t::impact( state );
       if ( state->result_amount > 0 )
       {
         pet()->dk()->trigger_festering_wound( state, 1, pet()->dk()->procs.fw_abomination );
@@ -4510,26 +4522,10 @@ struct abomination_pet_t : public death_knight_pet_t
     return RESOURCE_NONE;
   }
 
-  void arise() override
-  {
-    death_knight_pet_t::arise();
-    for ( auto& t : sim->target_non_sleeping_list )
-    {
-      disease_cloud->execute_on_target( t );
-    }
-  }
-
   void create_actions() override
   {
     death_knight_pet_t::create_actions();
     disease_cloud = get_action<disease_cloud_t>( "disease_cloud", this );
-
-    sim->target_non_sleeping_list.register_callback( [ & ]( player_t* t ) {
-      if ( !t->is_enemy() || dk()->pets.abomination.active_pet() == nullptr )
-        return;
-
-      disease_cloud->execute_on_target( t );
-    } );
   }
 
   attack_t* create_main_hand_auto_attack() override
