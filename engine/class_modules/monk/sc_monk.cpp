@@ -4253,6 +4253,7 @@ struct celestial_conduit_t : public monk_spell_t
       background       = true;
       aoe              = -1;
       split_aoe_damage = true;
+      ww_mastery       = true;
     }
 
     double composite_aoe_multiplier( const action_state_t *state ) const override
