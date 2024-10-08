@@ -140,7 +140,8 @@ Attributes       : Not Shapeshifted (16), Do Not Chain To Crowd-Controlled Targe
                  :
 Effects          :
 #1 (id=91)       : School Damage (2): fire | Attributes: Chain from Initial Target (7), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.54800 | PvP Coefficient: 2.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.54800 | PvP Coefficient: 2.50000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (2 -> 2.5)
 Description      : Throws a fiery ball that causes $s1 Fire damage.$?a157642[
 
 Each time your Fireball fails to critically strike a target, it gains a stacking $157644s1% increased critical strike chance. Effect ends when Fireball critically strikes.][]
@@ -333,7 +334,8 @@ Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=882)      : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.30000 | PvP Coefficient: 3.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.30000 | PvP Coefficient: 4.00000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (3 -> 4)
 #2 (id=1154626)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Scorches an enemy for $s1 Fire damage.
@@ -411,7 +413,8 @@ Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc 
                  :
 Effects          :
 #1 (id=2716)     : School Damage (2): arcane | Attributes: Chain from Initial Target (7), Add Target (Dest) Combat Reach to AOE (11), Enforce Line of Sight To Chain Targets (16)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.52600 | PvP Coefficient: 1.20000 | Target: Channel Target (77)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.52600 | PvP Coefficient: 1.35000 | Target: Channel Target (77)
+Hotfixed         : PvP Coefficient (1.2 -> 1.35)
 Description      : $@spelldesc5143
 
 Name             : Pyroblast (id=11366) [Spell Family (3)] 
@@ -435,7 +438,8 @@ Attributes       : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Pe
                  :
 Effects          :
 #1 (id=4785)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.98450 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.98450 | PvP Coefficient: 1.20000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.2)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].
 
 Name             : Ice Barrier (id=11426) [Spell Family (3)] 
@@ -3019,7 +3023,8 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redire
                  :
 Effects          :
 #1 (id=212926)   : School Damage (2): arcane | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.91800 | PvP Coefficient: 1.30000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.91800 | PvP Coefficient: 1.40000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.3 -> 1.4)
 #2 (id=212927)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Resource: none | Target: Self (1)
 #3 (id=818465)   : Dummy (3)
@@ -5193,35 +5198,44 @@ Attributes       : Passive (6), Not In Spellbook (143)
                  :
 Effects          :
 #1 (id=355547)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Blizzard (12486), Slow (31589), Ray of Frost (205021), Chilled (205708), Cone of Cold (212792), Flurry (228354), Frozen Orb (289308), Mass Slow (391104)
                    Family Flags: 20, 72
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=740367)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Ray of Frost (205021)
                    Family Flags: 56
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=1041319)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 23 | Target: Self (1)
                    Family Flags: 69
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #4 (id=1041320)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 32 | Target: Self (1)
                    Family Flags: 69
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #5 (id=1041484)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 2427 (Label)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 12 | Misc Value 2: 2427 (Label)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #6 (id=1045601)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2449 (Label) | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.50000 | Misc Value: 3 | Misc Value 2: 2449 (Label) | Target: Self (1)
                    Affected Spells (Label): Freezing Cold (394255)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #7 (id=1104987)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Blast Wave (157981), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Blast Wave (389631)
                    Family Flags: 38
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #8 (id=1104998)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 2937 (Label)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 3 | Misc Value 2: 2937 (Label)
                    Affected Spells (Label): Ring of Frost (321329)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #9 (id=1118534)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 23
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.50000 | Misc Value: 23
                    Affected Spells: Frostfire Bolt (431044), Frostfire Bolt (468655)
                    Family Flags: 108
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : All of your snare effects reduce the target's movement speed by an additional $s1%.
 
 Name             : Glacial Insulation (id=235297) [Spell Family (3), Passive] 
@@ -12695,7 +12709,8 @@ Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate P
                  :
 Effects          :
 #1 (id=1118518)  : Apply Aura (6) | Modify Mastery% (318)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (1 -> 2)
 Description      : $@spelldesc431038
 Tooltip          : Mastery increased by $w1%.
 
@@ -12907,7 +12922,8 @@ Attributes       : Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1118762)  : School Damage (2): frostfire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.45000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.3 -> 0.45)
 Description      : $@spelldesc431166
 
 Name             : Frostfire Empowerment (id=431176) [Spell Family (3), Passive, Hidden] 
@@ -12953,7 +12969,8 @@ Effects          :
                    Affected Spells: Frostfire Bolt (431044), Frostfire Bolt (468655)
                    Family Flags: 108
 #3 (id=1169876)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.60000 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 60)
 Description      : $@spelldesc431176
 Tooltip          : Your next Frostfire Bolt always critically strikes, deals $s3% additional damage, explodes for $431176s2% of its damage to nearby enemies, and is instant cast.
 
@@ -16583,9 +16600,11 @@ Attributes       : Not Shapeshifted (16), Allow Cast While Dead (23), Allow Whil
                  :
 Effects          :
 #1 (id=1182508)  : School Damage (2): frostfire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.10000 | PvP Coefficient: 2.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.26500 | PvP Coefficient: 2.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (1.1 -> 1.265)
 #2 (id=1182509)  : Apply Aura (6) | Periodic Damage (3): frostfire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05750 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.05 -> 0.0575)
 #3 (id=1182510)  : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : Launches a bolt of frostfire at the enemy, causing $s1 Frostfire damage, slowing movement speed by $s3%, and causing an additional $o2 Frostfire damage over $d.

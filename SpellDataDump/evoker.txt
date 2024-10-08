@@ -751,6 +751,10 @@ Effects          :
 #22 (id=1142881)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 2973 (Label) | Target: Self (1)
                    Affected Spells (Label): Attuned to the Dream (376930)
+#23 (id=1191263)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: -225 | Scaled Value: -225 | PvP Coefficient: 1.00000 | Misc Value: 23 | Misc Value 2: 4185 (Label) | Target: Self (1)
+                   Affected Spells (Label): Consume Flame (444088)
+Hotfixed         : NEW EFFECT
 
 Name             : Initial Evoker (id=356816) [Spell Family (224), Passive, Hidden] 
 Class            : Unknown Evoker (1465)
@@ -1492,7 +1496,8 @@ Effects          :
 #1 (id=898191)   : Apply Aura (6) | Resistance (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friendly (21)
 #2 (id=1049581)  : Apply Aura (6) | Modify Base Resistance (142) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friendly (21)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friendly (21)
+Hotfixed         : Base Value (30 -> 20)
 Description      : Protect an ally with $n explosive dragonscales, increasing their Armor by $<perc>% of your own.
 
 Melee attacks against the target cause 1 scale to explode, dealing $<dmg> Volcanic damage to enemies near them. This damage can only occur every few sec.
@@ -12351,7 +12356,8 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Abilit
                  :
 Effects          :
 #1 (id=1139174)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.81000 | PvP Coefficient: 0.50000 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.81000 | PvP Coefficient: 0.40000 | Target: Any Target (25)
+Hotfixed         : PvP Coefficient (0.5 -> 0.4)
 Description      : $@spelldesc443328
 
 Name             : Engulf (desc=Red) (id=443330) [Spell Family (224)] 
@@ -12371,7 +12377,8 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Abilit
                  :
 Effects          :
 #1 (id=1139175)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.25000 | PvP Coefficient: 1.00000 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.10000 | PvP Coefficient: 1.00000 | Target: Any Target (25)
+Hotfixed         : SP Coefficient (4.25 -> 5.1)
 Description      : $@spelldesc443328
 
 Name             : Bombardments (id=443788) [Spell Family (224)] 
@@ -12513,6 +12520,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
                  : 3022
+                 : 4185: Preservation Evoker (356810 effect#23)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Not In Spellbook (143), Allow Entering Arena (149), Disable Aura While Dead (226), Allow Class Ability Procs (416)
                  :
 Effects          :
@@ -12520,8 +12528,9 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1141764)  : None (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
-#3 (id=1141810)  : None (0)
-                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000
+#3 (id=1141810)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 375 | Scaled Value: 375 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Type (0 -> 6), Sub Type (0 -> 4), Base Value (300 -> 375), Target 1 (0 -> 1)
 Description      : Engulf consumes $s1 sec of $?c1[Fire Breath][Dream Breath] from the target, detonating it and $?c1[damaging][healing] all nearby targets equal to $s3% of the amount consumed, reduced beyond $s2 targets.
 
 Name             : Consume Flame (desc=Red) (id=444089) [Spell Family (224)] 
