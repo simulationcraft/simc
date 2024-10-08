@@ -509,8 +509,18 @@ struct void_flay_t final : public priest_pet_spell_t
 
     damage_mul = data().effectN( 2 ).percent();
 
-    apply_affecting_aura( p.o().specs.shadow_priest );
+    // TODO: check if this is working
     apply_affecting_aura( p.o().specs.discipline_priest );
+
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1288
+    if ( p.o().bugs )
+    {
+      spell_power_mod.direct = 0.9;
+    }
+    else
+    {
+      apply_affecting_aura( p.o().specs.shadow_priest );
+    }
   }
 
   void init() override
@@ -524,8 +534,11 @@ struct void_flay_t final : public priest_pet_spell_t
   {
     auto m = player->composite_player_target_multiplier( target, get_school() );
 
-    m *= 1.0 + damage_mul * target->resources.pct( RESOURCE_HEALTH );
+    double health_percent = ( target->health_percentage() / 100 );
 
+    m *= 1.0 + damage_mul * health_percent;
+
+    sim->print_debug( "void_flay damage_mul: {} health_percent: {}, m: {}", damage_mul, health_percent, m );
     return m;
   }
 
