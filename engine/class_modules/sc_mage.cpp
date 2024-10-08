@@ -7061,8 +7061,7 @@ struct splinter_t final : public mage_spell_t
       p()->cooldowns.frozen_orb->reset( true );
       if ( p()->action.spellfrost_arcane_orb && p()->target )
         p()->action.spellfrost_arcane_orb->execute_on_target( p()->target );
-      if ( p()->specialization() == MAGE_FROST )
-        p()->buffs.spellfrost_teachings->trigger();
+      p()->buffs.spellfrost_teachings->trigger();
     }
   }
 
@@ -8431,7 +8430,7 @@ void mage_t::create_buffs()
 
   // Spellslinger
   buffs.spellfrost_teachings = make_buff( this, "spellfrost_teachings", find_spell( 458411 ) )
-                                 ->set_default_value_from_effect( 3 )
+                                 ->set_default_value_from_effect( specialization() == MAGE_FROST ? 3 : 1 )
                                  ->set_chance( talents.spellfrost_teachings.ok() );
   buffs.unerring_proficiency = make_buff( this, "unerring_proficiency", find_spell( specialization() == MAGE_FROST ? 444976 : 444981 ) )
                                  ->set_default_value_from_effect( 1 )
@@ -8613,7 +8612,12 @@ void mage_t::init_rng()
   rppm.frostfire_infusion = get_rppm( "frostfire_infusion", talents.frostfire_infusion );
   // Accumulated RNG is also not present in the game data.
   accumulated_rng.pyromaniac = get_accumulated_rng( "pyromaniac", talents.pyromaniac.ok() ? 0.00605 : 0.0 );
-  accumulated_rng.spellfrost_teachings = get_accumulated_rng( "spellfrost_teachings", talents.spellfrost_teachings.ok() ? 0.0004 : 0.0 );
+
+  // Reconstructed from the patch notes to give 2.5% and 2% avg proc chance.
+  // TODO: get some actual data and confirm that they're still using accumulated RNG
+  // and these values are accurate
+  double sft_step = specialization() == MAGE_FROST ? 9.6574e-4 : 6.2009e-4;
+  accumulated_rng.spellfrost_teachings = get_accumulated_rng( "spellfrost_teachings", talents.spellfrost_teachings.ok() ? sft_step : 0.0 );
 }
 
 void mage_t::init_finished()
