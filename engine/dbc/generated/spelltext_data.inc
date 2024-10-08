@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56819
-static const std::array<spelltext_data_t, 26338> __spelltext_data { {
+static const std::array<spelltext_data_t, 26339> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26217,6 +26217,7 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 462488, "$@spelldesc462486", "Downpour can be cast!", 0 },
   { 462513, "The Severed Threads lend you their aid, increasing your damage dealt & healing done while inside Nerub-ar Palace by $s1%.", "Damage dealt increased by $s1%.\r\nHealing and absorption effects increased by $s2%.", 0 },
   { 462515, "$@spelldesc445707", "Critical damage dealt increased by $s1%.", 0 },
+  { 462517, "The Severed Threads lend you their aid, increasing your damage dealt & healing done while inside Nerub-ar Palace.", 0, 0 },
   { 462568, "$@spelldesc462368", "Fire, Frost, and Nature damage taken reduced by $w1%.", 0 },
   { 462576, "Something skitters in the corner of your eyes. Everywhere.", "Something skitters in the corner of your eyes. Everywhere.", 0 },
   { 462587, "Your critical heals have ${$s2+$s1}% effectiveness instead of the usual $s2%.", 0, 0 },
@@ -26547,7 +26548,7 @@ static const std::array<spelldesc_vars_data_t, 585> __spelldesc_vars_data { {
   {  260364, "$damage=${$cond($gt($SP,$AP),$SP*0.25,$AP*0.5)}" },
   {  260798, "$damage=${2.0*$260798s1}" },
   {  262627, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
-  {  263648, "$baseAbsorb=${10*$AP*$pctH}\r\n$fragmentAbsorb=${2*$AP*$pctH}" },
+  {  263648, "$baseAbsorb=${15*$AP*$pctH}\r\n$fragmentAbsorb=${4*$AP*$pctH}" },
   {  264057, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$demoPassive=$?s137044[${1+0.01*$137044m3}][${1}]\r\n$damage=${.575*($SP*1)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}" },
   {  265931, "$mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]" },
   {  267964, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$demoPassive=$?s137044[${1+0.01*$137044m3}][${1}]\r\n$damage=${.575*($SP*1)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}" },
@@ -26937,6 +26938,7 @@ static const std::array<spelldesc_vars_data_t, 585> __spelldesc_vars_data { {
 } };
 
 // spelldesc_vars hotfix entries, wow build 11.0.2.56819
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
+  {  263648,  0, "$baseAbsorb=${10*$AP*$pctH}\r\n$fragmentAbsorb=${2*$AP*$pctH}", "$baseAbsorb=${15*$AP*$pctH}\r\n$fragmentAbsorb=${4*$AP*$pctH}" },
 } };
 
