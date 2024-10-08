@@ -281,8 +281,8 @@ public:
     action_t* cold_front_frozen_orb;
     action_t* dematerialize;
     action_t* excess_ice_nova;
-    action_t* excess_living_bomb;
     action_t* firefall_meteor;
+    action_t* frostfire_burst;
     action_t* frostfire_empowerment;
     action_t* frostfire_infusion;
     action_t* glacial_assault;
@@ -5523,7 +5523,7 @@ struct ice_lance_t final : public frost_mage_spell_t
 
     if ( p()->buffs.excess_fire->check() )
     {
-      p()->action.excess_living_bomb->execute_on_target( s->target );
+      p()->action.frostfire_burst->execute_on_target( s->target );
       p()->buffs.excess_fire->decrement();
     }
 
@@ -5709,7 +5709,7 @@ struct fire_blast_t final : public fire_mage_spell_t
 
       if ( p()->buffs.excess_fire->check() )
       {
-        p()->action.excess_living_bomb->execute_on_target( s->target );
+        p()->action.frostfire_burst->execute_on_target( s->target );
         p()->buffs.excess_fire->decrement();
       }
 
@@ -5730,19 +5730,8 @@ struct fire_blast_t final : public fire_mage_spell_t
 
 struct living_bomb_explosion_t final : public fire_mage_spell_t
 {
-  const bool excess;
-
-  static unsigned explosion_spell_id( bool excess, bool primary )
-  {
-    if ( excess )
-      return primary ? 438674 : 464884;
-    else
-      return primary ? 44461 : 453251;
-  }
-
-  living_bomb_explosion_t( std::string_view n, mage_t* p, bool excess_, bool primary_ ) :
-    fire_mage_spell_t( n, p, p->find_spell( explosion_spell_id( excess_, primary_ ) ) ),
-    excess( excess_ )
+  living_bomb_explosion_t( std::string_view n, mage_t* p, bool primary_ ) :
+    fire_mage_spell_t( n, p, p->find_spell( primary_ ? 44461 : 453251 ) )
   {
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
@@ -5754,7 +5743,7 @@ struct living_bomb_explosion_t final : public fire_mage_spell_t
   {
     fire_mage_spell_t::init();
 
-    action_t* parent = excess ? p()->action.excess_living_bomb : p()->action.living_bomb;
+    action_t* parent = p()->action.living_bomb;
     if ( parent && this != parent )
       parent->add_child( this );
   }
@@ -5786,29 +5775,19 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
 {
   // The game has two spells for the DoT, one for pre-spread one and one for
   // post-spread one. This allows two copies of the DoT to be up on one target.
-  const bool excess;
   const bool primary;
   size_t max_spread_targets;
 
   action_t* dot_spread = nullptr;
   action_t* explosion = nullptr;
 
-  static unsigned dot_spell_id( bool excess, bool primary )
+  static std::string spell_name( bool explosion, bool primary )
   {
-    if ( excess )
-      return primary ? 438672 : 438671;
-    else
-      return primary ? 217694 : 244813;
+    return fmt::format( "living_bomb{}{}", primary ? "" : "_spread", explosion ? "_explosion" : "" );
   }
 
-  static std::string spell_name( bool explosion, bool excess, bool primary )
-  {
-    return fmt::format( "{}living_bomb{}{}", excess ? "excess_" : "", primary ? "" : "_spread", explosion ? "_explosion" : "" );
-  }
-
-  living_bomb_dot_t( std::string_view n, mage_t* p, bool excess_ = false, bool primary_ = true ) :
-    fire_mage_spell_t( n, p, p->find_spell( dot_spell_id( excess_, primary_ ) ) ),
-    excess( excess_ ),
+  living_bomb_dot_t( std::string_view n, mage_t* p, bool primary_ = true ) :
+    fire_mage_spell_t( n, p, p->find_spell( primary_ ? 217694 : 244813 ) ),
     primary( primary_ ),
     max_spread_targets()
   {
@@ -5817,9 +5796,9 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
     max_spread_targets = as<size_t>( p->find_spell( 450716 )->effectN( 3 ).base_value() );
     max_spread_targets += as<size_t>( p->talents.blast_zone->effectN( 4 ).base_value() );
 
-    explosion = get_action<living_bomb_explosion_t>( spell_name( true, excess, primary ), p, excess, primary );
+    explosion = get_action<living_bomb_explosion_t>( spell_name( true, primary ), p, primary );
     if ( primary )
-      dot_spread = get_action<living_bomb_dot_t>( spell_name( false, excess, false ), p, excess, false );
+      dot_spread = get_action<living_bomb_dot_t>( spell_name( false, false ), p, false );
   }
 
   void init() override
@@ -5827,7 +5806,7 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
     fire_mage_spell_t::init();
     update_flags &= ~STATE_HASTE;
 
-    action_t* parent = excess ? p()->action.excess_living_bomb : p()->action.living_bomb;
+    action_t* parent = p()->action.living_bomb;
     if ( parent && this != parent )
       parent->add_child( this );
   }
@@ -5856,24 +5835,10 @@ struct living_bomb_dot_t final : public fire_mage_spell_t
 
       if ( p()->talents.convection.ok() && spread == 0 )
         dot_spread->execute_on_target( target );
-
-      if ( excess )
-      {
-        p()->cooldowns.phoenix_flames->adjust( -1000 * p()->talents.excess_fire->effectN( 2 ).time_value() );
-        p()->trigger_brain_freeze( 1.0, p()->procs.brain_freeze_excess_fire, 0_ms );
-      }
     }
 
     explosion->execute();
     p()->buffs.sparking_cinders->trigger();
-  }
-
-  void execute() override
-  {
-    fire_mage_spell_t::execute();
-
-    if ( primary && excess )
-      trigger_frostfire_mastery();
   }
 
   void trigger_dot( action_state_t* s ) override
@@ -6864,6 +6829,27 @@ struct frostfire_infusion_t final : public mage_spell_t
   }
 };
 
+struct frostfire_burst_t final : public mage_spell_t
+{
+  frostfire_burst_t( std::string_view n, mage_t* p ) :
+    mage_spell_t( n, p, p->find_spell( 470596 ) )
+  {
+    background = true;
+    aoe = -1;
+    reduced_aoe_targets = 8;
+
+    if ( data().ok() )
+      parse_effect_data( data().effectN( p->specialization() == MAGE_FIRE ? 2 : 1 ) );
+  }
+
+  void execute() override
+  {
+    mage_spell_t::execute();
+    p()->cooldowns.phoenix_flames->adjust( -1000 * p()->talents.excess_fire->effectN( 2 ).time_value() );
+    p()->trigger_brain_freeze( 1.0, p()->procs.brain_freeze_excess_fire, 0_ms );
+  }
+};
+
 struct frostfire_empowerment_t final : public spell_t
 {
   frostfire_empowerment_t( std::string_view n, mage_t* p ) :
@@ -7693,7 +7679,7 @@ void mage_t::create_actions()
     action.spellfrost_arcane_orb = get_action<arcane_orb_t>( "spellfrost_arcane_orb", this, "", ao_type::SPELLFROST );
 
   if ( talents.excess_fire.ok() )
-    action.excess_living_bomb = get_action<living_bomb_dot_t>( "excess_living_bomb", this, true );
+    action.frostfire_burst = get_action<frostfire_burst_t>( "frostfire_burst", this );
 
   if ( talents.isothermic_core.ok() )
   {
