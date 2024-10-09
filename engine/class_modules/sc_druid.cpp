@@ -2744,12 +2744,12 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     if ( data().ok() )
     {
       // effect data missing stack suppress flag for effect #2, manually override
-      snapshots.bloodtalons =  parse_persistent_effects( p->buff.bloodtalons, IGNORE_STACKS );
+      snapshots.bloodtalons =  parse_persistent_effects( p->buff.bloodtalons, IGNORE_STACKS, DECREMENT_BUFF );
       snapshots.tigers_fury =  parse_persistent_effects( p->buff.tigers_fury,
                                                          p->talent.carnivorous_instinct,
                                                          p->talent.tigers_tenacity );
       // NOTE: thrash dot snapshot data is missing, it must be manually added in cat_thrash_t
-      snapshots.clearcasting = parse_persistent_effects( p->buff.clearcasting_cat,
+      snapshots.clearcasting = parse_persistent_effects( p->buff.clearcasting_cat, DECREMENT_BUFF,
                                                          p->talent.moment_of_clarity );
     }
   }
@@ -2774,8 +2774,6 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     if ( !is_free() && snapshots.clearcasting && current_resource() == RESOURCE_ENERGY &&
          p()->buff.clearcasting_cat->up() )
     {
-      p()->buff.clearcasting_cat->decrement();
-
       // Base cost doesn't factor in but Omen of Clarity does net us less energy during it, so account for that here.
       eff_cost *= 1.0 + p()->buff.incarnation_cat->check_value();
 
@@ -2909,22 +2907,21 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
   {
     base_t::execute();
 
-    if ( snapshots.bloodtalons )
+    if ( hit_any_target )
     {
-      if ( bt_counter && hit_any_target )
+      if ( snapshots.bloodtalons && bt_counter )
         bt_counter->count_execute();
 
-      p()->buff.bloodtalons->decrement();
+      if ( snapshots.tigers_fury && tf_counter )
+        tf_counter->count_execute();
+
+      if ( snapshots.sudden_ambush && sa_counter )
+        sa_counter->count_execute();
     }
-
-    if ( snapshots.tigers_fury && tf_counter && hit_any_target )
-      tf_counter->count_execute();
-
-    if ( snapshots.sudden_ambush && sa_counter && hit_any_target )
-      sa_counter->count_execute();
-
-    if ( !hit_any_target )
+    else
+    {
       player->resource_gain( RESOURCE_ENERGY, last_resource_cost * 0.80, p()->gain.energy_refund );
+    }
 
     if ( harmful )
     {
