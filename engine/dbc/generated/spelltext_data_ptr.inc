@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.5.56865
-static const std::array<spelltext_data_t, 26524> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 26525> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26167,6 +26167,7 @@ static const std::array<spelltext_data_t, 26524> __ptr_spelltext_data { {
   { 462488, "$@spelldesc462486", "Downpour can be cast!", 0 },
   { 462513, "The Severed Threads lend you their aid, increasing your damage dealt & healing done while inside Nerub-ar Palace by $s1%.", "Damage dealt increased by $s1%.\r\nHealing and absorption effects increased by $s2%.", 0 },
   { 462515, "$@spelldesc445707", "Critical damage dealt increased by $s1%.", 0 },
+  { 462517, "The Severed Threads lend you their aid, increasing your damage dealt & healing done while inside Nerub-ar Palace.", 0, 0 },
   { 462568, "$@spelldesc462368", "Fire, Frost, and Nature damage taken reduced by $w1%.", 0 },
   { 462576, "Something skitters in the corner of your eyes. Everywhere.", "Something skitters in the corner of your eyes. Everywhere.", 0 },
   { 462587, "Your critical heals have ${$s2+$s1}% effectiveness instead of the usual $s2%.", 0, 0 },

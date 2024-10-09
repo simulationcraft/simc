@@ -2881,7 +2881,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
 #3 (id=1090166)  : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friendly (21)
+                   Affected School(s): All
 Description      : Redirect your excess magic to a friendly healer for $d. When you cast an empowered spell, you restore ${$372571s1/100}.2% of their maximum mana per empower level. Limit 1.
 Tooltip          : $@auracaster is restoring mana to you when they cast an empowered spell.$?$w2>0[
 
@@ -10681,7 +10682,8 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.50000 | Misc Value: 0x7f | Target: Any Target (25)
                    Affected School(s): All
 #2 (id=1104851)  : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.50000 | Misc Value: 127 | Target: Any Target (25)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.50000 | Misc Value: 0x7f | Target: Any Target (25)
+                   Affected School(s): All
 #3 (id=1104853)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Any Target (25)
 Description      : $@spelldesc395152
