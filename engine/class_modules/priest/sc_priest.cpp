@@ -1746,6 +1746,9 @@ struct collapsing_void_damage_t final : public priest_spell_t
     aoe              = -1;
     radius           = data().effectN( 1 ).radius_max();
     split_aoe_damage = 1;
+
+    // TODO: Refactor this into a pet, seems to get the same pet mod as our other ones
+    spell_power_mod.direct *= 1.296;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1795,6 +1798,9 @@ struct entropic_rift_damage_t final : public priest_spell_t
     radius            = base_radius;
 
     affected_by_shadow_weaving = true;
+
+    // TODO: Refactor this into a pet, seems to get the same pet mod as our other ones
+    spell_power_mod.direct *= 1.296;
   }
 
   double miss_chance( double hit, player_t* t ) const override
@@ -1823,7 +1829,10 @@ struct entropic_rift_damage_t final : public priest_spell_t
   {
     double m = priest_spell_t::composite_da_multiplier( s );
 
-    m *= 1.0 + priest().buffs.collapsing_void->check_value();
+    // The initial stack does not count for increasing damage
+    // TODO: use the buff data better
+    double mod = ( priest().buffs.collapsing_void->check() - 1 ) * priest().buffs.collapsing_void->default_value;
+    m *= 1.0 + mod;
 
     return m;
   }
@@ -2917,7 +2926,7 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
         else
           return expr_t::create_constant( "cthun_last_trigger_attempt", -1 );
       }
-      
+
       if ( util::str_compare_ci( splits[ 1 ], "next_tick_si_proc_chance" ) )
       {
         if ( talents.shadow.shadowy_insight.enabled() )
@@ -2942,9 +2951,8 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
         if ( talents.shadow.shadowy_insight.enabled() )
         {
           return make_fn_expr( "avg_time_until_si_proc", [ this ] {
-
-            auto td           = get_target_data( target );
-            dot_t* swp        = td->dots.shadow_word_pain;
+            auto td    = get_target_data( target );
+            dot_t* swp = td->dots.shadow_word_pain;
 
             double active_swp = get_active_dots( swp );
 
