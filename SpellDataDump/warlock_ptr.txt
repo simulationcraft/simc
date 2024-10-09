@@ -11182,7 +11182,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Attributes       : Do Not Display Duration (170)
-Aura Interrupt   : Leave World (19), Raid Encounter End or M+ Start (41), Ecnounter End (56)
+Aura Interrupt   : Leave World (19), Raid Encounter End or M+ Start (41), Encounter End (56)
                  :
 Effects          :
 #1 (id=1022007)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
