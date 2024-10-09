@@ -7432,6 +7432,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.arcane_debilitation    = make_buff( *this, "arcane_debilitation", mage->find_spell( 453599 ) )
                                      ->set_default_value( mage->talents.arcane_debilitation->effectN( 2 ).percent() )
                                      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                     ->modify_duration( mage->talents.time_loop->effectN( 2 ).time_value() )
                                      ->set_chance( mage->talents.arcane_debilitation.ok() );
   debuffs.controlled_destruction = make_buff( *this, "controlled_destruction", mage->find_spell( 453268 ) )
                                      ->set_default_value( 0.1 * mage->talents.controlled_destruction->effectN( 1 ).percent() )
