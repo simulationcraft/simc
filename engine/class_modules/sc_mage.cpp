@@ -566,7 +566,6 @@ public:
     timespan_t gained_full_icicles;
     bool had_low_mana;
     bool trigger_dematerialize;
-    bool trigger_leydrinker;
     bool trigger_ff_empowerment;
     bool trigger_flash_freezeburn;
     bool trigger_glorious_incandescence;
@@ -3416,13 +3415,6 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     }
 
     consume_nether_precision( target );
-
-    if ( p()->buffs.leydrinker->check() )
-    {
-      p()->buffs.leydrinker->decrement();
-      p()->state.trigger_leydrinker = true;
-    }
-
     p()->consume_burden_of_power();
     p()->trigger_spellfire_spheres();
     p()->trigger_mana_cascade();
@@ -3484,12 +3476,6 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
       residual_action::trigger( p()->action.dematerialize, s->target, p()->talents.dematerialize->effectN( 1 ).percent() * s->result_total );
     }
 
-    if ( p()->state.trigger_leydrinker )
-    {
-      p()->state.trigger_leydrinker = false;
-      p()->action.leydrinker_echo->execute_on_target( s->target, p()->talents.leydrinker->effectN( 2 ).percent() * s->result_total );
-    }
-
     trigger_glorious_incandescence( s->target );
   }
 };
@@ -3549,13 +3535,6 @@ struct arcane_blast_t final : public arcane_mage_spell_t
 
     p()->buffs.concentration->trigger();
     consume_nether_precision( target );
-
-    if ( p()->buffs.leydrinker->check() )
-    {
-      p()->buffs.leydrinker->decrement();
-      p()->state.trigger_leydrinker = true;
-    }
-
     p()->buffs.intuition->trigger();
   }
 
@@ -3604,9 +3583,9 @@ struct arcane_blast_t final : public arcane_mage_spell_t
       residual_action::trigger( p()->action.dematerialize, s->target, p()->talents.dematerialize->effectN( 1 ).percent() * s->result_total );
     }
 
-    if ( p()->state.trigger_leydrinker )
+    if ( p()->buffs.leydrinker->check() )
     {
-      p()->state.trigger_leydrinker = false;
+      p()->buffs.leydrinker->decrement();
       p()->action.leydrinker_echo->execute_on_target( s->target, p()->talents.leydrinker->effectN( 2 ).percent() * s->result_total );
     }
   }
@@ -6587,7 +6566,10 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
   void execute() override
   {
     arcane_mage_spell_t::execute();
+
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
+    if ( p()->talents.leydrinker.ok() )
+      p()->buffs.leydrinker->trigger( -1, buff_t::DEFAULT_VALUE(), 1.0 );
   }
 
   void impact( action_state_t* s ) override
