@@ -1114,6 +1114,7 @@ struct overwhelming_force_t : base_action_t
       background = dual = proc = true;
       base_multiplier          = player->talent.master_of_harmony.overwhelming_force->effectN( 1 ).percent();
       base_multiplier += player->baseline.brewmaster.aura->effectN( 32 ).percent();
+      aoe = -1;
       reduced_aoe_targets      = player->talent.master_of_harmony.overwhelming_force->effectN( 2 ).base_value();
     }
 
@@ -1239,7 +1240,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
   {
     if ( p()->talent.brewmaster.press_the_advantage->ok() )
       return false;
-    return monk_melee_attack_t::ready();
+    return base_t::ready();
   }
 
   void execute() override
@@ -1259,7 +1260,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 
     //------------
 
-    monk_melee_attack_t::execute();
+    base_t::execute();
 
     p()->buff.blackout_combo->expire();
 
@@ -1306,7 +1307,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 
   void impact( action_state_t *s ) override
   {
-    monk_melee_attack_t::impact( s );
+    base_t::impact( s );
 
     // Apply Mark of the Crane
     p()->trigger_mark_of_the_crane( s );
