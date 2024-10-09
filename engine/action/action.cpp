@@ -4780,9 +4780,9 @@ double action_t::composite_rolling_ta_multiplier( const action_state_t* s ) cons
     // Calculate ticks_left_fractional for the DoT after it is refreshed.
     double new_ticks_left = 1.0 + ( calculate_dot_refresh_duration( dot, new_duration ) - dot->time_to_next_full_tick() ) / new_tick;
     // Roll the multiplier for the old ticks that will be lost into a multiplier for the new DoT.
-    m = ( ticks_left * s->rolling_ta_multiplier + new_base_ticks ) / new_ticks_left;
+    m = ( ticks_left * dot->state->rolling_ta_multiplier + new_base_ticks ) / new_ticks_left;
     sim->print_debug( "{} {} rolling_ta_multiplier updated: old_multiplier={} to new_multiplier={} ticks_left={} new_base_ticks={} new_ticks_left={}.",
-      *player, *this, s->rolling_ta_multiplier, m, ticks_left, new_base_ticks, new_ticks_left );
+      *player, *this, dot->state->rolling_ta_multiplier, m, ticks_left, new_base_ticks, new_ticks_left );
   }
 
   return m;
