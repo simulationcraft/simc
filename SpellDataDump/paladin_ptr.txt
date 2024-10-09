@@ -14568,6 +14568,7 @@ Description      : $@spelldesc404306
 Tooltip          : Building up Divine strength, at 25 stacks your next single target Holy Power ability causes ${$406983s1/25} Holystrike damage to your primary target and ${$406983s2/25} Holystrike damage to enemies within 8 yds.
 
 Name             : Divine Arbiter (id=406983) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holystrike
 Spell Type       : Melee
@@ -14579,7 +14580,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Affecting spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 27, 65
-Attributes       : Can't Crit (93), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
+Attributes       : Can't Crit (93), Can Proc From Procs (122), Not In Spellbook (143), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1070163)  : School Damage (2): holystrike
