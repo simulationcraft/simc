@@ -1191,6 +1191,7 @@ struct echoing_void_demise_t final : public priest_spell_t
     proc                = false;
     callbacks           = true;
     may_miss            = false;
+    harmful             = false;
     aoe                 = -1;
     range               = data().effectN( 1 ).radius_max();
     reduced_aoe_targets = data().effectN( 2 ).base_value();
@@ -1420,6 +1421,8 @@ public:
     triggers_atonement = true;
 
     // Devour Matter gives you more Insanity and an extra amount of sp coeff
+    // TODO: Refactor this into an additional hit (same spell ID)
+    // This additional hit has an independet crit chance, gets the execute mod, and gets the deathspeaker mod
     if ( priest().options.force_devour_matter && priest().talents.voidweaver.devour_matter.enabled() )
     {
       energize_amount += priest().talents.voidweaver.devour_matter->effectN( 3 ).base_value();
@@ -1743,6 +1746,8 @@ struct collapsing_void_damage_t final : public priest_spell_t
     aoe              = -1;
     radius           = data().effectN( 1 ).radius_max();
     split_aoe_damage = 1;
+
+    // TODO: Refactor this into a pet, seems to get the same pet mod as our other ones
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1792,13 +1797,40 @@ struct entropic_rift_damage_t final : public priest_spell_t
     radius            = base_radius;
 
     affected_by_shadow_weaving = true;
+
+    // TODO: Refactor this into a pet, seems to get the same pet mod as our other ones
+  }
+
+  double miss_chance( double hit, player_t* t ) const override
+  {
+    double m = priest_spell_t::miss_chance( hit, t );
+
+    if ( priest().options.entropic_rift_miss_percent > 0.0 )
+    {
+      // Double miss_percent when fighting more than 2 targets
+      double miss_percent = priest().options.entropic_rift_miss_percent;
+      if ( target_list().size() > 2 )
+      {
+        miss_percent = miss_percent * 2;
+      }
+
+      sim->print_debug( "entropic_rift_damage sets miss_chance to {} with target count: {}", miss_percent,
+                        target_list().size() );
+
+      m = miss_percent;
+    }
+
+    return m;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = priest_spell_t::composite_da_multiplier( s );
 
-    m *= 1.0 + priest().buffs.collapsing_void->check_value();
+    // The initial stack does not count for increasing damage
+    // TODO: use the buff data better
+    double mod = ( priest().buffs.collapsing_void->check() - 1 ) * priest().buffs.collapsing_void->default_value;
+    m *= 1.0 + mod;
 
     return m;
   }
@@ -2090,10 +2122,10 @@ struct crystalline_reflection_heal_t final : public priest_heal_t
     spell_power_mod.direct = p.talents.crystalline_reflection->effectN( 3 ).sp_coeff();
   }
 
-  void impact(action_state_t* s) override
+  void impact( action_state_t* s ) override
   {
     priest_heal_t::impact( s );
-    
+
     if ( priest().buffs.twist_of_fate_heal_ally_fake->check() )
     {
       priest().buffs.twist_of_fate->trigger();
@@ -2136,7 +2168,7 @@ struct power_word_shield_t final : public priest_absorb_t
 
     if ( p.talents.crystalline_reflection.enabled() )
     {
-      crystalline_reflection_heal = new crystalline_reflection_heal_t( p );
+      crystalline_reflection_heal   = new crystalline_reflection_heal_t( p );
       crystalline_reflection_damage = new crystalline_reflection_damage_t( p );
 
       add_child( crystalline_reflection_heal );
@@ -2892,6 +2924,90 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
         else
           return expr_t::create_constant( "cthun_last_trigger_attempt", -1 );
       }
+
+      if ( util::str_compare_ci( splits[ 1 ], "next_tick_si_proc_chance" ) )
+      {
+        if ( talents.shadow.shadowy_insight.enabled() )
+        {
+          return make_fn_expr( "next_tick_si_proc_chance", [ this ] {
+            double proc_chance = std::max( threshold_rng.shadowy_insight->get_accumulated_chance() +
+                                               threshold_rng.shadowy_insight->get_increment_max() - 1.0,
+                                           0.0 ) /
+                                 threshold_rng.shadowy_insight->get_increment_max();
+
+            return proc_chance;
+          } );
+        }
+        else
+        {
+          return expr_t::create_constant( "next_tick_si_proc_chance", 0 );
+        }
+      }
+
+      if ( util::str_compare_ci( splits[ 1 ], "avg_time_until_si_proc" ) )
+      {
+        if ( talents.shadow.shadowy_insight.enabled() )
+        {
+          return make_fn_expr( "avg_time_until_si_proc", [ this ] {
+            auto td    = get_target_data( target );
+            dot_t* swp = td->dots.shadow_word_pain;
+
+            double active_swp = get_active_dots( swp );
+
+            if ( active_swp == 0 || !swp->current_action )
+            {
+              return std::numeric_limits<double>::infinity();
+            }
+
+            action_state_t* swp_state = swp->current_action->get_state( swp->state );
+            double dot_tick_time      = ( swp->current_action->tick_time( swp_state ) ).total_seconds();
+
+            double time_til_next_proc = ( 1 - threshold_rng.shadowy_insight->get_accumulated_chance() ) /
+                                        threshold_rng.shadowy_insight->get_increment_max() * 2 * dot_tick_time;
+
+            action_state_t::release( swp_state );
+
+            return time_til_next_proc;
+          } );
+        }
+        else
+        {
+          return expr_t::create_constant( "avg_time_until_si_proc", std::numeric_limits<double>::infinity() );
+        }
+      }
+
+      if ( util::str_compare_ci( splits[ 1 ], "min_time_until_si_proc" ) )
+      {
+        if ( talents.shadow.shadowy_insight.enabled() )
+        {
+          return make_fn_expr( "min_time_until_si_proc", [ this ] {
+            auto td    = get_target_data( target );
+            dot_t* swp = td->dots.shadow_word_pain;
+
+            double active_swp = get_active_dots( swp );
+
+            if ( active_swp == 0 || !swp->current_action )
+            {
+              return std::numeric_limits<double>::infinity();
+            }
+
+            action_state_t* swp_state = swp->current_action->get_state( swp->state );
+            double dot_tick_time      = ( swp->current_action->tick_time( swp_state ) ).total_seconds();
+
+            double time_til_next_proc = ( 1 - threshold_rng.shadowy_insight->get_accumulated_chance() ) /
+                                        threshold_rng.shadowy_insight->get_increment_max() * dot_tick_time;
+
+            action_state_t::release( swp_state );
+
+            return time_til_next_proc;
+          } );
+        }
+        else
+        {
+          return expr_t::create_constant( "min_time_until_si_proc", std::numeric_limits<double>::infinity() );
+        }
+      }
+
       throw std::invalid_argument( fmt::format( "Unsupported priest expression '{}'.", splits[ 1 ] ) );
     }
   }
@@ -2955,6 +3071,7 @@ double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
   // Certain modifiers are only for Guardians, otherwise just give the Pet Modifier
+
   if ( guardian )
   {
     m *= ( 1.0 + specs.shadow_priest->effectN( 4 ).percent() );
@@ -3488,7 +3605,7 @@ void priest_t::init_spells()
   talents.voidweaver.entropic_rift_aoe      = find_spell( 450193 );  // Contains AoE radius info
   talents.voidweaver.entropic_rift_damage   = find_spell( 447448 );  // Contains damage coeff
   talents.voidweaver.entropic_rift_driver   = find_spell( 459314 );  // Contains damage coeff
-  talents.voidweaver.entropic_rift_object   = find_spell( 447445 ); // Contains spell radius
+  talents.voidweaver.entropic_rift_object   = find_spell( 447445 );  // Contains spell radius
   talents.voidweaver.no_escape              = HT( "No Escape" );     // NYI
   talents.voidweaver.dark_energy            = HT( "Dark Energy" );
   talents.voidweaver.void_blast             = HT( "Void Blast" );
@@ -3579,7 +3696,7 @@ void priest_t::create_buffs()
           // time.
           // TODO: Check if this works fine on secondary targets, if so, rewrite this to have state passing to allow it
           // to miss the main target.
-          if ( b->current_tick >= 2 && rng().roll( 1.0 - options.entropic_rift_miss_percent ) )
+          if ( b->current_tick >= 2 )
           {
             background_actions.entropic_rift_damage->execute_on_target( state.last_entropic_rift_target );
           }
@@ -3970,7 +4087,9 @@ void priest_t::create_options()
   add_option( opt_int( "priest.cauterizing_shadows_allies", options.cauterizing_shadows_allies, 0, 3 ) );
   add_option( opt_bool( "priest.force_devour_matter", options.force_devour_matter ) );
   add_option( opt_float( "priest.entropic_rift_miss_percent", options.entropic_rift_miss_percent, 0.0, 1.0 ) );
-  add_option( opt_float( "priest.crystalline_reflection_damage_mult", options.crystalline_reflection_damage_mult, 0.0, 1.0 ) );
+  add_option(
+      opt_float( "priest.crystalline_reflection_damage_mult", options.crystalline_reflection_damage_mult, 0.0, 1.0 ) );
+  add_option( opt_bool( "priest.no_channel_macro_mfi", options.no_channel_macro_mfi ) );
 }
 
 std::string priest_t::create_profile( save_e type )

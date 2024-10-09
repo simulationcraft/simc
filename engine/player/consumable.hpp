@@ -28,7 +28,7 @@ struct dbc_consumable_base_t : public action_t
 
   dbc_consumable_base_t( player_t* p, std::string_view name_str );
 
-  std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override;
+  std::unique_ptr<expr_t> create_expression( std::string_view name ) override;
 
   // Needed to satisfy normal execute conditions
   result_e calculate_result( action_state_t* ) const override

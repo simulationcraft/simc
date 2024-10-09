@@ -22,7 +22,5 @@ void register_special_effects();
 void register_target_data_initializers( sim_t& );
 void register_hotfixes();
 action_t* create_action( player_t*, std::string_view, std::string_view );
-double role_mult( player_t*, const spell_data_t* );
-double role_mult( const special_effect_t& );
 double writhing_mul( player_t* );
 }  // namespace unique_gear::thewarwithin

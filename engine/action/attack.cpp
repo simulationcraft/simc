@@ -176,11 +176,11 @@ double attack_t::action_multiplier() const
   return mul;
 }
 
-double attack_t::composite_target_multiplier( player_t* target ) const
+double attack_t::composite_target_multiplier( player_t* t ) const
 {
-  double mul = action_t::composite_target_multiplier( target );
+  double mul = action_t::composite_target_multiplier( t );
 
-  mul *= composite_target_damage_vulnerability( target );
+  mul *= composite_target_damage_vulnerability( t );
 
   return mul;
 }
@@ -497,14 +497,14 @@ ranged_attack_t::ranged_attack_t( util::string_view token, player_t* p, const sp
 // Ranged attacks are identical to melee attacks, but cannot be parried or dodged.
 // all of the inherited *_chance() methods are accurate.
 
-double ranged_attack_t::composite_target_multiplier( player_t* target ) const
+double ranged_attack_t::composite_target_multiplier( player_t* t ) const
 {
-  double v = attack_t::composite_target_multiplier( target );
+  double v = attack_t::composite_target_multiplier( t );
 
   return v;
 }
 
-void ranged_attack_t::schedule_execute( action_state_t* execute_state )
+void ranged_attack_t::schedule_execute( action_state_t* state )
 {
   if ( sim->debug )
   {
@@ -514,7 +514,7 @@ void ranged_attack_t::schedule_execute( action_state_t* execute_state )
 
   time_to_execute = execute_time();
 
-  execute_event = start_action_execute_event( time_to_execute, execute_state );
+  execute_event = start_action_execute_event( time_to_execute, state );
 
   if ( trigger_gcd > timespan_t::zero() )
     player->off_gcdactions.clear();

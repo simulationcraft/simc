@@ -31,32 +31,38 @@ off_hand=vagabonds_torch,id=222566,ilevel=636,bonus_id=11300,crafted_stats=36/49
 
 save=TWW1_Mage_Arcane.simc
 
-# mage="TWW1_Mage_Fire"
-# spec=fire
-# level=70
-# race=dwarf
-# role=spell
-# position=ranged_back
-# talents=3031021
+mage="TWW1_Mage_Fire"
+spec=fire
+level=80
+race=dwarf
+role=spell
+position=ranged_back
+talents=C8DAAAAAAAAAAAAAAAAAAAAAAYGYxCmhZmFDjZGmGzMmZAAAAAAMQAzMTLzyyMAAbGzgxMjZGWMLjZMzwMbzYZmlhBAAAAAAA
 
-# head=erudite_occultists_hood,id=188844,bonus_id=1498/7187/6935,gem_id=173128
-# neck=sin_stained_pendant,id=178827,bonus_id=1592/6536/6646/6935,gem_id=173128
-# shoulder=erudite_occultists_mantle,id=188843,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-# chest=erudite_occultists_robes,id=188839,bonus_id=1505/7187,enchant=eternal_insight
-# wrist=grimveiled_bracers,id=173249,bonus_id=1588/6934/6649/6650/6935,gem_id=173128,enchant=eternal_intellect
-# hands=erudite_occultists_handwraps,id=188845,bonus_id=1505/7187
-# waist=erudite_occultists_cord,id=188841,bonus_id=1498/7187/6935,gem_id=173130
-# legs=grimveiled_pants,id=173246,bonus_id=1588/8123/6648/6649
-# feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
-# finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=1592/6536/6646/6935,gem_id=173130,enchant=tenet_of_haste
-# finger2=death_gods_signet,id=179355,bonus_id=1592/6536/6646/6935,gem_id=173130,enchant=tenet_of_haste
-# trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
-# trinket2=unbound_changeling,id=178708,bonus_id=1592/6536/6646/6918
-# main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
-# off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=feast_of_the_divine_day
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3
 
-# save=TWW1_Mage_Fire.simc
+head=cocoonsilk_cowl,id=178693,bonus_id=10835,ilevel=639,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213455/213494
+shoulder=beacons_of_violet_rebirth,id=212090,ilevel=639
+back=anvilhide_cape,id=221088,ilevel=639,enchant_id=7403
+chest=runecoat_of_violet_rebirth,id=212095,ilevel=639,enchant_id=7364
+wrist=consecrated_cuffs,id=222815,bonus_id=11109,ilevel=636,gem_id=213470,enchant_id=7385,crafted_stats=36/40
+hands=jeweled_gauntlets_of_violet_rebirth,id=212093,ilevel=639
+waist=cord_of_the_pious_warder,id=159245,ilevel=639,gem_id=213485
+legs=coattails_of_violet_rebirth,id=212091,ilevel=639,enchant_id=7534
+feet=tainted_earthshard_walkers,id=221082,ilevel=639,enchant_id=7418
+finger1=key_to_the_unseeming,id=212447,bonus_id=10836,ilevel=639,gem_id=213494/213470,enchant_id=7340
+finger2=stitchfleshs_misplaced_signet,id=178736,bonus_id=10836,ilevel=639,gem_id=213485/213455,enchant_id=7340
+trinket1=treacherous_transmitter,id=221023,ilevel=639
+trinket2=spymasters_web,id=220202,ilevel=639
+main_hand=sovereigns_disdain,id=212394,ilevel=639,enchant_id=7460
+off_hand=vagabonds_torch,id=222566,bonus_id=11300,ilevel=636,crafted_stats=36/49
+
+save=TWW1_Mage_Fire.simc
 
 mage="TWW1_Mage_Frost"
 spec=frost

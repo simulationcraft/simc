@@ -149,6 +149,8 @@ public:
     action_t* armament[ NUM_ARMAMENT ];
     action_t* sacred_weapon_proc_damage;
     action_t* sacred_weapon_proc_heal;
+    action_t* refining_fire;
+    action_t* eye_for_an_eye;
   } active;
 
   // Buffs
@@ -469,59 +471,79 @@ public:
 
     // 0
     const spell_data_t* lay_on_hands;
-    const spell_data_t* blessing_of_freedom;
-    const spell_data_t* hammer_of_wrath;
-    const spell_data_t* cleanse_toxins;
     const spell_data_t* auras_of_the_resolute;
-    const spell_data_t* obduracy;
-    const spell_data_t* auras_of_swift_vengeance;
-    const spell_data_t* turn_evil;
+    const spell_data_t* hammer_of_wrath;
+
+    const spell_data_t* cleanse_toxins;
+    const spell_data_t* empyreal_ward;
     const spell_data_t* fist_of_justice;
-    const spell_data_t* divine_steed;
-    const spell_data_t* greater_judgment;
     const spell_data_t* repentance;
     const spell_data_t* blinding_light;
+    const spell_data_t* turn_evil;
+
+    const spell_data_t* a_just_reward;
+    const spell_data_t* afterimage;
+    const spell_data_t* healing_hands; // Ret only
+    const spell_data_t* divine_steed;
+    const spell_data_t* lights_countenance;
+    const spell_data_t* greater_judgment;
+    const spell_data_t* wrench_evil;
+    const spell_data_t* stand_against_evil;
+
+    const spell_data_t* holy_reprieve;
     const spell_data_t* cavalier;
-    const spell_data_t* seasoned_warhorse;
+    const spell_data_t* divine_spurs;
+    const spell_data_t* steed_of_liberty;
+    const spell_data_t* blessing_of_freedom;
     const spell_data_t* rebuke;
 
     // 8
-    const spell_data_t* holy_aegis;
-    const spell_data_t* avenging_wrath;  // Spell
-    const spell_data_t* justification;
-    const spell_data_t* punishment;
-    const spell_data_t* golden_path;
-    const spell_data_t* blessing_of_sacrifice;
-    const spell_data_t* sanctified_plates;
-    const spell_data_t* blessing_of_protection;
-    const spell_data_t* unbound_freedom;
-    const spell_data_t* lightforged_blessing;
-    const spell_data_t* seal_of_mercy;
-    const spell_data_t* afterimage;
-    const spell_data_t* sacrifice_of_the_just;
-    const spell_data_t* recompense;
-    const spell_data_t* unbreakable_spirit;
-    const spell_data_t* improved_blessing_of_protection;
-    const spell_data_t* crusaders_reprieve;
-
-    // 20
-    const spell_data_t* strength_of_conviction;
-    const spell_data_t* judgment_of_light;
-    const spell_data_t* seal_of_might;
-    const spell_data_t* divine_purpose;
-    const spell_data_t* seal_of_alacrity;
-    const spell_data_t* incandescence;
-    const spell_data_t* touch_of_light;
-    const spell_data_t* faiths_armor;
-    const spell_data_t* of_dusk_and_dawn;
+    const spell_data_t* obduracy;
     const spell_data_t* divine_toll;
-    const spell_data_t* seal_of_the_crusader;
-    const spell_data_t* seal_of_order;
-    const spell_data_t* fading_light;
+    const spell_data_t* unbound_freedom;
+    const spell_data_t* sanctified_plates;
+    const spell_data_t* punishment;
+
+    const spell_data_t* divine_reach;
+    const spell_data_t* blessing_of_sacrifice;
     const spell_data_t* divine_resonance;
     const spell_data_t* quickened_invocation;
+    const spell_data_t* blessing_of_protection;
+    const spell_data_t* consecrated_ground;
+
+    const spell_data_t* holy_aegis;
+    const spell_data_t* sacrifice_of_the_just;
+    const spell_data_t* recompense;
+    const spell_data_t* sacred_strength;
+    const spell_data_t* divine_purpose;
+    const spell_data_t* improved_blessing_of_protection;
+    const spell_data_t* unbreakable_spirit;
+
+    // 20
+    const spell_data_t* lightforged_blessing;
+    const spell_data_t* lead_the_charge; 
+    const spell_data_t* worthy_sacrifice;
+    const spell_data_t* righteous_protection;
+    const spell_data_t* holy_ritual;
+    const spell_data_t* blessed_calling;
+    const spell_data_t* inspired_guard;
+    const spell_data_t* judgment_of_light;
+
+    const spell_data_t* faiths_armor;
+    const spell_data_t* stoicism;
+    const spell_data_t* seal_of_might;
+    const spell_data_t* seal_of_the_crusader;
     const spell_data_t* zealots_paragon;  // Prot only
     const spell_data_t* vengeful_wrath;   // Ret only
+    const spell_data_t* eye_for_an_eye;
+    const spell_data_t* golden_path;
+    const spell_data_t* selfless_healer;
+
+    const spell_data_t* of_dusk_and_dawn;
+    const spell_data_t* lightbearer;
+    const spell_data_t* lights_revocation;
+
+    const spell_data_t* avenging_wrath;  // Keeping this because it still contains all the spell data needed
 
     // Stuff that may come back
     const spell_data_t* seraphim;  // It'll come back :copium:
@@ -547,50 +569,57 @@ public:
     // Protection
     // 0
     const spell_data_t* avengers_shield;
+
     const spell_data_t* holy_shield;
-    const spell_data_t* inner_light;
-    const spell_data_t* redoubt;
     const spell_data_t* hammer_of_the_righteous;
     const spell_data_t* blessed_hammer;
+
+    const spell_data_t* inner_light;
+    const spell_data_t* redoubt;
     const spell_data_t* grand_crusader;
     const spell_data_t* shining_light;
+
     const spell_data_t* improved_holy_shield;
-    const spell_data_t* sanctuary;
     const spell_data_t* inspiring_vanguard;
     const spell_data_t* ardent_defender;
     const spell_data_t* barricade_of_faith;
-    const spell_data_t* consecration_in_flame;
+    const spell_data_t* sanctuary;
 
     // 8
-    const spell_data_t* consecrated_ground;
-    const spell_data_t* tirions_devotion;
+    const spell_data_t* refining_fire;
     const spell_data_t* bulwark_of_order;
     const spell_data_t* improved_ardent_defender;
     const spell_data_t* blessing_of_spellwarding;
     const spell_data_t* light_of_the_titans;
-    const spell_data_t* strength_in_adversity;
-    const spell_data_t* crusaders_resolve;
+    const spell_data_t* tirions_devotion;
+    const spell_data_t* consecration_in_flame;
+
     const spell_data_t* tyrs_enforcer;
     const spell_data_t* relentless_inquisitor;
     const spell_data_t* avenging_wrath_might;
     const spell_data_t* sentinel;
     const spell_data_t* seal_of_charity;
     const spell_data_t* faith_in_the_light;
+
+    const spell_data_t* soaring_shield;
     const spell_data_t* seal_of_reprisal;
-    const spell_data_t* bastion_of_light;
     const spell_data_t* guardian_of_ancient_kings;
     const spell_data_t* hand_of_the_protector;
     const spell_data_t* crusaders_judgment;
 
     // 20
     const spell_data_t* focused_enmity;
-    const spell_data_t* soaring_shield;
     const spell_data_t* gift_of_the_golden_valkyr;
-    const spell_data_t* uthers_counsel;
     const spell_data_t* sanctified_wrath;
+    const spell_data_t* uthers_counsel;
+
+    const spell_data_t* strength_in_adversity;
+    const spell_data_t* crusaders_resolve;
     const spell_data_t* ferren_marcuss_fervor;
     const spell_data_t* eye_of_tyr;
     const spell_data_t* resolute_defender;
+    const spell_data_t* bastion_of_light;
+
     const spell_data_t* moment_of_glory;
     const spell_data_t* bulwark_of_righteous_fury;
     const spell_data_t* inmost_light;
@@ -730,6 +759,21 @@ public:
       const spell_data_t* suns_avatar;
     } herald_of_the_sun;
 
+    // Remove after 11.0.5
+    const spell_data_t* auras_of_swift_vengeance;
+    const spell_data_t* seasoned_warhorse;
+    const spell_data_t* justification;
+    const spell_data_t* seal_of_mercy;
+    const spell_data_t* crusaders_reprieve;
+    const spell_data_t* strength_of_conviction;
+    const spell_data_t* seal_of_alacrity;
+    const spell_data_t* incandescence;
+    const spell_data_t* touch_of_light;
+    const spell_data_t* seal_of_order;
+    const spell_data_t* fading_light;
+
+    
+
   } talents;
 
   // Paladin options
@@ -747,8 +791,6 @@ public:
   season next_season;
   armament next_armament;
   double radiant_glory_accumulator;
-
-  bool lights_deliverance_triggered_during_ready;
 
   int holy_power_generators_used;
   int melee_swing_count;
@@ -1124,7 +1166,7 @@ public:
   struct affected_by_t
   {
     bool avenging_wrath, judgment, blessing_of_dawn, seal_of_reprisal, seal_of_order, divine_purpose,
-      divine_purpose_cost;                                                               // Shared
+      divine_purpose_cost, sacred_strength;                                                // Shared
     bool crusade, highlords_judgment, highlords_judgment_hidden, final_reckoning_st, final_reckoning_aoe,
       blades_of_light, divine_hammer, ret_t29_2p, ret_t29_4p, rise_from_ash; // Ret
     bool avenging_crusader;                                                                // Holy
@@ -1205,6 +1247,8 @@ public:
     this->affected_by.divine_purpose      = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 2 ) );
     this->affected_by.seal_of_reprisal    = this->data().affected_by( p->talents.seal_of_reprisal->effectN( 1 ) );
     this->affected_by.blessing_of_dawn    = this->data().affected_by( p->find_spell( 385127 )->effectN( 1 ) );
+    if ( p->is_ptr() )
+      this->affected_by.sacred_strength     = this->data().affected_by( p->talents.sacred_strength->effectN( 1 ) );
 
     if ( p->talents.penitence->ok() )
     {
@@ -1378,7 +1422,7 @@ public:
 
     // Class talent's Avenging Wrath damage multiplier affects only if base talent is talented (Could still use AW with
     // only Sentinel/AWM/Crusade/AC talented)
-    if ( affected_by.avenging_wrath && p()->talents.avenging_wrath->ok() &&
+    if ( affected_by.avenging_wrath && ( p()->is_ptr() || p()->talents.avenging_wrath->ok() ) &&
          ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
     {
       am *= 1.0 + p()->buffs.avenging_wrath->get_damage_mod();
@@ -1406,6 +1450,10 @@ public:
     {
       am *= 1.0 + p()->spells.divine_purpose_buff->effectN( 2 ).percent();
     }
+    if (affected_by.sacred_strength && p()->talents.sacred_strength->ok())
+    {
+      am *= 1.0 + p()->talents.sacred_strength->effectN( 1 ).percent();
+    }
 
     if ( affected_by.seal_of_reprisal && p()->talents.seal_of_reprisal->ok() )
     {
@@ -1418,10 +1466,10 @@ public:
       // Get base multiplier
       double bod_mult = p()->buffs.blessing_of_dawn->value();
       // Increase base multiplier by SoO/FL increase
-      if ( p()->talents.seal_of_order->ok() )
+      if ( !p()->is_ptr() && p()->talents.seal_of_order->ok() )
         bod_mult += p()->talents.seal_of_order->effectN( 1 ).percent();
       // Separating those, in case on of them gets changed. Both do exactly the same to Dawn, though.
-      if ( p()->talents.fading_light->ok() )
+      if ( !p()->is_ptr() && p()->talents.fading_light->ok() )
         bod_mult += p()->talents.fading_light->effectN( 1 ).percent();
       // Multiply by stack count
       bod_mult *= p()->buffs.blessing_of_dawn->stack();
@@ -1761,7 +1809,15 @@ public:
     // Free Hammer of Light from Divine Purpose counts as 5 Holy Power spent, Free Hammer of Light from Light's
     // Deliverance counts as 0 Holy Power spent
     if ( isFreeSLDPSpender )
+    {
       num_hopo_spent = is_hammer_of_light_driver ? hol_cost : 3.0;
+      // 2024-09-10 If Hammer of Light is affected by Divine Purpose, it counts as 5 Holy Power spent.
+      if ( p->bugs && p->specialization() == PALADIN_PROTECTION && p->buffs.divine_purpose->up() &&
+           is_hammer_of_light_driver )
+      {
+        num_hopo_spent = 5.0;
+      }
+    }
 
     if ( p->talents.righteous_cause->ok() && p->cooldowns.righteous_cause_icd->up() )
     {
@@ -1782,45 +1838,9 @@ public:
     if ( p->talents.relentless_inquisitor->ok() && !ab::background )
       p->buffs.relentless_inquisitor->trigger();
 
-    /*
-      Hammer of Light shenanigans, leaving these findings for later, not touching for now:
-      Crusade, no RG:
-      Execute gives 5 Stacks, if no DP active
-      Damage gives 5 Stacks, if DP active
-      (Can go to 10 stacks immediately, if HoL was the one to trigger DP, see
-      https://www.warcraftlogs.com/reports/WjvLtYRhfq1PmQTF#fight=last&type=auras&ability=231895&view=events&pins=0%24Separate%24%23244F4B%24any%24-1%246015535.0.0.Unknown%240.0.0.Any%24true%240.0.0.Any%24true%24429826%7C427453%7C408458
-      )
-
-      Crusade, RG:
-      Execute gives 5 Stacks, if no DP active
-      Damage never gives stacks
-
-      Light's Deliverance never gives Stacks
-    */
-    if ( p->buffs.crusade->check() )
+    if ( num_hopo_spent > 0 && p->buffs.crusade->check() )
     {
-      double crusade_stacks_given = num_hopo_spent;
-
-      if ( is_hammer_of_light_driver )
-      {
-        // 2024-08-05 The driver doesn't give stacks if it was free
-        if ( ( p->buffs.divine_purpose->up() && p->bugs ) ||
-             ( p->buffs.templar.hammer_of_light_free->up() && p->bugs ) )
-        {
-          crusade_stacks_given = 0.0;
-        }
-      }
-      // Damage part of Hammer of Light
-      else if ( is_hammer_of_light )
-      {
-        // 2024-08-05 The damage part gives stacks if Divine Purpose is up (Can go to 10 stacks immediately if the driver procced it). But only for hardcast Crusades
-        if ( p->bugs && p->buffs.divine_purpose->up() && !p->talents.radiant_glory->ok() )
-        {
-          crusade_stacks_given = 5.0;
-        }
-      }
-      if ( crusade_stacks_given > 0 )
-        p->buffs.crusade->trigger( as<int>( crusade_stacks_given ) );
+      p->buffs.crusade->trigger( as<int>( num_hopo_spent ) );
     }
 
     // Hammer of Light driver can proc it under all circumstances, but not the damage part
@@ -1952,7 +1972,7 @@ public:
       p->procs.divine_purpose->occur();
     }
 
-    if ( p->talents.incandescence->ok() )
+    if ( !p->is_ptr() && p->talents.incandescence->ok() )
     {
       for ( int hopo = 0; hopo < num_hopo_spent; hopo++ )
       {

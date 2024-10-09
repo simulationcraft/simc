@@ -567,6 +567,9 @@ namespace warlock
     hero.malevolence = find_talent_spell( talent_tree::HERO, "Malevolence" ); // Should be ID 430014
     hero.malevolence_buff = find_spell( 442726 );
     hero.malevolence_dmg = find_spell( 446285 );
+
+    cooldowns.blackened_soul->duration = 500_ms; // TODO: Set using data once hotfix is in using hero.blackened_soul->internal_cooldown();
+    cooldowns.seeds_of_their_demise->duration = 15_s;
   }
 
   void warlock_t::init_spells_soul_harvester()

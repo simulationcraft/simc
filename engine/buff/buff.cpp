@@ -2618,13 +2618,13 @@ bool buff_t::can_expire( action_t* action ) const
   return true;
 }
 
-void buff_t::expire( action_t* action, timespan_t delay )
+void buff_t::expire( action_t* action, timespan_t d )
 {
   if ( can_expire( action ) )
-    expire( delay );
+    expire( d );
 }
 
-void buff_t::expire( timespan_t delay )
+void buff_t::expire( timespan_t d )
 {
   if ( current_stack <= 0 )
   {
@@ -2632,11 +2632,11 @@ void buff_t::expire( timespan_t delay )
     return;
   }
 
-  if ( delay > timespan_t::zero() )  // Expiration Delay
+  if ( d > timespan_t::zero() )  // Expiration Delay
   {
     if ( !expiration_delay )  // Don't reschedule already existing expiration delay
     {
-      expiration_delay = make_event<expiration_delay_t>( *sim, this, delay );
+      expiration_delay = make_event<expiration_delay_t>( *sim, this, d );
     }
     return;
   }
@@ -3029,6 +3029,11 @@ util::string_view buff_t::source_name() const
 rng::rng_t& buff_t::rng()
 {
   return sim->rng();
+}
+
+rng::rng_t& buff_t::rng() const
+{
+  return sim -> rng();
 }
 
 /**
@@ -3486,10 +3491,10 @@ void cost_reduction_buff_t::expire_override( int expiration_stacks, timespan_t r
   buff_t::expire_override( expiration_stacks, remaining_duration );
 }
 
-cost_reduction_buff_t* cost_reduction_buff_t::set_reduction( school_e school, double amount )
+cost_reduction_buff_t* cost_reduction_buff_t::set_reduction( school_e s, double a )
 {
-  this->amount = amount;
-  this->school = school;
+  amount = a;
+  school = s;
   return this;
 }
 
@@ -3766,27 +3771,37 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
       sim->print_debug( "{} damage debuff direct multiplier initialized to {}", *this, direct_mod.multiplier );
       sim->print_debug( "{} damage debuff periodic multiplier initialized to {}", *this, periodic_mod.multiplier );
     }
-    else if ( e.subtype() == A_ADD_PCT_LABEL_MODIFIER && multiplier != 0.0 )
+    else if ( e.subtype() == A_ADD_PCT_LABEL_MODIFIER )
     {
       if ( e.property_type() == P_GENERIC )
       {
-        if ( direct_mod.multiplier == 1.0 && direct_mod.effect_idx == 0 )
+        if ( multiplier != 0.0 && direct_mod.multiplier == 1.0 && direct_mod.effect_idx == 0 )
           set_direct_mod( spell, idx, multiplier );
 
-        assert( direct_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier ) 
-                && "Additional label modifiers do not match the existing direct effect value" );
-
-        direct_mod.labels.push_back( e.misc_value2() );
+        if ( direct_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier ) )
+        {
+          direct_mod.labels.push_back( e.misc_value2() );
+        }
+        else
+        {
+          sim->print_debug( "{} ignoring label modifier of {} due to not matching existing direct effect value of {}",
+                            *this, ( multiplier == 0.0 ? e.percent() : multiplier ), direct_mod.multiplier );
+        }
       }
       else if ( e.property_type() == P_TICK_DAMAGE )
       {
-        if ( periodic_mod.multiplier == 1.0 && periodic_mod.effect_idx == 0 )
+        if ( multiplier != 0.0 && periodic_mod.multiplier == 1.0 && periodic_mod.effect_idx == 0 )
           set_periodic_mod( spell, idx, multiplier );
 
-        assert( periodic_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier )
-                && "Additional label modifiers do not match the existing periodic effect value" );
-
-        periodic_mod.labels.push_back( e.misc_value2() );
+        if ( periodic_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier ) )
+        {
+          periodic_mod.labels.push_back( e.misc_value2() );
+        }
+        else
+        {
+          sim->print_debug( "{} ignoring label modifier of {} due to not matching existing periodic effect value of {}",
+                            *this, ( multiplier == 0.0 ? e.percent() : multiplier ), periodic_mod.multiplier );
+        }
       }
     }
     else if ( e.subtype() == A_ADD_FLAT_LABEL_MODIFIER && e.property_type() == P_CRIT )

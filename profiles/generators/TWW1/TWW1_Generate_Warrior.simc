@@ -57,19 +57,19 @@ race=mechagnome
 spec=protection
 role=tank
 position=front
-talents=CkEAAAAAAAAAAAAAAAAAAAAAAYEDAAAAzMzYmZGMbzsMzMz2mZMMNzgZmBwyADbMzMwDMzDMMAAAAAAgZGAgltNADDsBLLGNmBwsFbYD
+talents=CkEAmidFBOBFf5oKuZ7r/WeW7YgBAAAgZmZMzMDmtZWmZmZbzMGGzAzMDglBG2YmZgZmHYYAAAAAAAzMAALbbAGGssNjZZZbYmZYGWmNjNsB
 
 head=warsculptors_barbute,id=211984,bonus_id=10878,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,bonus_id=10879,ilevel=639,gem_id=213479/213479
-shoulders=warsculptors_horned_spaulders,id=211982,ilevel=639
+shoulder=vile_butchers_pauldrons,id=178749,bonus_id=1538/10870/4786,ilevel=639
 back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant=chant_of_winged_grace_3
 chest=warsculptors_furred_plastron,id=211987,ilevel=639,enchant=crystalline_radiance_3
 wrists=everforged_vambraces,id=222435,bonus_id=10222/10878/11304,ilevel=636,gem_id=213479,crafted_stats=32/36
-hands=machinists_searing_handguards,id=221086,ilevel=639
-waist=everforged_greatbelt,id=222431,ilevel=636bonus_id=10222/8790/8960/10878/11304,gem_id=213479
+hands=warsculptors_crushers,id=211985,,ilevel=639
+waist=crystalfissure_girdle,id=221079,bonus_id=1672/10870/1808,gem_id=213470,ilevel=639
 legs=warsculptors_cuisses,id=211983,ilevel=639,enchant=defenders_armor_kit_3
-feet=warsculptors_carved_boots,id=211986,ilevel=639,enchant=defenders_march_3
-finger1=devout_zealots_ring,id=221136,bonus_id=10879,ilevel=639,gem_id=213479/213479,enchant=radiant_haste_3
+feet=everforged_sabatons,id=222429,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960,ilevel=636,crafted_stats=32/36,enchant=defenders_march_3
+finger1=band_of_the_ancient_dredger,id=159461,bonus_id=10047/10299/8781,ilevel=639,gem_id=213479/213455,enchant=radiant_haste_3
 finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,ilevel=639,gem_id=213479/213479,enchant=radiant_haste_3
 trinket1=arakara_sacbrood,id=219314,ilevel=639
 trinket2=spare_meat_hook,id=178751,ilevel=639

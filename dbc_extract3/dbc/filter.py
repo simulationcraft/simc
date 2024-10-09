@@ -827,8 +827,8 @@ class ExpectedStatModSet(DataSet):
         xpac = maps[0].id_expansion
         maps = [m for m in maps if m.id_expansion == xpac]
 
-        # assume the latest raid has the highest loading screen id
-        maps.sort(key = lambda e: e.id_loading_screen, reverse = True)
+        # assume the latest raid has the highest order index in JournalTierXInstance for the map's JournalInstan ce
+        maps.sort(key = lambda e: e.child_ref('JournalInstance').child_refs('JournalTierXInstance')[0].order, reverse = True)
         map_id = maps[0].id
 
         # find all the difficulties for the map & m+
@@ -862,7 +862,8 @@ class ExpectedStatModSet(DataSet):
                     mod_ids.append([e, c[1]])
                     break
             else:
-                if e.id_parent == dungeon_id[0]:
+                # check if it's m+ season for the current expansion
+                if e.id_parent == dungeon_id[0] and e.ref('id_mythic_plus_season').id_expansion == xpac:
                     mod_d_ids.append([e, dungeon_id[1]])
 
         # assume highest mythic plus season id is the current season

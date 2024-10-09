@@ -104,7 +104,7 @@ item_t::item_t( player_t* p, util::string_view o ) :
   unique_addon( false ),
   is_ptr( p -> dbc->ptr ),
   parsed(),
-  options_str( o ), option_initial_cd(0)
+  options_str( o ), option_initial_cd( 0 )
 {
   parsed.data.name = name_str.c_str();
 }
@@ -822,9 +822,8 @@ void item_t::parse_options()
     option_name_str = options_str.substr( 0, cut_pt );
   }
 
-  std::array<std::unique_ptr<option_t>, 35> options { {
+  std::array<std::unique_ptr<option_t>, 33> options { {
     opt_uint("id", parsed.data.id),
-    opt_obsoleted("upgrade"),
     opt_string("stats", option_stats_str),
     opt_string("gems", option_gems_str),
     opt_string("enchant", option_enchant_str),
@@ -1041,10 +1040,10 @@ void item_t::parse_options()
         else
         {
           auto stat_type = util::parse_stat_type( stat_str );
-          auto item_mod = util::translate_stat( stat_type );
-          if ( item_mod != ITEM_MOD_NONE )
+          auto stat_mod = util::translate_stat( stat_type );
+          if ( stat_mod != ITEM_MOD_NONE )
           {
-            parsed.crafted_stat_mod.push_back( item_mod );
+            parsed.crafted_stat_mod.push_back( stat_mod );
           }
           else
           {
@@ -1086,6 +1085,7 @@ bool item_t::initialize_data()
 std::string item_t::encoded_item() const
 {
   std::ostringstream s;
+  s.imbue( std::locale("C") );  // ensure item strings are locale-independent
 
   s << name_str;
 
@@ -1418,10 +1418,10 @@ std::string item_t::encoded_addon() const
 
 std::string item_t::encoded_stats() const
 {
-  if ( ! option_stats_str.empty() )
+  if ( !option_stats_str.empty() )
     return option_stats_str;
 
-  std::vector<std::string> stats;
+  std::vector<std::string> enc_stats;
 
   for ( size_t i = 0; i < std::size( parsed.data.stat_type_e ); i++ )
   {
@@ -1429,10 +1429,11 @@ std::string item_t::encoded_stats() const
       continue;
 
     std::string stat_str = item_database::stat_to_str( parsed.data.stat_type_e[ i ], stat_value( i ) );
-    if ( ! stat_str.empty() ) stats.push_back( stat_str );
+    if ( !stat_str.empty() )
+      enc_stats.push_back( stat_str );
   }
 
-  return util::string_join( stats, "_" );
+  return util::string_join( enc_stats, "_" );
 }
 
 // item_t::encoded_weapon ===================================================
@@ -1713,22 +1714,25 @@ void item_t::decode_stats()
   // since the missives system allows overriding of the "crafted stat system" through item
   // bonuses.
   auto crafted_stat_id = ITEM_MOD_BONUS_STAT_1;
-  range::for_each( parsed.crafted_stat_mod, [ this, &crafted_stat_id ]( int crafted_mod ) {
-    auto it = range::find_if( parsed.data.stat_type_e, [crafted_stat_id]( int item_mod ) {
-      return item_mod == crafted_stat_id;
-    } );
 
-    if ( it != parsed.data.stat_type_e.end() )
+  for ( auto crafted_mod : parsed.crafted_stat_mod )
+  {
+    // If multiple instances of the same crafted item mod is present, replace them all. It's unclear if this is
+    // what actually happens in game, as alternative possibility is that only those mods with non-zero stat
+    // allocations are processed. Refactor if necessary if we are able to confirm in game.
+    for ( size_t i = 0; i < parsed.data.stat_type_e.size(); i++ )
     {
-      auto stat_type = util::translate_item_mod( crafted_mod );
-      player->sim->print_debug( "Player {} item '{}' modifying crafted stat type {} to '{}' (index={})",
-          player->name(), name(), *it,  util::stat_type_string( stat_type ),
-          std::distance( parsed.data.stat_type_e.begin(), it ) );
-      (*it) = crafted_mod;
+      if ( auto& item_mod = parsed.data.stat_type_e[ i ]; item_mod == crafted_stat_id )
+      {
+        auto stat_type = util::translate_item_mod( crafted_mod );
+        player->sim->print_debug( "Player {} item '{}' modifying crafted stat type {} to '{}' (index={})",
+                                  player->name(), name(), item_mod, util::stat_type_string( stat_type ), i );
+        item_mod = crafted_mod;
+      }
     }
 
     crafted_stat_id++;
-  } );
+  }
 
   for ( size_t i = 0; i < parsed.data.stat_type_e.size(); i++ )
   {

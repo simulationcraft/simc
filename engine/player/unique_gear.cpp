@@ -17,6 +17,7 @@
 
 #include <cctype>
 #include <memory>
+#include <regex>
 
 #include "simulationcraft.hpp"
 
@@ -2470,7 +2471,7 @@ struct felmouth_frenzy_driver_t : public spell_t
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
-    size_t ticks = n_ticks[ rng().range( n_ticks.size() ) ];
+    size_t ticks = rng().range( n_ticks );
     assert( ticks >= 4 && ticks <= 6 );
     return base_tick_time * ticks;
   }
@@ -3870,19 +3871,18 @@ const special_effect_t* item_targetdata_initializer_t::effect( actor_target_data
  * proc callback, and relevant actions/buffs, or call a custom function to
  * perform the initialization.
  */
-void unique_gear::initialize_special_effect( special_effect_t& effect,
-                                             unsigned          spell_id )
+void unique_gear::initialize_special_effect( special_effect_t& effect, unsigned spell_id )
 {
   player_t* p = effect.player;
 
   // Perform max level checking on the driver before anything
-  const spell_data_t* spell = p -> find_spell( spell_id );
-  if ( spell -> req_max_level() > 0 && as<unsigned>( p -> level() ) > spell -> req_max_level() )
+  const spell_data_t* spell = p->find_spell( spell_id );
+  if ( spell->max_aura_level() > 0 && as<unsigned>( p->level() ) > spell->max_aura_level() )
   {
-    if ( p -> sim -> debug )
+    if ( p->sim->debug )
     {
-      p -> sim -> out_debug.printf( "%s disabled effect %s, player level %d higher than maximum effect level %u",
-        p -> name(), spell -> name_cstr(), p -> level(), spell -> req_max_level() );
+      p->sim->out_debug.printf( "%s disabled effect %s, player level %d higher than maximum effect level %u", p->name(),
+                                spell->name_cstr(), p->level(), spell->max_aura_level() );
     }
     effect.type = SPECIAL_EFFECT_NONE;
     return;
@@ -4397,6 +4397,13 @@ struct item_has_use_expr_t : public item_effect_expr_t
     {
       for ( auto e : effects )
       {
+        // Check has_use_buff override
+        if ( e->has_use_buff_override )
+        {
+          has_buff = true;
+          break;
+        }
+
         // Check if there is a stat set on the special effect
         if ( stat_fits_criteria( e->stat, STAT_ANY_DPS ) )
         {
@@ -4452,6 +4459,13 @@ struct item_has_use_expr_t : public item_effect_expr_t
     {
       for ( auto e : effects )
       {
+        // check has_use_damage override
+        if ( e->has_use_damage_override )
+        {
+          has_damage = true;
+          break;
+        }
+
         // check if action name exists
         action_t* a = player.find_action( e->name() );
         if ( action_has_damage( a ) )
@@ -4704,18 +4718,18 @@ namespace unique_gear
     may_miss = may_dodge = may_parry = may_block = harmful = false;
     target = player;
 
-    for (size_t i = 1; i <= data().effect_count(); i++)
+    for ( size_t i = 1; i <= data().effect_count(); i++ )
     {
-      const spelleffect_data_t& effect = data().effectN(i);
-      if (effect.type() == E_ENERGIZE)
+      const spelleffect_data_t& eff = data().effectN( i );
+      if ( eff.type() == E_ENERGIZE )
       {
-        gain_da = effect.average(item);
-        gain_resource = effect.resource_gain_type();
+        gain_da = eff.average( item );
+        gain_resource = eff.resource_gain_type();
       }
-      else if (effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_ENERGIZE)
+      else if ( eff.type() == E_APPLY_AURA && eff.subtype() == A_PERIODIC_ENERGIZE )
       {
-        gain_ta = effect.average(item);
-        gain_resource = effect.resource_gain_type();
+        gain_ta = eff.average( item );
+        gain_resource = eff.resource_gain_type();
       }
     }
 
@@ -5289,3 +5303,48 @@ void unique_gear::sort_special_effects()
   range::sort( __fallback_effect_db, cmp_special_effect );
 }
 
+double unique_gear::role_mult( player_t* player, const spell_data_t* s_data )
+{
+  static constexpr const char* role_mult_str =
+    "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|"
+    "a356810|a137012[${0.66}.2][${1}]";
+
+  double mult = 1.0;
+  auto vars = s_data ? player->dbc->spell_desc_vars( s_data->id() ).desc_vars() : role_mult_str;
+
+  assert( vars && "No spell description variables found. role_mult( player_t* ) can provide a default value." );
+  if ( vars )
+  {
+    std::cmatch m;
+    std::regex get_var( R"(\$rolemult=\$(.*))" );  // find the $rolemult= variable
+    if ( std::regex_search( vars, m, get_var ) )
+    {
+      const auto var = m.str( 1 );
+      std::regex get_role( R"(\??((?:a\d+\|?)*)\[\$\{([\d\.]+)\}[\d\.]*\])" );  // find each role group
+      std::sregex_iterator role_it( var.begin(), var.end(), get_role );
+      for ( std::sregex_iterator i = role_it; i != std::sregex_iterator(); i++ )
+      {
+        mult = util::to_double( i->str( 2 ) );
+        const auto role = i->str( 1 );
+        std::regex get_spec( R"(a(\d+))" );  // find each spec spell id
+        std::sregex_iterator spec_it( role.begin(), role.end(), get_spec );
+        for ( std::sregex_iterator j = spec_it; j != std::sregex_iterator(); j++ )
+        {
+          if ( util::to_unsigned_ignore_error( j->str( 1 ), 0u ) == player->spec_spell->id() )
+          {
+            player->sim->print_debug( "parsed role multiplier for spell '{}': {}",
+                                      s_data ? s_data->name_cstr() : "none", mult );
+            return mult;
+          }
+        }
+      }
+    }
+  }
+
+  return mult;
+}
+
+double unique_gear::role_mult( const special_effect_t& effect )
+{
+  return role_mult( effect.player, effect.driver() );
+}

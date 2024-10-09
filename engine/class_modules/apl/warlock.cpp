@@ -12,7 +12,7 @@ namespace warlock_apl{
 
   std::string flask( const player_t* p )
   {
-    if ( p->true_level >= 80 ) return "flask_of_tempered_swiftness_3";
+    if ( p->true_level >= 80 ) return "flask_of_alchemical_chaos_3";
     return ( p->true_level >= 70 ) ? "iced_phial_of_corrupting_rage_3" : "disabled";
   }
 
@@ -30,7 +30,7 @@ namespace warlock_apl{
 
   std::string temporary_enchant( const player_t* p )
   {
-    if ( p->true_level >= 80 ) return "main_hand:oil_of_deep_toxins_3";
+    if ( p->true_level >= 80 ) return "main_hand:algari_mana_oil_3";
     return ( p->true_level >= 70 ) ? "main_hand:howling_rune_3" : "disabled";
   }
 
@@ -42,9 +42,11 @@ void affliction( player_t* p )
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
   action_priority_list_t* end_of_fight = p->get_action_priority_list( "end_of_fight" );
+  action_priority_list_t* se_maintenance = p->get_action_priority_list( "se_maintenance" );
+  action_priority_list_t* opener_cleave_se = p->get_action_priority_list( "opener_cleave_se" );
+  action_priority_list_t* cleave_se_maintenance = p->get_action_priority_list( "cleave_se_maintenance" );
   action_priority_list_t* items = p->get_action_priority_list( "items" );
   action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
-  action_priority_list_t* se_maintenance = p->get_action_priority_list( "se_maintenance" );
   action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
   precombat->add_action( "flask" );
@@ -66,7 +68,7 @@ void affliction( player_t* p )
 
   precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>2|spell_targets.seed_of_corruption_aoe>1" );
+  precombat->add_action( "seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>2|spell_targets.seed_of_corruption_aoe>1&talent.demonic_soul" );
   precombat->add_action( "haunt" );
 
   default_->add_action( "call_action_list,name=variables" );
@@ -88,7 +90,7 @@ void affliction( player_t* p )
   default_->add_action( "phantom_singularity,if=(!talent.soul_rot|cooldown.soul_rot.remains<4|fight_remains<cooldown.soul_rot.remains)&dot.agony.remains&(dot.corruption.remains|dot.wither.remains)&dot.unstable_affliction.remains" );
   default_->add_action( "malevolence,if=variable.vt_ps_up" );
   default_->add_action( "soul_rot,if=variable.vt_ps_up" );
-  default_->add_action( "summon_darkglare,if=variable.cd_dots_up" );
+  default_->add_action( "summon_darkglare,if=variable.cd_dots_up&(debuff.shadow_embrace.stack=debuff.shadow_embrace.max_stack)" );
   default_->add_action( "call_action_list,name=se_maintenance,if=talent.demonic_soul" );
   default_->add_action( "malefic_rapture,if=soul_shard>4&(talent.demonic_soul&buff.nightfall.react<2|!talent.demonic_soul)|buff.tormented_crescendo.react>1" );
   default_->add_action( "drain_soul,if=talent.demonic_soul&buff.nightfall.react&buff.tormented_crescendo.react<2&target.health.pct<20" );
@@ -122,50 +124,63 @@ void affliction( player_t* p )
   aoe->add_action( "corruption,target_if=min:remains,if=remains<5&!talent.seed_of_corruption" );
   aoe->add_action( "wither,target_if=min:remains,if=remains<5&!talent.seed_of_corruption" );
   aoe->add_action( "summon_darkglare,if=variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot" );
-  aoe->add_action( "malefic_rapture,if=(cooldown.summon_darkglare.remains>15|soul_shard>3)&buff.tormented_crescendo.up" );
+  aoe->add_action( "malefic_rapture,if=(cooldown.summon_darkglare.remains>15|soul_shard>3|(talent.demonic_soul&soul_shard>2))&buff.tormented_crescendo.up" );
   aoe->add_action( "malefic_rapture,if=soul_shard>4|(talent.tormented_crescendo&buff.tormented_crescendo.react=1&soul_shard>3)" );
+  aoe->add_action( "malefic_rapture,if=talent.demonic_soul&(soul_shard>2|(talent.tormented_crescendo&buff.tormented_crescendo.react=1&soul_shard))" );
   aoe->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react" );
   aoe->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react=2" );
   aoe->add_action( "malefic_rapture,if=(variable.cd_dots_up|variable.vt_ps_up)&(soul_shard>2|cooldown.oblivion.remains>10|!talent.oblivion)" );
   aoe->add_action( "malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react" );
-  aoe->add_action( "drain_soul,cycle_targets=1,if=talent.drain_soul&buff.nightfall.react&talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)" );
-  aoe->add_action( "drain_soul,cycle_targets=1,interrupt_global=1,if=talent.drain_soul&(talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3))|!talent.shadow_embrace" );
-  aoe->add_action( "shadow_bolt,cycle_targets=1,if=buff.nightfall.react&talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)" );
+  aoe->add_action( "drain_soul,interrupt_if=cooldown.vile_taint.ready,if=talent.drain_soul&buff.nightfall.react&talent.shadow_embrace&(debuff.shadow_embrace.stack<4|debuff.shadow_embrace.remains<3)" );
+  aoe->add_action( "drain_soul,interrupt_if=cooldown.vile_taint.ready,interrupt_global=1,if=talent.drain_soul&(talent.shadow_embrace&(debuff.shadow_embrace.stack<4|debuff.shadow_embrace.remains<3))|!talent.shadow_embrace" );
+  aoe->add_action( "shadow_bolt,if=buff.nightfall.react&talent.shadow_embrace&(debuff.shadow_embrace.stack<2|debuff.shadow_embrace.remains<3)" );
 
   cleave->add_action( "call_action_list,name=ogcd" );
   cleave->add_action( "call_action_list,name=items" );
-  cleave->add_action( "vile_taint,if=!talent.soul_rot|(variable.min_agony<1.5|cooldown.soul_rot.remains<=execute_time+gcd.max)|cooldown.soul_rot.remains>=12" );
-  cleave->add_action( "phantom_singularity,if=(cooldown.soul_rot.remains<=execute_time|cooldown.soul_rot.remains>=25)&active_dot.agony=2" );
-  cleave->add_action( "soul_rot,if=(variable.vt_up|variable.ps_up)&active_dot.agony=2" );
-  cleave->add_action( "agony,target_if=min:remains,if=(remains<cooldown.vile_taint.remains+action.vile_taint.cast_time|!talent.vile_taint)&remains<5&fight_remains>5" );
-  cleave->add_action( "unstable_affliction,if=remains<5&fight_remains>3" );
-  cleave->add_action( "haunt,if=debuff.haunt.remains<3" );
-  cleave->add_action( "wither,target_if=min:remains,if=remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)&fight_remains>5" );
-  cleave->add_action( "corruption,target_if=min:remains,if=remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)&fight_remains>5" );
-  cleave->add_action( "summon_darkglare,if=(!talent.shadow_embrace|debuff.shadow_embrace.stack=3)&variable.ps_up&variable.vt_up&variable.sr_up|cooldown.invoke_power_infusion_0.duration>0&cooldown.invoke_power_infusion_0.up&!talent.soul_rot" );
-  cleave->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react=1&soul_shard>3" );
-  cleave->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react" );
-  cleave->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react=2" );
-  cleave->add_action( "malefic_rapture,if=(variable.cd_dots_up|variable.vt_ps_up)&(soul_shard>2|cooldown.oblivion.remains>10|!talent.oblivion)" );
-  cleave->add_action( "malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react" );
-  cleave->add_action( "drain_soul,interrupt=1,if=talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)" );
-  cleave->add_action( "drain_soul,target_if=min:debuff.shadow_embrace.remains,if=buff.nightfall.react&(talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)|!talent.shadow_embrace)" );
-  cleave->add_action( "shadow_bolt,target_if=min:debuff.shadow_embrace.remains,if=buff.nightfall.react&(talent.shadow_embrace&(debuff.shadow_embrace.stack<3|debuff.shadow_embrace.remains<3)|!talent.shadow_embrace)" );
-  cleave->add_action( "malefic_rapture,if=variable.cd_dots_up|variable.vt_ps_up" );
-  cleave->add_action( "malefic_rapture,if=soul_shard>3" );
-  cleave->add_action( "agony,target_if=refreshable" );
-  cleave->add_action( "wither,target_if=refreshable" );
-  cleave->add_action( "corruption,target_if=refreshable" );
-  cleave->add_action( "malefic_rapture,if=soul_shard>1" );
-  cleave->add_action( "drain_soul,interrupt_global=1" );
+  cleave->add_action( "call_action_list,name=end_of_fight" );
+  cleave->add_action( "agony,target_if=min:remains,if=(remains<cooldown.vile_taint.remains+action.vile_taint.cast_time|!talent.vile_taint)&(remains<gcd.max*2|talent.demonic_soul&remains<cooldown.soul_rot.remains+8&cooldown.soul_rot.remains<5)&fight_remains>remains+5" );
+  cleave->add_action( "wither,target_if=min:remains,if=remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)&fight_remains>remains+5" );
+  cleave->add_action( "haunt,if=talent.demonic_soul&buff.nightfall.react<2-prev_gcd.1.drain_soul&(!talent.vile_taint|cooldown.vile_taint.remains)|debuff.haunt.remains<3" );
+  cleave->add_action( "unstable_affliction,if=(remains<5|talent.demonic_soul&remains<cooldown.soul_rot.remains+8&cooldown.soul_rot.remains<5)&fight_remains>remains+5" );
+  cleave->add_action( "corruption,target_if=min:remains,if=remains<5&!(action.seed_of_corruption.in_flight|dot.seed_of_corruption.remains>0)&fight_remains>remains+5" );
+  cleave->add_action( "call_action_list,name=cleave_se_maintenance,if=talent.wither" );
+  cleave->add_action( "vile_taint,if=!talent.soul_rot|(variable.min_agony<1.5|cooldown.soul_rot.remains<=execute_time+gcd.max)|cooldown.soul_rot.remains>=20" );
+  cleave->add_action( "phantom_singularity,if=(!talent.soul_rot|cooldown.soul_rot.remains<4|fight_remains<cooldown.soul_rot.remains)&active_dot.agony=2" );
+  cleave->add_action( "malevolence,if=variable.vt_ps_up" );
+  cleave->add_action( "soul_rot,if=(variable.vt_ps_up)&active_dot.agony=2" );
+  cleave->add_action( "summon_darkglare,if=variable.cd_dots_up" );
+  cleave->add_action( "call_action_list,name=opener_cleave_se,if=talent.demonic_soul" );
+  cleave->add_action( "call_action_list,name=cleave_se_maintenance,if=talent.demonic_soul" );
+  cleave->add_action( "malefic_rapture,if=soul_shard>4&(talent.demonic_soul&buff.nightfall.react<2|!talent.demonic_soul)|buff.tormented_crescendo.react>1" );
+  cleave->add_action( "drain_soul,if=talent.demonic_soul&buff.nightfall.react&buff.tormented_crescendo.react<2&target.health.pct<20" );
+  cleave->add_action( "malefic_rapture,if=talent.demonic_soul&(soul_shard>1|buff.tormented_crescendo.react&cooldown.soul_rot.remains>buff.tormented_crescendo.remains*gcd.max)&(!talent.vile_taint|soul_shard>1&cooldown.vile_taint.remains>10)&(!talent.oblivion|cooldown.oblivion.remains>10|soul_shard>2&cooldown.oblivion.remains<10)" );
+  cleave->add_action( "malefic_rapture,if=talent.tormented_crescendo&buff.tormented_crescendo.react&(buff.tormented_crescendo.remains<gcd.max*2|buff.tormented_crescendo.react=2)" );
+  cleave->add_action( "malefic_rapture,if=(variable.cd_dots_up|(talent.demonic_soul|talent.phantom_singularity)&variable.vt_ps_up|talent.wither&variable.vt_ps_up&!dot.soul_rot.remains&soul_shard>1)&(!talent.oblivion|cooldown.oblivion.remains>10|soul_shard>2&cooldown.oblivion.remains<10)" );
+  cleave->add_action( "malefic_rapture,if=talent.tormented_crescendo&talent.nightfall&buff.tormented_crescendo.react&buff.nightfall.react|talent.demonic_soul&!buff.nightfall.react&(!talent.vile_taint|cooldown.vile_taint.remains>10|soul_shard>1&cooldown.vile_taint.remains<10)" );
+  cleave->add_action( "malefic_rapture,if=!talent.demonic_soul&buff.tormented_crescendo.react" );
+  cleave->add_action( "agony,if=refreshable|cooldown.soul_rot.remains<5&remains<8" );
+  cleave->add_action( "unstable_affliction,if=refreshable|cooldown.soul_rot.remains<5&remains<8" );
+  cleave->add_action( "drain_soul,if=buff.nightfall.react" );
+  cleave->add_action( "shadow_bolt,if=buff.nightfall.react" );
+  cleave->add_action( "wither,if=refreshable" );
+  cleave->add_action( "corruption,if=refreshable" );
+  cleave->add_action( "drain_soul,chain=1,early_chain_if=buff.nightfall.react,interrupt_if=tick_time>0.5" );
   cleave->add_action( "shadow_bolt" );
 
   end_of_fight->add_action( "drain_soul,if=talent.demonic_soul&(fight_remains<5&buff.nightfall.react|prev_gcd.1.haunt&buff.nightfall.react=2&!buff.tormented_crescendo.react)" );
   end_of_fight->add_action( "oblivion,if=soul_shard>1&fight_remains<(soul_shard+buff.tormented_crescendo.react)*gcd.max+execute_time" );
   end_of_fight->add_action( "malefic_rapture,if=fight_remains<4&(!talent.demonic_soul|talent.demonic_soul&buff.nightfall.react<1)" );
 
+  se_maintenance->add_action( "drain_soul,interrupt=1,if=talent.shadow_embrace&talent.drain_soul&(debuff.shadow_embrace.stack<debuff.shadow_embrace.max_stack|debuff.shadow_embrace.remains<3)&active_enemies<=4&fight_remains>15,interrupt_if=debuff.shadow_embrace.stack=debuff.shadow_embrace.max_stack" );
+  se_maintenance->add_action( "shadow_bolt,if=talent.shadow_embrace&((debuff.shadow_embrace.stack+action.shadow_bolt.in_flight_to_target_count)<debuff.shadow_embrace.max_stack|debuff.shadow_embrace.remains<3&!action.shadow_bolt.in_flight_to_target)&active_enemies<=4&fight_remains>15" );
+
+  opener_cleave_se->add_action( "drain_soul,if=talent.shadow_embrace&talent.drain_soul&buff.nightfall.react&(debuff.shadow_embrace.stack<debuff.shadow_embrace.max_stack|debuff.shadow_embrace.remains<3)&(fight_remains>15|time<20),interrupt_if=debuff.shadow_embrace.stack=debuff.shadow_embrace.max_stack" );
+
+  cleave_se_maintenance->add_action( "drain_soul,target_if=min:debuff.shadow_embrace.remains,if=talent.shadow_embrace&talent.drain_soul&(talent.wither|talent.demonic_soul&buff.nightfall.react)&(debuff.shadow_embrace.stack<debuff.shadow_embrace.max_stack|debuff.shadow_embrace.remains<3)&fight_remains>15,interrupt_if=debuff.shadow_embrace.stack>3" );
+  cleave_se_maintenance->add_action( "shadow_bolt,target_if=min:debuff.shadow_embrace.remains,if=talent.shadow_embrace&!talent.drain_soul&((debuff.shadow_embrace.stack+action.shadow_bolt.in_flight_to_target_count)<debuff.shadow_embrace.max_stack|debuff.shadow_embrace.remains<3&!action.shadow_bolt.in_flight_to_target)&fight_remains>15" );
+
   items->add_action( "use_item,name=aberrant_spellforge,use_off_gcd=1,if=gcd.remains>gcd.max*0.8" );
-  items->add_action( "use_item,name=spymasters_web,if=variable.cd_dots_up&(fight_remains<=80|talent.drain_soul&target.health.pct<20)|fight_remains<20" );
+  items->add_action( "use_item,name=spymasters_web,if=variable.cd_dots_up&(buff.spymasters_report.stack>=38|fight_remains<=80|talent.drain_soul&target.health.pct<20)|fight_remains<20" );
   items->add_action( "use_item,slot=trinket1,if=(variable.cds_active)&(variable.trinket_priority=1|variable.trinket_2_exclude|!trinket.2.has_cooldown|(trinket.2.cooldown.remains|variable.trinket_priority=2&cooldown.summon_darkglare.remains>20&!pet.darkglare.active&trinket.2.cooldown.remains<cooldown.summon_darkglare.remains))&variable.trinket_1_buffs&!variable.trinket_1_manual|(variable.trinket_1_buff_duration+1>=fight_remains)" );
   items->add_action( "use_item,slot=trinket2,if=(variable.cds_active)&(variable.trinket_priority=2|variable.trinket_1_exclude|!trinket.1.has_cooldown|(trinket.1.cooldown.remains|variable.trinket_priority=1&cooldown.summon_darkglare.remains>20&!pet.darkglare.active&trinket.1.cooldown.remains<cooldown.summon_darkglare.remains))&variable.trinket_2_buffs&!variable.trinket_2_manual|(variable.trinket_2_buff_duration+1>=fight_remains)" );
   items->add_action( "use_item,name=time_thiefs_gambit,if=variable.cds_active|fight_remains<15|((trinket.1.cooldown.duration<cooldown.summon_darkglare.remains_expected+5)&active_enemies=1)|(active_enemies>1&havoc_active)" );
@@ -173,15 +188,12 @@ void affliction( player_t* p )
   items->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|talent.summon_darkglare&cooldown.summon_darkglare.remains_expected>20|!talent.summon_darkglare)" );
   items->add_action( "use_item,use_off_gcd=1,slot=main_hand" );
 
-  ogcd->add_action( "potion,if=variable.cds_active|fight_remains<32|dot.soul_rot.ticking&time<20" );
-  ogcd->add_action( "berserking,if=variable.cds_active|fight_remains<14|dot.soul_rot.ticking&time<20" );
-  ogcd->add_action( "blood_fury,if=variable.cds_active|fight_remains<17|dot.soul_rot.ticking&time<20" );
+  ogcd->add_action( "potion,if=variable.cds_active|fight_remains<32|prev_gcd.1.soul_rot&time<20" );
+  ogcd->add_action( "berserking,if=variable.cds_active|fight_remains<14|prev_gcd.1.soul_rot&time<20" );
+  ogcd->add_action( "blood_fury,if=variable.cds_active|fight_remains<17|prev_gcd.1.soul_rot&time<20" );
   ogcd->add_action( "invoke_external_buff,name=power_infusion,if=variable.cds_active" );
-  ogcd->add_action( "fireblood,if=variable.cds_active|fight_remains<10|dot.soul_rot.ticking&time<20" );
-  ogcd->add_action( "ancestral_call,if=variable.cds_active|fight_remains<17|dot.soul_rot.ticking&time<20" );
-
-  se_maintenance->add_action( "drain_soul,interrupt=1,if=talent.shadow_embrace&talent.drain_soul&(debuff.shadow_embrace.stack<debuff.shadow_embrace.max_stack|debuff.shadow_embrace.remains<3)&active_enemies<=4&fight_remains>15,interrupt_if=debuff.shadow_embrace.stack=debuff.shadow_embrace.max_stack" );
-  se_maintenance->add_action( "shadow_bolt,if=talent.shadow_embrace&((debuff.shadow_embrace.stack+action.shadow_bolt.in_flight_to_target_count)<debuff.shadow_embrace.max_stack|debuff.shadow_embrace.remains<3&!action.shadow_bolt.in_flight_to_target)&active_enemies<=4&fight_remains>15" );
+  ogcd->add_action( "fireblood,if=variable.cds_active|fight_remains<10|prev_gcd.1.soul_rot&time<20" );
+  ogcd->add_action( "ancestral_call,if=variable.cds_active|fight_remains<17|prev_gcd.1.soul_rot&time<20" );
 
   variables->add_action( "variable,name=ps_up,op=set,value=!talent.phantom_singularity|dot.phantom_singularity.remains" );
   variables->add_action( "variable,name=vt_up,op=set,value=!talent.vile_taint|dot.vile_taint_dot.remains" );
@@ -243,16 +255,14 @@ void demonology( player_t* p )
   default_->add_action( "call_action_list,name=fight_end,if=fight_remains<30" );
   default_->add_action( "call_action_list,name=opener,if=time<variable.first_tyrant_time" );
   default_->add_action( "call_action_list,name=tyrant,if=cooldown.summon_demonic_tyrant.remains<gcd.max*14" );
-  default_->add_action( "hand_of_guldan,if=time<0.5&(fight_remains%%95>40|fight_remains%%95<15)&(talent.reign_of_tyranny|active_enemies>2)" );
   default_->add_action( "call_dreadstalkers,if=cooldown.summon_demonic_tyrant.remains>25|variable.next_tyrant_cd>25" );
-  default_->add_action( "summon_demonic_tyrant,if=buff.vilefiend.up|buff.grimoire_felguard.up|cooldown.grimoire_felguard.remains>60" );
   default_->add_action( "summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>30" );
   default_->add_action( "demonbolt,target_if=(!debuff.doom.up|!action.demonbolt.in_flight&debuff.doom.remains<=2),if=buff.demonic_core.up&(((!talent.soul_strike|cooldown.soul_strike.remains>gcd.max*2&talent.fel_invocation)&soul_shard<4)|soul_shard<(4-(active_enemies>2)))&!prev_gcd.1.demonbolt&talent.doom&cooldown.summon_demonic_tyrant.remains>15" );
   default_->add_action( "demonbolt,if=buff.demonic_core.stack>=3&soul_shard<=3&!variable.pool_cores_for_tyrant" );
   default_->add_action( "power_siphon,if=buff.demonic_core.stack<3&cooldown.summon_demonic_tyrant.remains>25" );
-  default_->add_action( "demonic_strength,if=!(raid_event.adds.in<45-raid_event.add.duration)" );
-  default_->add_action( "bilescourge_bombers" );
-  default_->add_action( "guillotine,if=(cooldown.demonic_strength.remains|!talent.demonic_strength)&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>6)" );
+  default_->add_action( "demonic_strength,,if=active_enemies>1" );
+  default_->add_action( "bilescourge_bombers,if=active_enemies>1" );
+  default_->add_action( "guillotine,if=active_enemies>1&(cooldown.demonic_strength.remains|!talent.demonic_strength)&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.remains>6)" );
   default_->add_action( "ruination" );
   default_->add_action( "infernal_bolt,if=soul_shard<3&cooldown.summon_demonic_tyrant.remains>20" );
   default_->add_action( "implosion,if=two_cast_imps>0&variable.impl&!prev_gcd.1.implosion&!raid_event.adds.exists|two_cast_imps>0&variable.impl&!prev_gcd.1.implosion&raid_event.adds.exists&(active_enemies>3|active_enemies<=3&last_cast_imps>0)" );
@@ -368,11 +378,11 @@ void destruction( player_t* p )
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.summon_infernal.duration=0|cooldown.summon_infernal.duration%%trinket.1.cooldown.duration=0)" );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.summon_infernal.duration=0|cooldown.summon_infernal.duration%%trinket.2.cooldown.duration=0)" );
   precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.spymasters_web", "Sets a specific Trinkets in Slot 1 to follow an APL line and not the automatic logic" );
-  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.spymasters_web", "Sets a specific Trinkets in Slot 1 to follow an APL line and not the automatic logic" );
-  precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell", "For On Use Trinkets on slot 1 with on use effects you dont want to use in combat" );
-  precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell", "For On Use Trinkets on slot 2 with on use effects you dont want to use in combat" );
-  precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.mirror_of_fractured_tomorrows*20)", "Sets the duration of the trinket in the automatic logic" );
-  precombat->add_action( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration+(trinket.2.is.mirror_of_fractured_tomorrows*20)", "Sets the duration of the trinket in the automatic logic" );
+  precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.spymasters_web", "Sets a specific Trinkets in Slot 2 to follow an APL line and not the automatic logic" );
+  precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.whispering_incarnate_icon", "For On Use Trinkets on slot 1 with on use effects you dont want to use in combat" );
+  precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.whispering_incarnate_icon", "For On Use Trinkets on slot 2 with on use effects you dont want to use in combat" );
+  precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration", "Sets the duration of the trinket in the automatic logic" );
+  precombat->add_action( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration", "Sets the duration of the trinket in the automatic logic" );
   precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_buff_duration)*(1+0.5*trinket.2.has_buff.intellect)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%variable.trinket_1_buff_duration)*(1+0.5*trinket.1.has_buff.intellect)*(variable.trinket_1_sync))", "Automatic Logic in case both Trinkets are on use buffs" );
   precombat->add_action( "variable,name=allow_rof_2t_spender,default=2,op=reset" );
   precombat->add_action( "variable,name=do_rof_2t,value=variable.allow_rof_2t_spender>1.99&!(talent.cataclysm&talent.improved_chaos_bolt),op=set" );
@@ -389,14 +399,15 @@ void destruction( player_t* p )
   default_->add_action( "call_action_list,name=ogcd" );
   default_->add_action( "call_action_list,name=items" );
   default_->add_action( "malevolence,if=cooldown.summon_infernal.remains>=55" );
+  default_->add_action( "wait,sec=((buff.diabolic_ritual_mother_of_chaos.remains+buff.diabolic_ritual_overlord.remains+buff.diabolic_ritual_pit_lord.remains)),if=(diabolic_ritual&(buff.diabolic_ritual_mother_of_chaos.remains+buff.diabolic_ritual_overlord.remains+buff.diabolic_ritual_pit_lord.remains)<gcd.max*0.25)&soul_shard>2" );
   default_->add_action( "chaos_bolt,if=demonic_art" );
   default_->add_action( "soul_fire,if=buff.decimation.react&(soul_shard<=4|buff.decimation.remains<=gcd.max*2)&debuff.conflagrate.remains>=execute_time" );
   default_->add_action( "wither,if=talent.internal_combustion&(((dot.wither.remains-5*action.chaos_bolt.in_flight)<dot.wither.duration*0.4)|dot.wither.remains<3|(dot.wither.remains-action.chaos_bolt.execute_time)<5&action.chaos_bolt.usable)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>(dot.wither.remains-5))&target.time_to_die>8&!action.soul_fire.in_flight_to_target" );
   default_->add_action( "conflagrate,if=talent.roaring_blaze&debuff.conflagrate.remains<1.5|full_recharge_time<=gcd.max*2|recharge_time<=8&(diabolic_ritual&(buff.diabolic_ritual_mother_of_chaos.remains+buff.diabolic_ritual_overlord.remains+buff.diabolic_ritual_pit_lord.remains)<gcd.max)&soul_shard>=1.5" );
   default_->add_action( "shadowburn,if=(cooldown.shadowburn.full_recharge_time<=gcd.max*3|debuff.eradication.remains<=gcd.max&talent.eradication&!action.chaos_bolt.in_flight&!talent.diabolic_ritual)&(talent.conflagration_of_chaos|talent.blistering_atrophy)|fight_remains<=8" );
   default_->add_action( "chaos_bolt,if=buff.ritual_of_ruin.up" );
-  default_->add_action( "shadowburn,if=cooldown.summon_infernal.remains>=90&talent.rain_of_chaos" );
-  default_->add_action( "chaos_bolt,if=cooldown.summon_infernal.remains>=90&talent.rain_of_chaos" );
+  default_->add_action( "shadowburn,if=(cooldown.summon_infernal.remains>=90&talent.rain_of_chaos)|buff.malevolence.up" );
+  default_->add_action( "chaos_bolt,if=(cooldown.summon_infernal.remains>=90&talent.rain_of_chaos)|buff.malevolence.up" );
   default_->add_action( "ruination,if=(debuff.eradication.remains>=execute_time|!talent.eradication|!talent.shadowburn)" );
   default_->add_action( "cataclysm,if=raid_event.adds.in>15&(dot.immolate.refreshable&!talent.wither|talent.wither&dot.wither.refreshable)" );
   default_->add_action( "channel_demonfire,if=talent.raging_demonfire&(dot.immolate.remains+dot.wither.remains-5*(action.chaos_bolt.in_flight&talent.internal_combustion))>cast_time" );
@@ -414,30 +425,35 @@ void destruction( player_t* p )
 
   aoe->add_action( "call_action_list,name=ogcd" );
   aoe->add_action( "call_action_list,name=items" );
-  aoe->add_action( "call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd.max&active_enemies<5&(!cooldown.summon_infernal.up|!talent.summon_infernal)" );
   aoe->add_action( "malevolence,if=cooldown.summon_infernal.remains>=55&soul_shard<4.7&(active_enemies<=3+active_dot.wither|time>30)" );
+  aoe->add_action( "rain_of_fire,if=demonic_art" );
+  aoe->add_action( "wait,sec=((buff.diabolic_ritual_mother_of_chaos.remains+buff.diabolic_ritual_overlord.remains+buff.diabolic_ritual_pit_lord.remains)),if=(diabolic_ritual&(buff.diabolic_ritual_mother_of_chaos.remains+buff.diabolic_ritual_overlord.remains+buff.diabolic_ritual_pit_lord.remains)<gcd.max*0.25)&soul_shard>2" );
+  aoe->add_action( "incinerate,if=(diabolic_ritual&(buff.diabolic_ritual_mother_of_chaos.remains+buff.diabolic_ritual_overlord.remains+buff.diabolic_ritual_pit_lord.remains)<=action.incinerate.cast_time&(buff.diabolic_ritual_mother_of_chaos.remains+buff.diabolic_ritual_overlord.remains+buff.diabolic_ritual_pit_lord.remains)>gcd.max*0.25)" );
+  aoe->add_action( "call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd.max&active_enemies<5&(!cooldown.summon_infernal.up|!talent.summon_infernal)" );
   aoe->add_action( "dimensional_rift,if=soul_shard<4.7&(charges>2|fight_remains<cooldown.dimensional_rift.duration)" );
-  aoe->add_action( "rain_of_fire,if=soul_shard>=(4.5-0.1*active_dot.immolate)" );
+  aoe->add_action( "rain_of_fire,if=!talent.inferno&soul_shard>=(4.5-0.1*active_dot.immolate)|soul_shard>=(3.5-0.1*active_dot.immolate)|buff.ritual_of_ruin.up" );
   aoe->add_action( "wither,target_if=min:dot.wither.remains+99*debuff.havoc.remains+99*!dot.wither.ticking,if=dot.wither.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.wither.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains|time<5)&(active_dot.wither<=4|time>15)&target.time_to_die>18" );
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains+dot.wither.remains>cast_time&talent.raging_demonfire" );
   aoe->add_action( "shadowburn,if=(active_enemies<4+(talent.cataclysm+4*talent.cataclysm)*talent.wither)&((cooldown.shadowburn.full_recharge_time<=gcd.max*3|debuff.eradication.remains<=gcd.max&talent.eradication&!action.chaos_bolt.in_flight&!talent.diabolic_ritual)&(talent.conflagration_of_chaos|talent.blistering_atrophy)&(active_enemies<5+(talent.wither&talent.cataclysm)+havoc_active)|fight_remains<=8)" );
+  aoe->add_action( "shadowburn,target_if=min:time_to_die,if=(active_enemies<4+(talent.cataclysm+4*talent.cataclysm)*talent.wither)&((cooldown.shadowburn.full_recharge_time<=gcd.max*3|debuff.eradication.remains<=gcd.max&talent.eradication&!action.chaos_bolt.in_flight&!talent.diabolic_ritual)&(talent.conflagration_of_chaos|talent.blistering_atrophy)&(active_enemies<5+(talent.wither&talent.cataclysm)+havoc_active)&time_to_die<5|fight_remains<=8)" );
   aoe->add_action( "ruination" );
-  aoe->add_action( "rain_of_fire,if=pet.infernal.active|pet.overfiend.active" );
-  aoe->add_action( "rain_of_fire,if=fight_remains<12|time>5" );
+  aoe->add_action( "rain_of_fire,if=pet.infernal.active&talent.rain_of_chaos" );
+  aoe->add_action( "soul_fire,target_if=min:dot.wither.remains+dot.immolate.remains-5*debuff.conflagrate.up+100*debuff.havoc.remains,if=(buff.decimation.up)&!talent.raging_demonfire&havoc_active" );
+  aoe->add_action( "soul_fire,target_if=min:(dot.wither.remains+dot.immolate.remains-5*debuff.conflagrate.up+100*debuff.havoc.remains),if=buff.decimation.up&active_dot.immolate<=4" );
   aoe->add_action( "infernal_bolt,if=soul_shard<2.5" );
   aoe->add_action( "chaos_bolt,if=soul_shard>3.5-(0.1*active_enemies)&!talent.rain_of_fire" );
   aoe->add_action( "cataclysm,if=raid_event.adds.in>15|talent.wither" );
-  aoe->add_action( "havoc,target_if=min:((-target.time_to_die)<?-15)+dot.immolate.remains+99*(self.target=target),if=(!cooldown.summon_infernal.up|!talent.summon_infernal|(talent.inferno&active_enemies>4))&target.time_to_die>8&cooldown.malevolence.remains>15|time<5" );
+  aoe->add_action( "havoc,target_if=min:((-target.time_to_die)<?-15)+dot.immolate.remains+99*(self.target=target),if=(!cooldown.summon_infernal.up|!talent.summon_infernal|(talent.inferno&active_enemies>4))&target.time_to_die>8&(cooldown.malevolence.remains>15|!talent.malevolence)|time<5" );
   aoe->add_action( "wither,target_if=min:dot.wither.remains+99*debuff.havoc.remains,if=dot.wither.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.wither.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains|time<5)&active_dot.wither<=active_enemies&target.time_to_die>18" );
-  aoe->add_action( "immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=dot.immolate.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains|time<5)&active_dot.immolate<=4&target.time_to_die>18" );
+  aoe->add_action( "immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=dot.immolate.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains|time<5)&(active_dot.immolate<=6&!(talent.diabolic_ritual&talent.inferno)|active_dot.immolate<=4)&target.time_to_die>18" );
   aoe->add_action( "call_action_list,name=ogcd" );
   aoe->add_action( "summon_infernal,if=cooldown.invoke_power_infusion_0.up|cooldown.invoke_power_infusion_0.duration=0|fight_remains>=120" );
-  aoe->add_action( "rain_of_fire,if=debuff.pyrogenics.down&active_enemies<=4" );
+  aoe->add_action( "rain_of_fire,if=debuff.pyrogenics.down&active_enemies<=4&!talent.diabolic_ritual" );
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains+dot.wither.remains>cast_time" );
-  aoe->add_action( "immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=((dot.immolate.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains))|active_enemies>active_dot.immolate)&target.time_to_die>10&!havoc_active" );
-  aoe->add_action( "immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=((dot.immolate.refreshable&variable.havoc_immo_time<5.4)|(dot.immolate.remains<2&dot.immolate.remains<havoc_remains)|!dot.immolate.ticking|(variable.havoc_immo_time<2)*havoc_active)&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&target.time_to_die>11" );
+  aoe->add_action( "immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=((dot.immolate.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains))|active_enemies>active_dot.immolate)&target.time_to_die>10&!havoc_active&!(talent.diabolic_ritual&talent.inferno)" );
+  aoe->add_action( "immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=((dot.immolate.refreshable&variable.havoc_immo_time<5.4)|(dot.immolate.remains<2&dot.immolate.remains<havoc_remains)|!dot.immolate.ticking|(variable.havoc_immo_time<2)*havoc_active)&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&target.time_to_die>11&!(talent.diabolic_ritual&talent.inferno)" );
   aoe->add_action( "dimensional_rift" );
-  aoe->add_action( "soul_fire,if=buff.backdraft.up" );
+  aoe->add_action( "soul_fire,target_if=min:(dot.wither.remains+dot.immolate.remains-5*debuff.conflagrate.up+100*debuff.havoc.remains),if=buff.decimation.up" );
   aoe->add_action( "incinerate,if=talent.fire_and_brimstone.enabled&buff.backdraft.up" );
   aoe->add_action( "conflagrate,if=buff.backdraft.stack<2|!talent.backdraft" );
   aoe->add_action( "incinerate" );
@@ -465,7 +481,7 @@ void destruction( player_t* p )
   cleave->add_action( "immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=(dot.immolate.refreshable&(dot.immolate.remains<cooldown.havoc.remains|!dot.immolate.ticking))&(!talent.cataclysm|cooldown.cataclysm.remains>remains)&(!talent.soul_fire|cooldown.soul_fire.remains+(!talent.mayhem*action.soul_fire.cast_time)>dot.immolate.remains)&target.time_to_die>15" );
   cleave->add_action( "summon_infernal" );
   cleave->add_action( "incinerate,if=talent.diabolic_ritual&(diabolic_ritual&(buff.diabolic_ritual_mother_of_chaos.remains+buff.diabolic_ritual_overlord.remains+buff.diabolic_ritual_pit_lord.remains-2-!variable.disable_cb_2t*action.chaos_bolt.cast_time-variable.disable_cb_2t*gcd.max)<=0)" );
-  cleave->add_action( "rain_of_fire,if=variable.pooling_condition&!talent.wither&buff.rain_of_chaos.up&dbc.effect.33883.sp_coefficient>0.2" );
+  cleave->add_action( "rain_of_fire,if=variable.pooling_condition&!talent.wither&buff.rain_of_chaos.up" );
   cleave->add_action( "rain_of_fire,if=variable.allow_rof_2t_spender>=1&!talent.wither&talent.pyrogenics&debuff.pyrogenics.remains<=gcd.max&(!talent.rain_of_chaos|cooldown.summon_infernal.remains>=gcd.max*3)&variable.pooling_condition" );
   cleave->add_action( "rain_of_fire,if=variable.do_rof_2t&variable.pooling_condition&(cooldown.summon_infernal.remains>=gcd.max*3|!talent.rain_of_chaos)" );
   cleave->add_action( "soul_fire,if=soul_shard<=4&talent.mayhem" );
@@ -478,8 +494,7 @@ void destruction( player_t* p )
 
   havoc->add_action( "conflagrate,if=talent.backdraft&buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
   havoc->add_action( "soul_fire,if=cast_time<havoc_remains&soul_shard<2.5" );
-  havoc->add_action( "channel_demonfire,if=soul_shard<4.5&talent.raging_demonfire.rank=2" );
-  havoc->add_action( "cataclysm,if=raid_event.adds.in>15|(talent.wither&variable.min_wither<action.wither.duration*0.3)" );
+  havoc->add_action( "cataclysm,if=raid_event.adds.in>15|(talent.wither&dot.wither.remains<action.wither.duration*0.3)" );
   havoc->add_action( "immolate,target_if=min:dot.immolate.remains+100*debuff.havoc.remains,if=(((dot.immolate.refreshable&variable.havoc_immo_time<5.4)&target.time_to_die>5)|((dot.immolate.remains<2&dot.immolate.remains<havoc_remains)|!dot.immolate.ticking|variable.havoc_immo_time<2)&target.time_to_die>11)&soul_shard<4.5" );
   havoc->add_action( "wither,target_if=min:dot.wither.remains+100*debuff.havoc.remains,if=(((dot.wither.refreshable&variable.havoc_immo_time<5.4)&target.time_to_die>5)|((dot.wither.remains<2&dot.wither.remains<havoc_remains)|!dot.wither.ticking|variable.havoc_immo_time<2)&target.time_to_die>11)&soul_shard<4.5" );
   havoc->add_action( "shadowburn,if=(cooldown.shadowburn.full_recharge_time<=gcd.max*3|debuff.eradication.remains<=gcd.max&talent.eradication&!action.chaos_bolt.in_flight&!talent.diabolic_ritual)&(talent.conflagration_of_chaos|talent.blistering_atrophy)" );
@@ -491,7 +506,7 @@ void destruction( player_t* p )
   havoc->add_action( "dimensional_rift,if=soul_shard<4.7&(charges>2|fight_remains<cooldown.dimensional_rift.duration)" );
   havoc->add_action( "incinerate,if=cast_time<havoc_remains" );
 
-  items->add_action( "use_item,name=spymasters_web,if=pet.infernal.remains>=10&pet.infernal.remains<=20&(fight_remains>240|fight_remains<=140)|fight_remains<=30" );
+  items->add_action( "use_item,name=spymasters_web,if=pet.infernal.remains>=10&pet.infernal.remains<=20&buff.spymasters_report.stack>=38&(fight_remains>240|fight_remains<=140)|fight_remains<=30" );
   items->add_action( "use_item,slot=trinket1,if=(variable.infernal_active|!talent.summon_infernal|variable.trinket_1_will_lose_cast)&(variable.trinket_priority=1|variable.trinket_2_exclude|!trinket.2.has_cooldown|(trinket.2.cooldown.remains|variable.trinket_priority=2&cooldown.summon_infernal.remains>20&!variable.infernal_active&trinket.2.cooldown.remains<cooldown.summon_infernal.remains))&variable.trinket_1_buffs&!variable.trinket_1_manual|(variable.trinket_1_buff_duration+1>=fight_remains)" );
   items->add_action( "use_item,slot=trinket2,if=(variable.infernal_active|!talent.summon_infernal|variable.trinket_2_will_lose_cast)&(variable.trinket_priority=2|variable.trinket_1_exclude|!trinket.1.has_cooldown|(trinket.1.cooldown.remains|variable.trinket_priority=1&cooldown.summon_infernal.remains>20&!variable.infernal_active&trinket.1.cooldown.remains<cooldown.summon_infernal.remains))&variable.trinket_2_buffs&!variable.trinket_2_manual|(variable.trinket_2_buff_duration+1>=fight_remains)" );
   items->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)|talent.summon_infernal&cooldown.summon_infernal.remains_expected>20&!prev_gcd.1.summon_infernal|!talent.summon_infernal)" );
@@ -512,9 +527,6 @@ void destruction( player_t* p )
   variables->add_action( "variable,name=infernal_active,op=set,value=pet.infernal.active|(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains)<20" );
   variables->add_action( "variable,name=trinket_1_will_lose_cast,value=((floor((fight_remains%trinket.1.cooldown.duration)+1)!=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(floor((fight_remains%trinket.1.cooldown.duration)+1))!=(floor(((fight_remains-cooldown.summon_infernal.remains)%trinket.1.cooldown.duration)+1))|((floor((fight_remains%trinket.1.cooldown.duration)+1)=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(((fight_remains-cooldown.summon_infernal.remains%%trinket.1.cooldown.duration)-cooldown.summon_infernal.remains-variable.trinket_1_buff_duration)>0)))&cooldown.summon_infernal.remains>20" );
   variables->add_action( "variable,name=trinket_2_will_lose_cast,value=((floor((fight_remains%trinket.2.cooldown.duration)+1)!=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(floor((fight_remains%trinket.2.cooldown.duration)+1))!=(floor(((fight_remains-cooldown.summon_infernal.remains)%trinket.2.cooldown.duration)+1))|((floor((fight_remains%trinket.2.cooldown.duration)+1)=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(((fight_remains-cooldown.summon_infernal.remains%%trinket.2.cooldown.duration)-cooldown.summon_infernal.remains-variable.trinket_2_buff_duration)>0)))&cooldown.summon_infernal.remains>20" );
-  variables->add_action( "variable,name=min_wither,default=21,op=reset" );
-  variables->add_action( "cycling_variable,name=min_immo,default=21,op=min,value=dot.immolate.remains+(99*!dot.immolate.remains)" );
-  variables->add_action( "cycling_variable,name=min_wither,default=21,op=min,value=dot.wither.remains+(99*!dot.wither.remains)" );
 }
 //destruction_apl_end
 

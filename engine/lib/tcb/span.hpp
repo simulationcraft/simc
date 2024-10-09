@@ -153,7 +153,8 @@ template <typename E, std::size_t S>
 struct span_storage {
     constexpr span_storage() noexcept = default;
 
-    constexpr span_storage(E* ptr, std::size_t /*unused*/) noexcept : ptr(ptr)
+    constexpr span_storage(E* p_ptr, std::size_t /*unused*/) noexcept
+       : ptr(p_ptr)
     {}
 
     E* ptr = nullptr;
@@ -164,8 +165,8 @@ template <typename E>
 struct span_storage<E, dynamic_extent> {
     constexpr span_storage() noexcept = default;
 
-    constexpr span_storage(E* ptr, std::size_t size) noexcept
-        : ptr(ptr), size(size)
+    constexpr span_storage(E* p_ptr, std::size_t p_size) noexcept
+        : ptr(p_ptr), size(p_size)
     {}
 
     E* ptr = nullptr;
@@ -263,12 +264,14 @@ template <typename T, typename E>
 struct is_container_element_type_compatible<
     T, E,
     typename std::enable_if<
-        !std::is_same<typename std::remove_cv<decltype(
-                          detail::data(std::declval<T>()))>::type,
-                      void>::value>::type>
-    : std::is_convertible<
-          remove_pointer_t<decltype(detail::data(std::declval<T>()))> (*)[],
-          E (*)[]> {};
+        !std::is_same<
+            typename std::remove_cv<decltype(detail::data(std::declval<T>()))>::type,
+            void>::value &&
+        std::is_convertible<
+            remove_pointer_t<decltype(detail::data(std::declval<T>()))> (*)[],
+            E (*)[]>::value
+        >::type>
+    : std::true_type {};
 
 template <typename, typename = size_t>
 struct is_complete : std::false_type {};
@@ -300,10 +303,9 @@ public:
     using pointer = element_type*;
     using const_pointer = const element_type*;
     using reference = element_type&;
+    using const_reference = const element_type&;
     using iterator = pointer;
-    using const_iterator = const_pointer;
     using reverse_iterator = std::reverse_iterator<iterator>;
-    using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
     static constexpr size_type extent = Extent;
 
@@ -337,23 +339,23 @@ public:
     constexpr span(element_type (&arr)[N]) noexcept : storage_(arr, N)
     {}
 
-    template <std::size_t N, std::size_t E = Extent,
+    template <typename T, std::size_t N, std::size_t E = Extent,
               typename std::enable_if<
                   (E == dynamic_extent || N == E) &&
                       detail::is_container_element_type_compatible<
-                          std::array<value_type, N>&, ElementType>::value,
+                          std::array<T, N>&, ElementType>::value,
                   int>::type = 0>
-    TCB_SPAN_ARRAY_CONSTEXPR span(std::array<value_type, N>& arr) noexcept
+    TCB_SPAN_ARRAY_CONSTEXPR span(std::array<T, N>& arr) noexcept
         : storage_(arr.data(), N)
     {}
 
-    template <std::size_t N, std::size_t E = Extent,
+    template <typename T, std::size_t N, std::size_t E = Extent,
               typename std::enable_if<
                   (E == dynamic_extent || N == E) &&
                       detail::is_container_element_type_compatible<
-                          const std::array<value_type, N>&, ElementType>::value,
+                          const std::array<T, N>&, ElementType>::value,
                   int>::type = 0>
-    TCB_SPAN_ARRAY_CONSTEXPR span(const std::array<value_type, N>& arr) noexcept
+    TCB_SPAN_ARRAY_CONSTEXPR span(const std::array<T, N>& arr) noexcept
         : storage_(arr.data(), N)
     {}
 
@@ -383,7 +385,8 @@ public:
 
     template <typename OtherElementType, std::size_t OtherExtent,
               typename std::enable_if<
-                  (Extent == OtherExtent || Extent == dynamic_extent) &&
+                  (Extent == dynamic_extent || OtherExtent == dynamic_extent ||
+                   Extent == OtherExtent) &&
                       std::is_convertible<OtherElementType (*)[],
                                           ElementType (*)[]>::value,
                   int>::type = 0>
@@ -489,10 +492,6 @@ public:
 
     constexpr iterator end() const noexcept { return data() + size(); }
 
-    constexpr const_iterator cbegin() const noexcept { return begin(); }
-
-    constexpr const_iterator cend() const noexcept { return end(); }
-
     TCB_SPAN_ARRAY_CONSTEXPR reverse_iterator rbegin() const noexcept
     {
         return reverse_iterator(end());
@@ -502,20 +501,6 @@ public:
     {
         return reverse_iterator(begin());
     }
-
-    TCB_SPAN_ARRAY_CONSTEXPR const_reverse_iterator crbegin() const noexcept
-    {
-        return const_reverse_iterator(cend());
-    }
-
-    TCB_SPAN_ARRAY_CONSTEXPR const_reverse_iterator crend() const noexcept
-    {
-        return const_reverse_iterator(cbegin());
-    }
-
-    friend constexpr iterator begin(span s) noexcept { return s.begin(); }
-
-    friend constexpr iterator end(span s) noexcept { return s.end(); }
 
 private:
     storage_type storage_{};
@@ -534,7 +519,8 @@ template <class T, size_t N>
 span(const std::array<T, N>&)->span<const T, N>;
 
 template <class Container>
-span(Container&)->span<typename Container::value_type>;
+span(Container&)->span<typename std::remove_reference<
+    decltype(*detail::data(std::declval<Container&>()))>::type>;
 
 template <class Container>
 span(const Container&)->span<const typename Container::value_type>;
@@ -568,7 +554,9 @@ make_span(const std::array<T, N>& arr) noexcept
 }
 
 template <typename Container>
-constexpr span<typename Container::value_type> make_span(Container& cont)
+constexpr span<typename std::remove_reference<
+    decltype(*detail::data(std::declval<Container&>()))>::type>
+make_span(Container& cont)
 {
     return {cont};
 }

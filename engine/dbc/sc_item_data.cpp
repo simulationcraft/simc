@@ -379,11 +379,29 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
 
       for ( size_t i = 0, end = std::size( item.parsed.data.stat_type_e ); i < end; i++ )
       {
-        if ( item_database::is_crafted_item_mod( item.parsed.data.stat_type_e[ i ] ) )
+        if ( auto old_type = item.parsed.data.stat_type_e[ i ]; item_database::is_crafted_item_mod( old_type ) )
         {
-          item.player->sim->print_debug( "Player {} item '{}' modifying stat type to '{}' (index={})",
-              item.player->name(), item.name(), util::stat_type_abbrev( stat_type ), i );
+          item.player->sim->print_debug( "Player {} item '{}' modifying stat type from {} to '{}' (index={})",
+              item.player->name(), item.name(), old_type, util::stat_type_abbrev( stat_type ), i );
+
           item.parsed.data.stat_type_e[ i ] = entry.value_1;
+
+          // If multiple instances of the same crafted item mod is present, replace them all. It's unclear if this is
+          // what actually happens in game, as alternative possibility is that only those mods with non-zero stat
+          // allocations are processed. Refactor if necessary if we are able to confirm in game.
+          for ( size_t j = i + 1; j < end; j++ )
+          {
+            if ( item.parsed.data.stat_type_e[ j ] == old_type )
+            {
+              item.player->sim->print_debug( "Player {} item '{}' has duplicate crafted item mod {} with allocation {} (index={})",
+                  item.player->name(), item.name(), old_type, item.parsed.data.stat_alloc[ i ], i );
+              item.player->sim->print_debug( "Player {} item '{}' has duplicate crafted item mod {} with allocation {} (index={})",
+                  item.player->name(), item.name(), old_type, item.parsed.data.stat_alloc[ j ], j );
+
+              item.parsed.data.stat_type_e[ j ] = entry.value_1;
+            }
+          }
+
           break;
         }
       }

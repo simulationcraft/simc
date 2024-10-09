@@ -29,7 +29,8 @@ protected:
   const rng_type_e rng_type_;
 
 public:
-  const static rng_type_e rng_type = RNG_NONE;
+  static constexpr rng_type_e rng_type = RNG_NONE;
+
   proc_rng_t( rng_type_e type_ );
   proc_rng_t( rng_type_e type_, std::string_view n, player_t* p );
   virtual ~proc_rng_t() = default;
@@ -50,7 +51,8 @@ private:
   double chance;
 
 public:
-  const static rng_type_e rng_type = RNG_SIMPLE;
+  static constexpr rng_type_e rng_type = RNG_SIMPLE;
+
   simple_proc_t( std::string_view n, player_t* p, double c = 0.0 );
 
   void reset() override {}
@@ -79,7 +81,8 @@ private:
   static constexpr timespan_t max_bad_luck_prot = 1000_s;
 
 public:
-  const static rng_type_e rng_type = RNG_RPPM;
+  static constexpr rng_type_e rng_type = RNG_RPPM;
+
   real_ppm_t( std::string_view n, player_t* p, double f = 0, double mod = 1.0, unsigned s = RPPM_NONE,
               blp b = BLP_ENABLED );
 
@@ -144,7 +147,8 @@ private:
   void init( initializer data );
 
 public:
-  const static rng_type_e rng_type = RNG_SHUFFLE;
+  static constexpr rng_type_e rng_type = RNG_SHUFFLE;
+
   shuffled_rng_t( std::string_view n, player_t* p, initializer data );
   shuffled_rng_t( std::string_view n, player_t* p, int success_entries = 0, int total_entries = 0 );
   void reset() override;
@@ -178,7 +182,8 @@ private:
   unsigned trigger_count;
 
 public:
-  const static rng_type_e rng_type = RNG_ACCUMULATE;
+  static constexpr rng_type_e rng_type = RNG_ACCUMULATE;
+
   accumulated_rng_t( std::string_view n, player_t* p, double c, std::function<double( double, unsigned )> fn = nullptr,
                      unsigned initial_count = 0 );
 
@@ -208,12 +213,14 @@ private:
   bool roll_over;
 
 public:
-  const static rng_type_e rng_type = RNG_THRESHOLD;
+  static constexpr rng_type_e rng_type = RNG_THRESHOLD;
+
   threshold_rng_t( std::string_view n, player_t* p, double increment_max, std::function<double( double )> fn = nullptr,
-                            bool random_initial_state = true, bool roll_over = false );
+                   bool random_initial_state = true, bool roll_over = false );
 
   void reset() override;
   int trigger() override;
+
   double get_accumulated_chance();
   double get_increment_max();
 };

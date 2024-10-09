@@ -529,9 +529,12 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
   {
     // this is super-spammy, may just want to disable this after we're sure this section is working as intended.
     if ( sim->debug )
-      sim->errorf(
-          "Player %s attempting to use action %s without the required talent, spec, class, or race; ignoring.\n",
-          player->name(), name() );
+    {
+      sim->error(
+        "Player {} attempting to use action {} without the required talent, spec, class, race, or level; ignoring.\n",
+        player->name(), name() );
+    }
+
     background = true;
   }
 
@@ -1560,19 +1563,19 @@ double action_t::composite_total_spell_power() const
   return spell_power;
 }
 
-double action_t::composite_target_armor( player_t* target ) const
+double action_t::composite_target_armor( player_t* t ) const
 {
-  return player->composite_player_target_armor( target );
+  return player->composite_player_target_armor( t );
 }
 
-double action_t::composite_target_crit_chance( player_t* target ) const
+double action_t::composite_target_crit_chance( player_t* t ) const
 {
-  return player->composite_player_target_crit_chance( target );
+  return player->composite_player_target_crit_chance( t );
 }
 
-double action_t::composite_target_multiplier(player_t* target) const
+double action_t::composite_target_multiplier( player_t* t ) const
 {
-  return player->composite_player_target_multiplier(target, get_school());
+  return player->composite_player_target_multiplier( t, get_school() );
 }
 
 void action_t::consume_resource()
@@ -1895,22 +1898,25 @@ void action_t::execute()
     target = default_target;
   }
 
-  const action_energize energize_type = energize_type_();
-  if ( energize_type == action_energize::ON_CAST || ( energize_type == action_energize::ON_HIT && hit_any_target ) )
+  switch ( energize_type_() )
   {
-    auto amount = composite_energize_amount( execute_state );
-    if ( amount != 0 )
-    {
-      gain_energize_resource( energize_resource_(), amount, energize_gain( execute_state ) );
-    }
-  }
-  else if ( energize_type == action_energize::PER_HIT )
-  {
-    auto amount = composite_energize_amount( execute_state ) * num_targets_hit;
-    if ( amount != 0 )
-    {
-      gain_energize_resource( energize_resource_(), amount, energize_gain( execute_state ) );
-    }
+    case action_energize::ON_HIT:
+      if ( !hit_any_target )
+        break;
+      SC_FALLTHROUGH;
+
+    case action_energize::ON_CAST:
+      if ( auto amount = composite_energize_amount( execute_state ) )
+        gain_energize_resource( energize_resource_(), amount, energize_gain( execute_state ) );
+      break;
+
+    case action_energize::PER_HIT:
+      if ( auto amount = composite_energize_amount( execute_state ) * num_targets_hit )
+        gain_energize_resource( energize_resource_(), amount, energize_gain( execute_state ) );
+      break;
+
+    default:
+      break;
   }
 
   if ( repeating && !proc )
@@ -2027,10 +2033,10 @@ void action_t::last_tick( dot_t* d )
   }
 }
 
-void action_t::assess_damage( result_amount_type type, action_state_t* state )
+void action_t::assess_damage( result_amount_type rt, action_state_t* state )
 {
   // Execute outbound damage assessor pipeline on the state object
-  player->assessor_out_damage.execute( type, state );
+  player->assessor_out_damage.execute( rt, state );
 
   // TODO: Should part of this move to assessing, priority_iteration_damage for example?
   if ( state->result_raw > 0 || result_is_miss( state->result ) )
@@ -2066,17 +2072,17 @@ void action_t::record_data( action_state_t* data )
 // player_t::execute_action() ). Background actions should (and are) directly call
 // action_t::schedule_execute. Off gcd actions will either directly execute the action, or schedule
 // a queued off-gcd execution.
-void action_t::queue_execute( execute_type type )
+void action_t::queue_execute( execute_type et )
 {
   auto queue_delay = cooldown->queue_delay();
   if ( queue_delay > timespan_t::zero() )
   {
-    queue_event      = make_event<queued_action_execute_event_t>( *sim, this, queue_delay, type );
+    queue_event      = make_event<queued_action_execute_event_t>( *sim, this, queue_delay, et );
     player->queueing = this;
   }
   else
   {
-    if ( type == execute_type::FOREGROUND )
+    if ( et == execute_type::FOREGROUND )
     {
       schedule_execute();
     }
@@ -2087,12 +2093,12 @@ void action_t::queue_execute( execute_type type )
       if ( cooldown->charges > 1 && cooldown->current_charge == 0 && cooldown->recharge_event &&
            cooldown->recharge_event->remains() == timespan_t::zero() )
       {
-        queue_event      = make_event<queued_action_execute_event_t>( *sim, this, timespan_t::zero(), type );
+        queue_event      = make_event<queued_action_execute_event_t>( *sim, this, timespan_t::zero(), et );
         player->queueing = this;
       }
       else
       {
-        do_execute( this, type );
+        do_execute( this, et );
       }
     }
   }
@@ -2614,13 +2620,13 @@ void action_t::init()
   if ( data().flags( spell_attribute::SX_DISABLE_PLAYER_MULT ) ||
        data().flags( spell_attribute::SX_DISABLE_PLAYER_HEALING_MULT ) )
   {
-    snapshot_flags &= ~( STATE_VERSATILITY | STATE_MUL_PLAYER_DAM );
+    snapshot_flags &= ~( STATE_VERSATILITY | STATE_MUL_PLAYER_DAM | STATE_MUL_PET );
   }
 
   if ( data().flags( spell_attribute::SX_DISABLE_TARGET_MULT ) )
   {
-    snapshot_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR );
-    update_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR );
+    snapshot_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR | STATE_TGT_MUL_PET );
+    update_flags &= ~( STATE_TGT_MUL_TA | STATE_TGT_MUL_DA | STATE_TGT_ARMOR | STATE_TGT_MUL_PET );
   }
 
   // TODO: accomodate negative mults such as damage reduction
@@ -3020,14 +3026,14 @@ void action_t::check_spell( const spell_data_t* sp )
   }
 }
 
-std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str )
+std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
 {
   class action_expr_t : public expr_t
   {
   public:
     action_t& action;
 
-    action_expr_t( util::string_view name, action_t& a ) : expr_t( name ), action( a )
+    action_expr_t( std::string_view name, action_t& a ) : expr_t( name ), action( a )
     {
     }
   };
@@ -3036,7 +3042,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
   {
   public:
     action_state_t* state;
-    action_state_expr_t( util::string_view name, action_t& a ) : action_expr_t( name, a ), state( a.get_state() )
+    action_state_expr_t( std::string_view name, action_t& a ) : action_expr_t( name, a ), state( a.get_state() )
     {
     }
 
@@ -3053,7 +3059,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     result_e result_type;
     bool average_crit;
 
-    amount_expr_t( util::string_view name, result_amount_type at, action_t& a, result_e rt = RESULT_NONE )
+    amount_expr_t( std::string_view name, result_amount_type at, action_t& a, result_e rt = RESULT_NONE )
       : action_state_expr_t( name, a ), amount_type( at ), result_type( rt ), average_crit( false )
     {
       if ( result_type == RESULT_NONE )
@@ -3095,33 +3101,33 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     }
   };
 
-  if ( name_str == "cast_time" )
-    return make_mem_fn_expr( name_str, *this, &action_t::execute_time );
+  if ( name == "cast_time" )
+    return make_mem_fn_expr( name, *this, &action_t::execute_time );
 
-  if ( name_str == "ready" )
-    return make_mem_fn_expr( name_str, *this, &action_t::ready );
+  if ( name == "ready" )
+    return make_mem_fn_expr( name, *this, &action_t::ready );
 
-  if ( name_str == "usable" )
-    return make_mem_fn_expr( name_str, *cooldown, &cooldown_t::is_ready );
+  if ( name == "usable" )
+    return make_mem_fn_expr( name, *cooldown, &cooldown_t::is_ready );
 
-  if ( name_str == "cost" )
-    return make_mem_fn_expr( name_str, *this, &action_t::cost );
+  if ( name == "cost" )
+    return make_mem_fn_expr( name, *this, &action_t::cost );
 
-  if ( name_str == "target" )
-    return make_fn_expr( name_str, [this] { return target->actor_index; } );
+  if ( name == "target" )
+    return make_fn_expr( name, [this] { return target->actor_index; } );
 
-  if ( name_str == "gcd" )
-    return make_mem_fn_expr( name_str, *this, &action_t::gcd );
+  if ( name == "gcd" )
+    return make_mem_fn_expr( name, *this, &action_t::gcd );
 
-  if ( name_str == "cooldown" )
-    return make_fn_expr( name_str, [this] { return cooldown_duration().total_seconds(); } );
+  if ( name == "cooldown" )
+    return make_fn_expr( name, [this] { return cooldown_duration().total_seconds(); } );
 
-  if ( name_str == "travel_time" )
-    return make_mem_fn_expr( name_str, *this, &action_t::travel_time );
+  if ( name == "travel_time" )
+    return make_mem_fn_expr( name, *this, &action_t::travel_time );
 
-  if ( name_str == "usable_in" )
+  if ( name == "usable_in" )
   {
-    return make_fn_expr( name_str, [this]() {
+    return make_fn_expr( name, [this]() {
       if ( !cooldown->is_ready() )
       {
         return cooldown->remains().total_seconds();
@@ -3137,7 +3143,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     } );
   }
 
-  if ( name_str == "execute_time" )
+  if ( name == "execute_time" )
   {
     struct execute_time_expr_t : public action_state_expr_t
     {
@@ -3160,7 +3166,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     return std::make_unique<execute_time_expr_t>( *this );
   }
 
-  if ( name_str == "tick_time" )
+  if ( name == "tick_time" )
   {
     struct tick_time_expr_t : public action_expr_t
     {
@@ -3179,7 +3185,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     return std::make_unique<tick_time_expr_t>( *this );
   }
 
-  if ( name_str == "new_tick_time" )
+  if ( name == "new_tick_time" )
   {
     struct new_tick_time_expr_t : public action_state_expr_t
     {
@@ -3195,15 +3201,15 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     return std::make_unique<new_tick_time_expr_t>( *this );
   }
 
-  if ( auto q = dot_t::create_expression( nullptr, this, this, name_str, true ) )
+  if ( auto q = dot_t::create_expression( nullptr, this, this, name, true ) )
     return q;
 
-  if ( name_str == "cooldown_react" )
+  if ( name == "cooldown_react" )
   {
-    return make_fn_expr( name_str, [this] { return cooldown->up() && cooldown->reset_react <= sim->current_time(); } );
+    return make_fn_expr( name, [this] { return cooldown->up() && cooldown->reset_react <= sim->current_time(); } );
   }
 
-  if ( name_str == "cast_delay" )
+  if ( name == "cast_delay" )
   {
     struct cast_delay_expr_t : public action_expr_t
     {
@@ -3231,7 +3237,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     return std::make_unique<cast_delay_expr_t>( *this );
   }
 
-  if ( name_str == "tick_multiplier" )
+  if ( name == "tick_multiplier" )
   {
     struct tick_multiplier_expr_t : public action_state_expr_t
     {
@@ -3252,7 +3258,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     return std::make_unique<tick_multiplier_expr_t>( *this );
   }
 
-  if ( name_str == "energize_amount" )
+  if ( name == "energize_amount" )
   {
     struct energize_amount_expr_t : public action_state_expr_t
     {
@@ -3288,7 +3294,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     return std::make_unique<energize_amount_expr_t>( *this );
   }
 
-  if ( name_str == "persistent_multiplier" )
+  if ( name == "persistent_multiplier" )
   {
     struct persistent_multiplier_expr_t : public action_state_expr_t
     {
@@ -3309,34 +3315,34 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     return std::make_unique<persistent_multiplier_expr_t>( *this );
   }
 
-  if ( name_str == "charges" || name_str == "charges_fractional" || name_str == "max_charges" ||
-       name_str == "recharge_time" || name_str == "full_recharge_time" )
+  if ( name == "charges" || name == "charges_fractional" || name == "max_charges" ||
+       name == "recharge_time" || name == "full_recharge_time" )
   {
-    return cooldown->create_expression( name_str );
+    return cooldown->create_expression( name );
   }
 
-  if ( name_str == "damage" )
-    return std::make_unique<amount_expr_t>( name_str, result_amount_type::DMG_DIRECT, *this );
-  else if ( name_str == "hit_damage" )
-    return std::make_unique<amount_expr_t>( name_str, result_amount_type::DMG_DIRECT, *this, RESULT_HIT );
-  else if ( name_str == "crit_damage" )
-    return std::make_unique<amount_expr_t>( name_str, result_amount_type::DMG_DIRECT, *this, RESULT_CRIT );
-  else if ( name_str == "hit_heal" )
-    return std::make_unique<amount_expr_t>( name_str, result_amount_type::HEAL_DIRECT, *this, RESULT_HIT );
-  else if ( name_str == "crit_heal" )
-    return std::make_unique<amount_expr_t>( name_str, result_amount_type::HEAL_DIRECT, *this, RESULT_CRIT );
-  else if ( name_str == "tick_damage" )
-    return std::make_unique<amount_expr_t>( name_str, result_amount_type::DMG_OVER_TIME, *this );
-  else if ( name_str == "hit_tick_damage" )
-    return std::make_unique<amount_expr_t>( name_str, result_amount_type::DMG_OVER_TIME, *this, RESULT_HIT );
-  else if ( name_str == "crit_tick_damage" )
-    return std::make_unique<amount_expr_t>( name_str, result_amount_type::DMG_OVER_TIME, *this, RESULT_CRIT );
-  else if ( name_str == "tick_heal" )
-    return std::make_unique<amount_expr_t>( name_str, result_amount_type::HEAL_OVER_TIME, *this, RESULT_HIT );
-  else if ( name_str == "crit_tick_heal" )
-    return std::make_unique<amount_expr_t>( name_str, result_amount_type::HEAL_OVER_TIME, *this, RESULT_CRIT );
+  if ( name == "damage" )
+    return std::make_unique<amount_expr_t>( name, result_amount_type::DMG_DIRECT, *this );
+  else if ( name == "hit_damage" )
+    return std::make_unique<amount_expr_t>( name, result_amount_type::DMG_DIRECT, *this, RESULT_HIT );
+  else if ( name == "crit_damage" )
+    return std::make_unique<amount_expr_t>( name, result_amount_type::DMG_DIRECT, *this, RESULT_CRIT );
+  else if ( name == "hit_heal" )
+    return std::make_unique<amount_expr_t>( name, result_amount_type::HEAL_DIRECT, *this, RESULT_HIT );
+  else if ( name == "crit_heal" )
+    return std::make_unique<amount_expr_t>( name, result_amount_type::HEAL_DIRECT, *this, RESULT_CRIT );
+  else if ( name == "tick_damage" )
+    return std::make_unique<amount_expr_t>( name, result_amount_type::DMG_OVER_TIME, *this );
+  else if ( name == "hit_tick_damage" )
+    return std::make_unique<amount_expr_t>( name, result_amount_type::DMG_OVER_TIME, *this, RESULT_HIT );
+  else if ( name == "crit_tick_damage" )
+    return std::make_unique<amount_expr_t>( name, result_amount_type::DMG_OVER_TIME, *this, RESULT_CRIT );
+  else if ( name == "tick_heal" )
+    return std::make_unique<amount_expr_t>( name, result_amount_type::HEAL_OVER_TIME, *this, RESULT_HIT );
+  else if ( name == "crit_tick_heal" )
+    return std::make_unique<amount_expr_t>( name, result_amount_type::HEAL_OVER_TIME, *this, RESULT_CRIT );
 
-  if ( name_str == "crit_pct_current" )
+  if ( name == "crit_pct_current" )
   {
     struct crit_pct_current_expr_t : public action_state_expr_t
     {
@@ -3357,9 +3363,9 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     return std::make_unique<crit_pct_current_expr_t>( *this );
   }
 
-  if ( name_str == "multiplier" )
+  if ( name == "multiplier" )
   {
-    return make_fn_expr( name_str, [this] {
+    return make_fn_expr( name, [this] {
       double multiplier = 0.0;
       for ( auto base_school : base_schools )
       {
@@ -3374,27 +3380,27 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     } );
   }
 
-  if ( name_str == "primary_target" )
+  if ( name == "primary_target" )
   {
-    return make_fn_expr( name_str, [this]() { return player->target == target; } );
+    return make_fn_expr( name, [this]() { return player->target == target; } );
   }
 
-  if ( name_str == "enabled" )
+  if ( name == "enabled" )
   {
-    return expr_t::create_constant( name_str, data().found() );
+    return expr_t::create_constant( name, data().found() );
   }
 
-  if ( name_str == "casting" )
+  if ( name == "casting" )
   {
-    return make_fn_expr( name_str, [ this ] ()
+    return make_fn_expr( name, [ this ] ()
     {
       return player->executing && player->executing->execute_event && player->executing->internal_id == internal_id;
     } );
   }
 
-  if ( name_str == "cast_remains" )
+  if ( name == "cast_remains" )
   {
-    return make_fn_expr( name_str, [ this ] ()
+    return make_fn_expr( name, [ this ] ()
     {
       if ( player->executing && player->executing->execute_event && player->executing->internal_id == internal_id )
         return player->executing->execute_event->remains().total_seconds();
@@ -3403,17 +3409,17 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     } );
   }
 
-  if ( name_str == "channeling" )
+  if ( name == "channeling" )
   {
-    return make_fn_expr( name_str, [ this ] ()
+    return make_fn_expr( name, [ this ] ()
     {
       return player->channeling && player->channeling->internal_id == internal_id;
     } );
   }
 
-  if ( name_str == "channel_remains" )
+  if ( name == "channel_remains" )
   {
-    return make_fn_expr( name_str, [ this ] ()
+    return make_fn_expr( name, [ this ] ()
     {
       if ( player->channeling && player->channeling->internal_id == internal_id )
         return player->channeling->get_dot()->remains().total_seconds();
@@ -3422,18 +3428,18 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     } );
   }
 
-  if ( name_str == "executing" )
+  if ( name == "executing" )
   {
-    return make_fn_expr( name_str, [ this ] ()
+    return make_fn_expr( name, [ this ] ()
     {
       action_t* current_action = player->executing ? player->executing : player->channeling;
       return current_action && current_action->internal_id == internal_id;
     } );
   }
 
-  if ( name_str == "execute_remains" )
+  if ( name == "execute_remains" )
   {
-    return make_fn_expr( name_str, [ this ] ()
+    return make_fn_expr( name, [ this ] ()
     {
       if ( player->executing && player->executing->execute_event && player->executing->internal_id == internal_id )
         return player->executing->execute_event->remains().total_seconds();
@@ -3445,13 +3451,13 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     } );
   }
 
-  if ( name_str == "last_used" )
+  if ( name == "last_used" )
   {
     std::vector<action_t*> last_used_list;
     for ( size_t i = 0; i < player->action_list.size(); ++i )
     {
       action_t* action = player->action_list[ i ];
-      if ( action->name_str == this->name_str )
+      if ( action->name_str == name_str )
         last_used_list.push_back( action );
     }
 
@@ -3479,7 +3485,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     return std::make_unique<last_used_expr_t>( std::move(last_used_list) );
   }
 
-  auto splits = util::string_split<util::string_view>( name_str, "." );
+  auto splits = util::string_split<std::string_view>( name, "." );
 
   if ( splits.size() == 2 )
   {
@@ -3491,7 +3497,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         {
           double yards_from_player;
           int num_targets;
-          active_enemies_t( action_t& a, util::string_view yards ) : action_expr_t( "active_enemies_within", a )
+          active_enemies_t( action_t& a, std::string_view yards ) : action_expr_t( "active_enemies_within", a )
           {
             yards_from_player = util::to_int( yards );
             num_targets       = 0;
@@ -3512,7 +3518,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
       }
       else
       {  // If distance targeting is not enabled, default to active_enemies behavior.
-        return make_ref_expr( name_str, sim->active_enemies );
+        return make_ref_expr( name, sim->active_enemies );
       }
     }
     if ( splits[ 0 ] == "prev" )
@@ -3520,7 +3526,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
       struct prev_expr_t : public action_expr_t
       {
         action_t* prev;
-        prev_expr_t( action_t& a, util::string_view prev_action )
+        prev_expr_t( action_t& a, std::string_view prev_action )
           : action_expr_t( "prev", a ), prev( a.player->find_action( prev_action ) )
         {
         }
@@ -3542,7 +3548,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
       struct prev_gcd_expr_t : public action_expr_t
       {
         action_t* previously_off_gcd;
-        prev_gcd_expr_t( action_t& a, util::string_view offgcdaction )
+        prev_gcd_expr_t( action_t& a, std::string_view offgcdaction )
           : action_expr_t( "prev_off_gcd", a ), previously_off_gcd( a.player->find_action( offgcdaction ) )
         {
         }
@@ -3628,7 +3634,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         action_t& original_spell;
         const std::string name_of_spell;
         bool second_attempt;
-        spell_targets_t( action_t& a, util::string_view spell_name )
+        spell_targets_t( action_t& a, std::string_view spell_name )
           : expr_t( "spell_targets" ), original_spell( a ), name_of_spell( spell_name ), second_attempt( false )
         {
           spell = a.player->find_action( spell_name );
@@ -3685,7 +3691,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
           return 0;
         }
       };
-      return std::make_unique<spell_targets_t>( *this, splits.size() > 1 ? splits[ 1 ] : this->name_str );
+      return std::make_unique<spell_targets_t>( *this, splits.size() > 1 ? splits[ 1 ] : name_str );
     }
     else
     {
@@ -3696,7 +3702,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
       else
       {
         // If distance targeting is not enabled, default to active_enemies behavior.
-        return make_ref_expr( name_str, sim->active_enemies );
+        return make_ref_expr( name, sim->active_enemies );
       }
     }
   }
@@ -3710,7 +3716,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
       int gcd;
       action_t* previously_used;
 
-      prevgcd_expr_t( action_t& a, int gcd, util::string_view prev_action )
+      prevgcd_expr_t( action_t& a, int gcd, std::string_view prev_action )
         : action_expr_t( "prev_gcd", a ),
           gcd( gcd ),  // prevgcd.1.action will mean 1 gcd ago, prevgcd.2.action will mean 2 gcds ago, etc.
           previously_used( a.player->find_action( prev_action ) )
@@ -3769,18 +3775,19 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
 
     // more complicated version, cycles through possible sources
     std::vector<std::unique_ptr<expr_t>> dot_expressions;
-    for (auto* target : sim->target_list)
+    for ( auto t : sim->target_list )
     {
-      dot_t* d = player->get_dot( splits[ 1 ], target );
+      dot_t* d = player->get_dot( splits[ 1 ], t );
       dot_expressions.push_back( dot_t::create_expression( d, this, this, splits[ 2 ], false ) );
     }
+
     struct enemy_dots_expr_t : public expr_t
     {
       std::vector<std::unique_ptr<expr_t>> expr_list;
 
-      enemy_dots_expr_t( std::vector<std::unique_ptr<expr_t>> expr_list ) : expr_t( "enemy_dot" ), expr_list( std::move(expr_list) )
-      {
-      }
+      enemy_dots_expr_t( std::vector<std::unique_ptr<expr_t>> expr_list )
+        : expr_t( "enemy_dot" ), expr_list( std::move( expr_list ) )
+      {}
 
       double evaluate() override
       {
@@ -3811,7 +3818,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
   {
     // Find target
     player_t* expr_target = nullptr;
-    auto tail      = name_str.substr( splits[ 0 ].length() + 1 );
+    auto tail      = name.substr( splits[ 0 ].length() + 1 );
     if ( util::is_number( splits[ 1 ] ) )
     {
       sim->error(
@@ -3828,7 +3835,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
         throw std::invalid_argument("Insufficient parameters for expression 'target.<number>.<expression>'");
       }
 
-      tail = name_str.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
+      tail = name.substr( splits[ 0 ].length() + splits[ 1 ].length() + 2 );
     }
     // Fake target distance
     if ( tail == "distance" )
@@ -3864,7 +3871,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
       std::vector<std::unique_ptr<expr_t>> proxy_expr;
       std::string suffix_expr_str;
 
-      target_proxy_expr_t( action_t& a, util::string_view expr_str )
+      target_proxy_expr_t( action_t& a, std::string_view expr_str )
         : action_expr_t( "target_proxy_expr", a ), suffix_expr_str( expr_str )
       {
       }
@@ -3907,7 +3914,7 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
     std::vector<action_t*> in_flight_list;
     bool in_flight_singleton = ( splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" ||
                                  splits[ 0 ] == "in_flight_remains" || splits[ 0 ] == "in_flight_to_target_count" );
-    auto action_name  = ( in_flight_singleton ) ? this->name_str : splits[ 1 ];
+    auto action_name  = ( in_flight_singleton ) ? name_str : splits[ 1 ];
     for ( size_t i = 0; i < player->action_list.size(); ++i )
     {
       action_t* action = player->action_list[ i ];
@@ -4048,18 +4055,18 @@ std::unique_ptr<expr_t> action_t::create_expression( util::string_view name_str 
   // necessary for self.target.*, self.dot.*
   if ( splits.size() >= 2 && splits[ 0 ] == "self" )
   {
-    auto tail = name_str.substr( splits[ 0 ].length() + 1 );
+    auto tail = name.substr( splits[ 0 ].length() + 1 );
     return player->create_action_expression( *this, tail );
   }
 
   // necessary for sim.target.*
   if ( splits.size() >= 2 && splits[ 0 ] == "sim" )
   {
-    auto tail = name_str.substr( splits[ 0 ].length() + 1 );
+    auto tail = name.substr( splits[ 0 ].length() + 1 );
     return sim->create_expression( tail );
   }
 
-  return player->create_action_expression( *this, name_str );
+  return player->create_action_expression( *this, name );
 }
 
 double action_t::ppm_proc_chance( double PPM ) const
@@ -4105,7 +4112,7 @@ timespan_t action_t::tick_time_flat_modifier( const action_state_t* ) const
   return 0_ms;
 }
 
-double action_t::tick_time_pct_multiplier( const action_state_t* s ) const
+double action_t::tick_time_pct_multiplier( const action_state_t* ) const
 {
   return 1.0;
 }
@@ -4227,7 +4234,7 @@ timespan_t action_t::dot_duration_flat_modifier( const action_state_t* ) const
   return 0_ms;
 }
 
-double action_t::dot_duration_pct_multiplier( const action_state_t* s ) const
+double action_t::dot_duration_pct_multiplier( const action_state_t* ) const
 {
   return 1.0;
 }
@@ -4344,11 +4351,11 @@ void action_t::trigger_dot( action_state_t* s )
 /**
  * Determine if a travel event for given target currently exists.
  */
-bool action_t::has_travel_events_for( const player_t* target ) const
+bool action_t::has_travel_events_for( const player_t* t ) const
 {
   for ( const auto& travel_event : travel_events )
   {
-    if ( travel_event->state->target == target )
+    if ( travel_event->state->target == t )
       return true;
   }
 
@@ -4685,21 +4692,22 @@ void action_t::add_child( action_t* child )
 void action_t::add_option( std::unique_ptr<option_t> new_option )
 { options.insert( options.begin(), std::move(new_option) ); }
 
-double action_t::composite_target_damage_vulnerability(player_t* target) const
+double action_t::composite_target_damage_vulnerability( player_t* t ) const
 {
   double target_vulnerability = 0.0;
   double tmp;
 
-  for (auto base_school : base_schools)
+  for ( auto base_school : base_schools )
   {
-    tmp = target->composite_player_vulnerability(base_school);
-    if (tmp > target_vulnerability) target_vulnerability = tmp;
+    tmp = t->composite_player_vulnerability( base_school );
+    if ( tmp > target_vulnerability )
+      target_vulnerability = tmp;
   }
 
   return target_vulnerability;
 }
 
-double action_t::composite_leech(const action_state_t*) const
+double action_t::composite_leech( const action_state_t* ) const
 {
   return player->cache.leech();
 }
@@ -4772,9 +4780,9 @@ double action_t::composite_rolling_ta_multiplier( const action_state_t* s ) cons
     // Calculate ticks_left_fractional for the DoT after it is refreshed.
     double new_ticks_left = 1.0 + ( calculate_dot_refresh_duration( dot, new_duration ) - dot->time_to_next_full_tick() ) / new_tick;
     // Roll the multiplier for the old ticks that will be lost into a multiplier for the new DoT.
-    m = ( ticks_left * s->rolling_ta_multiplier + new_base_ticks ) / new_ticks_left;
+    m = ( ticks_left * dot->state->rolling_ta_multiplier + new_base_ticks ) / new_ticks_left;
     sim->print_debug( "{} {} rolling_ta_multiplier updated: old_multiplier={} to new_multiplier={} ticks_left={} new_base_ticks={} new_ticks_left={}.",
-      *player, *this, s->rolling_ta_multiplier, m, ticks_left, new_base_ticks, new_ticks_left );
+      *player, *this, dot->state->rolling_ta_multiplier, m, ticks_left, new_base_ticks, new_ticks_left );
   }
 
   return m;
@@ -4839,10 +4847,10 @@ void action_t::reschedule_queue_event()
   }
   else
   {
-    execute_type type = debug_cast<queued_action_execute_event_t*>( queue_event )->type;
+    execute_type et = debug_cast<queued_action_execute_event_t*>( queue_event )->type;
 
     event_t::cancel( queue_event );
-    queue_event = make_event<queued_action_execute_event_t>( *sim, this, new_queue_delay, type );
+    queue_event = make_event<queued_action_execute_event_t>( *sim, this, new_queue_delay, et );
   }
 }
 rng::rng_t& action_t::rng()
@@ -4925,9 +4933,9 @@ player_t* action_t::get_expression_target()
   return ( target == player ) ? player->target : target;
 }
 
-void action_t::gain_energize_resource( resource_e resource_type, double amount, gain_t* gain )
+void action_t::gain_energize_resource( resource_e resource_type, double amount, gain_t* g )
 {
-  player->resource_gain( resource_type, amount, gain, this );
+  player->resource_gain( resource_type, amount, g, this );
 }
 
 bool action_t::usable_during_current_cast() const
@@ -5155,9 +5163,9 @@ player_t* action_t::select_target_if_target()
   double max_ = current_target_v;
   double min_ = current_target_v;
 
-  for ( auto player : master_list )
+  for ( auto p : master_list )
   {
-    target = player;
+    target = p;
 
     // No need to check current target
     if ( target == original_target )
@@ -5289,7 +5297,7 @@ void action_t::html_customsection( report::sc_html_stream& os )
   }
 }
 
-void action_t::apply_affecting_aura( const spell_data_t* spell )
+void action_t::apply_affecting_aura( const spell_data_t* spell, const spell_data_t* modifier )
 {
   if ( !spell->ok() )
   {
@@ -5300,12 +5308,77 @@ void action_t::apply_affecting_aura( const spell_data_t* spell )
 
   for ( const spelleffect_data_t& effect : spell->effects() )
   {
-    apply_affecting_effect( effect );
+    const spelleffect_data_t* mod = nullptr;
+
+    if ( modifier && modifier->ok() )
+    {
+      for ( const auto& m_eff : modifier->effects() )
+      {
+        if ( m_eff.type() != E_APPLY_AURA )
+          continue;
+
+        switch ( m_eff.subtype() )
+        {
+          case A_ADD_FLAT_MODIFIER:
+          case A_ADD_PCT_MODIFIER:
+            if ( spell->affected_by( m_eff ) )
+              break;
+            else
+              continue;
+          case A_ADD_FLAT_LABEL_MODIFIER:
+          case A_ADD_PCT_LABEL_MODIFIER:
+            if ( spell->affected_by_label( m_eff ) )
+              break;
+            else
+              continue;
+          default:
+            continue;
+        }
+
+        switch ( m_eff.property_type() )
+        {
+          case P_EFFECT_1: if ( effect.index() == 0 ) break; else continue;
+          case P_EFFECT_2: if ( effect.index() == 1 ) break; else continue;
+          case P_EFFECT_3: if ( effect.index() == 2 ) break; else continue;
+          case P_EFFECT_4: if ( effect.index() == 3 ) break; else continue;
+          case P_EFFECT_5: if ( effect.index() == 4 ) break; else continue;
+          default:         continue;
+        }
+
+        mod = &m_eff;
+        break;
+      }
+    }
+
+    apply_affecting_effect( effect, mod );
   }
 }
 
-void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
+void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const spelleffect_data_t* modifier )
 {
+  struct modified_effect_value_t
+  {
+    const spelleffect_data_t& effect;
+    double value;
+
+    modified_effect_value_t( const spelleffect_data_t& eff ) : effect( eff ), value( eff.base_value() ) {}
+
+    double base_value() const
+    { return value; }
+
+    double percent() const
+    { return value * ( 1 / 100.0 ); }
+
+    timespan_t time_value() const
+    { return timespan_t::from_millis( value ); }
+
+    double resource( resource_e type ) const
+    { return base_value() * effect.resource_multiplier( type ); }
+
+    property_type_t property_type() const
+    { return effect.property_type(); }
+  };
+
   if ( !effect.ok() || effect.type() != E_APPLY_AURA )
     return;
 
@@ -5329,7 +5402,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
   }
 
   // Applies "Spell Effect N" auras if they directly affect damage auras
-  auto apply_effect_n_multiplier = [ &value_, this ]( const spelleffect_data_t& effect, unsigned n ) {
+  auto apply_effect_n_multiplier = [ &value_, this ]( const modified_effect_value_t& effect, unsigned n ) {
     if ( is_direct_damage_effect( data().effectN( n ) ) )
     {
       base_dd_multiplier *= 1 + effect.percent();
@@ -5345,7 +5418,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
   };
 
   // Applies "Flat Modifier" and "Flat Modifier w/ Label" auras
-  auto apply_flat_modifier = [ &value_, this ]( const spelleffect_data_t& effect ) {
+  auto apply_flat_modifier = [ &value_, this ]( const modified_effect_value_t& effect ) {
     switch ( effect.property_type() )
     {
       case P_DURATION:
@@ -5483,7 +5556,7 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
   };
 
   // Applies "Percent Modifier" and "Percent Modifier w/ Label" auras
-  auto apply_percent_modifier = [ &value_, this ]( const spelleffect_data_t& effect ) {
+  auto apply_percent_modifier = [ &value_, this ]( const modified_effect_value_t& effect ) {
     switch ( effect.property_type() )
     {
       case P_GENERIC:
@@ -5609,6 +5682,15 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     }
   };
 
+  auto m_effect = modified_effect_value_t( effect );
+  if ( modifier && modifier->ok() )
+  {
+    if ( modifier->subtype() == A_ADD_FLAT_MODIFIER || modifier->subtype() == A_ADD_FLAT_LABEL_MODIFIER )
+      m_effect.value += modifier->base_value();
+    else if ( modifier->subtype() == A_ADD_PCT_MODIFIER || modifier->subtype() == A_ADD_PCT_LABEL_MODIFIER)
+      m_effect.value *= 1 + modifier->percent();
+  }
+
   // Standard Affected-by Auras
   if ( data().affected_by( effect ) )
   {
@@ -5632,11 +5714,11 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case A_ADD_FLAT_MODIFIER:
-        apply_flat_modifier( effect );
+        apply_flat_modifier( m_effect );
         break;
 
       case A_ADD_PCT_MODIFIER:
-        apply_percent_modifier( effect );
+        apply_percent_modifier( m_effect );
         break;
 
       default:
@@ -5649,15 +5731,15 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
     switch ( effect.subtype() )
     {
       case A_ADD_FLAT_LABEL_MODIFIER:
-        apply_flat_modifier( effect );
+        apply_flat_modifier( m_effect );
         break;
 
       case A_ADD_PCT_LABEL_MODIFIER:
-        apply_percent_modifier( effect );
+        apply_percent_modifier( m_effect );
         switch ( effect.property_type() )
         {
           case P_EFFECT_1:
-            apply_effect_n_multiplier( effect, 1 );
+            apply_effect_n_multiplier( m_effect, 1 );
             break;
 
           default:
@@ -5679,30 +5761,30 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         {
           if ( data().charge_cooldown() > 0_ms )
           {
-            internal_cooldown->duration += effect.time_value();
+            internal_cooldown->duration += m_effect.time_value();
             if ( internal_cooldown->duration < timespan_t::zero() )
               internal_cooldown->duration = timespan_t::zero();
             sim->print_debug( "{} internal cooldown duration modified by {} to {} (due to being a charge cooldown)",
-                              *this, effect.time_value(), internal_cooldown->duration );
+                              *this, m_effect.time_value(), internal_cooldown->duration );
           }
           else
           {
-            cooldown->duration += effect.time_value();
+            cooldown->duration += m_effect.time_value();
             if ( cooldown->duration < timespan_t::zero() )
               cooldown->duration = timespan_t::zero();
-            sim->print_debug( "{} cooldown duration modified by {} to {}", *this, effect.time_value(),
+            sim->print_debug( "{} cooldown duration modified by {} to {}", *this, m_effect.time_value(),
                               cooldown->duration );
           }
-          value_ = effect.base_value();
+          value_ = m_effect.base_value();
         }
         break;
 
       case A_MOD_MAX_CHARGES:
         if ( cooldown->action == this && data().charge_cooldown() > 0_ms )
         {
-          cooldown->charges += as<int>( effect.base_value() );
-          sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( effect.base_value() ) );
-          value_ = effect.base_value();
+          cooldown->charges += as<int>( m_effect.base_value() );
+          sim->print_debug( "{} cooldown charges modified by {}", *this, as<int>( m_effect.base_value() ) );
+          value_ = m_effect.base_value();
         }
         break;
 
@@ -5718,29 +5800,29 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
           if ( data().charge_cooldown() <= 0_ms )
           {
             sim->print_debug( "{} cooldown recharge time modifier ({}) ignored due to not being a charge cooldown",
-                              *this, effect.time_value() );
+                              *this, m_effect.time_value() );
           }
           else
           {
-            cooldown->duration += effect.time_value();
+            cooldown->duration += m_effect.time_value();
             if ( cooldown->duration < timespan_t::zero() )
               cooldown->duration = timespan_t::zero();
-            sim->print_debug( "{} cooldown recharge time modified by {}", *this, effect.time_value() );
+            sim->print_debug( "{} cooldown recharge time modified by {}", *this, m_effect.time_value() );
           }
-          value_ = effect.base_value();
+          value_ = m_effect.base_value();
         }
         break;
 
       case A_MOD_RECHARGE_TIME_PCT_CATEGORY:
         if ( data().charge_cooldown() > 0_ms )
         {
-          base_recharge_multiplier *= 1 + effect.percent();
+          base_recharge_multiplier *= 1 + m_effect.percent();
           if ( base_recharge_multiplier <= 0 )
           {
             cooldown->duration = timespan_t::zero();
           }
-          sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, effect.base_value() );
-          value_ = effect.percent();
+          sim->print_debug( "{} cooldown recharge multiplier modified by {}%", *this, m_effect.base_value() );
+          value_ = m_effect.percent();
         }
         break;
 
@@ -5779,10 +5861,10 @@ void action_t::apply_affecting_conduit_effect( const conduit_data_t& conduit, si
   apply_affecting_effect( effect );
 }
 
-void action_t::execute_on_target( player_t* target, double amount )
+void action_t::execute_on_target( player_t* t, double amount )
 {
-  assert( target );
-  set_target( target );
+  assert( t );
+  set_target( t );
 
   if ( amount >= 0.0 )
     base_dd_min = base_dd_max = amount;

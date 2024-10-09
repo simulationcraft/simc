@@ -11,7 +11,6 @@
 #include "dbc/trait_data.hpp"
 #include "player/covenant.hpp"
 #include "util/static_map.hpp"
-#include "util/string_view.hpp"
 #include "util/util.hpp"
 #include "util/xml.hpp"
 
@@ -23,105 +22,112 @@
 
 namespace {
 
-static constexpr std::array<util::string_view, 4> _spell_type_map { {
+static constexpr std::array<std::string_view, 4> _spell_type_map { {
   "None", "Magic", "Melee", "Ranged"
 } };
 
-static constexpr auto _hotfix_effect_map = util::make_static_map<unsigned, util::string_view>( {
-  {  3, "Index" },
-  {  4, "Type" },
-  {  5, "Sub Type" },
-  {  6, "Coefficient" },
-  {  7, "Delta" },
-  {  8, "Bonus" },
-  {  9, "SP Coefficient" },
-  { 10, "AP Coefficient" },
-  { 11, "Period" },
-  { 12, "Min Radius" },
-  { 13, "Max Radius" },
-  { 14, "Base Value" },
-  { 15, "Misc Value" },
-  { 16, "Misc Value 2" },
-  { 17, "Affects Spells" },
-  { 18, "Trigger Spell" },
-  { 19, "Chain Multiplier" },
+static constexpr auto _hotfix_effect_map = util::make_static_map<unsigned, std::string_view>( {
+  {  3, "Index"                   },
+  {  4, "Type"                    },
+  {  5, "Sub Type"                },
+  {  6, "Coefficient"             },
+  {  7, "Delta"                   },
+  {  8, "Bonus"                   },
+  {  9, "SP Coefficient"          },
+  { 10, "AP Coefficient"          },
+  { 11, "Period"                  },
+  { 12, "Min Radius"              },
+  { 13, "Max Radius"              },
+  { 14, "Base Value"              },
+  { 15, "Misc Value"              },
+  { 16, "Misc Value 2"            },
+  { 17, "Affects Spells"          },
+  { 18, "Trigger Spell"           },
+  { 19, "Chain Multiplier"        },
   { 20, "Points per Combo Points" },
-  { 21, "Points per Level" },
-  { 22, "Mechanic" },
-  { 23, "Chain Targets" },
-  { 24, "Target 1" },
-  { 25, "Target 2" },
-  { 26, "Value Multiplier" },
-  { 27, "PvP Coefficient" },
-  { 28, "Scaling Class" },
-  { 29, "Attribute" },
+  { 21, "Points per Level"        },
+  { 22, "Mechanic"                },
+  { 23, "Chain Targets"           },
+  { 24, "Target 1"                },
+  { 25, "Target 2"                },
+  { 26, "Value Multiplier"        },
+  { 27, "PvP Coefficient"         },
+  { 28, "Scaling Class"           },
+  { 29, "Attribute"               },
 } );
 
-static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, util::string_view>( {
-  {  0, "Name" },
-  {  3, "Velocity" },
-  {  4, "School" },
-  {  5, "Class" },
-  {  6, "Race" },
-  {  7, "Scaling Spell" },
-  {  8, "Max Scaling Level" },
-  {  9, "Learn Level" },
-  { 10, "Max Spell Level" },
-  { 11, "Min Range" },
-  { 12, "Max Range" },
-  { 13, "Cooldown" },
-  { 14, "GCD" },
-  { 15, "Category Cooldown" },
-  { 16, "Charges" },
-  { 17, "Charge Cooldown" },
-  { 18, "Category" },
-  { 19, "Duration" },
-  { 20, "Max stacks" },
-  { 21, "Proc Chance" },
-  { 22, "Proc Stacks" },
-  { 23, "Proc Flags 1" },
-  { 24, "Internal Cooldown" },
-  { 25, "RPPM" },
-  { 30, "Cast Time" },
-  { 35, "Attributes" },
-  { 36, "Affecting Spells" },
-  { 37, "Spell Family" },
-  { 38, "Stance Mask" },
-  { 39, "Mechanic" },
-  { 40, "Azerite Power Id" },
+static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, std::string_view>( {
+  {  0, "Name"               },
+  {  3, "Velocity"           },
+  {  4, "School"             },
+  {  5, "Class"              },
+  {  6, "Race"               },
+  {  7, "Scaling Spell"      },
+  {  8, "Max Scaling Level"  },
+  {  9, "Learn Level"        },
+  { 10, "Max Spell Level"    },
+  { 11, "Min Range"          },
+  { 12, "Max Range"          },
+  { 13, "Cooldown"           },
+  { 14, "GCD"                },
+  { 15, "Category Cooldown"  },
+  { 16, "Charges"            },
+  { 17, "Charge Cooldown"    },
+  { 18, "Category"           },
+  { 19, "Duration"           },
+  { 20, "Max stacks"         },
+  { 21, "Proc Chance"        },
+  { 22, "Proc Stacks"        },
+  { 23, "Proc Flags 1"       },
+  { 24, "Internal Cooldown"  },
+  { 25, "RPPM"               },
+  { 26, "Item Class"         },
+  { 27, "Inventory Mask"     },
+  { 28, "Item Subclass"      },
+  { 30, "Cast Time"          },
+  { 35, "Attributes"         },
+  { 36, "Affecting Spells"   },
+  { 37, "Spell Family"       },
+  { 38, "Stance Mask"        },
+  { 39, "Mechanic"           },
+  { 40, "Azerite Power Id"   },
   { 41, "Azerite Essence Id" },
-  { 46, "Required Max Level" },
-  { 47, "Spell Type" },
-  { 48, "Max Targets" },
-  { 49, "Required Level" },
-  { 50, "Travel Delay" },
-  { 51, "Min Travel Time" },
-  { 52, "Proc Flags 2" },
+  { 46, "Max Aura Level"     },
+  { 47, "Spell Type"         },
+  { 48, "Max Targets"        },
+  { 49, "Required Level"     },
+  { 50, "Travel Delay"       },
+  { 51, "Min Travel Time"    },
+  { 52, "Proc Flags 2"       },
+  { 53, "Min Scaling Level"  },
+  { 54, "Scale from ilevel"  },
+  { 55, "Aura Interrupt"     },
+  { 56, "Channel Interrupt"  },
 } );
 
-static constexpr auto _hotfix_spelltext_map = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _hotfix_spelltext_map = util::make_static_map<unsigned, std::string_view>( {
   { 0, "Description" },
-  { 1, "Tooltip" },
-  { 2, "Rank" },
+  { 1, "Tooltip"     },
+  { 2, "Rank"        },
 } );
 
-static constexpr auto _hotfix_spelldesc_vars_map = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _hotfix_spelldesc_vars_map = util::make_static_map<unsigned, std::string_view>( {
   { 0, "Variables" },
 } );
 
-static constexpr auto _hotfix_power_map = util::make_static_map<unsigned, util::string_view>( {
-  {  2, "Aura Id" },
-  {  4, "Power Type" },
-  {  5, "Cost" },
-  {  6, "Max Cost" },
-  {  7, "Cost per Tick" },
-  {  8, "Percent Cost" },
-  {  9, "Max Percent Cost" },
+static constexpr auto _hotfix_power_map = util::make_static_map<unsigned, std::string_view>( {
+  {  2, "Aura Id"               },
+  {  4, "Power Type"            },
+  {  5, "Cost"                  },
+  {  6, "Max Cost"              },
+  {  7, "Cost per Tick"         },
+  {  8, "Percent Cost"          },
+  {  9, "Max Percent Cost"      },
   { 10, "Percent Cost per Tick" }
 } );
 
 template <typename T, size_t N>
-std::string map_string( const util::static_map<T, util::string_view, N>& map, T key )
+std::string map_string( const util::static_map<T, std::string_view, N>& map, T key )
 {
   auto it = map.find( key );
   if ( it != map.end() )
@@ -130,7 +136,7 @@ std::string map_string( const util::static_map<T, util::string_view, N>& map, T 
 }
 
 void print_hotfixes( fmt::memory_buffer& buf, util::span<const hotfix::client_hotfix_entry_t> hotfixes,
-                     util::static_map_view<unsigned, util::string_view> map )
+                     util::static_map_view<unsigned, std::string_view> map )
 {
   for ( const auto& hotfix : hotfixes )
   {
@@ -165,7 +171,7 @@ void print_hotfixes( fmt::memory_buffer& buf, util::span<const hotfix::client_ho
 }
 
 std::string hotfix_map_str( util::span<const hotfix::client_hotfix_entry_t> hotfixes,
-                            util::static_map_view<unsigned, util::string_view> map )
+                            util::static_map_view<unsigned, std::string_view> map )
 {
   fmt::memory_buffer s;
   print_hotfixes( s, hotfixes, map );
@@ -213,9 +219,9 @@ std::streamsize real_ppm_decimals( const spell_data_t* spell, const rppm_modifie
 struct proc_map_entry_t
 {
   uint64_t flag;
-  util::string_view proc;
+  std::string_view proc;
 };
-static constexpr std::array<proc_map_entry_t, 35> _proc_flag_map { {
+static constexpr std::array<proc_map_entry_t, 39> _proc_flag_map { {
   { PF_HEARTBEAT,              "Heartbeat"                   },
   { PF_KILLING_BLOW,           "Killing Blow"                },
   { PF_MELEE,                  "White Melee"                 },
@@ -238,10 +244,10 @@ static constexpr std::array<proc_map_entry_t, 35> _proc_flag_map { {
   { PF_PERIODIC_TAKEN,         "Periodic Taken"              },
   { PF_ANY_DAMAGE_TAKEN,       "Any Damage Taken"            },
   { PF_HELPFUL_PERIODIC,       "Helpful Periodic"            },
-  { PF_JUMP,                   "Proc on jump"                },
   { PF_MAINHAND,               "Melee Main-Hand"             },
   { PF_OFFHAND,                "Melee Off-Hand"              },
   { PF_DEATH,                  "Death"                       },
+  { PF_JUMP,                   "Proc on jump"                },
   { PF_CLONE_SPELL,            "Proc Clone Spell"            },
   { PF_ENTER_COMBAT,           "Enter Combat"                },
   { PF_ENCOUNTER_START,        "Encounter Start"             },
@@ -251,6 +257,10 @@ static constexpr std::array<proc_map_entry_t, 35> _proc_flag_map { {
   { PF_TARGET_DIES,            "Target Dies"                 },
   { PF_KNOCKBACK,              "Knockback"                   },
   { PF_CAST_SUCCESSFUL,        "Cast Successful"             },
+  { PF_UNKNOWN_36,             "Unknown 36"                  },
+  { PF_UNKNOWN_37,             "Unknown 37"                  },
+  { PF_UNKNOWN_38,             "Unknown 38"                  },
+  { PF_UNKNOWN_39,             "Unknown 39"                  },
 } };
 
 struct class_map_entry_t
@@ -259,24 +269,24 @@ struct class_map_entry_t
   player_e pt;
 };
 static constexpr std::array<class_map_entry_t, 15> _class_map { {
-  { nullptr, PLAYER_NONE },
-  { "Warrior", WARRIOR },
-  { "Paladin", PALADIN },
-  { "Hunter", HUNTER },
-  { "Rogue", ROGUE },
-  { "Priest", PRIEST },
-  { "Death Knight", DEATH_KNIGHT },
-  { "Shaman", SHAMAN },
-  { "Mage", MAGE },
-  { "Warlock", WARLOCK },
-  { "Monk", MONK },
-  { "Druid", DRUID },
-  { "Demon Hunter", DEMON_HUNTER },
-  { "Evoker", EVOKER },
-  { nullptr, PLAYER_NONE },
+  { nullptr,        PLAYER_NONE   },
+  { "Warrior",      WARRIOR       },
+  { "Paladin",      PALADIN       },
+  { "Hunter",       HUNTER        },
+  { "Rogue",        ROGUE         },
+  { "Priest",       PRIEST        },
+  { "Death Knight", DEATH_KNIGHT  },
+  { "Shaman",       SHAMAN        },
+  { "Mage",         MAGE          },
+  { "Warlock",      WARLOCK       },
+  { "Monk",         MONK          },
+  { "Druid",        DRUID         },
+  { "Demon Hunter", DEMON_HUNTER  },
+  { "Evoker",       EVOKER        },
+  { nullptr,        PLAYER_NONE   },
 } };
 
-static constexpr auto _race_map = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _race_map = util::make_static_map<unsigned, std::string_view>( {
   {  0, "Human"               },
   {  1, "Orc"                 },
   {  2, "Dwarf"               },
@@ -304,7 +314,7 @@ static constexpr auto _race_map = util::make_static_map<unsigned, util::string_v
   { 31, "Kul Tiran"           },
 } );
 
-static constexpr auto _targeting_strings = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _targeting_strings = util::make_static_map<unsigned, std::string_view>( {
   { 1,   "Self"                   },
   { 2,   "Nearby Enemy"           },
   { 3,   "Nearby Party"           },
@@ -363,7 +373,7 @@ static constexpr auto _targeting_strings = util::make_static_map<unsigned, util:
   { 136, "Cone to Friendly"       },
 } );
 
-static constexpr auto _resource_strings = util::make_static_map<int, util::string_view>( {
+static constexpr auto _resource_strings = util::make_static_map<int, std::string_view>( {
   { -2, "Health",        },
   {  0, "Base Mana",     },
   {  1, "Rage",          },
@@ -386,7 +396,7 @@ static constexpr auto _resource_strings = util::make_static_map<int, util::strin
 } );
 
 // Mappings from Classic EnumeratedString.db2
-static constexpr auto _attribute_strings = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _attribute_strings = util::make_static_map<unsigned, std::string_view>( {
   {    0, "Proc Failure Burns Charge"                                            },
   {    1, "Uses Ranged Slot"                                                     },
   {    2, "On Next Swing (No Damage)"                                            },
@@ -836,9 +846,73 @@ static constexpr auto _attribute_strings = util::make_static_map<unsigned, util:
   {  446, "Recompute Aura On Level Scale"                                        },
   {  447, "Update Fall Speed After Aura Removal"                                 },
   {  448, "Prevent Jumping During Precast"                                       },
+  {  449, "Reagent Consumes Charges"                                             },
+  {  451, "Hide Passive From Tooltip"                                            },
+  {  468, "Private Aura"                                                         },
 } );
 
-static constexpr auto _property_type_strings = util::make_static_map<int, util::string_view>( {
+static constexpr auto _aura_interrupt_strings = util::make_static_map<unsigned, std::string_view>( {
+  {  0, "Hostile Action Received"          },
+  {  1, "Damage"                           },
+  {  2, "Action"                           },
+  {  3, "Moving"                           },
+  {  4, "Turning"                          },
+  {  5, "Animation"                        },
+  {  6, "Dismount"                         },
+  {  7, "Under Water"                      },
+  {  8, "Above Water"                      },
+  {  9, "Sheathing"                        },
+  { 10, "Interacting"                      },
+  { 11, "Looting"                          },
+  { 12, "Attacking"                        },
+  { 13, "Use Item"                         },
+  { 14, "Damage Channel Duration"          },
+  { 15, "Shapeshifting"                    },
+  { 16, "Action (Delayed)"                 },
+  { 17, "Mount"                            },
+  { 18, "Standing"                         },
+  { 19, "Leave World"                      },
+  { 20, "Stealth or Invisible"             },
+  { 21, "Invulnerability"                  },
+  { 22, "Enter World"                      },
+  { 23, "PVP Active"                       },
+  { 24, "Direct Damage"                    },
+  { 25, "Landing"                          },
+  { 26, "Release"                          },
+  { 27, "Damage (Script)"                  },
+  { 28, "Enter Combat"                     },
+  { 29, "Login"                            },
+  { 30, "Summon"                           },
+  { 31, "Leave Combat"                     },
+  { 32, "Falling"                          },
+  { 33, "Swimming"                         },
+  { 34, "Not Moving"                       },
+  { 35, "Ground"                           },
+  { 36, "Transform"                        },
+  { 37, "Jump"                             },
+  { 38, "Change Specialization"            },
+  { 39, "Exit Vehicle"                     },
+  { 40, "Raid Encounter Start or M+ Start" },
+  { 41, "Raid Encounter End or M+ Start"   },
+  { 42, "Disconnect"                       },
+  { 43, "Enter Instance"                   },
+  { 44, "Duel End"                         },
+  { 45, "Leave Arena or Battleground"      },
+  { 46, "Change Talent"                    },
+  { 47, "Change Glyph"                     },
+  { 48, "Seamless Transfer"                },
+  { 49, "Leave War Mode"                   },
+  { 50, "Touch Ground"                     },
+  { 51, "Chromie Time"                     },
+  { 52, "Spline or Free Flight"            },
+  { 53, "Proc or Periodic Attack"          },
+  { 54, "Challenge Mode Start"             },
+  { 55, "Encounter Start"                  },
+  { 56, "Encounter End"                    },
+  { 57, "Release Empower"                  },
+} );
+
+static constexpr auto _property_type_strings = util::make_static_map<int, std::string_view>( {
   {  0, "Spell Direct Amount"             },
   {  1, "Spell Duration"                  },
   {  2, "Spell Generated Threat"          },
@@ -881,7 +955,7 @@ static constexpr auto _property_type_strings = util::make_static_map<int, util::
   { 39, "Spell Resource Cost 3"           },
 } );
 
-static constexpr auto _effect_type_strings = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _effect_type_strings = util::make_static_map<unsigned, std::string_view>( {
   {   0, "None"                     },
   {   1, "Instant Kill"             },
   {   2, "School Damage"            },
@@ -980,223 +1054,227 @@ static constexpr auto _effect_type_strings = util::make_static_map<unsigned, uti
   { 290, "Reduce Remaining Cooldown"},
 } );
 
-static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, util::string_view>( {
-  {   0, "None"                                         },
-  {   2, "Possess"                                      },
-  {   3, "Periodic Damage"                              },
-  {   4, "Dummy"                                        },
-  {   5, "Confuse"                                      },
-  {   6, "Charm"                                        },
-  {   7, "Fear"                                         },
-  {   8, "Periodic Heal"                                },
-  {   9, "Auto Attack Speed (Normalized wDPS)"          },
-  {  10, "Threat"                                       },
-  {  11, "Taunt"                                        },
-  {  12, "Stun"                                         },
-  {  13, "Damage Done"                                  },
-  {  14, "Damage Taken"                                 },
-  {  15, "Damage Shield"                                },
-  {  16, "Stealth"                                      },
-  {  17, "Stealth Detection"                            },
-  {  18, "Invisibility"                                 },
-  {  19, "Invisibility Detection"                       },
-  {  20, "Periodic Heal%"                               },
-  {  21, "Periodic Power% Regen"                        },
-  {  22, "Resistance"                                   },
-  {  23, "Periodic Trigger Spell"                       },
-  {  24, "Periodic Energize Power"                      },
-  {  25, "Pacify"                                       },
-  {  26, "Root"                                         },
-  {  27, "Silence"                                      },
-  {  28, "Spell Reflection"                             },
-  {  29, "Attribute"                                    },
-  {  30, "Skill"                                        },
-  {  31, "Increase Speed%"                              },
-  {  32, "Increase Mounted Speed%"                      },
-  {  33, "Decrease Movement Speed%"                     },
-  {  34, "Increase Health"                              },
-  {  35, "Increase Resource"                            },
-  {  36, "Shapeshift"                                   },
-  {  37, "Immunity Against External Movement"           },
-  {  39, "School Immunity"                              },
-  {  40, "Damage Immunity"                              },
-  {  41, "Disable Stealth"                              },
-  {  42, "Proc Trigger Spell"                           },
-  {  43, "Proc Trigger Damage"                          },
-  {  44, "Track Creatures"                              },
-  {  47, "Modify Parry%"                                },
-  {  49, "Modify Dodge%"                                },
-  {  50, "Modify Critical Heal Bonus"                   },
-  {  51, "Modify Block%"                                },
-  {  52, "Modify Crit%"                                 },
-  {  53, "Periodic Health Leech"                        },
-  {  54, "Modify Hit%"                                  },
-  {  55, "Modify Spell Hit%"                            },
-  {  56, "Change Model"                                 },
-  {  57, "Modify Spell Crit%"                           },
-  {  60, "Pacify Silence"                               },
-  {  61, "Scale% (Stacking)"                            },
-  {  63, "Modify Max Cost"                              },
-  {  64, "Periodic Mana Leech"                          },
-  {  65, "Modify Spell Speed%"                          },
-  {  66, "Feign Death"                                  },
-  {  67, "Disarm"                                       },
-  {  68, "Stalked"                                      },
-  {  69, "Absorb Damage"                                },
-  {  72, "Modify Power Cost%"                           },
-  {  73, "Modify Power Cost"                            },
-  {  74, "Reflect Spells"                               },
-  {  77, "Mechanic Immunity"                            },
-  {  79, "Modify Damage Done%"                          },
-  {  80, "Modify Attribute%"                            },
-  {  81, "Transfer Damage%"                             },
-  {  84, "Restore Health"                               },
-  {  85, "Restore Power"                                },
-  {  87, "Modify Damage Taken%"                         },
-  {  88, "Modify Health Regeneration%"                  },
-  {  89, "Periodic Max Health% Damage"                  },
-  {  99, "Modify Attack Power"                          },
-  { 101, "Modify Armor%"                                },
-  { 102, "Modify Melee Attack Power vs Race"            },
-  { 103, "Temporary Thread Reduction"                   },
-  { 104, "Modify Attack Power"                          },
-  { 106, "Levitate"                                     },
-  { 107, "Add Flat Modifier"                            },
-  { 108, "Add Percent Modifier"                         },
-  { 110, "Modify Power Regen"                           },
-  { 115, "Modify Healing Received"                      },
-  { 116, "Combat Health Regen%"                         },
-  { 117, "Mechanic Resistance"                          },
-  { 118, "Modify Healing Received%"                     },
-  { 123, "Modify Target Resistance"                     },
-  { 124, "Modify Ranged Attack Power"                   },
-  { 126, "Modify Melee Damage Taken%"                   },
-  { 129, "Increase Movement Speed% (Stacking)"          },
-  { 130, "Increase Mount Speed% (Stacking)"             },
-  { 131, "Modify Ranged Attack Power vs Race"           },
-  { 132, "Modify Max Resource%"                         },
-  { 133, "Modify Max Health%"                           },
-  { 135, "Modify Healing Power"                         },
-  { 136, "Modify Healing% Done"                         },
-  { 137, "Modify Total Stat%"                           },
-  { 138, "Modify Melee Haste%"                          },
-  { 140, "Modify Ranged Haste%"                         },
-  { 142, "Modify Base Resistance"                       },
-  { 143, "Modify Cooldown Recharge Rate% (Label)"       },
-  { 144, "Reduce Fall Damage"                           },
-  { 147, "Mechanic Immunity"                            },
-  { 148, "Modify Cooldown Recharge Rate% (Category)"    },
-  { 149, "Modify Casting Pushback"                      },
-  { 150, "Modify Block Effectiveness"                   },
-  { 152, "Modify Aggro Distance"                        },
-  { 153, "Modify Auto Attack Range"                     },
-  { 157, "Modify Absorb% Done"                          },
-  { 163, "Modify Crit Damage Done%"                     },
-  { 166, "Modify Melee Attack Power%"                   },
-  { 167, "Modify Ranged Attack Power%"                  },
-  { 168, "Modify Damage Done% vs Race"                  },
-  { 171, "Increase Movement Speed%"                     },
-  { 172, "Increase Mounted Speed%"                      },
-  { 177, "Charmed"                                      },
-  { 178, "Modify Max Mana%"                             },
-  { 180, "Modify Spell Damage vs Race"                  },
-  { 184, "Modify Attacker Melee Hit Chance"             },
-  { 185, "Modify Attacker Ranged Hit Chance"            },
-  { 186, "Modify Attacker Spell Hit Chance"             },
-  { 187, "Modify Attacker Melee Crit Chance"            },
-  { 189, "Modify Rating"                                },
-  { 192, "Modify Ranged and Melee Haste%"               },
-  { 193, "Modify All Haste%"                            },
-  { 197, "Modify Attacker Crit Chance"                  },
-  { 198, "% of Misc1 Rating Added to Misc2 Rating"      },
-  { 200, "Modify Experience Gained from Kills"          },
-  { 213, "Modify Rage Generated From Auto Attacks"      },
-  { 216, "Modify Casting Speed"                         },
-  { 218, "Apply Percent Modifier w/ Label"              },
-  { 219, "Apply Flat Modifier w/ Label"                 },
-  { 220, "Modify Spell School"                          },
-  { 224, "Grant Talent"                                 },
-  { 226, "Periodic Dummy"                               },
-  { 228, "Stealth Detection"                            },
-  { 229, "Modify AoE Damage Taken%"                     },
-  { 231, "Trigger Spell with Value"                     },
-  { 232, "Modify Mechanic Duration% (Stacking)"         },
-  { 234, "Modify Mechanic Duration%"                    },
-  { 239, "Scale%"                                       },
-  { 240, "Modify Expertise%"                            },
-  { 241, "Forced Movement"                              },
-  { 244, "Comprehend Language"                          },
-  { 245, "Modify Debuff Duration%"                      },
-  { 247, "Copy Appearance"                              },
-  { 250, "Increase Max Health (Stacking)"               },
-  { 253, "Modify Critical Block Chance"                 },
-  { 259, "Modify Periodic Healing Recevied%"            },
-  { 263, "Disable Abilities"                            },
-  { 268, "Modify Armor by Primary Stat%"                },
-  { 269, "Modify Damage Done% to Caster"                },
-  { 270, "Modify Damage Taken% from Caster"             },
-  { 271, "Modify Damage Taken% from Caster's Spells"    },
-  { 272, "Modify Block Value%"                          },
-  { 274, "Add Block Value"                              },
-  { 275, "Modify Stance Mask"                           },
-  { 283, "Modify Healing Taken% from Caster's Spells"   },
-  { 286, "Modify Cooldown Recharge Rate%"               },
-  { 290, "Modify Critical Strike%"                      },
-  { 291, "Modify Experience Gained from Quests"         },
-  { 301, "Absorb Healing"                               },
-  { 305, "Modify Min Speed%"                            },
-  { 306, "Modify Crit Chance% from Caster"              },
-  { 308, "Modify Crit Chance% from Caster's Spells"     },
-  { 318, "Modify Mastery%"                              },
-  { 319, "Modify Melee Auto Attack Speed%"              },
-  { 329, "Modify Resource Generation%"                  },
-  { 330, "Cast while Moving (Whitelist)"                },
-  { 332, "Override Action Spell (Misc /w Base)"         },
-  { 334, "Modify Auto Attack Critical Chance"           },
-  { 339, "Modify Crit Chance% from Caster's Pets"       },
-  { 341, "Modify Cooldown Time (Category)"              },
-  { 342, "Modify Ranged and Melee Auto Attack Speed%"   },
-  { 343, "Modify Auto Attack Damage Taken% from Caster" },
-  { 344, "Modify Auto Attack Damage Done%"              },
-  { 345, "Ignore Armor%"                                },
-  { 354, "Modify Healing% Based on Target Health%"      },
-  { 360, "Duplicate Ability"                            },
-  { 361, "Override Auto-Attack with Spell"              },
-  { 366, "Override Spell Power per Attack Power%"       },
-  { 374, "Reduce Fall Damage%"                          },
-  { 377, "Cast while Moving"                            },
-  { 379, "Modify Mana Regen%"                           },
-  { 380, "Modify Damage Taken% from Caster Guardian"    },
-  { 381, "Modify Damage Taken% from Caster Pet"         },
-  { 383, "Ignore Spell Cooldown"                        },
-  { 404, "Override Attack Power per Spell Power%"       },
-  { 405, "Modify Combat Rating Multiplier"              },
-  { 409, "Slow Fall"                                    },
-  { 411, "Modify Cooldown Charge (Category)"            },
-  { 416, "Hasted Cooldown Duration"                     },
-  { 417, "Hasted Global Cooldown"                       },
-  { 418, "Modify Max Resource"                          },
-  { 419, "Modify Mana Pool%"                            },
-  { 421, "Modify Absorb% Done"                          },
-  { 422, "Modify Absorb% Done"                          },
-  { 429, "Modify Pet Damage Done%"                      },
-  { 441, "Modify Multistrike%"                          },
-  { 443, "Modify Leech%"                                },
-  { 453, "Modify Recharge Time (Category)"              },
-  { 454, "Modify Recharge Time% (Category)"             },
-  { 455, "Root"                                         },
-  { 457, "Hasted Cooldown Duration (Category)"          },
-  { 465, "Increase Armor"                               },
-  { 468, "Trigger Spell Based on Health%"               },
-  { 471, "Modify Versatility%"                          },
-  { 485, "Resist Forced Movement%"                      },
-  { 493, "Hunter Animal Companion"                      },
-  { 501, "Modify Crit Damage Done% from Caster's Spells" },
-  { 504, "Modify Healing Taken% from Caster'"           },
-  { 507, "Modify Damage Taken% from Spells (Label)"     },
-  { 531, "Modify Guardian Damage Done%"                 },
+static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, std::string_view>( {
+  {   0, "None"                                              },
+  {   2, "Possess"                                           },
+  {   3, "Periodic Damage"                                   },
+  {   4, "Dummy"                                             },
+  {   5, "Confuse"                                           },
+  {   6, "Charm"                                             },
+  {   7, "Fear"                                              },
+  {   8, "Periodic Heal"                                     },
+  {   9, "Auto Attack Speed (Normalized wDPS)"               },
+  {  10, "Threat"                                            },
+  {  11, "Taunt"                                             },
+  {  12, "Stun"                                              },
+  {  13, "Damage Done"                                       },
+  {  14, "Damage Taken"                                      },
+  {  15, "Damage Shield"                                     },
+  {  16, "Stealth"                                           },
+  {  17, "Stealth Detection"                                 },
+  {  18, "Invisibility"                                      },
+  {  19, "Invisibility Detection"                            },
+  {  20, "Periodic Heal%"                                    },
+  {  21, "Periodic Power% Regen"                             },
+  {  22, "Resistance"                                        },
+  {  23, "Periodic Trigger Spell"                            },
+  {  24, "Periodic Energize Power"                           },
+  {  25, "Pacify"                                            },
+  {  26, "Root"                                              },
+  {  27, "Silence"                                           },
+  {  28, "Spell Reflection"                                  },
+  {  29, "Attribute"                                         },
+  {  30, "Skill"                                             },
+  {  31, "Increase Speed%"                                   },
+  {  32, "Increase Mounted Speed%"                           },
+  {  33, "Decrease Movement Speed%"                          },
+  {  34, "Increase Health"                                   },
+  {  35, "Increase Resource"                                 },
+  {  36, "Shapeshift"                                        },
+  {  37, "Immunity Against External Movement"                },
+  {  39, "School Immunity"                                   },
+  {  40, "Damage Immunity"                                   },
+  {  41, "Disable Stealth"                                   },
+  {  42, "Proc Trigger Spell"                                },
+  {  43, "Proc Trigger Damage"                               },
+  {  44, "Track Creatures"                                   },
+  {  47, "Modify Parry%"                                     },
+  {  49, "Modify Dodge%"                                     },
+  {  50, "Modify Critical Heal Bonus"                        },
+  {  51, "Modify Block%"                                     },
+  {  52, "Modify Crit%"                                      },
+  {  53, "Periodic Health Leech"                             },
+  {  54, "Modify Hit%"                                       },
+  {  55, "Modify Spell Hit%"                                 },
+  {  56, "Change Model"                                      },
+  {  57, "Modify Spell Crit%"                                },
+  {  60, "Pacify Silence"                                    },
+  {  61, "Scale% (Stacking)"                                 },
+  {  63, "Modify Max Cost"                                   },
+  {  64, "Periodic Mana Leech"                               },
+  {  65, "Modify Spell Speed%"                               },
+  {  66, "Feign Death"                                       },
+  {  67, "Disarm"                                            },
+  {  68, "Stalked"                                           },
+  {  69, "Absorb Damage"                                     },
+  {  72, "Modify Power Cost%"                                },
+  {  73, "Modify Power Cost"                                 },
+  {  74, "Reflect Spells"                                    },
+  {  77, "Mechanic Immunity"                                 },
+  {  79, "Modify Damage Done%"                               },
+  {  80, "Modify Attribute%"                                 },
+  {  81, "Transfer Damage%"                                  },
+  {  84, "Restore Health"                                    },
+  {  85, "Restore Power"                                     },
+  {  87, "Modify Damage Taken%"                              },
+  {  88, "Modify Health Regeneration%"                       },
+  {  89, "Periodic Max Health% Damage"                       },
+  {  99, "Modify Attack Power"                               },
+  { 101, "Modify Armor%"                                     },
+  { 102, "Modify Melee Attack Power vs Race"                 },
+  { 103, "Temporary Thread Reduction"                        },
+  { 104, "Modify Attack Power"                               },
+  { 106, "Levitate"                                          },
+  { 107, "Add Flat Modifier"                                 },
+  { 108, "Add Percent Modifier"                              },
+  { 110, "Modify Power Regen"                                },
+  { 115, "Modify Healing Received"                           },
+  { 116, "Combat Health Regen%"                              },
+  { 117, "Mechanic Resistance"                               },
+  { 118, "Modify Healing Received%"                          },
+  { 123, "Modify Target Resistance"                          },
+  { 124, "Modify Ranged Attack Power"                        },
+  { 126, "Modify Melee Damage Taken%"                        },
+  { 129, "Increase Movement Speed% (Stacking)"               },
+  { 130, "Increase Mount Speed% (Stacking)"                  },
+  { 131, "Modify Ranged Attack Power vs Race"                },
+  { 132, "Modify Max Resource%"                              },
+  { 133, "Modify Max Health%"                                },
+  { 135, "Modify Healing Power"                              },
+  { 136, "Modify Healing% Done"                              },
+  { 137, "Modify Total Stat%"                                },
+  { 138, "Modify Melee Haste%"                               },
+  { 140, "Modify Ranged Haste%"                              },
+  { 142, "Modify Base Resistance"                            },
+  { 143, "Modify Cooldown Recharge Rate% (Label)"            },
+  { 144, "Reduce Fall Damage"                                },
+  { 147, "Mechanic Immunity"                                 },
+  { 148, "Modify Charge Cooldown Recharge Rate%"             },
+  { 149, "Modify Casting Pushback"                           },
+  { 150, "Modify Block Effectiveness"                        },
+  { 152, "Modify Aggro Distance"                             },
+  { 153, "Modify Auto Attack Range"                          },
+  { 157, "Modify Absorb% Done"                               },
+  { 163, "Modify Crit Damage Done%"                          },
+  { 166, "Modify Melee Attack Power%"                        },
+  { 167, "Modify Ranged Attack Power%"                       },
+  { 168, "Modify Damage Done% vs Race"                       },
+  { 171, "Increase Movement Speed%"                          },
+  { 172, "Increase Mounted Speed%"                           },
+  { 173, "Modify Charge Cooldown Type Recharge Rate%"        },
+  { 177, "Charmed"                                           },
+  { 178, "Modify Max Mana%"                                  },
+  { 180, "Modify Spell Damage vs Race"                       },
+  { 184, "Modify Attacker Melee Hit Chance"                  },
+  { 185, "Modify Attacker Ranged Hit Chance"                 },
+  { 186, "Modify Attacker Spell Hit Chance"                  },
+  { 187, "Modify Attacker Melee Crit Chance"                 },
+  { 189, "Modify Rating"                                     },
+  { 192, "Modify Ranged and Melee Haste%"                    },
+  { 193, "Modify All Haste%"                                 },
+  { 197, "Modify Attacker Crit Chance"                       },
+  { 198, "% of Misc1 Rating Added to Misc2 Rating"           },
+  { 200, "Modify Experience Gained from Kills"               },
+  { 213, "Modify Rage Generated From Auto Attacks"           },
+  { 216, "Modify Casting Speed"                              },
+  { 218, "Apply Percent Modifier w/ Label"                   },
+  { 219, "Apply Flat Modifier w/ Label"                      },
+  { 220, "Modify Spell School"                               },
+  { 224, "Grant Talent"                                      },
+  { 226, "Periodic Dummy"                                    },
+  { 228, "Stealth Detection"                                 },
+  { 229, "Modify AoE Damage Taken%"                          },
+  { 231, "Trigger Spell with Value"                          },
+  { 232, "Modify Mechanic Duration% (Stacking)"              },
+  { 234, "Modify Mechanic Duration%"                         },
+  { 239, "Scale%"                                            },
+  { 240, "Modify Expertise%"                                 },
+  { 241, "Forced Movement"                                   },
+  { 244, "Comprehend Language"                               },
+  { 245, "Modify Debuff Duration%"                           },
+  { 247, "Copy Appearance"                                   },
+  { 250, "Increase Max Health (Stacking)"                    },
+  { 253, "Modify Critical Block Chance"                      },
+  { 255, "Modify Damage Taken% from Mechanic"                },
+  { 259, "Modify Periodic Healing Recevied%"                 },
+  { 263, "Disable Abilities"                                 },
+  { 268, "Modify Armor by Primary Stat%"                     },
+  { 269, "Modify Damage Done% to Caster"                     },
+  { 270, "Modify Damage Taken% from Caster"                  },
+  { 271, "Modify Damage Taken% from Caster's Spells"         },
+  { 272, "Modify Block Value%"                               },
+  { 274, "Add Block Value"                                   },
+  { 275, "Modify Stance Mask"                                },
+  { 283, "Modify Healing Taken% from Caster's Spells"        },
+  { 286, "Modify Cooldown Recharge Rate%"                    },
+  { 290, "Modify Critical Strike%"                           },
+  { 291, "Modify Experience Gained from Quests"              },
+  { 301, "Absorb Healing"                                    },
+  { 305, "Modify Min Speed%"                                 },
+  { 306, "Modify Crit Chance% from Caster"                   },
+  { 308, "Modify Crit Chance% from Caster's Spells"          },
+  { 318, "Modify Mastery%"                                   },
+  { 319, "Modify Melee Auto Attack Speed%"                   },
+  { 329, "Modify Resource Generation%"                       },
+  { 330, "Cast while Moving (Whitelist)"                     },
+  { 332, "Override Action Spell (Misc /w Base)"              },
+  { 334, "Modify Auto Attack Critical Chance"                },
+  { 339, "Modify Crit Chance% from Caster's Pets"            },
+  { 341, "Modify Cooldown Time (Category)"                   },
+  { 342, "Modify Ranged and Melee Auto Attack Speed%"        },
+  { 343, "Modify Auto Attack Damage Taken% from Caster"      },
+  { 344, "Modify Auto Attack Damage Done%"                   },
+  { 345, "Ignore Armor%"                                     },
+  { 354, "Modify Healing% Based on Target Health%"           },
+  { 360, "Duplicate Ability"                                 },
+  { 361, "Override Auto-Attack with Spell"                   },
+  { 366, "Override Spell Power per Attack Power%"            },
+  { 374, "Reduce Fall Damage%"                               },
+  { 377, "Cast while Moving"                                 },
+  { 379, "Modify Mana Regen%"                                },
+  { 380, "Modify Damage Taken% from Caster Guardian"         },
+  { 381, "Modify Damage Taken% from Caster Pet"              },
+  { 383, "Ignore Spell Cooldown"                             },
+  { 399, "Modify Time Rate"                                  },
+  { 404, "Override Attack Power per Spell Power%"            },
+  { 405, "Modify Combat Rating Multiplier"                   },
+  { 409, "Slow Fall"                                         },
+  { 411, "Modify Cooldown Charge (Category)"                 },
+  { 416, "Hasted Cooldown Duration"                          },
+  { 417, "Hasted Global Cooldown"                            },
+  { 418, "Modify Max Resource"                               },
+  { 419, "Modify Mana Pool%"                                 },
+  { 421, "Modify Absorb% Done"                               },
+  { 422, "Modify Absorb% Done"                               },
+  { 429, "Modify Pet Damage Done%"                           },
+  { 441, "Modify Multistrike%"                               },
+  { 443, "Modify Leech%"                                     },
+  { 453, "Modify Recharge Time (Category)"                   },
+  { 454, "Modify Recharge Time% (Category)"                  },
+  { 455, "Root"                                              },
+  { 457, "Hasted Cooldown Duration (Category)"               },
+  { 465, "Increase Armor"                                    },
+  { 468, "Trigger Spell Based on Health%"                    },
+  { 470, "Modify Time Rate (Label)"                          },
+  { 471, "Modify Versatility%"                               },
+  { 485, "Resist Forced Movement%"                           },
+  { 493, "Hunter Animal Companion"                           },
+  { 501, "Modify Crit Damage Done% from Caster's Spells"     },
+  { 504, "Modify Healing Taken% from Caster"                 },
+  { 507, "Modify Damage Taken% from Spells (Label)"          },
+  { 531, "Modify Guardian Damage Done%"                      },
   { 537, "Modify Damage Taken% from Caster's Spells (Label)" },
-  { 540, "Modify Stat With Support Triggers"            },
+  { 540, "Modify Stat With Support Triggers"                 },
 } );
 
 static constexpr auto _effect_attribute_strings = util::make_static_map<unsigned, std::string_view>( {
@@ -1225,7 +1303,7 @@ static constexpr auto _effect_attribute_strings = util::make_static_map<unsigned
   { 26, "Damage Only Affects Absorbs"                  },
 } );
 
-static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::string_view>( {
+static constexpr auto _mechanic_strings = util::make_static_map<unsigned, std::string_view>( {
   { 1,  "Charm"        },
   { 2,  "Disorient"    },
   { 3,  "Disarm"       },
@@ -1264,7 +1342,7 @@ static constexpr auto _mechanic_strings = util::make_static_map<unsigned, util::
   { 36, "Taunt"        },
 } );
 
-static constexpr auto _label_strings = util::make_static_map<int, util::string_view>( {
+static constexpr auto _label_strings = util::make_static_map<int, std::string_view>( {
   { 16, "Class Spells"        },
   { 17, "Mage Spells"         },
   { 18, "Priest Spells"       },
@@ -1600,14 +1678,26 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
                       &util::stat_type_abbrev );
     s << " | Rating: " << util::string_join( tmp );
   }
+  else if ( e->subtype() == A_MOD_MECHANIC_RESISTANCE || e->subtype() == A_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT )
+  {
+    s << " | Mechanic: " << mechanic_str( e->misc_value1() );
+  }
   else if ( e->misc_value1() != 0 )
   {
     if ( e->affected_schools() != 0U )
+    {
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%#.x", e->misc_value1() );
-    else if ( e->subtype() == A_MOD_DAMAGE_FROM_SPELLS_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
+    }
+    else if ( e->subtype() == A_MOD_RECHARGE_RATE_LABEL || e->subtype() == A_MOD_TIME_RATE_BY_SPELL_LABEL ||
+              e->subtype() == A_MOD_DAMAGE_FROM_SPELLS_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
+    {
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d (Label)", e->misc_value1() );
+    }
     else
+    {
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d", e->misc_value1() );
+    }
+
     s << " | Misc Value: " << tmp_buffer.data();
   }
 
@@ -1703,33 +1793,36 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     s << std::endl;
   }
 
-  if ( e->type() == E_APPLY_AURA &&
-       ( e->subtype() == A_ADD_PCT_LABEL_MODIFIER || e->subtype() == A_ADD_FLAT_LABEL_MODIFIER ) )
+  if ( e->type() == E_APPLY_AURA || e->type() == E_APPLY_AREA_AURA_PARTY || e->type() == E_APPLY_AREA_AURA_RAID )
   {
-    auto str = label_str( e->misc_value2(), dbc );
-    if ( str != "" )
-      s << "                   Affected Spells (Label): " << str << std::endl;
-  }
-
-  if ( e->type() == E_APPLY_AURA &&
-       ( e->subtype() == A_MOD_RECHARGE_RATE_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_SPELLS_LABEL ||
-         e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL ) )
-  {
-    auto str = label_str( e->misc_value1(), dbc );
-    if ( str != "" )
-      s << "                   Affected Spells (Label): " << str << std::endl;
-  }
-
-  if ( e->type() == E_APPLY_AURA && range::contains( dbc::effect_category_subtypes(), e->subtype() ) )
-  {
-    auto affected_spells = dbc.spells_by_category( e->misc_value1() );
-    if ( !affected_spells.empty() )
+    switch ( e->subtype() )
     {
-      s << "                   Affected Spells (Category): ";
-      s << concatenate( affected_spells, []( std::stringstream& s, const spell_data_t* spell ) {
-        fmt::print( s, "{} ({})", spell->name_cstr(), spell->id() );
-      } );
-      s << std::endl;
+        case A_MOD_RECHARGE_RATE_LABEL:
+        case A_MOD_TIME_RATE_BY_SPELL_LABEL:
+        case A_MOD_DAMAGE_FROM_SPELLS_LABEL:
+        case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:
+          if ( auto str = label_str( e->misc_value1(), dbc ); !str.empty() )
+            s << "                   Affected Spells (Label): " << str << std::endl;
+          break;
+        case A_ADD_PCT_LABEL_MODIFIER:
+        case A_ADD_FLAT_LABEL_MODIFIER:
+          if ( auto str = label_str( e->misc_value2(), dbc ); !str.empty() )
+            s << "                   Affected Spells (Label): " << str << std::endl;
+          break;
+        default:
+          break;
+    }
+
+    if ( range::contains( dbc::effect_category_subtypes(), e->subtype() ) )
+    {
+      if ( auto affected = dbc.spells_by_category( e->misc_value1() ); !affected.empty() )
+      {
+        s << "                   Affected Spells (Category): ";
+        s << concatenate( affected, []( std::stringstream& s, const spell_data_t* spell ) {
+          fmt::print( s, "{} ({})", spell->name_cstr(), spell->id() );
+        } );
+        s << std::endl;
+      }
     }
   }
 
@@ -1829,21 +1922,20 @@ static std::string trait_data_to_str( const dbc_t& dbc, const spell_data_t* spel
     }
 
     std::vector<std::string> spec_strs;
-    for ( auto spec_idx : trait->id_spec )
+    for ( auto s_idx : trait->id_spec )
     {
-      if ( spec_idx == 0 )
+      if ( s_idx == 0 )
         continue;
 
-      auto specialization_str =
-          util::inverse_tokenize( dbc::specialization_string( static_cast<specialization_e>( spec_idx ) ) );
+      auto spec_str = util::inverse_tokenize( dbc::specialization_string( static_cast<specialization_e>( s_idx ) ) );
 
-      if ( util::str_compare_ci( specialization_str, "Unknown" ) )
+      if ( util::str_compare_ci( spec_str, "Unknown" ) )
       {
-        spec_strs.emplace_back( fmt::format( "{} ({})", specialization_str, spec_idx ) );
+        spec_strs.emplace_back( fmt::format( "{} ({})", spec_str, s_idx ) );
       }
       else
       {
-        spec_strs.emplace_back( fmt::format( "{}", specialization_str ) );
+        spec_strs.emplace_back( fmt::format( "{}", spec_str ) );
       }
     }
 
@@ -1893,7 +1985,6 @@ static std::string trait_data_to_str( const dbc_t& dbc, const spell_data_t* spel
 std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int level )
 {
   std::ostringstream s;
-  player_e pt = PLAYER_NONE;
 
   if ( spell->has_scaling_effects() && spell->level() > static_cast<unsigned>( level ) )
   {
@@ -1941,8 +2032,10 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell->class_mask() )
   {
+    std::vector<std::string> class_str;
+    std::vector<player_e> exclude;
+    std::vector<int> unknown;
     bool pet_ability = false;
-    s << "Class            : ";
 
     if ( dbc.is_specialization_ability( spell->id() ) )
     {
@@ -1952,35 +2045,55 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       for ( const specialization_e spec : spec_list )
       {
         if ( spec == PET_FEROCITY || spec == PET_CUNNING || spec == PET_TENACITY )
-          pet_ability = true;
+        {
+          class_str.emplace_back(
+            fmt::format( "{} Hunter Pet", util::inverse_tokenize( dbc::specialization_string( spec ) ) ) );
 
-        auto specialization_str = util::inverse_tokenize( dbc::specialization_string( spec ) );
+          exclude.emplace_back( player_e::HUNTER );
+          continue;
+        }
+
+        auto specialization_str = util::specialization_string( spec );
         if ( util::str_compare_ci( specialization_str, "Unknown" ) )
-          fmt::print( s, "{} ({}) ", specialization_str, static_cast<int>( spec ) );
+        {
+          unknown.emplace_back( static_cast<int>( spec ) );
+        }
         else
-          fmt::print( s, "{} ", specialization_str );
+        {
+          class_str.emplace_back( specialization_str );
+          exclude.emplace_back( dbc::get_class_from_spec( spec ) );
+        }
       }
     }
 
-    for ( unsigned int i = 1; i < std::size( _class_map ); i++ )
+    for ( size_t i = 1; i < std::size( _class_map ); i++ )
     {
       if ( ( spell->class_mask() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
       {
-        s << _class_map[ i ].name << ", ";
-        if ( !pt )
-          pt = _class_map[ i ].pt;
+        if ( unknown.size() )
+        {
+          for ( auto u : unknown )
+            class_str.emplace_back( fmt::format( "Unknown {} ({})", _class_map[ i ].name, u ) );
+
+          unknown.clear();
+        }
+        else if ( range::contains( exclude, _class_map[ i ].pt ) )
+        {
+          continue;
+        }
+        else
+        {
+          class_str.emplace_back( _class_map[ i ].name );
+        }
       }
     }
 
-    s.seekp( -2, std::ios_base::cur );
-    if ( pet_ability )
-      s << " Pet";
-    s << std::endl;
+    s << "Class            : " << util::string_join( class_str ) << std::endl;
   }
 
   if ( spell->race_mask() )
   {
-    std::vector<util::string_view> races;
+    std::vector<std::string_view> races;
     for ( unsigned int i = 0; i < sizeof( spell->race_mask() ) * 8; i++ )
     {
       uint64_t mask = uint64_t( 1 ) << i;
@@ -2061,13 +2174,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( pd.aura_id() > 0 && dbc.spell( pd.aura_id() )->id() == pd.aura_id() )
       s << " w/ " << dbc.spell( pd.aura_id() )->name_cstr() << " (id=" << pd.aura_id() << ")";
 
-    const auto hotfixes = spellpower_data_t::hotfixes( pd, dbc.ptr );
-    if ( !hotfixes.empty() )
+    if ( const auto power_hotfixes = spellpower_data_t::hotfixes( pd, dbc.ptr ); !power_hotfixes.empty() )
     {
-      if ( hotfixes.front().field_id == hotfix::NEW_ENTRY )
+      if ( power_hotfixes.front().field_id == hotfix::NEW_ENTRY )
         fmt::print( s, "[Hotfixed: NEW POWER]" );
       else
-        fmt::print( s, "[Hotfixed: {}]", hotfix_map_str( hotfixes, _hotfix_power_map ) );
+        fmt::print( s, "[Hotfixed: {}]", hotfix_map_str( power_hotfixes, _hotfix_power_map ) );
     }
 
     s << std::endl;
@@ -2075,22 +2187,34 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell->level() > 0 )
   {
-    s << "Spell Level      : " << (int)spell->level();
+    s << "Spell Level      : " << spell->level();
     if ( spell->max_level() > 0 )
-      s << " (max " << (int)spell->max_level() << ")";
+      s << " (max " << spell->max_level() << ")";
 
     s << std::endl;
   }
 
   if ( spell->max_scaling_level() > 0 )
   {
-    s << "Max Scaling Level: " << (int)spell->max_scaling_level();
+    s << "Max Scaling Level: " << spell->max_scaling_level();
     s << std::endl;
   }
 
-  if ( spell->req_max_level() > 0 )
+  if ( spell->min_scaling_level() > 0 )
   {
-    s << "Req. Max Level   : " << (int)spell->req_max_level();
+    s << "Min Scaling Level: " << spell->min_scaling_level();
+    s << std::endl;
+  }
+
+  if ( spell->scale_from_ilevel() )
+  {
+    s << "Scale from ilevel: " << spell->scale_from_ilevel();
+    s << std::endl;
+  }
+
+  if ( spell->max_aura_level() > 0 )
+  {
+    s << "Max Aura Level   : " << spell->max_aura_level();
     s << std::endl;
   }
 
@@ -2336,7 +2460,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
           }
 
           s.precision( real_ppm_decimals( spell, modifier ) );
-          mods.emplace_back( fmt::format( "{}: {}", util::string_join( class_str, ", " ),
+          mods.emplace_back( fmt::format( "{}: {}", util::string_join( class_str ),
                                           ( spell->real_ppm() * ( 1.0 + modifier.coefficient ) ) ) );
           break;
         }
@@ -2360,7 +2484,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
           }
 
           s.precision( real_ppm_decimals( spell, modifier ) );
-          mods.emplace_back( fmt::format( "{}: {}", util::string_join( race_str, ", " ),
+          mods.emplace_back( fmt::format( "{}: {}", util::string_join( race_str ),
                                           ( spell->real_ppm() * ( 1.0 + modifier.coefficient ) ) ) );
           break;
         }
@@ -2371,7 +2495,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     if ( !mods.empty() )
     {
-      s << " (" << util::string_join( mods, ", " ) << ")";
+      s << " (" << util::string_join( mods ) << ")";
     }
     s << std::endl;
   }
@@ -2422,32 +2546,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell->proc_flags() > 0 )
   {
-    s << "Proc Flags       : ";
-    for ( unsigned flag = 0; flag < 64; flag++ )
-    {
-      if ( spell->proc_flags() & ( static_cast<uint64_t>( 1 ) << flag ) )
-        s << "x";
-      else
-        s << ".";
-
-      if ( ( flag + 1 ) % 8 == 0 )
-        s << " ";
-
-      if ( ( flag + 1 ) % 32 == 0 )
-        s << "  ";
-    }
-    s << std::endl;
-    s << "                 : ";
+    std::vector<std::string_view> proc_str;
     for ( const auto& info : _proc_flag_map )
-    {
       if ( spell->proc_flags() & info.flag )
-      {
-        fmt::print( s, "{}, ", info.proc );
-      }
-    }
-    std::streampos x = s.tellp();
-    s.seekp( x - std::streamoff( 2 ) );
-    s << std::endl;
+        proc_str.emplace_back( info.proc );
+
+    fmt::print( s, "Proc Flags       : {}\n", fmt::join( proc_str, ", " ) );
   }
 
   if ( spell->class_family() > 0 )
@@ -2513,7 +2617,6 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       fmt::print( s, "Family Flags     : {}\n", fmt::join( flags, ", " ) );
   }
 
-  s << "Attributes       : ";
   std::string attr_str;
   for ( unsigned i = 0; i < NUM_SPELL_FLAGS; i++ )
   {
@@ -2521,35 +2624,49 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     {
       if ( spell->attribute( i ) & ( 1 << flag ) )
       {
-        s << "x";
         size_t attr_idx = i * 32 + flag;
         auto it = _attribute_strings.find( static_cast<unsigned int>( attr_idx ) );
-        if ( it != _attribute_strings.end() )
-        {
-          fmt::format_to( std::back_inserter( attr_str ), "{}{} ({})", attr_str.empty() ? "" : ", ", it->second,
-                          attr_idx );
-        }
+        fmt::format_to( std::back_inserter( attr_str ), "{}{} ({})", attr_str.empty() ? "" : ", ",
+                        it == _attribute_strings.end() ? "Unknown" : it->second, attr_idx );
       }
-      else
-        s << ".";
-
-      if ( ( flag + 1 ) % 8 == 0 )
-        s << " ";
-
-      if ( flag == 31 && i % 2 == 0 )
-        s << "  ";
     }
-
-    if ( ( i + 1 ) % 2 == 0 && i < NUM_SPELL_FLAGS - 1 )
-      s << std::endl << "                 : ";
   }
-
   if ( !attr_str.empty() )
-    s << std::endl << "                 : " + attr_str;
-  s << std::endl;
+    s << "Attributes       : " << attr_str << std::endl;
+
+  std::string aura_int_str;
+  for ( unsigned flag = 0; flag < 64; flag++ )
+  {
+    auto byte = static_cast<unsigned>( flag / 32 );
+    auto bit = flag % 32;
+    if ( spell->_aura_interrupt[ byte ] & ( 1 << bit ) )
+    {
+      auto it = _aura_interrupt_strings.find( flag );
+      fmt::format_to( std::back_inserter( aura_int_str ), "{}{} ({})", aura_int_str.empty() ? "" : ", ",
+                      it == _aura_interrupt_strings.end() ? "Unknown" : it->second, flag );
+    }
+  }
+  if ( !aura_int_str.empty() )
+    s << "Aura Interrupt   : " << aura_int_str << std::endl;
+
+  std::string channel_int_sr;
+  for ( unsigned flag = 0; flag < 64; flag++ )
+  {
+    auto byte = static_cast<unsigned>( flag / 32 );
+    auto bit = flag % 32;
+    if ( spell->_channel_interrupt[ byte ] & ( 1 << bit ) )
+    {
+      auto it = _aura_interrupt_strings.find( flag );
+      fmt::format_to( std::back_inserter( channel_int_sr ), "{}{} ({})", channel_int_sr.empty() ? "" : ", ",
+                      it == _aura_interrupt_strings.end() ? "Unknown" : it->second, flag );
+    }
+  }
+  if ( !channel_int_sr.empty() )
+    s << "Channel Interrupt: " << channel_int_sr << std::endl;
+
+  s << "                 :" << std::endl;  // empty line
 
   s << "Effects          :" << std::endl;
-
   for ( const spelleffect_data_t& e : spell->effects() )
   {
     if ( e.id() == 0 )

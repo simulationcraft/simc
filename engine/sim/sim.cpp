@@ -1798,7 +1798,7 @@ void sim_t::reset()
 {
   print_debug( "Resetting Simulator" );
 
-  if( deterministic )
+  if ( deterministic )
     seed = rng().reseed();
 
   event_mgr.reset();
@@ -1806,32 +1806,32 @@ void sim_t::reset()
   expected_iteration_time = max_time * iteration_time_adjust();
 
   for ( auto& buff : buff_list )
-    buff -> reset();
+    buff->reset();
 
-  for ( auto& target : target_list )
+  for ( auto& t : target_list )
   {
-    target -> reset();
-    range::for_each( target->pet_list, []( pet_t* pet ) { pet->reset(); } );
+    t->reset();
+    range::for_each( t->pet_list, []( pet_t* pet ) { pet->reset(); } );
   }
 
   if ( single_actor_batch )
   {
-    player_no_pet_list[ current_index ] -> reset();
+    player_no_pet_list[ current_index ]->reset();
     // make sure to reset pets after owner, or otherwards they may access uninitialized things from the owner
-    for ( auto pet : player_no_pet_list[ current_index ] -> pet_list )
+    for ( auto pet : player_no_pet_list[ current_index ]->pet_list )
     {
-      pet -> reset();
+      pet->reset();
     }
   }
   else
   {
     for ( auto& player : player_no_pet_list )
     {
-      player -> reset();
+      player->reset();
       // Make sure to reset pets after owner, or otherwards they may access uninitialized things from the owner
-      for ( auto& pet : player -> pet_list )
+      for ( auto& pet : player->pet_list )
       {
-        pet -> reset();
+        pet->reset();
       }
     }
   }
@@ -1878,11 +1878,11 @@ void sim_t::combat_begin()
   datacollection_begin();
 
   // Initialise all actors before (pre)combat.
-  for ( auto& target : target_list )
-    target -> precombat_init();
+  for ( auto& t : target_list )
+    t->precombat_init();
 
-  for ( auto& target : target_list )
-    target -> combat_begin();
+  for ( auto& t : target_list )
+    t->combat_begin();
 
   if ( overrides.arcane_intellect )
     auras.arcane_intellect->override_buff();

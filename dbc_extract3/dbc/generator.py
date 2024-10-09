@@ -1494,6 +1494,7 @@ class SpellDataGenerator(DataGenerator):
          # 11.0 The War Within ================================================
          451916, 451917, 451918, 451920, 451921, # earthen racial well fed buff
          206150, 461904, 461910, 462661, # new M+ affixes
+         462513, 462517, # severed strands weekly raid buff
          443585, # fateweaved needle
          452279, # aberrant spellforge
          448621, 448643, # void reaper's chime
@@ -1519,6 +1520,8 @@ class SpellDataGenerator(DataGenerator):
          441508, 441507, 441430, # Nerubian Phearomone Secreter
          455441, 455454, 455455, 455456, #Unstable Power Core Mastery Crit Haste Vers
          455521, 455522, 457627, # Woven Dawn Tailoring Set
+         449441, # Fury of the Stormrook Set
+         469917, 469920, # golem gearbox
         ),
 
         # Warrior:
@@ -2279,6 +2282,7 @@ class SpellDataGenerator(DataGenerator):
 
           # Shado-Pan
           ( 451021, 0 ), # Flurry Charge (Buff)
+          ( 470670, 0 ), # Flurry Strikes Energy Tracker (Buff)
 
           # Conduit of the Celestials
           ( 443616, 0 ), # Heart of the Jade Serpent (Buff)
@@ -2936,20 +2940,22 @@ class SpellDataGenerator(DataGenerator):
                 mask_class = util.class_mask(class_id=talent.class_id)
                 self.process_spell(talent.id_spell, ids, mask_class, 0, False)
 
+        # No longer in game, but kept for reference.
+        # If MinorTalent.db2 is ever used again, make sure to double check the format json for any field changes.
         # Get all perks
-        for _, perk_data in self.db('MinorTalent').items():
-            if self._options.build < 25600:
-                spell_id = perk_data.id_spell
-            else:
-                spell_id = perk_data.id_parent
-            if spell_id == 0:
-                continue
-
-            spec_data = self.db('ChrSpecialization')[perk_data.id_parent]
-            if spec_data.id == 0:
-                continue
-
-            self.process_spell(spell_id, ids, util.class_mask(class_id=spec_data.class_id), 0, False)
+        # for _, perk_data in self.db('MinorTalent').items():
+        #    if self._options.build < 25600:
+        #        spell_id = perk_data.id_spell
+        #    else:
+        #        spell_id = perk_data.id_parent
+        #    if spell_id == 0:
+        #        continue
+        #
+        #    spec_data = self.db('ChrSpecialization')[perk_data.id_parent]
+        #    if spec_data.id == 0:
+        #        continue
+        #
+        #    self.process_spell(spell_id, ids, util.class_mask(class_id=spec_data.class_id), 0, False)
 
         # Get base skills from SkillLineAbility
         for ability in self.db('SkillLineAbility').values():
@@ -3405,8 +3411,8 @@ class SpellDataGenerator(DataGenerator):
         for id in id_keys:
             spell = self.db('SpellName')[id]
 
-            # Unused hotfix IDs: 7,
-            # MAX hotfix id: 39
+            # Unused hotfix IDs: 1, 2, 5, 6, 7
+            # MAX hotfix id: 56
             hotfix = HotfixDataRecord()
             power_count = 0
 
@@ -3436,8 +3442,8 @@ class SpellDataGenerator(DataGenerator):
             fields += [ u'%#.8x' % ids.get(id, { 'mask_class' : 0, 'mask_race': 0 })['mask_class'] ]
 
             scaling_entry = spell.get_link('scaling')
-            fields += scaling_entry.field('max_scaling_level')
-            hotfix.add(scaling_entry, ('max_scaling_level', 8))
+            fields += scaling_entry.field('max_scaling_level', 'min_scaling_level', 'scale_from_ilevel')
+            hotfix.add(scaling_entry, ('max_scaling_level', 8), ('min_scaling_level', 53), ('scale_from_ilevel', 54))
 
             level_entry = spell.get_link('level')
 
@@ -3447,8 +3453,8 @@ class SpellDataGenerator(DataGenerator):
             req_level = max(level_entry.base_level, level_entry.spell_level)
             fields += [level_entry.field_format('base_level')[0] % req_level]
 
-            fields += level_entry.field('max_level', 'req_max_level')
-            hotfix.add(level_entry, ('base_level', 9), ('max_level', 10), ('req_max_level', 46), ('spell_level', 49))
+            fields += level_entry.field('max_level', 'max_aura_level')
+            hotfix.add(level_entry, ('base_level', 9), ('max_level', 10), ('max_aura_level', 46), ('spell_level', 49))
 
             range_entry = misc.ref('id_range')
             fields += range_entry.field('min_range_1', 'max_range_1')
@@ -3513,6 +3519,12 @@ class SpellDataGenerator(DataGenerator):
             fields += class_opt_entry.field('family')
             hotfix.add(class_opt_entry,
                 (('flags_1', 'flags_2', 'flags_3', 'flags_4'), 36), ('family', 37))
+
+            interrupt = spell.child('SpellInterrupts')
+            fields += [ '{ %s }' % ', '.join(interrupt.field('aura_interrupt_flags_1', 'aura_interrupt_flags_2')) ]
+            hotfix.add(interrupt, (('aura_interrupt_flags_1', 'aura_interrupt_flags_2'), 55))
+            fields += [ '{ %s }' % ', '.join(interrupt.field('channel_interrupt_flags_1', 'channel_interrupt_flags_2')) ]
+            hotfix.add(interrupt, (('channel_interrupt_flags_1', 'channel_interrupt_flags_2'), 56))
 
             shapeshif_entry = spell.child_ref('SpellShapeshift')
             fields += shapeshif_entry.field('flags_1')

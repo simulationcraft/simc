@@ -1036,13 +1036,15 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    "<li><span>spell_power_mod.direct:</span>{:.6f}</li>"
                    "<li><span>base_dd_min:</span>{:.2f}</li>"
                    "<li><span>base_dd_max:</span>{:.2f}</li>"
-                   "<li><span>base_dd_mult:</span>{:.2f}</li></ul></div>\n",
+                   "<li><span>base_dd_mult:</span>{:.2f}</li>\n"
+                   "<li><span>base_multiplier:</span>{:.2f}</li></ul></div>\n",
                    a->may_crit ? "true" : "false",
                    a->attack_power_mod.direct,
                    a->spell_power_mod.direct,
                    a->base_dd_min,
                    a->base_dd_max,
-                   a->base_dd_multiplier );
+                   a->base_dd_multiplier,
+                   a->base_multiplier );
       }
 
       if ( a->dot_duration > timespan_t::zero() )
@@ -1056,6 +1058,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    "<li><span>spell_power_mod.tick:</span>{:.6f}</li>"
                    "<li><span>base_td:</span>{:.2f}</li>"
                    "<li><span>base_td_mult:</span>{:.2f}</li>"
+                   "<li><span>base_multiplier:</span>{:.2f}</li>"
                    "<li><span>dot_duration:</span>{:.2f}</li>"
                    "<li><span>base_tick_time:</span>{:.2f}</li>"
                    "<li><span>hasted_ticks:</span>{}</li>"
@@ -1068,6 +1071,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                    a->spell_power_mod.tick,
                    a->base_td,
                    a->base_td_multiplier,
+                   a->base_multiplier,
                    a->dot_duration.total_seconds(),
                    a->base_tick_time.total_seconds(),
                    a->hasted_ticks ? "true" : "false",
@@ -1817,13 +1821,17 @@ std::string base64_to_url( std::string_view s )
 }
 
 // TODO: update once TWW trees are finalized
-int raidbots_talent_render_width( specialization_e /* spec */, int height )
+int raidbots_talent_render_width( specialization_e spec, int height, bool mini = false )
 {
-  return height * 49 / 25;
-
-/*switch ( spec )
+  switch ( spec )
   {
-  }*/
+    // narrower trees
+    case HUNTER_BEAST_MASTERY: return static_cast<int>( mini ? height * 1.45 : height * 1.60 );
+    // wider trees
+    case DRUID_RESTORATION:    return static_cast<int>( mini ? height * 1.80 : height * 1.95 );
+    // default size
+    default:                   return static_cast<int>( mini ? height * 1.60 : height * 1.75 );
+  }
 }
 
 std::string raidbots_domain( [[maybe_unused]] bool ptr )
@@ -1935,7 +1943,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
   if ( num_players == 1 )
   {
     auto w_ = raidbots_talent_render_width( p.specialization(), 600 );
-    os.format( "<iframe src=\"{}\" width=\"{}\" height=\"650\"></iframe>\n",
+    os.format( R"(<iframe src="{}" width="{}" height="600"></iframe>)",
                raidbots_talent_render_src( p.talents_str, p.true_level, w_, false, p.dbc->ptr ), w_ );
 
     // Hide the talent table only if the Raidbots talent iframe is present.
@@ -3362,19 +3370,31 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                    util::stat_type_string( stat.stat ),
                    stat.amount );
       }
+      os << "</ul>\n";
+    }
+    else  // assume static stat_buff_t will never register to stat_pct_buff
+    {
+      bool show_header = false;
 
-      for ( int stat_pct_buff_value = STAT_PCT_BUFF_CRIT; stat_pct_buff_value != STAT_PCT_BUFF_MAX; stat_pct_buff_value++ )
+      for ( auto stat = STAT_PCT_BUFF_CRIT; stat < STAT_PCT_BUFF_MAX; stat++ )
       {
-        stat_pct_buff_type stat_pct_buff = static_cast<stat_pct_buff_type>( stat_pct_buff_value );
-        if ( range::contains( p.buffs.stat_pct_buffs[ static_cast<stat_pct_buff_type>( stat_pct_buff_value ) ], stat_buff ) )
+        if ( range::contains( p.buffs.stat_pct_buffs[ stat ], &b ) )
         {
+          if ( !show_header )
+          {
+            os << R"(<h4>Stat Details</h4><ul class="label">)";
+            show_header = true;
+          }
+
           os.format( "<li><span>stat:</span>{}</li>"
-                     "<li><span>default:</span>{:.2f}%</li>",
-                     util::stat_pct_buff_type_string( stat_pct_buff ),
-                     stat_buff->default_value * 100.0 );
+                     "<li><span>amount:</span>{:.2f}%</li>",
+                     util::stat_pct_buff_type_string( stat ),
+                     b.default_value * ( stat == STAT_PCT_BUFF_MASTERY ? 1.0 : 100.0 ) );
         }
       }
-      os << "</ul>\n";
+
+      if ( show_header )
+        os << "</ul>\n";
     }
 
     if ( damage_buff )
@@ -3409,7 +3429,6 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
 
     if ( !constant_buffs )
     {
-
       if ( b.rppm )
       {
         os.format( R"(<h4>RPPM Details</h4><ul class="label">)"
@@ -3701,9 +3720,9 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
 
   os << "<div class=\"toggle-content\">\n";
 
-  if ( p.sim->players_by_name.size() == 1 )
+  if ( p.sim->players_by_name.size() == 1 && p.is_player() )
   {
-    auto w_ = raidbots_talent_render_width( p.specialization(), 125 );
+    auto w_ = raidbots_talent_render_width( p.specialization(), 125, true );
     os.format(
       R"(<iframe src="{}" width="{}" height="125" style="margin-right: 8px; margin-top: 5px; float: left"></iframe>)",
       raidbots_talent_render_src( p.talents_str, p.true_level, w_, true, p.dbc->ptr ), w_ );
@@ -3763,6 +3782,9 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
     os << "</tr>\n"
        << "</table>\n";
   }
+
+  os << "</div>\n"
+        "<div class=\"flexwrap\">\n";
 
   // Absorb
   if ( cd.aps.mean() > 0 )

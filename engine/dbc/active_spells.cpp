@@ -41,7 +41,7 @@ const active_class_spell_t& __find_class( util::string_view name,
     return util::str_compare_ci( name_str, str );
   } );
 
-  if ( it == __data.cend() )
+  if ( it == __data.end() )
   {
     return active_class_spell_t::nil();
   }
@@ -70,7 +70,7 @@ const active_pet_spell_t& __find_pet( util::string_view name,
     return util::str_compare_ci( name_str, str );
   } );
 
-  if ( it == __data.cend() )
+  if ( it == __data.end() )
   {
     return active_pet_spell_t::nil();
   }

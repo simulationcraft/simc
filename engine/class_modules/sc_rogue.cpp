@@ -618,6 +618,7 @@ public:
     const spell_data_t* recuperator_heal;
     const spell_data_t* shadowstep_buff;
     const spell_data_t* subterfuge_buff;
+    const spell_data_t* thistle_tea_buff;
     const spell_data_t* vanish_buff;
 
     // Hero Spells
@@ -810,7 +811,8 @@ public:
       player_talent_t evasion;                  // No implementation
       player_talent_t gouge;
       player_talent_t airborne_irritant;        // No implementation
-      player_talent_t shadowstep;
+      player_talent_t shadowstep;               // Removed in PTR
+      player_talent_t thrill_seeking;           // Added in PTR
 
       player_talent_t master_poisoner;          // No implementation
       player_talent_t elusiveness;              // No implementation
@@ -1017,13 +1019,14 @@ public:
       player_talent_t shuriken_tornado;
 
       player_talent_t inevitability;     
-      player_talent_t sepsis;
+      player_talent_t sepsis;                   // Removed in PTR
       player_talent_t perforated_veins;
       player_talent_t lingering_shadow;
       player_talent_t deeper_daggers;
       player_talent_t flagellation;
 
-      player_talent_t invigorating_shadowdust;
+      player_talent_t invigorating_shadowdust;  // Removed in PTR
+      player_talent_t death_perception;         // Added in PTR
       player_talent_t dark_shadow;
       player_talent_t finality;
 
@@ -1743,6 +1746,7 @@ public:
     ab::apply_affecting_aura( p->talent.rogue.rushed_setup );
     ab::apply_affecting_aura( p->talent.rogue.improved_sprint );
     ab::apply_affecting_aura( p->talent.rogue.shadowstep );
+    ab::apply_affecting_aura( p->talent.rogue.thrill_seeking );
     ab::apply_affecting_aura( p->talent.rogue.deadly_precision );
     ab::apply_affecting_aura( p->talent.rogue.virulent_poisons );
     ab::apply_affecting_aura( p->talent.rogue.tight_spender );
@@ -1782,6 +1786,7 @@ public:
     ab::apply_affecting_aura( p->talent.subtlety.improved_shadow_dance );
     ab::apply_affecting_aura( p->talent.subtlety.double_dance );
     ab::apply_affecting_aura( p->talent.subtlety.secret_stratagem );
+    ab::apply_affecting_aura( p->talent.subtlety.death_perception );
     ab::apply_affecting_aura( p->talent.subtlety.dark_brew );
 
     ab::apply_affecting_aura( p->talent.trickster.disorienting_strikes );
@@ -2586,7 +2591,7 @@ public:
 
     if ( affected_by.dashing_scoundrel && p()->buffs.envenom->check() )
     {
-      c += p()->spec.dashing_scoundrel->effectN( 1 ).percent();
+      c += p()->spec.dashing_scoundrel->effectN( 1 ).percent() * p()->buffs.envenom->check();
     }
 
     if ( affected_by.darkest_night_crit && p()->buffs.darkest_night->up() )
@@ -2684,6 +2689,16 @@ public:
       else
       {
         // Energy Spend Mechanics
+      }
+
+      // 2024-09-07 -- Thistle Tea now triggers automatically instead of being an action
+      if ( p()->is_ptr() && p()->talent.rogue.thistle_tea->ok() && p()->cooldowns.thistle_tea->is_ready() )
+      {
+        if ( p()->resources.current[ RESOURCE_ENERGY ] < p()->talent.rogue.thistle_tea->effectN( 2 ).resource( RESOURCE_ENERGY ) )
+        {
+          p()->buffs.thistle_tea->trigger();
+          p()->cooldowns.thistle_tea->start();
+        }
       }
     }
   }
@@ -3962,6 +3977,9 @@ struct between_the_eyes_t : public rogue_attack_t
     }
   }
 
+  bool procs_poison() const override
+  { return true; }
+
   bool procs_blade_flurry() const override
   { return true; }
 };
@@ -4368,7 +4386,7 @@ struct envenom_t : public rogue_attack_t
 
     if ( p()->talent.assassination.rapid_injection->ok() && p()->buffs.envenom->check() )
     {
-      m *= 1.0 + p()->talent.assassination.rapid_injection->effectN( 1 ).percent();
+      m *= 1.0 + p()->talent.assassination.rapid_injection->effectN( 1 ).percent() * p()->buffs.envenom->check();
     }
 
     // 2024-09-04 -- Although logically a target modifier, the mechanic is such that it consumes stacks on the target
@@ -5095,6 +5113,9 @@ struct pistol_shot_t : public rogue_attack_t
   bool procs_fatal_flourish() const override
   { return true; }
 
+  bool procs_poison() const override
+  { return true; }
+
   bool procs_blade_flurry() const override
   { return true; }
 
@@ -5502,6 +5523,20 @@ struct secret_technique_t : public rogue_attack_t
     {
       aoe = -1;
       reduced_aoe_targets = p->talent.subtlety.secret_technique->effectN( 6 ).base_value();
+    }
+
+    double composite_player_multiplier( const action_state_t* state ) const override
+    {
+      double m = rogue_attack_t::composite_player_multiplier( state );
+
+      // 2024-09-16 -- Lingering Darkness does not work on pet clone attacks
+      if ( p()->bugs && secondary_trigger_type == secondary_trigger::SECRET_TECHNIQUE_CLONE &&
+           p()->buffs.lingering_darkness->check() )
+      {
+        m /= 1.0 + p()->buffs.lingering_darkness->check_value();
+      }
+
+      return m;
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
@@ -6579,8 +6614,9 @@ struct thistle_tea_t : public rogue_spell_t
 {
   double precombat_seconds;
 
+  // 2024-09-07 -- No longer an active skill on PTR, existing spell reused for the buff
   thistle_tea_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
-    rogue_spell_t( name, p, p->talent.rogue.thistle_tea ),
+    rogue_spell_t( name, p, p->is_ptr() ? spell_data_t::not_found() : p->talent.rogue.thistle_tea ),
     precombat_seconds( 0.0 )
   {
     add_option( opt_float( "precombat_seconds", precombat_seconds ) );
@@ -7006,23 +7042,33 @@ struct fatebound_coin_tails_t : public rogue_attack_t
 
   double action_multiplier() const override
   {
-    auto mul = rogue_attack_t::action_multiplier();
+    auto m = rogue_attack_t::action_multiplier();
+
     auto stacks = p()->buffs.fatebound_coin_tails->total_stack();
-    mul *= 1.0 + (stacks * p()->spell.fatebound_coin_tails_buff->effectN( 1 ).percent());
-    return mul;
+    m *= 1.0 + ( stacks * p()->spell.fatebound_coin_tails_buff->effectN( 1 ).percent() );
+
+    if ( p()->talent.fatebound.delivered_doom->ok() )
+    {
+      auto num_targets = targets_in_range_list( target_list() ).size();
+      if ( !p()->is_ptr() && num_targets == 1 )
+      {
+        m *= 1.0 + p()->talent.fatebound.delivered_doom->effectN( 1 ).percent();
+      }
+      if ( p()->is_ptr() && num_targets < 6 )
+      {
+        m *= 1.0 + p()->talent.fatebound.delivered_doom->effectN( 1 ).percent() -
+          ( p()->talent.fatebound.delivered_doom->effectN( 2 ).percent() * ( num_targets - 1 ) );
+      }
+    }
+
+    return m;
   }
 
   bool procs_blade_flurry() const override
   { return true; }
-};
 
-struct fatebound_coin_tails_delivered_t : public fatebound_coin_tails_t
-{
-  fatebound_coin_tails_delivered_t( util::string_view name, rogue_t* p ) :
-    fatebound_coin_tails_t( name, p )
-  {
-    base_multiplier += p->talent.fatebound.delivered_doom->effectN( 1 ).percent();
-  }
+  bool procs_poison() const override
+  { return true; }
 };
 
 struct fatebound_lucky_coin_t : public rogue_attack_t
@@ -7776,6 +7822,12 @@ struct stealth_like_buff_t : public BuffBase
   void execute( int stacks, double value, timespan_t duration ) override
   {
     bb::execute( stacks, value, duration );
+
+    if ( rogue->is_ptr() && rogue->stealthed( STEALTH_BASIC ) )
+    {
+      if ( rogue->talent.outlaw.crackshot->ok() )
+        rogue->cooldowns.between_the_eyes->reset( false );
+    }
 
     if ( rogue->stealthed( STEALTH_BASIC | STEALTH_SHADOW_DANCE ) )
     {
@@ -8906,7 +8958,7 @@ void actions::rogue_action_t<Base>::execute_fatebound_coinflip( const action_sta
     if ( !ab::is_precombat )
     {
       // Don't fling tails coins at enemies precombat, since that'll start combat (assume the player knows not to have an enemy targeted)
-      auto tails_action = p()->talent.fatebound.delivered_doom->ok() && p()->sim->target_non_sleeping_list.size() <= 1
+      auto tails_action = p()->talent.fatebound.delivered_doom->ok() && p()->sim->target_non_sleeping_list.size() <= 1 && !p()->is_ptr()
         ? p()->active.fatebound.fatebound_coin_tails_delivered
         : p()->active.fatebound.fatebound_coin_tails;
       tails_action->execute_on_target( state->target );
@@ -9255,7 +9307,7 @@ void actions::rogue_action_t<Base>::trigger_cut_to_the_chase( const action_state
   if ( !p()->spell.cut_to_the_chase->ok() || !ab::result_is_hit( state->result ) )
     return;
 
-  if ( !p()->buffs.slice_and_dice->check() )
+  if ( !p()->buffs.slice_and_dice->check() && !p()->is_ptr() )
     return;
 
   if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 )
@@ -9265,7 +9317,7 @@ void actions::rogue_action_t<Base>::trigger_cut_to_the_chase( const action_state
   // Max duration it extends to is the maximum possible full pandemic duration, i.e. around 46s without and 54s with Deeper Stratagem.
   timespan_t max_duration = ( p()->consume_cp_max() + 1 ) * p()->buffs.slice_and_dice->data().duration() * 1.3;
   timespan_t effective_extend = std::min( timespan_t::from_seconds( extend_duration ), max_duration - p()->buffs.slice_and_dice->remains() );
-  p()->buffs.slice_and_dice->extend_duration( p(), effective_extend );
+  p()->buffs.slice_and_dice->extend_duration_or_trigger( effective_extend, p() );
 }
 
 template <typename Base>
@@ -9289,9 +9341,8 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
   if ( ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 )
     return;
 
-  // 2024-08-12 -- Currently when triggerd by an ER cast, only uses base combo points
   if ( p()->get_target_data( state->target )->debuffs.deathstalkers_mark->check() &&
-       cast_state( state )->get_combo_points( p()->bugs ) >= as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 2 ).base_value() ) )
+       cast_state( state )->get_combo_points() >= as<int>( p()->talent.deathstalker.deathstalkers_mark->effectN( 2 ).base_value() ) )
   {
     p()->get_target_data( state->target )->debuffs.deathstalkers_mark->decrement();
     p()->buffs.deathstalkers_mark->trigger();
@@ -9313,9 +9364,8 @@ void actions::rogue_action_t<Base>::trigger_deathstalkers_mark( const action_sta
     }
   }
 
-  // 2024-08-16 -- Currently when triggerd by an ER cast, only uses base combo points
   if ( ( affected_by.darkest_night || affected_by.darkest_night_crit ) && p()->buffs.darkest_night->check() &&
-       cast_state( state )->get_combo_points( p()->bugs ) >= p()->consume_cp_max() )
+       cast_state( state )->get_combo_points() >= p()->consume_cp_max() )
   {
     trigger_deathstalkers_mark_debuff( state, true );
     p()->buffs.darkest_night->expire( 1_ms ); // Expire with delay for potential Shadowy Finishers support
@@ -10618,6 +10668,7 @@ void rogue_t::init_spells()
   talent.rogue.gouge = find_talent_spell( talent_tree::CLASS, "Gouge" );
   talent.rogue.airborne_irritant = find_talent_spell( talent_tree::CLASS, "Airborne Irritant" );
   talent.rogue.shadowstep = find_talent_spell( talent_tree::CLASS, "Shadowstep" );
+  talent.rogue.thrill_seeking = find_talent_spell( talent_tree::CLASS, "Thrill Seeking" );
 
   talent.rogue.master_poisoner = find_talent_spell( talent_tree::CLASS, "Master Poisoner" );
   talent.rogue.cheat_death = find_talent_spell( talent_tree::CLASS, "Cheat Death" );
@@ -10845,6 +10896,7 @@ void rogue_t::init_spells()
   talent.subtlety.flagellation = find_talent_spell( talent_tree::SPECIALIZATION, "Flagellation" );
 
   talent.subtlety.invigorating_shadowdust = find_talent_spell( talent_tree::SPECIALIZATION, "Invigorating Shadowdust" );
+  talent.subtlety.death_perception = find_talent_spell( talent_tree::SPECIALIZATION, "Death Perception" );
   talent.subtlety.dark_shadow = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Shadow" );
   talent.subtlety.finality = find_talent_spell( talent_tree::SPECIALIZATION, "Finality" );
 
@@ -10905,7 +10957,7 @@ void rogue_t::init_spells()
   talent.fatebound.fate_intertwined = find_talent_spell( talent_tree::HERO, "Fate Intertwined" );
 
   talent.fatebound.delivered_doom = find_talent_spell( talent_tree::HERO, "Delivered Doom" );
-  talent.fatebound.inevitability = find_talent_spell( talent_tree::HERO, "Inevitability" );
+  talent.fatebound.inevitability = find_talent_spell( talent_tree::HERO, ( is_ptr() ? "Inevitabile End" : "Inevitability" ) );
   talent.fatebound.destiny_defined = find_talent_spell( talent_tree::HERO, "Destiny Defined" );
   talent.fatebound.double_jeopardy = find_talent_spell( talent_tree::HERO, "Double Jeopardy" );
 
@@ -10940,6 +10992,7 @@ void rogue_t::init_spells()
   spell.recuperator_heal = talent.rogue.recuperator->ok() ? find_spell( 426605 ) : spell_data_t::not_found();
   spell.shadowstep_buff = ( talent.rogue.shadowstep->ok() || spec.shadowstep->ok() ) ? find_spell( 36554 ) : spell_data_t::not_found();
   spell.subterfuge_buff = talent.rogue.subterfuge->ok() ? find_spell( 115192 ) : spell_data_t::not_found();
+  spell.thistle_tea_buff = talent.rogue.thistle_tea->ok() ? find_spell( 381623 ) : spell_data_t::not_found();
   spell.vanish_buff = spell.vanish->ok() ? find_spell( 11327 ) : spell_data_t::not_found();
   spell.cold_blood = talent.rogue.cold_blood->ok() ? talent.fatebound.inevitability->ok() ? find_spell( 456330 ) : find_spell( 382245 ) : spell_data_t::not_found();
 
@@ -11146,10 +11199,11 @@ void rogue_t::init_spells()
   {
     active.vicious_venoms.ambush = get_secondary_trigger_action<actions::vicious_venoms_t>(
       secondary_trigger::VICIOUS_VENOMS, "ambush_vicious_venoms", spec.vicious_venoms_ambush, false );
+    // 2024-09-11 -- Vicious Venoms no longer appears to trigger Doomblade after some point in TWW beta
     active.vicious_venoms.mutilate_mh = get_secondary_trigger_action<actions::vicious_venoms_t>(
-      secondary_trigger::VICIOUS_VENOMS, "mutilate_mh_vicious_venoms", spec.vicious_venoms_mutilate_mh, true );
+      secondary_trigger::VICIOUS_VENOMS, "mutilate_mh_vicious_venoms", spec.vicious_venoms_mutilate_mh, !bugs );
     active.vicious_venoms.mutilate_oh = get_secondary_trigger_action<actions::vicious_venoms_t>(
-      secondary_trigger::VICIOUS_VENOMS, "mutilate_oh_vicious_venoms", spec.vicious_venoms_mutilate_oh, true );
+      secondary_trigger::VICIOUS_VENOMS, "mutilate_oh_vicious_venoms", spec.vicious_venoms_mutilate_oh, !bugs );
   }
 
   if ( talent.assassination.doomblade->ok() )
@@ -11264,7 +11318,7 @@ void rogue_t::init_spells()
     active.fatebound.fatebound_coin_tails =
       get_background_action<actions::fatebound_coin_tails_t>( "fatebound_coin_tails" );
     active.fatebound.fatebound_coin_tails_delivered =
-      get_background_action<actions::fatebound_coin_tails_delivered_t>( "fatebound_coin_tails_delivered" );
+      get_background_action<actions::fatebound_coin_tails_t>( "fatebound_coin_tails_delivered" );
     active.fatebound.lucky_coin =
       get_background_action<actions::fatebound_lucky_coin_t>( "lucky_coin" );
 
@@ -11509,6 +11563,11 @@ void rogue_t::create_buffs()
     ->set_duration( timespan_t::min() )
     ->set_period( timespan_t::zero() )
     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+  if ( is_ptr() && talent.assassination.twist_the_knife->ok() )
+  {
+    buffs.envenom->apply_affecting_aura( talent.assassination.twist_the_knife )
+      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  }
 
   // Outlaw =================================================================
 
@@ -11625,7 +11684,7 @@ void rogue_t::create_buffs()
 
   buffs.subterfuge = new buffs::subterfuge_t( this );
 
-  buffs.thistle_tea = make_buff( this, "thistle_tea", talent.rogue.thistle_tea )
+  buffs.thistle_tea = make_buff( this, "thistle_tea", spell.thistle_tea_buff )
     ->set_cooldown( timespan_t::zero() )
     ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
@@ -12219,6 +12278,26 @@ void rogue_t::init_items()
 void rogue_t::init_special_effects()
 {
   player_t::init_special_effects();
+  
+  if ( unique_gear::find_special_effect( this, 448000 ) )
+  {
+    std::vector<unsigned> poison_ids = {
+      spell.instant_poison->effectN( 1 ).trigger()->id(),
+      spell.crippling_poison->effectN( 1 ).trigger()->id(),
+      spell.wound_poison->effectN( 1 ).trigger()->id(),
+      talent.rogue.atrophic_poison->effectN( 1 ).trigger()->id(),
+      talent.rogue.numbing_poison->effectN( 1 ).trigger()->id(),
+      talent.assassination.deadly_poison->effectN( 1 ).trigger()->id(),
+      talent.assassination.amplifying_poison->effectN( 3 ).trigger()->id()
+    };
+    range::erase_remove( poison_ids, 0 );
+
+    callbacks.register_callback_trigger_function(
+      448000, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ poison_ids ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
+        return !a->special || range::contains( poison_ids, a->data().id() );
+    } );
+  }
 
   if ( weapon_data[ WEAPON_MAIN_HAND ].item_data[ WEAPON_SECONDARY ] )
   {

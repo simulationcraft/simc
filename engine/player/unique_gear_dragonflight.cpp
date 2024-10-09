@@ -178,7 +178,7 @@ void phial_of_elemental_chaos( special_effect_t& effect )
 
     buff = make_buff( effect.player, effect.name(), effect.driver() )
       ->set_tick_callback( [ buff_list ]( buff_t* b, int, timespan_t ) {
-        buff_list[ b->rng().range( buff_list.size() ) ]->trigger();
+        b->rng().range( buff_list )->trigger();
       } );
   }
 
@@ -936,9 +936,9 @@ void dragonfire_bomb_dispenser( special_effect_t& effect )
       } );
     }
 
-    buff_t* create_debuff( player_t* target ) override
+    buff_t* create_debuff( player_t* t ) override
     {
-      return proc_spell_t::create_debuff( target )->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+      return proc_spell_t::create_debuff( t )->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
         if ( !new_ )
           st->execute_on_target( b->player );
       } );
@@ -1541,33 +1541,33 @@ void rashoks_molten_heart( special_effect_t& effect )
       set_quiet( true );
     }
 
-    void player_trigger( player_t* player )
+    void player_trigger( player_t* p )
     {
-      current_players.push_back( player );
+      current_players.push_back( p );
 
-      for ( auto* p : current_players )
+      for ( auto cur : current_players )
       {
-        stored_amount[ p ] = 0.0;
+        stored_amount[ cur ] = 0.0;
       }
     }
 
-    void player_expire( player_t* player )
+    void player_expire( player_t* p )
     {
-      stored_amount[ player ] = 0.0;
-      range::erase_remove( current_players, player );
+      stored_amount[ p ] = 0.0;
+      range::erase_remove( current_players, p );
     }
 
     void add_amount( double amount )
     {
-      for ( auto* p : current_players )
+      for ( auto cur : current_players )
       {
-        stored_amount[ p ] += amount;
+        stored_amount[ cur ] += amount;
       }
     }
 
-    double get_amount( player_t* player )
+    double get_amount( player_t* p )
     {
-      return stored_amount[ player ];
+      return stored_amount[ p ];
     }
 
     void reset() override
@@ -1604,21 +1604,21 @@ void rashoks_molten_heart( special_effect_t& effect )
         base_td *= ( 1 - fake_overheal );
     }
 
-    molten_radiance_helper_t* get_helper( player_t* target )
+    molten_radiance_helper_t* get_helper( player_t* t )
     {
-      if ( helpers[ target ] )
-        return helpers[ target ];
+      if ( helpers[ t ] )
+        return helpers[ t ];
 
-      buff_t* buff = buff_t::find( target, "molten_radiance_helper", target );
+      buff_t* buff = buff_t::find( t, "molten_radiance_helper", t );
 
       if ( buff != nullptr )
       {
-        helpers[ target ] = debug_cast<molten_radiance_helper_t*>( buff );
-        return helpers[ target ];
+        helpers[ t ] = debug_cast<molten_radiance_helper_t*>( buff );
+        return helpers[ t ];
       }
 
-      molten_radiance_helper_t* helper_buff = make_buff<molten_radiance_helper_t>( target );
-      helpers[ target ]                     = helper_buff;
+      molten_radiance_helper_t* helper_buff = make_buff<molten_radiance_helper_t>( t );
+      helpers[ t ]                     = helper_buff;
 
       assert( helper_buff );
 
@@ -2204,8 +2204,8 @@ void spoils_of_neltharus( special_effect_t& effect )
       cb->initialize();
       cb->activate();
 
-      auto init_buff = [ this, shuffle ]( std::string n, unsigned id ) {
-        auto spell = player->find_spell( id );
+      auto init_buff = [ this, shuffle ]( std::string n, unsigned buff_id ) {
+        auto spell = player->find_spell( buff_id );
 
         auto counter = make_buff<buff_t>( player, "spoils_of_neltharus_" + n, spell )
           ->set_quiet( true );
@@ -3628,8 +3628,7 @@ void bushwhackers_compass(special_effect_t& effect)
     {
       dbc_proc_callback_t::execute( a, s );
 
-      auto buff = effect.player -> sim -> rng().range( buffs.size() );
-      buffs[ buff ] -> trigger();
+      effect.player->sim->rng().range( buffs )->trigger();
     }
   };
   effect.buff_disabled = true;
@@ -3908,8 +3907,7 @@ void ruby_whelp_shell( special_effect_t& effect )
       }
       else
       {
-        size_t choice = rng().range( whelp_types.size() );
-        trigger_whelp_proc( whelp_types[ choice ], s );
+        trigger_whelp_proc( rng().range( whelp_types ), s );
       }
     }
 
@@ -5454,34 +5452,34 @@ void mirror_of_fractured_tomorrows( special_effect_t& e )
       return RESOURCE_NONE;
     }
 
-    action_t* create_action( util::string_view name, util::string_view options ) override
+    action_t* create_action( util::string_view name, util::string_view opt_str ) override
     {
       if ( name == "auto_attack" )
       {
-        return new future_self_auto_attack_t( this, effect, action, options );
+        return new future_self_auto_attack_t( this, effect, action, opt_str );
       }
 
       if ( name == "sand_cleave" )
       {
-        return new sand_cleave_t( this, effect, action, options );
+        return new sand_cleave_t( this, effect, action, opt_str );
       }
 
       if ( name == "sand_bolt" )
       {
-        return new sand_bolt_missile_t( this, effect, action, options );
+        return new sand_bolt_missile_t( this, effect, action, opt_str );
       }
 
       if ( name == "sand_shield" )
       {
-        return new sand_shield_t( this, effect, action, options );
+        return new sand_shield_t( this, effect, action, opt_str );
       }
 
       if ( name == "restorative_sands" )
       {
-        return new restorative_sands_t( this, effect, action, options );
+        return new restorative_sands_t( this, effect, action, opt_str );
       }
 
-      return pet_t::create_action( name, options );
+      return pet_t::create_action( name, opt_str );
     }
 
     void init_action_list() override
@@ -6019,7 +6017,7 @@ void pips_emerald_friendship_badge( special_effect_t& e )
   }
 
   e.player->register_combat_begin( [ buffs ]( player_t* p ) {
-    buffs.at( p->rng().range( buffs.size() ) ).first->trigger();
+    p->rng().range( buffs ).first->trigger();
   } );
 
   struct pips_cb_t : public dbc_proc_callback_t
@@ -6429,7 +6427,7 @@ void pinch_of_dream_magic( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_execute_function(
       effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
-        buffs[ cb->rng().range( buffs.size() ) ]->trigger();
+        cb->rng().range( buffs )->trigger();
       } );
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -8296,8 +8294,7 @@ void thorncaller_claw( special_effect_t& effect ) {
         if ( targets.size() != 0 )
         {
           // Choose a random new target to spread to
-          player_t* new_target =
-              targets[ static_cast<int>( effect.player->rng().range( 0, static_cast<double>( targets.size() ) ) ) ];
+          auto new_target = effect.player->rng().range( targets );
           effect.player->sim->print_debug( "{} demised with Thorn Spirit active. Spreading to new target {}.", t->name(), new_target->name() );
           thorn_spirit->execute_on_target( new_target );
         }
@@ -8405,9 +8402,9 @@ void fyralath_the_dream_render( special_effect_t& e )
 
       current_tick = 0;
 
-      range::for_each( player->sim->target_non_sleeping_list, [ this ]( player_t* target ) {
-        if ( dot->get_dot( target )->is_ticking() )
-          dot->get_dot( target )->cancel();
+      range::for_each( player->sim->target_non_sleeping_list, [ this ]( player_t* t ) {
+        if ( dot->get_dot( t )->is_ticking() )
+          dot->get_dot( t )->cancel();
       } );
       proc_spell_t::execute();
 
@@ -8724,7 +8721,7 @@ void elemental_lariat( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_execute_function(
       effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
-        buffs[ cb->rng().range( buffs.size() ) ]->trigger();
+        cb->rng().range( buffs )->trigger();
       } );
 }
 
@@ -8952,7 +8949,7 @@ void rallied_to_victory( special_effect_t& effect )
 
       if ( !effect.player->sim->single_actor_batch && effect.player->sim->player_non_sleeping_list.size() > 1 )
       {
-        int buffs = 1;
+        int num_buffs = 1;
 
         for ( auto p : effect.player->sim->player_non_sleeping_list )
         {
@@ -8961,12 +8958,12 @@ void rallied_to_victory( special_effect_t& effect )
 
           if ( rng().roll( effect.player->dragonflight_opts.rallied_to_victory_multi_actor_skip_chance ) )
           {
-              buffs++;
+              num_buffs++;
               continue;
           }
 
           get_buff( p )->trigger();
-          if ( ++buffs >= max_allied_buffs )
+          if ( ++num_buffs >= max_allied_buffs )
             break;
         }
       }
@@ -9530,7 +9527,7 @@ void verdant_conduit( special_effect_t& effect )
   {
     effect.player->callbacks.register_callback_execute_function(
         effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
-          buffs[ cb->rng().range( buffs.size() ) ]->trigger();
+          cb->rng().range( buffs )->trigger();
         } );
   }
 }
@@ -9581,7 +9578,7 @@ void string_of_delicacies( special_effect_t& e )
 
       if ( !effect.player->sim->single_actor_batch && effect.player->sim->player_non_sleeping_list.size() > 1 )
       {
-        int buffs = 1;
+        int num_buffs = 1;
 
         for ( auto p : effect.player->sim->player_non_sleeping_list )
         {
@@ -9590,12 +9587,12 @@ void string_of_delicacies( special_effect_t& e )
 
           if ( rng().roll( effect.player->dragonflight_opts.string_of_delicacies_multi_actor_skip_chance ) )
           {
-            buffs++;
+            num_buffs++;
             continue;
           }
 
           get_buff( p )->trigger();
-          if ( ++buffs >= max_allied_buffs )
+          if ( ++num_buffs >= max_allied_buffs )
             break;
         }
       }
@@ -10593,8 +10590,7 @@ void obscure_pastel_stone( special_effect_t& effect )
       if ( result_is_hit( s->result ) )
       {
         // TODO: If heal and absorb procs are implemented, they should target the player.
-        auto action = stone_actions[ rng().range( stone_actions.size() ) ];
-        if ( action )
+        if ( auto action = rng().range( stone_actions ) )
           action->execute_on_target( s->target );
       }
     }
@@ -10823,8 +10819,8 @@ void explosive_barrage( special_effect_t& effect )
           if ( tl.empty() )
             return;
 
-          barrage->execute_on_target( tl[ rng().range( tl.size() ) ] );
-          barrage->execute_on_target( tl[ rng().range( tl.size() ) ] );
+          barrage->execute_on_target( rng().range( tl ) );
+          barrage->execute_on_target( rng().range( tl ) );
         } );
       }
     }
@@ -10887,7 +10883,7 @@ void wildfire( special_effect_t& effect )
         else
         {
           const auto& tl = target_list();
-          target  = tl[ rng().range( tl.size() ) ];
+          target = rng().range( tl );
         }
       }
 
@@ -11128,7 +11124,7 @@ void arcanists_edge( special_effect_t& effect )
         else
         {
           const auto& tl = target_list();
-          target  = tl[ rng().range( tl.size() ) ];
+          target = rng().range( tl );
         }
       }
 
@@ -11355,7 +11351,7 @@ void sunstriders_flourish( special_effect_t& effect )
         else
         {
           const auto& tl = target_list();
-          target  = tl[ rng().range( tl.size() ) ];
+          target = rng().range( tl );
         }
       }
 

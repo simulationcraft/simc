@@ -374,6 +374,9 @@ struct spelleffect_data_t
   double min( const special_effect_t& effect ) const;
   double max( const special_effect_t& effect ) const;
 
+  double average_no_item( const player_t* p, unsigned level ) const;
+  double delta_no_item( const player_t* p, unsigned level ) const;
+  
   bool override_field( util::string_view field, double value );
   double get_field( util::string_view field ) const;
 
@@ -420,10 +423,12 @@ struct spell_data_t
   uint64_t    _race_mask;          // Racial mask for the spell
   unsigned    _class_mask;         // Class mask for spell
   int         _max_scaling_level;  // Max scaling level(?), 0 == no restrictions, otherwise min( player_level, max_scaling_level )
+  int         _min_scaling_level;
+  int         _scale_from_ilevel;  // Forces ilevel scaling at this ilevel, overrides any spell attributes
   // SpellLevels.dbc
   unsigned    _spell_level;        // Spell learned on level. NOTE: Only accurate for "class abilities"
   unsigned    _max_level;          // Maximum level for scaling
-  unsigned    _req_max_level;
+  unsigned    _max_aura_level;     // Maximum player level aura can apply to
   // SpellRange.dbc
   double      _min_range;          // Minimum range in yards
   double      _max_range;          // Maximum range in yards
@@ -454,9 +459,11 @@ struct spell_data_t
   // SpellScaling.dbc
   int         _cast_time;          // Casting time in milliseconds
   // Spell.dbc flags
-  unsigned    _attributes[NUM_SPELL_FLAGS]; // SpellMisc.dbc "flags"
-  unsigned    _class_flags[NUM_CLASS_FAMILY_FLAGS]; // SpellClassOptions.dbc flags
-  unsigned    _class_flags_family; // SpellClassOptions.dbc spell family
+  unsigned    _attributes[ NUM_SPELL_FLAGS ];  // SpellMisc.dbc "flags"
+  unsigned    _class_flags[ NUM_CLASS_FAMILY_FLAGS ];  // SpellClassOptions.dbc flags
+  unsigned    _class_flags_family;                     // SpellClassOptions.dbc spell family
+  unsigned    _aura_interrupt[ 2 ];     // SpellInterupts.dbc AuraInterruptFlags
+  unsigned    _channel_interrupt[ 2 ];  // SpellInterupts.dbc ChannelInterruptFlags
   // SpellShapeshift.db2
   unsigned    _stance_mask;        // Stance mask (used only for druid form restrictions?)
   // SpellMechanic.db2
@@ -534,8 +541,8 @@ struct spell_data_t
   uint32_t max_level() const
   { return _max_level; }
 
-  unsigned req_max_level() const
-  { return _req_max_level; }
+  unsigned max_aura_level() const
+  { return _max_aura_level; }
 
   uint32_t max_stacks() const
   { return _max_stack; }
@@ -613,8 +620,7 @@ struct spell_data_t
 
   bool has_scaling_effects() const
   {
-    auto _effects = effects();
-    return range::any_of( _effects, []( const spelleffect_data_t& e ) {
+    return range::any_of( effects(), []( const spelleffect_data_t& e ) {
       return e.scaling_class() != PLAYER_NONE;
     } );
   }
@@ -696,6 +702,12 @@ struct spell_data_t
 
   unsigned max_scaling_level() const
   { return _max_scaling_level; }
+
+  unsigned min_scaling_level() const
+  { return _min_scaling_level; }
+
+  unsigned scale_from_ilevel() const
+  { return _scale_from_ilevel; }
 
   timespan_t cast_time() const
   { return timespan_t::from_millis( _cast_time ); }

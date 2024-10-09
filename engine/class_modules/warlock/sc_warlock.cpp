@@ -253,6 +253,8 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.soul_fire = get_cooldown( "soul_fire" );
   cooldowns.dimensional_rift = get_cooldown( "dimensional_rift" );
   cooldowns.felstorm_icd = get_cooldown( "felstorm_icd" );
+  cooldowns.blackened_soul = get_cooldown( "blackened_soul_icd" );
+  cooldowns.seeds_of_their_demise = get_cooldown( "seeds_of_their_demise_icd" );
 
   resource_regeneration = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ] = true;
@@ -287,9 +289,6 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
 
     if ( talents.shadow_embrace.ok() )
       m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
-
-    if ( talents.infirmity.ok() )
-      m *= 1.0 + td->debuffs_infirmity->check_stack_value();
   }
 
   if ( specialization() == WARLOCK_DESTRUCTION )

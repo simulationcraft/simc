@@ -974,6 +974,7 @@ public:
   std::string default_temporary_enchant() const override;
 
   // overridden player_t stat functions
+  double composite_attribute( attribute_e attr ) const override;
   double composite_armor() const override;
   double composite_base_armor_multiplier() const override;
   double composite_armor_multiplier() const override;
@@ -990,6 +991,7 @@ public:
   const demon_hunter_td_t* find_target_data( const player_t* target ) const override;
   demon_hunter_td_t* get_target_data( player_t* target ) const override;
   void interrupt() override;
+  void arise() override;
   void regen( timespan_t periodicity ) override;
   double resource_gain( resource_e, double, gain_t* source = nullptr, action_t* action = nullptr ) override;
   double resource_gain( resource_e, double, double, gain_t* source = nullptr, action_t* action = nullptr );
@@ -1707,6 +1709,7 @@ public:
 
     // Vengeance
     ab::parse_effects( p()->buff.soul_furnace_damage_amp );
+    ab::parse_effects( p()->buff.tww1_vengeance_4pc );
 
     // Aldrachi Reaver
     ab::parse_effects( p()->buff.warblades_hunger );
@@ -2099,13 +2102,16 @@ struct demon_hunter_sigil_t : public demon_hunter_spell_t
     }
     if ( hit_any_target && p()->talent.vengeance.cycle_of_binding->ok() )
     {
-      std::vector<cooldown_t*> sigils_on_cooldown;
-      range::copy_if( sigil_cooldowns, std::back_inserter( sigils_on_cooldown ),
-                      []( cooldown_t* c ) { return c->down(); } );
-      for ( auto sigil_cooldown : sigils_on_cooldown )
-      {
-        sigil_cooldown->adjust( sigil_cooldown_adjust );
-      }
+      // this is an event so that cooldown tracking occurs correctly
+      make_event( *p()->sim, 0_ms, [this]() {
+        std::vector<cooldown_t*> sigils_on_cooldown;
+        range::copy_if( this->sigil_cooldowns, std::back_inserter( sigils_on_cooldown ),
+                        []( cooldown_t* c ) { return c->down(); } );
+        for ( auto sigil_cooldown : sigils_on_cooldown )
+        {
+          sigil_cooldown->adjust( this->sigil_cooldown_adjust );
+        }
+      });
     }
   }
 
@@ -2714,13 +2720,9 @@ struct eye_beam_base_t : public demon_hunter_spell_t
     {
       double m = demon_hunter_spell_t::action_multiplier();
 
-      // 2024-07-07 -- Isolated Prey's effect on Eye Beam does not work on live nor beta
-      if ( p()->talent.havoc.isolated_prey->ok() && !p()->bugs )
+      if ( p()->talent.havoc.isolated_prey->ok() && targets_in_range_list( target_list() ).size() == 1 )
       {
-        if ( targets_in_range_list( target_list() ).size() == 1 )
-        {
-          m *= 1.0 + p()->talent.havoc.isolated_prey->effectN( 2 ).percent();
-        }
+        m *= 1.0 + p()->talent.havoc.isolated_prey->effectN( 2 ).percent();
       }
 
       return m;
@@ -6448,6 +6450,8 @@ struct preemptive_strike_t : public demon_hunter_ranged_attack_t
     double mult               = state->composite_da_multiplier();
     double amount             = base_direct_amount * ap_coeff * mult;
 
+    state->result_raw = amount;
+
     if ( !sim->average_range )
       amount = floor( amount + rng().real() );
 
@@ -7403,11 +7407,18 @@ void demon_hunter_t::create_buffs()
   {
     buff.enduring_torment->set_default_value_from_effect_type( A_HASTE_ALL )->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
-  buff.monster_rising = make_buff( this, "monster_rising", hero_spec.monster_rising_buff )
-                            ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
-                            ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-                            ->set_allow_precombat( true )
-                            ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+
+  buff.monster_rising =
+      make_buff( this, "monster_rising", hero_spec.monster_rising_buff )
+          ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
+          ->set_allow_precombat( true )
+          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+          ->add_invalidate( CACHE_AGILITY );
+  if ( !bugs )
+  {
+    buff.monster_rising->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
+  }
+
   buff.pursuit_of_angryness =
       make_buff( this, "pursuit_of_angriness", talent.felscarred.pursuit_of_angriness )
           ->set_quiet( true )
@@ -8634,6 +8645,19 @@ void demon_hunter_t::create_benefits()
 // overridden player_t stat functions
 // ==========================================================================
 
+double demon_hunter_t::composite_attribute( attribute_e attr ) const
+{
+  double m = parse_player_effects_t::composite_attribute( attr );
+
+  // 2024-09-21 -- Monster Rising only affects base agi, not total agi
+  if ( attr == ATTR_AGILITY && bugs && buff.monster_rising->check() )
+  {
+    m += base.stats.attribute[ attr ] * buff.monster_rising->check_value();
+  }
+
+  return m;
+}
+
 // demon_hunter_t::composite_armor ==========================================
 
 double demon_hunter_t::composite_armor() const
@@ -8861,6 +8885,21 @@ void demon_hunter_t::combat_begin()
     resources.current[ RESOURCE_FURY ] = fury_cap;
     sim->print_debug( "Fury for {} capped at combat start to {} (was {})", *this, fury_cap, current_fury );
   }
+}
+
+// demon_hunter_t::interrupt ================================================
+
+void demon_hunter_t::interrupt()
+{
+  event_t::cancel( soul_fragment_pick_up );
+  base_t::interrupt();
+}
+
+// demon_hunter_t::arise ====================================================
+
+void demon_hunter_t::arise()
+{
+  base_t::arise();
 
   if ( talent.felscarred.monster_rising->ok() )
   {
@@ -8874,14 +8913,6 @@ void demon_hunter_t::combat_begin()
   {
     buff.pursuit_of_angryness->trigger();
   }
-}
-
-// demon_hunter_t::interrupt ================================================
-
-void demon_hunter_t::interrupt()
-{
-  event_t::cancel( soul_fragment_pick_up );
-  base_t::interrupt();
 }
 
 // demon_hunter_t::regen ====================================================

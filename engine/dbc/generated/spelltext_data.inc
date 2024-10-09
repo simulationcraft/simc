@@ -1,9 +1,8 @@
-// Spell text, wow build 11.0.2.56461
-static const std::array<spelltext_data_t, 26338> __spelltext_data { {
+// Spell text, wow build 11.0.2.56819
+static const std::array<spelltext_data_t, 26339> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
-  {     65, "Increases your melee haste by $s1 for $d.", 0, 0 },
   {     66, "Turns you invisible over $66d, reducing threat each second. While invisible, you are untargetable by enemies. Lasts $32612d. Taking any action cancels the effect.$?a382293[\r\n\r\nIncreases your movement speed by $382293s1% for $337278d.][]", "Fading.", 0 },
   {     71, "Hardened by battle, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength.", 0, 0 },
   {     75, "Automatically shoots the target until cancelled.", "Firing at the target.", 0 },
@@ -16038,9 +16037,9 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 345539, "Fire $s1 Empyreal Ordnance at up to $s2 targets. Targets suffer ${$345542s1*6*(1+$@versadmg)} Arcane damage over $345540d for each ordnance that hits them. As the ordnance expires on the target they return, each granting $345543s1 Intellect for $345541d. ", 0, 0 },
   { 345540, "$@spelldesc345539", "Taking $w Arcane damage every $t sec.", 0 },
   { 345541, "$@spelldesc345539", "Intellect increased by $w1.", 0 },
-  { 345545, "Coat your weapons in Flayedwing Toxin for $d, giving your attacks a high chance to deal $<ChimericPoison> Nature damage over $345546d.", "Your attacks have a high chance to deal Nature damage over $345546d.", 0 },
+  { 345545, "Coat your weapons in Flayedwing Toxin for $d, giving your attacks a high chance to inflict ${$<rolemult>*$345547s1*3} Nature damage over $345546d.", "Your attacks have a high chance to  inflict ${$<rolemult>*$345547s1*3} Nature damage over $345546d.", 0 },
   { 345546, "$@spelldesc345545", "Suffering $w1 Nature damage every $t1 sec.", 0 },
-  { 345548, "Hook an enemy who is within $r yds, causing them to bleed for $s1 Physical damage every $t1 sec and reducing their movement speed by $s2%. Lasts $d, or until they move more than $s3 yds away from you.", "Bleeding for $s1 Physical damage every $t1 sec as long as you are within $s3 yds of $@auracaster.", 0 },
+  { 345548, "Hook an enemy who is within $r yds, causing them to bleed for ${$<rolemult>*$s1} Physical damage every $t1 sec and reducing their movement speed by $s2%. Lasts $d, or until they move more than $s3 yds away from you.", "Bleeding for ${$<rolemult>*$s1} Physical damage every $t1 sec as long as you are within $s3 yds of $@auracaster.", 0 },
   { 345549, "Sacrifice $345551s2 health to charge the phylactery.\r\n\r\nHealing a target below $s3% health expends the phylactery's charge to amplify your spell, restoring $345551s1 additional health to the target.", "Healing a target below $s3% health will restore $345551w1 additional health to the target.", 0 },
   { 345550, "$@spelldesc345549", 0, 0 },
   { 345567, "Your damaging spells have a chance to draw a minion from the satchel, sending it running at your target where it explodes, dealing $s1 Shadow damage split between all nearby enemies.\r\n\r\nDamage is increased for each enemy struck, up to $s2 enemies.", 0, 0 },
@@ -22816,7 +22815,6 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 431715, "Casting an empower spell during Temporal Burst causes a nearby ally to gain a Thread of Fate for $431716d, granting them a chance to echo their damage or healing spells, dealing $431716s1% of the amount again.", 0, "Bronze" },
   { 431716, "$@spelldesc431715", "Abilities have a chance to echo at $s1% power.", "Bronze" },
   { 431730, "$?a137028[Eye of Tyr][Wake of Ashes] surrounds you with a Holy barrier for $?a137028[$s1][$s4]% of your maximum health.\r\n\r\nHammer of Light heals you for $?a137028[$s2][$s5]% of your maximum health, increased by $?a137028[$s3][$s6]% for each additional target hit. Any overhealing done with this effect gets converted into a Holy barrier instead.", 0, 0 },
-  { 431731, "$@spelldesc431730", 0, 0 },
   { 431752, "$@spelldesc431406", "Movement speed increased by $w1%.", 0 },
   { 431760, "Grants the following aura.\r\n\r\n$@spellicon440393 $@spellname440393\r\n\r\nThe threads of time you find will be woven into this cloak, permanently increasing its power.", 0, 0 },
   { 431777, "|CFFFFFFFF- Caster AoE|R\r\n|CFFFFFFFF- Forced movement|R\r\n|CFFFFFFFF- Mobility|R\r\n\r\n|CFFFFFFFF18 sec cooldown|R\r\nEngulf yourself in flames and rush forward, damaging enemies you pass through.", 0, "Offensive" },
@@ -23191,7 +23189,7 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 435479, "Spells and abilities have a chance to unearth a Colourful Fungal Friend to heal allies for $s2, grant you $s3 mana, or deal ${$s4*($438685d/$438685t)} Nature damage over $438685d to a nearby enemy.", 0, 0 },
   { 435482, "Unfurl a myriad of grasping webs in front of you entangling your enemies, reducing damage they deal to you by $s3% up to $s2 total damage and reducing their Attack Speed by $s1% for $d.\r\n\r\n$?$pl>80[Attack Speed reduction is less effective against enemies above level $s4.][]", "Absorbing up to $w2 damage from webbed attackers.", 0 },
   { 435488, "Increases maximum mana by $s1% per unique Khaz Algar gem color currently socketed.", "$?{$w2>0}[Maximum mana is increased by $W2%.][$@spellaura437034]", 0 },
-  { 435493, "Drink from the vial and let the toxins course through your veins increasing all secondary stats by $s1 for $d.\r\n\r\nUse again to administer yourself the antidote to end the effect.\r\n\r\nIf the Antidote is not administered before the end of the effect you will be stunned for $440235d.", "All secondary stats increased by $w1.", 0 },
+  { 435493, "Drink from the vial and let the toxins course through your veins increasing all secondary stats by $s1 for $d.\r\n\r\nJump to administer yourself the antidote to end the effect.\r\n\r\nIf the Antidote is not administered before the end of the effect you will be stunned for $440235d.", "All secondary stats increased by $w1.", 0 },
   { 435500, "Increases the effect of critical strikes by ${$M1}.1% per unique Khaz Algar gem color currently socketed.", "$?{$w2>0}[Critical strike effectiveness increased by ${$w2}.1%.][$@spellaura437034]", 0 },
   { 435501, "Increases the effect of critical strikes by $s1% per unique Khaz Algar gem color currently socketed.", "$?{$w2>0}[Movement speed increased by $w2%.][$@spellaura437034]", 0 },
   { 435502, "Engrave a ritual seal into your skin binding you to the shadows, granting yourself $s1 $pri.\r\n\r\nYour spells and abilities have a low chance to reduce one of your secondary stats by $s2 for $440389d during combat.", 0, 0 },
@@ -23484,7 +23482,7 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 440993, "When your health is brought below 35%, you gain a Second Wind, healing you for ${$441387s1*$441387t1*$441387d}% of your max health over $441387d.\r\n\r\nThis effect cannot occur more than once every $proccooldown sec.", 0, 0 },
   { 440995, "Colossal Might increases the damage of your Rend and Deep Wounds by $440989s2% per stack.\r\n", 0, 0 },
   { 440997, "$@spelldesc439669", 0, 0 },
-  { 441023, "Your spells and abilities have a chance to secrete $<effectCount> different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.", 0, 0 },
+  { 441023, "Your spells and abilities have a chance to secrete $?pc129946[][$<effectCount> ]different pheromones around you. Touching these pheromones will increase your primary stat by $s1 for $441428d.$?pc129945[][\r\n\r\nReach Accomplice reputation with each of the Severed Threads' pacts to secrete more pheromones.]", 0, 0 },
   { 441090, "$@spelldesc441092", 0, 0 },
   { 441091, "$@spelldesc441092", "$w1 Healing collected.", 0 },
   { 441092, "$s1% of your damage is collected as Vindication. Every $441091d, Vindication is consumed to heal up to $s2 allies within $441090A1 yards for the amount consumed.", 0, 0 },
@@ -24978,7 +24976,7 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 453627, "Vivify extends the duration of Renewing Mist and Enveloping Mist on its primary target by ${$s1/1000}.1 sec, up to ${$s2/1000}.1 sec.\r\n\r\n", 0, 0 },
   { 453628, "Enveloping Mist and Renewing Mist healing increased by $s1%.", 0, 0 },
   { 453629, "While you have one or more Boneshield charges, the damage you take is reduced by ${$abs($457468S1)}.1%. Losing a Boneshield charge has a chance to reduce the damage you take by an additional ${$abs($457473S1)}.1%, up to ${$abs($457473S1)*$457473U}.1% for $457473d.", 0, 0 },
-  { 453630, "Your damage is increased by $s1% per active Boneshield charge. Taking damage while below $s2 Boneshield charges has a chance to generate $s3-$s4 Boneshield charges.", 0, 0 },
+  { 453630, "Your damage is increased by ${$s1/10}.1% per active Boneshield charge. Taking damage while below $s2 Boneshield charges has a chance to generate $s3-$s4 Boneshield charges.", 0, 0 },
   { 453631, "Consuming Runic Power has a chance to increase your Strength by $457189s1% for $457189d.", 0, 0 },
   { 453632, "When you summon a minion, your Haste is increased by $456698s1%, up to ${$456698s1*$456698u}% for $456698d.", 0, 0 },
   { 453633, "Your minions deal $s1% increased damage.", 0, 0 },
@@ -25182,7 +25180,7 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 454851, "Casting Anti-Magic Shell grants $454863i nearby allies a Lesser Anti-Magic Shell that Absorbs up to $454863s1 magic damage and reduces the duration of harmful Magic effects against them by $454863s2%. ", 0, 0 },
   { 454857, "Your damaging spells and abilities have the chance to grant Vivaciousness, increasing secondary stats by $s1 and Speed or Avoidance by $s2 based on the school it was activated from.", 0, 0 },
   { 454859, "$@spelldesc454558", 0, 0 },
-  { 454862, "$@spelldesc454857", "The physical damage dealt has blossomed into an absorb shield for $w1 and $w2 Speed.", 0 },
+  { 454862, "$@spelldesc454857", "Granted $w1 Haste and $w2 Speed.", 0 },
   { 454863, "$@spelldesc454851", "Absorbing up to $w1 magic damage.\r\nDuration of harmful magic effects reduced by $s2%.", 0 },
   { 454871, "$@spelldesc374598", "Damage taken reduced by $w1% and Death Strike cost reduced by ${$s2/-10}.", 0 },
   { 454886, "$@spelldesc374049", "Damage taken from area of effect attacks reduced by an additional $w1%.", 0 },
@@ -25191,7 +25189,7 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 454957, "$@spelldesc454839", "Direct damage of your next Ferocious Bite or Primal Wrath increased by $w1%", 0 },
   { 454969, "Tiger Palm's chance to activate Blackout Kick! is increased by $s1% and consuming Teachings of the Monastery grants you ${$454970s1}.1% haste for $454970d equal to the amount of stacks consumed.", 0, 0 },
   { 454970, "$@spelldesc454969", "Haste increased by ${$w1}.1%.", 0 },
-  { 454975, "$@spelldesc454857", "Granted $w1 Haste and $w2 Speed.", 0 },
+  { 454975, "$@spelldesc454857", "Granted $w1 Haste and $w2 Avoidance.", 0 },
   { 454976, "$@spelldesc454857", "Granted $w1 Critical Strike and $w2 Speed.", 0 },
   { 454977, "$@spelldesc454857", "Granted $w1 Critical Strike and $w2 Avoidance.", 0 },
   { 454978, "$@spelldesc454857", "Granted $w1 Mastery and $w2 Speed.", 0 },
@@ -25371,7 +25369,6 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 455857, "$@spelldesc439851", 0, 0 },
   { 455887, "Your spells have a chance to call down a Voltaic Stormrook, inflicting ${$<rolemult>*$s1} Nature damage split between nearby enemies and granting $s2 Haste, further increased for each enemy struck.", 0, 0 },
   { 455960, "Share a pot of Everything Stew for all players to partake in.\r\n\r\n$@spelldesc462177\r\n\r\n$@spellicon457049 $@spellname457049  \r\nIf you spend at least 10 seconds eating you will become $@spellname457049 and gain $456961s4 of your lowest secondary stat for $462209d.", 0, 0 },
-  { 455961, "Restores ${$m1/5*$d} health and ${$m3/5*$d} mana over $d. Must remain seated while eating.", "Restores ${$w1/5} health and ${$w2/5} mana per second.", 0 },
   { 455962, "$@spelldesc371806", "Able to travel back in time to your takeoff location.", "Bronze" },
   { 455966, "$@spelldesc455640", "$w1 $pri increased.", 0 },
   { 455979, "Increases your Resourcefulness rating by $s1 when crafting Leatherworking reagents. \r\n\r\n$?PC117343[|cnWHITE_FONT_COLOR:Equip effect requires Khaz Algar Leatherworking (1)|R][|cnRED_FONT_COLOR:Equip effect requires Khaz Algar Leatherworking (1)|R]", 0, 0 },
@@ -25616,7 +25613,7 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 457489, "Taking damage greater than $s4% of your health grants you $s1 Avoidance and increases healing taken by $s2% for $457533d. This effect may only occur every $proccooldown sec.\r\n\r\nFalling damage reduced.", 0, 0 },
   { 457493, "$@spelldesc457481", "Your healing done is increased by $w1%.\r\n\r\n$?a157153[Cloudburst][Healing Stream] Totem lasts an additional ${$w2/1000} sec.", 0 },
   { 457496, "$@spelldesc457481", "Your healing done is increased by $w2%.\r\n\r\n$?a157153[Cloudburst][Healing Stream] Totem lasts an additional ${$w1/1000} sec.", 0 },
-  { 457506, 0, "Damage done increased by $w1%.", 0 },
+  { 457506, 0, "Damage done increased by ${$w1}.1%.", 0 },
   { 457507, "$@spelldesc452196", 0, 0 },
   { 457512, "Gain $s1 additional max combo point.\r\n\r\nYour finishing moves that consume more than $s3 combo points have increased effects, and your finishing moves deal $s4% increased damage.", 0, 0 },
   { 457521, "Arcane Surge damage increased by ${$s2/$s1}% per Arcane Charge.", 0, 0 },
@@ -26086,6 +26083,7 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 460909, "$@spelldesc421373", 0, 0 },
   { 460927, "$@spelldesc319606", 0, 0 },
   { 460938, "$?s436341[Restores ${$m1/5*$d} health and ${$m3/5*$d} mana over $d and changes your permanent Well Fed effect. Must remain seated while ingesting.][]", 0, 0 },
+  { 461063, "Draws upon your inner energy, restoring ${$m1/5*$d} health and ${$m3/5*$d} mana over $d. Must remain seated during contemplation.", "Restores ${$w1/5} health and ${$w2/5} mana per second.", 0 },
   { 461130, "$@spelldesc434157", "Your Strength is increased by $w1%.", 0 },
   { 461135, "$@spelldesc49530", 0, 0 },
   { 461145, "Increases your spell damage by $?c1[$448604s1][$448604s6]%.", "Spell damage increased by $w1%.", 0 },
@@ -26217,13 +26215,15 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 462479, "$@spelldesc462454", 0, 0 },
   { 462486, "Casting Healing Rain has a $s1% chance to activate Downpour, allowing you to cast Downpour within $462488d.\r\n\r\n$@spellicon207778 $@spellname207778\r\n$@spelldesc207778", 0, 0 },
   { 462488, "$@spelldesc462486", "Downpour can be cast!", 0 },
+  { 462513, "The Severed Threads lend you their aid, increasing your damage dealt & healing done while inside Nerub-ar Palace by $s1%.", "Damage dealt increased by $s1%.\r\nHealing and absorption effects increased by $s2%.", 0 },
   { 462515, "$@spelldesc445707", "Critical damage dealt increased by $s1%.", 0 },
+  { 462517, "The Severed Threads lend you their aid, increasing your damage dealt & healing done while inside Nerub-ar Palace.", 0, 0 },
   { 462568, "$@spelldesc462368", "Fire, Frost, and Nature damage taken reduced by $w1%.", 0 },
   { 462576, "Something skitters in the corner of your eyes. Everywhere.", "Something skitters in the corner of your eyes. Everywhere.", 0 },
   { 462587, "Your critical heals have ${$s2+$s1}% effectiveness instead of the usual $s2%.", 0, 0 },
   { 462603, "$@spelldesc207778", 0, 0 },
   { 462620, "Causes the earth within $a1 yards of your target to tremble and break, dealing $<damage> Physical damage over $d and has a $77478s2% chance to knock the enemy down. Multiple uses of Earthquake may overlap.\r\n\r\n|cFFFFFFFFThis spell is cast at your target.|r", 0, 0 },
-  { 462661, "Blessed by the void, $s2% increased spell and ability cool down rate and increases healing received by $s1% for $d.", "$w1% increased spell and ability cool down rate.\r\n\r\nHealing received increased by $s1%.", 0 },
+  { 462661, "Blessed by the void, $s2% increased spell and ability cool down rate and increases healing received by $s1% for $d.", "$s2% increased spell and ability cool down rate.\r\n\r\nHealing received increased by $s1%.", 0 },
   { 462695, "Your next Chain Lightning$?s454009[, Tempest,][] or Lightning Bolt has $462725s1% reduced cast time after casting Earth Shock, Elemental Blast, or Earthquake. Can accumulate up to $462725u charges.", 0, 0 },
   { 462725, "$@spelldesc462695", "Reduces the cast time of your next Lightning Bolt$?s454009[, Tempest,][] or Chain Lightning by $s1%.", 0 },
   { 462742, "$@spelldesc462757", 0, 0 },
@@ -26273,6 +26273,7 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 463516, "Reveal the location of all currently active Pact Treasures in Azj-Kahet.", 0, 0 },
   { 463517, "Reveal the location of every Pact Treasure available today.", "Reveal the location of every Pact Treasure available today.", 0 },
   { 463610, "Every $455535t sec in combat take 1% of your maximum Health as Nature damage and gain a stack of Symbiosis, granting $s2 Versatility for$455536d  stacking up to 5 times.", 0, 0 },
+  { 463611, "Your damaging spells and abilities have the chance to grant Vivaciousness, increasing secondary stats by $s1 and Speed or Avoidance by $s2 based on the school it was activated from.", 0, 0 },
   { 463677, "$@spelldesc445360", "Shoulders imbued with a runic illusion.", 0 },
   { 463678, "$@spelldesc445337", "Shoulders imbued with a shadowy illusion.", 0 },
   { 463679, "$@spelldesc445327", "Shoulders imbued with a crystalline illusion.", 0 },
@@ -26340,12 +26341,15 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 469995, "$@spelldesc452402", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.0.2.56461
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 11.0.2.56819
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+  {  454862,  1, "The physical damage dealt has blossomed into an absorb shield for $w1 and $w2 Speed.", "Granted $w1 Haste and $w2 Speed." },
+  {  454975,  1, "Granted $w1 Haste and $w2 Speed.", "Granted $w1 Haste and $w2 Avoidance." },
+  {  462661,  1, "$w1% increased spell and ability cool down rate.\r\n\r\nHealing received increased by $s1%.", "$s2% increased spell and ability cool down rate.\r\n\r\nHealing received increased by $s1%." },
 } };
 
-// Spell description variables, wow build 11.0.2.56461
-static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
+// Spell description variables, wow build 11.0.2.56819
+static const std::array<spelldesc_vars_data_t, 585> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26544,7 +26548,7 @@ static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {  260364, "$damage=${$cond($gt($SP,$AP),$SP*0.25,$AP*0.5)}" },
   {  260798, "$damage=${2.0*$260798s1}" },
   {  262627, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
-  {  263648, "$baseAbsorb=${10*$AP*$pctH}\r\n$fragmentAbsorb=${2*$AP*$pctH}" },
+  {  263648, "$baseAbsorb=${15*$AP*$pctH}\r\n$fragmentAbsorb=${4*$AP*$pctH}" },
   {  264057, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$demoPassive=$?s137044[${1+0.01*$137044m3}][${1}]\r\n$damage=${.575*($SP*1)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}" },
   {  265931, "$mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]" },
   {  267964, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$demoPassive=$?s137044[${1+0.01*$137044m3}][${1}]\r\n$damage=${.575*($SP*1)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}" },
@@ -26682,7 +26686,8 @@ static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {  343355, "$ext=${$231688s1/1000} sec" },
   {  343527, "$Mastery=$?a267316[${1+$267316s1/100}][${1}]\r\n$DP=$?a223819[${1+$223819s2/100}][${1}]\r\n$mult=${$<Mastery>*$<DP>}" },
   {  343655, "$shield=${($SP*11)*(1+$@versadmg)}\r\n$newshield=${$MHP*$406139s2/100*(1+$@versadmg)}" },
-  {  345545, "$ChimericPoison=${$345547s1*3}" },
+  {  345545, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
+  {  345548, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  345549, "$phylacteryhealth=$s2*15" },
   {  346396, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$serrated=$?s389882[${1+($389882s1)/100}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*$<serrated>*(1+$@versadmg)*(1+($137015s1/100))}" },
   {  351093, "$shield=${$MHP*$s1/100}" },
@@ -26932,7 +26937,8 @@ static const std::array<spelldesc_vars_data_t, 584> __spelldesc_vars_data { {
   {  462620, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$maelSup=$?a443447[${1+($443447s3/100)}][${1}]\r\n$warWithinSet=$?a453684[${1+($453684s2/100)}][${1}]\r\n$voltaicSurge=$?a454919[${1+($454919s1/100)}][${1}]\r\n$damage=${$SPN*0.4272*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*$<maelSup>*$<warWithinSet>*$<voltaicSurge>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.2.56461
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+// spelldesc_vars hotfix entries, wow build 11.0.2.56819
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
+  {  263648,  0, "$baseAbsorb=${10*$AP*$pctH}\r\n$fragmentAbsorb=${2*$AP*$pctH}", "$baseAbsorb=${15*$AP*$pctH}\r\n$fragmentAbsorb=${4*$AP*$pctH}" },
 } };
 

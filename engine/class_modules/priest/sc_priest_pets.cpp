@@ -230,6 +230,9 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
 
     if ( data().ok() )
     {
+      apply_affecting_aura( p.o().specs.shadow_priest );
+      apply_affecting_aura( p.o().specs.discipline_priest );
+
       apply_buff_effects();
       apply_debuffs_effects();
     }
@@ -406,6 +409,14 @@ struct base_fiend_pet_t : public priest_pet_t
     owner_coeff.health = 0.3;
   }
 
+  void init_base_stats() override
+  {
+    priest_pet_t::init_base_stats();
+
+    owner_coeff.ap_from_sp = direct_power_mod;
+    owner_coeff.sp_from_sp = direct_power_mod;
+  }
+
   virtual double mana_return_percent() const = 0;
   virtual double insanity_gain() const       = 0;
 
@@ -521,8 +532,11 @@ struct void_flay_t final : public priest_pet_spell_t
   {
     auto m = player->composite_player_target_multiplier( target, get_school() );
 
-    m *= 1.0 + damage_mul * target->resources.pct( RESOURCE_HEALTH );
+    double health_percent = ( target->health_percentage() / 100 );
 
+    m *= 1.0 + damage_mul * health_percent;
+
+    sim->print_debug( "void_flay damage_mul: {} health_percent: {}, m: {}", damage_mul, health_percent, m );
     return m;
   }
 
@@ -685,7 +699,7 @@ struct fiend_melee_t : public priest_pet_melee_t
     weapon_multiplier       = 0.0;
     base_dd_min             = weapon->min_dmg;
     base_dd_max             = weapon->max_dmg;
-    attack_power_mod.direct = p.direct_power_mod;
+    attack_power_mod.direct = 1.0;
   }
 
   base_fiend_pet_t& p()
@@ -772,15 +786,13 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
 
     // This is hard coded in the spell
     // spcoeff * $?a137032[${0.326139}][${0.442}]
-    spell_power_mod.direct *= p.direct_power_mod;
+    // spell_power_mod.direct *= p.direct_power_mod;
 
     // Negative modifier used for point scaling
     // Effect#4 [op=set, values=(-50, 0)]
     spell_power_mod.direct *= ( 1 + p.o().talents.shared.inescapable_torment->effectN( 3 ).percent() );
 
     // Tuning modifier effect
-    apply_affecting_aura( p.o().specs.shadow_priest );
-    apply_affecting_aura( p.o().specs.discipline_priest );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override

@@ -851,6 +851,7 @@ void bottled_flayedwing_toxin( special_effect_t& effect )
       tick_zero = true;
       // Tick damage value lives in a different spell for some reason
       base_td = e.player->find_spell( 345547 )->effectN( 1 ).average( e.item );
+      base_multiplier *= role_mult( e );
     }
   };
 
@@ -1169,14 +1170,14 @@ void infinitely_divisible_ooze( special_effect_t& effect )
       return RESOURCE_ENERGY;
     }
 
-    action_t* create_action( util::string_view name, util::string_view options ) override
+    action_t* create_action( util::string_view name, util::string_view opt_str ) override
     {
       if ( name == "noxious_bolt" )
       {
         return new noxious_bolt_t( this, effect );
       }
 
-      return pet_t::create_action( name, options );
+      return pet_t::create_action( name, opt_str );
     }
 
     void init_action_list() override
@@ -1916,6 +1917,14 @@ void dueling_form( special_effect_t& effect )
 void instructors_divine_bell( special_effect_t& effect )
 {
   effect.cooldown_category_ = 1141;
+}
+
+void spare_meat_hook( special_effect_t& effect )
+{
+  auto dot = create_proc_action<generic_proc_t>( "spare_meat_hook", effect, effect.driver() );
+  dot->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = dot;
 }
 
 // 9.1 Trinkets
@@ -3900,7 +3909,7 @@ void prismatic_brilliance( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_execute_function(
       effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
-        buffs[ cb->rng().range( buffs.size() ) ]->trigger();
+        cb->rng().range( buffs )->trigger();
       } );
 }
 
@@ -5447,10 +5456,10 @@ void winds_of_winter( special_effect_t& effect )
       base_dd_min = base_dd_max = 1.0; // Ensure that the correct snapshot flags are set.
     }
 
-    double composite_target_multiplier( player_t* target ) const override
+    double composite_target_multiplier( player_t* t ) const override
     {
       // Ignore Positive Damage Taken Modifiers (321)
-      return std::min( proc_spell_t::composite_target_multiplier( target ), 1.0 );
+      return std::min( proc_spell_t::composite_target_multiplier( t ), 1.0 );
     }
   };
 
@@ -6063,6 +6072,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 336219, items::dueling_form );
     unique_gear::register_special_effect( 348139, items::instructors_divine_bell );
     unique_gear::register_special_effect( 367896, items::instructors_divine_bell );
+    unique_gear::register_special_effect( 345548, items::spare_meat_hook );
 
     // 9.1 Trinkets
     unique_gear::register_special_effect( 353492, items::forbidden_necromantic_tome );

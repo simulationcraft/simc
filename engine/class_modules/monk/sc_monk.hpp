@@ -1310,6 +1310,8 @@ public:
     int chi_burst_healing_targets;
     int motc_override;
     double squirm_frequency;
+
+    int shado_pan_initial_charge_accumulator;
   } user_options;
 
   // exterminate these structs
@@ -1375,6 +1377,7 @@ public:
   double composite_player_target_armor( player_t *target ) const override;
   void create_pets() override;
   void init_spells() override;
+  void init_background_actions() override;
   void init_base_stats() override;
   void init_scaling() override;
   void create_buffs() override;

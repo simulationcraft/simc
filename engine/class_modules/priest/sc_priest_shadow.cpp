@@ -20,7 +20,7 @@ namespace spells
 // ==========================================================================
 // Mind Flay
 // ==========================================================================
-struct mind_flay_base_t final : public priest_spell_t
+struct mind_flay_base_t : public priest_spell_t
 {
   mind_flay_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
@@ -71,36 +71,30 @@ struct mind_flay_base_t final : public priest_spell_t
   }
 };
 
-struct mind_flay_t final : public priest_spell_t
+
+struct mind_flay_insanity_t final : public mind_flay_base_t
 {
-  mind_flay_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "mind_flay", p, p.specs.mind_flay ),
-      _base_spell( new mind_flay_base_t( "mind_flay", p, p.specs.mind_flay ) ),
-      _insanity_spell( new mind_flay_base_t( "mind_flay_insanity", p, p.talents.shadow.mind_flay_insanity_spell ) )
+  mind_flay_insanity_t( priest_t& p, util::string_view options_str )
+    : mind_flay_base_t( "mind_flay_insanity", p, p.talents.shadow.mind_flay_insanity_spell )
   {
     parse_options( options_str );
 
-    add_child( _base_spell );
+    // We spell queue out of MFI.
+    ability_lag = p.options.no_channel_macro_mfi ? p.world_lag : p.sim->queue_lag;
   }
 
   void execute() override
   {
-    if ( priest().buffs.mind_flay_insanity->check() )
-    {
-      _insanity_spell->execute();
-      priest().buffs.mind_flay_insanity->decrement();
+    mind_flay_base_t::execute();
 
-      // This rolls its own independent chance to crit for the Shadowy Apparition, since it happens on cast.
-      // It is not related to the first tick of MF:I's state
-      if ( priest().talents.archon.energy_cycle.enabled() )
-      {
-        priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_mfi,
-                                              rng().roll( priest().cache.spell_crit_chance() ) );
-      }
-    }
-    else
+    priest().buffs.mind_flay_insanity->decrement();
+
+    // This rolls its own independent chance to crit for the Shadowy Apparition, since it happens on cast.
+    // It is not related to the first tick of MF:I's state
+    if ( priest().talents.archon.energy_cycle.enabled() )
     {
-      _base_spell->execute();
+      priest().trigger_shadowy_apparitions( priest().procs.shadowy_apparition_mfi,
+                                            rng().roll( priest().cache.spell_crit_chance() ) );
     }
   }
 
@@ -115,9 +109,40 @@ struct mind_flay_t final : public priest_spell_t
     return priest_spell_t::ready();
   }
 
-private:
-  propagate_const<action_t*> _base_spell;
-  propagate_const<action_t*> _insanity_spell;
+  bool action_ready() override
+  {
+    if ( !priest().buffs.mind_flay_insanity->check() )
+      return false;
+
+    return mind_flay_base_t::action_ready();
+  }
+};
+
+struct mind_flay_t final : public mind_flay_base_t
+{
+  mind_flay_t( priest_t& p, util::string_view options_str ) : mind_flay_base_t( "mind_flay", p, p.specs.mind_flay )
+  {
+    parse_options( options_str );
+  }
+
+  bool ready() override
+  {
+    // Mind Spike replaces Mind Flay
+    if ( priest().talents.shadow.mind_spike.enabled() )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
+  }
+
+  bool action_ready() override
+  {
+    if ( priest().buffs.mind_flay_insanity->check() )
+      return false;
+
+    return mind_flay_base_t::action_ready();
+  }
 };
 
 // ==========================================================================
@@ -2465,6 +2490,10 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   if ( name == "mind_flay" )
   {
     return new mind_flay_t( *this, options_str );
+  }
+  if ( name == "mind_flay_insanity" )
+  {
+    return new mind_flay_insanity_t( *this, options_str );
   }
   if ( name == "void_bolt" )
   {
