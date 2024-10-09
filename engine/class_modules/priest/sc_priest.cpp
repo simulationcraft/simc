@@ -1748,7 +1748,6 @@ struct collapsing_void_damage_t final : public priest_spell_t
     split_aoe_damage = 1;
 
     // TODO: Refactor this into a pet, seems to get the same pet mod as our other ones
-    spell_power_mod.direct *= 1.296;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1800,7 +1799,6 @@ struct entropic_rift_damage_t final : public priest_spell_t
     affected_by_shadow_weaving = true;
 
     // TODO: Refactor this into a pet, seems to get the same pet mod as our other ones
-    spell_power_mod.direct *= 1.296;
   }
 
   double miss_chance( double hit, player_t* t ) const override
@@ -3073,12 +3071,6 @@ double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
 
   // Certain modifiers are only for Guardians, otherwise just give the Pet Modifier
-
-  if ( specialization() == PRIEST_SHADOW )
-  {
-    // Seems to apply to all pets/guardians. Unknown if it applies to non shadow ones currently. 08/10/2024
-    m *= 1.296;
-  }
 
   if ( guardian )
   {
