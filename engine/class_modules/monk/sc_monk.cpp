@@ -147,7 +147,7 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talent.conduit_of_the_celestials.xuens_guidance );
 
   // Master of Harmony
-  apply_affecting_aura( p()->talent.master_of_harmony.manifestation );
+  apply_affecting_aura( p()->talent.master_of_harmony.manifestation, p()->baseline.brewmaster.aura );
 
   // Shado-Pan
   parse_effects( p()->talent.shado_pan.efficient_training, p()->specialization() == MONK_WINDWALKER
@@ -217,8 +217,8 @@ void monk_action_t<Base>::apply_buff_effects()
   // TODO: parse_effects implementation for A_MOD_HEALING_RECEIVED_FROM_SPELL (283)
   parse_effects( p()->talent.master_of_harmony.aspect_of_harmony_heal, p()->talent.master_of_harmony.coalescence,
                  [ & ] { return p()->buff.aspect_of_harmony.heal_ticking(); } );
-  parse_effects( p()->buff.balanced_stratagem_physical, EXPIRE_BUFF );
-  parse_effects( p()->buff.balanced_stratagem_magic, EXPIRE_BUFF );
+  parse_effects( p()->buff.balanced_stratagem_physical, p()->baseline.brewmaster.aura, EXPIRE_BUFF );
+  parse_effects( p()->buff.balanced_stratagem_magic, p()->baseline.brewmaster.aura, EXPIRE_BUFF );
 
   // Shado-Pan
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
@@ -1113,6 +1113,8 @@ struct overwhelming_force_t : base_action_t
     {
       background = dual = proc = true;
       base_multiplier          = player->talent.master_of_harmony.overwhelming_force->effectN( 1 ).percent();
+      base_multiplier += player->baseline.brewmaster.aura->effectN( 32 ).percent();
+      aoe = -1;
       reduced_aoe_targets      = player->talent.master_of_harmony.overwhelming_force->effectN( 2 ).base_value();
     }
 
@@ -1238,7 +1240,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
   {
     if ( p()->talent.brewmaster.press_the_advantage->ok() )
       return false;
-    return monk_melee_attack_t::ready();
+    return base_t::ready();
   }
 
   void execute() override
@@ -1258,7 +1260,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 
     //------------
 
-    monk_melee_attack_t::execute();
+    base_t::execute();
 
     p()->buff.blackout_combo->expire();
 
@@ -1305,7 +1307,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 
   void impact( action_state_t *s ) override
   {
-    monk_melee_attack_t::impact( s );
+    base_t::impact( s );
 
     // Apply Mark of the Crane
     p()->trigger_mark_of_the_crane( s );
@@ -3689,7 +3691,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     }
 
     double purify_percent = data().effectN( 1 ).percent();
-    purify_percent += 2.0 * p()->talent.master_of_harmony.mantra_of_purity->effectN( 1 ).percent();
+    purify_percent += p()->talent.master_of_harmony.mantra_of_purity->effectN( 1 ).percent();
     double cleared = p()->find_stagger( "Stagger" )->purify_percent( purify_percent, "purifying_brew" );
 
     double healed = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
