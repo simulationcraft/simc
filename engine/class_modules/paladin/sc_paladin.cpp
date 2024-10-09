@@ -2375,6 +2375,17 @@ struct empyrean_hammer_t : public paladin_spell_t
     return am;
   }
 
+  double composite_target_multiplier( player_t *t ) const override
+  {
+    double ctm = paladin_spell_t::composite_target_multiplier( t );
+
+    paladin_td_t* td = this->td( t );
+    if ( p()->talents.burn_to_ash->ok() && td->dots.truths_wake->is_ticking() )
+      ctm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
+
+    return ctm;
+  }
+
   void impact(action_state_t* s) override
   {
     paladin_spell_t::impact( s );
