@@ -5996,7 +5996,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Tranquility (740), Starfall (50286), Typhoon (61391), Fungal Growth (81281), Wild Mushroom (88747), Wild Mushroom (88751), Typhoon (132469), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Tranquility (157982), Starfall (191034), Starfall (191037), Overgrowth (203651), Starfall (359399)
                    Family Flags: 3, 7, 53, 54, 55, 56, 82, 88
-#4 (id=340874)   : Apply Aura (6) | Unknown(188)
+#4 (id=340874)   : Apply Aura (6) | Modify UI UnitInRange (188)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=874468)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Range (5)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 5 | Misc Value 2: 1162 (Label) | Target: Self (1)

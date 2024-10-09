@@ -16009,7 +16009,7 @@ Effects          :
 #6 (id=1168480)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Radius (6)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 6 | Misc Value 2: 3873 (Label) | Target: Self (1)
                    Affected Spells (Label): Psychic Link (199486)
-#7 (id=1168786)  : Apply Aura (6) | Unknown(188)
+#7 (id=1168786)  : Apply Aura (6) | Modify UI UnitInRange (188)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=1175933)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)

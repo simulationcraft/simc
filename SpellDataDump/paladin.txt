@@ -4763,7 +4763,7 @@ Effects          :
                    Family Flags: 82, 92
 #3 (id=318061)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
-#4 (id=340875)   : Apply Aura (6) | Unknown(188)
+#4 (id=340875)   : Apply Aura (6) | Modify UI UnitInRange (188)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increase the range of your heals by $s1% for $d.
 Tooltip          : Range of heals increased by $s1%.
