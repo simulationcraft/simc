@@ -4013,7 +4013,10 @@ struct thunder_blast_t : public warrior_attack_t
     energize_type = action_energize::NONE;
 
     if ( p->spec.protection_warrior->ok() )
+    {
       rage_gain += p->spec.protection_warrior->effectN( 20 ).resource( RESOURCE_RAGE );
+      rage_gain += p->talents.mountain_thane.thunder_blast->effectN( 3 ).resource( RESOURCE_RAGE );
+    }
 
     if ( p->talents.mountain_thane.crashing_thunder->ok() && p->specialization() == WARRIOR_FURY )
       rage_gain += p->talents.mountain_thane.crashing_thunder->effectN( 4 ).resource( RESOURCE_RAGE );
