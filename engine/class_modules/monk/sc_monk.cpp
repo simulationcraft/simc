@@ -3691,7 +3691,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     }
 
     double purify_percent = data().effectN( 1 ).percent();
-    purify_percent += 2.0 * p()->talent.master_of_harmony.mantra_of_purity->effectN( 1 ).percent();
+    purify_percent += p()->talent.master_of_harmony.mantra_of_purity->effectN( 1 ).percent();
     double cleared = p()->find_stagger( "Stagger" )->purify_percent( purify_percent, "purifying_brew" );
 
     double healed = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
