@@ -5894,8 +5894,11 @@ struct melee_t : public death_knight_melee_attack_t
   {
     timespan_t t = death_knight_melee_attack_t::execute_time();
 
-    if ( first )
-      return ( weapon->slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t * 0.5, 0_ms ) : t * 0.5 ) : 0_ms;
+    if ( first && !sync_weapons )
+    {
+      timespan_t delay = p()->rng().range( 10_ms, t * 0.5 );
+      return ( weapon->slot == SLOT_OFF_HAND ) ? delay : 0_ms;
+    }
     else
       return t;
   }
