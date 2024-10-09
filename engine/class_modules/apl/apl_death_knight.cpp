@@ -129,7 +129,6 @@ void blood( player_t* p )
   deathbringer->add_action( "potion,if=buff.dancing_rune_weapon.up" );
   deathbringer->add_action( "blood_tap,if=rune<=1" );
   deathbringer->add_action( "raise_dead" );
-  deathbringer->add_action( "use_items" );
   deathbringer->add_action( "blood_fury,if=cooldown.dancing_rune_weapon.ready" );
   deathbringer->add_action( "berserking,if=cooldown.dancing_rune_weapon.ready" );
   deathbringer->add_action( "deaths_caress,if=!buff.bone_shield.up" );
