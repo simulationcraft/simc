@@ -1995,7 +1995,7 @@ void raid_event_t::schedule()
       raid_event->start();
 
       timespan_t ct = raid_event->timestamps.empty() ? raid_event->cooldown_time()
-                      : raid_event->num_starts < as<int>( raid_event->timestamps.size() )
+                      : raid_event->num_starts < raid_event->timestamps.size()
                         ? raid_event->timestamps.at( raid_event->num_starts )
                         : 0_ms;
 

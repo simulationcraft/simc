@@ -3740,7 +3740,7 @@ struct fire_breath_t : public empowered_charge_spell_t
         auto td = p()->get_target_data( state->target );
         if ( td )
         {
-          auto mul_before = td->molten_embers_multiplier;
+          // auto mul_before = td->molten_embers_multiplier;
           td->molten_embers_multiplier = p()->get_molten_embers_multiplier( state->target, true );
         }
       }

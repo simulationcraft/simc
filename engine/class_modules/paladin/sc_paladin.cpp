@@ -767,7 +767,7 @@ struct divine_steed_t : public paladin_spell_t
     parse_options( options_str );
     background  = false;
     if ( p->talents.cavalier->ok() )
-      cooldown->charges += p->talents.cavalier->effectN( 1 ).base_value();
+      cooldown->charges += as<int>( p->talents.cavalier->effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -2417,7 +2417,7 @@ void paladin_t::trigger_empyrean_hammer( player_t* target, int number_to_trigger
   }
 }
 
-void paladin_t::trigger_lights_deliverance(bool triggered_by_hol)
+void paladin_t::trigger_lights_deliverance( bool /* triggered_by_hol */ )
 {
   if ( !talents.templar.lights_deliverance->ok() || !buffs.templar.lights_deliverance->at_max_stacks() )
     return;

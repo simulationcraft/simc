@@ -12948,7 +12948,7 @@ void shaman_t::init_special_effects()
 {
   callbacks.register_callback_trigger_function(
       452030, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ id = 51505 ]( const dbc_proc_callback_t*, action_t* a, action_state_t*) {
+      [ id = 51505U ]( const dbc_proc_callback_t*, action_t* a, action_state_t*) {
         if ( a->data().id() == id )
         {
           lava_burst_t* lvb = debug_cast<lava_burst_t*>(a);
