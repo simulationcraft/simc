@@ -326,9 +326,8 @@ void frost( player_t* p )
   default_->add_action( "counterspell" );
   default_->add_action( "call_action_list,name=cds" );
   default_->add_action( "run_action_list,name=aoe,if=active_enemies>=7|active_enemies>=3&talent.ice_caller" );
-  default_->add_action( "run_action_list,name=ss_cleave,if=active_enemies>=2&active_enemies<=3&talent.splinterstorm" );
   default_->add_action( "run_action_list,name=cleave,if=active_enemies>=2&active_enemies<=3" );
-  default_->add_action( "run_action_list,name=ss_st,if=talent.splinterstorm" );
+  default_->add_action( "run_action_list,name=ss_st,if=talent.shifting_shards" );
   default_->add_action( "run_action_list,name=st" );
 
   aoe->add_action( "cone_of_cold,if=talent.coldest_snap&(prev_gcd.1.comet_storm|prev_gcd.1.frozen_orb&!talent.comet_storm)" );
@@ -341,7 +340,8 @@ void frost( player_t* p )
   aoe->add_action( "frost_nova,if=freezable&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike&!remaining_winters_chill)" );
   aoe->add_action( "shifting_power,if=cooldown.comet_storm.remains>10" );
   aoe->add_action( "frostbolt,if=buff.frostfire_empowerment.react&!buff.excess_frost.react&!buff.excess_fire.react" );
-  aoe->add_action( "flurry,if=cooldown_react&!remaining_winters_chill&(buff.brain_freeze.react&!talent.excess_frost|buff.excess_frost.react)" );
+  aoe->add_action( "glacial_spike,if=buff.icicles.react=5&talent.frostfire_bolt&active_enemies<7");
+  aoe->add_action( "flurry,if=cooldown_react&!remaining_winters_chill&(buff.brain_freeze.react&!talent.excess_frost|buff.excess_frost.react|prev_gcd.1.glacial_spike)" );
   aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time|remaining_winters_chill" );
   aoe->add_action( "flurry,if=cooldown_react&!remaining_winters_chill" );
   aoe->add_action( "ice_nova,if=active_enemies>=4&(!talent.glacial_spike|!freezable)&!talent.frostfire_bolt" );
@@ -352,8 +352,6 @@ void frost( player_t* p )
   cds->add_action( "use_item,name=imperfect_ascendancy_serum,if=buff.icy_veins.remains>19|fight_remains<25" );
   cds->add_action( "use_item,name=spymasters_web,if=(buff.icy_veins.remains>19&fight_remains<100)|fight_remains<25" );
   cds->add_action( "potion,if=prev_off_gcd.icy_veins|fight_remains<60" );
-  cds->add_action( "use_item,name=dreambinder_loom_of_the_great_cycle,if=(equipped.nymues_unraveling_spindle&prev_gcd.1.nymues_unraveling_spindle)|fight_remains>2" );
-  cds->add_action( "use_item,name=belorrelos_the_suncaller,if=time>5&!prev_gcd.1.flurry" );
   cds->add_action( "flurry,if=time=0&active_enemies<=2" );
   cds->add_action( "icy_veins" );
   cds->add_action( "use_items" );
@@ -364,18 +362,6 @@ void frost( player_t* p )
   cds->add_action( "lights_judgment" );
   cds->add_action( "fireblood" );
   cds->add_action( "ancestral_call" );
-
-  ss_cleave->add_action( "flurry,target_if=min:debuff.winters_chill.stack,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&(prev_gcd.1.frostbolt|prev_gcd.1.glacial_spike)" );
-  ss_cleave->add_action( "ice_lance,target_if=max:debuff.winters_chill.stack,if=buff.icy_veins.up&debuff.winters_chill.stack=2" );
-  ss_cleave->add_action( "ray_of_frost,if=buff.icy_veins.down&buff.freezing_winds.down&remaining_winters_chill=1" );
-  ss_cleave->add_action( "frozen_orb" );
-  ss_cleave->add_action( "shifting_power" );
-  ss_cleave->add_action( "ice_lance,target_if=max:debuff.winters_chill.stack,if=remaining_winters_chill|buff.fingers_of_frost.react" );
-  ss_cleave->add_action( "comet_storm,if=prev_gcd.1.flurry|prev_gcd.1.cone_of_cold|action.splinterstorm.in_flight" );
-  ss_cleave->add_action( "glacial_spike,if=buff.icicles.react=5" );
-  ss_cleave->add_action( "flurry,target_if=min:debuff.winters_chill.stack,if=cooldown_react&buff.icy_veins.up" );
-  ss_cleave->add_action( "frostbolt" );
-  ss_cleave->add_action( "call_action_list,name=movement" );
   
   cleave->add_action( "comet_storm,if=prev_gcd.1.flurry|prev_gcd.1.cone_of_cold" );
   cleave->add_action( "flurry,target_if=min:debuff.winters_chill.stack,if=cooldown_react&(((prev_gcd.1.frostbolt|prev_gcd.1.frostfire_bolt)&buff.icicles.react>=3)|prev_gcd.1.glacial_spike|(buff.icicles.react>=3&buff.icicles.react<5&charges_fractional=2))" );
