@@ -2017,12 +2017,6 @@ public:
     return pers;
   }
 
-  void init_finished() override
-  {
-    ab::init_finished();
-    ab::initialize_buff_list_on_vector( persistent_multiplier_effects );
-  }
-
   size_t total_effects_count() override
   {
     return ab::total_effects_count() + persistent_multiplier_effects.size();
@@ -2867,13 +2861,6 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
         sa_counter = get_counter( p()->buff.sudden_ambush );
 
     }
-  }
-
-  void init_finished() override
-  {
-    base_t::init_finished();
-    base_t::initialize_buff_list_on_vector( persistent_periodic_effects );
-    base_t::initialize_buff_list_on_vector( persistent_direct_effects );
   }
 
   size_t total_effects_count() override
@@ -4892,7 +4879,11 @@ struct rip_t final : public trigger_thriving_growth_t<trigger_waning_twilight_t<
         .set_buff( p->buff.feline_potential )
         .set_value( eff.percent() )
         .set_eff( &eff )
-        .set_idx( UINT32_MAX );
+        .set_idx( 1U << callback_list.size() );
+      callback_list.push_back( [ this, b = p->buff.feline_potential ]( parse_callback_e cb_type ) {
+        if ( cb_type == PARSE_CALLBACK_POST_EXECUTE )
+          b->expire( this );
+      } );
     }
   }
 
@@ -14134,13 +14125,13 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( mastery.razor_claws );
   _a->parse_effects( buff.apex_predators_craving );
   _a->parse_effects( buff.berserk_cat );
-  _a->parse_effects( buff.coiled_to_spring, CONSUME_BUFF );
+  _a->parse_effects( buff.coiled_to_spring, EXPIRE_BUFF );
   _a->parse_effects( buff.incarnation_cat );
   _a->parse_effects( buff.predator, USE_CURRENT );
-  _a->parse_effects( buff.predatory_swiftness, CONSUME_BUFF );
+  _a->parse_effects( buff.predatory_swiftness, EXPIRE_BUFF );
   _a->parse_effects( talent.taste_for_blood, [ this ] { return buff.tigers_fury->check();},
                      talent.taste_for_blood->effectN( 2 ).percent() );
-  _a->parse_effects( buff.fell_prey, CONSUME_BUFF, effect_mask_t( true ).disable( 2 ) );
+  _a->parse_effects( buff.fell_prey, EXPIRE_BUFF, effect_mask_t( true ).disable( 2 ) );
   // applies 15% to rampant ferocity (label 2740) via hidden script
   _a->parse_effects( buff.fell_prey, effect_mask_t( false ).enable( 2 ),
                      buff.fell_prey->data().effectN( 1 ).percent() );
@@ -14162,7 +14153,7 @@ void druid_t::parse_action_effects( action_t* action )
                      talent.berserk_unchecked_aggression );
   _a->parse_effects( buff.incarnation_bear, bear_mask, talent.berserk_ravage,
                      talent.berserk_unchecked_aggression );
-  _a->parse_effects( buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), CONSUME_BUFF );
+  _a->parse_effects( buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), EXPIRE_BUFF );
 
   // dot damage is buffed via script so copy da_mult entries to ta_mult
   // thrash damage buff always applies
@@ -14177,12 +14168,12 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( spec.fury_of_nature, effect_mask_t( false ).enable( 2, 3 ),
                      talent.fury_of_nature->effectN( 1 ).percent() );
 
-  _a->parse_effects( buff.gory_fur, CONSUME_BUFF );
+  _a->parse_effects( buff.gory_fur, EXPIRE_BUFF );
   _a->parse_effects( buff.rage_of_the_sleeper );
   _a->parse_effects( talent.reinvigoration, effect_mask_t( true ).disable( talent.innate_resolve.ok() ? 1 : 2 ) );
   _a->parse_effects( buff.tooth_and_claw );
-  _a->parse_effects( buff.vicious_cycle_mangle, USE_DEFAULT, CONSUME_BUFF );
-  _a->parse_effects( buff.vicious_cycle_maul, USE_DEFAULT, CONSUME_BUFF );
+  _a->parse_effects( buff.vicious_cycle_mangle, USE_DEFAULT, EXPIRE_BUFF );
+  _a->parse_effects( buff.vicious_cycle_maul, USE_DEFAULT, EXPIRE_BUFF );
 
   _a->parse_effects( buff.guardians_tenacity );
   // effects#5 and #6 are ignored regardless of lunar calling
@@ -14192,16 +14183,16 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( buff.abundance );
   _a->parse_effects( buff.clearcasting_tree, talent.flash_of_clarity );
   _a->parse_effects( buff.incarnation_tree );
-  _a->parse_effects( buff.natures_swiftness, talent.natures_splendor, CONSUME_BUFF );
+  _a->parse_effects( buff.natures_swiftness, talent.natures_splendor, EXPIRE_BUFF );
 
   // Hero talents
-  _a->parse_effects( buff.blooming_infusion_damage, CONSUME_BUFF );
-  _a->parse_effects( buff.blooming_infusion_heal, CONSUME_BUFF );
-  _a->parse_effects( buff.feline_potential, CONSUME_BUFF );
+  _a->parse_effects( buff.blooming_infusion_damage, EXPIRE_BUFF );
+  _a->parse_effects( buff.blooming_infusion_heal, EXPIRE_BUFF );
+  _a->parse_effects( buff.feline_potential, EXPIRE_BUFF );
   _a->parse_effects( buff.harmony_of_the_grove );
   _a->parse_effects( buff.root_network );
   _a->parse_effects( buff.strategic_infusion );
-  _a->parse_effects( buff.ursine_potential, CONSUME_BUFF );
+  _a->parse_effects( buff.ursine_potential, EXPIRE_BUFF );
 }
 
 void druid_t::parse_action_target_effects( action_t* action )

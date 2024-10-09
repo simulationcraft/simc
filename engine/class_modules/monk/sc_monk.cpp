@@ -178,7 +178,7 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects(
       p()->buff.counterstrike,
       affect_list_t( 1 ).add_spell( p()->baseline.brewmaster.spinning_crane_kick->effectN( 1 ).trigger()->id() ),
-      CONSUME_BUFF );
+      EXPIRE_BUFF );
 
   // Mistweaver
   parse_effects( p()->buff.jadefire_brand, p()->talent.windwalker.jadefire_brand_heal );
@@ -217,8 +217,8 @@ void monk_action_t<Base>::apply_buff_effects()
   // TODO: parse_effects implementation for A_MOD_HEALING_RECEIVED_FROM_SPELL (283)
   parse_effects( p()->talent.master_of_harmony.aspect_of_harmony_heal, p()->talent.master_of_harmony.coalescence,
                  [ & ] { return p()->buff.aspect_of_harmony.heal_ticking(); } );
-  parse_effects( p()->buff.balanced_stratagem_physical, CONSUME_BUFF );
-  parse_effects( p()->buff.balanced_stratagem_magic, CONSUME_BUFF );
+  parse_effects( p()->buff.balanced_stratagem_physical, EXPIRE_BUFF );
+  parse_effects( p()->buff.balanced_stratagem_magic, EXPIRE_BUFF );
 
   // Shado-Pan
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
