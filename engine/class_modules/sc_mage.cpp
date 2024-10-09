@@ -3275,6 +3275,7 @@ struct arcane_orb_bolt_t final : public arcane_mage_spell_t
   {
     background = true;
     affected_by.savant = true;
+    base_multiplier *= 1.0 + p->talents.charged_orb->effectN( 2 ).percent();
     base_multiplier *= 1.0 + p->talents.splintering_orbs->effectN( 3 ).percent();
   }
 
