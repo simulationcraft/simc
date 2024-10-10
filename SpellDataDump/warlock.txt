@@ -16703,13 +16703,14 @@ Description      : $@spelldesc455572
 Tooltip          : Damage dealt increased by $s1%.
 
 Name             : The Houndmaster's Gambit (id=455615) [Spell Family (5), Hidden] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Not an Attack (194)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Suppress Target Procs (113), Not an Attack (194)
                  :
 Effects          :
 #1 (id=1159208)  : Dummy (3)
@@ -16717,13 +16718,14 @@ Effects          :
 Description      : $@spelldesc455572
 
 Name             : The Houndmaster's Gambit (id=455621) [Spell Family (5), Hidden] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Not an Attack (194)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Not a Proc (105), Suppress Target Procs (113), Not an Attack (194)
                  :
 Effects          :
 #1 (id=1159219)  : Dummy (3)
