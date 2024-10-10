@@ -2549,7 +2549,15 @@ struct arcane_mage_spell_t : public mage_spell_t
       return;
 
     p()->buffs.nether_precision->decrement();
-    p()->buffs.leydrinker->trigger();
+
+    if ( rng().roll( p()->talents.leydrinker->effectN( 1 ).percent() ) )
+    {
+      if ( p()->buffs.leydrinker->check() )
+        make_event( *sim, 150_ms, [ this ] { p()->buffs.leydrinker->trigger(); } );
+      else
+        p()->buffs.leydrinker->trigger();
+    }
+
     if ( p()->talents.dematerialize.ok() )
       p()->state.trigger_dematerialize = true;
     p()->trigger_splinter( t );
@@ -4901,6 +4909,7 @@ struct frostbolt_t final : public frost_mage_spell_t
 
   int n_targets() const override
   {
+    // TODO: currently only hits 2 targets, they're most likely not using the talent value
     if ( p()->talents.fractured_frost.ok() && p()->buffs.icy_veins->check() )
       return as<int>( p()->talents.fractured_frost->effectN( 3 ).base_value() );
     else
@@ -6568,8 +6577,7 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
-    if ( p()->talents.leydrinker.ok() )
-      p()->buffs.leydrinker->trigger( -1, buff_t::DEFAULT_VALUE(), 1.0 );
+    p()->buffs.leydrinker->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -8232,7 +8240,7 @@ void mage_t::create_buffs()
                                       ->set_default_value_from_effect( 1 )
                                       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.leydrinker                = make_buff( this, "leydrinker", find_spell( 453758 ) )
-                                      ->set_chance( talents.leydrinker->effectN( 1 ).percent() );
+                                      ->set_chance( talents.leydrinker.ok() );
   buffs.nether_precision          = make_buff( this, "nether_precision", find_spell( 383783 ) )
                                       ->set_default_value( talents.nether_precision->effectN( 1 ).percent() )
                                       ->modify_default_value( talents.leysight->effectN( 1 ).percent() )
