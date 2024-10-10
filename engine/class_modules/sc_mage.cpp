@@ -328,6 +328,7 @@ public:
     // Arcane
     buff_t* aether_attunement;
     buff_t* aether_attunement_counter;
+    buff_t* aethervision;
     buff_t* arcane_charge;
     buff_t* arcane_familiar;
     buff_t* arcane_harmony;
@@ -2543,7 +2544,7 @@ struct arcane_mage_spell_t : public mage_spell_t
     }
   }
 
-  void consume_nether_precision( player_t* t )
+  void consume_nether_precision( player_t* t, bool aethervision = false )
   {
     if ( !p()->buffs.nether_precision->check() )
       return;
@@ -2561,6 +2562,9 @@ struct arcane_mage_spell_t : public mage_spell_t
     if ( p()->talents.dematerialize.ok() )
       p()->state.trigger_dematerialize = true;
     p()->trigger_splinter( t );
+
+    if ( aethervision )
+      p()->buffs.aethervision->trigger();
   }
 };
 
@@ -3367,6 +3371,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
 {
   action_t* orb_barrage = nullptr;
   int snapshot_charges = -1;
+  int aethervision_charges = 0;
   int glorious_incandescence_charges = 0;
   int arcane_soul_charges = 0;
   int intuition_charges = 0;
@@ -3379,6 +3384,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     affected_by.arcane_debilitation = true;
     triggers.overflowing_energy = triggers.clearcasting = true;
     base_multiplier *= 1.0 + p->sets->set( MAGE_ARCANE, TWW1, B2 )->effectN( 1 ).percent();
+    aethervision_charges = as<int>( p->find_spell( 467636 )->effectN( 1 ).base_value() );
     glorious_incandescence_charges = as<int>( p->find_spell( 451223 )->effectN( 1 ).base_value() );
     arcane_soul_charges = as<int>( p->find_spell( 453413 )->effectN( 1 ).base_value() );
     intuition_charges = as<int>( p->find_spell( 455683 )->effectN( 1 ).base_value() );
@@ -3441,6 +3447,12 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     }
     p()->buffs.intuition->trigger();
 
+    if ( int av_stack = p()->buffs.aethervision->check() )
+    {
+      p()->buffs.aethervision->expire();
+      p()->trigger_arcane_charge( av_stack * aethervision_charges );
+    }
+
     snapshot_charges = -1;
   }
 
@@ -3464,6 +3476,7 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     double am = arcane_mage_spell_t::action_multiplier();
 
     am *= arcane_charge_multiplier( true );
+    am *= 1.0 + p()->buffs.aethervision->check_stack_value();
     am *= 1.0 + p()->buffs.arcane_harmony->check_stack_value();
     am *= 1.0 + p()->buffs.nether_precision->check_value();
     am *= 1.0 + p()->buffs.intuition->check_value();
@@ -3542,7 +3555,7 @@ struct arcane_blast_t final : public arcane_mage_spell_t
       p()->buffs.presence_of_mind->decrement();
 
     p()->buffs.concentration->trigger();
-    consume_nether_precision( target );
+    consume_nether_precision( target, true );
     p()->buffs.intuition->trigger();
   }
 
@@ -8179,6 +8192,9 @@ void mage_t::create_buffs()
                                       ->set_default_value_from_effect( 1 );
   buffs.aether_attunement_counter = make_buff( this, "aether_attunement_counter", find_spell( 458388 ) )
                                       ->set_chance( talents.aether_attunement.ok() );
+  buffs.aethervision              = make_buff( this, "aethervision", find_spell( 467634 ) )
+                                      ->set_default_value_from_effect( 1 )
+                                      ->set_chance( talents.aethervision.ok() );
   buffs.arcane_charge             = make_buff( this, "arcane_charge", find_spell( 36032 ) )
                                       ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buffs.arcane_familiar           = make_buff( this, "arcane_familiar", find_spell( 210126 ) )
