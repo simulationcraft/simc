@@ -29,7 +29,7 @@ actions.precombat+=/stellar_flare
 actions=variable,name=passive_asp,value=6%spell_haste+talent.natures_balance+talent.orbit_breaker*dot.moonfire.ticking*(buff.orbit_breaker.stack>(27-2*buff.solstice.up))*24
 actions+=/variable,name=ca_effective_cd,value=cooldown.ca_inc.remains<?cooldown.force_of_nature.remains
 actions+=/variable,name=last_ca_inc,value=fight_remains<cooldown.ca_inc.duration+variable.ca_effective_cd
-actions+=/variable,name=cd_condition,value=(fight_remains<(15+5*talent.incarnation_chosen_of_elune)*(1+talent.greater_alignment*0.4)|!hero_tree.keeper_of_the_grove|(buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>25))&cooldown.ca_inc.ready
+actions+=/variable,name=cd_condition,value=(fight_remains<(15+5*talent.incarnation_chosen_of_elune)*(1+talent.greater_alignment*0.4)|target.time_to_die>10&(!hero_tree.keeper_of_the_grove|(buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>25)))&cooldown.ca_inc.ready
 actions+=/use_item,name=aberrant_spellforge
 actions+=/do_treacherous_transmitter_task,if=cooldown.ca_inc.remains>10
 actions+=/use_item,name=spymasters_web,if=fight_remains<20
@@ -46,16 +46,19 @@ actions+=/variable,name=eclipse_remains,value=buff.eclipse_lunar.remains<?buff.e
 actions+=/variable,name=enter_lunar,value=talent.lunar_calling|spell_targets.starfire>2-(talent.umbral_intensity.rank+talent.soul_of_the_forest>1)
 actions+=/variable,name=boat_stacks,value=buff.balance_of_all_things_arcane.stack+buff.balance_of_all_things_nature.stack
 actions+=/warrior_of_elune,if=talent.lunar_calling|!talent.lunar_calling&variable.eclipse_remains>=7&cooldown.ca_inc.remains>20
-actions+=/wrath,if=variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
-actions+=/starfire,if=!variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
 actions+=/run_action_list,name=aoe,if=spell_targets>1
 actions+=/run_action_list,name=st
 
-actions.aoe=moonfire,target_if=refreshable&(target.time_to_die-remains)>6&astral_power.deficit>variable.passive_asp+energize_amount,if=fight_style.dungeonroute
+actions.aoe=wrath,if=variable.enter_lunar&variable.eclipse&variable.eclipse_remains<cast_time
+actions.aoe+=/starfire,if=!variable.enter_lunar&variable.eclipse&variable.eclipse_remains<cast_time
+actions.aoe+=/starfall,if=astral_power.deficit<=variable.passive_asp+6
+actions.aoe+=/moonfire,target_if=refreshable&(target.time_to_die-remains)>6&astral_power.deficit>variable.passive_asp+energize_amount,if=fight_style.dungeonroute|fight_style.dungeonslice
 actions.aoe+=/sunfire,target_if=refreshable&(target.time_to_die-remains)>6-(spell_targets%2)&astral_power.deficit>variable.passive_asp+energize_amount
-actions.aoe+=/moonfire,target_if=refreshable&(target.time_to_die-remains)>6&astral_power.deficit>variable.passive_asp+energize_amount,if=!fight_style.dungeonroute
+actions.aoe+=/moonfire,target_if=refreshable&(target.time_to_die-remains)>6&astral_power.deficit>variable.passive_asp+energize_amount,if=!fight_style.dungeonroute&!fight_style.dungeonslice
+actions.aoe+=/wrath,if=variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
+actions.aoe+=/starfire,if=!variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
 actions.aoe+=/stellar_flare,target_if=refreshable&(target.time_to_die-remains-target>7+spell_targets),if=spell_targets<(11-talent.umbral_intensity.rank-(2*talent.astral_smolder)-talent.lunar_calling)
-actions.aoe+=/force_of_nature,if=(talent.power_of_the_dream&talent.early_spring&talent.orbital_strike)|variable.eclipse_remains>=3
+actions.aoe+=/force_of_nature,if=cooldown.ca_inc.remains<gcd.max&(!talent.natures_grace|!variable.eclipse|variable.eclipse_remains>6)|variable.eclipse_remains>=3&cooldown.ca_inc.remains>10+15*talent.control_of_the_dream&(fight_remains>cooldown+5|cooldown.ca_inc.remains>fight_remains)
 actions.aoe+=/fury_of_elune,if=variable.eclipse
 actions.aoe+=/call_action_list,name=pre_cd
 actions.aoe+=/celestial_alignment,if=variable.cd_condition
@@ -65,12 +68,12 @@ actions.aoe+=/starfire,if=(!talent.lunar_calling&spell_targets.starfire=1)&(buff
 actions.aoe+=/starfall,if=buff.starweavers_warp.up|buff.touch_the_cosmos_starfall.up
 actions.aoe+=/starsurge,if=buff.starweavers_weft.up|buff.touch_the_cosmos_starsurge.up
 actions.aoe+=/starfall
-actions.aoe+=/starsurge,if=!talent.starfall&(spell_targets.starfire<6&buff.starlord.stack<3|spell_targets.starfire<3)
 actions.aoe+=/convoke_the_spirits,if=(!buff.dreamstate.up&!buff.umbral_embrace.up&spell_targets.starfire<7|spell_targets.starfire=1)&(fight_remains<5|(buff.ca_inc.up|cooldown.ca_inc.remains>40)&(!hero_tree.keeper_of_the_grove|buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>15))
 actions.aoe+=/new_moon
 actions.aoe+=/half_moon
 actions.aoe+=/full_moon
 actions.aoe+=/wild_mushroom
+actions.aoe+=/force_of_nature,if=!hero_tree.keeper_of_the_grove
 actions.aoe+=/starfire,if=talent.lunar_calling|buff.eclipse_lunar.up&spell_targets.starfire>1
 actions.aoe+=/wrath
 
@@ -81,7 +84,9 @@ actions.pre_cd+=/potion,if=variable.cd_condition
 actions.pre_cd+=/use_item,slot=trinket1,if=!trinket.1.is.spymasters_web&!trinket.1.is.imperfect_ascendancy_serum&!trinket.1.is.treacherous_transmitter&(variable.on_use_trinket=1|variable.on_use_trinket=3)&variable.cd_condition
 actions.pre_cd+=/use_item,slot=trinket2,if=!trinket.2.is.spymasters_web&!trinket.2.is.imperfect_ascendancy_serum&!trinket.2.is.treacherous_transmitter&variable.on_use_trinket=2&variable.cd_condition
 
-actions.st=sunfire,target_if=remains<3
+actions.st=wrath,if=variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
+actions.st+=/starfire,if=!variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
+actions.st+=/sunfire,target_if=remains<3
 actions.st+=/moonfire,target_if=remains<3&(!talent.treants_of_the_moon|cooldown.force_of_nature.remains>3&!buff.harmony_of_the_grove.up)
 actions.st+=/call_action_list,name=pre_cd
 actions.st+=/celestial_alignment,if=variable.cd_condition
