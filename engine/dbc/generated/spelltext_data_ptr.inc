@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.5.56865
-static const std::array<spelltext_data_t, 26525> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 26522> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -1291,7 +1291,6 @@ static const std::array<spelltext_data_t, 26525> __ptr_spelltext_data { {
   {  36482, "Increases Physical damage taken by the target by $s1% for $d. This effect stacks.", "Physical damage taken increased by $s1%.", 0 },
   {  36483, "Reduces damage taken by Fire and Shadow spells by $s1% for $D.", "Damage taken by Fire and Shadow spells reduced by $s1%.", 0 },
   {  36488, "Friendly targets of the caster's heals gain an effect that reduces the damage taken by Fire and Shadow spells by $36483s1% for $36483d.", 0, 0 },
-  {  36554, "Step through the shadows to appear behind your target and gain $s2% increased movement speed for $d.$?s137035|s137037[\r\n\r\nIf you already know $@spellname36554, instead gain $394931s1 additional $Lcharge:charges; of $@spellname36554.][]", "Movement speed increased by $s2%.", 0 },
   {  37173, "Your special attacks have a chance to give you $37174s1 critical strike for $37174d.", 0, 0 },
   {  37174, "You gain an additional $s1 critical strike.", "$s1 critical strike.", 0 },
   {  37197, "Each time you cast a spell, there is chance you will gain $37198s1 spell power.", 0, 0 },
@@ -4482,7 +4481,6 @@ static const std::array<spelltext_data_t, 26525> __ptr_spelltext_data { {
   { 138895, "Haste increased by $s1 for $d.", "Haste increased by $s1.", 0 },
   { 138896, "Your periodic damage spells have a chance to grant $138898s1 Intellect for $138898d.  (Approximately ${$procrppm}.2 procs per minute)", 0, 0 },
   { 138898, "Intellect increased by $s1 for $d.", "Intellect increased by $s1.", 0 },
-  { 138916, "$@spelldesc36554", 0, 0 },
   { 138924, "Your heals have a chance to grant the target a shield absorbing $140380s1 damage, lasting $140380d. (Approximately ${$procrppm}.2 procs per minute, ${$proccooldown} sec cooldown)", 0, 0 },
   { 138925, "Consumes all Blessings of Zuldazar to shield the target, absorbing $s1 damage per Blessing consumed.  Lasts $d.", "Absorbs $w1 damage.", 0 },
   { 138938, "Increases Agility by $s1 for $d.", "Increases Agility by $s1.", 0 },
@@ -13304,7 +13302,6 @@ static const std::array<spelltext_data_t, 26525> __ptr_spelltext_data { {
   { 305314, "$@spelldesc303133", 0, 0 },
   { 305315, "$@spelldesc303133", 0, 0 },
   { 305331, "$@spelldesc303133", 0, 0 },
-  { 305334, "$@spelldesc36554", "Movement speed increased by $2%.", 0 },
   { 305350, "$?a137008[$@spellname202727]?a137006[$@spellname305392]?a137007[$@spellname223829]?a212612[$@spellname235893]?a212613[$@spellname205625]?a137013[$@spellname236696]?a137011[$@spellname236696]?a137010[$@spellname202110]?a137012[$@spellname203399]?a137015[$@spellname236776]?a137016[$@spellname236776]?a137017[$@spellname236776]?a137021[$@spellname198062]?a137019[$@spellname198062]?a137020[$@spellname198062]?a137023[$@spellname202126]?a137024[$@spellname202424]?a137025[$@spellname287771][]", 0, "Azerite Essence" },
   { 305352, "$?a137029[$@spellname210294]?a137028[$@spellname199542]?a137027[$@spellname305394]?a137032[$@spellname196162]?a137031[$@spellname213610]?a137033[$@spellname108968]?a137037[$@spellname197000]?a137036[$@spellname197000]?a137035[$@spellname197000]?a137040[$@spellname305483]?a137041[$@spellname204366]?a137039[$@spellname290254]?a137043[$@spellname212371]?a137044[$@spellname212295]?a137046[$@spellname285933]?a137049[$@spellname198817]?a137050[$@spellname213857]?a137048[$@spellname199045][]", 0, "Azerite Essence" },
   { 305392, "Deals $204167s4 Frost damage to the target and reduces their movement speed by $204206m2% for $204206d.\r\n\r\nChill Streak bounces up to $m1 times between closest targets within $204165A1 yards.", 0, 0 },
