@@ -84,6 +84,7 @@ aoe->add_action( "starfire,if=(!talent.lunar_calling&spell_targets.starfire=1)&(
 aoe->add_action( "starfall,if=buff.starweavers_warp.up|buff.touch_the_cosmos_starfall.up" );
 aoe->add_action( "starsurge,if=buff.starweavers_weft.up|buff.touch_the_cosmos_starsurge.up" );
 aoe->add_action( "starfall" );
+aoe->add_action( "starsurge,if=!talent.starfall&(buff.starlord.stack<3&spell_targets.starfire<6|spell_targets.starfire<3)" );
 aoe->add_action( "convoke_the_spirits,if=(!buff.dreamstate.up&!buff.umbral_embrace.up&spell_targets.starfire<7|spell_targets.starfire=1)&(fight_remains<5|(buff.ca_inc.up|cooldown.ca_inc.remains>40)&(!hero_tree.keeper_of_the_grove|buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>15))" );
 aoe->add_action( "new_moon" );
 aoe->add_action( "half_moon" );
