@@ -96,7 +96,7 @@ Labels           : 16: Class Spells
                  : 2353
                  : 2865: Indiscriminate Carnage (385747 effect#1), Indiscriminate Carnage (385747 effect#2), Indiscriminate Carnage (385754 effect#1), Indiscriminate Carnage (385754 effect#2)
 Mechanic         : Bleed
-Affecting spells : Stealth (1784 effect#5), Vanish (11327 effect#5), Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Cloaked Step (138916 effect#2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Bloody Mess (381626 effect#1), Lethality (382238 effect#2), Shrouded Suffocation (385478 effect#1), Improved Garrote (392401 effect#3), Improved Garrote (392403 effect#3), Septic Wounds (394845 effect#1), Shiv (400789 effect#3), Sudden Demise (423136 effect#1), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Thrombotic Tincture (458476 effects: #1, #2), Master Assassin (470676 effect#1)
+Affecting spells : Stealth (1784 effect#5), Vanish (11327 effect#5), Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Bloody Mess (381626 effect#1), Lethality (382238 effect#2), Shrouded Suffocation (385478 effect#1), Improved Garrote (392401 effect#3), Improved Garrote (392403 effect#3), Septic Wounds (394845 effect#1), Shiv (400789 effect#3), Sudden Demise (423136 effect#1), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Thrombotic Tincture (458476 effects: #1, #2), Master Assassin (470676 effect#1)
 Family Flags     : 8, 54
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Requires Main-Hand Weapon (106), Spell Haste Affects Periodic (173), Do Not Chain To Crowd-Controlled Targets (200), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
                  :
@@ -346,7 +346,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Stance Mask      : 0x20000000
 Mechanic         : Stun
-Affecting spells : Dirty Tricks (108216 effect#1), Shadow Blades (121471 effect#2), Cloaked Step (138916 effect#2), Shadow Dance (185313 effect#6), Broadside (193356 effect#2), Shot in the Dark (257506 effect#1), Rushed Setup (341534 effect#1), Sepsis (347037 effect#1), Rushed Setup (378803 effect#1), Heavy Hitter (381885 effects: #1, #2), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2)
+Affecting spells : Dirty Tricks (108216 effect#1), Shadow Blades (121471 effect#2), Shadow Dance (185313 effect#6), Broadside (193356 effect#2), Shot in the Dark (257506 effect#1), Rushed Setup (341534 effect#1), Sepsis (347037 effect#1), Rushed Setup (378803 effect#1), Heavy Hitter (381885 effects: #1, #2), Deft Maneuvers (385835 effect#1), Danse Macabre (393969 effects: #1, #2)
 Family Flags     : 10
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Prevents Anim (50), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
                  :
@@ -905,7 +905,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Stance Mask      : 0x20000000
-Affecting spells : Garrote (703 effect#4), Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Blindside (121153 effects: #1, #2), Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2, #16, #17), Assassination Rogue (137037 effects: #1, #2, #20, #21), Cloaked Step (138916 effect#2), Shadow Dance (185313 effects: #4, #5), Shadow Dance (185422 effect#5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Sepsis (347037 effect#1), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Improved Ambush (381620 effect#1), Vicious Venoms (381634 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Audacity (386270 effect#1), Vicious Follow-Up (394879 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Deathstalker's Mark (457160 effect#1), Master Assassin (470676 effect#1)
+Affecting spells : Garrote (703 effect#4), Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Blindside (121153 effects: #1, #2), Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2, #16, #17), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Shadow Dance (185422 effect#5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Sepsis (347037 effect#1), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Improved Ambush (381620 effect#1), Vicious Venoms (381634 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Audacity (386270 effect#1), Vicious Follow-Up (394879 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Deathstalker's Mark (457160 effect#1), Master Assassin (470676 effect#1)
 Family Flags     : 9, 54
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Allow While Stealthed (37), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
                  :
@@ -1523,35 +1523,6 @@ Effects          :
 #2 (id=1078297)  : Apply Aura (6) | School Immunity (39)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
-
-Name             : Shadowstep (id=36554) [Spell Family (8)] 
-Class            : Rogue
-School           : Physical
-Spell Type       : None
-Spell Level      : 11
-Range            : 25 yards
-Duration         : 2 seconds
-Cooldown         : 1 seconds
-Charges          : 0 (30 seconds cooldown)
-Category         : 1206: Subtlety Rogue (137035 effect#5), Quick Decisions (341531 effect#3), Quick Decisions (382503 effect#3), Thrill Seeking (394931 effect#1), Shadowstep (394932 effect#1), Shadowstep (394935 effect#1), Death's Arrival (454433 effect#2), Death's Arrival (457333 effect#2)
-Labels           : 16: Class Spells
-                 : 20: Rogue Spells
-                 : 292
-Affecting spells : Quick Decisions (341531 effect#1), Quick Decisions (382503 effect#1)
-Family Flags     : 41
-Attributes       : Is Ability (4), Not Shapeshifted (16), No Immunities (29), Allow While Stealthed (37), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Not an Attack (194), Allow Class Ability Procs (416), Always Require PvP Target Match (430)
-                 :
-Effects          :
-#1 (id=26920)    : Trigger Spell (64): (36563)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 36563 | Target: Any Target (25)
-#2 (id=283909)   : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=337812)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: At Target (63)
-Description      : Step through the shadows to appear behind your target and gain $s2% increased movement speed for $d.$?s137035|s137037[
-
-If you already know $@spellname36554, instead gain $394931s1 additional $Lcharge:charges; of $@spellname36554.][]
-Tooltip          : Movement speed increased by $s2%.
 
 Name             : Cheated Death (id=45181) 
 Class            : Rogue
@@ -2874,7 +2845,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=191063)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
-                   Affected Spells (Category): Shadowstep (36554)
 #6 (id=260977)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Marked for Death (137619)
@@ -3054,25 +3024,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 140149 | Target: Self (1)
 Description      : Marks the target, instantly granting full combo points and increasing the damage of your finishing moves by $s1% for $d. Cooldown resets if the target dies during effect.
 Tooltip          : Marked for death, taking extra damage from @auracaster's finishing moves. Cooldown resets upon death.
-
-Name             : Cloaked Step (id=138916) [Spell Family (8)] 
-Class            : Rogue
-School           : Physical
-Spell Type       : None
-Spell Level      : 1
-Range            : 100 yards
-Duration         : 0.2 seconds
-Labels           : 16: Class Spells
-                 : 20: Rogue Spells
-                 : 292
-Attributes       : Is Ability (4), No Immunities (29), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Not an Attack (194), No Aura Log (202), Allow Class Ability Procs (416)
-                 :
-Effects          :
-#2 (id=277799)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Garrote (703), Cheap Shot (1833), Ambush (8676), Garrote (360830), Ambush (385897), Ambush (430023)
-                   Family Flags: 8, 9, 10
-Description      : $@spelldesc36554
 
 Name             : Marked for Death (id=140149) [Spell Family (8), Hidden] 
 Class            : Rogue
@@ -6134,24 +6085,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 302565 | Target: Self (1)
 Description      : $@spelldesc296963
 
-Name             : Shadowstep (id=305334) [Spell Family (8)] 
-Class            : Rogue
-School           : Physical
-Spell Type       : None
-Spell Level      : 1
-Range            : 100 yards
-Duration         : 2 seconds
-Labels           : 16: Class Spells
-                 : 20: Rogue Spells
-                 : 292
-Attributes       : Is Ability (4), No Immunities (29), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Not an Attack (194), Allow Class Ability Procs (416)
-                 :
-Effects          :
-#2 (id=782460)   : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc36554
-Tooltip          : Movement speed increased by $2%.
-
 Name             : Echoing Reprimand (desc=Kyrian) (id=312954) [Hidden] 
 Class            : Rogue
 School           : Physical
@@ -7770,14 +7703,13 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=841994)   : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Shadowstep (36554), Grappling Hook (195457)
+                   Affected Spells: Grappling Hook (195457)
                    Family Flags: 41, 102
 #2 (id=841995)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 2303 | Target: Self (1)
                    Affected Spells (Category): Grappling Hook (195457)
 #3 (id=869683)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
-                   Affected Spells (Category): Shadowstep (36554)
 Description      : $?s195457[Grappling Hook][Shadowstep]'s cooldown is reduced by $s2%, and its maximum range is increased by |cFFFFFFFF$s1%|r.
 
 Name             : Fade to Nothing (id=341532) [Spell Family (8), Passive, Hidden] 
@@ -8714,7 +8646,7 @@ Labels           : 16: Class Spells
                  : 1077
                  : 2352: Deathmark (394331 effect#1), Deathmark (394331 effect#2), Deathmark (394331 effect#3), Deathmark (394331 effect#4)
 Mechanic         : Bleed
-Affecting spells : Stealth (1784 effect#5), Vanish (11327 effect#5), Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Cloaked Step (138916 effect#2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Bloody Mess (381626 effect#1), Lethality (382238 effect#2), Shrouded Suffocation (385478 effect#1), Improved Garrote (392401 effect#3), Improved Garrote (392403 effect#3), Septic Wounds (394845 effect#1), Shiv (400789 effect#3), Sudden Demise (423136 effect#1), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Thrombotic Tincture (458476 effects: #1, #2), Master Assassin (470676 effect#1)
+Affecting spells : Stealth (1784 effect#5), Vanish (11327 effect#5), Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Shiv (319504 effect#3), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Deadly Precision (381542 effect#1), Bloody Mess (381626 effect#1), Lethality (382238 effect#2), Shrouded Suffocation (385478 effect#1), Improved Garrote (392401 effect#3), Improved Garrote (392403 effect#3), Septic Wounds (394845 effect#1), Shiv (400789 effect#3), Sudden Demise (423136 effect#1), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Thrombotic Tincture (458476 effects: #1, #2), Master Assassin (470676 effect#1)
 Family Flags     : 8, 54
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Allow While Stealthed (37), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Requires Main-Hand Weapon (106), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
                  :
@@ -10078,13 +10010,12 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1013869)  : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Shadowstep (36554), Grappling Hook (195457)
+                   Affected Spells: Grappling Hook (195457)
                    Family Flags: 41, 102
 #2 (id=1013870)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=1013871)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
-                   Affected Spells (Category): Shadowstep (36554)
 Description      : Shadowstep's cooldown is reduced by $s3%, and its maximum range is increased by $s1%.
 
 Name             : Dark Brew (id=382504) [Spell Family (8), Passive] 
@@ -10776,7 +10707,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Affecting spells : Garrote (703 effect#4), Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Blindside (121153 effects: #1, #2), Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2, #16, #17), Assassination Rogue (137037 effects: #1, #2, #20, #21), Cloaked Step (138916 effect#2), Shadow Dance (185313 effects: #4, #5), Shadow Dance (185422 effect#5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Sepsis (347037 effect#1), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Improved Ambush (381620 effect#1), Vicious Venoms (381634 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Audacity (386270 effect#1), Vicious Follow-Up (394879 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Deathstalker's Mark (457160 effect#1), Master Assassin (470676 effect#1)
+Affecting spells : Garrote (703 effect#4), Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Blindside (121153 effects: #1, #2), Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2, #16, #17), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Shadow Dance (185422 effect#5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Sepsis (347037 effect#1), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Improved Ambush (381620 effect#1), Vicious Venoms (381634 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Audacity (386270 effect#1), Vicious Follow-Up (394879 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Deathstalker's Mark (457160 effect#1), Master Assassin (470676 effect#1)
 Family Flags     : 9, 54
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Caster Aura Icon (187), No Aura Log (202), Allow Class Ability Procs (416)
                  :
@@ -11906,20 +11837,20 @@ Effects          :
                    Affected Spells (Category): Shadow Dance (185313)
 Description      : Shadow Dance has $s1 additional charge.
 
-Name             : Thrill Seeking (id=394931) [Spell Family (8), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0, override="Shadowstep" (id=36554)]
+Name             : Thrill Seeking (id=394931) [Spell Family (8), Passive] 
+Hotfixed         : Attributes
+Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1034994)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
-                   Affected Spells (Category): Shadowstep (36554)
 #2 (id=1184073)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 2303 | Target: Self (1)
                    Affected Spells (Category): Grappling Hook (195457)
@@ -11938,7 +11869,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1034995)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
-                   Affected Spells (Category): Shadowstep (36554)
 
 Name             : Shadowstep (id=394935) [Spell Family (8), Passive, Hidden] 
 Class            : Subtlety Rogue
@@ -11953,7 +11883,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1034999)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
-                   Affected Spells (Category): Shadowstep (36554)
 
 Name             : Lightweight Shiv (id=394983) [Spell Family (8), Passive] 
 Talent Entry     : Assassination [tree=spec, row=5, col=2, max_rank=1, req_points=8]
@@ -13447,7 +13376,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Stance Mask      : 0x20000000
-Affecting spells : Garrote (703 effect#4), Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Blindside (121153 effects: #1, #2), Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2, #16, #17), Assassination Rogue (137037 effects: #1, #2, #20, #21), Cloaked Step (138916 effect#2), Shadow Dance (185313 effects: #4, #5), Shadow Dance (185422 effect#5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Sepsis (347037 effect#1), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Improved Ambush (381620 effect#1), Vicious Venoms (381634 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Audacity (386270 effect#1), Vicious Follow-Up (394879 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Deathstalker's Mark (457160 effect#1), Master Assassin (470676 effect#1)
+Affecting spells : Garrote (703 effect#4), Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Blindside (121153 effects: #1, #2), Shadow Blades (121471 effect#2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2, #16, #17), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Shadow Dance (185422 effect#5), Broadside (193356 effects: #2, #4), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Sepsis (347037 effect#1), Deathly Shadows (350964 effects: #1, #2), Deadly Precision (381542 effect#1), Improved Ambush (381620 effect#1), Vicious Venoms (381634 effect#2), Heavy Hitter (381885 effects: #1, #2), Lethality (382238 effect#2), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Audacity (386270 effect#1), Vicious Follow-Up (394879 effect#1), Fazed (441224 effects: #1, #4), Fatebound Coin (Heads) (452923 effects: #1, #2), Deathstalker's Mark (457160 effect#1), Master Assassin (470676 effect#1)
 Family Flags     : 9, 54
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
                  :
@@ -14628,7 +14557,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1179470)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 2.00000 | Misc Value: 1206 | Target: Self (1)
-                   Affected Spells (Category): Shadowstep (36554)
 #3 (id=1179471)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 2.00000 | Misc Value: 2303 | Target: Self (1)
                    Affected Spells (Category): Grappling Hook (195457)
@@ -15423,7 +15351,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
 #2 (id=1162288)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1206 | Target: Self (1)
-                   Affected Spells (Category): Shadowstep (36554)
 Description      : $@spelldesc454433
 Tooltip          : Able to Shadowstep an additional time.
 
