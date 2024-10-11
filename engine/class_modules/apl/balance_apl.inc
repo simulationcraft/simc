@@ -38,10 +38,12 @@ def->add_action( "warrior_of_elune,if=talent.lunar_calling|!talent.lunar_calling
 def->add_action( "run_action_list,name=aoe,if=spell_targets>1" );
 def->add_action( "run_action_list,name=st" );
 
-st->add_action( "wrath,if=variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)" );
-st->add_action( "starfire,if=!variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)" );
+st->add_action( "wrath,if=variable.enter_lunar&variable.eclipse&variable.eclipse_remains<cast_time" );
+st->add_action( "starfire,if=!variable.enter_lunar&variable.eclipse&variable.eclipse_remains<cast_time" );
 st->add_action( "sunfire,target_if=remains<3" );
 st->add_action( "moonfire,target_if=remains<3&(!talent.treants_of_the_moon|cooldown.force_of_nature.remains>3&!buff.harmony_of_the_grove.up)" );
+st->add_action( "wrath,if=variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)" );
+st->add_action( "starfire,if=!variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)" );
 st->add_action( "call_action_list,name=pre_cd" );
 st->add_action( "celestial_alignment,if=variable.cd_condition" );
 st->add_action( "incarnation,if=variable.cd_condition" );
