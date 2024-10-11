@@ -431,6 +431,7 @@ Usable against Humanoids, Demons, Undead, Dragonkin, and Giants.
 Tooltip          : Incapacitated.
 
 Name             : Judgment (id=20271) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -450,7 +451,7 @@ Labels           : 16: Class Spells
                  : 2580
 Affecting spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2, #4, #11), Protection Paladin (137028 effects: #1, #2, #5, #11), Holy Paladin (137029 effects: #4, #9, #10, #31), Avenging Crusader (216331 effect#1), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Divine Toll (326011 effect#1), Judgment (327977 effect#1), Blessing of Dawn (337747 effects: #1, #2), Divine Toll (375609 effect#1), Radiant Decree (383469 effect#3), Blessing of Dusk (385126 effect#3), Divine Glimpse (387805 effect#1), Sentinel (389539 effects: #1, #2, #3), Zealot's Paragon (391142 effect#3), Paladin Retribution Class Set 2pc (393675 effects: #1, #2), Luminous Force (394550 effect#1), Judgment of Justice (403495 effect#2), Blades of Light (403664 effects: #1, #2), Paladin Retribution 10.1 Class Set 2pc (405549 effects: #1, #2), Adjudication (406157 effect#1), Retribution Paladin (412314 effects: #14, #15), Awakening (414193 effects: #1, #2), Initial Paladin (417383 effects: #1, #2), Holy Paladin (428076 effect#19), Highlord's Judgment (449198 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Truth Prevails (461273 effect#1), Liberation (461471 effect#1)
 Family Flags     : 23, 27, 65
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Active Threat (94), Always AOE Line of Sight (186), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Active Threat (94), Always Line of Sight (185), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=11347)    : School Damage (2): holy | Attributes: Chain from Initial Target (7), Enforce Line of Sight To Chain Targets (16)
@@ -4889,7 +4890,7 @@ Effects          :
                    Family Flags: 82, 92
 #3 (id=318061)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
-#4 (id=340875)   : Apply Aura (6) | Unknown(188)
+#4 (id=340875)   : Apply Aura (6) | Modify UI UnitInRange (188)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increase the range of your heals by $s1% for $d.
 Tooltip          : Range of heals increased by $s1%.
@@ -14568,6 +14569,7 @@ Description      : $@spelldesc404306
 Tooltip          : Building up Divine strength, at 25 stacks your next single target Holy Power ability causes ${$406983s1/25} Holystrike damage to your primary target and ${$406983s2/25} Holystrike damage to enemies within 8 yds.
 
 Name             : Divine Arbiter (id=406983) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holystrike
 Spell Type       : Melee
@@ -14579,7 +14581,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Affecting spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 27, 65
-Attributes       : Can't Crit (93), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
+Attributes       : Can't Crit (93), Can Proc From Procs (122), Not In Spellbook (143), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=1070163)  : School Damage (2): holystrike
