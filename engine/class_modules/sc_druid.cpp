@@ -1553,12 +1553,8 @@ struct force_of_nature_t final : public treant_base_t
   force_of_nature_t( druid_t* p ) : treant_base_t( p )
   {
     // Treants have base weapon damage + ap from player's sp.
-    // TODO: confirm this
-    owner_coeff.ap_from_sp = 0.935;
-
-    double base_dps = o()->dbc->expected_stat( o()->true_level ).creature_auto_attack_dps;
-
-    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = base_dps * main_hand_weapon.swing_time.total_seconds() / 1000;
+    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = 9.6;
+    owner_coeff.ap_from_sp = 0.96;
 
     resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST;
