@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.5.56865
-static const std::array<spelltext_data_t, 26518> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 26524> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26165,6 +26165,7 @@ static const std::array<spelltext_data_t, 26518> __ptr_spelltext_data { {
   { 462479, "$@spelldesc462454", 0, 0 },
   { 462486, "Casting $?a455630[Surging Totem][Healing Rain] has a $s1% chance to activate Downpour, allowing you to cast Downpour within $462488d.\r\n\r\n$@spellicon207778 $@spellname207778\r\n$@spelldesc207778", 0, 0 },
   { 462488, "$@spelldesc462486", "Downpour can be cast!", 0 },
+  { 462513, "The Severed Threads lend you their aid, increasing your damage dealt & healing done while inside Nerub-ar Palace by $s1%.", "Damage dealt increased by $s1%.\r\nHealing and absorption effects increased by $s2%.", 0 },
   { 462515, "$@spelldesc445707", "Critical damage dealt increased by $s1%.", 0 },
   { 462568, "$@spelldesc462368", "Fire, Frost, and Nature damage taken reduced by $w1%.", 0 },
   { 462576, "Something skitters in the corner of your eyes. Everywhere.", "Something skitters in the corner of your eyes. Everywhere.", 0 },
@@ -26421,6 +26422,11 @@ static const std::array<spelltext_data_t, 26518> __ptr_spelltext_data { {
   { 469883, "$@spelldesc469882", 0, 0 },
   { 469886, "Successfully interrupting an enemy spellcast reduces your Rebuke's cooldown by ${$s1/1000}.1 sec. Effect increased by $s2% while wielding a Holy Armament.", 0, 0 },
   { 469915, "The gearbox is Wound each time you cause a critical strike.  When Wound $s1 times, unleash a Torrent of Flames dealing ${$<rolemult>*$s2} Fire damage. The gearbox cannot be Wound more than once every 2.5 sec.", 0, 0 },
+  { 469917, "Wind the Golem Gearbox.  When Wound $469915s1  times, release a Torent of Flames dealing $469915s2 Fire damage.", "When wound 3 times release a Torrent of Flames.", 0 },
+  { 469918, "Deals $469915s2 Fire damage.", 0, 0 },
+  { 469919, "$@spelldesc469918", 0, 0 },
+  { 469920, "$@spelldesc469918", 0, 0 },
+  { 469921, "$@spelldesc469918", 0, 0 },
   { 469922, "Your spells have a chance to call on Dope'rel to Backstab your target dealing ${$<rolemult>*$s1} Physical damage.", 0, 0 },
   { 469924, "$@spelldesc469922", 0, 0 },
   { 469925, "Each spell cast within 20 seconds will grant a stacking bonus of $469926s1 Intellect up to $469926u stacks. Expires after $d. Abilities with no mana cost will not trigger this trinket.", "Chance to gain Intellect.", 0 },

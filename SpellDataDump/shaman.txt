@@ -14439,7 +14439,8 @@ Attributes       : Aura Points On Client (268)
                  :
 Effects          :
 #1 (id=1074183)  : Apply Aura (6) | Modify Healing% Done (136)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : $@spelldesc405570
 Tooltip          : Healing done increased by $w1%.
 

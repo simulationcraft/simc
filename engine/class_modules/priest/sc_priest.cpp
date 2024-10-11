@@ -1797,6 +1797,28 @@ struct entropic_rift_damage_t final : public priest_spell_t
     affected_by_shadow_weaving = true;
   }
 
+  double miss_chance( double hit, player_t* t ) const override
+  {
+    double m = priest_spell_t::miss_chance( hit, t );
+
+    if ( priest().options.entropic_rift_miss_percent > 0.0 )
+    {
+      // Double miss_percent when fighting more than 2 targets
+      double miss_percent = priest().options.entropic_rift_miss_percent;
+      if ( target_list().size() > 2 )
+      {
+        miss_percent = miss_percent * 2;
+      }
+
+      sim->print_debug( "entropic_rift_damage sets miss_chance to {} with target count: {}", miss_percent,
+                        target_list().size() );
+
+      m = miss_percent;
+    }
+
+    return m;
+  }
+
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = priest_spell_t::composite_da_multiplier( s );
@@ -2895,6 +2917,91 @@ std::unique_ptr<expr_t> priest_t::create_expression( util::string_view expressio
         else
           return expr_t::create_constant( "cthun_last_trigger_attempt", -1 );
       }
+      
+      if ( util::str_compare_ci( splits[ 1 ], "next_tick_si_proc_chance" ) )
+      {
+        if ( talents.shadow.shadowy_insight.enabled() )
+        {
+          return make_fn_expr( "next_tick_si_proc_chance", [ this ] {
+            double proc_chance = std::max( threshold_rng.shadowy_insight->get_accumulated_chance() +
+                                               threshold_rng.shadowy_insight->get_increment_max() - 1.0,
+                                           0.0 ) /
+                                 threshold_rng.shadowy_insight->get_increment_max();
+
+            return proc_chance;
+          } );
+        }
+        else
+        {
+          return expr_t::create_constant( "next_tick_si_proc_chance", 0 );
+        }
+      }
+
+      if ( util::str_compare_ci( splits[ 1 ], "avg_time_until_si_proc" ) )
+      {
+        if ( talents.shadow.shadowy_insight.enabled() )
+        {
+          return make_fn_expr( "avg_time_until_si_proc", [ this ] {
+
+            auto td           = get_target_data( target );
+            dot_t* swp        = td->dots.shadow_word_pain;
+
+            double active_swp = get_active_dots( swp );
+
+            if ( active_swp == 0 || !swp->current_action )
+            {
+              return std::numeric_limits<double>::infinity();
+            }
+
+            action_state_t* swp_state = swp->current_action->get_state( swp->state );
+            double dot_tick_time      = ( swp->current_action->tick_time( swp_state ) ).total_seconds();
+
+            double time_til_next_proc = ( 1 - threshold_rng.shadowy_insight->get_accumulated_chance() ) /
+                                        threshold_rng.shadowy_insight->get_increment_max() * 2 * dot_tick_time;
+
+            action_state_t::release( swp_state );
+
+            return time_til_next_proc;
+          } );
+        }
+        else
+        {
+          return expr_t::create_constant( "avg_time_until_si_proc", std::numeric_limits<double>::infinity() );
+        }
+      }
+
+      if ( util::str_compare_ci( splits[ 1 ], "min_time_until_si_proc" ) )
+      {
+        if ( talents.shadow.shadowy_insight.enabled() )
+        {
+          return make_fn_expr( "min_time_until_si_proc", [ this ] {
+            auto td    = get_target_data( target );
+            dot_t* swp = td->dots.shadow_word_pain;
+
+            double active_swp = get_active_dots( swp );
+
+            if ( active_swp == 0 || !swp->current_action )
+            {
+              return std::numeric_limits<double>::infinity();
+            }
+
+            action_state_t* swp_state = swp->current_action->get_state( swp->state );
+            double dot_tick_time      = ( swp->current_action->tick_time( swp_state ) ).total_seconds();
+
+            double time_til_next_proc = ( 1 - threshold_rng.shadowy_insight->get_accumulated_chance() ) /
+                                        threshold_rng.shadowy_insight->get_increment_max() * dot_tick_time;
+
+            action_state_t::release( swp_state );
+
+            return time_til_next_proc;
+          } );
+        }
+        else
+        {
+          return expr_t::create_constant( "min_time_until_si_proc", std::numeric_limits<double>::infinity() );
+        }
+      }
+
       throw std::invalid_argument( fmt::format( "Unsupported priest expression '{}'.", splits[ 1 ] ) );
     }
   }
@@ -3582,7 +3689,7 @@ void priest_t::create_buffs()
           // time.
           // TODO: Check if this works fine on secondary targets, if so, rewrite this to have state passing to allow it
           // to miss the main target.
-          if ( b->current_tick >= 2 && rng().roll( 1.0 - options.entropic_rift_miss_percent ) )
+          if ( b->current_tick >= 2 )
           {
             background_actions.entropic_rift_damage->execute_on_target( state.last_entropic_rift_target );
           }
@@ -3975,6 +4082,7 @@ void priest_t::create_options()
   add_option( opt_float( "priest.entropic_rift_miss_percent", options.entropic_rift_miss_percent, 0.0, 1.0 ) );
   add_option(
       opt_float( "priest.crystalline_reflection_damage_mult", options.crystalline_reflection_damage_mult, 0.0, 1.0 ) );
+  add_option( opt_bool( "priest.no_channel_macro_mfi", options.no_channel_macro_mfi ) );
 }
 
 std::string priest_t::create_profile( save_e type )
@@ -4225,6 +4333,66 @@ struct priest_module_t final : public module_t
   }
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Priest", "2024-10-04", "Mind Blast damage increased by 10%", 3283,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "sp_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0.861696 )
+        .verification_value( 0.78336 );
+    hotfix::register_effect( "Priest", "2024-10-04", "Shadow Word: Death damage increased by 10%", 165318,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "sp_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0.935 )
+        .verification_value( 0.85000 );
+    hotfix::register_effect( "Priest", "2024-10-04", "Void Bolt damage increased by 10%", 303383,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "sp_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 3.509748 )
+        .verification_value( 3.19068 );
+    hotfix::register_effect( "Priest", "2024-10-04", "Shadowy Apparition damage increased by 10%", 1081317,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "sp_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0.2959616 )
+        .verification_value( 0.269056 );
+    hotfix::register_effect( "Priest", "2024-10-04", "Entropic Rift damage increased by 10%", 1145412,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "sp_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 0.66 )
+        .verification_value( 0.60000 );
+    hotfix::register_effect( "Priest", "2024-10-04", "Void Blast damage increased by 20%", 1151263,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "sp_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 2.016 )
+        .verification_value( 1.68000 );
+    hotfix::register_effect( "Priest", "2024-10-04", "Collapsing Void damage increased by 10%", 1146867,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "sp_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 4.84 )
+        .verification_value( 4.40000 );
+    hotfix::register_effect( "Priest", "2024-10-04", "Void Flay damage increased by 10%", 1152036,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "sp_coefficient" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 1.1 )
+        .verification_value( 1.00000 );
+    hotfix::register_effect( "Priest", "2024-10-04", "Inner Quietus Direct Damage changed to 25%", 1146665,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 25 )
+        .verification_value( 20 );
+    hotfix::register_effect( "Priest", "2024-10-04", "Inner Quietus Periodic Damage changed to 25%", 1158795,
+                             hotfix::HOTFIX_FLAG_LIVE )
+        .field( "base_value" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 25 )
+        .verification_value( 20 );
   }
   void combat_begin( sim_t* ) const override
   {

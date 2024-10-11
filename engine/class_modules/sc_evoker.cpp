@@ -1967,7 +1967,7 @@ public:
   {
     ab::init();
 
-    if ( p()->specialization() == EVOKER_AUGMENTATION )
+    if ( p()->specialization() == EVOKER_AUGMENTATION && p()->talent.time_skip.ok() )
     {
       auto time_skip = static_cast<buffs::time_skip_t*>( p()->buff.time_skip.get() );
       if ( p()->find_spelleffect( &time_skip->data(), A_MAX, 0, &ab::data() )->ok() )
@@ -4034,7 +4034,7 @@ struct deep_breath_t : public evoker_spell_t
         add_child( melt_armor_dot );
       }
 
-      if ( p->specialization() == EVOKER_AUGMENTATION )
+      if ( p->specialization() == EVOKER_AUGMENTATION && p->talent.ebon_might.ok() )
         ebon = p->get_secondary_action<ebon_might_t>(
             "ebon_might_deep_breath", p->talent.sands_of_time->effectN( 3 ).time_value(), "ebon_might_deep_breath" );
     }
@@ -5273,23 +5273,24 @@ struct eruption_t : public essence_spell_t
           ->buffs.blistering_scales->bump( as<int>( p()->talent.regenerative_chitin->effectN( 3 ).base_value() ) );
     }
 
-    if ( p()->talent.scalecommander.mass_eruption.enabled() && p()->buff.mass_eruption_stacks->check() && execute_state )
-    {
-      int eruptions = 1;
-      for ( auto potential_target : target_list() )
-      {
-        if ( potential_target == execute_state->target )
-          continue;
-
-        mass_eruption->execute_on_target( potential_target );
-
-        if ( ++eruptions >= mass_eruption_max_targets )
-          break;
-      }
-    }
-
     if ( !is_overlord )
     {
+      if ( p()->talent.scalecommander.mass_eruption.enabled() && p()->buff.mass_eruption_stacks->check() &&
+           execute_state )
+      {
+        int eruptions = 1;
+        for ( auto potential_target : target_list() )
+        {
+          if ( potential_target == execute_state->target )
+            continue;
+
+          mass_eruption->execute_on_target( potential_target );
+
+          if ( ++eruptions >= mass_eruption_max_targets )
+            break;
+        }
+      }
+
       p()->buff.volcanic_upsurge->decrement();
       p()->buff.mass_eruption_stacks->decrement();
     }

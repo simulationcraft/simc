@@ -6439,8 +6439,7 @@ public:
 struct undeath_dot_t final : public death_knight_spell_t
 {
   undeath_dot_t( std::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->pet_spell.undeath_dot ),
-      sqrt_targets( p->pet_spell.undeath_dot->effectN( 2 ).base_value() )
+    : death_knight_spell_t( name, p, p->pet_spell.undeath_dot )
   {
     background = true;
     may_miss = may_dodge = may_parry = false;
@@ -6451,11 +6450,14 @@ struct undeath_dot_t final : public death_knight_spell_t
   {
     death_knight_spell_t::tick( d );
     auto td = p()->get_target_data( d->target );
-    td->dot.undeath->increment( 1 );
-  }
+    auto cd = p()->cooldown.undeath_spread->get_cooldown( d->target );
 
-private:
-  double sqrt_targets;
+    if ( !cd->down() )
+    {
+      td->dot.undeath->increment( 1 );
+      cd->start();
+    }
+  }
 };
 
 struct trollbanes_icy_fury_t final : public death_knight_spell_t
@@ -12041,9 +12043,7 @@ void death_knight_t::summon_rider( timespan_t duration, bool random )
 {
   int n = 0;
   if ( random )
-  {
     n = get_random_rider();
-  }
   else
     n = rider_of_the_apocalypse::ALL_RIDERS;
 
@@ -12110,34 +12110,37 @@ void death_knight_t::sort_undeath_targets( std::vector<player_t*> tl )
 void death_knight_t::trigger_whitemanes_famine( player_t* main_target )
 {
   auto td = get_target_data( main_target );
-  td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
   auto cd = cooldown.undeath_spread->get_cooldown( main_target );
 
-  if ( !cd->down() && sim->target_non_sleeping_list.size() > 1 )
+  if ( !cd->down() )
   {
-    std::vector<player_t*> tl = undeath_tl;
-    auto it                   = range::find( tl, main_target );
-    if ( it != tl.end() )
-    {
-      tl.erase( it );
-    }
-
-    player_t* undeath_target = tl[ 0 ];
-
-    auto undeath_td = get_target_data( undeath_target );
-
-    if ( undeath_td->dot.undeath->is_ticking() )
-    {
-      undeath_td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
-    }
-    else
-    {
-      td->dot.undeath->copy( undeath_target, DOT_COPY_CLONE );
-    }
-
+    td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
     cd->start();
 
-    std::rotate( undeath_tl.begin(), undeath_tl.begin() + 1, undeath_tl.end() );
+    if ( sim->target_non_sleeping_list.size() > 1 )
+    {
+      std::vector<player_t*> tl = undeath_tl;
+      auto it                   = range::find( tl, main_target );
+      if ( it != tl.end() )
+      {
+        tl.erase( it );
+      }
+
+      player_t* undeath_target = tl[ 0 ];
+
+      auto undeath_td = get_target_data( undeath_target );
+
+      if ( undeath_td->dot.undeath->is_ticking() )
+      {
+        undeath_td->dot.undeath->increment( as<int>( pet_spell.undeath_dot->effectN( 3 ).base_value() ) );
+      }
+      else
+      {
+        td->dot.undeath->copy( undeath_target, DOT_COPY_CLONE );
+      }
+
+      std::rotate( undeath_tl.begin(), undeath_tl.begin() + 1, undeath_tl.end() );
+    }
   }
 }
 

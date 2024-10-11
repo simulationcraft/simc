@@ -4835,6 +4835,106 @@ void kaheti_shadeweavers_emblem( special_effect_t& effect )
   effect.execute_action = create_proc_action<kaheti_shadeweavers_emblem_t>( "kaheti_shadeweavers_emblem", effect );
 }
 
+// 469927 driver
+// 469928 damage
+// TODO: confirm if rolemult gets implemented in-game
+void hand_of_justice( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto damage = create_proc_action<generic_proc_t>( "quick_strike", effect, 469928 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  // TODO: currently not implemented in-game
+  // damage->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 469915 driver
+//  e1: counter threshold
+//  e2: damage coeff
+// 469917 counter
+// 469918 unknown
+// 469919 missile, trigger damage
+// 469920 damage
+//  e1: damage coeff (unused?)
+void golem_gearbox( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 469917 ) )
+    ->set_max_stack( as<int>( effect.driver()->effectN( 1 ).base_value() ) );
+
+  auto missile = create_proc_action<generic_proc_t>( "torrent_of_flames", effect, 469919 );
+  auto damage =
+    create_proc_action<generic_proc_t>( "torrent_of_flames_damage", effect, missile->data().effectN( 1 ).trigger() );
+  damage->dual = damage->background = true;
+  // TODO: confirm driver coeff is used and not damage spell coeff
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
+  // TODO: currently not implemented in-game
+  // damage->base_multiplier *= role_mult( effect );
+
+  missile->impact_action = damage;
+  // use missile stat obj and remove unused damage stats obj
+  range::erase_remove( effect.player->stats_list, damage->stats );
+  delete damage->stats;
+  damage->stats = missile->stats;
+
+  effect.proc_flags2_ = PF2_CRIT;
+  effect.custom_buff = counter;
+  effect.execute_action = missile;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 469922 driver, trigger damage
+// 469924 damage
+void doperels_calling_rune( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto damage = create_proc_action<generic_proc_t>( "ghostly_ambush", effect, effect.trigger() );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  // TODO: currently not implemented in-game
+  // damage->base_multiplier *= role_mult( effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 469925 on-use, buff, driver, trigger int buff
+// 469925 int buff
+// TODO: determine what can and cannot proc the int buff. mana cost does not seem to be a determining factor, as it will
+// proc from harmful actions with no mana or resource cost, and buffs that reduce resource cost to 0 still allow the
+// ability to proc the int buff. on the other hand, some mana cost non-harmful spell will not proc.
+void burst_of_knowledge( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto int_buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item );
+
+  auto buff = create_buff<buff_t>( effect.player, effect.driver() )
+    ->set_cooldown( 0_ms );
+
+  effect.has_use_buff_override = true;
+  effect.custom_buff = buff;
+
+  auto on_use_cb = new special_effect_t( effect.player );
+  on_use_cb->name_str = effect.name() + "_cb";
+  on_use_cb->spell_id = effect.driver()->id();
+  on_use_cb->cooldown_ = 0_ms;
+  on_use_cb->custom_buff = int_buff;
+  effect.player->special_effects.push_back( on_use_cb );
+
+  auto cb = new dbc_proc_callback_t( effect.player, *on_use_cb );
+  cb->activate_with_buff( buff );
+}
+
 // Weapons
 // 443384 driver
 // 443585 damage
@@ -5773,6 +5873,10 @@ void register_special_effects()
   register_special_effect( 442429, items::wildfire_wick );
   register_special_effect( 455467, items::kaheti_shadeweavers_emblem, true );
   register_special_effect( 455452, DISABLED_EFFECT );  // kaheti shadeweaver's emblem
+  register_special_effect( 469927, items::hand_of_justice );
+  register_special_effect( 469915, items::golem_gearbox );
+  register_special_effect( 469922, items::doperels_calling_rune );
+  register_special_effect( 469925, items::burst_of_knowledge );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );
