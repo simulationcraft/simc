@@ -8689,12 +8689,6 @@ struct ascendance_t : public shaman_spell_t
       p()->buff.ascendance->trigger();
     }
 
-    if ( ascendance_damage )
-    {
-      ascendance_damage->set_target( target );
-      ascendance_damage->execute();
-    }
-
     // Refresh Flame Shock to max duration
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
