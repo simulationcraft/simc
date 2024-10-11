@@ -1569,14 +1569,9 @@ struct force_of_nature_t final : public treant_base_t
   {
     pet_t::init_base_stats();
 
-    // TODO: confirm these values
-    resources.base[ RESOURCE_HEALTH ] = owner->resources.max[ RESOURCE_HEALTH ] * 0.4;
-    resources.base[ RESOURCE_MANA ]   = 0;
-
-    initial.stats.attribute[ ATTR_INTELLECT ] = 0;
-    initial.spell_power_per_intellect         = 0;
-    intellect_per_owner                       = 0;
-    stamina_per_owner                         = 0;
+    resources.base[ RESOURCE_HEALTH ] =
+      owner->resources.max[ RESOURCE_HEALTH ] * 0.6 *
+      ( 1.0 + find_effect( o()->talent.durability_of_nature, A_MOD_PET_STAT ).percent() );
   }
 
   resource_e primary_resource() const override { return RESOURCE_NONE; }
