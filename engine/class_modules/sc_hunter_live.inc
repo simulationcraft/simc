@@ -1,17 +1,3 @@
-//==========================================================================
-// Dedmonwakeen's DPS-DPM Simulator.
-// Send questions to natehieter@gmail.com
-// ==========================================================================
-
-#include <memory>
-
-#include "simulationcraft.hpp"
-#include "player/pet_spawner.hpp"
-#include "class_modules/apl/apl_hunter.hpp"
-
-namespace
-{ // UNNAMED NAMESPACE
-
 // helper smartpointer-like struct for spell data pointers
 struct spell_data_ptr_t
 {
@@ -8936,56 +8922,3 @@ public:
 private:
   hunter_t& p;
 };
-
-namespace live_hunter {
-#include "class_modules/sc_hunter_live.inc"
-};
-
-// HUNTER MODULE INTERFACE ==================================================
-
-struct hunter_module_t: public module_t
-{
-  hunter_module_t(): module_t( HUNTER ) {}
-
-  player_t* create_player( sim_t* sim, util::string_view name, race_e r = RACE_NONE ) const override
-  {
-    // TODO: Remove PTR check and the live hunter file
-    if ( sim->dbc->ptr )
-    {
-      auto  p = new hunter_t( sim, name, r );
-      p -> report_extension = std::unique_ptr<player_report_extension_t>( new hunter_report_t( *p ) );
-      return p;
-    }
-    else
-    {
-      auto  p = new live_hunter::hunter_t( sim, name, r );
-      p -> report_extension = std::unique_ptr<player_report_extension_t>( new live_hunter::hunter_report_t( *p ) );
-      return p;
-    }
-  }
-
-  bool valid() const override { return true; }
-
-  void static_init() const override
-  {
-  }
-
-  void init( player_t* ) const override
-  {
-  }
-
-  void register_hotfixes() const override
-  {
-  }
-
-  void combat_begin( sim_t* ) const override {}
-  void combat_end( sim_t* ) const override {}
-};
-
-} // UNNAMED NAMESPACE
-
-const module_t* module_t::hunter()
-{
-  static hunter_module_t m;
-  return &m;
-}
