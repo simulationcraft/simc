@@ -1245,6 +1245,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 379, "Modify Mana Regen%"                                },
   { 380, "Modify Damage Taken% from Caster Guardian"         },
   { 381, "Modify Damage Taken% from Caster Pet"              },
+  { 382, "Modify Pet Stat"                                   },
   { 383, "Ignore Spell Cooldown"                             },
   { 399, "Modify Time Rate"                                  },
   { 404, "Override Attack Power per Spell Power%"            },
@@ -1708,7 +1709,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     {
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d (Label)", e->misc_value2() );
     }
-    else if ( e->subtype() == A_SCHOOL_ABSORB )
+    else if ( e->subtype() == A_SCHOOL_ABSORB || e->subtype() == A_MOD_PET_STAT )
     {
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d", e->misc_value2() );
     }

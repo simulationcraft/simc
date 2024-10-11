@@ -85,10 +85,12 @@ actions.pre_cd+=/potion,if=variable.cd_condition
 actions.pre_cd+=/use_item,slot=trinket1,if=!trinket.1.is.spymasters_web&!trinket.1.is.imperfect_ascendancy_serum&!trinket.1.is.treacherous_transmitter&(variable.on_use_trinket=1|variable.on_use_trinket=3)&variable.cd_condition
 actions.pre_cd+=/use_item,slot=trinket2,if=!trinket.2.is.spymasters_web&!trinket.2.is.imperfect_ascendancy_serum&!trinket.2.is.treacherous_transmitter&variable.on_use_trinket=2&variable.cd_condition
 
-actions.st=wrath,if=variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
-actions.st+=/starfire,if=!variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
+actions.st=wrath,if=variable.enter_lunar&variable.eclipse&variable.eclipse_remains<cast_time
+actions.st+=/starfire,if=!variable.enter_lunar&variable.eclipse&variable.eclipse_remains<cast_time
 actions.st+=/sunfire,target_if=remains<3
 actions.st+=/moonfire,target_if=remains<3&(!talent.treants_of_the_moon|cooldown.force_of_nature.remains>3&!buff.harmony_of_the_grove.up)
+actions.st+=/wrath,if=variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
+actions.st+=/starfire,if=!variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
 actions.st+=/call_action_list,name=pre_cd
 actions.st+=/celestial_alignment,if=variable.cd_condition
 actions.st+=/incarnation,if=variable.cd_condition

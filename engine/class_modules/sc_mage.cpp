@@ -3868,6 +3868,8 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     triggers.clearcasting = true;
     tick_action = get_action<arcane_missiles_tick_t>( "arcane_missiles_tick", p );
     cost_reductions = { p->buffs.clearcasting };
+    if ( p->talents.slipstream.ok() )
+      affected_by.ice_floes = false; // Prevent AM from consuming Ice Floes w/ Slipstream
 
     // TODO (10.1.5 PTR): the tick time reduction is in CC while the duration reduction
     // is in Concentrated Power, which doesn't make sense and will presumably be fixed
@@ -4403,6 +4405,8 @@ struct evocation_t final : public arcane_mage_spell_t
     parse_options( options_str );
     channeled = ignore_false_positive = tick_zero = true;
     harmful = false;
+    if ( p->talents.slipstream.ok() )
+      affected_by.ice_floes = false; // Prevent Evo from consuming Ice Floes w/ Slipstream
   }
 
   void trigger_dot( action_state_t* s ) override
