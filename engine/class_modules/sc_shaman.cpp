@@ -2868,7 +2868,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       sim->print_debug( "{} trigger_lightning_rod_damage, action={}, target={}, amount={}",
         player->name(), name(), target->name(),
         accumulated_lightning_rod_damage * p()->constant.mul_lightning_rod );
-
       p()->action.lightning_rod->execute_on_target( target,
         accumulated_lightning_rod_damage * p()->constant.mul_lightning_rod );
     } );
@@ -4337,16 +4336,6 @@ struct elemental_overload_spell_t : public shaman_spell_t
             p->talent.echo_chamber->effectN( 1 ).percent();
     }
 
-
-
-    if ( p->is_ptr() )
-    {
-      if ( p->buff.ascendance->up() )
-      {
-        base_multiplier *= 1.0 + p->talent.ascendance->effectN( 8 ).percent();
-      }
-    }
-
     // multiplier is used by Mountains Will Fall and is applied after
     // overload damage multiplier is calculated.
     if ( multiplier != -1.0 )
@@ -4377,6 +4366,20 @@ struct elemental_overload_spell_t : public shaman_spell_t
     shaman_spell_t::snapshot_internal( s, flags, rt );
 
     cast_state( s )->exec_type = parent->exec_type;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p()->is_ptr() )
+    {
+      if ( p()->buff.ascendance->up() )
+      {
+        m *= 1.0 + p()->talent.ascendance->effectN( 8 ).percent();
+      }
+    }
+    return m;
   }
 };
 
@@ -6281,7 +6284,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
   double action_multiplier() const override
   {
-    double m = shaman_spell_t::action_multiplier();
+    double m = elemental_overload_spell_t::action_multiplier();
 
     if ( exec_type == spell_variant::PRIMORDIAL_WAVE )
     {
@@ -7187,7 +7190,7 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
 
   double action_multiplier() const override
   {
-    double m = shaman_spell_t::action_multiplier();
+    double m = elemental_overload_spell_t::action_multiplier();
 
     m *= 1.0 + p()->buff.magma_chamber->check_stack_value();
 
@@ -8068,7 +8071,7 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
 
   double action_multiplier() const override
   {
-    double m = shaman_spell_t::action_multiplier();
+    double m = elemental_overload_spell_t::action_multiplier();
 
     if ( p()->talent.earthshatter->ok() )
     {
@@ -8684,12 +8687,6 @@ struct ascendance_t : public shaman_spell_t
     else
     {
       p()->buff.ascendance->trigger();
-    }
-
-    if ( ascendance_damage )
-    {
-      ascendance_damage->set_target( target );
-      ascendance_damage->execute();
     }
 
     // Refresh Flame Shock to max duration
@@ -10051,6 +10048,17 @@ struct tempest_overload_t : public elemental_overload_spell_t
     // reduced_aoe_targets = as<double>( data().effectN( 3 ).base_value() );
     base_aoe_multiplier = data().effectN( 2 ).percent();
   }
+
+  void impact( action_state_t* state ) override
+  {
+    elemental_overload_spell_t::impact( state );
+
+    // Accumulate Lightning Rod damage from all targets hit by this cast.
+    if ( p()->talent.lightning_rod.ok() || p()->talent.conductive_energy.ok() )
+    {
+      accumulate_lightning_rod_damage( state );
+    }
+  }
 };
 
 struct tempest_t : public shaman_spell_t
@@ -10175,7 +10183,7 @@ struct tempest_t : public shaman_spell_t
     shaman_spell_t::impact( state );
 
     if ( ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->talent.conductive_energy.ok() ) ||
-         ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.conductive_energy.ok() && !p()->bugs ) )
+         ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.conductive_energy.ok()) )
     {
       accumulate_lightning_rod_damage( state );
     }
