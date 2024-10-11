@@ -14564,10 +14564,10 @@ Effects          :
 Description      : $@spelldesc116858
 
 Name             : Ruination (id=434635) [Spell Family (5)] 
-Hotfixed         : Affecting Spells
+Hotfixed         : Affecting Spells, Spell Type (0 -> 1)
 Class            : Warlock
 School           : Chaos
-Spell Type       : None
+Spell Type       : Magic
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
