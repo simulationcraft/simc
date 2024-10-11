@@ -17962,8 +17962,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
                  :
 Effects          :
-#1 (id=1113274)  : Apply Aura (6) | Unknown(382)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 0xd6c7 | Target: Self (1)
+#1 (id=1113274)  : Apply Aura (6) | Modify Pet Stat (382)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 54983 | Target: Self (1)
 Description      : $?a137013[Your Force of Nature treants generate ${$429217m1/10} Astral Power every $429217t1 sec.][Your Grove Guardians' healing is increased by $s1%.]
 
 Name             : Bounteous Bloom (id=429217) [Spell Family (7), Hidden] 
@@ -18019,8 +18019,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
                  :
 Effects          :
-#1 (id=1113301)  : Apply Aura (6) | Unknown(382)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 0x1958e | Target: Self (1)
+#1 (id=1113301)  : Apply Aura (6) | Modify Pet Stat (382)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 103822 | Target: Self (1)
 Description      : $?a137013[Your Force of Nature treants have 50% increased health.][Your Grove Guardians' Nourish and Swiftmend spells also apply a Minor Cenarion Ward that heals the target for $429222o1 over $429222d the next time they take damage.]
 
 Name             : Expansiveness (id=429399) [Spell Family (7), Passive] 
