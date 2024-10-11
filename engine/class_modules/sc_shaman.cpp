@@ -10717,7 +10717,7 @@ void shaman_t::create_actions()
     action.flame_shock_asc = new flame_shock_t( this, spell_variant::ASCENDANCE );
   }
 
-  if ( specialization() == SHAMAN_ELEMENTAL && talent.primordial_wave.ok() )
+  if ( talent.primordial_wave.ok() )
   {
     action.flame_shock_pw = new flame_shock_t( this, spell_variant::PRIMORDIAL_WAVE );
   }
