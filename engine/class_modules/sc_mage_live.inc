@@ -7475,7 +7475,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
                                      ->set_chance( mage->talents.arcane_debilitation.ok() );
   // TODO: The 0.5 from the talent is rounded to 1, increasing Ignite damage by 50% at max stacks.
   debuffs.controlled_destruction = make_buff( *this, "controlled_destruction", mage->find_spell( 453268 ) )
-                                     ->set_default_value( util::round( mage->talents.controlled_destruction->effectN( 1 ).percent(), mage->bugs ? 2 : 3 ) )
+                                     ->set_default_value( 0.01 )
                                      ->set_chance( mage->talents.controlled_destruction.ok() );
   debuffs.controlled_instincts   = make_buff( *this, "controlled_instincts", mage->find_spell( mage->specialization() == MAGE_FROST ? 463192 : 454214 ) )
                                      ->set_chance( mage->talents.controlled_instincts.ok() );
