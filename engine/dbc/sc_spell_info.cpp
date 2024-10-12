@@ -1179,6 +1179,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 185, "Modify Attacker Ranged Hit Chance"                 },
   { 186, "Modify Attacker Spell Hit Chance"                  },
   { 187, "Modify Attacker Melee Crit Chance"                 },
+  { 188, "Modify UI UnitInRange"                             },
   { 189, "Modify Rating"                                     },
   { 192, "Modify Ranged and Melee Haste%"                    },
   { 193, "Modify All Haste%"                                 },
@@ -1244,6 +1245,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 379, "Modify Mana Regen%"                                },
   { 380, "Modify Damage Taken% from Caster Guardian"         },
   { 381, "Modify Damage Taken% from Caster Pet"              },
+  { 382, "Modify Pet Stat"                                   },
   { 383, "Ignore Spell Cooldown"                             },
   { 399, "Modify Time Rate"                                  },
   { 404, "Override Attack Power per Spell Power%"            },
@@ -1707,7 +1709,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     {
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d (Label)", e->misc_value2() );
     }
-    else if ( e->subtype() == A_SCHOOL_ABSORB )
+    else if ( e->subtype() == A_SCHOOL_ABSORB || e->subtype() == A_MOD_PET_STAT )
     {
       snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d", e->misc_value2() );
     }
@@ -2035,7 +2037,6 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     std::vector<std::string> class_str;
     std::vector<player_e> exclude;
     std::vector<int> unknown;
-    bool pet_ability = false;
 
     if ( dbc.is_specialization_ability( spell->id() ) )
     {

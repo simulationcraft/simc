@@ -5,7 +5,7 @@ level=80
 race=dwarf
 role=attack
 position=ranged_back
-talents=C0PAAAAAAAAAAAAAAAAAAAAAAYsNDMgFwMsEyYBAAAAAADAAAAAAgZGDjZmZYmhZYYGzMGzMzkZYMjZmZMzwwYYmhZZMmlZwG
+talents=C0PAAAAAAAAAAAAAAAAAAAAAAYsNDMgFwMsEYsAAAAAAgBAAAAAAwMWGGzMzwMDDzwMmZMmZmJzwYGzMzYmxMMGmZYWGMLzgN
 
 # Default consumables
 potion=tempered_potion_3

@@ -26,7 +26,7 @@ const T& find( unsigned key, bool ptr, Proj proj )
   const auto __data = T::data( ptr );
 
   auto it = range::lower_bound( __data, key, {}, proj );
-  if ( it != __data.cend() && std::invoke( proj, *it ) == key )
+  if ( it != __data.end() && std::invoke( proj, *it ) == key )
   {
     return *it;
   }

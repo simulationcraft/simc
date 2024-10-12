@@ -1241,7 +1241,7 @@ enum effect_subtype_t : unsigned {
     A_MOD_MANA_REGEN_PCT = 379,
     A_MOD_DAMAGE_FROM_CASTER_GUARDIAN = 380,
     A_MOD_DAMAGE_FROM_CASTER_PET = 381,
-    A_382 = 382,
+    A_MOD_PET_STAT = 382,
     A_IGNORE_SPELL_COOLDOWN = 383,
     A_385 = 385,
     A_389 = 389,

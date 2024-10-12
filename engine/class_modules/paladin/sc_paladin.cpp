@@ -767,7 +767,7 @@ struct divine_steed_t : public paladin_spell_t
     parse_options( options_str );
     background  = false;
     if ( p->talents.cavalier->ok() )
-      cooldown->charges += p->talents.cavalier->effectN( 1 ).base_value();
+      cooldown->charges += as<int>( p->talents.cavalier->effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -2296,6 +2296,12 @@ struct empyrean_hammer_wd_t : public paladin_spell_t
     background          = true;
     may_crit            = false;
     aoe                 = -1;
+
+    if (p->specialization() == PALADIN_RETRIBUTION)
+    {
+      base_dd_multiplier += p->spec.retribution_paladin_2->effectN( 20 ).percent();
+    }
+
     // ToDo (Fluttershy)
     // This spell currently deals full damage to all targets, even above 20.
     // SimC automatically reduces AoE damage above 20 targets, so may need custom execute, if this behaviour stays
@@ -2369,6 +2375,17 @@ struct empyrean_hammer_t : public paladin_spell_t
     return am;
   }
 
+  double composite_target_multiplier( player_t *t ) const override
+  {
+    double ctm = paladin_spell_t::composite_target_multiplier( t );
+
+    paladin_td_t* td = this->td( t );
+    if ( p()->talents.burn_to_ash->ok() && td->dots.truths_wake->is_ticking() )
+      ctm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
+
+    return ctm;
+  }
+
   void impact(action_state_t* s) override
   {
     paladin_spell_t::impact( s );
@@ -2400,7 +2417,7 @@ void paladin_t::trigger_empyrean_hammer( player_t* target, int number_to_trigger
   }
 }
 
-void paladin_t::trigger_lights_deliverance(bool triggered_by_hol)
+void paladin_t::trigger_lights_deliverance( bool /* triggered_by_hol */ )
 {
   if ( !talents.templar.lights_deliverance->ok() || !buffs.templar.lights_deliverance->at_max_stacks() )
     return;
@@ -4025,6 +4042,14 @@ void paladin_t::create_buffs()
   buffs.rising_wrath = make_buff( this, "rising_wrath", find_spell( 456700 ) )
     ->set_default_value_from_effect(1);
   buffs.heightened_wrath = make_buff( this, "heightened_wrath", find_spell( 456759 ) );
+
+  if ( specialization() == PALADIN_RETRIBUTION )
+  {
+    buffs.templar.shake_the_heavens->apply_affecting_aura( spec.retribution_paladin_2 );
+    buffs.templar.lights_deliverance->apply_affecting_aura( spec.retribution_paladin_2 );
+    buffs.templar.undisputed_ruling->apply_affecting_aura( spec.retribution_paladin_2 );
+    buffs.templar.sanctification->apply_affecting_aura( spec.retribution_paladin_2 );
+  }
 }
 
 // paladin_t::default_potion ================================================

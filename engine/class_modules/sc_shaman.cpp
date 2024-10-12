@@ -88,7 +88,8 @@ enum class spell_variant : unsigned
   PRIMORDIAL_WAVE,
   THORIMS_INVOCATION,
   FUSION_OF_ELEMENTS,
-  LIQUID_MAGMA_TOTEM
+  LIQUID_MAGMA_TOTEM,
+  SURGE_OF_POWER
 };
 
 enum class strike_variant : unsigned
@@ -327,6 +328,8 @@ static std::string action_name( util::string_view name, spell_variant t )
     case spell_variant::PRIMORDIAL_WAVE: return fmt::format( "{}_pw", name );
     case spell_variant::THORIMS_INVOCATION: return fmt::format( "{}_ti", name );
     case spell_variant::FUSION_OF_ELEMENTS: return fmt::format( "{}_foe", name );
+    case spell_variant::LIQUID_MAGMA_TOTEM: return fmt::format( "{}_lmt", name );
+    case spell_variant::SURGE_OF_POWER: return fmt::format( "{}_sop", name );
     default: return std::string( name );
   }
 }
@@ -340,6 +343,8 @@ static util::string_view exec_type_str( spell_variant t )
     case spell_variant::PRIMORDIAL_WAVE: return "primordial_wave";
     case spell_variant::THORIMS_INVOCATION: return "thorims_invocation";
     case spell_variant::FUSION_OF_ELEMENTS: return "fusion_of_elements";
+    case spell_variant::LIQUID_MAGMA_TOTEM: return "liquid_magma_totem";
+    case spell_variant::SURGE_OF_POWER: return "surge_of_power";
     default: return "normal";
   }
 }
@@ -466,6 +471,9 @@ public:
     action_t* chain_lightning_ti;
     action_t* ti_trigger;
     action_t* lava_burst_pw;
+    action_t* flame_shock_asc;
+    action_t* flame_shock_pw;
+    action_t* flame_shock_lmt;
     action_t* flame_shock;
     action_t* elemental_blast;
 
@@ -2860,7 +2868,6 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       sim->print_debug( "{} trigger_lightning_rod_damage, action={}, target={}, amount={}",
         player->name(), name(), target->name(),
         accumulated_lightning_rod_damage * p()->constant.mul_lightning_rod );
-
       p()->action.lightning_rod->execute_on_target( target,
         accumulated_lightning_rod_damage * p()->constant.mul_lightning_rod );
     } );
@@ -4329,16 +4336,6 @@ struct elemental_overload_spell_t : public shaman_spell_t
             p->talent.echo_chamber->effectN( 1 ).percent();
     }
 
-
-
-    if ( p->is_ptr() )
-    {
-      if ( p->buff.ascendance->up() )
-      {
-        base_multiplier *= 1.0 + p->talent.ascendance->effectN( 8 ).percent();
-      }
-    }
-
     // multiplier is used by Mountains Will Fall and is applied after
     // overload damage multiplier is calculated.
     if ( multiplier != -1.0 )
@@ -4369,6 +4366,20 @@ struct elemental_overload_spell_t : public shaman_spell_t
     shaman_spell_t::snapshot_internal( s, flags, rt );
 
     cast_state( s )->exec_type = parent->exec_type;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    if ( p()->is_ptr() )
+    {
+      if ( p()->buff.ascendance->up() )
+      {
+        m *= 1.0 + p()->talent.ascendance->effectN( 8 ).percent();
+      }
+    }
+    return m;
   }
 };
 
@@ -6273,7 +6284,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
   double action_multiplier() const override
   {
-    double m = shaman_spell_t::action_multiplier();
+    double m = elemental_overload_spell_t::action_multiplier();
 
     if ( exec_type == spell_variant::PRIMORDIAL_WAVE )
     {
@@ -7179,7 +7190,7 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
 
   double action_multiplier() const override
   {
-    double m = shaman_spell_t::action_multiplier();
+    double m = elemental_overload_spell_t::action_multiplier();
 
     m *= 1.0 + p()->buff.magma_chamber->check_stack_value();
 
@@ -7306,6 +7317,17 @@ struct elemental_blast_t : public shaman_spell_t
         // Elemental Blast can trigger DRE on PTR
         p()->trigger_deeply_rooted_elements( execute_state );
       }
+    }
+
+    // While I still think this interaction shouldn't exist (proc of proc) it
+    // certainly does. So here we go with an implemented bug.
+    if ( p()->bugs && 
+         p()->is_ptr() && 
+         p()->specialization() == SHAMAN_ELEMENTAL && 
+         exec_type == spell_variant::FUSION_OF_ELEMENTS ) 
+    {
+        // Elemental Blast can trigger DRE on PTR
+        p()->trigger_deeply_rooted_elements( execute_state );
     }
 
     // [BUG] 2024-08-23 Supercharge works on Elemental Blast in-game
@@ -8049,7 +8071,7 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
 
   double action_multiplier() const override
   {
-    double m = shaman_spell_t::action_multiplier();
+    double m = elemental_overload_spell_t::action_multiplier();
 
     if ( p()->talent.earthshatter->ok() )
     {
@@ -8225,8 +8247,10 @@ private:
   }
 
 public:
-  flame_shock_t( shaman_t* player, util::string_view options_str = {} )
-    : shaman_spell_t( "flame_shock", player, player->find_spell( 188389 )),
+  flame_shock_t( shaman_t* player, spell_variant type_, util::string_view options_str = {} )
+    // Specifically not using a spell_variant aware name to prevent the creation of separate flame shock dots.
+    // All separate variants shall debuff the same dot.
+    : shaman_spell_t( "flame_shock", player, player->find_spell( 188389 ), type_),
       spreader( player->talent.surge_of_power->ok() ? new flame_shock_spreader_t( player ) : nullptr ),
       elemental_resource( player->find_spell( 263819 ) )
   {
@@ -8247,12 +8271,15 @@ public:
     {
       cooldown->duration = data().cooldown() + p()->talent.flames_of_the_cauldron->effectN( 2 ).time_value();
 
-      if ( player->is_ptr() ) {
+      if ( player->is_ptr() && (
+            type_ == spell_variant::NORMAL ||
+            type_ == spell_variant::SURGE_OF_POWER ) )
+      {
         maelstrom_gain = player->spec.maelstrom->effectN( 11 ).resource( RESOURCE_MAELSTROM );
       }
     }
   }
-  spell_variant variant = spell_variant::NORMAL;
+
   void trigger_dot( action_state_t* state ) override
   {
     if ( !get_dot( state->target )->is_ticking() )
@@ -8387,7 +8414,8 @@ public:
   void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
-    if ( this->variant != spell_variant::LIQUID_MAGMA_TOTEM )
+    if ( this->exec_type == spell_variant::NORMAL || 
+         this->exec_type == spell_variant::PRIMORDIAL_WAVE )
     {
       if ( p()->buff.surge_of_power->up() && sim->target_non_sleeping_list.size() == 1 )
       {
@@ -8416,7 +8444,7 @@ public:
           // expire first to prevent infinity
           p()->proc.surge_of_power_flame_shock->occur();
           p()->buff.surge_of_power->decrement();
-          p()->trigger_secondary_flame_shock( additional_target, spell_variant::NORMAL );
+          p()->trigger_secondary_flame_shock( additional_target, spell_variant::SURGE_OF_POWER );
         }
       }
     }
@@ -8661,12 +8689,6 @@ struct ascendance_t : public shaman_spell_t
       p()->buff.ascendance->trigger();
     }
 
-    if ( ascendance_damage )
-    {
-      ascendance_damage->set_target( target );
-      ascendance_damage->execute();
-    }
-
     // Refresh Flame Shock to max duration
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
@@ -8691,7 +8713,7 @@ struct ascendance_t : public shaman_spell_t
         auto tl = target_list();
         for ( size_t i = 0; i < std::min( tl.size(), as<size_t>( data().effectN( 7 ).base_value() ) ); ++i )
         {
-          p()->trigger_secondary_flame_shock( tl[ i ], spell_variant::NORMAL );
+          p()->trigger_secondary_flame_shock( tl[ i ], spell_variant::ASCENDANCE );
         }
       }
     }
@@ -9954,7 +9976,7 @@ struct primordial_wave_t : public shaman_spell_t
 
       p()->buff.primordial_wave->trigger();
 
-      p()->trigger_secondary_flame_shock( s, spell_variant::NORMAL );
+      p()->trigger_secondary_flame_shock( s, spell_variant::PRIMORDIAL_WAVE );
     }
   };
 
@@ -9967,10 +9989,6 @@ struct primordial_wave_t : public shaman_spell_t
     add_child( impact_action );
 
     ancestor_trigger = ancestor_cast::LAVA_BURST;
-
-    if ( player->is_ptr() && player->specialization() == SHAMAN_ELEMENTAL ) {
-      maelstrom_gain = player->spec.maelstrom->effectN( 12 ).resource( RESOURCE_MAELSTROM );
-    }
   }
 
   void init() override
@@ -9982,7 +10000,7 @@ struct primordial_wave_t : public shaman_spell_t
     affected_by_maelstrom_weapon = false;
 
     // On 11.0.5 PTR, casting Primordial Wave generates (3) Maelstrom
-    if ( p()->is_ptr() )
+    if ( p()->is_ptr() && player->specialization() == SHAMAN_ELEMENTAL )
     {
         maelstrom_gain = p()->spec.maelstrom->effectN( 12 ).resource( RESOURCE_MAELSTROM );
     }
@@ -10029,6 +10047,17 @@ struct tempest_overload_t : public elemental_overload_spell_t
     // Blizzard forgot to apply Tempest's AOE soft cap hotfix to its overload spell
     // reduced_aoe_targets = as<double>( data().effectN( 3 ).base_value() );
     base_aoe_multiplier = data().effectN( 2 ).percent();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    elemental_overload_spell_t::impact( state );
+
+    // Accumulate Lightning Rod damage from all targets hit by this cast.
+    if ( p()->talent.lightning_rod.ok() || p()->talent.conductive_energy.ok() )
+    {
+      accumulate_lightning_rod_damage( state );
+    }
   }
 };
 
@@ -10154,7 +10183,7 @@ struct tempest_t : public shaman_spell_t
     shaman_spell_t::impact( state );
 
     if ( ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->talent.conductive_energy.ok() ) ||
-         ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.conductive_energy.ok() && !p()->bugs ) )
+         ( p()->specialization() == SHAMAN_ELEMENTAL && p()->talent.conductive_energy.ok()) )
     {
       accumulate_lightning_rod_damage( state );
     }
@@ -10390,7 +10419,7 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "elemental_blast" )
     return new elemental_blast_t( this, spell_variant::NORMAL, options_str );
   if ( name == "flame_shock" )
-    return new flame_shock_t( this, options_str );
+    return new flame_shock_t( this, spell_variant::NORMAL, options_str );
   if ( name == "frost_shock" )
     return new frost_shock_t( this, options_str );
   if ( name == "ghost_wolf" )
@@ -10690,6 +10719,22 @@ void shaman_t::create_actions()
     action.lava_burst_pw = new lava_burst_t( this, spell_variant::PRIMORDIAL_WAVE );
   }
 
+  if ( specialization() == SHAMAN_ELEMENTAL && ( talent.ascendance.ok() ||
+       talent.deeply_rooted_elements.ok() ) )
+  {
+    action.flame_shock_asc = new flame_shock_t( this, spell_variant::ASCENDANCE );
+  }
+
+  if ( talent.primordial_wave.ok() )
+  {
+    action.flame_shock_pw = new flame_shock_t( this, spell_variant::PRIMORDIAL_WAVE );
+  }
+
+  if ( specialization() == SHAMAN_ELEMENTAL && talent.liquid_magma_totem.ok() )
+  {
+    action.flame_shock_lmt = new flame_shock_t( this, spell_variant::LIQUID_MAGMA_TOTEM );
+  }
+
   if ( talent.thorims_invocation.ok() )
   {
     action.lightning_bolt_ti = new lightning_bolt_t( this, spell_variant::THORIMS_INVOCATION );
@@ -10760,7 +10805,7 @@ void shaman_t::create_actions()
   }
 
   // Generic Actions
-  action.flame_shock = new flame_shock_t( this );
+  action.flame_shock = new flame_shock_t( this, spell_variant::NORMAL );
   action.flame_shock->background = true;
   action.flame_shock->cooldown = get_cooldown( "flame_shock_secondary" );
   action.flame_shock->base_costs[ RESOURCE_MANA ] = 0;
@@ -11789,11 +11834,22 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
 
 void shaman_t::trigger_secondary_flame_shock( player_t* target, spell_variant variant = spell_variant::NORMAL ) const
 {
-  flame_shock_t* fs = debug_cast<flame_shock_t*>(action.flame_shock);
-  fs->variant       = variant;
+  flame_shock_t* fs = debug_cast<flame_shock_t*>( action.flame_shock );
+  if ( variant == spell_variant::PRIMORDIAL_WAVE ) 
+  {
+    fs = debug_cast<flame_shock_t*>( action.flame_shock_pw );
+  }
+  else if ( variant == spell_variant::ASCENDANCE )
+  {
+    fs = debug_cast<flame_shock_t*>( action.flame_shock_asc );
+  }
+  else if ( variant == spell_variant::LIQUID_MAGMA_TOTEM )
+  {
+    fs = debug_cast<flame_shock_t*>( action.flame_shock_lmt );
+  }
 
-  action.flame_shock->set_target( target );
-  action.flame_shock->execute();
+  fs->set_target( target );
+  fs->execute();
 }
 
 void shaman_t::trigger_secondary_flame_shock( const action_state_t* state, spell_variant variant = spell_variant::NORMAL ) const
@@ -12937,7 +12993,7 @@ void shaman_t::init_special_effects()
 {
   callbacks.register_callback_trigger_function(
       452030, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ id = 51505 ]( const dbc_proc_callback_t*, action_t* a, action_state_t*) {
+      [ id = 51505U ]( const dbc_proc_callback_t*, action_t* a, action_state_t*) {
         if ( a->data().id() == id )
         {
           lava_burst_t* lvb = debug_cast<lava_burst_t*>(a);

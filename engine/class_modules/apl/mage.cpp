@@ -350,7 +350,7 @@ void frost( player_t* p )
   aoe->add_action( "call_action_list,name=movement" );
 
   cds->add_action( "use_item,name=imperfect_ascendancy_serum,if=buff.icy_veins.remains>19|fight_remains<25" );
-  cds->add_action( "use_item,name=spymasters_web,if=(buff.icy_veins.remains>19&fight_remains<100)|fight_remains<25" );
+  cds->add_action( "use_item,name=spymasters_web,if=(buff.icy_veins.remains>19&(fight_remains<100|buff.spymasters_report.stack=40&fight_remains>120))|fight_remains<25" );
   cds->add_action( "potion,if=prev_off_gcd.icy_veins|fight_remains<60" );
   cds->add_action( "use_item,name=dreambinder_loom_of_the_great_cycle,if=(equipped.nymues_unraveling_spindle&prev_gcd.1.nymues_unraveling_spindle)|fight_remains>2" );
   cds->add_action( "use_item,name=belorrelos_the_suncaller,if=time>5&!prev_gcd.1.flurry" );

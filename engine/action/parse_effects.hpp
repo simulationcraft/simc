@@ -11,18 +11,26 @@
 #include "player/stats.hpp"
 #include "util/io.hpp"
 
-enum parse_flag_e : uint8_t
+enum parse_flag_e : uint16_t
 {
-  USE_DATA          = 0x00,
-  USE_DEFAULT       = 0x01,
-  USE_CURRENT       = 0x02,
-  IGNORE_STACKS     = 0x04,
-  ALLOW_ZERO        = 0x08,
-  CONSUME_BUFF      = 0x10,
+  USE_DATA          = 0x0000,
+  USE_DEFAULT       = 0x0001,
+  USE_CURRENT       = 0x0002,
+  IGNORE_STACKS     = 0x0004,
+  ALLOW_ZERO        = 0x0008,
+  EXPIRE_BUFF       = 0x0010,
+  DECREMENT_BUFF    = 0x0020,
   // internal flags that should not be used in parse_effects()
-  VALUE_OVERRIDE    = 0x20,
-  AFFECTED_OVERRIDE = 0x40,
-  MANUAL_ENTRY      = 0x80
+  VALUE_OVERRIDE    = 0x0100,
+  AFFECTED_OVERRIDE = 0x0200,
+  MANUAL_ENTRY      = 0x0400
+};
+
+enum parse_callback_e
+{
+  PARSE_CALLBACK_PRE_IMPACT,
+  PARSE_CALLBACK_POST_IMPACT,
+  PARSE_CALLBACK_POST_EXECUTE,
 };
 
 // effects dependent on player state
@@ -36,9 +44,9 @@ struct player_effect_t
   // full processing
   std::function<bool()> func = nullptr;
   std::function<double( double )> value_func = nullptr;
-  uint8_t type = USE_DATA;
+  uint16_t type = USE_DATA;
   bool mastery = false;
-  uint32_t idx = 0;  // used for consume_buff linkage during init_finished()
+  uint32_t idx = 0;  // index of parse_action_base_t::callback_list
   // effect linkback
   const spelleffect_data_t* eff = &spelleffect_data_t::nil();
   // optional enum identifier
@@ -81,7 +89,7 @@ struct player_effect_t
            opt_enum == other.opt_enum;
   }
 
-  std::string value_type_name( uint8_t ) const;
+  std::string value_type_name( uint16_t ) const;
 
   void print_parsed_line( report::sc_html_stream&, const sim_t&, bool,
                           const std::function<std::string( uint32_t )>&,
@@ -93,7 +101,7 @@ struct target_effect_t
 {
   std::function<int( actor_target_data_t* )> func = nullptr;
   double value = 0.0;
-  uint8_t type = USE_DATA;  // for internal flags only
+  uint16_t type = USE_DATA;  // for internal flags only
   bool mastery = false;
   const spelleffect_data_t* eff = &spelleffect_data_t::nil();
   uint32_t opt_enum = UINT32_MAX;
@@ -118,7 +126,7 @@ struct target_effect_t
     return value == other.value && mastery == other.mastery && eff == other.eff && opt_enum == other.opt_enum;
   }
 
-  std::string value_type_name( uint8_t ) const;
+  std::string value_type_name( uint16_t ) const;
 
   void print_parsed_line( report::sc_html_stream&, const sim_t&, bool,
                           const std::function<std::string( uint32_t )>&,
@@ -253,15 +261,50 @@ struct affect_list_t
   { remove_spell( s ); return remove_spell( ss... ); }
 };
 
+// local aliases
+namespace
+{
+using parse_cb_t = std::function<void( parse_callback_e )>;
+template <typename T> using detect_simple = decltype( T::simple );
+template <typename T> using detect_buff = decltype( T::buff );
+template <typename T> using detect_func = decltype( T::func );
+template <typename T> using detect_value_func = decltype( T::value_func );
+template <typename T> using detect_use_stacks = decltype( T::use_stacks );
+template <typename T> using detect_type = decltype( T::type );
+template <typename T> using detect_value = decltype( T::value );
+template <typename T> using detect_idx = decltype( T::idx );
+}
+
 // used to store values from parameter pack recursion of parse_effect/parse_target_effects
 template <typename U, typename = std::enable_if_t<std::is_default_constructible_v<U>>>
 struct pack_t
 {
   U data;
+  const spell_data_t* spell;  // uninitalized
   std::vector<const spell_data_t*> list;
   uint32_t mask = 0U;
   std::vector<U>* copy = nullptr;
   std::vector<affect_list_t> affect_lists;
+  parse_cb_t callback = nullptr;
+
+  pack_t( const spell_data_t* s_data ) : spell( s_data ) {}
+
+  pack_t( buff_t* buff )
+  {
+    if ( buff )
+    {
+      spell = &buff->data();
+
+      if constexpr ( is_detected_v<detect_buff, U> )
+      {
+        data.buff = buff;
+      }
+    }
+    else
+    {
+      spell = nullptr;
+    }
+  }
 };
 
 template <typename U>
@@ -278,41 +321,6 @@ struct parse_base_t
   parse_base_t() = default;
   virtual ~parse_base_t() = default;
 
-  // detectors for is_detected_v<>
-  template <typename T> using detect_simple = decltype( T::simple );
-  template <typename T> using detect_buff = decltype( T::buff );
-  template <typename T> using detect_func = decltype( T::func );
-  template <typename T> using detect_value_func = decltype( T::value_func );
-  template <typename T> using detect_use_stacks = decltype( T::use_stacks );
-  template <typename T> using detect_type = decltype( T::type );
-  template <typename T> using detect_value = decltype( T::value );
-  template <typename T> using detect_idx = decltype( T::idx );
-
-  // handle first argument to parse_effects(), set buff if necessary and return spell_data_t*
-  template <typename T, typename U>
-  const spell_data_t* resolve_parse_data( T data, pack_t<U>& tmp )
-  {
-    if constexpr ( std::is_invocable_v<decltype( &buff_t::data ), T> )
-    {
-      if ( !data )
-        return nullptr;
-
-      if constexpr ( is_detected_v<detect_buff, U> )
-        tmp.data.buff = data;
-
-      return &data->data();
-    }
-    else if constexpr ( std::is_invocable_v<decltype( &spell_data_t::ok ), T> )
-    {
-      return data;
-    }
-    else
-    {
-      static_assert( static_false<T>, "Invalid data type for resolve_parse_data" );
-      return nullptr;
-    }
-  }
-
   // returns the value of the effect. overload if different value access method is needed for other spell_data_t*
   // castable types, such as conduits
   double mod_spell_effects_value( const spell_data_t*, const spelleffect_data_t& e ) { return e.base_value(); }
@@ -321,15 +329,22 @@ struct parse_base_t
   void apply_affecting_mod( double&, bool&, const spell_data_t*, size_t, T );
 
   template <typename U>
-  void apply_affecting_mods( const pack_t<U>& tmp, double& val, bool& mastery, const spell_data_t* base, size_t idx )
+  void apply_affecting_mods( const pack_t<U>& pack, double& val, bool& mastery, size_t idx )
   {
     // Apply effect modifying effects from mod list. Blizz only currently supports modifying effects 1-5
     if ( idx > 5 )
       return;
 
-    for ( size_t j = 0; j < tmp.list.size(); j++ )
-      apply_affecting_mod( val, mastery, base, idx, tmp.list[ j ] );
+    for ( size_t j = 0; j < pack.list.size(); j++ )
+      apply_affecting_mod( val, mastery, pack.spell, idx, pack.list[ j ] );
   }
+
+  virtual void parse_callback_function( pack_t<player_effect_t>&, parse_cb_t )
+  { assert( false && "cannot register parse callback on this base" ); }
+  virtual void parse_callback_function( pack_t<player_effect_t>&, parse_flag_e )
+  { assert( false && "cannot register parse callback on this base" ); }
+  virtual void register_callback_function( pack_t<player_effect_t>& )
+  { assert( false && "cannot register parse callback on this base" ); }
 
   // populate pack with optional arguments to parse_effects().
   // parsing order of precedence is:
@@ -339,67 +354,78 @@ struct parse_base_t
   // 4) floating point value to directly set the effect value and override all parsing
   // 5) integral bitmask to ignore effect# n corresponding to the n'th bit
   template <typename U, typename T>
-  void parse_spell_effect_mod( pack_t<U>& tmp, T mod )
+  void parse_spell_effect_mod( pack_t<U>& pack, T mod )
   {
     if constexpr ( std::is_invocable_v<decltype( &spell_data_t::ok ), T> )
     {
-      tmp.list.push_back( mod );
+      pack.list.push_back( mod );
     }
     else if constexpr ( std::is_convertible_v<T, std::function<double( double )>> &&
                         is_detected_v<detect_value_func, U> )
     {
-      tmp.data.value_func = std::move( mod );
+      pack.data.value_func = std::move( mod );
     }
     else if constexpr ( ( std::is_convertible_v<T, std::function<bool()>> ||
                           std::is_convertible_v<T, std::function<bool( const action_t*, const action_state_t* )>> ) &&
                         is_detected_v<detect_func, U> )
     {
-      tmp.data.func = std::move( mod );
+      pack.data.func = std::move( mod );
+    }
+    else if constexpr ( std::is_convertible_v<T, parse_cb_t> && std::is_same_v<U, player_effect_t> )
+    {
+      parse_callback_function( pack, std::move( mod ) );
     }
     else if constexpr ( std::is_same_v<T, parse_flag_e> )
     {
       if constexpr ( is_detected_v<detect_use_stacks, U> )
       {
         if ( mod == IGNORE_STACKS )
-          tmp.data.use_stacks = false;
+        {
+          pack.data.use_stacks = false;
+          return;
+        }
       }
 
       if constexpr ( is_detected_v<detect_type, U> )
       {
-        if ( ( mod == USE_DEFAULT || mod == USE_CURRENT ) && !( tmp.data.type & VALUE_OVERRIDE ) )
+        if ( ( mod == USE_DEFAULT || mod == USE_CURRENT ) && !( pack.data.type & VALUE_OVERRIDE ) )
         {
-          tmp.data.type &= ~( USE_DEFAULT | USE_CURRENT );
-          tmp.data.type |= mod;
+          pack.data.type &= ~( USE_DEFAULT | USE_CURRENT );
+          pack.data.type |= mod;
+          return;
         }
       }
 
-      if constexpr ( is_detected_v<detect_idx, U> )
+      if constexpr ( std::is_same_v<U, player_effect_t> )
       {
-        if ( mod == CONSUME_BUFF )
-          tmp.data.idx = UINT32_MAX;;
+        if ( mod == EXPIRE_BUFF || mod == DECREMENT_BUFF )
+        {
+          parse_callback_function( pack, mod );
+          return;
+        }
       }
     }
     else if constexpr ( std::is_floating_point_v<T> && is_detected_v<detect_value, U> )
     {
-      tmp.data.value = mod;
+      pack.data.value = mod;
 
       if constexpr ( is_detected_v<detect_type, U> )
       {
-        tmp.data.type &= ~( USE_DEFAULT | USE_CURRENT );
-        tmp.data.type |= VALUE_OVERRIDE;
+        pack.data.type &= ~( USE_DEFAULT | USE_CURRENT );
+        pack.data.type |= VALUE_OVERRIDE;
       }
     }
     else if constexpr ( std::is_same_v<T, effect_mask_t> || ( std::is_integral_v<T> && !std::is_same_v<T, bool> ) )
     {
-      tmp.mask = mod;
+      pack.mask = mod;
     }
     else if constexpr ( std::is_same_v<T, affect_list_t> )
     {
-      tmp.affect_lists.push_back( std::move( mod ) );
+      pack.affect_lists.push_back( std::move( mod ) );
     }
     else if constexpr ( std::is_convertible_v<decltype( *std::declval<T>() ), const std::vector<U>> )
     {
-      tmp.copy = &( *mod );
+      pack.copy = &( *mod );
     }
     else
     {
@@ -408,9 +434,9 @@ struct parse_base_t
   }
 
   template <typename U, typename... Ts>
-  void parse_spell_effect_mods( pack_t<U>& tmp, Ts... mods )
+  void parse_spell_effect_mods( pack_t<U>& pack, Ts... mods )
   {
-    ( parse_spell_effect_mod( tmp, mods ), ... );
+    ( parse_spell_effect_mod( pack, mods ), ... );
   }
 };
 
@@ -501,30 +527,26 @@ struct modified_spell_data_t : public parse_base_t
     if ( !_spell.ok() )
       return this;
 
-    pack_t<modify_effect_t> pack;
-    const spell_data_t* spell = resolve_parse_data( data, pack );
+    pack_t<modify_effect_t> pack( data );
 
-    if ( !spell || !spell->ok() )
+    if ( !pack.spell || !pack.spell->ok() )
       return this;
 
     // parse mods and populate pack
     parse_spell_effect_mods( pack, mods... );
 
-    for ( size_t i = 1; i <= spell->effect_count(); i++ )
+    for ( size_t i = 1; i <= pack.spell->effect_count(); i++ )
     {
       if ( pack.mask & 1 << ( i - 1 ) )
         continue;
 
-      // local copy of pack per effect
-      pack_t<modify_effect_t> tmp = pack;
-
-      parse_effect( tmp, spell, i );
+      parse_effect( pack, i );
     }
 
     return this;
   }
 
-  void parse_effect( pack_t<modify_effect_t>&, const spell_data_t*, size_t );
+  void parse_effect( const pack_t<modify_effect_t>&, size_t );
 
   void print_parsed_spell( report::sc_html_stream&, const sim_t& );
 
@@ -540,13 +562,14 @@ struct parse_effects_t : public parse_base_t
 {
 protected:
   player_t* _player;
-  mutable uint32_t buff_idx_to_consume = 0;
+  std::vector<parse_cb_t> callback_list;
+  mutable uint32_t callback_idx = 0;
 
 public:
   parse_effects_t( player_t* p ) : _player( p ) {}
 
   template <typename U>
-  void parse_effect( pack_t<U>&, const spell_data_t*, size_t, bool );
+  bool parse_effect( pack_t<U>&, size_t, bool );
 
   // Syntax: parse_effects( data[, spells|condition|ignore_mask|value|flags][,...] )
   //   (buff_t*) or
@@ -578,40 +601,41 @@ public:
   template <typename T, typename... Ts>
   void parse_effects( T data, Ts... mods )
   {
-    pack_t<player_effect_t> pack;
-    const spell_data_t* spell = resolve_parse_data( data, pack );
+    pack_t<player_effect_t> pack( data );
 
-    if ( !spell || !spell->ok() )
+    if ( !pack.spell || !pack.spell->ok() )
       return;
 
     // parse mods and populate pack
     parse_spell_effect_mods( pack, mods... );
 
-    for ( size_t i = 1; i <= spell->effect_count(); i++ )
+    bool has_entry = false;
+
+    for ( size_t i = 1; i <= pack.spell->effect_count(); i++ )
     {
       if ( pack.mask & 1 << ( i - 1 ) )
         continue;
 
-      // local copy of pack per effect
-      pack_t<player_effect_t> tmp = pack;
-
-      parse_effect( tmp, spell, i, false );
+      has_entry = parse_effect( pack, i, false ) || has_entry;
     }
+
+    if ( has_entry && pack.callback )
+      register_callback_function( pack );
   }
 
   template <typename T, typename... Ts>
   void force_effect( T data, unsigned idx, Ts... mods )
   {
-    pack_t<player_effect_t> pack;
-    const spell_data_t* spell = resolve_parse_data( data, pack );
+    pack_t<player_effect_t> pack( data );
 
-    if ( !spell || !spell->ok() || !can_force( spell->effectN( idx ) ) )
+    if ( !pack.spell || !pack.spell->ok() || !can_force( pack.spell->effectN( idx ) ) )
       return;
 
     // parse mods and populate pack
     parse_spell_effect_mods( pack, mods... );
 
-    parse_effect( pack, spell, idx, true );
+    if ( parse_effect( pack, idx, true ) && pack.callback )
+      register_callback_function( pack );
   }
 
   // Syntax: parse_target_effects( func, debuff[, spells|ignore_mask][,...] )
@@ -625,25 +649,21 @@ public:
   void parse_target_effects( const std::function<int( actor_target_data_t* )>& fn, const spell_data_t* spell,
                              Ts... mods )
   {
-    pack_t<target_effect_t> pack;
-
     if ( !spell || !spell->ok() )
       return;
 
+    pack_t<target_effect_t> pack( spell );
     pack.data.func = std::move( fn );
 
     // parse mods and populate pack
     parse_spell_effect_mods( pack, mods... );
 
-    for ( size_t i = 1; i <= spell->effect_count(); i++ )
+    for ( size_t i = 1; i <= pack.spell->effect_count(); i++ )
     {
       if ( pack.mask & 1 << ( i - 1 ) )
         continue;
 
-      // local copy of pack per effect
-      pack_t<target_effect_t> tmp = pack;
-
-      parse_effect( tmp, spell, i, false );
+      parse_effect( pack, i, false );
     }
   }
 
@@ -651,28 +671,27 @@ public:
   void force_target_effect( const std::function<int( actor_target_data_t* )>& fn, const spell_data_t* spell,
                             unsigned idx, Ts... mods )
   {
-    pack_t<target_effect_t> pack;
-
     if ( !spell || !spell->ok() || !can_force( spell->effectN( idx ) ) )
       return;
 
+    pack_t<target_effect_t> pack( spell );
     pack.data.func = std::move( fn );
 
     // parse mods and populate pack
     parse_spell_effect_mods( pack, mods... );
 
-    parse_effect( pack, spell, idx, true );
+    parse_effect( pack, idx, true );
   }
 
   virtual bool is_valid_aura( const spelleffect_data_t& ) const { return false; }
   virtual bool is_valid_target_aura( const spelleffect_data_t& ) const { return false; }
 
-  virtual std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, pack_t<player_effect_t>& pack,
-                                                           double& val_mul, std::string& str, bool& flat,
-                                                           bool force ) = 0;
-  virtual std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t& eff, pack_t<target_effect_t>& data,
-                                                           double& val_mul, std::string& str, bool& flat,
-                                                           bool force ) = 0;
+  virtual std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t& eff, player_effect_t& tmp,
+                                                           double& val_mul, std::string& str, bool& flat, bool force,
+                                                           const pack_t<player_effect_t>& pack ) = 0;
+  virtual std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t& eff, target_effect_t& tmp,
+                                                           double& val_mul, std::string& str, bool& flat, bool force,
+                                                           const pack_t<target_effect_t>& pack ) = 0;
 
   virtual void debug_message( const player_effect_t& data, std::string_view type_str, std::string_view val_str,
                               bool mastery, const spell_data_t* s_data, size_t i ) = 0;
@@ -748,10 +767,10 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   bool is_valid_aura( const spelleffect_data_t& ) const override;
   bool is_valid_target_aura( const spelleffect_data_t& ) const override;
 
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t&, pack_t<player_effect_t>&, double&,
-                                                   std::string&, bool&, bool ) override;
-  std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, pack_t<target_effect_t>&, double&,
-                                                   std::string&, bool&, bool ) override;
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t&, player_effect_t&, double&, std::string&,
+                                                   bool&, bool, const pack_t<player_effect_t>& ) override;
+  std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, target_effect_t&, double&, std::string&,
+                                                   bool&, bool, const pack_t<target_effect_t>& ) override;
 
   void debug_message( const player_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
                       size_t ) override;
@@ -809,19 +828,24 @@ struct parse_action_base_t : public parse_effects_t
   std::vector<target_effect_t> target_crit_bonus_effects;
 
 private:
-  std::vector<buff_t*> _buff_list;
   action_t* _action;
 
 public:
   parse_action_base_t( player_t* p, action_t* a ) : parse_effects_t( p ), _action( a ) {}
 
+  void parse_callback_function( pack_t<player_effect_t>& pack, parse_cb_t cb ) override;
+  void parse_callback_function( pack_t<player_effect_t>& pack, parse_flag_e type ) override;
+  void register_callback_function( pack_t<player_effect_t>& pack ) override;
+
+  void trigger_callbacks( parse_callback_e );
+
   bool is_valid_aura( const spelleffect_data_t& ) const override;
   bool is_valid_target_aura( const spelleffect_data_t& ) const override;
 
-  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t&, pack_t<player_effect_t>&, double&,
-                                                   std::string&, bool&, bool ) override;
-  std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, pack_t<target_effect_t>&, double&,
-                                                   std::string&, bool&, bool ) override;
+  std::vector<player_effect_t>* get_effect_vector( const spelleffect_data_t&, player_effect_t&, double&, std::string&,
+                                                   bool&, bool, const pack_t<player_effect_t>& ) override;
+  std::vector<target_effect_t>* get_effect_vector( const spelleffect_data_t&, target_effect_t&, double&, std::string&,
+                                                   bool&, bool, const pack_t<target_effect_t>& ) override;
 
   void debug_message( const player_effect_t&, std::string_view, std::string_view, bool, const spell_data_t*,
                       size_t ) override;
@@ -831,12 +855,6 @@ public:
   bool can_force( const spelleffect_data_t& ) const override;
 
   bool check_affected_list( const std::vector<affect_list_t>&, const spelleffect_data_t&, bool& );
-
-  void initialize_buff_list_on_vector( std::vector<player_effect_t>& );
-
-  void initialize_buff_list();
-
-  void consume_buff_list();
 
   void parsed_effects_html( report::sc_html_stream& );
 
@@ -935,14 +953,22 @@ public:
   void init_finished() override
   {
     BASE::init_finished();
-    initialize_buff_list();
     initialize_cooldown_buffs();
   }
+
+  void impact( action_state_t* s ) override
+  {
+    trigger_callbacks( PARSE_CALLBACK_PRE_IMPACT );
+    BASE::impact( s );
+    trigger_callbacks( PARSE_CALLBACK_POST_IMPACT );
+  }
+
 
   void execute() override
   {
     BASE::execute();
-    consume_buff_list();
+    trigger_callbacks( PARSE_CALLBACK_POST_EXECUTE );
+    callback_idx = 0;
   }
 
   double cost_flat_modifier() const override

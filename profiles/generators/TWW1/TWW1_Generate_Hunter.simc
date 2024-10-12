@@ -4,7 +4,7 @@ race=dwarf
 role=attack
 position=ranged_back
 spec=beast_mastery
-talents=C0PAAAAAAAAAAAAAAAAAAAAAAYsNDMgFwMsEyYBAAAAAADAAAAAAgZGDjZmZYmhZYYGzMGzMzkZYMjZmZMzwwYYmhZZMmlZwG
+talents=C0PAAAAAAAAAAAAAAAAAAAAAAYsNDMgFwMsEYsAAAAAAgBAAAAAAwMWGGzMzwMDDzwMmZMmZmJzwYGzMzYmxMMGmZYWGMLzgN
 
 head=,id=212020,bonus_id=1808,gem_id=213743,ilevel=639
 neck=,id=225577,bonus_id=8781,gem_id=213479/213470,ilevel=639
@@ -82,7 +82,7 @@ race=dwarf
 spec=marksmanship
 role=attack
 position=ranged_back
-talents=C4PAAAAAAAAAAAAAAAAAAAAAAYsNDMglgZYJwsAAAAAAAmxMzMDzMzgZmhZmZMmZMjHAAAAAAAAmhxMMzMzMTzMGDzMMGmZbGsB
+talents=C4PAAAAAAAAAAAAAAAAAAAAAAYsNDMglgZYJwsAAAAAAAmxMzMDzMzgZmhZmZMmZmZAAAAAAAAmhxMMzMzMTzMGDzMMGmZbGsB
 
 head=,id=133285,bonus_id=1808,gem_id=213743,ilevel=639
 neck=,id=212448,bonus_id=8781,gem_id=213455/213455,ilevel=639

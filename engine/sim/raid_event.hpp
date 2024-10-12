@@ -34,7 +34,7 @@ public:
   sim_t* sim;
   std::string name;
   std::string type;
-  int64_t num_starts;
+  size_t num_starts;
   timespan_t first, last;
   double first_pct, last_pct;
   rng::truncated_gauss_t cooldown;

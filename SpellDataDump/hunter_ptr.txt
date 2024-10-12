@@ -1,5 +1,6 @@
 SimulationCraft 1100-02 for World of Warcraft 11.0.5.56865 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -13,7 +14,7 @@ Labels           : 16: Class Spells
                  : 1194
 Affecting spells : Bestial Wrath (19574 effects: #1, #4), Survival Hunter (137017 effect#6), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effect#1), Bullseye (204090 effect#1), Thrill of the Hunt (257946 effect#1), Heaven's Nemesis (397118 effect#1), Cornered Prey (452101 effect#1)
 Family Flags     : 0, 121
-Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Auto Repeat (69), Normal Ranged Attack (111), No Cast Log (128), Auto Ranged Combat (152), AI Primary Ranged Attack (206), Allow Class Ability Procs (416)
+Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Auto Repeat (69), Normal Ranged Attack (111), No Cast Log (128), Auto Ranged Combat (152), AI Primary Ranged Attack (206), Do Not Log on Learn (355), Allow Class Ability Procs (416)
                  :
 Effects          :
 #1 (id=46)       : Weapon Damage% (31)
@@ -4006,7 +4007,7 @@ Affecting spells : Cornered Prey (452101 effect#1)
 Triggered by     : Lock and Load (194595)
 Family Flags     : 112
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Do Not Consume if Gained During Cast (79), Can Proc From Procs (122), Allow Cast While Casting (135), Not In Spellbook (143), No Cooldown On Tooltip (192), Floating Combat Text On Cast (198), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Ecnounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
                  :
 Effects          :
 #1 (id=285662)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
@@ -16345,7 +16346,7 @@ Stacks           : 20 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : No Aura Cancel (31), Not In Spellbook (143), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Ecnounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
                  :
 Effects          :
 #1 (id=1166879)  : Apply Aura (6) | Dummy (4)
@@ -16384,7 +16385,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Not In Spellbook (143), Spellcast Override In Spellbook (310), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Ecnounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
                  :
 Effects          :
 #1 (id=1166885)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
@@ -16518,7 +16519,7 @@ Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Ecnounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
                  :
 Effects          :
 #1 (id=1166989)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Target Range (35)
@@ -17244,7 +17245,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Ecnounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
                  :
 Effects          :
 #1 (id=1179905)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
@@ -17551,7 +17552,7 @@ Labels           : 16: Class Spells
                  : 3022
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Ecnounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
                  :
 Effects          :
 #1 (id=1181535)  : Apply Aura (6) | Dummy (4)
@@ -17570,7 +17571,7 @@ Labels           : 16: Class Spells
                  : 3022
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Ecnounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
                  :
 Effects          :
 #1 (id=1181536)  : Apply Aura (6) | Dummy (4)
@@ -17590,7 +17591,7 @@ Labels           : 16: Class Spells
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Ecnounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
                  :
 Effects          :
 #1 (id=1181738)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
@@ -17701,7 +17702,7 @@ Labels           : 16: Class Spells
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Attributes       : Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Ecnounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
                  :
 Effects          :
 #1 (id=1182585)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -17721,7 +17722,7 @@ Labels           : 16: Class Spells
                  : 117
                  : 292
 Attributes       : Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Ecnounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
                  :
 Effects          :
 #1 (id=1182588)  : Apply Aura (6) | Modify Pet Damage Done% (429)
@@ -17831,7 +17832,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Ecnounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
                  :
 Effects          :
 #1 (id=1184898)  : Apply Aura (6) | Modify All Haste% (193)
@@ -17851,7 +17852,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Ecnounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
                  :
 Effects          :
 #1 (id=1185789)  : Apply Aura (6) | Dummy (4)
@@ -17871,7 +17872,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Ecnounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
                  :
 Effects          :
 #1 (id=1185799)  : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
