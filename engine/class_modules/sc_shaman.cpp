@@ -6260,7 +6260,7 @@ struct chain_lightning_t : public chained_base_t
       p()->trigger_arc_discharge( state );
     }
 
-    if ( state->chain_target == 0 )
+    if ( state->chain_target == 0 && p()->specialization() == SHAMAN_ENHANCEMENT )
     {
       p()->buff.voltaic_blaze->trigger();
     }
@@ -7408,7 +7408,8 @@ struct lightning_bolt_t : public shaman_spell_t
       trigger_lightning_rod_debuff( state->target, lr_delay );
     }
 
-    if ( state->chain_target == 0 && exec_type != spell_variant::PRIMORDIAL_WAVE )
+    if ( state->chain_target == 0 && exec_type != spell_variant::PRIMORDIAL_WAVE &&
+         p()->specialization() == SHAMAN_ENHANCEMENT )
     {
       p()->buff.voltaic_blaze->trigger();
     }
@@ -10560,7 +10561,7 @@ struct tempest_t : public shaman_spell_t
       trigger_lightning_rod_debuff( state->target );
     }
 
-    if ( state->chain_target == 0 )
+    if ( state->chain_target == 0 && p()->specialization() == SHAMAN_ENHANCEMENT )
     {
       p()->buff.voltaic_blaze->trigger();
     }
