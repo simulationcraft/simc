@@ -1473,9 +1473,6 @@ struct flamestrike_t final : public arcane_phoenix_spell_t
     if ( o()->buffs.sparking_cinders->check() )
       m *= 1.0 + o()->talents.sparking_cinders->effectN( 2 ).percent();
 
-    if ( o()->buffs.majesty_of_the_phoenix->check() )
-      m *= 1.0 + o()->buffs.majesty_of_the_phoenix->data().effectN( 1 ).percent();
-
     // TODO: Double check that this actually applies and check whether it gets consumed.
     if ( o()->buffs.burden_of_power->check() )
       m *= 1.0 + o()->buffs.burden_of_power->data().effectN( 3 ).percent();
@@ -4627,11 +4624,26 @@ struct flamestrike_pyromaniac_t final : public fire_mage_spell_t
     if ( p()->buffs.sparking_cinders->check() )
       m *= 1.0 + p()->talents.sparking_cinders->effectN( 2 ).percent();
 
-    if ( p()->buffs.majesty_of_the_phoenix->check() )
-      m *= 1.0 + p()->buffs.majesty_of_the_phoenix->data().effectN( 1 ).percent();
-
     if ( p()->buffs.burden_of_power->check() )
       m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 3 ).percent();
+
+    return m;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = fire_mage_spell_t::composite_crit_chance();
+
+    c += p()->buffs.majesty_of_the_phoenix->check() * p()->buffs.majesty_of_the_phoenix->data().effectN( 1 ).percent();
+
+    return c;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = fire_mage_spell_t::composite_crit_damage_bonus_multiplier();
+
+    m *= 1.0 + p()->buffs.majesty_of_the_phoenix->check() * p()->buffs.majesty_of_the_phoenix->data().effectN( 2 ).percent();
 
     return m;
   }
@@ -4658,6 +4670,8 @@ struct flamestrike_t final : public hot_streak_spell_t
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
     base_dd_multiplier *= 1.0 + p->talents.quickflame->effectN( 1 ).percent();
+    // 1 ms travel delay to handle Majesty of the Phoenix correctly
+    travel_delay = 0.001;
 
     if ( p->talents.pyromaniac.ok() )
       pyromaniac_action = get_action<flamestrike_pyromaniac_t>( "flamestrike_pyromaniac", p );
@@ -4670,16 +4684,6 @@ struct flamestrike_t final : public hot_streak_spell_t
     }
   }
 
-  timespan_t execute_time_flat_modifier() const override
-  {
-    auto add = hot_streak_spell_t::execute_time_flat_modifier();
-
-    if ( p()->buffs.majesty_of_the_phoenix->check() )
-      add += p()->buffs.majesty_of_the_phoenix->data().effectN( 2 ).time_value();
-
-    return add;
-  }
-
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = fire_mage_spell_t::composite_da_multiplier( s );
@@ -4690,11 +4694,27 @@ struct flamestrike_t final : public hot_streak_spell_t
     if ( p()->buffs.sparking_cinders->check() )
       m *= 1.0 + p()->talents.sparking_cinders->effectN( 2 ).percent();
 
-    if ( p()->buffs.majesty_of_the_phoenix->check() )
-      m *= 1.0 + p()->buffs.majesty_of_the_phoenix->data().effectN( 1 ).percent();
-
     if ( p()->buffs.burden_of_power->check() )
       m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 3 ).percent();
+
+    return m;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = hot_streak_spell_t::composite_crit_chance();
+
+    // TODO: does this affect Fuel the Fire?
+    c += p()->buffs.majesty_of_the_phoenix->check() * p()->buffs.majesty_of_the_phoenix->data().effectN( 1 ).percent();
+
+    return c;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = hot_streak_spell_t::composite_crit_damage_bonus_multiplier();
+
+    m *= 1.0 + p()->buffs.majesty_of_the_phoenix->check() * p()->buffs.majesty_of_the_phoenix->data().effectN( 2 ).percent();
 
     return m;
   }
@@ -4714,6 +4734,7 @@ struct flamestrike_t final : public hot_streak_spell_t
 
     hot_streak_spell_t::execute();
 
+    // TODO: description indicates it should consume all stacks, but currently only consumes 1
     p()->buffs.majesty_of_the_phoenix->decrement();
 
     if ( p()->buffs.combustion->check() )
