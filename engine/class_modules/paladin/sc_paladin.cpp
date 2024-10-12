@@ -5164,6 +5164,9 @@ void paladin_t::combat_begin()
   next_season = SUMMER;
   next_armament = SACRED_WEAPON;
 
+  // this does not appear to reset on combat start, so we initialize it at random
+  radiant_glory_accumulator = rng().range( 0.0, 1.0 );
+
   if ( talents.inquisitors_ire->ok() )
   {
     buffs.inquisitors_ire_driver->trigger();

@@ -2003,6 +2003,7 @@ class SpellDataGenerator(DataGenerator):
           ( 447419, 0 ),                                # Call of the Ancestor Lava Burst
           ( 447427, 0 ),                                # Call of the Ancestor Elemental Blast
           ( 447425, 0 ),                                # Call of the Ancestor Chain Lightning
+          ( 470058, 0 ),                                # Voltaic Blaze override buff
         ),
 
         # Mage:

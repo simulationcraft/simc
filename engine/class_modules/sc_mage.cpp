@@ -1471,10 +1471,7 @@ struct flamestrike_t final : public arcane_phoenix_spell_t
       m *= 1.0 + o()->talents.unleashed_inferno->effectN( 4 ).percent();
 
     if ( o()->buffs.sparking_cinders->check() )
-      m *= 1.0 + o()->talents.sparking_cinders->effectN( 2 ).percent();
-
-    if ( o()->buffs.majesty_of_the_phoenix->check() )
-      m *= 1.0 + o()->buffs.majesty_of_the_phoenix->data().effectN( 1 ).percent();
+      m *= 1.0 + o()->buffs.sparking_cinders->data().effectN( 2 ).percent();
 
     // TODO: Double check that this actually applies and check whether it gets consumed.
     if ( o()->buffs.burden_of_power->check() )
@@ -2850,7 +2847,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.scorch.ok() )
       return false;
 
-    if ( p()->buffs.heat_shimmer->check() )
+    if ( time_to_execute == 0_ms && p()->buffs.heat_shimmer->check() )
       return true;
 
     return target->health_percentage() <= p()->talents.scorch->effectN( 2 ).base_value() + p()->talents.sunfury_execution->effectN( 2 ).base_value();
@@ -2861,7 +2858,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.improved_scorch.ok() )
       return false;
 
-    if ( p()->buffs.heat_shimmer->check() )
+    if ( time_to_execute == 0_ms && p()->buffs.heat_shimmer->check() )
       return true;
 
     return target->health_percentage() <= p()->talents.improved_scorch->effectN( 1 ).base_value() + p()->talents.sunfury_execution->effectN( 2 ).base_value();
@@ -4625,13 +4622,28 @@ struct flamestrike_pyromaniac_t final : public fire_mage_spell_t
       m *= 1.0 + p()->talents.unleashed_inferno->effectN( 4 ).percent();
 
     if ( p()->buffs.sparking_cinders->check() )
-      m *= 1.0 + p()->talents.sparking_cinders->effectN( 2 ).percent();
-
-    if ( p()->buffs.majesty_of_the_phoenix->check() )
-      m *= 1.0 + p()->buffs.majesty_of_the_phoenix->data().effectN( 1 ).percent();
+      m *= 1.0 + p()->buffs.sparking_cinders->data().effectN( 2 ).percent();
 
     if ( p()->buffs.burden_of_power->check() )
       m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 3 ).percent();
+
+    return m;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = fire_mage_spell_t::composite_crit_chance();
+
+    c += p()->buffs.majesty_of_the_phoenix->check() * p()->buffs.majesty_of_the_phoenix->data().effectN( 1 ).percent();
+
+    return c;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = fire_mage_spell_t::composite_crit_damage_bonus_multiplier();
+
+    m *= 1.0 + p()->buffs.majesty_of_the_phoenix->check() * p()->buffs.majesty_of_the_phoenix->data().effectN( 2 ).percent();
 
     return m;
   }
@@ -4658,6 +4670,8 @@ struct flamestrike_t final : public hot_streak_spell_t
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
     base_dd_multiplier *= 1.0 + p->talents.quickflame->effectN( 1 ).percent();
+    // 1 ms travel delay to handle Majesty of the Phoenix correctly
+    travel_delay = 0.001;
 
     if ( p->talents.pyromaniac.ok() )
       pyromaniac_action = get_action<flamestrike_pyromaniac_t>( "flamestrike_pyromaniac", p );
@@ -4670,16 +4684,6 @@ struct flamestrike_t final : public hot_streak_spell_t
     }
   }
 
-  timespan_t execute_time_flat_modifier() const override
-  {
-    auto add = hot_streak_spell_t::execute_time_flat_modifier();
-
-    if ( p()->buffs.majesty_of_the_phoenix->check() )
-      add += p()->buffs.majesty_of_the_phoenix->data().effectN( 2 ).time_value();
-
-    return add;
-  }
-
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = fire_mage_spell_t::composite_da_multiplier( s );
@@ -4688,13 +4692,29 @@ struct flamestrike_t final : public hot_streak_spell_t
       m *= 1.0 + p()->talents.unleashed_inferno->effectN( 4 ).percent();
 
     if ( p()->buffs.sparking_cinders->check() )
-      m *= 1.0 + p()->talents.sparking_cinders->effectN( 2 ).percent();
-
-    if ( p()->buffs.majesty_of_the_phoenix->check() )
-      m *= 1.0 + p()->buffs.majesty_of_the_phoenix->data().effectN( 1 ).percent();
+      m *= 1.0 + p()->buffs.sparking_cinders->data().effectN( 2 ).percent();
 
     if ( p()->buffs.burden_of_power->check() )
       m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 3 ).percent();
+
+    return m;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = hot_streak_spell_t::composite_crit_chance();
+
+    // TODO: does this affect Fuel the Fire?
+    c += p()->buffs.majesty_of_the_phoenix->check() * p()->buffs.majesty_of_the_phoenix->data().effectN( 1 ).percent();
+
+    return c;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = hot_streak_spell_t::composite_crit_damage_bonus_multiplier();
+
+    m *= 1.0 + p()->buffs.majesty_of_the_phoenix->check() * p()->buffs.majesty_of_the_phoenix->data().effectN( 2 ).percent();
 
     return m;
   }
@@ -4714,6 +4734,7 @@ struct flamestrike_t final : public hot_streak_spell_t
 
     hot_streak_spell_t::execute();
 
+    // TODO: description indicates it should consume all stacks, but currently only consumes 1
     p()->buffs.majesty_of_the_phoenix->decrement();
 
     if ( p()->buffs.combustion->check() )
@@ -6196,7 +6217,7 @@ struct pyroblast_pyromaniac_t final : public fire_mage_spell_t
     double m = fire_mage_spell_t::composite_da_multiplier( s );
 
     if ( p()->buffs.sparking_cinders->check() )
-      m *= 1.0 + p()->talents.sparking_cinders->effectN( 1 ).percent();
+      m *= 1.0 + p()->buffs.sparking_cinders->data().effectN( 1 ).percent();
 
     if ( p()->buffs.burden_of_power->check() )
       m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 1 ).percent();
@@ -6239,7 +6260,7 @@ struct pyroblast_t final : public hot_streak_spell_t
     double m = hot_streak_spell_t::composite_da_multiplier( s );
 
     if ( p()->buffs.sparking_cinders->check() )
-      m *= 1.0 + p()->talents.sparking_cinders->effectN( 1 ).percent();
+      m *= 1.0 + p()->buffs.sparking_cinders->data().effectN( 1 ).percent();
 
     if ( p()->buffs.burden_of_power->check() )
       m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 1 ).percent();
@@ -6372,6 +6393,39 @@ struct ray_of_frost_t final : public frost_mage_spell_t
   }
 };
 
+struct scorch_state_t final : public mage_spell_state_t
+{
+  bool scorch_execute;
+  bool improved_scorch;
+
+  scorch_state_t( action_t* action, player_t* target ) :
+    mage_spell_state_t( action, target ),
+    scorch_execute(),
+    improved_scorch()
+  { }
+
+  void initialize() override
+  {
+    mage_spell_state_t::initialize();
+    scorch_execute = false;
+    improved_scorch = false;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    mage_spell_state_t::debug_str( s ) << " scorch_execute=" << scorch_execute << " improved_scorch=" << improved_scorch;
+    return s;
+  }
+
+  void copy_state( const action_state_t* s ) override
+  {
+    mage_spell_state_t::copy_state( s );
+    auto other = debug_cast<const scorch_state_t*>( s );
+    scorch_execute = other->scorch_execute;
+    improved_scorch = other->improved_scorch;
+  }
+};
+
 struct scorch_t final : public fire_mage_spell_t
 {
   scorch_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -6383,6 +6437,25 @@ struct scorch_t final : public fire_mage_spell_t
     // There is a tiny delay between Scorch dealing damage and Hot Streak
     // state being updated. Here we model it as a tiny travel time.
     travel_delay = p->options.scorch_delay.total_seconds();
+  }
+
+  action_state_t* new_state() override
+  { return new scorch_state_t( this, target ); }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    auto ss = debug_cast<scorch_state_t*>( s );
+    ss->scorch_execute = scorch_execute_active( s->target );
+    ss->improved_scorch = improved_scorch_active( s->target );
+    fire_mage_spell_t::snapshot_state( s, rt );
+  }
+
+  void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    if ( time_to_execute == 0_ms )
+      p()->buffs.heat_shimmer->decrement();
   }
 
   timespan_t execute_time() const override
@@ -6419,13 +6492,11 @@ struct scorch_t final : public fire_mage_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      if ( scorch_execute_active( s->target ) )
+      auto ss = debug_cast<scorch_state_t*>( s );
+      if ( ss->scorch_execute )
         p()->buffs.frenetic_speed->trigger();
-      if ( improved_scorch_active( s->target ) )
+      if ( ss->improved_scorch )
         get_td( s->target )->debuffs.improved_scorch->trigger();
-      if ( p()->buffs.heat_shimmer->check() )
-        // The currently casting Scorch and a queued Scorch can both fully benefit from Heat Shimmer.
-        make_event( *sim, 15_ms, [ this ] { p()->buffs.heat_shimmer->decrement(); } );
     }
   }
 
