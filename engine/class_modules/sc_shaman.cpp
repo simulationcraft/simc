@@ -11206,7 +11206,7 @@ void shaman_t::create_actions()
     action.earthen_rage = new earthen_rage_damage_t( this );
   }
 
-  if ( talent.arc_discharge.ok() )
+  if ( talent.arc_discharge.ok() && specialization() == SHAMAN_ENHANCEMENT )
   {
     action.lightning_bolt_ad = new lightning_bolt_t( this, spell_variant::ARC_DISCHARGE );
     action.chain_lightning_ad = new chain_lightning_t( this, spell_variant::ARC_DISCHARGE );
