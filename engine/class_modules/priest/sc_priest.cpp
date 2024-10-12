@@ -1746,8 +1746,6 @@ struct collapsing_void_damage_t final : public priest_spell_t
     aoe              = -1;
     radius           = data().effectN( 1 ).radius_max();
     split_aoe_damage = 1;
-
-    // TODO: Refactor this into a pet, seems to get the same pet mod as our other ones
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1797,8 +1795,6 @@ struct entropic_rift_damage_t final : public priest_spell_t
     radius            = base_radius;
 
     affected_by_shadow_weaving = true;
-
-    // TODO: Refactor this into a pet, seems to get the same pet mod as our other ones
   }
 
   double miss_chance( double hit, player_t* t ) const override
