@@ -13487,8 +13487,8 @@ void shaman_t::create_buffs()
     ->set_trigger_spell( talent.windfury_weapon );
 
   buff.voltaic_blaze = make_buff( this, "voltaic_blaze", find_spell( 470058 ) )
-    ->set_chance( talent.voltaic_surge->effectN( 1 ).percent() )
-    ->set_trigger_spell( talent.voltaic_surge );
+    ->set_chance( talent.voltaic_blaze->effectN( 1 ).percent() )
+    ->set_trigger_spell( talent.voltaic_blaze );
 
   //
   // Restoration
