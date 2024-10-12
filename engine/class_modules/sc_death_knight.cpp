@@ -3733,12 +3733,16 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::arise();
     dk()->buffs.dancing_rune_weapon->trigger();
+    if ( dk()->is_ptr() && dk()->talent.sanlayn.gift_of_the_sanlayn.ok() )
+      dk()->buffs.gift_of_the_sanlayn->trigger();
   }
 
   void demise() override
   {
     death_knight_pet_t::demise();
     dk()->buffs.dancing_rune_weapon->expire();
+    if ( dk()->is_ptr() && dk()->talent.sanlayn.gift_of_the_sanlayn.ok() )
+      dk()->buffs.gift_of_the_sanlayn->expire();
   }
 
   attack_t* create_main_hand_auto_attack() override
@@ -14008,7 +14012,7 @@ void death_knight_t::create_buffs()
                     "{} gains Vampiric Blood: health pct change {}%, current health: {} -> {}, max: {} -> {}", name(),
                     health_change * 100.0, old_health, resources.current[ RESOURCE_HEALTH ], old_max_health,
                     resources.max[ RESOURCE_HEALTH ] );
-                if ( talent.sanlayn.gift_of_the_sanlayn.ok() )
+                if ( !is_ptr() && talent.sanlayn.gift_of_the_sanlayn.ok() )
                 {
                   buffs.gift_of_the_sanlayn->trigger();
                 }
@@ -14024,7 +14028,7 @@ void death_knight_t::create_buffs()
                     "{} loses Vampiric Blood: health pct change {}%, current health: {} -> {}, max: {} -> {}", name(),
                     health_change * 100.0, old_health, resources.current[ RESOURCE_HEALTH ], old_max_health,
                     resources.max[ RESOURCE_HEALTH ] );
-                if ( talent.sanlayn.gift_of_the_sanlayn.ok() )
+                if ( !is_ptr() && talent.sanlayn.gift_of_the_sanlayn.ok() )
                 {
                   buffs.gift_of_the_sanlayn->expire();
                 }
