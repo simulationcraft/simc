@@ -10735,12 +10735,16 @@ struct soul_reaper_action_t final : public soul_reaper_t
         }
       }
     }
+    if ( p()->is_ptr() && p()->talent.deathbringer.reaper_of_souls.ok() && p()->buffs.reaper_of_souls->check() )
+    {
+      p()->buffs.reaper_of_souls->expire();
+    }
   }
 
-  double cost() const override
+  double composite_energize_amount( const action_state_t* s) const override
   {
-    double c = death_knight_melee_attack_t::cost();
-    if ( !p()->bugs && p()->is_ptr() && p()->talent.deathbringer.reaper_of_souls.ok() && p()->buffs.reaper_of_souls->up() )
+    double c = death_knight_melee_attack_t::composite_energize_amount( s );
+    if ( p()->is_ptr() && p()->talent.deathbringer.reaper_of_souls.ok() && p()->buffs.reaper_of_souls->up() )
     {
       c = 0.0;
     }
@@ -15042,11 +15046,7 @@ void death_knight_action_t<Base>::apply_action_effects()
   if ( p()->is_ptr() )
   {
     parse_effects( p()->buffs.exterminate);
-  }
-  else
-  {
-    parse_effects( p()->buffs.exterminate_painful_death, effect_mask_t( true ).disable( 2 ) );
-    parse_effects( p()->buffs.exterminate, effect_mask_t( true ).disable( 2 ) );
+    parse_effects( p()->buffs.reaper_of_souls );
   }
 
   // San'layn
