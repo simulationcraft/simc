@@ -2847,7 +2847,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.scorch.ok() )
       return false;
 
-    if ( p()->buffs.heat_shimmer->check() )
+    if ( time_to_execute == 0_ms && p()->buffs.heat_shimmer->check() )
       return true;
 
     return target->health_percentage() <= p()->talents.scorch->effectN( 2 ).base_value() + p()->talents.sunfury_execution->effectN( 2 ).base_value();
@@ -2858,7 +2858,7 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->talents.improved_scorch.ok() )
       return false;
 
-    if ( p()->buffs.heat_shimmer->check() )
+    if ( time_to_execute == 0_ms && p()->buffs.heat_shimmer->check() )
       return true;
 
     return target->health_percentage() <= p()->talents.improved_scorch->effectN( 1 ).base_value() + p()->talents.sunfury_execution->effectN( 2 ).base_value();
@@ -6393,6 +6393,39 @@ struct ray_of_frost_t final : public frost_mage_spell_t
   }
 };
 
+struct scorch_state_t final : public mage_spell_state_t
+{
+  bool scorch_execute;
+  bool improved_scorch;
+
+  scorch_state_t( action_t* action, player_t* target ) :
+    mage_spell_state_t( action, target ),
+    scorch_execute(),
+    improved_scorch()
+  { }
+
+  void initialize() override
+  {
+    mage_spell_state_t::initialize();
+    scorch_execute = false;
+    improved_scorch = false;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    mage_spell_state_t::debug_str( s ) << " scorch_execute=" << scorch_execute << " improved_scorch=" << improved_scorch;
+    return s;
+  }
+
+  void copy_state( const action_state_t* s ) override
+  {
+    mage_spell_state_t::copy_state( s );
+    auto other = debug_cast<const scorch_state_t*>( s );
+    scorch_execute = other->scorch_execute;
+    improved_scorch = other->improved_scorch;
+  }
+};
+
 struct scorch_t final : public fire_mage_spell_t
 {
   scorch_t( std::string_view n, mage_t* p, std::string_view options_str ) :
@@ -6404,6 +6437,25 @@ struct scorch_t final : public fire_mage_spell_t
     // There is a tiny delay between Scorch dealing damage and Hot Streak
     // state being updated. Here we model it as a tiny travel time.
     travel_delay = p->options.scorch_delay.total_seconds();
+  }
+
+  action_state_t* new_state() override
+  { return new scorch_state_t( this, target ); }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    auto ss = debug_cast<scorch_state_t*>( s );
+    ss->scorch_execute = scorch_execute_active( s->target );
+    ss->improved_scorch = improved_scorch_active( s->target );
+    fire_mage_spell_t::snapshot_state( s, rt );
+  }
+
+  void execute() override
+  {
+    fire_mage_spell_t::execute();
+
+    if ( time_to_execute == 0_ms )
+      p()->buffs.heat_shimmer->decrement();
   }
 
   timespan_t execute_time() const override
@@ -6440,13 +6492,11 @@ struct scorch_t final : public fire_mage_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      if ( scorch_execute_active( s->target ) )
+      auto ss = debug_cast<scorch_state_t*>( s );
+      if ( ss->scorch_execute )
         p()->buffs.frenetic_speed->trigger();
-      if ( improved_scorch_active( s->target ) )
+      if ( ss->improved_scorch )
         get_td( s->target )->debuffs.improved_scorch->trigger();
-      if ( p()->buffs.heat_shimmer->check() )
-        // The currently casting Scorch and a queued Scorch can both fully benefit from Heat Shimmer.
-        make_event( *sim, 15_ms, [ this ] { p()->buffs.heat_shimmer->decrement(); } );
     }
   }
 
