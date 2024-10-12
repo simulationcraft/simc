@@ -1471,7 +1471,7 @@ struct flamestrike_t final : public arcane_phoenix_spell_t
       m *= 1.0 + o()->talents.unleashed_inferno->effectN( 4 ).percent();
 
     if ( o()->buffs.sparking_cinders->check() )
-      m *= 1.0 + o()->talents.sparking_cinders->effectN( 2 ).percent();
+      m *= 1.0 + o()->buffs.sparking_cinders->data().effectN( 2 ).percent();
 
     // TODO: Double check that this actually applies and check whether it gets consumed.
     if ( o()->buffs.burden_of_power->check() )
@@ -4622,7 +4622,7 @@ struct flamestrike_pyromaniac_t final : public fire_mage_spell_t
       m *= 1.0 + p()->talents.unleashed_inferno->effectN( 4 ).percent();
 
     if ( p()->buffs.sparking_cinders->check() )
-      m *= 1.0 + p()->talents.sparking_cinders->effectN( 2 ).percent();
+      m *= 1.0 + p()->buffs.sparking_cinders->data().effectN( 2 ).percent();
 
     if ( p()->buffs.burden_of_power->check() )
       m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 3 ).percent();
@@ -4692,7 +4692,7 @@ struct flamestrike_t final : public hot_streak_spell_t
       m *= 1.0 + p()->talents.unleashed_inferno->effectN( 4 ).percent();
 
     if ( p()->buffs.sparking_cinders->check() )
-      m *= 1.0 + p()->talents.sparking_cinders->effectN( 2 ).percent();
+      m *= 1.0 + p()->buffs.sparking_cinders->data().effectN( 2 ).percent();
 
     if ( p()->buffs.burden_of_power->check() )
       m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 3 ).percent();
@@ -6217,7 +6217,7 @@ struct pyroblast_pyromaniac_t final : public fire_mage_spell_t
     double m = fire_mage_spell_t::composite_da_multiplier( s );
 
     if ( p()->buffs.sparking_cinders->check() )
-      m *= 1.0 + p()->talents.sparking_cinders->effectN( 1 ).percent();
+      m *= 1.0 + p()->buffs.sparking_cinders->data().effectN( 1 ).percent();
 
     if ( p()->buffs.burden_of_power->check() )
       m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 1 ).percent();
@@ -6260,7 +6260,7 @@ struct pyroblast_t final : public hot_streak_spell_t
     double m = hot_streak_spell_t::composite_da_multiplier( s );
 
     if ( p()->buffs.sparking_cinders->check() )
-      m *= 1.0 + p()->talents.sparking_cinders->effectN( 1 ).percent();
+      m *= 1.0 + p()->buffs.sparking_cinders->data().effectN( 1 ).percent();
 
     if ( p()->buffs.burden_of_power->check() )
       m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 1 ).percent();
