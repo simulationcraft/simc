@@ -701,9 +701,9 @@ public:
     double earthquake_spell_power_coefficient = 0.3884;
 
     /// 11.0.5 rng options until proper formulas found
-    double ice_strike_proc_chance = 0.1;
     double flowing_spirits_proc_chance = 0.0;
     double imbuement_mastery_base_chance = 0.07;
+    double ice_strike_base_chance = 0.07;
 
     double dre_enhancement_base_chance = 0.02;
     unsigned dre_enhancement_forced_failures = 8;
@@ -1121,6 +1121,7 @@ public:
 
     accumulated_rng_t* imbuement_mastery;
     accumulated_rng_t* dre_enhancement;
+    accumulated_rng_t* ice_strike;
   } rng_obj;
 
   // Cached pointer for ascendance / normal white melee
@@ -10391,9 +10392,9 @@ struct primordial_wave_t : public shaman_spell_t
 
     // On 11.0.5 PTR, the Primordial Wave projectile hitting the mob triggers
     // a Lava Surge
-    if ( p()->is_ptr() )
+    if ( p()->is_ptr() && p()->spec.lava_surge->ok() )
     {
-        p()->buff.lava_surge->trigger();
+      p()->buff.lava_surge->trigger();
     }
   }
 };
@@ -11264,7 +11265,7 @@ void shaman_t::create_options()
 
   add_option( opt_float( "shaman.earthquake_spell_power_coefficient", options.earthquake_spell_power_coefficient, 0.0, 100.0 ) );
 
-  add_option( opt_float( "shaman.ice_strike_proc_chance", options.ice_strike_proc_chance, 0.0, 1.0 ) );
+  add_option( opt_float( "shaman.ice_strike_base_chance", options.ice_strike_base_chance, 0.0, 1.0 ) );
   add_option( opt_float( "shaman.flowing_spirits_proc_chance", options.flowing_spirits_proc_chance, 0.0, 1.0 ) );
 
   add_option( opt_float( "shaman.imbuement_mastery_base_chance", options.imbuement_mastery_base_chance, 0.0, 1.0 ) );
@@ -11310,7 +11311,7 @@ void shaman_t::copy_from( player_t* source )
   options.routine_communication_total = p->options.routine_communication_total;
 
   options.thunderstrike_ward_proc_chance = p->options.thunderstrike_ward_proc_chance;
-  options.ice_strike_proc_chance = p->options.ice_strike_proc_chance;
+  options.ice_strike_base_chance = p->options.ice_strike_base_chance;
   options.flowing_spirits_proc_chance = p->options.flowing_spirits_proc_chance;
   options.imbuement_mastery_base_chance = p->options.imbuement_mastery_base_chance;
 
@@ -11592,8 +11593,8 @@ void shaman_t::init_spells()
   talent.raging_maelstrom = _ST( "Raging Maelstrom" );
   talent.lashing_flames = _ST( "Lashing Flames" );
   talent.ashen_catalyst = _ST( "Ashen Catalyst" );
-  talent.ice_strike_cast = find_talent_spell( talent_tree::SPECIALIZATION, 466467 );
-  talent.ice_strike_proc = find_talent_spell( talent_tree::SPECIALIZATION, 470194 );
+  talent.ice_strike_cast = find_talent_spell( talent_tree::SPECIALIZATION, 470194 );
+  talent.ice_strike_proc = find_talent_spell( talent_tree::SPECIALIZATION, 466467 );
   // Row 5
   talent.doom_winds = _ST( "Doom Winds" );
   talent.sundering = _ST( "Sundering" );
@@ -12410,7 +12411,7 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
       buff.unlimited_power->trigger();
     }
 
-    if ( dbc->ptr && rng().roll( options.ice_strike_proc_chance ) )
+    if ( dbc->ptr && talent.ice_strike_proc.ok() && rng_obj.ice_strike->trigger() )
     {
       buff.ice_strike_cast->trigger();
     }
@@ -12578,6 +12579,11 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
 
 void shaman_t::trigger_lava_surge()
 {
+  if ( !spec.lava_surge->ok() )
+  {
+    return;
+  }
+
   if ( buff.lava_surge->check() )
   {
     proc.wasted_lava_surge->occur();
@@ -13658,6 +13664,8 @@ void shaman_t::init_rng()
         ? 0.0
         : ( attempt - options.dre_enhancement_forced_failures ) * base_chance;
     } );
+  rng_obj.ice_strike = get_accumulated_rng( "ice_strike",
+    options.ice_strike_base_chance );
 }
 
 // shaman_t::init_items =====================================================
