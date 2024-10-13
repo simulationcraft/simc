@@ -1266,7 +1266,7 @@ public:
   void trigger_windfury_weapon( const action_state_t*, double override_chance = -1.0 );
   void trigger_flametongue_weapon( const action_state_t* );
   void trigger_stormbringer( const action_state_t* state, double proc_chance = -1.0, proc_t* proc_obj = nullptr );
-  void trigger_hot_hand( const action_state_t* state, double override_chance = -1.0, timespan_t override_duration = timespan_t::min() );
+  void trigger_hot_hand( const action_state_t* state );
   void trigger_lava_surge();
   void trigger_splintered_elements( action_t* secondary );
   void trigger_herald_of_the_storms();
@@ -1278,6 +1278,7 @@ public:
   void trigger_stormflurry( const action_state_t* state );
   void trigger_primordial_wave_damage( shaman_spell_t* spell );
   void trigger_imbuement_mastery( const action_state_t* state );
+  void trigger_whirling_fire( const action_state_t* state );
 
   // TWW Triggers
   template <typename T>
@@ -4879,10 +4880,7 @@ struct lava_lash_t : public shaman_attack_t
     p()->trigger_lively_totems( execute_state );
 
     p()->buff.ashen_catalyst->expire();
-    if ( p()->dbc->ptr && p()->buff.whirling_fire->up() )
-    {
-      p()->trigger_hot_hand( execute_state, 1.0, p()->buff.whirling_fire->data().effectN( 1 ).time_value() );
-    }
+    p()->trigger_whirling_fire( execute_state );
     p()->buff.whirling_fire->decrement();
 
     if ( ( !p()->dbc->ptr && p()->rng_obj.lively_totems->trigger() ) ||
@@ -6777,12 +6775,7 @@ struct fire_nova_t : public shaman_spell_t
       p()->trigger_lively_totems( execute_state );
     }
 
-    if ( p()->dbc->ptr && p()->buff.whirling_fire->up() )
-    {
-      p()->trigger_hot_hand( execute_state, 1.0, p()->buff.whirling_fire->data().effectN( 1 ).time_value() );
-    }
-
-    p()->buff.whirling_fire->decrement();
+    p()->trigger_whirling_fire( execute_state );
   }
 
   void impact( action_state_t* state ) override
@@ -12177,13 +12170,12 @@ void shaman_t::trigger_stormbringer( const action_state_t* state, double overrid
   }
 }
 
-void shaman_t::trigger_hot_hand( const action_state_t* state, double override_chance, timespan_t override_duration )
+void shaman_t::trigger_hot_hand( const action_state_t* state )
 {
   assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Hot Hand called on invalid action type" );
   shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
 
-  // Note, overrides allows Hot Hand to proc from "anything"
-  if ( !attack->may_proc_hot_hand && override_chance == -1.0 && override_duration == timespan_t::min() )
+  if ( !attack->may_proc_hot_hand )
   {
     return;
   }
@@ -12194,7 +12186,7 @@ void shaman_t::trigger_hot_hand( const action_state_t* state, double override_ch
     return;
   }
 
-  if ( buff.hot_hand->trigger( -1, buff_t::DEFAULT_VALUE(), override_chance, override_duration ) )
+  if ( buff.hot_hand->trigger() )
   {
     if ( attack->proc_hh )
     {
@@ -12856,6 +12848,37 @@ void shaman_t::trigger_imbuement_mastery( const action_state_t* state )
   }
 
   get_target_data( state->target )->debuff.flametongue_attack->trigger();
+}
+
+void shaman_t::trigger_whirling_fire( const action_state_t* /* state */ )
+{
+  if ( !talent.whirling_elements.ok() )
+  {
+    return;
+  }
+
+  if ( !dbc->ptr )
+  {
+    return;
+  }
+
+  if ( !buff.whirling_fire->check() )
+  {
+    return;
+  }
+
+  // Mote of Fire extends an existing Hot Hand buff, or triggers a new one with its duration
+  if ( buff.hot_hand->check() )
+  {
+    buff.hot_hand->extend_duration( this, buff.whirling_fire->data().effectN( 1 ).time_value() );
+  }
+  else
+  {
+    buff.hot_hand->trigger( -1, buff_t::DEFAULT_VALUE(), 1.0 );
+  }
+
+  buff.whirling_fire->decrement();
+  cooldown.lava_lash->reset( false );
 }
 
 template <typename T>
