@@ -1180,7 +1180,7 @@ static constexpr auto _effect_subtype_strings = util::make_static_map<unsigned, 
   { 143, "Modify Cooldown Recharge Rate% (Label)"            },
   { 144, "Reduce Fall Damage"                                },
   { 147, "Mechanic Immunity"                                 },
-  { 148, "Modify Charge Cooldown Recharge Rate%"             },
+  { 148, "Modify Charge Cooldown Recharge Rate% (Category)"  },
   { 149, "Modify Casting Pushback"                           },
   { 150, "Modify Block Effectiveness"                        },
   { 152, "Modify Aggro Distance"                             },
@@ -1695,7 +1695,11 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   }
   else if ( e->misc_value1() != 0 )
   {
-    if ( e->affected_schools() != 0U )
+    if ( range::contains( dbc::effect_category_subtypes(), e->subtype() ) )
+    {
+      tokens.emplace_back( fmt::format( "Misc Value: {} (Category)", e->misc_value1() ) );
+    }
+    else if ( e->affected_schools() != 0U )
     {
       tokens.emplace_back( fmt::format( "Misc Value: {:#x}", e->misc_value1() ) );
     }
@@ -2295,7 +2299,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     }
 
     if ( !weapon_types.empty() )
-      s << "Requires weapon  : " << util::string_join( weapon_types ) << std::endl;
+      s << "Requires weapon  : " << wrap_join( weapon_types, wrap ) << std::endl;
   }
   else if ( spell->equipped_class() == ITEM_CLASS_ARMOR )
   {
