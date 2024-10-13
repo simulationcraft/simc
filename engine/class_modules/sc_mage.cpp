@@ -3819,6 +3819,7 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
       {
         auto debuff = get_td( s->target )->debuffs.arcane_debilitation;
         debuff->trigger();
+        // TODO: this part of the effect doesn't seem to work right now
         while ( rng().roll( p()->talents.time_loop->effectN( 1 ).percent() ) )
           debuff->trigger();
       }
@@ -7524,9 +7525,10 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs()
 {
   // Baseline
-  // TODO: the first talent point might not actually do anything, double check
+  const auto& ad = mage->talents.arcane_debilitation;
+  double ad_value = ad->effectN( 3 ).percent() * ( 1.0 + ad->effectN( 5 ).percent() );
   debuffs.arcane_debilitation    = make_buff( *this, "arcane_debilitation", mage->find_spell( 453599 ) )
-                                     ->set_default_value( mage->talents.arcane_debilitation->effectN( 2 ).percent() )
+                                     ->set_default_value( ad_value )
                                      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                      ->modify_duration( mage->talents.time_loop->effectN( 2 ).time_value() )
                                      ->set_chance( mage->talents.arcane_debilitation.ok() );
