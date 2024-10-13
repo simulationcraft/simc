@@ -704,6 +704,7 @@ public:
     double flowing_spirits_proc_chance = 0.0;
     double imbuement_mastery_base_chance = 0.07;
     double ice_strike_base_chance = 0.07;
+    double lively_totems_base_chance = 0.06;
 
     double dre_enhancement_base_chance = 0.02;
     unsigned dre_enhancement_forced_failures = 8;
@@ -794,6 +795,7 @@ public:
 
     // TWW Trackers
     proc_t* tempest_awakening_storms;
+    proc_t* lively_totems;
   } proc;
 
   // Class Specializations
@@ -1122,6 +1124,7 @@ public:
     accumulated_rng_t* imbuement_mastery;
     accumulated_rng_t* dre_enhancement;
     accumulated_rng_t* ice_strike;
+    accumulated_rng_t* lively_totems_ptr;
   } rng_obj;
 
   // Cached pointer for ascendance / normal white melee
@@ -4879,11 +4882,13 @@ struct lava_lash_t : public shaman_attack_t
     }
     p()->buff.whirling_fire->decrement();
 
-    if ( p()->rng_obj.lively_totems->trigger() )
+    if ( ( !p()->dbc->ptr && p()->rng_obj.lively_totems->trigger() ) ||
+         ( p()->dbc->ptr && p()->rng_obj.lively_totems_ptr->trigger() ) )
     {
       // 2024-07-10: Searing Totem death seems to be delayed from basically nothing to approximately
       // 850ms. Makes it possible to get an extra searing bolt if the timing is right.
       p()->pet.searing_totem.spawn( timespan_t::from_seconds( 8.0 + rng().range( 0.85 ) ) );
+      p()->proc.lively_totems->occur();
     }
   }
 
@@ -11272,6 +11277,8 @@ void shaman_t::create_options()
 
   add_option( opt_float( "shaman.dre_enhancement_base_chance", options.dre_enhancement_base_chance, 0.0, 1.0 ) );
   add_option( opt_uint( "shaman.dre_enhancement_forced_failures", options.dre_enhancement_forced_failures, 0, 100 ) );
+
+  add_option( opt_float( "shaman.lively_totems_base_chance", options.lively_totems_base_chance, 0.0, 1.0 ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -11314,6 +11321,7 @@ void shaman_t::copy_from( player_t* source )
   options.ice_strike_base_chance = p->options.ice_strike_base_chance;
   options.flowing_spirits_proc_chance = p->options.flowing_spirits_proc_chance;
   options.imbuement_mastery_base_chance = p->options.imbuement_mastery_base_chance;
+  options.lively_totems_base_chance = p->options.lively_totems_base_chance;
 
   options.dre_enhancement_base_chance = p->options.dre_enhancement_base_chance;
   options.dre_enhancement_forced_failures = p->options.dre_enhancement_forced_failures;
@@ -13584,6 +13592,7 @@ void shaman_t::init_procs()
   proc.tempest_awakening_storms = get_proc( "Awakened Storms w/ Tempest");
 
   proc.molten_thunder = get_proc( "Molten Thunder" );
+  proc.lively_totems = get_proc( "Lively Totems" );
 }
 
 // shaman_t::init_uptimes ====================================================
@@ -13622,13 +13631,6 @@ void shaman_t::init_rng()
   rng_obj.awakening_storms = get_rppm( "awakening_storms", talent.awakening_storms );
   rng_obj.lively_totems = get_rppm( "lively_totems", talent.lively_totems );
 
-  // For now, set the RPPM values back from live to get it proccing at all
-  if ( dbc->ptr )
-  {
-    rng_obj.lively_totems->set_frequency( 5.0 );
-    rng_obj.lively_totems->set_scaling( RPPM_HASTE );
-  }
-
   if ( options.ancient_fellowship_positive == 0 ) {
     options.ancient_fellowship_positive = as<unsigned>( talent.ancient_fellowship->effectN( 3 ).base_value() );
   }
@@ -13666,6 +13668,8 @@ void shaman_t::init_rng()
     } );
   rng_obj.ice_strike = get_accumulated_rng( "ice_strike",
     options.ice_strike_base_chance );
+  rng_obj.lively_totems_ptr = get_accumulated_rng( "lively_totems_ptr",
+    options.lively_totems_base_chance );
 }
 
 // shaman_t::init_items =====================================================
