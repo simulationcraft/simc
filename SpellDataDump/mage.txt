@@ -10317,7 +10317,8 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
                  :
 Effects          :
 #1 (id=1015729)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0.5 | Scaled Value: 0.5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (0.5 -> 5)
 #2 (id=1163847)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Damaging a target with Pyroblast increases the damage it receives from Ignite by ${$s2/100}.1%. Stacks up to $453268u times.
