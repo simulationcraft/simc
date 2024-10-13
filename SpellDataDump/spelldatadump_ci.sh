@@ -23,9 +23,7 @@ do
 done
 
 FILE=SpellDataDump/allspells.txt
-echo "WARNING: allspells.txt will be deprecated in the future. Please refer to the class files or nonclass.txt for non-class spells." > $FILE.unix
-echo >> $FILE.unix
-${SIMC_CLI_PATH} display_build="0" spell_query="spell" >> $FILE.unix
+${SIMC_CLI_PATH} display_build="0" spell_query="spell" > $FILE.unix
 convert_line_ending $FILE
 
 FILE=SpellDataDump/nonclass.txt

@@ -1491,43 +1491,48 @@ std::string azerite_essence_str( const spell_data_t* spell, util::span<const aze
 std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* e,
                                                std::ostringstream& s, int level, unsigned wrap )
 {
+  std::vector<std::string> tokens;
+  std::string tmp_str;
   std::streamsize ssize = s.precision( 7 );
-  std::array<char, 512> tmp_buffer;
 
-  snprintf( tmp_buffer.data(), tmp_buffer.size(), "#%-*s: ", 16,
-            fmt::format( "{} (id={})", e->index() + 1, e->id() ).c_str() );
-  s << tmp_buffer.data();
+  // Start first line
+  s << fmt::format( "#{:16}: ", fmt::format( "{} (id={})", e->index() + 1, e->id() ) );
 
-  s << map_string( _effect_type_strings, e->raw_type() );
-  // Put some nice handling on some effect types
+  // Effect Type
+  tmp_str = map_string( _effect_type_strings, e->raw_type() );
+
   switch ( e->type() )
   {
     case E_SCHOOL_DAMAGE:
-      s << ": " << util::school_type_string( spell->get_school_type() );
+      tmp_str += fmt::format( ": {}", util::school_type_string( spell->get_school_type() ) );
       break;
     case E_TRIGGER_SPELL:
     case E_TRIGGER_SPELL_WITH_VALUE:
       if ( e->trigger_spell_id() )
       {
         if ( dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )
-          s << ": " << dbc.spell( e->trigger_spell_id() )->name_cstr();
+          tmp_str += fmt::format( ": {}", dbc.spell( e->trigger_spell_id() )->name_cstr() );
         else
-          s << ": (" << e->trigger_spell_id() << ")";
+          tmp_str += fmt::format( ": ({})", e->trigger_spell_id() );
       }
       break;
     default:
       break;
   }
 
+  tokens.emplace_back( tmp_str );
+
+  // Effect Subtype
   if ( e->subtype() > 0 )
   {
-    s << " | " << map_string( _effect_subtype_strings, e->raw_subtype() );
+    tmp_str = map_string( _effect_subtype_strings, e->raw_subtype() );
+
     switch ( e->subtype() )
     {
       case A_PERIODIC_DAMAGE:
-        s << ": " << util::school_type_string( spell->get_school_type() );
+        tmp_str += fmt::format( ": {}", util::school_type_string( spell->get_school_type() ) );
         if ( e->period() != timespan_t::zero() )
-          s << " every " << e->period().total_seconds() << " seconds";
+          tmp_str += fmt::format( " every {} seconds", e->period().total_seconds() );
         break;
       case A_PERIODIC_HEAL:
       case A_PERIODIC_ENERGIZE:
@@ -1535,51 +1540,44 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
       case A_PERIODIC_HEAL_PCT:
       case A_PERIODIC_LEECH:
         if ( e->period() != timespan_t::zero() )
-          s << ": every " << e->period().total_seconds() << " seconds";
+          tmp_str += fmt::format( ": every {} seconds", e->period().total_seconds() );
         break;
       case A_PROC_TRIGGER_SPELL:
         if ( e->trigger_spell_id() )
         {
           if ( dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )
-          {
-            s << ": " << dbc.spell( e->trigger_spell_id() )->name_cstr();
-          }
+            tmp_str += fmt::format( ": {}", dbc.spell( e->trigger_spell_id() )->name_cstr() );
           else
-          {
-            s << ": (" << e->trigger_spell_id() << ")";
-          }
+            tmp_str += fmt::format( ": ({})", e->trigger_spell_id() );
         }
         break;
       case A_PERIODIC_TRIGGER_SPELL:
         s << ": ";
         if ( e->trigger_spell_id() && dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )
-        {
-          s << dbc.spell( e->trigger_spell_id() )->name_cstr();
-        }
+          tmp_str += fmt::format( ": {}", dbc.spell( e->trigger_spell_id() )->name_cstr() );
         else
-        {
-          s << "Unknown(" << e->trigger_spell_id() << ")";
-        }
+          tmp_str += fmt::format( ": Unknown({})", e->trigger_spell_id() );
 
         if ( e->period() != timespan_t::zero() )
-          s << " every " << e->period().total_seconds() << " seconds";
+          tmp_str += fmt::format( " every {} seconds", e->period().total_seconds() );
         break;
       case A_ADD_FLAT_MODIFIER:
       case A_ADD_PCT_MODIFIER:
       case A_ADD_PCT_LABEL_MODIFIER:
       case A_ADD_FLAT_LABEL_MODIFIER:
-        s << ": " << map_string( _property_type_strings, e->misc_value1() );
+        tmp_str += fmt::format( ": {}", map_string( _property_type_strings, e->misc_value1() ) );
         break;
       default:
         break;
     }
+
+    tokens.emplace_back( tmp_str );
   }
 
   if ( e->_scaling_type )
-  {
-    s << " | Scaling Class: " << e->_scaling_type;
-  }
+    tokens.emplace_back( fmt::format( "Scaling Class: {}", e->_scaling_type ) );
 
+  // TODO: wrap within the attribute list as well?
   if ( e->_attribute )
   {
     std::vector<std::string> attr_str;
@@ -1587,22 +1585,28 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
       if ( e->_attribute & ( 1 << flag ) )
         attr_str.push_back( map_string( _effect_attribute_strings, flag ) );
 
-    s << " | Attributes: " << util::string_join( attr_str );
+    tokens.emplace_back( fmt::format( "Attributes: {}", util::string_join( attr_str ) ) );
   }
 
-  s << std::endl;
+  // Print first line
+  s << wrap_join( tokens, wrap, " | ", " |\n                   " ) << std::endl;
 
-  s << "                   Base Value: " << e->base_value();
-  s << " | Scaled Value: ";
+  // Start second line
+  tokens.clear();
+  s << "                   ";
 
+  tokens.emplace_back( fmt::format( "Base Value: {}", e->base_value() ) );
+
+  tmp_str = "Scaled Value: ";
   if ( level <= MAX_LEVEL )
   {
     double v_min = dbc.effect_min( e, level );
     double v_max = dbc.effect_max( e, level );
 
-    s << v_min;
     if ( v_min != v_max )
-      s << " - " << v_max;
+      tmp_str += fmt::format( "{:.7g} - {:.7g}", v_min, v_max );
+    else
+      tmp_str += fmt::format( "{:.7g}", v_min );
   }
   else
   {
@@ -1625,176 +1629,144 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
       item_budget = ilevel_data.damage_secondary;
     }
 
-    s << item_budget * e->m_coefficient() * coefficient;
+    tmp_str += fmt::format( "{:.7g}", item_budget * e->m_coefficient() * coefficient );
   }
 
-  if ( e->m_coefficient() || e->m_delta() )
-  {
-    s << " (";
+  if ( e->m_coefficient() && e->m_delta() )
+    tmp_str += fmt::format( " (coefficient={:.7g}, delta={})", e->m_coefficient(), e->m_delta() );
+  else if ( e->m_coefficient() )
+    tmp_str += fmt::format( " (coefficient={:.7g})", e->m_coefficient() );
+  else if ( e->m_delta() )
+    tmp_str += fmt::format( " (delta={})", e->m_delta() );
 
-    if ( e->m_coefficient() )
-      s << "coefficient=" << e->m_coefficient();
+  tokens.emplace_back( tmp_str );
 
-    if ( e->m_delta() )
-    {
-      if ( e->m_coefficient() )
-        s << ", ";
-
-      s << "delta coefficient=" << e->m_delta();
-    }
-
-    s << ")";
-  }
-
-  if ( level <= MAX_LEVEL )
-  {
-    if ( e->m_unk() )
-    {
-      s << " | Bonus Value: " << dbc.effect_bonus( e->id(), level );
-      s << " (" << e->m_unk() << ")";
-    }
-  }
+  if ( level <= MAX_LEVEL && e->m_unk() )
+    tokens.emplace_back( fmt::format( "Bonus Value: {} ({})", dbc.effect_bonus( e->id(), level ), e->m_unk() ) );
 
   if ( e->real_ppl() != 0 )
-  {
-    snprintf( tmp_buffer.data(), tmp_buffer.size(), "%f", e->real_ppl() );
-    s << " | Points Per Level: " << e->real_ppl();
-  }
+    tokens.emplace_back( fmt::format( "Points Per Level: {}", e->real_ppl() ) );
 
   if ( e->m_value() != 0 )
-  {
-    s << " | Value Multiplier: " << e->m_value();
-  }
+    tokens.emplace_back( fmt::format( "Value Multiplier: {}", e->m_value() ) );
 
   if ( e->sp_coeff() != 0 )
-  {
-    snprintf( tmp_buffer.data(), tmp_buffer.size(), "%.5f", e->sp_coeff() );
-    s << " | SP Coefficient: " << tmp_buffer.data();
-  }
+    tokens.emplace_back( fmt::format( "SP Coefficient: {:.7g}", e->sp_coeff() ) );
 
   if ( e->ap_coeff() != 0 )
-  {
-    snprintf( tmp_buffer.data(), tmp_buffer.size(), "%.5f", e->ap_coeff() );
-    s << " | AP Coefficient: " << tmp_buffer.data();
-  }
+    tokens.emplace_back( fmt::format( "AP Coefficient: {:.7g}", e->ap_coeff() ) );
 
-  snprintf( tmp_buffer.data(), tmp_buffer.size(), "%.5f", e->pvp_coeff() );
-  s << " | PvP Coefficient: " << tmp_buffer.data();
+  if ( e->pvp_coeff() != 1.0 )
+    tokens.emplace_back( fmt::format( "PvP Coefficient: {:.7g}", e->pvp_coeff() ) );
 
   if ( e->chain_target() != 0 )
-    s << " | Chain Multiplier: " << e->chain_multiplier();
+    tokens.emplace_back( fmt::format( "Chain Multiplier: {}", e->chain_multiplier() ) );
 
   if ( e->type() == E_ENERGIZE || ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_INCREASE_RESOURCE ||
                                                                    e->subtype() == A_MOD_MAX_RESOURCE ) ) )
   {
-    s << " | Resource: "
-      << util::resource_type_string( util::translate_power_type( static_cast<power_e>( e->misc_value1() ) ) );
+    tokens.emplace_back( fmt::format( "Resource: {}", util::resource_type_string( util::translate_power_type(
+                                                        static_cast<power_e>( e->misc_value1() ) ) ) ) );
   }
   else if ( e->type() == E_APPLY_AURA && e->subtype() == A_MOD_STAT )
   {
     auto misc1 = e->misc_value1();
     if ( misc1 < -2 || misc1 >= STAT_MAX )
     {
-      snprintf( tmp_buffer.data(), tmp_buffer.size(), "Invalid (%d)", e->misc_value1() );
+      tokens.emplace_back( fmt::format( "Stat: Invalid ({})", misc1 ) );
     }
     else
     {
       auto stat = misc1 == -2 ? STAT_STR_AGI_INT : misc1 == -1 ? STAT_ALL : static_cast<stat_e>( misc1 + 1 );
-      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%s", util::stat_type_abbrev( stat ) );
+      tokens.emplace_back( fmt::format( "Stat: {}", util::stat_type_abbrev( stat ) ) );
     }
-
-    s << " | Stat: " << tmp_buffer.data();
   }
   else if ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_RATING || e->subtype() == A_MOD_RATING_MULTIPLIER ) )
   {
     std::vector<const char*> tmp;
     range::transform( util::translate_all_rating_mod( e->misc_value1() ), std::back_inserter( tmp ),
                       &util::stat_type_abbrev );
-    s << " | Rating: " << util::string_join( tmp );
+
+    tokens.emplace_back( fmt::format( "Rating: {}", util::string_join( tmp ) ) );
   }
   else if ( e->subtype() == A_MOD_MECHANIC_RESISTANCE || e->subtype() == A_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT )
   {
-    s << " | Mechanic: " << mechanic_str( e->misc_value1() );
+    tokens.emplace_back( fmt::format( "Mechanic: {}", mechanic_str( e->misc_value1() ) ) );
   }
   else if ( e->misc_value1() != 0 )
   {
     if ( e->affected_schools() != 0U )
     {
-      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%#.x", e->misc_value1() );
+      tokens.emplace_back( fmt::format( "Misc Value: {:#x}", e->misc_value1() ) );
     }
     else if ( e->subtype() == A_MOD_RECHARGE_RATE_LABEL || e->subtype() == A_MOD_TIME_RATE_BY_SPELL_LABEL ||
               e->subtype() == A_MOD_DAMAGE_FROM_SPELLS_LABEL || e->subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL )
     {
-      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d (Label)", e->misc_value1() );
+      tokens.emplace_back( fmt::format( "Misc Value: {} (Label)", e->misc_value1() ) );
     }
     else
     {
-      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d", e->misc_value1() );
+      tokens.emplace_back( fmt::format( "Misc Value: {}", e->misc_value1() ) );
     }
-
-    s << " | Misc Value: " << tmp_buffer.data();
   }
 
   if ( e->misc_value2() != 0 )
   {
     if ( e->subtype() == A_ADD_PCT_LABEL_MODIFIER || e->subtype() == A_ADD_FLAT_LABEL_MODIFIER )
     {
-      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d (Label)", e->misc_value2() );
+      tokens.emplace_back( fmt::format( "Misc Value 2: {} (Label)", e->misc_value2() ) );
     }
     else if ( e->subtype() == A_SCHOOL_ABSORB || e->subtype() == A_MOD_PET_STAT )
     {
-      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%d", e->misc_value2() );
+      tokens.emplace_back( fmt::format( "Misc Value 2: {}", e->misc_value2() ) );
     }
     else
     {
-      snprintf( tmp_buffer.data(), tmp_buffer.size(), "%#.x", e->misc_value2() );
+      tokens.emplace_back( fmt::format( "Misc Value 2: {:#x}", e->misc_value2() ) );
     }
-    s << " | Misc Value 2: " << tmp_buffer.data();
   }
 
   if ( e->pp_combo_points() != 0 )
-    s << " | Points Per Combo Point: " << e->pp_combo_points();
+    tokens.emplace_back( fmt::format( "Points Per Combo Point: {}", e->pp_combo_points() ) );
 
   if ( e->trigger_spell_id() != 0 )
-    s << " | Trigger Spell: " << e->trigger_spell_id();
+    tokens.emplace_back( fmt::format( "Trigger Spell: {}", e->trigger_spell_id() ) );
 
   if ( e->radius() > 0 || e->radius_max() > 0 )
   {
-    s << " | Radius: " << e->radius();
     if ( e->radius_max() > 0 && e->radius_max() != e->radius() )
-      s << " - " << e->radius_max();
-    s << " yards";
+      tokens.emplace_back( fmt::format( "Radius: {} - {} yards", e->radius(), e->radius_max() ) );
+    else
+      tokens.emplace_back( fmt::format( "Radius: {} yards", e->radius() ) );
   }
 
   if ( e->mechanic() > 0 )
-  {
-    s << " | Mechanic: " << mechanic_str( e->mechanic() );
-  }
+    tokens.emplace_back( fmt::format( "Mechanic: {}", mechanic_str( e->mechanic() ) ) );
 
   if ( e->chain_target() > 0 )
-  {
-    s << " | Chain Targets: " << e->chain_target();
-  }
+    tokens.emplace_back( fmt::format( "Chain Targets: {}", e->chain_target() ) );
 
   if ( e->target_1() != 0 || e->target_2() != 0 )
   {
-    s << " | Target: ";
     if ( e->target_1() && !e->target_2() )
     {
-      s << map_string( _targeting_strings, e->target_1() );
+      tokens.emplace_back( fmt::format( "Target: {}", map_string( _targeting_strings, e->target_1() ) ) );
     }
     else if ( !e->target_1() && e->target_2() )
     {
-      s << "[" << map_string( _targeting_strings, e->target_2() ) << "]";
+      tokens.emplace_back( fmt::format( "Target: [{}]", map_string( _targeting_strings, e->target_2() ) ) );
     }
     else
     {
-      s << map_string( _targeting_strings, e->target_1() ) << " -> " << map_string( _targeting_strings, e->target_2() );
+      tokens.emplace_back( fmt::format( "Target: {} -> {}", map_string( _targeting_strings, e->target_1() ),
+                                        map_string( _targeting_strings, e->target_2() ) ) );
     }
   }
 
-  s << std::endl;
+  // Print second line
+  s << wrap_join( tokens, wrap, " | ", " |\n                   " ) << std::endl;
 
+  // Print third optional line
   if ( e->type() == E_APPLY_AURA && e->affected_schools() != 0U )
   {
     s << "                   Affected School(s): ";
@@ -1817,6 +1789,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     s << std::endl;
   }
 
+  // Print fourth optional line
   std::vector<const spell_data_t*> affected_spells = dbc.effect_affects_spells( spell->class_family(), e );
   if ( !affected_spells.empty() )
   {
