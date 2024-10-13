@@ -489,6 +489,8 @@ public:
     action_t* stormflurry_ss;
     action_t* stormflurry_ws;
 
+    action_t* stormblast;
+
     action_t* feral_spirit_t28;
     action_t* feral_spirit_t31;
     action_t* feral_spirit_rt;
@@ -641,6 +643,7 @@ public:
     buff_t* legacy_of_the_frost_witch;
 
     buff_t* voltaic_blaze;
+    buff_t* stormblast;
 
     // Shared talent stuff
     buff_t* tempest;
@@ -733,6 +736,7 @@ public:
     cooldown_t* tempest_strikes;
     cooldown_t* ancestral_swiftness;
     cooldown_t* flowing_spirit;
+    cooldown_t* stormblast; // Stormblast ICD custom implementation
   } cooldown;
 
   // Expansion-specific Legendaries
@@ -1188,6 +1192,7 @@ public:
     cooldown.tempest_strikes    = get_cooldown( "tempest_strikes" );
     cooldown.ancestral_swiftness= get_cooldown( "ancestral_swiftness" );
     cooldown.flowing_spirit     = get_cooldown( "flowing_spirit" );
+    cooldown.stormblast         = get_cooldown( "stormblast_icd" );
 
     melee_mh      = nullptr;
     melee_oh      = nullptr;
@@ -1279,6 +1284,7 @@ public:
   void trigger_primordial_wave_damage( shaman_spell_t* spell );
   void trigger_imbuement_mastery( const action_state_t* state );
   void trigger_whirling_fire( const action_state_t* state );
+  void trigger_stormblast( const action_state_t* state );
 
   // TWW Triggers
   template <typename T>
@@ -4188,17 +4194,17 @@ struct icy_edge_attack_t : public shaman_attack_t
 
 struct stormstrike_attack_state_t : public shaman_action_state_t
 {
-  bool stormbringer;
+  bool stormblast;
 
   stormstrike_attack_state_t( action_t* action_, player_t* target_ ) :
-    shaman_action_state_t( action_, target_ ), stormbringer( false )
+    shaman_action_state_t( action_, target_ ), stormblast( false )
   { }
 
   void initialize() override
   {
     shaman_action_state_t::initialize();
 
-    stormbringer = false;
+    stormblast = false;
   }
 
   void copy_state( const action_state_t* s ) override
@@ -4206,14 +4212,14 @@ struct stormstrike_attack_state_t : public shaman_action_state_t
     shaman_action_state_t::copy_state( s );
 
     auto lbs = debug_cast<const stormstrike_attack_state_t*>( s );
-    stormbringer= lbs->stormbringer;
+    stormblast = lbs->stormblast;
   }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
   {
     shaman_action_state_t::debug_str( s );
 
-    s << " stormbringer=" << stormbringer;
+    s << " stormblast=" << stormblast;
 
     return s;
   }
@@ -4221,14 +4227,15 @@ struct stormstrike_attack_state_t : public shaman_action_state_t
 
 struct stormstrike_attack_t : public shaman_attack_t
 {
-  bool stormbringer;
+  bool stormblast_trigger;
   strike_variant strike_type;
 
   action_t* stormblast;
 
   stormstrike_attack_t( util::string_view n, shaman_t* player, const spell_data_t* s, weapon_t* w,
                         strike_variant sf = strike_variant::NORMAL )
-    : shaman_attack_t( n, player, s ), stormbringer( false ), strike_type( sf ), stormblast( nullptr )
+    : shaman_attack_t( n, player, s ), stormblast_trigger( false ), strike_type( sf ),
+      stormblast( nullptr )
   {
     background = true;
     may_miss = may_dodge = may_parry = false;
@@ -4285,29 +4292,21 @@ struct stormstrike_attack_t : public shaman_attack_t
     shaman_attack_t::snapshot_internal( s, flags, rt );
 
     auto state = debug_cast<stormstrike_attack_state_t*>( s );
-    state->stormbringer = stormbringer;
+    state->stormblast = stormblast_trigger;
   }
 
   void execute() override
   {
     shaman_attack_t::execute();
 
-    stormbringer = false;
+    stormblast_trigger = false;
   }
 
   void impact( action_state_t* s ) override
   {
     shaman_attack_t::impact( s );
 
-    auto state = debug_cast<stormstrike_attack_state_t*>( s );
-
-    if ( state->stormbringer && p()->talent.stormblast.ok() && result_is_hit( state->result ) )
-    {
-      auto dmg = p()->talent.stormblast->effectN( 1 ).percent() * state->result_amount;
-      stormblast->base_dd_min = stormblast->base_dd_max = dmg;
-
-      stormblast->execute_on_target( state->target );
-    }
+    p()->trigger_stormblast( s );
   }
 };
 
@@ -5064,6 +5063,39 @@ struct lava_lash_t : public shaman_attack_t
 
 // Stormstrike Attack =======================================================
 
+struct stormstrike_state_t : public shaman_action_state_t
+{
+  bool stormblast;
+
+  stormstrike_state_t( action_t* action_, player_t* target_ ) :
+    shaman_action_state_t( action_, target_ ), stormblast( false )
+  { }
+
+  void initialize() override
+  {
+    shaman_action_state_t::initialize();
+
+    stormblast = false;
+  }
+
+  void copy_state( const action_state_t* s ) override
+  {
+    shaman_action_state_t::copy_state( s );
+
+    auto lbs = debug_cast<const stormstrike_state_t*>( s );
+    stormblast = lbs->stormblast;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    shaman_action_state_t::debug_str( s );
+
+    s << " stormblast=" << stormblast;
+
+    return s;
+  }
+};
+
 struct stormstrike_base_t : public shaman_attack_t
 {
   struct stormflurry_event_t : public event_t
@@ -5071,8 +5103,10 @@ struct stormstrike_base_t : public shaman_attack_t
     stormstrike_base_t* action;
     player_t* target;
 
-    stormflurry_event_t( stormstrike_base_t* a, player_t* t, timespan_t delay ) :
-      event_t( *a->player, delay ), action( a ), target( t )
+    bool stormblast;
+
+    stormflurry_event_t( stormstrike_base_t* a, player_t* t, timespan_t delay, bool sb ) :
+      event_t( *a->player, delay ), action( a ), target( t ), stormblast( sb )
     { }
 
     const char* name() const override
@@ -5087,8 +5121,7 @@ struct stormstrike_base_t : public shaman_attack_t
         return;
       }
 
-      action->set_target( target );
-      action->execute();
+      action->trigger_stormflurry( target, stormblast );
       action->p()->proc.stormflurry->occur();
     }
   };
@@ -5134,6 +5167,39 @@ struct stormstrike_base_t : public shaman_attack_t
     }
   }
 
+  void trigger_stormflurry( player_t* t, bool stormblast )
+  {
+    auto s= get_state();
+
+    snapshot_state( s, amount_type( s ) );
+
+    auto ss = debug_cast<stormstrike_state_t*>( s );
+    // On 11.0.5, the stormblast state of the original strike that triggered the stormflurry is
+    // carried over. On live, stormflurries never "benefited" from Stormbringer in terms of being
+    // able to proc a Stormblast.
+    if ( p()->dbc->ptr )
+    {
+      ss->stormblast = stormblast;
+    }
+
+    pre_execute_state = s;
+
+    execute_on_target( t );
+  }
+
+  action_state_t* new_state() override
+  { return new stormstrike_state_t( this, target ); }
+
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    shaman_attack_t::snapshot_internal( s, flags, rt );
+
+    auto state = debug_cast<stormstrike_state_t*>( s );
+    state->stormblast = p()->talent.stormblast.ok() &&
+      ( ( !p()->dbc->ptr && strike_type == strike_variant::NORMAL && p()->buff.stormbringer->up() ) ||
+        ( p()->dbc->ptr && p()->buff.stormblast->check() != 0 ) );
+  }
+
   void init() override
   {
     shaman_attack_t::init();
@@ -5150,6 +5216,7 @@ struct stormstrike_base_t : public shaman_attack_t
     shaman_attack_t::execute();
 
     auto stormbringer_state = strike_type == strike_variant::NORMAL && p()->buff.stormbringer->up();
+    auto ss = debug_cast<const stormstrike_state_t*>( execute_state );
 
     if ( stormbringer_state )
     {
@@ -5158,14 +5225,12 @@ struct stormstrike_base_t : public shaman_attack_t
 
     if ( result_is_hit( execute_state->result ) )
     {
-      mh->set_target( execute_state->target );
-      mh->stormbringer = stormbringer_state;
-      mh->execute();
+      mh->stormblast_trigger = ss->stormblast;
+      mh->execute_on_target( execute_state->target );
       if ( oh )
       {
-        oh->set_target( execute_state->target );
-        oh->stormbringer = stormbringer_state;
-        oh->execute();
+        oh->stormblast_trigger = ss->stormblast;
+        oh->execute_on_target( execute_state->target );
       }
 
       if ( p()->buff.crash_lightning->up() )
@@ -5202,6 +5267,12 @@ struct stormstrike_base_t : public shaman_attack_t
       p()->trigger_whirling_air( execute_state );
     }
     p()->trigger_totemic_rebound( execute_state );
+
+    if ( p()->dbc->ptr && p()->cooldown.stormblast->up() )
+    {
+      p()->buff.stormblast->decrement();
+      p()->cooldown.stormblast->start( p()->buff.stormblast->data().internal_cooldown() );
+    }
   }
 };
 
@@ -12163,10 +12234,15 @@ void shaman_t::trigger_stormbringer( const action_state_t* state, double overrid
     }
   }
 
-  if ( dbc->ptr && triggered && rng().roll( talent.molten_thunder->effectN( 1 ).percent() ) )
+  if ( dbc->ptr && triggered )
   {
-    cooldown.sundering->reset( true );
-    proc.molten_thunder->occur();
+    if ( rng().roll( talent.molten_thunder->effectN( 1 ).percent() ) )
+    {
+      cooldown.sundering->reset( true );
+      proc.molten_thunder->occur();
+    }
+
+    buff.stormblast->trigger();
   }
 }
 
@@ -12787,19 +12863,23 @@ void shaman_t::trigger_stormflurry( const action_state_t* state )
   }
 
   auto a = state->action->id == 115356 ? action.stormflurry_ws : action.stormflurry_ss;
+  auto s = debug_cast<const stormstrike_state_t*>( state );
 
   timespan_t delay = rng().gauss<200,25>();
   if ( sim->debug )
   {
     auto ss = static_cast<stormstrike_base_t*>( state->action );
     sim->out_debug.print(
-      "{} scheduling stormflurry source={}, action={}, target={}, delay={}, chained={}",
+      "{} scheduling stormflurry source={}, action={}, target={}, delay={}, chained={} stormblast={}",
       name(), state->action->name(), a->name(), state->target->name(), delay,
-      static_cast<unsigned>( ss->strike_type ) );
+      static_cast<unsigned>( ss->strike_type ), s->stormblast );
   }
 
+  // Note, on live, the stormblast does not propagate to the stormflurried strikes, but rather
+  // determines the state upon executing the strike
   make_event<stormstrike_t::stormflurry_event_t>( *sim, static_cast<stormstrike_base_t*>( a ),
-                                                 state->target, delay );
+                                                 state->target, delay,
+                                                 dbc->ptr ? s->stormblast : false );
 }
 
 void shaman_t::trigger_primordial_wave_damage( shaman_spell_t* spell )
@@ -12879,6 +12959,30 @@ void shaman_t::trigger_whirling_fire( const action_state_t* /* state */ )
 
   buff.whirling_fire->decrement();
   cooldown.lava_lash->reset( false );
+}
+
+void shaman_t::trigger_stormblast( const action_state_t* state )
+{
+  if ( !talent.stormblast.ok() )
+  {
+    return;
+  }
+
+  auto s = debug_cast<const stormstrike_attack_state_t*>( state );
+  if ( !s->stormblast )
+  {
+    return;
+  }
+
+  auto a= debug_cast<stormstrike_attack_t*>( state->action );
+
+  if ( a->result_is_hit( state->result ) )
+  {
+    auto dmg = talent.stormblast->effectN( 1 ).percent() * state->result_amount;
+    a->stormblast->base_dd_min = a->stormblast->base_dd_max = dmg;
+
+    a->stormblast->execute_on_target( state->target );
+  }
 }
 
 template <typename T>
@@ -13551,6 +13655,10 @@ void shaman_t::create_buffs()
   buff.voltaic_blaze = make_buff( this, "voltaic_blaze", find_spell( 470058 ) )
     ->set_chance( talent.voltaic_blaze->effectN( 1 ).percent() )
     ->set_trigger_spell( talent.voltaic_blaze );
+
+  buff.stormblast = make_buff( this, "stormblast", find_spell( 470466 ) )
+    ->set_cooldown( 0_ms ) // Stormblast uses ICD for something else than applications
+    ->set_trigger_spell( dbc->ptr ? talent.stormblast : spell_data_t::not_found() );
 
   //
   // Restoration
