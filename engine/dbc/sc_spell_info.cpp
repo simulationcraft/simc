@@ -179,26 +179,47 @@ std::string hotfix_map_str( util::span<const hotfix::client_hotfix_entry_t> hotf
 }
 
 template <typename Range, typename Callback>
-std::string concatenate( Range&& data, Callback&& fn, const std::string& delim = ", " )
+std::string wrap_concatenate( Range&& data, Callback&& fn, size_t wrap, const std::string& delim = ", ",
+                              const std::string& wrap_delim = ",\n                   " )
 {
   if ( data.empty() )
-  {
     return "";
-  }
 
   std::stringstream s;
+  size_t len = 0;
 
-  for ( size_t i = 0, end = data.size(); i < end; ++i )
+  for ( auto it = data.begin(); it != data.end(); it++ )
   {
-    fn( s, data[ i ] );
+    auto str = fn( *it );
+    auto str_len = str.size();
 
-    if ( i < end - 1 )
+    if ( it == data.begin() )
     {
-      s << delim;
+      len = str_len;
+      s << str;
+    }
+    else if ( wrap && len + str_len > wrap )
+    {
+      len = str_len;
+      s << wrap_delim << str;
+    }
+    else
+    {
+      len += str_len;
+      s << delim << str;
     }
   }
 
   return s.str();
+}
+
+template <typename Range>
+std::string wrap_join( Range&& data, size_t wrap, const std::string& delim = ", ",
+                       const std::string& wrap_delim = ",\n                   " )
+{
+  return wrap_concatenate( std::forward<Range>( data ), []( std::string_view s ) {
+    return s;
+  },wrap, delim, wrap_delim );
 }
 
 std::streamsize real_ppm_decimals( const spell_data_t* spell, const rppm_modifier_t& modifier )
@@ -1358,6 +1379,8 @@ static constexpr auto _label_strings = util::make_static_map<int, std::string_vi
   { 26, "Paladin Spells"      },
   { 27, "Death Knight Spells" },
   { 66, "Demon Hunter Spells" },
+  { 640, "Azerite Essences"   },
+  { 3959, "Item Effects"      },
 } );
 
 std::string mechanic_str( unsigned mechanic )
@@ -1370,7 +1393,7 @@ std::string mechanic_str( unsigned mechanic )
   return fmt::format( "UnknownMechanic({})", mechanic );
 }
 
-std::string label_str( int label, const dbc_t& dbc )
+std::string label_str( int label, const dbc_t& dbc, size_t wrap )
 {
   auto it = _label_strings.find( label );
   if ( it != _label_strings.end() )
@@ -1378,9 +1401,9 @@ std::string label_str( int label, const dbc_t& dbc )
     return fmt::format( "{} ({})", it->second, label );
   }
   auto affected_spells = dbc.spells_by_label( label );
-  return concatenate( affected_spells, []( std::stringstream& s, const spell_data_t* spell ) {
-    fmt::print( s, "{} ({})", spell->name_cstr(), spell->id() );
-  } );
+  return wrap_concatenate( affected_spells, []( const spell_data_t* spell ) {
+    return fmt::format( "{} ({})", spell->name_cstr(), spell->id() );
+  }, wrap );
 }
 
 std::string spell_flags( const spell_data_t* spell )
@@ -1466,14 +1489,13 @@ std::string azerite_essence_str( const spell_data_t* spell, util::span<const aze
 }  // unnamed namespace
 
 std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* e,
-                                               std::ostringstream& s, int level )
+                                               std::ostringstream& s, int level, unsigned wrap )
 {
   std::streamsize ssize = s.precision( 7 );
   std::array<char, 512> tmp_buffer;
-  std::array<char, 64> tmp_buffer2;
 
-  snprintf( tmp_buffer2.data(), tmp_buffer2.size(), "(id=%u)", e->id() );
-  snprintf( tmp_buffer.data(), tmp_buffer.size(), "#%d %-*s: ", (int16_t)e->index() + 1, 14, tmp_buffer2.data() );
+  snprintf( tmp_buffer.data(), tmp_buffer.size(), "#%-*s: ", 16,
+            fmt::format( "{} (id={})", e->index() + 1, e->id() ).c_str() );
   s << tmp_buffer.data();
 
   s << map_string( _effect_type_strings, e->raw_type() );
@@ -1606,11 +1628,21 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     s << item_budget * e->m_coefficient() * coefficient;
   }
 
-  if ( e->m_coefficient() != 0 || e->m_delta() != 0 )
+  if ( e->m_coefficient() || e->m_delta() )
   {
-    s << " (coefficient=" << e->m_coefficient();
-    if ( e->m_delta() != 0 )
-      s << ", delta coefficient=" << e->m_delta();
+    s << " (";
+
+    if ( e->m_coefficient() )
+      s << "coefficient=" << e->m_coefficient();
+
+    if ( e->m_delta() )
+    {
+      if ( e->m_coefficient() )
+        s << ", ";
+
+      s << "delta coefficient=" << e->m_delta();
+    }
+
     s << ")";
   }
 
@@ -1789,9 +1821,9 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   if ( !affected_spells.empty() )
   {
     s << "                   Affected Spells: ";
-    s << concatenate( affected_spells, []( std::stringstream& s, const spell_data_t* spell ) {
-      fmt::print( s, "{} ({})", spell->name_cstr(), spell->id() );
-    } );
+    s << wrap_concatenate( affected_spells, []( const spell_data_t* spell ) {
+      return fmt::format( "{} ({})", spell->name_cstr(), spell->id() );
+    }, wrap );
     s << std::endl;
   }
 
@@ -1803,12 +1835,12 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
         case A_MOD_TIME_RATE_BY_SPELL_LABEL:
         case A_MOD_DAMAGE_FROM_SPELLS_LABEL:
         case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:
-          if ( auto str = label_str( e->misc_value1(), dbc ); !str.empty() )
+          if ( auto str = label_str( e->misc_value1(), dbc, wrap ); !str.empty() )
             s << "                   Affected Spells (Label): " << str << std::endl;
           break;
         case A_ADD_PCT_LABEL_MODIFIER:
         case A_ADD_FLAT_LABEL_MODIFIER:
-          if ( auto str = label_str( e->misc_value2(), dbc ); !str.empty() )
+          if ( auto str = label_str( e->misc_value2(), dbc, wrap ); !str.empty() )
             s << "                   Affected Spells (Label): " << str << std::endl;
           break;
         default:
@@ -1820,9 +1852,9 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
       if ( auto affected = dbc.spells_by_category( e->misc_value1() ); !affected.empty() )
       {
         s << "                   Affected Spells (Category): ";
-        s << concatenate( affected, []( std::stringstream& s, const spell_data_t* spell ) {
-          fmt::print( s, "{} ({})", spell->name_cstr(), spell->id() );
-        } );
+        s << wrap_concatenate( affected, []( const spell_data_t* spell ) {
+          return fmt::format( "{} ({})", spell->name_cstr(), spell->id() );
+        }, wrap );
         s << std::endl;
       }
     }
@@ -1984,7 +2016,7 @@ static std::string trait_data_to_str( const dbc_t& dbc, const spell_data_t* spel
   return util::string_join( strings, "\n                 : " );
 }
 
-std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int level )
+std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int level, unsigned wrap )
 {
   std::ostringstream s;
 
@@ -2089,7 +2121,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       }
     }
 
-    s << "Class            : " << util::string_join( class_str ) << std::endl;
+    s << "Class            : " << wrap_join( class_str, wrap ) << std::endl;
   }
 
   if ( spell->race_mask() )
@@ -2289,12 +2321,8 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       }
     }
 
-    s << "Requires weapon  : ";
     if ( !weapon_types.empty() )
-    {
-      s << util::string_join( weapon_types );
-    }
-    s << std::endl;
+      s << "Requires weapon  : " << util::string_join( weapon_types ) << std::endl;
   }
   else if ( spell->equipped_class() == ITEM_CLASS_ARMOR )
   {
@@ -2325,13 +2353,11 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( !armor_types.empty() || !armor_invtypes.empty() )
     {
       s << "Requires armor   : ";
-      s << util::string_join( armor_types );
+
       if ( !armor_types.empty() )
-      {
-        s << " ";
-      }
-      s << util::string_join( armor_invtypes );
-      s << std::endl;
+        s << util::string_join( armor_types ) << " ";
+
+      s << util::string_join( armor_invtypes ) << std::endl;
     }
   }
 
@@ -2353,9 +2379,9 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( !affecting_effects.empty() )
     {
       s << ": ";
-      s << concatenate( affecting_effects, []( std::stringstream& s, const spelleffect_data_t* e ) {
-        s << e->spell()->name_cstr() << " (" << e->spell()->id() << " effect#" << ( e->index() + 1 ) << ")";
-      } );
+      s << wrap_concatenate( affecting_effects, []( const spelleffect_data_t* e ) {
+        return fmt::format( "{} ({} effect#{})", e->spell()->name_cstr(), e->spell()->id(), e->index() + 1 );
+      }, wrap );
     }
     s << std::endl;
   }
@@ -2385,9 +2411,9 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     }
     else if ( !affecting_effects.empty() )
     {
-      s << ": " << concatenate( affecting_effects, []( std::stringstream& s, const spelleffect_data_t* e ) {
-        s << e->spell()->name_cstr() << " (" << e->spell()->id() << " effect#" << ( e->index() + 1 ) << ")";
-      } );
+      s << ": " << wrap_concatenate( affecting_effects, []( const spelleffect_data_t* e ) {
+        return fmt::format( "{} ({} effect#{})", e->spell()->name_cstr(), e->spell()->id(), e->index() + 1 );
+      }, wrap );
     }
 
     s << std::endl;
@@ -2589,16 +2615,16 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
         effects = effects.subspan( count );
       }
 
-      fmt::print( s, "Affecting spells : {}\n", fmt::join( spell_strings, ", " ) );
+      s << "Affecting Spells : " << wrap_join( spell_strings, wrap ) << std::endl;
     }
   }
 
   if ( spell->driver_count() > 0 )
   {
-    s << "Triggered by     : ";
-    s << concatenate( spell->drivers(), []( std::stringstream& s, const spell_data_t* spell ) {
-      s << spell->name_cstr() << " (" << spell->id() << ")";
-    } );
+    s << "Triggered By     : ";
+    s << wrap_concatenate( spell->drivers(), []( const spell_data_t* spell ) {
+      return fmt::format( "{} ({})", spell->name_cstr(), spell->id() );
+    }, wrap );
     s << std::endl;
   }
 
@@ -2618,7 +2644,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       fmt::print( s, "Family Flags     : {}\n", fmt::join( flags, ", " ) );
   }
 
-  std::string attr_str;
+  std::vector<std::string> attr_str;
   for ( unsigned i = 0; i < NUM_SPELL_FLAGS; i++ )
   {
     for ( unsigned flag = 0; flag < 32; flag++ )
@@ -2627,15 +2653,15 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
       {
         size_t attr_idx = i * 32 + flag;
         auto it = _attribute_strings.find( static_cast<unsigned int>( attr_idx ) );
-        fmt::format_to( std::back_inserter( attr_str ), "{}{} ({})", attr_str.empty() ? "" : ", ",
-                        it == _attribute_strings.end() ? "Unknown" : it->second, attr_idx );
+        attr_str.emplace_back(
+          fmt::format( "{} ({})", it == _attribute_strings.end() ? "Unknown" : it->second, attr_idx ) );
       }
     }
   }
   if ( !attr_str.empty() )
-    s << "Attributes       : " << attr_str << std::endl;
+    s << "Attributes       : " << wrap_join( attr_str, wrap ) << std::endl;
 
-  std::string aura_int_str;
+  std::vector<std::string> aura_int_str;
   for ( unsigned flag = 0; flag < 64; flag++ )
   {
     auto byte = static_cast<unsigned>( flag / 32 );
@@ -2643,14 +2669,14 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( spell->_aura_interrupt[ byte ] & ( 1 << bit ) )
     {
       auto it = _aura_interrupt_strings.find( flag );
-      fmt::format_to( std::back_inserter( aura_int_str ), "{}{} ({})", aura_int_str.empty() ? "" : ", ",
-                      it == _aura_interrupt_strings.end() ? "Unknown" : it->second, flag );
+      aura_int_str.emplace_back(
+        fmt::format( "{} ({})", it == _aura_interrupt_strings.end() ? "Unknown" : it->second, flag ) );
     }
   }
   if ( !aura_int_str.empty() )
-    s << "Aura Interrupt   : " << aura_int_str << std::endl;
+    s << "Aura Interrupt   : " << wrap_join( aura_int_str, wrap ) << std::endl;
 
-  std::string channel_int_sr;
+  std::vector<std::string> channel_int_str;
   for ( unsigned flag = 0; flag < 64; flag++ )
   {
     auto byte = static_cast<unsigned>( flag / 32 );
@@ -2658,14 +2684,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( spell->_channel_interrupt[ byte ] & ( 1 << bit ) )
     {
       auto it = _aura_interrupt_strings.find( flag );
-      fmt::format_to( std::back_inserter( channel_int_sr ), "{}{} ({})", channel_int_sr.empty() ? "" : ", ",
-                      it == _aura_interrupt_strings.end() ? "Unknown" : it->second, flag );
+      channel_int_str.emplace_back(
+        fmt::format( "{} ({})", it == _aura_interrupt_strings.end() ? "Unknown" : it->second, flag ) );
     }
   }
-  if ( !channel_int_sr.empty() )
-    s << "Channel Interrupt: " << channel_int_sr << std::endl;
-
-  s << "                 :" << std::endl;  // empty line
+  if ( !channel_int_str.empty() )
+    s << "Channel Interrupt: " << wrap_join( channel_int_str, wrap ) << std::endl;
 
   s << "Effects          :" << std::endl;
   for ( const spelleffect_data_t& e : spell->effects() )
@@ -2673,7 +2697,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     if ( e.id() == 0 )
       continue;
 
-    spell_info::effect_to_str( dbc, spell, &e, s, level );
+    spell_info::effect_to_str( dbc, spell, &e, s, level, wrap );
   }
 
   if ( spell_text.desc() )
