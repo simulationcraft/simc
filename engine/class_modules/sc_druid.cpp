@@ -6789,6 +6789,9 @@ public:
 
   void execute() override
   {
+    if ( p()->is_ptr() && p()->eclipse_handler.in_eclipse() && rng().roll( touch_pct ) )
+      p()->buff.touch_the_cosmos->trigger( this );
+
     druid_spell_t::execute();
 
     if ( ( dreamstate || !has_flag( flag_e::FOREGROUND ) ) && p()->buff.dreamstate->can_expire( this ) )
@@ -6799,9 +6802,6 @@ public:
     // Dreamstate is triggered after the first harmful cast.
     if ( is_precombat && p()->talent.natures_grace.ok() && !p()->buff.dreamstate->check() )
       p()->buff.dreamstate->trigger();
-
-    if ( p()->is_ptr() && p()->eclipse_handler.in_eclipse() && rng().roll( touch_pct ) )
-      p()->buff.touch_the_cosmos->trigger( this );
   }
 
   void impact( action_state_t* s ) override
