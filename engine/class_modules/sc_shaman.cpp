@@ -11604,7 +11604,7 @@ void shaman_t::init_spells()
   talent.raging_maelstrom = _ST( "Raging Maelstrom" );
   talent.lashing_flames = _ST( "Lashing Flames" );
   talent.ashen_catalyst = _ST( "Ashen Catalyst" );
-  talent.ice_strike_cast = find_talent_spell( talent_tree::SPECIALIZATION, 470194 );
+  talent.ice_strike_cast = find_talent_spell( talent_tree::SPECIALIZATION, dbc->ptr ? 470194 : 342240 );
   talent.ice_strike_proc = find_talent_spell( talent_tree::SPECIALIZATION, 466467 );
   // Row 5
   talent.doom_winds = _ST( "Doom Winds" );
