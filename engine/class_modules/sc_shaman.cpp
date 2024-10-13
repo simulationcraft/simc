@@ -9109,6 +9109,10 @@ struct ascendance_t : public shaman_spell_t
     p()->cooldown.strike->reset( false );
 
     auto dre_duration = p()->talent.deeply_rooted_elements->effectN( 1 ).time_value();
+    if ( p()->dbc->ptr )
+    {
+      dre_duration += p()->talent.thorims_invocation->effectN( 2 ).time_value();
+    }
 
     if ( background )
     {
