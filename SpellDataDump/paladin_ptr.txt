@@ -19142,6 +19142,7 @@ Description      : $@spelldesc469701
 Tooltip          : Redistributing health with your ally.
 
 Name             : Tempered in Battle (id=469822) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -19149,6 +19150,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
+Attributes       : Can't Crit (93), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=1184405)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)

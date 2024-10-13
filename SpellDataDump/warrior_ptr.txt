@@ -13891,6 +13891,7 @@ Effects          :
 Description      : Your attacks trigger Lightning Strikes $s1% more often.
 
 Name             : Demolish (id=436358) [Spell Family (4)] 
+Hotfixed         : Attributes
 Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Warrior
 School           : Physical
@@ -13898,13 +13899,16 @@ Spell Type       : None
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 45 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
+Proc Chance      : 101%
+Proc Flags       : Yellow Melee Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
 Affecting Spells : Protection Warrior (137048 effect#26), Colossal Might (440989 effect#1)
 Family Flags     : 126
-Attributes       : Is Ability (4), Track Target in Cast (Player Only) (22), Is Channelled (34), Track Target in Channel (46), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Do Not Reset Combat Timers (81), Allow Aura While Dead (116), Delay Combat Timer During Cast (211), Haste Affects Duration (273), Melee Haste Affects Periodic (278), Allow Defense While Casting (337), Allow Defense While Channeling (338)
+Attributes       : Is Ability (4), Track Target in Cast (Player Only) (22), Is Channelled (34), Track Target in Channel (46), Aura Stays After Combat (57), No Aura Icon (60), Name in Channel Bar (61), Do Not Reset Combat Timers (81), Allow Aura While Dead (116), Can Proc From Procs (122), Delay Combat Timer During Cast (211), Haste Affects Duration (273), Melee Haste Affects Periodic (278), Allow Defense While Casting (337), Allow Defense While Channeling (338)
 Channel Interrupt: Looting (11), Mount (17), Jump (37)
 Effects          :
 #1 (id=1127631)  : Apply Aura (6) | Periodic Dummy (226): every 0.1 seconds
@@ -14367,6 +14371,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Range            : 10 yards
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -14383,6 +14388,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Range            : 10 yards
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -14399,6 +14405,7 @@ Class            : Warrior
 School           : Physical
 Spell Type       : Melee
 Range            : 10 yards
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292

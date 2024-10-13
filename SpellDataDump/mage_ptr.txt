@@ -389,7 +389,7 @@ Velocity         : 50 yards/sec
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Affecting Spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Arcane Pummeling (270670 effect#1), Cord of Infinity (281263 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Arcane Artillery (424331 effect#2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Arcane Soul (451038 effect#2), Eureka (452198 effect#1), Charring Embers (453122 effect#1), Arcane Debilitation (453599 effect#1), Aether Attunement (453601 effect#2), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting Spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Arcane Pummeling (270670 effect#1), Cord of Infinity (281263 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Arcane Artillery (424331 effect#2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Arcane Soul (451038 effect#2), Eureka (452198 effect#1), Charring Embers (453122 effect#1), Arcane Debilitation (453599 effect#2), Aether Attunement (453601 effect#2), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Triggered By     : Arcane Missiles (5143)
 Family Flags     : 3, 21
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
@@ -693,7 +693,7 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Affecting Spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Arcane Charge (36032 effects: #1, #4, #5), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Presence of Mind (205025 effect#1), Bone Chilling (205766 effects: #1, #2), Rhonin's Assaulting Armwraps (208081 effect#1), Norgannon's Foresight (236380 effect#1), Equipoise (264352 effect#1), Equipoise (264353 effect#1), Rule of Threes (264774 effect#1), Galvanizing Spark (278536 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #3, #7), Nether Precision (336889 effect#1), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Nether Precision (383783 effect#1), Concentration (384379 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Burden of Power (451049 effect#2), Charring Embers (453122 effect#1), Arcane Debilitation (453599 effect#1), Mage Arcane 11.0 Class Set 2pc (453723 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2), Consortium's Bauble (461260 effects: #1, #2)
+Affecting Spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Arcane Charge (36032 effects: #1, #4, #5), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Presence of Mind (205025 effect#1), Bone Chilling (205766 effects: #1, #2), Rhonin's Assaulting Armwraps (208081 effect#1), Norgannon's Foresight (236380 effect#1), Equipoise (264352 effect#1), Equipoise (264353 effect#1), Rule of Threes (264774 effect#1), Galvanizing Spark (278536 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #3, #7), Nether Precision (336889 effect#1), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Nether Precision (383783 effect#1), Concentration (384379 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Burden of Power (451049 effect#2), Charring Embers (453122 effect#1), Arcane Debilitation (453599 effect#2), Mage Arcane 11.0 Class Set 2pc (453723 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2), Consortium's Bauble (461260 effects: #1, #2)
 Family Flags     : 3, 29
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
@@ -948,7 +948,7 @@ Velocity         : 24 yards/sec
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Affecting Spells : Shatter (12982 effect#1), Arcane Charge (36032 effects: #2, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Mage (137018 effect#1), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Arcane Harmony (332777 effect#1), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Nether Precision (383783 effect#1), Arcane Harmony (384455 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Bursting Energy (395006 effect#1), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Arcane Soul (451038 effect#3), Glorious Incandescence (451073 effect#2), Charring Embers (453122 effect#1), Arcane Debilitation (453599 effect#1), Mage Arcane 11.0 Class Set 2pc (453723 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Intuition (455681 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2), Aethervision (467634 effect#1)
+Affecting Spells : Shatter (12982 effect#1), Arcane Charge (36032 effects: #2, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Mage (137018 effect#1), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Arcane Harmony (332777 effect#1), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Nether Precision (383783 effect#1), Arcane Harmony (384455 effect#1), Overflowing Energy (390218 effect#1), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Bursting Energy (395006 effect#1), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Arcane Soul (451038 effect#3), Glorious Incandescence (451073 effect#2), Charring Embers (453122 effect#1), Arcane Debilitation (453599 effect#2), Mage Arcane 11.0 Class Set 2pc (453723 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Intuition (455681 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2), Aethervision (467634 effect#1)
 Family Flags     : 3, 47
 Attributes       : Not Shapeshifted (16), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
@@ -14564,7 +14564,8 @@ Description      : $@spelldesc449700
 Name             : Arcane Debilitation (id=453598) [Spell Family (3), Passive] 
 Talent Entry     : Arcane [tree=spec, row=8, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(0.5, 1)]
-                 : Effect#2 [op=set, values=(0.5, 1)]
+                 : Effect#2 [op=set, values=(1, 2)]
+                 : Effect#3 [op=set, values=(1, 2)]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -14572,8 +14573,6 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
                  : 2848
-Proc Chance      : 100%
-Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1155575)  : Apply Aura (6) | Dummy (4)
@@ -14581,6 +14580,18 @@ Effects          :
 #2 (id=1156291)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 0.5 | Scaled Value: 0.5 | Misc Value: 3 | Misc Value 2: 3636 (Label) | Target: Self (1)
                    Affected Spells (Label): Arcane Debilitation (453599)
+#3 (id=1192626)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Misc Value 2: 3636 (Label) | Target: Self (1)
+                   Affected Spells (Label): Arcane Debilitation (453599)
+Hotfixed         : NEW EFFECT
+#4 (id=1192672)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3) | Attributes: Suppress Points Stacking (6)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 3636 (Label) | Target: Self (1)
+                   Affected Spells (Label): Arcane Debilitation (453599)
+Hotfixed         : NEW EFFECT
+#5 (id=1192675)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 12 | Misc Value 2: 3636 (Label) | Target: Self (1)
+                   Affected Spells (Label): Arcane Debilitation (453599)
+Hotfixed         : NEW EFFECT
 Description      : Damaging a target with Arcane Missiles increases the damage they take from Arcane Missiles, Arcane Barrage, and Arcane Blast by ${$s1}.1% for $453599d. Multiple instances may overlap.
 
 Name             : Arcane Debilitation (id=453599) [Spell Family (3)] 
@@ -14592,15 +14603,19 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-                 : 3636: Time Loop (452924 effect#2), Arcane Debilitation (453598 effect#2)
+                 : 3636: Time Loop (452924 effect#2), Arcane Debilitation (453598 effect#2), Arcane Debilitation (453598 effect#3), Arcane Debilitation (453598 effect#4), Arcane Debilitation (453598 effect#5)
 Stacks           : 50 maximum
 Proc Chance      : 101%
 Attributes       : Aura Is Debuff (26), DoT Stacking Rule (103), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=1155576)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+#1 (id=1155576)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+Hotfixed         : Sub Type (271 -> 4), Affects Spells
+#2 (id=1192631)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425)
                    Family Flags: 21, 29, 47
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc422880
 Tooltip          : Damage taken from $@auracaster's Arcane Missiles, Arcane Barrage, and Arcane Blast increased by $s1%.
 
