@@ -3006,10 +3006,10 @@ Effects          :
                    Affected Spells: Path of Frost (3714), Empower Rune Weapon (47568), Obliterate (49020), Frost Strike (49143), Death Strike (49998), Pillar of Frost (51271), Scourge Strike (55090), Horn of Winter (57330), Raise Ally (61999), Festering Strike (85948), Glacial Advance (194913), Marrowrend (195182), Heart Strike (206930), Frostscythe (207230), Obliteration (207256), Unholy Assault (207289), Clawing Shadows (207311), Wraith Walk (212552), Necrotic Strike (223829), Heart Strike (228645), Consumption (274156), Apocalypse (275699), Raise Abomination (288853), Swarming Mist (311648), Shackle the Unworthy (312202), Abomination Limb (315443), Rune Strike (316239), Soul Reaper (343294), Abomination Limb (383269), Vampiric Strike (433895), Soul Reaper (448229), Raise Abomination (455395), Festering Scythe (458128), Heart Strike (460501)
                    Family Flags: 127
 #3 (id=191178)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 1611 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 1611 (Category) | Target: Self (1)
                    Affected Spells (Category): Blood Boil (50842)
 #4 (id=191179)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1642 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1642 (Category) | Target: Self (1)
 #5 (id=191180)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Frostscythe (207230), Death Knight Frost Class Set 2pc (393623)
@@ -3113,10 +3113,10 @@ Effects          :
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
 #4 (id=191168)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1428 | Target: Self (1)
+                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1428 (Category) | Target: Self (1)
                    Affected Spells (Category): Death Grip (49576)
 #5 (id=191169)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 1877 | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 1877 (Category) | Target: Self (1)
                    Affected Spells (Category): Death and Decay (43265), Death's Due (324128)
 #6 (id=260807)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
@@ -3125,7 +3125,7 @@ Effects          :
 #8 (id=260809)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #9 (id=260810)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1428 | Target: Self (1)
+                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1428 (Category) | Target: Self (1)
                    Affected Spells (Category): Death Grip (49576)
 #10 (id=260811)  : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 150 | Scaled Value: 150 | Resource: runic_power | Target: Self (1)
@@ -7639,7 +7639,7 @@ Effects          :
 #3 (id=794302)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #4 (id=841298)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1901 | Target: Self (1)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1901 (Category) | Target: Self (1)
                    Affected Spells (Category): Door of Shadows (300728)
 #5 (id=876192)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -9278,7 +9278,7 @@ Labels           : 931
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=830829)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1428 | Target: Self (1)
+                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1428 (Category) | Target: Self (1)
                    Affected Spells (Category): Death Grip (49576)
 Description      : Death Grip's cooldown is reduced by ${$s1/-1000} sec and for $334722d after casting Death Grip, you may cast the spell a second time without regard for its cooldown.
 
@@ -9535,7 +9535,7 @@ Effects          :
                    Affected Spells: Empower Rune Weapon (47568), Hungering Rune Weapon (207127)
                    Family Flags: 14
 #2 (id=836047)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1614 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1614 (Category) | Target: Self (1)
                    Affected Spells (Category): Empower Rune Weapon (47568), Hungering Rune Weapon (207127)
 Description      : Empower Rune Weapon takes $s2% less time to recharge and grants |cFFFFFFFF${$s1}.1%|r additional Haste.
 
@@ -10153,16 +10153,16 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Update Passives on Apply/Remove (344), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=890190)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1877 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1877 (Category) | Target: Self (1)
                    Affected Spells (Category): Death and Decay (43265), Death's Due (324128)
 #2 (id=890191)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1428 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1428 (Category) | Target: Self (1)
                    Affected Spells (Category): Death Grip (49576)
 #3 (id=890197)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1941 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1941 (Category) | Target: Self (1)
                    Affected Spells (Category): Death's Advance (48265), Death Charge (444347)
 #4 (id=894343)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1927 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1927 (Category) | Target: Self (1)
                    Affected Spells (Category): Defile (152280)
 Description      : Death's Advance, Death and Decay, and Death Grip have $s1 additional charge.
 
@@ -15406,10 +15406,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1140400)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 1877 | Target: Self (1)
+                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 1877 (Category) | Target: Self (1)
                    Affected Spells (Category): Death and Decay (43265), Death's Due (324128)
 #2 (id=1140717)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1927 | Target: Self (1)
+                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1927 (Category) | Target: Self (1)
                    Affected Spells (Category): Defile (152280)
 #3 (id=1158346)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)

@@ -3304,12 +3304,12 @@ Effects          :
                    Affected Spells: Channel Demonfire (196447)
                    Family Flags: 5
 #2 (id=188983)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 672 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 672 (Category) | Target: Self (1)
                    Affected Spells (Category): Conflagrate (17962)
 #3 (id=191035)   : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 26 | Target: Self (1)
 #4 (id=777106)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 651 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 651 (Category) | Target: Self (1)
                    Affected Spells (Category): Shadowburn (17877)
 
 Name             : Affliction Warlock (id=137043) [Spell Family (5), Passive, Hidden] 
@@ -5247,7 +5247,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=349696)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 672 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 672 (Category) | Target: Self (1)
                    Affected Spells (Category): Conflagrate (17962)
 Description      : Conflagrate gains an additional charge.
 
@@ -8291,10 +8291,10 @@ Labels           : 931
 Attributes       : Passive (6), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268)
 Effects          :
 #1 (id=834998)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 672 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 672 (Category) | Target: Self (1)
                    Affected Spells (Category): Conflagrate (17962)
 #2 (id=834999)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 672 | Target: Self (1)
+                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 672 (Category) | Target: Self (1)
                    Affected Spells (Category): Conflagrate (17962)
 Description      : Conflagrate has $s1 additional $Lcharge:charges; and has its recharge time reduced by ${$m2/-1000}.1 sec.
 
@@ -11422,7 +11422,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1024755)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -2000 | Scaled Value: -2000 | Misc Value: 672 | Target: Self (1)
+                   Base Value: -2000 | Scaled Value: -2000 | Misc Value: 672 (Category) | Target: Self (1)
                    Affected Spells (Category): Conflagrate (17962)
 Description      : Reduces the cooldown of Conflagrate by ${$s1/-1000} sec.
 

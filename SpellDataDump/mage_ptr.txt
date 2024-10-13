@@ -2460,7 +2460,7 @@ Effects          :
                    Affected Spells: Arcane Barrage (44425), Blizzard (190356), Cinderstorm (198928), Cinderstorm (198929), Arcane Echo (342232)
                    Family Flags: 47, 98, 127
 #2 (id=172453)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1500 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1500 (Category) | Target: Self (1)
                    Affected Spells (Category): Fire Blast (108853), Fire Blast (319836)
 
 Name             : Fire Mage (id=137019) [Spell Family (3), Passive, Hidden] 
@@ -4059,7 +4059,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=302656)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 1500 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 1500 (Category) | Target: Self (1)
                    Affected Spells (Category): Fire Blast (108853), Fire Blast (319836)
 Description      : Increases the maximum number of Fire Blast charges by $s1.
 
@@ -4099,7 +4099,7 @@ Family Flags     : 81
 Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=302663)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1588 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1588 (Category) | Target: Self (1)
                    Affected Spells (Category): Frost Nova (122)
 Description      : Frost Nova now has ${1+$m1} charges.
 
@@ -7562,10 +7562,10 @@ Conduit Id       : 26 (values=-2000, -2200, -2400, -2600, -2800, -3000, -3200, -
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=834151)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 0.5 | Misc Value: 1446 | Target: Self (1)
+                   Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 0.5 | Misc Value: 1446 (Category) | Target: Self (1)
                    Affected Spells (Category): Blink (1953)
 #2 (id=835882)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 0.5 | Misc Value: 1632 | Target: Self (1)
+                   Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 0.5 | Misc Value: 1632 (Category) | Target: Self (1)
                    Affected Spells (Category): Shimmer (212653)
 Description      : The cooldown of Blink is reduced by |cFFFFFFFF${$s1/-1000}.1 sec|r.
 
@@ -8209,7 +8209,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=844854)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1633 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1633 (Category) | Target: Self (1)
                    Affected Spells (Category): Phoenix's Flames (194466), Phoenix Flames (257541)
 #2 (id=1163118)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 100000 | Scaled Value: 100000 | Misc Value: 7 | Target: Self (1)
@@ -8431,11 +8431,11 @@ Labels           : 292
 Triggered By     : Fiery Rush (363500)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=902915)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.6 | Misc Value: 1500 | Target: Self (1)
+#1 (id=902915)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.6 | Misc Value: 1500 (Category) | Target: Self (1)
                    Affected Spells (Category): Fire Blast (108853), Fire Blast (319836)
-#2 (id=902917)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.6 | Misc Value: 1633 | Target: Self (1)
+#2 (id=902917)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.6 | Misc Value: 1633 (Category) | Target: Self (1)
                    Affected Spells (Category): Phoenix's Flames (194466), Phoenix Flames (257541)
 Description      : $@spelldesc363500
 Tooltip          : Burning for $365199s1% of your maximum health every $365199t sec. While burning your Fire Blast and Phoenix Flames recharge $s1% faster.
@@ -8745,7 +8745,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1006512)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2031 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2031 (Category) | Target: Self (1)
                    Affected Spells (Category): Flurry (44614)
 Description      : Flurry now has ${$s1+1} charges. 
 
@@ -9173,10 +9173,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1013563)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 0.5 | Misc Value: 1446 | Target: Self (1)
+                   Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 0.5 | Misc Value: 1446 (Category) | Target: Self (1)
                    Affected Spells (Category): Blink (1953)
 #2 (id=1013564)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 0.5 | Misc Value: 1632 | Target: Self (1)
+                   Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 0.5 | Misc Value: 1632 (Category) | Target: Self (1)
                    Affected Spells (Category): Shimmer (212653)
 Description      : The cooldowns of Blink and Shimmer are reduced by ${$s1/-1000} sec.
 
@@ -9774,11 +9774,11 @@ Labels           : 16: Class Spells
 Triggered By     : Fiery Rush (383634)
 Attributes       : Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1015685)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.6 | Misc Value: 1500 | Target: Self (1)
+#1 (id=1015685)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.6 | Misc Value: 1500 (Category) | Target: Self (1)
                    Affected Spells (Category): Fire Blast (108853), Fire Blast (319836)
-#2 (id=1015686)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.6 | Misc Value: 1633 | Target: Self (1)
+#2 (id=1015686)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.6 | Misc Value: 1633 (Category) | Target: Self (1)
                    Affected Spells (Category): Phoenix's Flames (194466), Phoenix Flames (257541)
 Description      : $@spelldesc383634
 Tooltip          : Your Fire Blast and Phoenix Flames recharge $s1% faster.
@@ -10327,7 +10327,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Include In Advanced Combat Log (72), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1017397)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2045 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2045 (Category) | Target: Self (1)
                    Affected Spells (Category): Arcane Orb (153626)
 #2 (id=1180889)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
@@ -10528,7 +10528,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1021568)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1500 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1500 (Category) | Target: Self (1)
                    Affected Spells (Category): Fire Blast (108853), Fire Blast (319836)
 #2 (id=1154870)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -12145,7 +12145,7 @@ Effects          :
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Ring of Frost (82691), Ring of Frost (113724), Ring of Frost (136511), Ring of Frost (140384), Ice Nova (157997), Frost Nova (235235), Icebind (397252), Icebind (397253), Icebind (397254), Icebind (397255), Icebind (397256), Icebind (397257), Icebind (397259), Icebind (397260)
                    Family Flags: 6, 9, 70, 119
 #2 (id=1118576)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 1452 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 1452 (Category) | Target: Self (1)
                    Affected Spells (Category): Ice Floes (108839)
 #3 (id=1118816)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 11 | Target: Self (1)
@@ -12154,7 +12154,7 @@ Effects          :
 #4 (id=1142492)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #5 (id=1163206)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 1588 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 1588 (Category) | Target: Self (1)
                    Affected Spells (Category): Frost Nova (122)
 #6 (id=1186283)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 11 | Misc Value 2: 1327 (Label) | Target: Self (1)
@@ -15919,7 +15919,7 @@ Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Effects          :
 #1 (id=1189478)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1269 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1269 (Category) | Target: Self (1)
                    Affected Spells (Category): Frozen Orb (84714)
 Description      : $@spelldesc444986
 Tooltip          : $?c1[Arcane Orb][Frozen Orb] damage increased by $s1%.

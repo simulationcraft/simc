@@ -2248,16 +2248,16 @@ Family Flags     : 52
 Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=119340)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1536 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1536 (Category) | Target: Self (1)
                    Affected Spells (Category): Lava Burst (51505)
 #2 (id=263356)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1228 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1228 (Category) | Target: Self (1)
                    Affected Spells (Category): Riptide (61295)
 #3 (id=263363)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1569 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1569 (Category) | Target: Self (1)
                    Affected Spells (Category): Healing Stream Totem (5394)
 #4 (id=1023076)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2062 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2062 (Category) | Target: Self (1)
                    Affected Spells (Category): Cloudburst Totem (157153)
 Description      : $?c1[Lava Burst now has ${$s2+1}][Riptide, Healing Stream Totem, and Lava Burst now have ${$s2+1}] charges. Effects that reset $?c1[its][their] remaining cooldown will instead grant 1 charge.
 
@@ -2386,7 +2386,7 @@ Effects          :
                    Affected Spells: Stormstrike (17364)
                    Family Flags: 36
 #9 (id=1180318)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -60 | Scaled Value: -60 | Misc Value: 1254 | Target: Self (1)
+                   Base Value: -60 | Scaled Value: -60 | Misc Value: 1254 (Category) | Target: Self (1)
                    Affected Spells (Category): Stormstrike (17364), Windstrike (115356)
 #10 (id=1180319) : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 14 | Target: Self (1)
@@ -2929,7 +2929,7 @@ Effects          :
                    Affected Spells: Stormstrike (17364), Feral Spirit (51533), Lava Lash (60103), Windstrike (115356), Crash Lightning (187874), Crash Lightning (195592), Feral Lunge (196884), Sundering (197214), Molten Weapon (224125), Icy Edge (224126), Crackling Surge (224127), Feral Spirit (228562), Feral Spirit (262627), Elemental Spirits (262629), Feral Spirit (271852), Feral Spirit (333957), Fire Nova (333974), Fire Nova (333977), Ice Strike (342240), Feral Spirit (363928), Feral Spirit (363932), Feral Spirit (363933), Feral Spirit (363941), Doom Winds (384352), Earthen Weapon (392375), Feral Spirit (426516), Doom Winds (466772), Feral Spirit (469322), Feral Spirit (469328), Feral Spirit (469330), Feral Spirit (469332), Ice Strike (470194)
                    Family Flags: 16, 27, 36, 48, 66, 75, 85, 112
 #4 (id=191050)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1634 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1634 (Category) | Target: Self (1)
 #5 (id=191051)   : Apply Aura (6) | Modify Block% (51)
                    Base Value: 7 | Scaled Value: 7 | Misc Value: 11 | Target: Self (1)
 
@@ -3015,7 +3015,7 @@ Effects          :
 #22 (id=1080081) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #23 (id=1113288) : Apply Aura (6) | Modify Cooldown Time (Category) (341)
-                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1182 | Target: Self (1)
+                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1182 (Category) | Target: Self (1)
                    Affected Spells (Category): PvP Trinket (42292), Honorable Medallion (195710), Gladiator's Medallion (336126), Gladiator's Fastidious Resolve (363117)
 #24 (id=1113392) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -3079,7 +3079,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Misc Value 2: 1636 (Label) | Target: Self (1)
                    Affected Spells (Label): Refreshing Waters (378211), Elemental Blast (394150), Elemental Blast (394152)
 #8 (id=1006536)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 2077 | Target: Self (1)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 2077 (Category) | Target: Self (1)
                    Affected Spells (Category): Elemental Blast (117014)
 #9 (id=1007176)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0 | Target: Self (1)
@@ -8075,7 +8075,7 @@ Effects          :
 #1 (id=806720)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #2 (id=1185745)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1254 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1254 (Category) | Target: Self (1)
                    Affected Spells (Category): Stormstrike (17364), Windstrike (115356)
 #3 (id=1185758)  : Apply Aura (6) | Proc Trigger Spell (42): Stormblast
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 470466 | Target: Self (1)
@@ -8715,10 +8715,10 @@ Family Flags     : 52
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=829538)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1536 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1536 (Category) | Target: Self (1)
                    Affected Spells (Category): Lava Burst (51505)
 #2 (id=1014099)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1228 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1228 (Category) | Target: Self (1)
                    Affected Spells (Category): Riptide (61295)
 Description      : $?s137039[Riptide and Lava Burst have][Lava Burst has] an additional charge.
 
@@ -11583,13 +11583,13 @@ Effects          :
                    Affected Spells: Earthbind Totem (2484), Healing Stream Totem (5394), Tremor Totem (8143), Mana Tide Totem (16191), Earthgrab Totem (51485), Spirit Link Totem (98008), Stone Bulwark Totem (108270), Healing Tide Totem (108280), Cloudburst Totem (157153), Capacitor Totem (192058), Wind Rush Totem (192077), Liquid Magma Totem (192222), Earthen Wall Totem (198838), Ancestral Protection Totem (207399), Vesper Totem (324386), Poison Cleansing Totem (383013), Surging Totem (444995)
                    Family Flags: 29
 #2 (id=1014666)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -6000 | Scaled Value: -6000 | Misc Value: 1569 | Target: Self (1)
+                   Base Value: -6000 | Scaled Value: -6000 | Misc Value: 1569 (Category) | Target: Self (1)
                    Affected Spells (Category): Healing Stream Totem (5394)
 #3 (id=1014667)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -6000 | Scaled Value: -6000 | Misc Value: 1540 | Target: Self (1)
+                   Base Value: -6000 | Scaled Value: -6000 | Misc Value: 1540 (Category) | Target: Self (1)
                    Affected Spells (Category): Spirit Link Totem (98008)
 #4 (id=1023077)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -6000 | Scaled Value: -6000 | Misc Value: 2062 | Target: Self (1)
+                   Base Value: -6000 | Scaled Value: -6000 | Misc Value: 2062 (Category) | Target: Self (1)
                    Affected Spells (Category): Cloudburst Totem (157153)
 Description      : Reduces the cooldown of your totems by ${$s1/-1000} sec.
 
@@ -12994,10 +12994,10 @@ Family Flags     : 6
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=1031470)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1569 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1569 (Category) | Target: Self (1)
                    Affected Spells (Category): Healing Stream Totem (5394)
 #2 (id=1031471)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2062 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2062 (Category) | Target: Self (1)
                    Affected Spells (Category): Cloudburst Totem (157153)
 Description      : $@spelltooltip5394
 
@@ -13014,10 +13014,10 @@ Family Flags     : 6
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=1031472)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1569 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1569 (Category) | Target: Self (1)
                    Affected Spells (Category): Healing Stream Totem (5394)
 #2 (id=1031473)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2062 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2062 (Category) | Target: Self (1)
                    Affected Spells (Category): Cloudburst Totem (157153)
 Description      : $@spelltooltip5394
 
@@ -13143,7 +13143,7 @@ Effects          :
                    Affected Spells: Lava Burst (51505), Lava Burst (285452)
                    Family Flags: 44
 #2 (id=1033573)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2077 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2077 (Category) | Target: Self (1)
                    Affected Spells (Category): Elemental Blast (117014)
 Description      : $@spelldesc117014
 
@@ -14270,7 +14270,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Display Range (126), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1139295)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1536 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1536 (Category) | Target: Self (1)
                    Affected Spells (Category): Lava Burst (51505)
 #2 (id=1144385)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -14285,7 +14285,7 @@ Effects          :
                    Affected Spells: Riptide (61295)
                    Family Flags: 68
 #5 (id=1144388)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1228 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1228 (Category) | Target: Self (1)
                    Affected Spells (Category): Riptide (61295)
 Description      : Lava Burst gains an additional charge and deals 5% increased damage.$?a137039[
 

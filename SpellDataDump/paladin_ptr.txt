@@ -771,7 +771,7 @@ Effects          :
 #4 (id=714298)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=723594)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2179 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2179 (Category) | Target: Self (1)
                    Affected Spells (Category): Holy Shock (20473)
 #6 (id=724125)   : Apply Aura (6) | Modify Auto Attack Critical Chance (334)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -2342,18 +2342,18 @@ Effects          :
 #1 (id=179710)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -36 | Scaled Value: -36 | Target: Self (1)
 #2 (id=191096)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 1543 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 1543 (Category) | Target: Self (1)
 #3 (id=191097)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 1570 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 1570 (Category) | Target: Self (1)
                    Affected Spells (Category): Hammer of the Righteous (53595)
 #4 (id=191098)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 1627 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 1627 (Category) | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 #5 (id=191099)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1659 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1659 (Category) | Target: Self (1)
                    Affected Spells (Category): Blessed Hammer (204019), Blessed Hammers (404140)
 #6 (id=260670)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1895 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1895 (Category) | Target: Self (1)
                    Affected Spells (Category): Hammer of Wrath (24275)
 #7 (id=260671)   : Apply Aura (6) | Modify Block% (51)
                    Base Value: 7 | Scaled Value: 7 | Misc Value: 11 | Target: Self (1)
@@ -2388,13 +2388,13 @@ Effects          :
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Crusader Strike (35395), Divine Storm (53385), Templar's Verdict (85256), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198034), Eye for an Eye (205191), Eye for an Eye (205202), Judgment (214222), Justicar's Vengeance (215661), Templar's Verdict (224266), Zeal (269937), Judgment (275773), Judgment (275779), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Final Verdict (383328), Expurgation (383344), Highlord's Judgment (383921), Boundless Judgment (383970), Judgment (383991), Execution Sentence (387113), Execution Sentence (387200), Blade of Justice (404358), Crusading Strikes (408385)
                    Family Flags: 23, 31, 39, 47, 49, 54, 63, 77, 80, 88, 108, 126
 #5 (id=191095)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 1627 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 1627 (Category) | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 #6 (id=260907)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 2128 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 2128 (Category) | Target: Self (1)
                    Affected Spells (Category): Blade of Justice (184575)
 #7 (id=260908)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1663 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1663 (Category) | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
 #8 (id=260909)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
@@ -2435,7 +2435,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0 | Misc Value: 3 | Misc Value 2: 2602 (Label) | Target: Self (1)
                    Affected Spells (Label): Sanctified Plates (402964)
 #19 (id=1050893) : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 2128 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 2128 (Category) | Target: Self (1)
                    Affected Spells (Category): Blade of Justice (184575)
 #20 (id=1051234) : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 1 | Target: Self (1)
@@ -2497,7 +2497,7 @@ Effects          :
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Crusader Strike (132331), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Recompense (384914), Seal of the Crusader (385723), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Execution Sentence (387200), Blessing of Winter (388012), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun's Avatar (431911), Sacred Weapon (432616), Hammer and Anvil (433717), Divine Guidance (433808), Forge's Reckoning (447258), Sun's Avatar (463075), Eye for an Eye (469311)
                    Family Flags: 65
 #3 (id=191089)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -55 | Scaled Value: -55 | Misc Value: 1663 | Target: Self (1)
+                   Base Value: -55 | Scaled Value: -55 | Misc Value: 1663 (Category) | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
 #4 (id=191090)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 11 | Target: Self (1)
@@ -2508,7 +2508,7 @@ Effects          :
                    Affected Spells: Denounce (2812), Judgment (20271), Hammer of Wrath (24275), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Templar's Verdict (85256), Rebuke (96231), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198034), Eye for an Eye (205191), Eye for an Eye (205202), Judgment (214222), Justicar's Vengeance (215661), Templar's Verdict (224266), Zeal (269937), Judgment (275773), Judgment (275779), Final Verdict (336872), Final Verdict (383328), Expurgation (383344), Highlord's Judgment (383921), Boundless Judgment (383970), Judgment (383991), Blade of Justice (404358), Crusading Strikes (408385), Shield of the Righteous (415091)
                    Family Flags: 23, 39, 47, 49, 50, 52, 54, 57, 61, 63, 77, 80, 84, 88, 108, 126
 #6 (id=260917)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1663 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1663 (Category) | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
 #7 (id=260918)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 101 | Scaled Value: 101 | Misc Value: 126 | Misc Value 2: 0x1 | Target: Self (1)
@@ -2594,7 +2594,7 @@ Effects          :
                    Affected Spells: Denounce (2812), Judgment (20271), Hammer of Wrath (24275), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Templar's Verdict (85256), Rebuke (96231), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198034), Eye for an Eye (205191), Eye for an Eye (205202), Judgment (214222), Justicar's Vengeance (215661), Templar's Verdict (224266), Zeal (269937), Judgment (275773), Judgment (275779), Final Verdict (336872), Final Verdict (383328), Expurgation (383344), Highlord's Judgment (383921), Boundless Judgment (383970), Judgment (383991), Blade of Justice (404358), Crusading Strikes (408385), Shield of the Righteous (415091)
                    Family Flags: 23, 39, 47, 49, 50, 52, 54, 57, 61, 63, 77, 80, 84, 88, 108, 125, 126
 #5 (id=191087)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1663 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1663 (Category) | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
 #6 (id=260927)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
@@ -2632,14 +2632,14 @@ Hotfixed         : PvP Coefficient (1 -> 1.24)
 #17 (id=1081586) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #18 (id=1081587) : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: 150 | Scaled Value: 150 | Misc Value: 1895 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | Misc Value: 1895 (Category) | Target: Self (1)
                    Affected Spells (Category): Hammer of Wrath (24275)
 #19 (id=1083882) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 224 | Scaled Value: 224 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
 #20 (id=1083883) : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 1627 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 1627 (Category) | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 #21 (id=1083884) : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2660,7 +2660,7 @@ Hotfixed         : PvP Coefficient (1 -> 1.24)
 #26 (id=1084647) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 332 | Scaled Value: 332 | Misc Value 2: 2704 (Label) | Target: Self (1)
 #27 (id=1084676) : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 2179 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 2179 (Category) | Target: Self (1)
                    Affected Spells (Category): Holy Shock (20473)
 #28 (id=1084775) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -3733,14 +3733,14 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Aura Icon (60), Can Pr
 Effects          :
 #1 (id=291057)   : : Apply Aura (6) | Periodic Trigger Spell (23): Divine Hammer every 2.2 seconds
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 198137 | Target: Self (1)
-#2 (id=1144706)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
-                   Base Value: 75 | Scaled Value: 75 | Misc Value: 1663 | Target: Self (1)
+#2 (id=1144706)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
+                   Base Value: 75 | Scaled Value: 75 | Misc Value: 1663 (Category) | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
-#3 (id=1144707)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
-                   Base Value: 75 | Scaled Value: 75 | Misc Value: 1627 | Target: Self (1)
+#3 (id=1144707)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
+                   Base Value: 75 | Scaled Value: 75 | Misc Value: 1627 (Category) | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
-#4 (id=1144708)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148)
-                   Base Value: 75 | Scaled Value: 75 | Misc Value: 2128 | Target: Self (1)
+#4 (id=1144708)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
+                   Base Value: 75 | Scaled Value: 75 | Misc Value: 2128 (Category) | Target: Self (1)
                    Affected Spells (Category): Blade of Justice (184575)
 Description      : Divine Hammers spin around you, consuming a Holy Power to strike enemies within $198137A1 yds for $?s405289[${$198137sw1*1.05} Radiant][$198137sw1 Holy] damage every $t sec. 
 
@@ -4083,7 +4083,7 @@ Effects          :
 #2 (id=323063)   : Apply Aura (6) | Dummy (4)
                    Base Value: -1000 | Scaled Value: -1000 | Misc Value: 1627 | Target: Self (1)
 #3 (id=341689)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 1627 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 1627 (Category) | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 Description      : Reduces the cooldown of Crusader Strike by $s3% and grants it a $h% chance to make your next ability consume $209785s1 less Holy Power.
 Variables        : $reduction=${$m2/-1000}
@@ -4185,7 +4185,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=301061)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1663 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1663 (Category) | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
 #2 (id=1037397)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3000 | Scaled Value: 3000 | Target: Self (1)
@@ -4765,10 +4765,10 @@ Effects          :
                    Affected Spells: Judgment (20271), Crusader Strike (35395), Crusader Strike (132331), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779), Boundless Judgment (383970), Judgment (383991)
                    Family Flags: 23, 47
 #2 (id=321879)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 1627 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 1627 (Category) | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 #3 (id=321880)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 1663 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 1663 (Category) | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
 #4 (id=321881)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -4781,14 +4781,14 @@ Effects          :
                    Affected Spells: Hammer of Wrath (24275)
                    Family Flags: 39
 #8 (id=872228)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2179 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2179 (Category) | Target: Self (1)
                    Affected Spells (Category): Holy Shock (20473)
 #9 (id=1034553)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #10 (id=1034571) : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #11 (id=1164875) : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1627 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1627 (Category) | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 Description      : You become the ultimate crusader of light for $d. Crusader Strike and Judgment cool down $s2% faster and heal up to $s6 injured allies within $216371A yds for $s5% of the damage done, split evenly among them.
 
@@ -5176,7 +5176,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=347617)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1662 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1662 (Category) | Target: Self (1)
                    Affected Spells (Category): Divine Steed (190784)
 Description      : Divine Steed now has ${1+$m1} charges.
 
@@ -6691,7 +6691,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
 Effects          :
 #1 (id=803383)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -15000 | Scaled Value: -15000 | Misc Value: 1662 | Target: Self (1)
+                   Base Value: -15000 | Scaled Value: -15000 | Misc Value: 1662 (Category) | Target: Self (1)
                    Affected Spells (Category): Divine Steed (190784)
 Description      : Cooldown reduced by ${-$s1/1000} sec.
 
@@ -7460,7 +7460,7 @@ Labels           : 931
 Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=835774)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1895 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1895 (Category) | Target: Self (1)
                    Affected Spells (Category): Hammer of Wrath (24275)
 Description      : Hammer of Wrath has $s1 extra $Lcharge:charges; and increases Holy damage done by $345046s1% for $345046d, stacking $345046u times.
 
@@ -8697,7 +8697,7 @@ Triggered By     : Duty-Bound Gavel (364719), Duty-Bound Gavel (367664)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=887942)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1938 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1938 (Category) | Target: Self (1)
                    Affected Spells (Category): Vanquisher's Hammer (328204)
 #2 (id=888846)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 37 | Misc Value 2: 0x4 | Target: Self (1)
@@ -9439,7 +9439,7 @@ Effects          :
                    Affected Spells: Lay on Hands (633), Divine Shield (642), Protection of the Fallen Dragons (392255), Lay on Hands (471195)
                    Family Flags: 15, 22
 #2 (id=1012224)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.67 | Misc Value: 1392 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.67 | Misc Value: 1392 (Category) | Target: Self (1)
                    Affected Spells (Category): Blessing of Protection (1022), Blessing of Spellwarding (204018)
 Description      : Your Lay on Hands, Divine Shield, Blessing of Protection, and Blessing of Spellwarding have $s1% reduced cooldown.
 
@@ -9713,7 +9713,7 @@ Effects          :
 #1 (id=1015003)  : Apply Aura (6) | Unknown(205) | Attributes: Unknown(23)
                    Base Value: -2000 | Scaled Value: -2000 | Misc Value: 32 | Target: Self (1)
 #2 (id=1049616)  : Apply Aura (6) | Modify Recharge Time (Category) (453) | Attributes: Unknown(23)
-                   Base Value: -2000 | Scaled Value: -2000 | Misc Value: 1627 | Target: Self (1)
+                   Base Value: -2000 | Scaled Value: -2000 | Misc Value: 1627 (Category) | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 Description      : Reduces the cooldown of Judgment by ${$s1/-1000} sec and Crusader Strike by ${$s2/-1000} sec.
 
@@ -9728,7 +9728,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1015039)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1627 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1627 (Category) | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 Description      : Crusader Strike now has ${$s1+1} charges.
 
@@ -9813,7 +9813,7 @@ Proc Flags       : Yellow Melee
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1015193)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1895 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1895 (Category) | Target: Self (1)
                    Affected Spells (Category): Hammer of Wrath (24275)
 #2 (id=1015872)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
@@ -10309,7 +10309,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Only In Spellbook Until Learned (240)
 Effects          :
 #1 (id=1017694)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -60000 | Scaled Value: -60000 | Misc Value: 1186 | Target: Self (1)
+                   Base Value: -60000 | Scaled Value: -60000 | Misc Value: 1186 (Category) | Target: Self (1)
                    Affected Spells (Category): Blessing of Sacrifice (6940)
 Description      : Reduces the cooldown of Blessing of Sacrifice by ${$m1/-1000} sec.
 
@@ -10324,7 +10324,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Only In Spellbook Until Learned (240)
 Effects          :
 #1 (id=1017827)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -60000 | Scaled Value: -60000 | Misc Value: 1392 | Target: Self (1)
+                   Base Value: -60000 | Scaled Value: -60000 | Misc Value: 1392 (Category) | Target: Self (1)
                    Affected Spells (Category): Blessing of Protection (1022), Blessing of Spellwarding (204018)
 Description      : Reduces the cooldown of Blessing of Protection$?c2[ and Blessing of Spellwarding][] by ${-$s1/1000} sec.
 
@@ -10426,19 +10426,19 @@ Effects          :
                    Affected Spells: Judgment (20271), Holy Shock (20473), Hammer of Wrath (24275), Holy Shock (25912), Crusader Strike (35395), Hammer of the Righteous (53595), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Blessed Hammer (204019), Blessed Hammer (204301), Judgment (214222), Bestow Faith (223306), Wake of Ashes (255937), Judgment (275773), Judgment (275779), Divine Toll (304971), Bestow Faith (343618), Divine Toll (375576), Expurgation (383344), Radiant Decree (383469), Boundless Judgment (383970), Judgment (383991), Divine Resonance (386731), Divine Resonance (387896), Truth's Wake (403695), Blessed Hammers (404139), Blessed Hammers (404140), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Templar Strike (407480)
                    Family Flags: 21, 23, 33, 39, 47, 50, 68, 70, 92, 97, 117, 126
 #4 (id=1034388)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1570 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1570 (Category) | Target: Self (1)
                    Affected Spells (Category): Hammer of the Righteous (53595)
 #5 (id=1034395)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1663 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1663 (Category) | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
 #6 (id=1034408)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1659 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1659 (Category) | Target: Self (1)
                    Affected Spells (Category): Blessed Hammer (204019), Blessed Hammers (404140)
 #7 (id=1034409)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1627 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1627 (Category) | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 #8 (id=1034728)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1895 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1895 (Category) | Target: Self (1)
                    Affected Spells (Category): Hammer of Wrath (24275)
 #9 (id=1072265)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -10449,13 +10449,13 @@ Effects          :
                    Affected Spells: Light's Hammer (114158), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919)
                    Family Flags: 67, 90
 #11 (id=1088524) : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 2128 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 2128 (Category) | Target: Self (1)
                    Affected Spells (Category): Blade of Justice (184575)
 #12 (id=1092976) : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 2179 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 2179 (Category) | Target: Self (1)
                    Affected Spells (Category): Holy Shock (20473)
 #13 (id=1183063) : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 2284 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 2284 (Category) | Target: Self (1)
                    Affected Spells (Category): Eye of Tyr (387174)
 Description      : Damage taken reduced by $s1%$?s385129&c2[, armor increased by $s2%, and Holy Power generating abilities cool down $s3% faster]?s385129[ and your Holy Power generating abilities also grant an absorb shield for $s9% of damage or healing dealt.][] For $d.
 Tooltip          : Damage taken reduced by $w1%$?s385129[, armor increased by $w2%, and Holy Power generating abilities cool down $w3% faster.][.]
@@ -12848,7 +12848,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1050883)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2128 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2128 (Category) | Target: Self (1)
                    Affected Spells (Category): Blade of Justice (184575)
 Description      : Blade of Justice now has ${$s1+1} charges.
 
@@ -13053,7 +13053,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143)
 Effects          :
 #1 (id=1051972)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -2000 | Scaled Value: -2000 | Misc Value: 2128 | Target: Self (1)
+                   Base Value: -2000 | Scaled Value: -2000 | Misc Value: 2128 (Category) | Target: Self (1)
                    Affected Spells (Category): Blade of Justice (184575)
 Description      : Reduces the cooldown of Blade of Justice by ${$s1/-1000} sec.
 
@@ -13309,7 +13309,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1053768)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1663 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1663 (Category) | Target: Self (1)
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
 Description      : Judgment now has ${$s1+1} charges.
 
@@ -13486,7 +13486,7 @@ Effects          :
                    Affected Spells: Eye of Tyr (387174)
                    Family Flags: 59
 #2 (id=1054199)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -33 | Scaled Value: -33 | Misc Value: 2284 | Target: Self (1)
+                   Base Value: -33 | Scaled Value: -33 | Misc Value: 2284 (Category) | Target: Self (1)
                    Affected Spells (Category): Eye of Tyr (387174)
 Description      : Eye of Tyr deals $s1% increased damage and has $s2% reduced cooldown.
 
@@ -13722,10 +13722,10 @@ Effects          :
 #1 (id=1055714)  : Apply Aura (6) | Proc Trigger Spell (42): Templar Strikes
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 406648 | Target: Self (1)
 #2 (id=1073914)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: 6750 | Scaled Value: 6750 | Misc Value: 1627 | Target: Self (1)
+                   Base Value: 6750 | Scaled Value: 6750 | Misc Value: 1627 (Category) | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 #3 (id=1172179)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: -1 | Scaled Value: -1 | Misc Value: 1627 | Target: Self (1)
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 1627 (Category) | Target: Self (1)
                    Affected Spells (Category): Crusader Strike (35395), Templar Strike (407480)
 Description      : Crusader Strike becomes a 2 part combo.
 
@@ -14460,7 +14460,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1082842)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2179 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2179 (Category) | Target: Self (1)
                    Affected Spells (Category): Holy Shock (20473)
 Description      : Holy Shock now has ${$s1+1} charges.
 
@@ -15543,7 +15543,7 @@ Effects          :
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 0 | Misc Value: 23 | Misc Value 2: 2602 (Label) | Target: Self (1)
                    Affected Spells (Label): Sanctified Plates (402964)
 #4 (id=1113292)  : Apply Aura (6) | Modify Cooldown Time (Category) (341)
-                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1182 | Target: Self (1)
+                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1182 (Category) | Target: Self (1)
                    Affected Spells (Category): PvP Trinket (42292), Honorable Medallion (195710), Gladiator's Medallion (336126), Gladiator's Fastidious Resolve (363117)
 #5 (id=1117928)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Misc Value 2: 2655 (Label) | Target: Self (1)
@@ -16668,7 +16668,7 @@ Attributes       : Passive (6), No Aura Icon (60)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1121752)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 2220 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 2220 (Category) | Target: Self (1)
                    Affected Spells (Category): Holy Bulwark (432459), Sacred Weapon (432472)
 Description      : The cooldown of Holy Armaments is reduced by $s1%.
 
@@ -17806,7 +17806,7 @@ Effects          :
                    Affected Spells: Holy Shock (25914)
                    Family Flags: 48
 #2 (id=1157387)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.5 | Misc Value: 2179 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.5 | Misc Value: 2179 (Category) | Target: Self (1)
                    Affected Spells (Category): Holy Shock (20473)
 Description      : Holy Shock's healing is increased by $s1% and its cooldown is reduced by $s2%.
 
@@ -17904,7 +17904,7 @@ Effects          :
 #5 (id=1156820)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=1156821)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2179 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2179 (Category) | Target: Self (1)
                    Affected Spells (Category): Holy Shock (20473)
 #7 (id=1156822)  : Apply Aura (6) | Unknown(262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -18855,7 +18855,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1183756)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 1662 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 1662 (Category) | Target: Self (1)
                    Affected Spells (Category): Divine Steed (190784)
 #2 (id=1183757)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 1 | Target: Self (1)

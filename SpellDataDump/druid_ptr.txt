@@ -1902,7 +1902,7 @@ Effects          :
                    Affected Spells: Growl (6795), Mangle (33917), Thrash (77758)
                    Family Flags: 35, 38, 91
 #2 (id=98174)    : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1568 | Target: Self (1)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1568 (Category) | Target: Self (1)
                    Affected Spells (Category): Frenzied Regeneration (22842)
 #3 (id=805984)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
@@ -3091,7 +3091,7 @@ Effects          :
                    Affected Spells: Growl (6795), Frenzied Regeneration (22842), Mangle (33917), Thrash (77758)
                    Family Flags: 35, 38, 62, 91
 #2 (id=111384)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1568 | Target: Self (1)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 1568 (Category) | Target: Self (1)
                    Affected Spells (Category): Frenzied Regeneration (22842)
 #3 (id=111385)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
@@ -3621,7 +3621,7 @@ Effects          :
                    Affected Spells: Ironfur (192081)
                    Family Flags: 78
 #3 (id=810228)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1568 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1568 (Category) | Target: Self (1)
                    Affected Spells (Category): Frenzied Regeneration (22842)
 Description      : $@spelldesc319454
 Tooltip          : Bear Form gives an additional $s1% Stamina, multiple uses of Ironfur may overlap, and Frenzied Regeneration gains an extra charge.
@@ -4157,10 +4157,10 @@ Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179692)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1581 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1581 (Category) | Target: Self (1)
                    Affected Spells (Category): Brutal Slash (202028)
 #2 (id=191162)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1568 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1568 (Category) | Target: Self (1)
                    Affected Spells (Category): Frenzied Regeneration (22842)
 #3 (id=191163)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 11 | Target: Self (1)
@@ -4415,7 +4415,7 @@ Effects          :
                    Affected Spells: Wild Growth (48438)
                    Family Flags: 58
 #23 (id=1099956) : Apply Aura (6) | Modify Cooldown Time (Category) (341)
-                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1182 | Target: Self (1)
+                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1182 (Category) | Target: Self (1)
                    Affected Spells (Category): PvP Trinket (42292), Honorable Medallion (195710), Gladiator's Medallion (336126), Gladiator's Fastidious Resolve (363117)
 #24 (id=1113290) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0 | Misc Value: 22 | Target: Self (1)
@@ -6064,7 +6064,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook (143), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=294998)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1576 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1576 (Category) | Target: Self (1)
                    Affected Spells (Category): Swiftmend (18562)
 Description      : Swiftmend now has ${$m1+1} charges.
 
@@ -6741,7 +6741,7 @@ Effects          :
                    Affected Spells: Barkskin (22812)
                    Family Flags: 50
 #2 (id=301037)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -12 | Scaled Value: -12 | Misc Value: 1469 | Target: Self (1)
+                   Base Value: -12 | Scaled Value: -12 | Misc Value: 1469 (Category) | Target: Self (1)
                    Affected Spells (Category): Survival Instincts (61336)
 Description      : Reduces the cooldowns of Barkskin and Survival Instincts by $s1%.
 
@@ -8977,7 +8977,7 @@ Effects          :
                    Affected Spells: Ironfur (192081)
                    Family Flags: 78
 #9 (id=1005992)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1568 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1568 (Category) | Target: Self (1)
                    Affected Spells (Category): Frenzied Regeneration (22842)
 #10 (id=1005993) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -9641,7 +9641,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=821504)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1469 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1469 (Category) | Target: Self (1)
                    Affected Spells (Category): Survival Instincts (61336)
 Description      : Survival Instincts now has ${$s1+1} charges.
 
@@ -10950,7 +10950,7 @@ Effects          :
                    Affected Spells: Mighty Bash (5211), Mass Entanglement (102359)
                    Family Flags: 13, 66
 #2 (id=841855)   : Apply Aura (6) | Modify Cooldown Time (Category) (341)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1383 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1383 (Category) | Target: Self (1)
                    Affected Spells (Category): Heart of the Wild (108291), Heart of the Wild (108292), Heart of the Wild (108293), Heart of the Wild (108294)
 Description      : The cooldown of Mighty Bash, Mass Entanglement, and Heart of the Wild are reduced by |cFFFFFFFF${-$s1}.1%|r.
 
@@ -12230,7 +12230,7 @@ Effects          :
                    Affected Spells: Frenzied Regeneration (22842)
                    Family Flags: 62
 #2 (id=997885)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1568
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1568 (Category)
                    Affected Spells (Category): Frenzied Regeneration (22842)
 Description      : Frenzied Regeneration's cooldown is reduced by $s1%.
 
@@ -12318,7 +12318,7 @@ Effects          :
 #1 (id=1005889)  : Apply Aura (6) | Dummy (4)
                    Base Value: 120 | Scaled Value: 120 | Target: Self (1)
 #2 (id=1017562)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1568 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1568 (Category) | Target: Self (1)
                    Affected Spells (Category): Frenzied Regeneration (22842)
 Description      : Frenzied Regeneration's healing is increased by up to $s1% based on your missing health.
 
@@ -12485,7 +12485,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1013940)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -12000 | Scaled Value: -12000 | Misc Value: 2336 | Target: Self (1)
+                   Base Value: -12000 | Scaled Value: -12000 | Misc Value: 2336 (Category) | Target: Self (1)
                    Affected Spells (Category): Nature's Swiftness (132158)
 Description      : Nature's Swiftness's cooldown is reduced by ${$s1/-1000} sec.
 
@@ -12826,7 +12826,7 @@ Effects          :
                    Affected Spells: Incarnation: Tree of Life (33891), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Incarnation: Chosen of Elune (390414)
                    Family Flags: 43
 #3 (id=1038807)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -60000 | Scaled Value: -60000 | Misc Value: 2328 | Target: Self (1)
+                   Base Value: -60000 | Scaled Value: -60000 | Misc Value: 2328 (Category) | Target: Self (1)
                    Affected Spells (Category): Incarnation: Chosen of Elune (102560), Celestial Alignment (194223), Celestial Alignment (383410), Incarnation: Chosen of Elune (390414)
 Description      : $?s102560[Incarnation: Chosen of Elune][Celestial Alignment] blasts all enemies in a targeted area for ${$361237s1*$<mastery>} Astral damage and applies Stellar Flare to them.
 
@@ -17184,7 +17184,7 @@ Effects          :
                    Base Value: -15000 | Scaled Value: -15000 | Misc Value: 11 | Misc Value 2: 3035 (Label) | Target: Self (1)
                    Affected Spells (Label): Force of Nature (205636)
 #2 (id=1112687)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1440 | Target: Self (1)
+                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1440 (Category) | Target: Self (1)
                    Affected Spells (Category): Grove Guardians (102693)
 Description      : $?a137013[Force of Nature cooldown reduced by ${$s1/-1000} sec.][Grove Guardians cooldown reduced by ${$s2/-1000} sec.]
 
@@ -20108,10 +20108,10 @@ Effects          :
                    Affected Spells: Incarnation: Tree of Life (33891), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Celestial Alignment (194223), Celestial Alignment (383410), Incarnation: Chosen of Elune (390414)
                    Family Flags: 43, 113
 #2 (id=1182658)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2328 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2328 (Category) | Target: Self (1)
                    Affected Spells (Category): Incarnation: Chosen of Elune (102560), Celestial Alignment (194223), Celestial Alignment (383410), Incarnation: Chosen of Elune (390414)
 #3 (id=1182659)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -80000 | Scaled Value: -80000 | Misc Value: 2328 | Target: Self (1)
+                   Base Value: -80000 | Scaled Value: -80000 | Misc Value: 2328 (Category) | Target: Self (1)
                    Affected Spells (Category): Incarnation: Chosen of Elune (102560), Celestial Alignment (194223), Celestial Alignment (383410), Incarnation: Chosen of Elune (390414)
 Description      : $?s102560[Incarnation: Chosen of Elune][Celestial Alignment]'s cooldown is reduced to ${180+$s3/1000} seconds and it has two charges, but its duration is reduced by $s1%.
 
@@ -20267,7 +20267,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1185935)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2336 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2336 (Category) | Target: Self (1)
                    Affected Spells (Category): Nature's Swiftness (132158)
 Description      : Nature's Swiftness now has ${$s1+1} charges.
 

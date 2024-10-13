@@ -2432,27 +2432,27 @@ Effects          :
                    Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Dismiss Pet (2641), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Exhilaration (109304), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Harpoon (190925), Cobra Shot (193455), Spitting Cobra (194407), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Scatter Shot (213691), Barbed Shot (217200), High Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259495), Volley (260243), Double Tap (260402), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Death Chakram (325553), Wild Mark (328275), Wild Spirit (328520), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Bloodshed (346396), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Spearhead (360966), Death Chakram (361756), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Wailing Arrow (398388), Hunter's Mark (428402), Barrage (459796), Implosive Trap (462031), Black Arrow (466930)
                    Family Flags: 1
 #4 (id=191144)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1628 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1628 (Category) | Target: Self (1)
 #5 (id=191145)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1616 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1616 (Category) | Target: Self (1)
                    Affected Spells (Category): Butchery (212436)
 #6 (id=214883)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1575 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1575 (Category) | Target: Self (1)
 #7 (id=260638)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1557 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1557 (Category) | Target: Self (1)
 #8 (id=260639)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1674 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1674 (Category) | Target: Self (1)
 #9 (id=260640)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1675 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1675 (Category) | Target: Self (1)
                    Affected Spells (Category): Barbed Shot (217200)
 #10 (id=260641)  : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1716 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1716 (Category) | Target: Self (1)
                    Affected Spells (Category): Wildfire Bomb (259495), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045)
 #11 (id=260642)  : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1171 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1171 (Category) | Target: Self (1)
                    Affected Spells (Category): Kill Command (259489)
 #12 (id=260643)  : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2067 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2067 (Category) | Target: Self (1)
                    Affected Spells (Category): Kill Command (34026)
 #13 (id=260644)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2539,7 +2539,7 @@ Effects          :
                    Affected Spells: Barrage (120360), Barrage (459796)
                    Family Flags: 98
 #6 (id=260887)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1715 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1715 (Category) | Target: Self (1)
                    Affected Spells (Category): Aimed Shot (19434)
 #7 (id=260888)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
@@ -6670,7 +6670,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=707688)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1716 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1716 (Category) | Target: Self (1)
                    Affected Spells (Category): Wildfire Bomb (259495), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045)
 #2 (id=718214)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50
@@ -6902,7 +6902,7 @@ Effects          :
 #1 (id=710486)   : Apply Aura (6) | Proc Trigger Spell (42): Terms of Engagement
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 265896 | Target: Self (1)
 #2 (id=1019070)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 1635 | Target: Self (1)
+                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 1635 (Category) | Target: Self (1)
                    Affected Spells (Category): Harpoon (190925)
 Description      : Harpoon has a ${$m2/-1000} sec reduced cooldown, and deals $271625s1 Physical damage and generates ${($265898s1/5)*$265898d} Focus over $265898d. Killing an enemy resets the cooldown of Harpoon.
 
@@ -7150,14 +7150,14 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=718193)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1171 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1171 (Category) | Target: Self (1)
                    Affected Spells (Category): Kill Command (259489)
 #2 (id=718196)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Kill Command (259489)
                    Family Flags: 72
 #3 (id=1025596)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2067 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2067 (Category) | Target: Self (1)
                    Affected Spells (Category): Kill Command (34026)
 #4 (id=1025597)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Target: Self (1)
@@ -8187,8 +8187,8 @@ Effects          :
                    Family Flags: 118
 #2 (id=752442)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
-#3 (id=752449)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (148) | Attributes: Unknown(23)
-                   Base Value: 235 | Scaled Value: 235 | Misc Value: 1715 | Target: Self (1)
+#3 (id=752449)   : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148) | Attributes: Unknown(23)
+                   Base Value: 235 | Scaled Value: 235 | Misc Value: 1715 (Category) | Target: Self (1)
                    Affected Spells (Category): Aimed Shot (19434)
 #4 (id=752452)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Unknown(23)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 10 | Target: Self (1)
@@ -8510,10 +8510,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=809194)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1873 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1873 (Category) | Target: Self (1)
                    Affected Spells (Category): Kill Shot (53351), Kill Shot (320976), Black Arrow (466930)
 #2 (id=1026383)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1873 | Target: Self (1)
+                   Base Value: -3000 | Scaled Value: -3000 | Misc Value: 1873 (Category) | Target: Self (1)
                    Affected Spells (Category): Kill Shot (53351), Kill Shot (320976), Black Arrow (466930)
 Description      : Kill Shot now has ${$m1+1} charges and has its cooldown reduced by ${$m2/-1000}.1 sec.
 
@@ -9710,7 +9710,7 @@ Effects          :
                    Affected Spells: Barbed Shot (217200), Frenzy (217207), Frenzy (272790), Frenzy (272795)
                    Family Flags: 78
 #2 (id=841837)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 1675 | Target: Self (1)
+                   Base Value: -1000 | Scaled Value: -1000 | Misc Value: 1675 (Category) | Target: Self (1)
                    Affected Spells (Category): Barbed Shot (217200)
 Description      : Barbed Shot's recharge time is reduced by ${-$s2/1000} sec, and its damage is increased by |cFFFFFFFF${$s1}.1%|r.
 
@@ -11277,7 +11277,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1007446)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -2000 | Scaled Value: -2000 | Misc Value: 1716 | Target: Self (1)
+                   Base Value: -2000 | Scaled Value: -2000 | Misc Value: 1716 (Category) | Target: Self (1)
                    Affected Spells (Category): Wildfire Bomb (259495), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045)
 Description      : Wildfire Bomb cooldown reduced by ${$m1/-1000}.1 sec.
 
@@ -11712,7 +11712,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023497)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1830 | Target: Self (1)
+                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1830 (Category) | Target: Self (1)
                    Affected Spells (Category): Survival of the Fittest (264735)
 #2 (id=1023498)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Target: Self (1)
@@ -12554,7 +12554,7 @@ Effects          :
                    Affected Spells: Rapid Fire (257044)
                    Family Flags: 118
 #2 (id=1045536)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1715 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 1715 (Category) | Target: Self (1)
                    Affected Spells (Category): Aimed Shot (19434)
 Description      : Aimed Shot and Rapid Fire cooldown reduced by $s1%.
 
@@ -14609,7 +14609,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1166242)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1830 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1830 (Category) | Target: Self (1)
                    Affected Spells (Category): Survival of the Fittest (264735)
 Description      : Survival of the Fittest gains an additional charge.
 

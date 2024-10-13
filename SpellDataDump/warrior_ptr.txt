@@ -21,7 +21,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #4 (id=982928)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1692 | Target: Self (1)
+                   Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1692 (Category) | Target: Self (1)
                    Affected Spells (Category): Spell Reflection (23920), Spell Reflection (335255)
 Description      : Hardened by battle, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength.
 
@@ -1906,10 +1906,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=166913)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1386 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1386 (Category) | Target: Self (1)
                    Affected Spells (Category): Charge (100), Intercept (198304)
 #2 (id=320495)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 0.8 | Misc Value: 1386 | Target: Self (1)
+                   Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 0.8 | Misc Value: 1386 (Category) | Target: Self (1)
                    Affected Spells (Category): Charge (100), Intercept (198304)
 Description      : Increases the maximum number of charges on Charge by 1, and reduces its cooldown by ${$s2/-1000} sec.
 
@@ -2520,7 +2520,7 @@ Effects          :
 #3 (id=191020)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #4 (id=191021)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1385 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1385 (Category) | Target: Self (1)
                    Affected Spells (Category): Shield Block (2565)
 #5 (id=191022)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2727,7 +2727,7 @@ Effects          :
 #4 (id=191012)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: -45 | Scaled Value: -45 | Target: Self (1)
 #5 (id=191013)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1672 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1672 (Category) | Target: Self (1)
                    Affected Spells (Category): Raging Blow (85288), Crushing Blow (335097)
 #6 (id=831458)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -3625,7 +3625,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=297945)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 0.7 | Misc Value: 1211 | Target: Self (1)
+                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 0.7 | Misc Value: 1211 (Category) | Target: Self (1)
                    Affected Spells (Category): Heroic Leap (6544)
 Description      : Reduces the cooldown of Heroic Leap by ${$m1/-1000} sec, and Heroic Leap now also increases your movement speed by $202164s1% for $202164d.
 
@@ -4199,7 +4199,7 @@ Effects          :
                    Affected Spells: Spell Reflection (23920), Spell Reflection (335255), Spell Reflection (385391)
                    Family Flags: 33
 #2 (id=1071390)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: 10000 | Scaled Value: 10000 | Misc Value: 1692 | Target: Self (1)
+                   Base Value: 10000 | Scaled Value: 10000 | Misc Value: 1692 (Category) | Target: Self (1)
                    Affected Spells (Category): Spell Reflection (23920), Spell Reflection (335255)
 #3 (id=1071391)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 37 | Misc Value 2: 2590 (Label) | Target: Self (1)
@@ -4297,7 +4297,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=320540)   : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -13 | Scaled Value: -13 | Misc Value: 1672 | Target: Self (1)
+                   Base Value: -13 | Scaled Value: -13 | Misc Value: 1672 (Category) | Target: Self (1)
                    Affected Spells (Category): Raging Blow (85288), Crushing Blow (335097)
 #2 (id=738411)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -4573,7 +4573,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Only In Spellbook Until Learned (240), Do Not Log on Learn (355), Cooldown Shared With AI Group (418)
 Effects          :
 #1 (id=349779)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1385 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1385 (Category) | Target: Self (1)
                    Affected Spells (Category): Shield Block (2565)
 Description      : Shield Block has ${$s1+1} charges.
 
@@ -6972,7 +6972,7 @@ Effects          :
                    Affected Spells: Die by the Sword (118038), Enraged Regeneration (184364)
                    Family Flags: 64, 97
 #2 (id=880715)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -20000 | Scaled Value: -20000 | Misc Value: 1929 | Target: Self (1)
+                   Base Value: -20000 | Scaled Value: -20000 | Misc Value: 1929 (Category) | Target: Self (1)
                    Affected Spells (Category): Shield Wall (871)
 Description      : The cooldown of $?c1[Die by the Sword]?c2[Enraged Regeneration][Shield Wall] is reduced by |cFFFFFFFF${$s1/-1000} sec|r.
 Variables        : $swCDR=${$s1/-500}
@@ -7218,7 +7218,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Include In Advanced Combat Log (72), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=831685)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 1211 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 1211 (Category) | Target: Self (1)
                    Affected Spells (Category): Heroic Leap (6544)
 Description      : Heroic Leap gains $s1 additional $Lcharge:charges;.
 
@@ -7583,7 +7583,7 @@ Effects          :
 #1 (id=832360)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #2 (id=880714)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1929 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1929 (Category) | Target: Self (1)
                    Affected Spells (Category): Shield Wall (871)
 Description      : Shield Wall gains $s2 additional charge, and grants $s1% of its effect to all party members.
 
@@ -8559,7 +8559,7 @@ Labels           : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=904636)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1672 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1672 (Category) | Target: Self (1)
                    Affected Spells (Category): Raging Blow (85288), Crushing Blow (335097)
 #2 (id=904637)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -9159,7 +9159,7 @@ Effects          :
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Ravager (156287), Bladestorm (227847), Ravager (228920), Bladestorm (446035)
                    Family Flags: 46, 107
 #2 (id=1030176)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2073 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2073 (Category) | Target: Self (1)
                    Affected Spells (Category): Ravager (228920)
 #3 (id=1030177)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -90000 | Scaled Value: -90000 | Misc Value: 11 | Target: Self (1)
@@ -9174,7 +9174,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 23 | Misc Value 2: 3637 (Label) | Target: Self (1)
                    Affected Spells (Label): Bladestorm (50622)
 #7 (id=1134339)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2270 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 2270 (Category) | Target: Self (1)
                    Affected Spells (Category): Bladestorm (227847), Bladestorm (446035)
 Description      : $?c3[Ravager's damage is reduced by $s1% but it now has $s4 charges and generates ${$s5/10} additional Rage each time it deals damage.][Bladestorm and Ravager's damage are reduced by $s1% but they now have $s4 charges and generate ${$s5/10} additional Rage each time they deal damage.]
 
@@ -9785,7 +9785,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Only In Spellbook Until Learned (240), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1016031)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1672 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1672 (Category) | Target: Self (1)
                    Affected Spells (Category): Raging Blow (85288), Crushing Blow (335097)
 Description      : Raging Blow has ${$s1+1} charges and has a $85288s1% chance to instantly reset its own cooldown.
 
@@ -10558,7 +10558,7 @@ Effects          :
                    Affected Spells: Overpower (7384), Dreadnaught (315961)
                    Family Flags: 2, 85
 #2 (id=1132927)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1680 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1680 (Category) | Target: Self (1)
                    Affected Spells (Category): Overpower (7384)
 Description      : Overpower has ${1+$s2} charges and deals $s1% more damage.
 
@@ -11648,13 +11648,13 @@ Effects          :
                    Affected Spells: Shield Wall (871), Intervene (3411), Pummel (6552), Spell Reflection (23920), Storm Bolt (107570), Die by the Sword (118038), Intervene (147833), Enraged Regeneration (184364), Intercept (198304), Intervene (316531), Spell Reflection (335255), Spell Reflection (385391)
                    Family Flags: 3, 13, 33, 48, 64, 97, 105
 #2 (id=1170200)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 1692 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 1692 (Category) | Target: Self (1)
                    Affected Spells (Category): Spell Reflection (23920), Spell Reflection (335255)
 #3 (id=1170201)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 2192 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 2192 (Category) | Target: Self (1)
                    Affected Spells (Category): Intervene (3411)
 #4 (id=1170203)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 1929 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 1929 (Category) | Target: Self (1)
                    Affected Spells (Category): Shield Wall (871)
 Description      : Cooldown of $?c1[Die By the Sword]?c2[Enraged Regeneration][Shield Wall], Pummel, Intervene, Spell Reflection, and Storm Bolt reduced by $s1%.
 
@@ -12536,10 +12536,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1039070)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -60000 | Scaled Value: -60000 | Misc Value: 1929 | Target: Self (1)
+                   Base Value: -60000 | Scaled Value: -60000 | Misc Value: 1929 (Category) | Target: Self (1)
                    Affected Spells (Category): Shield Wall (871)
 #2 (id=1039071)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1929 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1929 (Category) | Target: Self (1)
                    Affected Spells (Category): Shield Wall (871)
 Description      : Shield Wall gains $s2 additional charge, and its cooldown is reduced by ${$s1/-1000} sec.
 
