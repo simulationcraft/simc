@@ -13,8 +13,10 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 cd $DIR/..
 
-if grep -q "#define SC_USE_PTR 1" engine/config.h; then
+if grep -q "#define SC_USE_PTR 1" engine/config.hpp; then
   HAS_PTR=1
+else
+  HAS_PTR=0
 fi
 
 for CLASS in "${CLASSES[@]}"

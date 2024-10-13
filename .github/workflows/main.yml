@@ -7,7 +7,7 @@ on:
     branches: [ thewarwithin ]
     paths-ignore:
       - 'ActionPriorityLists/**'
-      - 'SpellDataDump/**'
+      - 'SpellDataDump/*.txt'
       - 'dbc_extract3/**'
       - 'casc_extract/**'
 
