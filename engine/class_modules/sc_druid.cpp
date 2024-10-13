@@ -8864,8 +8864,7 @@ struct wrath_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
   {
     base_t::execute();
 
-    //if ( p()->eclipse_handler.in_eclipse() && !p()->is_ptr() )
-    if ( p()->eclipse_handler.in_eclipse() )
+    if ( p()->eclipse_handler.in_eclipse() && !p()->is_ptr() )
       p()->buff.touch_the_cosmos_starsurge->trigger( this );
   }
 
