@@ -1300,8 +1300,8 @@ public:
   void trigger_elemental_equilibrium( const action_state_t* state );
   void trigger_deeply_rooted_elements( const action_state_t* state );
 
-  void trigger_secondary_flame_shock( player_t* target, spell_variant variant ) const;
-  void trigger_secondary_flame_shock( const action_state_t* state, spell_variant variant ) const;
+  void trigger_secondary_flame_shock( player_t* target, spell_variant variant = spell_variant::NORMAL ) const;
+  void trigger_secondary_flame_shock( const action_state_t* state, spell_variant variant = spell_variant::NORMAL ) const;
   void regenerate_flame_shock_dependent_target_list( const action_t* action ) const;
 
   void generate_maelstrom_weapon( const action_t* action, int stacks = 1 );
@@ -8570,21 +8570,43 @@ public:
     aoe = 0;
     ancestor_trigger = ancestor_cast::LAVA_BURST;
 
-    if ( player->specialization() == SHAMAN_ENHANCEMENT )
+    switch ( exec_type )
     {
-      cooldown->duration = data().cooldown();
-      cooldown->hasted   = data().affected_by( p()->spec.enhancement_shaman->effectN( 8 ) );
-    }
-    if ( player->specialization() == SHAMAN_ELEMENTAL )
-    {
-      cooldown->duration = data().cooldown() + p()->talent.flames_of_the_cauldron->effectN( 2 ).time_value();
+      case spell_variant::NORMAL:
+        if ( player->specialization() == SHAMAN_ENHANCEMENT )
+        {
+          cooldown->duration = data().cooldown();
+          cooldown->hasted   = data().affected_by( p()->spec.enhancement_shaman->effectN( 8 ) );
+        }
 
-      if ( player->is_ptr() && (
-            type_ == spell_variant::NORMAL ||
-            type_ == spell_variant::SURGE_OF_POWER ) )
-      {
-        maelstrom_gain = player->spec.maelstrom->effectN( 11 ).resource( RESOURCE_MAELSTROM );
-      }
+        if ( player->specialization() == SHAMAN_ELEMENTAL )
+        {
+          cooldown->duration = data().cooldown() + p()->talent.flames_of_the_cauldron->effectN( 2 ).time_value();
+          if ( player->dbc->ptr )
+          {
+            maelstrom_gain = player->spec.maelstrom->effectN( 11 ).resource( RESOURCE_MAELSTROM );
+          }
+        }
+        break;
+      case spell_variant::SURGE_OF_POWER:
+        background = true;
+        cooldown = player->get_cooldown( "__flame_shock_secondary" );
+        base_costs[ RESOURCE_MANA ] = 0;
+        if ( player->dbc->ptr )
+        {
+          maelstrom_gain = player->spec.maelstrom->effectN( 11 ).resource( RESOURCE_MAELSTROM );
+        }
+        break;
+      case spell_variant::ASCENDANCE:
+      case spell_variant::LIQUID_MAGMA_TOTEM:
+      case spell_variant::PRIMORDIAL_WAVE:
+        background = true;
+        cooldown = player->get_cooldown( "__flame_shock_secondary" );
+        base_costs[ RESOURCE_MANA ] = 0;
+        break;
+      default:
+        assert( 0 );
+        break;
     }
   }
 
@@ -12320,27 +12342,27 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   proc.deeply_rooted_elements->occur();
 }
 
-void shaman_t::trigger_secondary_flame_shock( player_t* target, spell_variant variant = spell_variant::NORMAL ) const
+void shaman_t::trigger_secondary_flame_shock( player_t* target, spell_variant variant ) const
 {
-  flame_shock_t* fs = debug_cast<flame_shock_t*>( action.flame_shock );
+  action_t* fs = action.flame_shock;
+
   if ( variant == spell_variant::PRIMORDIAL_WAVE ) 
   {
-    fs = debug_cast<flame_shock_t*>( action.flame_shock_pw );
+    fs = action.flame_shock_pw;
   }
   else if ( variant == spell_variant::ASCENDANCE )
   {
-    fs = debug_cast<flame_shock_t*>( action.flame_shock_asc );
+    fs = action.flame_shock_asc;
   }
   else if ( variant == spell_variant::LIQUID_MAGMA_TOTEM )
   {
-    fs = debug_cast<flame_shock_t*>( action.flame_shock_lmt );
+    fs = action.flame_shock_lmt;
   }
 
-  fs->set_target( target );
-  fs->execute();
+  fs->execute_on_target( target );
 }
 
-void shaman_t::trigger_secondary_flame_shock( const action_state_t* state, spell_variant variant = spell_variant::NORMAL ) const
+void shaman_t::trigger_secondary_flame_shock( const action_state_t* state, spell_variant variant ) const
 {
   if ( !state->action->result_is_hit( state->result ) )
   {
