@@ -4806,6 +4806,7 @@ Effects          :
 Description      : Maximum focus increased by $s1%.
 
 Name             : Trailblazer (id=231390) [Spell Family (9)] 
+Hotfixed         : Aura Interrupt
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -4816,7 +4817,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Trailblazer (199921 effect#2)
 Family Flags     : 46
 Attributes       : No Aura Cancel (31), Not In Spellbook (143), Aura Points On Client (268), Do Not Log Aura Refresh (291)
-Aura Interrupt   : Change Talent (46)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
 Effects          :
 #1 (id=348988)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -5681,6 +5682,7 @@ Description      : $@spelldesc259495
 Tooltip          : Burning for $w1 Fire damage, and causing $259587s2 Fire damage to nearby allies every $t1 sec.
 
 Name             : Flanking Strike (id=259516) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -5692,7 +5694,7 @@ Labels           : 16: Class Spells
                  : 3876: Exposed Flank (459861 effect#2), Exposed Flank (459861 effect#3)
 Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#2), Mastery: Spirit Bond (263135 effects: #1, #2), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Tactical Advantage (378951 effect#1), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Cornered Prey (452101 effect#1), Outland Venom (459941 effect#1)
 Family Flags     : 62, 106
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Melee Chain Targeting (172), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Melee Chain Targeting (172), Always Line of Sight (185), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=484062)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.825 | Target: Enemy (6)
@@ -7212,6 +7214,7 @@ $hunterDamage=${$269752s1}
 $damage=${$<petDamage>+$<hunterDamage>}
 
 Name             : Flanking Strike (id=269752) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -7224,7 +7227,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#2), Mastery: Spirit Bond (263135 effects: #1, #2), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Tactical Advantage (378951 effect#1), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Cornered Prey (452101 effect#1), Outland Venom (459941 effect#1)
 Triggered By     : Flanking Strike (269754)
 Family Flags     : 62, 106
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Do Not Display Range (126), Melee Chain Targeting (172), Do Not Chain To Crowd-Controlled Targets (200), Aura Points On Client (268), No PvP Battle Fatigue (387), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Do Not Display Range (126), Melee Chain Targeting (172), Always Line of Sight (185), Do Not Chain To Crowd-Controlled Targets (200), Aura Points On Client (268), No PvP Battle Fatigue (387), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=718232)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.82 | Target: Enemy (6)
@@ -16381,7 +16384,8 @@ Proc Flags       : Cast Successful
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1179904)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+Hotfixed         : Base Value (4 -> 3)
 #2 (id=1179943)  : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 #3 (id=1179944)  : Apply Aura (6) | Dummy (4)

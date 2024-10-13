@@ -5878,8 +5878,9 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=799272)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-#2 (id=840602)   : Apply Aura (6) | Unknown(285)
+#2 (id=840602)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 426605 | Target: Self (1)
+Hotfixed         : Sub Type (285 -> 4)
 Description      : Finishing move that consumes combo points to increase attack speed by $s1%. Lasts longer per combo point.
    1 point  : 12 seconds
    2 points: 18 seconds
@@ -12557,6 +12558,7 @@ Description      : $@spelldesc382518
 Tooltip          : At $394254u stacks, your next attack that generates combo points deals $w1% increased damage.
 
 Name             : Slice and Dice (id=426605) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12567,6 +12569,7 @@ Labels           : 16: Class Spells
                  : 2945: Recuperator (378996 effect#1)
 Triggered By     : Slice and Dice (315496)
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Do Not Display Range (126), No Cast Log (128), Not an Attack (194), No Aura Log (202), Aura Points On Client (268), Do Not Log Aura Refresh (291), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1105254)  : Apply Aura (6) | Periodic Heal% (20): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
