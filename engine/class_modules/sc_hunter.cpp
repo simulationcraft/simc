@@ -437,7 +437,6 @@ public:
     buff_t* thrill_of_the_hunt;
     buff_t* dire_beast;
     buff_t* bestial_wrath;
-    buff_t* hunters_prey;
     buff_t* call_of_the_wild;
     buff_t* beast_cleave; 
     buff_t* serpentine_rhythm;
@@ -693,6 +692,7 @@ public:
     spell_data_ptr_t beast_cleave;
     spell_data_ptr_t wild_call;
     spell_data_ptr_t hunters_prey;
+    spell_data_ptr_t hunters_prey_hidden_buff;
     spell_data_ptr_t venoms_bite;
 
     spell_data_ptr_t stomp;
@@ -4195,8 +4195,6 @@ struct kill_shot_t : hunter_ranged_attack_t
     p()->buffs.deathblow->expire();
     p() -> buffs.razor_fragments -> decrement();
 
-    p() -> buffs.hunters_prey -> decrement();
-
     if ( p()->talents.shadow_erasure.ok() && td( target )->dots.black_arrow->is_ticking() &&
          rng().roll( p()->talents.shadow_erasure->proc_chance() ) )
       se_recharge_cooldown->reset( true );
@@ -4234,6 +4232,18 @@ struct kill_shot_t : hunter_ranged_attack_t
     if ( p()->talents.sic_em.ok() && p()->buffs.deathblow->check() )
       return as<int>( p()->talents.sic_em->effectN( 2 ).base_value() );
 
+    //TODO 2024-10-14 There is a bug where only Kill Shots buffed by Deathblow bounce to additional targets.
+    // Needs more testing to determine if damage is affected. 
+    if ( p()->talents.hunters_prey.ok() )
+    {
+      int active = 0; 
+      active += p()->pets.main->is_active();
+      active += p()->pets.animal_companion->is_active();
+      active += as<int>( p()->pets.cotw_stable_pet.n_active_pets() );
+      active += as<int>( p()->pets.boo_stable_pet.n_active_pets() );
+      return 1 + std::min( active, as<int>( p()->talents.hunters_prey_hidden_buff->max_stacks() ) );
+    }
+
     return hunter_ranged_attack_t::n_targets();
   }
 
@@ -4249,6 +4259,15 @@ struct kill_shot_t : hunter_ranged_attack_t
     double am = hunter_ranged_attack_t::action_multiplier();
 
     am *= 1 + p() -> buffs.razor_fragments -> check_value();
+    if ( p()->talents.hunters_prey.ok() )
+    {
+      int active = 0; 
+      active += p()->pets.main->is_active();
+      active += p()->pets.animal_companion->is_active();
+      active += as<int>( p()->pets.cotw_stable_pet.n_active_pets() );
+      active += as<int>( p()->pets.boo_stable_pet.n_active_pets() );
+      am *= 1 + p()->talents.hunters_prey_hidden_buff->effectN( 3 ).percent() * std::min( active, as<int>( p()->talents.hunters_prey_hidden_buff->max_stacks() ) );
+    }
 
     return am;
   }
@@ -4305,7 +4324,7 @@ struct black_arrow_t : public hunter_ranged_attack_t
     if ( p->specialization() == HUNTER_BEAST_MASTERY )
     {
       tick_recharge_cooldown = p->cooldowns.barbed_shot;
-      death_shade_cast_buff = p->buffs.hunters_prey;
+      death_shade_cast_buff = p->buffs.deathblow;
       shadow_lash.cooldown_buff = p->buffs.call_of_the_wild;
     }
 
@@ -7555,6 +7574,7 @@ void hunter_t::init_spells()
     talents.beast_cleave                      = find_talent_spell( talent_tree::SPECIALIZATION, "Beast Cleave", HUNTER_BEAST_MASTERY );
     talents.wild_call                         = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Call", HUNTER_BEAST_MASTERY );
     talents.hunters_prey                      = find_talent_spell( talent_tree::SPECIALIZATION, "Hunter's Prey", HUNTER_BEAST_MASTERY );
+    talents.hunters_prey_hidden_buff          = find_spell( 468219 );
     talents.venoms_bite                       = find_talent_spell( talent_tree::SPECIALIZATION, "Venom's Bite", HUNTER_BEAST_MASTERY );
 
     talents.stomp                             = find_talent_spell( talent_tree::SPECIALIZATION, "Stomp", HUNTER_BEAST_MASTERY );
@@ -8005,10 +8025,6 @@ void hunter_t::create_buffs()
     make_buff( this, "bestial_wrath", talents.bestial_wrath )
       -> set_cooldown( 0_ms )
       -> set_default_value_from_effect( 1 );
-
-  buffs.hunters_prey =
-    make_buff( this, "hunters_prey", find_spell( 378215 ) )
-      -> set_activated( false );
 
   buffs.call_of_the_wild =
     make_buff( this, "call_of_the_wild", talents.call_of_the_wild )
