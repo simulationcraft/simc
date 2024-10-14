@@ -5008,10 +5008,11 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
       p() -> buffs.deathblow -> trigger();    
     }
 
-    // TODO: Wailing Arrow consumes Trick Shots despite gaining nothing from it,
-    // but check for it here if that's ever fixed.
-    p()->buffs.trick_shots->up(); // Benefit tracking
-    p()->consume_trick_shots();
+    if( !p()->buffs.wailing_arrow_override->check() )
+    { 
+      p()->buffs.trick_shots->up(); // Benefit tracking
+      p()->consume_trick_shots();
+    }
 
     // XXX: 2020-10-22 Lock and Load completely supresses consumption of Streamline
     if ( ! p() -> buffs.lock_and_load -> check() )
