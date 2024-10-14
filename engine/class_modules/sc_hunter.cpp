@@ -1160,6 +1160,7 @@ public:
 
     // Beast Mastery Tree passives
     ab::apply_affecting_aura( p -> talents.war_orders );
+    ab::apply_affecting_aura( p -> talents.cobra_senses );
     ab::apply_affecting_aura( p -> talents.savagery );
 
     // Survival Tree passives
@@ -4649,7 +4650,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
   cobra_shot_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "cobra_shot", p, p -> talents.cobra_shot ),
-    kill_command_reduction( -timespan_t::from_seconds( data().effectN( 3 ).base_value() ) + p -> talents.cobra_senses -> effectN( 1 ).time_value() )
+    kill_command_reduction( -timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
   {
     parse_options( options_str );
   }
