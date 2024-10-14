@@ -4232,10 +4232,12 @@ struct kill_shot_t : hunter_ranged_attack_t
     if ( p()->talents.hunters_prey.ok() )
     {
       int active = 0; 
-      active += p()->pets.main->is_active();
-      active += p()->pets.animal_companion->is_active();
+      for ( auto pet : pets::active<pets::hunter_pet_t>( p()->pets.main, p()->pets.animal_companion ) )
+        active += pet->is_active();
+      
       active += as<int>( p()->pets.cotw_stable_pet.n_active_pets() );
       active += as<int>( p()->pets.boo_stable_pet.n_active_pets() );
+
       return 1 + std::min( active, as<int>( p()->talents.hunters_prey_hidden_buff->max_stacks() ) );
     }
 
@@ -4257,10 +4259,12 @@ struct kill_shot_t : hunter_ranged_attack_t
     if ( p()->talents.hunters_prey.ok() )
     {
       int active = 0; 
-      active += p()->pets.main->is_active();
-      active += p()->pets.animal_companion->is_active();
+      for ( auto pet : pets::active<pets::hunter_pet_t>( p()->pets.main, p()->pets.animal_companion ) )
+        active += pet->is_active();
+      
       active += as<int>( p()->pets.cotw_stable_pet.n_active_pets() );
       active += as<int>( p()->pets.boo_stable_pet.n_active_pets() );
+
       am *= 1 + p()->talents.hunters_prey_hidden_buff->effectN( 3 ).percent() * std::min( active, as<int>( p()->talents.hunters_prey_hidden_buff->max_stacks() ) );
     }
 
