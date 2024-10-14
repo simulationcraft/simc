@@ -6762,7 +6762,17 @@ struct wave_of_souls_t final : public death_knight_spell_t
     death_knight_spell_t::impact( state );
     if ( state->result == RESULT_CRIT )
     {
-      get_td( state->target )->debuff.wave_of_souls->trigger();
+      if ( p()->is_ptr() && state->chain_target == 0 && p()->talent.deathbringer.swift_and_painful->ok() )
+      {
+        double value = ( 1.0 + p()->talent.deathbringer.swift_and_painful->effectN( 2 ).percent() ) *
+                       p()->spell.wave_of_souls_debuff->effectN( 1 ).percent();
+        get_td( state->target )->debuff.wave_of_souls->trigger( 1, value );
+
+      }
+      else
+      {
+        get_td( state->target )->debuff.wave_of_souls->trigger();
+      }
     }
   }
 
