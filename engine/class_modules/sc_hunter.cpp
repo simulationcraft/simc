@@ -606,7 +606,7 @@ public:
     spell_data_ptr_t rapid_fire;
     spell_data_ptr_t rapid_fire_tick;
     spell_data_ptr_t multishot_mm;
-    spell_data_ptr_t precise_shots;
+    spell_data_ptr_t precise_shot;
     spell_data_ptr_t precise_shots_buff;
 
     spell_data_ptr_t surging_shots;
@@ -1512,7 +1512,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 
   hunter_ranged_attack_t( util::string_view n, hunter_t* p, const spell_data_t* s = spell_data_t::nil() ) : hunter_action_t( n, p, s )
   {
-    affected_by.precise_shots = p -> talents.precise_shots.ok() && parse_damage_affecting_aura( this, p -> talents.precise_shots_buff ).direct;
+    affected_by.precise_shots = p -> talents.precise_shot.ok() && parse_damage_affecting_aura( this, p -> talents.precise_shots_buff ).direct;
     affected_by.precise_shots_cost = check_affected_by( this, p->talents.precise_shots_buff->effectN( 6 ) ); 
   }
 
@@ -7510,7 +7510,7 @@ void hunter_t::init_spells()
     talents.rapid_fire                        = find_talent_spell( talent_tree::SPECIALIZATION, "Rapid Fire", HUNTER_MARKSMANSHIP );
     talents.rapid_fire_tick                   = find_spell( 257045 );
     talents.multishot_mm                      = find_talent_spell( talent_tree::SPECIALIZATION, "Multi-Shot", HUNTER_MARKSMANSHIP );
-    talents.precise_shots                     = find_talent_spell( talent_tree::SPECIALIZATION, "Precise Shots", HUNTER_MARKSMANSHIP );
+    talents.precise_shot                      = find_talent_spell( talent_tree::SPECIALIZATION, "Precise Shot", HUNTER_MARKSMANSHIP );
     talents.precise_shots_buff                = find_spell( 260242 );
 
     talents.surging_shots                     = find_talent_spell( talent_tree::SPECIALIZATION, "Surging Shots", HUNTER_MARKSMANSHIP );
@@ -7905,9 +7905,8 @@ void hunter_t::create_buffs()
 
   buffs.precise_shots =
     make_buff( this, "precise_shots", talents.precise_shots_buff )
-      -> set_default_value( talents.precise_shots->effectN( 1 ).percent() )
-      -> set_initial_stack( talents.precise_shots.ok() ? talents.precise_shots_buff->max_stacks() : 1 )
-      -> set_chance( talents.precise_shots.ok() );
+      -> set_default_value( talents.precise_shot->effectN( 1 ).percent() )
+      -> set_chance( talents.precise_shot.ok() );
 
   buffs.streamline =
     make_buff( this, "streamline", find_spell( 342076 ) )
