@@ -5036,6 +5036,11 @@ struct kingsbane_t : public rogue_attack_t
   kingsbane_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->talent.assassination.kingsbane, options_str )
   {
+    // 2024-10-14 -- For unknown reasons, Kingsbane appears to double dip from Lethality
+    if ( p->bugs )
+    {
+      apply_affecting_aura( p->talent.rogue.lethality );
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -6370,19 +6375,21 @@ struct shiv_t : public rogue_attack_t
   {
   }
 
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    p()->buffs.symbolic_victory->trigger();
+    trigger_supercharger();
+  }
+
   void impact( action_state_t* s ) override
   {
     rogue_attack_t::impact( s );
 
-    if ( result_is_hit( s->result ) )
+    if ( result_is_hit( s->result ) && p()->talent.assassination.improved_shiv->ok() )
     {
-      if ( p()->talent.assassination.improved_shiv->ok() )
-      {
-        td( s->target )->debuffs.shiv->trigger();
-      }
-
-      p()->buffs.symbolic_victory->trigger();
-      trigger_supercharger();
+      td( s->target )->debuffs.shiv->trigger();
     }
   }
 
