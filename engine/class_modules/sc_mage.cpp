@@ -1524,29 +1524,18 @@ struct meteorite_t final : public arcane_phoenix_spell_t
 {
   action_t* damage_action = nullptr;
   action_t* damage_action_exceptional = nullptr;
-  timespan_t fall_time;
-  timespan_t meteor_delay;
 
   meteorite_t( std::string_view n, arcane_phoenix_pet_t* p, bool exceptional_ = false ) :
-    arcane_phoenix_spell_t( n, p, p->find_spell( 449559 ), exceptional_ ),
-    fall_time( timespan_t::from_seconds( p->find_spell( exceptional_ ? 456137 : 449560 )->missile_speed() ) ),
-    meteor_delay( p->find_spell( 449562 )->duration() )
+    arcane_phoenix_spell_t( n, p, p->find_spell( 449559 ), exceptional_ )
   {
     damage_action = damage_action_exceptional = get_action<meteorite_impact_t>( "meteorite_exceptional_impact", p, true );
     if ( !exceptional )
       damage_action = get_action<meteorite_impact_t>( "meteorite_impact", p );
+    travel_delay = p->find_spell( exceptional_ ? 456137 : 449560 )->missile_speed();
   }
 
   const arcane_phoenix_pet_t* p() const
   { return static_cast<arcane_phoenix_pet_t*>( player ); }
-
-  arcane_phoenix_pet_t* p()
-  { return static_cast<arcane_phoenix_pet_t*>( player ); }
-
-  timespan_t travel_time() const override
-  {
-    return std::max( meteor_delay * p()->cache.spell_cast_speed(), fall_time ) - fall_time;
-  }
 
   void execute() override
   {
@@ -1563,16 +1552,11 @@ struct meteorite_t final : public arcane_phoenix_spell_t
   {
     arcane_phoenix_spell_t::impact( s );
 
-    // The Meteorite fizzles if it does not spawn in the sky before the Arcane Phoenix expires.
+    // Once an instance of the pet has dealt damage with one exceptional Meteorite,
+    // all subsequent regular meteorites it casts will use the exceptional spell ID.
     // TODO: Check this later
-    if ( !p()->is_sleeping() )
-    {
-      // Once an instance of the pet has dealt damage with one exceptional Meteorite,
-      // all subsequent regular meteorites it casts will use the exceptional spell ID.
-      // TODO: Check this later
-      action_t* a = p()->exceptional_meteor_used ? damage_action_exceptional : damage_action;
-      make_event( *sim, fall_time, [ a, t = s->target ] { a->execute_on_target( t ); } );
-    }
+    action_t* a = p()->exceptional_meteor_used ? damage_action_exceptional : damage_action;
+    a->execute_on_target( s->target );
   }
 };
 
@@ -6026,22 +6010,14 @@ struct meteorite_impact_t final : public mage_spell_t
 
 struct meteorite_t final : public mage_spell_t
 {
-  timespan_t meteor_delay;
-
   meteorite_t( std::string_view n, mage_t* p ) :
-    mage_spell_t( n, p, p->find_spell( 449559 ) ),
-    meteor_delay( p->find_spell( 449562 )->duration() )
+    mage_spell_t( n, p, p->find_spell( 449559 ) )
   {
     background = true;
     impact_action = get_action<meteorite_impact_t>( "meteorite_impact", p );
+    travel_delay = p->find_spell( 449560 )->missile_speed();
 
     add_child( impact_action );
-  }
-
-  timespan_t travel_time() const override
-  {
-    // Travel time cannot go lower than 1 second to give time for Meteorite to visually fall.
-    return std::max( meteor_delay * p()->cache.spell_cast_speed(), 1.0_s );
   }
 };
 
