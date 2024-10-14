@@ -5037,8 +5037,8 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
   {
     double c = hunter_ranged_attack_t::cost_pct_multiplier();
 
-    if ( p() -> buffs.eagletalons_true_focus -> check() )
-      c *= 1 + p() -> talents.eagletalons_true_focus -> effectN( 1 ).percent();
+    if ( p()->buffs.trueshot->check() )
+      c *= 1 + p()->talents.trueshot->effectN( 7 ).percent();
 
     return c;
   }
