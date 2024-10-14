@@ -3357,10 +3357,14 @@ struct arcane_orb_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::impact( s );
 
-    int count = as<int>( p()->talents.splintering_orbs->effectN( 4 ).base_value() );
-    int max_count = as<int>( p()->talents.splintering_orbs->effectN( 1 ).base_value() );
-    if ( s->chain_target < max_count / count )
-      p()->trigger_splinter( s->target, count );
+    if ( p()->talents.splintering_orbs.ok() )
+    {
+      int count = as<int>( p()->talents.splintering_orbs->effectN( 4 ).base_value() );
+      int max_count = as<int>( p()->talents.splintering_orbs->effectN( 1 ).base_value() );
+      assert( count > 0 );
+      if ( s->chain_target < max_count / count )
+        p()->trigger_splinter( s->target, count );
+    }
   }
 };
 
