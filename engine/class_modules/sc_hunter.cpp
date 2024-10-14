@@ -697,7 +697,6 @@ public:
 
     spell_data_ptr_t stomp;
     spell_data_ptr_t serpentine_rhythm;
-    spell_data_ptr_t kindred_spirits;
     spell_data_ptr_t kill_cleave;
     spell_data_ptr_t training_expert;
     spell_data_ptr_t dire_beast;
@@ -2108,8 +2107,7 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     hunter_main_pet_base_t::init_base_stats();
 
     resources.base[RESOURCE_HEALTH] = 6373;
-    resources.base[RESOURCE_FOCUS] = 100
-      + o() -> talents.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
+    resources.base[RESOURCE_FOCUS] = 100;
 
     base_gcd = 1.5_s;
 
@@ -7578,7 +7576,6 @@ void hunter_t::init_spells()
 
     talents.stomp                             = find_talent_spell( talent_tree::SPECIALIZATION, "Stomp", HUNTER_BEAST_MASTERY );
     talents.serpentine_rhythm                 = find_talent_spell( talent_tree::SPECIALIZATION, "Serpentine Rhythm", HUNTER_BEAST_MASTERY );
-    talents.kindred_spirits                   = find_talent_spell( talent_tree::SPECIALIZATION, "Kindred Spirits", HUNTER_BEAST_MASTERY );
     talents.kill_cleave                       = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Cleave", HUNTER_BEAST_MASTERY );
     talents.training_expert                   = find_talent_spell( talent_tree::SPECIALIZATION, "Training Expert", HUNTER_BEAST_MASTERY );
     talents.dire_beast                        = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Beast", HUNTER_BEAST_MASTERY );
@@ -7823,8 +7820,7 @@ void hunter_t::init_base_stats()
     }
   }
 
-  resources.base[RESOURCE_FOCUS] = 100
-    + talents.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
+  resources.base[RESOURCE_FOCUS] = 100;
 }
 
 void hunter_t::create_actions()
