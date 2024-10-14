@@ -13302,6 +13302,7 @@ void shaman_t::trigger_arc_discharge( const action_state_t* state )
       action.lightning_bolt_ad->execute_on_target( state->target );
     }
   }
+  buff.arc_discharge->decrement();
 }
 
 void shaman_t::trigger_flowing_spirits( const action_state_t* state )
