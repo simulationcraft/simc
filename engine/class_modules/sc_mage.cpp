@@ -1896,6 +1896,7 @@ struct mage_spell_t : public spell_t
     bool clearcasting = false;
     bool from_the_ashes = false;
     bool ignite = false;
+    bool overflowing_energy = true;
     bool touch_of_the_magi = true;
 
     target_trigger_type_e calefaction = TT_NONE;
@@ -2246,7 +2247,7 @@ public:
     if ( s->result_total <= 0.0 )
       return;
 
-    if ( p()->talents.overflowing_energy.ok() && s->result_type == result_amount_type::DMG_DIRECT && s->result_total > 0.0 )
+    if ( triggers.overflowing_energy && p()->talents.overflowing_energy.ok() && s->result_type == result_amount_type::DMG_DIRECT )
     {
       // TODO: This isn't perfect, but currently describes all "non AoE" spells mages have
       if ( may_crit && s->result != RESULT_CRIT && aoe >= 0 && aoe < 5 )
@@ -7054,6 +7055,7 @@ struct splinter_t final : public mage_spell_t
     splinterstorm( splinterstorm_ )
   {
     background = proc = true;
+    triggers.overflowing_energy = false;
 
     if ( p->talents.controlled_instincts.ok() )
       controlled_instincts = get_action<controlled_instincts_t>( "controlled_instincts", p );
