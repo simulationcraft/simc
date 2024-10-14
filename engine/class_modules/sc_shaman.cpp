@@ -4882,8 +4882,9 @@ struct lava_lash_t : public shaman_attack_t
     p()->trigger_whirling_fire( execute_state );
     p()->buff.whirling_fire->decrement();
 
-    if ( ( !p()->dbc->ptr && p()->rng_obj.lively_totems->trigger() ) ||
-         ( p()->dbc->ptr && p()->rng_obj.lively_totems_ptr->trigger() ) )
+    if ( p()->talent.lively_totems.ok() &&
+         ( ( !p()->dbc->ptr && p()->rng_obj.lively_totems->trigger() ) ||
+         ( p()->dbc->ptr && p()->rng_obj.lively_totems_ptr->trigger() ) ) )
     {
       // 2024-07-10: Searing Totem death seems to be delayed from basically nothing to approximately
       // 850ms. Makes it possible to get an extra searing bolt if the timing is right.
