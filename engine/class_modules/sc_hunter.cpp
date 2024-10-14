@@ -688,7 +688,6 @@ public:
     spell_data_ptr_t barbed_scales;
     spell_data_ptr_t snakeskin_quiver;
     spell_data_ptr_t cobra_senses;
-    spell_data_ptr_t improved_kill_command;
     spell_data_ptr_t beast_cleave;
     spell_data_ptr_t wild_call;
     spell_data_ptr_t hunters_prey;
@@ -2320,7 +2319,6 @@ public:
 
     //Beast Mastery 
     ab::apply_affecting_aura( o() -> talents.savagery );
-    ab::apply_affecting_aura( o() -> talents.improved_kill_command );
 
     //Marksmanship
 
@@ -7567,7 +7565,6 @@ void hunter_t::init_spells()
     talents.snakeskin_quiver                  = find_talent_spell( talent_tree::SPECIALIZATION, "Snakeskin Quiver", HUNTER_BEAST_MASTERY );
     talents.cobra_senses                      = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Senses", HUNTER_BEAST_MASTERY );
     talents.alpha_predator                    = find_talent_spell( talent_tree::SPECIALIZATION, "Alpha Predator", HUNTER_BEAST_MASTERY );
-    talents.improved_kill_command             = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Kill Command", HUNTER_BEAST_MASTERY );
     talents.beast_cleave                      = find_talent_spell( talent_tree::SPECIALIZATION, "Beast Cleave", HUNTER_BEAST_MASTERY );
     talents.wild_call                         = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Call", HUNTER_BEAST_MASTERY );
     talents.hunters_prey                      = find_talent_spell( talent_tree::SPECIALIZATION, "Hunter's Prey", HUNTER_BEAST_MASTERY );
