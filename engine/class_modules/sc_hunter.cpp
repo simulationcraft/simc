@@ -5082,8 +5082,8 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 
     if( rng().roll( deathblow.chance ) )
     {
-      deathblow.proc -> occur();
-      p() -> buffs.deathblow -> trigger();    
+      deathblow.proc->occur();
+      p()->buffs.deathblow->trigger();    
     }
 
     if( !p()->buffs.wailing_arrow_override->check() )
@@ -5352,7 +5352,7 @@ struct rapid_fire_t: public hunter_spell_t
     p() -> buffs.streamline -> trigger();
     if( rng().roll( deathblow.chance ) )
     {
-      deathblow.proc -> occur();
+      deathblow.proc->occur();
       p()->buffs.deathblow->trigger();    
     }
   }
@@ -6365,12 +6365,19 @@ struct kill_command_t: public hunter_spell_t
 
       wildfire_infusion_reduction = p->talents.wildfire_infusion->effectN( 2 ).time_value();
       bloody_claws_extension      = p->talents.bloody_claws->effectN( 2 ).time_value();
+    }
 
-      if ( p->talents.deathblow.ok() )
+    if ( p->talents.deathblow.ok() )
+    {
+      if ( p->specialization() == HUNTER_SURVIVAL )
       {
         deathblow.chance = p->talents.sic_em.ok() ? p->talents.sic_em->effectN( 4 ).percent() : p->talents.deathblow->effectN( 3 ).percent();
-        deathblow.proc = p->get_proc( "Deathblow" );
       }
+      else 
+      {
+        deathblow.chance = p->talents.deathblow->effectN( 2 ).percent();
+      }
+      deathblow.proc = p->get_proc( "Deathblow" );
     }
 
     if ( p -> talents.dire_command.ok() )
@@ -6441,7 +6448,7 @@ struct kill_command_t: public hunter_spell_t
       }
       if( rng().roll( chance ) )
       {
-        deathblow.proc -> occur();
+        deathblow.proc->occur();
         p()->buffs.deathblow->trigger();
         p()->cooldowns.kill_shot->reset( true );
       }
