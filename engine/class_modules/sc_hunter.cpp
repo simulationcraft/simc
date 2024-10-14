@@ -1855,7 +1855,6 @@ struct stable_pet_t : public hunter_pet_t
   {
     double m = hunter_pet_t::composite_player_multiplier( school );
 
-    m *= 1 + o() -> talents.animal_companion -> effectN( 2 ).percent();
     m *= 1 + o() -> talents.training_expert -> effectN( 1 ).percent();
     m *= 1 + o()->buffs.harmonize->check_value();
 
