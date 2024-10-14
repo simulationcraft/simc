@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.5.56865
-static const std::array<spelltext_data_t, 26522> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 26524> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26299,7 +26299,9 @@ static const std::array<spelltext_data_t, 26522> __ptr_spelltext_data { {
   { 467059, "Finishing move that dispatches the enemy, dealing damage per combo point:\r\n   1 point  : ${$m1*1} damage\r\n   2 points: ${$m1*2} damage\r\n   3 points: ${$m1*3} damage\r\n   4 points: ${$m1*4} damage\r\n   5 points: ${$m1*5} damage$?s193531|((s394320|s394321)&!s193531)[\r\n   6 points: ${$m1*6} damage][]$?s193531&(s394320|s394321)[\r\n   7 points: ${$m1*7} damage][]", 0, 0 },
   { 467263, "$@spelldesc114051", 0, 0 },
   { 467270, "Life Cocoon grants up to $s1 stacks of Mana Tea and applies $s2 stacks of Healing Elixir to its target.", 0, 0 },
+  { 467274, "Sundering grants you Hot Hand for 8 sec.\r\n\r\nWhile Hot Hand is active, Lava Lash casts Sundering at $s1% effectiveness. Sundering cast from this effect does not incapacitate.", 0, 0 },
   { 467281, "$@spelldesc122280", "$w1 Healing Elixir stored, which will heal for $428439s1% of your maximum health if brought below $s1% heatlh.", 0 },
+  { 467283, "Shatters a line of earth in front of you with your main hand weapon, causing ${$s1/$467274s1*100} Flamestrike damage.", "Incapacitated.", 0 },
   { 467293, "After casting Jadefire Stomp or Thunder Focus Tea, Ancient Teachings transfers an additional $388026s2% damage to healing for $388026d.\r\n\r\nWhile Jadefire Teachings is active, your Stamina is increased by $388026s1%.", 0, 0 },
   { 467306, "$@spelldesc445034", 0, 0 },
   { 467307, "Kick up a powerful gust of wind, dealing $468179s1 Nature damage in a $468179a1 yd cone to enemies in front of you, split evenly among them. Damage is increased by $s1% for each target hit, up to ${$s1*$s2}%.\r\n\r\nGrants Rushing Winds for $467341d, increasing Renewing Mist's healing by $467341s1%.", 0, 0 },

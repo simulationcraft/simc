@@ -2004,6 +2004,7 @@ class SpellDataGenerator(DataGenerator):
           ( 447427, 0 ),                                # Call of the Ancestor Elemental Blast
           ( 447425, 0 ),                                # Call of the Ancestor Chain Lightning
           ( 470058, 0 ),                                # Voltaic Blaze override buff
+          ( 467283, 0 ),                                # Reactivity proc
         ),
 
         # Mage:

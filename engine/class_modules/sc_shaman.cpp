@@ -4437,6 +4437,27 @@ struct imbuement_mastery_t : public shaman_spell_t  // Imbuement Mastery damage
   }
 };
 
+struct sundering_reactivity_t : public shaman_attack_t
+{
+  sundering_reactivity_t( shaman_t* player ) :
+    shaman_attack_t( "sundering_reactivity", player, player->find_spell( 467283 ) )
+  {
+    weapon = &( player->main_hand_weapon );
+    aoe    = -1;  // TODO: This is likely not going to affect all enemies but it will do for now
+    base_multiplier = player->talent.reactivity->effectN( 1 ).percent();
+  }
+
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    may_proc_flametongue = false;
+    may_proc_windfury = false;
+    may_proc_flowing_spirits = false;
+    p()->set_mw_proc_state( this, mw_proc_state::DISABLED );
+  }
+};
+
 // Elemental overloads
 
 struct elemental_overload_spell_t : public shaman_spell_t
@@ -5453,25 +5474,13 @@ struct ice_strike_t : public shaman_attack_t
 
 struct sundering_t : public shaman_attack_t
 {
-  sundering_t( shaman_t* player, util::string_view options_str = {},
-               spell_variant variant_ = spell_variant::NORMAL )
-    : shaman_attack_t( ::action_name( "sundering", variant_ ), player,
-                     player->talent.sundering, variant_ )
+  sundering_t( shaman_t* player, util::string_view options_str )
+    : shaman_attack_t( "sundering", player, player->talent.sundering )
   {
     weapon = &( player->main_hand_weapon );
 
     parse_options( options_str );
     aoe    = -1;  // TODO: This is likely not going to affect all enemies but it will do for now
-
-    switch ( exec_type )
-    {
-      case spell_variant::REACTIVITY:
-        cooldown = player->get_cooldown( "__reactivity_sundering" );
-        background = true;
-        break;
-      default:
-        break;
-    }
   }
 
   void init() override
@@ -11345,7 +11354,7 @@ void shaman_t::create_actions()
 
   if ( talent.reactivity.ok() && dbc->ptr )
   {
-    action.reactivity = new sundering_t( this, "", spell_variant::REACTIVITY );
+    action.reactivity = new sundering_reactivity_t( this );
   }
 
   // Generic Actions
