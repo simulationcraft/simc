@@ -1851,7 +1851,8 @@ public:
 
     may_proc_flowing_spirits = p()->talent.flowing_spirits.ok() &&
       ( ab::data().dmg_class() == SPELL_TYPE_MAGIC || ab::data().dmg_class() == SPELL_TYPE_MELEE ) &&
-      ab::special && ab::callbacks && !ab::proc && ab::data().flags( SX_ALLOW_CLASS_ABILITY_PROCS );
+      ab::special && ab::callbacks && !ab::proc && ab::data().flags( SX_ALLOW_CLASS_ABILITY_PROCS ) &&
+      ab::has_direct_damage_effect( ab::data() );
   }
 
 
@@ -10567,6 +10568,13 @@ struct tempest_t : public shaman_spell_t
       default:
         break;
     }
+  }
+
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    may_proc_flowing_spirits = true;
   }
 
   void execute() override
