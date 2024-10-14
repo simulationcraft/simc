@@ -557,8 +557,6 @@ public:
     // Hunter Tree
     spell_data_ptr_t kill_shot;
 
-    spell_data_ptr_t improved_kill_shot;
-
     spell_data_ptr_t tar_trap;
 
     spell_data_ptr_t counter_shot;
@@ -1136,7 +1134,6 @@ public:
     affected_by.withering_fire = parse_damage_affecting_aura( this, p->talents.withering_fire_buff );
 
     // Hunter Tree passives
-    ab::apply_affecting_aura( p -> talents.improved_kill_shot );
     ab::apply_affecting_aura( p -> talents.specialized_arsenal );
     ab::apply_affecting_aura( p -> talents.improved_traps );
     ab::apply_affecting_aura( p -> talents.born_to_be_wild );
@@ -7420,8 +7417,6 @@ void hunter_t::init_spells()
 
   // Hunter Tree
   talents.kill_shot                         = find_talent_spell( talent_tree::CLASS, "Kill Shot" );
-
-  talents.improved_kill_shot                = find_talent_spell( talent_tree::CLASS, "Improved Kill Shot" );
 
   talents.tar_trap                          = find_talent_spell( talent_tree::CLASS, "Tar Trap" );
 
