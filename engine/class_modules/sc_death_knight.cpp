@@ -6755,6 +6755,17 @@ struct wave_of_souls_t final : public death_knight_spell_t
     aoe                     = -1;
     const int effect_idx    = p->specialization() == DEATH_KNIGHT_FROST ? 2 : 1;
     attack_power_mod.direct = data().effectN( effect_idx ).ap_coeff();
+    second_wave             = false;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = death_knight_spell_t::composite_crit_chance();
+    if ( second_wave )
+    {
+      c = 1.0;
+    }
+    return c;
   }
 
   void impact( action_state_t* state ) override
@@ -6767,7 +6778,6 @@ struct wave_of_souls_t final : public death_knight_spell_t
         double value = ( 1.0 + p()->talent.deathbringer.swift_and_painful->effectN( 2 ).percent() ) *
                        p()->spell.wave_of_souls_debuff->effectN( 1 ).percent();
         get_td( state->target )->debuff.wave_of_souls->trigger( 1, value );
-
       }
       else
       {
@@ -6787,6 +6797,9 @@ struct wave_of_souls_t final : public death_knight_spell_t
 
     return m;
   }
+
+public:
+  bool second_wave;
 };
 
 struct soul_rupture_t final : public death_knight_spell_t
@@ -6889,8 +6902,15 @@ struct reapers_mark_t final : public death_knight_spell_t
       make_event( *sim, first, [ this ]() {
         p()->active_spells.wave_of_souls->execute();
         timespan_t second = rng().gauss<1000, 200>();
+        wave_of_souls_t* wos           = debug_cast<wave_of_souls_t*>( p()->active_spells.wave_of_souls );        
+        wos->second_wave               = true;
         make_repeating_event(
-            *sim, second, [ this ]() { p()->active_spells.wave_of_souls->execute(); }, 1 );
+            *sim, second,
+            [ this, wos ]() {
+              p()->active_spells.wave_of_souls->execute();
+              wos->second_wave = false;
+            },
+            1 );
       } );
     }
   }
