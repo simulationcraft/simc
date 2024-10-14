@@ -776,6 +776,8 @@ public:
 
     std::array<proc_t*, 21> magma_chamber;
 
+    proc_t* ascendance_tempest_overload;
+    proc_t* potm_tempest_overload;
     proc_t* surge_of_power_lightning_bolt;
     proc_t* surge_of_power_sk_lightning_bolt;
     proc_t* surge_of_power_lava_burst;
@@ -2824,6 +2826,10 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     {
         if ( p()->buff.ascendance->up() )
         {
+          if ( id == 452201 )
+          {
+            p()->proc.ascendance_tempest_overload->occur();
+          }
           trigger_elemental_overload( s, 1.0 );
         }
     }
@@ -10703,6 +10709,7 @@ struct tempest_t : public shaman_spell_t
       {
         if ( p()->buff.power_of_the_maelstrom->up() )
         {
+          p()->proc.potm_tempest_overload->occur();
           trigger_elemental_overload( s, 1.0 );
           p()->buff.power_of_the_maelstrom->decrement();
         }
@@ -10713,19 +10720,18 @@ struct tempest_t : public shaman_spell_t
           {
             trigger_elemental_overload( s, 1.0 );
           }
-          p()->buff.surge_of_power->decrement();
           p()->proc.surge_of_power_tempest->occur();
+          p()->buff.surge_of_power->decrement();
         }
       }
 
-      trigger_elemental_overload( s );
       if ( p()->talent.supercharge.ok() )
       {
         trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
       }
     }
 
-    base_t::schedule_travel( s );
+    shaman_spell_t::schedule_travel( s );
   }
 
 };
@@ -13738,6 +13744,8 @@ void shaman_t::init_procs()
 
   proc.deeply_rooted_elements                   = get_proc( "Deeply Rooted Elements" );
 
+  proc.ascendance_tempest_overload      = get_proc( "Ascendance: Tempest" );
+  proc.potm_tempest_overload            = get_proc( "PotM: Tempest" );
   proc.surge_of_power_lightning_bolt = get_proc( "Surge of Power: Lightning Bolt" );
   proc.surge_of_power_sk_lightning_bolt = get_proc( "Surge of Power: SK Lightning Bolt" );
   proc.surge_of_power_lava_burst     = get_proc( "Surge of Power: Lava Burst" );
