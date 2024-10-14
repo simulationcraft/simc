@@ -8504,9 +8504,9 @@ void mage_t::create_buffs()
                                    ->set_default_value( find_spell( 448604 )->effectN( specialization() == MAGE_FIRE ? 6 : 1 ).percent() )
                                    ->set_chance( talents.codex_of_the_sunstriders.ok() );
   buffs.mana_cascade           = make_buff( this, "mana_cascade", find_spell( specialization() == MAGE_FIRE ? 449314 : 449322 ) )
-                                   ->set_default_value( specialization() == MAGE_FIRE || bugs
-                                     ? find_spell( 449314 )->effectN( 2 ).base_value() * 0.001
-                                     : find_spell( 449322 )->effectN( 1 ).percent() )
+                                   ->set_default_value_from_effect( 2,  0.001 )
+                                   // TODO: Ignite the Future does not currently allow Mana Cascade to stack beyond 10.
+                                   ->modify_max_stack( bugs ? 0 : as<int>( talents.ignite_the_future->effectN( 1 ).base_value() ) )
                                    ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                                    ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
                                      {
