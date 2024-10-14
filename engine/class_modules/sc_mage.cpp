@@ -2246,7 +2246,7 @@ public:
     if ( s->result_total <= 0.0 )
       return;
 
-    if ( p()->talents.overflowing_energy.ok() && s->result_type == result_amount_type::DMG_DIRECT )
+    if ( p()->talents.overflowing_energy.ok() && s->result_type == result_amount_type::DMG_DIRECT && s->result_total > 0.0 )
     {
       // TODO: This isn't perfect, but currently describes all "non AoE" spells mages have
       if ( may_crit && s->result != RESULT_CRIT && aoe >= 0 && aoe < 5 )
