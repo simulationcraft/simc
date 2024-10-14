@@ -904,7 +904,6 @@ public:
 
   struct {
     events::tar_trap_aoe_t* tar_trap_aoe = nullptr;
-    unsigned steady_focus_counter = 0;
     // Focus used for Calling the Shots (260404)
     double focus_used_CTS = 0;
     unsigned bombardment_counter = 0;
@@ -1508,8 +1507,6 @@ public:
 
 struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 {
-  bool breaks_steady_focus = true;
-
   hunter_ranged_attack_t( util::string_view n, hunter_t* p, const spell_data_t* s = spell_data_t::nil() ) : hunter_action_t( n, p, s )
   {
     affected_by.precise_shots = p -> talents.precise_shot.ok() && parse_damage_affecting_aura( this, p -> talents.precise_shots_buff ).direct;
@@ -1518,14 +1515,6 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 
   bool usable_moving() const override
   { return true; }
-
-  void execute() override
-  {
-    hunter_action_t::execute();
-
-    if ( !background && breaks_steady_focus )
-      p() -> state.steady_focus_counter = 0;
-  }
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
@@ -5281,7 +5270,6 @@ struct steady_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    breaks_steady_focus = false;
     energize_type = action_energize::ON_CAST;
     energize_resource = RESOURCE_FOCUS;
     energize_amount = p->find_spell( 77443 )->effectN( 1 ).base_value();
@@ -5296,12 +5284,7 @@ struct steady_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> state.steady_focus_counter += 1;
-    if ( p() -> state.steady_focus_counter == 2 )
-    {
-      p() -> buffs.steady_focus -> trigger();
-      p() -> state.steady_focus_counter = 0;
-    }
+    p() -> buffs.steady_focus -> trigger();
     if ( p()->talents.pin_cushion.ok() )
     {
       p()->cooldowns.aimed_shot->adjust( -p()->talents.pin_cushion->effectN( 1 ).time_value() ); 
@@ -7319,11 +7302,7 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
 {
   auto splits = util::string_split<util::string_view>( expression_str, "." );
 
-  if ( splits.size() == 1 && splits[ 0 ] == "steady_focus_count" )
-  {
-    return make_fn_expr( expression_str, [ this ] { return state.steady_focus_counter; } );
-  }
-  else if ( splits.size() == 2 && splits[ 0 ] == "tar_trap" )
+  if ( splits.size() == 2 && splits[ 0 ] == "tar_trap" )
   {
     if ( splits[ 1 ] == "up" )
       return make_fn_expr( expression_str, [ this ] { return state.tar_trap_aoe != nullptr; } );
