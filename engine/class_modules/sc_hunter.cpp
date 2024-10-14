@@ -411,13 +411,13 @@ public:
   {
     // Hunter Tree
     buff_t* trigger_finger;
+    buff_t* deathblow;
 
     // Marksmanship Tree
     buff_t* precise_shots;
     buff_t* lone_wolf;
     buff_t* streamline;
     buff_t* in_the_rhythm;
-    buff_t* deathblow;
     buff_t* razor_fragments;
     buff_t* trick_shots;
     buff_t* volley;
@@ -459,7 +459,6 @@ public:
     buff_t* mongoose_fury;
     buff_t* coordinated_assault;
     buff_t* exposed_flank;
-    buff_t* sic_em;
     buff_t* relentless_primal_ferocity;
     buff_t* bombardier;
 
@@ -557,6 +556,8 @@ public:
     // Hunter Tree
     spell_data_ptr_t kill_shot;
 
+    spell_data_ptr_t deathblow; 
+
     spell_data_ptr_t tar_trap;
 
     spell_data_ptr_t counter_shot;
@@ -627,7 +628,7 @@ public:
     spell_data_ptr_t lock_and_load;
     spell_data_ptr_t steady_focus;
 
-    spell_data_ptr_t deathblow;
+    spell_data_ptr_t improved_deathblow;
     spell_data_ptr_t night_hunter;
     spell_data_ptr_t tactical_reload;
     spell_data_ptr_t serpentstalkers_trickery;
@@ -4210,7 +4211,7 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> buffs.deathblow -> decrement();
+    p()->buffs.deathblow->expire();
     p() -> buffs.razor_fragments -> decrement();
 
     p() -> buffs.hunters_prey -> decrement();
@@ -4221,8 +4222,6 @@ struct kill_shot_t : hunter_ranged_attack_t
     
     if ( venoms_bite )
       venoms_bite->execute_on_target( target );
-
-    p()->buffs.sic_em->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -4251,8 +4250,8 @@ struct kill_shot_t : hunter_ranged_attack_t
 
   int n_targets() const override
   {
-    if ( p()->buffs.sic_em->up() )
-      return as<int>( p()->buffs.sic_em->check_value() );
+    if ( p()->talents.sic_em.ok() && p()->buffs.deathblow->check() )
+      return as<int>( p()->talents.sic_em->effectN( 2 ).base_value() );
 
     return hunter_ranged_attack_t::n_targets();
   }
@@ -4261,9 +4260,7 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     return hunter_ranged_attack_t::target_ready( candidate_target ) &&
       ( candidate_target -> health_percentage() <= health_threshold_pct
-        || p() -> buffs.deathblow -> check()
-        || p() -> buffs.hunters_prey -> check()
-        || p() -> buffs.sic_em -> check() );
+        || p() -> buffs.deathblow -> check() );
   }
 
   double action_multiplier() const override
@@ -4972,6 +4969,11 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     wind_arrow_t* wind_arrow = nullptr;
   } legacy_of_the_windrunners;
 
+  struct {
+    double chance = 0; 
+    proc_t* proc;
+  } deathblow;
+
   serpent_sting_t* serpentstalkers_trickery = nullptr;
   serpent_sting_hydras_bite_t* hydras_bite = nullptr;
 
@@ -5006,6 +5008,12 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     {
       legacy_of_the_windrunners.count = as<int>( p->talents.legacy_of_the_windrunners->effectN( 1 ).base_value() );
       legacy_of_the_windrunners.wind_arrow = p->get_background_action<wind_arrow_t>( "wind_arrow" );
+    }
+
+    if ( p->talents.deathblow.ok() )
+    {
+      deathblow.chance = p->talents.improved_deathblow.ok() ? p->talents.improved_deathblow->effectN( 2 ).percent() : p->talents.deathblow->effectN( 1 ).percent();
+      deathblow.proc = p->get_proc( "Deathblow" );
     }
 
     if ( p->talents.hydras_bite.ok() )
@@ -5069,7 +5077,12 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
       serpentstalkers_trickery->execute_on_target( target );
 
     p() -> buffs.precise_shots -> trigger();
-    p() -> buffs.deathblow -> trigger( -1, buff_t::DEFAULT_VALUE(), p() -> talents.deathblow -> proc_chance() );
+
+    if( rng().roll( deathblow.chance ) )
+    {
+      deathblow.proc -> occur();
+      p() -> buffs.deathblow -> trigger();    
+    }
 
     // TODO: Wailing Arrow consumes Trick Shots despite gaining nothing from it,
     // but check for it here if that's ever fixed.
@@ -5297,6 +5310,11 @@ struct rapid_fire_t: public hunter_spell_t
   rapid_fire_tick_t* damage;
   int base_num_ticks;
 
+  struct {
+    double chance = 0; 
+    proc_t* proc;
+  } deathblow;
+
   rapid_fire_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "rapid_fire", p, p -> talents.rapid_fire ),
     damage( p -> get_background_action<rapid_fire_tick_t>( "rapid_fire_tick" ) ),
@@ -5308,6 +5326,12 @@ struct rapid_fire_t: public hunter_spell_t
     channeled = reset_auto_attack = true;
 
     base_num_ticks += p -> talents.fan_the_hammer.ok() ? as<int>( p -> talents.fan_the_hammer -> effectN( 2 ).base_value() ) : 0;
+
+    if ( p->talents.improved_deathblow.ok() )
+    {
+      deathblow.chance = p->talents.improved_deathblow->effectN( 1 ).percent();
+      deathblow.proc = p->get_proc( "Deathblow" );
+    }
   }
 
   void init() override
@@ -5324,7 +5348,11 @@ struct rapid_fire_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     p() -> buffs.streamline -> trigger();
-    p() -> buffs.deathblow -> trigger( -1, buff_t::DEFAULT_VALUE(), p() -> talents.deathblow -> effectN( 1 ).percent() );
+    if( rng().roll( deathblow.chance ) )
+    {
+      deathblow.proc -> occur();
+      p()->buffs.deathblow->trigger();    
+    }
   }
 
   void tick( dot_t* d ) override
@@ -6324,9 +6352,13 @@ struct kill_command_t: public hunter_spell_t
     proc_t* proc;
   } dire_command;
 
+  struct {
+    double chance = 0; 
+    proc_t* proc;
+  } deathblow;
+
   timespan_t wildfire_infusion_reduction = 0_s;
   timespan_t bloody_claws_extension = 0_s;
-  double sic_em_chance = 0;
 
   kill_command_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "kill_command", p, p -> talents.kill_command )
@@ -6352,7 +6384,12 @@ struct kill_command_t: public hunter_spell_t
 
       wildfire_infusion_reduction = p->talents.wildfire_infusion->effectN( 2 ).time_value();
       bloody_claws_extension      = p->talents.bloody_claws->effectN( 2 ).time_value();
-      sic_em_chance               = p->talents.sic_em->effectN( 1 ).percent();
+
+      if ( p->talents.deathblow.ok() )
+      {
+        deathblow.chance = p->talents.sic_em.ok() ? p->talents.sic_em->effectN( 4 ).percent() : p->talents.deathblow->effectN( 3 ).percent();
+        deathblow.proc = p->get_proc( "Deathblow" );
+      }
     }
 
     if ( p -> talents.dire_command.ok() )
@@ -6413,8 +6450,22 @@ struct kill_command_t: public hunter_spell_t
       p() -> procs.dire_command -> occur();
     }
 
-    if ( rng().roll( p()->talents.hunters_prey->effectN( 1 ).percent() ) )
-      p()->buffs.hunters_prey->trigger();
+    if ( p()->talents.deathblow.ok() )
+    {
+      double chance = deathblow.chance;
+      // Sic 'Em doubles the chance of Deathblow during Coordinated Assault, but it is not in spell data.
+      if ( p()->talents.sic_em.ok() && p()->buffs.coordinated_assault->check() )
+      {
+        chance *= 2; 
+      }
+      if( rng().roll( chance ) )
+      {
+        deathblow.proc -> occur();
+        p()->buffs.deathblow->trigger();
+        p()->cooldowns.kill_shot->reset( true );
+      }
+    }
+
 
     if( p() -> talents.a_murder_of_crows.ok() )
     {
@@ -6428,12 +6479,6 @@ struct kill_command_t: public hunter_spell_t
 
     p()->cooldowns.wildfire_bomb->adjust( -wildfire_infusion_reduction );
     p()->buffs.mongoose_fury->extend_duration( p(), bloody_claws_extension );
-
-    if ( rng().roll( sic_em_chance ) )
-    {
-      p()->buffs.sic_em->trigger();
-      p()->cooldowns.kill_shot->reset( true );
-    }
 
     if( p()->talents.vicious_hunt.ok() )
     {
@@ -7418,6 +7463,8 @@ void hunter_t::init_spells()
   // Hunter Tree
   talents.kill_shot                         = find_talent_spell( talent_tree::CLASS, "Kill Shot" );
 
+  talents.deathblow                         = find_talent_spell( talent_tree::CLASS, "Deathblow" );
+
   talents.tar_trap                          = find_talent_spell( talent_tree::CLASS, "Tar Trap" );
 
   talents.counter_shot                      = find_talent_spell( talent_tree::CLASS, "Counter Shot" );
@@ -7479,7 +7526,7 @@ void hunter_t::init_spells()
     talents.lock_and_load                     = find_talent_spell( talent_tree::SPECIALIZATION, "Lock and Load", HUNTER_MARKSMANSHIP );
     talents.steady_focus                      = find_talent_spell( talent_tree::SPECIALIZATION, "Steady Focus", HUNTER_MARKSMANSHIP );
 
-    talents.deathblow                         = find_talent_spell( talent_tree::SPECIALIZATION, "Deathblow", HUNTER_MARKSMANSHIP );
+    talents.improved_deathblow                = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Deathblow", HUNTER_MARKSMANSHIP );
     talents.barrage                           = find_talent_spell( talent_tree::SPECIALIZATION, "Barrage", HUNTER_MARKSMANSHIP );
     talents.night_hunter                      = find_talent_spell( talent_tree::SPECIALIZATION, "Night Hunter", HUNTER_MARKSMANSHIP );
     talents.tactical_reload                   = find_talent_spell( talent_tree::SPECIALIZATION, "Tactical Reload", HUNTER_MARKSMANSHIP );
@@ -8003,12 +8050,6 @@ void hunter_t::create_buffs()
 
   buffs.hunters_prey =
     make_buff( this, "hunters_prey", find_spell( 378215 ) )
-      -> set_stack_change_callback(
-        [ this ]( buff_t*, int old, int ) {
-          if ( old == 0 ) {
-            cooldowns.kill_shot -> reset( true );
-          }
-        } )
       -> set_activated( false );
 
   buffs.call_of_the_wild =
@@ -8138,11 +8179,6 @@ void hunter_t::create_buffs()
     make_buff( this, "exposed_flank", find_spell( 459864 ) )
       ->set_default_value( find_spell( 459864 )->effectN( 1 ).base_value() )
       ->set_chance( talents.exposed_flank.ok() );
-
-  buffs.sic_em = 
-    make_buff( this, "sic_em", find_spell( 461409 ) )
-      ->set_default_value( find_spell( 461409 )->effectN( 2 ).base_value() )
-      ->set_chance( talents.sic_em.ok() );
 
   buffs.bombardier = 
     make_buff( this, "bombardier", talents.bombardier_buff )
