@@ -426,7 +426,6 @@ public:
     buff_t* lock_and_load;
     buff_t* bullseye;
     buff_t* bulletstorm;
-    buff_t* eagletalons_true_focus;
     buff_t* salvo;
     buff_t* unerring_vision_hidden;
     buff_t* unerring_vision;
@@ -661,15 +660,13 @@ public:
     spell_data_ptr_t wailing_arrow_override_buff;
     spell_data_ptr_t wailing_arrow_override;
     spell_data_ptr_t wailing_arrow_damage;
-
-    spell_data_ptr_t eagletalons_true_focus;
-    spell_data_ptr_t calling_the_shots;
+    spell_data_ptr_t unerring_vision;
     spell_data_ptr_t small_game_hunter;
     spell_data_ptr_t kill_zone;
     spell_data_ptr_t kill_zone_debuff;
 
     spell_data_ptr_t readiness;
-    spell_data_ptr_t unerring_vision;
+    spell_data_ptr_t calling_the_shots;
     spell_data_ptr_t salvo;
 
     // Beast Mastery Tree
@@ -1153,7 +1150,6 @@ public:
     ab::apply_affecting_aura( p -> talents.small_game_hunter );
     ab::apply_affecting_aura( p -> talents.fan_the_hammer );
     ab::apply_affecting_aura( p -> talents.rapid_fire_barrage );
-    ab::apply_affecting_aura( p -> talents.eagletalons_true_focus );
 
     // Beast Mastery Tree passives
     ab::apply_affecting_aura( p -> talents.war_orders );
@@ -3874,38 +3870,12 @@ struct arcane_shot_base_t: public hunter_ranged_attack_t
 
 struct arcane_shot_t : public arcane_shot_base_t
 {
-  struct arcane_shot_eagletalons_true_focus_t : public arcane_shot_base_t
-  {
-    arcane_shot_eagletalons_true_focus_t( util::string_view n, hunter_t* p ) : arcane_shot_base_t( n, p )
-    {
-      background = dual = true;
-      base_multiplier *= p->talents.eagletalons_true_focus->effectN( 3 ).percent();
-      base_costs[ RESOURCE_FOCUS ] = 0;
-    }
-  };
-
-  arcane_shot_eagletalons_true_focus_t* eagletalons_true_focus = nullptr;
-
   arcane_shot_t( hunter_t* p, util::string_view options_str ) : arcane_shot_base_t( "arcane_shot", p )
   {
     parse_options( options_str );
 
     if ( p->specialization() == HUNTER_MARKSMANSHIP && p->talents.chimaera_shot.ok() )
       background = true;
-
-    if ( p->talents.eagletalons_true_focus.ok() )
-    {
-      eagletalons_true_focus = p->get_background_action<arcane_shot_eagletalons_true_focus_t>( "arcane_shot_eagletalons_true_focus" );
-      add_child( eagletalons_true_focus );
-    }
-  }
-
-  void execute() override
-  {
-    arcane_shot_base_t::execute();
-
-    if ( eagletalons_true_focus && p()->buffs.eagletalons_true_focus->up() )
-      eagletalons_true_focus->execute_on_target( target );
   }
 };
 
@@ -4845,28 +4815,6 @@ struct chimaera_shot_base_t : public hunter_ranged_attack_t
 
 struct chimaera_shot_t : public chimaera_shot_base_t
 {
-  struct chimaera_shot_eagletalons_true_focus_t : public chimaera_shot_base_t
-  {
-    chimaera_shot_eagletalons_true_focus_t( util::string_view n, hunter_t* p ) : chimaera_shot_base_t( n, p )
-    {
-      background = dual = true;
-      base_costs[ RESOURCE_FOCUS ] = 0;
-
-      nature = p->get_background_action<impact_t>( "chimaera_shot_eagletalons_true_focus_nature",
-                                                   p->talents.chimaera_shot_nature,
-                                                   p->talents.eagletalons_true_focus->effectN( 3 ).percent() );
-
-      frost  = p->get_background_action<impact_t>( "chimaera_shot_eagletalons_true_focus_frost",
-                                                  p->talents.chimaera_shot_frost,
-                                                  p->talents.eagletalons_true_focus->effectN( 3 ).percent() );
-
-      add_child( nature );
-      add_child( frost );
-    }
-  };
-
-  chimaera_shot_eagletalons_true_focus_t* eagletalons_true_focus = nullptr;
-
   chimaera_shot_t( hunter_t* p, util::string_view options_str ) : chimaera_shot_base_t( "chimaera_shot", p )
   {
     parse_options( options_str );
@@ -4876,20 +4824,6 @@ struct chimaera_shot_t : public chimaera_shot_base_t
 
     add_child( nature );
     add_child( frost );
-
-    if ( p->talents.eagletalons_true_focus.ok() )
-    {
-      eagletalons_true_focus = p->get_background_action<chimaera_shot_eagletalons_true_focus_t>( "chimaera_shot_eagletalons_true_focus" );
-      add_child( eagletalons_true_focus );
-    }
-  }
-
-  void execute() override
-  {
-    chimaera_shot_base_t::execute();
-
-    if ( eagletalons_true_focus && p()->buffs.eagletalons_true_focus->up() )
-      eagletalons_true_focus->execute_on_target( target );
   }
 };
 
@@ -5464,27 +5398,9 @@ struct multishot_mm_base_t: public hunter_ranged_attack_t
 
 struct multishot_mm_t : public multishot_mm_base_t
 {
-  struct multishot_mm_eagletalons_true_focus_t : public multishot_mm_base_t
-  {
-    multishot_mm_eagletalons_true_focus_t( util::string_view n, hunter_t* p ) : multishot_mm_base_t( n, p )
-    {
-      background = dual = true;
-      base_multiplier *= p->talents.eagletalons_true_focus->effectN( 3 ).percent();
-      base_costs[ RESOURCE_FOCUS ] = 0;
-    }
-  };
-
-  multishot_mm_eagletalons_true_focus_t* eagletalons_true_focus = nullptr;
-
   multishot_mm_t( hunter_t* p, util::string_view options_str ) : multishot_mm_base_t( "multishot", p )
   {
     parse_options( options_str );
-
-    if ( p->talents.eagletalons_true_focus.ok() )
-    {
-      eagletalons_true_focus = p->get_background_action<multishot_mm_eagletalons_true_focus_t>( "multishot_eagletalons_true_focus" );
-      add_child( eagletalons_true_focus );
-    }
   }
 
   void execute() override
@@ -5492,9 +5408,6 @@ struct multishot_mm_t : public multishot_mm_base_t
     multishot_mm_base_t::execute();
 
     p()->trigger_symphonic_arsenal();
-
-    if ( eagletalons_true_focus && p()->buffs.eagletalons_true_focus->up() )
-      eagletalons_true_focus->execute_on_target( target );
   }
 };
 
@@ -7545,14 +7458,13 @@ void hunter_t::init_spells()
     talents.wailing_arrow_override_buff       = talents.wailing_arrow.ok() ? find_spell( 459808 ) : spell_data_t::not_found();
     talents.wailing_arrow_override            = talents.wailing_arrow.ok() ? find_spell( 392060 ) : spell_data_t::not_found();
     talents.wailing_arrow_damage              = talents.wailing_arrow.ok() ? find_spell( 392058 ) : spell_data_t::not_found();
-    talents.eagletalons_true_focus            = find_talent_spell( talent_tree::SPECIALIZATION, "Eagletalon's True Focus", HUNTER_MARKSMANSHIP );
-    talents.calling_the_shots                 = find_talent_spell( talent_tree::SPECIALIZATION, "Calling the Shots", HUNTER_MARKSMANSHIP );
+    talents.unerring_vision                   = find_talent_spell( talent_tree::SPECIALIZATION, "Unerring Vision", HUNTER_MARKSMANSHIP );
     talents.small_game_hunter                 = find_talent_spell( talent_tree::SPECIALIZATION, "Small Game Hunter", HUNTER_MARKSMANSHIP );
     talents.kill_zone                         = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Zone", HUNTER_MARKSMANSHIP );
     talents.kill_zone_debuff                  = talents.kill_zone.ok() ? find_spell( 393480 ) : spell_data_t::not_found();
 
     talents.readiness                         = find_talent_spell( talent_tree::SPECIALIZATION, "Readiness", HUNTER_MARKSMANSHIP );
-    talents.unerring_vision                   = find_talent_spell( talent_tree::SPECIALIZATION, "Unerring Vision", HUNTER_MARKSMANSHIP );
+    talents.calling_the_shots                 = find_talent_spell( talent_tree::SPECIALIZATION, "Calling the Shots", HUNTER_MARKSMANSHIP );
     talents.salvo                             = find_talent_spell( talent_tree::SPECIALIZATION, "Salvo", HUNTER_MARKSMANSHIP );
   }
 
@@ -7936,17 +7848,14 @@ void hunter_t::create_buffs()
           cooldowns.rapid_fire -> adjust_recharge_multiplier();
           if ( cur == 0 ) 
           {
-            buffs.eagletalons_true_focus -> expire();
             buffs.unerring_vision_hidden -> expire();
             buffs.unerring_vision -> expire();
           }
           else if ( cur == 1 ) 
           {
             buffs.unerring_vision_hidden -> trigger();
-            buffs.eagletalons_true_focus -> trigger();
           }
-        } )
-      -> apply_affecting_aura( talents.eagletalons_true_focus );
+        } );
 
   buffs.lock_and_load =
     make_buff( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
@@ -7980,10 +7889,6 @@ void hunter_t::create_buffs()
   buffs.unerring_vision =
     make_buff<stat_buff_t>(this, "unerring_vision", find_spell( 386877 ) )
       -> add_invalidate( CACHE_CRIT_CHANCE );
-
-  buffs.eagletalons_true_focus =
-    make_buff( this, "eagletalons_true_focus", talents.eagletalons_true_focus -> effectN( 4 ).trigger() )
-      -> set_trigger_spell( talents.eagletalons_true_focus );
 
   buffs.bulletstorm =
     make_buff( this, "bulletstorm", find_spell( 389020 ) )
