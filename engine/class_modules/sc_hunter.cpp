@@ -537,6 +537,7 @@ public:
   {
     proc_t* calling_the_shots;
 
+    proc_t* snakeskin_quiver;
     proc_t* wild_call;
     proc_t* wild_instincts;
     proc_t* dire_command;
@@ -683,6 +684,7 @@ public:
     spell_data_ptr_t multishot_bm;
     spell_data_ptr_t laceration;
 
+    spell_data_ptr_t snakeskin_quiver;
     spell_data_ptr_t cobra_senses;
     spell_data_ptr_t improved_kill_command;
     spell_data_ptr_t beast_cleave;
@@ -883,6 +885,7 @@ public:
 
   struct {
     action_t* barbed_shot = nullptr;
+    action_t* snakeskin_quiver = nullptr;
     action_t* dire_command = nullptr;
     action_t* a_murder_of_crows = nullptr;
 
@@ -3585,16 +3588,29 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
     }
   };
 
+  double snakeskin_quiver_chance = 0;
   double wild_call_chance = 0;
 
   auto_shot_t( hunter_t* p ) : auto_attack_base_t( "auto_shot", p, p->specs.auto_shot )
   {
-    wild_call_chance = p -> talents.wild_call -> effectN( 1 ).percent();
+    wild_call_chance = p->talents.wild_call->effectN( 1 ).percent();
+    snakeskin_quiver_chance = p->talents.snakeskin_quiver->effectN( 1 ).percent();
   }
 
   action_state_t* new_state() override
   {
     return new state_t( this, target );
+  }
+
+  void execute() override
+  {
+    auto_attack_base_t::execute();
+
+    if ( rng().roll( snakeskin_quiver_chance ) )
+    {
+      p()->procs.snakeskin_quiver->occur();
+      p()->actions.snakeskin_quiver->execute_on_target( target );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4647,6 +4663,18 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::schedule_travel( s );
 
     p() -> cooldowns.kill_command -> adjust( kill_command_reduction );
+  }
+};
+
+// Cobra Shot (Snakeskin Quiver)
+
+struct cobra_shot_snakeskin_quiver_t: public cobra_shot_t
+{
+  cobra_shot_snakeskin_quiver_t( hunter_t* p ):
+    cobra_shot_t( p, "" )
+  {
+    background = dual = true;
+    base_costs[ RESOURCE_FOCUS ] = 0;
   }
 };
 
@@ -7487,6 +7515,7 @@ void hunter_t::init_spells()
     talents.multishot_bm                      = find_talent_spell( talent_tree::SPECIALIZATION, "Multi-Shot", HUNTER_BEAST_MASTERY );
     talents.laceration                        = find_talent_spell( talent_tree::SPECIALIZATION, "Laceration", HUNTER_BEAST_MASTERY );
 
+    talents.snakeskin_quiver                  = find_talent_spell( talent_tree::SPECIALIZATION, "Snakeskin Quiver", HUNTER_BEAST_MASTERY );
     talents.cobra_senses                      = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Senses", HUNTER_BEAST_MASTERY );
     talents.alpha_predator                    = find_talent_spell( talent_tree::SPECIALIZATION, "Alpha Predator", HUNTER_BEAST_MASTERY );
     talents.improved_kill_command             = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Kill Command", HUNTER_BEAST_MASTERY );
@@ -7779,6 +7808,10 @@ void hunter_t::create_actions()
 
   if ( talents.lunar_storm.ok() )
     actions.lunar_storm = new attacks::lunar_storm_t( this );
+
+  if ( talents.snakeskin_quiver.ok() )
+    actions.snakeskin_quiver = new attacks::cobra_shot_snakeskin_quiver_t( this );
+
 }
 
 void hunter_t::create_buffs()
@@ -8205,6 +8238,9 @@ void hunter_t::init_procs()
 
   if ( talents.dire_command.ok() )
     procs.dire_command = get_proc( "Dire Command" );
+
+  if ( talents.snakeskin_quiver.ok() )
+    procs.snakeskin_quiver = get_proc( "Snakeskin Quiver" );
 
   if ( talents.wild_call.ok() )
     procs.wild_call = get_proc( "Wild Call" );
