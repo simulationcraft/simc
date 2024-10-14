@@ -1663,8 +1663,10 @@ public:
   bool affected_by_earthen_weapon_da;
   bool affected_by_earthen_weapon_ta;
   bool affected_by_natures_fury;
-  bool affected_by_xs_cost;
-  bool affected_by_xs_cast_time;
+  bool affected_by_ns_cost;
+  bool affected_by_ns_cast_time;
+  bool affected_by_ans_cost;
+  bool affected_by_ans_cast_time;
   bool affected_by_enh_mastery_da;
   bool affected_by_enh_mastery_ta;
   bool affected_by_enh_t29_2pc;
@@ -1716,8 +1718,10 @@ public:
       affected_by_icy_edge_da( false ),
       affected_by_icy_edge_ta( false ),
       affected_by_natures_fury( false ),
-      affected_by_xs_cost( false ),
-      affected_by_xs_cast_time( false ),
+      affected_by_ns_cost( false ),
+      affected_by_ns_cast_time( false ),
+      affected_by_ans_cost( false ),
+      affected_by_ans_cast_time( false ),
       affected_by_enh_mastery_da( false ),
       affected_by_enh_mastery_ta( false ),
       affected_by_enh_t29_2pc( false ),
@@ -1787,13 +1791,12 @@ public:
       ab::data().affected_by( player->talent.natures_fury->effectN( 1 ) ) ||
       ab::data().affected_by_label( player->talent.natures_fury->effectN( 2 ) );
 
-    affected_by_xs_cost = ab::data().affected_by( player->talent.natures_swiftness->effectN( 1 ) ) ||
-                          ab::data().affected_by( player->talent.natures_swiftness->effectN( 3 ) ) ||
-                          ab::data().affected_by( player->buff.ancestral_swiftness->data().effectN( 1 ) ) ||
-                          ab::data().affected_by( player->buff.ancestral_swiftness->data().effectN( 3 ) );
-    affected_by_xs_cast_time =
-      ab::data().affected_by( player->talent.natures_swiftness->effectN( 2 ) ) ||
-      ab::data().affected_by( player->buff.ancestral_swiftness->data().effectN( 2 ) );
+    affected_by_ns_cost = ab::data().affected_by( player->talent.natures_swiftness->effectN( 1 ) ) ||
+                          ab::data().affected_by( player->talent.natures_swiftness->effectN( 3 ) );
+    affected_by_ans_cost = ab::data().affected_by( player->buff.ancestral_swiftness->data().effectN( 1 ) ) ||
+                           ab::data().affected_by( player->buff.ancestral_swiftness->data().effectN( 3 ) );
+    affected_by_ns_cast_time = ab::data().affected_by( player->talent.natures_swiftness->effectN( 2 ) );
+    affected_by_ans_cast_time = ab::data().affected_by( player->buff.ancestral_swiftness->data().effectN( 2 ) );
 
     affected_by_enh_mastery_da = ab::data().affected_by( player->mastery.enhanced_elements->effectN( 1 ) );
     affected_by_enh_mastery_ta = ab::data().affected_by( player->mastery.enhanced_elements->effectN( 5 ) );
@@ -2178,22 +2181,22 @@ public:
   {
     auto mul = ab::execute_time_pct_multiplier();
 
-    if ( affected_by_xs_cast_time && p()->buff.natures_swiftness->check() && !ab::background )
+    if ( affected_by_ns_cast_time && p()->buff.natures_swiftness->check() && !ab::background )
     {
       mul *= 1.0 + p()->talent.natures_swiftness->effectN( 2 ).percent();
     }
 
-    if ( affected_by_xs_cast_time && p()->buff.ancestral_swiftness->check() && !ab::background )
+    if ( affected_by_ans_cast_time && p()->buff.ancestral_swiftness->check() && !ab::background )
     {
       mul *= 1.0 + p()->buff.ancestral_swiftness->data().effectN( 2 ).percent();
     }
 
-    if ( affected_by_arc_discharge && p()->buff.arc_discharge->check() )
+    if ( affected_by_arc_discharge && p()->buff.arc_discharge->check() && !ab::background)
     {
       mul *= 1.0 + p()->buff.arc_discharge->data().effectN( 1 ).percent();
     }
 
-    if ( affected_by_storm_frenzy && p()->buff.storm_frenzy->check() )
+    if ( affected_by_storm_frenzy && p()->buff.storm_frenzy->check() && !ab::background)
     {
       mul *= 1.0 + p()->buff.storm_frenzy->value();
     }
@@ -2221,12 +2224,12 @@ public:
   {
     double c = ab::cost_pct_multiplier();
 
-    if ( affected_by_xs_cost && p()->buff.natures_swiftness->check() && !ab::background && ab::current_resource() != RESOURCE_MAELSTROM )
+    if ( affected_by_ns_cost && p()->buff.natures_swiftness->check() && !ab::background && ab::current_resource() != RESOURCE_MAELSTROM )
     {
       c *= 1.0 + p()->talent.natures_swiftness->effectN( 1 ).percent();
     }
 
-    if ( affected_by_xs_cost && p()->buff.ancestral_swiftness->check() && !ab::background && ab::current_resource() != RESOURCE_MAELSTROM )
+    if ( affected_by_ans_cost && p()->buff.ancestral_swiftness->check() && !ab::background && ab::current_resource() != RESOURCE_MAELSTROM )
     {
       c *= 1.0 + p()->buff.ancestral_swiftness->data().effectN( 1 ).percent();
     }
@@ -2249,12 +2252,12 @@ public:
       p()->buff.flurry->trigger( p()->buff.flurry->max_stack() );
     }
 
-    if ( ( affected_by_xs_cast_time || affected_by_xs_cost ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()) && !ab::background)
+    if ( ( affected_by_ns_cast_time || affected_by_ns_cost ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()) && !ab::background)
     {
       p()->buff.natures_swiftness->decrement();
     }
 
-    if ( ( affected_by_xs_cast_time || affected_by_xs_cost ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()) && !ab::background)
+    if ( ( affected_by_ans_cast_time || affected_by_ans_cost ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()) && !ab::background)
     {
       p()->buff.ancestral_swiftness->decrement();
     }
@@ -2267,7 +2270,8 @@ public:
       this->p()->buff.t29_2pc_enh->expire();
     }
 
-    if ( affected_by_storm_frenzy && !this->background && exec_type == spell_variant::NORMAL )
+    if ( affected_by_storm_frenzy && !this->background && exec_type == spell_variant::NORMAL &&
+         !( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() ) && !ab::background )
     {
       this->p()->buff.storm_frenzy->decrement();
     }
@@ -13292,8 +13296,6 @@ void shaman_t::trigger_arc_discharge( const action_state_t* state )
       action.lightning_bolt_ad->execute_on_target( state->target );
     }
   }
-
-  buff.arc_discharge->decrement();
 }
 
 void shaman_t::trigger_flowing_spirits( const action_state_t* state )
