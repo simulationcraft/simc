@@ -440,6 +440,8 @@ public:
     buff_t* hunters_prey;
     buff_t* call_of_the_wild;
     buff_t* beast_cleave; 
+    buff_t* serpentine_rhythm;
+    buff_t* serpentine_blessing;
     buff_t* explosive_venom;
     buff_t* a_murder_of_crows;
     buff_t* huntmasters_call; 
@@ -693,6 +695,7 @@ public:
     spell_data_ptr_t venoms_bite;
 
     spell_data_ptr_t stomp;
+    spell_data_ptr_t serpentine_rhythm;
     spell_data_ptr_t kindred_spirits;
     spell_data_ptr_t kill_cleave;
     spell_data_ptr_t training_expert;
@@ -4656,6 +4659,28 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> talents.killer_cobra.ok() && p() -> buffs.bestial_wrath -> check() )
       p() -> cooldowns.kill_command -> reset( true );
+    
+    if( p()->talents.serpentine_rhythm.ok() )
+    {
+      if( p()->buffs.serpentine_rhythm->at_max_stacks() )
+      {
+        p()->buffs.serpentine_rhythm->expire();
+        p()->buffs.serpentine_blessing->trigger();
+      }
+      else
+      {
+        p()->buffs.serpentine_rhythm->trigger();
+      }
+    }
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+    m *= 1.0 + p()->buffs.serpentine_rhythm->check_stack_value();
+
+    return m;
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -7525,6 +7550,7 @@ void hunter_t::init_spells()
     talents.venoms_bite                       = find_talent_spell( talent_tree::SPECIALIZATION, "Venom's Bite", HUNTER_BEAST_MASTERY );
 
     talents.stomp                             = find_talent_spell( talent_tree::SPECIALIZATION, "Stomp", HUNTER_BEAST_MASTERY );
+    talents.serpentine_rhythm                 = find_talent_spell( talent_tree::SPECIALIZATION, "Serpentine Rhythm", HUNTER_BEAST_MASTERY );
     talents.kindred_spirits                   = find_talent_spell( talent_tree::SPECIALIZATION, "Kindred Spirits", HUNTER_BEAST_MASTERY );
     talents.kill_cleave                       = find_talent_spell( talent_tree::SPECIALIZATION, "Kill Cleave", HUNTER_BEAST_MASTERY );
     talents.training_expert                   = find_talent_spell( talent_tree::SPECIALIZATION, "Training Expert", HUNTER_BEAST_MASTERY );
@@ -8014,6 +8040,16 @@ void hunter_t::create_buffs()
   buffs.beast_cleave = 
     make_buff( this, "beast_cleave", find_spell( 268877 ) )
     -> apply_affecting_effect( talents.beast_cleave -> effectN( 2 ) );
+
+  buffs.serpentine_rhythm = 
+    make_buff( this, "serpentine_rhythm", find_spell( 468703 ) )
+    -> set_default_value_from_effect( 1 )
+    -> set_chance( talents.serpentine_rhythm.ok() );
+
+  buffs.serpentine_blessing = 
+    make_buff( this, "serpentine_blessing", find_spell( 468704 ) )
+    -> set_default_value_from_effect( 1 )
+    -> set_chance( talents.serpentine_rhythm.ok() );
 
   buffs.explosive_venom = 
     make_buff( this, "explosive_venom", find_spell( 459689 ) )
@@ -8679,6 +8715,8 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
       m *= 1 + talents.coordinated_assault->effectN( 4 ).percent();
 
     m *= 1 + buffs.summon_hati -> check_value();
+
+    m *= 1 + buffs.serpentine_blessing->check_value();
   }
 
   return m;
