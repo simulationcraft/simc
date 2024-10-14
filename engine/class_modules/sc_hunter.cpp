@@ -686,6 +686,7 @@ public:
     spell_data_ptr_t multishot_bm;
     spell_data_ptr_t laceration;
 
+    spell_data_ptr_t barbed_scales;
     spell_data_ptr_t snakeskin_quiver;
     spell_data_ptr_t cobra_senses;
     spell_data_ptr_t improved_kill_command;
@@ -4660,7 +4661,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     if ( p() -> talents.killer_cobra.ok() && p() -> buffs.bestial_wrath -> check() )
       p() -> cooldowns.kill_command -> reset( true );
     
-    if( p()->talents.serpentine_rhythm.ok() )
+    if ( p()->talents.serpentine_rhythm.ok() )
     {
       if( p()->buffs.serpentine_rhythm->at_max_stacks() )
       {
@@ -4671,6 +4672,11 @@ struct cobra_shot_t: public hunter_ranged_attack_t
       {
         p()->buffs.serpentine_rhythm->trigger();
       }
+    }
+
+    if ( p()->talents.barbed_scales.ok() )
+    {
+      p()->cooldowns.barbed_shot->adjust( -p()->talents.barbed_scales->effectN( 1 ).time_value() );
     }
   }
 
@@ -7540,6 +7546,7 @@ void hunter_t::init_spells()
     talents.multishot_bm                      = find_talent_spell( talent_tree::SPECIALIZATION, "Multi-Shot", HUNTER_BEAST_MASTERY );
     talents.laceration                        = find_talent_spell( talent_tree::SPECIALIZATION, "Laceration", HUNTER_BEAST_MASTERY );
 
+    talents.barbed_scales                     = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Scales", HUNTER_BEAST_MASTERY );
     talents.snakeskin_quiver                  = find_talent_spell( talent_tree::SPECIALIZATION, "Snakeskin Quiver", HUNTER_BEAST_MASTERY );
     talents.cobra_senses                      = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Senses", HUNTER_BEAST_MASTERY );
     talents.alpha_predator                    = find_talent_spell( talent_tree::SPECIALIZATION, "Alpha Predator", HUNTER_BEAST_MASTERY );
