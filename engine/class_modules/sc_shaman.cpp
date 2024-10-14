@@ -13334,7 +13334,8 @@ void shaman_t::trigger_flowing_spirits( const action_state_t* state )
   }
 
   // DF4/T31 gives +1 summon per Flowing Spirit proc
-  auto n_summons = 1U + sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B2 );
+  auto n_summons = 1U +
+    as<unsigned>( sets->set( SHAMAN_ENHANCEMENT, TWW1, B4 )->effectN( 1 ).base_value() );
   auto duration = spell.flowing_spirits_feral_spirit->duration();
 
   if ( sets->has_set_bonus( SHAMAN_ENHANCEMENT, T31, B4 ) )
