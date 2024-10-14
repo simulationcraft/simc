@@ -9045,6 +9045,13 @@ struct ascendance_damage_t : public shaman_spell_t
     aoe = -1;
     background = true;
   }
+
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    may_proc_flowing_spirits = false;
+  }
 };
 
 // Ascendance Spell =========================================================
