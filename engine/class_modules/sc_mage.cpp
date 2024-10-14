@@ -3414,7 +3414,6 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     }
 
     consume_nether_precision( target );
-    p()->consume_burden_of_power();
     p()->trigger_spellfire_spheres();
     p()->trigger_mana_cascade();
 
@@ -3450,8 +3449,8 @@ struct arcane_barrage_t final : public arcane_mage_spell_t
     if ( s->target->health_percentage() <= p()->talents.arcane_bombardment->effectN( 1 ).base_value() )
       m *= 1.0 + p()->talents.arcane_bombardment->effectN( 2 ).percent() + p()->talents.sunfury_execution->effectN( 1 ).percent();
 
-    if ( p()->buffs.burden_of_power->check() )
-      m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 4 ).percent();
+    if ( p()->buffs.glorious_incandescence->check() )
+      m *= 1.0 + p()->buffs.glorious_incandescence->data().effectN( 2 ).percent();
 
     return m;
   }
@@ -5650,7 +5649,7 @@ struct fire_blast_t final : public fire_mage_spell_t
     fire_mage_spell_t( n, p, p->talents.fire_blast.ok() ? p->talents.fire_blast : p->find_class_spell( "Fire Blast" ) )
   {
     parse_options( options_str );
-    triggers.hot_streak = triggers.kindling = triggers.calefaction = triggers.unleashed_inferno = TT_MAIN_TARGET;
+    triggers.hot_streak = triggers.kindling = triggers.calefaction = triggers.unleashed_inferno = TT_ALL_TARGETS;
     affected_by.unleashed_inferno = triggers.ignite = triggers.from_the_ashes = triggers.overflowing_energy = true;
 
     cooldown->charges += as<int>( p->talents.flame_on->effectN( 1 ).base_value() );
@@ -5667,15 +5666,21 @@ struct fire_blast_t final : public fire_mage_spell_t
     }
   }
 
+  int n_targets() const override
+  {
+    if ( p()->buffs.glorious_incandescence->check() )
+      return as<int>( p()->buffs.glorious_incandescence->data().effectN( 3 ).base_value() );
+    else
+      return fire_mage_spell_t::n_targets();
+  }
+
   void execute() override
   {
     if ( p()->buffs.glorious_incandescence->check() )
-    {
-      p()->buffs.glorious_incandescence->decrement();
       p()->state.trigger_glorious_incandescence = true;
-    }
 
     fire_mage_spell_t::execute();
+    p()->buffs.glorious_incandescence->decrement();
 
     if ( p()->specialization() == MAGE_FIRE )
       p()->trigger_time_manipulation();
@@ -5696,11 +5701,12 @@ struct fire_blast_t final : public fire_mage_spell_t
 
   void impact( action_state_t* s ) override
   {
-    spread_ignite( s->target );
+    if ( s->chain_target == 0 )
+      spread_ignite( s->target );
 
     fire_mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) )
+    if ( result_is_hit( s->result ) && s->chain_target == 0 )
     {
       p()->buffs.feel_the_burn->trigger();
 
