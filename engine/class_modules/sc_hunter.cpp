@@ -612,6 +612,7 @@ public:
     spell_data_ptr_t surging_shots;
     spell_data_ptr_t streamline;
     spell_data_ptr_t improved_steady_shot;
+    spell_data_ptr_t pin_cushion;
     spell_data_ptr_t crack_shot;
 
     spell_data_ptr_t penetrating_shots;
@@ -5281,12 +5282,13 @@ struct steady_shot_t: public hunter_ranged_attack_t
     parse_options( options_str );
 
     breaks_steady_focus = false;
+    energize_type = action_energize::ON_CAST;
+    energize_resource = RESOURCE_FOCUS;
+    energize_amount = p->find_spell( 77443 )->effectN( 1 ).base_value();
 
     if ( p -> talents.improved_steady_shot.ok() )
     {
-      energize_type = action_energize::ON_CAST;
-      energize_resource = RESOURCE_FOCUS;
-      energize_amount = p -> talents.improved_steady_shot -> effectN( 1 ).base_value();
+      energize_amount += p->talents.improved_steady_shot->effectN( 1 ).base_value();
     }
   }
 
@@ -5299,6 +5301,10 @@ struct steady_shot_t: public hunter_ranged_attack_t
     {
       p() -> buffs.steady_focus -> trigger();
       p() -> state.steady_focus_counter = 0;
+    }
+    if ( p()->talents.pin_cushion.ok() )
+    {
+      p()->cooldowns.aimed_shot->adjust( -p()->talents.pin_cushion->effectN( 1 ).time_value() ); 
     }
   }
 };
@@ -7510,6 +7516,7 @@ void hunter_t::init_spells()
     talents.surging_shots                     = find_talent_spell( talent_tree::SPECIALIZATION, "Surging Shots", HUNTER_MARKSMANSHIP );
     talents.streamline                        = find_talent_spell( talent_tree::SPECIALIZATION, "Streamline", HUNTER_MARKSMANSHIP );
     talents.improved_steady_shot              = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Steady Shot", HUNTER_MARKSMANSHIP );
+    talents.pin_cushion                       = find_talent_spell( talent_tree::SPECIALIZATION, "Pin Cushion", HUNTER_MARKSMANSHIP );
     talents.crack_shot                        = find_talent_spell( talent_tree::SPECIALIZATION, "Crack Shot", HUNTER_MARKSMANSHIP );
 
     talents.penetrating_shots                 = find_talent_spell( talent_tree::SPECIALIZATION, "Penetrating Shots", HUNTER_MARKSMANSHIP );
