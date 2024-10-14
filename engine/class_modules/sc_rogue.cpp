@@ -5694,6 +5694,9 @@ struct secret_technique_t : public rogue_attack_t
 
     p()->buffs.tww1_subtlety_4pc->trigger();
   }
+
+  bool consumes_echoing_reprimand() const override
+  { return true; }
 };
 
 // Shadow Blades ============================================================
@@ -7412,7 +7415,7 @@ struct coup_de_grace_t : public rogue_attack_t
   { return true; }
 
   bool consumes_echoing_reprimand() const override
-  { return false; }
+  { return p()->is_ptr(); }
 };
 
 // TWW1 Set Bonus ===========================================================
@@ -9558,16 +9561,23 @@ void actions::rogue_action_t<Base>::trigger_supercharger()
   if ( !p()->talent.rogue.supercharger->ok() )
     return;
 
+  double trigger_buffs = p()->talent.rogue.supercharger->effectN( 1 ).base_value();
   for ( buff_t* b : p()->buffs.supercharger )
   {
+    if ( trigger_buffs <= 0 )
+      return;
+
     if ( !b->check() )
     {
       b->trigger();
-      return;
+      trigger_buffs--;
     }
   }
 
-  p()->procs.supercharger_wasted->occur();
+  if ( trigger_buffs > 0 )
+  {
+    p()->procs.supercharger_wasted->occur();
+  }
 }
 
 template <typename Base>
