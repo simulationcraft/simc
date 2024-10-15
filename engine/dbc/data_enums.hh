@@ -1343,6 +1343,7 @@ enum spell_attribute : unsigned
   SX_DISABLE_WEAPON_PROCS           = 151u,
   SX_TICK_ON_APPLICATION            = 169u,
   SX_DOT_HASTED                     = 173u,
+  SX_TREAT_AS_AREA_EFFECT           = 175u,
   SX_REQ_LINE_OF_SIGHT              = 186u,
   SX_IGNORE_FOR_MOD_TIME_RATE       = 196u,
   SX_DISABLE_PLAYER_MULT            = 221u,

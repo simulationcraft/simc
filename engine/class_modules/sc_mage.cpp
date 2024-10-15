@@ -2250,7 +2250,7 @@ public:
     if ( triggers.overflowing_energy && p()->talents.overflowing_energy.ok() && s->result_type == result_amount_type::DMG_DIRECT )
     {
       // TODO: This isn't perfect, but currently describes all "non AoE" spells mages have
-      if ( may_crit && s->result != RESULT_CRIT && aoe >= 0 && aoe < 5 )
+      if ( may_crit && s->result != RESULT_CRIT && aoe >= 0 && aoe < 5 && !data().flags( spell_attribute::SX_TREAT_AS_AREA_EFFECT ) )
         p()->trigger_merged_buff( p()->buffs.overflowing_energy, true );
       if ( s->result == RESULT_CRIT && ( !proc || not_a_proc ) )
         p()->trigger_merged_buff( p()->buffs.overflowing_energy, false );
