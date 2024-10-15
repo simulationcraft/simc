@@ -6885,7 +6885,7 @@ struct reapers_mark_t final : public death_knight_spell_t
       }
       else
       {
-        p()->buffs.bone_shield->trigger( p()->talent.deathbringer.grim_reaper->effectN( 3 ).base_value() );
+        p()->buffs.bone_shield->trigger( as<int>( p()->talent.deathbringer.grim_reaper->effectN( 3 ).base_value() ) );
       }
     }
   }
@@ -8287,7 +8287,7 @@ struct death_coil_t final : public death_knight_spell_t
 
     if ( p()->talent.sanlayn.vampiric_strike.ok() && !p()->buffs.gift_of_the_sanlayn->check() )
     {
-      p()->trigger_vampiric_strike_proc( target );
+      p()->trigger_vampiric_strike_proc( execute_state->target );
     }
 
     p()->buffs.sudden_doom->decrement();
@@ -9009,8 +9009,6 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
                          bool shattering_blade )
     : death_knight_melee_attack_t( n, p, s ),
       sb( shattering_blade ),
-      weapon_hand( w ),
-      damage( 0 ),
       shattered_frost( nullptr )
   {
     background = special = true;
@@ -9035,34 +9033,13 @@ struct frost_strike_strike_t final : public death_knight_melee_attack_t
     return m;
   }
 
-  void trigger_shattered_frost( double hit_damage, bool final_hit )
-  {
-    damage += hit_damage;
-    if ( final_hit )
-    {
-      damage *= p()->talent.frost.shattered_frost->effectN( 1 ).percent();
-      shattered_frost->base_dd_min = shattered_frost->base_dd_max = damage;
-      shattered_frost->execute();
-      damage = 0;
-    }
-  }
-
   void impact( action_state_t* s ) override
   {
     death_knight_melee_attack_t::impact( s );
-    if ( p()->talent.frost.shattered_frost->ok() && s->result_amount > 0 && sb )
+    if ( p()->talent.frost.shattered_frost->ok() && s->result_amount > 0 && sb && weapon->slot == SLOT_MAIN_HAND )
     {
-      if ( weapon_hand->group() == WEAPON_2H )
-      {
-        trigger_shattered_frost( s->result_amount, true );
-      }
-      if ( weapon_hand->group() == WEAPON_1H )
-      {
-        if ( weapon_hand->slot == SLOT_MAIN_HAND )
-        {
-          trigger_shattered_frost( s->result_amount, true );
-        }
-      }
+      shattered_frost->execute_on_target(
+          s->target, s->result_amount * p()->talent.frost.shattered_frost->effectN( 1 ).percent() );
     }
 
     if ( p()->talent.frost.hyperpyrexia->ok() && s->result_amount > 0 &&
@@ -9077,8 +9054,6 @@ public:
   bool sb;
 
 private:
-  weapon_t* weapon_hand;
-  double damage;
   action_t* shattered_frost;
 };
 
@@ -9346,7 +9321,7 @@ struct heart_strike_base_t : public death_knight_melee_attack_t
     if ( p()->talent.deathbringer.dark_talons.ok() && p()->talent.icy_talons->ok() &&
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
-      p()->buffs.dark_talons_icy_talons->trigger( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
+      p()->buffs.dark_talons_icy_talons->trigger( as<int>( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() ) );
     }
 
     p()->trigger_sanlayn_execute_talents( this->data().id() == p()->spell.vampiric_strike->id() );
@@ -9688,7 +9663,7 @@ struct howling_blast_t final : public death_knight_spell_t
     if ( p()->talent.deathbringer.dark_talons.ok() && p()->buffs.rime->check() && p()->talent.icy_talons->ok() &&
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
-      p()->buffs.dark_talons_icy_talons->trigger( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
+      p()->buffs.dark_talons_icy_talons->trigger( as<int>( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() ) );
     }
 
     p()->buffs.rime->decrement();
@@ -9743,7 +9718,7 @@ struct marrowrend_t final : public death_knight_melee_attack_t
     if ( p()->talent.deathbringer.dark_talons.ok() && p()->talent.icy_talons->ok() &&
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
-      p()->buffs.dark_talons_icy_talons->trigger( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
+      p()->buffs.dark_talons_icy_talons->trigger( as<int>( p()->talent.deathbringer.dark_talons->effectN( 2 ).base_value() ) );
     }
 
     if ( p()->buffs.exterminate->up() )
@@ -11808,7 +11783,7 @@ void death_knight_t::consume_killing_machine( proc_t* proc, timespan_t total_del
     if ( talent.deathbringer.dark_talons.ok() && talent.icy_talons->ok() &&
          rng().roll( talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
     {
-      buffs.dark_talons_icy_talons->trigger( talent.deathbringer.dark_talons->effectN( 2 ).base_value() );
+      buffs.dark_talons_icy_talons->trigger( as<int>( talent.deathbringer.dark_talons->effectN( 2 ).base_value() ) );
     }
   } );
 }
