@@ -1115,8 +1115,8 @@ struct overwhelming_force_t : base_action_t
       background = dual = proc = true;
       base_multiplier          = player->talent.master_of_harmony.overwhelming_force->effectN( 1 ).percent();
       base_multiplier += player->baseline.brewmaster.aura->effectN( 32 ).percent();
-      aoe = -1;
-      reduced_aoe_targets      = player->talent.master_of_harmony.overwhelming_force->effectN( 2 ).base_value();
+      aoe                 = -1;
+      reduced_aoe_targets = player->talent.master_of_harmony.overwhelming_force->effectN( 2 ).base_value();
     }
 
     void init() override
@@ -5632,7 +5632,10 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
 
     set_tick_callback( [ this ]( buff_t *, int, timespan_t ) {
       if ( rushing_jade_wind_tick )
+      {
         rushing_jade_wind_tick->execute();
+        return;
+      }
 
       if ( action_t *rjw = p().find_action( "rushing_jade_wind_tick" ); rjw )
       {
@@ -5942,7 +5945,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
