@@ -955,7 +955,7 @@ struct judgment_ret_t : public judgment_t
 
     if ( rng().roll( mastery_chance ) )
     {
-      p()->active.highlords_judgment->set_target( target );
+      p()->active.highlords_judgment->set_target( s->target );
       p()->active.highlords_judgment->execute();
     }
   }

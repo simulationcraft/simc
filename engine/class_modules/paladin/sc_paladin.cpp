@@ -1690,12 +1690,7 @@ void judgment_t::impact( action_state_t* s )
   {
     if ( p()->talents.greater_judgment->ok() )
     {
-      int num_stacks = 1;
-      if ( p()->talents.highlords_wrath->ok() )
-      {
-        num_stacks += as<int>( p()->talents.highlords_wrath->effectN( 1 ).base_value() );
-      }
-      td( s->target )->debuff.judgment->trigger( num_stacks );
+      p()->trigger_greater_judgment( td( s->target ) );
     }
 
     int amount = 5;
@@ -1839,7 +1834,7 @@ struct divine_toll_t : public paladin_spell_t
     if ( result_is_hit( s->result ) )
     {
       p()->active.divine_toll->set_target( s->target );
-      p()->active.divine_toll->schedule_execute();
+      p()->active.divine_toll->execute();
     }
   }
 
@@ -2183,7 +2178,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       {
         if ( p()->talents.greater_judgment->ok() )
         {
-          td( s->target )->debuff.judgment->trigger();
+          p()->trigger_greater_judgment( td( s->target ) );
         }
         if ( s->chain_target < 2 )
         {
@@ -2433,6 +2428,16 @@ void paladin_t::trigger_lights_deliverance( bool /* triggered_by_hol */ )
   auto cost_reduction = buffs.templar.hammer_of_light_free->default_value;
   buffs.templar.hammer_of_light_free->execute(-1, cost_reduction, timespan_t::min());
   buffs.templar.lights_deliverance->expire();
+}
+
+void paladin_t::trigger_greater_judgment(paladin_td_t* targetdata)
+{
+  int num_stacks = 1;
+  if ( talents.highlords_wrath->ok() )
+  {
+    num_stacks += as<int>( talents.highlords_wrath->effectN( 1 ).base_value() );
+  }
+  targetdata->debuff.judgment->trigger( num_stacks );
 }
 
 // Holy Armaments
