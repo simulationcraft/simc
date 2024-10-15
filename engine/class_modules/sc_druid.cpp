@@ -1314,7 +1314,6 @@ public:
   void init_items() override;
   void init_scaling() override;
   void init_finished() override;
-  void add_precombat_buff_state( buff_t*, int, double, timespan_t ) override;
   void parse_player_effects();
   void create_buffs() override;
   void apply_affecting_auras( buff_t& );
@@ -10512,26 +10511,6 @@ void druid_t::init_finished()
       sf->dreamstate.locked = true;
     }
   }
-
-  // trinket specific adjustments
-  if ( specialization() == DRUID_BALANCE )
-  {
-    if ( unique_gear::find_special_effect( this, 90986 ) &&
-         precombat_state_map.find( "buff.dead_winds.stack" ) == precombat_state_map.end() )
-    {
-      auto buff = buff_t::find( this, "dead_winds" );
-      assert( buff );
-      add_precombat_buff_state( buff, 20, buff_t::DEFAULT_VALUE(), timespan_t::min() );
-    }
-  }
-}
-
-void druid_t::add_precombat_buff_state( buff_t* b, int s, double v, timespan_t d )
-{
-  if ( !s )
-    return;
-
-  player_t::add_precombat_buff_state( b, s, v, d );
 }
 
 // druid_t::create_buffs ====================================================
