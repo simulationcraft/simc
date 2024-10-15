@@ -4830,10 +4830,10 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = action_base_t::composite_da_multiplier( state );
-    if ( p()->talent.deathbringer.wave_of_souls->ok() && this->data().id() != p()->spell.wave_of_souls_damage->id() )
+    if ( p()->talent.deathbringer.wave_of_souls->ok() && this->get_school() == SCHOOL_SHADOWFROST )
     {
       death_knight_td_t* td = get_td( state->target );
-      if ( dbc::is_school( this->get_school(), SCHOOL_SHADOWFROST ) && td->debuff.wave_of_souls->check() )
+      if ( td->debuff.wave_of_souls->check() )
       {
         m *= 1 + td->debuff.wave_of_souls->check_stack_value();
       }
