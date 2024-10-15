@@ -111,7 +111,7 @@ actions.st+=/starfire,if=!variable.enter_lunar&(!variable.eclipse|variable.eclip
 actions.st+=/call_action_list,name=pre_cd
 actions.st+=/celestial_alignment,if=variable.cd_condition
 actions.st+=/incarnation,if=variable.cd_condition
-actions.st+=/force_of_nature,if=cooldown.ca_inc.remains<gcd.max&(!talent.natures_grace|!variable.eclipse|variable.eclipse_remains>6)|variable.eclipse_remains>=3&cooldown.ca_inc.remains>10+15*talent.control_of_the_dream&(fight_remains>cooldown+5|cooldown.ca_inc.remains>fight_remains)
+actions.st+=/force_of_nature,if=cooldown.ca_inc.remains<gcd.max&(!talent.natures_grace|!variable.eclipse|variable.eclipse_remains>6)|variable.eclipse_remains>=6&cooldown.ca_inc.remains>10+15*talent.control_of_the_dream&(fight_remains>cooldown+5|cooldown.ca_inc.remains>fight_remains)
 actions.st+=/fury_of_elune,if=5+variable.passive_asp<astral_power.deficit
 actions.st+=/starsurge,if=talent.starlord&buff.starlord.stack<3
 actions.st+=/sunfire,target_if=refreshable
