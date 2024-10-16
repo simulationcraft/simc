@@ -1401,8 +1401,11 @@ std::string label_str( int label, const dbc_t& dbc, size_t wrap )
     return fmt::format( "{} ({})", it->second, label );
   }
   auto affected_spells = dbc.spells_by_label( label );
-  return wrap_concatenate( affected_spells, []( const spell_data_t* spell ) {
-    return fmt::format( "{} ({})", spell->name_cstr(), spell->id() );
+  return wrap_concatenate( affected_spells, [ first = affected_spells.front() ]( const spell_data_t* spell ) {
+    if ( spell == first )
+      return fmt::format( "Affected Spells (Label): {} ({})", spell->name_cstr(), spell->id() );
+    else
+      return fmt::format( "{} ({})", spell->name_cstr(), spell->id() );
   }, wrap );
 }
 
@@ -1797,9 +1800,12 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
   std::vector<const spell_data_t*> affected_spells = dbc.effect_affects_spells( spell->class_family(), e );
   if ( !affected_spells.empty() )
   {
-    s << "                   Affected Spells: ";
-    s << wrap_concatenate( affected_spells, []( const spell_data_t* spell ) {
-      return fmt::format( "{} ({})", spell->name_cstr(), spell->id() );
+    s << "                   ";
+    s << wrap_concatenate( affected_spells, [ first = affected_spells.front() ]( const spell_data_t* spell ) {
+      if ( spell == first )
+        return fmt::format( "Affected Spells: {} ({})", spell->name_cstr(), spell->id() );
+      else
+        return fmt::format( "{} ({})", spell->name_cstr(), spell->id() );
     }, wrap );
     s << std::endl;
   }
@@ -1813,12 +1819,12 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
         case A_MOD_DAMAGE_FROM_SPELLS_LABEL:
         case A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL:
           if ( auto str = label_str( e->misc_value1(), dbc, wrap ); !str.empty() )
-            s << "                   Affected Spells (Label): " << str << std::endl;
+            s << "                   " << str << std::endl;
           break;
         case A_ADD_PCT_LABEL_MODIFIER:
         case A_ADD_FLAT_LABEL_MODIFIER:
           if ( auto str = label_str( e->misc_value2(), dbc, wrap ); !str.empty() )
-            s << "                   Affected Spells (Label): " << str << std::endl;
+            s << "                   " << str << std::endl;
           break;
         default:
           break;
