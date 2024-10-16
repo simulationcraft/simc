@@ -68,7 +68,7 @@ hands=entombed_seraphs_castigation,id=211994,bonus_id=1540/10299
 waist=greatbelt_of_the_hungerer,id=212442,bonus_id=1540/10299/10878,gem_id=213479
 legs=entombed_seraphs_greaves,id=211992,bonus_id=1540/10299,enchant=stormbound_armor_kit_3
 feet=everforged_sabatons,id=222429,bonus_id=11144/1485/10222/10520/8960,crafted_stats=36/32,enchant=defenders_march_3
-finger1=devout_zealots_ring,id=221136,bonus_id=4786/3131/10299/8781/10879,gem_id=213479/213479,enchant=radiant_haste_3
+finger1=devout_zealots_ring,id=221136,bonus_id=4786/3131/10299/10879,gem_id=213479/213479,enchant=radiant_haste_3
 finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10299/10879,gem_id=213479/213455,enchant=radiant_haste_3
 trinket1=arakara_sacbrood,id=219314,bonus_id=4786/3131/10299
 trinket2=ovinaxs_mercurial_egg,id=220305,bonus_id=1540/10299
