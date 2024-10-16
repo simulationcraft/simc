@@ -2826,7 +2826,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     {
         if ( p()->buff.ascendance->up() )
         {
-          if ( id == 452201 )
+          if ( id == 452201 && s->chain_target == 0 )
           {
             p()->proc.ascendance_tempest_overload->occur();
           }
@@ -10733,9 +10733,14 @@ struct tempest_t : public shaman_spell_t
       {
         trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
       }
+      shaman_spell_t::schedule_travel( s );
     }
-
-    shaman_spell_t::schedule_travel( s );
+    else
+    {
+      // Tempest overloads only on primary target. While calling base_t here
+      // is pretty ugly it's the only way we believe to be able to model this. 
+      base_t::schedule_travel( s );
+    }
   }
 
 };
