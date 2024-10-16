@@ -17484,7 +17484,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=1171289)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Generated Threat (2)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 2 | Misc Value 2: 3959 (Label) | Target: Self (1)
-                   Affected Spells (Label): Item Effects (3959)
+                   Item Effects (3959)
 #2 (id=1174627)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self (1)
                    Affected Spells (Label): Xavaric's Magnum Opus (207472)
@@ -17515,7 +17515,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=1171291)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Generated Threat (2)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Misc Value 2: 3959 (Label) | Target: Self (1)
-                   Affected Spells (Label): Item Effects (3959)
+                   Item Effects (3959)
 
 Name             : Unholy Death Knight (id=462064) [Spell Family (15), Passive, Hidden] 
 Class            : Unholy Death Knight
@@ -17528,7 +17528,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=1171292)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Generated Threat (2)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Misc Value 2: 3959 (Label) | Target: Self (1)
-                   Affected Spells (Label): Item Effects (3959)
+                   Item Effects (3959)
 #2 (id=1174699)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 3 | Misc Value 2: 2697 (Label) | Target: Self (1)
                    Affected Spells (Label): Algeth'ar Puzzle (383781)

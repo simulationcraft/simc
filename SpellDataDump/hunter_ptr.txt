@@ -16234,7 +16234,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=1171307)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Generated Threat (2)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Misc Value 2: 3959 (Label) | Target: Self (1)
-                   Affected Spells (Label): Item Effects (3959)
+                   Item Effects (3959)
 
 Name             : Hunter (id=462080) [Spell Family (9), Passive, Hidden] 
 Class            : Beast Mastery Hunter, Marksmanship Hunter, Survival Hunter
@@ -16259,7 +16259,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=1171309)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Generated Threat (2)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Misc Value 2: 3959 (Label) | Target: Self (1)
-                   Affected Spells (Label): Item Effects (3959)
+                   Item Effects (3959)
 
 Name             : Survival Hunter (id=462082) [Spell Family (9), Passive, Hidden] 
 Class            : Survival Hunter
@@ -16272,7 +16272,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=1171310)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Generated Threat (2)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Misc Value 2: 3959 (Label) | Target: Self (1)
-                   Affected Spells (Label): Item Effects (3959)
+                   Item Effects (3959)
 
 Name             : Territorial Instincts (id=462153) [Spell Family (9)] 
 Class            : Hunter, Monk
