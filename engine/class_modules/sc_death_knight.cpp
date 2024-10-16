@@ -706,7 +706,6 @@ public:
     propagate_const<buff_t*> rune_mastery;
     propagate_const<buff_t*> unholy_ground;
     propagate_const<buff_t*> icy_talons;
-    propagate_const<buff_t*> abomination_limb;
     propagate_const<buff_t*> lichborne;  // NYI
     buff_t* frost_shield;
     propagate_const<buff_t*> death_and_decay;
@@ -4928,9 +4927,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
          ( ( p()->runeforge.rune_of_razorice_mh && weapon->slot == SLOT_MAIN_HAND ) ||
            ( p()->runeforge.rune_of_razorice_oh && weapon->slot == SLOT_OFF_HAND ) ) )
     {
-      // Razorice is executed after the attack that triggers it
-      p()->active_spells.runeforge_razorice->set_target( state->target );
-      p()->active_spells.runeforge_razorice->schedule_execute();
+      make_event<delayed_execute_event_t>( *sim, p(), p()->active_spells.runeforge_razorice, state->target, 0_ms );
     }
   }
 };
@@ -6942,22 +6939,12 @@ struct abomination_limb_t : public death_knight_spell_t
 
     parse_options( options_str );
 
-    // Periodic behavior handled by the buff
-    dot_duration = base_tick_time = 0_ms;
-
     if ( p->talent.abomination_limb->ok() )
     {
-      add_child( p->active_spells.abomination_limb_damage );
+      tick_action = p->active_spells.abomination_limb_damage;
+      tick_action->stats = stats;
+      stats->action_list.push_back( tick_action );
     }
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    // Pull affect for this ability is NYI
-
-    p()->buffs.abomination_limb->trigger();
   }
 };
 
@@ -7871,8 +7858,8 @@ struct dark_transformation_t final : public death_knight_spell_t
     target  = p;
 
     execute_action = get_action<dark_transformation_damage_t>( "dark_transformation_damage", p );
-    add_child( execute_action );
     execute_action->stats = stats;
+    stats->action_list.push_back( execute_action );
 
     parse_options( options_str );
 
@@ -8202,10 +8189,9 @@ struct coil_of_devastation_t final : public residual_action::residual_periodic_a
 struct death_coil_damage_t final : public death_knight_spell_t
 {
   death_coil_damage_t( std::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.death_coil_damage ), coil_of_devastation( nullptr )
+    : death_knight_spell_t( name, p, p->spell.death_coil_damage ), coil_of_devastation( nullptr ), sudden_doom( false )
   {
     background = dual = true;
-    aoe               = 0;
 
     if ( p->talent.unholy.coil_of_devastation.ok() )
     {
@@ -8226,47 +8212,13 @@ struct death_coil_damage_t final : public death_knight_spell_t
     return m;
   }
 
-  void impact( action_state_t* state ) override
-  {
-    death_knight_spell_t::impact( state );
-    if ( p()->talent.unholy.coil_of_devastation.ok() )
-    {
-      residual_action::trigger( coil_of_devastation, state->target,
-                                state->result_amount * p()->talent.unholy.coil_of_devastation->effectN( 1 ).percent() );
-    }
-  }
-
-private:
-  propagate_const<action_t*> coil_of_devastation;
-};
-
-struct death_coil_t final : public death_knight_spell_t
-{
-  death_coil_t( death_knight_t* p, std::string_view options_str )
-    : death_knight_spell_t( "death_coil", p, p->spec.death_coil )
-  {
-    parse_options( options_str );
-
-    impact_action        = get_action<death_coil_damage_t>( "death_coil_damage", p );
-    impact_action->stats = stats;
-    stats->action_list.push_back( impact_action );
-
-    aoe = 1 + as<int>( p->talent.unholy.improved_death_coil->effectN( 2 ).base_value() );
-
-    if ( p->talent.unholy.coil_of_devastation.ok() )
-      add_child( get_action<coil_of_devastation_t>( "coil_of_devastation", p ) );
-
-    if ( p->talent.unholy.doomed_bidding.ok() )
-    {
-      p->pets.doomed_bidding_magus_coil.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
-    }
-  }
-
   void execute() override
   {
+    sudden_doom = p()->buffs.sudden_doom->check();
+
     death_knight_spell_t::execute();
 
-    if ( p()->buffs.sudden_doom->check() )
+    if ( sudden_doom )
     {
       if ( p()->talent.unholy.doomed_bidding.ok() )
       {
@@ -8297,20 +8249,51 @@ struct death_coil_t final : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
+    if ( p()->talent.unholy.coil_of_devastation.ok() )
+    {
+      residual_action::trigger( coil_of_devastation, state->target,
+                                state->result_amount * p()->talent.unholy.coil_of_devastation->effectN( 1 ).percent() );
+    }
+
     if ( p()->talent.unholy.death_rot.ok() )
     {
-      get_td( state->target )->debuff.death_rot->trigger( 1 + p()->buffs.sudden_doom->check() );
+      get_td( state->target )->debuff.death_rot->trigger( 1 + sudden_doom );
     }
 
-    if ( p()->talent.unholy.rotten_touch.ok() && p()->buffs.sudden_doom->check() )
+    if ( sudden_doom )
     {
-      get_td( state->target )->debuff.rotten_touch->trigger();
-    }
+      if ( p()->talent.unholy.rotten_touch.ok() )
+      {
+        get_td( state->target )->debuff.rotten_touch->trigger();
+      }
 
-    if ( p()->buffs.sudden_doom->check() )
-    {
       p()->burst_festering_wound( state->target, as<int>( p()->talent.unholy.sudden_doom->effectN( 3 ).base_value() ),
                                   p()->procs.fw_sudden_doom );
+    }
+  }
+
+private:
+  propagate_const<action_t*> coil_of_devastation;
+  bool sudden_doom;
+};
+
+struct death_coil_t final : public death_knight_spell_t
+{
+  death_coil_t( death_knight_t* p, std::string_view options_str )
+    : death_knight_spell_t( "death_coil", p, p->spec.death_coil )
+  {
+    parse_options( options_str );
+
+    execute_action = get_action<death_coil_damage_t>( "death_coil_damage", p );
+    execute_action->stats = stats;
+    stats->action_list.push_back( execute_action );
+
+    if ( p->talent.unholy.coil_of_devastation.ok() )
+      add_child( get_action<coil_of_devastation_t>( "coil_of_devastation", p ) );
+
+    if ( p->talent.unholy.doomed_bidding.ok() )
+    {
+      p->pets.doomed_bidding_magus_coil.set_creation_event_callback( pets::parent_pet_action_fn( this ) );
     }
   }
 };
@@ -9822,7 +9805,7 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
     double m = death_knight_melee_attack_t::composite_da_multiplier( state );
     // Obliterate does not list Frozen Heart in it's list of affecting spells.  So mastery does not get applied
     // automatically.
-    if ( p()->spec.frostreaper->ok() && p()->buffs.killing_machine->up() )
+    if ( p()->spec.frostreaper->ok() && get_school() == SCHOOL_FROST )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
@@ -9836,7 +9819,7 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
 
     const death_knight_td_t* td = get_td( target );
     // Obliterate does not list razorice in it's list of affecting spells, so debuff does not get applied automatically.
-    if ( td && p()->spec.frostreaper->ok() && p()->buffs.killing_machine->up() )
+    if ( td && p()->spec.frostreaper->ok() && get_school() == SCHOOL_FROST )
     {
       m *= 1.0 + td->debuff.razorice->check_stack_value();
     }
@@ -9880,21 +9863,12 @@ struct obliterate_strike_t final : public death_knight_melee_attack_t
 
   void execute() override
   {
-    if ( !p()->options.split_obliterate_schools && p()->spec.frostreaper->ok() && p()->buffs.killing_machine->up() )
-    {
-      school = SCHOOL_FROST;
-    }
-
     if ( p()->talent.rider.whitemanes_famine.ok() && p()->sim->target_non_sleeping_list.size() > 1 )
     {
       p()->sort_undeath_targets( target_list() );
     }
 
     death_knight_melee_attack_t::execute();
-
-    // Improved Killing Machine - revert school after the hit
-    if ( !p()->options.split_obliterate_schools )
-      school = SCHOOL_PHYSICAL;
   }
 
 private:
@@ -9992,18 +9966,10 @@ struct obliterate_t final : public death_knight_melee_attack_t
           p()->cooldown.frigid_executioner_icd->start();
         }
       }
-      if ( km_mh && p()->buffs.killing_machine->up() )
-      {
-        make_event<delayed_execute_event_t>( *sim, p(), km_mh, execute_state->target, mh_delay );
-        if ( oh && km_oh )
-          make_event<delayed_execute_event_t>( *sim, p(), km_oh, execute_state->target, oh_delay );
-      }
-      else
-      {
-        make_event<delayed_execute_event_t>( *sim, p(), mh, execute_state->target, mh_delay );
-        if ( oh )
-          make_event<delayed_execute_event_t>( *sim, p(), oh, execute_state->target, oh_delay );
-      }
+
+      make_event<delayed_execute_event_t>( *sim, p(), p()->buffs.killing_machine->check() ? km_mh : mh, execute_state->target, mh_delay );
+      if ( oh )
+        make_event<delayed_execute_event_t>( *sim, p(), p()->buffs.killing_machine->check() ? km_oh : oh, execute_state->target, oh_delay );
 
       p()->buffs.rime->trigger();
     }
@@ -13910,14 +13876,6 @@ void death_knight_t::create_buffs()
                             ->set_default_value_from_effect( 1 )
                             ->set_duration( 0_ms );  // Handled by trigger_dnd_buffs() & expire_dnd_buffs()
 
-  buffs.abomination_limb =
-      make_fallback( talent.abomination_limb.ok(), this, "abomination_limb", talent.abomination_limb )
-          ->set_cooldown( 0_ms )  // Handled by the action
-          ->set_partial_tick( true )
-          ->set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) {
-            active_spells.abomination_limb_damage->execute();
-          } );
-
   buffs.icy_talons =
       make_fallback( talent.icy_talons.ok(), this, "icy_talons", talent.icy_talons->effectN( 1 ).trigger() )
           ->set_default_value( talent.icy_talons->effectN( 1 ).percent() )
@@ -15036,7 +14994,7 @@ void death_knight_action_t<Base>::apply_action_effects()
   // Frost
   parse_effects( p()->buffs.rime, p()->talent.frost.improved_rime );
   parse_effects( p()->buffs.gathering_storm );
-  parse_effects( p()->buffs.killing_machine, effect_mask_t( true ).disable( 2 ) );
+  parse_effects( p()->buffs.killing_machine );
   parse_effects( p()->mastery.frozen_heart );
 
   // Unholy
