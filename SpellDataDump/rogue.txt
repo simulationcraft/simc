@@ -15249,6 +15249,328 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=1171330)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Generated Threat (2)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Misc Value 2: 3959 (Label) | Target: Self (1)
-                   Item Effects (3959)
+                   Affected Spells (Label): Item Effects (3959)
 
-Name     
+Name             : Rogue (id=462103) [Spell Family (8), Passive, Hidden] 
+Class            : Assassination Rogue, Outlaw Rogue, Subtlety Rogue
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171331)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Global Cooldown (21)
+                   Base Value: -33 | Scaled Value: -33 | Misc Value: 21 | Misc Value 2: 640 (Label) | Target: Self (1)
+                   Affected Spells (Label): Azerite Essences (640)
+
+Name             : Outlaw Rogue (id=462104) [Spell Family (8), Passive, Hidden] 
+Class            : Outlaw Rogue
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171332)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Generated Threat (2)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Misc Value 2: 3959 (Label) | Target: Self (1)
+                   Affected Spells (Label): Item Effects (3959)
+
+Name             : Subtlety Rogue (id=462105) [Spell Family (8), Passive, Hidden] 
+Class            : Subtlety Rogue
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171333)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Generated Threat (2)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Misc Value 2: 3959 (Label) | Target: Self (1)
+                   Affected Spells (Label): Item Effects (3959)
+#2 (id=1174746)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 3 | Misc Value 2: 599 (Label) | Target: Self (1)
+
+Name             : Coup de Grace (id=462127) [Spell Family (8), Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : Cast Successful
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
+Aura Interrupt   : Leave World (19), Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Chromie Time (51)
+Effects          :
+#1 (id=1171359)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 441776 | Scaled Value: 441776 | Misc Value: 2098 | Target: Self (1)
+Description      : $@spelldesc441423
+Tooltip          : Able to perform a Coup de Grace.
+
+Name             : Coup de Grace (id=462128) [Spell Family (8), Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : Cast Successful
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
+Aura Interrupt   : Leave World (19), Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Chromie Time (51)
+Effects          :
+#1 (id=1171360)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 441776 | Scaled Value: 441776 | Misc Value: 196819 | Target: Self (1)
+Description      : $@spelldesc441423
+Tooltip          : Able to perform a Coup de Grace.
+
+Name             : Dispatch (Coup de Grace) (id=462140) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : Melee
+Spell Level      : 22
+Range            : 30 yards
+GCD              : 1 seconds
+Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+Affecting Spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Eviscerating Blade (184917 effect#2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Summarily Dispatched (386868 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4), Brutal Opportunist (394888 effect#1), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Cold Blood (456330 effect#1), Sanguine Stratagem (457512 effects: #1, #4)
+Family Flags     : 54, 112
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171377)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.11 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.104 -> 0.11)
+Description      : $@spelldesc441423
+
+Name             : Dispatch (Coup de Grace) (id=462239) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : Melee
+Spell Level      : 22
+Range            : 30 yards
+GCD              : 1 seconds
+Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+Affecting Spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Eviscerating Blade (184917 effect#2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Summarily Dispatched (386868 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4), Brutal Opportunist (394888 effect#1), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Cold Blood (456330 effect#1), Sanguine Stratagem (457512 effects: #1, #4)
+Family Flags     : 54, 112
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171849)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.11 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.104 -> 0.11)
+Description      : $@spelldesc441423
+
+Name             : Dispatch (Coup de Grace) (id=462240) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : Melee
+Spell Level      : 22
+Range            : 30 yards
+GCD              : 1 seconds
+Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+Affecting Spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Eviscerating Blade (184917 effect#2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Summarily Dispatched (386868 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4), Brutal Opportunist (394888 effect#1), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Cold Blood (456330 effect#1), Sanguine Stratagem (457512 effects: #1, #4)
+Family Flags     : 54, 112
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171850)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.22 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.208 -> 0.22)
+Description      : $@spelldesc441423
+
+Name             : Eviscerate (Coup de Grace) (id=462241) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : Melee
+Spell Level      : 2
+Range            : 30 yards
+GCD              : 1 seconds
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Shadow Dance (185313 effects: #4, #5), Adrenaline Rush (186286 effect#3), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Finality: Eviscerate (197496 effect#1), Symbols of Death (212283 effects: #1, #2), Eviscerate (245691 effect#1), Master Assassin (256735 effect#1), Night's Vengeance (273424 effect#1), Master Assassin's Mark (340094 effect#1), Finality: Eviscerate (340600 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Finality: Eviscerate (385949 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4), Masterful Finish (395003 effects: #1, #3), Symbolic Victory (409987 effect#1), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Bolstering Shadows (455577 effects: #1, #2), Symbolic Victory (457167 effect#1), Sanguine Stratagem (457512 effects: #1, #4)
+Family Flags     : 17, 54
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171851)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.07 | Target: Enemy (6)
+Description      : $@spelldesc441423
+
+Name             : Eviscerate (Coup de Grace) (id=462242) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : Melee
+Spell Level      : 2
+Range            : 30 yards
+GCD              : 1 seconds
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Shadow Dance (185313 effects: #4, #5), Adrenaline Rush (186286 effect#3), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Finality: Eviscerate (197496 effect#1), Symbols of Death (212283 effects: #1, #2), Eviscerate (245691 effect#1), Master Assassin (256735 effect#1), Night's Vengeance (273424 effect#1), Master Assassin's Mark (340094 effect#1), Finality: Eviscerate (340600 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Finality: Eviscerate (385949 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4), Masterful Finish (395003 effects: #1, #3), Symbolic Victory (409987 effect#1), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Bolstering Shadows (455577 effects: #1, #2), Symbolic Victory (457167 effect#1), Sanguine Stratagem (457512 effects: #1, #4)
+Family Flags     : 17, 54
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171852)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.07 | Target: Enemy (6)
+Description      : $@spelldesc441423
+
+Name             : Eviscerate (Coup de Grace) (id=462243) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : Melee
+Spell Level      : 2
+Range            : 30 yards
+GCD              : 1 seconds
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Shadow Dance (185313 effects: #4, #5), Adrenaline Rush (186286 effect#3), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Finality: Eviscerate (197496 effect#1), Symbols of Death (212283 effects: #1, #2), Eviscerate (245691 effect#1), Master Assassin (256735 effect#1), Night's Vengeance (273424 effect#1), Master Assassin's Mark (340094 effect#1), Finality: Eviscerate (340600 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Finality: Eviscerate (385949 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4), Masterful Finish (395003 effects: #1, #3), Symbolic Victory (409987 effect#1), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Bolstering Shadows (455577 effects: #1, #2), Symbolic Victory (457167 effect#1), Sanguine Stratagem (457512 effects: #1, #4)
+Family Flags     : 17, 54
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171853)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.14 | Target: Enemy (6)
+Description      : $@spelldesc441423
+
+Name             : Eviscerate (Coup de Grace) (id=462244) [Spell Family (8)] 
+Class            : Rogue
+School           : Shadow
+Spell Type       : Melee
+Range            : 100 yards
+GCD              : 1 seconds
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+                 : 2696: Veiltouched (382017 effect#3), Veiltouched (382017 effect#4), Dark Brew (382504 effect#4), Dark Brew (382504 effect#5), Deeper Daggers (383405 effect#3), Deeper Daggers (383405 effect#4)
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Shadow Dance (185313 effects: #4, #5), Adrenaline Rush (186286 effect#3), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Finality: Eviscerate (197496 effect#1), Symbols of Death (212283 effects: #1, #2), Eviscerate (245691 effect#1), Master Assassin (256735 effect#1), Night's Vengeance (273424 effect#1), Master Assassin's Mark (340094 effect#1), Finality: Eviscerate (340600 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Finality: Eviscerate (385949 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4), Masterful Finish (395003 effects: #1, #3), Symbolic Victory (409987 effect#1), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Bolstering Shadows (455577 effects: #1, #2), Symbolic Victory (457167 effect#1), Sanguine Stratagem (457512 effects: #1, #4)
+Family Flags     : 17, 54
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171854)  : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.07 | Target: Enemy (6)
+Description      : $@spelldesc196819
+
+Name             : Eviscerate (Coup de Grace) (id=462247) [Spell Family (8)] 
+Class            : Rogue
+School           : Shadow
+Spell Type       : Melee
+Range            : 100 yards
+GCD              : 1 seconds
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+                 : 2696: Veiltouched (382017 effect#3), Veiltouched (382017 effect#4), Dark Brew (382504 effect#4), Dark Brew (382504 effect#5), Deeper Daggers (383405 effect#3), Deeper Daggers (383405 effect#4)
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Shadow Dance (185313 effects: #4, #5), Adrenaline Rush (186286 effect#3), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Finality: Eviscerate (197496 effect#1), Symbols of Death (212283 effects: #1, #2), Eviscerate (245691 effect#1), Master Assassin (256735 effect#1), Night's Vengeance (273424 effect#1), Master Assassin's Mark (340094 effect#1), Finality: Eviscerate (340600 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Finality: Eviscerate (385949 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4), Masterful Finish (395003 effects: #1, #3), Symbolic Victory (409987 effect#1), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Bolstering Shadows (455577 effects: #1, #2), Symbolic Victory (457167 effect#1), Sanguine Stratagem (457512 effects: #1, #4)
+Family Flags     : 17, 54
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171857)  : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.07 | Target: Enemy (6)
+Description      : $@spelldesc196819
+
+Name             : Eviscerate (Coup de Grace) (id=462248) [Spell Family (8)] 
+Class            : Rogue
+School           : Shadow
+Spell Type       : Melee
+Range            : 100 yards
+GCD              : 1 seconds
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+                 : 2696: Veiltouched (382017 effect#3), Veiltouched (382017 effect#4), Dark Brew (382504 effect#4), Dark Brew (382504 effect#5), Deeper Daggers (383405 effect#3), Deeper Daggers (383405 effect#4)
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Shadow Dance (185313 effects: #4, #5), Adrenaline Rush (186286 effect#3), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Finality: Eviscerate (197496 effect#1), Symbols of Death (212283 effects: #1, #2), Eviscerate (245691 effect#1), Master Assassin (256735 effect#1), Night's Vengeance (273424 effect#1), Master Assassin's Mark (340094 effect#1), Finality: Eviscerate (340600 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Finality: Eviscerate (385949 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4), Masterful Finish (395003 effects: #1, #3), Symbolic Victory (409987 effect#1), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Bolstering Shadows (455577 effects: #1, #2), Symbolic Victory (457167 effect#1), Sanguine Stratagem (457512 effects: #1, #4)
+Family Flags     : 17, 54
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), No Helpful Threat (131), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1171858)  : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.14 | Target: Enemy (6)
+Description      : $@spelldesc196819
+
+Name             : Killing Spree (id=463781) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : Melee
+Spell Level      : 1
+Range            : 100 yards
+Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Devious Stratagem (394321 effects: #1, #4), Fazed (441224 effects: #1, #5), Disorienting Strikes (441274 effect#1), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Sanguine Stratagem (457512 effects: #1, #4)
+Family Flags     : 54, 55
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Active Threat (94), PvP Enabling (96), Not a Proc (105), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1174687)  : Trigger Spell (64): Killing Spree
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 57842 | Target: Enemy (6)
+#2 (id=1174688)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.8 | Target: Enemy (6)
+Description      : $@spelldesc51690
+
+Name             : Dispatch (id=467059) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : Melee
+Resource         : 35 Energy (3) (id=307403)
+Resource         : 1 - 5 Combo Points (4) (id=307404)
+Spell Level      : 22
+Range            : 5 yards
+GCD              : 1 seconds
+Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+Affecting Spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Eviscerating Blade (184917 effect#2), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Deft Maneuvers (385835 effect#1), Summarily Dispatched (386868 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4), Devious Stratagem (394321 effects: #1, #4), Brutal Opportunist (394888 effect#1), Fazed (441224 effects: #1, #5), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Cold Blood (456330 effect#1), Sanguine Stratagem (457512 effects: #1, #4)
+Family Flags     : 54, 112
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Not a Proc (105), Requires Main-Hand Weapon (106), No Helpful Threat (131), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1179999)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.44 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.416 -> 0.44)
+Description      : Finishing move that dispatches the enemy, dealing damage per combo point:
+   1 point  : ${$m1*1} damage
+   2 points: ${$m1*2} damage
+   3 points: ${$m1*3} damage
+   4 points: ${$m1*4} damage
+   5 points: ${$m1*5} damage$?s193531|((s394320|s394321)&!s193531)[
+   6 points: ${$m1*6} damage][]$?s193531&(s394320|s394321)[
+   7 points: ${$m1*7} damage][]
+
+Name             : Darkest Night (id=469637) [Spell Family (8), Hidden] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 0.2 seconds
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+                 : 3022
+Attributes       : Do Not Log Immune Misses (3), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Active Defense (21), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), No Initial Threat (86), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Allow Aura While Dead (116), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Do Not Log Caster (141), Suppress Weapon Procs (151), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), No Cooldown On Tooltip (192), Can Target Untargetable (216), Do Not Log PvP Kill (241), Can Hit AOE Untargetable (260), Allow While Charmed (261), Ignore Sanctuary (263), Do Not Log Aura Refresh (291), Do Not Display Power Cost (303), Allow Cast While Channeling (308), Do Not Log Full Overheal (323), Ignore Feign Death (346), Do Not Log Absorb (348), Do Not Log on Learn (355), Do Not Log Spell Miss (397), Do Not Display Cast Time (441), Hide Passive From Tooltip (451)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Effects          :
+#1 (id=1184103)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Target: Enemy (6)
+Description      : $@spelldesc457058
+Tooltip          : Your next $?c1[Envenom][Eviscerate] cast with maximum combo points is guaranteed to critically strike, deal $w2% additional damage, and apply $w3 stacks of Deathstalker's Mark to the target.
+
+
