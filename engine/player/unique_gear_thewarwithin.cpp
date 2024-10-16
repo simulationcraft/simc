@@ -4933,6 +4933,17 @@ void burst_of_knowledge( special_effect_t& effect )
   cb->activate_with_buff( buff );
 }
 
+void heart_of_roccor( special_effect_t& effect )
+{
+  // Currently missing the misc value for the buff type, manually setting it for now. 
+  // Implementation will probably be redundant once its fixed. 
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item )
+            ->add_stat( STAT_STRENGTH, effect.trigger()->effectN( 1 ).average( effect ) );
+
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 // 443384 driver
 // 443585 damage
@@ -5875,6 +5886,7 @@ void register_special_effects()
   register_special_effect( 469915, items::golem_gearbox );
   register_special_effect( 469922, items::doperels_calling_rune );
   register_special_effect( 469925, items::burst_of_knowledge );
+  register_special_effect( 469768, items::heart_of_roccor );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );
