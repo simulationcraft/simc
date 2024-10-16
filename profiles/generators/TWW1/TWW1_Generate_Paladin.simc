@@ -50,7 +50,34 @@ main_hand=everforged_greataxe,id=222443,bonus_id=10421/1515/11300/8960/8791,ench
 
 save=TWW1_Paladin_Retribution.simc
 
-paladin="TWW1_Paladin_Protection"
+paladin=TWW1_Paladin_Protection_Lightsmith
+level=80
+race=draenei
+role=tank
+position=front
+spec=protection
+talents=CIEAAAAAAAAAAAAAAAAAAAAAAsMmZMjHYegFmZmZssxMjZwwMAAADAAAAAAAphZmhBmBzMLGmZGAwYgZAYwMADAACwMzyySbzMWMD
+
+head=entombed_seraphs_casque,id=211993,bonus_id=1540/10299/10878,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10879,gem_id=213470/213491
+shoulder=flesh_connectors_epaulets,id=221185,bonus_id=4786/3131/10299
+back=wings_of_shattered_sorrow,id=225574,bonus_id=1540/10299
+chest=entombed_seraphs_breastplate,id=211996,bonus_id=1540/10299,enchant=crystalline_radiance_3
+wrist=everforged_vambraces,id=222435,bonus_id=11144/1485/10222/10520/10878/8960,crafted_stats=36/32,gem_id=213494
+hands=entombed_seraphs_castigation,id=211994,bonus_id=1540/10299
+waist=greatbelt_of_the_hungerer,id=212442,bonus_id=1540/10299/10878,gem_id=213479
+legs=entombed_seraphs_greaves,id=211992,bonus_id=1540/10299,enchant=stormbound_armor_kit_3
+feet=everforged_sabatons,id=222429,bonus_id=11144/1485/10222/10520/8960,crafted_stats=36/32,enchant=defenders_march_3
+finger1=devout_zealots_ring,id=221136,bonus_id=4786/3131/10299/8781/10879,gem_id=213479/213479,enchant=radiant_haste_3
+finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10299/10879,gem_id=213479/213455,enchant=radiant_haste_3
+trinket1=arakara_sacbrood,id=219314,bonus_id=4786/3131/10299
+trinket2=ovinaxs_mercurial_egg,id=220305,bonus_id=1540/10299
+main_hand=engorged_worm_smasher,id=178730,bonus_id=4786/9948/10299,enchant=authority_of_the_depths_3
+off_hand=crest_of_the_caustic_despot,id=225579,bonus_id=1540/10299
+
+save=TWW1_Paladin_Protection.simc
+
+paladin="TWW1_Paladin_Protection_Templar"
 level=80
 race=draenei
 spec=protection
@@ -58,24 +85,24 @@ role=tank
 position=front
 talents=CIEAAAAAAAAAAAAAAAAAAAAAAsMmZMjHYegFmZmZssxMjZwwMAAADAAAAAAAphZmhBmBzMLGmZGAwYgZAYwMADAwMTbzysNDQgNzA
 
-head=visor_of_the_ascended_captain,id=212427,bonus_id=10878,ilevel=639,gem_id=213743
-neck=sureki_zealots_insignia,id=225577,bonus_id=10879,ilevel=639,gem_id=213485/213485
-shoulders=entombed_seraphs_plumes,id=211991,ilevel=639
-back=anvilhide_cape,id=221088,ilevel=639,enchant_id=7409
-chest=entombed_seraphs_breastplate,id=211996,ilevel=639,enchant_id=7364
-wrists=everforged_vambraces,id=222435,bonus_id=10520/10878,ilevel=636,gem_id=213485,enchant_id=7391,crafted_stats=36/40
-hands=entombed_seraphs_castigation,id=211994,ilevel=639
-waist=greatbelt_of_the_hungerer,id=212442,bonus_id=10878,ilevel=639,gem_id=213485
-legs=entombed_seraphs_greaves,id=211992,ilevel=639,enchant_id=7601
-feet=everforged_sabatons,id=222429,bonus_id=10520,ilevel=636,enchant_id=7418,crafted_stats=36/40
-finger1=key_to_the_unseeming,id=212447,bonus_id=10879,ilevel=639,gem_id=213470/213455,enchant_id=7340
-finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,ilevel=639,gem_id=213494/213485,enchant_id=7340
-trinket1=arakara_sacbrood,id=219314,ilevel=639
-trinket2=skyterrors_corrosive_organ,id=212453,ilevel=639
-main_hand=engorged_worm_smasher,id=178730,ilevel=639,enchant_id=7460
-off_hand=oldblood_hielaman,id=221177,ilevel=639
+head=visor_of_the_ascended_captain,id=212427,bonus_id=1540/10299/10878,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10879,gem_id=213485/213485
+shoulders=entombed_seraphs_plumes,id=211991,bonus_id=1540/10299
+back=anvilhide_cape,id=221088,bonus_id=4786/3131/10299
+chest=entombed_seraphs_breastplate,id=211996,bonus_id=1540/10299,enchant=crystalline_radiance_3
+wrists=everforged_vambraces,id=222435,bonus_id=11144/1485/10222/10520/10878/8960,gem_id=213485,crafted_stats=36/40
+hands=entombed_seraphs_castigation,id=211994,bonus_id=1540/10299
+waist=greatbelt_of_the_hungerer,id=212442,bonus_id=1540/10299/10878,gem_id=213485
+legs=entombed_seraphs_greaves,id=211992,bonus_id=1540/10299,enchant=stormbound_armor_kit_3
+feet=everforged_sabatons,id=222429,bonus_id=11144/1485/10222/10520/8960,enchant=defenders_march_3,crafted_stats=36/40
+finger1=key_to_the_unseeming,id=212447,bonus_id=1540/10299/10879,gem_id=213470/213455,enchant=radiant_haste_3
+finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10299/10879,gem_id=213494/213485,enchant=radiant_haste_3
+trinket1=arakara_sacbrood,id=219314,bonus_id=4786/3131/10299
+trinket2=skyterrors_corrosive_organ,id=212453,bonus_id=1540/10299
+main_hand=engorged_worm_smasher,id=178730,bonus_id=4786/9948/10299,enchant=authority_of_the_depths_3
+off_hand=oldblood_hielaman,id=221177,bonus_id=4786/3131/10299
 
-save=TWW1_Paladin_Protection.simc
+save=TWW1_Paladin_Protection_Templar.simc
 
 
 # paladin="TWW1_Paladin_Retribution"
