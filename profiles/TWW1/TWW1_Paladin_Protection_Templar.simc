@@ -1,11 +1,11 @@
-paladin="TWW1_Paladin_Protection_Lightsmith"
+paladin="TWW1_Paladin_Protection_Templar"
 source=default
 spec=protection
 level=80
 race=draenei
 role=tank
 position=front
-talents=CIEAAAAAAAAAAAAAAAAAAAAAAsMmZMjHYegFmZmZssxMjZwwMAAADAAAAAAAphZmhBmBzMLGmZGAwYgZAYwMADAACwMzyySbzMWMD
+talents=CIEAAAAAAAAAAAAAAAAAAAAAAsMmZMjHYegFmZmZssxMjZwwMAAADAAAAAAAphZmhBmBzMLGmZGAwYgZAYwMADAwMTbzysNDQgNzA
 
 # Default consumables
 potion=tempered_potion_3
@@ -99,31 +99,31 @@ actions.standard+=/consecration
 actions.trinkets=use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)
 actions.trinkets+=/use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)
 
-head=entombed_seraphs_casque,id=211993,bonus_id=1540/10299/10878,gem_id=213743
-neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10879,gem_id=213470/213491
-shoulders=flesh_connectors_epaulets,id=221185,bonus_id=4786/3131/10299
-back=wings_of_shattered_sorrow,id=225574,bonus_id=1540/10299
+head=visor_of_the_ascended_captain,id=212427,bonus_id=1540/10299/10878,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10879,gem_id=213485/213485
+shoulders=entombed_seraphs_plumes,id=211991,bonus_id=1540/10299
+back=anvilhide_cape,id=221088,bonus_id=4786/3131/10299
 chest=entombed_seraphs_breastplate,id=211996,bonus_id=1540/10299,enchant=crystalline_radiance_3
-wrists=everforged_vambraces,id=222435,bonus_id=11144/1485/10222/10520/10878/8960,gem_id=213494,crafted_stats=36/32
+wrists=everforged_vambraces,id=222435,bonus_id=11144/1485/10222/10520/10878/8960,gem_id=213485,crafted_stats=36/40
 hands=entombed_seraphs_castigation,id=211994,bonus_id=1540/10299
-waist=greatbelt_of_the_hungerer,id=212442,bonus_id=1540/10299/10878,gem_id=213479
+waist=greatbelt_of_the_hungerer,id=212442,bonus_id=1540/10299/10878,gem_id=213485
 legs=entombed_seraphs_greaves,id=211992,bonus_id=1540/10299,enchant=stormbound_armor_kit_3
-feet=everforged_sabatons,id=222429,bonus_id=11144/1485/10222/10520/8960,enchant=defenders_march_3,crafted_stats=36/32
-finger1=devout_zealots_ring,id=221136,bonus_id=4786/3131/10299/10879,gem_id=213479/213479,enchant=radiant_haste_3
-finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10299/10879,gem_id=213479/213455,enchant=radiant_haste_3
+feet=everforged_sabatons,id=222429,bonus_id=11144/1485/10222/10520/8960,enchant=defenders_march_3,crafted_stats=36/40
+finger1=key_to_the_unseeming,id=212447,bonus_id=1540/10299/10879,gem_id=213470/213455,enchant=radiant_haste_3
+finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10299/10879,gem_id=213494/213485,enchant=radiant_haste_3
 trinket1=arakara_sacbrood,id=219314,bonus_id=4786/3131/10299
-trinket2=ovinaxs_mercurial_egg,id=220305,bonus_id=1540/10299
+trinket2=skyterrors_corrosive_organ,id=212453,bonus_id=1540/10299
 main_hand=engorged_worm_smasher,id=178730,bonus_id=4786/9948/10299,enchant=authority_of_the_depths_3
-off_hand=crest_of_the_caustic_despot,id=225579,bonus_id=1540/10299
+off_hand=oldblood_hielaman,id=221177,bonus_id=4786/3131/10299
 
 # Gear Summary
 # gear_ilvl=638.63
-# gear_strength=32547
+# gear_strength=36154
 # gear_stamina=238006
-# gear_crit_rating=16205
-# gear_haste_rating=16592
-# gear_mastery_rating=3487
-# gear_versatility_rating=2154
+# gear_crit_rating=7503
+# gear_haste_rating=21131
+# gear_mastery_rating=4850
+# gear_versatility_rating=5420
 # gear_armor=84953
 # set_bonus=thewarwithin_season_1_2pc=1
 # set_bonus=thewarwithin_season_1_4pc=1
