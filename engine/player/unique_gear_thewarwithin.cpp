@@ -4917,15 +4917,16 @@ void burst_of_knowledge( special_effect_t& effect )
   auto int_buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item );
 
   auto buff = create_buff<buff_t>( effect.player, effect.driver() )
-    ->set_cooldown( 0_ms );
+                  ->set_cooldown( 0_ms )
+                  ->set_expire_callback( [ int_buff ]( buff_t*, int, timespan_t d ) { int_buff->expire(); } );
 
   effect.has_use_buff_override = true;
-  effect.custom_buff = buff;
+  effect.custom_buff           = buff;
 
-  auto on_use_cb = new special_effect_t( effect.player );
-  on_use_cb->name_str = effect.name() + "_cb";
-  on_use_cb->spell_id = effect.driver()->id();
-  on_use_cb->cooldown_ = 0_ms;
+  auto on_use_cb         = new special_effect_t( effect.player );
+  on_use_cb->name_str    = effect.name() + "_cb";
+  on_use_cb->spell_id    = effect.driver()->id();
+  on_use_cb->cooldown_   = 0_ms;
   on_use_cb->custom_buff = int_buff;
   effect.player->special_effects.push_back( on_use_cb );
 
@@ -4935,6 +4936,9 @@ void burst_of_knowledge( special_effect_t& effect )
 
 void heart_of_roccor( special_effect_t& effect )
 {
+  if (!effect.player->is_ptr())
+    return;
+
   // Currently missing the misc value for the buff type, manually setting it for now. 
   // Implementation will probably be redundant once its fixed. 
   auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item )
