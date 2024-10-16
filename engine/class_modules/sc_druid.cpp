@@ -6691,11 +6691,14 @@ void druid_action_t<Base>::init()
     // allow ground_aoe for snapshots
     if ( !ab::background || ab::ground_aoe )
     {
-      const auto& eff = p()->buff.lunar_amplification->data().effectN( 1 );
-      add_parse_entry( persistent_multiplier_effects )
-        .set_buff( p()->buff.lunar_amplification )
-        .set_value( eff.percent() )
-        .set_eff( &eff );
+      if ( const auto& eff = p()->buff.lunar_amplification->data().effectN( 1 );
+           !has_parse_entry( persistent_multiplier_effects, &eff ) )
+      {
+        add_parse_entry( persistent_multiplier_effects )
+          .set_buff( p()->buff.lunar_amplification )
+          .set_value( eff.percent() )
+          .set_eff( &eff );
+      }
     }
   }
 }
