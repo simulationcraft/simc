@@ -1398,9 +1398,15 @@ std::string label_str( int label, const dbc_t& dbc, size_t wrap )
   auto it = _label_strings.find( label );
   if ( it != _label_strings.end() )
   {
-    return fmt::format( "{} ({})", it->second, label );
+    return fmt::format( "Affected Spells (Label): {} ({})", it->second, label );
   }
+
   auto affected_spells = dbc.spells_by_label( label );
+  if ( affected_spells.empty() )
+  {
+    return "";
+  }
+
   return wrap_concatenate( affected_spells, [ first = affected_spells.front() ]( const spell_data_t* spell ) {
     if ( spell == first )
       return fmt::format( "Affected Spells (Label): {} ({})", spell->name_cstr(), spell->id() );
