@@ -242,9 +242,11 @@ custom_cb_t secondary_food( unsigned id, stat_e stat1, stat_e stat2 = STAT_NONE 
 
     auto buff = create_buff<consumable_buff_t<stat_buff_t>>( effect.player, effect.driver() );
 
+    // all single secondary stat food are minor foods. note that item tooltip for hearty versions are incorrect and do
+    // not apply the minor food multiplier.
     if ( stat2 == STAT_NONE )
     {
-      auto _amt = coeff->effectN( 4 ).average( effect );
+      auto _amt = coeff->effectN( 4 ).average( effect ) * coeff->effectN( 1 ).base_value() * 0.1;
       buff->add_stat( stat1, _amt );
     }
     else
