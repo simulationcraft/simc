@@ -1552,12 +1552,8 @@ struct force_of_nature_t final : public treant_base_t
   force_of_nature_t( druid_t* p ) : treant_base_t( p )
   {
     // Treants have base weapon damage + ap from player's sp.
-    // TODO: confirm this
-    owner_coeff.ap_from_sp = 0.935;
-
-    double base_dps = o()->dbc->expected_stat( o()->true_level ).creature_auto_attack_dps;
-
-    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = base_dps * main_hand_weapon.swing_time.total_seconds() / 1000;
+    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = 9.6;
+    owner_coeff.ap_from_sp = 0.96;
 
     resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST;
@@ -1572,14 +1568,9 @@ struct force_of_nature_t final : public treant_base_t
   {
     pet_t::init_base_stats();
 
-    // TODO: confirm these values
-    resources.base[ RESOURCE_HEALTH ] = owner->resources.max[ RESOURCE_HEALTH ] * 0.4;
-    resources.base[ RESOURCE_MANA ]   = 0;
-
-    initial.stats.attribute[ ATTR_INTELLECT ] = 0;
-    initial.spell_power_per_intellect         = 0;
-    intellect_per_owner                       = 0;
-    stamina_per_owner                         = 0;
+    resources.base[ RESOURCE_HEALTH ] =
+      owner->resources.max[ RESOURCE_HEALTH ] * 0.6 *
+      ( 1.0 + find_effect( o()->talent.durability_of_nature, A_MOD_PET_STAT ).percent() );
   }
 
   resource_e primary_resource() const override { return RESOURCE_NONE; }
@@ -2015,12 +2006,6 @@ public:
       pers *= 1.0 + ab::get_effect_value( i );
 
     return pers;
-  }
-
-  void init_finished() override
-  {
-    ab::init_finished();
-    ab::initialize_buff_list_on_vector( persistent_multiplier_effects );
   }
 
   size_t total_effects_count() override
@@ -2750,12 +2735,12 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     if ( data().ok() )
     {
       // effect data missing stack suppress flag for effect #2, manually override
-      snapshots.bloodtalons =  parse_persistent_effects( p->buff.bloodtalons, IGNORE_STACKS );
+      snapshots.bloodtalons =  parse_persistent_effects( p->buff.bloodtalons, IGNORE_STACKS, DECREMENT_BUFF );
       snapshots.tigers_fury =  parse_persistent_effects( p->buff.tigers_fury,
                                                          p->talent.carnivorous_instinct,
                                                          p->talent.tigers_tenacity );
       // NOTE: thrash dot snapshot data is missing, it must be manually added in cat_thrash_t
-      snapshots.clearcasting = parse_persistent_effects( p->buff.clearcasting_cat,
+      snapshots.clearcasting = parse_persistent_effects( p->buff.clearcasting_cat, DECREMENT_BUFF,
                                                          p->talent.moment_of_clarity );
     }
   }
@@ -2780,8 +2765,6 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     if ( !is_free() && snapshots.clearcasting && current_resource() == RESOURCE_ENERGY &&
          p()->buff.clearcasting_cat->up() )
     {
-      p()->buff.clearcasting_cat->decrement();
-
       // Base cost doesn't factor in but Omen of Clarity does net us less energy during it, so account for that here.
       eff_cost *= 1.0 + p()->buff.incarnation_cat->check_value();
 
@@ -2869,13 +2852,6 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
     }
   }
 
-  void init_finished() override
-  {
-    base_t::init_finished();
-    base_t::initialize_buff_list_on_vector( persistent_periodic_effects );
-    base_t::initialize_buff_list_on_vector( persistent_direct_effects );
-  }
-
   size_t total_effects_count() override
   {
     return base_t::total_effects_count() + persistent_periodic_effects.size() + persistent_direct_effects.size();
@@ -2922,22 +2898,21 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
   {
     base_t::execute();
 
-    if ( snapshots.bloodtalons )
+    if ( hit_any_target )
     {
-      if ( bt_counter && hit_any_target )
+      if ( snapshots.bloodtalons && bt_counter )
         bt_counter->count_execute();
 
-      p()->buff.bloodtalons->decrement();
+      if ( snapshots.tigers_fury && tf_counter )
+        tf_counter->count_execute();
+
+      if ( snapshots.sudden_ambush && sa_counter )
+        sa_counter->count_execute();
     }
-
-    if ( snapshots.tigers_fury && tf_counter && hit_any_target )
-      tf_counter->count_execute();
-
-    if ( snapshots.sudden_ambush && sa_counter && hit_any_target )
-      sa_counter->count_execute();
-
-    if ( !hit_any_target )
+    else
+    {
       player->resource_gain( RESOURCE_ENERGY, last_resource_cost * 0.80, p()->gain.energy_refund );
+    }
 
     if ( harmful )
     {
@@ -4892,7 +4867,11 @@ struct rip_t final : public trigger_thriving_growth_t<trigger_waning_twilight_t<
         .set_buff( p->buff.feline_potential )
         .set_value( eff.percent() )
         .set_eff( &eff )
-        .set_idx( UINT32_MAX );
+        .set_idx( 1U << callback_list.size() );
+      callback_list.push_back( [ this, b = p->buff.feline_potential ]( parse_callback_e cb_type ) {
+        if ( cb_type == PARSE_CALLBACK_POST_EXECUTE )
+          b->expire( this );
+      } );
     }
   }
 
@@ -6809,6 +6788,9 @@ public:
 
   void execute() override
   {
+    if ( p()->is_ptr() && p()->eclipse_handler.in_eclipse() && rng().roll( touch_pct ) )
+      p()->buff.touch_the_cosmos->trigger( this );
+
     druid_spell_t::execute();
 
     if ( ( dreamstate || !has_flag( flag_e::FOREGROUND ) ) && p()->buff.dreamstate->can_expire( this ) )
@@ -6819,9 +6801,6 @@ public:
     // Dreamstate is triggered after the first harmful cast.
     if ( is_precombat && p()->talent.natures_grace.ok() && !p()->buff.dreamstate->check() )
       p()->buff.dreamstate->trigger();
-
-    if ( p()->is_ptr() && p()->eclipse_handler.in_eclipse() && rng().roll( touch_pct ) )
-      p()->buff.touch_the_cosmos->trigger( this );
   }
 
   void impact( action_state_t* s ) override
@@ -8884,8 +8863,7 @@ struct wrath_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
   {
     base_t::execute();
 
-    //if ( p()->eclipse_handler.in_eclipse() && !p()->is_ptr() )
-    if ( p()->eclipse_handler.in_eclipse() )
+    if ( p()->eclipse_handler.in_eclipse() && !p()->is_ptr() )
       p()->buff.touch_the_cosmos_starsurge->trigger( this );
   }
 
@@ -14134,13 +14112,13 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( mastery.razor_claws );
   _a->parse_effects( buff.apex_predators_craving );
   _a->parse_effects( buff.berserk_cat );
-  _a->parse_effects( buff.coiled_to_spring, CONSUME_BUFF );
+  _a->parse_effects( buff.coiled_to_spring, EXPIRE_BUFF );
   _a->parse_effects( buff.incarnation_cat );
   _a->parse_effects( buff.predator, USE_CURRENT );
-  _a->parse_effects( buff.predatory_swiftness, CONSUME_BUFF );
+  _a->parse_effects( buff.predatory_swiftness, EXPIRE_BUFF );
   _a->parse_effects( talent.taste_for_blood, [ this ] { return buff.tigers_fury->check();},
                      talent.taste_for_blood->effectN( 2 ).percent() );
-  _a->parse_effects( buff.fell_prey, CONSUME_BUFF, effect_mask_t( true ).disable( 2 ) );
+  _a->parse_effects( buff.fell_prey, EXPIRE_BUFF, effect_mask_t( true ).disable( 2 ) );
   // applies 15% to rampant ferocity (label 2740) via hidden script
   _a->parse_effects( buff.fell_prey, effect_mask_t( false ).enable( 2 ),
                      buff.fell_prey->data().effectN( 1 ).percent() );
@@ -14162,7 +14140,7 @@ void druid_t::parse_action_effects( action_t* action )
                      talent.berserk_unchecked_aggression );
   _a->parse_effects( buff.incarnation_bear, bear_mask, talent.berserk_ravage,
                      talent.berserk_unchecked_aggression );
-  _a->parse_effects( buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), CONSUME_BUFF );
+  _a->parse_effects( buff.dream_of_cenarius, effect_mask_t( true ).disable( 5 ), EXPIRE_BUFF );
 
   // dot damage is buffed via script so copy da_mult entries to ta_mult
   // thrash damage buff always applies
@@ -14177,12 +14155,12 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( spec.fury_of_nature, effect_mask_t( false ).enable( 2, 3 ),
                      talent.fury_of_nature->effectN( 1 ).percent() );
 
-  _a->parse_effects( buff.gory_fur, CONSUME_BUFF );
+  _a->parse_effects( buff.gory_fur, EXPIRE_BUFF );
   _a->parse_effects( buff.rage_of_the_sleeper );
   _a->parse_effects( talent.reinvigoration, effect_mask_t( true ).disable( talent.innate_resolve.ok() ? 1 : 2 ) );
   _a->parse_effects( buff.tooth_and_claw );
-  _a->parse_effects( buff.vicious_cycle_mangle, USE_DEFAULT, CONSUME_BUFF );
-  _a->parse_effects( buff.vicious_cycle_maul, USE_DEFAULT, CONSUME_BUFF );
+  _a->parse_effects( buff.vicious_cycle_mangle, USE_DEFAULT, EXPIRE_BUFF );
+  _a->parse_effects( buff.vicious_cycle_maul, USE_DEFAULT, EXPIRE_BUFF );
 
   _a->parse_effects( buff.guardians_tenacity );
   // effects#5 and #6 are ignored regardless of lunar calling
@@ -14192,16 +14170,16 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( buff.abundance );
   _a->parse_effects( buff.clearcasting_tree, talent.flash_of_clarity );
   _a->parse_effects( buff.incarnation_tree );
-  _a->parse_effects( buff.natures_swiftness, talent.natures_splendor, CONSUME_BUFF );
+  _a->parse_effects( buff.natures_swiftness, talent.natures_splendor, EXPIRE_BUFF );
 
   // Hero talents
-  _a->parse_effects( buff.blooming_infusion_damage, CONSUME_BUFF );
-  _a->parse_effects( buff.blooming_infusion_heal, CONSUME_BUFF );
-  _a->parse_effects( buff.feline_potential, CONSUME_BUFF );
+  _a->parse_effects( buff.blooming_infusion_damage, EXPIRE_BUFF );
+  _a->parse_effects( buff.blooming_infusion_heal, EXPIRE_BUFF );
+  _a->parse_effects( buff.feline_potential, EXPIRE_BUFF );
   _a->parse_effects( buff.harmony_of_the_grove );
   _a->parse_effects( buff.root_network );
   _a->parse_effects( buff.strategic_infusion );
-  _a->parse_effects( buff.ursine_potential, CONSUME_BUFF );
+  _a->parse_effects( buff.ursine_potential, EXPIRE_BUFF );
 }
 
 void druid_t::parse_action_target_effects( action_t* action )

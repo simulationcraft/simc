@@ -147,7 +147,7 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talent.conduit_of_the_celestials.xuens_guidance );
 
   // Master of Harmony
-  apply_affecting_aura( p()->talent.master_of_harmony.manifestation );
+  apply_affecting_aura( p()->talent.master_of_harmony.manifestation, p()->baseline.brewmaster.aura );
 
   // Shado-Pan
   parse_effects( p()->talent.shado_pan.efficient_training, p()->specialization() == MONK_WINDWALKER
@@ -178,17 +178,18 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects(
       p()->buff.counterstrike,
       affect_list_t( 1 ).add_spell( p()->baseline.brewmaster.spinning_crane_kick->effectN( 1 ).trigger()->id() ),
-      CONSUME_BUFF );
+      EXPIRE_BUFF );
 
   // Mistweaver
   parse_effects( p()->buff.jadefire_brand, p()->talent.windwalker.jadefire_brand_heal );
 
   // Windwalker
-  if ( const auto &effect = p()->baseline.windwalker.mastery->effectN( 1 ); effect.ok() && ww_mastery )
+  if ( const auto &effect = p()->baseline.windwalker.mastery->effectN( 1 ); effect.ok() )
   {
     auto mastery_parse_entry = [ & ]( std::vector<player_effect_t> &effect_list ) {
       add_parse_entry( effect_list )
           .set_buff( p()->buff.combo_strikes )
+          .set_func( [ & ] { return ww_mastery; } )
           .set_value( effect.mastery_value() )
           .set_mastery( true )
           .set_eff( &effect );
@@ -216,8 +217,8 @@ void monk_action_t<Base>::apply_buff_effects()
   // TODO: parse_effects implementation for A_MOD_HEALING_RECEIVED_FROM_SPELL (283)
   parse_effects( p()->talent.master_of_harmony.aspect_of_harmony_heal, p()->talent.master_of_harmony.coalescence,
                  [ & ] { return p()->buff.aspect_of_harmony.heal_ticking(); } );
-  parse_effects( p()->buff.balanced_stratagem_physical, CONSUME_BUFF );
-  parse_effects( p()->buff.balanced_stratagem_magic, CONSUME_BUFF );
+  parse_effects( p()->buff.balanced_stratagem_physical, p()->baseline.brewmaster.aura, EXPIRE_BUFF );
+  parse_effects( p()->buff.balanced_stratagem_magic, p()->baseline.brewmaster.aura, EXPIRE_BUFF );
 
   // Shado-Pan
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
@@ -1001,7 +1002,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
     shuffled_rng_t *deck;
     flurry_strike_wisdom_t *wisdom_flurry;
 
-    flurry_strike_t( monk_t *p )
+    flurry_strike_t( monk_t *p, action_t *parent )
       : monk_melee_attack_t( p, "flurry_strike", p->talent.shado_pan.flurry_strikes_hit ),
         flurry_strikes_counter( p->user_options.shado_pan_initial_charge_accumulator ),
         flurry_strikes_threshold( as<int>( p->talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value() ) ),
@@ -1015,7 +1016,8 @@ struct flurry_strikes_t : public monk_melee_attack_t
       apply_affecting_aura( p->talent.shado_pan.pride_of_pandaria );
 
       wisdom_flurry = new flurry_strike_wisdom_t( p );
-      add_child( wisdom_flurry );
+
+      parent->add_child( wisdom_flurry );
     }
 
     void impact( action_state_t *s ) override
@@ -1067,7 +1069,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
 
   flurry_strikes_t( monk_t *p ) : monk_melee_attack_t( p, "flurry_strikes", p->talent.shado_pan.flurry_strikes )
   {
-    strike = new flurry_strike_t( p );
+    strike = new flurry_strike_t( p, this );
     add_child( strike );
 
     if ( !p->talent.shado_pan.high_impact->ok() )
@@ -1112,7 +1114,9 @@ struct overwhelming_force_t : base_action_t
     {
       background = dual = proc = true;
       base_multiplier          = player->talent.master_of_harmony.overwhelming_force->effectN( 1 ).percent();
-      reduced_aoe_targets      = player->talent.master_of_harmony.overwhelming_force->effectN( 2 ).base_value();
+      base_multiplier += player->baseline.brewmaster.aura->effectN( 32 ).percent();
+      aoe                 = -1;
+      reduced_aoe_targets = player->talent.master_of_harmony.overwhelming_force->effectN( 2 ).base_value();
     }
 
     void init() override
@@ -1237,7 +1241,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
   {
     if ( p()->talent.brewmaster.press_the_advantage->ok() )
       return false;
-    return monk_melee_attack_t::ready();
+    return base_t::ready();
   }
 
   void execute() override
@@ -1257,7 +1261,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 
     //------------
 
-    monk_melee_attack_t::execute();
+    base_t::execute();
 
     p()->buff.blackout_combo->expire();
 
@@ -1304,7 +1308,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 
   void impact( action_state_t *s ) override
   {
-    monk_melee_attack_t::impact( s );
+    base_t::impact( s );
 
     // Apply Mark of the Crane
     p()->trigger_mark_of_the_crane( s );
@@ -3688,7 +3692,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     }
 
     double purify_percent = data().effectN( 1 ).percent();
-    purify_percent += 2.0 * p()->talent.master_of_harmony.mantra_of_purity->effectN( 1 ).percent();
+    purify_percent += p()->talent.master_of_harmony.mantra_of_purity->effectN( 1 ).percent();
     double cleared = p()->find_stagger( "Stagger" )->purify_percent( purify_percent, "purifying_brew" );
 
     double healed = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
@@ -4244,6 +4248,7 @@ struct celestial_conduit_t : public monk_spell_t
       background       = true;
       aoe              = -1;
       split_aoe_damage = true;
+      ww_mastery       = true;
     }
 
     double composite_aoe_multiplier( const action_state_t *state ) const override
@@ -5627,7 +5632,10 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
 
     set_tick_callback( [ this ]( buff_t *, int, timespan_t ) {
       if ( rushing_jade_wind_tick )
+      {
         rushing_jade_wind_tick->execute();
+        return;
+      }
 
       if ( action_t *rjw = p().find_action( "rushing_jade_wind_tick" ); rjw )
       {
@@ -5937,7 +5945,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(

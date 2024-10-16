@@ -1494,7 +1494,7 @@ class SpellDataGenerator(DataGenerator):
          # 11.0 The War Within ================================================
          451916, 451917, 451918, 451920, 451921, # earthen racial well fed buff
          206150, 461904, 461910, 462661, # new M+ affixes
-         462513, # severed strands weekly raid buff
+         462513, 462517, # severed strands weekly raid buff
          443585, # fateweaved needle
          452279, # aberrant spellforge
          448621, 448643, # void reaper's chime
@@ -2003,6 +2003,8 @@ class SpellDataGenerator(DataGenerator):
           ( 447419, 0 ),                                # Call of the Ancestor Lava Burst
           ( 447427, 0 ),                                # Call of the Ancestor Elemental Blast
           ( 447425, 0 ),                                # Call of the Ancestor Chain Lightning
+          ( 470058, 0 ),                                # Voltaic Blaze override buff
+          ( 467283, 0 ),                                # Reactivity proc
         ),
 
         # Mage:

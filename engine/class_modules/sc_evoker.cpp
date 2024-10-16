@@ -781,7 +781,8 @@ struct evoker_t : public player_t
     bool simulate_bombardments                                 = true;
     timespan_t simulate_bombardments_time_between_procs_mean   = 0.2_s;
     timespan_t simulate_bombardments_time_between_procs_stddev = 0.10_s;
-    timespan_t allied_virtual_cd_time = 118_s;
+    timespan_t allied_virtual_cd_time                          = 118_s;
+    double simulate_bombardments_fixed_crit                    = 0.21;
   } option;
 
   // Action pointers
@@ -1482,17 +1483,17 @@ private:
   using ab::composite_crit_chance_multiplier;
 
 public:
-  double composite_crit_chance( const action_state_t* s ) const
+  virtual double composite_crit_chance( const action_state_t* s ) const
   {
     return action_t::composite_crit_chance() + p( s )->cache.spell_crit_chance();
   }
 
-  double composite_haste( const action_state_t* s ) const
+  virtual double composite_haste( const action_state_t* s ) const
   {
     return action_t::composite_haste() * p( s )->cache.spell_cast_speed();
   }
 
-  double composite_crit_chance_multiplier( const action_state_t* s ) const
+  virtual double composite_crit_chance_multiplier( const action_state_t* s ) const
   {
     return action_t::composite_crit_chance_multiplier() * p( s )->composite_spell_crit_chance_multiplier();
   }
@@ -3740,7 +3741,7 @@ struct fire_breath_t : public empowered_charge_spell_t
         auto td = p()->get_target_data( state->target );
         if ( td )
         {
-          auto mul_before = td->molten_embers_multiplier;
+          // auto mul_before = td->molten_embers_multiplier;
           td->molten_embers_multiplier = p()->get_molten_embers_multiplier( state->target, true );
         }
       }
@@ -6188,10 +6189,12 @@ protected:
   target_specific_t<cooldown_t> cooldown_objects;
 
 public:
+  bool use_fixed_crit;
   bombardments_damage_t( player_t* p )
     : base( "bombardments", p, p->find_spell( 434481 ) ),
       diverted_power_chance( 0.085 ),  // Reasonable guess. TODO: Get more accurate
-      cooldown_objects{ false }
+      cooldown_objects{ false },
+      use_fixed_crit( false )
   {
     may_dodge = may_parry = may_block = false;
     background                        = true;
@@ -6225,6 +6228,20 @@ public:
   bool use_full_mastery() const
   {
     return evoker && evoker->talent.tyranny.ok() && evoker->buff.dragonrage->check();
+  }
+
+  double composite_crit_chance( const action_state_t* s ) const override
+  {
+    if ( use_fixed_crit )
+      return p( s )->option.simulate_bombardments_fixed_crit;
+    // Currently scales with target Crit Chance
+    return p( s )->bugs ? spell_t::composite_crit_chance() : base::composite_crit_chance( s );
+  }
+
+  double composite_crit_chance_multiplier( const action_state_t* s ) const override
+  {
+    // Currently scales with target Crit Chance
+    return p( s )->bugs ? spell_t::composite_crit_chance_multiplier() : base::composite_crit_chance( s );
   }
    
   double composite_target_multiplier( player_t* t ) const override
@@ -6872,7 +6889,9 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
     {
       auto damage_action    = cb->get_bombardments_action( p() );
       damage_action->evoker = p();
+      damage_action->use_fixed_crit = p()->bugs ? rng().roll( 0.9 ) : false;
       damage_action->execute_on_target( player );
+      damage_action->use_fixed_crit = false;
       cd->start();
     }
   }
@@ -8380,6 +8399,8 @@ void evoker_t::create_options()
   add_option( opt_timespan( "evoker.simulate_bombardments_time_between_procs_stddev",
                             option.simulate_bombardments_time_between_procs_stddev, 0_s, 9999_s ) );
   add_option( opt_timespan( "evoker.allied_virtual_cd_time", option.allied_virtual_cd_time, 0_s, 9999_s ) );
+  add_option(
+      opt_float( "evoker.simulate_bombardments_fixed_crit", option.simulate_bombardments_fixed_crit, 0.05, 1.0 ) );
 }
 
 void evoker_t::analyze( sim_t& sim )

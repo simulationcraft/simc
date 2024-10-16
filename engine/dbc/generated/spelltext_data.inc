@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.2.56819
-static const std::array<spelltext_data_t, 26338> __spelltext_data { {
+static const std::array<spelltext_data_t, 26339> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23628,7 +23628,7 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 442240, "Plant a banner representing your successes against the Draconic.", 0, 0 },
   { 442264, "$@spelldesc432990", "Divine Steed movement speed increased by $w1%.", 0 },
   { 442267, "$@spelldesc442205", "Your next melee ability will deal additional Nature damage.", 0 },
-  { 442268, 0, "Take $w1  nature damage every $t seconds.", 0 },
+  { 442268, 0, "Suffering $w1  Nature damage every $t seconds.", 0 },
   { 442290, "Consuming $?a212612[$s1][$s2] Soul Fragments or casting The Hunt converts your next Throw Glaive into Reaver's Glaive.\r\n\r\n$@spellicon442294 $@spellname442294: \r\n$@spelldesc442294", 0, 0 },
   { 442294, "Throw a glaive enhanced with the essence of consumed souls at your target, dealing $s1 Physical damage and ricocheting to ${$x1-1} additional $Lenemy:enemies;.\r\n \r\nBegins a well-practiced pattern of glaivework, enhancing your next $?a212612[Chaos Strike]?s263642[Fracture][Shear] and $?a212612[Blade Dance][Soul Cleave].\r\n\r\nThe enhanced ability you cast first deals $442290s3% increased damage, and the second deals $442290s4% increased damage.$?a442497[\r\n\r\n|CFFffffffGenerates $s2 Fury.|R][]", 0, 0 },
   { 442371, "|CFFFFFFFF- Caster buff|R\r\n|CFFFFFFFF- Damage reduction|R\r\n|CFFFFFFFF- Counters attacks|R\r\n\r\n|CFFFFFFFF14 sec cooldown|R\r\nRaise a charged bulwark that negates damage taken briefly. \r\n\r\nReceiving an attack grants bonus movement speed, removes harmful debuffs, and harms enemies near the caster for a short duration.\r\n", 0, "Utility" },
@@ -26217,12 +26217,13 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
   { 462488, "$@spelldesc462486", "Downpour can be cast!", 0 },
   { 462513, "The Severed Threads lend you their aid, increasing your damage dealt & healing done while inside Nerub-ar Palace by $s1%.", "Damage dealt increased by $s1%.\r\nHealing and absorption effects increased by $s2%.", 0 },
   { 462515, "$@spelldesc445707", "Critical damage dealt increased by $s1%.", 0 },
+  { 462517, "The Severed Threads lend you their aid, increasing your damage dealt & healing done while inside Nerub-ar Palace.", 0, 0 },
   { 462568, "$@spelldesc462368", "Fire, Frost, and Nature damage taken reduced by $w1%.", 0 },
   { 462576, "Something skitters in the corner of your eyes. Everywhere.", "Something skitters in the corner of your eyes. Everywhere.", 0 },
   { 462587, "Your critical heals have ${$s2+$s1}% effectiveness instead of the usual $s2%.", 0, 0 },
   { 462603, "$@spelldesc207778", 0, 0 },
   { 462620, "Causes the earth within $a1 yards of your target to tremble and break, dealing $<damage> Physical damage over $d and has a $77478s2% chance to knock the enemy down. Multiple uses of Earthquake may overlap.\r\n\r\n|cFFFFFFFFThis spell is cast at your target.|r", 0, 0 },
-  { 462661, "Blessed by the void, $s2% increased spell and ability cool down rate and increases healing received by $s1% for $d.", "$s2% increased spell and ability cool down rate.\r\n\r\nHealing received increased by $s1%.", 0 },
+  { 462661, "Blessed by the void, increases Versatility by $s1% and increases spell and ability cool down rate by $s2% for $d.", "Versatility increased by $s1%.\r\n\r\n$s2% increased spell and ability cool down rate.", 0 },
   { 462695, "Your next Chain Lightning$?s454009[, Tempest,][] or Lightning Bolt has $462725s1% reduced cast time after casting Earth Shock, Elemental Blast, or Earthquake. Can accumulate up to $462725u charges.", 0, 0 },
   { 462725, "$@spelldesc462695", "Reduces the cast time of your next Lightning Bolt$?s454009[, Tempest,][] or Chain Lightning by $s1%.", 0 },
   { 462742, "$@spelldesc462757", 0, 0 },
@@ -26341,10 +26342,12 @@ static const std::array<spelltext_data_t, 26338> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.2.56819
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 5> __spelltext_hotfix_data { {
+  {  442268,  1, "Take $w1  nature damage every $t seconds.", "Suffering $w1  Nature damage every $t seconds." },
   {  454862,  1, "The physical damage dealt has blossomed into an absorb shield for $w1 and $w2 Speed.", "Granted $w1 Haste and $w2 Speed." },
   {  454975,  1, "Granted $w1 Haste and $w2 Speed.", "Granted $w1 Haste and $w2 Avoidance." },
-  {  462661,  1, "$w1% increased spell and ability cool down rate.\r\n\r\nHealing received increased by $s1%.", "$s2% increased spell and ability cool down rate.\r\n\r\nHealing received increased by $s1%." },
+  {  462661,  0, "Blessed by the void, $s2% increased spell and ability cool down rate and increases healing received by $s1% for $d.", "Blessed by the void, increases Versatility by $s1% and increases spell and ability cool down rate by $s2% for $d." },
+  {  462661,  1, "$w1% increased spell and ability cool down rate.\r\n\r\nHealing received increased by $s1%.", "Versatility increased by $s1%.\r\n\r\n$s2% increased spell and ability cool down rate." },
 } };
 
 // Spell description variables, wow build 11.0.2.56819
@@ -26547,7 +26550,7 @@ static const std::array<spelldesc_vars_data_t, 585> __spelldesc_vars_data { {
   {  260364, "$damage=${$cond($gt($SP,$AP),$SP*0.25,$AP*0.5)}" },
   {  260798, "$damage=${2.0*$260798s1}" },
   {  262627, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
-  {  263648, "$baseAbsorb=${10*$AP*$pctH}\r\n$fragmentAbsorb=${2*$AP*$pctH}" },
+  {  263648, "$baseAbsorb=${15*$AP*$pctH}\r\n$fragmentAbsorb=${4*$AP*$pctH}" },
   {  264057, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$demoPassive=$?s137044[${1+0.01*$137044m3}][${1}]\r\n$damage=${.575*($SP*1)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}" },
   {  265931, "$mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]" },
   {  267964, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$demoPassive=$?s137044[${1+0.01*$137044m3}][${1}]\r\n$damage=${.575*($SP*1)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}" },
@@ -26937,6 +26940,7 @@ static const std::array<spelldesc_vars_data_t, 585> __spelldesc_vars_data { {
 } };
 
 // spelldesc_vars hotfix entries, wow build 11.0.2.56819
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelldesc_vars_hotfix_data { {
+  {  263648,  0, "$baseAbsorb=${10*$AP*$pctH}\r\n$fragmentAbsorb=${2*$AP*$pctH}", "$baseAbsorb=${15*$AP*$pctH}\r\n$fragmentAbsorb=${4*$AP*$pctH}" },
 } };
 

@@ -7,7 +7,7 @@ on:
     branches: [ thewarwithin ]
     paths-ignore:
       - 'ActionPriorityLists/**'
-      - 'SpellDataDump/**'
+      - 'SpellDataDump/*.txt'
       - 'dbc_extract3/**'
       - 'casc_extract/**'
 
@@ -153,58 +153,6 @@ jobs:
             generate_profiles_ci.sh
             .git
           key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
-
-  spelldata-dump:
-    name: Spell Data Dump
-    runs-on: ${{ matrix.os }}
-    needs: [ ubuntu-clang-build ]
-    if: github.event_name == 'push'
-
-    strategy:
-      fail-fast: false
-      matrix:
-        cppVersion: [17]
-        compiler: [clang++-15]
-        include:
-          - compiler: clang++-15
-            os: ubuntu-22.04
-
-    steps:
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ${{ runner.workspace }}/b/ninja/simc
-            profiles
-            tests
-            generate_profiles_ci.sh
-            .git
-          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
-
-      - uses: actions/checkout@v4
-
-      - name: Dump Spell Data
-        env:
-          UBSAN_OPTIONS: print_stacktrace=1
-          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
-        run: ${{ github.workspace}}/SpellDataDump/spelldatadump_ci.sh
-
-      - name: Check for Non-Trivial Changes
-        run: |
-          if [ "$(git ls-files -m)" = "SpellDataDump/build_info.txt" ]; then
-            git checkout -- SpellDataDump/build_info.txt
-          fi
-
-      - name: Setup
-        run: echo "SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
-
-      - name: Commit Spell Data
-        continue-on-error: true
-        uses: EndBug/add-and-commit@v9
-        with:
-          message: 'Update Spell Data Dump ${{ env.SHORT_SHA }}'
-          default_author: github_actions
-          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1 origin ${{ github.ref_name }}
-          add: '*.txt'
 
   spec-test:
     name: spec-test-${{ matrix.spec }}-${{ matrix.fightstyle }}
@@ -383,7 +331,7 @@ jobs:
           retention-days: 1
 
   spec-test-ptr:
-    name: spec-test-ptr
+    name: spec-test-ptr-${{ matrix.spec }}-${{ matrix.fightstyle }}
     runs-on: ${{ matrix.os }}
     needs: [ ubuntu-clang-build ]
 
@@ -640,6 +588,58 @@ jobs:
         env:
           UBSAN_OPTIONS: print_stacktrace=1
         run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null ${{ matrix.simc_flags }}
+
+  spelldata-dump:
+    name: Spell Data Dump
+    runs-on: ${{ matrix.os }}
+    needs: [ ubuntu-clang-build, ubuntu-run ]
+    if: github.event_name == 'push'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        cppVersion: [17]
+        compiler: [clang++-15]
+        include:
+          - compiler: clang++-15
+            os: ubuntu-22.04
+
+    steps:
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ${{ runner.workspace }}/b/ninja/simc
+            profiles
+            tests
+            generate_profiles_ci.sh
+            .git
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+
+      - uses: actions/checkout@v4
+
+      - name: Dump Spell Data
+        env:
+          UBSAN_OPTIONS: print_stacktrace=1
+          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
+        run: ${{ github.workspace}}/SpellDataDump/spelldatadump_ci.sh
+
+      - name: Check for Non-Trivial Changes
+        run: |
+          if [ "$(git ls-files -m)" = "SpellDataDump/build_info.txt" ]; then
+            git checkout -- SpellDataDump/build_info.txt
+          fi
+
+      - name: Setup
+        run: echo "SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
+
+      - name: Commit Spell Data
+        continue-on-error: true
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'Update Spell Data Dump ${{ env.SHORT_SHA }}'
+          default_author: github_actions
+          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1 origin ${{ github.ref_name }}
+          add: '*.txt'
 
   build-osx:
     name: macos-latest

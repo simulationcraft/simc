@@ -242,9 +242,11 @@ custom_cb_t secondary_food( unsigned id, stat_e stat1, stat_e stat2 = STAT_NONE 
 
     auto buff = create_buff<consumable_buff_t<stat_buff_t>>( effect.player, effect.driver() );
 
+    // all single secondary stat food are minor foods. note that item tooltip for hearty versions are incorrect and do
+    // not apply the minor food multiplier.
     if ( stat2 == STAT_NONE )
     {
-      auto _amt = coeff->effectN( 4 ).average( effect );
+      auto _amt = coeff->effectN( 4 ).average( effect ) * coeff->effectN( 1 ).base_value() * 0.1;
       buff->add_stat( stat1, _amt );
     }
     else
@@ -1632,12 +1634,8 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
 
         if ( !buff->check() )  // new stat, expire all stats first
         {
-          range::for_each( secondaries, [ &stack ]( const auto& b ) {
-            if ( b.second->check() )
-            {
-              b.second->expire();
-            }
-          } );
+          range::for_each( secondaries, []( const auto& b ) { b.second->expire(); } );
+
           stack = primary->max_stack() - primary->check();
         }
 
@@ -1851,9 +1849,9 @@ void treacherous_transmitter( special_effect_t& effect )
       // actual duration of the buff you'll get in combat
       auto actual = total - time;
       // cooldown on effect/trinket at start of combat
-      auto cd_dur = cooldown->duration - time;
+      // auto cd_dur = cooldown->duration - time;
       // shared cooldown at start of combat
-      auto cdgrp_dur = std::max( 0_ms, effect.cooldown_group_duration() - time );
+      // auto cdgrp_dur = std::max( 0_ms, effect.cooldown_group_duration() - time );
 
       sim->print_debug( "PRECOMBAT: Treacherous Transmitter started {}s before combat via {}, {}s in-combat buff", time,
                         "APL", actual );
@@ -4588,7 +4586,7 @@ void everburning_lantern( special_effect_t& effect )
 
   // setup damage proc callback driver & buff
   auto fireflies = create_buff<buff_t>( effect.player, effect.player->find_spell( 440645 ) )
-    ->set_stack_change_callback( [ cb ]( buff_t* b, int, int new_ ) {
+    ->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
       if ( new_ )
         cb->deactivate();
       else
@@ -4727,7 +4725,7 @@ void scroll_of_momentum( special_effect_t& effect )
   auto max = create_buff<buff_t>( effect.player, effect.player->find_spell( 459228 ) )
     ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
     ->add_invalidate( CACHE_RUN_SPEED )
-    ->set_stack_change_callback( [ cb ]( buff_t* b, int, int new_ ) {
+    ->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
       if ( new_ )
         cb->deactivate();
       else

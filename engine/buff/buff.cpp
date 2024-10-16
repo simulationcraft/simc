@@ -2586,7 +2586,7 @@ bool buff_t::can_trigger( action_t* action ) const
   if ( is_fallback || !action->data().ok() || !trigger_data->ok() )
     return false;
 
-  if ( action->proc && !trigger_data->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
+  if ( action->proc && !action->not_a_proc && !trigger_data->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
     return false;
 
   if ( trigger_data->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) && !action->allow_class_ability_procs )
@@ -2609,7 +2609,7 @@ bool buff_t::can_expire( action_t* action ) const
     return false;
 
   // TODO: check if trigger spell having CAN_PROC_FROM_PROCS is sufficient to allow the buff to consume
-  if ( action->proc && !data().flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
+  if ( action->proc && !action->not_a_proc && !data().flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
     return false;
 
   if ( data().flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) && !action->allow_class_ability_procs )
@@ -3771,27 +3771,37 @@ damage_buff_t* damage_buff_t::parse_spell_data( const spell_data_t* spell, doubl
       sim->print_debug( "{} damage debuff direct multiplier initialized to {}", *this, direct_mod.multiplier );
       sim->print_debug( "{} damage debuff periodic multiplier initialized to {}", *this, periodic_mod.multiplier );
     }
-    else if ( e.subtype() == A_ADD_PCT_LABEL_MODIFIER && multiplier != 0.0 )
+    else if ( e.subtype() == A_ADD_PCT_LABEL_MODIFIER )
     {
       if ( e.property_type() == P_GENERIC )
       {
-        if ( direct_mod.multiplier == 1.0 && direct_mod.effect_idx == 0 )
+        if ( multiplier != 0.0 && direct_mod.multiplier == 1.0 && direct_mod.effect_idx == 0 )
           set_direct_mod( spell, idx, multiplier );
 
-        assert( direct_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier ) 
-                && "Additional label modifiers do not match the existing direct effect value" );
-
-        direct_mod.labels.push_back( e.misc_value2() );
+        if ( direct_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier ) )
+        {
+          direct_mod.labels.push_back( e.misc_value2() );
+        }
+        else
+        {
+          sim->print_debug( "{} ignoring label modifier of {} due to not matching existing direct effect value of {}",
+                            *this, ( multiplier == 0.0 ? e.percent() : multiplier ), direct_mod.multiplier );
+        }
       }
       else if ( e.property_type() == P_TICK_DAMAGE )
       {
-        if ( periodic_mod.multiplier == 1.0 && periodic_mod.effect_idx == 0 )
+        if ( multiplier != 0.0 && periodic_mod.multiplier == 1.0 && periodic_mod.effect_idx == 0 )
           set_periodic_mod( spell, idx, multiplier );
 
-        assert( periodic_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier )
-                && "Additional label modifiers do not match the existing periodic effect value" );
-
-        periodic_mod.labels.push_back( e.misc_value2() );
+        if ( periodic_mod.multiplier == 1.0 + ( multiplier == 0.0 ? e.percent() : multiplier ) )
+        {
+          periodic_mod.labels.push_back( e.misc_value2() );
+        }
+        else
+        {
+          sim->print_debug( "{} ignoring label modifier of {} due to not matching existing periodic effect value of {}",
+                            *this, ( multiplier == 0.0 ? e.percent() : multiplier ), periodic_mod.multiplier );
+        }
       }
     }
     else if ( e.subtype() == A_ADD_FLAT_LABEL_MODIFIER && e.property_type() == P_CRIT )
