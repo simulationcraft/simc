@@ -2826,7 +2826,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     {
         if ( p()->buff.ascendance->up() )
         {
-          if ( id == 452201 && s->chain_target == 0 )
+          if ( id == 452201 )
           {
             p()->proc.ascendance_tempest_overload->occur();
           }
