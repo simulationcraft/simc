@@ -6157,7 +6157,7 @@ struct chain_lightning_t : public chained_base_t
       return false;
     }
 
-    if ( p()->buff.arc_discharge->check() )
+    if ( exec_type == spell_variant::ARC_DISCHARGE )
     {
       return false;
     }
@@ -7279,11 +7279,6 @@ struct lightning_bolt_t : public shaman_spell_t
   bool consume_maelstrom_weapon() const override
   {
     if ( exec_type == spell_variant::ARC_DISCHARGE )
-    {
-      return false;
-    }
-
-    if ( p()->buff.arc_discharge->up() )
     {
       return false;
     }
@@ -13300,16 +13295,25 @@ void shaman_t::trigger_arc_discharge( const action_state_t* state )
 
   if ( dbc->ptr && specialization() == SHAMAN_ENHANCEMENT )
   {
+    action_t* action_ = nullptr;
     // Chain Lightning
     if ( state->action->id == 188443 )
     {
-      action.chain_lightning_ad->execute_on_target( state->target );
+      action_ = action.chain_lightning_ad;
     }
     // Lightning Bolt
     else if ( state->action->id == 188196 )
     {
-      action.lightning_bolt_ad->execute_on_target( state->target );
+      action_ = action.lightning_bolt_ad;
     }
+
+    assert( action_ );
+
+    make_event( *sim, rng().gauss( 500_ms, 50_ms ),
+      [ action_, t = state->target ]() {
+        action_->execute_on_target( t );
+    } );
+
   }
   buff.arc_discharge->decrement();
 }
@@ -13457,6 +13461,13 @@ void shaman_t::create_buffs()
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   buff.arc_discharge = make_buff( this, "arc_discharge", find_spell( 455097 ) )
+    ->set_max_stack(
+      dbc->ptr
+      ? specialization() == SHAMAN_ELEMENTAL
+        ? find_spell( 455097 )->max_stacks()
+        : as<int>( find_spell( 455097 ) -> effectN( 3 ).base_value() )
+      : find_spell( 455097 )->max_stacks()
+    )
     ->set_default_value_from_effect( 2 );
   buff.storm_swell = make_buff( this, "storm_swell", is_ptr() ? find_spell( 455089 ) : spell_data_t::not_found() )
     ->set_default_value_from_effect_type(A_MOD_MASTERY_PCT)
