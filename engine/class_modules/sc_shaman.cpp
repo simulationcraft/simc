@@ -12275,7 +12275,7 @@ void shaman_t::trigger_stormbringer( const action_state_t* state, double overrid
 
   if ( dbc->ptr && triggered )
   {
-    if ( rng().roll( talent.molten_thunder->effectN( 1 ).percent() ) )
+    if ( rng().roll( talent.molten_thunder->effectN( 2 ).percent() ) )
     {
       cooldown.sundering->reset( true );
       proc.molten_thunder->occur();
