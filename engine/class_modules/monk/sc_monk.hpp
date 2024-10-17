@@ -89,7 +89,7 @@ struct monk_action_t : public parse_action_effects_t<Base>
   sef_ability_e sef_ability;
   bool ww_mastery;
   bool may_combo_strike;
-  bool trigger_chiji;
+  bool trigger_jadefire_stomp;
   bool cast_during_sck;
   bool track_cd_waste;
 
@@ -158,7 +158,6 @@ struct monk_heal_t : public monk_action_t<heal_t>
 {
   using base_t = monk_action_t<heal_t>;
   monk_heal_t( monk_t *player, std::string_view name, const spell_data_t *spell_data = spell_data_t::nil() );
-  double action_multiplier() const override;
 };
 
 struct monk_absorb_t : public monk_action_t<absorb_t>
@@ -350,9 +349,6 @@ public:
     propagate_const<dot_t *> crackling_jade_lightning_aoe;
     propagate_const<dot_t *> crackling_jade_lightning_sef;
     propagate_const<dot_t *> crackling_jade_lightning_sef_aoe;
-    propagate_const<dot_t *> enveloping_mist;
-    propagate_const<dot_t *> renewing_mist;
-    propagate_const<dot_t *> soothing_mist;
     propagate_const<dot_t *> touch_of_karma;
 
     // Master of Harmony
@@ -575,6 +571,7 @@ public:
   struct buffs_t
   {
     // General
+    propagate_const<buff_t *> ancient_concordance;
     propagate_const<buff_t *> chi_torpedo;
     propagate_const<buff_t *> chi_wave;
     propagate_const<buff_t *> dampen_harm;
@@ -617,13 +614,13 @@ public:
 
     // Mistweaver
     propagate_const<absorb_buff_t *> life_cocoon;
-    propagate_const<buff_t *> channeling_soothing_mist;
-    propagate_const<buff_t *> invoke_chiji;
-    propagate_const<buff_t *> invoke_chiji_evm;
-    propagate_const<buff_t *> lifecycles_enveloping_mist;
-    propagate_const<buff_t *> lifecycles_vivify;
-    propagate_const<buff_t *> mana_tea;
-    propagate_const<buff_t *> refreshing_jade_wind;
+    propagate_const<buff_t *> dance_of_chiji_mw;
+    propagate_const<buff_t *> jadefire_stomp_reset;
+    propagate_const<buff_t *> secret_infusion_haste;
+    propagate_const<buff_t *> secret_infusion_crit;
+    propagate_const<buff_t *> secret_infusion_mastery;
+    propagate_const<buff_t *> secret_infusion_versatility;
+    propagate_const<buff_t *> sheiluns_gift;
     propagate_const<buff_t *> teachings_of_the_monastery;
     propagate_const<buff_t *> thunder_focus_tea;
 
@@ -633,7 +630,7 @@ public:
     propagate_const<buff_t *> combat_wisdom;
     propagate_const<buff_t *> combo_strikes;
     propagate_const<buff_t *> cyclone_strikes;
-    propagate_const<buff_t *> dance_of_chiji;
+    propagate_const<buff_t *> dance_of_chiji_ww;
     propagate_const<buff_t *> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
     propagate_const<buff_t *> darting_hurricane;
     propagate_const<buff_t *> dizzying_kicks;
@@ -743,8 +740,10 @@ public:
     propagate_const<proc_t *> chi_surge;
     propagate_const<proc_t *> counterstrike_tp;
     propagate_const<proc_t *> counterstrike_sck;
+    propagate_const<proc_t *> dance_of_chiji;
     propagate_const<proc_t *> elusive_footwork_proc;
     propagate_const<proc_t *> face_palm;
+    propagate_const<proc_t *> jadefire_stomp_reset;
     propagate_const<proc_t *> glory_of_the_dawn;
     propagate_const<proc_t *> keg_smash_scalding_brew;
     propagate_const<proc_t *> quick_sip;
@@ -835,6 +834,7 @@ public:
       const spell_data_t *aura_2;
       const spell_data_t *aura_3;
       const spell_data_t *expel_harm_rank_2;
+      const spell_data_t *teachings_of_the_monastery;
     } mistweaver;
 
     struct
@@ -1031,13 +1031,12 @@ public:
       // Row 3
       player_talent_t life_cocoon;
       player_talent_t mana_tea;
-      player_talent_t healing_elixir;
+      player_talent_t invigorating_mists;
       // Row 4
-      player_talent_t teachings_of_the_monastery;
       player_talent_t crane_style;
       player_talent_t revival;
       player_talent_t restoral;
-      player_talent_t invigorating_mists;
+      player_talent_t healing_elixir;
       // 8 Required
       // Row 5
       player_talent_t nourishing_chi;
@@ -1071,11 +1070,17 @@ public:
       player_talent_t gift_of_the_celestials;
       player_talent_t focused_thunder;
       player_talent_t sheiluns_gift;
+      const spell_data_t *sheiluns_gift_stacks;
       // Row 9
       player_talent_t ancient_concordance;
+      const spell_data_t *ancient_concordance_buff;
       player_talent_t ancient_teachings;
       player_talent_t resplendent_mist;
       player_talent_t secret_infusion;
+      const spell_data_t *secret_infusion_haste_buff;
+      const spell_data_t *secret_infusion_crit_buff;
+      const spell_data_t *secret_infusion_mastery_buff;
+      const spell_data_t *secret_infusion_vers_buff;
       player_talent_t misty_peaks;
       player_talent_t peaceful_mending;
       player_talent_t veil_of_pride;
@@ -1333,7 +1338,6 @@ public:
     const spell_data_t *combat_wisdom_expel_harm;
     const spell_data_t *cyclone_strikes;
     const spell_data_t *dance_of_chiji;
-    const spell_data_t *dance_of_chiji_bug;
     const spell_data_t *dual_threat_kick;
     const spell_data_t *dizzying_kicks;
     const spell_data_t *empowered_tiger_lightning;
