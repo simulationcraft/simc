@@ -13630,19 +13630,19 @@ void shaman_t::create_buffs()
                             ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
 
   buff.icy_edge = make_buff<buff_t>( this, "icy_edge", find_spell( 224126 ) )
-    ->set_max_stack( 10 )
+    ->set_max_stack( 30 )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->set_default_value_from_effect( 1 );
   buff.molten_weapon    = make_buff<buff_t>( this, "molten_weapon", find_spell( 224125 ) )
-    ->set_max_stack( 10 )
+    ->set_max_stack( 30 )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->set_default_value_from_effect( 1 );
   buff.crackling_surge  = make_buff<buff_t>( this, "crackling_surge", find_spell( 224127 ) )
-    ->set_max_stack( 10 )
+    ->set_max_stack( 30 )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->set_default_value_from_effect( 1 );
   buff.earthen_weapon = make_buff<buff_t>( this, "earthen_weapon", find_spell( 392375 ) )
-    ->set_max_stack( 10 )
+    ->set_max_stack( 30 )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->set_default_value_from_effect( 1 );
   buff.converging_storms = make_buff( this, "converging_storms", find_spell( 198300 ) )
