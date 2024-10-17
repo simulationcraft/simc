@@ -711,6 +711,9 @@ public:
 
     double dre_enhancement_base_chance = 0.02;
     unsigned dre_enhancement_forced_failures = 8;
+
+    // Surging totem whiff
+    double surging_totem_miss_chance = 0.0;
   } options;
 
   // Cooldowns
@@ -10214,6 +10217,17 @@ struct surging_totem_pulse_t : public spell_totem_action_t
     return m;
   }
 
+  void execute() override
+  {
+    if ( o()->options.surging_totem_miss_chance > 0 &&
+         rng().roll( o()->options.surging_totem_miss_chance ) )
+    {
+      return;
+    }
+
+    spell_totem_action_t::execute();
+  }
+
   void reset() override
   {
     spell_totem_action_t::reset();
@@ -11407,6 +11421,8 @@ void shaman_t::create_options()
   add_option( opt_uint( "shaman.dre_enhancement_forced_failures", options.dre_enhancement_forced_failures, 0, 100 ) );
 
   add_option( opt_float( "shaman.lively_totems_base_chance", options.lively_totems_base_chance, 0.0, 1.0 ) );
+
+  add_option( opt_float( "shaman.surging_totem_miss_chance", options.surging_totem_miss_chance, 0.0, 1.0 ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -11453,6 +11469,8 @@ void shaman_t::copy_from( player_t* source )
 
   options.dre_enhancement_base_chance = p->options.dre_enhancement_base_chance;
   options.dre_enhancement_forced_failures = p->options.dre_enhancement_forced_failures;
+
+  options.surging_totem_miss_chance = p->options.surging_totem_miss_chance;
 }
 
 // shaman_t::create_special_effects ========================================
