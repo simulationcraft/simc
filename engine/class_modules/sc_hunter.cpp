@@ -4213,6 +4213,9 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     parse_options( options_str );
 
+    if ( p->talents.black_arrow.ok() )
+      background = true;
+
     if ( p -> talents.razor_fragments.ok() )
     {
       razor_fragments = p -> get_background_action<razor_fragments_t>( "razor_fragments" );
@@ -4333,6 +4336,15 @@ struct kill_shot_t : hunter_ranged_attack_t
 
 struct black_arrow_t : public hunter_ranged_attack_t
 {
+  struct black_arrow_dot_t : public hunter_ranged_attack_t
+  {
+    black_arrow_dot_t( hunter_t* p ) : hunter_ranged_attack_t( "black_arrow_dot", p, p->find_spell( 468572 ) )
+    {
+      background = dual = true;
+      hasted_ticks = false;
+    }
+  };
+
   double tick_recharge_chance = 0.0;
   cooldown_t* tick_recharge_cooldown = nullptr;
 
@@ -4352,12 +4364,20 @@ struct black_arrow_t : public hunter_ranged_attack_t
     double tick_time_mult = 0;
   } shadow_lash;
 
+  double lower_health_threshold_pct;
+  double upper_health_threshold_pct;
+
+  black_arrow_dot_t* black_arrow_dot;
+
   black_arrow_t( hunter_t* p, util::string_view options_str )
     : hunter_ranged_attack_t( "black_arrow", p, p->talents.black_arrow )
   {
     parse_options( options_str );
 
     tick_recharge_chance = data().effectN( 2 ).percent();
+
+    lower_health_threshold_pct = p->talents.black_arrow->effectN( 2 ).base_value();
+    upper_health_threshold_pct = p->talents.black_arrow->effectN( 3 ).base_value();
 
     if ( p->specialization() == HUNTER_MARKSMANSHIP )
     {
@@ -4384,18 +4404,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
 
     if ( p->talents.shadow_lash.ok() )
       shadow_lash.tick_time_mult = p->find_spell( 444354 )->effectN( 1 ).percent();
-
-    tick_zero = true;
-  }
-
-  double tick_time_pct_multiplier( const action_state_t* state ) const override
-  {
-    auto mul = hunter_ranged_attack_t::tick_time_pct_multiplier( state );
-
-    if ( shadow_lash.tick_time_mult && shadow_lash.cooldown_buff->up() )
-      mul *= 1.0 + shadow_lash.tick_time_mult;
-
-    return mul;
   }
 
   void execute() override
@@ -4406,6 +4414,14 @@ struct black_arrow_t : public hunter_ranged_attack_t
       death_shade_cast_buff->trigger();
   }
 
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    black_arrow_dot->execute_on_target( s->target );
+  }
+
+  /*
   void tick( dot_t* d ) override
   {
     hunter_ranged_attack_t::tick( d );
@@ -4428,6 +4444,15 @@ struct black_arrow_t : public hunter_ranged_attack_t
 
     if ( rng().roll( shadow_hounds.chance ) )
       p()->pets.dark_hound.spawn( shadow_hounds.duration );
+  }
+  */
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    return hunter_ranged_attack_t::target_ready( candidate_target ) &&
+      ( candidate_target -> health_percentage() <= lower_health_threshold_pct
+        || candidate_target -> health_percentage() >= upper_health_threshold_pct
+        || p() -> buffs.deathblow -> check() );
   }
 };
 
@@ -7271,7 +7296,7 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
   dots.serpent_sting = t -> get_dot( "serpent_sting", p );
   dots.a_murder_of_crows = t -> get_dot( "a_murder_of_crows", p );
   dots.wildfire_bomb = t -> get_dot( "wildfire_bomb_dot", p );
-  dots.black_arrow = t -> get_dot( "black_arrow", p );
+  dots.black_arrow = t -> get_dot( "black_arrow_dot", p );
   dots.barbed_shot = t -> get_dot( "barbed_shot", p );
   dots.cull_the_herd = t -> get_dot( "cull_the_herd", p );
   dots.explosive_shot = t->get_dot( "explosive_shot", p );
