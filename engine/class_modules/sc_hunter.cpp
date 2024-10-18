@@ -788,7 +788,7 @@ public:
     spell_data_ptr_t deadly_duo;
 
     // Dark Ranger
-    //spell_data_ptr_t black_arrow;
+    spell_data_ptr_t black_arrow;
     
     spell_data_ptr_t bleak_arrows; 
     //spell_data_ptr_t shadow_hounds;
@@ -797,9 +797,9 @@ public:
 
     spell_data_ptr_t phantom_pain; 
     spell_data_ptr_t ebon_bowstring;
-    //spell_data_ptr_t embrace_the_shadows;  // TODO defensive
-    //spell_data_ptr_t smoke_screen;         // TODO defensive
-    //spell_data_ptr_t dark_chains;          // TODO defensive
+    spell_data_ptr_t embrace_the_shadows;  // TODO defensive
+    spell_data_ptr_t smoke_screen;         // TODO defensive
+    spell_data_ptr_t dark_chains;          // TODO defensive
     spell_data_ptr_t shadow_dagger;
 
     spell_data_ptr_t banshees_mark; 
@@ -809,14 +809,7 @@ public:
     //spell_data_ptr_t withering_fire;
 
     //Reworked to be deleted
-    spell_data_ptr_t black_arrow;
-    spell_data_ptr_t black_arrow_buff;
-
     spell_data_ptr_t shadow_hounds;
-
-    spell_data_ptr_t embrace_the_shadows;  // TODO defensive
-    spell_data_ptr_t smoke_screen;         // TODO defensive
-    spell_data_ptr_t dark_chains;          // TODO defensive
 
     spell_data_ptr_t shadow_surge;
     spell_data_ptr_t shadow_surge_dmg;
@@ -1606,6 +1599,13 @@ struct hunter_pet_t: public pet_t
       main_hand_attack->schedule_execute();
 
     pet_t::schedule_ready( delta_time, waiting );
+  }
+
+  double composite_player_multiplier( school_e school ) const override
+  {
+    double m = pet_t::composite_player_multiplier( school );
+
+    return m;
   }
 
   double composite_player_critical_damage_multiplier( const action_state_t* s ) const override
@@ -7677,6 +7677,9 @@ void hunter_t::init_spells()
 
   if ( specialization() == HUNTER_MARKSMANSHIP || specialization() == HUNTER_BEAST_MASTERY )
   {
+    // Baseline
+    specs.serpent_sting = find_spell( 271788 );
+
     // Dark Ranger
     talents.black_arrow = find_talent_spell( talent_tree::HERO, "Black Arrow" );
 
@@ -7699,14 +7702,10 @@ void hunter_t::init_spells()
     talents.withering_fire = find_talent_spell( talent_tree::HERO, "Withering Fire" );
 
     //Reworked // to be deleted
-    talents.black_arrow_buff = talents.black_arrow.ok() ? find_spell( 439659 ) : spell_data_t::not_found();
-
     talents.shadow_surge_dmg = talents.shadow_surge.ok() ? find_spell( 444269 ) : spell_data_t::not_found();
 
     talents.withering_fire_dmg  = talents.withering_fire.ok() ? find_spell( 461490 ) : spell_data_t::not_found();
     talents.withering_fire_buff = talents.withering_fire.ok() ? find_spell( 461762 ) : spell_data_t::not_found();
-
-    specs.serpent_sting = find_spell( 271788 );
   }
 
   if ( specialization() == HUNTER_BEAST_MASTERY || specialization() == HUNTER_SURVIVAL )
@@ -8237,11 +8236,6 @@ void hunter_t::create_buffs()
 
   buffs.eyes_closed = make_buff( this, "eyes_closed", talents.eyes_closed->effectN( 1 ).trigger() );
 
-  buffs.black_arrow =
-    make_buff( this, "black_arrow", talents.black_arrow_buff )
-      ->set_default_value_from_effect( 2 )
-      ->set_chance( talents.black_arrow.ok() && specialization() == HUNTER_MARKSMANSHIP );
-
   buffs.withering_fire =
     make_buff( this, "withering_fire", talents.withering_fire_buff )
       ->set_default_value_from_effect( 1 )
@@ -8690,6 +8684,13 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
   {
     m *= 1.0 + buffs.howl_of_the_pack -> check_stack_value();
   }
+
+  return m;
+}
+
+double hunter_t::composite_player_multiplier( school_e school ) const
+{
+  double m = player_t::composite_player_multiplier( school );
 
   return m;
 }
