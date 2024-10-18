@@ -815,7 +815,6 @@ public:
     spell_data_ptr_t overshadow;
     spell_data_ptr_t shadow_hounds;
 
-    spell_data_ptr_t grave_reaper;
     spell_data_ptr_t embrace_the_shadows;  // TODO defensive
     spell_data_ptr_t smoke_screen;         // TODO defensive
     spell_data_ptr_t dark_chains;          // TODO defensive
@@ -7287,12 +7286,6 @@ void hunter_td_t::target_demise()
     p -> sim -> print_debug( "{} harpoon cooldown reset on damaged target death.", p -> name() );
     p -> cooldowns.harpoon -> reset( true );
   }
-
-  if ( p->talents.grave_reaper.ok() && dots.black_arrow->is_ticking() )
-  {
-    p->sim->print_debug( "{} black_arrow cooldown reduces on target death.", p->name() );
-    p->cooldowns.black_arrow->adjust( -timespan_t::from_seconds( p->talents.grave_reaper->effectN( 1 ).base_value() ) );
-  }
 }
 
 /**
@@ -7737,8 +7730,6 @@ void hunter_t::init_spells()
     talents.black_arrow_buff = talents.black_arrow.ok() ? find_spell( 439659 ) : spell_data_t::not_found();
 
     talents.overshadow    = find_talent_spell( talent_tree::HERO, "Overshadow" );
-
-    talents.grave_reaper        = find_talent_spell( talent_tree::HERO, "Grave Reaper" );
 
     talents.shadow_lash    = find_talent_spell( talent_tree::HERO, "Shadow Lash" );
     talents.shadow_surge_dmg = talents.shadow_surge.ok() ? find_spell( 444269 ) : spell_data_t::not_found();
