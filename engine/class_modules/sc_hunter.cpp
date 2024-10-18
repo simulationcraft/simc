@@ -806,7 +806,6 @@ public:
 
     //TODO
     spell_data_ptr_t phantom_pain; 
-    //TODO
     spell_data_ptr_t ebon_bowstring;
     spell_data_ptr_t embrace_the_shadows;  // TODO defensive
     spell_data_ptr_t smoke_screen;         // TODO defensive
@@ -4393,6 +4392,16 @@ struct black_arrow_t : public hunter_ranged_attack_t
     {
       shadow_hounds.chance = p->talents.shadow_hounds->effectN( 1 ).percent();
       shadow_hounds.duration = p->find_spell( 442419 )->duration();
+    }
+  }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    if ( p()->talents.ebon_bowstring.ok() && rng().roll( p()->talents.ebon_bowstring->effectN( 1 ).percent() ) )
+    {
+      p()->buffs.deathblow->trigger();
     }
   }
 
