@@ -1278,7 +1278,7 @@ public:
       player_talent_t soul_rupture;
       player_talent_t grim_reaper;
       player_talent_t pact_of_the_deathbringer;  // NYI
-      player_talent_t rune_carved_plates;        // NYI
+      player_talent_t rune_carved_plates;
       player_talent_t swift_end;
       player_talent_t painful_death;
       player_talent_t dark_talons;
@@ -7385,6 +7385,10 @@ struct the_blood_is_life_t : public death_knight_spell_t
     aoe                 = -1;
     may_crit            = false;
     reduced_aoe_targets = 8;
+    if ( p->is_ptr() )
+    {
+      reduced_aoe_targets = p->talent.sanlayn.the_blood_is_life->effectN( 3 ).base_value();
+    }
   }
 };
 
@@ -13991,15 +13995,30 @@ void death_knight_t::create_buffs()
                        spell.exterminate_buff_painful_death );
   }
 
-  buffs.rune_carved_plates_physical_buff =
+  if ( is_ptr() )
+  {
+    buffs.rune_carved_plates_physical_buff =
+      make_fallback( talent.deathbringer.rune_carved_plates.ok(), this, "rune_carved_plates_physical",
+                     spell.rune_carved_plates_physical_buff )
+          ->set_default_value( spell.rune_carved_plates_physical_buff->effectN( 1 ).base_value() / 1000 );
+
+    buffs.rune_carved_plates_magical_buff =
+      make_fallback( talent.deathbringer.rune_carved_plates.ok(), this, "rune_carved_plates_magical",
+                     spell.rune_carved_plates_magical_buff )
+          ->set_default_value( spell.rune_carved_plates_magical_buff->effectN( 1 ).base_value() / 1000 );
+  }
+  else
+  {
+    buffs.rune_carved_plates_physical_buff =
       make_fallback( talent.deathbringer.rune_carved_plates.ok(), this, "rune_carved_plates_physical",
                      spell.rune_carved_plates_physical_buff )
           ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
-  buffs.rune_carved_plates_magical_buff =
+    buffs.rune_carved_plates_magical_buff =
       make_fallback( talent.deathbringer.rune_carved_plates.ok(), this, "rune_carved_plates_magical",
                      spell.rune_carved_plates_magical_buff )
           ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
+  }
 
   // San'layn
   buffs.essence_of_the_blood_queen = make_fallback(
