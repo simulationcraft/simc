@@ -517,7 +517,6 @@ public:
     cooldown_t* coordinated_assault;
 
     cooldown_t* black_arrow;
-    cooldown_t* shadow_surge;
     cooldown_t* bleak_powder;
 
     cooldown_t* lunar_storm;
@@ -553,6 +552,12 @@ public:
     proc_t* crescent_steel_stacks;
     proc_t* overwatch_implosions;
   } procs;
+
+  // RPPM 
+  struct rppm_t
+  {
+    real_ppm_t* shadow_surge;
+  } rppm;
 
   // Talents
   struct talents_t
@@ -809,8 +814,8 @@ public:
     spell_data_ptr_t shadow_dagger;        // TODO utility
 
     spell_data_ptr_t banshees_mark; 
-    //TODO - reworked
-    //spell_data_ptr_t shadow_surge;
+    spell_data_ptr_t shadow_surge;
+    spell_data_ptr_t shadow_surge_dmg;
     spell_data_ptr_t bleak_powder;
     spell_data_ptr_t bleak_powder_dmg;
 
@@ -819,9 +824,6 @@ public:
 
     //Reworked to be deleted
     spell_data_ptr_t shadow_hounds;
-
-    spell_data_ptr_t shadow_surge;
-    spell_data_ptr_t shadow_surge_dmg;
 
     spell_data_ptr_t withering_fire;
     spell_data_ptr_t withering_fire_dmg;
@@ -966,7 +968,6 @@ public:
     cooldowns.coordinated_assault   = get_cooldown( "coordinated_assault" );
 
     cooldowns.black_arrow = get_cooldown( "black_arrow" );
-    cooldowns.shadow_surge = get_cooldown( "shadow_surge" );
     cooldowns.bleak_powder = get_cooldown( "bleak_powder" );
 
     cooldowns.lunar_storm = get_cooldown( "lunar_storm" );
@@ -4322,6 +4323,16 @@ struct black_arrow_t : public hunter_ranged_attack_t
       background = dual = true;
       hasted_ticks = false;
     }
+
+    void tick( dot_t* d ) override
+    {
+      hunter_ranged_attack_t::tick( d );
+
+      if ( p()->talents.shadow_surge.ok() && p()->rppm.shadow_surge->trigger() )
+      {
+        p()->actions.shadow_surge->execute_on_target( d->target );
+      }
+    }
   };
 
   struct bleak_powder_t : public hunter_ranged_attack_t
@@ -4681,12 +4692,6 @@ struct multishot_bm_t: public hunter_ranged_attack_t
   void impact(action_state_t* s) override
   {
     hunter_ranged_attack_t::impact( s );
-
-    if ( p()->actions.shadow_surge && td( s->target )->dots.black_arrow->is_ticking() && p()->cooldowns.shadow_surge->up() )
-    {
-      p()->actions.shadow_surge->execute_on_target( s->target );
-      p()->cooldowns.shadow_surge->start();
-    }
 
     if ( explosive_venom && debug_cast<state_t*>( s )->explosive_venom_ready )
       explosive_venom->execute_on_target( s->target );
@@ -5513,18 +5518,6 @@ struct multishot_mm_base_t: public hunter_ranged_attack_t
     m *= 1.0 + p() -> buffs.bulletstorm -> check_stack_value();
 
     return m;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    hunter_ranged_attack_t::impact( state );
-
-    if ( p()->actions.shadow_surge && td( state->target )->dots.black_arrow->is_ticking() &&
-         p()->cooldowns.shadow_surge->up() )
-    {
-      p()->actions.shadow_surge->execute_on_target( state->target );
-      p()->cooldowns.shadow_surge->start();
-    }
   }
 };
 
@@ -7746,14 +7739,13 @@ void hunter_t::init_spells()
 
     talents.banshees_mark = find_talent_spell( talent_tree::HERO, "Banshee's Mark" );
     talents.shadow_surge  = find_talent_spell( talent_tree::HERO, "Shadow Surge" );
+    talents.shadow_surge_dmg = talents.shadow_surge.ok() ? find_spell( 444269 ) : spell_data_t::not_found();
     talents.bleak_powder  = find_talent_spell( talent_tree::HERO, "Bleak Powder" );
     talents.bleak_powder_dmg = talents.bleak_powder.ok() ? specialization() == HUNTER_MARKSMANSHIP ? find_spell( 467914 ) : find_spell( 472084 )  : spell_data_t::not_found();
 
     talents.withering_fire = find_talent_spell( talent_tree::HERO, "Withering Fire" );
 
     //Reworked // to be deleted
-    talents.shadow_surge_dmg = talents.shadow_surge.ok() ? find_spell( 444269 ) : spell_data_t::not_found();
-
     talents.withering_fire_dmg  = talents.withering_fire.ok() ? find_spell( 461490 ) : spell_data_t::not_found();
     talents.withering_fire_buff = talents.withering_fire.ok() ? find_spell( 461762 ) : spell_data_t::not_found();
   }
@@ -7840,7 +7832,6 @@ void hunter_t::init_spells()
 
   // Cooldowns
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
-  cooldowns.shadow_surge->duration = talents.shadow_surge->internal_cooldown();
   cooldowns.bleak_powder->duration = talents.bleak_powder->internal_cooldown();
   cooldowns.legacy_of_the_windrunners->duration = talents.legacy_of_the_windrunners->internal_cooldown();
   cooldowns.lunar_storm->duration = talents.lunar_storm->internal_cooldown();
@@ -8375,6 +8366,8 @@ void hunter_t::init_procs()
 void hunter_t::init_rng()
 {
   player_t::init_rng();
+
+  rppm.shadow_surge = get_rppm( "Shadow Surge", talents.shadow_surge );
 }
 
 void hunter_t::init_scaling()
