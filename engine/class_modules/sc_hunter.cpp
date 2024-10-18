@@ -792,7 +792,6 @@ public:
     spell_data_ptr_t relentless_primal_ferocity;
     spell_data_ptr_t relentless_primal_ferocity_buff;
     spell_data_ptr_t bombardier;
-    spell_data_ptr_t bombardier_buff;
     spell_data_ptr_t deadly_duo;
 
     // Dark Ranger
@@ -4027,7 +4026,6 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
     may_miss = may_crit = false;
 
     explosion = p->get_background_action<damage_t>( "explosive_shot_damage" );
-
     grenade_juggler_reduction = p->talents.grenade_juggler->effectN( 3 ).time_value();
   }
 
@@ -4105,22 +4103,7 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
   {
     double c = hunter_ranged_attack_t::cost_pct_multiplier();
 
-    if ( p()->buffs.bombardier->check() )
-      c *= 1 + p()->talents.bombardier_buff->effectN( 1 ).percent();
-
     return c;
-  }
-
-  void update_ready( timespan_t ) override
-  {
-    timespan_t d = cooldown->duration;
-
-    if ( p()->buffs.bombardier->check() )
-    {
-      d = timespan_t::zero();
-    }
-
-    hunter_ranged_attack_t::update_ready( d );
   }
 
   action_state_t* new_state() override
@@ -4134,6 +4117,14 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
 
     if ( flags & STATE_EXPLOSIVE_VENOM )
       debug_cast<state_t*>( s )->explosive_venom_ready = p()->buffs.explosive_venom->at_max_stacks();
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->buffs.bombardier->up() )
+      return as<int>( p()->buffs.bombardier->data().effectN( 2 ).base_value() );
+
+    return hunter_ranged_attack_t::n_targets();
   }
 };
 
@@ -6147,7 +6138,7 @@ struct coordinated_assault_t: public hunter_melee_attack_t
       pet -> active.coordinated_assault -> execute_on_target( target );
     
     if ( p()->talents.bombardier.ok() )
-      p()->cooldowns.wildfire_bomb->reset( false, as<int>( p()->talents.bombardier->effectN( 3 ).base_value() ) );
+      p()->cooldowns.wildfire_bomb->reset( false, as<int>( p()->talents.bombardier->effectN( 1 ).base_value() ) );
 
     if( p()->talents.beast_of_opportunity.ok() )
       p()->pets.boo_stable_pet.spawn( p()->buffs.beast_of_opportunity->buff_duration(), as<int>( p()->buffs.beast_of_opportunity->data().effectN( 1 ).base_value() ) );
@@ -7778,7 +7769,6 @@ void hunter_t::init_spells()
     talents.relentless_primal_ferocity        = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Primal Ferocity", HUNTER_SURVIVAL );
     talents.relentless_primal_ferocity_buff   = talents.relentless_primal_ferocity.ok() ? find_spell( 459962 ) : spell_data_t::not_found();
     talents.bombardier                        = find_talent_spell( talent_tree::SPECIALIZATION, "Bombardier", HUNTER_SURVIVAL );
-    talents.bombardier_buff                   = talents.bombardier.ok() ? find_spell( 459859 ) : spell_data_t::not_found();
     talents.deadly_duo                        = find_talent_spell( talent_tree::SPECIALIZATION, "Deadly Duo", HUNTER_SURVIVAL );
 
     specs.serpent_sting = find_spell( 259491 );
@@ -8270,8 +8260,8 @@ void hunter_t::create_buffs()
       ->set_chance( talents.exposed_flank.ok() );
 
   buffs.bombardier = 
-    make_buff( this, "bombardier", talents.bombardier_buff )
-      ->set_initial_stack( talents.bombardier.ok() ? talents.bombardier_buff->max_stacks() : 1 );
+    make_buff( this, "bombardier", find_spell( 459859 ) )
+      ->set_chance( talents.bombardier.ok() );
 
   // Pet family buffs
 
