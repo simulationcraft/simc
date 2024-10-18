@@ -711,6 +711,9 @@ public:
 
     double dre_enhancement_base_chance = 0.02;
     unsigned dre_enhancement_forced_failures = 8;
+
+    // Surging totem whiff
+    double surging_totem_miss_chance = 0.1;
   } options;
 
   // Cooldowns
@@ -6157,7 +6160,7 @@ struct chain_lightning_t : public chained_base_t
       return false;
     }
 
-    if ( p()->buff.arc_discharge->check() )
+    if ( exec_type == spell_variant::ARC_DISCHARGE )
     {
       return false;
     }
@@ -7283,11 +7286,6 @@ struct lightning_bolt_t : public shaman_spell_t
       return false;
     }
 
-    if ( p()->buff.arc_discharge->up() )
-    {
-      return false;
-    }
-
     return shaman_spell_t::consume_maelstrom_weapon();
   }
 
@@ -7699,7 +7697,7 @@ struct elemental_blast_t : public shaman_spell_t
 
     // While I still think this interaction shouldn't exist (proc of proc) it
     // certainly does. So here we go with an implemented bug.
-    if ( p()->bugs && 
+    if ( !p()->bugs && 
          p()->is_ptr() && 
          p()->specialization() == SHAMAN_ELEMENTAL && 
          exec_type == spell_variant::FUSION_OF_ELEMENTS ) 
@@ -10219,6 +10217,17 @@ struct surging_totem_pulse_t : public spell_totem_action_t
     return m;
   }
 
+  void execute() override
+  {
+    if ( o()->options.surging_totem_miss_chance > 0 &&
+         rng().roll( o()->options.surging_totem_miss_chance ) )
+    {
+      return;
+    }
+
+    spell_totem_action_t::execute();
+  }
+
   void reset() override
   {
     spell_totem_action_t::reset();
@@ -10738,9 +10747,14 @@ struct tempest_t : public shaman_spell_t
       {
         trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
       }
+      shaman_spell_t::schedule_travel( s );
     }
-
-    shaman_spell_t::schedule_travel( s );
+    else
+    {
+      // Tempest overloads only on primary target. While calling base_t here
+      // is pretty ugly it's the only way we believe to be able to model this. 
+      base_t::schedule_travel( s );
+    }
   }
 
 };
@@ -11407,6 +11421,8 @@ void shaman_t::create_options()
   add_option( opt_uint( "shaman.dre_enhancement_forced_failures", options.dre_enhancement_forced_failures, 0, 100 ) );
 
   add_option( opt_float( "shaman.lively_totems_base_chance", options.lively_totems_base_chance, 0.0, 1.0 ) );
+
+  add_option( opt_float( "shaman.surging_totem_miss_chance", options.surging_totem_miss_chance, 0.0, 1.0 ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -11453,6 +11469,8 @@ void shaman_t::copy_from( player_t* source )
 
   options.dre_enhancement_base_chance = p->options.dre_enhancement_base_chance;
   options.dre_enhancement_forced_failures = p->options.dre_enhancement_forced_failures;
+
+  options.surging_totem_miss_chance = p->options.surging_totem_miss_chance;
 }
 
 // shaman_t::create_special_effects ========================================
@@ -12275,7 +12293,7 @@ void shaman_t::trigger_stormbringer( const action_state_t* state, double overrid
 
   if ( dbc->ptr && triggered )
   {
-    if ( rng().roll( talent.molten_thunder->effectN( 1 ).percent() ) )
+    if ( rng().roll( talent.molten_thunder->effectN( 2 ).percent() ) )
     {
       cooldown.sundering->reset( true );
       proc.molten_thunder->occur();
@@ -13300,16 +13318,25 @@ void shaman_t::trigger_arc_discharge( const action_state_t* state )
 
   if ( dbc->ptr && specialization() == SHAMAN_ENHANCEMENT )
   {
+    action_t* action_ = nullptr;
     // Chain Lightning
     if ( state->action->id == 188443 )
     {
-      action.chain_lightning_ad->execute_on_target( state->target );
+      action_ = action.chain_lightning_ad;
     }
     // Lightning Bolt
     else if ( state->action->id == 188196 )
     {
-      action.lightning_bolt_ad->execute_on_target( state->target );
+      action_ = action.lightning_bolt_ad;
     }
+
+    assert( action_ );
+
+    make_event( *sim, rng().gauss( 500_ms, 50_ms ),
+      [ action_, t = state->target ]() {
+        action_->execute_on_target( t );
+    } );
+
   }
   buff.arc_discharge->decrement();
 }
@@ -13457,6 +13484,13 @@ void shaman_t::create_buffs()
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   buff.arc_discharge = make_buff( this, "arc_discharge", find_spell( 455097 ) )
+    ->set_max_stack(
+      dbc->ptr
+      ? specialization() == SHAMAN_ELEMENTAL
+        ? find_spell( 455097 )->max_stacks()
+        : as<int>( find_spell( 455097 ) -> effectN( 3 ).base_value() )
+      : find_spell( 455097 )->max_stacks()
+    )
     ->set_default_value_from_effect( 2 );
   buff.storm_swell = make_buff( this, "storm_swell", is_ptr() ? find_spell( 455089 ) : spell_data_t::not_found() )
     ->set_default_value_from_effect_type(A_MOD_MASTERY_PCT)
@@ -13614,19 +13648,19 @@ void shaman_t::create_buffs()
                             ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
 
   buff.icy_edge = make_buff<buff_t>( this, "icy_edge", find_spell( 224126 ) )
-    ->set_max_stack( 10 )
+    ->set_max_stack( 30 )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->set_default_value_from_effect( 1 );
   buff.molten_weapon    = make_buff<buff_t>( this, "molten_weapon", find_spell( 224125 ) )
-    ->set_max_stack( 10 )
+    ->set_max_stack( 30 )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->set_default_value_from_effect( 1 );
   buff.crackling_surge  = make_buff<buff_t>( this, "crackling_surge", find_spell( 224127 ) )
-    ->set_max_stack( 10 )
+    ->set_max_stack( 30 )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->set_default_value_from_effect( 1 );
   buff.earthen_weapon = make_buff<buff_t>( this, "earthen_weapon", find_spell( 392375 ) )
-    ->set_max_stack( 10 )
+    ->set_max_stack( 30 )
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->set_default_value_from_effect( 1 );
   buff.converging_storms = make_buff( this, "converging_storms", find_spell( 198300 ) )

@@ -21,7 +21,7 @@ actions.precombat+=/variable,name=on_use_trinket,op=add,value=(trinket.2.has_use
 actions.precombat+=/moonkin_form
 actions.precombat+=/wrath
 actions.precombat+=/wrath
-actions.precombat+=/wait,sec=0.1,if=hero_tree.keeper_of_the_grove&!talent.stellar_flare
+actions.precombat+=/regrowth,if=hero_tree.keeper_of_the_grove&!talent.stellar_flare
 actions.precombat+=/starfire,if=!talent.stellar_flare&hero_tree.elunes_chosen
 actions.precombat+=/stellar_flare
 

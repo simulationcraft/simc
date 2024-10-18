@@ -6691,11 +6691,14 @@ void druid_action_t<Base>::init()
     // allow ground_aoe for snapshots
     if ( !ab::background || ab::ground_aoe )
     {
-      const auto& eff = p()->buff.lunar_amplification->data().effectN( 1 );
-      add_parse_entry( persistent_multiplier_effects )
-        .set_buff( p()->buff.lunar_amplification )
-        .set_value( eff.percent() )
-        .set_eff( &eff );
+      if ( const auto& eff = p()->buff.lunar_amplification->data().effectN( 1 );
+           !has_parse_entry( persistent_multiplier_effects, &eff ) )
+      {
+        add_parse_entry( persistent_multiplier_effects )
+          .set_buff( p()->buff.lunar_amplification )
+          .set_value( eff.percent() )
+          .set_eff( &eff );
+      }
     }
   }
 }
@@ -10799,13 +10802,13 @@ void druid_t::create_buffs()
     make_fallback( is_ptr() && talent.touch_the_cosmos.ok(), this, "touch_the_cosmos", find_spell( 450360 ) )
       ->set_trigger_spell( talent.touch_the_cosmos );
 
-  buff.touch_the_cosmos_starfall = make_fallback( talent.touch_the_cosmos.ok() && talent.starfall.ok(),
+  buff.touch_the_cosmos_starfall = make_fallback( !is_ptr() && talent.touch_the_cosmos.ok() && talent.starfall.ok(),
     this, "touch_the_cosmos_starfall", find_spell( 450361 ) )
       ->set_chance( talent.touch_the_cosmos->effectN( 2 ).percent() )
       ->set_name_reporting( "Starfall" )
       ->set_trigger_spell( talent.touch_the_cosmos );
 
-  buff.touch_the_cosmos_starsurge = make_fallback( talent.touch_the_cosmos.ok(),
+  buff.touch_the_cosmos_starsurge = make_fallback( !is_ptr() && talent.touch_the_cosmos.ok(),
     this, "touch_the_cosmos_starsurge", find_spell( 450360 ) )
       ->set_chance( talent.touch_the_cosmos->effectN( 1 ).percent() )
       ->set_name_reporting( "Starsurge" )

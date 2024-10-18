@@ -165,10 +165,10 @@ void elemental_ptr( player_t* p )
   precombat->add_action( "flametongue_weapon,if=talent.improved_flametongue_weapon.enabled", "Ensure weapon enchant is applied if you've selected Improved Flametongue Weapon." );
   precombat->add_action( "lightning_shield" );
   precombat->add_action( "thunderstrike_ward" );
-  precombat->add_action( "stormkeeper" );
   precombat->add_action( "variable,name=mael_cap,value=100+50*talent.swelling_maelstrom.enabled+25*talent.primordial_capacity.enabled,op=set" );
   precombat->add_action( "variable,name=spymaster_in_1st,value=trinket.1.is.spymasters_web" );
   precombat->add_action( "variable,name=spymaster_in_2nd,value=trinket.2.is.spymasters_web" );
+  precombat->add_action( "stormkeeper" );
 
   default_->add_action( "spiritwalkers_grace,moving=1,if=movement.distance>6", "Enable more movement." );
   default_->add_action( "wind_shear", "Interrupt of casts." );
@@ -176,13 +176,13 @@ void elemental_ptr( player_t* p )
   default_->add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
   default_->add_action( "fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
   default_->add_action( "ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
-  default_->add_action( "use_item,slot=trinket1,if=!variable.spymaster_in_1st|(fight_remains<45|time<fight_remains&buff.spymasters_report.stack=40)&cooldown.stormkeeper.remains<5|fight_remains<22" );
-  default_->add_action( "use_item,slot=trinket2,if=!variable.spymaster_in_2nd|(fight_remains<45|time<fight_remains&buff.spymasters_report.stack=40)&cooldown.stormkeeper.remains<5|fight_remains<22" );
+  default_->add_action( "use_item,slot=trinket1,if=!variable.spymaster_in_1st|(fight_remains<65|time<fight_remains&buff.spymasters_report.stack>35)&prev_gcd.1.stormkeeper|buff.ascendance.remains>12&buff.spymasters_report.stack>25|fight_remains<22" );
+  default_->add_action( "use_item,slot=trinket2,if=!variable.spymaster_in_2nd|(fight_remains<65|time<fight_remains&buff.spymasters_report.stack>35)&prev_gcd.1.stormkeeper|buff.ascendance.remains>12&buff.spymasters_report.stack>25|fight_remains<22" );
   default_->add_action( "use_item,slot=main_hand" );
   default_->add_action( "lightning_shield,if=buff.lightning_shield.down" );
   default_->add_action( "natures_swiftness" );
   default_->add_action( "invoke_external_buff,name=power_infusion", "Use Power Infusion on Cooldown." );
-  default_->add_action( "potion" );
+  default_->add_action( "potion,if=buff.bloodlust.up|buff.spymasters_web.up|buff.ascendance.remains>12|fight_remains<31" );
   default_->add_action( "run_action_list,name=aoe,if=spell_targets.chain_lightning>=2" );
   default_->add_action( "run_action_list,name=single_target" );
 
@@ -196,15 +196,15 @@ void elemental_ptr( player_t* p )
   aoe->add_action( "flame_shock,target_if=refreshable,if=buff.surge_of_power.up&dot.flame_shock.remains<target.time_to_die-16&active_dot.flame_shock<(spell_targets.chain_lightning>?6)&!talent.liquid_magma_totem.enabled", "Spread Flame Shock using Surge of Power if LMT is not picked." );
   aoe->add_action( "flame_shock,target_if=refreshable,if=talent.fire_elemental.enabled&(buff.surge_of_power.up|!talent.surge_of_power.enabled)&dot.flame_shock.remains<target.time_to_die-5&(active_dot.flame_shock<6|dot.flame_shock.remains>0)", "Spread and refresh Flame Shock using Surge of Power (if talented) up to 6." );
   aoe->add_action( "ascendance", "JUST DO IT! https://i.kym-cdn.com/entries/icons/mobile/000/018/147/Shia_LaBeouf__Just_Do_It__Motivational_Speech_(Original_Video_by_LaBeouf__R%C3%B6nkk%C3%B6___Turner)_0-4_screenshot.jpg" );
-  aoe->add_action( "tempest,target_if=min:debuff.lightning_rod.remains,if=!buff.arc_discharge.up&(buff.surge_of_power.up|!talent.surge_of_power.enabled)", "###buff tempest with sop" );
+  aoe->add_action( "tempest,target_if=min:debuff.lightning_rod.remains,if=!buff.arc_discharge.up&(buff.surge_of_power.up|!talent.surge_of_power.enabled)", "buff tempest with sop" );
 
-  single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up&buff.surge_of_power.up&spell_targets.chain_lightning=2", "###2t" );
+  single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up&buff.surge_of_power.up&spell_targets.chain_lightning=2", "2t" );
 
   aoe->add_action( "chain_lightning,if=active_enemies>=6&buff.surge_of_power.up", "Against 6 targets or more Surge of Power should be used with Chain Lightning rather than Lava Burst." );
   aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=buff.primordial_wave.up&(buff.stormkeeper.up&spell_targets.chain_lightning>=6|buff.tempest.up)&maelstrom<60-5*talent.eye_of_the_storm.enabled&talent.surge_of_power.enabled", "Consume Primordial Wave buff immediately if you have Stormkeeper buff, fighting 6+ enemies and need maelstrom to spend." );
   aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=buff.primordial_wave.up&(buff.primordial_wave.remains<4|buff.lava_surge.up)", "Cast Lava burst to consume Primordial Wave proc. Wait for Lava Surge proc if possible." );
   aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&!buff.master_of_the_elements.up&talent.master_of_the_elements.enabled&talent.fire_elemental.enabled", "*{Fire} Use Lava Surge proc to buff <anything> with Master of the Elements." );
-  aoe->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=spell_targets.chain_lightning=2&(maelstrom>variable.mael_cap-30|cooldown.primordial_wave.remains<gcd&talent.surge_of_power.enabled|(buff.stormkeeper.up&spell_targets.chain_lightning>=6|buff.tempest.up)&talent.surge_of_power.enabled)", "###2t" );
+  aoe->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=spell_targets.chain_lightning=2&(maelstrom>variable.mael_cap-30|cooldown.primordial_wave.remains<gcd&talent.surge_of_power.enabled|(buff.stormkeeper.up&spell_targets.chain_lightning>=6|buff.tempest.up)&talent.surge_of_power.enabled)", "2t" );
   aoe->add_action( "earthquake,if=cooldown.primordial_wave.remains<gcd&talent.surge_of_power.enabled&(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up|!talent.echoes_of_great_sundering.enabled)", "Activate Surge of Power if next global is Primordial wave. Respect Echoes of Great Sundering." );
   aoe->add_action( "earthquake,if=(lightning_rod=0&talent.lightning_rod.enabled|maelstrom>variable.mael_cap-30)&(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up|!talent.echoes_of_great_sundering.enabled)", "Spend if all Lightning Rods ran out or you are close to overcaping. Respect Echoes of Great Sundering." );
   aoe->add_action( "earthquake,if=(buff.stormkeeper.up&spell_targets.chain_lightning>=6|buff.tempest.up)&talent.surge_of_power.enabled&(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up|!talent.echoes_of_great_sundering.enabled)", "Spend to buff your follow-up Stormkeeper with Surge of Power on 6+ targets. Respect Echoes of Great Sundering." );
@@ -219,28 +219,22 @@ void elemental_ptr( player_t* p )
   single_target->add_action( "fire_elemental" );
   single_target->add_action( "storm_elemental" );
   single_target->add_action( "stormkeeper,if=!talent.ascendance.enabled|cooldown.ascendance.remains<gcd|cooldown.ascendance.remains>10", "Just use Stormkeeper." );
-  single_target->add_action( "totemic_recall,if=cooldown.liquid_magma_totem.remains>15&spell_targets.chain_lightning>1&talent.fire_elemental.enabled", "{Fire} Reset LMT CD as early as possible. ##suspend?" );
   single_target->add_action( "primordial_wave,if=!buff.surge_of_power.up", "Use Primordial Wave as much as possible." );
   single_target->add_action( "ancestral_swiftness,if=!buff.primordial_wave.up|!buff.stormkeeper.up|!talent.elemental_blast.enabled", "*Use Ancestral Swiftness as much as possible. Use on EB instead of LvB where possible." );
-  single_target->add_action( "ascendance" );
+  single_target->add_action( "ascendance,if=fight_remains>180|buff.spymasters_web.up|!(variable.spymaster_in_1st|variable.spymaster_in_2nd)" );
   single_target->add_action( "tempest,if=buff.surge_of_power.up", "Surge of Power is strong and should be used. ©" );
   single_target->add_action( "lightning_bolt,if=buff.surge_of_power.up" );
   single_target->add_action( "liquid_magma_totem,if=active_dot.flame_shock=0", "Use LMT to apply Flame Shock." );
-  single_target->add_action( "flame_shock,if=active_dot.flame_shock=0|(dot.flame_shock.remains<6&(dot.flame_shock.remains<cooldown.primordial_wave.remains|!talent.primordial_wave.enabled)&(dot.flame_shock.remains<cooldown.liquid_magma_totem.remains|!talent.liquid_magma_totem.enabled)&!buff.surge_of_power.up&!buff.master_of_the_elements.up)", "Manually refresh Flame shock if better options are not available." );
+  single_target->add_action( "flame_shock,if=(active_dot.flame_shock=0|dot.flame_shock.remains<6)&!buff.surge_of_power.up&!buff.master_of_the_elements.up&!talent.primordial_wave.enabled&!talent.liquid_magma_totem.enabled", "Manually refresh Flame shock if better options are not talented." );
   single_target->add_action( "earthquake,if=(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up)&(maelstrom>variable.mael_cap-15|fight_remains<5)", "Spend if close to overcaping. Respect Echoes of Great Sundering." );
   single_target->add_action( "elemental_blast,if=maelstrom>variable.mael_cap-15|fight_remains<5" );
   single_target->add_action( "earth_shock,if=maelstrom>variable.mael_cap-15|fight_remains<5" );
-  single_target->add_action( "icefury,if=!(buff.fusion_of_elements_nature.up|buff.fusion_of_elements_fire.up)&talent.fusion_of_elements.enabled", "Use Icefury to proc Fusion of Elements if Master of the Elements buff is not up or cant be used on smth better." );
-  single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=charges_fractional>=max_charges-0.8" );
-  single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=!talent.master_of_the_elements.enabled" );
-  single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=buff.primordial_wave.up&buff.primordial_wave.remains<4", "Dont waste Primordial Wave buff." );
-  single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&((buff.tempest.up|buff.stormkeeper.up)&maelstrom>52-5*talent.eye_of_the_storm.enabled-3*buff.ascendance.up+(25-5*talent.eye_of_the_storm.enabled)*talent.elemental_blast.enabled|maelstrom>variable.mael_cap-15)", "Buff your next spender with MotE." );
+  single_target->add_action( "icefury,if=!(buff.fusion_of_elements_nature.up|buff.fusion_of_elements_fire.up)", "Use Icefury to proc Fusion of Elements." );
+  single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=!buff.master_of_the_elements.up", "Use Lava Burst to proc Master of the Elements." );
   single_target->add_action( "earthquake,if=(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up)&(buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power.enabled", "Spend to activate Surge of Power buff for Tempest or Stormkeeper." );
   single_target->add_action( "elemental_blast,if=(buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power.enabled" );
   single_target->add_action( "earth_shock,if=(buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power.enabled" );
-  single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=!buff.master_of_the_elements.up&(buff.tempest.up|buff.stormkeeper.up)", "Use Icefury-buffed Frost Shock. actions.single_target+=/frost_shock,if=buff.icefury_dmg.up" );
   single_target->add_action( "tempest" );
-  single_target->add_action( "icefury,if=!(buff.fusion_of_elements_nature.up|buff.fusion_of_elements_fire.up)", "Use Icefury if you won't overwrite Fusion of Elements buffs." );
   single_target->add_action( "lightning_bolt", "Filler spell. Always available. Always the bottom line." );
   single_target->add_action( "flame_shock,moving=1,target_if=refreshable" );
   single_target->add_action( "flame_shock,moving=1,if=movement.distance>6" );
