@@ -5948,6 +5948,8 @@ struct merciless_blow_t : public hunter_melee_attack_t
 
 struct fury_of_the_eagle_t : public hunter_melee_attack_t
 {
+  bool procced_at_max_tip = false; 
+
   struct fury_of_the_eagle_tick_t: public hunter_melee_attack_t
   {
     double health_threshold = 0;
@@ -5963,7 +5965,7 @@ struct fury_of_the_eagle_t : public hunter_melee_attack_t
       health_threshold = p -> talents.fury_of_the_eagle -> effectN( 4 ).base_value();
       crit_chance_bonus = p -> talents.fury_of_the_eagle -> effectN( 3 ).percent();
 
-      // Fury of the Eagle ticks should not decrement Tip of the Spear on execute, but rather on the last tick.
+      // Fury of the Eagle ticks do not decrement Tip of the Spear stacks.
       decrements_tip_of_the_spear = false;
     }
 
@@ -5975,17 +5977,6 @@ struct fury_of_the_eagle_t : public hunter_melee_attack_t
         c += crit_chance_bonus;
 
       return c;
-    }
-
-    void impact( action_state_t* state ) override
-    {
-      hunter_melee_attack_t::impact( state );
-
-      if ( p()->talents.ruthless_marauder.ok() && p()->cooldowns.ruthless_marauder->is_ready() && rng().roll( p()->talents.ruthless_marauder->effectN( 1 ).percent() ) )
-      {
-        p()->buffs.tip_of_the_spear->trigger();
-        p()->cooldowns.ruthless_marauder->start();
-      }
     }
   };
 
@@ -6002,7 +5993,16 @@ struct fury_of_the_eagle_t : public hunter_melee_attack_t
 
     add_child( fote_tick );
 
-    decrements_tip_of_the_spear = false;
+     // Fury of the Eagle in-game decrements on cast, but retains damage bonus for the duration. 
+     //It is easier to keep track of whether it proc'd at max stacks and then decrement/increment at the end.
+     decrements_tip_of_the_spear = false;
+  }
+
+  void execute() override
+  {
+    hunter_melee_attack_t::execute();
+
+    procced_at_max_tip = false;
   }
 
   void tick( dot_t* dot ) override
@@ -6010,6 +6010,15 @@ struct fury_of_the_eagle_t : public hunter_melee_attack_t
     hunter_melee_attack_t::tick( dot );
 
     fote_tick -> execute_on_target( dot -> target );
+
+    if ( p()->talents.ruthless_marauder.ok() && p()->cooldowns.ruthless_marauder->is_ready() && rng().roll( p()->talents.ruthless_marauder->effectN( 1 ).percent() ) )
+    {
+      if ( p()->buffs.tip_of_the_spear->at_max_stacks() )
+        procced_at_max_tip = true;
+      
+      p()->buffs.tip_of_the_spear->trigger();
+      p()->cooldowns.ruthless_marauder->start();
+    }
   }
 
   void last_tick( dot_t* dot ) override
@@ -6018,6 +6027,9 @@ struct fury_of_the_eagle_t : public hunter_melee_attack_t
 
     if ( p()->talents.tip_of_the_spear.ok() )
       p()->buffs.tip_of_the_spear->decrement();
+    
+    if( procced_at_max_tip )
+      p()->buffs.tip_of_the_spear->increment();
     
     if( p()->talents.ruthless_marauder )
       p()->buffs.ruthless_marauder->trigger();
