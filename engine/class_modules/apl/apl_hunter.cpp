@@ -549,7 +549,7 @@ void survival_ptr( player_t* p )
   plcleave->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1" );
   plcleave->add_action( "explosive_shot,if=(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&((cooldown.coordinated_assault.remains>20&(cooldown.coordinated_assault.remains<80|buff.coordinated_assault.remains))|(cooldown.coordinated_assault.remains>12&cooldown.coordinated_assault.remains<20))|cooldown.coordinated_assault.remains<2" );
   plcleave->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
-  plcleave->add_action( "kill_shot,if=buff.sic_em.remains" );
+  plcleave->add_action( "kill_shot" );
   plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max|buff.exposed_flank.remains&buff.tip_of_the_spear.stack<2" );
   plcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0" );
   plcleave->add_action( "butchery,if=charges_fractional>2.8&cooldown.wildfire_bomb.charges_fractional<1.5" );
@@ -586,7 +586,7 @@ void survival_ptr( player_t* p )
   sentcleave->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1" );
   sentcleave->add_action( "explosive_shot,if=(buff.tip_of_the_spear.stack>0|buff.bombardier.remains)&((cooldown.coordinated_assault.remains>20&(cooldown.coordinated_assault.remains<80|buff.coordinated_assault.remains))|(cooldown.coordinated_assault.remains>12&cooldown.coordinated_assault.remains<20))|cooldown.coordinated_assault.remains<2" );
   sentcleave->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
-  sentcleave->add_action( "kill_shot,if=buff.sic_em.remains&active_enemies<4" );
+  sentcleave->add_action( "kill_shot,if=active_enemies<4" );
   sentcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
   sentcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0" );
   sentcleave->add_action( "raptor_bite,if=buff.merciless_blows.up" );
