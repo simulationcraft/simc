@@ -488,6 +488,7 @@ public:
 
     // Dark Ranger
     buff_t* black_arrow;
+    buff_t* bleak_powder_debuff;
     buff_t* withering_fire;
 
   } buffs;
@@ -517,6 +518,8 @@ public:
 
     cooldown_t* black_arrow;
     cooldown_t* shadow_surge;
+    cooldown_t* bleak_powder;
+
     cooldown_t* lunar_storm;
   } cooldowns;
 
@@ -808,8 +811,8 @@ public:
     spell_data_ptr_t banshees_mark; 
     //TODO - reworked
     //spell_data_ptr_t shadow_surge;
-    //TODO
     spell_data_ptr_t bleak_powder;
+    spell_data_ptr_t bleak_powder_dmg;
 
     //TODO - reworked
     //spell_data_ptr_t withering_fire;
@@ -964,6 +967,8 @@ public:
 
     cooldowns.black_arrow = get_cooldown( "black_arrow" );
     cooldowns.shadow_surge = get_cooldown( "shadow_surge" );
+    cooldowns.bleak_powder = get_cooldown( "bleak_powder" );
+
     cooldowns.lunar_storm = get_cooldown( "lunar_storm" );
 
     base_gcd = 1.5_s;
@@ -4319,6 +4324,25 @@ struct black_arrow_t : public hunter_ranged_attack_t
     }
   };
 
+  struct bleak_powder_t : public hunter_ranged_attack_t
+  {
+    bleak_powder_t( hunter_t* p ) : hunter_ranged_attack_t( "bleak_powder", p, p->talents.bleak_powder_dmg )
+    {
+      background = dual = true;
+      aoe = -1;
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      hunter_ranged_attack_t::available_targets( tl );
+      
+      // Cannot hit the original target.
+      range::erase_remove( tl, target );
+      
+      return tl.size();
+    }
+  };
+
   double tick_recharge_chance = 0.0;
   cooldown_t* tick_recharge_cooldown = nullptr;
 
@@ -4332,6 +4356,7 @@ struct black_arrow_t : public hunter_ranged_attack_t
   double upper_health_threshold_pct;
 
   black_arrow_dot_t* black_arrow_dot;
+  bleak_powder_t* bleak_powder;
 
   black_arrow_t( hunter_t* p, util::string_view options_str )
     : hunter_ranged_attack_t( "black_arrow", p, p->talents.black_arrow )
@@ -4370,6 +4395,12 @@ struct black_arrow_t : public hunter_ranged_attack_t
     if ( p()->talents.banshees_mark.ok() && rng().roll( 0.25 ) )
     {
       p()->actions.a_murder_of_crows->execute_on_target( s->target ); 
+    }
+
+    if ( p()->talents.bleak_powder && ( p()->buffs.trick_shots->check() || p()->buffs.beast_cleave->check() ) && p()->cooldowns.bleak_powder->is_ready() )
+    {
+      bleak_powder->execute_on_target( s->target );
+      p()->cooldowns.bleak_powder->start();
     }
   }
 
@@ -7716,6 +7747,7 @@ void hunter_t::init_spells()
     talents.banshees_mark = find_talent_spell( talent_tree::HERO, "Banshee's Mark" );
     talents.shadow_surge  = find_talent_spell( talent_tree::HERO, "Shadow Surge" );
     talents.bleak_powder  = find_talent_spell( talent_tree::HERO, "Bleak Powder" );
+    talents.bleak_powder_dmg = talents.bleak_powder.ok() ? specialization() == HUNTER_MARKSMANSHIP ? find_spell( 467914 ) : find_spell( 472084 )  : spell_data_t::not_found();
 
     talents.withering_fire = find_talent_spell( talent_tree::HERO, "Withering Fire" );
 
@@ -7809,6 +7841,7 @@ void hunter_t::init_spells()
   // Cooldowns
   cooldowns.ruthless_marauder -> duration = talents.ruthless_marauder -> internal_cooldown();
   cooldowns.shadow_surge->duration = talents.shadow_surge->internal_cooldown();
+  cooldowns.bleak_powder->duration = talents.bleak_powder->internal_cooldown();
   cooldowns.legacy_of_the_windrunners->duration = talents.legacy_of_the_windrunners->internal_cooldown();
   cooldowns.lunar_storm->duration = talents.lunar_storm->internal_cooldown();
 }
@@ -8253,6 +8286,10 @@ void hunter_t::create_buffs()
       -> set_default_value_from_effect( 1 );
 
   buffs.eyes_closed = make_buff( this, "eyes_closed", talents.eyes_closed->effectN( 1 ).trigger() );
+
+  buffs.bleak_powder_debuff = 
+    make_buff( this, "bleak_powder", find_spell( 467922 ) )
+      ->set_chance( talents.bleak_powder.ok() );
 
   buffs.withering_fire =
     make_buff( this, "withering_fire", talents.withering_fire_buff )
