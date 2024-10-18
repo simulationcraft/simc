@@ -1183,6 +1183,7 @@ public:
     // Hero Tree passives
     ab::apply_affecting_aura( p->talents.overshadow );
     ab::apply_affecting_aura( p->talents.sentinel_precision );
+    ab::apply_affecting_aura( p->talents.howl_of_the_pack );
   }
 
   hunter_t* p()             { return static_cast<hunter_t*>( ab::player ); }
