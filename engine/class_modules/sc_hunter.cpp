@@ -4435,7 +4435,7 @@ struct black_arrow_t : public hunter_ranged_attack_t
       p()->actions.a_murder_of_crows->execute_on_target( s->target ); 
     }
 
-    if ( p()->talents.bleak_powder && ( p()->buffs.trick_shots->check() || p()->buffs.beast_cleave->check() ) && p()->cooldowns.bleak_powder->is_ready() )
+    if ( p()->talents.bleak_powder.ok() && ( p()->buffs.trick_shots->check() || p()->buffs.beast_cleave->check() ) && p()->cooldowns.bleak_powder->is_ready() )
     {
       bleak_powder->execute_on_target( s->target );
       p()->cooldowns.bleak_powder->start();
