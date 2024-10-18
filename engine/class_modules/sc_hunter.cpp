@@ -2626,6 +2626,16 @@ struct kill_command_sv_t : public hunter_main_pet_attack_t
     base_multiplier *= 1 + o()->talents.alpha_predator->effectN( 2 ).percent();
   }
 
+  void execute() override
+  {
+    hunter_main_pet_attack_t::execute();
+
+    if ( o()->buffs.exposed_flank->check() && execute_state && execute_state->chain_target>0 )
+    {
+      o()->buffs.tip_of_the_spear->trigger();
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     hunter_main_pet_attack_t::impact( s );
@@ -2643,6 +2653,8 @@ struct kill_command_sv_t : public hunter_main_pet_attack_t
 
     if ( o()->talents.sentinel.ok() )
       o()->trigger_sentinel( s->target, false, o()->procs.sentinel_stacks );
+
+    o()->buffs.exposed_flank->expire();
   }
   
   void trigger_dot( action_state_t* s ) override
@@ -8171,7 +8183,7 @@ void hunter_t::create_buffs()
 
   buffs.exposed_flank = 
     make_buff( this, "exposed_flank", find_spell( 459864 ) )
-      ->set_default_value( find_spell( 459864 )->effectN( 1 ).base_value() )
+      ->set_default_value_from_effect( 1 )
       ->set_chance( talents.exposed_flank.ok() );
 
   buffs.bombardier = 
