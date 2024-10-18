@@ -4388,12 +4388,12 @@ struct black_arrow_t : public hunter_ranged_attack_t
   razor_fragments_t* razor_fragments = nullptr;
 
   black_arrow_t( hunter_t* p, util::string_view options_str )
-    : hunter_ranged_attack_t( "black_arrow", p, p->talents.black_arrow )
+    : hunter_ranged_attack_t( "black_arrow", p, p->find_spell( 466930 ) )
   {
     parse_options( options_str );
 
-    lower_health_threshold_pct = p->talents.black_arrow->effectN( 2 ).base_value();
-    upper_health_threshold_pct = p->talents.black_arrow->effectN( 3 ).base_value();
+    lower_health_threshold_pct = data().effectN( 2 ).base_value();
+    upper_health_threshold_pct = data().effectN( 3 ).base_value();
 
     if ( p -> talents.razor_fragments.ok() )
     {  
