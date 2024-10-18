@@ -4388,7 +4388,8 @@ struct black_arrow_t : public hunter_ranged_attack_t
   {
     return hunter_ranged_attack_t::target_ready( candidate_target ) &&
       ( candidate_target -> health_percentage() <= lower_health_threshold_pct
-        || candidate_target -> health_percentage() >= upper_health_threshold_pct
+        || p()->bugs && candidate_target -> health_percentage() >= upper_health_threshold_pct
+        || p()->talents.the_bell_tolls.ok() && candidate_target -> health_percentage() >= upper_health_threshold_pct
         || p() -> buffs.deathblow -> check() );
   }
 };
