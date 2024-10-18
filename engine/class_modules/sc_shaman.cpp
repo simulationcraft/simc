@@ -713,7 +713,7 @@ public:
     unsigned dre_enhancement_forced_failures = 8;
 
     // Surging totem whiff
-    double surging_totem_miss_chance = 0.0;
+    double surging_totem_miss_chance = 0.1;
   } options;
 
   // Cooldowns
