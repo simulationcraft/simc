@@ -4517,6 +4517,7 @@ struct symphonic_arsenal_t : hunter_ranged_attack_t
   {
     background = dual = true;
     aoe = as<int>( p->talents.symphonic_arsenal->effectN( 1 ).base_value() );
+    attack_power_mod.direct = p->specialization() == HUNTER_SURVIVAL ? p->talents.symphonic_arsenal_dmg->effectN( 3 ).ap_coeff() : p->talents.symphonic_arsenal_dmg->effectN( 1 ).ap_coeff();
   }
 
   void execute() override
