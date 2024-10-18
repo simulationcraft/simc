@@ -5658,6 +5658,9 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
     m *= 1 + p()->buffs.furious_assault->value();
 
+    if (p()->talents.wild_attacks.ok() )
+      m *= 1 + p()->talents.wild_attacks->effectN( 2 ).percent();
+
     return m;
   }
 
