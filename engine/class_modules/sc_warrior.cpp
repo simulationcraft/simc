@@ -1167,7 +1167,10 @@ public:
     }
     // Effect 3 is the auto attack mod
     parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars, effect_mask_t( false ).enable( 3 ) );
-    parse_effects( p()->talents.colossus.practiced_strikes, p()->spec.arms_warrior );
+    if ( is_ptr() )
+      parse_effects( p()->talents.colossus.practiced_strikes );
+    else
+      parse_effects( p()->talents.colossus.practiced_strikes, p()->spec.arms_warrior );
 
     // Slayer
     parse_effects( p()->buff.brutal_finish );
