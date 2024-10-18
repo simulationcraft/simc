@@ -7525,6 +7525,7 @@ struct defensive_stance_t : public warrior_spell_t
   {
     add_option( opt_string( "toggle", onoff ) );
     parse_options( options_str );
+    harmful = false;
     target = p;
 
     if ( onoff == "on" )
