@@ -821,7 +821,6 @@ public:
     spell_data_ptr_t shadow_lash;
     spell_data_ptr_t shadow_surge;
     spell_data_ptr_t shadow_surge_dmg;
-    spell_data_ptr_t shadow_erasure;
 
     spell_data_ptr_t withering_fire;
     spell_data_ptr_t withering_fire_dmg;
@@ -4187,8 +4186,6 @@ struct kill_shot_t : hunter_ranged_attack_t
   serpent_sting_t* venoms_bite = nullptr;
   razor_fragments_t* razor_fragments = nullptr;
 
-  cooldown_t* se_recharge_cooldown = nullptr;
-
   kill_shot_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "kill_shot", p, p -> talents.kill_shot ),
     health_threshold_pct( p -> talents.kill_shot -> effectN( 2 ).base_value() )
@@ -4204,12 +4201,6 @@ struct kill_shot_t : hunter_ranged_attack_t
       add_child( razor_fragments );
     }
 
-    if ( p->specialization() == HUNTER_MARKSMANSHIP )
-      se_recharge_cooldown = p->cooldowns.aimed_shot;
-
-    if ( p->specialization() == HUNTER_BEAST_MASTERY )
-      se_recharge_cooldown = p->cooldowns.barbed_shot;
-
     if ( p->talents.venoms_bite.ok() )
       venoms_bite = p->get_background_action<serpent_sting_t>( "serpent_sting" );
   }
@@ -4221,10 +4212,6 @@ struct kill_shot_t : hunter_ranged_attack_t
     p()->buffs.deathblow->expire();
     p() -> buffs.razor_fragments -> decrement();
 
-    if ( p()->talents.shadow_erasure.ok() && td( target )->dots.black_arrow->is_ticking() &&
-         rng().roll( p()->talents.shadow_erasure->proc_chance() ) )
-      se_recharge_cooldown->reset( true );
-    
     if ( venoms_bite )
       venoms_bite->execute_on_target( target );
   }
@@ -7728,7 +7715,6 @@ void hunter_t::init_spells()
 
     talents.shadow_lash    = find_talent_spell( talent_tree::HERO, "Shadow Lash" );
     talents.shadow_surge_dmg = talents.shadow_surge.ok() ? find_spell( 444269 ) : spell_data_t::not_found();
-    talents.shadow_erasure = find_talent_spell( talent_tree::HERO, "Shadow Erasure" );
 
     talents.withering_fire_dmg  = talents.withering_fire.ok() ? find_spell( 461490 ) : spell_data_t::not_found();
     talents.withering_fire_buff = talents.withering_fire.ok() ? find_spell( 461762 ) : spell_data_t::not_found();
