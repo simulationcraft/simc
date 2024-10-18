@@ -812,7 +812,6 @@ public:
     spell_data_ptr_t black_arrow;
     spell_data_ptr_t black_arrow_buff;
 
-    spell_data_ptr_t overshadow;
     spell_data_ptr_t shadow_hounds;
 
     spell_data_ptr_t embrace_the_shadows;  // TODO defensive
@@ -1197,7 +1196,6 @@ public:
     ab::apply_affecting_aura( p -> tier_set.tww_s1_sv_2pc );
 
     // Hero Tree passives
-    ab::apply_affecting_aura( p->talents.overshadow );
     ab::apply_affecting_aura( p->talents.sentinel_precision );
     ab::apply_affecting_aura( p->talents.howl_of_the_pack );
   }
@@ -2336,7 +2334,6 @@ public:
     ab::apply_affecting_aura( o() -> talents.killer_companion );
 
     //Hero Trees
-    ab::apply_affecting_aura( o() -> talents.overshadow );
   }
 
   T_PET* p()             { return static_cast<T_PET*>( ab::player ); }
@@ -7728,8 +7725,6 @@ void hunter_t::init_spells()
 
     //Reworked // to be deleted
     talents.black_arrow_buff = talents.black_arrow.ok() ? find_spell( 439659 ) : spell_data_t::not_found();
-
-    talents.overshadow    = find_talent_spell( talent_tree::HERO, "Overshadow" );
 
     talents.shadow_lash    = find_talent_spell( talent_tree::HERO, "Shadow Lash" );
     talents.shadow_surge_dmg = talents.shadow_surge.ok() ? find_spell( 444269 ) : spell_data_t::not_found();
