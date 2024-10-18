@@ -824,7 +824,6 @@ public:
     spell_data_ptr_t shadow_lash;
     spell_data_ptr_t shadow_surge;
     spell_data_ptr_t shadow_surge_dmg;
-    spell_data_ptr_t darkness_calls;
     spell_data_ptr_t shadow_erasure;
 
     spell_data_ptr_t withering_fire;
@@ -1613,16 +1612,6 @@ struct hunter_pet_t: public pet_t
       main_hand_attack->schedule_execute();
 
     pet_t::schedule_ready( delta_time, waiting );
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double m = pet_t::composite_player_multiplier( school );
-
-    if ( o()->talents.darkness_calls->effectN( 1 ).has_common_school( school ) )
-      m *= 1 + o()->talents.darkness_calls->effectN( 1 ).percent();
-
-    return m;
   }
 
   double composite_player_critical_damage_multiplier( const action_state_t* s ) const override
@@ -7767,7 +7756,6 @@ void hunter_t::init_spells()
 
     talents.shadow_lash    = find_talent_spell( talent_tree::HERO, "Shadow Lash" );
     talents.shadow_surge_dmg = talents.shadow_surge.ok() ? find_spell( 444269 ) : spell_data_t::not_found();
-    talents.darkness_calls = find_talent_spell( talent_tree::HERO, "Darkness Calls" );
     talents.shadow_erasure = find_talent_spell( talent_tree::HERO, "Shadow Erasure" );
 
     talents.withering_fire_dmg  = talents.withering_fire.ok() ? find_spell( 461490 ) : spell_data_t::not_found();
@@ -8757,16 +8745,6 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
   {
     m *= 1.0 + buffs.howl_of_the_pack -> check_stack_value();
   }
-
-  return m;
-}
-
-double hunter_t::composite_player_multiplier( school_e school ) const
-{
-  double m = player_t::composite_player_multiplier( school );
-
-  if ( talents.darkness_calls->effectN( 1 ).has_common_school( school ) )
-    m *= 1.0 + talents.darkness_calls->effectN( 1 ).percent();
 
   return m;
 }
