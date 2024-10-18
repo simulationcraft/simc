@@ -789,6 +789,27 @@ public:
     spell_data_ptr_t deadly_duo;
 
     // Dark Ranger
+    //spell_data_ptr_t black_arrow;
+    
+    spell_data_ptr_t bleak_arrows; 
+    //spell_data_ptr_t shadow_hounds;
+    spell_data_ptr_t soul_drinker;
+    spell_data_ptr_t the_bell_tolls;
+
+    spell_data_ptr_t phantom_pain; 
+    spell_data_ptr_t ebon_bowstring;
+    //spell_data_ptr_t embrace_the_shadows;  // TODO defensive
+    //spell_data_ptr_t smoke_screen;         // TODO defensive
+    //spell_data_ptr_t dark_chains;          // TODO defensive
+    spell_data_ptr_t shadow_dagger;
+
+    spell_data_ptr_t banshees_mark; 
+    //spell_data_ptr_t shadow_surge;
+    spell_data_ptr_t bleak_powder;
+
+    //spell_data_ptr_t withering_fire;
+
+    //Reworked to be deleted
     spell_data_ptr_t black_arrow;
     spell_data_ptr_t black_arrow_buff;
 
@@ -7695,25 +7716,39 @@ void hunter_t::init_spells()
   {
     // Dark Ranger
     talents.black_arrow = find_talent_spell( talent_tree::HERO, "Black Arrow" );
-    talents.black_arrow_buff = talents.black_arrow.ok() ? find_spell( 439659 ) : spell_data_t::not_found();
 
+    talents.bleak_arrows    = find_talent_spell( talent_tree::HERO, "Bleak Arrows" );
+    talents.shadow_hounds   = find_talent_spell( talent_tree::HERO, "Shadow Hounds" );
+    talents.soul_drinker    = find_talent_spell( talent_tree::HERO, "Soul Drinker" );
+    talents.the_bell_tolls  = find_talent_spell( talent_tree::HERO, "The Bell Tolls" );
+
+    talents.phantom_pain        = find_talent_spell( talent_tree::HERO, "Phantom Pain" );
+    talents.ebon_bowstring      = find_talent_spell( talent_tree::HERO, "Ebon Bowstring" );
+    talents.embrace_the_shadows = find_talent_spell( talent_tree::HERO, "Embrace the Shadows" );
+    talents.smoke_screen        = find_talent_spell( talent_tree::HERO, "Smoke Screen" );
+    talents.dark_chains         = find_talent_spell( talent_tree::HERO, "Dark Chains" );
+    talents.shadow_dagger       = find_talent_spell( talent_tree::HERO, "Shadow Dagger" );
+
+    talents.banshees_mark = find_talent_spell( talent_tree::HERO, "Banshee's Mark" );
+    talents.shadow_surge  = find_talent_spell( talent_tree::HERO, "Shadow Surge" );
+    talents.bleak_powder  = find_talent_spell( talent_tree::HERO, "Bleak Powder" );
+
+    talents.withering_fire = find_talent_spell( talent_tree::HERO, "Withering Fire" );
+
+    //Reworked // to be deleted
+    talents.black_arrow_buff = talents.black_arrow.ok() ? find_spell( 439659 ) : spell_data_t::not_found();
+    
     talents.overshadow    = find_talent_spell( talent_tree::HERO, "Overshadow" );
-    talents.shadow_hounds = find_talent_spell( talent_tree::HERO, "Shadow Hounds" );
     talents.death_shade   = find_talent_spell( talent_tree::HERO, "Death Shade" );
 
     talents.dark_empowerment    = find_talent_spell( talent_tree::HERO, "Dark Empowerment" );
     talents.grave_reaper        = find_talent_spell( talent_tree::HERO, "Grave Reaper" );
-    talents.embrace_the_shadows = find_talent_spell( talent_tree::HERO, "Embrace the Shadows" );
-    talents.smoke_screen        = find_talent_spell( talent_tree::HERO, "Smoke Screen" );
-    talents.dark_chains         = find_talent_spell( talent_tree::HERO, "Dark Chains" );
 
     talents.shadow_lash    = find_talent_spell( talent_tree::HERO, "Shadow Lash" );
-    talents.shadow_surge   = find_talent_spell( talent_tree::HERO, "Shadow Surge" );
     talents.shadow_surge_dmg = talents.shadow_surge.ok() ? find_spell( 444269 ) : spell_data_t::not_found();
     talents.darkness_calls = find_talent_spell( talent_tree::HERO, "Darkness Calls" );
     talents.shadow_erasure = find_talent_spell( talent_tree::HERO, "Shadow Erasure" );
 
-    talents.withering_fire = find_talent_spell( talent_tree::HERO, "Withering Fire" );
     talents.withering_fire_dmg  = talents.withering_fire.ok() ? find_spell( 461490 ) : spell_data_t::not_found();
     talents.withering_fire_buff = talents.withering_fire.ok() ? find_spell( 461762 ) : spell_data_t::not_found();
 
