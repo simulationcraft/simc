@@ -7697,7 +7697,7 @@ struct elemental_blast_t : public shaman_spell_t
 
     // While I still think this interaction shouldn't exist (proc of proc) it
     // certainly does. So here we go with an implemented bug.
-    if ( p()->bugs && 
+    if ( !p()->bugs && 
          p()->is_ptr() && 
          p()->specialization() == SHAMAN_ELEMENTAL && 
          exec_type == spell_variant::FUSION_OF_ELEMENTS ) 
