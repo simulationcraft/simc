@@ -818,7 +818,6 @@ public:
     spell_data_ptr_t smoke_screen;         // TODO defensive
     spell_data_ptr_t dark_chains;          // TODO defensive
 
-    spell_data_ptr_t shadow_lash;
     spell_data_ptr_t shadow_surge;
     spell_data_ptr_t shadow_surge_dmg;
 
@@ -4323,12 +4322,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
     timespan_t duration = 0_s;
   } shadow_hounds;
 
-  struct
-  {
-    buff_t* cooldown_buff = nullptr;
-    double tick_time_mult = 0;
-  } shadow_lash;
-
   double lower_health_threshold_pct;
   double upper_health_threshold_pct;
 
@@ -4347,13 +4340,11 @@ struct black_arrow_t : public hunter_ranged_attack_t
     if ( p->specialization() == HUNTER_MARKSMANSHIP )
     {
       tick_recharge_cooldown = p->cooldowns.aimed_shot;
-      shadow_lash.cooldown_buff = p->buffs.trueshot;
     }
 
     if ( p->specialization() == HUNTER_BEAST_MASTERY )
     {
       tick_recharge_cooldown = p->cooldowns.barbed_shot;
-      shadow_lash.cooldown_buff = p->buffs.call_of_the_wild;
     }
 
     if ( p->talents.shadow_hounds.ok() )
@@ -4361,9 +4352,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
       shadow_hounds.chance = p->talents.shadow_hounds->effectN( 1 ).percent();
       shadow_hounds.duration = p->find_spell( 442419 )->duration();
     }
-
-    if ( p->talents.shadow_lash.ok() )
-      shadow_lash.tick_time_mult = p->find_spell( 444354 )->effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -7713,7 +7701,6 @@ void hunter_t::init_spells()
     //Reworked // to be deleted
     talents.black_arrow_buff = talents.black_arrow.ok() ? find_spell( 439659 ) : spell_data_t::not_found();
 
-    talents.shadow_lash    = find_talent_spell( talent_tree::HERO, "Shadow Lash" );
     talents.shadow_surge_dmg = talents.shadow_surge.ok() ? find_spell( 444269 ) : spell_data_t::not_found();
 
     talents.withering_fire_dmg  = talents.withering_fire.ok() ? find_spell( 461490 ) : spell_data_t::not_found();
