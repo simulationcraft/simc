@@ -557,6 +557,7 @@ public:
   struct rppm_t
   {
     real_ppm_t* shadow_surge;
+    real_ppm_t* shadow_hounds;
   } rppm;
 
   // Talents
@@ -799,8 +800,7 @@ public:
     spell_data_ptr_t black_arrow;
     
     spell_data_ptr_t bleak_arrows; 
-    //TODO - reworked
-    //spell_data_ptr_t shadow_hounds;
+    spell_data_ptr_t shadow_hounds;
     spell_data_ptr_t soul_drinker;
     spell_data_ptr_t the_bell_tolls;
 
@@ -822,8 +822,6 @@ public:
     //spell_data_ptr_t withering_fire;
 
     //Reworked to be deleted
-    spell_data_ptr_t shadow_hounds;
-
     spell_data_ptr_t withering_fire;
     spell_data_ptr_t withering_fire_dmg;
     spell_data_ptr_t withering_fire_buff;
@@ -4317,10 +4315,21 @@ struct black_arrow_t : public hunter_ranged_attack_t
 {
   struct black_arrow_dot_t : public hunter_ranged_attack_t
   {
+    struct
+    {
+      timespan_t duration = 0_s;
+    } shadow_hounds;
+    
     black_arrow_dot_t( hunter_t* p ) : hunter_ranged_attack_t( "black_arrow_dot", p, p->find_spell( 468572 ) )
     {
       background = dual = true;
       hasted_ticks = false;
+
+      
+      if ( p->talents.shadow_hounds.ok() )
+      {
+        shadow_hounds.duration = p->find_spell( 442419 )->duration();
+      }
     }
 
     void tick( dot_t* d ) override
@@ -4330,6 +4339,15 @@ struct black_arrow_t : public hunter_ranged_attack_t
       if ( p()->talents.shadow_surge.ok() && p()->rppm.shadow_surge->trigger() )
       {
         p()->actions.shadow_surge->execute_on_target( d->target );
+      }
+
+      if( p()->talents.shadow_hounds.ok() && p()->rppm.shadow_hounds->trigger() )
+      {
+        p()->pets.dark_hound.spawn( shadow_hounds.duration );
+        if ( !p()->pets.dark_hound.active_pets().empty() && p()->specialization() == HUNTER_BEAST_MASTERY )
+        {
+          p()->pets.dark_hound.active_pets().back()->buffs.beast_cleave->trigger( shadow_hounds.duration );
+        }
       }
     }
   };
@@ -4356,12 +4374,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
   double tick_recharge_chance = 0.0;
   cooldown_t* tick_recharge_cooldown = nullptr;
 
-  struct
-  {
-    double chance = 0;
-    timespan_t duration = 0_s;
-  } shadow_hounds;
-
   double lower_health_threshold_pct;
   double upper_health_threshold_pct;
 
@@ -4386,12 +4398,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
     if ( p->specialization() == HUNTER_BEAST_MASTERY )
     {
       tick_recharge_cooldown = p->cooldowns.barbed_shot;
-    }
-
-    if ( p->talents.shadow_hounds.ok() )
-    {
-      shadow_hounds.chance = p->talents.shadow_hounds->effectN( 1 ).percent();
-      shadow_hounds.duration = p->find_spell( 442419 )->duration();
     }
   }
 
@@ -6620,12 +6626,22 @@ struct kill_command_t: public hunter_spell_t
 
 struct dire_beast_t: public hunter_spell_t
 {
+  struct
+  {
+    timespan_t duration = 0_s;
+  } shadow_hounds;
+
   dire_beast_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "dire_beast", p, p -> talents.dire_beast )
   {
     parse_options( options_str );
 
     harmful = false;
+
+    if ( p->talents.shadow_hounds.ok() )
+    {
+      shadow_hounds.duration = p->find_spell( 442419 )->duration();
+    }
   }
 
   void execute() override
@@ -6639,6 +6655,15 @@ struct dire_beast_t: public hunter_spell_t
     sim -> print_debug( "Dire Beast summoned with {} autoattacks", base_attacks_per_summon );
 
     p() -> pets.dire_beast.spawn( summon_duration );
+
+    if ( p()->talents.shadow_hounds.ok() && rng().roll( p()->talents.shadow_hounds->effectN( 1 ).percent() ) && p()->specialization() == HUNTER_BEAST_MASTERY )
+    {
+      p()->pets.dark_hound.spawn( shadow_hounds.duration );
+      if ( !p()->pets.dark_hound.active_pets().empty() )
+      {
+        p()->pets.dark_hound.active_pets().back()->buffs.beast_cleave->trigger( shadow_hounds.duration );
+      }
+    }
   }
 };
 
@@ -6646,12 +6671,22 @@ struct dire_beast_t: public hunter_spell_t
 
 struct dire_command_summon_t final : hunter_spell_t
 {
+  struct
+  {
+    timespan_t duration = 0_s;
+  } shadow_hounds;
+
   dire_command_summon_t( hunter_t* p ) : hunter_spell_t( "dire_command_summon", p, p -> find_spell( 219199 ) )
   {
     cooldown -> duration = 0_ms;
     track_cd_waste = false;
     background = true;
     harmful = false;
+    
+    if ( p->talents.shadow_hounds.ok() )
+    {
+      shadow_hounds.duration = p->find_spell( 442419 )->duration();
+    }
   }
 
   void execute() override
@@ -6659,6 +6694,14 @@ struct dire_command_summon_t final : hunter_spell_t
     hunter_spell_t::execute();
 
     p() -> pets.dire_beast.spawn( pets::dire_beast_duration( p() ).first );
+    if ( p()->talents.shadow_hounds.ok() && rng().roll( p()->talents.shadow_hounds->effectN( 1 ).percent() ) && p()->specialization() == HUNTER_BEAST_MASTERY )
+    {
+      p()->pets.dark_hound.spawn( shadow_hounds.duration );
+      if ( !p()->pets.dark_hound.active_pets().empty() )
+      {
+        p()->pets.dark_hound.active_pets().back()->buffs.beast_cleave->trigger( shadow_hounds.duration );
+      }
+    }
   }
 };
 
@@ -8376,7 +8419,8 @@ void hunter_t::init_rng()
 {
   player_t::init_rng();
 
-  rppm.shadow_surge = get_rppm( "Shadow Surge", talents.shadow_surge );
+  rppm.shadow_surge   = get_rppm( "Shadow Surge", talents.shadow_surge );
+  rppm.shadow_hounds  = get_rppm( "Shadow Hounds", talents.shadow_hounds );
 }
 
 void hunter_t::init_scaling()
