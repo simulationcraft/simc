@@ -750,9 +750,7 @@ public:
     spell_data_ptr_t sulfur_lined_pockets;
     spell_data_ptr_t butchery;
     spell_data_ptr_t bloody_claws;
-    spell_data_ptr_t terms_of_engagement;
-    spell_data_ptr_t terms_of_engagement_dmg;
-    spell_data_ptr_t terms_of_engagement_buff;
+    spell_data_ptr_t ranger;
 
     spell_data_ptr_t grenade_juggler;
     spell_data_ptr_t flanking_strike;
@@ -762,7 +760,9 @@ public:
     spell_data_ptr_t vipers_venom;
     spell_data_ptr_t bloodseeker;
 
-    spell_data_ptr_t ranger;
+    spell_data_ptr_t terms_of_engagement;
+    spell_data_ptr_t terms_of_engagement_dmg;
+    spell_data_ptr_t terms_of_engagement_buff;
     spell_data_ptr_t exposed_flank;
     spell_data_ptr_t tactical_advantage;
     spell_data_ptr_t sic_em;
@@ -7643,10 +7643,8 @@ void hunter_t::init_spells()
     talents.butchery                          = find_talent_spell( talent_tree::SPECIALIZATION, "Butchery", HUNTER_SURVIVAL );
     talents.bloody_claws                      = find_talent_spell( talent_tree::SPECIALIZATION, "Bloody Claws", HUNTER_SURVIVAL );
     talents.alpha_predator                    = find_talent_spell( talent_tree::SPECIALIZATION, "Alpha Predator", HUNTER_SURVIVAL );
-    talents.terms_of_engagement               = find_talent_spell( talent_tree::SPECIALIZATION, "Terms of Engagement", HUNTER_SURVIVAL );
-    talents.terms_of_engagement_dmg           = talents.terms_of_engagement.ok() ? find_spell( 271625 ) : spell_data_t::not_found();
-    talents.terms_of_engagement_buff          = talents.terms_of_engagement.ok() ? find_spell( 265898 ) : spell_data_t::not_found();
-
+    talents.ranger                            = find_talent_spell( talent_tree::SPECIALIZATION, "Ranger", HUNTER_SURVIVAL );
+    
     talents.grenade_juggler                   = find_talent_spell( talent_tree::SPECIALIZATION, "Grenade Juggler", HUNTER_SURVIVAL );
     talents.flanking_strike                   = find_talent_spell( talent_tree::SPECIALIZATION, "Flanking Strike", HUNTER_SURVIVAL );
     talents.flanking_strike_player            = talents.flanking_strike.ok() ? find_spell( 269752 ) : spell_data_t::not_found();
@@ -7655,7 +7653,9 @@ void hunter_t::init_spells()
     talents.vipers_venom                      = find_talent_spell( talent_tree::SPECIALIZATION, "Viper's Venom", HUNTER_SURVIVAL );
     talents.bloodseeker                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodseeker", HUNTER_SURVIVAL );
 
-    talents.ranger                            = find_talent_spell( talent_tree::SPECIALIZATION, "Ranger", HUNTER_SURVIVAL );
+    talents.terms_of_engagement               = find_talent_spell( talent_tree::SPECIALIZATION, "Terms of Engagement", HUNTER_SURVIVAL );
+    talents.terms_of_engagement_dmg           = talents.terms_of_engagement.ok() ? find_spell( 271625 ) : spell_data_t::not_found();
+    talents.terms_of_engagement_buff          = talents.terms_of_engagement.ok() ? find_spell( 265898 ) : spell_data_t::not_found();
     talents.exposed_flank                     = find_talent_spell( talent_tree::SPECIALIZATION, "Exposed Flank", HUNTER_SURVIVAL );
     talents.tactical_advantage                = find_talent_spell( talent_tree::SPECIALIZATION, "Tactical Advantage", HUNTER_SURVIVAL );
     talents.sic_em                            = find_talent_spell( talent_tree::SPECIALIZATION, "Sic 'Em", HUNTER_SURVIVAL );
