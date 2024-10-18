@@ -7357,6 +7357,19 @@ struct coup_de_grace_t : public rogue_attack_t
     }
   }
 
+  void snapshot_state( action_state_t* state, result_amount_type rt ) override
+  {
+    rogue_attack_t::snapshot_state( state, rt );
+
+    if ( p()->is_ptr() )
+    {
+      // Adjust the CP in the action state so it works with Relentless Strikes, etc.
+      auto rs = cast_state( state );
+      const int trigger_cp = rs->get_combo_points() + as<int>( p()->talent.trickster.coup_de_grace->effectN( 3 ).base_value() );
+      rs->set_combo_points( rs->get_combo_points( true ), trigger_cp );
+    }
+  }
+
   void execute() override
   {
     p()->buffs.deeper_daggers->trigger();
@@ -7388,7 +7401,10 @@ struct coup_de_grace_t : public rogue_attack_t
       p()->buffs.flawless_form->execute( as<int>( p()->talent.trickster.coup_de_grace->effectN( 2 ).base_value() ) );
     }
 
-    const int trigger_cp = cast_state( execute_state )->get_combo_points() + as<int>( p()->talent.trickster.coup_de_grace->effectN( 3 ).base_value() );
+    // 2024-10-17 -- On live, this does not work fully correctly, on PTR it uses snapshot_state() above
+    const int trigger_cp = cast_state( execute_state )->get_combo_points() +
+      ( p()->is_ptr() ? 0 : as<int>( p()->talent.trickster.coup_de_grace->effectN( 3 ).base_value() ) );
+
     attacks[ 0 ]->trigger_secondary_action( execute_state->target, trigger_cp );
     attacks[ 1 ]->trigger_secondary_action( execute_state->target, trigger_cp, 300_ms );
     attacks[ 2 ]->trigger_secondary_action( execute_state->target, trigger_cp, 1.2_s );
