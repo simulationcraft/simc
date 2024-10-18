@@ -791,21 +791,27 @@ public:
     spell_data_ptr_t black_arrow;
     
     spell_data_ptr_t bleak_arrows; 
+    //TODO - reworked
     //spell_data_ptr_t shadow_hounds;
     spell_data_ptr_t soul_drinker;
     spell_data_ptr_t the_bell_tolls;
 
+    //TODO
     spell_data_ptr_t phantom_pain; 
+    //TODO
     spell_data_ptr_t ebon_bowstring;
     spell_data_ptr_t embrace_the_shadows;  // TODO defensive
     spell_data_ptr_t smoke_screen;         // TODO defensive
     spell_data_ptr_t dark_chains;          // TODO defensive
-    spell_data_ptr_t shadow_dagger;
+    spell_data_ptr_t shadow_dagger;        // TODO utility
 
     spell_data_ptr_t banshees_mark; 
+    //TODO - reworked
     //spell_data_ptr_t shadow_surge;
+    //TODO
     spell_data_ptr_t bleak_powder;
 
+    //TODO - reworked
     //spell_data_ptr_t withering_fire;
 
     //Reworked to be deleted
@@ -4359,6 +4365,12 @@ struct black_arrow_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( s );
 
     black_arrow_dot->execute_on_target( s->target );
+
+    //The chance is not in spell data and is hardcoded into the tooltip
+    if ( p()->talents.banshees_mark.ok() && rng().roll( 0.25 ) )
+    {
+      p()->actions.a_murder_of_crows->execute_on_target( s->target ); 
+    }
   }
 
   /*
@@ -6789,6 +6801,7 @@ struct a_murder_of_crows_t : public hunter_spell_t
   {
     background = dual = true;
     tick_action = p->get_background_action<peck_t>( "crow_peck" );
+    school = p->talents.banshees_mark.ok() ? SCHOOL_SHADOW : SCHOOL_PHYSICAL;
   }
 
   // Spell data for A Murder of Crows still has it listed as costing focus
