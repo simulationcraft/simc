@@ -7016,27 +7016,7 @@ struct wildfire_bomb_base_t: public hunter_spell_t
       }
     };
 
-    struct explosive_shot_grenade_juggler_t : public attacks::explosive_shot_background_t
-    {
-      explosive_shot_grenade_juggler_t( util::string_view n, hunter_t* p ) : explosive_shot_background_t( n, p )
-      {
-      }
-
-      void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
-      {
-        explosive_shot_background_t::snapshot_internal( s, flags, rt );
-
-        if ( flags & STATE_EFFECTIVENESS )
-          debug_cast<state_t*>( s )->effectiveness = p()->talents.grenade_juggler->effectN( 5 ).percent();
-      }
-    };
-
     bomb_dot_t* bomb_dot;
-
-    struct {
-      double chance = 0;
-      explosive_shot_grenade_juggler_t* explosive_shot = nullptr;
-    } grenade_juggler;
 
     bomb_damage_t( util::string_view n, hunter_t* p, wildfire_bomb_base_t* a ) : 
       hunter_spell_t( n, p, p->talents.wildfire_bomb_dmg ),
@@ -7054,12 +7034,6 @@ struct wildfire_bomb_base_t: public hunter_spell_t
 
       a->add_child( this );
       a->add_child( bomb_dot );
-
-      if ( p->talents.grenade_juggler.ok() )
-      {
-        grenade_juggler.chance = p->talents.grenade_juggler->effectN( 2 ).percent();
-        grenade_juggler.explosive_shot = p->get_background_action<explosive_shot_grenade_juggler_t>( "explosive_shot_grenade_juggler" );
-      }
     }
 
     void execute() override
@@ -7075,8 +7049,8 @@ struct wildfire_bomb_base_t: public hunter_spell_t
         bomb_dot->execute();
       }
 
-      if ( rng().roll( grenade_juggler.chance ) )
-        grenade_juggler.explosive_shot->execute_on_target( target );
+      if ( rng().roll( p()->talents.grenade_juggler->effectN( 2 ).percent() ) )
+        p()->cooldowns.explosive_shot->reset( true );
 
       if ( p()->cooldowns.lunar_storm->up() )
         p()->trigger_lunar_storm( target );
