@@ -637,8 +637,9 @@ struct sim_t : private sc_thread_t
 
   // Spell database access
   std::unique_ptr<spell_data_expr_t> spell_query;
-  unsigned           spell_query_level;
-  std::string        spell_query_xml_output_file_str;
+  unsigned spell_query_level;
+  std::string spell_query_xml_output_file_str;
+  unsigned spell_query_wrap;
 
   std::unique_ptr<mutex_t> pause_mutex; // External pause mutex, instantiated an external entity (in our case the GUI).
   bool paused;

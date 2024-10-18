@@ -53,7 +53,7 @@ actions.st+=/kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_
 actions.st+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_call&charges_fractional>1.4|buff.call_of_the_wild.up|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|talent.savagery|fight_remains<9
 actions.st+=/cobra_shot,if=buff.bestial_wrath.up&talent.killer_cobra
 actions.st+=/explosive_shot,if=!buff.bestial_wrath.up&talent.killer_cobra|!talent.killer_cobra
-actions.st+=/kill_shot,if=buff.hunters_prey.remains<gcd*2&talent.venoms_bite|target.health.pct<20
+actions.st+=/kill_shot,if=talent.venoms_bite|target.health.pct<20
 actions.st+=/lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.st+=/cobra_shot
 actions.st+=/bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5

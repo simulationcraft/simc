@@ -1314,7 +1314,6 @@ public:
   void init_items() override;
   void init_scaling() override;
   void init_finished() override;
-  void add_precombat_buff_state( buff_t*, int, double, timespan_t ) override;
   void parse_player_effects();
   void create_buffs() override;
   void apply_affecting_auras( buff_t& );
@@ -6692,11 +6691,14 @@ void druid_action_t<Base>::init()
     // allow ground_aoe for snapshots
     if ( !ab::background || ab::ground_aoe )
     {
-      const auto& eff = p()->buff.lunar_amplification->data().effectN( 1 );
-      add_parse_entry( persistent_multiplier_effects )
-        .set_buff( p()->buff.lunar_amplification )
-        .set_value( eff.percent() )
-        .set_eff( &eff );
+      if ( const auto& eff = p()->buff.lunar_amplification->data().effectN( 1 );
+           !has_parse_entry( persistent_multiplier_effects, &eff ) )
+      {
+        add_parse_entry( persistent_multiplier_effects )
+          .set_buff( p()->buff.lunar_amplification )
+          .set_value( eff.percent() )
+          .set_eff( &eff );
+      }
     }
   }
 }
@@ -6789,6 +6791,9 @@ public:
 
   void execute() override
   {
+    if ( p()->is_ptr() && p()->eclipse_handler.in_eclipse() && rng().roll( touch_pct ) )
+      p()->buff.touch_the_cosmos->trigger( this );
+
     druid_spell_t::execute();
 
     if ( ( dreamstate || !has_flag( flag_e::FOREGROUND ) ) && p()->buff.dreamstate->can_expire( this ) )
@@ -6799,9 +6804,6 @@ public:
     // Dreamstate is triggered after the first harmful cast.
     if ( is_precombat && p()->talent.natures_grace.ok() && !p()->buff.dreamstate->check() )
       p()->buff.dreamstate->trigger();
-
-    if ( p()->is_ptr() && p()->eclipse_handler.in_eclipse() && rng().roll( touch_pct ) )
-      p()->buff.touch_the_cosmos->trigger( this );
   }
 
   void impact( action_state_t* s ) override
@@ -8864,8 +8866,7 @@ struct wrath_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
   {
     base_t::execute();
 
-    //if ( p()->eclipse_handler.in_eclipse() && !p()->is_ptr() )
-    if ( p()->eclipse_handler.in_eclipse() )
+    if ( p()->eclipse_handler.in_eclipse() && !p()->is_ptr() )
       p()->buff.touch_the_cosmos_starsurge->trigger( this );
   }
 
@@ -10513,26 +10514,6 @@ void druid_t::init_finished()
       sf->dreamstate.locked = true;
     }
   }
-
-  // trinket specific adjustments
-  if ( specialization() == DRUID_BALANCE )
-  {
-    if ( unique_gear::find_special_effect( this, 90986 ) &&
-         precombat_state_map.find( "buff.dead_winds.stack" ) == precombat_state_map.end() )
-    {
-      auto buff = buff_t::find( this, "dead_winds" );
-      assert( buff );
-      add_precombat_buff_state( buff, 20, buff_t::DEFAULT_VALUE(), timespan_t::min() );
-    }
-  }
-}
-
-void druid_t::add_precombat_buff_state( buff_t* b, int s, double v, timespan_t d )
-{
-  if ( !s )
-    return;
-
-  player_t::add_precombat_buff_state( b, s, v, d );
 }
 
 // druid_t::create_buffs ====================================================
@@ -10821,13 +10802,13 @@ void druid_t::create_buffs()
     make_fallback( is_ptr() && talent.touch_the_cosmos.ok(), this, "touch_the_cosmos", find_spell( 450360 ) )
       ->set_trigger_spell( talent.touch_the_cosmos );
 
-  buff.touch_the_cosmos_starfall = make_fallback( talent.touch_the_cosmos.ok() && talent.starfall.ok(),
+  buff.touch_the_cosmos_starfall = make_fallback( !is_ptr() && talent.touch_the_cosmos.ok() && talent.starfall.ok(),
     this, "touch_the_cosmos_starfall", find_spell( 450361 ) )
       ->set_chance( talent.touch_the_cosmos->effectN( 2 ).percent() )
       ->set_name_reporting( "Starfall" )
       ->set_trigger_spell( talent.touch_the_cosmos );
 
-  buff.touch_the_cosmos_starsurge = make_fallback( talent.touch_the_cosmos.ok(),
+  buff.touch_the_cosmos_starsurge = make_fallback( !is_ptr() && talent.touch_the_cosmos.ok(),
     this, "touch_the_cosmos_starsurge", find_spell( 450360 ) )
       ->set_chance( talent.touch_the_cosmos->effectN( 1 ).percent() )
       ->set_name_reporting( "Starsurge" )

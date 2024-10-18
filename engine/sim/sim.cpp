@@ -1560,6 +1560,7 @@ sim_t::sim_t()
     work_queue( new work_queue_t() ),
     spell_query(),
     spell_query_level( MAX_LEVEL ),
+    spell_query_wrap( 0 ),
     pause_mutex( nullptr ),
     paused( false ),
     chart_show_relative_difference( false ),
@@ -3863,6 +3864,7 @@ void sim_t::create_options()
   add_option( opt_float( "scaling_normalized", scaling_normalized ) );
   add_option( opt_bool( "merge_enemy_priority_dmg", merge_enemy_priority_dmg ) );
   add_option( opt_int( "decorated_tooltips", decorated_tooltips ) );
+  add_option( opt_uint( "spell_query_wrap", spell_query_wrap ) );
   // Charts
   add_option( opt_bool( "chart_show_relative_difference", chart_show_relative_difference ) );
   add_option( opt_string( "relative_difference_base", relative_difference_base ) );

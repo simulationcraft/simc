@@ -192,7 +192,7 @@ void beast_mastery_ptr( player_t* p )
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_call&charges_fractional>1.4|buff.call_of_the_wild.up|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|talent.savagery|fight_remains<9" );
   st->add_action( "cobra_shot,if=buff.bestial_wrath.up&talent.killer_cobra" );
   st->add_action( "explosive_shot,if=!buff.bestial_wrath.up&talent.killer_cobra|!talent.killer_cobra" );
-  st->add_action( "kill_shot,if=buff.hunters_prey.remains<gcd*2&talent.venoms_bite|target.health.pct<20" );
+  st->add_action( "kill_shot,if=talent.venoms_bite|target.health.pct<20" );
   st->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st->add_action( "cobra_shot" );
   st->add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
@@ -326,7 +326,7 @@ void marksmanship_ptr( player_t* p )
   cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<26" );
   cds->add_action( "salvo,if=active_enemies>2|cooldown.volley.remains<10" );
 
-  st->add_action( "steady_shot,if=talent.steady_focus&steady_focus_count&buff.steady_focus.remains<8" );
+  st->add_action( "steady_shot,if=talent.steady_focus&buff.steady_focus.remains<8" );
   st->add_action( "kill_shot,if=buff.razor_fragments.up" );
   st->add_action( "black_arrow" );
   st->add_action( "explosive_shot,if=active_enemies>1" );
@@ -349,7 +349,7 @@ void marksmanship_ptr( player_t* p )
   st->add_action( "bag_of_tricks,if=buff.trueshot.down" );
   st->add_action( "steady_shot" );
 
-  trickshots->add_action( "steady_shot,if=talent.steady_focus&steady_focus_count&buff.steady_focus.remains<8" );
+  trickshots->add_action( "steady_shot,if=talent.steady_focus&buff.steady_focus.remains<8" );
   trickshots->add_action( "explosive_shot" );
   trickshots->add_action( "volley" );
   trickshots->add_action( "barrage,if=talent.rapid_fire_barrage&buff.trick_shots.remains>=execute_time" );
@@ -409,6 +409,7 @@ void survival( player_t* p )
   cds->add_action( "potion,if=target.time_to_die<25|buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault" );
   cds->add_action( "use_item,name=imperfect_ascendancy_serum,use_off_gcd=1,if=gcd.remains>gcd.max-0.1" );
   cds->add_action( "use_items,if=cooldown.coordinated_assault.remains|cooldown.spearhead.remains" );
+  cds->add_action( "use_item,name=mad_queens_mandate,use_off_gcd=1,if=gcd.remains>gcd.max-0.1&(time_to_die<10|time_to_die>120)&(trinket.skardyns_grace.cooldown.remains|!equipped.skardyns_grace)|time_to_die<10" );
   cds->add_action( "aspect_of_the_eagle,if=target.distance>=6" );
 
   plst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1)", "PL ST is currently optimised for KCspam, if the playstyle ends up fixed it is likely better to entirely redo and take the sentactionlist as a baseline. PACK LEADER SINGLE TARGET ACTIONLIST." );

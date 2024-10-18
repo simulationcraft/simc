@@ -1002,7 +1002,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
     shuffled_rng_t *deck;
     flurry_strike_wisdom_t *wisdom_flurry;
 
-    flurry_strike_t( monk_t *p )
+    flurry_strike_t( monk_t *p, action_t *parent )
       : monk_melee_attack_t( p, "flurry_strike", p->talent.shado_pan.flurry_strikes_hit ),
         flurry_strikes_counter( p->user_options.shado_pan_initial_charge_accumulator ),
         flurry_strikes_threshold( as<int>( p->talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value() ) ),
@@ -1016,7 +1016,8 @@ struct flurry_strikes_t : public monk_melee_attack_t
       apply_affecting_aura( p->talent.shado_pan.pride_of_pandaria );
 
       wisdom_flurry = new flurry_strike_wisdom_t( p );
-      add_child( wisdom_flurry );
+
+      parent->add_child( wisdom_flurry );
     }
 
     void impact( action_state_t *s ) override
@@ -1068,7 +1069,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
 
   flurry_strikes_t( monk_t *p ) : monk_melee_attack_t( p, "flurry_strikes", p->talent.shado_pan.flurry_strikes )
   {
-    strike = new flurry_strike_t( p );
+    strike = new flurry_strike_t( p, this );
     add_child( strike );
 
     if ( !p->talent.shado_pan.high_impact->ok() )
@@ -1114,8 +1115,8 @@ struct overwhelming_force_t : base_action_t
       background = dual = proc = true;
       base_multiplier          = player->talent.master_of_harmony.overwhelming_force->effectN( 1 ).percent();
       base_multiplier += player->baseline.brewmaster.aura->effectN( 32 ).percent();
-      aoe = -1;
-      reduced_aoe_targets      = player->talent.master_of_harmony.overwhelming_force->effectN( 2 ).base_value();
+      aoe                 = -1;
+      reduced_aoe_targets = player->talent.master_of_harmony.overwhelming_force->effectN( 2 ).base_value();
     }
 
     void init() override
@@ -5631,7 +5632,10 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
 
     set_tick_callback( [ this ]( buff_t *, int, timespan_t ) {
       if ( rushing_jade_wind_tick )
+      {
         rushing_jade_wind_tick->execute();
+        return;
+      }
 
       if ( action_t *rjw = p().find_action( "rushing_jade_wind_tick" ); rjw )
       {
@@ -5941,7 +5945,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(

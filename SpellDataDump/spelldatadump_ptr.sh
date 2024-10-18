@@ -24,9 +24,7 @@ do
 done
 
 FILE=SpellDataDump/allspells_ptr.txt
-echo "WARNING: allspells_ptr.txt will be deprecated in the future. Please refer to the class files or nonclass_ptr.txt for non-class spells." > $FILE.unix
-echo >> $FILE.unix
-./engine/simc display_build="0" $PTR spell_query="spell" >> $FILE.unix
+./engine/simc display_build="0" $PTR spell_query="spell" > $FILE.unix
 convert_line_ending $FILE
 
 FILE=SpellDataDump/nonclass_ptr.txt

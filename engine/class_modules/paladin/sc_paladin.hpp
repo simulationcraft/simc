@@ -876,6 +876,7 @@ public:
   bool standing_in_hallow() const;
   void adjust_health_percent();
   void cast_holy_armaments( player_t* target, armament usedArmament, bool changeArmament, bool random );
+  void trigger_greater_judgment( paladin_td_t* targetdata );
 
   // Returns true if AW/Crusade is up, or if the target is below 20% HP.
   // This isn't in HoW's target_ready() so it can be used in the time_to_hpg expression
