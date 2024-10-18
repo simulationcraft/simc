@@ -3843,7 +3843,7 @@ struct demolish_damage_t : public warrior_attack_t
     if ( data().id() == 440888 )
     {
       aoe = -1;
-      reduced_aoe_targets = 8.0;
+      reduced_aoe_targets = p->talents.colossus.demolish->effectN( 1 ).base_value();
     }
   }
 
