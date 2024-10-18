@@ -7258,6 +7258,10 @@ void hunter_td_t::target_demise()
     p -> sim -> print_debug( "{} harpoon cooldown reset on damaged target death.", p -> name() );
     p -> cooldowns.harpoon -> reset( true );
   }
+  if ( p->talents.soul_drinker.ok() && dots.black_arrow->is_ticking() && p->rng().roll( p->talents.soul_drinker->effectN( 1 ).percent() ) )
+  {
+    p->buffs.deathblow->trigger();
+  }
 }
 
 /**
