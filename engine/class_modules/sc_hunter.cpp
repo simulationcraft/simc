@@ -361,6 +361,7 @@ struct hunter_td_t: public actor_target_data_t
     dot_t* barbed_shot;
     dot_t* cull_the_herd;
     dot_t* explosive_shot;
+    dot_t* merciless_blow; 
   } dots;
 
   hunter_td_t( player_t* target, hunter_t* p );
@@ -452,7 +453,6 @@ public:
     buff_t* tip_of_the_spear_explosive;
     buff_t* sulfur_lined_pockets;
     buff_t* sulfur_lined_pockets_explosive;
-    buff_t* merciless_blows;
     buff_t* bloodseeker;
     buff_t* aspect_of_the_eagle;
     buff_t* terms_of_engagement;
@@ -758,7 +758,7 @@ public:
     spell_data_ptr_t flanking_strike;
     spell_data_ptr_t flanking_strike_player;
     spell_data_ptr_t frenzy_strikes;
-    spell_data_ptr_t merciless_blows;
+    spell_data_ptr_t merciless_blow;
     spell_data_ptr_t vipers_venom;
     spell_data_ptr_t bloodseeker;
 
@@ -891,6 +891,7 @@ public:
     action_t* snakeskin_quiver = nullptr;
     action_t* dire_command = nullptr;
     action_t* a_murder_of_crows = nullptr;
+    action_t* merciless_blow = nullptr; 
 
     action_t* vicious_hunt = nullptr;
     action_t* cull_the_herd = nullptr;
@@ -3350,6 +3351,7 @@ int hunter_t::ticking_dots( hunter_td_t* td )
   dots += hunter_dots.serpent_sting->is_ticking();
   dots += hunter_dots.wildfire_bomb->is_ticking();
   dots += hunter_dots.cull_the_herd->is_ticking();
+  dots += hunter_dots.merciless_blow->is_ticking();
 
   auto pet_dots = pets.main->get_target_data( td->target )->dots;
   dots += pet_dots.bloodshed->is_ticking();
@@ -5669,8 +5671,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     if ( rng().roll( wildfire_infusion_chance ) )
       p()->cooldowns.kill_command->reset( true );
 
-    p()->buffs.merciless_blows->expire();
-
     if( p()->talents.pack_coordination.ok() && p()->pets.main->buffs.pack_coordination->check() )
     {
       p()->pets.main->active.pack_coordination_ba->execute_on_target( target );
@@ -5696,14 +5696,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   {
     const bool has_eagle = p() -> buffs.aspect_of_the_eagle -> check();
     return ( range > 10 ? has_eagle : !has_eagle ) && hunter_melee_attack_t::ready();
-  }
-
-  int n_targets() const override
-  {
-    if ( p()->buffs.merciless_blows->up() )
-      return as<int>( p()->buffs.merciless_blows->check_value() );
-
-    return hunter_melee_attack_t::n_targets();
   }
 };
 
@@ -5901,8 +5893,6 @@ struct butchery_t : public hunter_melee_attack_t
     if ( p()->talents.frenzy_strikes.ok() )
       p()->cooldowns.wildfire_bomb->adjust( -frenzy_strikes.reduction * std::min( num_targets_hit, frenzy_strikes.cap ) );
 
-    p()->buffs.merciless_blows->trigger();
-
     if ( p() -> talents.scattered_prey.ok() ) 
     {
       if( p() -> buffs.scattered_prey -> up() ) 
@@ -5913,6 +5903,11 @@ struct butchery_t : public hunter_melee_attack_t
       {
         p() -> buffs.scattered_prey -> trigger();
       }
+    }
+
+    if ( p()->talents.merciless_blow.ok() )
+    {
+      p()->actions.merciless_blow->execute_on_target( target );
     }
   }
 
@@ -5925,6 +5920,17 @@ struct butchery_t : public hunter_melee_attack_t
     return m;
   }
 };
+
+// Merciless Blow =================================================================
+
+struct merciless_blow_t : public hunter_melee_attack_t
+{
+  merciless_blow_t( hunter_t* p ):
+    hunter_melee_attack_t( "merciless_blow", p, p -> find_spell( 459870 ) )
+  {
+    background = dual = true;
+  }
+}; 
 
 // Fury of the Eagle ==============================================================
 
@@ -7240,6 +7246,7 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
   dots.barbed_shot = t -> get_dot( "barbed_shot", p );
   dots.cull_the_herd = t -> get_dot( "cull_the_herd", p );
   dots.explosive_shot = t->get_dot( "explosive_shot", p );
+  dots.merciless_blow = t->get_dot( "merciless_blow", p );
 
   t -> register_on_demise_callback( p, [this](player_t*) { target_demise(); } );
 }
@@ -7648,7 +7655,7 @@ void hunter_t::init_spells()
     talents.flanking_strike                   = find_talent_spell( talent_tree::SPECIALIZATION, "Flanking Strike", HUNTER_SURVIVAL );
     talents.flanking_strike_player            = talents.flanking_strike.ok() ? find_spell( 269752 ) : spell_data_t::not_found();
     talents.frenzy_strikes                    = find_talent_spell( talent_tree::SPECIALIZATION, "Frenzy Strikes", HUNTER_SURVIVAL );
-    talents.merciless_blows                   = find_talent_spell( talent_tree::SPECIALIZATION, "Merciless Blows", HUNTER_SURVIVAL );
+    talents.merciless_blow                    = find_talent_spell( talent_tree::SPECIALIZATION, "Merciless Blow", HUNTER_SURVIVAL );
     talents.vipers_venom                      = find_talent_spell( talent_tree::SPECIALIZATION, "Viper's Venom", HUNTER_SURVIVAL );
     talents.bloodseeker                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bloodseeker", HUNTER_SURVIVAL );
 
@@ -7864,6 +7871,9 @@ void hunter_t::create_actions()
 
   if ( talents.snakeskin_quiver.ok() )
     actions.snakeskin_quiver = new attacks::cobra_shot_snakeskin_quiver_t( this );
+
+  if ( talents.merciless_blow.ok() )
+    actions.merciless_blow = new attacks::merciless_blow_t( this );
 
 }
 
@@ -8122,10 +8132,6 @@ void hunter_t::create_buffs()
     make_buff( this, "terms_of_engagement", find_spell( 265898 ) )
       -> set_default_value_from_effect( 1, 1 / 5.0 )
       -> set_affects_regen( true );
-
-  buffs.merciless_blows = make_buff( this, "merciless_blows", find_spell( 459870 ) )
-      ->set_default_value_from_effect( 1 )
-      ->set_chance( talents.merciless_blows.ok() );
 
   buffs.aspect_of_the_eagle =
     make_buff( this, "aspect_of_the_eagle", find_spell( 186289 ) )
