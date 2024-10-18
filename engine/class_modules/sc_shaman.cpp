@@ -5302,7 +5302,11 @@ struct stormstrike_base_t : public shaman_attack_t
     {
       p()->trigger_whirling_air( execute_state );
     }
-    p()->trigger_totemic_rebound( execute_state );
+
+    if ( !p()->dbc->ptr )
+    {
+      p()->trigger_totemic_rebound( execute_state );
+    }
 
     if ( p()->dbc->ptr && p()->cooldown.stormblast->up() )
     {
@@ -6371,6 +6375,11 @@ struct chain_lightning_t : public chained_base_t
     {
       p()->trigger_whirling_air( state );
     }
+
+    if ( p()->dbc->ptr && state->chain_target == 0 )
+    {
+      p()->trigger_totemic_rebound( state );
+    }
   }
 
   void schedule_travel(action_state_t* s) override
@@ -7427,6 +7436,11 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       p()->trigger_whirling_air( execute_state );
     }
+
+    if ( p()->dbc->ptr )
+    {
+      p()->trigger_totemic_rebound( execute_state );
+    }
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -7692,6 +7706,11 @@ struct elemental_blast_t : public shaman_spell_t
       {
         // Elemental Blast can trigger DRE on PTR
         p()->trigger_deeply_rooted_elements( execute_state );
+      }
+
+      if ( p()->dbc->ptr )
+      {
+        p()->trigger_totemic_rebound( execute_state );
       }
     }
 
