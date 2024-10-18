@@ -1162,6 +1162,8 @@ public:
     if ( p()->talents.colossus.tide_of_battle->ok() )
     {
       parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 3 ), p()->spec.protection_warrior );
+      if ( is_ptr() )
+        parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 4 ), p()->spec.protection_warrior );
     }
     // Effect 3 is the auto attack mod
     parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars, effect_mask_t( false ).enable( 3 ) );
