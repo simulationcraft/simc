@@ -537,7 +537,7 @@ void survival_ptr( player_t* p )
   plst->add_action( "kill_command,target_if=min:bloodseeker.remains" );
   plst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>15)" );
   plst->add_action( "fury_of_the_eagle,interrupt=1,if=(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>40)" );
-  plst->add_action( "butchery,if=active_enemies>1&(talent.merciless_blows&buff.merciless_blows.down|!talent.merciless_blows)" );
+  plst->add_action( "butchery,if=active_enemies>1" );
   plst->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents" );
   plst->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains" );
 
@@ -553,7 +553,7 @@ void survival_ptr( player_t* p )
   plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max|buff.exposed_flank.remains&buff.tip_of_the_spear.stack<2" );
   plcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0" );
   plcleave->add_action( "butchery,if=charges_fractional>2.8&cooldown.wildfire_bomb.charges_fractional<1.5" );
-  plcleave->add_action( "raptor_bite,if=buff.merciless_blows.up" );
+  plcleave->add_action( "raptor_bite" );
   plcleave->add_action( "butchery" );
   plcleave->add_action( "kill_shot" );
   plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains" );
@@ -574,7 +574,7 @@ void survival_ptr( player_t* p )
   sentst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(!buff.relentless_primal_ferocity.up||(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<2))" );
   sentst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.lunar_storm.remains>full_recharge_time&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>15)" );
   sentst->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
-  sentst->add_action( "butchery,if=active_enemies>1&(talent.merciless_blows&buff.merciless_blows.down|!talent.merciless_blows)" );
+  sentst->add_action( "butchery,if=active_enemies>1" );
   sentst->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents" );
   sentst->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains" );
 
@@ -589,7 +589,7 @@ void survival_ptr( player_t* p )
   sentcleave->add_action( "kill_shot,if=active_enemies<4" );
   sentcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
   sentcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0" );
-  sentcleave->add_action( "raptor_bite,if=buff.merciless_blows.up" );
+  sentcleave->add_action( "raptor_bite" );
   sentcleave->add_action( "butchery" );
   sentcleave->add_action( "kill_shot" );
   sentcleave->add_action( "raptor_bite" );

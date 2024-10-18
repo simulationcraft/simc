@@ -51,7 +51,7 @@ actions.plst+=/raptor_bite,if=(buff.furious_assault.up&buff.tip_of_the_spear.sta
 actions.plst+=/kill_command,target_if=min:bloodseeker.remains
 actions.plst+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>15)
 actions.plst+=/fury_of_the_eagle,interrupt=1,if=(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>40)
-actions.plst+=/butchery,if=active_enemies>1&(talent.merciless_blows&buff.merciless_blows.down|!talent.merciless_blows)
+actions.plst+=/butchery,if=active_enemies>1
 actions.plst+=/raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents
 actions.plst+=/raptor_bite,target_if=max:dot.serpent_sting.remains
 
@@ -68,7 +68,7 @@ actions.plcleave+=/kill_shot
 actions.plcleave+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max|buff.exposed_flank.remains&buff.tip_of_the_spear.stack<2
 actions.plcleave+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0
 actions.plcleave+=/butchery,if=charges_fractional>2.8&cooldown.wildfire_bomb.charges_fractional<1.5
-actions.plcleave+=/raptor_bite,if=buff.merciless_blows.up
+actions.plcleave+=/raptor_bite
 actions.plcleave+=/butchery
 actions.plcleave+=/kill_shot
 actions.plcleave+=/kill_command,target_if=min:bloodseeker.remains
@@ -94,7 +94,7 @@ actions.sentst+=/kill_command,target_if=min:bloodseeker.remains,if=buff.tip_of_t
 actions.sentst+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(!buff.relentless_primal_ferocity.up||(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<2))
 actions.sentst+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.lunar_storm.remains>full_recharge_time&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>15)
 actions.sentst+=/fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0
-actions.sentst+=/butchery,if=active_enemies>1&(talent.merciless_blows&buff.merciless_blows.down|!talent.merciless_blows)
+actions.sentst+=/butchery,if=active_enemies>1
 actions.sentst+=/raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents
 actions.sentst+=/raptor_bite,target_if=max:dot.serpent_sting.remains
 
@@ -110,7 +110,7 @@ actions.sentcleave+=/fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0
 actions.sentcleave+=/kill_shot,if=active_enemies<4
 actions.sentcleave+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max
 actions.sentcleave+=/wildfire_bomb,if=buff.tip_of_the_spear.stack>0
-actions.sentcleave+=/raptor_bite,if=buff.merciless_blows.up
+actions.sentcleave+=/raptor_bite
 actions.sentcleave+=/butchery
 actions.sentcleave+=/kill_shot
 actions.sentcleave+=/raptor_bite
