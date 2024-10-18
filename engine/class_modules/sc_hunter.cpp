@@ -459,6 +459,7 @@ public:
     buff_t* mongoose_fury;
     buff_t* coordinated_assault;
     buff_t* exposed_flank;
+    buff_t* ruthless_marauder;
     buff_t* relentless_primal_ferocity;
     buff_t* bombardier;
 
@@ -1167,10 +1168,11 @@ public:
     ab::apply_affecting_aura( p -> talents.improved_wildfire_bomb );
     ab::apply_affecting_aura( p -> talents.sweeping_spear );
     ab::apply_affecting_aura( p -> talents.tactical_advantage );
+    ab::apply_affecting_aura( p -> talents.grenade_juggler );
     ab::apply_affecting_aura( p -> talents.ranger );
     ab::apply_affecting_aura( p -> talents.explosives_expert );
+    ab::apply_affecting_aura( p -> talents.ruthless_marauder );
     ab::apply_affecting_aura( p -> talents.symbiotic_adrenaline );
-    ab::apply_affecting_aura( p -> talents.grenade_juggler );
     ab::apply_affecting_aura( p -> talents.deadly_duo );
 
     // Set Bonus passives
@@ -5932,7 +5934,6 @@ struct fury_of_the_eagle_t : public hunter_melee_attack_t
   {
     double health_threshold = 0;
     double crit_chance_bonus = 0;
-    timespan_t ruthless_marauder_adjust = 0_ms;
 
     fury_of_the_eagle_tick_t( util::string_view n, hunter_t* p ) : hunter_melee_attack_t( n, p, p->talents.fury_of_the_eagle->effectN( 1 ).trigger() )
     {
@@ -5941,15 +5942,8 @@ struct fury_of_the_eagle_t : public hunter_melee_attack_t
       may_crit = true;
       radius = data().max_range();
       reduced_aoe_targets = p->talents.fury_of_the_eagle->effectN( 5 ).base_value();
-      health_threshold = p -> talents.fury_of_the_eagle -> effectN( 4 ).base_value() + p -> talents.ruthless_marauder -> effectN( 1 ).base_value();
+      health_threshold = p -> talents.fury_of_the_eagle -> effectN( 4 ).base_value();
       crit_chance_bonus = p -> talents.fury_of_the_eagle -> effectN( 3 ).percent();
-
-      // 2-12-22: Ruthless Marauder also adds to crit rate.
-      if ( p -> bugs )
-        crit_chance_bonus += p -> talents.ruthless_marauder -> effectN( 1 ).percent();
-
-      if ( p -> talents.ruthless_marauder )
-        ruthless_marauder_adjust = p -> talents.ruthless_marauder -> effectN( 3 ).time_value();
 
       // Fury of the Eagle ticks should not decrement Tip of the Spear on execute, but rather on the last tick.
       decrements_tip_of_the_spear = false;
@@ -5969,11 +5963,10 @@ struct fury_of_the_eagle_t : public hunter_melee_attack_t
     {
       hunter_melee_attack_t::impact( state );
 
-      if ( ruthless_marauder_adjust > 0_ms && state -> result == RESULT_CRIT && p() -> cooldowns.ruthless_marauder -> is_ready() )
+      if ( p()->talents.ruthless_marauder.ok() && p()->cooldowns.ruthless_marauder->is_ready() && rng().roll( p()->talents.ruthless_marauder->effectN( 1 ).percent() ) )
       {
-        p() -> cooldowns.wildfire_bomb -> adjust( -ruthless_marauder_adjust );
-        p() -> cooldowns.flanking_strike -> adjust( -ruthless_marauder_adjust );
-        p() -> cooldowns.ruthless_marauder -> start();
+        p()->buffs.tip_of_the_spear->trigger();
+        p()->cooldowns.ruthless_marauder->start();
       }
     }
   };
@@ -6007,6 +6000,9 @@ struct fury_of_the_eagle_t : public hunter_melee_attack_t
 
     if ( p()->talents.tip_of_the_spear.ok() )
       p()->buffs.tip_of_the_spear->decrement();
+    
+    if( p()->talents.ruthless_marauder )
+      p()->buffs.ruthless_marauder->trigger();
   }
 };
 
@@ -8153,6 +8149,11 @@ void hunter_t::create_buffs()
         cooldowns.explosive_shot->reset( true );
       }
     } );
+
+  buffs.ruthless_marauder =
+    make_buff( this, "ruthless_marauder", find_spell( 470070 ) )
+      ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+      ->set_default_value_from_effect( 1 );
 
   buffs.relentless_primal_ferocity =
     make_buff( this, "relentless_primal_ferocity", talents.relentless_primal_ferocity_buff )
