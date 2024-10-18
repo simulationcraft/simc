@@ -3628,11 +3628,14 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 
   double snakeskin_quiver_chance = 0;
   double wild_call_chance = 0;
+  double bleak_arrows_chance = 0; 
 
   auto_shot_t( hunter_t* p ) : auto_attack_base_t( "auto_shot", p, p->specs.auto_shot )
   {
     wild_call_chance = p->talents.wild_call->effectN( 1 ).percent();
     snakeskin_quiver_chance = p->talents.snakeskin_quiver->effectN( 1 ).percent();
+    bleak_arrows_chance = p->talents.bleak_arrows->effectN( p->specialization() == HUNTER_MARKSMANSHIP ? 2 : 1 ).percent();
+    school = p->talents.bleak_arrows->ok() ? SCHOOL_SHADOW : SCHOOL_PHYSICAL;
   }
 
   action_state_t* new_state() override
@@ -3662,6 +3665,11 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
     {
       p() -> cooldowns.barbed_shot -> reset( true );
       p() -> procs.wild_call -> occur();
+    }
+
+    if ( rng().roll( bleak_arrows_chance ) )
+    {
+      p()->buffs.deathblow->trigger();
     }
   }
 
@@ -6500,7 +6508,6 @@ struct kill_command_t: public hunter_spell_t
       {
         deathblow.proc->occur();
         p()->buffs.deathblow->trigger();
-        p()->cooldowns.kill_shot->reset( true );
       }
     }
 
@@ -7737,7 +7744,7 @@ void hunter_t::init_spells()
 
     //Reworked // to be deleted
     talents.black_arrow_buff = talents.black_arrow.ok() ? find_spell( 439659 ) : spell_data_t::not_found();
-    
+
     talents.overshadow    = find_talent_spell( talent_tree::HERO, "Overshadow" );
     talents.death_shade   = find_talent_spell( talent_tree::HERO, "Death Shade" );
 
