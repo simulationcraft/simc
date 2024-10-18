@@ -487,10 +487,9 @@ public:
     buff_t* eyes_closed;
 
     // Dark Ranger
-    buff_t* black_arrow;
     buff_t* bleak_powder_debuff;
     buff_t* withering_fire;
-
+    buff_t* withering_fire_build_up;
   } buffs;
 
   // Cooldowns
@@ -818,14 +817,8 @@ public:
     spell_data_ptr_t bleak_powder;
     spell_data_ptr_t bleak_powder_dmg;
 
-    //TODO - reworked
-    //spell_data_ptr_t withering_fire;
-
-    //Reworked to be deleted
+    //TODO
     spell_data_ptr_t withering_fire;
-    spell_data_ptr_t withering_fire_dmg;
-    spell_data_ptr_t withering_fire_buff;
-
 
     // Pack Leader
     spell_data_ptr_t vicious_hunt;
@@ -915,7 +908,6 @@ public:
     action_t* lunar_storm = nullptr;
 
     action_t* shadow_surge = nullptr;
-    action_t* withering_fire = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -1115,7 +1107,6 @@ public:
 
     // Tier Set
     damage_affected_by tww_s1_mm_4pc;
-    damage_affected_by withering_fire;
   } affected_by;
 
   cdwaste::action_data_t* cd_waste = nullptr;
@@ -1151,7 +1142,6 @@ public:
     affected_by.spearhead_crit_damage = check_affected_by( this, p->talents.spearhead_attack->effectN( 3 ) );
 
     affected_by.tww_s1_mm_4pc = parse_damage_affecting_aura( this, p -> tier_set.tww_s1_mm_4pc_buff );
-    affected_by.withering_fire = parse_damage_affecting_aura( this, p->talents.withering_fire_buff );
 
     // Hunter Tree passives
     ab::apply_affecting_aura( p -> talents.specialized_arsenal );
@@ -1336,9 +1326,6 @@ public:
     {
       am *= 1 + p()->buffs.moving_target->value();
     }
-
-    if ( affected_by.withering_fire.direct )
-      am *= 1 + p()->buffs.withering_fire->check_value();
 
     return am;
   }
@@ -4203,13 +4190,13 @@ struct kill_shot_t : hunter_ranged_attack_t
     if ( p->talents.black_arrow.ok() )
       background = true;
 
-    if ( p -> talents.razor_fragments.ok() )
+    if ( p -> talents.razor_fragments.ok() && !p->talents.black_arrow.ok() )
     {
       razor_fragments = p -> get_background_action<razor_fragments_t>( "razor_fragments" );
       add_child( razor_fragments );
     }
 
-    if ( p->talents.venoms_bite.ok() )
+    if ( p->talents.venoms_bite.ok() && !p->talents.black_arrow.ok() )
       venoms_bite = p->get_background_action<serpent_sting_t>( "serpent_sting" );
   }
 
@@ -4371,34 +4358,43 @@ struct black_arrow_t : public hunter_ranged_attack_t
     }
   };
 
-  double tick_recharge_chance = 0.0;
-  cooldown_t* tick_recharge_cooldown = nullptr;
+  // Razor Fragments (Marksmanship Talent)
+  struct razor_fragments_t : residual_bleed_base_t
+  {
+    double result_mod;
+
+    razor_fragments_t( util::string_view n, hunter_t* p )
+      : residual_bleed_base_t( n, p, p -> talents.razor_fragments_bleed )
+    {
+      result_mod = p -> talents.razor_fragments_buff -> effectN( 3 ).percent();
+      aoe = as<int>( p -> talents.razor_fragments_buff -> effectN( 2 ).base_value() );
+    }
+  };
 
   double lower_health_threshold_pct;
   double upper_health_threshold_pct;
 
   black_arrow_dot_t* black_arrow_dot;
   bleak_powder_t* bleak_powder;
+  serpent_sting_t* venoms_bite = nullptr;
+  razor_fragments_t* razor_fragments = nullptr;
 
   black_arrow_t( hunter_t* p, util::string_view options_str )
     : hunter_ranged_attack_t( "black_arrow", p, p->talents.black_arrow )
   {
     parse_options( options_str );
 
-    tick_recharge_chance = data().effectN( 2 ).percent();
-
     lower_health_threshold_pct = p->talents.black_arrow->effectN( 2 ).base_value();
     upper_health_threshold_pct = p->talents.black_arrow->effectN( 3 ).base_value();
 
-    if ( p->specialization() == HUNTER_MARKSMANSHIP )
-    {
-      tick_recharge_cooldown = p->cooldowns.aimed_shot;
-    }
+    if ( p -> talents.razor_fragments.ok() )
+    {  
+       razor_fragments = p -> get_background_action<razor_fragments_t>( "razor_fragments" );
+       add_child( razor_fragments );
+    }  
 
-    if ( p->specialization() == HUNTER_BEAST_MASTERY )
-    {
-      tick_recharge_cooldown = p->cooldowns.barbed_shot;
-    }
+    if ( p->talents.venoms_bite.ok() )
+      venoms_bite = p->get_background_action<serpent_sting_t>( "serpent_sting" );
   }
 
   void execute() override
@@ -4430,36 +4426,13 @@ struct black_arrow_t : public hunter_ranged_attack_t
     }
   }
 
-  /*
-  void tick( dot_t* d ) override
-  {
-    hunter_ranged_attack_t::tick( d );
-
-    if ( rng().roll( tick_recharge_chance ) )
-    {
-      tick_recharge_cooldown->reset( true );
-      p()->buffs.black_arrow->trigger();
-
-      if ( p()->actions.withering_fire )
-      {
-        p()->buffs.withering_fire->trigger();
-        for ( int i = 0; i < 4; i++ )
-          p()->actions.withering_fire->execute_on_target( d->target );
-      }
-    }
-
-    if ( rng().roll( shadow_hounds.chance ) )
-      p()->pets.dark_hound.spawn( shadow_hounds.duration );
-  }
-  */
-
   bool target_ready( player_t* candidate_target ) override
   {
     return hunter_ranged_attack_t::target_ready( candidate_target ) &&
-      ( candidate_target -> health_percentage() <= lower_health_threshold_pct
-        || p()->bugs && candidate_target -> health_percentage() >= upper_health_threshold_pct
-        || p()->talents.the_bell_tolls.ok() && candidate_target -> health_percentage() >= upper_health_threshold_pct
-        || p() -> buffs.deathblow -> check() );
+      ( candidate_target->health_percentage() <= lower_health_threshold_pct
+        || p()->bugs && candidate_target->health_percentage() >= upper_health_threshold_pct
+        || p()->talents.the_bell_tolls.ok() && candidate_target->health_percentage() >= upper_health_threshold_pct
+        || p()->buffs.deathblow -> check() );
   }
 };
 
@@ -4470,16 +4443,6 @@ struct shadow_surge_t final : hunter_ranged_attack_t
   shadow_surge_t( hunter_t* p ) : hunter_ranged_attack_t( "shadow_surge", p, p->talents.shadow_surge_dmg )
   {
     aoe = -1;
-    background = dual = true;
-  }
-};
-
-// Withering Fire (Dark Ranger) =========================================================
-
-struct withering_fire_t final : hunter_ranged_attack_t
-{
-  withering_fire_t(hunter_t* p) : hunter_ranged_attack_t( "withering_fire", p, p->talents.withering_fire_dmg )
-  {
     background = dual = true;
   }
 };
@@ -5187,8 +5150,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
       for ( int i = 0; i < count; i++ )
         legacy_of_the_windrunners.wind_arrow->execute_on_target( target );
     }
-
-    p()->buffs.black_arrow->decrement();
   }
 
   int n_targets() const override
@@ -5210,8 +5171,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 
     if ( p() -> buffs.trueshot -> check() )
       et *= 1 + p() -> buffs.trueshot -> check_value();
-
-    et *= 1 + p()->buffs.black_arrow->value();
 
     return et;
   }
@@ -6754,6 +6713,16 @@ struct bestial_wrath_t: public hunter_spell_t
 
     if( p()->talents.beast_of_opportunity.ok() )
       p()->pets.boo_stable_pet.spawn( p()->buffs.beast_of_opportunity->buff_duration(), as<int>( p()->buffs.beast_of_opportunity->data().effectN( 1 ).base_value() ) );
+
+    if ( p()->talents.withering_fire.ok() )
+    {
+      p()->buffs.withering_fire_build_up->trigger();
+      if ( p()->buffs.withering_fire_build_up->at_max_stacks() )
+      {
+        p()->buffs.withering_fire->trigger();
+        p()->buffs.withering_fire_build_up->expire();
+      }
+    }
   }
 
   bool ready() override
@@ -6914,6 +6883,9 @@ struct trueshot_t: public hunter_spell_t
 
     if ( p()->talents.readiness.ok() )
       p()->buffs.wailing_arrow_override->trigger();
+    
+    if ( p()->talents.withering_fire.ok() )
+      p()->buffs.withering_fire->trigger( p()->buffs.trueshot->data().duration() );
   }
 };
 
@@ -7796,10 +7768,6 @@ void hunter_t::init_spells()
     talents.bleak_powder_dmg = talents.bleak_powder.ok() ? specialization() == HUNTER_MARKSMANSHIP ? find_spell( 467914 ) : find_spell( 472084 )  : spell_data_t::not_found();
 
     talents.withering_fire = find_talent_spell( talent_tree::HERO, "Withering Fire" );
-
-    //Reworked // to be deleted
-    talents.withering_fire_dmg  = talents.withering_fire.ok() ? find_spell( 461490 ) : spell_data_t::not_found();
-    talents.withering_fire_buff = talents.withering_fire.ok() ? find_spell( 461762 ) : spell_data_t::not_found();
   }
 
   if ( specialization() == HUNTER_BEAST_MASTERY || specialization() == HUNTER_SURVIVAL )
@@ -7930,9 +7898,6 @@ void hunter_t::create_actions()
   
   if ( talents.shadow_surge.ok() )
     actions.shadow_surge = new attacks::shadow_surge_t( this );
-
-  if ( talents.withering_fire.ok() )
-    actions.withering_fire = new attacks::withering_fire_t( this );
   
   if ( talents.a_murder_of_crows.ok() )
     actions.a_murder_of_crows = new spells::a_murder_of_crows_t( this );
@@ -8335,8 +8300,11 @@ void hunter_t::create_buffs()
       ->set_chance( talents.bleak_powder.ok() );
 
   buffs.withering_fire =
-    make_buff( this, "withering_fire", talents.withering_fire_buff )
-      ->set_default_value_from_effect( 1 )
+    make_buff( this, "withering_fire", find_spell( 466991 ) )
+      ->set_chance( talents.withering_fire.ok() );
+
+  buffs.withering_fire_build_up =
+    make_buff( this, "withering_fire_build_up", find_spell( 468074 ) )
       ->set_chance( talents.withering_fire.ok() );
 }
 
@@ -8821,8 +8789,6 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
   m *= 1 + specs.survival_hunter -> effectN( 3 ).percent();
   m *= 1 + specs.marksmanship_hunter -> effectN( 3 ).percent();
-
-  m *= 1 + buffs.withering_fire->check_value();
 
   if ( !guardian )
   {
