@@ -530,7 +530,6 @@ public:
 
     gain_t* terms_of_engagement;
 
-    gain_t* dark_empowerment;
     gain_t* invigorating_pulse;
   } gains;
 
@@ -817,7 +816,6 @@ public:
     spell_data_ptr_t shadow_hounds;
     spell_data_ptr_t death_shade;
 
-    spell_data_ptr_t dark_empowerment;
     spell_data_ptr_t grave_reaper;
     spell_data_ptr_t embrace_the_shadows;  // TODO defensive
     spell_data_ptr_t smoke_screen;         // TODO defensive
@@ -4356,8 +4354,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
 
   buff_t* death_shade_cast_buff = nullptr;
 
-  double dark_empowerment_gain = 0;
-
   struct
   {
     buff_t* cooldown_buff = nullptr;
@@ -4399,9 +4395,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
       shadow_hounds.duration = p->find_spell( 442419 )->duration();
     }
 
-    if ( p->talents.dark_empowerment.ok() )
-      dark_empowerment_gain = p->find_spell( 442511 )->effectN( 1 ).base_value();
-
     if ( p->talents.shadow_lash.ok() )
       shadow_lash.tick_time_mult = p->find_spell( 444354 )->effectN( 1 ).percent();
   }
@@ -4430,9 +4423,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
     {
       tick_recharge_cooldown->reset( true );
       p()->buffs.black_arrow->trigger();
-
-      if ( dark_empowerment_gain )
-        p()->resource_gain( RESOURCE_FOCUS, dark_empowerment_gain, p()->gains.dark_empowerment, this );
 
       if ( p()->actions.withering_fire )
       {
@@ -7773,7 +7763,6 @@ void hunter_t::init_spells()
     talents.overshadow    = find_talent_spell( talent_tree::HERO, "Overshadow" );
     talents.death_shade   = find_talent_spell( talent_tree::HERO, "Death Shade" );
 
-    talents.dark_empowerment    = find_talent_spell( talent_tree::HERO, "Dark Empowerment" );
     talents.grave_reaper        = find_talent_spell( talent_tree::HERO, "Grave Reaper" );
 
     talents.shadow_lash    = find_talent_spell( talent_tree::HERO, "Shadow Lash" );
@@ -8337,7 +8326,6 @@ void hunter_t::init_gains()
 
   gains.terms_of_engagement       = get_gain( "Terms of Engagement" );
 
-  gains.dark_empowerment          = get_gain( "Dark Empowerment" );
   gains.invigorating_pulse        = get_gain( "Invigorating Pulse" );
 }
 
