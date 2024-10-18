@@ -5909,6 +5909,9 @@ struct melee_t : public death_knight_melee_attack_t
                                           ( 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) );
     }
 
+    apply_action_effects();
+    apply_target_effects();
+
     // Dual wielders have a -19% chance to hit on melee attacks
     if ( p->dual_wield() )
       base_hit -= 0.19;
@@ -5941,7 +5944,7 @@ struct melee_t : public death_knight_melee_attack_t
 
     if ( p()->talent.frost.smothering_offense.ok() )
     {
-      m *= 1.0 + ( p()->buffs.icy_talons->check() * p()->talent.frost.smothering_offense->effectN( 2 ).percent() );
+      m *= 1.0 + ( p()->buffs.icy_talons->check() * p()->buffs.icy_talons->data().effectN( 2 ).percent() );
     }
 
     return m;
@@ -14996,6 +14999,7 @@ void death_knight_action_t<Base>::apply_action_effects()
   parse_effects( p()->buffs.gathering_storm );
   parse_effects( p()->buffs.killing_machine );
   parse_effects( p()->mastery.frozen_heart );
+  parse_effects( p()->talent.frost.smothering_offense );
 
   // Unholy
   parse_effects( p()->buffs.unholy_assault );
