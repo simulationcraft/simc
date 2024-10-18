@@ -4315,7 +4315,7 @@ struct black_arrow_t : public hunter_ranged_attack_t
       timespan_t duration = 0_s;
     } shadow_hounds;
     
-    black_arrow_dot_t( hunter_t* p ) : hunter_ranged_attack_t( "black_arrow_dot", p, p->find_spell( 468572 ) )
+    black_arrow_dot_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->find_spell( 468572 ) )
     {
       background = dual = true;
       hasted_ticks = false;
@@ -4349,7 +4349,7 @@ struct black_arrow_t : public hunter_ranged_attack_t
 
   struct bleak_powder_t : public hunter_ranged_attack_t
   {
-    bleak_powder_t( hunter_t* p ) : hunter_ranged_attack_t( "bleak_powder", p, p->talents.bleak_powder_dmg )
+    bleak_powder_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.bleak_powder_dmg )
     {
       background = dual = true;
       aoe = -1;
@@ -4382,8 +4382,8 @@ struct black_arrow_t : public hunter_ranged_attack_t
   double lower_health_threshold_pct;
   double upper_health_threshold_pct;
 
-  black_arrow_dot_t* black_arrow_dot;
-  bleak_powder_t* bleak_powder;
+  black_arrow_dot_t* black_arrow_dot = nullptr;
+  bleak_powder_t* bleak_powder = nullptr;
   serpent_sting_t* venoms_bite = nullptr;
   razor_fragments_t* razor_fragments = nullptr;
 
@@ -4394,6 +4394,14 @@ struct black_arrow_t : public hunter_ranged_attack_t
 
     lower_health_threshold_pct = data().effectN( 2 ).base_value();
     upper_health_threshold_pct = data().effectN( 3 ).base_value();
+
+    black_arrow_dot = p->get_background_action<black_arrow_dot_t>( "black_arrow_dot" );
+
+    if ( p->talents.bleak_powder.ok() )
+    {
+      bleak_powder = p->get_background_action<bleak_powder_t>( "bleak_powder" );
+      add_child( bleak_powder );
+    }
 
     if ( p -> talents.razor_fragments.ok() )
     {  
@@ -7936,7 +7944,7 @@ void hunter_t::create_actions()
   if ( talents.phantom_pain.ok() )
     actions.phantom_pain = new attacks::phantom_pain_t( this );
   
-  if ( talents.a_murder_of_crows.ok() )
+  if ( talents.a_murder_of_crows.ok() || talents.banshees_mark.ok() )
     actions.a_murder_of_crows = new spells::a_murder_of_crows_t( this );
 
   if( talents.vicious_hunt.ok() )
