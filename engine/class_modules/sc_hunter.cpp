@@ -814,7 +814,6 @@ public:
 
     spell_data_ptr_t overshadow;
     spell_data_ptr_t shadow_hounds;
-    spell_data_ptr_t death_shade;
 
     spell_data_ptr_t grave_reaper;
     spell_data_ptr_t embrace_the_shadows;  // TODO defensive
@@ -4341,8 +4340,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
     timespan_t duration = 0_s;
   } shadow_hounds;
 
-  buff_t* death_shade_cast_buff = nullptr;
-
   struct
   {
     buff_t* cooldown_buff = nullptr;
@@ -4367,14 +4364,12 @@ struct black_arrow_t : public hunter_ranged_attack_t
     if ( p->specialization() == HUNTER_MARKSMANSHIP )
     {
       tick_recharge_cooldown = p->cooldowns.aimed_shot;
-      death_shade_cast_buff = p->buffs.deathblow;
       shadow_lash.cooldown_buff = p->buffs.trueshot;
     }
 
     if ( p->specialization() == HUNTER_BEAST_MASTERY )
     {
       tick_recharge_cooldown = p->cooldowns.barbed_shot;
-      death_shade_cast_buff = p->buffs.deathblow;
       shadow_lash.cooldown_buff = p->buffs.call_of_the_wild;
     }
 
@@ -4386,14 +4381,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
 
     if ( p->talents.shadow_lash.ok() )
       shadow_lash.tick_time_mult = p->find_spell( 444354 )->effectN( 1 ).percent();
-  }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    if ( p()->talents.death_shade.ok() )
-      death_shade_cast_buff->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -7750,7 +7737,6 @@ void hunter_t::init_spells()
     talents.black_arrow_buff = talents.black_arrow.ok() ? find_spell( 439659 ) : spell_data_t::not_found();
 
     talents.overshadow    = find_talent_spell( talent_tree::HERO, "Overshadow" );
-    talents.death_shade   = find_talent_spell( talent_tree::HERO, "Death Shade" );
 
     talents.grave_reaper        = find_talent_spell( talent_tree::HERO, "Grave Reaper" );
 
