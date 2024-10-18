@@ -803,7 +803,6 @@ public:
     spell_data_ptr_t soul_drinker;
     spell_data_ptr_t the_bell_tolls;
 
-    //TODO
     spell_data_ptr_t phantom_pain; 
     spell_data_ptr_t ebon_bowstring;
     spell_data_ptr_t embrace_the_shadows;  // TODO defensive
@@ -908,6 +907,7 @@ public:
     action_t* lunar_storm = nullptr;
 
     action_t* shadow_surge = nullptr;
+    action_t* phantom_pain = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -2592,6 +2592,23 @@ struct kill_command_bm_t: public kill_command_base_t<hunter_main_pet_base_t>
       {
         o()->buffs.furious_assault->trigger();
         o()->cooldowns.barbed_shot->reset( true );
+      }
+    }
+
+    if( o()->talents.phantom_pain.ok() )
+    {
+      double replicate_amount = o()->talents.phantom_pain->effectN( 1 ).percent();
+      for ( player_t* t : sim->target_non_sleeping_list )
+      {
+        if ( t->is_enemy() && !t->demise_event && t != s->target )
+        {
+          hunter_td_t* td = o()->get_target_data( t );
+          if( td->dots.black_arrow->is_ticking() )
+          {
+            double amount = replicate_amount * s->result_amount;
+            o()->actions.phantom_pain->execute_on_target( t, amount );
+          }
+        }
       }
     }
   }
@@ -4447,6 +4464,16 @@ struct shadow_surge_t final : hunter_ranged_attack_t
   }
 };
 
+// Phantom Pain (Dark Ranger) =========================================================
+struct phantom_pain_t final : hunter_ranged_attack_t
+{
+  phantom_pain_t( hunter_t* p ) : hunter_ranged_attack_t( "phantom_pain", p, p->find_spell( 468019 ) )
+  {
+    background = dual = true;
+    base_dd_min = base_dd_max = 1.0;
+  }
+};
+
 // Vicious Hunt (Pack Leader) ============================================================
 
 struct vicious_hunt_t final : hunter_ranged_attack_t
@@ -5182,6 +5209,23 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     if ( s -> chain_target == 0 ) {
       if ( hydras_bite )
         hydras_bite->execute_on_target( s->target );
+    }
+
+    if( p()->talents.phantom_pain.ok() )
+    {
+      double replicate_amount = p()->talents.phantom_pain->effectN( 1 ).percent();
+      for ( player_t* t : sim->target_non_sleeping_list )
+      {
+        if ( t->is_enemy() && !t->demise_event && t != s->target )
+        {
+          hunter_td_t* td = p()->get_target_data( t );
+          if( td->dots.black_arrow->is_ticking() )
+          {
+            double amount = replicate_amount * s->result_amount;
+            p()->actions.phantom_pain->execute_on_target( t, amount );
+          }
+        }
+      }
     }
   }
 
@@ -7898,6 +7942,9 @@ void hunter_t::create_actions()
   
   if ( talents.shadow_surge.ok() )
     actions.shadow_surge = new attacks::shadow_surge_t( this );
+
+  if ( talents.phantom_pain.ok() )
+    actions.phantom_pain = new attacks::phantom_pain_t( this );
   
   if ( talents.a_murder_of_crows.ok() )
     actions.a_murder_of_crows = new spells::a_murder_of_crows_t( this );
