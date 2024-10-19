@@ -4009,6 +4009,7 @@ struct deep_breath_t : public evoker_spell_t
   action_t* damage;
   action_t* ebon;
   action_t* melt_armor_dot;
+  timespan_t plot_duration;
 
   deep_breath_t( evoker_t* p, std::string_view options_str )
     : evoker_spell_t( "deep_breath", p,
@@ -4040,6 +4041,7 @@ struct deep_breath_t : public evoker_spell_t
             "ebon_might_deep_breath", p->talent.sands_of_time->effectN( 3 ).time_value(), "ebon_might_deep_breath" );
     }
 
+    plot_duration = timespan_t::from_seconds( p->talent.plot_the_future->effectN( 1 ).base_value() );
   }
 
   void impact( action_state_t* s ) override
@@ -4074,6 +4076,30 @@ struct deep_breath_t : public evoker_spell_t
           0_s, rng().gauss( p()->option.prepull_deep_breath_delay, p()->option.prepull_deep_breath_delay_stddev ) );
       player->gcd_ready = delay;
       stats->iteration_total_execute_time += delay;
+    }
+
+    if ( p()->talent.chronowarden.time_convergence.enabled() )
+    {
+      p()->buff.time_convergence_intellect->trigger();
+    }
+
+    if ( p()->talent.plot_the_future.ok() )
+    {
+      make_event( sim, player->gcd_ready - sim->current_time() - 1_ms, [ this ] {
+        if ( p()->buffs.bloodlust->check() )
+          p()->buffs.bloodlust->extend_duration( p(), plot_duration );
+        else if ( p()->buff.fury_of_the_aspects->check() )
+          p()->buff.fury_of_the_aspects->extend_duration( p(), plot_duration );
+        else
+        {
+          p()->buff.fury_of_the_aspects->trigger( plot_duration );
+          // Plots bloodlust re-triggers the buff for some reason.
+          if ( p()->talent.chronowarden.time_convergence.enabled() )
+          {
+            p()->buff.time_convergence_intellect->trigger();
+          }
+        }
+      } );
     }
   }
 };
