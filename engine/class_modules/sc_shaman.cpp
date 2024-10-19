@@ -4599,10 +4599,13 @@ struct earthen_rage_event_t : public event_t
       return;
     }
 
-    sim().print_debug( "{} triggers earthen_rage on target={}", player->name(),
-      player->earthen_rage_target->name() );
+    if ( !player->earthen_rage_target->is_sleeping() )
+    {
+      sim().print_debug( "{} triggers earthen_rage on target={}", player->name(),
+        player->earthen_rage_target->name() );
 
-    player->action.earthen_rage->execute_on_target( player->earthen_rage_target );
+      player->action.earthen_rage->execute_on_target( player->earthen_rage_target );
+    }
 
     player->earthen_rage_event = make_event<earthen_rage_event_t>( sim(), player, end_time );
     sim().print_debug( "{} schedules earthen_rage, next_event={}, tick_time={}",
