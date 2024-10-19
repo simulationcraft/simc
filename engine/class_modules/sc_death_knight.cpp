@@ -1830,6 +1830,8 @@ public:
   void parse_player_effects();
   const spell_data_t* conditional_spell_lookup( bool fn, int id );
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
+  double psuedo_random_p_from_c( double c );
+  double pseudo_random_c_from_p( double p );
   // Rider of the Apocalypse
   int get_random_rider();
   void summon_rider( timespan_t duration, bool random );
@@ -1847,7 +1849,7 @@ public:
   // Blood
   void bone_shield_handler( const action_state_t* ) const;
   // Frost
-  void trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc );
+  void trigger_killing_machine( bool predictable, proc_t* proc, proc_t* wasted_proc );
   void consume_killing_machine( proc_t* proc, timespan_t total_delay );
   void trigger_runic_empowerment( double rpcost );
   void chill_streak_bounce( player_t& target );
@@ -2647,7 +2649,7 @@ struct pet_action_t : public parse_action_effects_t<Base>
     if ( !this->player->sim->report_pets_separately )
     {
       auto it =
-          range::find_if( dk()->pet_list, [ this ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
+          range::find_if( dk()->pet_list, [ & ]( pet_t* pet ) { return this->player->name_str == pet->name_str; } );
 
       if ( it != dk()->pet_list.end() && this->player != *it )
       {
@@ -4603,6 +4605,15 @@ public:
   {
     return debug_cast<death_knight_t*>( Base::source );
   }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    // Dont trigger expire effects if the sim has ended.
+    if ( p()->sim->event_mgr.canceled )
+      return;
+
+    Base::expire_override( s, d );
+  }
 };
 
 // ==========================================================================
@@ -5878,20 +5889,16 @@ private:
 // ==========================================================================
 
 // Melee Attack =============================================================
-
 struct melee_t : public death_knight_melee_attack_t
 {
-  int sync_weapons;
-  bool first;
-  int autos_since_last_proc;
-  double sd_chance;
-
   melee_t( const char* name, death_knight_t* p, int sw )
     : death_knight_melee_attack_t( name, p ),
       sync_weapons( sw ),
       first( true ),
       autos_since_last_proc( 0 ),
-      sd_chance( 0 )
+      sd_chance( 0 ),
+      km_chance( 0 ),
+      idt_chance( 0 )
   {
     school                    = SCHOOL_PHYSICAL;
     may_crit                  = true;
@@ -5903,10 +5910,23 @@ struct melee_t : public death_knight_melee_attack_t
     trigger_gcd               = 0_ms;
     special                   = false;
     weapon_multiplier         = 1.0;
+
     if ( p->talent.unholy.sudden_doom.ok() )
     {
-      sd_chance = pseudo_random_c_from_p( p->talent.unholy.sudden_doom->effectN( 2 ).percent() *
-                                          ( 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) );
+      sd_chance = p->pseudo_random_c_from_p( p->talent.unholy.sudden_doom->effectN( 2 ).percent() *
+                                             ( 1 + p->talent.unholy.harbinger_of_doom->effectN( 2 ).percent() ) );
+    }
+
+    if ( p->talent.frost.killing_machine.ok() )
+    {
+      km_chance = p->spec.might_of_the_frozen_wastes->ok() && p->main_hand_weapon.group() == WEAPON_2H ? 1.0 : 0.3;
+    }
+
+    if ( p->talent.frost.icy_death_torrent.ok() )
+    {
+      idt_chance = p->talent.frost.icy_death_torrent->proc_chance() * p->main_hand_weapon.group() == WEAPON_2H
+                       ? 1.0
+                       : 1.0 / ( p->talent.frost.icy_death_torrent->effectN( 1 ).base_value() * 0.1 );
     }
 
     apply_action_effects();
@@ -5969,13 +5989,10 @@ struct melee_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( s->result ) )
     {
-      if ( p()->specialization() == DEATH_KNIGHT_UNHOLY && p()->talent.unholy.sudden_doom.ok() )
+      if ( p()->talent.unholy.sudden_doom.ok() && rng().roll( sd_chance * ++autos_since_last_proc ) )
       {
-        if ( rng().roll( sd_chance * ++autos_since_last_proc ) )
-        {
-          p()->buffs.sudden_doom->trigger();
-          autos_since_last_proc = 0;
-        }
+        p()->buffs.sudden_doom->trigger();
+        autos_since_last_proc = 0;
       }
 
       if ( p()->talent.permafrost.ok() )
@@ -5985,22 +6002,16 @@ struct melee_t : public death_knight_melee_attack_t
 
       if ( s->result == RESULT_CRIT )
       {
-        if ( p()->talent.frost.killing_machine.ok() )
+        if ( p()->talent.frost.killing_machine.ok() && rng().roll( km_chance * ++autos_since_last_proc ) )
         {
-          p()->trigger_killing_machine( 0, p()->procs.km_from_crit_aa, p()->procs.km_from_crit_aa_wasted );
+          p()->trigger_killing_machine( false, p()->procs.km_from_crit_aa, p()->procs.km_from_crit_aa_wasted );
+          autos_since_last_proc = 0;
         }
 
         // TODO: verify proc rate close to launch, as of build 55288 it is 100% for 2h and 50% for dw
-        if ( p()->talent.frost.icy_death_torrent.ok() )
+        if ( p()->talent.frost.icy_death_torrent.ok() && rng().roll( idt_chance ) )
         {
-          double chance_mult = p()->main_hand_weapon.group() == WEAPON_2H
-                                   ? 1
-                                   : 1 / ( p()->talent.frost.icy_death_torrent->effectN( 1 ).base_value() * 0.1 );
-
-          if ( rng().roll( p()->talent.frost.icy_death_torrent->proc_chance() * chance_mult ) )
-          {
-            p()->active_spells.icy_death_torrent_damage->execute();
-          }
+          p()->active_spells.icy_death_torrent_damage->execute();
         }
 
         if ( p()->talent.frost.the_long_winter.ok() && p()->buffs.pillar_of_frost->check() )
@@ -6023,52 +6034,6 @@ struct melee_t : public death_knight_melee_attack_t
         trigger_bloodworm();
       }
     }
-  }
-
-  double psuedo_random_p_from_c( double c )
-  {
-    double p_proc_on_n       = 0;
-    double p_proc_by_n       = 0;
-    double sum_n_p_proc_on_n = 0;
-
-    int max_fails = as<int>( std::ceil( 1 / c ) );
-    for ( int n = 1; n <= max_fails; ++n )
-    {
-      p_proc_on_n = std::min( 1.0, n * c ) * ( 1 - p_proc_by_n );
-      p_proc_by_n += p_proc_on_n;
-      sum_n_p_proc_on_n += n * p_proc_on_n;
-    }
-
-    return ( 1 / sum_n_p_proc_on_n );
-  }
-
-  double pseudo_random_c_from_p( double p )
-  {
-    double c_upper = p;
-    double c_lower = 0;
-    double c_mid;
-    double p1;
-    double p2 = 1;
-    while ( true )
-    {
-      c_mid = ( c_upper + c_lower ) * 0.5;
-      p1    = psuedo_random_p_from_c( c_mid );
-      if ( std::abs( p1 - p2 ) <= 0 )
-        break;
-
-      if ( p1 > p )
-      {
-        c_upper = c_mid;
-      }
-      else
-      {
-        c_lower = c_mid;
-      }
-
-      p2 = p1;
-    }
-
-    return c_mid;
   }
 
   void trigger_runic_attenuation( action_state_t* s )
@@ -6110,6 +6075,14 @@ struct melee_t : public death_knight_melee_attack_t
 
     p()->buffs.frost_shield->trigger( 1, amount, -1.0 );
   }
+
+private:
+  int sync_weapons;
+  bool first;
+  int autos_since_last_proc;
+  double sd_chance;
+  double km_chance;
+  double idt_chance;
 };
 
 // Auto Attack ==============================================================
@@ -6881,7 +6854,7 @@ struct reapers_mark_t final : public death_knight_spell_t
     {
       if ( p()->specialization() == DEATH_KNIGHT_FROST )
       {
-        p()->trigger_killing_machine( 1.0, p()->procs.km_from_grim_reaper, p()->procs.km_from_grim_reaper_wasted );
+        p()->trigger_killing_machine( true, p()->procs.km_from_grim_reaper, p()->procs.km_from_grim_reaper_wasted );
       }
       else
       {
@@ -9132,7 +9105,7 @@ struct frost_strike_t final : public death_knight_melee_attack_t
 
     if ( p()->buffs.pillar_of_frost->up() && p()->talent.frost.obliteration.ok() )
     {
-      p()->trigger_killing_machine( 1.0, p()->procs.km_from_obliteration_fs,
+      p()->trigger_killing_machine( true, p()->procs.km_from_obliteration_fs,
                                     p()->procs.km_from_obliteration_fs_wasted );
 
       // Obliteration's rune generation
@@ -9243,7 +9216,7 @@ struct glacial_advance_t final : public death_knight_spell_t
 
     if ( p()->buffs.pillar_of_frost->up() && p()->talent.frost.obliteration.ok() )
     {
-      p()->trigger_killing_machine( 1.0, p()->procs.km_from_obliteration_ga,
+      p()->trigger_killing_machine( true, p()->procs.km_from_obliteration_ga,
                                     p()->procs.km_from_obliteration_ga_wasted );
 
       // Obliteration's rune generation
@@ -9629,7 +9602,7 @@ struct howling_blast_t final : public death_knight_spell_t
     death_knight_spell_t::execute();
     if ( p()->buffs.pillar_of_frost->up() && p()->talent.frost.obliteration.ok() )
     {
-      p()->trigger_killing_machine( 1.0, p()->procs.km_from_obliteration_hb,
+      p()->trigger_killing_machine( true, p()->procs.km_from_obliteration_hb,
                                     p()->procs.km_from_obliteration_hb_wasted );
 
       // Obliteration's rune generation
@@ -10674,7 +10647,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     if ( p()->specialization() == DEATH_KNIGHT_FROST && p()->buffs.pillar_of_frost->up() &&
          p()->talent.frost.obliteration.ok() )
     {
-      p()->trigger_killing_machine( 1.0, p()->procs.km_from_obliteration_sr,
+      p()->trigger_killing_machine( true, p()->procs.km_from_obliteration_sr,
                                     p()->procs.km_from_obliteration_sr_wasted );
 
       // Obliteration's rune generation
@@ -11651,54 +11624,14 @@ unsigned death_knight_t::replenish_rune( unsigned n, gain_t* gain )
   return replenished;
 }
 
-// Helper function to trigger Killing Machine, whether it's from a "forced" proc, a % chance, or the regular rppm proc
-void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_t* wasted_proc )
+// Helper function to trigger Killing Machine
+void death_knight_t::trigger_killing_machine( bool predictable, proc_t* proc, proc_t* wasted_proc )
 {
-  bool triggered = false;
-  bool wasted    = buffs.killing_machine->at_max_stacks();
-  // If the given chance is 0, use the auto attack proc mechanic (new system, or rppm if the option is selected)
-  // Melekus, 2020-06-03: It appears that Killing Machine now procs from auto attacks following a custom system
-  // Every critical auto attack has a 30% * number of missed proc attempts to trigger Killing Machine
-  // Originally found by Bicepspump, made public on 2020-05-17
-  // This may have been added to the game on patch 8.2, when rppm data from Killing Machine was removed from the game
-  // 2022-01-29 During 9.2 beta cycle, it was noticed that during most, if not all of shadowlands, the KM forumula
-  // for 1h weapons was incorrect.  This new version seems to match testing done by Bicepspump, via wcl log pull.
-  if ( chance == 0 )
-  {
-    // If we are using a 1H, km_proc_attempts*0.3
-    // with 2H it looks to be km_proc_attempts*1.0 through testing
-    double km_proc_chance = 0.13;
-    if ( spec.might_of_the_frozen_wastes->ok() && main_hand_weapon.group() == WEAPON_2H )
-    {
-      km_proc_chance = 1.0;
-    }
-    else
-    {
-      km_proc_chance = ++km_proc_attempts * 0.3;
-    }
-
-    if ( rng().roll( km_proc_chance ) )
-    {
-      triggered        = true;
-      km_proc_attempts = 0;
-    }
-  }
-  // Else, use RNG
-  else
-  {
-    triggered = rng().roll( chance );
-  }
-
-  // If Killing Machine didn't proc, there's no waste and nothing else to do
-  if ( !triggered )
-  {
-    return;
-  }
+  bool wasted = buffs.killing_machine->at_max_stacks();
 
   buffs.killing_machine->trigger();
 
-  // If the proc is guaranteed, allow the player to instantly react to it
-  if ( chance == 1.0 )
+  if ( predictable )
   {
     buffs.killing_machine->predict();
   }
@@ -12308,6 +12241,52 @@ void death_knight_t::reapers_mark_explosion_wrapper( player_t* target, player_t*
   {
     debug_cast<reapers_mark_explosion_t*>( active_spells.reapers_mark_explosion )->execute_wrapper( target, stacks );
   }
+}
+
+double death_knight_t::psuedo_random_p_from_c( double c )
+{
+  double p_proc_on_n = 0;
+  double p_proc_by_n = 0;
+  double sum_n_p_proc_on_n = 0;
+
+  int max_fails = as<int>( std::ceil( 1 / c ) );
+  for (int n = 1; n <= max_fails; ++n)
+  {
+    p_proc_on_n = std::min( 1.0, n * c ) * ( 1 - p_proc_by_n );
+    p_proc_by_n += p_proc_on_n;
+    sum_n_p_proc_on_n += n * p_proc_on_n;
+  }
+
+  return ( 1 / sum_n_p_proc_on_n );
+}
+
+double death_knight_t::pseudo_random_c_from_p( double p )
+{
+  double c_upper = p;
+  double c_lower = 0;
+  double c_mid;
+  double p1;
+  double p2 = 1;
+  while (true)
+  {
+    c_mid = ( c_upper + c_lower ) * 0.5;
+    p1 = psuedo_random_p_from_c( c_mid );
+    if (std::abs( p1 - p2 ) <= 0)
+      break;
+
+    if (p1 > p)
+    {
+      c_upper = c_mid;
+    }
+    else
+    {
+      c_lower = c_mid;
+    }
+
+    p2 = p1;
+  }
+
+  return c_mid;
 }
 
 const spell_data_t* death_knight_t::conditional_spell_lookup( bool fn, int id )
