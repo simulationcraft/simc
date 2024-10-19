@@ -4361,16 +4361,6 @@ struct black_arrow_t : public kill_shot_base_t
       background = dual = true;
       aoe = -1;
     }
-
-    size_t available_targets( std::vector<player_t*>& tl ) const override
-    {
-      hunter_ranged_attack_t::available_targets( tl );
-      
-      // Cannot hit the original target.
-      range::erase_remove( tl, target );
-      
-      return tl.size();
-    }
   };
   
   double lower_health_threshold_pct;
