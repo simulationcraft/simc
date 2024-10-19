@@ -544,6 +544,8 @@ public:
     proc_t* wild_instincts;
     proc_t* dire_command;
 
+    proc_t* deathblow;
+
     proc_t* sentinel_stacks;
     proc_t* sentinel_implosions;
     proc_t* extrapolated_shots_stacks;
@@ -3661,6 +3663,7 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 
     if ( rng().roll( bleak_arrows_chance ) )
     {
+      p()->procs.deathblow->occur();
       p()->buffs.deathblow->trigger();
     }
   }
@@ -4392,6 +4395,7 @@ struct black_arrow_t : public kill_shot_base_t
 
     if ( p()->talents.ebon_bowstring.ok() && rng().roll( p()->talents.ebon_bowstring->effectN( 1 ).percent() ) )
     {
+      p()->procs.deathblow->occur();
       p()->buffs.deathblow->trigger();
     }
   }
@@ -5009,7 +5013,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 
   struct {
     double chance = 0; 
-    proc_t* proc;
   } deathblow;
 
   serpent_sting_t* serpentstalkers_trickery = nullptr;
@@ -5051,7 +5054,6 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     if ( p->talents.deathblow.ok() )
     {
       deathblow.chance = p->talents.improved_deathblow.ok() ? p->talents.improved_deathblow->effectN( 2 ).percent() : p->talents.deathblow->effectN( 1 ).percent();
-      deathblow.proc = p->get_proc( "Deathblow" );
     }
 
     if ( p->talents.hydras_bite.ok() )
@@ -5118,7 +5120,7 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 
     if( rng().roll( deathblow.chance ) )
     {
-      deathblow.proc->occur();
+      p()->procs.deathblow->occur();
       p()->buffs.deathblow->trigger();    
     }
 
@@ -5363,7 +5365,6 @@ struct rapid_fire_t: public hunter_spell_t
 
   struct {
     double chance = 0; 
-    proc_t* proc;
   } deathblow;
 
   rapid_fire_t( hunter_t* p, util::string_view options_str ):
@@ -5381,7 +5382,6 @@ struct rapid_fire_t: public hunter_spell_t
     if ( p->talents.improved_deathblow.ok() )
     {
       deathblow.chance = p->talents.improved_deathblow->effectN( 1 ).percent();
-      deathblow.proc = p->get_proc( "Deathblow" );
     }
   }
 
@@ -5401,7 +5401,7 @@ struct rapid_fire_t: public hunter_spell_t
     p() -> buffs.streamline -> trigger();
     if( rng().roll( deathblow.chance ) )
     {
-      deathblow.proc->occur();
+      p()->procs.deathblow->occur();
       p()->buffs.deathblow->trigger();    
     }
   }
@@ -6395,7 +6395,6 @@ struct kill_command_t: public hunter_spell_t
 
   struct {
     double chance = 0; 
-    proc_t* proc;
   } deathblow;
 
   timespan_t wildfire_infusion_reduction = 0_s;
@@ -6437,7 +6436,6 @@ struct kill_command_t: public hunter_spell_t
       {
         deathblow.chance = p->talents.deathblow->effectN( 2 ).percent();
       }
-      deathblow.proc = p->get_proc( "Deathblow" );
     }
 
     if ( p -> talents.dire_command.ok() )
@@ -6506,7 +6504,7 @@ struct kill_command_t: public hunter_spell_t
       }
       if( rng().roll( chance ) )
       {
-        deathblow.proc->occur();
+        p()->procs.deathblow->occur();
         p()->buffs.deathblow->trigger();
       }
     }
@@ -7349,6 +7347,7 @@ void hunter_td_t::target_demise()
   }
   if ( p->talents.soul_drinker.ok() && dots.black_arrow->is_ticking() && p->rng().roll( p->talents.soul_drinker->effectN( 1 ).percent() ) )
   {
+    p->procs.deathblow->occur();
     p->buffs.deathblow->trigger();
   }
 }
@@ -8041,7 +8040,7 @@ void hunter_t::create_buffs()
         [ this ]( buff_t*, int old, int ) {
           // XXX: check refreshes
           if ( old == 0 ) {
-            cooldowns.kill_shot -> reset( true );
+            talents.black_arrow.ok() ? cooldowns.black_arrow->reset( true ) : cooldowns.kill_shot->reset( true );
             buffs.razor_fragments -> trigger();
           }
         } )
@@ -8392,6 +8391,9 @@ void hunter_t::init_procs()
 
   if ( talents.wild_call.ok() )
     procs.wild_call = get_proc( "Wild Call" );
+  
+  if ( talents.deathblow.ok() )
+    procs.deathblow = get_proc( "Deathblow" );
 
   if ( talents.sentinel.ok() )
   {
