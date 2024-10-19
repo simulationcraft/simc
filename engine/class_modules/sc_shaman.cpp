@@ -10202,6 +10202,15 @@ struct surging_totem_pulse_t : public spell_totem_action_t
     sundered = false;
   }
 
+  double miss_chance( double hit, player_t* t ) const override
+  {
+    if ( o()->options.surging_totem_miss_chance == 0.0 )
+    {
+      return spell_totem_action_t::miss_chance( hit, t );
+    }
+    return o()->options.surging_totem_miss_chance;
+  }
+
   void init() override
   {
     spell_totem_action_t::init();
@@ -10234,17 +10243,6 @@ struct surging_totem_pulse_t : public spell_totem_action_t
     }
 
     return m;
-  }
-
-  void execute() override
-  {
-    if ( o()->options.surging_totem_miss_chance > 0 &&
-         rng().roll( o()->options.surging_totem_miss_chance ) )
-    {
-      return;
-    }
-
-    spell_totem_action_t::execute();
   }
 
   void reset() override
