@@ -4605,15 +4605,6 @@ public:
   {
     return debug_cast<death_knight_t*>( Base::source );
   }
-
-  void expire_override( int s, timespan_t d ) override
-  {
-    // Dont trigger expire effects if the sim has ended.
-    if ( p()->sim->event_mgr.canceled )
-      return;
-
-    Base::expire_override( s, d );
-  }
 };
 
 // ==========================================================================
@@ -6467,19 +6458,6 @@ struct summon_whitemane_t final : public summon_rider_t
       death_knight_spell_t::execute();
       p()->pets.whitemane.active_pet()->adjust_duration( duration );
       p()->pets.whitemane.active_pet()->rp_spent = 0;
-      if ( !p()->bugs )
-      {
-        auto td = p()->get_target_data( target );
-        if ( td && td->dot.undeath->is_ticking() )
-        {
-          td->dot.undeath->increment( 1 );
-          td->dot.undeath->adjust_duration( p()->pet_spell.undeath_dot->duration() - td->dot.undeath->remains() );
-        }
-        else
-        {
-          p()->active_spells.undeath_dot->execute_on_target( target );
-        }
-      }
     }
   }
 };
