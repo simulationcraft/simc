@@ -3080,6 +3080,15 @@ struct mortal_strike_t : public warrior_attack_t
         }
         p()->buff.colossal_might->trigger();
       }
+      // If this is an unhinged MS, and we have at least 2 targets, and sweeping strikes is up, grant an extra stack.  This is a bug.
+      if ( p()->bugs && this->unhinged && p()->buff.sweeping_strikes->up() && p()->sim->target_non_sleeping_list.size() > 1 )
+      {
+        if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
+        {
+          p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
+        }
+        p()->buff.colossal_might->trigger();
+      }
     }
 
     if ( p()->tier_set.t29_arms_4pc->ok() && s->result == RESULT_CRIT )
