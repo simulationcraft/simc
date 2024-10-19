@@ -13024,11 +13024,6 @@ public:
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Rogue", "2024-10-14", "Nimble Flurry Coefficient is Bugged", 1166349 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 40 )
-      .verification_value( 50 );
   }
 
   void init( player_t* ) const override {}
