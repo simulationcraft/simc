@@ -335,7 +335,7 @@ struct simplified_player_t : public player_t
   // Options
   struct options_t
   {
-    int item_level = 626;
+    int item_level = 630;
     std::string variant = "default";
   } option;
 
@@ -7393,7 +7393,7 @@ void evoker_t::create_pets()
       option.force_clutchmates = "no";
       close_as_clutchmates     = false;
 
-      bobs = { { "Bob BM", "bm" }, { "Bob Shadow", "shadow" }, { "Bob", "default" }, { "Bob Assa", "assa" } };
+      bobs = { { "Bob BM", "bm" }, { "Bob Shadow", "shadow" }, { "Bob", "default" }, { "Bob2", "default" } };
     }
 
     for ( auto& pair : bobs )
