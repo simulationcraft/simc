@@ -4196,9 +4196,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
     hunter_ranged_attack_t( n, p, s ),
     health_threshold_pct( p -> talents.kill_shot -> effectN( 2 ).base_value() )
   {
-    if ( p->talents.black_arrow.ok() )
-      background = true;
-
     if ( p -> talents.razor_fragments.ok() && !p->talents.black_arrow.ok() )
     {
       razor_fragments = p -> get_background_action<razor_fragments_t>( "razor_fragments" );
@@ -4310,6 +4307,9 @@ struct kill_shot_t : public kill_shot_base_t
   kill_shot_t( hunter_t* p, util::string_view options_str )
     : kill_shot_base_t( "kill_shot", p, p->talents.kill_shot )
   {
+    if ( p->talents.black_arrow.ok() )
+      background = true;
+    
     parse_options( options_str );
   }
 };
@@ -4375,6 +4375,9 @@ struct black_arrow_t : public kill_shot_base_t
   black_arrow_t( hunter_t* p, util::string_view options_str )
     : kill_shot_base_t( "black_arrow", p, p->find_spell( 466930 ) )
   {
+    if ( !p->talents.black_arrow.ok() )
+      background = true;
+
     parse_options( options_str );
 
     lower_health_threshold_pct = data().effectN( 2 ).base_value();
