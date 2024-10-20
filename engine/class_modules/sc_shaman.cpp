@@ -415,6 +415,8 @@ public:
   // Misc
   bool lava_surge_during_lvb;
   bool sk_during_cast;
+  std::unordered_map<std::string, std::tuple<timespan_t, double>> active_wolf_expr_cache;
+
   /// Shaman ability cooldowns
   std::vector<cooldown_t*> ability_cooldowns;
   player_t* earthen_rage_target =
@@ -1222,6 +1224,9 @@ public:
     // Buff States
     buff_state_lightning_rod = 0U;
     buff_state_lashing_flames = 0U;
+
+    // Reserve enough space so that references won't invalidate due to rehashing
+    active_wolf_expr_cache.reserve( 32 );
   }
 
   ~shaman_t() override = default;
@@ -1602,6 +1607,103 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
     })
     ->set_trigger_spell( p->talent.imbuement_mastery );
 }
+
+namespace expr
+{
+template <typename T>
+struct wolves_active_for_t : public expr_t
+{
+  action_t* action_;
+  std::unique_ptr<expr_t> expr_;
+  shaman_t* p_;
+  T cmp_;
+  std::tuple<timespan_t, double>& val_cache;
+
+  wolves_active_for_t( action_t* a, util::string_view subexpr ) : expr_t( "wolves_active_for" ),
+    action_( a ), expr_( a->create_expression( subexpr ) ),
+    p_( debug_cast<shaman_t*>( a->player ) ), cmp_(),
+    val_cache( p_->active_wolf_expr_cache[ std::string( subexpr ) ] )
+  {
+    if ( subexpr.size() == 0 || ( subexpr.size() > 0 && !expr_ ) )
+    {
+      throw std::invalid_argument( fmt::format("{} unable to generate expression from {}",
+        p_->name(), subexpr ) );
+    }
+  }
+
+  double evaluate() override
+  {
+    auto& time_ = std::get<0>( val_cache );
+    auto& n_wolves_ = std::get<1>( val_cache );
+    if ( p_->sim->current_time() > time_ )
+    {
+      auto val = expr_->evaluate();
+      n_wolves_ = 0U;
+      for ( const auto it : p_->pet.all_wolves )
+      {
+        auto wolf = debug_cast<const pet_t*>( it );
+        n_wolves_ += cmp_( wolf->expiration->remains().total_seconds(), val );
+      }
+
+      time_ = p_->sim->current_time();
+    }
+
+    return as<double>( n_wolves_ );
+  }
+};
+
+struct hprio_cd_min_remains_expr_t : public expr_t
+{
+  action_t* action_;
+  std::vector<cooldown_t*> cd_;
+
+  // TODO: Line_cd support
+  hprio_cd_min_remains_expr_t( action_t* a ) : expr_t( "min_remains" ), action_( a )
+  {
+    action_priority_list_t* list = a->player->get_action_priority_list( a->action_list->name_str );
+    for ( auto list_action : list->foreground_action_list )
+    {
+      // Jump out when we reach this action
+      if ( list_action == action_ )
+        break;
+
+      // Skip if this action's cooldown is the same as the list action's cooldown
+      if ( list_action->cooldown == action_->cooldown )
+        continue;
+
+      // Skip actions with no cooldown
+      if ( list_action->cooldown && list_action->cooldown->duration == timespan_t::zero() )
+        continue;
+
+      // Skip cooldowns that are already accounted for
+      if ( std::find( cd_.begin(), cd_.end(), list_action->cooldown ) != cd_.end() )
+        continue;
+
+      // std::cout << "Appending " << list_action -> name() << " to check list" << std::endl;
+      cd_.push_back( list_action->cooldown );
+    }
+  }
+
+  double evaluate() override
+  {
+    if ( cd_.empty() )
+      return 0;
+
+    timespan_t min_cd = cd_[ 0 ]->remains();
+    for ( size_t i = 1, end = cd_.size(); i < end; i++ )
+    {
+      timespan_t remains = cd_[ i ]->remains();
+      // std::cout << "cooldown.higher_priority.min_remains " << cd_[ i ] -> name_str << " remains=" <<
+      // remains.total_seconds() << std::endl;
+      if ( remains < min_cd )
+        min_cd = remains;
+    }
+
+    // std::cout << "cooldown.higher_priority.min_remains=" << min_cd.total_seconds() << std::endl;
+    return min_cd.total_seconds();
+  }
+};
+} // namespace expr ends
 
 // ==========================================================================
 // Shaman Action Base Template
@@ -2301,62 +2403,24 @@ public:
 
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
-    if ( !util::str_compare_ci( name, "cooldown.higher_priority.min_remains" ) )
-      return ab::create_expression( name );
+    auto split = util::string_split( name, "." );
 
-    struct hprio_cd_min_remains_expr_t : public expr_t
+    if ( util::str_compare_ci( split[ 0 ], "wolves_active_for" ) )
     {
-      action_t* action_;
-      std::vector<cooldown_t*> cd_;
+      auto subexpr = name.substr( 18 );
+      return std::make_unique<expr::wolves_active_for_t<std::greater_equal<double>>>( this, subexpr );
+    }
+    else if ( util::str_compare_ci( split[ 0 ], "wolves_expiring_in" ) )
+    {
+      auto subexpr = name.substr( 18 );
+      return std::make_unique<expr::wolves_active_for_t<std::less<double>>>( this, subexpr );
+    }
+    else if ( util::str_compare_ci( name, "cooldown.higher_priority.min_remains" ) )
+    {
+      return std::make_unique<expr::hprio_cd_min_remains_expr_t>( this );
+    }
 
-      // TODO: Line_cd support
-      hprio_cd_min_remains_expr_t( action_t* a ) : expr_t( "min_remains" ), action_( a )
-      {
-        action_priority_list_t* list = a->player->get_action_priority_list( a->action_list->name_str );
-        for ( auto list_action : list->foreground_action_list )
-        {
-          // Jump out when we reach this action
-          if ( list_action == action_ )
-            break;
-
-          // Skip if this action's cooldown is the same as the list action's cooldown
-          if ( list_action->cooldown == action_->cooldown )
-            continue;
-
-          // Skip actions with no cooldown
-          if ( list_action->cooldown && list_action->cooldown->duration == timespan_t::zero() )
-            continue;
-
-          // Skip cooldowns that are already accounted for
-          if ( std::find( cd_.begin(), cd_.end(), list_action->cooldown ) != cd_.end() )
-            continue;
-
-          // std::cout << "Appending " << list_action -> name() << " to check list" << std::endl;
-          cd_.push_back( list_action->cooldown );
-        }
-      }
-
-      double evaluate() override
-      {
-        if ( cd_.empty() )
-          return 0;
-
-        timespan_t min_cd = cd_[ 0 ]->remains();
-        for ( size_t i = 1, end = cd_.size(); i < end; i++ )
-        {
-          timespan_t remains = cd_[ i ]->remains();
-          // std::cout << "cooldown.higher_priority.min_remains " << cd_[ i ] -> name_str << " remains=" <<
-          // remains.total_seconds() << std::endl;
-          if ( remains < min_cd )
-            min_cd = remains;
-        }
-
-        // std::cout << "cooldown.higher_priority.min_remains=" << min_cd.total_seconds() << std::endl;
-        return min_cd.total_seconds();
-      }
-    };
-
-    return std::make_unique<hprio_cd_min_remains_expr_t>( this );
+    return ab::create_expression( name );
   }
 
   virtual void trigger_maelstrom_gain( const action_state_t* state )
@@ -14852,6 +14916,12 @@ void shaman_t::reset()
   assert( active_flame_shock.empty() );
   assert( buff_state_lightning_rod == 0U );
   assert( buff_state_lashing_flames == 0U );
+
+  for ( auto it : active_wolf_expr_cache )
+  {
+    std::get<0>( it.second ) = timespan_t::min();
+    std::get<1>( it.second ) = 0.0;
+  }
 }
 
 
