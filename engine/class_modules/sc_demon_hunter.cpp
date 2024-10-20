@@ -974,7 +974,6 @@ public:
   std::string default_temporary_enchant() const override;
 
   // overridden player_t stat functions
-  double composite_attribute( attribute_e attr ) const override;
   double composite_armor() const override;
   double composite_base_armor_multiplier() const override;
   double composite_armor_multiplier() const override;
@@ -6763,11 +6762,6 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       add_invalidate( CACHE_LEECH );
     }
-
-    if ( p->talent.felscarred.monster_rising->ok() )
-    {
-      add_invalidate( CACHE_AGILITY );
-    }
   }
 
   void trigger_demonic()
@@ -7410,14 +7404,11 @@ void demon_hunter_t::create_buffs()
 
   buff.monster_rising =
       make_buff( this, "monster_rising", hero_spec.monster_rising_buff )
-          ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
+          ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+          ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
           ->set_allow_precombat( true )
           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
           ->add_invalidate( CACHE_AGILITY );
-  if ( !bugs )
-  {
-    buff.monster_rising->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
-  }
 
   buff.pursuit_of_angryness =
       make_buff( this, "pursuit_of_angriness", talent.felscarred.pursuit_of_angriness )
@@ -8644,19 +8635,6 @@ void demon_hunter_t::create_benefits()
 // ==========================================================================
 // overridden player_t stat functions
 // ==========================================================================
-
-double demon_hunter_t::composite_attribute( attribute_e attr ) const
-{
-  double m = parse_player_effects_t::composite_attribute( attr );
-
-  // 2024-09-21 -- Monster Rising only affects base agi, not total agi
-  if ( attr == ATTR_AGILITY && bugs && buff.monster_rising->check() )
-  {
-    m += base.stats.attribute[ attr ] * buff.monster_rising->check_value();
-  }
-
-  return m;
-}
 
 // demon_hunter_t::composite_armor ==========================================
 
