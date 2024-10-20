@@ -13521,11 +13521,17 @@ void shaman_t::create_buffs()
     ->set_trigger_spell( talent.amplification_core );
 
   buff.whirling_air = make_buff( this, "whirling_air", find_spell( 453409 ) )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
     ->set_trigger_spell( talent.whirling_elements );
+  if ( !dbc->ptr )
+  {
+    buff.whirling_air->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+  }
   buff.whirling_fire = make_buff( this, "whirling_fire", find_spell( 453405 ) )
-    ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
     ->set_trigger_spell( talent.whirling_elements );
+  if ( !dbc->ptr )
+  {
+    buff.whirling_fire->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT );
+  }
   buff.whirling_earth = make_buff( this, "whirling_earth", find_spell( 453406 ) )
     ->set_trigger_spell( talent.whirling_elements );
   buff.lightning_shield = make_buff( this, "lightning_shield", find_spell( 192106 ) )
