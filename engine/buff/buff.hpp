@@ -22,6 +22,7 @@
 #include "util/timeline.hpp"
 #include "sim/uptime.hpp"
 #include "util/format.hpp"
+#include "sim/event.hpp"
 
 struct buff_t;
 class conduit_data_t;
@@ -41,10 +42,11 @@ struct cooldown_t;
 struct real_ppm_t;
 struct expr_t;
 struct spell_data_t;
+struct buff_event_t;
+struct tick_t;
 namespace rng{
 struct rng_t;
 }
-
 
 using buff_tick_callback_t = std::function<void(buff_t* buff, int current_tick, timespan_t tick_time)>;
 using buff_tick_time_callback_t = std::function<timespan_t(const buff_t*, unsigned)>;
@@ -691,3 +693,29 @@ inline buff_t* make_buff_fallback( Args&&... args )
 {
   return buff_t::make_buff_fallback<Buff>( std::forward<Args>( args )... );
 }
+
+
+struct buff_event_t : public event_t
+{
+  buff_t* buff;
+
+  buff_event_t( buff_t* b, timespan_t d ) : event_t( *b->sim, d ), buff( b )
+  {
+  }
+};
+
+struct tick_t : public buff_event_t
+{
+  double current_value;
+  int current_stacks;
+  timespan_t tick_time, start_time;
+
+  tick_t( buff_t* b, timespan_t d, double value, int stacks );
+
+  const char* name() const override
+  {
+    return "buff_tick";
+  }
+
+  void execute() override;
+};

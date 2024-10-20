@@ -717,8 +717,15 @@ struct halo_t final : public priest_spell_t
 
       if ( is_precombat )
       {
-        // TODO: Handle very precombat
-        priest().buffs.power_surge->tick_event->reschedule( -prepull_timespent );
+        // TODO: Handle very early precombat
+        priest().buffs.power_surge->extend_duration( player, -prepull_timespent );
+        
+        auto when = priest().buffs.power_surge->tick_event->remains() - prepull_timespent;
+        event_t::cancel( priest().buffs.power_surge->tick_event );
+        priest().buffs.power_surge->tick_event =
+            make_event<tick_t>( *sim, priest().buffs.power_surge, when, priest().buffs.power_surge->current_value,
+                                priest().buffs.power_surge->current_stack );
+        debug_cast<tick_t*>( priest().buffs.power_surge->tick_event )->start_time = -prepull_timespent;
       }
     }
 
