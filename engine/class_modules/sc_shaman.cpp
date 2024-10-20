@@ -9320,6 +9320,13 @@ struct doom_winds_damage_t : public shaman_attack_t
     background = true;
     aoe = -1;
   }
+
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    may_proc_flametongue = may_proc_stormbringer = may_proc_windfury = false;
+  }
 };
 
 struct doom_winds_t : public shaman_attack_t
