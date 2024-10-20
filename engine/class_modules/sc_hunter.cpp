@@ -3630,6 +3630,7 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
     snakeskin_quiver_chance = p->talents.snakeskin_quiver->effectN( 1 ).percent();
     bleak_arrows_chance = p->talents.bleak_arrows->effectN( p->specialization() == HUNTER_MARKSMANSHIP ? 2 : 1 ).percent();
     school = p->talents.bleak_arrows->ok() ? SCHOOL_SHADOW : SCHOOL_PHYSICAL;
+    ignores_armor = p->talents.bleak_arrows->ok();
   }
 
   action_state_t* new_state() override
