@@ -10380,9 +10380,12 @@ struct tempest_t : public shaman_spell_t
       }
     }
 
-    p()->buff.arc_discharge->trigger(
-      p()->dbc->ptr && p()->specialization() == SHAMAN_ENHANCEMENT ? 1 : p()->buff.arc_discharge->max_stack()
-    );
+    if ( p()->talent.arc_discharge.ok() )
+    {
+      p()->buff.arc_discharge->trigger(
+        p()->specialization() == SHAMAN_ENHANCEMENT ? 1 : p()->buff.arc_discharge->max_stack()
+      );
+    }
 
     if ( p()->talent.rolling_thunder.ok() && p()->specialization() == SHAMAN_ENHANCEMENT )
     {
