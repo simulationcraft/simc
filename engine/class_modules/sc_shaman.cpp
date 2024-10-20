@@ -10434,6 +10434,7 @@ struct tempest_t : public shaman_spell_t
   void execute() override
   {
     p()->buff.tempest->decrement();
+    p()->buff.master_of_the_elements->decrement();
 
     // PW needs to execute before the primary spell executes so we can retain proper
     // Maelstrom Weapon stacks for the AoE Lightning Bolt
