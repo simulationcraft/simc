@@ -114,10 +114,10 @@ actions.single_target+=/icefury,if=!(buff.fusion_of_elements_nature.up|buff.fusi
 # Use Lava Burst to proc Master of the Elements.
 actions.single_target+=/lava_burst,target_if=dot.flame_shock.remains>2,if=!buff.master_of_the_elements.up
 
-# Spend to activate Surge of Power buff for Tempest or Stormkeeper.
-actions.single_target+=/earthquake,if=(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up)&(buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power.enabled
-actions.single_target+=/elemental_blast,if=(buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power.enabled
-actions.single_target+=/earth_shock,if=(buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power.enabled
+# Spender logic - SoP spend to buff for Tempest or Stormkeeper - Afs Send it.
+actions.single_target+=/earthquake,if=(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up)&(((buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power.enabled)|talent.aftershock.enabled)
+actions.single_target+=/elemental_blast,if=((buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power.enabled)|talent.aftershock.enabled
+actions.single_target+=/earth_shock,if=((buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power.enabled)|talent.aftershock.enabled
 
 actions.single_target+=/tempest
 # Filler spell. Always available. Always the bottom line.
