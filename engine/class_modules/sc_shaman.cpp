@@ -10270,6 +10270,7 @@ struct tempest_overload_t : public elemental_overload_spell_t
     // Blizzard forgot to apply Tempest's AOE soft cap hotfix to its overload spell
     // reduced_aoe_targets = as<double>( data().effectN( 3 ).base_value() );
     base_aoe_multiplier = data().effectN( 2 ).percent();
+    affected_by_master_of_the_elements = true;
   }
 
   void impact( action_state_t* state ) override
