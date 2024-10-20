@@ -255,6 +255,7 @@ public:
   virtual void decrement( int stacks = 1, double value = DEFAULT_VALUE() );
   virtual void extend_duration( player_t* p, timespan_t seconds );
   virtual void extend_duration_or_trigger( timespan_t duration = timespan_t::min(), player_t* p = nullptr );
+  virtual void reschedule_tick( timespan_t delta );
 
   virtual void start( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   virtual void refresh( int stacks = 0, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
