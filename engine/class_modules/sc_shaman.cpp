@@ -6034,38 +6034,6 @@ struct chain_lightning_overload_t : public chained_overload_base_t
   }
 };
 
-struct lava_beam_overload_t : public chained_overload_base_t
-{
-  lava_beam_overload_t( shaman_t* p, spell_variant t, shaman_spell_t* parent_ )
-    : chained_overload_base_t( p, "lava_beam_overload", t, p->find_spell( 114738 ),
-        p->spec.maelstrom->effectN( 6 ).resource( RESOURCE_MAELSTROM ), parent_ )
-  {
-    affected_by_master_of_the_elements = true;
-  }
-
-  int n_targets() const override
-  {
-    int t = chained_overload_base_t::n_targets();
-
-    if ( p()->buff.surge_of_power->up() )
-    {
-      t += as<int>( p()->talent.surge_of_power->effectN( 4 ).base_value() );
-    }
-
-    return t;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    chained_overload_base_t::impact( state );
-
-    if ( p()->talent.lightning_rod.ok() || p()->talent.conductive_energy.ok() )
-    {
-      accumulate_lightning_rod_damage( state );
-    }
-  }
-};
-
 struct chained_base_t : public shaman_spell_t
 {
   chained_base_t( shaman_t* player, util::string_view name, spell_variant t,
@@ -6385,69 +6353,6 @@ struct chain_lightning_t : public chained_base_t
       {
         trigger_elemental_overload( s, 1.0 );
       }
-    }
-
-    chained_base_t::schedule_travel( s );
-  }
-};
-
-struct lava_beam_t : public chained_base_t
-{
-  // This is actually a tooltip bug in-game: real testing shows that Lava Beam and
-  // Lava Beam Overload generate resources identical to their Chain Lightning counterparts
-  lava_beam_t( shaman_t* player, spell_variant t = spell_variant::NORMAL, util::string_view options_str = {} )
-    : chained_base_t( player, "lava_beam", t, player->find_spell( 114074 ),
-                      player->spec.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
-  {
-    affected_by_master_of_the_elements = true;
-
-    if ( player->mastery.elemental_overload->ok() )
-    {
-      overload = new lava_beam_overload_t( player, t, this );
-    }
-  }
-
-  int n_targets() const override
-  {
-    int t = chained_base_t::n_targets();
-
-    if ( p()->buff.surge_of_power->up() )
-    {
-      t += as<int>( p()->talent.surge_of_power->effectN( 4 ).base_value() );
-    }
-
-    return t;
-  }
-
-  void execute() override
-  {
-    chained_base_t::execute();
-
-    p()->buff.surge_of_power->decrement();
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    chained_base_t::impact( state );
-
-    // Accumulate Lightning Rod damage from all targets hit by this cast.
-    if ( p()->talent.lightning_rod.ok() || p()->talent.conductive_energy.ok() )
-    {
-      accumulate_lightning_rod_damage( state );
-    }
-  }
-
-  void schedule_travel(action_state_t* s) override
-  {
-    if ( s->chain_target == 0 && p()->buff.power_of_the_maelstrom->up() )
-    {
-      trigger_elemental_overload( s, 1.0 );
-      p()->buff.power_of_the_maelstrom->decrement();
-    }
-
-    if ( s->chain_target == 0 && p()->talent.supercharge.ok() )
-    {
-      trigger_elemental_overload( s, p()->talent.supercharge->effectN( 1 ).percent() );
     }
 
     chained_base_t::schedule_travel( s );
@@ -10820,8 +10725,6 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
     return new fire_elemental_t( this, options_str );
   if ( name == "icefury" )
     return new icefury_t( this, options_str );
-  if ( name == "lava_beam" )
-    return new lava_beam_t( this, spell_variant::NORMAL, options_str );
   if ( name == "lava_burst" )
     return new lava_burst_t( this, spell_variant::NORMAL, options_str );
   if ( name == "liquid_magma_totem" )
