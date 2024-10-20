@@ -774,7 +774,6 @@ public:
 
     // Elemental
     proc_t* aftershock;
-    proc_t* flash_of_lightning;
     proc_t* herald_of_the_storms;
     proc_t* lightning_rod;
     proc_t* searing_flames;
@@ -13433,7 +13432,6 @@ void shaman_t::init_procs()
   proc.surge_of_power_wasted    = get_proc( "Surge of Power: Wasted" );
 
   proc.aftershock           = get_proc( "Aftershock" );
-  proc.flash_of_lightning   = get_proc( "Flash of Lightning" );
   proc.herald_of_the_storms = get_proc( "Herald of the Storms" );
   proc.lightning_rod        = get_proc( "Lightning Rod" );
   proc.searing_flames       = get_proc( "Searing Flames" );
