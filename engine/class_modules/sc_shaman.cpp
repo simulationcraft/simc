@@ -994,7 +994,7 @@ public:
     // Row 6
     player_talent_t earthshatter;
     player_talent_t flux_melting;
-    player_talent_t lightning_conduit;
+    player_talent_t lightning_capacitor;
     player_talent_t power_of_the_maelstrom;
     player_talent_t improved_flametongue_weapon;
     player_talent_t everlasting_elements;
@@ -11511,7 +11511,7 @@ void shaman_t::init_spells()
   talent.elemental_unity        = _ST( "Elemental Unity" );
   // Row 6
   talent.flux_melting           = _ST( "Flux Melting" );
-  talent.lightning_conduit      = _ST( "Lightning Conduit" );
+  talent.lightning_capacitor      = _ST( "Lightning Capacitor" );
   talent.power_of_the_maelstrom = _ST( "Power of the Maelstrom" );
   talent.improved_flametongue_weapon = _ST( "Improved Flametongue Weapon" );
   talent.everlasting_elements   = _ST( "Everlasting Elements" );
@@ -14309,9 +14309,9 @@ double shaman_t::composite_player_multiplier( school_e school ) const
   }
 
   if ( dbc::is_school( school, SCHOOL_NATURE ) && buff.lightning_shield->up() &&
-       talent.lightning_conduit.ok() )
+       talent.lightning_capacitor.ok() )
   {
-    m *= 1.0 + talent.lightning_conduit->effectN( 3 ).percent();
+    m *= 1.0 + talent.lightning_capacitor->effectN( 3 ).percent();
   }
 
   return m;
