@@ -4838,9 +4838,6 @@ void kaheti_shadeweavers_emblem( special_effect_t& effect )
 // TODO: confirm if rolemult gets implemented in-game
 void hand_of_justice( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   auto damage = create_proc_action<generic_proc_t>( "quick_strike", effect, 469928 );
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
   // TODO: currently not implemented in-game
@@ -4861,9 +4858,6 @@ void hand_of_justice( special_effect_t& effect )
 //  e1: damage coeff (unused?)
 void golem_gearbox( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   auto counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 469917 ) )
     ->set_max_stack( as<int>( effect.driver()->effectN( 1 ).base_value() ) );
 
@@ -4893,9 +4887,6 @@ void golem_gearbox( special_effect_t& effect )
 // 469924 damage
 void doperels_calling_rune( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   auto damage = create_proc_action<generic_proc_t>( "ghostly_ambush", effect, effect.trigger() );
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
   // TODO: currently not implemented in-game
@@ -4911,9 +4902,6 @@ void doperels_calling_rune( special_effect_t& effect )
 // ability to proc the int buff. on the other hand, some mana cost non-harmful spell will not proc.
 void burst_of_knowledge( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   auto int_buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item );
 
   auto buff = create_buff<buff_t>( effect.player, effect.driver() )
@@ -4936,9 +4924,6 @@ void burst_of_knowledge( special_effect_t& effect )
 
 void heart_of_roccor( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   // Currently missing the misc value for the buff type, manually setting it for now.
   // Implementation will probably be redundant once its fixed.
   auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item )
@@ -5160,9 +5145,6 @@ void harvesters_interdiction( special_effect_t& effect )
 // TODO: confirm buff cycle doesn't reset during middle of dungeon
 void guiding_stave_of_wisdom( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   struct guiding_stave_of_wisdom_cb_t : public dbc_proc_callback_t
   {
     std::vector<buff_t*> buffs;
@@ -5198,8 +5180,6 @@ void guiding_stave_of_wisdom( special_effect_t& effect )
 // 470643 reflect
 void flame_wrath( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
   // TODO: damage does not match tooltip, split damage is inconsistent. waiting for blizz to fix before implementing.
   // current value per target vs tooltip:
   //  1t: (4140/7200) 57.5%
