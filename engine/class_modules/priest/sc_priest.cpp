@@ -717,8 +717,17 @@ struct halo_t final : public priest_spell_t
 
       if ( is_precombat )
       {
-        // TODO: Handle very precombat
-        priest().buffs.power_surge->tick_event->reschedule( -prepull_timespent );
+
+        // TODO: Handle very early precombat
+        priest().buffs.power_surge->extend_duration( player, -prepull_timespent );
+
+
+        if (priest().buffs.power_surge->check())
+        {
+          auto when = -( prepull_timespent % priest().buffs.power_surge->tick_time() );
+
+          priest().buffs.power_surge->reschedule_tick( when );
+        }
       }
     }
 
@@ -4382,7 +4391,7 @@ struct priest_module_t final : public module_t
     p->buffs.body_and_soul    = make_buff( p, "body_and_soul", p->find_spell( 65081 ) );
     p->buffs.angelic_feather  = make_buff( p, "angelic_feather", p->find_spell( 121557 ) );
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.symbol_of_hope   = make_buff<buffs::symbol_of_hope_t>( p );
