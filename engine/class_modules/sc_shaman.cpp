@@ -8434,20 +8434,14 @@ public:
         if ( player->specialization() == SHAMAN_ELEMENTAL )
         {
           cooldown->duration = data().cooldown() + p()->talent.flames_of_the_cauldron->effectN( 2 ).time_value();
-          if ( player->dbc->ptr )
-          {
-            maelstrom_gain = player->spec.maelstrom->effectN( 11 ).resource( RESOURCE_MAELSTROM );
-          }
+          maelstrom_gain = player->spec.maelstrom->effectN( 11 ).resource( RESOURCE_MAELSTROM );
         }
         break;
       case spell_variant::SURGE_OF_POWER:
         background = true;
         cooldown = player->get_cooldown( "__flame_shock_secondary" );
         base_costs[ RESOURCE_MANA ] = 0;
-        if ( player->dbc->ptr )
-        {
-          maelstrom_gain = player->spec.maelstrom->effectN( 11 ).resource( RESOURCE_MAELSTROM );
-        }
+        maelstrom_gain = player->spec.maelstrom->effectN( 11 ).resource( RESOURCE_MAELSTROM );
         break;
       case spell_variant::ASCENDANCE:
       case spell_variant::LIQUID_MAGMA_TOTEM:
@@ -10363,22 +10357,7 @@ struct tempest_t : public shaman_spell_t
 
     if ( p()->talent.storm_swell.ok() )
     {
-      if ( execute_state->n_targets == 1 && !p()->dbc->ptr )
-      {
-        if ( p()->specialization() == SHAMAN_ENHANCEMENT )
-        {
-          p()->generate_maelstrom_weapon( this, as<int>( p()->talent.storm_swell->effectN( 1 ).base_value() ) );
-        }
-        else
-        {
-          p()->trigger_maelstrom_gain( p()->spell.storm_swell->effectN( 1 ).base_value(),
-                                      p()->gain.storm_swell );
-        }
-      }
-      else if ( p()->dbc->ptr )
-      {
-        p()->buff.storm_swell->trigger();
-      }
+      p()->buff.storm_swell->trigger();
     }
 
     if ( p()->talent.arc_discharge.ok() )
@@ -12144,7 +12123,7 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   }
 
   dre_attempts++;
-  if ( !dbc->ptr || specialization() == SHAMAN_ELEMENTAL )
+  if ( specialization() == SHAMAN_ELEMENTAL )
   {
     if ( options.dre_flat_chance <= 0 )
     {
