@@ -687,6 +687,8 @@ struct halo_t final : public priest_spell_t
       _dmg_spell_holy->prepull_timespent    = prepull_timespent;
       _heal_spell_shadow->prepull_timespent = prepull_timespent;
       _dmg_spell_shadow->prepull_timespent  = prepull_timespent;
+
+      cooldown->adjust( -prepull_timespent );
     }
 
     if ( priest().specialization() == PRIEST_SHADOW || priest().buffs.shadow_covenant->check() )
@@ -4055,6 +4057,12 @@ void priest_t::combat_begin()
   if ( specialization() == PRIEST_DISCIPLINE )
   {
     buffs.sins_of_the_many->trigger();
+  }
+  
+  // Removed on Encounter Start
+  if ( talents.archon.sustained_potency.enabled() )
+  {
+    buffs.sustained_potency->cancel();
   }
 
   if ( talents.twist_of_fate.enabled() )
