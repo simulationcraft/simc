@@ -10419,6 +10419,7 @@ struct tempest_t : public shaman_spell_t
         }
       }
       default:
+        affected_by_master_of_the_elements = true;
         break;
     }
   }
