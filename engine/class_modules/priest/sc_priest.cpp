@@ -3431,24 +3431,35 @@ void priest_t::init_finished()
 
   for ( auto pre = precombat_action_list.begin(); pre != precombat_action_list.end(); pre++ )
   {
+    // TODO: Remove Debugs After Feature is complete
     sim->print_debug( "{} looping through action list. Action: {}", this->name_str, ( *pre )->name_str );
+
     if ( auto halo = dynamic_cast<actions::spells::halo_t*>( *pre ) )
     {
       sim->print_debug( "{} Halo prepull found.", this->name_str );
       int actions           = 0;
       timespan_t time_spent = 0_ms;
 
-      std::for_each( pre + 1, precombat_action_list.end(), [ &actions, &time_spent ]( action_t* a ) {
+      for ( auto iter = pre + 1; pre != precombat_action_list.end(); iter++ )
+      {
+        action_t* a = *iter;
+
+        sim->print_debug( "{} Checking for Halo Action: {}, Gcd: {}, expr: {}, expr_succ: {}, ready: {}",
+                          this->name_str, a->name_str, a->gcd(), a->if_expr ? true : false,
+                          a->if_expr ? ( a->if_expr->success() ? "true" : "false" ) : "N/A", a->action_ready() );
+
         if ( a->gcd() > 0_ms && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
         {
           actions++;
           time_spent += std::max( a->base_execute_time.value(), a->trigger_gcd );
+          if ( a->harmful )
+            break;
         }
-      } );
+      }
 
       // Only allow precast Halo if there's only one GCD action following it - It doesn't have a very long
       // travel time. This can be at most 2 seconds or the current code will break.
-      if ( actions == 1 && time_spent < 2_s )
+      if ( time_spent < 2_s )
       {
         halo->harmful = false;
         sim->print_debug( "{} Halo prepull set to nonharmful.", this->name_str );
