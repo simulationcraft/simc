@@ -18,7 +18,7 @@ precombat->add_action( "stellar_flare" );
 def->add_action( "variable,name=passive_asp,value=6%spell_haste+talent.natures_balance+talent.orbit_breaker*dot.moonfire.ticking*(buff.orbit_breaker.stack>(27-2*buff.solstice.up))*24" );
 def->add_action( "variable,name=ca_effective_cd,value=cooldown.ca_inc.remains<?cooldown.force_of_nature.remains" );
 def->add_action( "variable,name=last_ca_inc,value=fight_remains<cooldown.ca_inc.duration+variable.ca_effective_cd" );
-def->add_action( "variable,name=cd_condition,value=(fight_remains<(15+5*talent.incarnation_chosen_of_elune)*(1-talent.whirling_stars*0.2)|target.time_to_die>10&(!hero_tree.keeper_of_the_grove|(buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>25))&(!talent.whirling_stars|!talent.convoke_the_spirits|cooldown.convoke_the_spirits.remains<3|cooldown.convoke_the_spirits.remains>cooldown.ca_inc.full_recharge_time))&cooldown.ca_inc.ready&!buff.ca_inc.up" );
+def->add_action( "variable,name=cd_condition,value=(fight_remains<(15+5*talent.incarnation_chosen_of_elune)*(1-talent.whirling_stars*0.2)|target.time_to_die>10&(!hero_tree.keeper_of_the_grove|(buff.harmony_of_the_grove.up&cooldown.convoke_the_spirits.remains<60&(!talent.new_moon|cooldown.new_moon.charges_fractional>=2)))&(!talent.whirling_stars|!talent.convoke_the_spirits|talent.whirling_stars&cooldown.convoke_the_spirits.remains<gcd.max*2|cooldown.convoke_the_spirits.remains>cooldown.ca_inc.full_recharge_time))&cooldown.ca_inc.ready&!buff.ca_inc.up" );
 def->add_action( "use_item,name=aberrant_spellforge" );
 def->add_action( "do_treacherous_transmitter_task,if=cooldown.ca_inc.remains>10" );
 def->add_action( "use_item,name=spymasters_web,if=fight_remains<20" );
