@@ -9985,6 +9985,16 @@ std::unique_ptr<expr_t> rogue_t::create_action_expression( action_t& action, std
       return range::contains( danse_macabre_tracker, action.data().id() );
     } );
   }
+  else if ( split[ 0 ] == "buff" && split[ 1 ] == "envenom" && split[ 2 ] == "remains" && split.size() == 4 )
+  {
+    int buff_idx = util::to_int( split[ 3 ] );
+    return make_fn_expr( name_str, [ this, buff_idx ]() {
+      if ( buffs.envenom->expiration.size() < buff_idx )
+        return 0_s;
+      else
+        return buffs.envenom->expiration[ buff_idx - 1 ]->occurs() - sim->current_time();
+    } );
+  }
 
   return player_t::create_action_expression( action, name_str );
 }
