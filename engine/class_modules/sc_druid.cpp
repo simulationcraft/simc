@@ -13488,49 +13488,44 @@ void eclipse_handler_t::init()
   uptimes[ eclipse_e::SOLAR ] = p->get_uptime( "Eclipse Solar" )->collect_uptime( *p->sim );
   uptimes[ 3 ] = p->get_uptime( "Both Eclipses" )->collect_uptime( *p->sim );
 
-  size_t res = 3;
-  bool sf = p->spec.starfall->ok();
-  bool foe = p->talent.fury_of_elune.ok();
-  bool nm = p->talent.new_moon.ok();
-  bool hm = nm;
-  bool fm = nm;
+  size_t res = 4;
+  size_t foe = p->talent.fury_of_elune.ok() ? 1 : 0;
+  size_t nm = p->talent.new_moon.ok() ? 3 : 0;
 
-  data.arrays.reserve( res + sf + foe + nm + hm + fm );
+  data.arrays.reserve( res + foe + nm );
   data.wrath = &data.arrays.emplace_back();
   data.starfire = &data.arrays.emplace_back();
   data.starsurge = &data.arrays.emplace_back();
-  if ( sf )
-    data.starfall = &data.arrays.emplace_back();
+  data.starfall = &data.arrays.emplace_back();
   if ( foe )
     data.fury_of_elune = &data.arrays.emplace_back();
   if ( nm )
+  {
     data.new_moon = &data.arrays.emplace_back();
-  if ( hm )
     data.half_moon = &data.arrays.emplace_back();
-  if ( fm )
     data.full_moon = &data.arrays.emplace_back();
+  }
 
-  iter.arrays.reserve( res + sf + foe + nm + hm + fm );
+  iter.arrays.reserve( res + foe + nm );
   iter.wrath = &iter.arrays.emplace_back();
   iter.starfire = &iter.arrays.emplace_back();
   iter.starsurge = &iter.arrays.emplace_back();
-  if ( sf )
-    iter.starfall = &iter.arrays.emplace_back();
+  iter.starfall = &iter.arrays.emplace_back();
   if ( foe )
     iter.fury_of_elune = &iter.arrays.emplace_back();
   if ( nm )
+  {
     iter.new_moon = &iter.arrays.emplace_back();
-  if ( hm )
     iter.half_moon = &iter.arrays.emplace_back();
-  if ( fm )
     iter.full_moon = &iter.arrays.emplace_back();
+  }
 }
 
 void eclipse_handler_t::cast_wrath()
 {
   if ( !enabled() ) return;
 
-  if ( iter.wrath && p->in_combat )
+  if ( p->in_combat )
     ( *iter.wrath )[ state ]++;
 
   if ( in_none( state ) )
@@ -13545,7 +13540,7 @@ void eclipse_handler_t::cast_starfire()
 {
   if ( !enabled() ) return;
 
-  if ( iter.starfire && p->in_combat )
+  if ( p->in_combat )
     ( *iter.starfire )[ state ]++;
 
   if ( in_none( state ) && !p->talent.lunar_calling.ok() )
@@ -13560,7 +13555,7 @@ void eclipse_handler_t::cast_starsurge()
 {
   if ( !enabled() ) return;
 
-  if ( iter.starsurge && p->in_combat )
+  if ( p->in_combat )
     ( *iter.starsurge )[ state ]++;
 }
 
@@ -13580,8 +13575,7 @@ void eclipse_handler_t::tick_starfall()
 {
   if ( !enabled() ) return;
 
-  if ( iter.starfall )
-    ( *iter.starfall )[ state ]++;
+  ( *iter.starfall )[ state ]++;
 }
 
 void eclipse_handler_t::tick_fury_of_elune()
@@ -13694,8 +13688,7 @@ void eclipse_handler_t::datacollection_begin()
   iter.wrath->fill( 0 );
   iter.starfire->fill( 0 );
   iter.starsurge->fill( 0 );
-  if ( iter.starfall )
-    iter.starfall->fill( 0 );
+  iter.starfall->fill( 0 );
   if ( iter.fury_of_elune )
     iter.fury_of_elune->fill( 0 );
   if ( iter.new_moon )
@@ -13726,8 +13719,7 @@ void eclipse_handler_t::datacollection_end()
   end( *iter.wrath, *data.wrath );
   end( *iter.starfire, *data.starfire );
   end( *iter.starsurge, *data.starsurge );
-  if ( iter.starfall )
-    end( *iter.starfall, *data.starfall );
+  end( *iter.starfall, *data.starfall );
   if ( iter.fury_of_elune )
     end( *iter.fury_of_elune, *data.fury_of_elune );
   if ( iter.new_moon )
@@ -13754,8 +13746,7 @@ void eclipse_handler_t::merge( const eclipse_handler_t& other )
   merge( *other.data.wrath, *data.wrath );
   merge( *other.data.starfire, *data.starfire );
   merge( *other.data.starsurge, *data.starsurge );
-  if ( data.starfall )
-    merge( *other.data.starfall, *data.starfall );
+  merge( *other.data.starfall, *data.starfall );
   if ( data.fury_of_elune )
     merge( *other.data.fury_of_elune, *data.fury_of_elune );
   if ( data.new_moon )
@@ -13778,8 +13769,7 @@ void eclipse_handler_t::print_table( report::sc_html_stream& os )
   print_line( os, p->spec.wrath, *data.wrath );
   print_line( os, p->talent.starfire, *data.starfire );
   print_line( os, p->talent.starsurge, *data.starsurge );
-
-  if ( data.starfall )      print_line( os, p->spec.starfall, *data.starfall );
+  print_line( os, p->spec.starfall, *data.starfall );
   if ( data.fury_of_elune ) print_line( os, p->find_spell( 202770 ), *data.fury_of_elune );
   if ( data.new_moon )      print_line( os, p->find_spell( 274281 ), *data.new_moon );
   if ( data.half_moon )     print_line( os, p->find_spell( 274282 ), *data.half_moon );
