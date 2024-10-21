@@ -1,5 +1,5 @@
 // Spell text, wow build 11.0.5.56865
-static const std::array<spelltext_data_t, 26524> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 26525> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26330,6 +26330,7 @@ static const std::array<spelltext_data_t, 26524> __ptr_spelltext_data { {
   { 467936, "Periodic damage from Black Arrow has a small chance to erupt in a burst of darkness, dealing $444269s1 Shadow damage to all enemies near the target. Damage reduced beyond $s1 targets.", 0, 0 },
   { 467941, "When $?c1[Kill Command][Aimed Shot] damages a target affected by Black Arrow, $s1% of the damage dealt is replicated to each other unit affected by Black Arrow.", 0, 0 },
   { 468019, "$@spelldesc467941", 0, 0 },
+  { 468037, "You attempt to finish off a wounded target, dealing $s1 Shadow damage.", 0, 0 },
   { 468074, "$@spelldesc466990", "Building up to a Withering Fire...", 0 },
   { 468075, "$@spelldesc466990", "During your next Bestial Wrath, darkness will overtake you.", 0 },
   { 468146, "When your Restoration heal over time effects are removed by enemies, they are replaced with Reactive Resin, healing an ally for $468152o1 over $468152d. Multiple stacks may overlap.", 0, 0 },
