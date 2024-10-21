@@ -4936,13 +4936,13 @@ void burst_of_knowledge( special_effect_t& effect )
 
 void heart_of_roccor( special_effect_t& effect )
 {
-  if (!effect.player->is_ptr())
+  if ( !effect.player->is_ptr() )
     return;
 
-  // Currently missing the misc value for the buff type, manually setting it for now. 
-  // Implementation will probably be redundant once its fixed. 
+  // Currently missing the misc value for the buff type, manually setting it for now.
+  // Implementation will probably be redundant once its fixed.
   auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item )
-            ->add_stat( STAT_STRENGTH, effect.trigger()->effectN( 1 ).average( effect ) );
+                  ->add_stat( STAT_STRENGTH, effect.trigger()->effectN( 1 ).average( effect ) );
 
   effect.custom_buff = buff;
   new dbc_proc_callback_t( effect.player, effect );

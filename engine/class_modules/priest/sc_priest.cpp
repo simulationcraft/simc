@@ -486,11 +486,13 @@ struct halo_spell_t final : public priest_spell_t
 {
   bool returning;
   action_t* return_spell;
+  timespan_t prepull_timespent;
 
   halo_spell_t( util::string_view n, priest_t& p, const spell_data_t* s, bool return_ = false )
     : priest_spell_t( n, p, s ),
       returning( return_ ),
-      return_spell( return_ ? nullptr : new halo_spell_t( name_str + "_return", p, s, true ) )
+      return_spell( return_ ? nullptr : new halo_spell_t( name_str + "_return", p, s, true ) ),
+      prepull_timespent( timespan_t::zero() )
   {
     aoe        = -1;
     background = true;
@@ -517,7 +519,7 @@ struct halo_spell_t final : public priest_spell_t
   timespan_t travel_time() const override
   {
     if ( !returning )
-      return priest_spell_t::travel_time();
+      return priest_spell_t::travel_time() - prepull_timespent;
 
     if ( travel_speed == 0 && travel_delay == 0 )
       return timespan_t::from_seconds( min_travel_time );
@@ -563,7 +565,8 @@ struct halo_spell_t final : public priest_spell_t
 
     if ( p().talents.archon.divine_halo.enabled() && !returning && return_spell )
     {
-      make_event( sim, timespan_t::from_seconds( radius / travel_speed ), [ this ] { return_spell->execute(); } );
+      make_event( sim, timespan_t::from_seconds( radius / travel_speed ) - prepull_timespent,
+                  [ this ] { return_spell->execute(); } );
     }
   }
 };
@@ -572,6 +575,7 @@ struct halo_heal_t final : public priest_heal_t
 {
   bool returning;
   action_t* return_spell;
+  timespan_t prepull_timespent;
   halo_heal_t( util::string_view n, priest_t& p, const spell_data_t* s, bool return_ = false )
     : priest_heal_t( n, p, s ),
       returning( return_ ),
@@ -640,6 +644,8 @@ struct halo_heal_t final : public priest_heal_t
 
 struct halo_t final : public priest_spell_t
 {
+  timespan_t prepull_timespent;
+
   halo_t( priest_t& p, util::string_view options_str ) : halo_t( p, false )
   {
     parse_options( options_str );
@@ -647,6 +653,7 @@ struct halo_t final : public priest_spell_t
 
   halo_t( priest_t& p, bool power_surge = false )
     : priest_spell_t( "halo", p, p.talents.halo ),
+      prepull_timespent( timespan_t::zero() ),
       _heal_spell_holy( new halo_heal_t( "halo_heal_holy", p, p.talents.halo_heal_holy ) ),
       _dmg_spell_holy( new halo_spell_t( "halo_damage_holy", p, p.talents.halo_dmg_holy ) ),
       _heal_spell_shadow( new halo_heal_t( "halo_heal_shadow", p, p.talents.halo_heal_shadow ) ),
@@ -663,9 +670,27 @@ struct halo_t final : public priest_spell_t
     }
   }
 
+  timespan_t travel_time() const override
+  {
+    if ( is_precombat )
+      return 1_ms;
+
+    return priest_spell_t::travel_time();
+  }
+
   void execute() override
   {
     priest_spell_t::execute();
+
+    if ( is_precombat )
+    {
+      _heal_spell_holy->prepull_timespent   = prepull_timespent;
+      _dmg_spell_holy->prepull_timespent    = prepull_timespent;
+      _heal_spell_shadow->prepull_timespent = prepull_timespent;
+      _dmg_spell_shadow->prepull_timespent  = prepull_timespent;
+
+      cooldown->adjust( -prepull_timespent );
+    }
 
     if ( priest().specialization() == PRIEST_SHADOW || priest().buffs.shadow_covenant->check() )
     {
@@ -678,9 +703,32 @@ struct halo_t final : public priest_spell_t
       _dmg_spell_holy->execute();
     }
 
+    if ( is_precombat )
+    {
+      _heal_spell_holy->prepull_timespent   = timespan_t::zero();
+      _dmg_spell_holy->prepull_timespent    = timespan_t::zero();
+      _heal_spell_shadow->prepull_timespent = timespan_t::zero();
+      _dmg_spell_shadow->prepull_timespent  = timespan_t::zero();
+    }
+
     if ( priest().talents.archon.power_surge.enabled() && !background )
     {
       priest().buffs.power_surge->trigger();
+
+      if ( is_precombat )
+      {
+
+        // TODO: Handle very early precombat
+        priest().buffs.power_surge->extend_duration( player, -prepull_timespent );
+
+
+        if (priest().buffs.power_surge->check())
+        {
+          auto when = -( prepull_timespent % priest().buffs.power_surge->tick_time() );
+
+          priest().buffs.power_surge->reschedule_tick( when );
+        }
+      }
     }
 
     if ( priest().talents.archon.sustained_potency.enabled() )
@@ -727,10 +775,10 @@ struct halo_t final : public priest_spell_t
   }
 
 private:
-  propagate_const<action_t*> _heal_spell_holy;
-  propagate_const<action_t*> _dmg_spell_holy;
-  propagate_const<action_t*> _heal_spell_shadow;
-  propagate_const<action_t*> _dmg_spell_shadow;
+  propagate_const<halo_heal_t*> _heal_spell_holy;
+  propagate_const<halo_spell_t*> _dmg_spell_holy;
+  propagate_const<halo_heal_t*> _heal_spell_shadow;
+  propagate_const<halo_spell_t*> _dmg_spell_shadow;
 };  // namespace spells
 
 // ==========================================================================
@@ -3352,35 +3400,12 @@ void priest_t::init_resources( bool force )
   if ( ( specialization() == PRIEST_SHADOW ) && resources.initial_opt[ RESOURCE_INSANITY ] <= 0 &&
        options.init_insanity )
   {
-    auto halo_insanity         = talents.halo->effectN( 4 ).resource( RESOURCE_INSANITY );
     auto shadow_crash_insanity = talents.shadow.shadow_crash->effectN( 2 ).resource( RESOURCE_INSANITY );
-
-    // Don't let Archon count Halo for pre-pull Insanity purposes
-    if ( talents.archon.power_surge.enabled() )
-    {
-      halo_insanity = 0.0;
-    }
 
     if ( talents.shadow.shadow_crash.enabled() || talents.shadow.shadow_crash_target.enabled() )
     {
-      // One Shadow Crash + One Halo == 16 Insanity
-      if ( talents.halo.enabled() )
-      {
-        resources.initial_opt[ RESOURCE_INSANITY ] = shadow_crash_insanity + halo_insanity;
-      }
-      else
-      {
-        // One Shadow Crash == 6 Insanity
-        resources.initial_opt[ RESOURCE_INSANITY ] = shadow_crash_insanity;
-      }
-    }
-    else
-    {
-      // One Halo == 10 Insanity
-      if ( talents.halo.enabled() )
-      {
-        resources.initial_opt[ RESOURCE_INSANITY ] = halo_insanity;
-      }
+      // One Shadow Crash == 6 Insanity
+      resources.initial_opt[ RESOURCE_INSANITY ] = shadow_crash_insanity;
     }
   }
 
@@ -3398,6 +3423,52 @@ void priest_t::init_finished()
   cooldowns.fiend = talents.voidweaver.voidwraith.enabled()
                         ? cooldowns.voidwraith
                         : ( talents.shared.mindbender.enabled() ? cooldowns.mindbender : cooldowns.shadowfiend );
+
+  /*PRECOMBAT SHENANIGANS
+  we do this here so all precombat actions have gone throught init() and init_finished() so if-expr are properly
+  parsed and we can adjust travel times accordingly based on subsequent precombat actions that will sucessfully
+  cast*/
+
+  for ( auto pre = precombat_action_list.begin(); pre != precombat_action_list.end(); pre++ )
+  {
+    // TODO: Remove Debugs After Feature is complete
+    sim->print_debug( "{} looping through action list. Action: {}", this->name_str, ( *pre )->name_str );
+
+    if ( auto halo = dynamic_cast<actions::spells::halo_t*>( *pre ) )
+    {
+      sim->print_debug( "{} Halo prepull found.", this->name_str );
+      int actions           = 0;
+      timespan_t time_spent = 0_ms;
+
+      for ( auto iter = pre + 1; pre != precombat_action_list.end(); iter++ )
+      {
+        action_t* a = *iter;
+
+        sim->print_debug( "{} Checking for Halo Action: {}, Gcd: {}, expr: {}, expr_succ: {}, ready: {}",
+                          this->name_str, a->name_str, a->gcd(), a->if_expr ? true : false,
+                          a->if_expr ? ( a->if_expr->success() ? "true" : "false" ) : "N/A", a->action_ready() );
+
+        if ( a->gcd() > 0_ms && ( !a->if_expr || a->if_expr->success() ) && a->action_ready() )
+        {
+          actions++;
+          time_spent += std::max( a->base_execute_time.value(), a->trigger_gcd );
+          if ( a->harmful )
+            break;
+        }
+      }
+
+      // Only allow precast Halo if there's only one GCD action following it - It doesn't have a very long
+      // travel time. This can be at most 2 seconds or the current code will break.
+      if ( time_spent < 2_s )
+      {
+        halo->harmful = false;
+        sim->print_debug( "{} Halo prepull set to nonharmful.", this->name_str );
+        // Child contains the travel time
+        halo->prepull_timespent = time_spent;
+        break;
+      }
+    }
+  }
 }
 
 void priest_t::init_special_effects()
@@ -3984,6 +4055,12 @@ void priest_t::combat_begin()
     buffs.sins_of_the_many->trigger();
   }
 
+  // Removed on Encounter Start
+  if ( talents.archon.sustained_potency.enabled() )
+  {
+    buffs.sustained_potency->cancel();
+  }
+
   if ( talents.twist_of_fate.enabled() )
   {
     struct twist_of_fate_event_t final : public event_t
@@ -4325,7 +4402,7 @@ struct priest_module_t final : public module_t
     p->buffs.body_and_soul    = make_buff( p, "body_and_soul", p->find_spell( 65081 ) );
     p->buffs.angelic_feather  = make_buff( p, "angelic_feather", p->find_spell( 121557 ) );
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.symbol_of_hope   = make_buff<buffs::symbol_of_hope_t>( p );

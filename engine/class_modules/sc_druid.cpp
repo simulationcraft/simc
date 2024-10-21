@@ -10402,7 +10402,7 @@ void druid_t::init_base_stats()
   }
 
   // Passive Talents & Spells
-  auto crit = find_effect( find_specialization_spell( "Critical Strike" ), A_MOD_ALL_CRIT_CHANCE ).percent();
+  auto crit = find_effect( find_specialization_spell( "Critical Strikes" ), A_MOD_ALL_CRIT_CHANCE ).percent();
   base.spell_crit_chance  += crit;
   base.attack_crit_chance += crit;
   base.armor_multiplier   *= 1.0 + find_effect( talent.killer_instinct, A_MOD_BASE_RESISTANCE_PCT ).percent();

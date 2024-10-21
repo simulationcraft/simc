@@ -31,7 +31,7 @@ actions.cds+=/lights_judgment,if=buff.trueshot.down
 actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<26
 actions.cds+=/salvo,if=active_enemies>2|cooldown.volley.remains<10
 
-actions.st=steady_shot,if=talent.steady_focus&steady_focus_count&buff.steady_focus.remains<8
+actions.st=steady_shot,if=talent.steady_focus&buff.steady_focus.remains<8
 actions.st+=/kill_shot,if=buff.razor_fragments.up
 actions.st+=/black_arrow
 actions.st+=/explosive_shot,if=active_enemies>1
@@ -58,7 +58,7 @@ actions.st+=/arcane_shot,if=focus>cost+action.aimed_shot.cost
 actions.st+=/bag_of_tricks,if=buff.trueshot.down
 actions.st+=/steady_shot
 
-actions.trickshots=steady_shot,if=talent.steady_focus&steady_focus_count&buff.steady_focus.remains<8
+actions.trickshots=steady_shot,if=talent.steady_focus&buff.steady_focus.remains<8
 actions.trickshots+=/explosive_shot
 actions.trickshots+=/volley
 actions.trickshots+=/barrage,if=talent.rapid_fire_barrage&buff.trick_shots.remains>=execute_time

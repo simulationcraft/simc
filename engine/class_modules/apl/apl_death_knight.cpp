@@ -138,7 +138,7 @@ void blood( player_t* p )
   deathbringer->add_action( "soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>(dot.soul_reaper.remains+5)" );
   deathbringer->add_action( "blood_boil,if=(dot.reapers_mark.ticking&(pet.dancing_rune_weapon.active&!drw.bp_ticking))|!dot.blood_plague.ticking|(charges_fractional>=1&dot.reapers_mark.ticking&buff.coagulopathy.remains>2*gcd)" );
   deathbringer->add_action( "death_and_decay,if=((dot.reapers_mark.ticking)&!death_and_decay.ticking)|!buff.death_and_decay.up" );
-  deathbringer->add_action( "marrowrend,if=(buff.exterminate_painful_death.up|buff.exterminate.up)&(runic_power.deficit>20&buff.coagulopathy.remains>2*gcd)" );
+  deathbringer->add_action( "marrowrend,if=buff.exterminate.up&(runic_power.deficit>20&buff.coagulopathy.remains>2*gcd)" );
   deathbringer->add_action( "abomination_limb,if=dot.reapers_mark.ticking" );
   deathbringer->add_action( "reapers_mark,if=!dot.reapers_mark.ticking&dot.blood_plague.ticking" );
   deathbringer->add_action( "bonestorm,if=buff.death_and_decay.up&buff.bone_shield.stack>5&cooldown.dancing_rune_weapon.remains>=10&(dot.reapers_mark.ticking)" );

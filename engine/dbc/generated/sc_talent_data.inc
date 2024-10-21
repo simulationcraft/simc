@@ -1,5 +1,5 @@
-// 564 talents, wow build 11.0.2.56819
-static std::array<talent_data_t, 564> __talent_data { {
+// 565 talents, wow build 11.0.5.56865
+static std::array<talent_data_t, 565> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
   { "War Machine"                       , 15760, 0x00, 0x0001,   73,   0,   0,  316733,       0,  0 },
@@ -232,6 +232,7 @@ static std::array<talent_data_t, 564> __talent_data { {
   { "Feral Affinity"                    , 22156, 0x00, 0x0400,  104,   1,   2,  202155,       0,  0 },
   { "Guardian Affinity"                 , 22157, 0x00, 0x0400,  102,   1,   2,  197491,       0,  0 },
   { "Guardian Affinity"                 , 22158, 0x00, 0x0400,  103,   1,   2,  217615,       0,  0 },
+  { "Restoration Affinity"              , 22159, 0x00, 0x0400,    0,   2,   2,  197492,       0,  0 },
   { "Guardian Affinity"                 , 22160, 0x00, 0x0400,  105,   2,   2,  197491,       0,  0 },
   { "Balance Affinity"                  , 22163, 0x00, 0x0400,    0,   0,   2,  197488,       0,  0 },
   { "Stellar Flare"                     , 22165, 0x00, 0x0400,  102,   2,   5,  202347,       0,  0 },
@@ -246,7 +247,7 @@ static std::array<talent_data_t, 564> __talent_data { {
   { "Repentance"                        , 22180, 0x00, 0x0002,    0,   1,   2,   20066,       0,  0 },
   { "Eye for an Eye"                    , 22183, 0x00, 0x0002,   70,   2,   3,  205191,       0,  0 },
   { "Hand of the Protector"             , 22189, 0x00, 0x0002,   66,   0,   5,  315924,       0,  0 },
-  { "Crusade"                           , 22215, 0x00, 0x0002,   70,   1,   6,  231895,   31884,  0 },
+  { "Crusade"                           , 22215, 0x00, 0x0002,   70,   1,   6,  231895,       0,  0 },
   { "Focused Thunder"                   , 22218, 0x00, 0x0200,  270,   0,   6,  197895,       0,  0 },
   { "Song of Chi-Ji"                    , 22219, 0x00, 0x0200,  270,   1,   3,  198898,       0,  0 },
   { "Pyroclasm"                         , 22220, 0x00, 0x0080,   63,   1,   6,  269650,       0,  0 },
@@ -358,7 +359,7 @@ static std::array<talent_data_t, 564> __talent_data { {
   { "Unbreakable Spirit"                , 22433, 0x00, 0x0002,    0,   0,   3,  114154,       0,  0 },
   { "Cavalier"                          , 22434, 0x00, 0x0002,    0,   1,   3,  230332,       0,  0 },
   { "Blessing of Spellwarding"          , 22435, 0x00, 0x0002,   66,   2,   3,  204018,       0,  0 },
-  { "Sentinel"                          , 22438, 0x00, 0x0002,   66,   1,   5,  389539,   31884,  0 },
+  { "Sentinel"                          , 22438, 0x00, 0x0002,   66,   1,   5,  389539,       0,  0 },
   { "Spitting Cobra"                    , 22441, 0x00, 0x0004,  253,   0,   3,  257891,       0,  0 },
   { "Glacial Insulation"                , 22442, 0x00, 0x0080,   64,   0,   1,  235297,       0,  0 },
   { "Shimmer"                           , 22443, 0x00, 0x0080,    0,   1,   1,  212653,    1953,  0 },
@@ -562,7 +563,7 @@ static std::array<talent_data_t, 564> __talent_data { {
   { "Execution Sentence"                , 23467, 0x00, 0x0002,   70,   2,   0,  343527,       0,  0 },
   { "Moment of Glory"                   , 23468, 0x00, 0x0002,   66,   2,   1,  327193,       0,  0 },
   { "Blessed Hammer"                    , 23469, 0x00, 0x0002,   66,   2,   0,  204019,   35395,  0 },
-  { "Avenging Crusader"                 , 23680, 0x00, 0x0002,   65,   1,   5,  216331,   31884,  0 },
+  { "Avenging Crusader"                 , 23680, 0x00, 0x0002,   65,   1,   5,  216331,       0,  0 },
   { "Beacon of Virtue"                  , 23681, 0x00, 0x0002,   65,   2,   6,  200025,       0,  0 },
 } };
 
