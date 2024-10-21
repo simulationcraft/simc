@@ -909,6 +909,8 @@ public:
 
     action_t* shadow_surge = nullptr;
     action_t* phantom_pain = nullptr;
+    action_t* withering_fire_primary = nullptr;
+    action_t* withering_fire_secondary = nullptr;
   } actions;
 
   cdwaste::player_data_t cd_waste;
@@ -1064,6 +1066,7 @@ public:
   void trigger_outland_venom_update();
   void trigger_calling_the_shots( action_t* action, double cost );
   void consume_trick_shots();
+  void trigger_deathblow( player_t* target );
   void trigger_sentinel( player_t* target, bool force = false, proc_t* proc = nullptr );
   void trigger_sentinel_implosion( hunter_td_t* td );
   void trigger_symphonic_arsenal();
@@ -3467,6 +3470,24 @@ void hunter_t::consume_trick_shots()
   buffs.trick_shots -> decrement();
 }
 
+void hunter_t::trigger_deathblow( player_t* target )
+{
+  if ( !talents.deathblow.ok() )
+    return;
+
+  procs.deathblow->occur();
+  
+  if( !buffs.withering_fire->check() )
+  {
+    buffs.deathblow->trigger();
+  }
+  else
+  {
+    actions.withering_fire_primary->execute_on_target( target );
+    actions.withering_fire_secondary->execute_on_target( target );
+  }
+}
+
 void hunter_t::trigger_sentinel( player_t* target, bool force, proc_t* proc )
 {
   if ( force || buffs.eyes_closed->check() || rng().roll( 0.22 ) )
@@ -3665,7 +3686,7 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
     if ( rng().roll( bleak_arrows_chance ) )
     {
       p()->procs.deathblow->occur();
-      p()->buffs.deathblow->trigger();
+      p()->trigger_deathblow( s->target );
     }
   }
 
@@ -4198,10 +4219,7 @@ struct kill_shot_base_t : hunter_ranged_attack_t
     health_threshold_pct( p -> talents.kill_shot -> effectN( 2 ).base_value() )
   {
     if ( p->talents.razor_fragments.ok() )
-    {
       razor_fragments = p -> get_background_action<razor_fragments_t>( "razor_fragments" );
-      add_child( razor_fragments );
-    }
 
     if ( p->talents.venoms_bite.ok() )
       venoms_bite = p->get_background_action<serpent_sting_t>( "serpent_sting" );
@@ -4317,47 +4335,43 @@ struct kill_shot_t : public kill_shot_base_t
 
 // Black Arrow (Dark Ranger) =========================================================
 
-struct black_arrow_t : public kill_shot_base_t
+struct black_arrow_dot_t : public hunter_ranged_attack_t
 {
-  struct black_arrow_dot_t : public hunter_ranged_attack_t
+  struct
   {
-    struct
+    timespan_t duration = 0_s;
+  } shadow_hounds;
+  
+  black_arrow_dot_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->find_spell( 468572 ) )
+  {
+    background = dual = true;
+    hasted_ticks = false;
+    if ( p->talents.shadow_hounds.ok() )
     {
-      timespan_t duration = 0_s;
-    } shadow_hounds;
-    
-    black_arrow_dot_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->find_spell( 468572 ) )
+      shadow_hounds.duration = p->find_spell( 442419 )->duration();
+    }
+  }
+  void tick( dot_t* d ) override
+  {
+    hunter_ranged_attack_t::tick( d );
+    if ( p()->talents.shadow_surge.ok() && p()->rppm.shadow_surge->trigger() )
     {
-      background = dual = true;
-      hasted_ticks = false;
-
-      
-      if ( p->talents.shadow_hounds.ok() )
-      {
-        shadow_hounds.duration = p->find_spell( 442419 )->duration();
-      }
+      p()->actions.shadow_surge->execute_on_target( d->target );
     }
 
-    void tick( dot_t* d ) override
+    if( p()->talents.shadow_hounds.ok() && p()->rppm.shadow_hounds->trigger() )
     {
-      hunter_ranged_attack_t::tick( d );
-
-      if ( p()->talents.shadow_surge.ok() && p()->rppm.shadow_surge->trigger() )
+      p()->pets.dark_hound.spawn( shadow_hounds.duration );
+      if ( !p()->pets.dark_hound.active_pets().empty() && p()->specialization() == HUNTER_BEAST_MASTERY )
       {
-        p()->actions.shadow_surge->execute_on_target( d->target );
-      }
-
-      if( p()->talents.shadow_hounds.ok() && p()->rppm.shadow_hounds->trigger() )
-      {
-        p()->pets.dark_hound.spawn( shadow_hounds.duration );
-        if ( !p()->pets.dark_hound.active_pets().empty() && p()->specialization() == HUNTER_BEAST_MASTERY )
-        {
-          p()->pets.dark_hound.active_pets().back()->buffs.beast_cleave->trigger( shadow_hounds.duration );
-        }
+        p()->pets.dark_hound.active_pets().back()->buffs.beast_cleave->trigger( shadow_hounds.duration );
       }
     }
-  };
-
+  }
+};
+  
+struct black_arrow_base_t : public kill_shot_base_t
+{
   struct bleak_powder_t : public hunter_ranged_attack_t
   {
     bleak_powder_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.bleak_powder_dmg )
@@ -4373,13 +4387,11 @@ struct black_arrow_t : public kill_shot_base_t
   black_arrow_dot_t* black_arrow_dot = nullptr;
   bleak_powder_t* bleak_powder = nullptr;
 
-  black_arrow_t( hunter_t* p, util::string_view options_str )
-    : kill_shot_base_t( "black_arrow", p, p->find_spell( 466930 ) )
+  black_arrow_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s )
+    : kill_shot_base_t( n, p, s )
   {
     if ( !p->talents.black_arrow.ok() )
       background = true;
-
-    parse_options( options_str );
 
     lower_health_threshold_pct = data().effectN( 2 ).base_value();
     upper_health_threshold_pct = data().effectN( 3 ).base_value();
@@ -4387,10 +4399,7 @@ struct black_arrow_t : public kill_shot_base_t
     black_arrow_dot = p->get_background_action<black_arrow_dot_t>( "black_arrow_dot" );
 
     if ( p->talents.bleak_powder.ok() )
-    {
       bleak_powder = p->get_background_action<bleak_powder_t>( "bleak_powder" );
-      add_child( bleak_powder );
-    }
   }
 
   void execute() override
@@ -4398,10 +4407,7 @@ struct black_arrow_t : public kill_shot_base_t
     kill_shot_base_t::execute();
 
     if ( p()->talents.ebon_bowstring.ok() && rng().roll( p()->talents.ebon_bowstring->effectN( 1 ).percent() ) )
-    {
-      p()->procs.deathblow->occur();
-      p()->buffs.deathblow->trigger();
-    }
+      p()->trigger_deathblow( target );
   }
 
   void impact( action_state_t* s ) override
@@ -4422,15 +4428,25 @@ struct black_arrow_t : public kill_shot_base_t
       p()->cooldowns.bleak_powder->start();
     }
   }
+};
+
+struct black_arrow_t final : public black_arrow_base_t
+{
+  black_arrow_t( hunter_t* p, util::string_view options_str )
+    : black_arrow_base_t( "black_arrow", p, p->find_spell( 466930 ) )
+  {
+    parse_options( options_str );
+  }
 
   bool target_ready( player_t* candidate_target ) override
   {
-    //Black Arrow has different target ready conditionals than regular Kill Shot, so we don't call Kill Shot base.
+    // Black Arrow has different target ready conditionals than regular Kill Shot, so we don't call Kill Shot base.
     return hunter_ranged_attack_t::target_ready( candidate_target ) &&
-      ( candidate_target->health_percentage() <= lower_health_threshold_pct
-        || ( p()->bugs && candidate_target->health_percentage() >= upper_health_threshold_pct )
-        || ( p()->talents.the_bell_tolls.ok() && candidate_target->health_percentage() >= upper_health_threshold_pct )
-        || p()->buffs.deathblow -> check() );
+           ( candidate_target->health_percentage() <= lower_health_threshold_pct ||
+             ( p()->bugs && candidate_target->health_percentage() >= upper_health_threshold_pct ) ||
+             ( p()->talents.the_bell_tolls.ok() &&
+               candidate_target->health_percentage() >= upper_health_threshold_pct ) ||
+             p()->buffs.deathblow->check() );
   }
 };
 
@@ -4452,6 +4468,47 @@ struct phantom_pain_t final : hunter_ranged_attack_t
   {
     background = dual = true;
     base_dd_min = base_dd_max = 1.0;
+  }
+};
+
+// Black Arrow from Withering Fire (Dark Ranger) =========================================================
+
+struct black_arrow_withering_fire_main_t final : black_arrow_base_t
+{
+  black_arrow_withering_fire_main_t( hunter_t* p ) 
+    : black_arrow_base_t( "black_arrow_wf_main", p, p->find_spell( 466930 ) )
+  {
+    background = true;
+  }
+};
+
+struct black_arrow_withering_fire_secondary_t final : hunter_ranged_attack_t
+{
+  black_arrow_dot_t* black_arrow_dot = nullptr;
+  
+  black_arrow_withering_fire_secondary_t( hunter_t* p ) : hunter_ranged_attack_t( "black_arrow_wf_secondary", p, p->find_spell( 468037 ) )
+  {
+    background = dual = true;
+    aoe               = as<int>( p->talents.withering_fire->effectN( 3 ).base_value() );
+
+    black_arrow_dot = p->get_background_action<black_arrow_dot_t>( "black_arrow_dot" );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    black_arrow_dot->execute_on_target( s->target );
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    hunter_ranged_attack_t::available_targets( tl );
+
+    // Cannot hit the original target.
+    range::erase_remove( tl, target );
+
+    return tl.size();
   }
 };
 
@@ -5122,11 +5179,8 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 
     p() -> buffs.precise_shots -> trigger();
 
-    if( rng().roll( deathblow.chance ) )
-    {
-      p()->procs.deathblow->occur();
-      p()->buffs.deathblow->trigger();    
-    }
+    if ( rng().roll( deathblow.chance ) )
+      p()->trigger_deathblow( target );
 
     if( !p()->buffs.wailing_arrow_override->check() )
     { 
@@ -5403,11 +5457,8 @@ struct rapid_fire_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     p() -> buffs.streamline -> trigger();
-    if( rng().roll( deathblow.chance ) )
-    {
-      p()->procs.deathblow->occur();
-      p()->buffs.deathblow->trigger();    
-    }
+    if ( rng().roll( deathblow.chance ) )
+      p()->trigger_deathblow( target );
   }
 
   void tick( dot_t* d ) override
@@ -6507,10 +6558,7 @@ struct kill_command_t: public hunter_spell_t
         chance *= 2; 
       }
       if( rng().roll( chance ) )
-      {
-        p()->procs.deathblow->occur();
-        p()->buffs.deathblow->trigger();
-      }
+        p()->trigger_deathblow( target );
     }
 
 
@@ -7350,10 +7398,7 @@ void hunter_td_t::target_demise()
     p -> cooldowns.harpoon -> reset( true );
   }
   if ( p->talents.soul_drinker.ok() && dots.black_arrow->is_ticking() && p->rng().roll( p->talents.soul_drinker->effectN( 1 ).percent() ) )
-  {
-    p->procs.deathblow->occur();
-    p->buffs.deathblow->trigger();
-  }
+    p->trigger_deathblow( target );
 }
 
 /**
@@ -7925,12 +7970,6 @@ void hunter_t::create_actions()
   if ( talents.dire_command.ok() )
     actions.dire_command = new spells::dire_command_summon_t( this );
   
-  if ( talents.shadow_surge.ok() )
-    actions.shadow_surge = new attacks::shadow_surge_t( this );
-
-  if ( talents.phantom_pain.ok() )
-    actions.phantom_pain = new attacks::phantom_pain_t( this );
-  
   if ( talents.a_murder_of_crows.ok() || talents.banshees_mark.ok() )
     actions.a_murder_of_crows = new spells::a_murder_of_crows_t( this );
 
@@ -7954,7 +7993,18 @@ void hunter_t::create_actions()
 
   if ( talents.merciless_blow.ok() )
     actions.merciless_blow = new attacks::merciless_blow_t( this );
+  
+  if ( talents.shadow_surge.ok() )
+    actions.shadow_surge = new attacks::shadow_surge_t( this );
 
+  if ( talents.phantom_pain.ok() )
+    actions.phantom_pain = new attacks::phantom_pain_t( this );
+  
+  if ( talents.withering_fire.ok() )
+  {
+    actions.withering_fire_primary   = new attacks::black_arrow_withering_fire_main_t( this );
+    actions.withering_fire_secondary = new attacks::black_arrow_withering_fire_secondary_t( this );
+  }
 }
 
 void hunter_t::create_buffs()
