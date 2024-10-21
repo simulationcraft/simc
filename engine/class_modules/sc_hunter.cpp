@@ -939,28 +939,28 @@ public:
     gains(),
     procs()
   {
-    cooldowns.kill_command          = get_cooldown( "kill_command" );
-    cooldowns.kill_shot             = get_cooldown( "kill_shot" );
-    cooldowns.explosive_shot        = get_cooldown( "explosive_shot" );
+    cooldowns.kill_command    = get_cooldown( "kill_command" );
+    cooldowns.kill_shot       = get_cooldown( "kill_shot" );
+    cooldowns.explosive_shot  = get_cooldown( "explosive_shot" );
 
-    cooldowns.aimed_shot            = get_cooldown( "aimed_shot" );
-    cooldowns.rapid_fire            = get_cooldown( "rapid_fire" );
-    cooldowns.trueshot              = get_cooldown( "trueshot" );
+    cooldowns.aimed_shot                = get_cooldown( "aimed_shot" );
+    cooldowns.rapid_fire                = get_cooldown( "rapid_fire" );
+    cooldowns.trueshot                  = get_cooldown( "trueshot" );
     cooldowns.legacy_of_the_windrunners = get_cooldown( "legacy_of_the_windrunners" );
 
-    cooldowns.barbed_shot           = get_cooldown( "barbed_shot" );
-    cooldowns.bestial_wrath         = get_cooldown( "bestial_wrath" );
+    cooldowns.barbed_shot   = get_cooldown( "barbed_shot" );
+    cooldowns.bestial_wrath = get_cooldown( "bestial_wrath" );
 
-    cooldowns.wildfire_bomb         = get_cooldown( "wildfire_bomb" );
-    cooldowns.butchery              = get_cooldown( "butchery" );
-    cooldowns.harpoon               = get_cooldown( "harpoon" );
-    cooldowns.flanking_strike       = get_cooldown( "flanking_strike");
-    cooldowns.fury_of_the_eagle     = get_cooldown( "fury_of_the_eagle" );
-    cooldowns.ruthless_marauder     = get_cooldown( "ruthless_marauder" );
-    cooldowns.coordinated_assault   = get_cooldown( "coordinated_assault" );
+    cooldowns.wildfire_bomb       = get_cooldown( "wildfire_bomb" );
+    cooldowns.butchery            = get_cooldown( "butchery" );
+    cooldowns.harpoon             = get_cooldown( "harpoon" );
+    cooldowns.flanking_strike     = get_cooldown( "flanking_strike");
+    cooldowns.fury_of_the_eagle   = get_cooldown( "fury_of_the_eagle" );
+    cooldowns.ruthless_marauder   = get_cooldown( "ruthless_marauder" );
+    cooldowns.coordinated_assault = get_cooldown( "coordinated_assault" );
 
-    cooldowns.black_arrow = get_cooldown( "black_arrow" );
-    cooldowns.bleak_powder = get_cooldown( "bleak_powder" );
+    cooldowns.black_arrow   = get_cooldown( "black_arrow" );
+    cooldowns.bleak_powder  = get_cooldown( "bleak_powder_icd" );
 
     cooldowns.lunar_storm = get_cooldown( "lunar_storm" );
 
