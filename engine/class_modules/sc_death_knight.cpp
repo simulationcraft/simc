@@ -5997,10 +5997,10 @@ struct melee_t : public death_knight_melee_attack_t
 
       if ( s->result == RESULT_CRIT )
       {
-        if ( p()->talent.frost.killing_machine.ok() && rng().roll( km_chance * ++autos_since_last_proc ) )
+        if ( p()->talent.frost.killing_machine.ok() && rng().roll( km_chance * ++p()->km_proc_attempts ) )
         {
           p()->trigger_killing_machine( false, p()->procs.km_from_crit_aa, p()->procs.km_from_crit_aa_wasted );
-          autos_since_last_proc = 0;
+          p()->km_proc_attempts = 0;
         }
 
         // TODO: verify proc rate close to launch, as of build 55288 it is 100% for 2h and 50% for dw
