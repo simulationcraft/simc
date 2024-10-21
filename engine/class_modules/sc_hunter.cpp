@@ -4197,13 +4197,13 @@ struct kill_shot_base_t : hunter_ranged_attack_t
     hunter_ranged_attack_t( n, p, s ),
     health_threshold_pct( p -> talents.kill_shot -> effectN( 2 ).base_value() )
   {
-    if ( p -> talents.razor_fragments.ok() && !p->talents.black_arrow.ok() )
+    if ( p->talents.razor_fragments.ok() )
     {
       razor_fragments = p -> get_background_action<razor_fragments_t>( "razor_fragments" );
       add_child( razor_fragments );
     }
 
-    if ( p->talents.venoms_bite.ok() && !p->talents.black_arrow.ok() )
+    if ( p->talents.venoms_bite.ok() )
       venoms_bite = p->get_background_action<serpent_sting_t>( "serpent_sting" );
   }
 
@@ -4212,7 +4212,7 @@ struct kill_shot_base_t : hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     p()->buffs.deathblow->expire();
-    p() -> buffs.razor_fragments -> decrement();
+    p()->buffs.razor_fragments->decrement();
 
     if ( venoms_bite )
       venoms_bite->execute_on_target( target );
@@ -4275,7 +4275,7 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
-    am *= 1 + p() -> buffs.razor_fragments -> check_value();
+    am *= 1 + p()->buffs.razor_fragments->check_value();
     if ( p()->talents.hunters_prey.ok() )
     {
       int active = 0; 
@@ -8045,7 +8045,7 @@ void hunter_t::create_buffs()
           // XXX: check refreshes
           if ( old == 0 ) {
             talents.black_arrow.ok() ? cooldowns.black_arrow->reset( true ) : cooldowns.kill_shot->reset( true );
-            buffs.razor_fragments -> trigger();
+            buffs.razor_fragments->trigger();
           }
         } )
       -> set_activated( false );
