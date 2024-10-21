@@ -4422,7 +4422,7 @@ struct black_arrow_base_t : public kill_shot_base_t
       p()->actions.a_murder_of_crows->execute_on_target( s->target ); 
     }
 
-    if ( p()->talents.bleak_powder.ok() && ( p()->buffs.trick_shots->check() || p()->buffs.beast_cleave->check() ) && p()->cooldowns.bleak_powder->is_ready() )
+    if ( p()->talents.bleak_powder.ok() && ( p()->buffs.trick_shots->check() || p()->buffs.beast_cleave->check() ) && p()->cooldowns.bleak_powder->up() )
     {
       bleak_powder->execute_on_target( s->target );
       p()->cooldowns.bleak_powder->start();
@@ -6089,7 +6089,7 @@ struct fury_of_the_eagle_t : public hunter_melee_attack_t
 
     fote_tick -> execute_on_target( dot -> target );
 
-    if ( p()->talents.ruthless_marauder.ok() && p()->cooldowns.ruthless_marauder->is_ready() && rng().roll( p()->talents.ruthless_marauder->effectN( 1 ).percent() ) )
+    if ( p()->talents.ruthless_marauder.ok() && p()->cooldowns.ruthless_marauder->up() && rng().roll( p()->talents.ruthless_marauder->effectN( 1 ).percent() ) )
     {
       if ( p()->buffs.tip_of_the_spear->at_max_stacks() )
         procced_at_max_tip = true;
