@@ -80,6 +80,7 @@ using namespace helpers;
       // Diabolist
       bool diabolic_ritual = false;
       bool demonic_art = false;
+      bool rancora_cb_bonus = false;
     } triggers;
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
@@ -192,13 +193,22 @@ using namespace helpers;
 
         if ( diabolist() && triggers.diabolic_ritual )
         {
-          timespan_t adjustment = -timespan_t::from_seconds( p()->hero.diabolic_ritual->effectN( 1 ).base_value() ) * shards_used;
+          timespan_t adjustment = 0_ms;
+
+          if ( demonology() )
+            adjustment = -timespan_t::from_seconds( p()->hero.diabolic_ritual->effectN( 1 ).base_value() ) * shards_used;
+
+          if ( destruction() && shards_used > 0 )
+            adjustment = -timespan_t::from_seconds( p()->hero.diabolic_ritual->effectN( 2 ).base_value() );
 
           if ( demonology() && p()->hero.infernal_machine.ok() && p()->warlock_pet_list.demonic_tyrants.n_active_pets() > 0 )
             adjustment += -p()->hero.infernal_machine->effectN( 1 ).time_value();
 
           if ( destruction() && p()->hero.infernal_machine.ok() && p()->warlock_pet_list.infernals.n_active_pets() > 0 )
             adjustment += -p()->hero.infernal_machine->effectN( 1 ).time_value();
+
+          if ( destruction() && p()->hero.touch_of_rancora.ok() && shards_used > 0 && triggers.rancora_cb_bonus )
+            adjustment += -timespan_t::from_seconds( p()->hero.touch_of_rancora->effectN( 3 ).base_value() );
 
           switch( p()->diabolic_ritual )
           {
@@ -3549,6 +3559,7 @@ using namespace helpers;
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
       triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
+      triggers.rancora_cb_bonus = true;
 
       base_dd_multiplier *= 1.0 + p->talents.improved_chaos_bolt->effectN( 1 ).percent();
 
