@@ -4751,7 +4751,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   void execute() override
   {
     action_base_t::execute();
-    if( !this->background && this->execute_state->target != p() && !this->execute_state->target->is_sleeping() && this->execute_state->target != nullptr )
+    if( !this->background && this->execute_state->target != p() && this->execute_state->target != nullptr && !this->execute_state->target->is_sleeping() )
       p()->last_target = this->execute_state->target;
 
     // For non tank DK's, we proc the ability on CD, attached to thier own executes, to simulate it
