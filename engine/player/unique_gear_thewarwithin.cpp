@@ -4840,8 +4840,7 @@ void hand_of_justice( special_effect_t& effect )
 {
   auto damage = create_proc_action<generic_proc_t>( "quick_strike", effect, 469928 );
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
-  // TODO: currently not implemented in-game
-  // damage->base_multiplier *= role_mult( effect );
+  damage->base_multiplier *= role_mult( effect );
 
   effect.execute_action = damage;
 
@@ -4867,14 +4866,10 @@ void golem_gearbox( special_effect_t& effect )
   damage->dual = damage->background = true;
   // TODO: confirm driver coeff is used and not damage spell coeff
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
-  // TODO: currently not implemented in-game
-  // damage->base_multiplier *= role_mult( effect );
+  damage->base_multiplier *= role_mult( effect );
 
+  missile->add_child( damage );
   missile->impact_action = damage;
-  // use missile stat obj and remove unused damage stats obj
-  range::erase_remove( effect.player->stats_list, damage->stats );
-  delete damage->stats;
-  damage->stats = missile->stats;
 
   effect.proc_flags2_ = PF2_CRIT;
   effect.custom_buff = counter;
