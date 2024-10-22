@@ -36,7 +36,7 @@ actions+=/chi_torpedo,if=movement.distance>5
 actions+=/flying_serpent_kick,if=movement.distance>5
 actions+=/spear_hand_strike,if=target.debuff.casting.react
 # Potion
-actions+=/potion,if=buff.storm_earth_and_fire.up&pet.xuen_the_white_tiger.active|fight_remains<=30
+actions+=/potion,if=buff.storm_earth_and_fire.up|fight_remains<=30
 # Enable PI if available
 actions+=/variable,name=has_external_pi,value=cooldown.invoke_power_infusion_0.duration>0
 # Use Trinkets
