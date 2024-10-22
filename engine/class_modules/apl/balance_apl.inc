@@ -11,8 +11,7 @@ precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.2.has
 precombat->add_action( "moonkin_form" );
 precombat->add_action( "wrath" );
 precombat->add_action( "wrath" );
-precombat->add_action( "wait,sec=0.1,if=hero_tree.keeper_of_the_grove&!talent.stellar_flare" );
-precombat->add_action( "starfire,if=!talent.stellar_flare&hero_tree.elunes_chosen" );
+precombat->add_action( "starfire,if=!talent.stellar_flare" );
 precombat->add_action( "stellar_flare" );
 
 def->add_action( "variable,name=passive_asp,value=6%spell_haste+talent.natures_balance+talent.orbit_breaker*dot.moonfire.ticking*(buff.orbit_breaker.stack>(27-2*buff.solstice.up))*24" );
