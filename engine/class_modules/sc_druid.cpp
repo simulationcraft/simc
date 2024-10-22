@@ -543,7 +543,6 @@ public:
   bool orbital_bug;
   std::vector<event_t*> persistent_event_delay;
   event_t* astral_power_decay;
-  timespan_t last_starfire_cast;
   struct dot_list_t
   {
     std::vector<dot_t*> moonfire;
@@ -7191,19 +7190,7 @@ struct force_of_nature_t final : public trigger_control_of_the_dream_t<druid_spe
     base_t::execute();
 
     p()->pets.force_of_nature.spawn( num );
-
-    if ( p()->talent.dream_surge.ok() )
-    {
-      p()->buff.dream_burst->trigger( dream_surge_num );
-
-      // if force of nature is queued after starfire, the starfire will still consume a stack of dream burst and proc
-      // the damage even though the buff is applied after starfire impact. assume a 10ms window for now.
-      if ( sim->current_time() - p()->last_starfire_cast <= 10_ms )
-      {
-        p()->active.dream_burst->execute_on_target( p()->last_foreground_action->target );
-        p()->buff.dream_burst->decrement();
-      }
-    }
+    p()->buff.dream_burst->trigger( dream_surge_num );
   }
 };
 
@@ -8411,12 +8398,6 @@ struct starfire_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
 struct starfire_t final : public umbral_embrace_t<eclipse_e::LUNAR, starfire_base_t>
 {
   DRUID_ABILITY( starfire_t, base_t, "starfire", p->talent.starfire ) {}
-
-  void execute() override
-  {
-    base_t::execute();
-    p()->last_starfire_cast = sim->current_time();
-  }
 };
 
 // Starsurge Spell ==========================================================
@@ -12322,7 +12303,6 @@ void druid_t::reset()
   orbital_bug = true;
   persistent_event_delay.clear();
   astral_power_decay = nullptr;
-  last_starfire_cast = 0_ms;
   dot_lists.moonfire.clear();
   dot_lists.sunfire.clear();
   dot_lists.thrash_bear.clear();
