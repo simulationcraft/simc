@@ -126,7 +126,7 @@ thewarwithin.ovinaxs_mercurial_egg_desired_primary_stacks=15
 head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1540/10255/10394/10879,gem_id=213494/213494
 shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540
-back=consecrated_cloak,id=221667,bonus_id=11144/9627/9633/8902/8793/10222/11109/8960,crafted_stats=49/36
+back=consecrated_cloak,id=222817,bonus_id=11144/9627/9633/8902/8793/10222/11109/8960,crafted_stats=49/36
 chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540,enchant=crystalline_radiance_3
 wrists=bracers_of_umbral_mending,id=133306,bonus_id=9466/1514/6935,ilevel=639,gem_id=213494
 hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
@@ -152,7 +152,7 @@ talents=CwPAAAAAAAAAAAAAAAAAAAAAAAAzMjZMDDzYmZmphZmZGzYAAAAAAAAAMzMzwYMmBAMbmhZx
 head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,bonus_id=6652/10354/10269/1540/10255/10394/10879,gem_id=213482/213482
 shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540
-back=consecrated_cloak,id=221667,bonus_id=11144/9627/9633/8902/8793/10222/11109/8960,crafted_stats=49/36
+back=consecrated_cloak,id=222817,bonus_id=11144/9627/9633/8902/8793/10222/11109/8960,crafted_stats=49/36
 chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540,enchant=crystalline_radiance_3
 wrists=bracers_of_umbral_mending,id=133306,bonus_id=9466/1514/6935,ilevel=639,gem_id=213494
 hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
