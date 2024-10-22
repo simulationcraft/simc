@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56865 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57171 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -12,7 +12,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
 Category Cooldown: 300 seconds
-Affecting Spells : Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
+Affecting Spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 31, 50
 Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Threat (42), No AutoCast (AI) (49), Do Not Display Range (126), Cannot Be Stolen (134), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Aura Interrupt   : Action (2), Interacting (10), Attacking (12), Mount (17), Leave World (19)
@@ -135,7 +135,7 @@ Family Flags     : 0, 3, 67
 Attributes       : Not Shapeshifted (16), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=91)       : School Damage (2): fire | Attributes: Chain from Initial Target (7), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.548 | PvP Coefficient: 2 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.548 | PvP Coefficient: 2.5 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Throws a fiery ball that causes $s1 Fire damage.$?a157642[
 
 Each time your Fireball fails to critically strike a target, it gains a stacking $157644s1% increased critical strike chance. Effect ends when Fireball critically strikes.][]
@@ -152,7 +152,7 @@ Cooldown         : 8 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Affecting Spells : Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
+Affecting Spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 31
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
@@ -320,7 +320,7 @@ Family Flags     : 3, 4
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=882)      : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.3 | PvP Coefficient: 3 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.3 | PvP Coefficient: 4 | Target: Enemy (6)
 #2 (id=1154626)  : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : Scorches an enemy for $s1 Fire damage.
@@ -395,7 +395,7 @@ Family Flags     : 3, 21
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=2716)     : School Damage (2): arcane | Attributes: Chain from Initial Target (7), Add Target (Dest) Combat Reach to AOE (11), Enforce Line of Sight To Chain Targets (16)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.526 | PvP Coefficient: 1.2 | Target: Channel Target (77)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.526 | PvP Coefficient: 1.35 | Target: Channel Target (77)
 Description      : $@spelldesc5143
 
 Name             : Pyroblast (id=11366) [Spell Family (3)] 
@@ -418,7 +418,7 @@ Family Flags     : 3, 22, 67
 Attributes       : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=4785)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.9845 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.9845 | PvP Coefficient: 1.2 | Target: Enemy (6)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].
 
 Name             : Ice Barrier (id=11426) [Spell Family (3)] 
@@ -510,7 +510,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=5359)     : Apply Aura (6) | Add Percent Modifier (108): Spell Pushback (9)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 9 | Target: Self (1)
-                   Affected Spells: Frostbolt (116), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Evocation (12051), Arcane Blast (30451), Flurry (44614), Rune of Power (116011), Conjure Familiar (126578), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Glacial Spike (199786), Ray of Frost (205021), Frostbolt (228597), Ebonbolt (257537), Displacement (389713), Summon Water Elemental (417486), Frostfire Bolt (431044), Flamestrike (450462), Pyroblast (460475), Flamestrike (460476), Frostfire Bolt (468655)
+                   Affected Spells: Frostbolt (116), Fireball (133), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Pyroblast (11366), Evocation (12051), Arcane Blast (30451), Flurry (44614), Conjure Familiar (126578), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Glacial Spike (199786), Ray of Frost (205021), Frostbolt (228597), Ebonbolt (257537), Displacement (389713), Summon Water Elemental (417486), Frostfire Bolt (431044), Flamestrike (450462), Pyroblast (460475), Flamestrike (460476), Frostfire Bolt (468655)
                    Family Flags: 0, 2, 4, 5, 7, 11, 22, 24, 26, 29, 30, 40, 43, 44, 51, 56, 76, 101, 110, 123
 Description      : Accelerates your spellcasting for $d, granting $m1% haste and preventing damage from delaying your spellcasts.
 
@@ -751,7 +751,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
 Mechanic         : Snare
-Affecting Spells : Ice Floes (108839 effect#1), Frigid Winds (235224 effect#1), Norgannon's Foresight (236380 effect#1)
+Affecting Spells : Frigid Winds (235224 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 31, 72
 Attributes       : Not Shapeshifted (16), Show Mechanic as Combat Text (213), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -823,7 +823,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
                  : 566
-Affecting Spells : Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
+Affecting Spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 31, 54, 67
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Not a Proc (105), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Hostile Action Received (0), Damage (1), Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13)
@@ -1840,8 +1840,8 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Co
 Effects          :
 #1 (id=120042)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Invisibility (66), Frostbolt (116), Fireball (133), Remove Curse (475), Flamestrike (2120), Arcane Missiles (5143), Pyroblast (11366), Evocation (12051), Arcane Blast (30451), Slow (31589), Invisibility (32612), Flurry (44614), Greater Invisibility (110959), Greater Invisibility (110960), Ring of Frost (113724), Rune of Power (116011), Conjure Familiar (126578), Conjure Refreshment (190336), Blizzard (190356), Cinderstorm (198928), Cinderstorm (198929), Glacial Spike (199786), Ray of Frost (205021), Frostbolt (228597), Glacial Spike (228600), Ebonbolt (257537), Radiant Spark (307443), Arcane Echo (342232), Arcane Surge (365350), Summon Water Elemental (417486), Frostfire Bolt (431044), Flamestrike (450462), Arcane Surge (453326), Pyroblast (460475), Flamestrike (460476), Frostfire Bolt (468655)
-                   Family Flags: 0, 2, 5, 11, 22, 24, 26, 29, 30, 31, 43, 44, 56, 62, 64, 69, 76, 86, 92, 98, 107, 110, 112, 116, 127
+                   Affected Spells: Frostbolt (116), Fireball (133), Flamestrike (2120), Arcane Missiles (5143), Pyroblast (11366), Evocation (12051), Arcane Blast (30451), Flurry (44614), Ring of Frost (113724), Conjure Familiar (126578), Conjure Refreshment (190336), Blizzard (190356), Cinderstorm (198928), Cinderstorm (198929), Glacial Spike (199786), Ray of Frost (205021), Frostbolt (228597), Glacial Spike (228600), Ebonbolt (257537), Radiant Spark (307443), Arcane Echo (342232), Arcane Surge (365350), Summon Water Elemental (417486), Frostfire Bolt (431044), Flamestrike (450462), Arcane Surge (453326), Pyroblast (460475), Flamestrike (460476), Frostfire Bolt (468655)
+                   Family Flags: 0, 2, 5, 11, 22, 24, 26, 29, 30, 43, 44, 56, 62, 64, 69, 76, 86, 92, 98, 107, 110, 112, 116, 127
 #2 (id=340801)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #3 (id=817013)   : Apply Aura (6) | Unknown(307)
@@ -1901,7 +1901,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effects: #1, #4), Bone Chilling (205766 effects: #1, #2), Fire Blast (231568 effect#1), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Mage Fire Class Set 4pc (393656 effects: #1, #2, #3), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Elemental Affinity (431067 effect#3), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Glorious Incandescence (451073 effects: #3, #4), Charring Embers (453122 effect#1), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Family Flags     : 1, 3, 85
-Attributes       : Not Shapeshifted (16), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Allow Cast While Casting (135), Do Not Chain To Crowd-Controlled Targets (200), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=120062)   : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.31538 | Target: Enemy (6)
@@ -1964,7 +1964,7 @@ Cooldown         : 120 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Affecting Spells : Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
+Affecting Spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 31, 50
 Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Threat (42), No AutoCast (AI) (49), Do Not Display Range (126), Cannot Be Stolen (134), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Aura Interrupt   : Action (2), Interacting (10), Attacking (12), Mount (17), Leave World (19)
@@ -1986,7 +1986,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
                  : 566
-Affecting Spells : Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
+Affecting Spells : Norgannon's Foresight (236380 effect#1)
 Triggered By     : Greater Invisibility (110959)
 Family Flags     : 31, 54, 67
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Not a Proc (105), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -2139,8 +2139,6 @@ Category         : 1593
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Affecting Spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
-Family Flags     : 76
 Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Do Not Display Range (126), Always Show Ground Texture (190), Caster Death Cancels Persistent Area Auras (347), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=131312)   : Create Area Trigger (179)
@@ -2887,7 +2885,7 @@ Family Flags     : 3, 83
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Not On AOE Immune (127), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=212926)   : School Damage (2): arcane | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.918 | PvP Coefficient: 1.3 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.918 | PvP Coefficient: 1.4 | Target: Enemy (6)
 #2 (id=212927)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: none | Target: Self (1)
 #3 (id=818465)   : Dummy (3)
@@ -4955,33 +4953,33 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=355547)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 3 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.5 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Blizzard (12486), Slow (31589), Ray of Frost (205021), Chilled (205708), Cone of Cold (212792), Flurry (228354), Frozen Orb (289308), Mass Slow (391104)
                    Family Flags: 20, 72
 #2 (id=740367)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 32 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.5 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Ray of Frost (205021)
                    Family Flags: 56
 #3 (id=1041319)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 23 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.5 | Misc Value: 23 | Target: Self (1)
                    Family Flags: 69
 #4 (id=1041320)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 32 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.5 | Misc Value: 32 | Target: Self (1)
                    Family Flags: 69
 #5 (id=1041484)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 12 | Misc Value 2: 2427 (Label)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.5 | Misc Value: 12 | Misc Value 2: 2427 (Label)
 #6 (id=1045601)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Misc Value 2: 2449 (Label) | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 3 | Misc Value 2: 2449 (Label) | Target: Self (1)
                    Affected Spells (Label): Freezing Cold (394255)
 #7 (id=1104987)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 12 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.5 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Blast Wave (157981), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Blast Wave (389631)
                    Family Flags: 38
 #8 (id=1104998)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 3 | Misc Value 2: 2937 (Label)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.5 | Misc Value: 3 | Misc Value 2: 2937 (Label)
                    Affected Spells (Label): Ring of Frost (321329)
 #9 (id=1118534)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 23
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0.5 | Misc Value: 23
                    Affected Spells: Frostfire Bolt (431044), Frostfire Bolt (468655)
                    Family Flags: 108
 Description      : All of your snare effects reduce the target's movement speed by an additional $s1%.
@@ -8322,6 +8320,38 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.9601 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
 Description      : $@spelldesc153561
 
+Name             : Visage (desc=Racial) (id=351239) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Cooldown         : 1.5 seconds
+Labels           : 16: Class Spells
+                 : 292
+Triggered By     : Visage Form (379034)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Immunity to Hostile & Friendly Effects (48), Include In Advanced Combat Log (72), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Entering Arena (149), Suppress Weapon Procs (151), Aura Points On Client (268), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
+Effects          :
+#1 (id=881391)   : Unknown(212)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1251 | Target: Self (1)
+Description      : Switch between your Dracthyr and Visage forms.
+
+Your Visage emanates magic, significantly increasing out-of-combat health regeneration for your party.
+
+Name             : Evoker (id=353167) [Spell Family (224), Passive, Hidden] 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
+Proc Chance      : 101%
+Proc Flags       : Generic Hostile Spell, Magic Hostile Spell
+Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=884754)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
 Name             : Death's Fathom (id=354294) [Spell Family (3), Hidden] 
 School           : Physical
 Spell Type       : None
@@ -8404,6 +8434,21 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : $@spelldesc356877
 Tooltip          : Haste and Critical Strike increased by $s1%.
+
+Name             : Chosen Identity (desc=Racial) (id=360022) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+GCD              : 1.5 seconds
+Duration         : Aura (infinite)
+Labels           : 292
+Triggered By     : Chosen Identity (384590)
+Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
+Effects          :
+#1 (id=896892)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 384590 | Scaled Value: 384590 | Misc Value: 360022 | Target: Self (1)
+Description      : Activate to automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
 
 Name             : Fiery Rush (id=363500) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
@@ -8734,6 +8779,21 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc210805
 
+Name             : Visage (desc=Racial) (id=372014) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Ignore Healing Modifiers (219), Disable Aura While Dead (226), Do Not Log Full Overheal (323), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=996412)   : Unknown(271) | Periodic Heal% (20): every 2 seconds
+                   Base Value: 2 | Scaled Value: 2 | Radius: 40 yards | Target: Self (1)
+Description      : $@spelldesc351239
+Tooltip          : $?s351239[Your out-of-combat health regeneration is increased.][$@auracaster is increasing your out-of-combat health regeneration.]
+
 Name             : Perpetual Winter (id=378198) [Spell Family (3), Passive, Hidden] 
 Talent Entry     : Frost [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Mage
@@ -8780,9 +8840,9 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1006848)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Frostbolt (116), Frostfire Bolt (431044), Frostfire Bolt (468655)
-                   Family Flags: 57, 108
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 17 | Target: Self (1)
+                   Affected Spells: Frostbolt (116), Frostfire Bolt (431044)
+                   Family Flags: 57
 #2 (id=1007173)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #3 (id=1171370)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -8931,6 +8991,25 @@ Effects          :
 #2 (id=1007601)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 378947
 Description      : $@spelldesc378947
+
+Name             : Visage Form (id=379034) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Cast Time        : 3 seconds
+Triggered By     : Visage Form (382916)
+Attributes       : No Immunities (29), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151)
+Effects          :
+#1 (id=1007597)  : Unknown(160)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 351239 | Target: Self (1)
+#2 (id=1007598)  : Unknown(140)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 367996 | Target: Self (1)
+#3 (id=1007599)  : Unknown(90)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 192288 | Target: Self (1)
+#4 (id=1012188)  : Unknown(170)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock your visage form.
 
 Name             : Splintering Cold (id=379049) [Spell Family (3), Passive] 
 Talent Entry     : Frost [tree=spec, row=7, col=3, max_rank=2, req_points=8]
@@ -9496,6 +9575,20 @@ Effects          :
 #2 (id=1018013)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Increases your movement speed by $s2% for $384360d after casting Blink and $s1% for $382824d after returning from Alter Time.
+
+Name             : Visage Form (id=382916) [Hidden] 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Duration         : 30 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Exclude Caster (51), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Not On Player (167), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1014506)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Self (22) -> In Area (7)
+#2 (id=1014519)  : Unknown(160)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 379034 | Target: Self (1)
+Description      : $@spelldesc351239
 
 Name             : Reabsorption (id=382998) [Spell Family (3)] 
 Class            : Mage
@@ -10296,6 +10389,23 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.4 | Target: Self (1)
 Description      : Arcane Barrage deals an additional $s2% damage against targets below $s1% health.
 
+Name             : Chosen Identity (desc=Racial) (id=384590) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+GCD              : 1.5 seconds
+Labels           : 292
+Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1017286)  : Cancel Aura (164)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 360022 | Target: Self (1)
+#2 (id=1050665)  : Cancel Aura (164)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403617 | Target: Self (1)
+Description      : While active, you automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
+
+Activate to disable this effect.
+
 Name             : Prodigious Savant (id=384612) [Spell Family (3), Passive] 
 Talent Entry     : Arcane [tree=spec, row=8, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=mul, values=(1, 2)]
@@ -10887,6 +10997,19 @@ Effects          :
                    Family Flags: 47
 Description      : $@spelldesc393654
 Tooltip          : Arcane Barrage critical strike chance increased by $s1%.
+
+Name             : Chosen Identity (desc=Racial) (id=403617) [Hidden] 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+Triggered By     : Chosen Identity (384590)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268)
+Effects          :
+#1 (id=1050664)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Mage Arcane 10.1 Class Set 2pc (id=405532) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
@@ -13698,12 +13821,10 @@ Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Allow While
 Effects          :
 #1 (id=1149131)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Hotfixed         : Type (6 -> 3), Sub Type (298 -> 0), Target 1 (53 -> 6), Target 2 (16 -> 0)
 #2 (id=1163829)  : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #3 (id=1189992)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : Type (6 -> 3), Sub Type (297 -> 0)
 Description      : The snap of your fingers warps the gravity around your target and $s2 other nearby enemies, suspending them in the air for $449700d.
 Upon landing, nearby enemies take $449715s1 Arcane damage.
 Tooltip          : Suspended in the air.
@@ -14583,15 +14704,12 @@ Effects          :
 #3 (id=1192626)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Misc Value 2: 3636 (Label) | Target: Self (1)
                    Affected Spells (Label): Arcane Debilitation (453599)
-Hotfixed         : NEW EFFECT
 #4 (id=1192672)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 3636 (Label) | Target: Self (1)
                    Affected Spells (Label): Arcane Debilitation (453599)
-Hotfixed         : NEW EFFECT
 #5 (id=1192675)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 12 | Misc Value 2: 3636 (Label) | Target: Self (1)
                    Affected Spells (Label): Arcane Debilitation (453599)
-Hotfixed         : NEW EFFECT
 Description      : Damaging a target with Arcane Missiles increases the damage they take from Arcane Missiles, Arcane Barrage, and Arcane Blast by ${$s1}.1% for $453599d. Multiple instances may overlap.
 
 Name             : Arcane Debilitation (id=453599) [Spell Family (3)] 
@@ -14610,12 +14728,10 @@ Attributes       : Aura Is Debuff (26), DoT Stacking Rule (103), Nameplate Perso
 Effects          :
 #1 (id=1155576)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Hotfixed         : Sub Type (271 -> 4), Affects Spells
 #2 (id=1192631)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Arcane Missiles (7268), Arcane Blast (30451), Arcane Barrage (44425)
                    Family Flags: 21, 29, 47
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc422880
 Tooltip          : Damage taken from $@auracaster's Arcane Missiles, Arcane Barrage, and Arcane Blast increased by $s1%.
 
@@ -14793,7 +14909,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Enemy (6)
 Description      : $@spelldesc452196
 
-Name             : Magi's Spark (id=453898) [Spell Family (3)] 
+Name             : Magi's Spark (id=453898) [Spell Family (3), Hidden] 
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -14802,7 +14918,7 @@ Duration         : 12 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Attributes       : Aura Is Debuff (26), DoT Stacking Rule (103)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Is Debuff (26), DoT Stacking Rule (103), Unknown (467)
 Effects          :
 #1 (id=1156046)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Enemy (6)
@@ -15856,14 +15972,13 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Affecting Spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #5), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Pyrotechnics (157644 effect#1), Combustion (190319 effects: #1, #4), Ice Form (198144 effect#1), Flame Accelerant (203275 effects: #1, #2), Flame Accelerant (203278 effects: #1, #2), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#9), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Duplicative Incineration (278538 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #3, #7), Slick Ice (327509 effect#3), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wintertide (378406 effect#1), Fractured Frost (378445 effects: #1, #3), Piercing Cold (378919 effect#1), Slick Ice (382148 effect#3), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Mage Fire Class Set 4pc (393656 effects: #1, #2, #3), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Thermal Conditioning (431117 effect#1), Frostfire Empowerment (431177 effect#2), Severe Temperatures (431190 effect#1), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Flame Accelerant (453283 effect#2), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
+Affecting Spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2, #5), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Pyrotechnics (157644 effect#1), Combustion (190319 effects: #1, #4), Ice Form (198144 effect#1), Flame Accelerant (203275 effects: #1, #2), Flame Accelerant (203278 effects: #1, #2), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#9), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Duplicative Incineration (278538 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #3, #7), Slick Ice (327509 effect#3), Siphoned Malice (337090 effects: #1, #2), Arcane Surge (365362 effects: #1, #2), Wintertide (378406 effect#1), Fractured Frost (378445 effect#3), Piercing Cold (378919 effect#1), Slick Ice (382148 effect#3), Wildfire (383489 effect#2), Wildfire (383492 effect#1), Improved Scorch (383608 effect#1), Overflowing Energy (390218 effect#1), Mage Fire Class Set 4pc (393656 effects: #1, #2, #3), Overflowing Energy (394195 effect#1), Touch of Ice (394994 effects: #1, #2), Charring Embers (408665 effect#1), Arcane Overload (409022 effect#1), Frigid Empowerment (417488 effects: #1, #2), Numbing Blast (417490 effect#1), Searing Rage (424285 effect#1), Forethought (424293 effects: #1, #2), Thermal Conditioning (431117 effect#1), Frostfire Empowerment (431177 effect#2), Severe Temperatures (431190 effect#1), Force of Will (444719 effect#2), Spellfire Sphere (448604 effects: #1, #5), Fire's Ire (450831 effect#2), Charring Embers (453122 effect#1), Flame Accelerant (453283 effect#2), Nether Munitions (454004 effect#1), Death's Chill (454371 effects: #1, #2), Blessing of the Phoenix (455134 effect#1), Molten Fury (458910 effect#1), Lingering Embers (461145 effects: #1, #2)
 Triggered By     : Frostfire Bolt (431044)
 Family Flags     : 0, 3, 5, 108
 Attributes       : Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), No Cast Log (128), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Do Not Chain To Crowd-Controlled Targets (200), Allow While Riding Vehicle (204), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Banished Aura State (299), Rolling Periodic (334), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1182508)  : School Damage (2): frostfire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.1 | PvP Coefficient: 2 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.75 -> 2)
 #2 (id=1182509)  : Apply Aura (6) | Periodic Damage (3): frostfire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.05 | Target: Enemy (6)
 #3 (id=1182510)  : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Suppress Points Stacking (6)
