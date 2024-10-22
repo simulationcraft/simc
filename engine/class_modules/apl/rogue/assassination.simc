@@ -2,7 +2,7 @@
 actions.precombat=apply_poison
 actions.precombat+=/flask
 actions.precombat+=/augmentation
-actions.precombat+=/food
+actions.precombat+=/food 
 actions.precombat+=/snapshot_stats
 # Check which trinket slots have Stat Values
 actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)&!trinket.2.is.treacherous_transmitter|trinket.1.is.treacherous_transmitter
@@ -22,15 +22,27 @@ actions+=/kick
 actions+=/variable,name=single_target,value=spell_targets.fan_of_knives<2
 # Combined Energy Regen needed to saturate
 actions+=/variable,name=regen_saturated,value=energy.regen_combined>30
-# Check if we should be using our energy
-actions+=/variable,name=not_pooling,value=(dot.deathmark.ticking|dot.kingsbane.ticking|debuff.shiv.up)|(buff.envenom.up&buff.envenom.remains<=1)|energy.pct>=(40+30*talent.hand_of_fate-15*talent.vicious_venoms)|fight_remains<=20
+# Pooling Setup, check for cooldowns
+actions+=/variable,name=in_cooldowns,value=dot.deathmark.ticking|dot.kingsbane.ticking|debuff.shiv.up
+# Check to clip envenom
+actions+=/variable,name=clip_envenom,value=buff.envenom.up&buff.envenom.remains.1<=1
+# Check upper bounds of energy to begin spending
+actions+=/variable,name=upper_limit_energy,value=energy.pct>=(70-30*talent.sanguine_blades-10*talent.vicious_venoms.rank)
+# Variable to control avoiding auto-proc on Thistle Tea
+actions+=/variable,name=avoid_tea,value=energy>40+50+5*talent.vicious_venoms.rank
+# Checking for cooldowns soon
+actions+=/variable,name=cd_soon,value=cooldown.kingsbane.remains<6&!cooldown.kingsbane.ready
+# Pooling Condition all together
+actions+=/variable,name=not_pooling,value=variable.in_cooldowns|!variable.cd_soon&variable.avoid_tea&buff.darkest_night.up|!variable.cd_soon&variable.avoid_tea&variable.clip_envenom|variable.upper_limit_energy|fight_remains<=20
+# Call Stealthed Actions
 actions+=/call_action_list,name=stealthed,if=stealthed.rogue|stealthed.improved_garrote|master_assassin_remains>0
-# Put SnD up initially for Cut to the Chase, refresh with Envenom if at low duration
-actions+=/slice_and_dice,if=!buff.slice_and_dice.up&dot.rupture.ticking&combo_points>=1&(!buff.indiscriminate_carnage.up|variable.single_target)
-actions+=/envenom,if=buff.slice_and_dice.up&buff.slice_and_dice.remains<5&combo_points>=5
+# Call Cooldowns
 actions+=/call_action_list,name=cds
+# Call Core DoT effects
 actions+=/call_action_list,name=core_dot
+# Call AoE DoTs when in AoE
 actions+=/call_action_list,name=aoe_dot,if=!variable.single_target
+# Call Direct Damage Abilities
 actions+=/call_action_list,name=direct
 actions+=/arcane_torrent,if=energy.deficit>=15+energy.regen_combined
 actions+=/arcane_pulse
@@ -52,26 +64,24 @@ actions.cds+=/deathmark,if=(variable.deathmark_condition&target.time_to_die>=10)
 actions.cds+=/call_action_list,name=shiv
 actions.cds+=/kingsbane,if=(debuff.shiv.up|cooldown.shiv.remains<6)&buff.envenom.up&(cooldown.deathmark.remains>=50|dot.deathmark.ticking)|fight_remains<=15
 # Avoid overcapped energy, use with shiv, or dump charges at the end of a fight
-actions.cds+=/thistle_tea,if=!buff.thistle_tea.up&(((energy.deficit>=100+energy.regen_combined|charges>=3)&debuff.shiv.remains>=4)|spell_targets.fan_of_knives>=4&debuff.shiv.remains>=6)|fight_remains<charges*6
+actions.cds+=/thistle_tea,if=!buff.thistle_tea.up&debuff.shiv.remains>=4|spell_targets.fan_of_knives>=4&debuff.shiv.remains>=6|fight_remains<=cooldown.thistle_tea.charges*6
 # Potion/Racials/Other misc cooldowns
 actions.cds+=/call_action_list,name=misc_cds
 actions.cds+=/call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0
 # Cold Blood with similar conditions to Envenom, avoiding munching Edge Case
-actions.cds+=/cold_blood,if=!buff.edge_case.up&cooldown.deathmark.remains>10&!buff.darkest_night.up&effective_combo_points>=variable.effective_spend_cp&(variable.not_pooling|debuff.amplifying_poison.stack>=20|!variable.single_target)&!buff.vanish.up&(!cooldown.kingsbane.up|!variable.single_target)&!cooldown.deathmark.up
+actions.cds+=/cold_blood,if=!buff.edge_case.up&cooldown.deathmark.remains>10&!buff.darkest_night.up&combo_points>=variable.effective_spend_cp&(variable.not_pooling|debuff.amplifying_poison.stack>=20|!variable.single_target)&!buff.vanish.up&(!cooldown.kingsbane.up|!variable.single_target)&!cooldown.deathmark.up
 
 # Core damage over time abilities used everywhere Maintain Garrote
 actions.core_dot=garrote,if=combo_points.deficit>=1&(pmultiplier<=1)&refreshable&target.time_to_die-remains>12
 # Maintain Rupture unless darkest night is up
-actions.core_dot+=/rupture,if=effective_combo_points>=variable.effective_spend_cp&(pmultiplier<=1)&refreshable&target.time_to_die-remains>(4+(talent.dashing_scoundrel*5)+(variable.regen_saturated*6))&(!buff.darkest_night.up|talent.caustic_spatter&!debuff.caustic_spatter.up)
-# Crimson Tempest with Momentum of Despair
-actions.core_dot+=/crimson_tempest,if=effective_combo_points>=variable.effective_spend_cp&refreshable&target.time_to_die-remains>8&buff.momentum_of_despair.remains>6&variable.single_target
+actions.core_dot+=/rupture,if=combo_points>=variable.effective_spend_cp&(pmultiplier<=1)&refreshable&target.time_to_die-remains>(4+(talent.dashing_scoundrel*5)+(variable.regen_saturated*6))&(!buff.darkest_night.up|talent.caustic_spatter&!debuff.caustic_spatter.up)
 
 # AoE Damage over time abilities Check what the maximum Scent of Blood stacks is currently
 actions.aoe_dot=variable,name=scent_effective_max_stacks,value=(spell_targets.fan_of_knives*talent.scent_of_blood.rank*2)>?20
 # We are Scent Saturated when our stack count is hitting the maximum
 actions.aoe_dot+=/variable,name=scent_saturation,value=buff.scent_of_blood.stack>=variable.scent_effective_max_stacks
 # Helper Variable to check basic finisher conditions
-actions.aoe_dot+=/variable,name=dot_finisher_condition,value=effective_combo_points>=variable.effective_spend_cp&(pmultiplier<=1)
+actions.aoe_dot+=/variable,name=dot_finisher_condition,value=combo_points>=variable.effective_spend_cp&(pmultiplier<=1)
 # Crimson Tempest on 2+ Targets if we have enough energy regen
 actions.aoe_dot+=/crimson_tempest,target_if=min:remains,if=spell_targets>=2&variable.dot_finisher_condition&refreshable&target.time_to_die-remains>6
 # Garrote upkeep, also uses it in AoE to reach energy saturation
@@ -83,7 +93,7 @@ actions.aoe_dot+=/rupture,cycle_targets=1,if=variable.dot_finisher_condition&ref
 actions.aoe_dot+=/garrote,if=refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>4&master_assassin_remains=0
 
 # Direct Damage Abilities Envenom at applicable cp if not pooling, capped on amplifying poison stacks, on an animacharged CP, or in aoe.
-actions.direct=envenom,if=!buff.darkest_night.up&effective_combo_points>=variable.effective_spend_cp&(variable.not_pooling|debuff.amplifying_poison.stack>=20|effective_combo_points>cp_max_spend|!variable.single_target)&!buff.vanish.up
+actions.direct=envenom,if=!buff.darkest_night.up&combo_points>=variable.effective_spend_cp&(variable.not_pooling|debuff.amplifying_poison.stack>=20|!variable.single_target)&!buff.vanish.up
 # Special Envenom handling for Darkest Night
 actions.direct+=/envenom,if=buff.darkest_night.up&effective_combo_points>=cp_max_spend
 # Check if we should be using a filler
@@ -92,8 +102,6 @@ actions.direct+=/variable,name=use_filler,value=combo_points.deficit>1|variable.
 actions.direct+=/variable,name=use_caustic_filler,value=talent.caustic_spatter&dot.rupture.ticking&(!debuff.caustic_spatter.up|debuff.caustic_spatter.remains<=2)&combo_points.deficit>1&!variable.single_target
 actions.direct+=/mutilate,if=variable.use_caustic_filler
 actions.direct+=/ambush,if=variable.use_caustic_filler
-# Use Echoing Reprimand on cooldown
-actions.direct+=/echoing_reprimand,if=variable.use_filler|fight_remains<20
 # Fan of Knives at 3+ targets, accounting for various edge cases
 actions.direct+=/fan_of_knives,if=variable.use_filler&!priority_rotation&(spell_targets.fan_of_knives>=3-(talent.momentum_of_despair&talent.thrown_precision)|buff.clear_the_witnesses.up&!talent.vicious_venoms)
 # Fan of Knives to apply poisons if inactive on any target (or any bleeding targets with priority rotation) at 3T
@@ -138,7 +146,7 @@ actions.shiv+=/shiv,if=talent.arterial_precision&variable.shiv_condition&debuff.
 # Fallback if no special cases apply
 actions.shiv+=/shiv,if=!talent.kingsbane&!talent.arterial_precision&variable.shiv_condition&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)
 # Dump Shiv on fight end
-actions.shiv+=/shiv,if=fight_remains<=charges*8
+actions.shiv+=/shiv,if=fight_remains<=cooldown.shiv.charges*8
 
 # Stealthed Actions
 actions.stealthed=pool_resource,for_next=1
@@ -169,5 +177,3 @@ actions.vanish+=/vanish,if=!talent.master_assassin&talent.indiscriminate_carnage
 actions.vanish+=/vanish,if=!talent.improved_garrote&talent.master_assassin&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.deathmark.up&(debuff.shiv.up|debuff.deathmark.remains<4)
 # Vanish fallback for Improved Garrote during Deathmark if no add waves are expected
 actions.vanish+=/vanish,if=talent.improved_garrote&cooldown.garrote.up&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&(debuff.deathmark.up|cooldown.deathmark.remains<4)&raid_event.adds.in>30
-# (Bugged as of Sept13) Vanish for slightly more mark uptime since you can apply mark and have darkest night at the same time 
-# actions.vanish+=/vanish,if=!talent.improved_garrote&buff.darkest_night.up&combo_points.deficit>=3&variable.single_target
