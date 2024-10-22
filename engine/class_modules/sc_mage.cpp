@@ -6076,14 +6076,6 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     base_crit += p->talents.call_of_the_sun_king->effectN( 2 ).percent();
   }
 
-  void execute() override
-  {
-    fire_mage_spell_t::execute();
-
-    if ( num_targets_hit >= as<int>( p()->talents.majesty_of_the_phoenix->effectN( 1 ).base_value() ) )
-      p()->buffs.majesty_of_the_phoenix->trigger();
-  }
-
   void impact( action_state_t* s ) override
   {
     fire_mage_spell_t::impact( s );
@@ -6166,6 +6158,12 @@ struct phoenix_flames_t final : public fire_mage_spell_t
       m /= 1.0 + p()->buffs.fiery_rush->check_value();
 
     return m;
+  }
+
+  void execute() override
+  {
+    fire_mage_spell_t::execute();
+    p()->buffs.majesty_of_the_phoenix->trigger();
   }
 
   void impact( action_state_t* s ) override
