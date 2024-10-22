@@ -43,9 +43,8 @@ actions+=/lights_judgment
 actions+=/bag_of_tricks
 
 # Builders
-actions.build=echoing_reprimand
 # High priority Ambush for Hidden Opportunity builds
-actions.build+=/ambush,if=talent.hidden_opportunity&buff.audacity.up
+actions.build=ambush,if=talent.hidden_opportunity&buff.audacity.up
 # With Audacity + Hidden Opportunity + Fan the Hammer, consume Opportunity to proc Audacity any time Ambush is not available
 actions.build+=/pistol_shot,if=talent.fan_the_hammer&talent.audacity&talent.hidden_opportunity&buff.opportunity.up&!buff.audacity.up
 # With Fan the Hammer, consume Opportunity as a higher priority if at max stacks or if it will expire
