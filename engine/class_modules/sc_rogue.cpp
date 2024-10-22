@@ -11801,7 +11801,7 @@ void rogue_t::create_buffs()
   buffs.kingsbane->set_refresh_behavior( buff_refresh_behavior::NONE );
 
   buffs.master_assassin = make_buff<damage_buff_t>( this, "master_assassin", spec.master_assassin_buff );
-  buffs.master_assassin->set_duration( timespan_t::from_seconds( talent.assassination.master_assassin->effectN( 1 ).base_value() ) );
+  buffs.master_assassin->apply_affecting_aura( talent.rogue.subterfuge ); // Duration Modifer;
   buffs.master_assassin_aura = make_buff<damage_buff_t>( this, "master_assassin_aura", spec.master_assassin_aura_buff );
   buffs.master_assassin_aura
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
