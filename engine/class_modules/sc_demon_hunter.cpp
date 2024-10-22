@@ -4548,23 +4548,16 @@ struct demonsurge_t : public amn_full_mastery_bug_t<demon_hunter_spell_t>
   {
     double m = demon_hunter_spell_t::composite_da_multiplier( s );
 
-    // Focused Hatred increases Demonsurge damage when hitting only one target
-    if ( p()->talent.felscarred.focused_hatred->ok() )
+    // Focused Hatred increases Demonsurge damage when hitting less than 6 targets
+    if ( p()->talent.felscarred.focused_hatred->ok() && s->n_targets <= 5 )
     {
-      if ( p()->is_ptr() && s->n_targets <= 5 )
-      {
-        // 1 target is always effect 1 %
-        // 2 target is effect 1 % - effect 2 %
-        // 3 target is effect 1 % - (effect 2 % * 2)
-        // etc up to 5 target
-        auto num_target_reduction_percent =
-            p()->talent.felscarred.focused_hatred->effectN( 2 ).percent() * ( s->n_targets - 1 );
-        m *= 1.0 + ( p()->talent.felscarred.focused_hatred->effectN( 1 ).percent() - num_target_reduction_percent );
-      }
-      else if ( !p()->is_ptr() && s->n_targets == 1 )
-      {
-        m *= 1.0 + p()->talent.felscarred.focused_hatred->effectN( 1 ).percent();
-      }
+      // 1 target is always effect 1 %
+      // 2 target is effect 1 % - effect 2 %
+      // 3 target is effect 1 % - (effect 2 % * 2)
+      // etc up to 5 target
+      auto num_target_reduction_percent =
+          p()->talent.felscarred.focused_hatred->effectN( 2 ).percent() * ( s->n_targets - 1 );
+      m *= 1.0 + ( p()->talent.felscarred.focused_hatred->effectN( 1 ).percent() - num_target_reduction_percent );
     }
 
     return m;
