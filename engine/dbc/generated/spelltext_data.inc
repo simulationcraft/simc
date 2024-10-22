@@ -1,5 +1,5 @@
-// Spell text, wow build 11.0.5.56865
-static const std::array<spelltext_data_t, 26524> __spelltext_data { {
+// Spell text, wow build 11.0.5.57171
+static const std::array<spelltext_data_t, 26525> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26162,7 +26162,7 @@ static const std::array<spelltext_data_t, 26524> __spelltext_data { {
   { 462479, "$@spelldesc462454", 0, 0 },
   { 462486, "Casting $?a455630[Surging Totem][Healing Rain] has a $s1% chance to activate Downpour, allowing you to cast Downpour within $462488d.\r\n\r\n$@spellicon207778 $@spellname207778\r\n$@spelldesc207778", 0, 0 },
   { 462488, "$@spelldesc462486", "Downpour can be cast!", 0 },
-  { 462513, "The Severed Threads lend you their aid, increasing your damage dealt & healing done while inside Nerub-ar Palace by $s1%.", "Damage dealt increased by $s1%.\r\nHealing and absorption effects increased by $s2%.", 0 },
+  { 462513, "The Severed Threads lend you their aid, increasing your damage dealt & healing done while inside Nerub-ar Palace by ${$w1}.2.", "Damage dealt increased by ${$w1}%\r\nHealing and absorption effects increased by ${$w1}%", 0 },
   { 462515, "$@spelldesc445707", "Critical damage dealt increased by $s1%.", 0 },
   { 462517, "The Severed Threads lend you their aid, increasing your damage dealt & healing done while inside Nerub-ar Palace.", 0, 0 },
   { 462568, "$@spelldesc462368", "Fire, Frost, and Nature damage taken reduced by $w1%.", 0 },
@@ -26330,6 +26330,7 @@ static const std::array<spelltext_data_t, 26524> __spelltext_data { {
   { 467936, "Periodic damage from Black Arrow has a small chance to erupt in a burst of darkness, dealing $444269s1 Shadow damage to all enemies near the target. Damage reduced beyond $s1 targets.", 0, 0 },
   { 467941, "When $?c1[Kill Command][Aimed Shot] damages a target affected by Black Arrow, $s1% of the damage dealt is replicated to each other unit affected by Black Arrow.", 0, 0 },
   { 468019, "$@spelldesc467941", 0, 0 },
+  { 468037, "You attempt to finish off a wounded target, dealing $s1 Shadow damage.", 0, 0 },
   { 468074, "$@spelldesc466990", "Building up to a Withering Fire...", 0 },
   { 468075, "$@spelldesc466990", "During your next Bestial Wrath, darkness will overtake you.", 0 },
   { 468146, "When your Restoration heal over time effects are removed by enemies, they are replaced with Reactive Resin, healing an ally for $468152o1 over $468152d. Multiple stacks may overlap.", 0, 0 },
@@ -26526,11 +26527,11 @@ static const std::array<spelltext_data_t, 26524> __spelltext_data { {
   { 472304, "Increases Strength by $s1 for $d.", "Strength increased by $w1", 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.0.5.56865
+// spelltext hotfix entries, wow build 11.0.5.57171
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.0.5.56865
+// Spell description variables, wow build 11.0.5.57171
 static const std::array<spelldesc_vars_data_t, 609> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -26737,7 +26738,7 @@ static const std::array<spelldesc_vars_data_t, 609> __spelldesc_vars_data { {
   {  260364, "$damage=${$cond($gt($SP,$AP),$SP*0.25,$AP*0.5)}" },
   {  260798, "$damage=${2.0*$260798s1}" },
   {  262627, "$percent=$?s63271[${$58877m1*1.4}][${$58877m1}]" },
-  {  263648, "$baseAbsorb=${10*$AP*$pctH}\r\n$fragmentAbsorb=${2*$AP*$pctH}" },
+  {  263648, "$baseAbsorb=${15*$AP*$pctH}\r\n$fragmentAbsorb=${4*$AP*$pctH}" },
   {  264057, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$demoPassive=$?s137044[${1+0.01*$137044m3}][${1}]\r\n$damage=${.575*($SP*1)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}" },
   {  265931, "$mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]" },
   {  267964, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$demoPassive=$?s137044[${1+0.01*$137044m3}][${1}]\r\n$damage=${.575*($SP*1)*$<demoMastery>*$<demoPassive>*(1+$@versadmg)}" },
@@ -27143,7 +27144,7 @@ static const std::array<spelldesc_vars_data_t, 609> __spelldesc_vars_data { {
   {  472302, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.5.56865
+// spelldesc_vars hotfix entries, wow build 11.0.5.57171
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

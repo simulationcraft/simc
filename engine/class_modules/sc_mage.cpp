@@ -1895,6 +1895,7 @@ struct mage_spell_t : public spell_t
     bool chill = false;
     bool clearcasting = false;
     bool from_the_ashes = false;
+    bool frostfire_mastery = true;
     bool ignite = false;
     bool overflowing_energy = true;
     bool touch_of_the_magi = true;
@@ -2225,9 +2226,7 @@ public:
     if ( !background && affected_by.ice_floes && time_to_execute > 0_ms )
       p()->buffs.ice_floes->decrement();
 
-    // TODO: This might need a more fine grained control since some spells behave weirdly
-    // (Blast Wave doesn't trigger Fire mastery, for example).
-    if ( harmful && !background )
+    if ( triggers.frostfire_mastery && harmful && !background )
       trigger_frostfire_mastery();
   }
 
@@ -2516,12 +2515,10 @@ struct arcane_mage_spell_t : public mage_spell_t
       }
 
       // Special handling for AM's 2 sec grace period
-      // TODO: Currently bugged and only applies to the first AM hit (again).
-      // Blizz also doesn't seem to be using the Magi's Spark debuff for this.
       if ( id == 7268 && td->debuffs.magis_spark->check() )
       {
         trigger_echo = true;
-        td->debuffs.magis_spark->expire( p()->bugs ? 1_ms : 2.0_s );
+        td->debuffs.magis_spark->expire( 2.0_s );
       }
 
       if ( trigger_echo )
@@ -3809,7 +3806,6 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
       {
         auto debuff = get_td( s->target )->debuffs.arcane_debilitation;
         debuff->trigger();
-        // TODO: this part of the effect doesn't seem to work right now
         while ( rng().roll( p()->talents.time_loop->effectN( 1 ).percent() ) )
           debuff->trigger();
       }
@@ -4060,6 +4056,7 @@ struct blast_wave_t final : public fire_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     cooldown->duration += p->talents.volatile_detonation->effectN( 1 ).time_value();
+    triggers.frostfire_mastery = false;
   }
 };
 
@@ -4469,6 +4466,7 @@ struct fireball_t final : public fire_mage_spell_t
       base_execute_time *= 1.0 + p->talents.thermal_conditioning->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->spec.fire_mage->effectN( 5 ).percent();
       enable_calculate_on_impact( 468655 );
+      triggers.frostfire_mastery = false; // Manually triggered on impact
     }
   }
 
@@ -4526,6 +4524,7 @@ struct fireball_t final : public fire_mage_spell_t
 
       if ( frostfire )
       {
+        trigger_frostfire_mastery();
         p()->buffs.severe_temperatures->expire();
 
         if ( p()->state.trigger_ff_empowerment )
@@ -4908,12 +4907,13 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     // TODO Frostfire
     // * triggers an additional Frost/Fire Mastery on hit rather than on cast
-    // * Fractured Frost makes the first projectile hit 3 nearby targets, doesn't care about where the other projectiles are going
-    // * extra hits from Fractured Frost don't trigger Bone Chilling
 
     parse_options( options_str );
     if ( frostfire )
+    {
       base_execute_time *= 1.0 + p->talents.thermal_conditioning->effectN( 1 ).percent();
+      triggers.frostfire_mastery = false; // Manually triggered on impact
+    }
     enable_calculate_on_impact( frostfire ? 468655 : 228597 );
 
     track_shatter = consumes_winters_chill = true;
@@ -4942,7 +4942,6 @@ struct frostbolt_t final : public frost_mage_spell_t
 
   int n_targets() const override
   {
-    // TODO: currently only hits 2 targets, they're most likely not using the talent value
     if ( p()->talents.fractured_frost.ok() && p()->buffs.icy_veins->check() )
       return as<int>( p()->talents.fractured_frost->effectN( 3 ).base_value() );
     else
@@ -5052,11 +5051,8 @@ struct frostbolt_t final : public frost_mage_spell_t
 
       if ( frostfire )
       {
-        // Severe Temperatures can affect multiple impacts, though this is probably only
-        // an artifact of the way the cleave was implemented: rather than having each impact
-        // cast a single target spell (like Frostbolt does), the first impact casts an AoE
-        // spell. There are some other minor considerations that might require redoing our
-        // FFB implementation, like Fractured Frost applying to projectiles in flight.
+        trigger_frostfire_mastery();
+        // TODO: Severe Temperatures can affect multiple impacts if they happen at roughly the same time
         p()->buffs.severe_temperatures->expire( 15_ms );
 
         if ( p()->state.trigger_ff_empowerment )
@@ -6080,14 +6076,6 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     base_crit += p->talents.call_of_the_sun_king->effectN( 2 ).percent();
   }
 
-  void execute() override
-  {
-    fire_mage_spell_t::execute();
-
-    if ( num_targets_hit >= as<int>( p()->talents.majesty_of_the_phoenix->effectN( 1 ).base_value() ) )
-      p()->buffs.majesty_of_the_phoenix->trigger( p()->buffs.majesty_of_the_phoenix->max_stack() );
-  }
-
   void impact( action_state_t* s ) override
   {
     fire_mage_spell_t::impact( s );
@@ -6170,6 +6158,12 @@ struct phoenix_flames_t final : public fire_mage_spell_t
       m /= 1.0 + p()->buffs.fiery_rush->check_value();
 
     return m;
+  }
+
+  void execute() override
+  {
+    fire_mage_spell_t::execute();
+    p()->buffs.majesty_of_the_phoenix->trigger();
   }
 
   void impact( action_state_t* s ) override

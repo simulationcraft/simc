@@ -1671,6 +1671,7 @@ class SpellDataGenerator(DataGenerator):
           ( 444354, 0), # Shadow Lash
           ( 444269, 0), # Shadow Surge
           ( 442419, 0), # Shadow Hounds
+          ( 468037, 0), # Withering Fire secondary Black Arrows
         ),
 
         # Rogue:

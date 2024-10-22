@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56865 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57171 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -719,7 +719,7 @@ Family Flags     : 8, 9, 18, 25, 52
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=5274)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.04816 | PvP Coefficient: 1.35 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.04816 | PvP Coefficient: 1.55 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : A vicious strike that deals $s1 Physical damage and reduces the effectiveness of healing on the target by $115804s1% for $115804d.
 Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 
@@ -5035,7 +5035,7 @@ Family Flags     : 9, 29, 52, 116
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Active Threat (94), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), No Attack Miss (249), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=486196)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.08441 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.08441 | PvP Coefficient: 1.15 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc163201
 Variables        : $damage=${2.0*$260798s1}
 
@@ -8217,6 +8217,38 @@ Effects          :
 Description      : $@spelldesc29838
 Tooltip          : Healing $202147s1% health every $202147t1 sec.
 
+Name             : Visage (desc=Racial) (id=351239) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Cooldown         : 1.5 seconds
+Labels           : 16: Class Spells
+                 : 292
+Triggered By     : Visage Form (379034)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Immunity to Hostile & Friendly Effects (48), Include In Advanced Combat Log (72), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Entering Arena (149), Suppress Weapon Procs (151), Aura Points On Client (268), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
+Effects          :
+#1 (id=881391)   : Unknown(212)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1251 | Target: Self (1)
+Description      : Switch between your Dracthyr and Visage forms.
+
+Your Visage emanates magic, significantly increasing out-of-combat health regeneration for your party.
+
+Name             : Evoker (id=353167) [Spell Family (224), Passive, Hidden] 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
+Proc Chance      : 101%
+Proc Flags       : Generic Hostile Spell, Magic Hostile Spell
+Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=884754)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
 Name             : Glory (id=353577) [Spell Family (4), Hidden] 
 School           : Physical
 Spell Type       : None
@@ -8375,6 +8407,21 @@ Effects          :
 #1 (id=894301)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | Radius: 8 yards | Target: Unknown(87)
 Description      : $@spelldesc307865
+
+Name             : Chosen Identity (desc=Racial) (id=360022) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+GCD              : 1.5 seconds
+Duration         : Aura (infinite)
+Labels           : 292
+Triggered By     : Chosen Identity (384590)
+Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
+Effects          :
+#1 (id=896892)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 384590 | Scaled Value: 384590 | Misc Value: 360022 | Target: Self (1)
+Description      : Activate to automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
 
 Name             : Whirlwind (desc=Offensive) (id=361904) [Spell Family (227)] 
 Class            : Warrior
@@ -8710,6 +8757,21 @@ Effects          :
 Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
+Name             : Visage (desc=Racial) (id=372014) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Ignore Healing Modifiers (219), Disable Aura While Dead (226), Do Not Log Full Overheal (323), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=996412)   : Unknown(271) | Periodic Heal% (20): every 2 seconds
+                   Base Value: 2 | Scaled Value: 2 | Radius: 40 yards | Target: Self (1)
+Description      : $@spelldesc351239
+Tooltip          : $?s351239[Your out-of-combat health regeneration is increased.][$@auracaster is increasing your out-of-combat health regeneration.]
+
 Name             : Champion's Spear (id=376079) [Spell Family (4)] 
 Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=1, req_points=20]
 Class            : Warrior
@@ -8854,6 +8916,25 @@ Effects          :
 #1 (id=1002904)  : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | Target: Unknown(87)
 Description      : $@spelldesc376079
+
+Name             : Visage Form (id=379034) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Cast Time        : 3 seconds
+Triggered By     : Visage Form (382916)
+Attributes       : No Immunities (29), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151)
+Effects          :
+#1 (id=1007597)  : Unknown(160)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 351239 | Target: Self (1)
+#2 (id=1007598)  : Unknown(140)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 367996 | Target: Self (1)
+#3 (id=1007599)  : Unknown(90)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 192288 | Target: Self (1)
+#4 (id=1012188)  : Unknown(170)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock your visage form.
 
 Name             : Leeching Strikes (id=382258) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
@@ -9055,6 +9136,20 @@ Effects          :
 #3 (id=1014481)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Increases your damage while dual wielding by $s1%.
+
+Name             : Visage Form (id=382916) [Hidden] 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Duration         : 30 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Exclude Caster (51), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Not On Player (167), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1014506)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Self (22) -> In Area (7)
+#2 (id=1014519)  : Unknown(160)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 379034 | Target: Self (1)
+Description      : $@spelldesc351239
 
 Name             : Reinforced Plates (id=382939) [Spell Family (4), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=6, col=6, max_rank=1, req_points=8]
@@ -10242,6 +10337,23 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 Description      : Your auto-attacks have a $s2% chance to hurl weapons at your target and 3 other enemies in front of you, dealing an additional $384391s1 Physical damage.
 
+Name             : Chosen Identity (desc=Racial) (id=384590) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+GCD              : 1.5 seconds
+Labels           : 292
+Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1017286)  : Cancel Aura (164)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 360022 | Target: Self (1)
+#2 (id=1050665)  : Cancel Aura (164)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403617 | Target: Self (1)
+Description      : While active, you automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
+
+Activate to disable this effect.
+
 Name             : Seismic Reverberation (id=384730) [Spell Family (4), Hidden] 
 Class            : Warrior
 School           : Physical
@@ -10979,7 +11091,7 @@ Family Flags     : 11, 92
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Use Shapeshift Bar (68), Include In Advanced Combat Log (72), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Riding Vehicle (204), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Cancel Area Aura on Spec Switch (389), Allow Aura On Level Scale (444), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=1020125)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.66666 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=1020126)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.5 | Misc Value: 0x7f | Target: Self (1)
@@ -12756,6 +12868,19 @@ Description      : Transform into a colossus for $d, causing you to deal $s1% in
 |cFFFFFFFFGenerates ${$s2/10} Rage.|r
 Tooltip          : Damage done increased by $s1%.
 
+Name             : Chosen Identity (desc=Racial) (id=403617) [Hidden] 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+Triggered By     : Chosen Identity (384590)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268)
+Effects          :
+#1 (id=1050664)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
 Name             : Warrior Arms 10.1 Class Set 2pc (id=405577) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
@@ -13891,7 +14016,6 @@ Effects          :
 Description      : Your attacks trigger Lightning Strikes $s1% more often.
 
 Name             : Demolish (id=436358) [Spell Family (4)] 
-Hotfixed         : Attributes
 Talent Entry     : Colossus (Arms, Protection) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Warrior
 School           : Physical

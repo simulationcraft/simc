@@ -1161,11 +1161,11 @@ public:
     }
     if ( p()->talents.colossus.tide_of_battle->ok() )
     {
-      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 3 ), p()->spec.protection_warrior );
+      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 3, 4 ), p()->spec.protection_warrior );
     }
     // Effect 3 is the auto attack mod
     parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars, effect_mask_t( false ).enable( 3 ) );
-    parse_effects( p()->talents.colossus.practiced_strikes, p()->spec.arms_warrior );
+    parse_effects( p()->talents.colossus.practiced_strikes );
 
     // Slayer
     parse_effects( p()->buff.brutal_finish );
@@ -3852,7 +3852,7 @@ struct demolish_damage_t : public warrior_attack_t
     if ( data().id() == 440888 )
     {
       aoe = -1;
-      reduced_aoe_targets = 8.0;
+      reduced_aoe_targets = p->talents.colossus.demolish->effectN( 1 ).base_value();
     }
   }
 
@@ -3983,7 +3983,7 @@ struct thunderous_roar_t : public warrior_attack_t
   {
     parse_options( options_str );
     aoe       = -1;
-    reduced_aoe_targets = 8; // Not in spelldata
+    reduced_aoe_targets = p->talents.warrior.thunderous_roar->effectN( 3 ).base_value();
     may_dodge = may_parry = may_block = false;
 
     thunderous_roar_dot   = new thunderous_roar_dot_t( p );
@@ -5554,7 +5554,7 @@ struct odyns_fury_off_hand_t : public warrior_attack_t
   {
     background          = true;
     aoe                 = -1;
-    reduced_aoe_targets = 8; // Not in spelldata
+    reduced_aoe_targets = p->talents.fury.odyns_fury->effectN( 6 ).base_value();
   }
 };
 
@@ -5567,7 +5567,7 @@ struct odyns_fury_main_hand_t : public warrior_attack_t
   {
     background = true;
     aoe        = -1;
-    reduced_aoe_targets = 8; // Not in spelldata
+    reduced_aoe_targets = p->talents.fury.odyns_fury->effectN( 6 ).base_value();
   }
 
   double composite_ta_multiplier( const action_state_t* state ) const override
@@ -5844,6 +5844,9 @@ struct warbreaker_t : public warrior_attack_t
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
     aoe    = -1;
+    // warbreaker reduced target count is not in spelldata yet
+    reduced_aoe_targets = 5;
+
     impact_action    = p->active.deep_wounds_ARMS;
   }
 
