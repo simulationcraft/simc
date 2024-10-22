@@ -147,7 +147,7 @@ void monk_action_t<Base>::apply_buff_effects()
   apply_affecting_aura( p()->talent.conduit_of_the_celestials.xuens_guidance );
 
   // Master of Harmony
-  apply_affecting_aura( p()->talent.master_of_harmony.manifestation );
+  apply_affecting_aura( p()->talent.master_of_harmony.manifestation, p()->baseline.brewmaster.aura );
 
   // Shado-Pan
   parse_effects( p()->talent.shado_pan.efficient_training, p()->specialization() == MONK_WINDWALKER
@@ -178,26 +178,24 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects(
       p()->buff.counterstrike,
       affect_list_t( 1 ).add_spell( p()->baseline.brewmaster.spinning_crane_kick->effectN( 1 ).trigger()->id() ),
-      CONSUME_BUFF );
+      EXPIRE_BUFF );
 
   // Mistweaver
   parse_effects( p()->buff.jadefire_brand, p()->talent.windwalker.jadefire_brand_heal );
 
   // Windwalker
-  if ( const auto &effect = p()->baseline.windwalker.mastery->effectN( 1 ); effect.ok() && true )
+  if ( const auto &effect = p()->baseline.windwalker.mastery->effectN( 1 ); effect.ok() )
   {
-    add_parse_entry( base_t::da_multiplier_effects )
-        .set_buff( p()->buff.combo_strikes )
-        .set_func( [ & ] { return ww_mastery; } )
-        .set_value( effect.mastery_value() )
-        .set_mastery( true )
-        .set_eff( &effect );
-    add_parse_entry( base_t::ta_multiplier_effects )
-        .set_buff( p()->buff.combo_strikes )
-        .set_func( [ & ] { return ww_mastery; } )
-        .set_value( effect.mastery_value() )
-        .set_mastery( true )
-        .set_eff( &effect );
+    auto mastery_parse_entry = [ & ]( std::vector<player_effect_t> &effect_list ) {
+      add_parse_entry( effect_list )
+          .set_buff( p()->buff.combo_strikes )
+          .set_func( [ & ] { return ww_mastery; } )
+          .set_value( effect.mastery_value() )
+          .set_mastery( true )
+          .set_eff( &effect );
+    };
+    mastery_parse_entry( base_t::da_multiplier_effects );
+    mastery_parse_entry( base_t::ta_multiplier_effects );
   }
   parse_effects( p()->buff.ordered_elements );
   parse_effects( p()->buff.hit_combo );
@@ -216,11 +214,11 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.strength_of_the_black_ox );
 
   // Master of Harmony
-  // TODO: parse_effects implementation for A_MOD_HEALING_RECEIVED (283)
+  // TODO: parse_effects implementation for A_MOD_HEALING_RECEIVED_FROM_SPELL (283)
   parse_effects( p()->talent.master_of_harmony.aspect_of_harmony_heal, p()->talent.master_of_harmony.coalescence,
                  [ & ] { return p()->buff.aspect_of_harmony.heal_ticking(); } );
-  parse_effects( p()->buff.balanced_stratagem_physical, CONSUME_BUFF );
-  parse_effects( p()->buff.balanced_stratagem_magic, CONSUME_BUFF );
+  parse_effects( p()->buff.balanced_stratagem_physical, p()->baseline.brewmaster.aura, EXPIRE_BUFF );
+  parse_effects( p()->buff.balanced_stratagem_magic, p()->baseline.brewmaster.aura, EXPIRE_BUFF );
 
   // Shado-Pan
   parse_effects( p()->buff.wisdom_of_the_wall_crit );
@@ -593,6 +591,20 @@ void monk_action_t<Base>::execute()
   base_t::execute();
 
   trigger_storm_earth_and_fire( this );
+
+  // TWW S1 Windwalker 2PC
+  if ( p()->buff.tiger_strikes->up() )
+  {
+    // These spells are not listed in the spell effect data but are affected
+    std::vector<unsigned int> missing_tiger_strikes_spells = {
+        p()->baseline.monk.spinning_crane_kick->id(), p()->talent.windwalker.fists_of_fury->id(),
+        p()->talent.windwalker.whirling_dragon_punch->id(), p()->talent.windwalker.strike_of_the_windlord->id() };
+
+    if ( base_t::data().affected_by( p()->buff.tiger_strikes->data().effectN( 1 ) ) ||
+         std::find( missing_tiger_strikes_spells.begin(), missing_tiger_strikes_spells.end(), base_t::data().id() ) !=
+             missing_tiger_strikes_spells.end() )
+      p()->buff.tiger_strikes->decrement();
+  }
 }
 
 template <class Base>
@@ -636,10 +648,6 @@ void monk_action_t<Base>::impact( action_state_t *s )
         p()->active_actions.gale_force->execute_on_target( s->target );
       }
     }
-
-    // TWW1 Windwalker 2PC
-    if ( p()->buff.tiger_strikes->up() && base_t::data().affected_by( p()->buff.tiger_strikes->data().effectN( 1 ) ) )
-      p()->buff.tiger_strikes->decrement();
   }
 }
 
@@ -994,9 +1002,9 @@ struct flurry_strikes_t : public monk_melee_attack_t
     shuffled_rng_t *deck;
     flurry_strike_wisdom_t *wisdom_flurry;
 
-    flurry_strike_t( monk_t *p )
+    flurry_strike_t( monk_t *p, action_t *parent )
       : monk_melee_attack_t( p, "flurry_strike", p->talent.shado_pan.flurry_strikes_hit ),
-        flurry_strikes_counter( 0 ),
+        flurry_strikes_counter( p->user_options.shado_pan_initial_charge_accumulator ),
         flurry_strikes_threshold( as<int>( p->talent.shado_pan.wisdom_of_the_wall->effectN( 1 ).base_value() ) ),
         deck( p->get_shuffled_rng( "wisdom_of_the_wall", { { WISDOM_OF_THE_WALL_CRIT, 1 },
                                                            { WISDOM_OF_THE_WALL_DODGE, 1 },
@@ -1008,7 +1016,8 @@ struct flurry_strikes_t : public monk_melee_attack_t
       apply_affecting_aura( p->talent.shado_pan.pride_of_pandaria );
 
       wisdom_flurry = new flurry_strike_wisdom_t( p );
-      add_child( wisdom_flurry );
+
+      parent->add_child( wisdom_flurry );
     }
 
     void impact( action_state_t *s ) override
@@ -1040,7 +1049,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
               p()->buff.wisdom_of_the_wall_mastery->trigger();
               break;
             default:
-              break;
+              assert( false );
           }
         }
       }
@@ -1051,10 +1060,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
         target_data->debuff.high_impact->trigger();
 
       if ( p()->buff.wisdom_of_the_wall_flurry->up() )
-      {
-        wisdom_flurry->set_target( s->target );
-        wisdom_flurry->execute();
-      }
+        wisdom_flurry->execute_on_target( s->target );
     }
   };
 
@@ -1063,7 +1069,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
 
   flurry_strikes_t( monk_t *p ) : monk_melee_attack_t( p, "flurry_strikes", p->talent.shado_pan.flurry_strikes )
   {
-    strike = new flurry_strike_t( p );
+    strike = new flurry_strike_t( p, this );
     add_child( strike );
 
     if ( !p->talent.shado_pan.high_impact->ok() )
@@ -1108,7 +1114,9 @@ struct overwhelming_force_t : base_action_t
     {
       background = dual = proc = true;
       base_multiplier          = player->talent.master_of_harmony.overwhelming_force->effectN( 1 ).percent();
-      reduced_aoe_targets      = player->talent.master_of_harmony.overwhelming_force->effectN( 2 ).base_value();
+      base_multiplier += player->baseline.brewmaster.aura->effectN( 32 ).percent();
+      aoe                 = -1;
+      reduced_aoe_targets = player->talent.master_of_harmony.overwhelming_force->effectN( 2 ).base_value();
     }
 
     void init() override
@@ -1233,7 +1241,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
   {
     if ( p()->talent.brewmaster.press_the_advantage->ok() )
       return false;
-    return monk_melee_attack_t::ready();
+    return base_t::ready();
   }
 
   void execute() override
@@ -1253,7 +1261,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 
     //------------
 
-    monk_melee_attack_t::execute();
+    base_t::execute();
 
     p()->buff.blackout_combo->expire();
 
@@ -1300,7 +1308,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
 
   void impact( action_state_t *s ) override
   {
-    monk_melee_attack_t::impact( s );
+    base_t::impact( s );
 
     // Apply Mark of the Crane
     p()->trigger_mark_of_the_crane( s );
@@ -1536,6 +1544,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     attack_power_mod.direct = 0;
 
     execute_action = new press_the_advantage_t<rising_sun_kick_dmg_t>( p, options_str );
+    add_child( execute_action );
 
     if ( p->talent.windwalker.glory_of_the_dawn->ok() )
     {
@@ -3683,7 +3692,7 @@ struct purifying_brew_t : public brew_t<monk_spell_t>
     }
 
     double purify_percent = data().effectN( 1 ).percent();
-    purify_percent += 2.0 * p()->talent.master_of_harmony.mantra_of_purity->effectN( 1 ).percent();
+    purify_percent += p()->talent.master_of_harmony.mantra_of_purity->effectN( 1 ).percent();
     double cleared = p()->find_stagger( "Stagger" )->purify_percent( purify_percent, "purifying_brew" );
 
     double healed = cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
@@ -4239,6 +4248,7 @@ struct celestial_conduit_t : public monk_spell_t
       background       = true;
       aoe              = -1;
       split_aoe_damage = true;
+      ww_mastery       = true;
     }
 
     double composite_aoe_multiplier( const action_state_t *state ) const override
@@ -5622,7 +5632,10 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
 
     set_tick_callback( [ this ]( buff_t *, int, timespan_t ) {
       if ( rushing_jade_wind_tick )
+      {
         rushing_jade_wind_tick->execute();
+        return;
+      }
 
       if ( action_t *rjw = p().find_action( "rushing_jade_wind_tick" ); rjw )
       {
@@ -5932,7 +5945,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
@@ -8792,6 +8805,10 @@ void monk_t::create_options()
   add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
   add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
   add_option( opt_float( "monk.squirm_frequency", user_options.squirm_frequency, 0, 30 ) );
+
+  // shado-pan options
+  add_option(
+      opt_int( "monk.shado_pan.initial_charge_accumulator", user_options.shado_pan_initial_charge_accumulator, 0, 9 ) );
 }
 
 // monk_t::copy_from =========================================================

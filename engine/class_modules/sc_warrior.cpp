@@ -1161,11 +1161,11 @@ public:
     }
     if ( p()->talents.colossus.tide_of_battle->ok() )
     {
-      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 3 ), p()->spec.protection_warrior );
+      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 3, 4 ), p()->spec.protection_warrior );
     }
     // Effect 3 is the auto attack mod
     parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars, effect_mask_t( false ).enable( 3 ) );
-    parse_effects( p()->talents.colossus.practiced_strikes, p()->spec.arms_warrior );
+    parse_effects( p()->talents.colossus.practiced_strikes );
 
     // Slayer
     parse_effects( p()->buff.brutal_finish );
@@ -1757,13 +1757,17 @@ struct devastator_t : warrior_attack_t
 
 struct melee_t : public warrior_attack_t
 {
+  int sync_weapons;
+  bool first;
   warrior_attack_t* sidearm;
   bool mh_lost_melee_contact, oh_lost_melee_contact;
   double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier, prot_rage_multiplier, seasoned_soldier_crit_mult;
   double sidearm_chance, enrage_chance;
   devastator_t* devastator;
-  melee_t( util::string_view name, warrior_t* p )
+  melee_t( util::string_view name, warrior_t* p, int sw )
     : warrior_attack_t( name, p, spell_data_t::nil() ),
+      sync_weapons( sw ),
+      first( true ),
       sidearm( nullptr),
       mh_lost_melee_contact( true ),
       oh_lost_melee_contact( true ),
@@ -1775,11 +1779,18 @@ struct melee_t : public warrior_attack_t
       sidearm_chance( p->talents.warrior.sidearm->proc_chance() ),
       devastator( nullptr )
   {
-    background = repeating = may_glance = usable_while_channeling = true;
-    allow_class_ability_procs = not_a_proc = true;
-    special           = false;
-    school            = SCHOOL_PHYSICAL;
-    trigger_gcd       = timespan_t::zero();
+    school                    = SCHOOL_PHYSICAL;
+    may_crit                  = true;
+    may_glance                = true;
+    background                = true;
+    allow_class_ability_procs = true;
+    not_a_proc                = true;
+    repeating                 = true;
+    trigger_gcd               = timespan_t::zero();
+    special                   = false;
+
+    usable_while_channeling   = true;
+
     weapon_multiplier = 1.0;
     if ( p->dual_wield() )
     {
@@ -1803,6 +1814,8 @@ struct melee_t : public warrior_attack_t
   void reset() override
   {
     warrior_attack_t::reset();
+
+    first = true;
     mh_lost_melee_contact = oh_lost_melee_contact = true;
   }
 
@@ -1813,9 +1826,14 @@ struct melee_t : public warrior_attack_t
     {
       return timespan_t::zero();  // If contact is lost, the attack is instant.
     }
-    else if ( weapon->slot == SLOT_OFF_HAND && oh_lost_melee_contact )  // Also used for the first attack.
+    else if ( weapon->slot == SLOT_OFF_HAND && ( oh_lost_melee_contact || first ) )  // Also used for the first attack.
     {
-      return timespan_t::zero();
+      if ( sync_weapons )
+        return timespan_t::zero();
+
+      // From testing and log analysis, when you charge in, around 50ms is a very common offset
+      // for the off hand attack.  If you walk up and auto the boss, it's typically 50% of your swing time offset.
+      return timespan_t::from_millis( rng().gauss_ab( 50, 25, 10, (t * 0.5).total_millis() ) );
     }
     else
     {
@@ -1847,6 +1865,9 @@ struct melee_t : public warrior_attack_t
 
   void execute() override
   {
+    if ( first )
+      first = false;
+
     if ( p()->current.distance_to_move > 5 )
     {  // Cancel autoattacks, auto_attack_t will restart them when we're back in range.
       if ( weapon->slot == SLOT_MAIN_HAND )
@@ -1953,8 +1974,10 @@ struct melee_t : public warrior_attack_t
 
 struct auto_attack_t : public warrior_attack_t
 {
+  int sync_weapons;
   auto_attack_t( warrior_t* p, util::string_view options_str ) : warrior_attack_t( "auto_attack", p )
   {
+    add_option( opt_bool( "sync_weapons", sync_weapons ) );
     parse_options( options_str );
     assert( p->main_hand_weapon.type != WEAPON_NONE );
     ignore_false_positive = usable_while_channeling = true;
@@ -1967,14 +1990,14 @@ struct auto_attack_t : public warrior_attack_t
     }
     else
     {
-      p->main_hand_attack                    = new melee_t( "auto_attack_mh", p );
+      p->main_hand_attack                    = new melee_t( "auto_attack_mh", p, sync_weapons );
       p->main_hand_attack->weapon            = &( p->main_hand_weapon );
       p->main_hand_attack->base_execute_time = p->main_hand_weapon.swing_time;
     }
 
     if ( p->off_hand_weapon.type != WEAPON_NONE && p->specialization() == WARRIOR_FURY )
     {
-      p->off_hand_attack                    = new melee_t( "auto_attack_oh", p );
+      p->off_hand_attack                    = new melee_t( "auto_attack_oh", p, sync_weapons );
       p->off_hand_attack->weapon            = &( p->off_hand_weapon );
       p->off_hand_attack->base_execute_time = p->off_hand_weapon.swing_time;
       p->off_hand_attack->id                = 1;
@@ -3057,6 +3080,15 @@ struct mortal_strike_t : public warrior_attack_t
         }
         p()->buff.colossal_might->trigger();
       }
+      // If this is an unhinged MS, and we have at least 2 targets, and sweeping strikes is up, grant an extra stack.  This is a bug.
+      if ( p()->bugs && this->unhinged && p()->buff.sweeping_strikes->up() && p()->sim->target_non_sleeping_list.size() > 1 )
+      {
+        if ( p()->talents.colossus.dominance_of_the_colossus->ok() && p()->buff.colossal_might->at_max_stacks() )
+        {
+          p()->cooldown.demolish->adjust( - timespan_t::from_seconds( p()->talents.colossus.dominance_of_the_colossus->effectN( 2 ).base_value() ) );
+        }
+        p()->buff.colossal_might->trigger();
+      }
     }
 
     if ( p()->tier_set.t29_arms_4pc->ok() && s->result == RESULT_CRIT )
@@ -3820,7 +3852,7 @@ struct demolish_damage_t : public warrior_attack_t
     if ( data().id() == 440888 )
     {
       aoe = -1;
-      reduced_aoe_targets = 8.0;
+      reduced_aoe_targets = p->talents.colossus.demolish->effectN( 1 ).base_value();
     }
   }
 
@@ -3951,7 +3983,7 @@ struct thunderous_roar_t : public warrior_attack_t
   {
     parse_options( options_str );
     aoe       = -1;
-    reduced_aoe_targets = 8; // Not in spelldata
+    reduced_aoe_targets = p->talents.warrior.thunderous_roar->effectN( 3 ).base_value();
     may_dodge = may_parry = may_block = false;
 
     thunderous_roar_dot   = new thunderous_roar_dot_t( p );
@@ -4013,7 +4045,10 @@ struct thunder_blast_t : public warrior_attack_t
     energize_type = action_energize::NONE;
 
     if ( p->spec.protection_warrior->ok() )
+    {
       rage_gain += p->spec.protection_warrior->effectN( 20 ).resource( RESOURCE_RAGE );
+      rage_gain += p->talents.mountain_thane.thunder_blast->effectN( 3 ).resource( RESOURCE_RAGE );
+    }
 
     if ( p->talents.mountain_thane.crashing_thunder->ok() && p->specialization() == WARRIOR_FURY )
       rage_gain += p->talents.mountain_thane.crashing_thunder->effectN( 4 ).resource( RESOURCE_RAGE );
@@ -5519,7 +5554,7 @@ struct odyns_fury_off_hand_t : public warrior_attack_t
   {
     background          = true;
     aoe                 = -1;
-    reduced_aoe_targets = 8; // Not in spelldata
+    reduced_aoe_targets = p->talents.fury.odyns_fury->effectN( 6 ).base_value();
   }
 };
 
@@ -5532,7 +5567,7 @@ struct odyns_fury_main_hand_t : public warrior_attack_t
   {
     background = true;
     aoe        = -1;
-    reduced_aoe_targets = 8; // Not in spelldata
+    reduced_aoe_targets = p->talents.fury.odyns_fury->effectN( 6 ).base_value();
   }
 
   double composite_ta_multiplier( const action_state_t* state ) const override
@@ -5809,6 +5844,9 @@ struct warbreaker_t : public warrior_attack_t
     parse_options( options_str );
     weapon = &( p->main_hand_weapon );
     aoe    = -1;
+    // warbreaker reduced target count is not in spelldata yet
+    reduced_aoe_targets = 5;
+
     impact_action    = p->active.deep_wounds_ARMS;
   }
 
@@ -7499,6 +7537,7 @@ struct defensive_stance_t : public warrior_spell_t
   {
     add_option( opt_string( "toggle", onoff ) );
     parse_options( options_str );
+    harmful = false;
     target = p;
 
     if ( onoff == "on" )

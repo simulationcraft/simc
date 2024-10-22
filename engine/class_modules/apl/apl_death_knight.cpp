@@ -105,95 +105,89 @@ std::string temporary_enchant( const player_t* p )
   }
 }
 
-  //blood_apl_start
-  void blood( player_t* p )
-  {
-    action_priority_list_t* default_ = p->get_action_priority_list( "default" );
-    action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-    action_priority_list_t* drw_up = p->get_action_priority_list( "drw_up" );
-    action_priority_list_t* racials = p->get_action_priority_list( "racials" );
-    action_priority_list_t* standard = p->get_action_priority_list( "standard" );
-    action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
+//blood_apl_start
+void blood( player_t* p )
+{
+  action_priority_list_t* default_ = p->get_action_priority_list( "default" );
+  action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* deathbringer = p->get_action_priority_list( "deathbringer" );
+  action_priority_list_t* sanlayn = p->get_action_priority_list( "sanlayn" );
 
-    precombat->add_action( "flask" );
-    precombat->add_action( "food" );
-    precombat->add_action( "augmentation" );
-    precombat->add_action( "snapshot_stats" );
-    precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|(trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit)|trinket.1.is.mirror_of_fractured_tomorrows" );
-    precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|(trinket.2.has_buff.strength|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit)|trinket.2.is.mirror_of_fractured_tomorrows" );
-    precombat->add_action( "variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_2_buffs&trinket.2.ilvl>=trinket.1.ilvl|variable.trinket_1_buffs" );
+  precombat->add_action( "flask" );
+  precombat->add_action( "food" );
+  precombat->add_action( "augmentation" );
+  precombat->add_action( "snapshot_stats" );
 
-    default_->add_action( "auto_attack" );
-    default_->add_action( "variable,name=death_strike_dump_amount,value=65" );
-    default_->add_action( "variable,name=bone_shield_refresh_value,value=4,op=setif,condition=talent.consumption.enabled|talent.blooddrinker.enabled,value_else=5" );
-    default_->add_action( "mind_freeze,if=target.debuff.casting.react" );
-    default_->add_action( "invoke_external_buff,name=power_infusion,if=buff.dancing_rune_weapon.up|!talent.dancing_rune_weapon", "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=49028/dancing-rune-weapon'>Dancing Rune Weapon</a> is up, or on cooldown if <a href='https://www.wowhead.com/spell=49028/dancing-rune-weapon'>Dancing Rune Weapon</a> is not talented" );
-    default_->add_action( "potion,if=buff.dancing_rune_weapon.up" );
-    default_->add_action( "call_action_list,name=trinkets" );
-    default_->add_action( "raise_dead" );
-    default_->add_action( "reapers_mark" );
+  default_->add_action( "auto_attack" );
+  default_->add_action( "use_items" );
+  default_->add_action( "run_action_list,name=deathbringer,if=hero_tree.deathbringer" );
+  default_->add_action( "run_action_list,name=sanlayn,if=hero_tree.sanlayn" );
 
-    default_->add_action( "icebound_fortitude,if=!(buff.dancing_rune_weapon.up|buff.vampiric_blood.up)&(target.cooldown.pause_action.remains>=8|target.cooldown.pause_action.duration>0)" );
-    default_->add_action( "vampiric_blood,if=!(buff.dancing_rune_weapon.up|buff.icebound_fortitude.up|buff.vampiric_blood.up)&(target.cooldown.pause_action.remains>=13|target.cooldown.pause_action.duration>0)" );
-    default_->add_action( "deaths_caress,if=!buff.bone_shield.up" );
-    default_->add_action( "death_and_decay,if=!death_and_decay.ticking&(talent.unholy_ground|talent.sanguine_ground|spell_targets.death_and_decay>3|buff.crimson_scourge.up)" );
-    default_->add_action( "death_strike,if=buff.coagulopathy.remains<=gcd|buff.icy_talons.remains<=gcd|runic_power>=variable.death_strike_dump_amount|runic_power.deficit<=variable.heart_strike_rp|target.time_to_die<10" );
-    default_->add_action( "blooddrinker,if=!buff.dancing_rune_weapon.up" );
-    default_->add_action( "call_action_list,name=racials" );
-    default_->add_action( "sacrificial_pact,if=!buff.dancing_rune_weapon.up&(pet.ghoul.remains<2|target.time_to_die<gcd)" );
-    default_->add_action( "blood_tap,if=(rune<=2&rune.time_to_4>gcd&charges_fractional>=1.8)|rune.time_to_3>gcd" );
-    default_->add_action( "gorefiends_grasp,if=talent.tightening_grasp.enabled" );
-    default_->add_action( "empower_rune_weapon,if=rune<6&runic_power.deficit>5" );
-    default_->add_action( "abomination_limb" );
-    default_->add_action( "dancing_rune_weapon,if=!buff.dancing_rune_weapon.up" );
-    default_->add_action( "run_action_list,name=drw_up,if=buff.dancing_rune_weapon.up" );
-    default_->add_action( "call_action_list,name=standard" );
+  deathbringer->add_action( "variable,name=death_strike_dump_amount,value=35" );
+  deathbringer->add_action( "variable,name=bone_shield_refresh_value,value=6" );
+  deathbringer->add_action( "variable,name=heart_strike_rp_drw,value=(21+spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
+  deathbringer->add_action( "potion,if=buff.dancing_rune_weapon.up" );
+  deathbringer->add_action( "blood_tap,if=rune<=1" );
+  deathbringer->add_action( "raise_dead" );
+  deathbringer->add_action( "blood_fury,if=cooldown.dancing_rune_weapon.ready" );
+  deathbringer->add_action( "berserking,if=cooldown.dancing_rune_weapon.ready" );
+  deathbringer->add_action( "deaths_caress,if=!buff.bone_shield.up" );
+  deathbringer->add_action( "death_strike,if=buff.coagulopathy.remains<=gcd|runic_power.deficit<35" );
+  deathbringer->add_action( "blood_boil,if=dot.reapers_mark.ticking&(dot.reapers_mark.remains<2*gcd|charges_fractional>=1.5)" );
+  deathbringer->add_action( "consumption,if=dot.reapers_mark.ticking&dot.blood_plague.ticking" );
+  deathbringer->add_action( "soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>(dot.soul_reaper.remains+5)" );
+  deathbringer->add_action( "blood_boil,if=(dot.reapers_mark.ticking&(pet.dancing_rune_weapon.active&!drw.bp_ticking))|!dot.blood_plague.ticking|(charges_fractional>=1&dot.reapers_mark.ticking&buff.coagulopathy.remains>2*gcd)" );
+  deathbringer->add_action( "death_and_decay,if=((dot.reapers_mark.ticking)&!death_and_decay.ticking)|!buff.death_and_decay.up" );
+  deathbringer->add_action( "marrowrend,if=buff.exterminate.up&(runic_power.deficit>20&buff.coagulopathy.remains>2*gcd)" );
+  deathbringer->add_action( "abomination_limb,if=dot.reapers_mark.ticking" );
+  deathbringer->add_action( "reapers_mark,if=!dot.reapers_mark.ticking&dot.blood_plague.ticking" );
+  deathbringer->add_action( "bonestorm,if=buff.death_and_decay.up&buff.bone_shield.stack>5&cooldown.dancing_rune_weapon.remains>=10&(dot.reapers_mark.ticking)" );
+  deathbringer->add_action( "abomination_limb" );
+  deathbringer->add_action( "blooddrinker,if=buff.coagulopathy.remains>3*gcd&!buff.dancing_rune_weapon.up" );
+  deathbringer->add_action( "dancing_rune_weapon,if=buff.coagulopathy.remains>2*gcd" );
+  deathbringer->add_action( "bonestorm,if=buff.death_and_decay.up&buff.bone_shield.stack>5&cooldown.dancing_rune_weapon.remains>=10" );
+  deathbringer->add_action( "tombstone,if=buff.death_and_decay.up&buff.bone_shield.stack>5&runic_power.deficit>=30&cooldown.dancing_rune_weapon.remains>=10" );
+  deathbringer->add_action( "marrowrend,if=!dot.bonestorm.ticking&(buff.bone_shield.stack<variable.bone_shield_refresh_value&runic_power.deficit>20|buff.bone_shield.remains<=3)" );
+  deathbringer->add_action( "blood_boil,if=charges_fractional>=1.5|(full_recharge_time<=gcd.max)" );
+  deathbringer->add_action( "consumption" );
+  deathbringer->add_action( "death_strike,if=runic_power.deficit<=variable.heart_strike_rp_drw|runic_power>=variable.death_strike_dump_amount" );
+  deathbringer->add_action( "blood_boil,if=charges_fractional>=1.5&buff.hemostasis.stack<5&cooldown.reapers_mark.remains>5" );
+  deathbringer->add_action( "heart_strike,if=rune>=1|rune.time_to_2<gcd|runic_power.deficit>=variable.heart_strike_rp_drw" );
 
-    drw_up->add_action( "blood_boil,if=!dot.blood_plague.ticking" );
-    drw_up->add_action( "tombstone,if=buff.bone_shield.stack>5&rune>=2&runic_power.deficit>=30&!talent.shattering_bone|(talent.shattering_bone.enabled&death_and_decay.ticking)" );
-    drw_up->add_action( "death_strike,if=buff.coagulopathy.remains<=gcd|buff.icy_talons.remains<=gcd" );
-    drw_up->add_action( "marrowrend,if=(buff.bone_shield.remains<=4|buff.bone_shield.stack<variable.bone_shield_refresh_value)&runic_power.deficit>20" );
-    drw_up->add_action( "soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>(dot.soul_reaper.remains+5)" );
-    drw_up->add_action( "soul_reaper,target_if=min:dot.soul_reaper.remains,if=target.time_to_pct_35<5&active_enemies>=2&target.time_to_die>(dot.soul_reaper.remains+5)" );
-    drw_up->add_action( "death_and_decay,if=!death_and_decay.ticking&(talent.sanguine_ground|talent.unholy_ground)" );
-    drw_up->add_action( "blood_boil,if=spell_targets.blood_boil>2&charges_fractional>=1.1" );
-    drw_up->add_action( "variable,name=heart_strike_rp_drw,value=(25+spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
-    drw_up->add_action( "death_strike,if=runic_power.deficit<=variable.heart_strike_rp_drw|runic_power>=variable.death_strike_dump_amount" );
-    drw_up->add_action( "consumption" );
-    drw_up->add_action( "blood_boil,if=charges_fractional>=1.1&buff.hemostasis.stack<5" );
-    drw_up->add_action( "heart_strike,if=rune.time_to_2<gcd|runic_power.deficit>=variable.heart_strike_rp_drw" );
-
-    racials->add_action( "blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)" );
-    racials->add_action( "berserking" );
-    racials->add_action( "arcane_pulse,if=active_enemies>=2|rune<1&runic_power.deficit>60" );
-    racials->add_action( "lights_judgment,if=buff.unholy_strength.up" );
-    racials->add_action( "ancestral_call" );
-    racials->add_action( "fireblood" );
-    racials->add_action( "bag_of_tricks" );
-    racials->add_action( "arcane_torrent,if=runic_power.deficit>20" );
-
-    standard->add_action( "tombstone,if=buff.bone_shield.stack>5&rune>=2&runic_power.deficit>=30&!talent.shattering_bone|(talent.shattering_bone.enabled&death_and_decay.ticking)&cooldown.dancing_rune_weapon.remains>=25" );
-    standard->add_action( "variable,name=heart_strike_rp,value=(10+spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
-    standard->add_action( "death_strike,if=buff.coagulopathy.remains<=gcd|buff.icy_talons.remains<=gcd|runic_power>=variable.death_strike_dump_amount|runic_power.deficit<=variable.heart_strike_rp|target.time_to_die<10" );
-    standard->add_action( "deaths_caress,if=(buff.bone_shield.remains<=4|(buff.bone_shield.stack<variable.bone_shield_refresh_value+1))&runic_power.deficit>10&!(talent.insatiable_blade&cooldown.dancing_rune_weapon.remains<buff.bone_shield.remains)&!talent.consumption.enabled&!talent.blooddrinker.enabled&rune.time_to_3>gcd" );
-    standard->add_action( "marrowrend,if=(buff.bone_shield.remains<=4|buff.bone_shield.stack<variable.bone_shield_refresh_value)&runic_power.deficit>20&!(talent.insatiable_blade&cooldown.dancing_rune_weapon.remains<buff.bone_shield.remains)" );
-    standard->add_action( "consumption" );
-    standard->add_action( "soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>(dot.soul_reaper.remains+5)" );
-    standard->add_action( "soul_reaper,target_if=min:dot.soul_reaper.remains,if=target.time_to_pct_35<5&active_enemies>=2&target.time_to_die>(dot.soul_reaper.remains+5)" );
-    standard->add_action( "bonestorm,if=buff.bone_shield.stack>=5" );
-    standard->add_action( "blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)" );
-    standard->add_action( "heart_strike,if=rune.time_to_4<gcd" );
-    standard->add_action( "blood_boil,if=charges_fractional>=1.1" );
-    standard->add_action( "heart_strike,if=(rune>1&(rune.time_to_3<gcd|buff.bone_shield.stack>7))" );
-
-    trinkets->add_action( "use_item,name=fyralath_the_dreamrender,if=dot.mark_of_fyralath.ticking", "Trinkets" );
-    trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|!trinket.2.has_cooldown)", "Prioritize damage dealing on use trinkets over trinkets that give buffs" );
-    trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|!trinket.1.has_cooldown)" );
-    trinkets->add_action( "use_item,slot=main_hand,if=!equipped.fyralath_the_dreamrender&(variable.trinket_1_buffs|trinket.1.cooldown.remains)&(variable.trinket_2_buffs|trinket.2.cooldown.remains)" );
-    trinkets->add_action( "use_item,slot=trinket1,if=variable.trinket_1_buffs&(buff.dancing_rune_weapon.up|!talent.dancing_rune_weapon|cooldown.dancing_rune_weapon.remains>20)&(trinket.2.cooldown.remains|!trinket.2.has_cooldown|variable.trinket_2_buffs)" );
-    trinkets->add_action( "use_item,slot=trinket2,if=variable.trinket_2_buffs&(buff.dancing_rune_weapon.up|!talent.dancing_rune_weapon|cooldown.dancing_rune_weapon.remains>20)&(trinket.1.cooldown.remains|!trinket.1.has_cooldown|variable.trinket_1_buffs)" );
-  }
-  //blood_apl_end
+  sanlayn->add_action( "variable,name=death_strike_dump_amount,value=50" );
+  sanlayn->add_action( "variable,name=death_strike_pre_essence_dump_amount,value=20" );
+  sanlayn->add_action( "variable,name=bone_shield_refresh_value,value=11" );
+  sanlayn->add_action( "variable,name=heart_strike_rp_drw,value=(21+spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
+  sanlayn->add_action( "death_strike,if=buff.coagulopathy.remains<=gcd" );
+  sanlayn->add_action( "raise_dead" );
+  sanlayn->add_action( "potion,if=buff.dancing_rune_weapon.up" );
+  sanlayn->add_action( "blood_fury,if=cooldown.dancing_rune_weapon.ready" );
+  sanlayn->add_action( "berserking,if=cooldown.dancing_rune_weapon.ready" );
+  sanlayn->add_action( "blood_tap,if=rune<3" );
+  sanlayn->add_action( "blood_boil,if=!dot.blood_plague.ticking|(dot.blood_plague.remains<10&buff.vampiric_blood.up)" );
+  sanlayn->add_action( "abomination_limb,if=buff.coagulopathy.remains>=2*gcd&(!buff.essence_of_the_blood_queen.up|buff.essence_of_the_blood_queen.remains>=3*gcd)&(!buff.vampiric_blood.up|buff.vampiric_blood.remains>=6*gcd)" );
+  sanlayn->add_action( "blood_boil,if=cooldown.vampiric_blood.remains<3*gcd&buff.coagulopathy.remains>=gcd" );
+  sanlayn->add_action( "heart_strike,if=buff.vampiric_blood.up&(buff.vampiric_blood.remains<2*gcd)" );
+  sanlayn->add_action( "bonestorm,if=(!buff.vampiric_blood.up&buff.death_and_decay.up)&buff.bone_shield.stack>5&cooldown.dancing_rune_weapon.remains>=10&buff.coagulopathy.remains>3*gcd" );
+  sanlayn->add_action( "tombstone,if=(!buff.vampiric_blood.up&buff.death_and_decay.up)&buff.bone_shield.stack>5&runic_power.deficit>=30&cooldown.dancing_rune_weapon.remains>=10&buff.coagulopathy.remains>2*gcd" );
+  sanlayn->add_action( "dancing_rune_weapon,if=buff.coagulopathy.remains>=2*gcd&(!buff.essence_of_the_blood_queen.up|buff.essence_of_the_blood_queen.remains>=3*gcd)&(!buff.vampiric_blood.up|buff.vampiric_blood.remains>=6*gcd)" );
+  sanlayn->add_action( "death_strike,if=!buff.vampiric_strike.up&cooldown.vampiric_blood.remains<=30&runic_power>variable.death_strike_pre_essence_dump_amount&buff.essence_of_the_blood_queen.stack>=3" );
+  sanlayn->add_action( "heart_strike,if=(buff.vampiric_blood.up)&(buff.coagulopathy.remains>2*gcd)" );
+  sanlayn->add_action( "consumption,if=buff.vampiric_blood.remains<=3|buff.infliction_of_sorrow.up|cooldown.vampiric_blood.remains>5" );
+  sanlayn->add_action( "death_strike,if=buff.vampiric_blood.up&(buff.coagulopathy.remains<2*gcd|(runic_power.deficit<=variable.heart_strike_rp_drw&buff.incite_terror.stack>=3))" );
+  sanlayn->add_action( "heart_strike,if=buff.vampiric_strike.up|buff.infliction_of_sorrow.up&((talent.consumption.enabled&buff.consumption.up)|!talent.consumption.enabled)&dot.blood_plague.ticking&dot.blood_plague.remains>20" );
+  sanlayn->add_action( "vampiric_blood,if=buff.coagulopathy.up" );
+  sanlayn->add_action( "deaths_caress,if=!buff.bone_shield.up" );
+  sanlayn->add_action( "death_and_decay,if=!buff.death_and_decay.up|(buff.crimson_scourge.up&(!buff.vampiric_blood.up|buff.vampiric_blood.remains>3*gcd))" );
+  sanlayn->add_action( "marrowrend,if=!dot.bonestorm.ticking&(buff.bone_shield.stack<variable.bone_shield_refresh_value&runic_power.deficit>20|buff.bone_shield.remains<=3)" );
+  sanlayn->add_action( "death_strike,if=runic_power.deficit<=variable.heart_strike_rp_drw|runic_power>=variable.death_strike_dump_amount" );
+  sanlayn->add_action( "heart_strike,if=rune>1" );
+  sanlayn->add_action( "bonestorm,if=buff.death_and_decay.up&buff.bone_shield.stack>5&cooldown.dancing_rune_weapon.remains>=10" );
+  sanlayn->add_action( "tombstone,if=buff.death_and_decay.up&buff.bone_shield.stack>5&runic_power.deficit>=30&cooldown.dancing_rune_weapon.remains>=10" );
+  sanlayn->add_action( "soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>(dot.soul_reaper.remains+5)" );
+  sanlayn->add_action( "blood_boil,if=charges>=2|(full_recharge_time<=gcd.max)" );
+}
+//blood_apl_end
 
 //frost_apl_start
 void frost( player_t* p )
@@ -290,7 +284,7 @@ void frost( player_t* p )
   cooldowns->add_action( "frostwyrms_fury,if=!talent.apocalypse_now&active_enemies>=2&(talent.pillar_of_frost&buff.pillar_of_frost.up|raid_event.adds.exists&raid_event.adds.up&raid_event.adds.in<cooldown.pillar_of_frost.remains-raid_event.adds.in-raid_event.adds.duration)" );
   cooldowns->add_action( "frostwyrms_fury,if=!talent.apocalypse_now&talent.obliteration&(talent.pillar_of_frost&buff.pillar_of_frost.up&!main_hand.2h|!buff.pillar_of_frost.up&main_hand.2h&cooldown.pillar_of_frost.remains|!talent.pillar_of_frost)&(buff.pillar_of_frost.remains<gcd|(buff.unholy_strength.up&buff.unholy_strength.remains<gcd)|(talent.bonegrinder.rank=2&buff.bonegrinder_frost.up&buff.bonegrinder_frost.remains<gcd))&(debuff.razorice.stack=5|!death_knight.runeforge.razorice&!talent.glacial_advance|talent.shattering_blade)" );
   cooldowns->add_action( "raise_dead,use_off_gcd=1" );
-  cooldowns->add_action( "soul_reaper,if=fight_remains>5&target.time_to_pct_35<5&target.time_to_pct_0>5&active_enemies<=1&(talent.obliteration&(buff.pillar_of_frost.up&!buff.killing_machine.react&rune>2|!buff.pillar_of_frost.up|buff.killing_machine.react<2&!buff.exterminate.up&!buff.exterminate_painful_death.up&buff.pillar_of_frost.remains<gcd)|talent.breath_of_sindragosa&(buff.breath_of_sindragosa.up&runic_power>50|!buff.breath_of_sindragosa.up)|!talent.breath_of_sindragosa&!talent.obliteration)" );
+  cooldowns->add_action( "soul_reaper,if=fight_remains>5&target.time_to_pct_35<5&target.time_to_pct_0>5&active_enemies<=1&(talent.obliteration&(buff.pillar_of_frost.up&!buff.killing_machine.react&rune>2|!buff.pillar_of_frost.up|buff.killing_machine.react<2&!buff.exterminate.up&buff.pillar_of_frost.remains<gcd)|talent.breath_of_sindragosa&(buff.breath_of_sindragosa.up&runic_power>50|!buff.breath_of_sindragosa.up)|!talent.breath_of_sindragosa&!talent.obliteration)" );
   cooldowns->add_action( "frostscythe,if=!buff.killing_machine.react&!buff.pillar_of_frost.up" );
   cooldowns->add_action( "any_dnd,if=!buff.death_and_decay.up&variable.adds_remain&(buff.pillar_of_frost.up&buff.killing_machine.react&(talent.enduring_strength|buff.pillar_of_frost.remains>5)|!buff.pillar_of_frost.up&(cooldown.death_and_decay.charges=2|cooldown.pillar_of_frost.remains>cooldown.death_and_decay.duration|!talent.the_long_winter&cooldown.pillar_of_frost.remains<gcd.max*2)|fight_remains<15)&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)" );
 
@@ -305,7 +299,7 @@ void frost( player_t* p )
   high_prio_actions->add_action( "frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=active_enemies=1&variable.rp_buffs&talent.breath_of_sindragosa&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time" );
   high_prio_actions->add_action( "frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=active_enemies=1&variable.rp_buffs&!talent.breath_of_sindragosa&talent.obliteration&!buff.pillar_of_frost.up" );
 
-  obliteration->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice+((hero_tree.deathbringer&debuff.reapers_mark_debuff.down)*5),if=buff.killing_machine.react&(buff.exterminate.up|buff.exterminate_painful_death.up|fight_remains<gcd*2)", "Obliteration Active Rotation" );
+  obliteration->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice+((hero_tree.deathbringer&debuff.reapers_mark_debuff.down)*5),if=buff.killing_machine.react&(buff.exterminate.up|fight_remains<gcd*2)", "Obliteration Active Rotation" );
   obliteration->add_action( "howling_blast,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&variable.rime_buffs" );
   obliteration->add_action( "glacial_advance,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!buff.death_and_decay.up&variable.ga_priority" );
   obliteration->add_action( "frost_strike,target_if=max:((talent.shattering_blade&debuff.razorice.stack=5)*5)+(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react<2&buff.pillar_of_frost.remains<gcd&!buff.death_and_decay.up" );
@@ -332,7 +326,7 @@ void frost( player_t* p )
   racials->add_action( "bag_of_tricks,if=!talent.obliteration&buff.pillar_of_frost.up&(buff.unholy_strength.up&buff.unholy_strength.remains<gcd*3|buff.pillar_of_frost.remains<gcd*3)" );
 
   single_target->add_action( "frost_strike,if=talent.a_feast_of_souls&debuff.razorice.stack=5&talent.shattering_blade&buff.a_feast_of_souls.up", "Single Target Rotation" );
-  single_target->add_action( "obliterate,if=buff.killing_machine.react=2|buff.exterminate.up|buff.exterminate_painful_death.up" );
+  single_target->add_action( "obliterate,if=buff.killing_machine.react=2|buff.exterminate.up" );
   single_target->add_action( "horn_of_winter,if=(!talent.breath_of_sindragosa|variable.true_breath_cooldown>cooldown.horn_of_winter.duration-15)&cooldown.pillar_of_frost.remains<variable.oblit_pooling_time" );
   single_target->add_action( "frost_strike,if=(debuff.razorice.stack=5&talent.shattering_blade)|(rune<2&!talent.icebreaker)" );
   single_target->add_action( "howling_blast,if=variable.rime_buffs&(!talent.breath_of_sindragosa|talent.rage_of_the_frozen_champion|cooldown.breath_of_sindragosa.remains)" );
@@ -350,8 +344,8 @@ void frost( player_t* p )
 
   trinkets->add_action( "use_item,use_off_gcd=1,name=treacherous_transmitter,if=cooldown.pillar_of_frost.remains<6&(!talent.breath_of_sindragosa|(buff.breath_of_sindragosa.up|variable.true_breath_cooldown<6))|fight_remains<30", "Trinkets" );
   trinkets->add_action( "do_treacherous_transmitter_task,use_off_gcd=1,if=buff.pillar_of_frost.up|fight_remains<15", "When to complete the Tracherous Transmitter task given." );
-  trinkets->add_action( "use_item,slot=trinket1,if=!trinket.1.cast_time>0&variable.trinket_1_buffs&!variable.trinket_1_manual&(!talent.breath_of_sindragosa|buff.breath_of_sindragosa.up|cooldown.breath_of_sindragosa.remains>trinket.1.cooldown.remains%2)&(buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa&buff.pillar_of_frost.remains>10)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)", "Trinkets The trinket with the highest estimated value, will be used first and paired with Pillar of Frost." );
-  trinkets->add_action( "use_item,slot=trinket2,if=!trinket.2.cast_time>0&variable.trinket_2_buffs&!variable.trinket_2_manual&(!talent.breath_of_sindragosa|buff.breath_of_sindragosa.up|cooldown.breath_of_sindragosa.remains>trinket.2.cooldown.remains%2)&(buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa&buff.pillar_of_frost.remains>10)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)" );
+  trinkets->add_action( "use_item,slot=trinket1,if=!trinket.1.cast_time>0&variable.trinket_1_buffs&!variable.trinket_1_manual&(buff.pillar_of_frost.remains>variable.trinket_1_duration%2)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)", "Trinkets The trinket with the highest estimated value, will be used first and paired with Pillar of Frost." );
+  trinkets->add_action( "use_item,slot=trinket2,if=!trinket.2.cast_time>0&variable.trinket_2_buffs&!variable.trinket_2_manual&(buff.pillar_of_frost.remains>variable.trinket_2_duration%2)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)" );
   trinkets->add_action( "use_item,slot=trinket1,use_off_gcd=1,if=trinket.1.cast_time>0&variable.trinket_1_buffs&!variable.trinket_1_manual&!buff.pillar_of_frost.up&(!talent.breath_of_sindragosa|!buff.breath_of_sindragosa.up&runic_power>variable.breath_rp_threshold&(cooldown.pillar_of_frost.ready&variable.sending_cds))&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|variable.trinket_1_duration>=fight_remains", "Channeled buff trinkets will be used before cooldowns" );
   trinkets->add_action( "use_item,slot=trinket2,use_off_gcd=1,if=trinket.2.cast_time>0&variable.trinket_2_buffs&!variable.trinket_2_manual&!buff.pillar_of_frost.up&(!talent.breath_of_sindragosa|!buff.breath_of_sindragosa.up&runic_power>variable.breath_rp_threshold&(cooldown.pillar_of_frost.ready&variable.sending_cds))&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|variable.trinket_2_duration>=fight_remains" );
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(variable.damage_trinket_priority=1|(!trinket.2.has_cooldown|trinket.2.cooldown.remains))&((trinket.1.cast_time>0&(!talent.breath_of_sindragosa|!buff.breath_of_sindragosa.up|!variable.breath_dying)&!buff.pillar_of_frost.up|!trinket.1.cast_time>0)&(!variable.trinket_2_buffs|cooldown.pillar_of_frost.remains>20)|!talent.pillar_of_frost)|fight_remains<15", "If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown." );
@@ -367,7 +361,7 @@ void frost( player_t* p )
   variables->add_action( "variable,name=oblit_pooling_time,op=setif,value=((cooldown.pillar_of_frost.remains+1)%gcd.max)%((rune+1)*((runic_power+5)))*100,value_else=3,condition=runic_power<35&rune<2&cooldown.pillar_of_frost.remains<10", "Formulaic approach to determine the time before these abilities come off cooldown that the simulation should star to pool resources. Capped at 15s in the run_action_list call." );
   variables->add_action( "variable,name=breath_pooling_time,op=setif,value=((variable.true_breath_cooldown+1)%gcd.max)%((rune+1)*(runic_power+20))*100,value_else=2,condition=runic_power.deficit>10&variable.true_breath_cooldown<10" );
   variables->add_action( "variable,name=pooling_runes,value=rune<variable.oblit_rune_pooling&talent.obliteration&(!talent.breath_of_sindragosa|variable.true_breath_cooldown)&cooldown.pillar_of_frost.remains<variable.oblit_pooling_time" );
-  variables->add_action( "variable,name=pooling_runic_power,value=talent.breath_of_sindragosa&(variable.true_breath_cooldown<variable.breath_pooling_time|fight_remains<30&!cooldown.breath_of_sindragosa.remains)|talent.obliteration&runic_power<35&cooldown.pillar_of_frost.remains<variable.oblit_pooling_time" );
+  variables->add_action( "variable,name=pooling_runic_power,value=talent.breath_of_sindragosa&(variable.true_breath_cooldown<variable.breath_pooling_time|fight_remains<30&!cooldown.breath_of_sindragosa.remains)|talent.obliteration&(!talent.breath_of_sindragosa|cooldown.breath_of_sindragosa.remains>30)&runic_power<35&cooldown.pillar_of_frost.remains<variable.oblit_pooling_time" );
   variables->add_action( "variable,name=ga_priority,value=(!talent.shattered_frost&talent.shattering_blade&active_enemies>=4)|(!talent.shattered_frost&!talent.shattering_blade&active_enemies>=2)" );
   variables->add_action( "variable,name=breath_dying,value=runic_power<variable.breath_rp_cost*2*gcd.max&rune.time_to_2>runic_power%variable.breath_rp_cost" );
 }
@@ -428,24 +422,27 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=san_st,if=active_enemies=1&talent.vampiric_strike" );
   default_->add_action( "call_action_list,name=st,if=active_enemies=1&!talent.vampiric_strike" );
 
-  aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1&buff.death_and_decay.up&talent.bursting_sores&cooldown.apocalypse.remains>variable.apoc_timing", "AOE" );
+  aoe->add_action( "festering_strike,if=buff.festering_scythe.react", "AOE" );
+  aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1&buff.death_and_decay.up&talent.bursting_sores&cooldown.apocalypse.remains>variable.apoc_timing" );
   aoe->add_action( "epidemic,if=!variable.pooling_runic_power" );
-  aoe->add_action( "wound_spender,target_if=min:debuff.chains_of_ice_trollbane_slow.remains,if=debuff.chains_of_ice_trollbane_slow.up&debuff.chains_of_ice_trollbane_slow.remains<gcd" );
+  aoe->add_action( "wound_spender,target_if=debuff.chains_of_ice_trollbane_slow.up" );
   aoe->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=cooldown.apocalypse.remains<variable.apoc_timing|buff.festering_scythe.react" );
   aoe->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=debuff.festering_wound.stack<2" );
   aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1&cooldown.apocalypse.remains>gcd|buff.vampiric_strike.react&dot.virulent_plague.ticking" );
 
-  aoe_burst->add_action( "epidemic,if=!buff.vampiric_strike.react&(!talent.bursting_sores|talent.bursting_sores&death_knight.fwounded_targets<active_enemies&death_knight.fwounded_targets<active_enemies*0.4&buff.sudden_doom.react|buff.sudden_doom.react&(buff.a_feast_of_souls.up|debuff.death_rot.remains<gcd|debuff.death_rot.stack<10))", "AoE Burst" );
-  aoe_burst->add_action( "wound_spender,target_if=min:debuff.chains_of_ice_trollbane_slow.remains,if=debuff.chains_of_ice_trollbane_slow.up" );
-  aoe_burst->add_action( "festering_strike,if=buff.festering_scythe.react" );
+  aoe_burst->add_action( "festering_strike,if=buff.festering_scythe.react", "AoE Burst" );
+  aoe_burst->add_action( "epidemic,if=!buff.vampiric_strike.react&(!talent.bursting_sores|talent.bursting_sores&death_knight.fwounded_targets<active_enemies&death_knight.fwounded_targets<active_enemies*0.4&buff.sudden_doom.react|buff.sudden_doom.react&(buff.a_feast_of_souls.up|debuff.death_rot.remains<gcd|debuff.death_rot.stack<10))" );
+  aoe_burst->add_action( "wound_spender,target_if=debuff.chains_of_ice_trollbane_slow.up" );
   aoe_burst->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=1|buff.vampiric_strike.react" );
   aoe_burst->add_action( "epidemic" );
   aoe_burst->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=debuff.festering_wound.stack<=2" );
   aoe_burst->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack" );
 
-  aoe_setup->add_action( "any_dnd,if=!death_and_decay.ticking&(!talent.bursting_sores&!talent.vile_contagion|death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets>=8|raid_event.adds.exists&raid_event.adds.remains<=11&raid_event.adds.remains>5)", "AoE Setup" );
-  aoe_setup->add_action( "wound_spender,target_if=min:debuff.chains_of_ice_trollbane_slow.remains,if=debuff.chains_of_ice_trollbane_slow.up&debuff.chains_of_ice_trollbane_slow.remains<gcd" );
-  aoe_setup->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=cooldown.vile_contagion.remains<5|death_knight.fwounded_targets=active_enemies&debuff.festering_wound.stack<=4|buff.festering_scythe.react" );
+  aoe_setup->add_action( "festering_strike,if=buff.festering_scythe.react", "AoE Setup" );
+  aoe_setup->add_action( "any_dnd,if=!death_and_decay.ticking&(!talent.bursting_sores&!talent.vile_contagion|death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets>=8|raid_event.adds.exists&raid_event.adds.remains<=11&raid_event.adds.remains>5|!buff.death_and_decay.up&talent.defile)" );
+  aoe_setup->add_action( "wound_spender,target_if=debuff.chains_of_ice_trollbane_slow.up" );
+  aoe_setup->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!talent.vile_contagion" );
+  aoe_setup->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=cooldown.vile_contagion.remains<5|death_knight.fwounded_targets=active_enemies&debuff.festering_wound.stack<=4" );
   aoe_setup->add_action( "epidemic,if=!variable.pooling_runic_power&buff.sudden_doom.react" );
   aoe_setup->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=cooldown.apocalypse.remains<gcd&debuff.festering_wound.stack=0|death_knight.fwounded_targets<active_enemies" );
   aoe_setup->add_action( "epidemic,if=!variable.pooling_runic_power" );
@@ -525,6 +522,7 @@ void unholy( player_t* p )
   san_trinkets->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.2.cast_time>0&!buff.gift_of_the_sanlayn.up|!trinket.2.cast_time>0)&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|!trinket.1.has_cooldown|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination|!talent.summon_gargoyle&talent.army_of_the_dead&(!talent.raise_abomination&cooldown.army_of_the_dead.remains>20|talent.raise_abomination&cooldown.raise_abomination.remains>20)|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination&cooldown.dark_transformation.remains>20|talent.summon_gargoyle&cooldown.summon_gargoyle.remains>20&!pet.gargoyle.active)|fight_remains<15" );
 
   st->add_action( "soul_reaper,if=target.health.pct<=35&fight_remains>5", "Single Taget Non-San'layn" );
+  st->add_action( "wound_spender,if=debuff.chains_of_ice_trollbane_slow.up" );
   st->add_action( "any_dnd,if=talent.unholy_ground&!buff.death_and_decay.up&(pet.apoc_ghoul.active|pet.abomination.active|pet.gargoyle.active)" );
   st->add_action( "death_coil,if=!variable.pooling_runic_power&variable.spend_rp|fight_remains<10" );
   st->add_action( "festering_strike,if=debuff.festering_wound.stack<4&(!variable.pop_wounds|buff.festering_scythe.react)" );
@@ -541,7 +539,7 @@ void unholy( player_t* p )
 
   variables->add_action( "variable,name=st_planning,op=setif,value=1,value_else=0,condition=active_enemies=1&(!raid_event.adds.exists|raid_event.adds.in>15)", "Variables" );
   variables->add_action( "variable,name=adds_remain,op=setif,value=1,value_else=0,condition=active_enemies>=2&(!raid_event.adds.exists&fight_remains>6|raid_event.adds.exists&raid_event.adds.remains>6)" );
-  variables->add_action( "variable,name=apoc_timing,op=setif,value=7,value_else=3,condition=cooldown.apocalypse.remains<10&debuff.festering_wound.stack<=4&cooldown.unholy_assault.remains>10" );
+  variables->add_action( "variable,name=apoc_timing,op=setif,value=3,value_else=0,condition=cooldown.apocalypse.remains<5&debuff.festering_wound.stack<1&cooldown.unholy_assault.remains>5" );
   variables->add_action( "variable,name=pop_wounds,op=setif,value=1,value_else=0,condition=(cooldown.apocalypse.remains>variable.apoc_timing|!talent.apocalypse)&(debuff.festering_wound.stack>=1&cooldown.unholy_assault.remains<20&talent.unholy_assault&variable.st_planning|debuff.rotten_touch.up&debuff.festering_wound.stack>=1|debuff.festering_wound.stack>=4-pet.abomination.active)|fight_remains<5&debuff.festering_wound.stack>=1" );
   variables->add_action( "variable,name=pooling_runic_power,op=setif,value=1,value_else=0,condition=talent.vile_contagion&cooldown.vile_contagion.remains<5&runic_power<30" );
   variables->add_action( "variable,name=spend_rp,op=setif,value=1,value_else=0,condition=(!talent.rotten_touch|talent.rotten_touch&!debuff.rotten_touch.up|runic_power.deficit<20)&((talent.improved_death_coil&(active_enemies=2|talent.coil_of_devastation)|rune<3|pet.gargoyle.active|buff.sudden_doom.react|!variable.pop_wounds&debuff.festering_wound.stack>=4))" );

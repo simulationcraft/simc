@@ -1494,6 +1494,7 @@ class SpellDataGenerator(DataGenerator):
          # 11.0 The War Within ================================================
          451916, 451917, 451918, 451920, 451921, # earthen racial well fed buff
          206150, 461904, 461910, 462661, # new M+ affixes
+         462513, 462517, # severed strands weekly raid buff
          443585, # fateweaved needle
          452279, # aberrant spellforge
          448621, 448643, # void reaper's chime
@@ -1520,6 +1521,7 @@ class SpellDataGenerator(DataGenerator):
          455441, 455454, 455455, 455456, #Unstable Power Core Mastery Crit Haste Vers
          455521, 455522, 457627, # Woven Dawn Tailoring Set
          449441, # Fury of the Stormrook Set
+         469917, 469920, # golem gearbox
         ),
 
         # Warrior:
@@ -1669,6 +1671,7 @@ class SpellDataGenerator(DataGenerator):
           ( 444354, 0), # Shadow Lash
           ( 444269, 0), # Shadow Surge
           ( 442419, 0), # Shadow Hounds
+          ( 468037, 0), # Withering Fire secondary Black Arrows
         ),
 
         # Rogue:
@@ -2001,6 +2004,8 @@ class SpellDataGenerator(DataGenerator):
           ( 447419, 0 ),                                # Call of the Ancestor Lava Burst
           ( 447427, 0 ),                                # Call of the Ancestor Elemental Blast
           ( 447425, 0 ),                                # Call of the Ancestor Chain Lightning
+          ( 470058, 0 ),                                # Voltaic Blaze override buff
+          ( 467283, 0 ),                                # Reactivity proc
         ),
 
         # Mage:
@@ -2280,6 +2285,7 @@ class SpellDataGenerator(DataGenerator):
 
           # Shado-Pan
           ( 451021, 0 ), # Flurry Charge (Buff)
+          ( 470670, 0 ), # Flurry Strikes Energy Tracker (Buff)
 
           # Conduit of the Celestials
           ( 443616, 0 ), # Heart of the Jade Serpent (Buff)
@@ -2937,20 +2943,22 @@ class SpellDataGenerator(DataGenerator):
                 mask_class = util.class_mask(class_id=talent.class_id)
                 self.process_spell(talent.id_spell, ids, mask_class, 0, False)
 
+        # No longer in game, but kept for reference.
+        # If MinorTalent.db2 is ever used again, make sure to double check the format json for any field changes.
         # Get all perks
-        for _, perk_data in self.db('MinorTalent').items():
-            if self._options.build < 25600:
-                spell_id = perk_data.id_spell
-            else:
-                spell_id = perk_data.id_parent
-            if spell_id == 0:
-                continue
-
-            spec_data = self.db('ChrSpecialization')[perk_data.id_parent]
-            if spec_data.id == 0:
-                continue
-
-            self.process_spell(spell_id, ids, util.class_mask(class_id=spec_data.class_id), 0, False)
+        # for _, perk_data in self.db('MinorTalent').items():
+        #    if self._options.build < 25600:
+        #        spell_id = perk_data.id_spell
+        #    else:
+        #        spell_id = perk_data.id_parent
+        #    if spell_id == 0:
+        #        continue
+        #
+        #    spec_data = self.db('ChrSpecialization')[perk_data.id_parent]
+        #    if spec_data.id == 0:
+        #        continue
+        #
+        #    self.process_spell(spell_id, ids, util.class_mask(class_id=spec_data.class_id), 0, False)
 
         # Get base skills from SkillLineAbility
         for ability in self.db('SkillLineAbility').values():
@@ -3406,7 +3414,7 @@ class SpellDataGenerator(DataGenerator):
         for id in id_keys:
             spell = self.db('SpellName')[id]
 
-            # Unused hotfix IDs: 5, 6, 7
+            # Unused hotfix IDs: 1, 2, 5, 6, 7
             # MAX hotfix id: 56
             hotfix = HotfixDataRecord()
             power_count = 0

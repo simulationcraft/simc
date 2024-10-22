@@ -982,7 +982,7 @@ enum effect_subtype_t : unsigned {
     A_MOD_HEALING = 115,
     A_MOD_REGEN_DURING_COMBAT = 116,
     A_MOD_MECHANIC_RESISTANCE = 117,
-    A_MOD_HEALING_PCT = 118,
+    A_MOD_HEALING_RECEIVED_PCT = 118,
     A_119 = 119, // old A_SHARE_PET_TRACKING
     A_UNTRACKABLE = 120,
     A_EMPATHY = 121,
@@ -1147,7 +1147,7 @@ enum effect_subtype_t : unsigned {
     A_MOD_TARGET_ARMOR_PCT = 280,
     A_MOD_HONOR_GAIN = 281,
     A_MOD_BASE_HEALTH_PCT = 282,
-    A_MOD_HEALING_RECEIVED = 283, // Possibly only for some spell family class spells
+    A_MOD_HEALING_RECEIVED_FROM_SPELL = 283, // Possibly only for some spell family class spells
     A_284 = 284,
     A_285 = 285, // Some type of trigger buff, possibly on equip/learn
     A_MOD_RECHARGE_RATE = 286,
@@ -1241,7 +1241,7 @@ enum effect_subtype_t : unsigned {
     A_MOD_MANA_REGEN_PCT = 379,
     A_MOD_DAMAGE_FROM_CASTER_GUARDIAN = 380,
     A_MOD_DAMAGE_FROM_CASTER_PET = 381,
-    A_382 = 382,
+    A_MOD_PET_STAT = 382,
     A_IGNORE_SPELL_COOLDOWN = 383,
     A_385 = 385,
     A_389 = 389,
@@ -1343,6 +1343,7 @@ enum spell_attribute : unsigned
   SX_DISABLE_WEAPON_PROCS           = 151u,
   SX_TICK_ON_APPLICATION            = 169u,
   SX_DOT_HASTED                     = 173u,
+  SX_TREAT_AS_AREA_EFFECT           = 175u,
   SX_REQ_LINE_OF_SIGHT              = 186u,
   SX_IGNORE_FOR_MOD_TIME_RATE       = 196u,
   SX_DISABLE_PLAYER_MULT            = 221u,

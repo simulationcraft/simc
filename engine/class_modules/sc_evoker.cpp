@@ -335,7 +335,7 @@ struct simplified_player_t : public player_t
   // Options
   struct options_t
   {
-    int item_level = 621;
+    int item_level = 630;
     std::string variant = "default";
   } option;
 
@@ -781,7 +781,8 @@ struct evoker_t : public player_t
     bool simulate_bombardments                                 = true;
     timespan_t simulate_bombardments_time_between_procs_mean   = 0.2_s;
     timespan_t simulate_bombardments_time_between_procs_stddev = 0.10_s;
-    timespan_t allied_virtual_cd_time = 118_s;
+    timespan_t allied_virtual_cd_time                          = 118_s;
+    double simulate_bombardments_fixed_crit                    = 0.21;
   } option;
 
   // Action pointers
@@ -1482,17 +1483,17 @@ private:
   using ab::composite_crit_chance_multiplier;
 
 public:
-  double composite_crit_chance( const action_state_t* s ) const
+  virtual double composite_crit_chance( const action_state_t* s ) const
   {
     return action_t::composite_crit_chance() + p( s )->cache.spell_crit_chance();
   }
 
-  double composite_haste( const action_state_t* s ) const
+  virtual double composite_haste( const action_state_t* s ) const
   {
     return action_t::composite_haste() * p( s )->cache.spell_cast_speed();
   }
 
-  double composite_crit_chance_multiplier( const action_state_t* s ) const
+  virtual double composite_crit_chance_multiplier( const action_state_t* s ) const
   {
     return action_t::composite_crit_chance_multiplier() * p( s )->composite_spell_crit_chance_multiplier();
   }
@@ -1967,7 +1968,7 @@ public:
   {
     ab::init();
 
-    if ( p()->specialization() == EVOKER_AUGMENTATION )
+    if ( p()->specialization() == EVOKER_AUGMENTATION && p()->talent.time_skip.ok() )
     {
       auto time_skip = static_cast<buffs::time_skip_t*>( p()->buff.time_skip.get() );
       if ( p()->find_spelleffect( &time_skip->data(), A_MAX, 0, &ab::data() )->ok() )
@@ -3740,7 +3741,7 @@ struct fire_breath_t : public empowered_charge_spell_t
         auto td = p()->get_target_data( state->target );
         if ( td )
         {
-          auto mul_before = td->molten_embers_multiplier;
+          // auto mul_before = td->molten_embers_multiplier;
           td->molten_embers_multiplier = p()->get_molten_embers_multiplier( state->target, true );
         }
       }
@@ -4008,6 +4009,7 @@ struct deep_breath_t : public evoker_spell_t
   action_t* damage;
   action_t* ebon;
   action_t* melt_armor_dot;
+  timespan_t plot_duration;
 
   deep_breath_t( evoker_t* p, std::string_view options_str )
     : evoker_spell_t( "deep_breath", p,
@@ -4034,11 +4036,12 @@ struct deep_breath_t : public evoker_spell_t
         add_child( melt_armor_dot );
       }
 
-      if ( p->specialization() == EVOKER_AUGMENTATION )
+      if ( p->specialization() == EVOKER_AUGMENTATION && p->talent.ebon_might.ok() )
         ebon = p->get_secondary_action<ebon_might_t>(
             "ebon_might_deep_breath", p->talent.sands_of_time->effectN( 3 ).time_value(), "ebon_might_deep_breath" );
     }
 
+    plot_duration = timespan_t::from_seconds( p->talent.plot_the_future->effectN( 1 ).base_value() );
   }
 
   void impact( action_state_t* s ) override
@@ -4073,6 +4076,30 @@ struct deep_breath_t : public evoker_spell_t
           0_s, rng().gauss( p()->option.prepull_deep_breath_delay, p()->option.prepull_deep_breath_delay_stddev ) );
       player->gcd_ready = delay;
       stats->iteration_total_execute_time += delay;
+    }
+
+    if ( p()->talent.chronowarden.time_convergence.enabled() )
+    {
+      p()->buff.time_convergence_intellect->trigger();
+    }
+
+    if ( p()->talent.plot_the_future.ok() )
+    {
+      make_event( sim, player->gcd_ready - sim->current_time() - 1_ms, [ this ] {
+        if ( p()->buffs.bloodlust->check() )
+          p()->buffs.bloodlust->extend_duration( p(), plot_duration );
+        else if ( p()->buff.fury_of_the_aspects->check() )
+          p()->buff.fury_of_the_aspects->extend_duration( p(), plot_duration );
+        else
+        {
+          p()->buff.fury_of_the_aspects->trigger( plot_duration );
+          // Plots bloodlust re-triggers the buff for some reason.
+          if ( p()->talent.chronowarden.time_convergence.enabled() )
+          {
+            p()->buff.time_convergence_intellect->trigger();
+          }
+        }
+      } );
     }
   }
 };
@@ -5273,23 +5300,24 @@ struct eruption_t : public essence_spell_t
           ->buffs.blistering_scales->bump( as<int>( p()->talent.regenerative_chitin->effectN( 3 ).base_value() ) );
     }
 
-    if ( p()->talent.scalecommander.mass_eruption.enabled() && p()->buff.mass_eruption_stacks->check() && execute_state )
-    {
-      int eruptions = 1;
-      for ( auto potential_target : target_list() )
-      {
-        if ( potential_target == execute_state->target )
-          continue;
-
-        mass_eruption->execute_on_target( potential_target );
-
-        if ( ++eruptions >= mass_eruption_max_targets )
-          break;
-      }
-    }
-
     if ( !is_overlord )
     {
+      if ( p()->talent.scalecommander.mass_eruption.enabled() && p()->buff.mass_eruption_stacks->check() &&
+           execute_state )
+      {
+        int eruptions = 1;
+        for ( auto potential_target : target_list() )
+        {
+          if ( potential_target == execute_state->target )
+            continue;
+
+          mass_eruption->execute_on_target( potential_target );
+
+          if ( ++eruptions >= mass_eruption_max_targets )
+            break;
+        }
+      }
+
       p()->buff.volcanic_upsurge->decrement();
       p()->buff.mass_eruption_stacks->decrement();
     }
@@ -6187,10 +6215,12 @@ protected:
   target_specific_t<cooldown_t> cooldown_objects;
 
 public:
+  bool use_fixed_crit;
   bombardments_damage_t( player_t* p )
     : base( "bombardments", p, p->find_spell( 434481 ) ),
       diverted_power_chance( 0.085 ),  // Reasonable guess. TODO: Get more accurate
-      cooldown_objects{ false }
+      cooldown_objects{ false },
+      use_fixed_crit( false )
   {
     may_dodge = may_parry = may_block = false;
     background                        = true;
@@ -6224,6 +6254,20 @@ public:
   bool use_full_mastery() const
   {
     return evoker && evoker->talent.tyranny.ok() && evoker->buff.dragonrage->check();
+  }
+
+  double composite_crit_chance( const action_state_t* s ) const override
+  {
+    if ( use_fixed_crit )
+      return p( s )->option.simulate_bombardments_fixed_crit;
+    // Currently scales with target Crit Chance
+    return p( s )->bugs ? spell_t::composite_crit_chance() : base::composite_crit_chance( s );
+  }
+
+  double composite_crit_chance_multiplier( const action_state_t* s ) const override
+  {
+    // Currently scales with target Crit Chance
+    return p( s )->bugs ? spell_t::composite_crit_chance_multiplier() : base::composite_crit_chance( s );
   }
    
   double composite_target_multiplier( player_t* t ) const override
@@ -6871,7 +6915,9 @@ struct bombardments_buff_t : public evoker_buff_t<buff_t>
     {
       auto damage_action    = cb->get_bombardments_action( p() );
       damage_action->evoker = p();
+      damage_action->use_fixed_crit = p()->bugs ? rng().roll( 0.9 ) : false;
       damage_action->execute_on_target( player );
+      damage_action->use_fixed_crit = false;
       cd->start();
     }
   }
@@ -7373,7 +7419,7 @@ void evoker_t::create_pets()
       option.force_clutchmates = "no";
       close_as_clutchmates     = false;
 
-      bobs = { { "Bob BM", "bm" }, { "Bob Shadow", "shadow" }, { "Bob", "default" }, { "Bob Assa", "assa" } };
+      bobs = { { "Bob BM", "bm" }, { "Bob Shadow", "shadow" }, { "Bob", "default" }, { "Bob2", "default" } };
     }
 
     for ( auto& pair : bobs )
@@ -8379,6 +8425,8 @@ void evoker_t::create_options()
   add_option( opt_timespan( "evoker.simulate_bombardments_time_between_procs_stddev",
                             option.simulate_bombardments_time_between_procs_stddev, 0_s, 9999_s ) );
   add_option( opt_timespan( "evoker.allied_virtual_cd_time", option.allied_virtual_cd_time, 0_s, 9999_s ) );
+  add_option(
+      opt_float( "evoker.simulate_bombardments_fixed_crit", option.simulate_bombardments_fixed_crit, 0.05, 1.0 ) );
 }
 
 void evoker_t::analyze( sim_t& sim )

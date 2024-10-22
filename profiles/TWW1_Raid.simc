@@ -29,8 +29,7 @@ TWW1_Mage_Fire.simc
 TWW1_Mage_Frost.simc
 TWW1_Mage_Arcane.simc
 
-# TWW1_Monk_Brewmaster.simc
-# TWW1_Monk_Brewmaster_Niuzao.simc
+TWW1_Monk_Brewmaster.simc
 TWW1_Monk_Windwalker.simc
 TWW1_Monk_Windwalker_Celestial.simc
 
@@ -39,6 +38,7 @@ TWW1_Paladin_Retribution.simc
 TWW1_Paladin_Retribution_Templar.simc
 
 TWW1_Priest_Shadow.simc
+TWW1_Priest_Shadow_Archon.simc
 
 TWW1_Rogue_Assassination.simc
 TWW1_Rogue_Assassination_Fatebound.simc

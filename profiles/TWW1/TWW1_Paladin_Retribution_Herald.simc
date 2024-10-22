@@ -1,11 +1,11 @@
-paladin="TWW1_Paladin_Retribution_Templar"
+paladin="TWW1_Paladin_Retribution_Herald"
 source=default
 spec=retribution
 level=80
 race=human
 role=attack
 position=back
-talents=CYEAAAAAAAAAAAAAAAAAAAAAAAAAAwAAjpNLbzMbLbjx2YmttZ2AAAAAAwYimZ2MwMMjZZMMzwsMLzwwghZwyCbAAAIzMtNbz2MAgNA
+talents=CYEAAAAAAAAAAAAAAAAAAAAAAAAAAwAAjpNbbzMbLbjx2YmttZ2AAAAAAwYimZ2MwMYMLjhZGmlZZGGGMMjxyCbAAzysNzMbNzMtNbz2MAgFA
 
 # Default consumables
 potion=tempered_potion_3
@@ -53,7 +53,7 @@ actions.cooldowns+=/avenging_wrath,if=(holy_power>=4&time<5|holy_power>=3&time>5
 actions.cooldowns+=/crusade,if=holy_power>=5&time<5|holy_power>=3&time>5
 actions.cooldowns+=/final_reckoning,if=(holy_power>=4&time<8|holy_power>=3&time>=8|holy_power>=2&(talent.divine_auxiliary|talent.radiant_glory))&(cooldown.avenging_wrath.remains>10|cooldown.crusade.remains&(!buff.crusade.up|buff.crusade.stack>=10)|talent.radiant_glory&(buff.avenging_wrath.up|talent.crusade&cooldown.wake_of_ashes.remains<gcd))&(!raid_event.adds.exists|raid_event.adds.up|raid_event.adds.in>40)
 
-actions.finishers=variable,name=ds_castable,value=(spell_targets.divine_storm>=2|buff.empyrean_power.up)&!buff.empyrean_legacy.up&!(buff.divine_arbiter.up&buff.divine_arbiter.stack>24)
+actions.finishers=variable,name=ds_castable,value=(spell_targets.divine_storm>=2|buff.empyrean_power.up|!talent.final_verdict&talent.tempest_of_the_lightbringer)&!buff.empyrean_legacy.up&!(buff.divine_arbiter.up&buff.divine_arbiter.stack>24)
 actions.finishers+=/hammer_of_light
 actions.finishers+=/divine_hammer,if=holy_power=5
 actions.finishers+=/divine_storm,if=variable.ds_castable&!buff.hammer_of_light_ready.up&(!talent.crusade|cooldown.crusade.remains>gcd*3|buff.crusade.up&buff.crusade.stack<10|talent.radiant_glory)&(!buff.divine_hammer.up|cooldown.divine_hammer.remains>110&holy_power>=4)
@@ -86,11 +86,11 @@ neck=sureki_zealots_insignia,id=225577,bonus_id=4800/4786/1540/10299/8781,gem_id
 shoulders=entombed_seraphs_plumes,id=211991,bonus_id=4800/4786/1540/10299
 back=royal_emblem_of_nerubar,id=212446,bonus_id=4800/4786/1540/10299
 chest=entombed_seraphs_breastplate,id=211996,bonus_id=4800/4786/1540/10299,enchant=crystalline_radiance_3
-wrists=everforged_vambraces,id=222435,bonus_id=10421/1515/8793/523/11109/8960,gem_id=213494
+wrists=everforged_vambraces,id=222435,bonus_id=10421/1515/8791/523/11109/8960,gem_id=213494
 hands=entombed_seraphs_castigation,id=211994,bonus_id=4800/4786/1540/10299
-waist=crystalfissure_girdle,id=221079,bonus_id=4786/3131/10299/523,gem_id=213494
+waist=girdle_of_somber_ploys,id=221133,bonus_id=4786/3131/10299/523,gem_id=213494
 legs=legplates_of_broken_trust,id=221092,bonus_id=4786/3131/10299,enchant=stormbound_armor_kit_3
-feet=entombed_seraphs_sabatons,id=211995,ilevel=639
+feet=boots_of_the_black_bulwark,id=225590,bonus_id=4800/4786/1540/10299
 finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=4800/4786/1540/10299/8781,gem_id=213494/213458,enchant=radiant_mastery_3
 finger2=writhing_ringworm,id=225576,bonus_id=4800/4786/1540/10299/8781,gem_id=213482/213473,enchant=radiant_mastery_3
 trinket1=mark_of_khardros,id=133300,bonus_id=4786/11342/10299
@@ -102,10 +102,10 @@ main_hand=everforged_greataxe,id=222443,bonus_id=10421/1515/11300/8960/8791,ench
 # gear_strength=36129
 # gear_stamina=236870
 # gear_attack_power=469
-# gear_crit_rating=9477
-# gear_haste_rating=11441
-# gear_mastery_rating=15239
-# gear_versatility_rating=2274
+# gear_crit_rating=9149
+# gear_haste_rating=12541
+# gear_mastery_rating=14944
+# gear_versatility_rating=1797
 # gear_armor=56297
 # set_bonus=thewarwithin_season_1_2pc=1
 # set_bonus=thewarwithin_season_1_4pc=1

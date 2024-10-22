@@ -955,7 +955,7 @@ double felguard_pet_t::composite_melee_crit_chance() const
 {
   double m = warlock_pet_t::composite_melee_crit_chance();
 
-  m *= 1.0 + o()->talents.improved_demonic_tactics->effectN( 2 ).percent();
+  m *= 1.0 + o()->talents.improved_demonic_tactics->effectN( 1 ).percent();
 
   return m;
 }
@@ -964,7 +964,7 @@ double felguard_pet_t::composite_spell_crit_chance() const
 {
   double m = warlock_pet_t::composite_spell_crit_chance();
 
-  m *= 1.0 + o()->talents.improved_demonic_tactics->effectN( 2 ).percent();
+  m *= 1.0 + o()->talents.improved_demonic_tactics->effectN( 1 ).percent();
 
   return m;
 }

@@ -242,9 +242,11 @@ custom_cb_t secondary_food( unsigned id, stat_e stat1, stat_e stat2 = STAT_NONE 
 
     auto buff = create_buff<consumable_buff_t<stat_buff_t>>( effect.player, effect.driver() );
 
+    // all single secondary stat food are minor foods. note that item tooltip for hearty versions are incorrect and do
+    // not apply the minor food multiplier.
     if ( stat2 == STAT_NONE )
     {
-      auto _amt = coeff->effectN( 4 ).average( effect );
+      auto _amt = coeff->effectN( 4 ).average( effect ) * coeff->effectN( 1 ).base_value() * 0.1;
       buff->add_stat( stat1, _amt );
     }
     else
@@ -1068,7 +1070,7 @@ void spymasters_web( special_effect_t& effect )
 //  e2: haste value
 //  e3: mult per use stack
 //  e4: unknown, damage cap? self damage?
-//  e5: post-combat duration
+//  e5: post-combat duration?
 //  e6: unknown, chance to be silenced?
 // 451895 is empowered buff
 // 445619 on-use
@@ -1207,16 +1209,17 @@ void aberrant_spellforge( special_effect_t& effect )
 
   effect.custom_buff = stack;
 
-  effect.player->register_on_combat_state_callback(
-      [ stack, dur = timespan_t::from_seconds( data->effectN( 5 ).base_value() ) ]( player_t* p, bool c ) {
-        if ( !c )
-        {
-          make_event( *p->sim, dur, [ p, stack ] {
-            if ( !p->in_combat )
-              stack->expire();
-          } );
-        }
+  // TODO: unknown if this is hardcoded to 15s or based off the dummy data
+  auto expire_delay = timespan_t::from_seconds( data->effectN( 5 ).base_value() ) * 2;
+  effect.player->register_on_combat_state_callback( [ stack, expire_delay ]( player_t* p, bool c ) {
+    if ( !c )
+    {
+      make_event( *p->sim, expire_delay, [ p, stack ] {
+        if ( !p->in_combat )
+          stack->expire();
       } );
+    }
+  } );
 }
 
 // 445203 data
@@ -1561,7 +1564,6 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
   {
     double cap_mul;
     int cap;
-    double original_amount;
 
     ovinax_stat_buff_t( player_t* p, std::string_view n, const spell_data_t* s, const spell_data_t* data )
       : stat_buff_t( p, n, s ),
@@ -1569,30 +1571,13 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
         cap( as<int>( data->effectN( 5 ).base_value() ) )
     {}
 
-    void reset() override
-    {
-      stat_buff_t::reset();
-      stats[ 0 ].amount = original_amount;
-    }
-
-    void _initialize()
-    {
-      // assume each buff has a single stat. refactor if this changes.
-      assert( stats.size() == 1 );
-      original_amount = stats[ 0 ].amount;
-    }
-
     // values can be off by a +/-2 due to unknown rounding being performed by the in-game script
-    void recalculate_stat_amount( int stacks = 0 )
+    double buff_stat_stack_amount( const buff_stat_t& stat, int s ) const override
     {
-      auto s = stacks ? stacks : check();
-      if ( !s )
-        return;
-
-      if ( s <= cap )
-        stats[ 0 ].amount = original_amount;
-      else
-        stats[ 0 ].amount = original_amount * ( cap + ( s - cap ) * cap_mul ) / s;
+      double val = std::max( 1.0, std::fabs( stat.amount ) );
+      double stack = s <= cap ? s : cap + ( s - cap ) * cap_mul;
+      // TODO: confirm truncation happens on final amount, and not per stack amount
+      return std::copysign( std::trunc( stack * val + 1e-3 ), stat.amount );
     }
   };
 
@@ -1600,7 +1585,6 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
   auto primary = create_buff<ovinax_stat_buff_t>( effect.player, effect.player->find_spell( 449578 ), data );
   primary->set_stat_from_effect_type( A_MOD_STAT, data->effectN( 1 ).average( effect ) )
          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  primary->_initialize();
 
   static constexpr std::array<unsigned, 4> buff_ids = { 449595, 449594, 449581, 449593 };
 
@@ -1616,7 +1600,6 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
     buff->set_stat_from_effect_type( A_MOD_RATING, data->effectN( 2 ).average( effect ) )
         ->set_name_reporting( stat_str )
         ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-    buff->_initialize();
 
     secondaries[ secondary_ratings[ i ] ] = buff;
   }
@@ -1631,12 +1614,6 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
     ->set_tick_callback( [ primary, secondaries, halt, p = effect.player ]( buff_t*, int, timespan_t ) {
       if ( halt->check() )
         return;
-
-      // recalculate stat amounts first before making stack adjustments. because recalculation changes the basic
-      // per-stack amount of the buff, this results in different post-adjustment total amounts depending if the stack is
-      // increasing or decreasing until the next tick.
-      primary->recalculate_stat_amount();
-      range::for_each( secondaries, []( const auto& b ) { b.second->recalculate_stat_amount(); } );
 
       // if player is moving decrement stack. if player is above desired primary stack and not casting, assume player
       // will sidestep to try to decrement.
@@ -1657,13 +1634,9 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
 
         if ( !buff->check() )  // new stat, expire all stats first
         {
-          range::for_each( secondaries, [ &stack ]( const auto& b ) {
-            if ( b.second->check() )
-            {
-              stack = b.second->check();
-              b.second->expire();
-            }
-          } );
+          range::for_each( secondaries, []( const auto& b ) { b.second->expire(); } );
+
+          stack = primary->max_stack() - primary->check();
         }
 
         if ( !buff->at_max_stacks() )
@@ -1685,14 +1658,12 @@ void ovinaxs_mercurial_egg( special_effect_t& effect )
 
         if ( p_stacks )
         {
-          primary->recalculate_stat_amount( p_stacks );
           primary->trigger( p_stacks );
         }
 
         if ( s_stacks )
         {
           auto buff = secondaries.at( util::highest_stat( p, secondary_ratings ) );
-          buff->recalculate_stat_amount( s_stacks );
           buff->trigger( s_stacks );
         }
 
@@ -1785,9 +1756,12 @@ void treacherous_transmitter( special_effect_t& effect )
     std::vector<action_t*> apl_actions;
     action_t* use_action;
     const special_effect_t& effect;
+    timespan_t task_dur;
 
     cryptic_instructions_t( const special_effect_t& e )
-      : generic_proc_t( e, "cryptic_instructions", e.driver() ), effect( e )
+      : generic_proc_t( e, "cryptic_instructions", e.driver() ),
+        effect( e ),
+        task_dur( 0_ms )
     {
       harmful            = false;
       cooldown->duration = 0_ms;  // Handled by the item
@@ -1802,8 +1776,7 @@ void treacherous_transmitter( special_effect_t& effect )
         {
           apl_actions.push_back( a );
         }
-        if ( a->action_list && a->action_list->name_str == "precombat" &&
-             a->name_str == "use_item_" + item->name_str )
+        if ( a->action_list && a->action_list->name_str == "precombat" && a->name_str == "use_item_" + item->name_str )
         {
           a->harmful = harmful;
           use_action = a;
@@ -1836,6 +1809,8 @@ void treacherous_transmitter( special_effect_t& effect )
           debug_cast<do_treacherous_transmitter_task_t*>( a )->task = tasks[ 0 ];
         }
       }
+
+      task_dur = e.player->find_spell( 449947 )->duration();
     }
 
     void precombat_buff()
@@ -1874,9 +1849,9 @@ void treacherous_transmitter( special_effect_t& effect )
       // actual duration of the buff you'll get in combat
       auto actual = total - time;
       // cooldown on effect/trinket at start of combat
-      auto cd_dur = cooldown->duration - time;
+      // auto cd_dur = cooldown->duration - time;
       // shared cooldown at start of combat
-      auto cdgrp_dur = std::max( 0_ms, effect.cooldown_group_duration() - time );
+      // auto cdgrp_dur = std::max( 0_ms, effect.cooldown_group_duration() - time );
 
       sim->print_debug( "PRECOMBAT: Treacherous Transmitter started {}s before combat via {}, {}s in-combat buff", time,
                         "APL", actual );
@@ -1924,14 +1899,13 @@ void treacherous_transmitter( special_effect_t& effect )
       }
       else
       {
-        make_event( *sim, rng().range( 3_s, player->find_spell( 449947 )->duration() - 250_ms ),
-                    [ this ] { stat_buff->trigger(); } );
+        make_event( *sim, rng().gauss_ab( 6_s, 3_s, 3_s, task_dur ), [ this ] { stat_buff->trigger(); } );
       }
     }
   };
 
   effect.disable_buff();
-  effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
+  effect.stat           = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
   effect.execute_action = create_proc_action<cryptic_instructions_t>( "cryptic_instructions", effect );
 }
 
@@ -3421,7 +3395,8 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
 }
 
 // 454859 rppm data
-// 454857 driver/values
+// 454857 card driver/values
+// 463611 embellish values (11.0.5 only)
 // 454862 fire
 // 454975 shadow
 // 454976 nature
@@ -3443,7 +3418,7 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
     buff_t* force;
     buff_t* magical_multi;
 
-    vivacity_cb_t( const special_effect_t& e )
+    vivacity_cb_t( const special_effect_t& e, const spell_data_t* values )
       : dbc_proc_callback_t( e.player, e ),
         impact( nullptr ),
         shadow( nullptr ),
@@ -3454,8 +3429,6 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
         force( nullptr ),
         magical_multi( nullptr )
     {
-      auto values = e.player->find_spell( 454857 );
-
       impact = create_buff<stat_buff_t>( e.player, e.player->find_spell( 454862 ) )
         ->add_stat_from_effect( 1, values->effectN( 1 ).average( e ) )
         ->add_stat_from_effect( 2, values->effectN( 2 ).average( e ) );
@@ -3521,11 +3494,12 @@ void darkmoon_deck_vivacity( special_effect_t& effect )
     }
   };
 
+  auto data = effect.driver();
   effect.spell_id = 454859;
 
   effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
 
-  new vivacity_cb_t( effect );
+  new vivacity_cb_t( effect, data );
 }
 
 void algari_alchemist_stone( special_effect_t& e )
@@ -4612,7 +4586,7 @@ void everburning_lantern( special_effect_t& effect )
 
   // setup damage proc callback driver & buff
   auto fireflies = create_buff<buff_t>( effect.player, effect.player->find_spell( 440645 ) )
-    ->set_stack_change_callback( [ cb ]( buff_t* b, int, int new_ ) {
+    ->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
       if ( new_ )
         cb->deactivate();
       else
@@ -4719,6 +4693,12 @@ void detachable_fang( special_effect_t& effect )
   effect.execute_action = create_proc_action<gnash_t>( "gnash", effect );
 
   new dbc_proc_callback_t( effect.player, effect );
+
+  effect.player->callbacks.register_callback_execute_function( effect.driver()->id(),
+    []( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
+      if ( cb->listener->get_player_distance( *s->target ) <= cb->proc_action->range )
+        cb->proc_action->execute_on_target( s->target );
+    } );
 }
 
 // 459222 driver
@@ -4745,7 +4725,7 @@ void scroll_of_momentum( special_effect_t& effect )
   auto max = create_buff<buff_t>( effect.player, effect.player->find_spell( 459228 ) )
     ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED )
     ->add_invalidate( CACHE_RUN_SPEED )
-    ->set_stack_change_callback( [ cb ]( buff_t* b, int, int new_ ) {
+    ->set_stack_change_callback( [ cb ]( buff_t*, int, int new_ ) {
       if ( new_ )
         cb->deactivate();
       else
@@ -4851,6 +4831,106 @@ void kaheti_shadeweavers_emblem( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<kaheti_shadeweavers_emblem_t>( "kaheti_shadeweavers_emblem", effect );
+}
+
+// 469927 driver
+// 469928 damage
+// TODO: confirm if rolemult gets implemented in-game
+void hand_of_justice( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_proc_t>( "quick_strike", effect, 469928 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  // TODO: currently not implemented in-game
+  // damage->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 469915 driver
+//  e1: counter threshold
+//  e2: damage coeff
+// 469917 counter
+// 469918 unknown
+// 469919 missile, trigger damage
+// 469920 damage
+//  e1: damage coeff (unused?)
+void golem_gearbox( special_effect_t& effect )
+{
+  auto counter = create_buff<buff_t>( effect.player, effect.player->find_spell( 469917 ) )
+    ->set_max_stack( as<int>( effect.driver()->effectN( 1 ).base_value() ) );
+
+  auto missile = create_proc_action<generic_proc_t>( "torrent_of_flames", effect, 469919 );
+  auto damage =
+    create_proc_action<generic_proc_t>( "torrent_of_flames_damage", effect, missile->data().effectN( 1 ).trigger() );
+  damage->dual = damage->background = true;
+  // TODO: confirm driver coeff is used and not damage spell coeff
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
+  // TODO: currently not implemented in-game
+  // damage->base_multiplier *= role_mult( effect );
+
+  missile->impact_action = damage;
+  // use missile stat obj and remove unused damage stats obj
+  range::erase_remove( effect.player->stats_list, damage->stats );
+  delete damage->stats;
+  damage->stats = missile->stats;
+
+  effect.proc_flags2_ = PF2_CRIT;
+  effect.custom_buff = counter;
+  effect.execute_action = missile;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 469922 driver, trigger damage
+// 469924 damage
+void doperels_calling_rune( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_proc_t>( "ghostly_ambush", effect, effect.trigger() );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  // TODO: currently not implemented in-game
+  // damage->base_multiplier *= role_mult( effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 469925 on-use, buff, driver, trigger int buff
+// 469925 int buff
+// TODO: determine what can and cannot proc the int buff. mana cost does not seem to be a determining factor, as it will
+// proc from harmful actions with no mana or resource cost, and buffs that reduce resource cost to 0 still allow the
+// ability to proc the int buff. on the other hand, some mana cost non-harmful spell will not proc.
+void burst_of_knowledge( special_effect_t& effect )
+{
+  auto int_buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item );
+
+  auto buff = create_buff<buff_t>( effect.player, effect.driver() )
+                  ->set_cooldown( 0_ms )
+                  ->set_expire_callback( [ int_buff ]( buff_t*, int, timespan_t d ) { int_buff->expire(); } );
+
+  effect.has_use_buff_override = true;
+  effect.custom_buff           = buff;
+
+  auto on_use_cb         = new special_effect_t( effect.player );
+  on_use_cb->name_str    = effect.name() + "_cb";
+  on_use_cb->spell_id    = effect.driver()->id();
+  on_use_cb->cooldown_   = 0_ms;
+  on_use_cb->custom_buff = int_buff;
+  effect.player->special_effects.push_back( on_use_cb );
+
+  auto cb = new dbc_proc_callback_t( effect.player, *on_use_cb );
+  cb->activate_with_buff( buff );
+}
+
+void heart_of_roccor( special_effect_t& effect )
+{
+  // Currently missing the misc value for the buff type, manually setting it for now.
+  // Implementation will probably be redundant once its fixed.
+  auto buff = create_buff<stat_buff_t>( effect.player, effect.trigger(), effect.item )
+                  ->add_stat( STAT_STRENGTH, effect.trigger()->effectN( 1 ).average( effect ) );
+
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Weapons
@@ -5055,6 +5135,61 @@ void harvesters_interdiction( special_effect_t& effect )
   effect.execute_action = dot;
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 469936 driver
+// 469937 crit buff
+// 469938 haste buff
+// 469941 mastery buff
+// 469942 versatility buff
+// TODO: confirm buff cycle doesn't reset during middle of dungeon
+void guiding_stave_of_wisdom( special_effect_t& effect )
+{
+  struct guiding_stave_of_wisdom_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<buff_t*> buffs;
+
+    guiding_stave_of_wisdom_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+    {
+      for ( auto id : { 469937, 469938, 469941, 469942 } )
+      {
+        auto buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( id ) )
+          ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+        buffs.push_back( buff );
+      }
+    }
+
+    void reset() override
+    {
+      std::rotate( buffs.begin(), buffs.begin() + effect.player->rng().range( 4 ), buffs.end() );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      buffs.front()->trigger();
+      std::rotate( buffs.begin(), buffs.begin() + 1, buffs.end() );
+    }
+  };
+
+  new guiding_stave_of_wisdom_cb_t( effect );
+}
+
+// 470641 driver, trigger damage
+// 470642 damage, trigger reflect
+// 470643 reflect
+void flame_wrath( special_effect_t& effect )
+{
+  // TODO: damage does not match tooltip, split damage is inconsistent. waiting for blizz to fix before implementing.
+  // current value per target vs tooltip:
+  //  1t: (4140/7200) 57.5%
+  //  2t: (3120/7200) 43.3333..%
+  //  3t: (2610/7200) 36.25%
+  //  4t: (2304/7200) 32%
+  //  5t: (2100/7200) 29.1666..%
+  //  6t: (1800/7200) 25%
+  //  7t: (1575/7200) 21.875%
+  //  8t: (1400/7200) 19.4444..%
 }
 
 // Armor
@@ -5710,7 +5845,7 @@ void register_special_effects()
   register_special_effect( 450044, DISABLED_EFFECT );  // twin fang instruments
   register_special_effect( { 463610, 463232 }, items::darkmoon_deck_symbiosis );
   register_special_effect( 455482, items::imperfect_ascendancy_serum );
-  register_special_effect( 454857, items::darkmoon_deck_vivacity );
+  register_special_effect( { 454857, 463611 }, items::darkmoon_deck_vivacity );
   register_special_effect( 432421, items::algari_alchemist_stone );
   register_special_effect( { 458573, 463095 }, items::darkmoon_deck_ascension );
   register_special_effect( { 454558, 463108 }, items::darkmoon_deck_radiance );
@@ -5731,12 +5866,19 @@ void register_special_effects()
   register_special_effect( 442429, items::wildfire_wick );
   register_special_effect( 455467, items::kaheti_shadeweavers_emblem, true );
   register_special_effect( 455452, DISABLED_EFFECT );  // kaheti shadeweaver's emblem
+  register_special_effect( 469927, items::hand_of_justice );
+  register_special_effect( 469915, items::golem_gearbox );
+  register_special_effect( 469922, items::doperels_calling_rune );
+  register_special_effect( 469925, items::burst_of_knowledge );
+  register_special_effect( 469768, items::heart_of_roccor );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );
   register_special_effect( 442205, items::befoulers_syringe );
   register_special_effect( 455887, items::voltaic_stormcaller );
   register_special_effect( 455819, items::harvesters_interdiction );
+  register_special_effect( 469936, items::guiding_stave_of_wisdom );
+  register_special_effect( 470641, items::flame_wrath );
 
   // Armor
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );
