@@ -69,16 +69,17 @@ actions+=/regrowth,if=buff.predatory_swiftness.up&variable.regrowth
 actions.aoe_builder=variable,name=proccing_bt,op=set,value=variable.need_bt
 # maintain thrash highest prio
 actions.aoe_builder+=/thrash_cat,if=refreshable&!talent.thrashing_claws&!(variable.need_bt&buff.bt_thrash.up)
-# avoid capping brs charges. Also send brutal slashes in aoe, even if we need to proc bloodtalons, during berserk.
+# avoid capping brs charges. Also send brutal slashes/ws swipe in aoe, even if we need to proc bloodtalons, during berserk.
 actions.aoe_builder+=/brutal_slash,target_if=min:time_to_die,if=(cooldown.brutal_slash.full_recharge_time<4|time_to_die<4|raid_event.adds.remains<4|(buff.bs_inc.up&spell_targets>=3-hero_tree.druid_of_the_claw))&!(variable.need_bt&buff.bt_swipe.up&(buff.bs_inc.down|spell_targets<3-hero_tree.druid_of_the_claw))
+actions.aoe_builder+=/swipe_cat,target_if=min:time_to_die,if=talent.wild_slashes&(time_to_die<4|raid_event.adds.remains<4|buff.bs_inc.up&spell_targets>=3-hero_tree.druid_of_the_claw)&!(variable.need_bt&buff.bt_swipe.up&(buff.bs_inc.down|spell_targets<3-hero_tree.druid_of_the_claw))
 # with wild slashes we swipe at 5+ targets over raking/moonfire
 actions.aoe_builder+=/swipe_cat,if=time_to_die<4|(talent.wild_slashes&spell_targets.swipe_cat>4&!(variable.need_bt&buff.bt_swipe.up))
 actions.aoe_builder+=/prowl,target_if=dot.rake.refreshable|dot.rake.pmultiplier<1.4,if=!(variable.need_bt&buff.bt_rake.up)&action.rake.ready&gcd.remains=0&!buff.sudden_ambush.up&!variable.cc_capped
 actions.aoe_builder+=/shadowmeld,target_if=dot.rake.refreshable|dot.rake.pmultiplier<1.4,if=!(variable.need_bt&buff.bt_rake.up)&action.rake.ready&!buff.sudden_ambush.up&!buff.prowl.up&!variable.cc_capped
 # dcr rake > moonfire
 actions.aoe_builder+=/rake,target_if=refreshable,if=talent.doubleclawed_rake&!(variable.need_bt&buff.bt_rake.up)&!variable.cc_capped
-# at 4t with wild slashes, swipe is better than moonfiring
-actions.aoe_builder+=/swipe_cat,if=talent.wild_slashes&spell_targets.swipe_cat>3&!(variable.need_bt&buff.bt_swipe.up)
+# at 3t with wild slashes, swipe is better than moonfiring/st rake
+actions.aoe_builder+=/swipe_cat,if=talent.wild_slashes&spell_targets.swipe_cat>2&!(variable.need_bt&buff.bt_swipe.up)
 # li moonfire is better than non-dcr rake in aoe
 actions.aoe_builder+=/moonfire_cat,target_if=refreshable,if=!(variable.need_bt&buff.bt_moonfire.up)&!variable.cc_capped
 actions.aoe_builder+=/rake,target_if=refreshable,if=!(variable.need_bt&buff.bt_rake.up)&!variable.cc_capped
@@ -108,9 +109,6 @@ actions.builder+=/shred,if=buff.clearcasting.react&!(variable.need_bt&buff.bt_sh
 # pool energy if we need to refresh dot in the next 1.5s
 actions.builder+=/pool_resource,wait=0.2,if=variable.dot_refresh_soon&energy.deficit>70&!variable.need_bt&!buff.bs_inc.up&cooldown.tigers_fury.remains>3
 actions.builder+=/brutal_slash,if=!(variable.need_bt&buff.bt_swipe.up)
-actions.builder+=/swipe_cat,if=talent.wild_slashes&!(variable.need_bt&buff.bt_swipe.up)
-# moonfire filler over shred if we wont downgrade its snapshot
-actions.builder+=/moonfire_cat,if=!(variable.need_bt&buff.bt_moonfire.up)&!(variable.moonfire_snapshotted&buff.tigers_fury.down)
 actions.builder+=/shred,if=!(variable.need_bt&buff.bt_shred.up)
 actions.builder+=/swipe_cat,if=variable.need_bt&buff.bt_swipe.down
 # clip rake for bt if it wont downgrade its snapshot
@@ -120,8 +118,8 @@ actions.builder+=/thrash_cat,if=variable.need_bt&buff.bt_thrash.down
 
 actions.cooldown=use_item,name=imperfect_ascendancy_serum,if=cooldown.bs_inc.remains<=1
 # non-stat on use trinkets get used on cooldown, so long as it wont interfere with a stat on-use trinket
-actions.cooldown+=/use_item,slot=trinket1,if=(trinket.1.has_use_damage|trinket.1.is.twin_fang_instruments|trinket.1.is.sikrans_endless_arsenal)&(trinket.2.cooldown.remains>20|!variable.trinket_2_buffs|trinket.2.cooldown.remains&cooldown.tigers_fury.remains>20)
-actions.cooldown+=/use_item,slot=trinket2,if=(trinket.2.has_use_damage|trinket.2.is.twin_fang_instruments|trinket.2.is.sikrans_endless_arsenal)&(trinket.1.cooldown.remains>20|!variable.trinket_1_buffs|trinket.1.cooldown.remains&cooldown.tigers_fury.remains>20)
+actions.cooldown+=/use_item,slot=trinket1,if=trinket.1.has_use_damage&(trinket.2.cooldown.remains>20|!variable.trinket_2_buffs)
+actions.cooldown+=/use_item,slot=trinket2,if=trinket.2.has_use_damage&(trinket.1.cooldown.remains>20|!variable.trinket_1_buffs)
 actions.cooldown+=/incarnation,if=target.time_to_die>17|target.time_to_die=fight_remains
 # berserk with tigers fury
 actions.cooldown+=/berserk,if=buff.tigers_fury.up&(target.time_to_die>12|target.time_to_die=fight_remains)
@@ -130,9 +128,9 @@ actions.cooldown+=/berserking,if=buff.bs_inc.up
 actions.cooldown+=/potion,if=buff.bs_inc.up|fight_remains<32|(!variable.lastZerk&variable.lastConvoke&cooldown.convoke_the_spirits.remains<10)
 # non trinket gear-on-uses have variable rules on whether or not they trigger the trinket shared CD. For the cases they do we will need specific APL entries. For now just use on cooldown.
 actions.cooldown+=/use_items
-# stat on-use trinkets, prefers trinket with higher priority. reads like this: berserk is up OR if tigers fury up & convoke is either ready, wont be for the next tf, or the other trinket will be ready in time for convoke. If we dont have convoke, then we use if berserk wont be up for next tf or other trinket will be up for berserk.
-actions.cooldown+=/use_item,slot=trinket1,if=variable.trinket_1_buffs&(buff.bs_inc.up|((buff.tigers_fury.up&cooldown.tigers_fury.remains>20)&(cooldown.convoke_the_spirits.remains<4|cooldown.convoke_the_spirits.remains>45|(variable.trinket_2_buffs&cooldown.convoke_the_spirits.remains-trinket.2.cooldown.remains>0)|!talent.convoke_the_spirits&(cooldown.bs_inc.remains>40|cooldown.bs_inc.remains-trinket.2.cooldown.remains>0))))&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains
-actions.cooldown+=/use_item,slot=trinket2,if=variable.trinket_2_buffs&(buff.bs_inc.up|((buff.tigers_fury.up&cooldown.tigers_fury.remains>20)&(cooldown.convoke_the_spirits.remains<4|cooldown.convoke_the_spirits.remains>45|(variable.trinket_1_buffs&cooldown.convoke_the_spirits.remains-trinket.1.cooldown.remains>0)|!talent.convoke_the_spirits&(cooldown.bs_inc.remains>40|cooldown.bs_inc.remains-trinket.1.cooldown.remains>0))))&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains
+# stat on-use trinkets, prefers trinket with higher priority.
+actions.cooldown+=/use_item,slot=trinket1,if=variable.trinket_1_buffs&(buff.bs_inc.up|((buff.tigers_fury.up&cooldown.tigers_fury.remains>25)&(cooldown.convoke_the_spirits.remains<6|(variable.trinket_2_buffs&cooldown.convoke_the_spirits.remains-trinket.2.cooldown.remains>0)|!talent.convoke_the_spirits&cooldown.bs_inc.remains-trinket.2.cooldown.remains>0)))&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains
+actions.cooldown+=/use_item,slot=trinket2,if=variable.trinket_2_buffs&(buff.bs_inc.up|((buff.tigers_fury.up&cooldown.tigers_fury.remains>25)&(cooldown.convoke_the_spirits.remains<6|(variable.trinket_1_buffs&cooldown.convoke_the_spirits.remains-trinket.1.cooldown.remains>0)|!talent.convoke_the_spirits&cooldown.bs_inc.remains-trinket.1.cooldown.remains>0)))&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains
 actions.cooldown+=/do_treacherous_transmitter_task,if=buff.tigers_fury.up|fight_remains<22
 actions.cooldown+=/feral_frenzy,if=combo_points<=1|buff.bs_inc.up&combo_points<=2
 # always line up convoke with berserk if you can

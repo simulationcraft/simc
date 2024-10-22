@@ -1,5 +1,5 @@
-// Racial abilities, wow build 11.0.5.56865
-static const std::array<racial_spell_entry_t, 168> __ptr_racial_spell_data { {
+// Racial abilities, wow build 11.0.5.57171
+static const std::array<racial_spell_entry_t, 170> __ptr_racial_spell_data { {
   { 0x0000000000000001, 0x00000000, 458619, "No Place Like Home"                 },
   { 0x0000000000000001, 0x00000000,  20598, "The Human Spirit"                   },
   { 0x0000000000000001, 0x00000000,  59752, "Will to Survive"                    },
@@ -95,7 +95,8 @@ static const std::array<racial_spell_entry_t, 168> __ptr_racial_spell_data { {
   { 0x0000000000004000, 0x00000000, 312890, "Skeleton Pinkie"                    },
   { 0x0000000000018000, 0x00001000, 403216, "Aerial Halt"                        },
   { 0x0000000000018000, 0x00000000, 365575, "Awakened"                           },
-  { 0x0000000000018000, 0x00000000, 360022, "Chosen Identity"                    },
+  { 0x0000000000018000, 0x00001000, 360022, "Chosen Identity"                    },
+  { 0x0000000000018000, 0x0000019d, 360022, "Chosen Identity"                    },
   { 0x0000000000018000, 0x00000000, 366489, "Discerning Eye"                     },
   { 0x0000000000018000, 0x00000000, 430846, "Empowered Soaring"                  },
   { 0x0000000000018000, 0x00000000, 430935, "Expedited Takeoff"                  },
@@ -106,7 +107,8 @@ static const std::array<racial_spell_entry_t, 168> __ptr_racial_spell_data { {
   { 0x0000000000018000, 0x00001000, 376744, "Skyward Ascent"                     },
   { 0x0000000000018000, 0x00001000, 369536, "Soar"                               },
   { 0x0000000000018000, 0x00001000, 376743, "Surge Forward"                      },
-  { 0x0000000000018000, 0x00000000, 351239, "Visage"                             },
+  { 0x0000000000018000, 0x00001000, 351239, "Visage"                             },
+  { 0x0000000000018000, 0x0000019d, 351239, "Visage"                             },
   { 0x0000000000018000, 0x00000000, 368437, "Visage"                             },
   { 0x0000000000018000, 0x00000000, 357214, "Wing Buffet"                        },
   { 0x0000000000060000, 0x00000000, 436344, "Azerite Surge"                      },

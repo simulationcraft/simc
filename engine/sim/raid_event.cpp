@@ -2463,6 +2463,15 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
         fmt::format( "Invalid filter expression '{}' for non-adds raid event '{}'.", filter, type_or_name ) );
   }
 
+  if ( filter == "has_boss" )
+  {
+    if ( auto pull_event = dynamic_cast<pull_event_t*>( e ) )
+      return pull_event->has_boss;
+
+    throw std::invalid_argument(
+        fmt::format( "Invalid filter expression '{}' for non-pull raid event '{}'.", filter, type_or_name ) );
+  }
+
   // if we have no idea what filter they've specified, return 0
   // todo: should this generate an error or something instead?
 
