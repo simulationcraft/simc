@@ -306,9 +306,10 @@ public:
     actions::rogue_attack_t* poison_bomb = nullptr;
     actions::rogue_attack_t* serrated_bone_spike = nullptr;
     actions::shadow_blades_attack_t* shadow_blades_attack = nullptr;
-   
+    actions::rogue_spell_t* thistle_tea = nullptr;
     actions::rogue_attack_t* triple_threat_mh = nullptr;
     actions::rogue_attack_t* triple_threat_oh = nullptr;
+
     residual_action::residual_periodic_action_t<spell_t>* doomblade = nullptr;
 
     struct
@@ -2681,8 +2682,7 @@ public:
       {
         if ( p()->resources.current[ RESOURCE_ENERGY ] < p()->talent.rogue.thistle_tea->effectN( 2 ).resource( RESOURCE_ENERGY ) )
         {
-          p()->cooldowns.thistle_tea->start();
-          p()->buffs.thistle_tea->trigger();
+          p()->active.thistle_tea->execute();
         }
       }
     }
@@ -6636,6 +6636,7 @@ struct thistle_tea_t : public rogue_spell_t
 
     harmful = false;
     energize_type = action_energize::ON_CAST;
+    cooldown = p->cooldowns.thistle_tea;
     set_target( p );
   }
 
@@ -11105,6 +11106,11 @@ void rogue_t::init_spells()
   if ( talent.rogue.echoing_reprimand->ok() )
   {
     active.echoing_reprimand = get_background_action<actions::echoing_reprimand_t>( "echoing_reprimand" );
+  }
+
+  if ( talent.rogue.thistle_tea->ok() )
+  {
+    active.thistle_tea = get_background_action<actions::thistle_tea_t>( "thistle_tea_auto" );
   }
 
   // Assassination
