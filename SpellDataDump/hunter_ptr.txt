@@ -885,7 +885,8 @@ Effects          :
 #1 (id=23978)    : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #2 (id=83780)    : Dummy (3)
-                   Base Value: 177.6 | Scaled Value: 177.6 | Target: Self (1)
+                   Base Value: 174 | Scaled Value: 174 | Target: Self (1)
+Hotfixed         : Base Value (177.600006 -> 174)
 Description      : Give the command to kill, causing your pet to savagely deal $<damage> Physical damage to the enemy.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $lowNerf=${0.5+$min($pl,20)*0.025}
@@ -1630,7 +1631,8 @@ Family Flags     : 43, 108
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=83776)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.776 | PvP Coefficient: 1.15 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.7464 | PvP Coefficient: 1.15 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.776 -> 1.7464)
 Description      : $@spelldesc34026
 
 Name             : Mail Specialization (desc=Passive) (id=86538) [Passive, Hidden] 
@@ -2480,15 +2482,18 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Bloodshed (346396), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Killer Companion (378955), Spearhead (378957), Murloc Stampede (388719), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Greater Mrgrglhjorn (396968), Wailing Arrow (398388), Shadow Surge (444269), Vicious Hunt (445431), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Lunar Storm (453398), Lunar Storm (457978), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Bleak Powder (472084)
                    Family Flags: 106
+Hotfixed         : Base Value (0 -> 8)
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Bloodshed (346396), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Killer Companion (378955), Spearhead (378957), Murloc Stampede (388719), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Greater Mrgrglhjorn (396968), Wailing Arrow (398388), Shadow Surge (444269), Vicious Hunt (445431), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Lunar Storm (453398), Lunar Storm (457978), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Bleak Powder (472084)
                    Family Flags: 106
+Hotfixed         : Base Value (0 -> 8)
 #3 (id=191139)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+Hotfixed         : Base Value (0 -> 8)
 #4 (id=191140)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Barrage (120361)
@@ -2498,7 +2503,8 @@ Effects          :
                    Affected Spells: Volley (260243), Volley (260247)
                    Family Flags: 34
 #6 (id=1032354)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+Hotfixed         : Base Value (0 -> 8)
 #7 (id=1097992)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Kill Shot (53351), Kill Shot (320976), Black Arrow (466930), Black Arrow (468037)
@@ -14627,13 +14633,15 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
 Effects          :
 #1 (id=1155652)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Scorching Wildfire (259587), Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049), Bleak Powder (467914), Bleak Powder (472084)
                    Family Flags: 22
+Hotfixed         : Base Value (5 -> 8)
 #2 (id=1161660)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Scorching Wildfire (259587), Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049), Bleak Powder (467914), Bleak Powder (472084)
                    Family Flags: 22
+Hotfixed         : Base Value (5 -> 8)
 Description      : Wildfire Bomb damage increased by $s1%.
 
 Name             : Hunter Survival 11.0 Class Set 4pc (id=453653) [Spell Family (9), Passive, Hidden] 
@@ -14647,7 +14655,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Can Proc from Suppressed Caster Procs (385)
 Effects          :
 #1 (id=1155653)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Base Value (10 -> 20)
 Description      : $?s259387[Mongoose Bite][Raptor Strike] deals $s1% increased damage to targets affected by Wildfire Bomb.
 
 Name             : Hunter Beast Mastery 11.0 Class Set 2pc (id=453654) [Spell Family (9), Passive, Hidden] 
