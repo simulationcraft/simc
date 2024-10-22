@@ -31,7 +31,7 @@ level=80
 race=mechagnome
 role=attack
 position=back
-talents=CsPAAAAAAAAAAAAAAAAAAAAAAMGAzMjZmxYYGzMzMzMGmJzYMjBMzYMjZmZmZmZZmBAAAAAAAAAAAYzsNwAWAbDTIjFMYMDA
+talents=CsPAAAAAAAAAAAAAAAAAAAAAAMGAzMjZmxYYGzMzMzMGmJzYMjBMzYMjZmZmZmZxMAAAAAAAAAAAAjltBGwCYZYCZsgZYMDA
 deathknight.ams_absorb_percent=1
 deathknight.first_ams_cast=0
 
@@ -60,7 +60,7 @@ level=80
 race=mechagnome
 role=attack
 position=back
-talents=CsPAAAAAAAAAAAAAAAAAAAAAAwAYmZMzMGDzYmZmZmxwMZGjZwgZGzMMzMzMzMLzMAAAAAAAAAAAAbmtBGwCYZYCZsgZMjZA
+talents=CsPAAAAAAAAAAAAAAAAAAAAAAwAYmZMzMGDzYmZmZmxwMZGjZwgZGzMMzMzMzMLzMAAAAAAAAAAAAjltBGwCYZYCZsgZMjZA
 deathknight.ams_absorb_percent=1
 deathknight.first_ams_cast=0
 
