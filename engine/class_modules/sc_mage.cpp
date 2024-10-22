@@ -6081,7 +6081,7 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     fire_mage_spell_t::execute();
 
     if ( num_targets_hit >= as<int>( p()->talents.majesty_of_the_phoenix->effectN( 1 ).base_value() ) )
-      p()->buffs.majesty_of_the_phoenix->trigger( p()->buffs.majesty_of_the_phoenix->max_stack() );
+      p()->buffs.majesty_of_the_phoenix->trigger();
   }
 
   void impact( action_state_t* s ) override
