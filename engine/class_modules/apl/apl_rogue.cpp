@@ -281,12 +281,13 @@ void subtlety( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* build = p->get_action_priority_list( "build" );
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
-  action_priority_list_t* finish = p->get_action_priority_list( "finish" );
-  action_priority_list_t* items = p->get_action_priority_list( "items" );
+  action_priority_list_t* race = p->get_action_priority_list( "race" );
+  action_priority_list_t* item = p->get_action_priority_list( "item" );
   action_priority_list_t* stealth_cds = p->get_action_priority_list( "stealth_cds" );
-  action_priority_list_t* stealthed = p->get_action_priority_list( "stealthed" );
+  action_priority_list_t* finish = p->get_action_priority_list( "finish" );
+  action_priority_list_t* build = p->get_action_priority_list( "build" );
+  action_priority_list_t* fill = p->get_action_priority_list( "fill" );
 
   precombat->add_action( "apply_poison" );
   precombat->add_action( "flask" );
@@ -296,83 +297,67 @@ void subtlety( player_t* p )
   precombat->add_action( "variable,name=priority_rotation,value=priority_rotation" );
   precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)" );
   precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)" );
-  precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.is.treacherous_transmitter" );
   precombat->add_action( "stealth" );
 
   default_->add_action( "stealth" );
-  default_->add_action( "kick" );
-  default_->add_action( "variable,name=snd_condition,value=buff.slice_and_dice.up" );
-  default_->add_action( "eviscerate,if=combo_points>=1&!variable.snd_condition" );
-  default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "call_action_list,name=items" );
-  default_->add_action( "run_action_list,name=stealthed,if=stealthed.all" );
-  default_->add_action( "call_action_list,name=stealth_cds" );
-  default_->add_action( "call_action_list,name=finish,if=buff.darkest_night.up&combo_points==cp_max_spend" );
-  default_->add_action( "call_action_list,name=finish,if=combo_points>=cp_max_spend&!buff.darkest_night.up" );
-  default_->add_action( "call_action_list,name=finish,if=(combo_points.deficit<=1+talent.deathstalkers_mark|fight_remains<=1&combo_points>=3)&!buff.darkest_night.up" );
-  default_->add_action( "call_action_list,name=build,if=energy.deficit<=20+talent.vigor.rank*25+talent.thistle_tea*20+talent.shadowcraft*20" );
-  default_->add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen" );
-  default_->add_action( "arcane_pulse" );
-  default_->add_action( "lights_judgment" );
-  default_->add_action( "bag_of_tricks" );
+  default_->add_action( "variable,name=stealth,value=buff.shadow_dance.up|buff.stealth.up|buff.vanish.up", "Variables" );
+  default_->add_action( "variable,name=targets,value=spell_targets.shuriken_storm" );
+  default_->add_action( "variable,name=skip_rupture,value=buff.shadow_dance.up|!buff.slice_and_dice.up|buff.darkest_night.up|variable.targets>=8&!talent.replicating_shadows&talent.unseen_blade" );
+  default_->add_action( "variable,name=maintenance,value=(dot.rupture.ticking|variable.skip_rupture)&buff.slice_and_dice.up" );
+  default_->add_action( "variable,name=secret,value=buff.shadow_dance.up|(cooldown.flagellation.remains<40&cooldown.flagellation.remains>20&talent.death_perception)" );
+  default_->add_action( "variable,name=racial_sync,value=(buff.flagellation_buff.up&buff.shadow_dance.up)|!talent.shadow_blades&buff.symbols_of_death.up|fight_remains<20" );
+  default_->add_action( "variable,name=shd_cp,value=combo_points<=1|buff.darkest_night.up&combo_points>=7|effective_combo_points>=6&talent.unseen_blade" );
+  default_->add_action( "call_action_list,name=cds", "Cooldowns" );
+  default_->add_action( "call_action_list,name=race", "Racials" );
+  default_->add_action( "call_action_list,name=item", "Items (Trinkets)" );
+  default_->add_action( "call_action_list,name=stealth_cds,if=!variable.stealth", "Cooldowns for Stealth" );
+  default_->add_action( "call_action_list,name=finish,if=!buff.darkest_night.up&effective_combo_points>=6|buff.darkest_night.up&combo_points==cp_max_spend", "Finishing Rules" );
+  default_->add_action( "call_action_list,name=build", "Combo Point Builder" );
+  default_->add_action( "call_action_list,name=fill,if=!variable.stealth", "Filler, Spells used if you can use nothing else." );
 
-  build->add_action( "shuriken_storm,if=spell_targets>=2+(talent.gloomblade&buff.lingering_shadow.remains>=6|buff.perforated_veins.up)-(!debuff.find_weakness.up&!talent.improved_backstab)&(buff.flawless_form.up|!talent.unseen_blade)" );
-  build->add_action( "shuriken_storm,if=buff.clear_the_witnesses.up&(!buff.symbols_of_death.up|!talent.inevitability)&(buff.lingering_shadow.remains<=6|!talent.lingering_shadow)" );
-  build->add_action( "gloomblade" );
-  build->add_action( "backstab" );
+  cds->add_action( "cold_blood,if=cooldown.secret_technique.up&buff.shadow_dance.up&combo_points>=6&variable.secret", "Cooldowns" );
+  cds->add_action( "potion,if=buff.bloodlust.react|fight_remains<30|buff.flagellation_buff.up" );
+  cds->add_action( "symbols_of_death,if=(buff.symbols_of_death.remains<=3&variable.maintenance&(buff.flagellation_buff.up|!talent.flagellation|cooldown.flagellation.remains>=30-15*!talent.death_perception&cooldown.secret_technique.remains<=8|!talent.death_perception)|fight_remains<=15)" );
+  cds->add_action( "shadow_blades,if=variable.maintenance&variable.shd_cp&buff.shadow_dance.up&!buff.premeditation.up" );
+  cds->add_action( "thistle_tea,if=buff.shadow_dance.remains>2&!buff.thistle_tea.up" );
+  cds->add_action( "flagellation,if=combo_points>=5|fight_remains<=25" );
 
-  cds->add_action( "variable,name=ruptures_before_flag,value=variable.priority_rotation|spell_targets<=4|(talent.replicating_shadows&(spell_targets>=5&active_dot.rupture>=spell_targets-2))|!talent.replicating_shadows" );
-  cds->add_action( "cold_blood,if=!talent.secret_technique&combo_points>=6" );
-  cds->add_action( "flagellation,target_if=max:target.time_to_die,if=(variable.snd_condition&variable.ruptures_before_flag&combo_points>=5&target.time_to_die>10)|fight_remains<=24" );
-  cds->add_action( "symbols_of_death,if=variable.snd_condition&dot.rupture.ticking&(buff.shadow_blades.up|(cooldown.shadow_blades.remains>=25&(buff.darkest_night.up|!talent.death_perception|!talent.deathstalkers_mark)))&buff.symbols_of_death.remains<=3" );
-  cds->add_action( "shadow_blades,if=variable.snd_condition&combo_points<=1&(buff.flagellation_buff.up|!talent.flagellation)|fight_remains<=16" );
-  cds->add_action( "shuriken_tornado,if=variable.snd_condition&buff.symbols_of_death.up&combo_points<=2&!buff.premeditation.up&(!talent.flagellation|cooldown.flagellation.remains>20)&spell_targets.shuriken_storm>=3" );
-  cds->add_action( "shuriken_tornado,if=variable.snd_condition&!buff.shadow_dance.up&!buff.flagellation_buff.up&!buff.flagellation_persist.up&!buff.shadow_blades.up&spell_targets.shuriken_storm<=2&!raid_event.adds.up" );
-  cds->add_action( "goremaws_bite,if=variable.snd_condition&combo_points.deficit>=3&(!cooldown.shadow_dance.up|talent.double_dance&buff.shadow_dance.up&talent.the_rotten|raid_event.adds.up)" );
-  cds->add_action( "thistle_tea,if=!buff.thistle_tea.up&(buff.shadow_dance.remains>=6)|fight_remains<=(6*cooldown.thistle_tea.charges)" );
-  cds->add_action( "potion,if=buff.bloodlust.react|fight_remains<30|buff.symbols_of_death.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=10)" );
-  cds->add_action( "variable,name=racial_sync,value=buff.shadow_blades.up|!talent.shadow_blades&buff.symbols_of_death.up|fight_remains<20" );
-  cds->add_action( "blood_fury,if=variable.racial_sync" );
-  cds->add_action( "berserking,if=variable.racial_sync" );
-  cds->add_action( "fireblood,if=variable.racial_sync&buff.shadow_dance.up" );
-  cds->add_action( "ancestral_call,if=variable.racial_sync" );
-  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.shadow_dance.up" );
+  race->add_action( "blood_fury,if=variable.racial_sync", "Race Cooldowns" );
+  race->add_action( "berserking,if=variable.racial_sync" );
+  race->add_action( "fireblood,if=variable.racial_sync&buff.shadow_dance.up" );
+  race->add_action( "ancestral_call,if=variable.racial_sync" );
+  race->add_action( "invoke_external_buff,name=power_infusion,if=buff.shadow_dance.up" );
 
-  finish->add_action( "variable,name=secret_condition,value=((buff.danse_macabre.stack>=1)|!talent.danse_macabre|(talent.unseen_blade&buff.shadow_dance.up&(buff.escalating_blade.stack>=2|buff.shadow_blades.up)))" );
-  finish->add_action( "rupture,if=!dot.rupture.ticking&target.time_to_die-remains>6" );
-  finish->add_action( "variable,name=skip_rupture,value=buff.shadow_dance.up&(spell_targets.shuriken_storm=1|dot.rupture.ticking&spell_targets.shuriken_storm>=2)|buff.darkest_night.up" );
-  finish->add_action( "rupture,if=(!variable.skip_rupture|variable.priority_rotation)&target.time_to_die-remains>6&refreshable" );
-  finish->add_action( "coup_de_grace,if=debuff.fazed.up&buff.shadow_dance.up" );
-  finish->add_action( "cold_blood,if=variable.secret_condition&cooldown.secret_technique.ready" );
-  finish->add_action( "secret_technique,if=variable.secret_condition" );
-  finish->add_action( "rupture,cycle_targets=1,if=!variable.skip_rupture&!variable.priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(2*combo_points)&refreshable" );
-  finish->add_action( "rupture,if=!variable.skip_rupture&buff.finality_rupture.up&(cooldown.symbols_of_death.remains<=3|buff.symbols_of_death.up)" );
-  finish->add_action( "black_powder,if=!variable.priority_rotation&talent.deathstalkers_mark&spell_targets>=3&!buff.darkest_night.up" );
-  finish->add_action( "black_powder,if=!variable.priority_rotation&talent.unseen_blade&((buff.escalating_blade.stack=4&!buff.shadow_dance.up&cooldown.shadow_blades.remains<25)|spell_targets>=3&!buff.flawless_form.up|(!used_for_danse&buff.shadow_dance.up&talent.shuriken_tornado&spell_targets>=3))" );
+  item->add_action( "use_item,name=treacherous_transmitter,if=cooldown.flagellation.remains<=2|fight_remains<=15", "Trinket and Items" );
+  item->add_action( "do_treacherous_transmitter_task,if=buff.shadow_dance.up|fight_remains<=15" );
+  item->add_action( "use_item,name=imperfect_ascendancy_serum,use_off_gcd=1,if=dot.rupture.ticking&buff.flagellation_buff.up" );
+  item->add_action( "use_item,name=mad_queens_mandate,if=(!talent.lingering_darkness|buff.lingering_darkness.up|equipped.treacherous_transmitter)&(!equipped.treacherous_transmitter|trinket.treacherous_transmitter.cooldown.remains>20)|fight_remains<=15" );
+  item->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready&!buff.shadow_blades.up&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
+  item->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready&!buff.shadow_blades.up&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
+
+  stealth_cds->add_action( "shadow_dance,if=variable.shd_cp&variable.maintenance&cooldown.secret_technique.remains<=24&(buff.symbols_of_death.remains>=6|buff.flagellation_persist.remains>=6)|fight_remains<=10", "Shadow Dance, Vanish, Shadowmeld" );
+  stealth_cds->add_action( "vanish,if=energy>=40&!buff.subterfuge.up&effective_combo_points<=3" );
+  stealth_cds->add_action( "shadowmeld,if=energy>=40&combo_points.deficit>=3" );
+
+  finish->add_action( "secret_technique,if=variable.secret" );
+  finish->add_action( "rupture,if=!variable.skip_rupture&(!dot.rupture.ticking|refreshable)&target.time_to_die-remains>6", "Maintenance Finisher" );
+  finish->add_action( "rupture,cycle_targets=1,if=!variable.skip_rupture&!variable.priority_rotation&&target.time_to_die>=(2*combo_points)&refreshable&variable.targets>=2" );
+  finish->add_action( "black_powder,if=!variable.priority_rotation&variable.maintenance&variable.targets>=2&!buff.flawless_form.up&!buff.darkest_night.up", "Direct Damage Finisher" );
   finish->add_action( "coup_de_grace,if=debuff.fazed.up" );
   finish->add_action( "eviscerate" );
 
-  items->add_action( "use_item,name=treacherous_transmitter,if=cooldown.flagellation.remains<=2|fight_remains<=15" );
-  items->add_action( "do_treacherous_transmitter_task,if=buff.shadow_dance.up|fight_remains<=15" );
-  items->add_action( "use_item,name=imperfect_ascendancy_serum,use_off_gcd=1,if=dot.rupture.ticking&buff.flagellation_buff.up" );
-  items->add_action( "use_item,name=mad_queens_mandate,if=(!talent.lingering_darkness|buff.lingering_darkness.up|equipped.treacherous_transmitter)&(!equipped.treacherous_transmitter|trinket.treacherous_transmitter.cooldown.remains>20)|fight_remains<=15" );
-  items->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.shadow_blades.up|(1+cooldown.shadow_blades.remains)>=trinket.1.cooldown.duration|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready&!buff.shadow_blades.up&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
-  items->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.shadow_blades.up|(1+cooldown.shadow_blades.remains)>=trinket.2.cooldown.duration|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready&!buff.shadow_blades.up&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
+  build->add_action( "shadowstrike,cycle_targets=1,if=debuff.find_weakness.remains<=2&variable.targets=2&talent.unseen_blade|!used_for_danse&talent.danse_macabre", "Combo Point Builder" );
+  build->add_action( "shuriken_storm,if=talent.deathstalkers_mark&!buff.premeditation.up&variable.targets>=(2+3*buff.shadow_dance.up)|buff.clear_the_witnesses.up&!buff.symbols_of_death.up|buff.flawless_form.up&variable.targets>=3&!variable.stealth" );
+  build->add_action( "shuriken_tornado,if=buff.lingering_darkness.up|talent.deathstalkers_mark&cooldown.shadow_blades.remains>=32&variable.targets>=2|talent.unseen_blade&buff.symbols_of_death.up&variable.targets>=4" );
+  build->add_action( "shadowstrike" );
+  build->add_action( "goremaws_bite,if=combo_points.deficit>=3" );
+  build->add_action( "gloomblade" );
+  build->add_action( "backstab" );
 
-  stealth_cds->add_action( "vanish,if=!talent.subterfuge&combo_points.deficit>=3&((!talent.premeditation&buff.shadow_blades.up&buff.symbols_of_death.up)|!buff.shadow_blades.up|fight_remains<10)" );
-  stealth_cds->add_action( "shadow_dance,if=(buff.symbols_of_death.remains>=6|buff.shadow_blades.up)|fight_remains<=8" );
-  stealth_cds->add_action( "vanish,if=talent.subterfuge&combo_points.deficit>=3&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=3)" );
-  stealth_cds->add_action( "shadowmeld,if=energy>=40&combo_points.deficit>3" );
-
-  stealthed->add_action( "shadowstrike,if=talent.deathstalkers_mark&!debuff.deathstalkers_mark.up&!buff.darkest_night.up" );
-  stealthed->add_action( "call_action_list,name=finish,if=buff.darkest_night.up&combo_points=cp_max_spend" );
-  stealthed->add_action( "call_action_list,name=finish,if=effective_combo_points>=cp_max_spend&!buff.darkest_night.up" );
-  stealthed->add_action( "call_action_list,name=finish,if=buff.shuriken_tornado.up&combo_points.deficit<=2&!buff.darkest_night.up" );
-  stealthed->add_action( "call_action_list,name=finish,if=(combo_points.deficit<=1+talent.deathstalkers_mark)&!buff.darkest_night.up" );
-  stealthed->add_action( "shadowstrike,if=(!used_for_danse&buff.shadow_blades.up)|(talent.unseen_blade&spell_targets>=2)" );
-  stealthed->add_action( "shuriken_storm,if=!buff.premeditation.up&spell_targets>=4" );
-  stealthed->add_action( "gloomblade,if=buff.lingering_shadow.remains>=10&buff.shadow_blades.up&spell_targets=1" );
-  stealthed->add_action( "shadowstrike" );
+  fill->add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen", "This list usually contains Cooldowns with neglectable impact that causes global cooldowns" );
+  fill->add_action( "arcane_pulse" );
+  fill->add_action( "lights_judgment" );
+  fill->add_action( "bag_of_tricks" );
 }
 //subtlety_apl_end
 
