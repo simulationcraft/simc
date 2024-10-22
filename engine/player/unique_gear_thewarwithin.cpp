@@ -4868,11 +4868,8 @@ void golem_gearbox( special_effect_t& effect )
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 2 ).average( effect );
   damage->base_multiplier *= role_mult( effect );
 
+  missile->add_child( damage );
   missile->impact_action = damage;
-  // use missile stat obj and remove unused damage stats obj
-  range::erase_remove( effect.player->stats_list, missile->stats );
-  delete missile->stats;
-  missile->stats = damage->stats;
 
   effect.proc_flags2_ = PF2_CRIT;
   effect.custom_buff = counter;
