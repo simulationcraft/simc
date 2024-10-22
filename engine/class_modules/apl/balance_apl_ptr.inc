@@ -61,7 +61,7 @@ st->add_action( "starsurge,if=buff.starlord.remains>4&variable.boat_stacks>=3|fi
 st->add_action( "new_moon,if=astral_power.deficit>variable.passive_asp+energize_amount|fight_remains<20|cooldown.ca_inc.remains>15" );
 st->add_action( "half_moon,if=astral_power.deficit>variable.passive_asp+energize_amount&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)|fight_remains<20|cooldown.ca_inc.remains>15" );
 st->add_action( "full_moon,if=astral_power.deficit>variable.passive_asp+energize_amount&(buff.eclipse_lunar.remains>execute_time|buff.eclipse_solar.remains>execute_time)|fight_remains<20|cooldown.ca_inc.remains>15" );
-st->add_action( "starsurge,if=buff.starweavers_weft.up|buff.touch_the_cosmos_starsurge.up" );
+st->add_action( "starsurge,if=buff.starweavers_weft.up|buff.touch_the_cosmos.up" );
 st->add_action( "starsurge,if=astral_power.deficit<variable.passive_asp+action.wrath.energize_amount+(action.starfire.energize_amount+variable.passive_asp)*(buff.eclipse_solar.remains<(gcd.max*3))" );
 st->add_action( "force_of_nature,if=!hero_tree.keeper_of_the_grove" );
 st->add_action( "wild_mushroom" );
@@ -84,8 +84,7 @@ aoe->add_action( "celestial_alignment,if=variable.cd_condition" );
 aoe->add_action( "incarnation,if=variable.cd_condition" );
 aoe->add_action( "warrior_of_elune,if=!talent.lunar_calling&buff.eclipse_solar.remains<7|talent.lunar_calling" );
 aoe->add_action( "starfire,if=(!talent.lunar_calling&spell_targets.starfire=1)&(buff.eclipse_solar.up&buff.eclipse_solar.remains<action.starfire.cast_time|eclipse.in_none)" );
-aoe->add_action( "starfall,if=buff.starweavers_warp.up|buff.touch_the_cosmos_starfall.up" );
-aoe->add_action( "starsurge,if=buff.starweavers_weft.up|buff.touch_the_cosmos_starsurge.up" );
+aoe->add_action( "starfall,if=buff.starweavers_warp.up|buff.touch_the_cosmos.up" );
 aoe->add_action( "starfall" );
 aoe->add_action( "convoke_the_spirits,if=(!buff.dreamstate.up&!buff.umbral_embrace.up&spell_targets.starfire<7|spell_targets.starfire=1)&(fight_remains<5|(buff.ca_inc.up|cooldown.ca_inc.remains>40)&(!hero_tree.keeper_of_the_grove|buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>15))" );
 aoe->add_action( "new_moon" );
