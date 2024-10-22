@@ -4751,9 +4751,6 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   void execute() override
   {
     action_base_t::execute();
-    if( !this->background && this->execute_state->target != p() && this->execute_state->target != nullptr && !this->execute_state->target->is_sleeping() )
-      p()->last_target = this->execute_state->target;
-
     // For non tank DK's, we proc the ability on CD, attached to thier own executes, to simulate it
     if ( p()->talent.blood_draw.ok() && p()->specialization() != DEATH_KNIGHT_BLOOD &&
          p()->active_spells.blood_draw->ready() && p()->in_combat )
@@ -4765,6 +4762,9 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   void impact( action_state_t* s ) override
   {
     action_base_t::impact( s );
+    if ( !this->background && s->target != p() && s->target != nullptr && s->target->is_sleeping() )
+      p()->last_target = this->s->target;
+
     if ( p()->talent.sanlayn.pact_of_the_sanlayn.ok() && p()->pets.blood_beast.active_pet() != nullptr &&
          dbc::is_school( this->get_school(), SCHOOL_SHADOW ) )
     {
