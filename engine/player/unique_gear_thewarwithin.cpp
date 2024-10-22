@@ -5176,20 +5176,19 @@ void guiding_stave_of_wisdom( special_effect_t& effect )
 }
 
 // 470641 driver, trigger damage
-// 470642 damage, trigger reflect
-// 470643 reflect
+// 470642 damage
+// 470643 reflect, NYI
 void flame_wrath( special_effect_t& effect )
 {
-  // TODO: damage does not match tooltip, split damage is inconsistent. waiting for blizz to fix before implementing.
-  // current value per target vs tooltip:
-  //  1t: (4140/7200) 57.5%
-  //  2t: (3120/7200) 43.3333..%
-  //  3t: (2610/7200) 36.25%
-  //  4t: (2304/7200) 32%
-  //  5t: (2100/7200) 29.1666..%
-  //  6t: (1800/7200) 25%
-  //  7t: (1575/7200) 21.875%
-  //  8t: (1400/7200) 19.4444..%
+  auto damage = create_proc_action<generic_aoe_proc_t>( "flame_wrath", effect, effect.trigger(), true );
+  damage->base_dd_min = damage->base_dd_max =
+    effect.driver()->effectN( 1 ).average( effect ) + effect.trigger()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = damage;
+
+  // TODO: damage reflect shield NYI
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Armor
