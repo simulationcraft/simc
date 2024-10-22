@@ -3437,10 +3437,18 @@ void priest_t::init_finished()
     if ( auto halo = dynamic_cast<actions::spells::halo_t*>( *pre ) )
     {
       sim->print_debug( "{} Halo prepull found.", this->name_str );
+
+      if ( halo->if_expr && !halo->if_expr->success() )
+      {
+        sim->print_debug( "{} Halo prepull failed if expr.", this->name_str );
+        continue;
+      }
+
       int actions           = 0;
       timespan_t time_spent = 0_ms;
+      bool harmful_found    = false;
 
-      for ( auto iter = pre + 1; pre != precombat_action_list.end(); iter++ )
+      for ( auto iter = pre + 1; iter < precombat_action_list.end(); iter++ )
       {
         action_t* a = *iter;
 
@@ -3453,7 +3461,16 @@ void priest_t::init_finished()
           actions++;
           time_spent += std::max( a->base_execute_time.value(), a->trigger_gcd );
           if ( a->harmful )
-            break;
+          {
+            if ( harmful_found )
+            {
+              break;
+            }
+            else
+            {
+              harmful_found = true;
+            }
+          }
         }
       }
 
@@ -3465,8 +3482,9 @@ void priest_t::init_finished()
         sim->print_debug( "{} Halo prepull set to nonharmful.", this->name_str );
         // Child contains the travel time
         halo->prepull_timespent = time_spent;
-        break;
       }
+
+      break;
     }
   }
 }
