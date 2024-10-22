@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56865 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57171 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -204,7 +204,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x08000000
 Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #9, #10), Discipline Priest (137032 effects: #4, #5, #12, #13, #23, #24), Shadow Priest (137033 effects: #1, #2, #5, #6), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Voidform (250844 effects: #3, #9), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2), Death's Torment (423726 effect#1), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Manipulation (459985 effect#1)
 Family Flags     : 15, 72
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=242)      : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.1292 | Target: Enemy (6)
@@ -1135,7 +1135,7 @@ Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2, #5), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effects: #3, #9), Sins of the Many (280398 effects: #1, #2), Thought Harvester (288340 effect#2), Unfurling Darkness (341282 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Maddening Touch (391228 effect#1), Screams of the Void (393919 effect#1), Initial Priest (417191 effects: #1, #2), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 42, 72
-Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
+Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
@@ -8005,6 +8005,38 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.5 | Radius: 0 - 15 yards | Target: Unknown(87) -> At Friendly in Area (31)
 Description      : $@spelldesc324724
 
+Name             : Visage (desc=Racial) (id=351239) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Cooldown         : 1.5 seconds
+Labels           : 16: Class Spells
+                 : 292
+Triggered By     : Visage Form (379034)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Immunity to Hostile & Friendly Effects (48), Include In Advanced Combat Log (72), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Entering Arena (149), Suppress Weapon Procs (151), Aura Points On Client (268), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
+Effects          :
+#1 (id=881391)   : Unknown(212)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1251 | Target: Self (1)
+Description      : Switch between your Dracthyr and Visage forms.
+
+Your Visage emanates magic, significantly increasing out-of-combat health regeneration for your party.
+
+Name             : Evoker (id=353167) [Spell Family (224), Passive, Hidden] 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 292
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
+Proc Chance      : 101%
+Proc Flags       : Generic Hostile Spell, Magic Hostile Spell
+Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=884754)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
 Name             : Blaze of Light (id=355851) [Spell Family (6)] 
 Class            : Priest
 School           : Physical
@@ -8119,6 +8151,21 @@ Effects          :
 Description      : Enter a pact with the Death Loa, calling forth a haunted mask that lingers on a target until Fae Guardians ends.
 
 $@spellname356908: Copies the benefit of the current faerie on the target. Follows your Direct Mask.
+
+Name             : Chosen Identity (desc=Racial) (id=360022) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+GCD              : 1.5 seconds
+Duration         : Aura (infinite)
+Labels           : 292
+Triggered By     : Chosen Identity (384590)
+Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
+Effects          :
+#1 (id=896892)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 384590 | Scaled Value: 384590 | Misc Value: 360022 | Target: Self (1)
+Description      : Activate to automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
 
 Name             : Shadow Crash (desc=Offensive) (id=361987) [Spell Family (227)] 
 Class            : Priest
@@ -8521,6 +8568,21 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
+
+Name             : Visage (desc=Racial) (id=372014) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Ignore Healing Modifiers (219), Disable Aura While Dead (226), Do Not Log Full Overheal (323), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=996412)   : Unknown(271) | Periodic Heal% (20): every 2 seconds
+                   Base Value: 2 | Scaled Value: 2 | Radius: 40 yards | Target: Self (1)
+Description      : $@spelldesc351239
+Tooltip          : $?s351239[Your out-of-combat health regeneration is increased.][$@auracaster is increasing your out-of-combat health regeneration.]
 
 Name             : Burning Vehemence (id=372307) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Holy [tree=spec, row=4, col=6, max_rank=1, req_points=0]
@@ -10166,6 +10228,56 @@ Effects          :
 #1 (id=1005288)  : Apply Aura (6) | Proc Trigger Spell (42): Words of the Pious
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 390933 | Target: Self (1)
 Description      : For $390933d after casting Power Word: Shield, you deal $390933s1% additional damage and healing with Smite and Holy Nova.
+
+Name             : Visage Form (id=379034) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Cast Time        : 3 seconds
+Triggered By     : Visage Form (382916)
+Attributes       : No Immunities (29), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151)
+Effects          :
+#1 (id=1007597)  : Unknown(160)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 351239 | Target: Self (1)
+#2 (id=1007598)  : Unknown(140)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 367996 | Target: Self (1)
+#3 (id=1007599)  : Unknown(90)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 192288 | Target: Self (1)
+#4 (id=1012188)  : Unknown(170)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock your visage form.
+
+Name             : Visage Form (id=382916) [Hidden] 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Duration         : 30 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Exclude Caster (51), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Not On Player (167), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1014506)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Self (22) -> In Area (7)
+#2 (id=1014519)  : Unknown(160)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 379034 | Target: Self (1)
+Description      : $@spelldesc351239
+
+Name             : Chosen Identity (desc=Racial) (id=384590) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+GCD              : 1.5 seconds
+Labels           : 292
+Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1017286)  : Cancel Aura (164)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 360022 | Target: Self (1)
+#2 (id=1050665)  : Cancel Aura (164)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403617 | Target: Self (1)
+Description      : While active, you automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
+
+Activate to disable this effect.
 
 Name             : From Darkness Comes Light (id=390615) [Spell Family (6), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=3, col=3, max_rank=1, req_points=0, select_idx=200]
@@ -12067,6 +12179,19 @@ Effects          :
 #2 (id=1045338)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : $@spelldesc372307
+
+Name             : Chosen Identity (desc=Racial) (id=403617) [Hidden] 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+Triggered By     : Chosen Identity (384590)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268)
+Effects          :
+#1 (id=1050664)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Divine Image (id=405216) [Spell Family (6), Hidden] 
 Class            : Paladin, Priest
@@ -15371,7 +15496,7 @@ Labels           : 16: Class Spells
                  : 117
                  : 292
 Triggered By     : Shadow Crash (457042)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1177515)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Radius: 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
@@ -15390,7 +15515,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Sins of the Many (280398 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Triggered By     : Shadow Crash (457042)
 Family Flags     : 31, 72
-Attributes       : Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
+Attributes       : Allow Dead Target (64), Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1177516)  : School Damage (2): shadow | Attributes: Always AOE Line of Sight (5)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.687926 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)

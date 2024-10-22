@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56865 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57171 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -245,10 +245,8 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Target: Enemy (6)
 #3 (id=1087985)  : Trigger Spell w/ Value (142): Lightforged Blessing
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 403460
-Hotfixed         : Base Value (3 -> 2)
 #4 (id=1087986)  : Trigger Spell w/ Value (142): Lightforged Blessing
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 407467
-Hotfixed         : Base Value (3 -> 2)
 #5 (id=1163009)  : Trigger Spell w/ Value (142): Blessed Assurance
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 433019
 Description      : Casts down the enemy with a bolt of Holy Light, causing $s1 Holy damage and preventing the target from causing critical effects for the next $d.
@@ -331,7 +329,6 @@ Tooltip          : $?$w1>0[$w1% of damage taken is redirected to $@auracaster.][
 Movement speed increased by $w5%.][]
 
 Name             : Turn Evil (id=10326) [Spell Family (10)] 
-Hotfixed         : Max Targets (1 -> 6)
 Talent Entry     : Generic [tree=class, row=2, col=5, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
@@ -417,7 +414,6 @@ Usable against Humanoids, Demons, Undead, Dragonkin, and Giants.
 Tooltip          : Incapacitated.
 
 Name             : Judgment (id=20271) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -1055,10 +1051,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.51 | Radius: 6 yards | Target: Cone Enemy (24)
 #2 (id=1055445)  : Trigger Spell w/ Value (142): Lightforged Blessing
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 403460
-Hotfixed         : Base Value (3 -> 2)
 #3 (id=1073752)  : Trigger Spell w/ Value (142): Lightforged Blessing
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 407467
-Hotfixed         : Base Value (3 -> 2)
 Description      : Slams enemies in front of you with your shield, causing $s1 Holy damage, and increasing your Armor by $?c1[${$132403s1*$INT/100}][${$132403s1*$STR/100}] for $132403d.$?a386568[
 
 $@spelldesc386568][]$?a280373[
@@ -1454,7 +1448,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 881
-                 : 2587: Penitence (403026 effect#2)
+                 : 2587: Penitence (403026 effect#2), Truth's Wake (403695 effect#6)
                  : 2664: Consecrated Ground (204054 effect#5), Sanctification (424622 effect#2)
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2, #13, #22), Protection Paladin (137028 effects: #1, #2, #4, #12), Holy Paladin (137029 effects: #3, #9, #11, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Consecration (327980 effect#1), Blessing of Dawn (337747 effects: #1, #2), Consecration in Flame (379022 effect#2), Sanctify (382538 effect#1), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Truth's Wake (403695 effect#4), Burning Crusade (405289 effect#1), Adjudication (406157 effect#1), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Sanctification (424622 effect#1), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 5, 27, 65
@@ -1754,7 +1748,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Judgment (197277 effect#1), Final Reckoning (343721 effect#4), Reckoning (343724 effect#2), Blessing of Dawn (385127 effect#1), Divine Purpose (408458 effect#2), Sacred Strength (469337 effect#1)
+Affecting Spells : Judgment (197277 effect#1), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2), Blessing of Dawn (385127 effect#1), Divine Purpose (408458 effect#2), Retribution Paladin (412314 effect#22), Sacred Strength (469337 effect#1)
 Family Flags     : 112
 Attributes       : Always AOE Line of Sight (186), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
@@ -2622,7 +2616,6 @@ Effects          :
                    Base Value: 66 | Scaled Value: 66 | PvP Coefficient: 1.24 | Target: Self (1)
                    Affected Spells: Word of Glory (85673), Eternal Flame (156322), Afterimage (391309), Eternal Flame (461432)
                    Family Flags: 78, 89
-Hotfixed         : PvP Coefficient (1 -> 1.24)
 #15 (id=1039315) : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 5 | Target: Self (1)
                    Affected Spells: Divine Toll (304971), Divine Toll (375576), Divine Resonance (386731), Divine Resonance (387896)
@@ -3758,7 +3751,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 881
-                 : 2587: Penitence (403026 effect#2)
+                 : 2587: Penitence (403026 effect#2), Truth's Wake (403695 effect#6)
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Judgment (197277 effect#1), Consecrated Ground (204054 effect#3), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#4), Sanctify (382538 effect#1), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Truth's Wake (403695 effect#4), Burning Crusade (405289 effect#1), Adjudication (406157 effect#1), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Triggered By     : Divine Hammer (198034)
 Family Flags     : 25, 27, 65
@@ -8525,12 +8518,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.8875 | PvP Coefficient: 0.8 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
 #3 (id=845757)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
-                   Affected Spells: Justicar's Vengeance (215661), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054)
-                   Family Flags: 44, 88, 111
+                   Affected Spells: Ancient Fury (86704), Justicar's Vengeance (215661), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Hammer of Light (429826)
+                   Family Flags: 44, 88, 111, 112
 #4 (id=1144778)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
-                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Ancient Fury (86704), Divine Hammer (198137), Radiant Decree (383469), Intercession (391054), Shield of the Righteous (415091), Hammer of Light (429826)
-                   Family Flags: 25, 49, 52, 111, 112
+                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Divine Hammer (198137), Shield of the Righteous (415091)
+                   Family Flags: 25, 49, 52
 Description      : Call down a blast of heavenly energy, dealing $s2 Holy damage to all targets in the area and causing them to take $s3% increased damage from your single target Holy Power abilities, and $s4% increased damage from other Holy Power abilities for $d.
 
 $?s406158 [|cFFFFFFFFGenerates $406158s1 Holy Power.][]
@@ -9407,7 +9400,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Duration         : 15 seconds
+Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -9418,7 +9411,7 @@ Family Flags     : 46
 Attributes       : No Threat (42), Include In Advanced Combat Log (72), Can't Crit (93), DoT Stacking Rule (103), Ignore Healing Modifiers (219), Aura Points On Client (268), Heal Prediction (280), Rolling Periodic (334), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Change Talent (46)
 Effects          :
-#1 (id=1006803)  : Apply Aura (6) | Periodic Heal (8): every 3 seconds
+#1 (id=1006803)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.6 | Target: Friendly (21)
 Description      : $@spelldesc378405
 Tooltip          : Healing for $w1 every $t1 sec.
@@ -9567,7 +9560,7 @@ Name             : Faith in the Light (id=379041) [Spell Family (10)]
 Class            : Paladin
 School           : Physical
 Spell Type       : Magic
-Duration         : 5 seconds
+Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -10002,7 +9995,7 @@ Cooldown         : 15 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Judgment (197277 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Ashes to Dust (236106 effect#1), Mastery: Highlord's Judgment (267316 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effects: #3, #4), Reckoning (343724 effect#2), Radiant Decree (384052 effect#1), Blessing of Dusk (385126 effect#3), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Retribution Class Set 2pc (393675 effects: #1, #2), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Hammer of Light (427441 effect#1), Paladin Retribution 11.0 Class Set 2pc (453655 effects: #2, #3), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Judgment (197277 effect#1), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), Crusade (231895 effects: #1, #2), Ashes to Dust (236106 effect#1), Mastery: Highlord's Judgment (267316 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2), Radiant Decree (384052 effect#1), Blessing of Dusk (385126 effect#3), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Retribution Class Set 2pc (393675 effects: #1, #2), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effects: #14, #15, #22), Initial Paladin (417383 effects: #1, #2), Hammer of Light (427441 effect#1), Paladin Retribution 11.0 Class Set 2pc (453655 effects: #2, #3), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1)
 Family Flags     : 27, 65, 68, 111, 112
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Periodic Can Crit (265), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
@@ -11098,7 +11091,6 @@ Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1022823)  : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.66 | Misc Value: 1 | Target: Friendly (21)
-Hotfixed         : Base Value (100 -> 30), PvP Coefficient (1 -> 1.66)
 Description      : $@spelldesc387791
 Tooltip          : Armor increased by $s1%.
 
@@ -11655,7 +11647,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 773
 Category Cooldown: 600 seconds
-Affecting Spells : Protection Paladin (137028 effect#13), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Final Reckoning (343721 effects: #3, #4), Divine Purpose (408458 effects: #1, #2), Sacred Strength (469337 effect#1)
+Affecting Spells : Protection Paladin (137028 effect#13), Fires of Justice (209785 effect#1), Divine Purpose (223819 effects: #1, #2), The Magistrate's Judgment (337682 effect#1), Final Reckoning (343721 effect#3), Divine Purpose (408458 effects: #1, #2), Sacred Strength (469337 effect#1)
 Family Flags     : 93, 111
 Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), No AutoCast (AI) (49), Allow Dead Target (64), Allow While Not Shapeshifted (caster form) (83), No Res Timer (100), Always Hit (114), Not In Arena or Rated Battleground (144), Enforce In Combat Ressurection Limit (279), Not In Arena (297), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
@@ -12610,7 +12602,7 @@ Effects          :
                    Affected Spells (Label): Execution Sentence (343527), Expurgation (383346), Truth's Wake (403695), Dawnlight (431380), Sun Sear (431414), Templar Slash (447142)
 #2 (id=1055944)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Misc Value 2: 2587 (Label) | Target: Self (1)
-                   Affected Spells (Label): Consecration (81297), Divine Hammer (198137)
+                   Affected Spells (Label): Consecration (81297), Divine Hammer (198137), Empyrean Hammer (431398)
 Description      : Your damage over time effects deal $s1% more damage.
 
 Name             : Vanguard's Momentum (id=403081) [Spell Family (10)] 
@@ -12640,7 +12632,6 @@ Attributes       : Exclude Caster (51), Can't Crit (93), Not In Spellbook (143),
 Effects          :
 #1 (id=1050431)  : Direct Heal% (136)
                    Base Value: 2 | Scaled Value: 2 | Radius: 0 - 12 yards | Target: At Self (18) -> At Friendly in Area (31)
-Hotfixed         : Base Value (3 -> 2)
 Description      : Divine Storm heals you for $s1% of your maximum health.
 
 Name             : Lightforged Blessing (id=403479) [Spell Family (10), Passive, Hidden] 
@@ -12796,6 +12787,9 @@ Effects          :
 #5 (id=1144331)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2511 (Label) | Radius: 14 yards | Target: Cone to Enemy (104)
                    Affected Spells (Label): Execution Sentence (343527), Expurgation (383346), Truth's Wake (403695), Dawnlight (431380), Sun Sear (431414), Templar Slash (447142)
+#6 (id=1191610)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 2587 (Label) | Radius: 14 yards | Target: Cone to Enemy (104)
+                   Affected Spells (Label): Consecration (81297), Divine Hammer (198137), Empyrean Hammer (431398)
 Description      : Burns the targets for an additional $o2 Radiant damage over $d, and slows them by $s1%.
 
 Tooltip          : $?(s403696)[Burning for $w2 damage every $t2 sec and movement speed reduced by $s1%.] [Movement speed reduced by $s1%.]
@@ -13896,7 +13890,6 @@ Description      : $@spelldesc404306
 Tooltip          : Building up Divine strength, at 25 stacks your next single target Holy Power ability causes ${$406983s1/25} Holystrike damage to your primary target and ${$406983s2/25} Holystrike damage to enemies within 8 yds.
 
 Name             : Divine Arbiter (id=406983) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holystrike
 Spell Type       : Melee
@@ -13982,7 +13975,6 @@ Attributes       : Can't Crit (93), Not In Spellbook (143), Ignore Healing Modif
 Effects          :
 #1 (id=1070945)  : Direct Heal% (136)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Hotfixed         : Base Value (3 -> 2)
 Description      : Divine Storm heals you for $s1% of your maximum health.
 
 Name             : Consecrated Blade (id=407475) [Spell Family (10), Hidden] 
@@ -14369,6 +14361,27 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Divine Storm (53385), Shield of the Righteous (53600), Consecration (81297), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Judgment (275773), Judgment (275779), Light's Decree (286232), Sanctified Wrath (326731), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Highlord's Judgment (383921), Judgment (383991), Seal of the Crusader (385723), Execution Sentence (387113), Truth's Wake (403695), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Shield of the Righteous (415091), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Sun Sear (431414), Sun's Avatar (431911), Templar Slash (447142), Sun's Avatar (463075)
                    Family Flags: 27
+#16 (id=1191545) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
+                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Misc Value 2: 4197 (Label) | Target: Self (1)
+                   Affected Spells (Label): Shake the Heavens (431536)
+#17 (id=1191548) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 37 | Misc Value 2: 3455 (Label) | Target: Self (1)
+                   Affected Spells (Label): Light's Deliverance (433674)
+#18 (id=1191562) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 3 | Misc Value 2: 4199 (Label) | Target: Self (1)
+                   Affected Spells (Label): Undisputed Ruling (432629)
+#19 (id=1191563) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
+                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Misc Value 2: 4199 (Label) | Target: Self (1)
+                   Affected Spells (Label): Undisputed Ruling (432629)
+#20 (id=1191571) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 12 | Misc Value 2: 4200 (Label) | Target: Self (1)
+#21 (id=1191574) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
+                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Misc Value 2: 4201 (Label) | Target: Self (1)
+                   Affected Spells (Label): Sanctification (433671)
+#22 (id=1191619) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Affected Spells: Ancient Fury (86704), Radiant Decree (383469), Hammer of Light (429826)
+                   Family Flags: 112
 
 Name             : Aura Mastery (id=412629) [Spell Family (10), Hidden] 
 Class            : Paladin
@@ -14863,10 +14876,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.79 | Radius: 6 yards | Target: Cone to Enemy (104)
 #2 (id=1084763)  : Trigger Spell w/ Value (142): Lightforged Blessing
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 403460
-Hotfixed         : Base Value (1 -> 2)
 #3 (id=1084764)  : Trigger Spell w/ Value (142): Lightforged Blessing
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 407467
-Hotfixed         : Base Value (1 -> 2)
 #4 (id=1084768)  : Dummy (3)
                    Base Value: 1500 | Scaled Value: 1500
 Description      : Slams enemies in front of you with your shield, causing $s1 Holy damage, and reducing the cooldown of Crusader Strike by ${$s4/1000}.1 sec.$?a386568[
@@ -15563,7 +15574,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value 2: 2939 (Label) | Target: Self (1)
                    Affected Spells (Label): Golden Path (377129)
 #10 (id=1177912) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 3 | Misc Value 2: 2345 (Label) | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 3 | Misc Value 2: 2345 (Label) | Target: Self (1)
                    Affected Spells (Label): Blessing of Dawn (385127)
 #11 (id=1177913) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 3 | Misc Value 2: 2608 (Label) | Target: Self (1)
@@ -15604,7 +15615,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 3084: Divine Purpose (223819 effect#6)
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Judgment (197277 effect#1), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#4), Reckoning (343724 effect#2), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Divine Purpose (408458 effect#2), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Judgment (197277 effect#1), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Divine Purpose (408458 effect#2), Retribution Paladin (412314 effects: #14, #15, #22), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1)
 Triggered By     : Hammer of Light (427453)
 Family Flags     : 27, 65, 112
 Attributes       : Allow Dead Target (64), Not a Proc (105), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
@@ -15679,7 +15690,7 @@ Family Flags     : 1, 41, 46
 Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268)
 Effects          :
 #1 (id=1119127)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.9 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.17 | Target: Friendly (21)
 #2 (id=1119128)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 #3 (id=1119194)  : Apply Aura (6) | Increase Speed% (31)
@@ -15699,7 +15710,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Sacred Dawn (243174 effect#1)
 Family Flags     : 41
-Attributes       : No Redirection (35), No Reflection (39), Can't Crit (93), Do Not Display Range (126), Not In Spellbook (143), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416)
+Attributes       : No Redirection (35), No Reflection (39), Can't Crit (93), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1119129)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Target: At Target (63) -> At Friendly in Area (31)
@@ -15715,6 +15726,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
+                 : 2587: Penitence (403026 effect#2), Truth's Wake (403695 effect#6)
                  : 3086: Sanctification (433671 effect#1), Sanctification (433671 effect#2)
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 27, 65
@@ -16130,6 +16142,7 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
+                 : 4197: Retribution Paladin (412314 effect#16)
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
@@ -16568,7 +16581,7 @@ Family Flags     : 65
 Attributes       : Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1121464)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.8 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.04 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #2 (id=1169430)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : $@spelldesc432502
@@ -16599,6 +16612,11 @@ Class            : Paladin
 School           : Physical
 Spell Type       : None
 Duration         : 6 seconds
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+                 : 3022
+                 : 4199: Retribution Paladin (412314 effect#18), Retribution Paladin (412314 effect#19)
 Triggered By     : Undisputed Ruling (432626)
 Attributes       : Aura Points On Client (268)
 Effects          :
@@ -16848,7 +16866,7 @@ Attributes       : Aura Points On Client (268)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1122075)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 Description      : $@spelldesc433015
 Tooltip          : Damage and healing of your next $?s204019[Blessed Hammer]?s53595[Hammer of the Righteous][Crusader Strike] increased by $w1%.
 
@@ -16860,11 +16878,12 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
+                 : 4182
 Attributes       : Passive (6), No Aura Icon (60)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1122231)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #2 (id=1123462)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : For each Holy Power ability cast, your next Consecration deals $<value> damage or healing immediately, split across all enemies and allies.
@@ -16882,7 +16901,7 @@ Attributes       : Allow Aura While Dead (116), Allow Entering Arena (149), Aura
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1122925)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value 2: 0x9 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value 2: 0x9 | Target: Self (1)
 #2 (id=1122926)  : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 1 | Target: Self (1)
 Description      : $@spelldesc433568
@@ -16970,6 +16989,11 @@ Class            : Paladin
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+                 : 3022
+                 : 4201: Retribution Paladin (412314 effect#21)
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Attributes       : Aura Points On Client (268)
@@ -16988,7 +17012,7 @@ Class            : Paladin
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Labels           : 3455
+Labels           : 3455: Retribution Paladin (412314 effect#17)
 Stacks           : 60 maximum
 Proc Chance      : 101%
 Triggered By     : Light's Deliverance (425518)
@@ -17078,7 +17102,7 @@ Family Flags     : 41, 46
 Attributes       : Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1123227)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.5 | AP Coefficient: 1.5 | Radius: 0 - 5 yards | Target: At Enemy (53) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.75 | AP Coefficient: 3.75 | Radius: 0 - 20 yards | Target: At Enemy (53) -> At Friendly in Area (31)
 Description      : $@spelldesc433718
 
 Name             : Light's Deliverance (id=433732) [Spell Family (10)] 
@@ -17455,7 +17479,7 @@ Family Flags     : 65
 Attributes       : Do Not Display Range (126), Bouncy Chain Missiles (146), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1145138)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.2 | Radius: 0 - 5 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.56 | Radius: 0 - 5 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #2 (id=1167682)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Deals $s1 damage to enemy targets. Reduced above $s2 targets.
@@ -18786,12 +18810,10 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1183592)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Hotfixed         : Sub Type (107 -> 4), Misc Value (17 -> 0), Affects Spells
 #2 (id=1191494)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Turn Evil (10326)
                    Family Flags: 96
-Hotfixed         : NEW EFFECT
 Description      : Turn Evil now affects $s1 additional enemies.
 
 Name             : Righteous Protection (id=469321) [Spell Family (10), Passive, Hidden] 
@@ -18883,7 +18905,6 @@ Effects          :
 Description      : After $?c1[Cleanse][Cleanse Toxins] successfully removes an effect from an ally, they are healed for $469413s1.
 
 Name             : A Just Reward (id=469413) [Spell Family (10)] 
-Hotfixed         : School (1 -> 2)
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -19099,6 +19120,9 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Blessing of Protection (1022), Blessing of Spellwarding (204018)
                    Family Flags: 7
+#4 (id=1194086)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 33 | Target: Self (1)
+                   Family Flags: 8
 Description      : Allies affected by your Blessings have $s1% increased movement speed.
 
 Name             : Lead the Charge (id=469780) [Spell Family (10), Passive, Hidden] 
@@ -19109,6 +19133,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
+Internal Cooldown: 0.3 seconds
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Log on Learn (355), Allow Class Ability Procs (416)
@@ -19142,7 +19167,6 @@ Description      : $@spelldesc469701
 Tooltip          : Redistributing health with your ally.
 
 Name             : Tempered in Battle (id=469822) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : None

@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.56865 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57171 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -352,6 +352,23 @@ Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
 
+Name             : Visage (desc=Racial) (id=351239) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Cooldown         : 1.5 seconds
+Labels           : 16: Class Spells
+                 : 292
+Triggered By     : Visage Form (379034)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Sitting (27), No Threat (42), Immunity to Hostile & Friendly Effects (48), Include In Advanced Combat Log (72), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Entering Arena (149), Suppress Weapon Procs (151), Aura Points On Client (268), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
+Effects          :
+#1 (id=881391)   : Unknown(212)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1251 | Target: Self (1)
+Description      : Switch between your Dracthyr and Visage forms.
+
+Your Visage emanates magic, significantly increasing out-of-combat health regeneration for your party.
+
 Name             : Quell (id=351338) [Spell Family (224)] 
 Talent Entry     : Generic [tree=class, row=4, col=1, max_rank=1, req_points=0]
 Class            : Evoker
@@ -372,7 +389,7 @@ Effects          :
 Description      : Interrupt an enemy's spellcasting and prevent any spell from that school of magic from being cast for $d.
 
 Name             : Evoker (id=353167) [Spell Family (224), Passive, Hidden] 
-Class            : Evoker
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
 Race             : Dracthyr (0x18000)
 School           : Physical
 Spell Type       : None
@@ -722,6 +739,9 @@ Effects          :
 #22 (id=1142881) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 23 | Misc Value 2: 2973 (Label) | Target: Self (1)
                    Affected Spells (Label): Attuned to the Dream (376930)
+#23 (id=1191263) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: -225 | Scaled Value: -225 | Misc Value: 23 | Misc Value 2: 4185 (Label) | Target: Self (1)
+                   Affected Spells (Label): Consume Flame (444088)
 
 Name             : Initial Evoker (id=356816) [Spell Family (224), Passive, Hidden] 
 Class            : Unknown Evoker (1465)
@@ -1355,6 +1375,21 @@ Healing increased by $s8% when not in a raid.
 Removes all root effects. You are immune to movement impairing and loss of control effects while flying.
 Tooltip          : Releasing healing breath. Immune to crowd control.
 
+Name             : Chosen Identity (desc=Racial) (id=360022) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+GCD              : 1.5 seconds
+Duration         : Aura (infinite)
+Labels           : 292
+Triggered By     : Chosen Identity (384590)
+Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Allow Entering Arena (149), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Visible only to caster (conversations only) (343), Active Passive (393), Allow during spell override (404), Do Not Display Cast Time (441), Allow Aura On Level Scale (444)
+Effects          :
+#1 (id=896892)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 384590 | Scaled Value: 384590 | Misc Value: 360022 | Target: Self (1)
+Description      : Activate to automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
+
 Name             : Sleep Walk (desc=Green) (id=360806) [Spell Family (224)] 
 Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
 Class            : Evoker
@@ -1438,7 +1473,7 @@ Effects          :
 #1 (id=898191)   : Apply Aura (6) | Resistance (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Friendly (21)
 #2 (id=1049581)  : Apply Aura (6) | Modify Base Resistance (142) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 1 | Target: Friendly (21)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Target: Friendly (21)
 Description      : Protect an ally with $n explosive dragonscales, increasing their Armor by $<perc>% of your own.
 
 Melee attacks against the target cause 1 scale to explode, dealing $<dmg> Volcanic damage to enemies near them. This damage can only occur every few sec.
@@ -3757,6 +3792,21 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 30 yards | Target: Unknown(87) -> At Friendly in Area (31)
 Description      : $@spelldesc371832
 
+Name             : Visage (desc=Racial) (id=372014) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 16: Class Spells
+                 : 292
+Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Ignore Healing Modifiers (219), Disable Aura While Dead (226), Do Not Log Full Overheal (323), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=996412)   : Unknown(271) | Periodic Heal% (20): every 2 seconds
+                   Base Value: 2 | Scaled Value: 2 | Radius: 40 yards | Target: Self (1)
+Description      : $@spelldesc351239
+Tooltip          : $?s351239[Your out-of-combat health regeneration is increased.][$@auracaster is increasing your out-of-combat health regeneration.]
+
 Name             : Oppressing Roar (desc=Black) (id=372048) [Spell Family (224)] 
 Talent Entry     : Generic [tree=class, row=8, col=3, max_rank=1, req_points=20]
 Class            : Evoker
@@ -5638,6 +5688,25 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 Description      : $@spelldesc378196
 
+Name             : Visage Form (id=379034) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Cast Time        : 3 seconds
+Triggered By     : Visage Form (382916)
+Attributes       : No Immunities (29), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151)
+Effects          :
+#1 (id=1007597)  : Unknown(160)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 351239 | Target: Self (1)
+#2 (id=1007598)  : Unknown(140)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 367996 | Target: Self (1)
+#3 (id=1007599)  : Unknown(90)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 192288 | Target: Self (1)
+#4 (id=1012188)  : Unknown(170)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Unlock your visage form.
+
 Name             : Soar (id=381437) [Spell Family (224), Hidden] 
 Class            : Evoker
 Race             : Dracthyr (0x18000)
@@ -6163,6 +6232,20 @@ Description      : Divert spiritual energy, healing an ally for $367230s1. Split
 |cFFFFFFFFIV:|r Heals a fourth ally.
 Variables        : $range=${30}
 
+Name             : Visage Form (id=382916) [Hidden] 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Duration         : 30 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Threat (42), Exclude Caster (51), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Not On Player (167), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1014506)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Self (22) -> In Area (7)
+#2 (id=1014519)  : Unknown(160)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 379034 | Target: Self (1)
+Description      : $@spelldesc351239
+
 Name             : Living Flame (id=383880) 
 Class            : Evoker
 School           : Fire
@@ -6178,6 +6261,23 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 (delta=0.05) | Target: Unknown(40)
 Description      : $@spelldesc361469
 Tooltip          : Healing for $w2 every $t2 sec.
+
+Name             : Chosen Identity (desc=Racial) (id=384590) 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+GCD              : 1.5 seconds
+Labels           : 292
+Attributes       : Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268), Spellcast Override In Spellbook (310), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1017286)  : Cancel Aura (164)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 360022 | Target: Self (1)
+#2 (id=1050665)  : Cancel Aura (164)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403617 | Target: Self (1)
+Description      : While active, you automatically assume your Visage when you leave combat$?a353167[.][, and assume Dracthyr form when you enter combat.]
+
+Activate to disable this effect.
 
 Name             : Divide and Conquer (desc=PvP Talent) (id=384691) [Spell Family (224)] 
 Class            : Evoker
@@ -7551,6 +7651,19 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Friendly (21)
 Description      : $@spelldesc403265
 Tooltip          : Movement speed increased by $w1%.
+
+Name             : Chosen Identity (desc=Racial) (id=403617) [Hidden] 
+Class            : Warrior, Hunter, Rogue, Priest, Mage, Warlock, Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+Triggered By     : Chosen Identity (384590)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Cannot Be Stolen (134), Suppress Weapon Procs (151), Not an Attack (194), Aura Points On Client (268)
+Effects          :
+#1 (id=1050664)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Breath of Eons (desc=Bronze) (id=403631) [Spell Family (224)] 
 Talent Entry     : Augmentation [tree=spec, row=4, col=2, max_rank=1, req_points=0, replace="Deep Breath" (id=357210)]
@@ -11751,7 +11864,7 @@ Family Flags     : 0, 79
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1139174)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.81 | PvP Coefficient: 0.5 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.81 | PvP Coefficient: 0.4 | Target: Any Target (25)
 Description      : $@spelldesc443328
 
 Name             : Engulf (desc=Red) (id=443330) [Spell Family (224)] 
@@ -11770,7 +11883,7 @@ Family Flags     : 1, 79, 80
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1139175)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.25 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.1 | Target: Any Target (25)
 Description      : $@spelldesc443328
 
 Name             : Bombardments (id=443788) [Spell Family (224)] 
@@ -11906,14 +12019,15 @@ Labels           : 16: Class Spells
                  : 292
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
                  : 3022
+                 : 4185: Preservation Evoker (356810 effect#23)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Not In Spellbook (143), Allow Entering Arena (149), Disable Aura While Dead (226), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1140380)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #2 (id=1141764)  : None (0)
                    Base Value: 5 | Scaled Value: 5
-#3 (id=1141810)  : None (0)
-                   Base Value: 300 | Scaled Value: 300
+#3 (id=1141810)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 375 | Scaled Value: 375 | Target: Self (1)
 Description      : Engulf consumes $s1 sec of $?c1[Fire Breath][Dream Breath] from the target, detonating it and $?c1[damaging][healing] all nearby targets equal to $s3% of the amount consumed, reduced beyond $s2 targets.
 
 Name             : Consume Flame (desc=Red) (id=444089) [Spell Family (224)] 
