@@ -8148,13 +8148,9 @@ struct starfall_t final : public ap_spender_t
     {
       background = proc = dual = true;
 
-      if ( !p->buff.lunar_amplification->is_fallback )
+      if ( !p->buff.lunar_amplification_starfall->is_fallback )
       {
-        range::erase_remove( persistent_multiplier_effects, [ & ]( const auto& e ) {
-          return e.buff == p->buff.lunar_amplification;
-        } );
-
-        const auto& eff = p->buff.lunar_amplification->data().effectN( 1 );
+        const auto& eff = p->buff.lunar_amplification_starfall->data().effectN( 1 );
         add_parse_entry( da_multiplier_effects )
           .set_buff( p->buff.lunar_amplification_starfall )
           .set_value( eff.percent() )
@@ -8222,6 +8218,25 @@ struct starfall_t final : public ap_spender_t
     weaver_buff = p->buff.starweaver_starfall;
   }
 
+  void init_finished() override
+  {
+    base_t::init_finished();
+
+    // TODO: temporary hack for lunar amplification
+    if ( !p()->buff.lunar_amplification->is_fallback )
+    {
+      range::erase_remove( persistent_multiplier_effects, [ & ]( const auto& e ) {
+        return e.buff == p()->buff.lunar_amplification;
+      } );
+      range::erase_remove( driver->persistent_multiplier_effects, [ & ]( const auto& e ) {
+        return e.buff == p()->buff.lunar_amplification;
+      } );
+      range::erase_remove( driver->damage->persistent_multiplier_effects, [ & ]( const auto& e ) {
+        return e.buff == p()->buff.lunar_amplification;
+      } );
+    }
+  }
+
   void execute() override
   {
     if ( p()->talent.aetherial_kindling.ok() )
@@ -8239,6 +8254,17 @@ struct starfall_t final : public ap_spender_t
 
     p()->buff.starfall->trigger();
     p()->buff.starweaver_starsurge->trigger( this );
+
+    // TODO: temporary hack
+    if ( auto la = p()->buff.lunar_amplification->check() )
+      p()->buff.lunar_amplification_starfall->trigger( la );
+  }
+
+  void html_customsection( report::sc_html_stream& os ) override
+  {
+    // TODO: hack to not report DISABLED
+    snapshot_flags |= STATE_TGT_MUL_DA;
+    base_t::html_customsection( os );
   }
 };
 
