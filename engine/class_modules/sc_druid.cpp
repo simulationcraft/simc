@@ -13302,9 +13302,9 @@ void druid_t::shapeshift( form_e f )
 
     switch ( f )
     {
-      case BEAR_FORM:    buff.lycaras_teachings_vers->trigger(); break;
-      case CAT_FORM:     buff.lycaras_teachings_crit->trigger(); break;
-      case MOONKIN_FORM: buff.lycaras_teachings_haste->trigger(); break;
+      case BEAR_FORM:    buff.lycaras_teachings_vers->trigger();  break;
+      case CAT_FORM:     buff.lycaras_teachings_crit->trigger();  break;
+      case MOONKIN_FORM: buff.lycaras_teachings_mast->trigger();  break;
       default:           buff.lycaras_teachings_haste->trigger(); break;
     }
   }
