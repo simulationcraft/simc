@@ -4760,7 +4760,7 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   void impact( action_state_t* s ) override
   {
     action_base_t::impact( s );
-    if ( !this->background && s->target != p() && s->target != nullptr && s->target->is_sleeping() )
+    if ( !this->background && s->target != p() && s->target != nullptr && s->target->is_sleeping() && s->chain_target == 0  )
       p()->last_target = s->target;
 
     if ( p()->talent.sanlayn.pact_of_the_sanlayn.ok() && p()->pets.blood_beast.active_pet() != nullptr &&
