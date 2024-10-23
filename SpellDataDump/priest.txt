@@ -3289,11 +3289,13 @@ Effects          :
                    Affected Spells: Collapsing Void (448405)
                    Family Flags: 30
 #29 (id=1164342) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 3 | Misc Value 2: 3886 (Label) | Trigger Spell: 448278 | Target: Self (1)
+                   Base Value: -25 | Scaled Value: -25 | Misc Value: 3 | Misc Value 2: 3886 (Label) | Trigger Spell: 448278 | Target: Self (1)
                    Affected Spells (Label): Inner Quietus (448278)
+Hotfixed         : Base Value (-20 -> -25)
 #30 (id=1169927) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 23 | Misc Value 2: 3886 (Label) | Trigger Spell: 448278 | Target: Self (1)
+                   Base Value: -25 | Scaled Value: -25 | Misc Value: 23 | Misc Value 2: 3886 (Label) | Trigger Spell: 448278 | Target: Self (1)
                    Affected Spells (Label): Inner Quietus (448278)
+Hotfixed         : Base Value (-20 -> -25)
 #31 (id=1169928) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -30.5 | Scaled Value: -30.5 | Target: Self (1)
                    Affected Spells: Entropic Rift (447445), Entropic Rift (447448), Entropic Rift (450193), Entropic Rift (459314)
@@ -3332,17 +3334,19 @@ Effects          :
 #7 (id=260938)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 #8 (id=260939)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Entropic Rift (447445), Entropic Rift (447448), Entropic Rift (450193), Entropic Rift (459314)
                    Family Flags: 44
+Hotfixed         : Base Value (9 -> 20)
 #9 (id=260940)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 600 | Scaled Value: 600 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Void Blast (450983)
                    Family Flags: 13
 #10 (id=260941)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Collapsing Void (448405)
                    Family Flags: 30
+Hotfixed         : Base Value (9 -> 20)
 #11 (id=1040379) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 9 | Scaled Value: 9 | Misc Value 2: 4004 (Label) | Target: Self (1)
                    Affected Spells (Label): Divine Star (122128), Divine Star (390845)
@@ -3374,16 +3378,18 @@ Effects          :
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
 #20 (id=1045987) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -37 | Scaled Value: -37 | Target: Self (1)
+                   Base Value: -31 | Scaled Value: -31 | Target: Self (1)
                    Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
                    Family Flags: 33
+Hotfixed         : Base Value (-37 -> -31)
 #21 (id=1047131) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 12 | Misc Value 2: 3886 (Label) | Trigger Spell: 448278 | Target: Self (1)
                    Affected Spells (Label): Inner Quietus (448278)
 #22 (id=1047140) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 49 | Scaled Value: 49 | Target: Self (1)
+                   Base Value: 64 | Scaled Value: 64 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Void Blast (450983)
                    Family Flags: 13
+Hotfixed         : Base Value (49 -> 64)
 #23 (id=1073588) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Shadow Word: Death (32379), Painbreaker Psalm (336167)
@@ -3408,13 +3414,17 @@ Effects          :
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
 #29 (id=1085139) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 9 | Scaled Value: 9 | Misc Value 2: 4005 (Label) | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 4005 (Label) | Target: Self (1)
                    Affected Spells (Label): Void Flay (451435)
+Hotfixed         : Base Value (9 -> 20)
 #30 (id=1122451) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Misc Value 2: 4040 (Label) | Target: Self (1)
                    Affected Spells (Label): Mind Blast (8092)
-#31 (id=1122452) : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#31 (id=1122452) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Affected Spells: Void Blast (450215), Void Blast (450983)
+                   Family Flags: 57
+Hotfixed         : Sub Type (4 -> 108), Base Value (0 -> 10), Affects Spells
 
 Name             : Glyph of Inspired Hymns (desc=Holy) (id=147072) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -4773,7 +4783,8 @@ Effects          :
 #1 (id=303382)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 234746 | Target: Enemy (6)
 #2 (id=303383)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.19068 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.50975 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (3.19068 -> 3.50975)
 #3 (id=308158)   : Energize Power (30)
                    Base Value: 1000 | Scaled Value: 1000 | Resource: insanity | Target: Self (1)
 #4 (id=845538)   : Server Side Script (77)
@@ -12716,7 +12727,8 @@ Family Flags     : 72, 90
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1081317)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.269056 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.295962 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.269056 -> 0.295962)
 Description      : $@spelldesc341491
 
 Name             : Epiphany (id=414553) [Spell Family (6), Passive, Hidden] 
@@ -14000,17 +14012,19 @@ Triggered By     : Discipline Priest (137032), Shadow Priest (137033)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1146665)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914)
                    Family Flags: 15, 42
+Hotfixed         : Base Value (20 -> 25)
 #2 (id=1151713)  : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
 #3 (id=1158795)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914)
                    Family Flags: 15, 42
+Hotfixed         : Base Value (20 -> 25)
 Description      : $?c3[Vampiric Touch and Shadow Word: Pain deal $s1% additional damage.][Power Word: Shield absorbs $s2% additional damage.]
 
 Name             : Voidwound (id=448279) [Spell Family (6)] 
@@ -14241,7 +14255,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3532
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #18), Discipline Priest (137032 effects: #4, #5, #8, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Schism (214621 effect#1), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Shadow Covenant (322105 effect#1), Boon of the Ascended (325013 effect#4), Divine Conversation (363727 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Twilight Equilibrium (390707 effect#1), Weal and Woe (390787 effect#1), Words of the Pious (390933 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Void Infusion (450612 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #18), Discipline Priest (137032 effects: #4, #5, #8, #23, #24), Shadow Priest (137033 effects: #1, #2, #31), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Schism (214621 effect#1), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Shadow Covenant (322105 effect#1), Boon of the Ascended (325013 effect#4), Divine Conversation (363727 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Twilight Equilibrium (390707 effect#1), Weal and Woe (390787 effect#1), Words of the Pious (390933 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Void Infusion (450612 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 7, 57, 72
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
@@ -14346,7 +14360,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3532
-Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #9, #23, #24), Shadow Priest (137033 effects: #1, #2, #9, #13, #22), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Shadow Covenant (322105 effect#1), Mind Devourer (338332 effect#1), Dark Thought (341207 effect#2), Talbadar's Stratagem (342416 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Dark Indulgence (372972 effect#2), Insidious Ire (373213 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Shadowy Insight (375981 effects: #1, #2, #3), Twilight Equilibrium (390707 effect#1), Expiation (390832 effect#1), Twist of Fate (390978 effects: #1, #2), Mind Melt (391092 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Void Infusion (450612 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Darkness from Light (455033 effect#1)
+Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #9, #23, #24), Shadow Priest (137033 effects: #1, #2, #9, #13, #22, #31), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Schism (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Trinity (290793 effect#1), Shadow Covenant (322105 effect#1), Mind Devourer (338332 effect#1), Dark Thought (341207 effect#2), Talbadar's Stratagem (342416 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Dark Indulgence (372972 effect#2), Insidious Ire (373213 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Shadowy Insight (375981 effects: #1, #2, #3), Twilight Equilibrium (390707 effect#1), Expiation (390832 effect#1), Twist of Fate (390978 effects: #1, #2), Mind Melt (391092 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Void Infusion (450612 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Darkness from Light (455033 effect#1)
 Family Flags     : 13, 57, 72
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
