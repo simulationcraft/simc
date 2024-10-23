@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57171 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57212 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -496,7 +496,6 @@ Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (4
 Effects          :
 #1 (id=39872)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.596 | PvP Coefficient: 1.49 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.75 -> 1.49)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Death Coil (id=47633) [Spell Family (15)] 
@@ -2019,7 +2018,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), D
 Effects          :
 #1 (id=60372)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.787888 | PvP Coefficient: 1.13192 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.838179 -> 0.787888), PvP Coefficient (1.064 -> 1.13192)
 Description      : $@spelldesc49020
 
 Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
@@ -3096,12 +3094,10 @@ Effects          :
                    Base Value: -13 | Scaled Value: -13 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Blood Plague (55078), Frost Fever (55095)
                    Family Flags: 57, 58
-Hotfixed         : NEW EFFECT
 #11 (id=1191590) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Blood Plague (55078), Frost Fever (55095)
                    Family Flags: 57, 58
-Hotfixed         : NEW EFFECT
 
 Name             : Blood Death Knight (id=137008) [Spell Family (15), Passive, Hidden] 
 Class            : Blood Death Knight
@@ -3333,7 +3329,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Radius: 12 yards | Target: Cone to Enemy (104)
 #2 (id=215545)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.17664 | PvP Coefficient: 0.666667 | Radius: 12 yards | Target: Cone to Enemy (104)
-Hotfixed         : AP Coefficient (1.30738 -> 1.17664)
 Description      : $@spelldesc152279
 
 Name             : Breath of Sindragosa (id=155168) [Spell Family (15)] 
@@ -3716,7 +3711,6 @@ Attributes       : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.1725 | PvP Coefficient: 0.85 | Misc Value: 127 | Radius: 0 - 10 yards | Target: At Target (63) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1 -> 0.85)
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=1005520)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
@@ -3746,7 +3740,6 @@ Attributes       : Allow While Sitting (27), No Redirection (35), No Reflection 
 Effects          :
 #1 (id=281173)   : School Damage (2): shadow | Attributes: Always AOE Line of Sight (5)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.288 | PvP Coefficient: 0.85 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1 -> 0.85)
 Description      : $@spelldesc191587
 
 Name             : Runic Empowerment (id=193486) 
@@ -5924,7 +5917,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), D
 Effects          :
 #1 (id=331344)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.787888 | PvP Coefficient: 1.13192 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.838179 -> 0.787888), PvP Coefficient (1.064 -> 1.13192)
 Description      : $@spelldesc49020
 
 
@@ -8548,7 +8540,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), D
 Effects          :
 #1 (id=815754)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.16635 | PvP Coefficient: 1.13192 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (1.2408 -> 1.16635), PvP Coefficient (1.064 -> 1.13192)
 Description      : $@spelldesc49020
 
 
@@ -14354,10 +14345,8 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1126738)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5382 | PvP Coefficient: 1.2821 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.69 -> 0.5382), PvP Coefficient (1 -> 1.2821)
 #2 (id=1174044)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.773663 | PvP Coefficient: 1.2821 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.991875 -> 0.773663), PvP Coefficient (1 -> 1.2821)
 Description      : $@spelldesc434711
 
 Name             : Reaper's Mark (id=436304) [Spell Family (15)] 
@@ -14377,10 +14366,8 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1127543)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.085176 | PvP Coefficient: 0.6 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.1092 -> 0.085176)
 #2 (id=1144448)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.191646 | PvP Coefficient: 0.6 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.2457 -> 0.191646)
 Description      : $@spelldesc439843
 
 Name             : Dark Talons (id=436687) [Spell Family (15), Passive] 
@@ -14474,7 +14461,6 @@ Attributes       : Not a Proc (105), Area Effects Use Target Radius (328), Allow
 Effects          :
 #1 (id=1132889)  : School Damage (2): frost | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.07712 | PvP Coefficient: 1.13636 | Radius: 0 - 10 yards | Target: Unknown(78) -> Cone to Enemy (104)
-Hotfixed         : AP Coefficient (1.224 -> 1.07712), PvP Coefficient (1 -> 1.13636)
 Description      : $@spelldesc435010
 
 Name             : Reaper's Mark (id=439594) [Spell Family (15)] 
@@ -14518,14 +14504,12 @@ Attributes       : Do Not Chain To Crowd-Controlled Targets (200), Allow Class A
 Effects          :
 #1 (id=1133377)  : School Damage (2): shadowfrost | Attributes: Chain from Initial Target (7), Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.17 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (1.5 -> 1.17)
 #2 (id=1133380)  : Trigger Spell (64): Reaper's Mark
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 434765 | Target: Enemy (6)
 #3 (id=1138466)  : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Resource: runic_power | Target: Self (1)
 #4 (id=1173983)  : School Damage (2): shadowfrost | Attributes: Chain from Initial Target (7), Enforce Line of Sight To Chain Targets (16)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.496 | PvP Coefficient: 0.6 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (3.2 -> 2.496)
 Description      : Viciously slice into the soul of your enemy, dealing $?a137008[$s1][$s4] Shadowfrost damage and applying Reaper's Mark.
 
 Each time you deal Shadow or Frost damage, add a stack of Reaper's Mark. After $434765d or reaching $434765u stacks, the mark explodes, dealing $?a137008[$436304s1][$436304s2] damage per stack.
@@ -14963,10 +14947,8 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1135880)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.14812 | PvP Coefficient: 0.7 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (2.754 -> 2.14812)
 #2 (id=1174046)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.35643 | PvP Coefficient: 0.7 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (4.30312 -> 3.35643)
 Description      : $@spelldesc441378
 
 Name             : Exterminate (id=441426) [Spell Family (15)] 
@@ -14985,10 +14967,8 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1135882)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.14566 | PvP Coefficient: 0.7 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (1.4688 -> 1.14566)
 #2 (id=1174049)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.14566 | PvP Coefficient: 0.7 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (1.4688 -> 1.14566)
 Description      : $@spelldesc441378
 
 Name             : Death's Messenger (id=441511) 
