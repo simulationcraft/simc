@@ -4884,8 +4884,7 @@ void doperels_calling_rune( special_effect_t& effect )
 {
   auto damage = create_proc_action<generic_proc_t>( "ghostly_ambush", effect, effect.trigger() );
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
-  // TODO: currently not implemented in-game
-  // damage->base_multiplier *= role_mult( effect );
+  damage->base_multiplier *= role_mult( effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
