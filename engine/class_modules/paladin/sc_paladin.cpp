@@ -4893,7 +4893,7 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
     cooldowns.inner_light_icd->start();
   }
 
-  if ( s->action->harmful && talents.eye_for_an_eye->ok() )
+  if ( s->action->harmful && talents.eye_for_an_eye->ok() && s->action->player != this)
   {
     if (buffs.ardent_defender->up() || buffs.divine_protection->up() || buffs.divine_shield->up())
     {
