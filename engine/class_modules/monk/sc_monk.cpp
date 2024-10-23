@@ -4005,10 +4005,11 @@ struct flurry_of_xuen_t : public monk_spell_t
   {
     double da = monk_spell_t::composite_da_multiplier( s );
 
-    // Tested 18/06/2024. FLoX does 150% increased damage during Storm Earth, and Fire.
-    if ( p()->bugs && p()->buff.storm_earth_and_fire->check() )
-      da *= 2.5;
-
+      if ( p()->buff.storm_earth_and_fire->up() )
+      {
+        // Tested 23/10/2024. Flurry of Xuen deals additional damage during SEF.
+        da *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
+      }
     return da;
   }
 };
@@ -9312,7 +9313,6 @@ public:
     ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
     ReportIssue( "Rushing Jade Wind is expiring mastery and Hit Combo on each of the SotWL hit events", "2024-07-20",
                  true );
-    ReportIssue( "Flurry of Xuen does additional damage during Storm, Earth, and Fire", "2024-08-01", true );
     ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
 
