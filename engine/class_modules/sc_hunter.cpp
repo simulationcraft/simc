@@ -3685,7 +3685,6 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 
     if ( rng().roll( bleak_arrows_chance ) )
     {
-      p()->procs.deathblow->occur();
       p()->trigger_deathblow( s->target );
     }
   }
