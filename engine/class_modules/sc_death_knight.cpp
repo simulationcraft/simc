@@ -7580,9 +7580,9 @@ struct chill_streak_damage_t final : public death_knight_spell_t
 {
   chill_streak_damage_t( std::string_view n, death_knight_t* p )
     : death_knight_spell_t( n, p, p->spell.chill_streak_damage ),
-      current( 0 ),
       max_bounces( 0 ),
-      enduring_chill_chance( 0 )
+      enduring_chill_chance( 0 ),
+      current( 0 )
   {
     background = proc     = true;
     max_bounces           = as<int>( p->talent.frost.chill_streak->effectN( 1 ).base_value() );

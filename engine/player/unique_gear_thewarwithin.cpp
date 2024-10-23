@@ -4901,7 +4901,7 @@ void burst_of_knowledge( special_effect_t& effect )
 
   auto buff = create_buff<buff_t>( effect.player, effect.driver() )
                   ->set_cooldown( 0_ms )
-                  ->set_expire_callback( [ int_buff ]( buff_t*, int, timespan_t d ) { int_buff->expire(); } );
+                  ->set_expire_callback( [ int_buff ]( buff_t*, int, timespan_t ) { int_buff->expire(); } );
 
   effect.has_use_buff_override = true;
   effect.custom_buff           = buff;
