@@ -1841,6 +1841,11 @@ void player_t::init_items()
         items[ slot ].options_str = fmt::format( ",id={},ilevel={}", equipment.id_item,
                                                  character_loadout_data_t::default_item_level( is_ptr() ) );
       }
+
+      // TODO: temporary hack since fury only gets a single weapon
+      if ( specialization() == WARRIOR_FURY && items[ SLOT_OFF_HAND ].options_str.empty() )
+        items[ SLOT_OFF_HAND ].options_str = items[ SLOT_MAIN_HAND ].options_str;
+
     }
 
     // Legendary Shadoweave Shirt used as base item for enable_all_item_effects
