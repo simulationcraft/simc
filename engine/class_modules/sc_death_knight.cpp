@@ -7280,7 +7280,6 @@ struct the_blood_is_life_t : public death_knight_spell_t
     background          = true;
     aoe                 = -1;
     may_crit            = false;
-    reduced_aoe_targets = 8;
     reduced_aoe_targets = p->talent.sanlayn.the_blood_is_life->effectN( 3 ).base_value();  
   }
 };
