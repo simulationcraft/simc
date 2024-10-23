@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57171 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57212 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -13867,7 +13867,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #4 (id=1125687)  : Energize Power (30)
                    Base Value: 20 | Scaled Value: 20 | Resource: rage | Target: Self (1)
-Hotfixed         : Base Value (50 -> 20)
 #5 (id=1125688)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Blasts all enemies within $A1 yards for $s1 Stormstrike damage$?s199045[, roots them for $199042d,][] and reduces their movement speed by $435203s1% for $435203d. Deals reduced damage beyond $s5 targets.$?a137048|(a137050&a436707)[
@@ -13895,7 +13894,6 @@ Effects          :
 #3 (id=1191205)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 32 | Misc Value 2: 3159 (Label) | Target: Self (1)
                    Affected Spells (Label): Thunder Blast (435222)
-Hotfixed         : NEW EFFECT
 Description      : Shield Slam and Bloodthirst have a $s1% chance to grant you Thunder Blast, stacking up to 2 charges.
 
 $@spellicon435222|cFFFFFFFF$@spellname435222|r
@@ -13940,7 +13938,6 @@ Attributes       : Do Not Sheath (18), No Reflection (39), Do Not Display Range 
 Effects          :
 #1 (id=1126722)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.034 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.8268 -> 1.034)
 #2 (id=1126723)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: rage | Target: Self (1)
 Description      : $@spelldesc434969
@@ -13974,12 +13971,10 @@ Effects          :
 #1 (id=1127296)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 12 | Misc Value 2: 3164 (Label) | Target: Self (1)
                    Affected Spells (Label): Lightning Strike (435791)
-Hotfixed         : Base Value (50 -> 30)
 #2 (id=1127299)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Revenge (6572), Raging Blow (85384), Raging Blow (96103), Execute Off-Hand (163558), Execute (260798), Execute (280849), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 10, 45, 115, 116
-Hotfixed         : Base Value (15 -> 25)
 Description      : Lightning Strikes generate ${$s1/10} Rage.
 
 $?a137048[Revenge][Raging Blow] and Execute damage increased by $s2%.
@@ -14097,7 +14092,6 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Thunder Blast (435222)
                    Family Flags: 7
-Hotfixed         : Base Value (50 -> 80)
 #5 (id=1128298)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Thunder Blast (435222)
@@ -14175,7 +14169,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881), Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364), Rampage (218617), Bloodbath (335096)
                    Family Flags: 42, 108
-Hotfixed         : Base Value (20 -> 30)
 Description      : Shield Slam damage increased by $s1%.$?a137048[
 
 Demoralizing Shout reduces damage enemies deal to you by an additional ${-$s2}%.][
@@ -14861,7 +14854,6 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1141376)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Hotfixed         : Base Value (15 -> 10)
 Description      : Each strike of Bladestorm deals an additional $s1% damage evenly split across all targets.
 
 Name             : Slayer's Malice (id=444779) [Spell Family (4), Passive, Hidden] 
@@ -15336,7 +15328,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.3 | Target: Self (1)
                    Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364), Rampage (218617)
                    Family Flags: 108
-Hotfixed         : Base Value (10 -> 15), PvP Coefficient (0.5 -> 0.3)
 Description      : $@spelldesc453639
 Tooltip          : Rampage damage increased by $w1%.
 
@@ -15358,7 +15349,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.25 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881), Bloodbath (335096)
                    Family Flags: 42
-Hotfixed         : Base Value (10 -> 20), PvP Coefficient (0.5 -> 0.25)
 Description      : $@spelldesc453638
 Tooltip          : Bloodthirst damage increased by $w1%.
 
@@ -15419,22 +15409,18 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Raging Blow (85384), Raging Blow (96103), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 45
-Hotfixed         : Base Value (25 -> 20)
 #2 (id=1160096)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Raging Blow (85384), Raging Blow (96103), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 45
-Hotfixed         : Base Value (25 -> 20)
 #3 (id=1170847)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Overpower (7384), Dreadnaught (315961)
                    Family Flags: 2, 85
-Hotfixed         : Base Value (25 -> 20)
 #4 (id=1170848)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Overpower (7384), Dreadnaught (315961)
                    Family Flags: 2, 85
-Hotfixed         : Base Value (25 -> 20)
 Description      : $@spelldesc444774
 Tooltip          : $?c1[Overpower damage increased by $w3% and critical strike damage increased by $w4%.][Raging Blow damage increased by $w1% and critical strike damage increased by $w2%.
 ]
@@ -15767,7 +15753,6 @@ Attributes       : Do Not Sheath (18), No Reflection (39), Do Not Display Range 
 Effects          :
 #1 (id=1168536)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.2981 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.2385 -> 0.2981)
 #2 (id=1168735)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : $@spelldesc436148

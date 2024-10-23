@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57171 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57212 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -3375,19 +3375,15 @@ Effects          :
 #18 (id=1191593) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -17 | Scaled Value: -17 | Misc Value 2: 3535 (Label) | Target: Self (1)
                    Affected Spells (Label): Demonic Soul (449801), Wicked Reaping (449826)
-Hotfixed         : NEW EFFECT
 #19 (id=1191594) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0 | Misc Value 2: 3535 (Label) | Target: Self (1)
                    Affected Spells (Label): Demonic Soul (449801), Wicked Reaping (449826)
-Hotfixed         : NEW EFFECT
 #20 (id=1191595) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -17 | Scaled Value: -17 | Misc Value 2: 3545 (Label) | Target: Self (1)
                    Affected Spells (Label): Soul Anathema (450538)
-Hotfixed         : NEW EFFECT
 #21 (id=1191596) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0 | Misc Value 2: 3545 (Label) | Target: Self (1)
                    Affected Spells (Label): Soul Anathema (450538)
-Hotfixed         : NEW EFFECT
 
 Name             : Demonology Warlock (id=137044) [Spell Family (5), Passive, Hidden] 
 Class            : Demonology Warlock
@@ -5016,7 +5012,6 @@ Effects          :
 #1 (id=321564)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : Base Value (45 -> 60)
 Description      : $@spelldesc108501
 Tooltip          : Summoned by a Grimoire of Service.
 Damage done increased by $s1%.
@@ -5826,7 +5821,6 @@ Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Cla
 Effects          :
 #1 (id=707419)   : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.44925 | PvP Coefficient: 1.4 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.4)
 #2 (id=1049817)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=1173941)  : Trigger Missiles (32)
@@ -11666,7 +11660,6 @@ Effects          :
                    Base Value: -2 | Scaled Value: -2 | Target: Self (1)
 #3 (id=1025921)  : Apply Aura Pet (174) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.667 | Misc Value: 32 | Misc Value 2: 2357 (Label) | Radius: 100 yards | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 1.667)
 Description      : Reduces the chance you will be critically struck by $s1%. All damage your primary demon takes is reduced by $s3%.
 
 Name             : Abyss Walker (id=389609) [Spell Family (5), Passive, Hidden] 
@@ -15341,7 +15334,6 @@ Family Flags     : 49
 Effects          :
 #1 (id=1154812)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.4) | SP Coefficient: 1.2474 | Radius: 0 - 10 yards | Target: At Target (63) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (1.3 -> 1)
 Description      : $@spelldesc453172
 
 Name             : Death's Embrace (id=453189) [Spell Family (5), Passive, Hidden] 
@@ -15403,7 +15395,6 @@ Labels           : 16: Class Spells
 Effects          :
 #1 (id=1154918)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.90371 | PvP Coefficient: 0.7 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.7)
 Description      : $@spelldesc387273
 
 Name             : Doom (id=453567) [Spell Family (5)] 
@@ -15468,7 +15459,6 @@ Attributes       : Not Shapeshifted (16), Allow Harmful on Friendly (373), Allow
 Effects          :
 #1 (id=1155611)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.59415 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (2.16179 -> 2.59415)
 #2 (id=1155612)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=1155613)  : Dummy (3)
@@ -15858,7 +15848,6 @@ Attributes       : Spell Haste Affects Periodic (173), Periodic Can Crit (265)
 Effects          :
 #1 (id=1158960)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.244435 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.203696 -> 0.244435)
 Description      : $@spelldesc455489
 
 Name             : Foul Mouth (id=455502) [Spell Family (5), Passive, Hidden] 
