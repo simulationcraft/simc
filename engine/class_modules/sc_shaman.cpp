@@ -12804,6 +12804,11 @@ void shaman_t::trigger_arc_discharge( const action_state_t* state )
 
     make_event( *sim, rng().gauss( 500_ms, 50_ms ),
       [ action_, t = state->target ]() {
+        if ( t->is_sleeping() )
+        {
+          return;
+        }
+
         action_->execute_on_target( t );
     } );
 
