@@ -1308,6 +1308,10 @@ void sikrans_endless_arsenal( special_effect_t& effect )
             }
           } );
 
+      e.player->callbacks.register_callback_trigger_function( d_driver->spell_id,
+        dbc_proc_callback_t::trigger_fn_type::CONDITION,
+        []( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) { return s->target->is_enemy(); } );
+
       auto d_cb = new dbc_proc_callback_t( e.player, *d_driver );
       d_cb->activate_with_buff( d_stance );
 
