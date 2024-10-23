@@ -4005,7 +4005,7 @@ struct flurry_of_xuen_t : public monk_spell_t
   {
     double da = monk_spell_t::composite_da_multiplier( s );
 
-      if ( p()->buff.storm_earth_and_fire->up() )
+      if ( p()->buff.storm_earth_and_fire->check() )
       {
         // Tested 23/10/2024. Flurry of Xuen deals additional damage during SEF.
         da *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
