@@ -486,8 +486,7 @@ void unholy( player_t* p )
   cds_shared->add_action( "antimagic_shell,if=death_knight.ams_absorb_percent>0&runic_power<30&rune<2" );
 
   cleave->add_action( "any_dnd,if=!death_and_decay.ticking", "Cleave" );
-  cleave->add_action( "death_coil,if=!variable.pooling_runic_power&talent.improved_death_coil" );
-  cleave->add_action( "epidemic,if=!variable.pooling_runic_power&!talent.improved_death_coil" );
+  cleave->add_action( "death_coil,if=!variable.pooling_runic_power" );
   cleave->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!variable.pop_wounds&debuff.festering_wound.stack<4|buff.festering_scythe.react" );
   cleave->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=cooldown.apocalypse.remains<variable.apoc_timing&debuff.festering_wound.stack<4" );
   cleave->add_action( "wound_spender,if=variable.pop_wounds" );
