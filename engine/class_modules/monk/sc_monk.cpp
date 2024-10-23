@@ -4003,10 +4003,11 @@ struct flurry_of_xuen_t : public monk_spell_t
   {
     double da = monk_spell_t::composite_da_multiplier( s );
 
-    // Tested 18/06/2024. FLoX does 150% increased damage during Storm Earth, and Fire.
-    if ( p()->bugs && p()->buff.storm_earth_and_fire->check() )
-      da *= 2.5;
-
+      if ( p()->buff.storm_earth_and_fire->check() )
+      {
+        // Tested 23/10/2024. Flurry of Xuen deals additional damage during SEF.
+        da *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
+      }
     return da;
   }
 };
@@ -9308,7 +9309,6 @@ public:
     ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
     ReportIssue( "SEF does not contribute to Fury of Xuen's ETL cache", "2024-08-01", true );
     ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
-    ReportIssue( "Flurry of Xuen does additional damage during Storm, Earth, and Fire", "2024-08-01", true );
     ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
 

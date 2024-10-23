@@ -47,7 +47,7 @@ actions+=/variable,name=ca_effective_cd,value=cooldown.ca_inc.remains<?cooldown.
 actions+=/variable,name=last_ca_inc,value=fight_remains<cooldown.ca_inc.duration+variable.ca_effective_cd
 actions+=/variable,name=cd_condition,value=(fight_remains<(15+5*talent.incarnation_chosen_of_elune)*(1-talent.whirling_stars*0.2)|target.time_to_die>10&(!hero_tree.keeper_of_the_grove|(buff.harmony_of_the_grove.up&cooldown.convoke_the_spirits.remains<60&(!talent.new_moon|cooldown.new_moon.charges_fractional>=2)))&(!talent.whirling_stars|!talent.convoke_the_spirits|talent.whirling_stars&cooldown.convoke_the_spirits.remains<gcd.max*2|cooldown.convoke_the_spirits.remains>cooldown.ca_inc.full_recharge_time))&cooldown.ca_inc.ready&!buff.ca_inc.up
 actions+=/use_item,name=aberrant_spellforge
-actions+=/do_treacherous_transmitter_task,if=cooldown.ca_inc.remains>10
+actions+=/do_treacherous_transmitter_task,if=cooldown.ca_inc.remains>10|buff.ca_inc.up
 actions+=/use_item,name=spymasters_web,if=fight_remains<20
 actions+=/use_item,name=imperfect_ascendancy_serum,if=dot.sunfire.remains>4&(dot.moonfire.remains>4|talent.treants_of_the_moon&(cooldown.force_of_nature.remains<3|buff.harmony_of_the_grove.up)&variable.ca_effective_cd<1|fight_remains<20|fight_remains<variable.ca_effective_cd&(buff.harmony_of_the_grove.up|cooldown.convoke_the_spirits.ready))&buff.spymasters_report.stack<=29
 actions+=/use_item,name=treacherous_transmitter,if=(variable.ca_effective_cd<3|fight_remains<20|fight_remains<variable.ca_effective_cd&(buff.harmony_of_the_grove.up|cooldown.convoke_the_spirits.ready))&buff.spymasters_report.stack<=29
@@ -109,6 +109,7 @@ actions.st+=/starfire,if=!variable.enter_lunar&(!variable.eclipse|variable.eclip
 actions.st+=/call_action_list,name=pre_cd
 actions.st+=/celestial_alignment,if=variable.cd_condition
 actions.st+=/incarnation,if=variable.cd_condition
+actions.st+=/starsurge,if=variable.cd_condition&astral_power.deficit>variable.passive_asp+action.force_of_nature.energize_amount
 actions.st+=/force_of_nature,if=cooldown.ca_inc.remains<gcd.max&(!variable.eclipse|variable.eclipse_remains>6)|variable.eclipse_remains>=3&(cooldown.ca_inc.remains>10+15*talent.control_of_the_dream&(fight_remains>cooldown+5|cooldown.ca_inc.remains>fight_remains)|talent.whirling_stars&talent.convoke_the_spirits&cooldown.convoke_the_spirits.remains>cooldown.force_of_nature.duration-10)
 actions.st+=/fury_of_elune,if=5+variable.passive_asp<astral_power.deficit
 actions.st+=/starfall,if=buff.starweavers_warp.up
