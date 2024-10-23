@@ -7,7 +7,7 @@ timeofday=night
 role=spell
 position=back
 professions=alchemy=1/engineering=1
-talents=CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALUYmZGGmZAzMMzYAbzMLsMz2M2YmZMzsYWmZMzM2AbMAjltZ222mZZ2mpZmlZCAAAwiZGDA
+talents=CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGFmZMMMzAmZYmxww2YMmZ2mxCmZmZsNjZGzYsBWYAGgttxCmmZWGBAAAYzMDD
 
 # Default consumables
 potion=tempered_potion_3
@@ -28,7 +28,9 @@ temporary_enchant=main_hand:algari_mana_oil_3
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune|druid.no_cds
 actions.precombat+=/variable,name=on_use_trinket,value=0
 actions.precombat+=/variable,name=on_use_trinket,op=add,value=trinket.1.has_use_buff&!trinket.1.is.ovinaxs_mercurial_egg
@@ -36,8 +38,7 @@ actions.precombat+=/variable,name=on_use_trinket,op=add,value=(trinket.2.has_use
 actions.precombat+=/moonkin_form
 actions.precombat+=/wrath
 actions.precombat+=/wrath
-actions.precombat+=/wait,sec=0.1,if=hero_tree.keeper_of_the_grove&!talent.stellar_flare
-actions.precombat+=/starfire,if=!talent.stellar_flare&hero_tree.elunes_chosen
+actions.precombat+=/starfire,if=!talent.stellar_flare
 actions.precombat+=/stellar_flare
 
 # Executed every time the actor is available.
@@ -106,7 +107,6 @@ actions.st+=/moonfire,target_if=remains<3&(!talent.treants_of_the_moon|cooldown.
 actions.st+=/wrath,if=variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
 actions.st+=/starfire,if=!variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
 actions.st+=/call_action_list,name=pre_cd
-actions.st+=/fury_of_elune,if=5+variable.passive_asp<astral_power.deficit&hero_tree.elunes_chosen
 actions.st+=/celestial_alignment,if=variable.cd_condition
 actions.st+=/incarnation,if=variable.cd_condition
 actions.st+=/force_of_nature,if=cooldown.ca_inc.remains<gcd.max&(!variable.eclipse|variable.eclipse_remains>6)|variable.eclipse_remains>=3&(cooldown.ca_inc.remains>10+15*talent.control_of_the_dream&(fight_remains>cooldown+5|cooldown.ca_inc.remains>fight_remains)|talent.whirling_stars&talent.convoke_the_spirits&cooldown.convoke_the_spirits.remains>cooldown.force_of_nature.duration-10)
@@ -130,32 +130,31 @@ actions.st+=/wild_mushroom
 actions.st+=/starfire,if=talent.lunar_calling
 actions.st+=/wrath
 
-head=whispering_mask,id=221163,bonus_id=8780,ilevel=639,gem_id=213497
-neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213497/213497
+head=whispering_mask,id=221163,bonus_id=8780,ilevel=639,gem_id=213494
+neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213494/213494
 shoulders=maw_of_the_greatlynx,id=212054,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-back=royal_emblem_of_nerubar,id=212446,ilevel=639,enchant_id=7403
+back=anvilhide_cape,id=221088,ilevel=639,enchant_id=7409
 chest=hide_of_the_greatlynx,id=212059,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7364
-wrists=polluted_spectres_wraps,id=212438,bonus_id=8780,ilevel=639,gem_id=213497,enchant_id=7385
+wrists=runebranded_armbands,id=219334,bonus_id=10222/8780/10520/8960/8790,ilevel=636,gem_id=213494,enchant_id=7391
 hands=eviscerators_of_the_greatlynx,id=212057,ilevel=639
-waist=runebranded_waistband,id=219331,bonus_id=10222/8780/11109/8960/8791,ilevel=636,gem_id=213497
-legs=leggings_of_the_greatlynx,id=212055,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7531
-feet=chitinspiked_jackboots,id=212445,ilevel=639,enchant_id=7424
-finger1=writhing_ringworm,id=225576,bonus_id=8781,ilevel=639,gem_id=213497/213497,enchant_id=7346
-finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=8781,ilevel=639,gem_id=213497/213497,enchant_id=7346
-trinket1=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
-trinket2=unbound_changeling,id=178708,bonus_id=7214/6652/1501/5884/6646/6918,ilevel=639
-main_hand=scithewood_scepter,id=178709,ilevel=639,enchant_id=7460
-off_hand=vagabonds_torch,id=222566,bonus_id=10421/1515/11300/8960/8791
+waist=runebranded_waistband,id=219331,bonus_id=10222/8780/10520/8960/8793,ilevel=636,gem_id=213494
+legs=leggings_of_the_greatlynx,id=212055,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7534
+feet=fleeting_massacre_footpads,id=225591,ilevel=639,enchant_id=7424
+finger1=writhing_ringworm,id=225576,bonus_id=8781,ilevel=639,gem_id=213494/213494,enchant_id=7346
+finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=8781,ilevel=639,gem_id=213494/213494,enchant_id=7346
+trinket1=arakara_sacbrood,id=219314,ilevel=639
+trinket2=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
+main_hand=takazjs_entropic_edict,id=212397,ilevel=639,enchant_id=7460
 
 # Gear Summary
-# gear_ilvl=638.63
-# gear_stamina=237172
-# gear_intellect=48762
-# gear_crit_rating=8102
-# gear_haste_rating=10908
-# gear_mastery_rating=18392
-# gear_versatility_rating=1700
-# gear_avoidance_rating=1635
-# gear_armor=26347
+# gear_ilvl=638.60
+# gear_stamina=237341
+# gear_intellect=45258
+# gear_crit_rating=6703
+# gear_haste_rating=13736
+# gear_mastery_rating=17851
+# gear_versatility_rating=2253
+# gear_leech_rating=3060
+# gear_armor=26307
 # set_bonus=thewarwithin_season_1_2pc=1
 # set_bonus=thewarwithin_season_1_4pc=1
