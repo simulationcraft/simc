@@ -12192,7 +12192,8 @@ Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1118518)  : Apply Aura (6) | Modify Mastery% (318)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+Hotfixed         : Base Value (1 -> 2)
 Description      : $@spelldesc431038
 Tooltip          : Mastery increased by $w1%.
 
@@ -12430,7 +12431,8 @@ Effects          :
                    Affected Spells: Frostfire Bolt (431044), Frostfire Bolt (468655)
                    Family Flags: 108
 #3 (id=1169876)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.6 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.6 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 60)
 Description      : $@spelldesc431176
 Tooltip          : Your next Frostfire Bolt always critically strikes, deals $s3% additional damage, explodes for $431176s2% of its damage to nearby enemies, and is instant cast.
 
