@@ -711,8 +711,8 @@ public:
     double ice_strike_base_chance = 0.07;
     double lively_totems_base_chance = 0.06;
 
-    double dre_enhancement_base_chance = 0.02;
-    unsigned dre_enhancement_forced_failures = 8;
+    double dre_enhancement_base_chance = 0.0024;
+    unsigned dre_enhancement_forced_failures = 0;
 
     // Surging totem whiff
     double surging_totem_miss_chance = 0.1;
@@ -12823,7 +12823,7 @@ void shaman_t::trigger_flowing_spirits( const action_state_t* state )
     return;
   }
 
-  double proc_chance = talent.flowing_spirits->effectN( 1 ).percent();
+  double proc_chance = talent.flowing_spirits->effectN( 1 ).percent() * 2.0 / 3.0;
   if ( options.flowing_spirits_proc_chance != 0.0 )
   {
     proc_chance = options.flowing_spirits_proc_chance;
