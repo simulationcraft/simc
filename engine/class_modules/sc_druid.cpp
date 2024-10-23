@@ -9666,32 +9666,6 @@ void druid_t::activate()
     } );
   }
 
-  if ( talent.lycaras_teachings.ok() )
-  {
-    sim->register_heartbeat_event_callback( [ this ]( sim_t* ) {
-      buff_t* new_buff;
-
-      switch ( get_form() )
-      {
-        case NO_FORM:      new_buff = buff.lycaras_teachings_haste; break;
-        case CAT_FORM:     new_buff = buff.lycaras_teachings_crit; break;
-        case BEAR_FORM:    new_buff = buff.lycaras_teachings_vers; break;
-        case MOONKIN_FORM: new_buff = buff.lycaras_teachings_mast; break;
-        default:           return;
-      }
-
-      if ( !new_buff->check() )
-      {
-        buff.lycaras_teachings_haste->expire();
-        buff.lycaras_teachings_crit->expire();
-        buff.lycaras_teachings_vers->expire();
-        buff.lycaras_teachings_mast->expire();
-
-        new_buff->trigger();
-      }
-    } );
-  }
-
   if ( talent.resilient_flourishing.ok() && talent.thriving_growth.ok() )
   {
     register_on_kill_callback( [ this ]( player_t* t ) {
@@ -12426,6 +12400,9 @@ void druid_t::precombat_init()
   if ( talent.brambles.ok() )
     buff.brambles->trigger();
 
+  if ( talent.lycaras_teachings.ok() )
+    buff.lycaras_teachings_haste->trigger();
+
   if ( talent.orbit_breaker.ok() )
   {
     auto stacks = options.initial_orbit_breaker_stacks >= 0
@@ -12463,18 +12440,6 @@ void druid_t::precombat_init()
 void druid_t::combat_begin()
 {
   player_t::combat_begin();
-
-  if ( talent.lycaras_teachings.ok() )
-  {
-    switch( get_form() )
-    {
-      case NO_FORM:      buff.lycaras_teachings_haste->trigger(); break;
-      case CAT_FORM:     buff.lycaras_teachings_crit->trigger();  break;
-      case BEAR_FORM:    buff.lycaras_teachings_vers->trigger();  break;
-      case MOONKIN_FORM: buff.lycaras_teachings_mast->trigger();  break;
-      default: break;
-    }
-  }
 
   if ( eclipse_handler.enabled() )
   {
@@ -13327,6 +13292,22 @@ void druid_t::shapeshift( form_e f )
   }
 
   form = f;
+
+  if ( talent.lycaras_teachings.ok() )
+  {
+    buff.lycaras_teachings_haste->expire();
+    buff.lycaras_teachings_crit->expire();
+    buff.lycaras_teachings_vers->expire();
+    buff.lycaras_teachings_mast->expire();
+
+    switch ( f )
+    {
+      case BEAR_FORM:    buff.lycaras_teachings_vers->trigger(); break;
+      case CAT_FORM:     buff.lycaras_teachings_crit->trigger(); break;
+      case MOONKIN_FORM: buff.lycaras_teachings_haste->trigger(); break;
+      default:           buff.lycaras_teachings_haste->trigger(); break;
+    }
+  }
 }
 
 void druid_t::init_beast_weapon( weapon_t& w, double swing_time )
