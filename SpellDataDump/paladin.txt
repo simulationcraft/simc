@@ -14377,6 +14377,7 @@ Effects          :
                    Affected Spells (Label): Undisputed Ruling (432629)
 #20 (id=1191571) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 12 | Misc Value 2: 4200 (Label) | Target: Self (1)
+                   Affected Spells (Label): Wrathful Descent (431551)
 #21 (id=1191574) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 1 | Misc Value 2: 4201 (Label) | Target: Self (1)
                    Affected Spells (Label): Sanctification (433671)
@@ -16176,6 +16177,10 @@ Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=2, col=3, m
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+                 : 4200: Retribution Paladin (412314 effect#20)
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143)
