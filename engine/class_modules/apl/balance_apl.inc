@@ -46,6 +46,7 @@ st->add_action( "starfire,if=!variable.enter_lunar&(!variable.eclipse|variable.e
 st->add_action( "call_action_list,name=pre_cd" );
 st->add_action( "celestial_alignment,if=variable.cd_condition" );
 st->add_action( "incarnation,if=variable.cd_condition" );
+st->add_action( "starsurge,if=variable.cd_condition&astral_power.deficit>variable.passive_asp+action.force_of_nature.energize_amount" );
 st->add_action( "force_of_nature,if=cooldown.ca_inc.remains<gcd.max&(!variable.eclipse|variable.eclipse_remains>6)|variable.eclipse_remains>=3&(cooldown.ca_inc.remains>10+15*talent.control_of_the_dream&(fight_remains>cooldown+5|cooldown.ca_inc.remains>fight_remains)|talent.whirling_stars&talent.convoke_the_spirits&cooldown.convoke_the_spirits.remains>cooldown.force_of_nature.duration-10)" );
 st->add_action( "fury_of_elune,if=5+variable.passive_asp<astral_power.deficit" );
 st->add_action( "starfall,if=buff.starweavers_warp.up" );
