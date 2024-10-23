@@ -885,8 +885,8 @@ Effects          :
 #1 (id=23978)    : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #2 (id=83780)    : Dummy (3)
-                   Base Value: 174 | Scaled Value: 174 | Target: Self (1)
-Hotfixed         : Base Value (177.600006 -> 174)
+                   Base Value: 115 | Scaled Value: 115 | Target: Self (1)
+Hotfixed         : Base Value (174 -> 115)
 Description      : Give the command to kill, causing your pet to savagely deal $<damage> Physical damage to the enemy.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $lowNerf=${0.5+$min($pl,20)*0.025}
@@ -1631,8 +1631,8 @@ Family Flags     : 43, 108
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=83776)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.7464 | PvP Coefficient: 1.15 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (1.776 -> 1.7464)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.1544 | PvP Coefficient: 1.15 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.7464 -> 1.1544)
 Description      : $@spelldesc34026
 
 Name             : Mail Specialization (desc=Passive) (id=86538) [Passive, Hidden] 
