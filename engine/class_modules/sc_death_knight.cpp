@@ -5878,9 +5878,8 @@ struct melee_t : public death_knight_melee_attack_t
 
     if ( p->talent.frost.icy_death_torrent.ok() )
     {
-      idt_chance = p->talent.frost.icy_death_torrent->proc_chance() * p->main_hand_weapon.group() == WEAPON_2H
-                       ? 1.0
-                       : 1.0 / ( p->talent.frost.icy_death_torrent->effectN( 1 ).base_value() * 0.1 );
+      idt_chance = p->main_hand_weapon.group() == WEAPON_2H ? 1.0 : 1.0 / ( p->talent.frost.icy_death_torrent->effectN( 1 ).base_value() * 0.1 ) *
+                             p->talent.frost.icy_death_torrent->proc_chance();
     }
 
     apply_action_effects();
