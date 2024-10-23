@@ -2569,8 +2569,6 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
     if ( p()->talent.windwalker.rushing_jade_wind.ok() )
     {
       p()->buff.rushing_jade_wind->trigger();
-      if ( p()->bugs )
-        combo_strikes_trigger();
     }
 
     p()->buff.tigers_ferocity->trigger();
@@ -9310,8 +9308,6 @@ public:
     ReportIssue( "The ETL cache for both tigers resets to 0 when either spawn", "2023-08-03", true );
     ReportIssue( "SEF does not contribute to Fury of Xuen's ETL cache", "2024-08-01", true );
     ReportIssue( "Blackout Combo buffs both the initial and periodic effect of Breath of Fire", "2023-03-08", true );
-    ReportIssue( "Rushing Jade Wind is expiring mastery and Hit Combo on each of the SotWL hit events", "2024-07-20",
-                 true );
     ReportIssue( "Flurry of Xuen does additional damage during Storm, Earth, and Fire", "2024-08-01", true );
     ReportIssue( "Memory of the Monastery stacks are overwritten each time the buff is applied", "2024-08-01", true );
     ReportIssue( "Chi Burst consumes both stacks of the buff on use", "2024-08-09", true );
