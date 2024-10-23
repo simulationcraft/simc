@@ -22,8 +22,7 @@ namespace buffs {
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
     // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
     //  values
-    if ( p->is_ptr() || ( !p->is_ptr() && p->talents.avenging_wrath->ok() ) )
-      damage_modifier = data().effectN( 1 ).percent() / 10.0;
+    damage_modifier = data().effectN( 1 ).percent() / 10.0;
     haste_bonus = data().effectN( 3 ).percent() / 10.0;
 
     auto* paladin = static_cast<paladin_t*>( p );
@@ -1663,7 +1662,6 @@ void paladin_t::init_spells_retribution()
   talents.crusade                     = find_talent_spell( talent_tree::SPECIALIZATION, "Crusade" );
   talents.radiant_glory               = find_talent_spell( talent_tree::SPECIALIZATION, "Radiant Glory" );
   talents.empyrean_power              = find_talent_spell( talent_tree::SPECIALIZATION, "Empyrean Power" );
-  if ( !is_ptr() ) talents.consecrated_ground_ret      = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Ground", PALADIN_RETRIBUTION );
   talents.tempest_of_the_lightbringer = find_talent_spell( talent_tree::SPECIALIZATION, "Tempest of the Lightbringer" );
   talents.justicars_vengeance         = find_talent_spell( talent_tree::SPECIALIZATION, "Justicar's Vengeance" );
   talents.execution_sentence          = find_talent_spell( talent_tree::SPECIALIZATION, "Execution Sentence" );
