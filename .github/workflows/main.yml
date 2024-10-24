@@ -549,8 +549,6 @@ jobs:
         include:
           - compiler: clang++-15
             os: ubuntu-22.04
-        classes:
-          - name: shaman
 
     steps:
       - uses: actions/cache@v4
@@ -568,9 +566,9 @@ jobs:
         env:
           UBSAN_OPTIONS: print_stacktrace=1
           SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
-        run: ${{ github.workspace }}/generate_apl_modules.sh
+        run: ${{ github.workspace }}/generate_apl_modules_ci.sh
 
-      - name: Commit APLs
+      - name: Commit code-generated APLs
         continue-on-error: true
         uses: EndBug/add-and-commit@v9
         with:
