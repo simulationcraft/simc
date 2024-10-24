@@ -568,6 +568,7 @@ public:
     bool had_low_mana;
     bool trigger_dematerialize;
     bool trigger_ff_empowerment;
+    bool ff_empowerment_crit;
     bool trigger_flash_freezeburn;
     bool trigger_glorious_incandescence;
     int embedded_splinters;
@@ -2166,10 +2167,18 @@ public:
   { return spell_t::calculate_direct_amount( s ); }
 
   result_e calculate_result( action_state_t* s ) const override
-  { return calculate_on_impact ? RESULT_NONE : spell_t::calculate_result( s ); }
+  { return calculate_on_impact ? RESULT_NONE : add_ffe_crit( s ); }
 
   virtual result_e calculate_impact_result( action_state_t* s ) const
-  { return spell_t::calculate_result( s ); }
+  { return add_ffe_crit( s ); }
+
+  result_e add_ffe_crit( action_state_t* s ) const
+  {
+    result_e r = spell_t::calculate_result( s );
+    if ( s->chain_target == 0 && r == RESULT_HIT && p()->bugs && may_crit && p()->state.ff_empowerment_crit )
+      r = RESULT_CRIT;
+    return r;
+  }
 
   void enable_calculate_on_impact( unsigned spell_id )
   {
@@ -2276,6 +2285,9 @@ public:
         p()->action.frostfire_infusion->execute_on_target( s->target );
       p()->buffs.frostfire_empowerment->trigger();
     }
+
+    if ( s->chain_target == 0 && may_crit )
+      p()->state.ff_empowerment_crit = false;
   }
 
   void assess_damage( result_amount_type rt, action_state_t* s ) override
@@ -4992,7 +5004,7 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     double m = frost_mage_spell_t::composite_crit_chance_multiplier();
 
-    if ( frostfire && p()->state.trigger_ff_empowerment )
+    if ( frostfire && p()->state.trigger_ff_empowerment && !p()->bugs )
       m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 1 ).percent();
 
     return m;
@@ -5029,6 +5041,7 @@ struct frostbolt_t final : public frost_mage_spell_t
         // TODO: Double check this later
         make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
         p()->state.trigger_ff_empowerment = true;
+        p()->state.ff_empowerment_crit = true;
         trigger_frostfire_mastery( true );
       }
 
