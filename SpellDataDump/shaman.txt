@@ -12782,8 +12782,9 @@ Effects          :
                    Family Flags: 102
 #5 (id=1185726)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-                   Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
-                   Family Flags: 0, 1
+                   Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816), Tempest (452201)
+                   Family Flags: 0, 1, 107
+Hotfixed         : Affects Spells
 Description      : Increases the damage of Lightning Bolt and Chain Lightning by $s5%$?a378270[, and Deeply Rooted Elements lasts ${$s2/1000} sec longer]?s114051[, and reduces the cooldown of Ascendance by ${$s4/-1000} sec][, reduces the cooldown of Ascendance by ${$s4/-1000} sec, and causes Deeply Rooted Elements to last ${$s2/1000} sec longer].
 
 While Ascendance is active, Windstrike automatically consumes up to $s1 Maelstrom Weapon stacks to discharge a Lightning Bolt or Chain Lightning at $s3% effectiveness at your enemy, whichever you most recently used.
@@ -15150,7 +15151,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
-Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #14, #26, #27, #31), Enhancement Shaman (137041 effects: #1, #2, #5), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Astral Bulwark (377933 effect#2), Nature's Swiftness (378081 effects: #1, #2), Planes Traveler (381647 effect#2), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Storm Frenzy (462725 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #14, #26, #27, #31), Enhancement Shaman (137041 effects: #1, #2, #5), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Astral Bulwark (377933 effect#2), Nature's Swiftness (378081 effects: #1, #2), Planes Traveler (381647 effect#2), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Thorim's Invocation (384444 effect#5), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Storm Frenzy (462725 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 39, 56, 107, 126
 Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217)
 Effects          :

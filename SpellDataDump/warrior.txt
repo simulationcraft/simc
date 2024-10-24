@@ -10258,7 +10258,8 @@ Family Flags     : 8, 9, 91
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1016832)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.5056 | Radius: 0 - 12 yards | Target: At Self (18) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.5056 | PvP Coefficient: 0.85 | Radius: 0 - 12 yards | Target: At Self (18) -> At Enemy in Area (16)
+Hotfixed         : PvP Coefficient (1 -> 0.85)
 #2 (id=1016833)  : Trigger Spell (64): Thunderous Roar
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 397364 | Target: Self (1)
 #3 (id=1180323)  : Dummy (3)
