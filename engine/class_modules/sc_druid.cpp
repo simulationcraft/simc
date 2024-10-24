@@ -5095,14 +5095,6 @@ struct thrash_cat_t final : public trigger_claw_rampage_t<DRUID_FERAL, cp_genera
           .set_value( p->talent.moment_of_clarity->effectN( 4 ).percent() )
           .set_eff( &p->buff.clearcasting_cat->data().effectN( 4 ) );
       }
-
-      // various reduced dot tick/duration talents apply twice
-      if ( p->bugs )
-      {
-        apply_affecting_aura( p->talent.circle_of_life_and_death_cat );
-        apply_affecting_aura( p->talent.circle_of_life_and_death_bear );
-        apply_affecting_aura( p->talent.liveliness );
-      }
     }
 
     void trigger_dot( action_state_t* s ) override
