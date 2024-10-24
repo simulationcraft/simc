@@ -5212,8 +5212,7 @@ struct frozen_orb_t final : public frost_mage_spell_t
     if ( p()->talents.splintering_orbs.ok() )
     {
       p()->trigger_splinter( nullptr );
-      // TODO: Frost is using Arcane's spelldata value, capping splinters from FO at 4
-      int count = as<int>( p()->talents.splintering_orbs->effectN( p()->bugs ? 1 : 6 ).base_value() ) - 1;
+      int count = as<int>( p()->talents.splintering_orbs->effectN( 6 ).base_value() ) - 1;
       make_repeating_event( *sim, pulse_time, [ this ] { p()->trigger_splinter( nullptr ); }, count );
     }
   }
