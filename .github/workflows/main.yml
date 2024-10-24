@@ -535,6 +535,50 @@ jobs:
         with:
           name: apl-${{ github.sha }}-*
 
+  update-generated-apl-modules:
+    name: Action Priority List Dump / Regenerate Profiles
+    runs-on: ${{ matrix.os }}
+    needs: [ spec-test, spelldata-dump ]
+    if: github.event_name == 'push' && ( success() || failure() ) && github.repository == 'simulationcraft/simc'
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        cppVersion: [17]
+        compiler: [clang++-15]
+        include:
+          - compiler: clang++-15
+            os: ubuntu-22.04
+        classes:
+          - name: shaman
+
+    steps:
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ${{ runner.workspace }}/b/ninja/simc
+          key: ubuntu-${{ matrix.compiler }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
+
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        run: echo "SHORT_SHA=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
+
+      - name: Run
+        env:
+          UBSAN_OPTIONS: print_stacktrace=1
+          SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
+        run: ${{ github.workspace }}/generate_apl_modules.sh
+
+      - name: Commit APLs
+        continue-on-error: true
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'Update generated APL modules ${{ env.SHORT_SHA }}'
+          default_author: github_actions
+          fetch: --no-tags --force --prune --no-recurse-submodules --depth=1 origin ${{ github.ref_name }}
+          add: 'engine/class_modules/apl'
+      
   ubuntu-run:
     name: ubuntu-${{ matrix.compiler }}-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ${{ matrix.os }}
