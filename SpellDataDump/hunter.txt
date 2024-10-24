@@ -14037,9 +14037,11 @@ Proc Flags       : Periodic
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1150243)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1152094)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Each time Sentinel deals damage to an enemy you gain an absorb shield equal to ${$s1}.1% of your maximum health, up to $s2%.
 
 Name             : Extrapolated Shots (id=450374) [Spell Family (9), Passive] 
@@ -15093,6 +15095,7 @@ Effects          :
 Description      : Kill Command deals increased critical strike damage equal to $s2% of your critical strike chance.
 
 Name             : Laceration (id=459552) [Spell Family (9), Passive] 
+Hotfixed         : Attributes
 Talent Entry     : Beast Mastery [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Nature
@@ -15100,7 +15103,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1166453)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)

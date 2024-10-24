@@ -281,6 +281,7 @@ Effects          :
 Description      : Cleanses a friendly target, removing all $?s393024[Poison, Disease, and ][]Magic effects.
 
 Name             : Blessing of Sacrifice (id=6940) [Spell Family (10)] 
+Hotfixed         : Cooldown (1000 -> 120000)
 Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
@@ -289,14 +290,12 @@ Resource         : 1.4% Base Mana (0) (id=284)
 Spell Level      : 41
 Range            : 40 yards
 Duration         : 12 seconds
-Cooldown         : 1 seconds
-Charges          : 1 (120 seconds cooldown)
-Category         : 1186: Sacrifice of the Just (384820 effect#1)
+Cooldown         : 120 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 2655: Retribution Paladin (412314 effect#3), Retribution Paladin (412314 effect#4), Holy Paladin (428076 effect#5)
-Affecting Spells : Blessing of Sacrifice (200327 effect#1), Uther's Guard (207558 effect#2), Echoing Blessings (339316 effect#5), Echoing Blessings (387801 effect#5), Blessed Calling (469770 effect#1)
+Affecting Spells : Blessing of Sacrifice (200327 effect#1), Uther's Guard (207558 effect#2), Echoing Blessings (339316 effect#5), Sacrifice of the Just (384820 effect#1), Echoing Blessings (387801 effect#5), Blessed Calling (469770 effect#1)
 Family Flags     : 13
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Exclude Caster (51), Include In Advanced Combat Log (72), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Ignore Target Absorb Modifiers (371), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
@@ -10301,9 +10300,11 @@ Labels           : 16: Class Spells
                  : 2651: Holy Paladin (428076 effect#8)
 Attributes       : Passive (6), Only In Spellbook Until Learned (240)
 Effects          :
-#1 (id=1017694)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: -60000 | Scaled Value: -60000 | Misc Value: 1186 (Category) | Target: Self (1)
-                   Affected Spells (Category): Blessing of Sacrifice (6940)
+#1 (id=1017694)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -60000 | Scaled Value: -60000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Blessing of Sacrifice (6940)
+                   Family Flags: 13
+Hotfixed         : Sub Type (453 -> 107), Misc Value (1186 -> 11), Affects Spells
 Description      : Reduces the cooldown of Blessing of Sacrifice by ${$m1/-1000} sec.
 
 Name             : Improved Blessing of Protection (id=384909) [Spell Family (10), Passive] 
@@ -15667,7 +15668,8 @@ Family Flags     : 1, 27, 65
 Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1119125)  : Apply Aura (6) | Periodic Damage (3): holyfire every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.6375 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.75 -> 0.6375)
 #2 (id=1119126)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=1119190)  : Apply Aura (6) | Decrease Movement Speed% (33)

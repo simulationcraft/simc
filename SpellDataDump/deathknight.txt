@@ -14421,9 +14421,11 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1128925)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 10)
 #2 (id=1128929)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 20)
 #3 (id=1132112)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : When Reaper's Mark explodes, it deals $?a137008[$s1][$s2]% of the damage dealt to nearby enemies and causes them to deal $s3% reduced Physical damage to you for 10 sec.
@@ -15982,7 +15984,7 @@ Name             : Exterminate (id=447954) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Magic
-Duration         : Aura (infinite)
+Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
