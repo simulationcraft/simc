@@ -4912,7 +4912,7 @@ void burst_of_knowledge( special_effect_t& effect )
   auto on_use_cb         = new special_effect_t( effect.player );
   on_use_cb->name_str    = effect.name() + "_cb";
   on_use_cb->spell_id    = effect.driver()->id();
-  on_use_cb->cooldown_   = 0_ms;
+  on_use_cb->cooldown_   = effect.driver()->internal_cooldown();
   on_use_cb->custom_buff = int_buff;
   effect.player->special_effects.push_back( on_use_cb );
 
