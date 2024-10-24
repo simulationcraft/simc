@@ -437,7 +437,6 @@ public:
     damage_buff_t* fatebound_coin_heads;
     buff_t* fatebound_coin_tails;
     stat_buff_t* fatebound_lucky_coin;
-    buff_t* edge_case; // not a buff in-game, but useful to track as a buff
     buff_t* double_jeopardy; // not a buff in-game, but useful to track as a buff
 
     // Trickster
@@ -3615,7 +3614,12 @@ struct adrenaline_rush_t : public rogue_spell_t
     }
 
     if ( p()->talent.fatebound.edge_case->ok() ) {
-      p()->buffs.edge_case->trigger();
+      execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
+      if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
+      {
+        p()->buffs.double_jeopardy->expire();
+        execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
+      }
     }
   }
 };
@@ -4303,7 +4307,12 @@ struct deathmark_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     if ( p()->talent.fatebound.edge_case->ok() ) {
-      p()->buffs.edge_case->trigger();
+      execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
+      if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
+      {
+        p()->buffs.double_jeopardy->expire();
+        execute_fatebound_coinflip( execute_state, fatebound_t::coinflip_e::EDGE );
+      }
     }
   }
 };
@@ -8820,14 +8829,9 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
 
   fatebound_t::coinflip_e result;
 
-  // Edge case - coin lands on edge - inevitable coins override this and match the previous coin instead
-  if ( p()->talent.fatebound.edge_case->ok() && p()->buffs.edge_case->check() && !trigger_inevitable )
-  {
-    result = fatebound_t::coinflip_e::EDGE;
-  }
   // No stacks of either buff or equal stacks of both buffs (thanks to only using edge case)
   // Nothing to bias, just flip the coin fairly
-  else if ( p()->buffs.fatebound_coin_tails->total_stack() == p()->buffs.fatebound_coin_heads->total_stack() && !trigger_inevitable )
+  if ( p()->buffs.fatebound_coin_tails->total_stack() == p()->buffs.fatebound_coin_heads->total_stack() && !trigger_inevitable )
   {
     result = p()->rng().roll( 0.5 ) ? fatebound_t::coinflip_e::HEADS : fatebound_t::coinflip_e::TAILS;
   }
@@ -8865,7 +8869,6 @@ void actions::rogue_action_t<Base>::trigger_hand_of_fate( const action_state_t* 
       current_is_heads ? fatebound_t::coinflip_e::HEADS : fatebound_t::coinflip_e::TAILS :
       current_is_heads ? fatebound_t::coinflip_e::TAILS : fatebound_t::coinflip_e::HEADS;
   }
-  p()->buffs.edge_case->expire(); // Always expires on next coinflip even if not used because an inevitable flip munched it
 
   execute_fatebound_coinflip( state, result );
   if ( p()->talent.fatebound.double_jeopardy->ok() && p()->buffs.double_jeopardy->check() )
@@ -11735,11 +11738,6 @@ void rogue_t::create_buffs()
       buffs.fatebound_lucky_coin->trigger();
     }
   });
-
-  // Edge case isn't a buff in-game, but treating it as such is useful to track state
-  buffs.edge_case = make_buff( this, "edge_case", talent.fatebound.edge_case )
-    ->set_duration( timespan_t::zero() )
-    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT ); // Shouldn't expire, used to track state
 
   // Likewise, double jeopardy isn't a buff in-game, but treating it as such makes tracking it simpler
   buffs.double_jeopardy = make_buff( this, "double_jeopardy", talent.fatebound.double_jeopardy )
