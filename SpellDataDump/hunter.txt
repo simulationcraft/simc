@@ -3729,8 +3729,9 @@ Effects          :
                    Family Flags: 121
 #2 (id=283906)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.4 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Wind Arrow (191043), Explosive Shot (212680), Scatter Shot (213691), Bursting Shot (224729), Bursting Shot (238559), Rapid Fire (257045), Multi-Shot (257620), Serpent Sting (259491), Volley (260243), Volley (260247), Explosive Shot (269850), Serpent Sting (271788), Resonating Arrow (308495), Kill Shot (320976), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Coordinated Assault (361738), Death Chakram (361756), Wailing Arrow (392058), Wailing Arrow (392060), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Rapid Fire (460496), Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
-                   Family Flags: 3, 5, 11, 12, 14, 17, 32, 34, 70, 73, 74, 76, 79, 91, 93, 99, 105, 119
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Wind Arrow (191043), Explosive Shot (212680), Scatter Shot (213691), Bursting Shot (224729), Bursting Shot (238559), Rapid Fire (257045), Multi-Shot (257620), Serpent Sting (259491), Volley (260243), Volley (260247), Explosive Shot (269850), Serpent Sting (271788), Resonating Arrow (308495), Kill Shot (320976), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Coordinated Assault (361738), Death Chakram (361756), Wailing Arrow (392058), Wailing Arrow (392060), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Rapid Fire (460496), Black Arrow (466930), Black Arrow (468037)
+                   Family Flags: 3, 5, 11, 12, 14, 17, 32, 34, 70, 73, 74, 76, 79, 93, 99, 105, 119
+Hotfixed         : Affects Spells
 #3 (id=316221)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.625 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Barrage (120361)
@@ -16928,7 +16929,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 3993: Unnatural Causes (459527 effect#5), Unnatural Causes (459529 effect#2)
-Affecting Spells : Mastery: Sniper Training (193468 effects: #2, #4), Shadow Lash (444354 effect#1), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1)
+Affecting Spells : Mastery: Sniper Training (193468 effect#4), Shadow Lash (444354 effect#1), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1)
 Family Flags     : 91
 Attributes       : DoT Stacking Rule (103), Do Not Display Range (126), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
