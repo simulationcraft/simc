@@ -19805,12 +19805,14 @@ Triggered By     : Druid Feral 11.0 Class Set 4pc (454839)
 Attributes       : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268)
 Effects          :
 #1 (id=1157970)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568), Primal Wrath (285381), Ravage (441591)
                    Family Flags: 93, 108
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1157971)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 2740 (Label) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Misc Value 2: 2740 (Label) | Target: Self (1)
                    Affected Spells (Label): Rampant Ferocity (391710)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc454839
 Tooltip          : Direct damage of your next Ferocious Bite and Rampant Ferocity or Primal Wrath increased by $w1%.
 
