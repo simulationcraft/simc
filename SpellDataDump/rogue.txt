@@ -14253,8 +14253,6 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 3022
-Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Generic Hostile Spell
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1161655)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
