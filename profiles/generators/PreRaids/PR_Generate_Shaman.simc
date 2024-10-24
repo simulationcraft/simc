@@ -28,13 +28,13 @@
 
 # save=PR_Shaman_Elemental.simc
 
-shaman="PR_Shaman_Enhancement_DRE"
+shaman="PR_Shaman_Enhancement_Totemic"
 level=80
 race=goblin
 spec=enhancement
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzCm5BMzMzMzgtZmlZAAAAAAAAAAgFAGzYYILwywQDWAwsMZGMLLmZmZMMzsglZmJwYZMzAAMD
+talents=CcQAYp+JUk5Lea12OyacsLNThMzAMzYsNzMzglZGbz2MAAAAAAAAAA2gFssMjZmtNNLbDzoZmGsBgZZyMwiZMzgZmZ2GWmZmswyYhZGAgZmB
 
 head=cryptbound_headpiece,id=221156,ilevel=593
 neck=emergency_stop_keychain,id=221077,ilevel=593
@@ -53,7 +53,7 @@ trinket2=empowering_crystal_of_anubikkaj,id=219312,ilevel=593
 main_hand=eirichs_fist_of_deception,id=221090,ilevel=593,enchant=authority_of_the_depths_2
 off_hand=bainbridges_blackjack,id=159648,ilevel=593,enchant=authority_of_the_depths_2
 
-save=PR_Shaman_Enhancement_DRE.simc
+save=PR_Shaman_Enhancement_Totemic.simc
 
 shaman="PR_Shaman_Enhancement"
 level=80
@@ -61,7 +61,7 @@ race=goblin
 spec=enhancement
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzCmhZmZmZGmtZmlZAAAAAAAAAAgNAGzYYILwywQDWAwsMZGMLLmZmZMMzsglZmJwYZMzAAMD
+talents=CcQAYp+JUk5Lea12OyacsLNThMzMzCmhZ2mZmZYWmZWWGAAAAAAAAAAYDgNzYYjsAzohGsAgZZyMwiZMzgZmZ2mxyMzkFWGYmBAYGD
 
 head=cryptbound_headpiece,id=221156,ilevel=593
 neck=emergency_stop_keychain,id=221077,ilevel=593
