@@ -3511,6 +3511,12 @@ void priest_t::init_special_effects()
     }
   }
 
+  // Entropic Rift is coded as direct damage, but should not count
+  // as casts for Burst of Knowledge
+  callbacks.register_callback_trigger_function(
+      469925, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      []( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) { return a->data().id() != 447448; } );
+
   base_t::init_special_effects();
 }
 
