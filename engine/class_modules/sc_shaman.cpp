@@ -6057,6 +6057,10 @@ struct chain_lightning_t : public chained_base_t
         background = true;
         base_execute_time = 0_s;
         base_costs[ RESOURCE_MANA ] = 0;
+        if ( auto ptr = p()->find_action( "chain_lightning" ) )
+        {
+          ptr->add_child( this );
+        }
         break;
       }
       default:
@@ -7015,6 +7019,10 @@ struct lightning_bolt_t : public shaman_spell_t
         background = true;
         base_execute_time = 0_s;
         base_costs[ RESOURCE_MANA ] = 0;
+        if ( auto ptr = p()->find_action( "lightning_bolt" ) )
+        {
+          ptr->add_child( this );
+        }
         break;
       }
       default:
