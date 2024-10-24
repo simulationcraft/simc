@@ -1336,6 +1336,7 @@ public:
   void init_special_effects() override;
   std::string create_profile( save_e ) override;
   void create_special_effects() override;
+  action_t* create_proc_action( util::string_view /* name */, const special_effect_t& /* effect */ ) override;
   void action_init_finished( action_t& action ) override;
   void analyze( sim_t& sim ) override;
   void datacollection_end() override;
@@ -11122,6 +11123,35 @@ void shaman_t::create_special_effects()
 
     new maelstrom_weapon_cb_t( *mw_effect );
   }
+}
+
+// shaman_t::create_proc_action ============================================
+
+action_t* shaman_t::create_proc_action( util::string_view name, const special_effect_t& effect )
+{
+  if ( effect.spell_id == 469927 )
+  {
+    struct quick_strike_t : public shaman_attack_t
+    {
+      quick_strike_t( shaman_t* p, const special_effect_t& effect ) :
+        shaman_attack_t( "quick_strike", p, p->find_spell( 469928 ) )
+      {
+        background = true;
+        base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+      }
+
+      void init() override
+      {
+        shaman_attack_t::init();
+
+        may_proc_flametongue = may_proc_flowing_spirits = may_proc_stormbringer = false;
+        may_proc_windfury = false;
+      }
+    };
+
+    return new quick_strike_t( this, effect );
+  }
+  return player_t::create_proc_action( name, effect );
 }
 
 // shaman_t::action_init_finished ==========================================
