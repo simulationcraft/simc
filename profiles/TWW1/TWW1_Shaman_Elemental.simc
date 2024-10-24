@@ -9,7 +9,7 @@ talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAMbzyyMzMzYWsNDgZmZAAAAAAYzMG2gFYGN0YDAMbT
 
 # Default consumables
 potion=tempered_potion_3
-flask=flask_of_tempered_swiftness_3
+flask=flask_of_alchemical_chaos_3
 food=feast_of_the_divine_day
 augmentation=crystallized
 temporary_enchant=main_hand:algari_mana_oil_3,if=!talent.improved_flametongue_weapon
