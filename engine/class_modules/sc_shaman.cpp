@@ -9839,7 +9839,7 @@ struct surging_totem_pulse_t : public spell_totem_action_t
 
   double miss_chance( double hit, player_t* t ) const override
   {
-    if ( o()->options.surging_totem_miss_chance == 0.0 )
+    if ( sundered || o()->options.surging_totem_miss_chance == 0.0 )
     {
       return spell_totem_action_t::miss_chance( hit, t );
     }
