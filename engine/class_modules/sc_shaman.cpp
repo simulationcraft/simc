@@ -1597,9 +1597,6 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
     ->set_default_value_from_effect( 1 );
 
   debuff.flametongue_attack = make_buff( *this, "flametongue_attack", p->find_spell( 467390 ) )
-    ->set_tick_callback( [ p, target ]( buff_t*, int, timespan_t ) {
-      p->action.imbuement_mastery->execute_on_target( target );
-    })
     ->set_trigger_spell( p->talent.imbuement_mastery );
 }
 
@@ -12605,6 +12602,7 @@ void shaman_t::trigger_imbuement_mastery( const action_state_t* state )
   }
 
   get_target_data( state->target )->debuff.flametongue_attack->trigger();
+  action.imbuement_mastery->execute_on_target( state->target );
 }
 
 void shaman_t::trigger_whirling_fire( const action_state_t* /* state */ )
