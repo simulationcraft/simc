@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57171 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57212 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -64,7 +64,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 600 seconds
-Category         : 1195
+Category         : 1195 (Type 0x0)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 117
@@ -260,7 +260,7 @@ Spell Level      : 10
 GCD              : 1 seconds
 Duration         : 15 seconds
 Charges          : 0 (30 seconds cooldown)
-Category         : 1569: Echo of the Elements (108283 effect#3), Totemic Surge (381867 effect#2), Healing Stream Totem (392915 effect#1), Healing Stream Totem (392916 effect#1)
+Category         : 1569 (Type 0x1): Echo of the Elements (108283 effect#3), Totemic Surge (381867 effect#2), Healing Stream Totem (392915 effect#1), Healing Stream Totem (392916 effect#1)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -295,7 +295,7 @@ Affecting Spells : Restoration Shaman (137039 effect#25), Elemental Shaman (1370
 Family Flags     : 13
 Attributes       : Can Proc From Procs (122), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=2016)     : : Apply Aura (6) | Periodic Trigger Spell (23): Healing Stream Totem every 2 seconds
+#1 (id=2016)     : Apply Aura (6) | Periodic Trigger Spell (23): Healing Stream Totem every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 52042 | Target: Self (1)
 #2 (id=318426)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -511,7 +511,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
 Charges          : 1 (7.5 seconds cooldown)
-Category         : 1254: Ascendance (114051 effect#9), Enhancement Shaman (137041 effect#25), Stormblast (319930 effect#2)
+Category         : 1254 (Type 0x1): Ascendance (114051 effect#9), Enhancement Shaman (137041 effect#25), Stormblast (319930 effect#2)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -551,7 +551,7 @@ School           : Nature
 Spell Type       : None
 Spell Level      : 8
 Cooldown         : 1800 seconds
-Category         : 1161
+Category         : 1161 (Type 0x0)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -862,7 +862,7 @@ Spell Level      : 49
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 30 seconds
-Category         : 1223
+Category         : 1223 (Type 0x0)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -895,7 +895,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Charges          : 1 (8 seconds cooldown)
-Category         : 1536: Echo of the Elements (108283 effect#1), Echo of the Elements (333919 effect#1), Elemental Reverb (443418 effect#1)
+Category         : 1536 (Type 0x1): Echo of the Elements (108283 effect#1), Echo of the Elements (333919 effect#1), Elemental Reverb (443418 effect#1)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -922,7 +922,7 @@ Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 30 seconds
-Category         : 1655
+Category         : 1655 (Type 0x0)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -956,7 +956,7 @@ Spell Level      : 34
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
-Category         : 1653
+Category         : 1653 (Type 0x0)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 183: Spiritual Journey (214170 effect#1)
@@ -1029,7 +1029,7 @@ Family Flags     : 13, 41
 Attributes       : Allow While Sitting (27), No Threat (42), Exclude Caster (51), Ignore Line of Sight (66), Not an Action (92), Treat As Periodic (121), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=44468)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.6768 | Radius: 0 - 40 yards | Target: At Self (18) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.6768 | PvP Coefficient: 1.15 | Radius: 0 - 40 yards | Target: At Self (18) -> At Friendly in Area (31)
 Description      : Heals an injured nearby raid or party member.
 
 Name             : Water Shield (id=52127) [Spell Family (11)] 
@@ -1225,7 +1225,7 @@ Spell Type       : None
 Spell Level      : 44
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Category         : 44
+Category         : 44 (Type 0x0)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 219
@@ -1486,7 +1486,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 18 seconds
 Charges          : 1 (6 seconds cooldown)
-Category         : 1228: Echo of the Elements (108283 effect#2), Echo of the Elements (333919 effect#2), Elemental Reverb (443418 effect#5)
+Category         : 1228 (Type 0x1): Echo of the Elements (108283 effect#2), Echo of the Elements (333919 effect#2), Elemental Reverb (443418 effect#5)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -1635,7 +1635,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Charges          : 1 (15 seconds cooldown)
-Category         : 1539
+Category         : 1539 (Type 0x1)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -1756,7 +1756,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
-Category         : 1513
+Category         : 1513 (Type 0x1)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -1860,7 +1860,7 @@ Family Flags     : 41, 80
 Attributes       : Not Shapeshifted (16), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.46 | PvP Coefficient: 1.2 | Target: Chain Friendly (45)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.46 | PvP Coefficient: 1.32 | Target: Chain Friendly (45)
 Description      : An efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
@@ -2073,7 +2073,8 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
 Charges          : 1 (180 seconds cooldown)
-Category         : 1540: Totemic Surge (381867 effect#3)
+Category         : 1540 (Type 0x1): Totemic Surge (381867 effect#3)
+Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -2100,7 +2101,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Threat (42), Extra Initial Period (169), Always Show Ground Texture (190), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=104842)   : : Apply Aura (6) | Periodic Trigger Spell (23): Spirit Link every 1 seconds
+#1 (id=104842)   : Apply Aura (6) | Periodic Trigger Spell (23): Spirit Link every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Trigger Spell: 98020 | Target: Self (1)
 
 Name             : Spirit Link (id=98020) [Spell Family (11), Passive, Hidden] 
@@ -2516,7 +2517,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Log (8), Not In Spellbook (143), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=128429)   : : Apply Aura (6) | Periodic Trigger Spell (23): Stone Bulwark every 5 seconds
+#1 (id=128429)   : Apply Aura (6) | Periodic Trigger Spell (23): Stone Bulwark every 5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 462844 | Target: Self (1)
 
 Name             : Stone Bulwark (id=114893) [Spell Family (11)] 
@@ -2577,7 +2578,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
 Charges          : 1 (7.5 seconds cooldown)
-Category         : 1254: Ascendance (114051 effect#9), Enhancement Shaman (137041 effect#25), Stormblast (319930 effect#2)
+Category         : 1254 (Type 0x1): Ascendance (114051 effect#9), Enhancement Shaman (137041 effect#25), Stormblast (319930 effect#2)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -2648,7 +2649,7 @@ Labels           : 16: Class Spells
                  : 1660: Totemic Focus (382201 effect#3), Spatial Paradox (406789 effect#12), Oversized Totems (445026 effect#1)
 Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=132224)   : : Apply Aura (6) | Periodic Trigger Spell (23): Earthgrab every 2 seconds
+#1 (id=132224)   : Apply Aura (6) | Periodic Trigger Spell (23): Earthgrab every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 64695 | Radius: 0 - 8 yards | Target: Self (1) -> Enemy in Area (15)
 
 Name             : Earthbind (id=116947) [Spell Family (11)] 
@@ -2696,7 +2697,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Charges          : 1 (12 seconds cooldown)
-Category         : 2077: Elemental Shaman (137040 effect#8), Elemental Blast (394152 effect#2)
+Category         : 2077 (Type 0x1): Elemental Shaman (137040 effect#8), Elemental Blast (394152 effect#2)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -3003,11 +3004,11 @@ Effects          :
                    Affected Spells: Flame Shock (188389), Flame Shock (470411)
                    Family Flags: 28
 #19 (id=1040710) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 11 | Scaled Value: 11 | Target: Self (1)
+                   Base Value: 22 | Scaled Value: 22 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
 #20 (id=1040711) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Target: Self (1)
+                   Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
 #21 (id=1080080) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -3178,17 +3179,21 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -4 | Scaled Value: -4 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ice Strike (342240), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest Strikes (428078), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Ice Strike (470194), Flame Shock (470411)
                    Family Flags: 39
+Hotfixed         : Base Value (-4 -> 2)
 #2 (id=191038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -4 | Scaled Value: -4 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ice Strike (342240), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest Strikes (428078), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Ice Strike (470194), Flame Shock (470411)
                    Family Flags: 39
+Hotfixed         : Base Value (-4 -> 2)
 #3 (id=191039)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: -4 | Scaled Value: -4 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+Hotfixed         : Base Value (-4 -> 2)
 #4 (id=191040)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: -4 | Scaled Value: -4 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+Hotfixed         : Base Value (-4 -> 2)
 #5 (id=191041)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -21 | Scaled Value: -21 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Elemental Blast (117014), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816), Lava Burst (285452), Tempest (452201)
@@ -3267,8 +3272,9 @@ Effects          :
                    Affected Spells: Healing Stream (5672), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Poison Cleansing (403922)
                    Family Flags: 13
 #27 (id=1176327) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 12 | Misc Value 2: 3986 (Label) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Misc Value 2: 3986 (Label) | Target: Self (1)
                    Affected Spells (Label): Lightning Rod (210689), Conductive Energy (455123)
+Hotfixed         : Base Value (-10 -> 0)
 #28 (id=1179021) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 3 | Misc Value 2: 4046 (Label) | Target: Self (1)
                    Affected Spells (Label): Oversurge (445030)
@@ -3420,7 +3426,7 @@ GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 1 seconds
 Charges          : 0 (45 seconds cooldown)
-Category         : 2062: Echo of the Elements (108283 effect#4), Totemic Surge (381867 effect#4), Healing Stream Totem (392915 effect#2), Healing Stream Totem (392916 effect#2)
+Category         : 2062 (Type 0x1): Echo of the Elements (108283 effect#4), Totemic Surge (381867 effect#4), Healing Stream Totem (392915 effect#2), Healing Stream Totem (392916 effect#2)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 52
@@ -3587,7 +3593,7 @@ Family Flags     : 126
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Allow Class Ability Procs (416)
 Channel Interrupt: Action (2), Moving (3)
 Effects          :
-#1 (id=219451)   : : Apply Aura (6) | Periodic Trigger Spell (23): Stormfury every 1 seconds
+#1 (id=219451)   : Apply Aura (6) | Periodic Trigger Spell (23): Stormfury every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.1 | Trigger Spell: 269005 | Target: Enemy (6)
 #2 (id=713318)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
@@ -4083,7 +4089,7 @@ Spell Level      : 24
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Category         : 85
+Category         : 85 (Type 0x0)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -4322,7 +4328,7 @@ Spell Type       : Magic
 Resource         : 0.1% Base Mana (0) (id=10367)
 Range            : 40 yards
 Cast Time        : 1.5 seconds
-Category         : 19
+Category         : 19 (Type 0x0)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -4626,7 +4632,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=282007)   : : Apply Aura (6) | Periodic Trigger Spell (23): Liquid Magma Totem every 1 seconds
+#1 (id=282007)   : Apply Aura (6) | Periodic Trigger Spell (23): Liquid Magma Totem every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 192223 | Target: Self (1)
 Description      : $@spelldesc192222
 Tooltip          : Erupting liquid magma.
@@ -4672,7 +4678,8 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (150 seconds cooldown)
-Category         : 1572: Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3), Benevolent Faerie (327710 effect#4), Benevolent Faerie Fermata (345453 effect#4), Haunted Mask (356968 effect#4)
+Category         : 1572 (Type 0x1): Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3), Benevolent Faerie (327710 effect#4), Benevolent Faerie Fermata (345453 effect#4), Haunted Mask (356968 effect#4)
+Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 52
@@ -4945,7 +4952,8 @@ Spell Level      : 34
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (150 seconds cooldown)
-Category         : 1572: Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3), Benevolent Faerie (327710 effect#4), Benevolent Faerie Fermata (345453 effect#4), Haunted Mask (356968 effect#4)
+Category         : 1572 (Type 0x1): Strive for Perfection (296320 effect#3), Strive for Perfection (299367 effect#3), Strive for Perfection (299369 effect#3), Benevolent Faerie (327710 effect#4), Benevolent Faerie Fermata (345453 effect#4), Haunted Mask (356968 effect#4)
+Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -5593,7 +5601,7 @@ Spell Level      : 5
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Category         : 1223
+Category         : 1223 (Type 0x0)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -5807,7 +5815,7 @@ Max Targets      : 3
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Charges          : 3 (12 seconds cooldown)
-Category         : 1225
+Category         : 1225 (Type 0x1)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -5901,7 +5909,8 @@ Effects          :
 #1 (id=312100)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #2 (id=341410)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 10)
 Description      : $?s454009[Tempest, ][]$?s137040[Earth Shock, Elemental Blast, and Earthquake][Lightning Bolt, Elemental Blast, and Chain Lightning] make your target a Lightning Rod for $197209d.
  
 Lightning Rods take $s2% of all damage you deal with $?s454009[Tempest, Lightning Bolt,][Lightning Bolt] and Chain Lightning.
@@ -6391,7 +6400,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1050631)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-#4 (id=1050632)  : : Apply Aura (6) | Periodic Trigger Spell (23): Tidebringer every 10 seconds
+#4 (id=1050632)  : Apply Aura (6) | Periodic Trigger Spell (23): Tidebringer every 10 seconds
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 236502 | Target: Self (1)
 Description      : Every $t4 sec, the cast time of your next Chain Heal is reduced by $236502m1%, and jump distance increased by $236502m2%. Maximum of $m2 charges.
 
@@ -6473,7 +6482,7 @@ Spell Type       : Magic
 Duration         : 15 seconds
 Attributes       : Can Proc From Procs (122), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=476596)   : : Apply Aura (6) | Periodic Trigger Spell (23): Healing Stream Totem every 2 seconds
+#1 (id=476596)   : Apply Aura (6) | Periodic Trigger Spell (23): Healing Stream Totem every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 255017 | Target: Self (1)
 #2 (id=476597)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -6679,7 +6688,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow Aura While Dead (116), Not In Spellbook (143), Do Not Display Duration (170), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=486342)   : : Apply Aura (6) | Periodic Trigger Spell (23): Spirit Wolf every 1 seconds
+#1 (id=486342)   : Apply Aura (6) | Periodic Trigger Spell (23): Spirit Wolf every 1 seconds
                    Base Value: 6 | Scaled Value: 6 | Trigger Spell: 260881 | Target: Self (1)
 Description      : $@spelldesc260878
 
@@ -7107,7 +7116,7 @@ Affecting Spells : Restoration Shaman (137039 effect#25), Elemental Shaman (1370
 Family Flags     : 13
 Attributes       : Can Proc From Procs (122), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=725792)   : : Apply Aura (6) | Periodic Trigger Spell (23): Healing Stream Totem every 2 seconds
+#1 (id=725792)   : Apply Aura (6) | Periodic Trigger Spell (23): Healing Stream Totem every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 273848 | Target: Self (1)
 #2 (id=725793)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -8456,7 +8465,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Charges          : 1 (30 seconds cooldown)
-Category         : 1893
+Category         : 1893 (Type 0x1)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -9895,7 +9904,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=843166)   : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(342244) every 0.5 seconds
+#1 (id=843166)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(342244) every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.65 | Trigger Spell: 342244 | Target: Self (1)
 Description      : Discharge excess energy from your Lightning Shield, dealing $342244s1 Nature damage to an enemy within $342244A1 yds every $t1 sec for $d.
 
@@ -10692,7 +10701,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Charges          : 1 (30 seconds cooldown)
-Category         : 1893
+Category         : 1893 (Type 0x1)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -12317,7 +12326,7 @@ Affecting Spells : Restoration Shaman (137039 effect#25), Elemental Shaman (1370
 Family Flags     : 13
 Attributes       : Can Proc From Procs (122), Extra Initial Period (169), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1014658)  : : Apply Aura (6) | Periodic Trigger Spell (23): Poison Cleansing every 1.5 seconds
+#1 (id=1014658)  : Apply Aura (6) | Periodic Trigger Spell (23): Poison Cleansing every 1.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 403922 | Target: Self (1)
 Description      : $@spelldesc383013
 Tooltip          : Cleansing all Poison effects from a nearby party or raid member every $t1 sec.
@@ -12498,7 +12507,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 600 seconds
-Category         : 1195
+Category         : 1195 (Type 0x0)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 117
@@ -12776,8 +12785,9 @@ Effects          :
                    Family Flags: 102
 #5 (id=1185726)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-                   Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816)
-                   Family Flags: 0, 1
+                   Affected Spells: Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816), Tempest (452201)
+                   Family Flags: 0, 1, 107
+Hotfixed         : Affects Spells
 Description      : Increases the damage of Lightning Bolt and Chain Lightning by $s5%$?a378270[, and Deeply Rooted Elements lasts ${$s2/1000} sec longer]?s114051[, and reduces the cooldown of Ascendance by ${$s4/-1000} sec][, reduces the cooldown of Ascendance by ${$s4/-1000} sec, and causes Deeply Rooted Elements to last ${$s2/1000} sec longer].
 
 While Ascendance is active, Windstrike automatically consumes up to $s1 Maelstrom Weapon stacks to discharge a Lightning Bolt or Chain Lightning at $s3% effectiveness at your enemy, whichever you most recently used.
@@ -14088,7 +14098,7 @@ Proc Chance      : 100%
 Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
 Attributes       : Can Proc From Procs (122), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1104559)  : : Apply Aura (6) | Periodic Trigger Spell (23): Healing Stream Totem every 2 seconds
+#1 (id=1104559)  : Apply Aura (6) | Periodic Trigger Spell (23): Healing Stream Totem every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 426218 | Target: Self (1)
 #2 (id=1104560)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -14199,7 +14209,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Charges          : 1 (30 seconds cooldown)
-Category         : 1893
+Category         : 1893 (Type 0x1)
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
@@ -15144,7 +15154,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
-Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #14, #26, #27, #31), Enhancement Shaman (137041 effects: #1, #2, #5), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Astral Bulwark (377933 effect#2), Nature's Swiftness (378081 effects: #1, #2), Planes Traveler (381647 effect#2), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Storm Frenzy (462725 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
+Affecting Spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #14, #26, #27, #31), Enhancement Shaman (137041 effects: #1, #2, #5), Storm Elemental (157299 effects: #4, #5), Storm Elemental (157319 effects: #4, #5), Mastery: Elemental Overload (168534 effects: #3, #4), Maelstrom Weapon (187881 effects: #1, #2), Summon Lightning Elemental (191716 effects: #2, #3), Crackling Surge (224127 effects: #1, #2), Astral Bulwark (377933 effect#2), Nature's Swiftness (378081 effects: #1, #2), Planes Traveler (381647 effect#2), Nature's Fury (381655 effect#1), Flash of Lightning (381936 effect#1), Thorim's Invocation (384444 effect#5), Initial Shaman (417374 effects: #1, #2), Stormcaller (454021 effects: #1, #2), Amplification Core (456369 effects: #1, #2), Maelstrom Surge (457727 effects: #1, #2), Storm Frenzy (462725 effects: #1, #2), Lightning Capacitor (462862 effects: #1, #2), Lesser Storm Elemental (462990 effects: #4, #5), Lesser Storm Elemental (462993 effects: #4, #5)
 Family Flags     : 39, 56, 107, 126
 Attributes       : Not Shapeshifted (16), Doesn't Reset Swing Timer if Instant (217)
 Effects          :
@@ -15721,7 +15731,8 @@ Effects          :
 #1 (id=1158318)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #2 (id=1158319)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 10)
 Description      : $?s137040[Lightning Rod targets now also take $s2% of the damage that Tempest deals, and Tempest also applies Lightning Rod effect.][Gain the effects of the Lightning Rod talent:
 
 $@spellicon210689 $@spellname210689
@@ -16694,6 +16705,7 @@ Effects          :
 Description      : Your next Chain Lightning$?s454009[, Tempest,][] or Lightning Bolt has $462725s1% reduced cast time after casting Earth Shock, Elemental Blast, or Earthquake. Can accumulate up to $462725u charges.
 
 Name             : Storm Frenzy (id=462725) [Spell Family (11)] 
+Hotfixed         : Proc Flags 1 (65536 -> 0), Internal Cooldown (1000 -> 0), Proc Flags 2 (0 -> 4)
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -16701,10 +16713,9 @@ Duration         : 12 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Internal Cooldown: 1 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Proc Flags       : Magic Hostile Spell
+Proc Flags       : Cast Successful
 Attributes       : Not In Spellbook (143), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1172813)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10) | Attributes: Suppress Points Stacking (6)
@@ -17634,7 +17645,7 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook (143), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1181105)  : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 5 seconds
+#1 (id=1181105)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 5 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1181753)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)

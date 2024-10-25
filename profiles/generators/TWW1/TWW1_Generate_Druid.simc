@@ -7,23 +7,24 @@ timeofday=night
 role=spell
 position=back
 professions=alchemy=1/engineering=1
-talents=CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGFmZMMMzAmZYmxww2YMmZ2mxCmZmZsNjZGzYsBWYAGgttxCmmZWGBAAAYzMDD
+talents=CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALUYmZGGmZAzMMzYAbzMLsMz2M2YmZMzsYWmZMzM2AbMAjltZ222mZZ2mpZmlZCAAAwiZGDA
 
-head=whispering_mask,id=221163,bonus_id=8780,ilevel=639,gem_id=213494
-neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213494/213494
+head=whispering_mask,id=221163,bonus_id=8780,ilevel=639,gem_id=213497
+neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213497/213497
 shoulders=maw_of_the_greatlynx,id=212054,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-back=anvilhide_cape,id=221088,ilevel=639,enchant_id=7409
+back=royal_emblem_of_nerubar,id=212446,ilevel=639,enchant_id=7403
 chest=hide_of_the_greatlynx,id=212059,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7364
-wrists=runebranded_armbands,id=219334,bonus_id=10222/8780/10520/8960/8790,ilevel=636,gem_id=213494,enchant_id=7391
+wrists=polluted_spectres_wraps,id=212438,bonus_id=8780,ilevel=639,gem_id=213497,enchant_id=7385
 hands=eviscerators_of_the_greatlynx,id=212057,ilevel=639
-waist=runebranded_waistband,id=219331,bonus_id=10222/8780/10520/8960/8793,ilevel=636,gem_id=213494
-legs=leggings_of_the_greatlynx,id=212055,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7534
-feet=fleeting_massacre_footpads,id=225591,ilevel=639,enchant_id=7424
-finger1=writhing_ringworm,id=225576,bonus_id=8781,ilevel=639,gem_id=213494/213494,enchant_id=7346
-finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=8781,ilevel=639,gem_id=213494/213494,enchant_id=7346
-trinket1=arakara_sacbrood,id=219314,ilevel=639
-trinket2=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
-main_hand=takazjs_entropic_edict,id=212397,ilevel=639,enchant_id=7460
+waist=runebranded_waistband,id=219331,bonus_id=10222/8780/11109/8960/8791,ilevel=636,gem_id=213497
+legs=leggings_of_the_greatlynx,id=212055,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7531
+feet=chitinspiked_jackboots,id=212445,ilevel=639,enchant_id=7424
+finger1=writhing_ringworm,id=225576,bonus_id=8781,ilevel=639,gem_id=213497/213497,enchant_id=7346
+finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=8781,ilevel=639,gem_id=213497/213497,enchant_id=7346
+trinket1=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
+trinket2=unbound_changeling,id=178708,bonus_id=7214/6652/1501/5884/6646/6918,ilevel=639
+main_hand=scithewood_scepter,id=178709,ilevel=639,enchant_id=7460
+off_hand=vagabonds_torch,id=222566,bonus_id=10421/1515/11300/8960/8791
 
 save=TWW1_Druid_Balance.simc
 
@@ -36,7 +37,7 @@ timeofday=night
 role=attack
 position=back
 professions=alchemy=1/engineering=1
-talents=CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDMzyMzYmZb2GjtZMjZmBAAAAAYJYYMYMGamxMMzYMDbzMAAAAAAAADAAAgAgZbmlmtZW2wMzA
+talents=CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmBmZZmZMzsNbjx2MmxMzAAAAAAsEMMgxMDNzYmxMjxMsZGAAAAAAAgBAAAQAwsNzSz2MLbYmZAA
 
 head=mask_of_the_greatlynx,id=212056,bonus_id=6652/10876/10376/10354/10273/1498/10255/1808,ilevel=639,gem_id=213494
 neck=sureki_zealots_insignia,id=225577,bonus_id=8781,ilevel=639,gem_id=213494/213494

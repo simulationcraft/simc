@@ -568,6 +568,7 @@ public:
     bool had_low_mana;
     bool trigger_dematerialize;
     bool trigger_ff_empowerment;
+    bool ff_empowerment_crit;
     bool trigger_flash_freezeburn;
     bool trigger_glorious_incandescence;
     int embedded_splinters;
@@ -2166,10 +2167,18 @@ public:
   { return spell_t::calculate_direct_amount( s ); }
 
   result_e calculate_result( action_state_t* s ) const override
-  { return calculate_on_impact ? RESULT_NONE : spell_t::calculate_result( s ); }
+  { return calculate_on_impact ? RESULT_NONE : add_ffe_crit( s ); }
 
   virtual result_e calculate_impact_result( action_state_t* s ) const
-  { return spell_t::calculate_result( s ); }
+  { return add_ffe_crit( s ); }
+
+  result_e add_ffe_crit( action_state_t* s ) const
+  {
+    result_e r = spell_t::calculate_result( s );
+    if ( s->chain_target == 0 && r == RESULT_HIT && p()->bugs && may_crit && p()->state.ff_empowerment_crit )
+      r = RESULT_CRIT;
+    return r;
+  }
 
   void enable_calculate_on_impact( unsigned spell_id )
   {
@@ -2276,6 +2285,9 @@ public:
         p()->action.frostfire_infusion->execute_on_target( s->target );
       p()->buffs.frostfire_empowerment->trigger();
     }
+
+    if ( s->chain_target == 0 && may_crit )
+      p()->state.ff_empowerment_crit = false;
   }
 
   void assess_damage( result_amount_type rt, action_state_t* s ) override
@@ -2528,7 +2540,8 @@ struct arcane_mage_spell_t : public mage_spell_t
 
   void consume_nether_precision( player_t* t, bool aethervision = false )
   {
-    if ( !p()->buffs.nether_precision->check() )
+    int old_stack = p()->buffs.nether_precision->check();
+    if ( !old_stack )
       return;
 
     p()->buffs.nether_precision->decrement();
@@ -2541,8 +2554,9 @@ struct arcane_mage_spell_t : public mage_spell_t
         p()->buffs.leydrinker->trigger();
     }
 
+    // TODO: Consuming the 2nd stack of NP seems to stop Dematerialize from triggering
     if ( p()->talents.dematerialize.ok() )
-      p()->state.trigger_dematerialize = true;
+      p()->state.trigger_dematerialize = !p()->bugs || old_stack == p()->buffs.nether_precision->max_stack();
     p()->trigger_splinter( t );
 
     if ( aethervision )
@@ -4992,7 +5006,7 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     double m = frost_mage_spell_t::composite_crit_chance_multiplier();
 
-    if ( frostfire && p()->state.trigger_ff_empowerment )
+    if ( frostfire && p()->state.trigger_ff_empowerment && !p()->bugs )
       m *= 1.0 + p()->buffs.frostfire_empowerment->data().effectN( 1 ).percent();
 
     return m;
@@ -5029,6 +5043,7 @@ struct frostbolt_t final : public frost_mage_spell_t
         // TODO: Double check this later
         make_event( *sim, 15_ms, [ this ] { p()->buffs.frostfire_empowerment->decrement(); } );
         p()->state.trigger_ff_empowerment = true;
+        p()->state.ff_empowerment_crit = true;
         trigger_frostfire_mastery( true );
       }
 
@@ -5212,8 +5227,7 @@ struct frozen_orb_t final : public frost_mage_spell_t
     if ( p()->talents.splintering_orbs.ok() )
     {
       p()->trigger_splinter( nullptr );
-      // TODO: Frost is using Arcane's spelldata value, capping splinters from FO at 4
-      int count = as<int>( p()->talents.splintering_orbs->effectN( p()->bugs ? 1 : 6 ).base_value() ) - 1;
+      int count = as<int>( p()->talents.splintering_orbs->effectN( 6 ).base_value() ) - 1;
       make_repeating_event( *sim, pulse_time, [ this ] { p()->trigger_splinter( nullptr ); }, count );
     }
   }

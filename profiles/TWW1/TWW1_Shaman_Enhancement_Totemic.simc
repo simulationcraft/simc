@@ -1,11 +1,11 @@
-shaman="PR_Shaman_Enhancement_DRE"
+shaman="TWW1_Shaman_Enhancement_Totemic"
 source=default
 spec=enhancement
 level=80
 race=goblin
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzCm5BMzMzMzgtZmlZAAAAAAAAAAgFAGzYYILwywQDWAwsMZGMLLmZmZMMzsglZmJwYZMzAAMD
+talents=CcQAYp+JUk5Lea12OyacsLNThMzAMzYsNzMzglZGbz2MAAAAAAAAAA2gFssMjZmtNNLbDzoZmGsBgZZyMwiZMzgZmZ2GWmZmswyYhZGAgZmB
 
 # Default consumables
 potion=tempered_potion_3
@@ -155,8 +155,8 @@ actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=7&feral_spirit.
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=7&feral_spirit.active>=1&(buff.icy_edge.stack+buff.molten_weapon.stack>=1)&charges_fractional>=1.8&cooldown.feral_spirit.remains>=3
 actions.single+=/lightning_bolt,if=talent.tempest.enabled&buff.maelstrom_weapon.stack>=(buff.maelstrom_weapon.max_stack-talent.elemental_spirits.enabled*(talent.supercharge.enabled+talent.static_accumulation.enabled))&!buff.primordial_wave.up
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.ascendance.up&ti_chain_lightning&(buff.ascendance.remains>(cooldown.strike.remains+gcd))&!buff.primordial_wave.up
-actions.single+=/stormstrike,if=!talent.elemental_spirits.enabled&(buff.doom_winds.up|talent.deeply_rooted_elements.enabled|(talent.stormblast.enabled&buff.stormbringer.up))
 actions.single+=/lava_lash,if=buff.hot_hand.up&!talent.tempest.enabled
+actions.single+=/stormstrike,if=!talent.elemental_spirits.enabled&(buff.doom_winds.up|talent.deeply_rooted_elements.enabled|(talent.stormblast.enabled&buff.stormsurge.up))
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&charges=max_charges&!talent.tempest.enabled
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=8&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains&(!buff.splintered_elements.up|fight_remains<=12)
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=8&(feral_spirit.active>=2|!talent.elemental_spirits.enabled)&!talent.tempest.enabled
@@ -166,7 +166,7 @@ actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&feral_spirit.
 actions.single+=/lightning_bolt,if=((buff.maelstrom_weapon.stack>=8)|(talent.static_accumulation.enabled&buff.maelstrom_weapon.stack>=5))&buff.primordial_wave.down&talent.ascendance.enabled&talent.tempest.enabled
 actions.single+=/doom_winds,if=raid_event.adds.in>=action.doom_winds.cooldown&talent.elemental_spirits.enabled&talent.ascendance.enabled&talent.tempest.enabled
 actions.single+=/lava_lash,if=talent.tempest.enabled&(buff.hot_hand.up|(talent.molten_assault.enabled&talent.elemental_spirits.enabled&!talent.deeply_rooted_elements.enabled&dot.flame_shock.remains<=3))
-actions.single+=/stormstrike,if=talent.elemental_spirits.enabled&(buff.doom_winds.up|talent.deeply_rooted_elements.enabled|talent.ascendance.enabled|(talent.stormblast.enabled&buff.stormbringer.up))
+actions.single+=/stormstrike,if=talent.elemental_spirits.enabled&(buff.doom_winds.up|talent.deeply_rooted_elements.enabled|(talent.stormblast.enabled&buff.stormsurge.up))
 actions.single+=/frost_shock,if=buff.hailstorm.up&buff.ice_strike.up&talent.swirling_maelstrom.enabled&talent.tempest.enabled&talent.ascendance.enabled
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&feral_spirit.active>=4&talent.deeply_rooted_elements.enabled&(charges_fractional>=1.8|(buff.icy_edge.stack+buff.molten_weapon.stack>=4))
 actions.single+=/lightning_bolt,if=((buff.maelstrom_weapon.stack>=8)|(talent.static_accumulation.enabled&buff.maelstrom_weapon.stack>=5))&buff.primordial_wave.down
@@ -199,29 +199,31 @@ actions.single+=/earth_elemental
 actions.single+=/flame_shock
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down
 
-head=cryptbound_headpiece,id=221156,ilevel=593
-neck=emergency_stop_keychain,id=221077,ilevel=593
-shoulders=wintersnap_shoulderguards,id=178695,ilevel=593
-back=anvilhide_cape,id=221088,ilevel=593
-chest=goliaths_chitinous_chainmail,id=221147,ilevel=593,enchant=crystalline_radiance_2
-wrists=hiveswarm_bracers,id=178703,ilevel=593
-hands=claws_of_tainted_ichor,id=221162,ilevel=593
-waist=reinforced_antiintruder_chainmail,id=221075,ilevel=593
-legs=entwined_chimeric_legguards,id=221186,ilevel=593,enchant=stormbound_armor_kit_2
-feet=silksteel_striders,id=221152,ilevel=593
-finger1=circle_of_bone,id=133299,ilevel=593,enchant=radiant_haste_2
-finger2=stitchfleshs_misplaced_signet,id=178736,ilevel=593,enchant=radiant_haste_2
-trinket1=arakara_sacbrood,id=219314,ilevel=593
-trinket2=empowering_crystal_of_anubikkaj,id=219312,ilevel=593
-main_hand=eirichs_fist_of_deception,id=221090,ilevel=593,enchant=authority_of_the_depths_2
-off_hand=bainbridges_blackjack,id=159648,ilevel=593,enchant=authority_of_the_depths_2
+head=noetic_of_the_forgotten_reservoir,id=212011,ilevel=639,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213482/213482
+shoulders=concourse_of_the_forgotten_reservoir,id=212009,ilevel=639
+back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960,crafted_stats=49/36
+chest=goresplattered_membrane,id=212421,ilevel=639,enchant=crystalline_radiance_3
+wrists=throne_defenders_bangles,id=212415,ilevel=639,gem_id=213482
+hands=covenant_of_the_forgotten_reservoir,id=212012,ilevel=639
+waist=cinch_of_lingering_influence,id=221168,ilevel=639,gem_id=213482
+legs=sarong_of_the_forgotten_reservoir,id=212010,ilevel=639,enchant=stormbound_armor_kit_3
+feet=silksteel_striders,id=221152,ilevel=639
+finger1=key_to_the_unseeming,id=212447,ilevel=639,gem_id=213482/213482,enchant=radiant_haste_3
+finger2=writhing_ringworm,id=225576,ilevel=639,gem_id=213482/213482,enchant=radiant_haste_3
+trinket1=skardyns_grace,id=133282,bonus_id=4786/11342/10299,ilevel=639
+trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/6652/10383/1632/10255,ilevel=639
+main_hand=void_reapers_warp_blade,id=219877,bonus_id=1540/10299/10376,enchant=authority_of_the_depths_3
+off_hand=everforged_mace,id=222442,bonus_id=10421/9633/8902/9627/8793/10222/11144/11300/8960,enchant=authority_of_the_depths_3,crafted_stats=36/32
 
 # Gear Summary
-# gear_ilvl=593.00
-# gear_agility=23854
-# gear_stamina=124235
-# gear_crit_rating=298
-# gear_haste_rating=14502
-# gear_mastery_rating=8200
-# gear_versatility_rating=4228
-# gear_armor=29302
+# gear_ilvl=638.63
+# gear_agility=36181
+# gear_stamina=237354
+# gear_crit_rating=2730
+# gear_haste_rating=20583
+# gear_mastery_rating=14614
+# gear_versatility_rating=518
+# gear_armor=38044
+# set_bonus=thewarwithin_season_1_2pc=1
+# set_bonus=thewarwithin_season_1_4pc=1

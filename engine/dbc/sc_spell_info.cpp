@@ -103,6 +103,8 @@ static constexpr auto _hotfix_spell_map = util::make_static_map<unsigned, std::s
   { 54, "Scale from ilevel"  },
   { 55, "Aura Interrupt"     },
   { 56, "Channel Interrupt"  },
+  { 57, "Category Flags"     },
+  { 58, "Category Type"      },
 } );
 
 static constexpr auto _hotfix_spelltext_map = util::make_static_map<unsigned, std::string_view>( {
@@ -933,6 +935,15 @@ static constexpr auto _aura_interrupt_strings = util::make_static_map<unsigned, 
   { 57, "Release Empower"                  },
 } );
 
+static constexpr auto _category_flag_strings = util::make_static_map<unsigned, std::string_view>( {
+//{ 0, "UNUSED" },
+  { 1, "Global Cooldown"                  },
+  { 2, "Cooldown on Leaving Combat"       },
+  { 3, "Cooldown in Days"                 },
+  { 4, "Reset Charges on Encounter End"   },
+  { 5, "Reset Coooldown on Encounter End" },
+} );
+
 static constexpr auto _property_type_strings = util::make_static_map<int, std::string_view>( {
   {  0, "Spell Direct Amount"             },
   {  1, "Spell Duration"                  },
@@ -1561,7 +1572,6 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
         }
         break;
       case A_PERIODIC_TRIGGER_SPELL:
-        s << ": ";
         if ( e->trigger_spell_id() && dbc.spell( e->trigger_spell_id() ) != spell_data_t::nil() )
           tmp_str += fmt::format( ": {}", dbc.spell( e->trigger_spell_id() )->name_cstr() );
         else
@@ -2363,16 +2373,45 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell->category() > 0 )
   {
-    s << "Category         : " << spell->category();
+    s << "Category         : ";
+    std::string category_str = fmt::format( "{} (Type {:#x})", spell->category(), spell->category_type() );
     auto affecting_effects = dbc.effect_categories_affecting_spell( spell );
-    if ( !affecting_effects.empty() )
+    if ( affecting_effects.empty() )
     {
-      s << ": ";
-      s << wrap_concatenate( affecting_effects, []( const spelleffect_data_t* e ) {
-        return fmt::format( "{} ({} effect#{})", e->spell()->name_cstr(), e->spell()->id(), e->index() + 1 );
-      }, wrap );
+      s << category_str;
+    }
+    else
+    {
+      s << wrap_concatenate( affecting_effects,
+        [ category_str, first = affecting_effects.front() ]( const spelleffect_data_t* e ) {
+          if ( e == first )
+          {
+            return fmt::format( "{}: {} ({} effect#{})", category_str, e->spell()->name_cstr(), e->spell()->id(),
+                                e->index() + 1 );
+          }
+          else
+          {
+            return fmt::format( "{} ({} effect#{})", e->spell()->name_cstr(), e->spell()->id(), e->index() + 1 );
+          }
+        },
+        wrap );
     }
     s << std::endl;
+
+    if ( spell->category_flags() )
+    {
+      std::vector<std::string> category_flags_str;
+      for ( unsigned flag = 0; flag < 32; flag++ )
+      {
+        if ( spell->category_flags() & ( 1 << flag ) )
+        {
+          auto it = _category_flag_strings.find( flag );
+          category_flags_str.emplace_back(
+            fmt::format( "{} ({})", it == _category_flag_strings.end() ? "Unknown" : it->second, flag ) );
+        }
+      }
+      s << "Category Flags   : " << wrap_join( category_flags_str, wrap ) << std::endl;
+    }
   }
 
   bool first_label = true;

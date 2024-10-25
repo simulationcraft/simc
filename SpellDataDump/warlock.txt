@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57171 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57212 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -132,7 +132,7 @@ Spell Level      : 3
 Cast Time        : 6 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Category         : 1363
+Category         : 1363 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -153,7 +153,7 @@ Spell Level      : 23
 Cast Time        : 6 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Category         : 1363
+Category         : 1363 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -174,7 +174,7 @@ Spell Level      : 10
 Cast Time        : 6 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Category         : 1363
+Category         : 1363 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -356,7 +356,7 @@ GCD              : 1.5 seconds
 Travel Time      : 1 seconds
 Duration         : 0.25 seconds
 Cooldown         : 120 seconds
-Category         : 731
+Category         : 731 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -546,7 +546,7 @@ Spell Level      : 5
 Range            : 30 yards
 Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
-Category         : 1266
+Category         : 1266 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -604,7 +604,7 @@ School           : Physical
 Spell Type       : Magic
 Spell Level      : 7
 Cooldown         : 60 seconds
-Category         : 1711
+Category         : 1711 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -629,7 +629,7 @@ GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Travel Delay     : 0.1 seconds
 Cooldown         : 45 seconds
-Category         : 631
+Category         : 631 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -761,7 +761,7 @@ Resource         : 20 Energy (3) (id=312)
 Spell Level      : 17
 GCD              : 1.5 seconds
 Duration         : 300 seconds
-Category         : 37
+Category         : 37 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -793,7 +793,7 @@ Spell Level      : 12
 Range            : 30 yards
 Duration         : 5 seconds
 Cooldown         : 10 seconds
-Category         : 82
+Category         : 82 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -854,7 +854,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Charges          : 2 (12 seconds cooldown)
-Category         : 651: Warlock (137042 effect#4)
+Category         : 651 (Type 0x1): Warlock (137042 effect#4)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -899,7 +899,7 @@ Resource         : 1% Base Mana (0) (id=7367)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 2 (12.96 seconds cooldown)
-Category         : 672: Warlock (137042 effect#2), Improved Conflagrate (231793 effect#1), Cinders of the Azj'Aqir (337166 effect#1), Cinders of the Azj'Aqir (337166 effect#2), Explosive Potential (388827 effect#1)
+Category         : 672 (Type 0x1): Warlock (137042 effect#2), Improved Conflagrate (231793 effect#1), Cinders of the Azj'Aqir (337166 effect#1), Cinders of the Azj'Aqir (337166 effect#2), Explosive Potential (388827 effect#1)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -926,7 +926,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), Spell Haste Affects Periodic (173), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=10699)    : : Apply Aura (6) | Periodic Trigger Spell (23): Immolation every 2 seconds
+#1 (id=10699)    : Apply Aura (6) | Periodic Trigger Spell (23): Immolation every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 20153 | Target: Self (1)
 Description      : Burns nearby enemies for $20153s1 fire damage every $t1 sec.
 Tooltip          : Burns nearby enemies for fire damage every $t1 sec.
@@ -939,7 +939,7 @@ Resource         : 20 Energy (3) (id=802)
 Spell Level      : 18
 Range            : 30 yards
 Cooldown         : 15 seconds
-Category         : 12
+Category         : 12 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -960,7 +960,7 @@ Spell Type       : Magic
 Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 24 seconds
-Category         : 88
+Category         : 88 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -1028,7 +1028,7 @@ Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Duration         : 900 seconds
 Cooldown         : 600 seconds
-Category         : 831
+Category         : 831 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -1267,7 +1267,7 @@ Resource         : 1 Soul Shard (7) (id=1188)
 Cast Time        : 6 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Category         : 1363
+Category         : 1363 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -1289,7 +1289,7 @@ Range            : 6 - 25 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 15 seconds
-Category         : 1158
+Category         : 1158 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -2047,7 +2047,7 @@ Labels           : 16: Class Spells
 Family Flags     : 35
 Attributes       : Is Ability (4), Do Not Sheath (18), No Threat (42), Requires Main-Hand Weapon (106), Extra Initial Period (169), Spell Haste Affects Periodic (173), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=92647)    : : Apply Aura (6) | Periodic Trigger Spell (23): Felstorm every 1 seconds
+#1 (id=92647)    : Apply Aura (6) | Periodic Trigger Spell (23): Felstorm every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 89753 | Target: Self (1)
 #2 (id=92648)    : Apply Aura (6) | Unknown(264)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2552,7 +2552,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Cooldown         : 90 seconds
-Category         : 1336
+Category         : 1336 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -2688,7 +2688,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 27 seconds
 Cooldown         : 90 seconds
-Category         : 1336
+Category         : 1336 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -2712,7 +2712,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 27 seconds
 Cooldown         : 90 seconds
-Category         : 1336
+Category         : 1336 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -2736,7 +2736,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 27 seconds
 Cooldown         : 90 seconds
-Category         : 1336
+Category         : 1336 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -2760,7 +2760,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 27 seconds
 Cooldown         : 90 seconds
-Category         : 1336
+Category         : 1336 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -2832,7 +2832,8 @@ Resource         : 1% Base Mana (0) (id=192762)
 Duration         : 20 seconds
 Cooldown         : 120 seconds
 Charges          : 0 (120 seconds cooldown)
-Category         : 1447
+Category         : 1447 (Type 0x1)
+Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -3070,7 +3071,7 @@ Spell Level      : 12
 Range            : 30 yards
 Max Targets      : 1
 Duration         : 20 seconds
-Category         : 1266
+Category         : 1266 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -3372,6 +3373,18 @@ Effects          :
 #17 (id=1187050) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445474)
+#18 (id=1191593) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: -17 | Scaled Value: -17 | Misc Value 2: 3535 (Label) | Target: Self (1)
+                   Affected Spells (Label): Demonic Soul (449801), Wicked Reaping (449826)
+#19 (id=1191594) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0 | Misc Value 2: 3535 (Label) | Target: Self (1)
+                   Affected Spells (Label): Demonic Soul (449801), Wicked Reaping (449826)
+#20 (id=1191595) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: -17 | Scaled Value: -17 | Misc Value 2: 3545 (Label) | Target: Self (1)
+                   Affected Spells (Label): Soul Anathema (450538)
+#21 (id=1191596) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0 | Misc Value 2: 3545 (Label) | Target: Self (1)
+                   Affected Spells (Label): Soul Anathema (450538)
 
 Name             : Demonology Warlock (id=137044) [Spell Family (5), Passive, Hidden] 
 Class            : Demonology Warlock
@@ -3663,7 +3676,7 @@ Spell Level      : 12
 Range            : 30 yards
 Duration         : 5 seconds
 Cooldown         : 10 seconds
-Category         : 82
+Category         : 82 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -3737,7 +3750,7 @@ Spell Level      : 22
 Range            : 40 yards
 Duration         : 6 seconds
 Cooldown         : 24 seconds
-Category         : 88
+Category         : 88 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -3755,7 +3768,7 @@ School           : Physical
 Spell Type       : None
 Range            : 50000 yards
 Cooldown         : 24 seconds
-Category         : 88
+Category         : 88 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -4356,7 +4369,8 @@ Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 3 (45 seconds cooldown)
-Category         : 1630
+Category         : 1630 (Type 0x0)
+Category Flags   : Reset Charges on Encounter End (4)
 Labels           : 88
                  : 203
                  : 293
@@ -4998,7 +5012,7 @@ Labels           : 16: Class Spells
 Attributes       : Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=321564)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 45 | Scaled Value: 45 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 Description      : $@spelldesc108501
 Tooltip          : Summoned by a Grimoire of Service.
@@ -5808,7 +5822,7 @@ Family Flags     : 49, 70
 Attributes       : Not Shapeshifted (16), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=707419)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.44925 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.44925 | PvP Coefficient: 1.4 | Target: Enemy (6)
 #2 (id=1049817)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=1173941)  : Trigger Missiles (32)
@@ -5829,7 +5843,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Log (8), Do Not Sheath (18), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=707727)   : : Apply Aura (6) | Periodic Trigger Spell (23): Burning Ember every 1 seconds
+#1 (id=707727)   : Apply Aura (6) | Periodic Trigger Spell (23): Burning Ember every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 264365 | Target: Self (1)
 Description      : Generates $264365s1 Soul Shard Fragment every $t1 sec.
 Tooltip          : Generates $264365s1 Soul Shard Fragment every $t1 sec.
@@ -7760,7 +7774,7 @@ Spell Type       : None
 Spell Level      : 1
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Category         : 133
+Category         : 133 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -9277,7 +9291,7 @@ Spell Level      : 19
 Cast Time        : 6 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Category         : 1363
+Category         : 1363 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -10289,10 +10303,12 @@ Effects          :
 Description      : While Agony, $?a445465[Wither][Corruption], and Unstable Affliction are active, your Shadow Bolt has a $s1% chance and your Drain Soul has a $s2% chance to make your next Malefic Rapture cost no Soul Shards and cast instantly.
 
 Name             : Tormented Crescendo (id=387077) [Spell Family (5), Hidden] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not a Proc (105), Suppress Target Procs (113)
+Labels           : 19: Warlock Spells
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Not an Attack (194)
 Effects          :
 #1 (id=1021628)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 100 yards | Target: At Self (18) -> At Enemy in Area (16)
@@ -11421,7 +11437,8 @@ Spell Type       : Magic
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 3 (45 seconds cooldown)
-Category         : 1630
+Category         : 1630 (Type 0x0)
+Category Flags   : Reset Charges on Encounter End (4)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -11647,7 +11664,7 @@ Effects          :
 #2 (id=1025920)  : Apply Aura (6) | Modify Attacker Crit Chance (197)
                    Base Value: -2 | Scaled Value: -2 | Target: Self (1)
 #3 (id=1025921)  : Apply Aura Pet (174) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
-                   Base Value: -8 | Scaled Value: -8 | Misc Value: 32 | Misc Value 2: 2357 (Label) | Radius: 100 yards | Target: Self (1)
+                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.667 | Misc Value: 32 | Misc Value 2: 2357 (Label) | Radius: 100 yards | Target: Self (1)
 Description      : Reduces the chance you will be critically struck by $s1%. All damage your primary demon takes is reduced by $s3%.
 
 Name             : Abyss Walker (id=389609) [Spell Family (5), Passive, Hidden] 
@@ -12582,7 +12599,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
-Category         : 133
+Category         : 133 (Type 0x0)
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
@@ -13214,7 +13231,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Spell Haste Affects Periodic (173), Aura Points On Client (268)
 Effects          :
-#1 (id=1109298)  : : Apply Aura (6) | Periodic Trigger Spell (23): Infernal Presence every 1 seconds
+#1 (id=1109298)  : Apply Aura (6) | Periodic Trigger Spell (23): Infernal Presence every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 428455 | Target: Self (1)
 Description      : Cloaked in the ever-burning flames of the abyss, dealing $428455s1 Fire damage to enemies within $428455a1 yards every $t1 sec.
 Tooltip          : Radiating searing flames, dealing $428455s1 Fire damage to nearby enemies every $t1 sec.
@@ -13617,7 +13634,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169)
 Effects          :
-#1 (id=1120585)  : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
+#1 (id=1120585)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc428517
 
@@ -13632,7 +13649,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1121210)  : : Apply Party Aura (35) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
+#1 (id=1121210)  : Apply Party Aura (35) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1182921)  : Apply Aura (6) | Root (26)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13653,7 +13670,7 @@ Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attac
 Effects          :
 #1 (id=1121387)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=1131464)  : : Apply Aura (6) | Periodic Trigger Spell (23): Chaos Salvo every 0.2 seconds
+#2 (id=1131464)  : Apply Aura (6) | Periodic Trigger Spell (23): Chaos Salvo every 0.2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 432592 | Target: Self (1)
 Description      : $@spelldesc428518
 
@@ -14051,7 +14068,7 @@ Attributes       : Not Shapeshifted (16), No Immunities (29), Is Channelled (34)
 Effects          :
 #1 (id=1131904)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=1131906)  : : Apply Aura (6) | Periodic Trigger Spell (23): Felseeker every 0.5 seconds
+#2 (id=1131906)  : Apply Aura (6) | Periodic Trigger Spell (23): Felseeker every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 434404 | Target: Self (1)
 #3 (id=1182874)  : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -14339,6 +14356,7 @@ Description      : $@spelldesc440044
 Tooltip          : $?s440040&s440044[The effects of Xalan's Cruelty are increased to $s2% and the effects of Xalan's Ferocity are increased to $s1%.]?s440040[The effects of Xalan's Cruelty are increased $s2%.][The effects of Xalan's Ferocity are increased $s1%.]
 
 Name             : Blackened Soul (id=441638) [Spell Family (5), Hidden] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
@@ -14346,7 +14364,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), No Harmful Threat (132), Allow Class Ability Procs (416)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Ignore Line of Sight (66), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Not an Attack (194)
 Effects          :
 #1 (id=1136234)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: At Self (22) -> Enemy in Area (15)
@@ -14520,7 +14538,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Suppress Target Procs (113)
 Effects          :
-#1 (id=1142740)  : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
+#1 (id=1142740)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc440043
 
@@ -14852,7 +14870,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-                 : 3535: Mastery: Master Demonologist (77219 effect#5), Wicked Reaping (449631 effect#1)
+                 : 3535: Mastery: Master Demonologist (77219 effect#5), Affliction Warlock (137043 effect#18), Affliction Warlock (137043 effect#19), Wicked Reaping (449631 effect#1)
 Affecting Spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49
 Effects          :
@@ -14880,7 +14898,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-                 : 3535: Mastery: Master Demonologist (77219 effect#5), Wicked Reaping (449631 effect#1)
+                 : 3535: Mastery: Master Demonologist (77219 effect#5), Affliction Warlock (137043 effect#18), Affliction Warlock (137043 effect#19), Wicked Reaping (449631 effect#1)
 Affecting Spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49
 Effects          :
@@ -14942,7 +14960,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-                 : 3545: Mastery: Potent Afflictions (77215 effect#3), Mastery: Master Demonologist (77219 effect#4), Quietus (449634 effect#1), Quietus (449634 effect#2), Quietus (449634 effect#3)
+                 : 3545: Mastery: Potent Afflictions (77215 effect#3), Mastery: Master Demonologist (77219 effect#4), Affliction Warlock (137043 effect#20), Affliction Warlock (137043 effect#21), Quietus (449634 effect#1), Quietus (449634 effect#2), Quietus (449634 effect#3)
 Affecting Spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Triggered By     : Soul Anathema (449624)
 Family Flags     : 49
@@ -15321,7 +15339,7 @@ Affecting Spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlo
 Family Flags     : 49
 Effects          :
 #1 (id=1154812)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.4) | SP Coefficient: 1.2474 | PvP Coefficient: 1.3 | Radius: 0 - 10 yards | Target: At Target (63) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.4) | SP Coefficient: 1.2474 | Radius: 0 - 10 yards | Target: At Target (63) -> At Enemy in Area (16)
 Description      : $@spelldesc453172
 
 Name             : Death's Embrace (id=453189) [Spell Family (5), Passive, Hidden] 
@@ -15382,7 +15400,7 @@ Labels           : 16: Class Spells
                  : 292
 Effects          :
 #1 (id=1154918)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.90371 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.90371 | PvP Coefficient: 0.7 | Target: Enemy (6)
 Description      : $@spelldesc387273
 
 Name             : Doom (id=453567) [Spell Family (5)] 
@@ -15446,7 +15464,7 @@ Family Flags     : 122
 Attributes       : Not Shapeshifted (16), Allow Harmful on Friendly (373), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1155611)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.16179 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.59415 | Target: Enemy (6)
 #2 (id=1155612)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=1155613)  : Dummy (3)
@@ -15835,7 +15853,7 @@ Triggered By     : Gloom Slash (455489)
 Attributes       : Spell Haste Affects Periodic (173), Periodic Can Crit (265)
 Effects          :
 #1 (id=1158960)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.203696 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.244435 | Target: Enemy (6)
 Description      : $@spelldesc455489
 
 Name             : Foul Mouth (id=455502) [Spell Family (5), Passive, Hidden] 
@@ -15973,26 +15991,28 @@ Description      : $@spelldesc455572
 Tooltip          : Damage dealt increased by $s1%.
 
 Name             : The Houndmaster's Gambit (id=455615) [Spell Family (5), Hidden] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Suppress Target Procs (113), Not an Attack (194)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Not an Attack (194)
 Effects          :
 #1 (id=1159208)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Self (18) -> To Area (8)
 Description      : $@spelldesc455572
 
 Name             : The Houndmaster's Gambit (id=455621) [Spell Family (5), Hidden] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Not a Proc (105), Suppress Target Procs (113), Not an Attack (194)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Not an Attack (194)
 Effects          :
 #1 (id=1159219)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Self (18) -> To Area (8)
@@ -16557,6 +16577,7 @@ Effects          :
 Description      : $@spelldesc460551
 
 Name             : Doom (id=460569) [Hidden] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -16564,7 +16585,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Not an Attack (194)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Not an Attack (194)
 Effects          :
 #1 (id=1168345)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Enemy (53) -> At Enemy in Area (16)

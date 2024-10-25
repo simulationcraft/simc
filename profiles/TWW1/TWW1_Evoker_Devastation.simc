@@ -5,7 +5,7 @@ level=80
 race=dracthyr
 role=spell
 position=back
-talents=CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzMzMYmNzgBMwYmpZMzkZbsMmZmxMmZbGwMmZbMzsMmBGYMYBWGjGLDIzAwGA
+talents=CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzMzMYmNzYmBMYMTzYmJz2YZMzMjZMzyMgZMzGzMLzMgBGDWglxox2AyMIYDD
 
 # Default consumables
 potion=tempered_potion_3
@@ -177,13 +177,13 @@ actions.trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&!variable
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|trinket.1.is.spymasters_web|trinket.1.cooldown.duration=0)&(!variable.trinket_2_ogcd_cast)&(variable.next_dragonrage>20|!talent.dragonrage|!variable.trinket_1_buffs|trinket.1.is.spymasters_web&(buff.spymasters_report.stack<5|fight_remains>=130+variable.next_dragonrage))
 
 head=horns_of_the_destroyer,id=212029,bonus_id=1540/10299/1808,gem_id=213743
-neck=locket_of_broken_memories,id=212448,bonus_id=1540/10299/10376/8781,gem_id=213494/213494
+neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213473/213485
 shoulders=fumaroles_of_the_destroyer,id=212027,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
 back=wings_of_shattered_sorrow,id=225574,bonus_id=6652/10376/10354/10269/1511/10255,ilevel=639
 chest=scales_of_the_destroyer,id=212032,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant=crystalline_radiance_3
-wrists=glyphetched_vambraces,id=219342,bonus_id=10421/9633/8902/11144/10222/1485/1808/11109/8960,gem_id=213494,crafted_stats=32/36
+wrists=glyphetched_vambraces,id=219342,bonus_id=10421/9633/8902/11144/10222/1485/1808/11109/8960,gem_id=213455,crafted_stats=32/36
 hands=rippers_of_the_destroyer,id=212030,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-waist=core_of_the_destroyer,id=212026,bonus_id=1540/10299/1808,gem_id=213494
+waist=core_of_the_destroyer,id=212026,bonus_id=1540/10299/1808,gem_id=213497
 legs=liquified_defectors_leggings,id=212435,bonus_id=1540/10299/10376,enchant=sunset_spellthread_3
 feet=rashanans_grotesque_talons,id=225586,bonus_id=1540/10299/10376,enchant_id=7424
 finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10394/10879,ilevel=639,gem_id=213494/213494,enchant=radiant_critical_strike_3
@@ -197,10 +197,10 @@ off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/11144/10222/1485/113
 # gear_ilvl=638.63
 # gear_stamina=237584
 # gear_intellect=45357
-# gear_crit_rating=23510
-# gear_haste_rating=9328
-# gear_mastery_rating=5508
-# gear_versatility_rating=2009
+# gear_crit_rating=18753
+# gear_haste_rating=13269
+# gear_mastery_rating=6079
+# gear_versatility_rating=2254
 # gear_armor=38017
 # set_bonus=thewarwithin_season_1_2pc=1
 # set_bonus=thewarwithin_season_1_4pc=1

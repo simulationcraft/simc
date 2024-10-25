@@ -27,13 +27,13 @@ off_hand=,id=178712,bonus_id=9948/10299/10376
 
 save=TWW1_Shaman_Elemental.simc
 
-shaman="TWW1_Shaman_Enhancement_DRE"
+shaman="TWW1_Shaman_Enhancement_Totemic"
 level=80
 race=goblin
 spec=enhancement
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzCm5BMzMzMzgtZmlZAAAAAAAAAAgFAGzYYILwywQDWAwsMZGMLLmZmZMMzsglZmJwYZMzAAMD
+talents=CcQAYp+JUk5Lea12OyacsLNThMzAMzYsNzMzglZGbz2MAAAAAAAAAA2gFssMjZmtNNLbDzoZmGsBgZZyMwiZMzgZmZ2GWmZmswyYhZGAgZmB
 
 head=noetic_of_the_forgotten_reservoir,id=212011,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213482/213482
@@ -52,7 +52,7 @@ trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/6652/10383/1632/10255,i
 main_hand=void_reapers_warp_blade,id=219877,bonus_id=1540/10299/10376,enchant=authority_of_the_depths_3
 off_hand=everforged_mace,id=222442,bonus_id=10421/9633/8902/9627/8793/10222/11144/11300/8960,enchant=authority_of_the_depths_3,crafted_stats=36/32
 
-save=TWW1_Shaman_Enhancement_DRE.simc
+save=TWW1_Shaman_Enhancement_Totemic.simc
 
 shaman="TWW1_Shaman_Enhancement"
 level=80
@@ -60,7 +60,7 @@ race=goblin
 spec=enhancement
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzCmhZmZmZGmtZmlZAAAAAAAAAAgNAGzYYILwywQDWAwsMZGMLLmZmZMMzsglZmJwYZMzAAMD
+talents=CcQAYp+JUk5Lea12OyacsLNThMzMzCmhZ2mZmZYWmZWWGAAAAAAAAAAYDgNzYYjsAzohGsAgZZyMwiZMzgZmZ2mxyMzkFWGYmBAYGD
 
 head=noetic_of_the_forgotten_reservoir,id=212011,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213482/213482

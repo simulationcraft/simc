@@ -1833,7 +1833,7 @@ struct melee_t : public warrior_attack_t
 
       // From testing and log analysis, when you charge in, around 50ms is a very common offset
       // for the off hand attack.  If you walk up and auto the boss, it's typically 50% of your swing time offset.
-      return timespan_t::from_millis( rng().gauss_ab( 50, 25, 10, (t * 0.5).total_millis() ) );
+      return timespan_t::from_millis( rng().gauss_ab( 50, 25, 10, static_cast<double>( (t * 0.5).total_millis() ) ) );
     }
     else
     {

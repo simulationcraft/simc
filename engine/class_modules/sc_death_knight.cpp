@@ -1267,20 +1267,19 @@ public:
     {
       player_talent_t reapers_mark;
       player_talent_t wave_of_souls;
-      player_talent_t blood_fever;
+      player_talent_t wither_away;
       player_talent_t bind_in_darkness;
       player_talent_t soul_rupture;
       player_talent_t grim_reaper;
+      player_talent_t reaper_of_souls;
       player_talent_t pact_of_the_deathbringer;  // NYI
       player_talent_t rune_carved_plates;
+      player_talent_t swift_and_painful;
       player_talent_t dark_talons;
-      player_talent_t wither_away;
+      player_talent_t reapers_onslaught;
       player_talent_t deaths_messenger;
       player_talent_t expelling_shield;  // NYI
       player_talent_t exterminate;
-      player_talent_t reapers_onslaught;
-      player_talent_t swift_and_painful;
-      player_talent_t reaper_of_souls;
     } deathbringer;
 
     // San'layn
@@ -1461,7 +1460,6 @@ public:
     const spell_data_t* reapers_mark_grim_reaper;
     const spell_data_t* wave_of_souls_damage;
     const spell_data_t* wave_of_souls_debuff;
-    const spell_data_t* blood_fever_damage;
     const spell_data_t* bind_in_darkness_buff;
     const spell_data_t* dark_talons_shadowfrost_buff;
     const spell_data_t* dark_talons_icy_talons_buff;
@@ -3637,7 +3635,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       dot_behavior = DOT_EXTEND;
     }
 
-    dot_t* get_dot( player_t* t )
+    dot_t* get_dot( player_t* t ) override
     {
       dot_t* d           = melee_attack_t::get_dot( t );
       is_reaper_of_souls = false;
@@ -4762,8 +4760,8 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
   void impact( action_state_t* s ) override
   {
     action_base_t::impact( s );
-    if ( !this->background && s->target != p() && s->target != nullptr && s->target->is_sleeping() )
-      p()->last_target = this->s->target;
+    if ( !this->background && s->target != p() && s->target != nullptr && s->target->is_sleeping() && s->chain_target == 0  )
+      p()->last_target = s->target;
 
     if ( p()->talent.sanlayn.pact_of_the_sanlayn.ok() && p()->pets.blood_beast.active_pet() != nullptr &&
          dbc::is_school( this->get_school(), SCHOOL_SHADOW ) )
@@ -5878,9 +5876,8 @@ struct melee_t : public death_knight_melee_attack_t
 
     if ( p->talent.frost.icy_death_torrent.ok() )
     {
-      idt_chance = p->talent.frost.icy_death_torrent->proc_chance() * p->main_hand_weapon.group() == WEAPON_2H
-                       ? 1.0
-                       : 1.0 / ( p->talent.frost.icy_death_torrent->effectN( 1 ).base_value() * 0.1 );
+      idt_chance = ( p->main_hand_weapon.group() == WEAPON_2H ? 1.0 : 1.0 / ( p->talent.frost.icy_death_torrent->effectN( 1 ).base_value() * 0.1 ) ) *
+                             p->talent.frost.icy_death_torrent->proc_chance();
     }
 
     apply_action_effects();
@@ -6090,16 +6087,6 @@ struct auto_attack_t final : public death_knight_melee_attack_t
 // ==========================================================================
 // Death Knight Diseases
 // ==========================================================================
-// Deathbringer
-struct blood_fever_t final : public death_knight_spell_t
-{
-  blood_fever_t( std::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->spell.blood_fever_damage )
-  {
-    background         = true;
-    cooldown->duration = 0_ms;
-  }
-};
 // Common diseases code
 
 struct death_knight_disease_t : public death_knight_spell_t
@@ -6168,7 +6155,6 @@ struct blood_plague_t final : public death_knight_disease_t
 
 private:
   propagate_const<action_t*> heal;
-  propagate_const<action_t*> blood_fever;
 };
 
 // Frost Fever =======================================================
@@ -6219,7 +6205,6 @@ struct frost_fever_t final : public death_knight_disease_t
 
 private:
   int rp_generation;
-  propagate_const<action_t*> blood_fever;
 };
 
 // Virulent Plague ====================================================
@@ -7295,7 +7280,6 @@ struct the_blood_is_life_t : public death_knight_spell_t
     background          = true;
     aoe                 = -1;
     may_crit            = false;
-    reduced_aoe_targets = 8;
     reduced_aoe_targets = p->talent.sanlayn.the_blood_is_life->effectN( 3 ).base_value();  
   }
 };
@@ -7580,9 +7564,9 @@ struct chill_streak_damage_t final : public death_knight_spell_t
 {
   chill_streak_damage_t( std::string_view n, death_knight_t* p )
     : death_knight_spell_t( n, p, p->spell.chill_streak_damage ),
-      current( 0 ),
       max_bounces( 0 ),
-      enduring_chill_chance( 0 )
+      enduring_chill_chance( 0 ),
+      current( 0 )
   {
     background = proc     = true;
     max_bounces           = as<int>( p->talent.frost.chill_streak->effectN( 1 ).base_value() );
@@ -10594,7 +10578,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     return m;
   }
 
-  dot_t* get_dot( player_t* t )
+  dot_t* get_dot( player_t* t ) override
   {
     dot_t* d           = melee_attack_t::get_dot( t );
     is_reaper_of_souls = false;
@@ -13393,7 +13377,6 @@ void death_knight_t::spell_lookups()
   spell.reapers_mark_grim_reaper       = conditional_spell_lookup( talent.deathbringer.reapers_mark.ok(), 443761 );
   spell.wave_of_souls_damage           = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 435802 );
   spell.wave_of_souls_debuff           = conditional_spell_lookup( talent.deathbringer.wave_of_souls.ok(), 443404 );
-  spell.blood_fever_damage             = conditional_spell_lookup( talent.deathbringer.blood_fever.ok(), 440005 );
   spell.bind_in_darkness_buff          = conditional_spell_lookup( talent.deathbringer.bind_in_darkness.ok(), 443532 );
   spell.dark_talons_shadowfrost_buff   = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443586 );
   spell.dark_talons_icy_talons_buff    = conditional_spell_lookup( talent.deathbringer.dark_talons.ok(), 443595 );

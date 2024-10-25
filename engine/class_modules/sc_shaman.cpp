@@ -711,8 +711,8 @@ public:
     double ice_strike_base_chance = 0.07;
     double lively_totems_base_chance = 0.06;
 
-    double dre_enhancement_base_chance = 0.02;
-    unsigned dre_enhancement_forced_failures = 8;
+    double dre_enhancement_base_chance = 0.0024;
+    unsigned dre_enhancement_forced_failures = 0;
 
     // Surging totem whiff
     double surging_totem_miss_chance = 0.1;
@@ -1336,6 +1336,7 @@ public:
   void init_special_effects() override;
   std::string create_profile( save_e ) override;
   void create_special_effects() override;
+  action_t* create_proc_action( util::string_view /* name */, const special_effect_t& /* effect */ ) override;
   void action_init_finished( action_t& action ) override;
   void analyze( sim_t& sim ) override;
   void datacollection_end() override;
@@ -1596,9 +1597,6 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
     ->set_default_value_from_effect( 1 );
 
   debuff.flametongue_attack = make_buff( *this, "flametongue_attack", p->find_spell( 467390 ) )
-    ->set_tick_callback( [ p, target ]( buff_t*, int, timespan_t ) {
-      p->action.imbuement_mastery->execute_on_target( target );
-    })
     ->set_trigger_spell( p->talent.imbuement_mastery );
 }
 
@@ -5510,12 +5508,6 @@ struct sundering_t : public shaman_attack_t
 
     p()->buff.t30_2pc_enh->trigger();
     p()->trigger_earthsurge( execute_state );
-
-    if ( p()->buff.whirling_earth->up() )
-    {
-      p()->buff.whirling_earth->decrement();
-      cooldown->adjust( -p()->buff.whirling_earth->data().effectN( 1 ).time_value() );
-    }
   }
 };
 
@@ -6062,6 +6054,10 @@ struct chain_lightning_t : public chained_base_t
         background = true;
         base_execute_time = 0_s;
         base_costs[ RESOURCE_MANA ] = 0;
+        if ( auto ptr = p()->find_action( "chain_lightning" ) )
+        {
+          ptr->add_child( this );
+        }
         break;
       }
       default:
@@ -7020,6 +7016,10 @@ struct lightning_bolt_t : public shaman_spell_t
         background = true;
         base_execute_time = 0_s;
         base_costs[ RESOURCE_MANA ] = 0;
+        if ( auto ptr = p()->find_action( "lightning_bolt" ) )
+        {
+          ptr->add_child( this );
+        }
         break;
       }
       default:
@@ -7387,11 +7387,6 @@ struct elemental_blast_t : public shaman_spell_t
       // talents
       p()->buff.storm_frenzy->trigger();
 
-      if ( p()->buff.whirling_earth->up() )
-      {
-        p()->buff.whirling_earth->decrement();
-        cooldown->adjust( -p()->buff.whirling_earth->data().effectN( 1 ).time_value() );
-      }
       p()->track_magma_chamber();
       p()->buff.magma_chamber->expire();
 
@@ -8367,6 +8362,33 @@ public:
     }
   }
 
+  int n_targets() const override
+  {
+    if ( exec_type != spell_variant::PRIMORDIAL_WAVE && p()->buff.whirling_earth->check() )
+    {
+      return as<int>( p()->buff.whirling_earth->data().effectN( 3 ).base_value() );
+    }
+    else
+    {
+      return shaman_spell_t::n_targets();
+    }
+  }
+
+  double calculate_direct_amount( action_state_t* state ) const override
+  {
+    shaman_spell_t::calculate_direct_amount( state );
+
+    // Apparently in game, Whirling Earth only buffs the first Flame Shock target damage
+    if ( exec_type != spell_variant::PRIMORDIAL_WAVE && state->chain_target > 0 &&
+         p()->buff.whirling_earth->check() )
+    {
+      state->result_raw = floor( state->result_raw / ( 1.0 + p()->buff.whirling_earth->check_stack_value() ) );
+      state->result_total = floor( state->result_total / ( 1.0 + p()->buff.whirling_earth->check_stack_value() ) );
+    }
+
+    return state->result_total;
+  }
+
   void trigger_dot( action_state_t* state ) override
   {
     if ( !get_dot( state->target )->is_ticking() )
@@ -8377,6 +8399,18 @@ public:
     track_flame_shock( state );
 
     shaman_spell_t::trigger_dot( state );
+  }
+
+  double action_da_multiplier() const override
+  {
+    auto m = shaman_spell_t::action_da_multiplier();
+
+    if ( exec_type != spell_variant::PRIMORDIAL_WAVE )
+    {
+      m *= 1.0 + p()->buff.whirling_earth->stack_value();
+    }
+
+    return m;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -8479,6 +8513,11 @@ public:
     shaman_spell_t::execute();
 
     p()->buff.voltaic_blaze->decrement();
+
+    if ( exec_type != spell_variant::PRIMORDIAL_WAVE )
+    {
+      p()->buff.whirling_earth->decrement();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -9805,7 +9844,7 @@ struct surging_totem_pulse_t : public spell_totem_action_t
 
   double miss_chance( double hit, player_t* t ) const override
   {
-    if ( o()->options.surging_totem_miss_chance == 0.0 )
+    if ( sundered || o()->options.surging_totem_miss_chance == 0.0 )
     {
       return spell_totem_action_t::miss_chance( hit, t );
     }
@@ -10369,11 +10408,49 @@ struct voltaic_blaze_t : public shaman_spell_t
     parse_options( options_str );
   }
 
+  double calculate_direct_amount( action_state_t* state ) const override
+  {
+    shaman_spell_t::calculate_direct_amount( state );
+
+    // Apparently in game, Whirling Earth only buffs the first Flame Shock target damage
+    if ( state->chain_target > 0 && p()->buff.whirling_earth->check() )
+    {
+      state->result_raw = floor( state->result_raw / ( 1.0 + p()->buff.whirling_earth->check_stack_value() ) );
+      state->result_total = floor( state->result_total / ( 1.0 + p()->buff.whirling_earth->check_stack_value() ) );
+    }
+
+    return state->result_total;
+  }
+
+  double action_da_multiplier() const override
+  {
+    auto m = shaman_spell_t::action_da_multiplier();
+
+    m *= 1.0 + p()->buff.whirling_earth->stack_value();
+
+    return m;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    p()->buff.whirling_earth->decrement();
+  }
+
   void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
 
-    p()->trigger_secondary_flame_shock( state->target, spell_variant::NORMAL );
+    make_event( *sim, [ t = state->target, p = p() ]() {
+      if ( t->is_sleeping() )
+      {
+        return;
+      }
+
+      p->trigger_secondary_flame_shock( t, spell_variant::NORMAL );
+    } );
+
     p()->generate_maelstrom_weapon( state, as<int>( data().effectN( 2 ).base_value() ) );
   }
 
@@ -11122,6 +11199,35 @@ void shaman_t::create_special_effects()
 
     new maelstrom_weapon_cb_t( *mw_effect );
   }
+}
+
+// shaman_t::create_proc_action ============================================
+
+action_t* shaman_t::create_proc_action( util::string_view name, const special_effect_t& effect )
+{
+  if ( effect.spell_id == 469927 )
+  {
+    struct quick_strike_t : public shaman_attack_t
+    {
+      quick_strike_t( shaman_t* p, const special_effect_t& effect ) :
+        shaman_attack_t( "quick_strike", p, p->find_spell( 469928 ) )
+      {
+        background = true;
+        base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+      }
+
+      void init() override
+      {
+        shaman_attack_t::init();
+
+        may_proc_flametongue = may_proc_flowing_spirits = may_proc_stormbringer = false;
+        may_proc_windfury = false;
+      }
+    };
+
+    return new quick_strike_t( this, effect );
+  }
+  return player_t::create_proc_action( name, effect );
 }
 
 // shaman_t::action_init_finished ==========================================
@@ -12496,6 +12602,7 @@ void shaman_t::trigger_imbuement_mastery( const action_state_t* state )
   }
 
   get_target_data( state->target )->debuff.flametongue_attack->trigger();
+  action.imbuement_mastery->execute_on_target( state->target );
 }
 
 void shaman_t::trigger_whirling_fire( const action_state_t* /* state */ )
@@ -12804,6 +12911,11 @@ void shaman_t::trigger_arc_discharge( const action_state_t* state )
 
     make_event( *sim, rng().gauss( 500_ms, 50_ms ),
       [ action_, t = state->target ]() {
+        if ( t->is_sleeping() )
+        {
+          return;
+        }
+
         action_->execute_on_target( t );
     } );
 
@@ -12823,7 +12935,7 @@ void shaman_t::trigger_flowing_spirits( const action_state_t* state )
     return;
   }
 
-  double proc_chance = talent.flowing_spirits->effectN( 1 ).percent();
+  double proc_chance = talent.flowing_spirits->effectN( 1 ).percent() * 2.0 / 3.0;
   if ( options.flowing_spirits_proc_chance != 0.0 )
   {
     proc_chance = options.flowing_spirits_proc_chance;
@@ -12972,6 +13084,7 @@ void shaman_t::create_buffs()
   buff.whirling_fire = make_buff( this, "whirling_fire", find_spell( 453405 ) )
     ->set_trigger_spell( talent.whirling_elements );
   buff.whirling_earth = make_buff( this, "whirling_earth", find_spell( 453406 ) )
+    ->set_default_value_from_effect( 1 )
     ->set_trigger_spell( talent.whirling_elements );
   buff.lightning_shield = make_buff( this, "lightning_shield", find_spell( 192106 ) )
       ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER);

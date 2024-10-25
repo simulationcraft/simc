@@ -717,12 +717,10 @@ struct halo_t final : public priest_spell_t
 
       if ( is_precombat )
       {
-
         // TODO: Handle very early precombat
         priest().buffs.power_surge->extend_duration( player, -prepull_timespent );
 
-
-        if (priest().buffs.power_surge->check())
+        if ( priest().buffs.power_surge->check() )
         {
           auto when = -( prepull_timespent % priest().buffs.power_surge->tick_time() );
 
@@ -2354,6 +2352,7 @@ struct essence_devourer_t final : public priest_heal_t
                                                            : p.talents.essence_devourer_shadowfiend )
   {
     harmful = false;
+    proc    = true;
   }
 };
 
@@ -3512,6 +3511,12 @@ void priest_t::init_special_effects()
     }
   }
 
+  // Entropic Rift is coded as direct damage, but should not count
+  // as casts for Burst of Knowledge
+  callbacks.register_callback_trigger_function(
+      469925, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      []( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) { return a->data().id() != 447448; } );
+
   base_t::init_special_effects();
 }
 
@@ -4420,7 +4425,7 @@ struct priest_module_t final : public module_t
     p->buffs.body_and_soul    = make_buff( p, "body_and_soul", p->find_spell( 65081 ) );
     p->buffs.angelic_feather  = make_buff( p, "angelic_feather", p->find_spell( 121557 ) );
     p->buffs.guardian_spirit  = make_buff( p, "guardian_spirit",
-                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.symbol_of_hope   = make_buff<buffs::symbol_of_hope_t>( p );

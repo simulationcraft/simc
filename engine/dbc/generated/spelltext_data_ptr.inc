@@ -26170,7 +26170,7 @@ static const std::array<spelltext_data_t, 26525> __ptr_spelltext_data { {
   { 462587, "Your critical heals have ${$s2+$s1}% effectiveness instead of the usual $s2%.", 0, 0 },
   { 462603, "$@spelldesc207778", 0, 0 },
   { 462620, "Causes the earth within $a1 yards of your target to tremble and break, dealing $<damage> Physical damage over $d and has a $77478s2% chance to knock the enemy down. Multiple uses of Earthquake may overlap.\r\n\r\n|cFFFFFFFFThis spell is cast at your target.|r", 0, 0 },
-  { 462661, "Blessed by the void, $s2% increased spell and ability cool down rate and increases healing received by $s1% for $d.", "$s2% increased spell and ability cool down rate.\r\n\r\nHealing received increased by $s1%.", 0 },
+  { 462661, "Blessed by the void, increases Versatility by $s1% and increases spell and ability cool down rate by $s2% for $d.", "Versatility increased by $s1%.\r\n\r\n$s2% increased spell and ability cool down rate.", 0 },
   { 462695, "Your next Chain Lightning$?s454009[, Tempest,][] or Lightning Bolt has $462725s1% reduced cast time after casting Earth Shock, Elemental Blast, or Earthquake. Can accumulate up to $462725u charges.", 0, 0 },
   { 462725, "$@spelldesc462695", "Reduces the cast time of your next Lightning Bolt$?s454009[, Tempest,][] or Chain Lightning by $s1%.", 0 },
   { 462742, "$@spelldesc462757", 0, 0 },
@@ -26528,7 +26528,9 @@ static const std::array<spelltext_data_t, 26525> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.5.57171
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+  {  462661,  0, "Blessed by the void, $s2% increased spell and ability cool down rate and increases healing received by $s1% for $d.", "Blessed by the void, increases Versatility by $s1% and increases spell and ability cool down rate by $s2% for $d." },
+  {  462661,  1, "$s2% increased spell and ability cool down rate.\r\n\r\nHealing received increased by $s1%.", "Versatility increased by $s1%.\r\n\r\n$s2% increased spell and ability cool down rate." },
 } };
 
 // Spell description variables, wow build 11.0.5.57171

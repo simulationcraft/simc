@@ -1308,6 +1308,10 @@ void sikrans_endless_arsenal( special_effect_t& effect )
             }
           } );
 
+      e.player->callbacks.register_callback_trigger_function( d_driver->spell_id,
+        dbc_proc_callback_t::trigger_fn_type::CONDITION,
+        []( const dbc_proc_callback_t*, action_t*, const action_state_t* s ) { return s->target->is_enemy(); } );
+
       auto d_cb = new dbc_proc_callback_t( e.player, *d_driver );
       d_cb->activate_with_buff( d_stance );
 
@@ -4884,8 +4888,7 @@ void doperels_calling_rune( special_effect_t& effect )
 {
   auto damage = create_proc_action<generic_proc_t>( "ghostly_ambush", effect, effect.trigger() );
   damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
-  // TODO: currently not implemented in-game
-  // damage->base_multiplier *= role_mult( effect );
+  damage->base_multiplier *= role_mult( effect );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -4901,7 +4904,7 @@ void burst_of_knowledge( special_effect_t& effect )
 
   auto buff = create_buff<buff_t>( effect.player, effect.driver() )
                   ->set_cooldown( 0_ms )
-                  ->set_expire_callback( [ int_buff ]( buff_t*, int, timespan_t d ) { int_buff->expire(); } );
+                  ->set_expire_callback( [ int_buff ]( buff_t*, int, timespan_t ) { int_buff->expire(); } );
 
   effect.has_use_buff_override = true;
   effect.custom_buff           = buff;
@@ -4909,7 +4912,7 @@ void burst_of_knowledge( special_effect_t& effect )
   auto on_use_cb         = new special_effect_t( effect.player );
   on_use_cb->name_str    = effect.name() + "_cb";
   on_use_cb->spell_id    = effect.driver()->id();
-  on_use_cb->cooldown_   = 0_ms;
+  on_use_cb->cooldown_   = effect.driver()->internal_cooldown();
   on_use_cb->custom_buff = int_buff;
   effect.player->special_effects.push_back( on_use_cb );
 

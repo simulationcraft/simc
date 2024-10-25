@@ -63,7 +63,7 @@ Spell Level      : 37
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 180 seconds
-Category         : 46
+Category         : 46 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -74,7 +74,7 @@ Family Flags     : 53
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), No Threat (42), No Aura Icon (60), Name in Channel Bar (61), Active Threat (94), Extra Initial Period (169), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13)
 Effects          :
-#1 (id=293)      : : Apply Aura (6) | Periodic Trigger Spell (23): Tranquility every 2 seconds
+#1 (id=293)      : Apply Aura (6) | Periodic Trigger Spell (23): Tranquility every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 157982 | Target: Self (1)
 #2 (id=294)      : Apply Party Aura (35) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Radius: 40 yards | Target: Unknown(29)
@@ -345,7 +345,7 @@ Spell Level      : 6
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Category         : 44
+Category         : 44 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 219
@@ -499,7 +499,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 60 seconds
-Category         : 32
+Category         : 32 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -753,7 +753,7 @@ Spell Level      : 9
 Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
-Category         : 82
+Category         : 82 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -993,7 +993,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 8 - 25 yards
 Cooldown         : 15 seconds
-Category         : 1205
+Category         : 1205 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 219
@@ -1040,7 +1040,7 @@ Spell Level      : 11
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (15 seconds cooldown)
-Category         : 1576: Prosperity (200383 effect#1)
+Category         : 1576 (Type 0x1): Prosperity (200383 effect#1)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -1067,7 +1067,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 600 seconds
-Category         : 26
+Category         : 26 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -1255,7 +1255,7 @@ GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (36 seconds cooldown)
-Category         : 1568: Berserk (50334 effect#2), Incarnation: Guardian of Ursoc (102558 effect#2), Heart of the Wild (108293 effect#3), Druid (137009 effect#2), Heart of the Wild (319454 effect#9), Reinvigoration (372945 effect#2), Innate Resolve (377811 effect#2)
+Category         : 1568 (Type 0x1): Berserk (50334 effect#2), Incarnation: Guardian of Ursoc (102558 effect#2), Heart of the Wild (108293 effect#3), Druid (137009 effect#2), Heart of the Wild (319454 effect#9), Reinvigoration (372945 effect#2), Innate Resolve (377811 effect#2)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -1477,7 +1477,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Cooldown         : 180 seconds
-Category         : 1333
+Category         : 1333 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -1610,7 +1610,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 7 seconds
 Cooldown         : 10 seconds
-Category         : 1237
+Category         : 1237 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -1802,7 +1802,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 8 - 25 yards
 Cooldown         : 15 seconds
-Category         : 1205
+Category         : 1205 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 219
@@ -1886,7 +1886,7 @@ Spell Type       : None
 Spell Level      : 1
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Category         : 1208
+Category         : 1208 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -2002,7 +2002,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
-Category         : 133
+Category         : 133 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -2061,7 +2061,8 @@ Spell Level      : 32
 Duration         : 6 seconds
 Cooldown         : 6 seconds
 Charges          : 1 (180 seconds cooldown)
-Category         : 1469: Survival of the Fittest (203965 effect#2), Dual Determination (208228 effect#1), Dual Determination (208228 effect#2), Strive for Perfection (296320 effect#7), Strive for Perfection (296320 effect#8), Strive for Perfection (299367 effect#7), Strive for Perfection (299369 effect#7), Improved Survival Instincts (328767 effect#1)
+Category         : 1469 (Type 0x1): Survival of the Fittest (203965 effect#2), Dual Determination (208228 effect#1), Dual Determination (208228 effect#2), Strive for Perfection (296320 effect#7), Strive for Perfection (296320 effect#8), Strive for Perfection (299367 effect#7), Strive for Perfection (299369 effect#7), Improved Survival Instincts (328767 effect#1)
+Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -2295,7 +2296,7 @@ Spell Level      : 22
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 120 seconds
-Category         : 1257
+Category         : 1257 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -2320,7 +2321,7 @@ Spell Level      : 22
 GCD              : 1 seconds
 Duration         : 8 seconds
 Cooldown         : 120 seconds
-Category         : 1257
+Category         : 1257 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 219
@@ -2374,7 +2375,7 @@ Resource         : 3.36% Base Mana (0) (id=3373)
 Range            : 40 yards
 Duration         : 8 seconds
 Cooldown         : 60 seconds
-Category         : 1420
+Category         : 1420 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -2622,7 +2623,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
-Category         : 1510
+Category         : 1510 (Type 0x1)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -2647,7 +2648,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Charges          : 3 (30 seconds cooldown)
-Category         : 1372
+Category         : 1372 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -2911,7 +2912,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 50000 yards
 Cooldown         : 15 seconds
-Category         : 1205
+Category         : 1205 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 219
@@ -2936,7 +2937,7 @@ Spell Type       : None
 Range            : 5 - 25 yards
 Duration         : 0.5 seconds
 Cooldown         : 15 seconds
-Category         : 1205
+Category         : 1205 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 219
@@ -2961,7 +2962,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Cooldown         : 15 seconds
-Category         : 1205
+Category         : 1205 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 219
@@ -2986,7 +2987,7 @@ Spell Type       : Melee
 Spell Level      : 1
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Category         : 1333
+Category         : 1333 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -2999,7 +3000,7 @@ Family Flags     : 31, 43
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Immunity to Hostile & Friendly Effects (48), Allow Entering Arena (149), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Allow Aura On Level Scale (444)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
-#1 (id=111355)   : : Apply Aura (6) | Periodic Trigger Spell (23): Berserk every 1.5 seconds
+#1 (id=111355)   : Apply Aura (6) | Periodic Trigger Spell (23): Berserk every 1.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 343216 | Target: Self (1)
 #2 (id=310506)   : Trigger Spell (64): Incarnation: Avatar of Ashamane
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 252071 | Target: Self (1)
@@ -3074,7 +3075,7 @@ Spell Type       : None
 Spell Level      : 1
 Duration         : 30 seconds
 Cooldown         : 180 seconds
-Category         : 1333
+Category         : 1333 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -3163,7 +3164,7 @@ Spell Level      : 1
 Duration         : 20 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (180 seconds cooldown)
-Category         : 2328: Orbital Strike (390378 effect#3), Whirling Stars (468743 effect#2), Whirling Stars (468743 effect#3)
+Category         : 2328 (Type 0x0): Orbital Strike (390378 effect#3), Whirling Stars (468743 effect#2), Whirling Stars (468743 effect#3)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -3221,7 +3222,7 @@ Range            : 40 yards
 Duration         : 15 seconds
 Cooldown         : 0.5 seconds
 Charges          : 3 (20 seconds cooldown)
-Category         : 1440: Early Spring (428937 effect#2)
+Category         : 1440 (Type 0x0): Early Spring (428937 effect#2)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -3383,7 +3384,7 @@ Spell Type       : Melee
 Spell Level      : 26
 Range            : 13 yards
 Cooldown         : 15 seconds
-Category         : 1260
+Category         : 1260 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -3433,7 +3434,7 @@ Range            : 10 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 120 seconds
-Category         : 1257
+Category         : 1257 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -3471,7 +3472,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Category         : 1208
+Category         : 1208 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -3482,7 +3483,7 @@ Family Flags     : 70
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
-#1 (id=117476)   : : Apply Aura (6) | Periodic Trigger Spell (23): Berserk every 1.5 seconds
+#1 (id=117476)   : Apply Aura (6) | Periodic Trigger Spell (23): Berserk every 1.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 343216 | Target: Self (1)
 #2 (id=1028544)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -3541,7 +3542,7 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 45 seconds
 Cooldown         : 300 seconds
-Category         : 1383: Born of the Wilds (341451 effect#2)
+Category         : 1383 (Type 0x0): Born of the Wilds (341451 effect#2)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -3571,7 +3572,7 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 45 seconds
 Cooldown         : 300 seconds
-Category         : 1383: Born of the Wilds (341451 effect#2)
+Category         : 1383 (Type 0x0): Born of the Wilds (341451 effect#2)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -3604,7 +3605,7 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 45 seconds
 Cooldown         : 300 seconds
-Category         : 1383: Born of the Wilds (341451 effect#2)
+Category         : 1383 (Type 0x0): Born of the Wilds (341451 effect#2)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -3633,7 +3634,7 @@ Spell Type       : None
 GCD              : 1.5 seconds
 Duration         : 45 seconds
 Cooldown         : 300 seconds
-Category         : 1383: Born of the Wilds (341451 effect#2)
+Category         : 1383 (Type 0x0): Born of the Wilds (341451 effect#2)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -3976,7 +3977,7 @@ School           : Physical
 Spell Type       : Magic
 Duration         : Aura (infinite)
 Charges          : 1 (60 seconds cooldown)
-Category         : 2336: Passing Seasons (382550 effect#1), Twinleaf (470540 effect#1)
+Category         : 2336 (Type 0x1): Passing Seasons (382550 effect#1), Twinleaf (470540 effect#1)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -4029,7 +4030,7 @@ Spell Level      : 28
 Range            : 15 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Category         : 1217
+Category         : 1217 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -5302,7 +5303,7 @@ Spell Type       : None
 Spell Level      : 15
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
-Category         : 133
+Category         : 133 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -5465,7 +5466,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Incapacitating Roar (99), Entangling Roots (339), Tranquility (740), Cat Form (768), Rejuvenation (774), Travel Form (783), Rip (1079), Bear Form Passive (1178), Rake (1822), Dash (1850), Hibernate (2637), Remove Corruption (2782), Soothe (2908), Wrath (5176), Mighty Bash (5211), Prowl (5215), Tiger's Fury (5217), Shred (5221), Bear Form (5487), Growl (6795), Maul (6807), Moonfire (8921), Regrowth (8936), Omen of Clarity (16864), Clearcasting (16870), Primal Fury (16953), Wild Charge (16979), Swiftmend (18562), Rebirth (20484), Ferocious Bite (22568), Maim (22570), Barkskin (22812), Frenzied Regeneration (22842), Moonkin Form (24858), Innervate (29166), Lifebloom (33763), Lifebloom (33778), Cyclone (33786), Incarnation: Tree of Life (33891), Mangle (33917), Wild Growth (48438), Eclipse (Solar) (48517), Eclipse (Lunar) (48518), Wild Charge (49376), Starfall (50286), Survival Instincts (50322), Berserk (50334), Nourish (50464), Savage Roar (52610), Infected Wounds (58180), Survival Instincts (61336), Typhoon (61391), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Starsurge (78674), Solar Beam (78675), Eclipse (79577), Pulverize (80313), Efflorescence (81262), Efflorescence (81269), Fungal Growth (81281), Nature's Cure (88423), Wild Mushroom (88747), Wild Mushroom (88751), Sunfire (93402), Gore (93622), Skull Bash (93985), Solar Beam (97547), Ironbark (102342), Cenarion Ward (102351), Cenarion Ward (102352), Mass Entanglement (102359), Wild Charge (102383), Wild Charge (102401), Wild Charge (102417), Incarnation: Avatar of Ashamane (102543), Prowl (102547), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Grove Guardians (102693), Ursol's Vortex (102793), Swipe (106785), Thrash (106830), Thrash (106832), Skull Bash (106839), Stampeding Roar (106898), Berserk (106951), Renewal (108238), Nature's Swiftness (132158), Typhoon (132469), Clearcasting (135700), Ysera's Gift (145108), Ysera's Gift (145109), Ysera's Gift (145110), Efflorescence (145205), Moonfire (155625), Rake (155722), Rejuvenation (Germination) (155777), Owlkin Frenzy (157228), Tranquility (157982), Moonfire (164812), Sunfire (164815), Flight Form (165962), Fey Missile (188046), Lifebloom (188550), Wrath (190984), Starfall (191034), Starfall (191037), Ironfur (192081), Thrash (192090), Dreamwalk (193753), Starfire (194153), Celestial Alignment (194223), Astral Influence (197524), Moonkin Form (197625), Starsurge (197626), Starfire (197628), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Shooting Stars (202342), Stellar Flare (202347), Shooting Stars (202497), Fury of Elune (202770), Reactive Resin (203406), Overgrowth (203651), Brambles (203958), Lunar Beam (204069), Force of Nature (205636), Spring Blossoms (207386), Mount Form (210053), Gore (210706), Thrash (211141), Fury of Elune (211545), Revitalize (212040), Brambles (213709), Swipe (213764), Swipe (213771), Strength of the Wild (236716), Force of Nature (248280), Incarnation: Avatar of Ashamane (252071), Tiger Dash (252216), Streaking Star (272873), New Moon (274281), Half Moon (274282), Full Moon (274283), Feral Frenzy (274837), Feral Frenzy (274838), Aquatic Form (276012), Flight Form (276029), Berserk (279526), Lunar Shrapnel (279641), Grove Tending (279793), Fury of Elune (281871), Primal Wrath (285381), Early Harvest (287255), Dreamwalk (293887), Thorns (305496), Thorns (305497), Convoke the Spirits (323764), Adaptive Swarm (325733), Adaptive Swarm (325748), Kindred Spirits (326434), Empower Bond (326446), Empower Bond (326462), Empower Bond (326647), Kindred Empowerment (327022), Kindred Protection (327037), Kindred Focus (327071), Kindred Empowerment (327139), Kindred Focus (327148), Lone Empowerment (338142), Berserk (343216), Kindred Empowerment (344991), Infected Wounds (354571), Star Burst (356474), Starfall (359399), Orbital Strike (361237), Architect's Aligner (363789), Sickle of the Lion (363830), Renewing Bloom (364686), Fury of Elune (365640), Ephemeral Profusion (367330), Grove Tending (383193), Celestial Alignment (383410), Incarnation: Chosen of Elune (390414), Tear (391356), Convoke the Spirits (391528), Rampant Ferocity (391710), Tiger's Tenacity (391874), Adaptive Swarm (391889), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Primal Claws (393617), Power of Goldrinn (394046), Goldrinn's Fang (394047), Fury of Elune (394111), Thorns of Iron (400223), Raze (400254), Overflowing Power (405191), Thrash (405233), Star Burst (406430), Crashing Star (408310), Predator Revealed (411344), Lunar Beam (414613), Star Burst (421072), Nourish (422090), Swiftmend (422094), Wild Growth (422382), Nourish (423618), Minor Moon (424588), Boundless Moonlight (428682), Minor Cenarion Ward (429222), Dream Burst (433850), Dream Bloom (434141), Symbiotic Blooms (439530), Bloodseeker Vines (439531), Remove Corruption (440015), Bursting Growth (440121), Bursting Growth (440122), Ravage (441591), Ravage (441605), Wildpower Surge (441704), Dreadful Wound (441812), Wildpower Surge (442562), Dreadful Wound (451177), Lethal Preservation (455466), Reactive Resin (468152), Sunseeker Mushroom (468936), Sunseeker Mushroom (468938), Crashing Star (468981)
                    Family Flags: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127
-#3 (id=844885)   : : Apply Aura (6) | Periodic Trigger Spell (23): Starfall every 1 seconds
+#3 (id=844885)   : Apply Aura (6) | Periodic Trigger Spell (23): Starfall every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 50286 | Target: Self (1)
 #4 (id=870076)   : Apply Aura (6) | Unknown(307)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 726 | Target: Self (1)
@@ -5563,7 +5564,7 @@ Cast Time        : 10 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Cooldown         : 60 seconds
-Category         : 511
+Category         : 511 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -5622,7 +5623,7 @@ Range            : 40 yards
 Duration         : 15 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (180 seconds cooldown)
-Category         : 2328: Orbital Strike (390378 effect#3), Whirling Stars (468743 effect#2), Whirling Stars (468743 effect#3)
+Category         : 2328 (Type 0x0): Orbital Strike (390378 effect#3), Whirling Stars (468743 effect#2), Whirling Stars (468743 effect#3)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -6018,7 +6019,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102351), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Grove Tending (279793), Grove Tending (383193), Minor Cenarion Ward (429222)
                    Family Flags: 4, 6, 7, 8, 44, 58, 106
-#3 (id=709956)   : : Apply Aura (6) | Periodic Trigger Spell (23): Essence of G'Hanir every 0.25 seconds
+#3 (id=709956)   : Apply Aura (6) | Periodic Trigger Spell (23): Essence of G'Hanir every 0.25 seconds
                    Base Value: -50 | Scaled Value: -50 | Trigger Spell: 218889 | Target: Self (1)
 #4 (id=874181)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Tick Time (19)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 19 | Misc Value 2: 1158 (Label) | Target: Self (1)
@@ -6225,7 +6226,7 @@ Spell Level      : 1
 Range            : 8 yards
 GCD              : 1 seconds
 Charges          : 3 (8 seconds cooldown)
-Category         : 1581: Druid (137009 effect#1)
+Category         : 1581 (Type 0x1): Druid (137009 effect#1)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -6500,7 +6501,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Charges          : 3 (15 seconds cooldown)
-Category         : 1584
+Category         : 1584 (Type 0x0)
 Labels           : 92
                  : 293
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -6556,7 +6557,7 @@ Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Travel Time      : 0.9 seconds
 Charges          : 3 (15 seconds cooldown)
-Category         : 1584
+Category         : 1584 (Type 0x0)
 Labels           : 92
                  : 293
 Attributes       : Aura Points On Client (268), Missile Speed is Delay (in sec) (292), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
@@ -6701,7 +6702,7 @@ Labels           : 16: Class Spells
                  : 3097: Circle of Life and Death (391969 effect#6)
 Attributes       : Passive (6), Not In Spellbook (143), Spell Haste Affects Periodic (173), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=300974)   : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 3 seconds
+#1 (id=300974)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 3 seconds
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Thrash also generates ${$203961s1/10} Rage each time it deals damage, on up to $s1 targets.
 
@@ -6993,7 +6994,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Lifebloom (33763), Wild Growth (48438), Cenarion Ward (102351), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Lifebloom (188550), Minor Cenarion Ward (429222)
                    Family Flags: 4, 6, 44, 58, 106
-#2 (id=325987)   : : Apply Aura (6) | Periodic Trigger Spell (23): Essence of G'Hanir every 0.25 seconds
+#2 (id=325987)   : Apply Aura (6) | Periodic Trigger Spell (23): Essence of G'Hanir every 0.25 seconds
                    Base Value: -50 | Scaled Value: -50 | Trigger Spell: 218889 | Target: Self (1)
 Description      : Release the natural power within G'Hanir to increase the frequency that all of your heal over time effects heal allies by ${100*(1/(1+($m1/100))-1)}% for $d.
 Tooltip          : Heal over time spells are healing ${100*(1/(1+($m1/100))-1)}% faster.
@@ -7887,7 +7888,7 @@ Spell Type       : Magic
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 45 seconds
-Category         : 44
+Category         : 44 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 219
@@ -8085,7 +8086,7 @@ Cast Time        : 1 seconds
 GCD              : 1 seconds
 Velocity         : 20 yards/sec
 Charges          : 3 (20 seconds cooldown)
-Category         : 1727
+Category         : 1727 (Type 0x1)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -8112,7 +8113,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Charges          : 3 (20 seconds cooldown)
-Category         : 1727
+Category         : 1727 (Type 0x1)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -8139,7 +8140,7 @@ Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Travel Time      : 0.65 seconds
 Charges          : 3 (20 seconds cooldown)
-Category         : 1727
+Category         : 1727 (Type 0x1)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -8751,7 +8752,7 @@ Spell Level      : 10
 Cast Time        : 10 seconds
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Category         : 511
+Category         : 511 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -9312,7 +9313,7 @@ Spell Type       : None
 Spell Level      : 48
 Range            : 100 yards
 Cooldown         : 60 seconds
-Category         : 1885
+Category         : 1885 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -9338,7 +9339,7 @@ Spell Type       : None
 Spell Level      : 48
 Range            : 100 yards
 Cooldown         : 60 seconds
-Category         : 1885
+Category         : 1885 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -9380,7 +9381,7 @@ Spell Type       : None
 Spell Level      : 48
 Range            : 100 yards
 Cooldown         : 60 seconds
-Category         : 1885
+Category         : 1885 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -9687,7 +9688,7 @@ Spell Type       : None
 Spell Level      : 48
 Duration         : 10 seconds
 Cooldown         : 60 seconds
-Category         : 1885
+Category         : 1885 (Type 0x0)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -11499,7 +11500,7 @@ Triggered By     : Architect's Aligner (363496)
 Attributes       : Spell Haste Affects Periodic (173)
 Aura Interrupt   : Leave World (19)
 Effects          :
-#1 (id=903413)   : : Apply Aura (6) | Periodic Trigger Spell (23): Architect's Aligner every 1 seconds
+#1 (id=903413)   : Apply Aura (6) | Periodic Trigger Spell (23): Architect's Aligner every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 363789 | Target: Self (1)
 Description      : $@spelldesc363496
 Tooltip          : The Architect's Aligner is activated, dealing $363789s1 Cosmic damage every $t sec.
@@ -12666,7 +12667,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Charges          : 1 (180 seconds cooldown)
-Category         : 2328: Orbital Strike (390378 effect#3), Whirling Stars (468743 effect#2), Whirling Stars (468743 effect#3)
+Category         : 2328 (Type 0x0): Orbital Strike (390378 effect#3), Whirling Stars (468743 effect#2), Whirling Stars (468743 effect#3)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -12842,7 +12843,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Charges          : 1 (180 seconds cooldown)
-Category         : 2328: Orbital Strike (390378 effect#3), Whirling Stars (468743 effect#2), Whirling Stars (468743 effect#3)
+Category         : 2328 (Type 0x0): Orbital Strike (390378 effect#3), Whirling Stars (468743 effect#2), Whirling Stars (468743 effect#3)
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
@@ -16020,7 +16021,7 @@ Aura Interrupt   : Enter World (22), Change Specialization (38), Raid Encounter 
 Effects          :
 #1 (id=1072615)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.5 | Misc Value 2: 0x2 | Target: Self (1)
-#2 (id=1072616)  : : Apply Aura (6) | Periodic Trigger Spell (23): Predator Revealed every 2 seconds
+#2 (id=1072616)  : Apply Aura (6) | Periodic Trigger Spell (23): Predator Revealed every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 411344 | Target: Self (1)
 Description      : $@spelldesc405513
 Tooltip          : Agility increased by $w1%. Generating $s2 combo $lpoint:points; every $t1 sec.
@@ -19805,12 +19806,14 @@ Triggered By     : Druid Feral 11.0 Class Set 4pc (454839)
 Attributes       : Do Not Sheath (18), No Threat (42), Include In Advanced Combat Log (72), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268)
 Effects          :
 #1 (id=1157970)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Ferocious Bite (22568), Primal Wrath (285381), Ravage (441591)
                    Family Flags: 93, 108
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1157971)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value 2: 2740 (Label) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Misc Value 2: 2740 (Label) | Target: Self (1)
                    Affected Spells (Label): Rampant Ferocity (391710)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc454839
 Tooltip          : Direct damage of your next Ferocious Bite and Rampant Ferocity or Primal Wrath increased by $w1%.
 

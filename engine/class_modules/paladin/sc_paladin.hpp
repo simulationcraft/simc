@@ -1248,8 +1248,7 @@ public:
     this->affected_by.divine_purpose      = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 2 ) );
     this->affected_by.seal_of_reprisal    = this->data().affected_by( p->talents.seal_of_reprisal->effectN( 1 ) );
     this->affected_by.blessing_of_dawn    = this->data().affected_by( p->find_spell( 385127 )->effectN( 1 ) );
-    if ( p->is_ptr() )
-      this->affected_by.sacred_strength     = this->data().affected_by( p->talents.sacred_strength->effectN( 1 ) );
+    this->affected_by.sacred_strength     = this->data().affected_by( p->talents.sacred_strength->effectN( 1 ) );
 
     if ( p->talents.penitence->ok() )
     {
@@ -1423,8 +1422,7 @@ public:
 
     // Class talent's Avenging Wrath damage multiplier affects only if base talent is talented (Could still use AW with
     // only Sentinel/AWM/Crusade/AC talented)
-    if ( affected_by.avenging_wrath && ( p()->is_ptr() || p()->talents.avenging_wrath->ok() ) &&
-         ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
+    if ( affected_by.avenging_wrath && ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
     {
       am *= 1.0 + p()->buffs.avenging_wrath->get_damage_mod();
     }
@@ -1466,12 +1464,6 @@ public:
       // Buffs handled in holy_power_consumer_t
       // Get base multiplier
       double bod_mult = p()->buffs.blessing_of_dawn->value();
-      // Increase base multiplier by SoO/FL increase
-      if ( !p()->is_ptr() && p()->talents.seal_of_order->ok() )
-        bod_mult += p()->talents.seal_of_order->effectN( 1 ).percent();
-      // Separating those, in case on of them gets changed. Both do exactly the same to Dawn, though.
-      if ( !p()->is_ptr() && p()->talents.fading_light->ok() )
-        bod_mult += p()->talents.fading_light->effectN( 1 ).percent();
       // Multiply by stack count
       bod_mult *= p()->buffs.blessing_of_dawn->stack();
       am *= 1.0 + bod_mult;
@@ -1971,18 +1963,6 @@ public:
     {
       p->buffs.divine_purpose->trigger();
       p->procs.divine_purpose->occur();
-    }
-
-    if ( !p->is_ptr() && p->talents.incandescence->ok() )
-    {
-      for ( int hopo = 0; hopo < num_hopo_spent; hopo++ )
-      {
-        // this appears to be hardcoded?
-        if ( ab::rng().roll( 0.05 ) )
-        {
-          p->active.incandescence->schedule_execute();
-        }
-      }
     }
 
     if ( p->talents.faiths_armor->ok() )

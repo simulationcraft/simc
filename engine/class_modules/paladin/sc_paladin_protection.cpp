@@ -178,7 +178,7 @@ struct avengers_shield_base_t : public paladin_spell_t
       td( s->target )->debuff.crusaders_resolve->trigger();
     }
 
-    if ( p()->is_ptr() && p()->talents.refining_fire->ok() )
+    if ( p()->talents.refining_fire->ok() )
     {
       p()->active.refining_fire->target = s->target;
       p()->active.refining_fire->execute();
@@ -1247,10 +1247,9 @@ void paladin_t::init_spells_protection()
   talents.ardent_defender                = find_talent_spell( talent_tree::SPECIALIZATION, "Ardent Defender" );
   talents.barricade_of_faith             = find_talent_spell( talent_tree::SPECIALIZATION, "Barricade of Faith" );
   talents.sanctuary                      = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctuary" );
-  if ( !is_ptr() ) talents.consecrated_ground             = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Ground" );
 
   //8
-  if ( is_ptr() ) talents.refining_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Refining Fire" );
+  talents.refining_fire                  = find_talent_spell( talent_tree::SPECIALIZATION, "Refining Fire" );
   talents.bulwark_of_order               = find_talent_spell( talent_tree::SPECIALIZATION, "Bulwark of Order" );
   talents.improved_ardent_defender       = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Ardent Defender" );
   talents.blessing_of_spellwarding       = find_talent_spell( talent_tree::SPECIALIZATION, "Blessing of Spellwarding" );

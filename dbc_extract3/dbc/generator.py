@@ -3415,7 +3415,7 @@ class SpellDataGenerator(DataGenerator):
             spell = self.db('SpellName')[id]
 
             # Unused hotfix IDs: 1, 2, 5, 6, 7
-            # MAX hotfix id: 56
+            # MAX hotfix id: 58
             hotfix = HotfixDataRecord()
             power_count = 0
 
@@ -3470,8 +3470,8 @@ class SpellDataGenerator(DataGenerator):
             category = spell.child('SpellCategories')
             category_data = category.ref('id_charge_category')
 
-            fields += category_data.field('charges', 'charge_cooldown')
-            hotfix.add(category_data, ('charges', 16), ('charge_cooldown', 17))
+            fields += category_data.field('flags', 'charges', 'charge_cooldown', 'type_mask')
+            hotfix.add(category_data, ('flags', 57), ('charges', 16), ('charge_cooldown', 17), ('type_mask', 58))
             if category.id_charge_category > 0: # Note, some spells have both cooldown and charge categories
                 fields += category.field('id_charge_category')
                 hotfix.add(category, ('id_charge_category', 18))
