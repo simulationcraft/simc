@@ -2540,7 +2540,8 @@ struct arcane_mage_spell_t : public mage_spell_t
 
   void consume_nether_precision( player_t* t, bool aethervision = false )
   {
-    if ( !p()->buffs.nether_precision->check() )
+    int old_stack = p()->buffs.nether_precision->check();
+    if ( !old_stack )
       return;
 
     p()->buffs.nether_precision->decrement();
@@ -2553,8 +2554,9 @@ struct arcane_mage_spell_t : public mage_spell_t
         p()->buffs.leydrinker->trigger();
     }
 
+    // TODO: Consuming the 2nd stack of NP seems to stop Dematerialize from triggering
     if ( p()->talents.dematerialize.ok() )
-      p()->state.trigger_dematerialize = true;
+      p()->state.trigger_dematerialize = !p()->bugs || old_stack == p()->buffs.nether_precision->max_stack();
     p()->trigger_splinter( t );
 
     if ( aethervision )
