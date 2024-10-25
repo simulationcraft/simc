@@ -2352,8 +2352,9 @@ Effects          :
                    Base Value: 7 | Scaled Value: 7 | Misc Value: 11 | Target: Self (1)
 #8 (id=260672)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-                   Affected Spells: Divine Toll (304971), Divine Toll (375576), Divine Resonance (386731), Divine Resonance (387896)
-                   Family Flags: 92
+                   Affected Spells: Divine Toll (304971), Divine Toll (375576), Divine Resonance (386731), Divine Resonance (387896), Hammer of Light (427453)
+                   Family Flags: 29, 92
+Hotfixed         : Affects Spells
 
 Name             : Retribution Paladin (id=137027) [Spell Family (10), Passive, Hidden] 
 Class            : Retribution Paladin
@@ -10199,17 +10200,20 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1016941)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Sentinel (389539)
                    Family Flags: 76
+Hotfixed         : Base Value (20 -> 0)
 #2 (id=1016942)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Sentinel (389539)
                    Family Flags: 76
+Hotfixed         : Base Value (20 -> 0)
 #3 (id=1035086)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 33 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Sentinel (389539)
                    Family Flags: 76
+Hotfixed         : Base Value (20 -> 0)
 #4 (id=1091237)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Crusade (231895), Crusade (454373)
@@ -15508,7 +15512,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 3022
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Divine Purpose (223819 effects: #1, #4), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Divine Purpose (408458 effect#1), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Light's Deliverance (433732 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Paladin (137026 effect#8), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Divine Purpose (223819 effects: #1, #4), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Divine Purpose (408458 effect#1), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Light's Deliverance (433732 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 27, 29, 65
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60), Not In Spellbook (143), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
@@ -15608,9 +15612,15 @@ Effects          :
                    Base Value: 156 | Scaled Value: 156 | Target: Self (1)
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779), Boundless Judgment (383970), Judgment (383991)
                    Family Flags: 23
+#20 (id=1195722) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 18 | Scaled Value: 18 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Dawnlight (431380), Dawnlight (431381)
+                   Family Flags: 1
+Hotfixed         : NEW EFFECT
 Description      : Holy Paladin core passive
 
 Name             : Hammer of Light (id=429826) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -15622,7 +15632,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Judgment (197277 effect#1), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Reckoning (343724 effect#2), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Divine Purpose (408458 effect#2), Retribution Paladin (412314 effects: #14, #15, #22), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1)
 Triggered By     : Hammer of Light (427453)
 Family Flags     : 27, 65, 112
-Attributes       : Allow Dead Target (64), Not a Proc (105), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
+Attributes       : Allow Dead Target (64), Do Not Reset Combat Timers (81), Not a Proc (105), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1114338)  : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5.80645 | PvP Coefficient: 0.8 | Target: Enemy (6)
@@ -15665,12 +15675,13 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 2511: Penitence (403026 effect#1), Truth's Wake (403695 effect#5)
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Sun's Avatar (431425 effect#1), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Holy Paladin (428076 effect#20), Sun's Avatar (431425 effect#1), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 1, 27, 65
 Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1119125)  : Apply Aura (6) | Periodic Damage (3): holyfire every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.6375 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.75 -> 0.6375)
 #2 (id=1119126)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=1119190)  : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -15689,7 +15700,7 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Sun's Avatar (431425 effect#1), Avenging Wrath (454351 effects: #2, #11), Heightened Wrath (456759 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effect#20), Sun's Avatar (431425 effect#1), Avenging Wrath (454351 effects: #2, #11), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 1, 41, 46
 Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268)
 Effects          :
@@ -18505,6 +18516,7 @@ Description      : $@spelldesc157047
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Sacrosanct Crusade (id=461867) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -18513,7 +18525,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 3022
-Attributes       : Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Fail on all targets immune (85), Aura Never Bounces (148), Ignore Healing Modifiers (219), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+Attributes       : Wearer Casts Proc Trigger (11), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Do Not Reset Combat Timers (81), Fail on all targets immune (85), Aura Never Bounces (148), Doesn't Reset Swing Timer if Instant (217), Ignore Healing Modifiers (219), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1170661)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)

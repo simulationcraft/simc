@@ -10307,10 +10307,12 @@ Effects          :
 Description      : While Agony, $?a445465[Wither][Corruption], and Unstable Affliction are active, your Shadow Bolt has a $s1% chance and your Drain Soul has a $s2% chance to make your next Malefic Rapture cost no Soul Shards and cast instantly.
 
 Name             : Tormented Crescendo (id=387077) [Spell Family (5), Hidden] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not a Proc (105), Suppress Target Procs (113)
+Labels           : 19: Warlock Spells
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Not an Attack (194)
 Effects          :
 #1 (id=1021628)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 100 yards | Target: At Self (18) -> At Enemy in Area (16)
@@ -14358,6 +14360,7 @@ Description      : $@spelldesc440044
 Tooltip          : $?s440040&s440044[The effects of Xalan's Cruelty are increased to $s2% and the effects of Xalan's Ferocity are increased to $s1%.]?s440040[The effects of Xalan's Cruelty are increased $s2%.][The effects of Xalan's Ferocity are increased $s1%.]
 
 Name             : Blackened Soul (id=441638) [Spell Family (5), Hidden] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
@@ -14365,7 +14368,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not Shapeshifted (16), No Threat (42), No Aura Icon (60), Ignore Line of Sight (66), Suppress Caster Procs (112), Suppress Target Procs (113), No Harmful Threat (132), Allow Class Ability Procs (416)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Ignore Line of Sight (66), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Not an Attack (194)
 Effects          :
 #1 (id=1136234)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: At Self (22) -> Enemy in Area (15)
@@ -15996,26 +15999,28 @@ Description      : $@spelldesc455572
 Tooltip          : Damage dealt increased by $s1%.
 
 Name             : The Houndmaster's Gambit (id=455615) [Spell Family (5), Hidden] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Suppress Target Procs (113), Not an Attack (194)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Not an Attack (194)
 Effects          :
 #1 (id=1159208)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Self (18) -> To Area (8)
 Description      : $@spelldesc455572
 
 Name             : The Houndmaster's Gambit (id=455621) [Spell Family (5), Hidden] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Not a Proc (105), Suppress Target Procs (113), Not an Attack (194)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Not an Attack (194)
 Effects          :
 #1 (id=1159219)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Self (18) -> To Area (8)
@@ -16580,6 +16585,7 @@ Effects          :
 Description      : $@spelldesc460551
 
 Name             : Doom (id=460569) [Hidden] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -16587,7 +16593,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Not an Attack (194)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Suppress Weapon Procs (151), Not an Attack (194)
 Effects          :
 #1 (id=1168345)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Enemy (53) -> At Enemy in Area (16)
