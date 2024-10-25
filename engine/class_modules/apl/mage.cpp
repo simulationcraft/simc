@@ -309,34 +309,69 @@ void frost( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
+  action_priority_list_t* aoe_ff = p->get_action_priority_list( "aoe_ff" );
+  action_priority_list_t* aoe_ss = p->get_action_priority_list( "aoe_ss" );
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
-  action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* cleave_ff = p->get_action_priority_list( "cleave_ff" );
   action_priority_list_t* cleave_ss = p->get_action_priority_list( "cleave_ss" );
+  action_priority_list_t* movement = p->get_action_priority_list( "movement" );
   action_priority_list_t* st_aoebuild = p->get_action_priority_list( "st_aoebuild" );
   action_priority_list_t* st_ff = p->get_action_priority_list( "st_ff" );
   action_priority_list_t* st_ss = p->get_action_priority_list( "st_ss" );
-  action_priority_list_t* movement = p->get_action_priority_list( "movement" );
 
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
   precombat->add_action( "arcane_intellect" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "variable,name=st_aoebuild,value=talent.splinterstorm&!(talent.cold_front&talent.slick_ice&talent.deaths_chill&talent.frozen_touch)|talent.frostfire_bolt&!talent.deep_shatter" );
+  precombat->add_action( "variable,name=st_aoebuild,value=talent.splinterstorm&!(talent.cold_front&talent.slick_ice&talent.deaths_chill&talent.frozen_touch)|talent.frostfire_bolt&!(talent.deep_shatter&talent.slick_ice&talent.deaths_chill)" );
   precombat->add_action( "variable,name=st_ff,value=talent.frostfire_bolt" );
-  precombat->add_action( "variable,name=time_to_coc,value=10*talent.frostfire_bolt+23*talent.splinterstorm" );
   precombat->add_action( "blizzard,if=active_enemies>=2&talent.ice_caller&!talent.fractured_frost|active_enemies>=4" );
   precombat->add_action( "frostbolt,if=active_enemies<=3" );
 
   default_->add_action( "counterspell" );
   default_->add_action( "call_action_list,name=cds" );
-  default_->add_action( "run_action_list,name=aoe,if=active_enemies>=7|active_enemies>=3&!talent.frostfire_bolt|active_enemies>=4" );
-  default_->add_action( "run_action_list,name=cleave_ff,if=active_enemies>=2&active_enemies<=3&talent.frostfire_bolt" );
-  default_->add_action( "run_action_list,name=cleave_ss,if=active_enemies>=2" );
+  default_->add_action( "run_action_list,name=aoe_ff,if=talent.frostfire_bolt&active_enemies>=4" );
+  default_->add_action( "run_action_list,name=aoe_ss,if=talent.splinterstorm&active_enemies>=3" );
+  default_->add_action( "run_action_list,name=cleave_ff,if=talent.frostfire_bolt&active_enemies>=2&active_enemies<=3" );
+  default_->add_action( "run_action_list,name=cleave_ss,if=talent.splinterstorm&active_enemies=2" );
   default_->add_action( "run_action_list,name=st_aoebuild,if=variable.st_aoebuild" );
   default_->add_action( "run_action_list,name=st_ff,if=variable.st_ff" );
   default_->add_action( "run_action_list,name=st_ss" );
+
+  aoe_ff->add_action( "cone_of_cold,if=talent.coldest_snap&cooldown.frozen_orb.remains>4&(prev_gcd.1.comet_storm|prev_gcd.1.frozen_orb&!talent.comet_storm|cooldown.comet_storm.remains>15&!talent.frostfire_bolt)" );
+  aoe_ff->add_action( "frozen_orb,if=cooldown_react&((!prev_gcd.1.cone_of_cold|!talent.isothermic_core)&(!prev_gcd.1.glacial_spike|!freezable))" );
+  aoe_ff->add_action( "blizzard,if=!prev_gcd.1.glacial_spike|!freezable" );
+  aoe_ff->add_action( "frostbolt,if=buff.icy_veins.up&(buff.deaths_chill.stack<9|buff.deaths_chill.stack=9&!action.frostbolt.in_flight)&buff.icy_veins.remains>8&talent.deaths_chill" );
+  aoe_ff->add_action( "comet_storm,if=!prev_gcd.1.glacial_spike&(!talent.coldest_snap|cooldown.cone_of_cold.ready&cooldown.frozen_orb.remains>20|(cooldown.cone_of_cold.remains>10))" );
+  aoe_ff->add_action( "freeze,if=freezable&debuff.frozen.down&(!talent.glacial_spike|prev_gcd.1.glacial_spike)" );
+  aoe_ff->add_action( "ice_nova,if=freezable&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike)" );
+  aoe_ff->add_action( "frost_nova,if=freezable&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike&!remaining_winters_chill)" );
+  aoe_ff->add_action( "shifting_power,if=cooldown.comet_storm.remains>14" );
+  aoe_ff->add_action( "frostbolt,if=buff.frostfire_empowerment.react&!buff.excess_frost.react&!buff.excess_fire.react" );
+  aoe_ff->add_action( "glacial_spike,if=buff.icicles.react=5&(freezable|(action.flurry.cooldown_react|remaining_winters_chill))" );
+  aoe_ff->add_action( "flurry,if=cooldown_react&!remaining_winters_chill&(buff.brain_freeze.react&!talent.excess_frost|buff.excess_frost.react|prev_gcd.1.glacial_spike)" );
+  aoe_ff->add_action( "ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time|remaining_winters_chill" );
+  aoe_ff->add_action( "flurry,if=cooldown_react&!remaining_winters_chill" );
+  aoe_ff->add_action( "ice_nova,if=active_enemies>=4&(!talent.glacial_spike|!freezable)&!talent.frostfire_bolt" );
+  aoe_ff->add_action( "cone_of_cold,if=!talent.coldest_snap&active_enemies>=7" );
+  aoe_ff->add_action( "frostbolt" );
+  aoe_ff->add_action( "call_action_list,name=movement" );
+
+  aoe_ss->add_action( "cone_of_cold,if=talent.coldest_snap&cooldown.frozen_orb.remains&(prev_gcd.1.comet_storm|prev_gcd.1.frozen_orb&cooldown.comet_storm.remains)&(!talent.deaths_chill|buff.icy_veins.remains<8|buff.deaths_chill.stack>=12)" );
+  aoe_ss->add_action( "freeze,if=freezable&debuff.frozen.down&prev_gcd.1.glacial_spike" );
+  aoe_ss->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0&prev_gcd.1.glacial_spike" );
+  aoe_ss->add_action( "frozen_orb,if=cooldown_react" );
+  aoe_ss->add_action( "frostbolt,if=talent.deaths_chill&buff.icy_veins.remains>8&(buff.deaths_chill.stack<9|buff.deaths_chill.stack=9&!action.frostbolt.in_flight)" );
+  aoe_ss->add_action( "comet_storm" );
+  aoe_ss->add_action( "blizzard" );
+  aoe_ss->add_action( "shifting_power,if=cooldown.icy_veins.remains>10" );
+  aoe_ss->add_action( "glacial_spike,if=buff.icicles.react=5&(action.flurry.cooldown_react|remaining_winters_chill)" );
+  aoe_ss->add_action( "ice_lance,if=buff.fingers_of_frost.react" );
+  aoe_ss->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0" );
+  aoe_ss->add_action( "ice_nova,if=freezable|active_enemies>=8" );
+  aoe_ss->add_action( "frostbolt" );
+  aoe_ss->add_action( "call_action_list,name=movement" );
 
   cds->add_action( "use_item,name=imperfect_ascendancy_serum,if=buff.icy_veins.remains>19|fight_remains<25" );
   cds->add_action( "use_item,name=spymasters_web,if=fight_remains<25|(fight_remains<100|buff.spymasters_report.stack>35)&(!talent.deaths_chill&buff.icy_veins.remains>19|talent.deaths_chill&buff.icy_veins.remains>15&buff.icy_veins.remains<20)" );
@@ -352,25 +387,6 @@ void frost( player_t* p )
   cds->add_action( "fireblood" );
   cds->add_action( "ancestral_call" );
 
-  aoe->add_action( "cone_of_cold,if=talent.coldest_snap&cooldown.frozen_orb.remains>4&(prev_gcd.1.comet_storm|prev_gcd.1.frozen_orb&!talent.comet_storm|cooldown.comet_storm.remains>15&!talent.frostfire_bolt)" );
-  aoe->add_action( "frozen_orb,if=cooldown_react&((!prev_gcd.1.cone_of_cold|!talent.isothermic_core)&(!prev_gcd.1.glacial_spike|!freezable))" );
-  aoe->add_action( "blizzard,if=!prev_gcd.1.glacial_spike|!freezable" );
-  aoe->add_action( "frostbolt,if=buff.icy_veins.up&(buff.deaths_chill.stack<9|buff.deaths_chill.stack=9&!action.frostbolt.in_flight)&buff.icy_veins.remains>8&talent.deaths_chill" );
-  aoe->add_action( "comet_storm,if=!prev_gcd.1.glacial_spike&(!talent.coldest_snap|cooldown.cone_of_cold.ready&cooldown.frozen_orb.remains>20|(cooldown.cone_of_cold.remains>variable.time_to_coc))" );
-  aoe->add_action( "freeze,if=freezable&debuff.frozen.down&(!talent.glacial_spike|prev_gcd.1.glacial_spike)" );
-  aoe->add_action( "ice_nova,if=freezable&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike)" );
-  aoe->add_action( "frost_nova,if=freezable&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike&!remaining_winters_chill)" );
-  aoe->add_action( "shifting_power,if=cooldown.comet_storm.remains>14" );
-  aoe->add_action( "frostbolt,if=buff.frostfire_empowerment.react&!buff.excess_frost.react&!buff.excess_fire.react" );
-  aoe->add_action( "glacial_spike,if=buff.icicles.react=5&(freezable|(action.flurry.cooldown_react|remaining_winters_chill))" );
-  aoe->add_action( "flurry,if=cooldown_react&!remaining_winters_chill&(buff.brain_freeze.react&!talent.excess_frost|buff.excess_frost.react|prev_gcd.1.glacial_spike)" );
-  aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time|remaining_winters_chill" );
-  aoe->add_action( "flurry,if=cooldown_react&!remaining_winters_chill" );
-  aoe->add_action( "ice_nova,if=active_enemies>=4&(!talent.glacial_spike|!freezable)&!talent.frostfire_bolt" );
-  aoe->add_action( "cone_of_cold,if=!talent.coldest_snap&active_enemies>=7" );
-  aoe->add_action( "frostbolt" );
-  aoe->add_action( "call_action_list,name=movement" );
-
   cleave_ff->add_action( "comet_storm,if=prev_gcd.1.flurry|prev_gcd.1.cone_of_cold" );
   cleave_ff->add_action( "frostbolt,if=buff.icy_veins.up&(buff.deaths_chill.stack<8|buff.deaths_chill.stack=8&!action.frostbolt.in_flight)&buff.icy_veins.remains>8&talent.deaths_chill" );
   cleave_ff->add_action( "flurry,target_if=min:debuff.winters_chill.stack,if=cooldown_react&(((prev_gcd.1.frostbolt|prev_gcd.1.frostfire_bolt)&buff.icicles.react>=3)|prev_gcd.1.glacial_spike|(buff.icicles.react>=3&buff.icicles.react<5&charges_fractional=2))" );
@@ -385,28 +401,33 @@ void frost( player_t* p )
   cleave_ff->add_action( "frostbolt" );
   cleave_ff->add_action( "call_action_list,name=movement" );
 
-  cleave_ss->add_action( "comet_storm,if=prev_gcd.1.flurry&(buff.icy_veins.down)|prev_gcd.1.cone_of_cold|active_enemies>=3" );
+  cleave_ss->add_action( "comet_storm,if=prev_gcd.1.flurry&(buff.icy_veins.down)" );
   cleave_ss->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&(prev_gcd.1.frostbolt|prev_gcd.1.glacial_spike)" );
   cleave_ss->add_action( "flurry,target_if=min:debuff.winters_chill.stack,if=cooldown_react&prev_gcd.1.glacial_spike" );
   cleave_ss->add_action( "freeze,if=freezable&debuff.frozen.down&(!talent.glacial_spike|prev_gcd.1.glacial_spike)" );
-  cleave_ss->add_action( "ice_nova,if=freezable&!prev_off_gcd.freeze&(prev_gcd.1.glacial_spike)" );
   cleave_ss->add_action( "frozen_orb,if=cooldown_react" );
   cleave_ss->add_action( "shifting_power,if=cooldown.icy_veins.remains>10&cooldown.flurry.remains&(fight_remains>cooldown.icy_veins.remains-6)" );
-  cleave_ss->add_action( "cone_of_cold,if=talent.coldest_snap&cooldown.comet_storm.remains>10&cooldown.frozen_orb.remains>10&remaining_winters_chill=0&active_enemies>=3" );
-  cleave_ss->add_action( "glacial_spike,if=buff.icicles.react=5&((action.flurry.cooldown_react|remaining_winters_chill)|freezable&(cooldown.freeze.ready|cooldown.ice_nova.ready))" );
+  cleave_ss->add_action( "glacial_spike,if=buff.icicles.react=5&(action.flurry.cooldown_react|remaining_winters_chill|freezable&cooldown.freeze.ready)" );
   cleave_ss->add_action( "ray_of_frost,if=remaining_winters_chill&buff.icy_veins.down" );
   cleave_ss->add_action( "frostbolt,if=talent.deaths_chill&(!talent.freezing_rain&buff.icy_veins.remains>8&buff.deaths_chill.stack<=13|talent.freezing_rain&buff.icy_veins.remains>22)" );
   cleave_ss->add_action( "ice_lance,if=buff.fingers_of_frost.react&!prev_gcd.1.glacial_spike" );
-  cleave_ss->add_action( "blizzard,if=talent.ice_caller&talent.freezing_rain&active_enemies>=3" );
   cleave_ss->add_action( "frostbolt" );
   cleave_ss->add_action( "call_action_list,name=movement" );
+
+  movement->add_action( "any_blink,if=movement.distance>10" );
+  movement->add_action( "ice_floes,if=buff.ice_floes.down" );
+  movement->add_action( "ice_nova" );
+  movement->add_action( "cone_of_cold,if=!talent.coldest_snap&active_enemies>=2" );
+  movement->add_action( "arcane_explosion,if=mana.pct>30&active_enemies>=2" );
+  movement->add_action( "fire_blast" );
+  movement->add_action( "ice_lance" );
 
   st_aoebuild->add_action( "comet_storm,if=prev_gcd.1.flurry&(buff.icy_veins.down|talent.frostfire_bolt)" );
   st_aoebuild->add_action( "flurry,if=cooldown_react&(buff.icicles.react<5|talent.splinterstorm)&(remaining_winters_chill=0&debuff.winters_chill.down&(prev_gcd.1.frostbolt|prev_gcd.1.frostfire_bolt|prev_gcd.1.glacial_spike)|buff.excess_frost.react)" );
   st_aoebuild->add_action( "frozen_orb,if=cooldown_react&(talent.splinterstorm|(!talent.ray_of_frost|buff.fingers_of_frost.down&cooldown.ray_of_frost.remains&buff.icicles.react<5))" );
   st_aoebuild->add_action( "shifting_power,if=(cooldown.icy_veins.remains>10&cooldown.flurry.remains&(fight_remains>cooldown.icy_veins.remains-6)|talent.frostfire_bolt)&(talent.splinterstorm|(buff.icy_veins.down|!talent.deaths_chill)&cooldown.frozen_orb.remains>10&(!talent.comet_storm|cooldown.comet_storm.remains>10)&(!talent.ray_of_frost|cooldown.ray_of_frost.remains>10)&buff.icicles.react<5)" );
   st_aoebuild->add_action( "glacial_spike,if=buff.icicles.react=5&(action.flurry.cooldown_react|remaining_winters_chill)" );
-  st_aoebuild->add_action( "ray_of_frost,if=remaining_winters_chill" );
+  st_aoebuild->add_action( "ray_of_frost,if=remaining_winters_chill&talent.frostfire_bolt|remaining_winters_chill=1" );
   st_aoebuild->add_action( "ice_lance,if=buff.fingers_of_frost.react&!prev_gcd.1.glacial_spike|remaining_winters_chill" );
   st_aoebuild->add_action( "frostbolt" );
   st_aoebuild->add_action( "call_action_list,name=movement" );
@@ -432,14 +453,6 @@ void frost( player_t* p )
   st_ss->add_action( "ice_lance,if=remaining_winters_chill=2|remaining_winters_chill&action.flurry.cooldown_react" );
   st_ss->add_action( "frostbolt" );
   st_ss->add_action( "call_action_list,name=movement" );
-
-  movement->add_action( "any_blink,if=movement.distance>10" );
-  movement->add_action( "ice_floes,if=buff.ice_floes.down" );
-  movement->add_action( "ice_nova" );
-  movement->add_action( "cone_of_cold,if=!talent.coldest_snap&active_enemies>=2" );
-  movement->add_action( "arcane_explosion,if=mana.pct>30&active_enemies>=2" );
-  movement->add_action( "fire_blast" );
-  movement->add_action( "ice_lance" );
 }
 //frost_apl_end
 
