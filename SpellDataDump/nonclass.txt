@@ -241231,10 +241231,13 @@ Effects          :
 Description      : Your melee attacks have a chance to inflict $s1 Nature damage.
 
 Name             : Mindtap (id=454798) 
+Hotfixed         : Cooldown (0 -> 120000), GCD (1000 -> 0), Category Cooldown (0 -> 20000), Category (0 -> 1141)
 School           : Physical
 Spell Type       : None
-GCD              : 1 seconds
 Duration         : 20 seconds
+Cooldown         : 120 seconds
+Category         : 1141 (Type 0x0)
+Category Cooldown: 20 seconds
 Attributes       : Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1157695)  : Apply Aura (6) | Attribute (29) | Scaling Class: -1

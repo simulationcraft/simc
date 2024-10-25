@@ -3375,6 +3375,7 @@ Has a $s3% chance to hit an additional time, making your next Pistol Shot half c
 Variables        : $mult=${($max(0,$min($pl-10,10))*8+195)/275}
 
 Name             : Broadside (id=193356) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3384,7 +3385,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=283680)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3 | Target: Self (1)
@@ -3414,6 +3415,7 @@ Description      : Your combo-point generating abilities generate $s1 additional
 Tooltip          : Your combo-point generating abilities generate $s1 additional combo point and deal $s4% increased damage.
 
 Name             : Ruthless Precision (id=193357) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3423,7 +3425,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=283681)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 7 | Target: Self (1)
@@ -3438,6 +3440,7 @@ Tooltip          : Critical strike chance of Between the Eyes increased by ${$s1
 Critical strike chance of all other abilities increased by $s1%.
 
 Name             : Grand Melee (id=193358) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3446,7 +3449,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=283682)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -3470,6 +3473,7 @@ Tooltip          : Damage increased by $w1%.
 Blade Flurry deals $w2% additional damage to nearby enemies.
 
 Name             : True Bearing (id=193359) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3479,7 +3483,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=283683)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Target: Self (1)
@@ -4072,6 +4076,7 @@ Critical strikes with Shuriken Storm apply Find Weakness for $319949s1 sec.][]
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Buried Treasure (id=199600) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4081,7 +4086,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=293719)   : Apply Aura (6) | Restore Power (85)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Target: Self (1)
@@ -4089,6 +4094,7 @@ Description      : Your base Energy regeneration is increased by ${$s1/5} per se
 Tooltip          : Increases Energy regeneration by ${$s1/5} per sec.
 
 Name             : Skull and Crossbones (id=199603) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4098,7 +4104,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=293724)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 23 | Target: Self (1)
@@ -5865,6 +5871,7 @@ Variables        : $CAP=${($AP+$OAP)*2/3}
 $damage=${$m1*$<CAP>/$AP}
 
 Name             : Slice and Dice (id=315496) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -5881,7 +5888,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Recuperator (341312 effect#1), Tight Spender (381621 effect#1), Swift Slasher (381988 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effect#1), Devious Stratagem (394321 effect#1), Goremaw's Bite (426593 effect#2), Thousand Cuts (441346 effect#1), Sanguine Stratagem (457512 effect#1)
 Family Flags     : 18, 89
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Allow While Stealthed (37), No Threat (42), Finishing Move - Duration (54), Do Not Display Range (126), Not an Attack (194), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=799272)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
@@ -6118,6 +6125,7 @@ Description      : $@spelldesc245388
 Tooltip          : $w1% increased Nature $?a400783[and Bleed ][]damage taken from $@auracaster.$?${$W2<0}[ Healing received reduced by $w2%.][]
 
 Name             : Blade Flurry (id=319606) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -6136,7 +6144,7 @@ Proc Flags       : White Melee, Yellow Melee, Yellow Ranged
 Affecting Spells : Adrenaline Rush (13750 effect#3), Grand Melee (193358 effect#2), Dancing Steel (272026 effect#2), Ambidexterity (341542 effect#1), Ambidexterity (381822 effect#1)
 Family Flags     : 30, 43
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Include In Advanced Combat Log (72), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=806204)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.6 | Radius: 0 - 10 yards | Target: At Self (18) -> At Enemy in Area (16)
@@ -9589,7 +9597,8 @@ Effects          :
 #2 (id=1013523)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Gouge (1776), Mutilate (5374), Shiv (5938), Ambush (8676), Mutilate (27576), Fan of Knives (51723), Quaking Palm (107079), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Sinister Strike (341541), Dreadblades (343142), Shadowstrike (345121), Echoing Reprimand (354835), Echoing Reprimand (354838), Garrote (360830), Serrated Bone Spike (385424), Kingsbane (385627), Ambush (385897), Serrated Bone Spike (394036), Goremaw's Bite (426591), Goremaw's Bite (426592), Ambush (430023), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672)
-                   Family Flags: 1, 2, 3, 8, 9, 23, 26, 29, 33, 34, 50, 53, 67, 75, 82, 85, 98, 101, 104, 109, 115, 118, 119, 127
+                   Family Flags: 1, 2, 3, 8, 9, 23, 26, 29, 33, 34, 50, 53, 67, 75, 82, 98, 101, 104, 109, 115, 118, 119, 127
+Hotfixed         : Affects Spells
 #3 (id=1114575)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Bonus Multiplier (15)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 15 | Misc Value 2: 3052 (Label) | Target: Self (1)
                    Affected Spells (Label): Blade Flurry (429951)
