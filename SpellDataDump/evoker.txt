@@ -5990,7 +5990,8 @@ Effects          :
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Heroic Leap reduced by $s1%.
 
-Name             : Permeating Chill (id=381773) [Spell Family (224), Passive, Hidden] 
+Name             : Permeating Chill (id=381773) [Spell Family (224), Passive] 
+Hotfixed         : Attributes
 Class            : Evoker
 School           : Spellfrost
 Spell Type       : None
@@ -6000,7 +6001,7 @@ Labels           : 16: Class Spells
                  : 1465
 Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell, Periodic
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1012819)  : Apply Aura (6) | Proc Trigger Spell (42): Permeating Chill
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 370898 | Target: Self (1)

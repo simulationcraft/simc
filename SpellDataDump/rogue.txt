@@ -978,6 +978,7 @@ Movement speed increased by $w3%.][]$?$w4!=0[
 Damage increased by $w4%.][]
 
 Name             : Adrenaline Rush (id=13750) [Spell Family (8)] 
+Hotfixed         : Attributes
 Talent Entry     : Outlaw [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
@@ -990,10 +991,11 @@ Labels           : 16: Class Spells
                  : 184
                  : 292
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
+                 : 1387
                  : 2887: Underhanded Upper Hand (Adrenaline Rush) (424081 effect#1)
 Affecting Spells : Celerity (340087 effect#1)
 Family Flags     : 39
-Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Extra Initial Period (169), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Suppress Target Procs (113), Extra Initial Period (169), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=6149)     : Apply Aura (6) | Modify Power Regen (110)
@@ -3661,6 +3663,7 @@ Spell Type       : None
 Spell Level      : 16
 Range            : 40 yards
 Velocity         : 80 yards/sec
+Cooldown         : 0.8 seconds
 Charges          : 1 (45 seconds cooldown)
 Category         : 2303 (Type 0x9): Retractable Hook (256188 effect#1), Quick Decisions (341531 effect#2), Thrill Seeking (394931 effect#2), Death's Arrival (454433 effect#3), Death's Arrival (457343 effect#2)
 Labels           : 16: Class Spells
@@ -5062,6 +5065,7 @@ Effects          :
 Description      : Activating Adrenaline Rush causes your next Roll the Bones to grant at least two matches.
 
 Name             : Loaded Dice (id=256171) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -5069,11 +5073,12 @@ Duration         : 45 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Generic Heal
 Triggered By     : Loaded Dice (256170)
-Attributes       : Aura Points On Client (268)
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113), Aura Points On Client (268)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=478589)   : Apply Aura (6) | Dummy (4)
@@ -11496,13 +11501,15 @@ Effects          :
 Description      : Generate full combo points when you gain Adrenaline Rush, and full Energy when it ends.
 
 Name             : Improved Adrenaline Rush (id=395424) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Attributes       : Allow Class Ability Procs (416)
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1035888)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: combo_points | Target: Self (1)
@@ -12281,6 +12288,7 @@ Effects          :
 Description      : $@spelldesc424044
 
 Name             : Underhanded Upper Hand (Blade Flurry) (id=424080) [Spell Family (8), Hidden] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12288,7 +12296,8 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : 1387
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Suppress Target Procs (113), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1100520)  : Apply Aura (6) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 2886 (Label) | Target: Self (1)
@@ -12296,6 +12305,7 @@ Effects          :
 Description      : $@spelldesc424044
 
 Name             : Underhanded Upper Hand (Adrenaline Rush) (id=424081) [Spell Family (8), Hidden] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12303,7 +12313,8 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : 1387
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Suppress Target Procs (113), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1100521)  : Apply Aura (6) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 2887 (Label) | Target: Self (1)
@@ -12311,6 +12322,7 @@ Effects          :
 Description      : $@spelldesc424044
 
 Name             : Crackshot (id=424254) [Spell Family (8), Hidden] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12318,7 +12330,8 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Cancel (31), Not In Spellbook (143), No Aura Log (202), Allow Class Ability Procs (416)
+                 : 1387
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Cancel (31), Allow While Stealthed (37), Suppress Target Procs (113), Not In Spellbook (143), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1100839)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self (1)
@@ -13407,7 +13420,7 @@ Name             : Fatebound Coin (Tails) (id=452538) [Spell Family (8)]
 Class            : Rogue
 School           : Cosmic
 Spell Type       : Melee
-Range            : 30 yards
+Range            : 20 yards
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -13420,6 +13433,7 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452542) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13428,6 +13442,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1153785)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13436,6 +13452,7 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452544) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13444,13 +13461,16 @@ Duration         : 2 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
 Triggered By     : Fatebound Coin (452559)
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1153788)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 33612 | Target: Unknown(87)
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452555) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : Magic
@@ -13459,6 +13479,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1153832)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13467,6 +13489,7 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452557) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13475,12 +13498,15 @@ Duration         : 2 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1153835)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 33612 | Target: Unknown(87)
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452558) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13489,12 +13515,15 @@ Duration         : 2 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1153837)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 33612 | Target: Unknown(87)
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452559) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : Magic
@@ -13503,8 +13532,10 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
 Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #1, #2, #3), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Vile Tincture (458475 effects: #1, #2), Master Assassin (470676 effect#1)
 Family Flags     : 54, 97
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1153838)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13530,6 +13561,7 @@ Description      : $@spelldesc452536
 Tooltip          : Agility increased by $w1%.
 
 Name             : Fatebound Coin (id=452740) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13538,6 +13570,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1154108)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13546,6 +13580,7 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452741) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13554,6 +13589,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1154110)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13562,6 +13599,7 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452742) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13570,6 +13608,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1154112)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13578,6 +13618,7 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (Tails) (id=452917) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13585,9 +13626,10 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
 Stacks           : 99 maximum
 Proc Chance      : 101%
-Attributes       : No Aura Cancel (31), Aura Points On Client (268)
+Attributes       : No Aura Cancel (31), Allow While Stealthed (37), Suppress Target Procs (113), Aura Points On Client (268)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Enter Instance (43), Change Talent (46)
 Effects          :
 #1 (id=1154405)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -13602,6 +13644,7 @@ Description      : $@spelldesc452536
 Tooltip          : Fatebound Coin damage increased by $w1%.$?a454300[ Leech increased by ${$W2}.1%.][]
 
 Name             : Fatebound Coin (Heads) (id=452923) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13609,12 +13652,13 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
                  : 3641
 Stacks           : 99 maximum
 Proc Chance      : 101%
 Affecting Spells : Fatebound Coin (Heads) (456479 effects: #1, #2)
 Family Flags     : 56
-Attributes       : No Aura Cancel (31), Aura Points On Client (268)
+Attributes       : No Aura Cancel (31), Allow While Stealthed (37), Suppress Target Procs (113), Aura Points On Client (268)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Enter Instance (43), Change Talent (46)
 Effects          :
 #1 (id=1154414)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -13635,6 +13679,7 @@ Description      : $@spelldesc452536
 Tooltip          : Damage increased by ${$W1+$456479s~1}%.$?a454300[ Leech increased by ${$W3}.1%.][]
 
 Name             : Fatebound Coin (id=453010) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : Magic
@@ -13643,6 +13688,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1154537)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13651,6 +13698,7 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=453012) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13659,6 +13707,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1154540)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13667,6 +13717,7 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=453014) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13675,6 +13726,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1154543)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13683,6 +13736,7 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=453016) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13691,6 +13745,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1154546)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -14223,6 +14279,7 @@ Description      : Increases the critical strike chance of your next two $?a1370
 Tooltip          : Critical strike chance of $?a137037[Envenom][Dispatch] increased by $s1%.
 
 Name             : Fatebound Coin (Heads) (id=456479) [Spell Family (8), Hidden] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -14230,8 +14287,9 @@ Duration         : 3600 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
 Proc Chance      : 101%
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268), Update Passives on Apply/Remove (344)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Cancel (31), Allow While Stealthed (37), Suppress Target Procs (113), Do Not Display Duration (170), Aura Points On Client (268), Update Passives on Apply/Remove (344)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Enter Instance (43), Change Talent (46)
 Effects          :
 #1 (id=1160701)  : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
@@ -15702,6 +15760,7 @@ Effects          :
 Description      : $@spelldesc453457
 
 Name             : Adrenaline Rush (id=470680) [Spell Family (8), Hidden] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -15709,9 +15768,10 @@ Resource         : 1 Energy (3) (id=308850)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
 Affecting Spells : Celerity (340087 effect#1)
 Family Flags     : 39
-Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1186211)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: energy | Target: Self (1)

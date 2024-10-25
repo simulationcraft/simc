@@ -4890,6 +4890,7 @@ Description      : Shatters a line of earth in front of you with your main hand 
 Tooltip          : Incapacitated.
 
 Name             : Lightning Rod (id=197568) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -4899,7 +4900,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Elemental Fury (60188 effect#1)
 Family Flags     : 121
-Attributes       : Can't Crit (93), Ignore Caster Modifiers (125), Do Not Display Range (126), Allow Class Ability Procs (416)
+Attributes       : Can't Crit (93), Ignore Caster Modifiers (125), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=290283)   : School Damage (2): nature
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
