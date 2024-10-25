@@ -885,8 +885,8 @@ Effects          :
 #1 (id=23978)    : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #2 (id=83780)    : Dummy (3)
-                   Base Value: 174 | Scaled Value: 174 | Target: Self (1)
-Hotfixed         : Base Value (177.600006 -> 174)
+                   Base Value: 115 | Scaled Value: 115 | Target: Self (1)
+Hotfixed         : Base Value (177.600006 -> 115)
 Description      : Give the command to kill, causing your pet to savagely deal $<damage> Physical damage to the enemy.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $lowNerf=${0.5+$min($pl,20)*0.025}
@@ -1631,8 +1631,8 @@ Family Flags     : 43, 108
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=83776)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.7464 | PvP Coefficient: 1.15 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (1.776 -> 1.7464)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.1544 | PvP Coefficient: 1.15 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (1.776 -> 1.1544)
 Description      : $@spelldesc34026
 
 Name             : Mail Specialization (desc=Passive) (id=86538) [Passive, Hidden] 
@@ -3733,8 +3733,9 @@ Effects          :
                    Family Flags: 121
 #2 (id=283906)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.4 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Wind Arrow (191043), Explosive Shot (212680), Scatter Shot (213691), Bursting Shot (224729), Bursting Shot (238559), Rapid Fire (257045), Multi-Shot (257620), Serpent Sting (259491), Volley (260243), Volley (260247), Explosive Shot (269850), Serpent Sting (271788), Resonating Arrow (308495), Kill Shot (320976), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Coordinated Assault (361738), Death Chakram (361756), Wailing Arrow (392058), Wailing Arrow (392060), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Rapid Fire (460496), Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
-                   Family Flags: 3, 5, 11, 12, 14, 17, 32, 34, 70, 73, 74, 76, 79, 91, 93, 99, 105, 119
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Wind Arrow (191043), Explosive Shot (212680), Scatter Shot (213691), Bursting Shot (224729), Bursting Shot (238559), Rapid Fire (257045), Multi-Shot (257620), Serpent Sting (259491), Volley (260243), Volley (260247), Explosive Shot (269850), Serpent Sting (271788), Resonating Arrow (308495), Kill Shot (320976), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Coordinated Assault (361738), Death Chakram (361756), Wailing Arrow (392058), Wailing Arrow (392060), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Rapid Fire (460496), Black Arrow (466930), Black Arrow (468037)
+                   Family Flags: 3, 5, 11, 12, 14, 17, 32, 34, 70, 73, 74, 76, 79, 93, 99, 105, 119
+Hotfixed         : Affects Spells
 #3 (id=316221)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.625 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Barrage (120361)
@@ -14041,9 +14042,11 @@ Proc Flags       : Periodic
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1150243)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1152094)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Each time Sentinel deals damage to an enemy you gain an absorb shield equal to ${$s1}.1% of your maximum health, up to $s2%.
 
 Name             : Extrapolated Shots (id=450374) [Spell Family (9), Passive] 
@@ -15100,6 +15103,7 @@ Effects          :
 Description      : Kill Command deals increased critical strike damage equal to $s2% of your critical strike chance.
 
 Name             : Laceration (id=459552) [Spell Family (9), Passive] 
+Hotfixed         : Attributes
 Talent Entry     : Beast Mastery [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Nature
@@ -15107,7 +15111,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Attributes       : Passive (6)
+Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1166453)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16474,8 +16478,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 #3 (id=1179819)  : Dummy (3)
                    Base Value: 80 | Scaled Value: 80
-#4 (id=1182350)  : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 468572
 Description      : You attempt to finish off a wounded target, dealing $s1 Shadow damage and $468572o1 Shadow damage over $468572d. Only usable on enemies above $s3% health or below $s2% health.
 
 Name             : Black Arrow (id=466932) [Spell Family (9), Passive, Hidden] 
@@ -16934,8 +16936,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 3993: Unnatural Causes (459527 effect#5), Unnatural Causes (459529 effect#2)
-Affecting Spells : Mastery: Sniper Training (193468 effects: #2, #4), Shadow Lash (444354 effect#1), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1)
-Triggered By     : Black Arrow (466930)
+Affecting Spells : Mastery: Sniper Training (193468 effect#4), Shadow Lash (444354 effect#1), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1)
 Family Flags     : 91
 Attributes       : DoT Stacking Rule (103), Do Not Display Range (126), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
