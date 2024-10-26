@@ -15096,7 +15096,7 @@ static const std::array<spelltext_data_t, 26525> __spelltext_data { {
   { 336885, "$@spelldesc336239", "Standing in the shade makes it easier to focus, increasing your Mastery by $w1.", 0 },
   { 336886, "Consuming Clearcasting increases the damage of your next 2 Arcane Blasts by |cFFFFFFFF$s1%|r.", 0, 0 },
   { 336887, "$@spelldesc336884", "Movement speed reduced by ${$w}.1%.", 0 },
-  { 336889, "$@spelldesc336886", "Arcane Blast and Arcane Barrage damage increased by $w1%.", 0 },
+  { 336889, "$@spelldesc336886", "Arcane Blast damage increased by $w1%.", 0 },
   { 336890, "Targets affected by your Leg Sweep deal |cFFFFFFFF${$s1*-.1}.1%|r less damage for $336891d.", 0, 0 },
   { 336891, "$@spelldesc336890", "Damage done reduced by ${$w}.1%.", 0 },
   { 336892, "$@spelldesc336878", "Your next Aimed Shot will consume $s1% less Focus.", 0 },
@@ -18740,7 +18740,7 @@ static const std::array<spelltext_data_t, 26525> __spelltext_data { {
   { 383764, "$@spelldesc388505", 0, 0 },
   { 383781, "Solve a puzzle, increasing your Mastery by $s1 for $d.", "Mastery increased by $w1.", 0 },
   { 383782, "Consuming Clearcasting increases the damage of your next 2 Arcane Blasts or Arcane Barrages by $s1%.", 0, 0 },
-  { 383783, "$@spelldesc383782", "Arcane Blast damage increased by $w1%.", 0 },
+  { 383783, "$@spelldesc383782", "Arcane Blast and Arcane Barrage damage increased by $w1%.", 0 },
   { 383785, "Each time you dodge or an enemy misses you, your next Tiger Palm or Spinning Crane Kick deals $383800s1% increased damage.", "Each time you dodge or an enemy misses you,your next Tiger Palm or Spinning Crane Kick deals $383800s1% increased damage.", 0 },
   { 383798, "Your helpful spells and abilities have a chance to pep up you and your Coached ally, granting you both $s2 Mastery for $383803d. \r\n", 0, 0 },
   { 383799, "$@spelldesc386578", "Mastery increased by $w1.", 0 },
@@ -26528,7 +26528,9 @@ static const std::array<spelltext_data_t, 26525> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.0.5.57212
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
+  {  336889,  1, "Arcane Blast and Arcane Barrage damage increased by $w1%.", "Arcane Blast damage increased by $w1%." },
+  {  383783,  1, "Arcane Blast damage increased by $w1%.", "Arcane Blast and Arcane Barrage damage increased by $w1%." },
 } };
 
 // Spell description variables, wow build 11.0.5.57212
