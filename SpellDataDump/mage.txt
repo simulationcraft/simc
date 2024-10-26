@@ -7654,6 +7654,7 @@ Effects          :
 Description      : Consuming Clearcasting increases the damage of your next 2 Arcane Blasts by |cFFFFFFFF$s1%|r.
 
 Name             : Nether Precision (id=336889) [Spell Family (3)] 
+Hotfixed         : Tooltip
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -7672,7 +7673,7 @@ Effects          :
                    Affected Spells: Arcane Blast (30451)
                    Family Flags: 29
 Description      : $@spelldesc336886
-Tooltip          : Arcane Blast and Arcane Barrage damage increased by $w1%.
+Tooltip          : Arcane Blast damage increased by $w1%.
 
 Name             : Discipline of the Grove (id=336992) [Spell Family (3), Passive, Hidden] 
 School           : Physical
@@ -9939,6 +9940,7 @@ Effects          :
 Description      : Consuming Clearcasting increases the damage of your next 2 Arcane Blasts or Arcane Barrages by $s1%.
 
 Name             : Nether Precision (id=383783) [Spell Family (3)] 
+Hotfixed         : Tooltip
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -9957,7 +9959,7 @@ Effects          :
                    Affected Spells: Arcane Blast (30451), Arcane Barrage (44425)
                    Family Flags: 29, 47
 Description      : $@spelldesc383782
-Tooltip          : Arcane Blast damage increased by $w1%.
+Tooltip          : Arcane Blast and Arcane Barrage damage increased by $w1%.
 
 Name             : Fevered Incantation (id=383810) [Spell Family (3), Passive] 
 Talent Entry     : Fire [tree=spec, row=8, col=1, max_rank=2, req_points=20]
@@ -15649,8 +15651,6 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
-Proc Chance      : 100%
-Proc Flags       : Cast Successful
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1169921)  : Apply Aura (6) | Dummy (4)
