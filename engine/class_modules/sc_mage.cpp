@@ -2442,6 +2442,55 @@ double mage_spell_state_t::composite_crit_chance() const
   return c;
 }
 
+template <typename Data>
+struct mss_with_data_t final : public mage_spell_state_t
+{
+  Data data;
+
+  mss_with_data_t( action_t* action, player_t* target ) :
+    mage_spell_state_t( action, target ),
+    data()
+  { }
+
+  void initialize() override
+  {
+    mage_spell_state_t::initialize();
+    data = Data();
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    mage_spell_state_t::debug_str( s );
+    data.debug( s );
+    return s;
+  }
+
+  void copy_state( const action_state_t* s ) override
+  {
+    mage_spell_state_t::copy_state( s );
+    data = debug_cast<const mss_with_data_t*>( s )->data;
+  }
+};
+
+template <typename Base, typename Data>
+struct custom_state_spell_t : public Base
+{
+  using custom_state_t = mss_with_data_t<Data>;
+
+  template <typename... Args>
+  custom_state_spell_t( Args&&... args )
+    : Base( std::forward<Args>( args )... )
+  { }
+
+  custom_state_t* cast_state( action_state_t* s )
+  { return debug_cast<custom_state_t*>( s ); }
+
+  const custom_state_t* cast_state( const action_state_t* s ) const
+  { return debug_cast<const custom_state_t*>( s ); }
+
+  action_state_t* new_state() override
+  { return new custom_state_t( this, this->target ); }
+};
 
 // ==========================================================================
 // Arcane Mage Spell
@@ -2560,54 +2609,29 @@ struct arcane_mage_spell_t : public mage_spell_t
   }
 };
 
-struct dematerialize_state_t final : public mage_spell_state_t
+struct dematerialize_data_t
 {
-  bool dematerialize;
-
-  dematerialize_state_t( action_t* action, player_t* target ) :
-    mage_spell_state_t( action, target ),
-    dematerialize()
-  { }
-
-  void initialize() override
-  {
-    mage_spell_state_t::initialize();
-    dematerialize = false;
-  }
-
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    mage_spell_state_t::debug_str( s ) << " dematerialize=" << dematerialize;
-    return s;
-  }
-
-  void copy_state( const action_state_t* s ) override
-  {
-    mage_spell_state_t::copy_state( s );
-    dematerialize = debug_cast<const dematerialize_state_t*>( s )->dematerialize;
-  }
+  bool dematerialize = false;
+  void debug( std::ostringstream& s ) const { s << " dematerialize=" << dematerialize; }
 };
 
-struct dematerialize_spell_t : public arcane_mage_spell_t
+struct dematerialize_spell_t : public custom_state_spell_t<arcane_mage_spell_t, dematerialize_data_t>
 {
   dematerialize_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    arcane_mage_spell_t( n, p, s )
+    custom_state_spell_t( n, p, s )
   { }
-
-  action_state_t* new_state() override
-  { return new dematerialize_state_t( this, target ); }
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
-    debug_cast<dematerialize_state_t*>( s )->dematerialize = p()->talents.dematerialize.ok() && p()->buffs.nether_precision->check() != 0;
-    arcane_mage_spell_t::snapshot_state( s, rt );
+    cast_state( s )->data.dematerialize = p()->talents.dematerialize.ok() && p()->buffs.nether_precision->check() != 0;
+    custom_state_spell_t::snapshot_state( s, rt );
   }
 
   void impact( action_state_t* s ) override
   {
-    arcane_mage_spell_t::impact( s );
+    custom_state_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) && debug_cast<dematerialize_state_t*>( s )->dematerialize )
+    if ( result_is_hit( s->result ) && cast_state( s )->data.dematerialize )
       residual_action::trigger( p()->action.dematerialize, s->target, p()->talents.dematerialize->effectN( 1 ).percent() * s->result_total );
   }
 };
@@ -2925,42 +2949,20 @@ struct fire_mage_spell_t : public mage_spell_t
   }
 };
 
-struct hot_streak_state_t final : public mage_spell_state_t
+struct hot_streak_data_t
 {
-  bool hot_streak;
-
-  hot_streak_state_t( action_t* action, player_t* target ) :
-    mage_spell_state_t( action, target ),
-    hot_streak()
-  { }
-
-  void initialize() override
-  {
-    mage_spell_state_t::initialize();
-    hot_streak = false;
-  }
-
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    mage_spell_state_t::debug_str( s ) << " hot_streak=" << hot_streak;
-    return s;
-  }
-
-  void copy_state( const action_state_t* s ) override
-  {
-    mage_spell_state_t::copy_state( s );
-    hot_streak = debug_cast<const hot_streak_state_t*>( s )->hot_streak;
-  }
+  bool hot_streak = false;
+  void debug( std::ostringstream& s ) const { s << " hot_streak=" << hot_streak; }
 };
 
-struct hot_streak_spell_t : public fire_mage_spell_t
+struct hot_streak_spell_t : public custom_state_spell_t<fire_mage_spell_t, hot_streak_data_t>
 {
   action_t* pyromaniac_action;
   // Last available Hot Streak state.
   bool last_hot_streak;
 
   hot_streak_spell_t( std::string_view n, mage_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    fire_mage_spell_t( n, p, s ),
+    custom_state_spell_t( n, p, s ),
     pyromaniac_action(),
     last_hot_streak()
   {
@@ -2969,12 +2971,9 @@ struct hot_streak_spell_t : public fire_mage_spell_t
     base_multiplier *= 1.0 + p->talents.surging_blaze->effectN( 2 ).percent();
   }
 
-  action_state_t* new_state() override
-  { return new hot_streak_state_t( this, target ); }
-
   void reset() override
   {
-    fire_mage_spell_t::reset();
+    custom_state_spell_t::reset();
     last_hot_streak = false;
   }
 
@@ -2983,18 +2982,18 @@ struct hot_streak_spell_t : public fire_mage_spell_t
     if ( p()->buffs.hot_streak->check() || p()->buffs.hyperthermia->check() )
       return 0_ms;
 
-    return fire_mage_spell_t::execute_time();
+    return custom_state_spell_t::execute_time();
   }
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
-    debug_cast<hot_streak_state_t*>( s )->hot_streak = last_hot_streak;
-    fire_mage_spell_t::snapshot_state( s, rt );
+    cast_state( s )->data.hot_streak = last_hot_streak;
+    custom_state_spell_t::snapshot_state( s, rt );
   }
 
   double composite_crit_chance() const override
   {
-    double c = fire_mage_spell_t::composite_crit_chance();
+    double c = custom_state_spell_t::composite_crit_chance();
 
     c += p()->buffs.hyperthermia->check_value();
 
@@ -3003,7 +3002,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
   double action_multiplier() const override
   {
-    double am = fire_mage_spell_t::action_multiplier();
+    double am = custom_state_spell_t::action_multiplier();
 
     if ( time_to_execute > 0_ms && !p()->buffs.hyperthermia->check() )
       am *= 1.0 + p()->buffs.fury_of_the_sun_king->check_value();
@@ -3013,9 +3012,9 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
   double composite_ignite_multiplier( const action_state_t* s ) const override
   {
-    double m = fire_mage_spell_t::composite_ignite_multiplier( s );
+    double m = custom_state_spell_t::composite_ignite_multiplier( s );
 
-    if ( debug_cast<const hot_streak_state_t*>( s )->hot_streak )
+    if ( cast_state( s )->data.hot_streak )
     {
       m *= 2.0; // base Hot Streak! multiplier (not in spell data)
       m *= 1.0 + p()->talents.inflame->effectN( 1 ).percent();
@@ -3026,7 +3025,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
   void schedule_execute( action_state_t* s ) override
   {
-    fire_mage_spell_t::schedule_execute( s );
+    custom_state_spell_t::schedule_execute( s );
     last_hot_streak = p()->buffs.hot_streak->up();
   }
 
@@ -3049,7 +3048,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       p()->trigger_spellfire_spheres();
     }
 
-    fire_mage_spell_t::execute();
+    custom_state_spell_t::execute();
 
     p()->buffs.sparking_cinders->decrement();
 
@@ -3772,44 +3771,17 @@ struct arcane_intellect_t final : public mage_spell_t
   }
 };
 
-struct am_state_t final : public mage_spell_state_t
+struct am_data_t
 {
-  double tick_time_multiplier;
-  int targets;
-
-  am_state_t( action_t* action, player_t* target ) :
-    mage_spell_state_t( action, target ),
-    tick_time_multiplier( 1.0 ),
-    targets( 0 )
-  { }
-
-  void initialize() override
-  {
-    mage_spell_state_t::initialize();
-    tick_time_multiplier = 1.0;
-    targets = 0;
-  }
-
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    mage_spell_state_t::debug_str( s ) << " tick_time_multiplier=" << tick_time_multiplier << " targets=" << targets;
-    return s;
-  }
-
-  void copy_state( const action_state_t* s ) override
-  {
-    mage_spell_state_t::copy_state( s );
-
-    auto ams = debug_cast<const am_state_t*>( s );
-    tick_time_multiplier = ams->tick_time_multiplier;
-    targets              = ams->targets;
-  }
+  double tick_time_multiplier = 1.0;
+  int targets = 0;
+  void debug( std::ostringstream& s ) const { s << " tick_time_multiplier=" << tick_time_multiplier << " targets=" << targets; }
 };
 
-struct arcane_missiles_tick_t final : public arcane_mage_spell_t
+struct arcane_missiles_tick_t final : public custom_state_spell_t<arcane_mage_spell_t, am_data_t>
 {
   arcane_missiles_tick_t( std::string_view n, mage_t* p ) :
-    arcane_mage_spell_t( n, p, p->find_spell( 7268 ) )
+    custom_state_spell_t( n, p, p->find_spell( 7268 ) )
   {
     background = proc = true;
     affected_by.savant = affected_by.arcane_debilitation = true;
@@ -3819,30 +3791,27 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
     base_aoe_multiplier *= ( 1.0 + aa.effectN( 4 ).percent() ) / ( 1.0 + aa.effectN( 1 ).percent() );
   }
 
-  action_state_t* new_state() override
-  { return new am_state_t( this, target ); }
-
   int n_targets() const override
   {
     // If pre_execute_state exists, we need to respect the n_targets amount
     // as it existed when the state was updated.
     if ( pre_execute_state )
-      return debug_cast<am_state_t*>( pre_execute_state )->targets;
+      return cast_state( pre_execute_state )->data.targets;
 
     return p()->buffs.aether_attunement->check()
       ? as<int>( p()->buffs.aether_attunement->data().effectN( 2 ).base_value() )
-      : arcane_mage_spell_t::n_targets();
+      : custom_state_spell_t::n_targets();
   }
 
   void update_state( action_state_t* s, unsigned flags, result_amount_type rt ) override
   {
-    arcane_mage_spell_t::update_state( s, flags, rt );
-    debug_cast<am_state_t*>( s )->targets = n_targets();
+    custom_state_spell_t::update_state( s, flags, rt );
+    cast_state( s )->data.targets = n_targets();
   }
 
   void impact( action_state_t* s ) override
   {
-    arcane_mage_spell_t::impact( s );
+    custom_state_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
     {
@@ -3875,7 +3844,7 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
 
   double action_multiplier() const override
   {
-    double am = arcane_mage_spell_t::action_multiplier();
+    double am = custom_state_spell_t::action_multiplier();
 
     am *= 1.0 + p()->buffs.aether_attunement->check_value();
 
@@ -3883,13 +3852,13 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
   }
 };
 
-struct arcane_missiles_t final : public arcane_mage_spell_t
+struct arcane_missiles_t final : public custom_state_spell_t<arcane_mage_spell_t, am_data_t>
 {
   double cc_duration_reduction;
   double cc_tick_time_reduction;
 
   arcane_missiles_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    arcane_mage_spell_t( n, p, p->talents.arcane_missiles )
+    custom_state_spell_t( n, p, p->talents.arcane_missiles )
   {
     parse_options( options_str );
     may_miss = false;
@@ -3913,14 +3882,11 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     return result_amount_type::DMG_DIRECT;
   }
 
-  action_state_t* new_state() override
-  { return new am_state_t( this, target ); }
-
   // We need to snapshot any tick time reduction effect here so that it correctly affects the whole channel.
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
-    debug_cast<am_state_t*>( s )->tick_time_multiplier = p()->buffs.clearcasting_channel->check() ? 1.0 + cc_tick_time_reduction : 1.0;
-    arcane_mage_spell_t::snapshot_state( s, rt );
+    cast_state( s )->data.tick_time_multiplier = p()->buffs.clearcasting_channel->check() ? 1.0 + cc_tick_time_reduction : 1.0;
+    custom_state_spell_t::snapshot_state( s, rt );
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3935,9 +3901,9 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
 
   double tick_time_pct_multiplier( const action_state_t* s ) const override
   {
-    auto mul = arcane_mage_spell_t::tick_time_pct_multiplier( s );
+    auto mul = custom_state_spell_t::tick_time_pct_multiplier( s );
 
-    mul *= debug_cast<const am_state_t*>( s )->tick_time_multiplier;
+    mul *= cast_state( s )->data.tick_time_multiplier;
 
     return mul;
   }
@@ -3959,7 +3925,7 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     if ( !p()->buffs.clearcasting->check() )
       return false;
 
-    return arcane_mage_spell_t::ready();
+    return custom_state_spell_t::ready();
   }
 
   void execute() override
@@ -3979,7 +3945,7 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
       p()->buffs.clearcasting_channel->expire();
     }
 
-    arcane_mage_spell_t::execute();
+    custom_state_spell_t::execute();
   }
 
   void trigger_dot( action_state_t* s ) override
@@ -4005,7 +3971,7 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
       ticks += as<int>( std::ceil( chain_remains / tt ) - 1 );
     }
 
-    arcane_mage_spell_t::trigger_dot( s );
+    custom_state_spell_t::trigger_dot( s );
 
     // AM channel duration is a bit fuzzy, it will go above or below the
     // standard duration to make sure it has the correct number of ticks.
@@ -4020,12 +3986,12 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     if ( p()->talents.slipstream.ok() )
       return true;
 
-    return arcane_mage_spell_t::usable_moving();
+    return custom_state_spell_t::usable_moving();
   }
 
   void last_tick( dot_t* d ) override
   {
-    arcane_mage_spell_t::last_tick( d );
+    custom_state_spell_t::last_tick( d );
     channel_finish();
   }
 };
@@ -5397,42 +5363,20 @@ struct frigid_pulse_t final : public mage_spell_t
   }
 };
 
-struct ice_lance_state_t final : public mage_spell_state_t
+struct ice_lance_data_t
 {
-  bool fingers_of_frost;
-
-  ice_lance_state_t( action_t* action, player_t* target ) :
-    mage_spell_state_t( action, target ),
-    fingers_of_frost()
-  { }
-
-  void initialize() override
-  {
-    mage_spell_state_t::initialize();
-    fingers_of_frost = false;
-  }
-
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    mage_spell_state_t::debug_str( s ) << " fingers_of_frost=" << fingers_of_frost;
-    return s;
-  }
-
-  void copy_state( const action_state_t* s ) override
-  {
-    mage_spell_state_t::copy_state( s );
-    fingers_of_frost = debug_cast<const ice_lance_state_t*>( s )->fingers_of_frost;
-  }
+  bool fingers_of_frost = false;
+  void debug( std::ostringstream& s ) const { s << " fingers_of_frost=" << fingers_of_frost; }
 };
 
-struct ice_lance_t final : public frost_mage_spell_t
+struct ice_lance_t final : public custom_state_spell_t<frost_mage_spell_t, ice_lance_data_t>
 {
   shatter_source_t* extension_source = nullptr;
   shatter_source_t* cleave_source = nullptr;
   action_t* frigid_pulse = nullptr;
 
   ice_lance_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    frost_mage_spell_t( n, p, p->talents.ice_lance )
+    custom_state_spell_t( n, p, p->talents.ice_lance )
   {
     parse_options( options_str );
     enable_calculate_on_impact( 228598 );
@@ -5463,7 +5407,7 @@ struct ice_lance_t final : public frost_mage_spell_t
   {
     proc_brain_freeze = p()->get_proc( "Brain Freeze from Ice Lance" );
 
-    frost_mage_spell_t::init_finished();
+    custom_state_spell_t::init_finished();
 
     if ( sim->report_details != 0 && p()->talents.splitting_ice.ok() )
       cleave_source = p()->get_shatter_source( "Ice Lance cleave" );
@@ -5471,12 +5415,9 @@ struct ice_lance_t final : public frost_mage_spell_t
       extension_source = p()->get_shatter_source( "Thermal Void extension" );
   }
 
-  action_state_t* new_state() override
-  { return new ice_lance_state_t( this, target ); }
-
   unsigned frozen( const action_state_t* s ) const override
   {
-    unsigned source = frost_mage_spell_t::frozen( s );
+    unsigned source = custom_state_spell_t::frozen( s );
 
     // In game, FoF Ice Lances are implemented using a global flag which determines
     // whether to treat the targets as frozen or not. On IL execute, FoF is checked
@@ -5497,7 +5438,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     }
     else
     {
-      if ( debug_cast<const ice_lance_state_t*>( s )->fingers_of_frost )
+      if ( cast_state( s )->data.fingers_of_frost )
         source |= FF_FINGERS_OF_FROST;
     }
 
@@ -5506,7 +5447,7 @@ struct ice_lance_t final : public frost_mage_spell_t
 
   void schedule_travel( action_state_t* s ) override
   {
-    frost_mage_spell_t::schedule_travel( s );
+    custom_state_spell_t::schedule_travel( s );
 
     // We need access to the action state corresponding to the main target so that we
     // can use mage_spell_t::frozen to figure out the frozen state at the moment of cast.
@@ -5522,7 +5463,7 @@ struct ice_lance_t final : public frost_mage_spell_t
   {
     p()->state.fingers_of_frost_active = p()->buffs.fingers_of_frost->up();
 
-    frost_mage_spell_t::execute();
+    custom_state_spell_t::execute();
 
     if ( p()->state.fingers_of_frost_active )
       p()->buffs.cryopathy->trigger();
@@ -5540,13 +5481,13 @@ struct ice_lance_t final : public frost_mage_spell_t
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
-    debug_cast<ice_lance_state_t*>( s )->fingers_of_frost = p()->buffs.fingers_of_frost->check();
-    frost_mage_spell_t::snapshot_state( s, rt );
+    cast_state( s )->data.fingers_of_frost = p()->buffs.fingers_of_frost->check();
+    custom_state_spell_t::snapshot_state( s, rt );
   }
 
   void impact( action_state_t* s ) override
   {
-    frost_mage_spell_t::impact( s );
+    custom_state_spell_t::impact( s );
 
     if ( !result_is_hit( s->result ) )
       return;
@@ -5586,7 +5527,7 @@ struct ice_lance_t final : public frost_mage_spell_t
 
   double action_multiplier() const override
   {
-    double am = frost_mage_spell_t::action_multiplier();
+    double am = custom_state_spell_t::action_multiplier();
 
     am *= 1.0 + p()->buffs.chain_reaction->check_stack_value();
     am *= 1.0 + p()->buffs.permafrost_lances->check_value();
@@ -5596,7 +5537,7 @@ struct ice_lance_t final : public frost_mage_spell_t
 
   double frozen_multiplier( const action_state_t* s ) const override
   {
-    double fm = frost_mage_spell_t::frozen_multiplier( s );
+    double fm = custom_state_spell_t::frozen_multiplier( s );
 
     fm *= 3.0;
 
@@ -6430,43 +6371,17 @@ struct ray_of_frost_t final : public frost_mage_spell_t
   }
 };
 
-struct scorch_state_t final : public mage_spell_state_t
+struct scorch_data_t
 {
-  bool scorch_execute;
-  bool improved_scorch;
-
-  scorch_state_t( action_t* action, player_t* target ) :
-    mage_spell_state_t( action, target ),
-    scorch_execute(),
-    improved_scorch()
-  { }
-
-  void initialize() override
-  {
-    mage_spell_state_t::initialize();
-    scorch_execute = false;
-    improved_scorch = false;
-  }
-
-  std::ostringstream& debug_str( std::ostringstream& s ) override
-  {
-    mage_spell_state_t::debug_str( s ) << " scorch_execute=" << scorch_execute << " improved_scorch=" << improved_scorch;
-    return s;
-  }
-
-  void copy_state( const action_state_t* s ) override
-  {
-    mage_spell_state_t::copy_state( s );
-    auto other = debug_cast<const scorch_state_t*>( s );
-    scorch_execute = other->scorch_execute;
-    improved_scorch = other->improved_scorch;
-  }
+  bool scorch_execute = false;
+  bool improved_scorch = false;
+  void debug( std::ostringstream& s ) const { s << " scorch_execute=" << scorch_execute << " improved_scorch=" << improved_scorch; }
 };
 
-struct scorch_t final : public fire_mage_spell_t
+struct scorch_t final : public custom_state_spell_t<fire_mage_spell_t, scorch_data_t>
 {
   scorch_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    fire_mage_spell_t( n, p, p->talents.scorch )
+    custom_state_spell_t( n, p, p->talents.scorch )
   {
     parse_options( options_str );
     triggers.hot_streak = triggers.calefaction = triggers.unleashed_inferno = triggers.kindling = TT_MAIN_TARGET;
@@ -6476,20 +6391,17 @@ struct scorch_t final : public fire_mage_spell_t
     travel_delay = p->options.scorch_delay.total_seconds();
   }
 
-  action_state_t* new_state() override
-  { return new scorch_state_t( this, target ); }
-
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
-    auto ss = debug_cast<scorch_state_t*>( s );
-    ss->scorch_execute = scorch_execute_active( s->target );
-    ss->improved_scorch = improved_scorch_active( s->target );
-    fire_mage_spell_t::snapshot_state( s, rt );
+    auto ss = cast_state( s );
+    ss->data.scorch_execute = scorch_execute_active( s->target );
+    ss->data.improved_scorch = improved_scorch_active( s->target );
+    custom_state_spell_t::snapshot_state( s, rt );
   }
 
   void execute() override
   {
-    fire_mage_spell_t::execute();
+    custom_state_spell_t::execute();
 
     if ( time_to_execute == 0_ms )
       p()->buffs.heat_shimmer->decrement();
@@ -6500,12 +6412,12 @@ struct scorch_t final : public fire_mage_spell_t
     if ( p()->buffs.heat_shimmer->check() )
       return 0_ms;
 
-    return fire_mage_spell_t::execute_time();
+    return custom_state_spell_t::execute_time();
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double m = fire_mage_spell_t::composite_da_multiplier( s );
+    double m = custom_state_spell_t::composite_da_multiplier( s );
 
     if ( scorch_execute_active( s->target ) )
       m *= 1.0 + p()->talents.scald->effectN( 1 ).percent();
@@ -6515,7 +6427,7 @@ struct scorch_t final : public fire_mage_spell_t
 
   double composite_target_crit_chance( player_t* target ) const override
   {
-    double c = fire_mage_spell_t::composite_target_crit_chance( target );
+    double c = custom_state_spell_t::composite_target_crit_chance( target );
 
     if ( scorch_execute_active( target ) )
       c += 1.0;
@@ -6525,14 +6437,14 @@ struct scorch_t final : public fire_mage_spell_t
 
   void impact( action_state_t* s ) override
   {
-    fire_mage_spell_t::impact( s );
+    custom_state_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
     {
-      auto ss = debug_cast<scorch_state_t*>( s );
-      if ( ss->scorch_execute )
+      auto ss = cast_state( s );
+      if ( ss->data.scorch_execute )
         p()->buffs.frenetic_speed->trigger();
-      if ( ss->improved_scorch )
+      if ( ss->data.improved_scorch )
         get_td( s->target )->debuffs.improved_scorch->trigger();
     }
   }
