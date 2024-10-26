@@ -571,7 +571,7 @@ public:
   struct buffs_t
   {
     // General
-    propagate_const<buff_t *> ancient_concordance;
+    propagate_const<buff_t *> awakened_jadefire;
     propagate_const<buff_t *> chi_torpedo;
     propagate_const<buff_t *> chi_wave;
     propagate_const<buff_t *> dampen_harm;
@@ -1072,8 +1072,6 @@ public:
       player_talent_t sheiluns_gift;
       const spell_data_t *sheiluns_gift_stacks;
       // Row 9
-      player_talent_t ancient_concordance;
-      const spell_data_t *ancient_concordance_buff;
       player_talent_t ancient_teachings;
       player_talent_t resplendent_mist;
       player_talent_t secret_infusion;
@@ -1087,6 +1085,7 @@ public:
       player_talent_t shaohaos_lessons;
       // Row 10
       player_talent_t awakened_jadefire;
+      const spell_data_t *awakened_jadefire_buff;
       player_talent_t dance_of_chiji;
       player_talent_t tea_of_serenity;
       player_talent_t tea_of_plenty;

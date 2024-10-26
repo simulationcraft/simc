@@ -604,9 +604,6 @@ void monk_action_t<Base>::execute()
   {
     double reset_value = p()->buff.jadefire_stomp_reset->data().effectN( 2 ).percent();
 
-    if ( base_t::id == p()->baseline.monk.blackout_kick->id() )
-      reset_value += p()->talent.mistweaver.ancient_concordance->effectN( 1 ).percent();
-
     reset_value *= 1 + p()->talent.mistweaver.awakened_jadefire->effectN( 2 ).percent();
 
     if ( p()->rng().roll( reset_value ) )
@@ -1778,7 +1775,7 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
   {
     // The Ancient Concordance buff's spell data modified number of targets hit, but the value is 1 instead of 3, so it
     // is useless. We set the value manually to 3.
-    if ( p()->buff.ancient_concordance->check() )
+    if ( p()->buff.awakened_jadefire->check() )
       return 3;
 
     return base_t::n_targets();
@@ -6822,8 +6819,6 @@ void monk_t::init_spells()
     talent.mistweaver.focused_thunder        = _ST( "Focused Thunder" );
     talent.mistweaver.sheiluns_gift          = _ST( "Sheilun's Gift" );
     // Row 9
-    talent.mistweaver.ancient_concordance          = _ST( "Ancient Concordance" );
-    talent.mistweaver.ancient_concordance_buff     = find_spell( 389391 );
     talent.mistweaver.ancient_teachings            = _ST( "Ancient Teachings" );
     talent.mistweaver.resplendent_mist             = _ST( "Resplendent Mist" );
     talent.mistweaver.secret_infusion              = _ST( "Secret Infusion" );
@@ -6838,16 +6833,17 @@ void monk_t::init_spells()
     talent.mistweaver.veil_of_pride                = _ST( "Veil of Pride" );
     talent.mistweaver.shaohaos_lessons             = _ST( "Shaohao's Lessons" );
     // Row 10
-    talent.mistweaver.awakened_jadefire     = _ST( "Awakened Jadefire" );
-    talent.mistweaver.dance_of_chiji        = _ST( "Dance of Chi-Ji" );
-    talent.mistweaver.tea_of_serenity       = _ST( "Tea of Serenity" );
-    talent.mistweaver.tea_of_plenty         = _ST( "Tea of Plenty" );
-    talent.mistweaver.unison                = _ST( "Unison" );
-    talent.mistweaver.mending_proliferation = _ST( "Mending Proliferation" );
-    talent.mistweaver.invokers_delight      = _ST( "Invoker's Delight" );
-    talent.mistweaver.tear_of_morning       = _ST( "Tear of Morning" );
-    talent.mistweaver.rising_mist           = _ST( "Rising Mist" );
-    talent.mistweaver.legacy_of_wisdom      = _ST( "Legacy of Wisdom" );
+    talent.mistweaver.awakened_jadefire      = _ST( "Awakened Jadefire" );
+    talent.mistweaver.awakened_jadefire_buff = find_spell( 389387 );
+    talent.mistweaver.dance_of_chiji         = _ST( "Dance of Chi-Ji" );
+    talent.mistweaver.tea_of_serenity        = _ST( "Tea of Serenity" );
+    talent.mistweaver.tea_of_plenty          = _ST( "Tea of Plenty" );
+    talent.mistweaver.unison                 = _ST( "Unison" );
+    talent.mistweaver.mending_proliferation  = _ST( "Mending Proliferation" );
+    talent.mistweaver.invokers_delight       = _ST( "Invoker's Delight" );
+    talent.mistweaver.tear_of_morning        = _ST( "Tear of Morning" );
+    talent.mistweaver.rising_mist            = _ST( "Rising Mist" );
+    talent.mistweaver.legacy_of_wisdom       = _ST( "Legacy of Wisdom" );
   }
 
   // monk_t::talent::windwalker
@@ -7404,9 +7400,9 @@ void monk_t::create_buffs()
                             ->set_default_value_from_effect( 2 )
                             ->set_stack_change_callback( [ this ]( buff_t *, int old_, int new_ ) {
                               if ( old_ == 0 )
-                                buff.ancient_concordance->trigger();
+                                buff.awakened_jadefire->trigger();
                               else if ( new_ == 0 )
-                                buff.ancient_concordance->expire();
+                                buff.awakened_jadefire->expire();
                             } );
 
   buff.rushing_jade_wind = make_buff_fallback<buffs::rushing_jade_wind_buff_t>(
@@ -7527,8 +7523,8 @@ void monk_t::create_buffs()
       talent.brewmaster.improved_invoke_niuzao_the_black_ox->ok(), this, "recent_purifies" );
 
   // Mistweaver
-  buff.ancient_concordance = make_buff_fallback( talent.mistweaver.ancient_concordance->ok(), this,
-                                                 "ancient_concordance", talent.mistweaver.ancient_concordance_buff );
+  buff.awakened_jadefire = make_buff_fallback( talent.mistweaver.awakened_jadefire->ok(), this, "ancient_concordance",
+                                               talent.mistweaver.awakened_jadefire_buff );
 
   buff.jadefire_stomp_reset =
       make_buff_fallback( talent.mistweaver.jadefire_stomp->ok(), this, "jadefire_stomp_reset", find_spell( 388193 ) )
