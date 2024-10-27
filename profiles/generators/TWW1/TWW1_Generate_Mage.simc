@@ -29,7 +29,7 @@ trinket1=spymasters_web,id=220202,ilevel=639
 main_hand=sovereigns_disdain,id=212394,enchant_id=7460,ilevel=639
 off_hand=vagabonds_torch,id=222566,ilevel=636,bonus_id=11300,crafted_stats=36/49
 
-save=TWW1_Mage_Arcane_Spellslinger.simc
+save=TWW1_Mage_Arcane.simc
 
 mage="TWW1_Mage_Arcane_Sunfury"
 spec=arcane
