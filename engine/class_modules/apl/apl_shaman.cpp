@@ -79,12 +79,10 @@ void elemental( player_t* p )
   aoe->add_action( "flame_shock,target_if=refreshable,if=talent.fire_elemental.enabled&(buff.surge_of_power.up|!talent.surge_of_power.enabled)&dot.flame_shock.remains<target.time_to_die-5&(active_dot.flame_shock<6|dot.flame_shock.remains>0)", "Spread and refresh Flame Shock using Surge of Power (if talented) up to 6." );
   aoe->add_action( "ascendance", "JUST DO IT! https://i.kym-cdn.com/entries/icons/mobile/000/018/147/Shia_LaBeouf__Just_Do_It__Motivational_Speech_(Original_Video_by_LaBeouf__R%C3%B6nkk%C3%B6___Turner)_0-4_screenshot.jpg" );
   aoe->add_action( "tempest,target_if=min:debuff.lightning_rod.remains,if=!buff.arc_discharge.up&(buff.surge_of_power.up|!talent.surge_of_power.enabled)", "buff tempest with sop" );
-
-  single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up&buff.surge_of_power.up&spell_targets.chain_lightning=2", "2t" );
-
+  aoe->add_action( "lightning_bolt,if=buff.stormkeeper.up&buff.surge_of_power.up&spell_targets.chain_lightning=2", "2t" );
   aoe->add_action( "chain_lightning,if=active_enemies>=6&buff.surge_of_power.up", "Against 6 targets or more Surge of Power should be used with Chain Lightning rather than Lava Burst." );
   aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=buff.primordial_wave.up&(buff.stormkeeper.up&spell_targets.chain_lightning>=6|buff.tempest.up)&maelstrom<60-5*talent.eye_of_the_storm.enabled&talent.surge_of_power.enabled", "Consume Primordial Wave buff immediately if you have Stormkeeper buff, fighting 6+ enemies and need maelstrom to spend." );
-  aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=buff.primordial_wave.up&(buff.primordial_wave.remains<4|buff.lava_surge.up)", "Cast Lava burst to consume Primordial Wave proc. Wait for Lava Surge proc if possible." );
+  aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=buff.primordial_wave.up", "Cast Lava burst to consume Primordial Wave proc. Wait for Lava Surge proc if possible." );
   aoe->add_action( "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&!buff.master_of_the_elements.up&talent.master_of_the_elements.enabled&talent.fire_elemental.enabled", "*{Fire} Use Lava Surge proc to buff <anything> with Master of the Elements." );
   aoe->add_action( "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=spell_targets.chain_lightning=2&(maelstrom>variable.mael_cap-30|cooldown.primordial_wave.remains<gcd&talent.surge_of_power.enabled|(buff.stormkeeper.up&spell_targets.chain_lightning>=6|buff.tempest.up)&talent.surge_of_power.enabled)", "2t" );
   aoe->add_action( "earthquake,if=cooldown.primordial_wave.remains<gcd&talent.surge_of_power.enabled&(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up|!talent.echoes_of_great_sundering.enabled)", "Activate Surge of Power if next global is Primordial wave. Respect Echoes of Great Sundering." );
@@ -100,19 +98,25 @@ void elemental( player_t* p )
 
   single_target->add_action( "fire_elemental" );
   single_target->add_action( "storm_elemental" );
-  single_target->add_action( "stormkeeper,if=!talent.ascendance.enabled|cooldown.ascendance.remains<gcd|cooldown.ascendance.remains>10", "Just use Stormkeeper." );
+  single_target->add_action( "stormkeeper", "Just use Stormkeeper." );
   single_target->add_action( "primordial_wave,if=!buff.surge_of_power.up", "Use Primordial Wave as much as possible." );
-  single_target->add_action( "ancestral_swiftness,if=!buff.primordial_wave.up|!buff.stormkeeper.up|!talent.elemental_blast.enabled", "*Use Ancestral Swiftness as much as possible. Use on EB instead of LvB where possible." );
-  single_target->add_action( "ascendance,if=fight_remains>180|buff.spymasters_web.up|!(variable.spymaster_in_1st|variable.spymaster_in_2nd)" );
+  single_target->add_action( "ancestral_swiftness" );
+  single_target->add_action( "ascendance,if=fight_remains>180-60*talent.first_ascendant.enabled|buff.spymasters_web.up|!(variable.spymaster_in_1st|variable.spymaster_in_2nd)" );
   single_target->add_action( "tempest,if=buff.surge_of_power.up", "Surge of Power is strong and should be used. ©" );
   single_target->add_action( "lightning_bolt,if=buff.surge_of_power.up" );
-  single_target->add_action( "liquid_magma_totem,if=active_dot.flame_shock=0", "Use LMT to apply Flame Shock." );
-  single_target->add_action( "flame_shock,if=(active_dot.flame_shock=0|dot.flame_shock.remains<6)&!buff.surge_of_power.up&!buff.master_of_the_elements.up&!talent.primordial_wave.enabled&!talent.liquid_magma_totem.enabled", "Manually refresh Flame shock if better options are not talented." );
+  single_target->add_action( "tempest,if=buff.storm_frenzy.stack=2&!talent.surge_of_power.enabled", "Dont waste Storm Frenzy (minimal gain)." );
+  single_target->add_action( "lightning_bolt,if=buff.storm_frenzy.stack=2&!talent.surge_of_power.enabled" );
+  single_target->add_action( "liquid_magma_totem,if=dot.flame_shock.refreshable&!buff.master_of_the_elements.up", "Use LMT to apply Flame Shock." );
+  single_target->add_action( "flame_shock,if=dot.flame_shock.refreshable&!buff.surge_of_power.up&!buff.master_of_the_elements.up&!talent.primordial_wave.enabled&!talent.liquid_magma_totem.enabled", "Manually refresh Flame shock if better options are not talented." );
   single_target->add_action( "earthquake,if=(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up)&(maelstrom>variable.mael_cap-15|fight_remains<5)", "Spend if close to overcaping. Respect Echoes of Great Sundering." );
   single_target->add_action( "elemental_blast,if=maelstrom>variable.mael_cap-15|fight_remains<5" );
   single_target->add_action( "earth_shock,if=maelstrom>variable.mael_cap-15|fight_remains<5" );
+  single_target->add_action( "earthquake,if=(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up)&!talent.surge_of_power.enabled", "Just spend if not talented into Surge of Power." );
+  single_target->add_action( "elemental_blast,if=!talent.surge_of_power.enabled" );
+  single_target->add_action( "earth_shock,if=!talent.surge_of_power.enabled" );
   single_target->add_action( "icefury,if=!(buff.fusion_of_elements_nature.up|buff.fusion_of_elements_fire.up)", "Use Icefury to proc Fusion of Elements." );
   single_target->add_action( "lava_burst,target_if=dot.flame_shock.remains>2,if=!buff.master_of_the_elements.up", "Use Lava Burst to proc Master of the Elements." );
+  single_target->add_action( "lava_burst,if=!buff.master_of_the_elements.up&buff.lava_surge.up" );
   single_target->add_action( "earthquake,if=(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up)&(buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power.enabled", "Spend to activate Surge of Power buff for Tempest or Stormkeeper." );
   single_target->add_action( "elemental_blast,if=(buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power.enabled" );
   single_target->add_action( "earth_shock,if=(buff.tempest.up|buff.stormkeeper.up)&talent.surge_of_power.enabled" );
