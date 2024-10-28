@@ -1662,6 +1662,7 @@ Effects          :
 Description      : $@spelldesc51690
 
 Name             : Tricks of the Trade (id=57934) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Talent Entry     : Generic [tree=class, row=3, col=3, max_rank=1, req_points=0, select_idx=100]
 Class            : Rogue
 School           : Physical
@@ -1678,6 +1679,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged
 Family Flags     : 49
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cooldown On Event (25), Allow While Stealthed (37), No Threat (42), Exclude Caster (51), Require All Targets (58), Allow Low Level Buff (67), Only On Player (104), Aura Points On Client (268), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=51254)    : Redirect Threat (130)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 30000 | Target: Raid Target (57)
@@ -1826,6 +1828,7 @@ Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Tricks of the Trade (id=59628) [Spell Family (8)] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -1837,6 +1840,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3304: So Tricky (441403 effect#2)
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Allow Low Level Buff (67), Limit N (165), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=53201)    : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 127 | Target: Self (1)
