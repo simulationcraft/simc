@@ -251701,7 +251701,7 @@ Tooltip          : Chance to gain Intellect.
 Name             : Knowledge (id=469926) 
 School           : Arcane
 Spell Type       : None
-Duration         : Aura (infinite)
+Duration         : 10 seconds
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Triggered By     : Burst of Knowledge (469925)
