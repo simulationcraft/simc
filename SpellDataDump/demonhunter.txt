@@ -10856,8 +10856,9 @@ Labels           : 16: Class Spells
 Attributes       : Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Enter Instance (43), Change Talent (46)
 Effects          :
-#1 (id=1137648)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#1 (id=1137648)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : Sub Type (108 -> 4)
 Description      : $@spelldesc442290
 Tooltip          : $?a212612[$@spellicon162794 Chaos Strike]?s263642[$@spellicon263642 Fracture]?a212613[$@spellicon203782 Shear][Chaos Strike, Fracture, or Shear] applies Reaver's Mark which causes the target to take increased damage for $442624d.
 
