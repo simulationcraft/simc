@@ -9,7 +9,7 @@ actions.precombat+=/variable,name=trinket_2_stronger,value=!variable.trinket_1_s
 actions.precombat+=/salvo,precast_time=10
 # Precast Aimed Shot on one or two targets unless we could cleave it with Volley on two targets.
 actions.precombat+=/aimed_shot,if=active_enemies<3&(!talent.volley|active_enemies<2)
-# Precast Steady Shot on two targets if we are saving Aimed Shot to cleave with Volley, otherwise on three or more targets.
+# Otherwise precast Steady Shot on two targets if we are saving Aimed Shot to cleave with Volley, otherwise on three or more targets.
 actions.precombat+=/steady_shot,if=active_enemies>2|talent.volley&active_enemies=2
 
 # Executed every time the actor is available.
@@ -22,54 +22,54 @@ actions+=/call_action_list,name=st,if=active_enemies<3|!talent.trick_shots
 actions+=/call_action_list,name=trickshots,if=active_enemies>2
 
 # Call for Power Infusion when Trueshot is up.
-actions.cds=invoke_external_buff,name=power_infusion,if=buff.trueshot.remains>12
+actions.cds=invoke_external_buff,name=power_infusion,if=buff.trueshot.remains>12|fight_remains<13
 actions.cds+=/berserking,if=buff.trueshot.up|fight_remains<13
 actions.cds+=/blood_fury,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16
 actions.cds+=/ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<16
 actions.cds+=/fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9
 actions.cds+=/lights_judgment,if=buff.trueshot.down
-actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<26
+actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<31
 actions.cds+=/salvo,if=active_enemies>2|cooldown.volley.remains<10
 
-actions.st=steady_shot,if=talent.steady_focus&buff.steady_focus.remains<8
+actions.st=/black_arrow,if=buff.trueshot.down
 actions.st+=/kill_shot,if=buff.razor_fragments.up
-actions.st+=/black_arrow
-actions.st+=/explosive_shot,if=active_enemies>1
-actions.st+=/volley
-# Hold Rapid Fire for up to 5s to proc Lunar Storm. Ignore Lunar Storm if Wailing Arrow is up.
-actions.st+=/rapid_fire,if=talent.lunar_storm&(!cooldown.lunar_storm.remains|cooldown.lunar_storm.remains>5|action.wailing_arrow.ready)|!talent.lunar_storm
-actions.st+=/trueshot,if=variable.trueshot_ready
+actions.st+=/steady_shot,if=talent.steady_focus&buff.steady_focus.remains<execute_time&buff.trueshot.down
+actions.st+=/volley,if=active_enemies>1|buff.salvo.up
+actions.st+=/explosive_shot,if=active_enemies>1&buff.trick_shots.down
+# TODO: figure out why this is such a big gain for aoe builds in ST
+actions.st+=/trueshot,if=variable.trueshot_ready&talent.multishot
 # Trigger Salvo if Volley isn't being used to trigger it.
 actions.st+=/multishot,if=buff.salvo.up&!talent.volley
-# Don't overwrite Precise Shots unless Trueshot is active or it can cleave.
-actions.st+=/wailing_arrow
-# With Serpentstalker's Trickery target the lowest remaining Serpent Sting. Don't overwrite Precise Shots unless either Trueshot is active or Aimed Shot would cap before its next cast. Don't overwrite when using Chimaera Shot on two targets. Overwrite freely if it can cleave.
-actions.st+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.precise_shots.down|(buff.trueshot.up|full_recharge_time<gcd+cast_time)&(active_enemies<2|!talent.chimaera_shot)|(buff.trick_shots.remains>execute_time&active_enemies>1)
-actions.st+=/steady_shot,if=talent.steady_focus&buff.steady_focus.down&buff.trueshot.down
+# As a Dark Ranger with Readiness, Aimed Shot over Rapid Fire in Trueshot to get more Deathblows.
+actions.st+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=talent.black_arrow&talent.readiness&buff.trueshot.up
+# Hold Rapid Fire for up to 8s to proc Lunar Storm. Ignore Lunar Storm if Rapid Fire's cooldown can be reset with Wailing Arrow. Ignore all of this in Trueshot or as a Dark Ranger.
+actions.st+=/rapid_fire,if=!talent.lunar_storm|(!cooldown.lunar_storm.remains|cooldown.lunar_storm.remains>8|(action.wailing_arrow.ready&talent.readiness)|buff.trueshot.up)
+# With Wailing Arrow and Aimed Shot, target enemies without Serpent Sting or the enemy with the lowest remaining Serpent Sting.
+actions.st+=/wailing_arrow,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99
+actions.st+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99
+actions.st+=/black_arrow
 actions.st+=/kill_shot
-actions.st+=/chimaera_shot,if=buff.precise_shots.up
 actions.st+=/multishot,if=buff.precise_shots.up&active_enemies>1&(talent.symphonic_arsenal|talent.small_game_hunter)
 actions.st+=/arcane_shot,if=buff.precise_shots.up
-actions.st+=/barrage,if=talent.rapid_fire_barrage
+actions.st+=/trueshot,if=variable.trueshot_ready
+actions.st+=/volley
 actions.st+=/explosive_shot
-actions.st+=/chimaera_shot,if=focus>cost+action.aimed_shot.cost
-actions.st+=/multishot,if=focus>cost+action.aimed_shot.cost&active_enemies>1&(talent.symphonic_arsenal|talent.small_game_hunter)
-actions.st+=/arcane_shot,if=focus>cost+action.aimed_shot.cost
-actions.st+=/bag_of_tricks,if=buff.trueshot.down
 actions.st+=/steady_shot
 
-actions.trickshots=steady_shot,if=talent.steady_focus&buff.steady_focus.remains<8
-actions.trickshots+=/explosive_shot
-actions.trickshots+=/volley
-actions.trickshots+=/barrage,if=talent.rapid_fire_barrage&buff.trick_shots.remains>=execute_time
-actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>=execute_time
+actions.trickshots=black_arrow,if=buff.trick_shots.remains>execute_time&buff.razor_fragments.up
+actions.trickshots+=/steady_shot,if=talent.steady_focus&buff.steady_focus.remains<execute_time&buff.trueshot.down  
+actions.trickshots+=/explosive_shot  
+actions.trickshots+=/volley  
+actions.trickshots+=/black_arrow,if=!talent.razor_fragments&buff.trick_shots.remains>execute_time
 actions.trickshots+=/kill_shot,if=buff.razor_fragments.up
-actions.trickshots+=/black_arrow
-actions.trickshots+=/wailing_arrow,if=buff.precise_shots.down
-actions.trickshots+=/trueshot,if=variable.trueshot_ready
-# For Serpentstalker's Trickery, target the lowest remaining Serpent Sting. Only cast if it would cleave with Trick Shots. Don't overwrite Precise Shots.
-actions.trickshots+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.trick_shots.remains>=execute_time&buff.precise_shots.down
-actions.trickshots+=/multishot,if=buff.trick_shots.down|buff.precise_shots.up|focus>cost+action.aimed_shot.cost
+actions.trickshots+=/trueshot,if=variable.trueshot_ready  
+actions.trickshots+=/barrage,if=talent.rapid_fire_barrage&buff.trick_shots.remains>execute_time  
+# Hold Rapid Fire for up to 5s to proc Lunar Storm. Ignore Lunar Storm if Rapid Fire's cooldown can be reset with Wailing Arrow. Ignore all of this in Trueshot or as a Dark Ranger.
+actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(!talent.lunar_storm|(!cooldown.lunar_storm.remains|cooldown.lunar_storm.remains>5|(action.wailing_arrow.ready&talent.readiness)|buff.trueshot.up))
+# With Wailing Arrow and Aimed Shot, target enemies without Serpent Sting or the enemy with the lowest remaining Serpent Sting.
+actions.trickshots+=/wailing_arrow,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99
+actions.trickshots+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.trick_shots.remains>execute_time&buff.precise_shots.down
+actions.trickshots+=/multishot,if=buff.precise_shots.up|buff.trick_shots.down
 actions.trickshots+=/bag_of_tricks,if=buff.trueshot.down
 actions.trickshots+=/steady_shot
 
