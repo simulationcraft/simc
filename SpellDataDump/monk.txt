@@ -11047,6 +11047,7 @@ Variables        : $shield=${($SP*11)*(1+$@versadmg)}
 $newshield=${$MHP*$116680s8/100*(1+$@versadmg)}
 
 Name             : Tea of Plenty (id=388525) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -11059,7 +11060,7 @@ Internal Cooldown: 1 seconds
 Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Magic Hostile Spell
-Attributes       : Cooldown On Event (25), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Allow Cast While Casting (135), Aura Points On Client (268), Heal Prediction (280)
+Attributes       : Cooldown On Event (25), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Points On Client (268), Heal Prediction (280)
 Effects          :
 #1 (id=1024266)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11) | Attributes: Suppress Points Stacking (6)
                    Base Value: -9000 | Scaled Value: -9000 | Misc Value: 11 | Target: Self (1)
