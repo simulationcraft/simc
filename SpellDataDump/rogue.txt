@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57212 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57292 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -978,7 +978,6 @@ Movement speed increased by $w3%.][]$?$w4!=0[
 Damage increased by $w4%.][]
 
 Name             : Adrenaline Rush (id=13750) [Spell Family (8)] 
-Hotfixed         : Attributes
 Talent Entry     : Outlaw [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Rogue
 School           : Physical
@@ -3379,7 +3378,6 @@ Has a $s3% chance to hit an additional time, making your next Pistol Shot half c
 Variables        : $mult=${($max(0,$min($pl-10,10))*8+195)/275}
 
 Name             : Broadside (id=193356) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3419,7 +3417,6 @@ Description      : Your combo-point generating abilities generate $s1 additional
 Tooltip          : Your combo-point generating abilities generate $s1 additional combo point and deal $s4% increased damage.
 
 Name             : Ruthless Precision (id=193357) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3444,7 +3441,6 @@ Tooltip          : Critical strike chance of Between the Eyes increased by ${$s1
 Critical strike chance of all other abilities increased by $s1%.
 
 Name             : Grand Melee (id=193358) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -3477,7 +3473,6 @@ Tooltip          : Damage increased by $w1%.
 Blade Flurry deals $w2% additional damage to nearby enemies.
 
 Name             : True Bearing (id=193359) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4080,7 +4075,6 @@ Critical strikes with Shuriken Storm apply Find Weakness for $319949s1 sec.][]
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Buried Treasure (id=199600) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -4098,7 +4092,6 @@ Description      : Your base Energy regeneration is increased by ${$s1/5} per se
 Tooltip          : Increases Energy regeneration by ${$s1/5} per sec.
 
 Name             : Skull and Crossbones (id=199603) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -5075,7 +5068,6 @@ Effects          :
 Description      : Activating Adrenaline Rush causes your next Roll the Bones to grant at least two matches.
 
 Name             : Loaded Dice (id=256171) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -5135,11 +5127,13 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Not an Action (92), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=479461)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Serrated Bone Spike (385424), Kingsbane (385627), Ambush (385897), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Caustic Spatter (421979), Envenomous Explosion (426581), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Coup de Grace (441776), Coup de Grace (450743), Fatebound Coin (Tails) (452538), Fatebound Coin (452559), Corrupt the Blood (457133), Deathstalker's Mark (457157), Clear the Witnesses (457179), Hunt Them Down (457193), Singular Focus (457236), Lucky Coin (461818), Fatal Intent (461984), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Killing Spree (463781), Dispatch (467059), Echoing Reprimand (470672)
                    Family Flags: 54
+Hotfixed         : Base Value (25 -> 20)
 #2 (id=730848)   : Apply Aura (6) | Modify Auto Attack Critical Chance (334)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 20)
 Description      : $@spelldesc255989
 Tooltip          : Critical strike chance increased by $w1%.
 
@@ -5875,7 +5869,6 @@ Variables        : $CAP=${($AP+$OAP)*2/3}
 $damage=${$m1*$<CAP>/$AP}
 
 Name             : Slice and Dice (id=315496) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -6129,7 +6122,6 @@ Description      : $@spelldesc245388
 Tooltip          : $w1% increased Nature $?a400783[and Bleed ][]damage taken from $@auracaster.$?${$W2<0}[ Healing received reduced by $w2%.][]
 
 Name             : Blade Flurry (id=319606) [Spell Family (8)] 
-Hotfixed         : Aura Interrupt
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -9602,7 +9594,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Gouge (1776), Mutilate (5374), Shiv (5938), Ambush (8676), Mutilate (27576), Fan of Knives (51723), Quaking Palm (107079), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Sinister Strike (341541), Dreadblades (343142), Shadowstrike (345121), Echoing Reprimand (354835), Echoing Reprimand (354838), Garrote (360830), Serrated Bone Spike (385424), Kingsbane (385627), Ambush (385897), Serrated Bone Spike (394036), Goremaw's Bite (426591), Goremaw's Bite (426592), Ambush (430023), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672)
                    Family Flags: 1, 2, 3, 8, 9, 23, 26, 29, 33, 34, 50, 53, 67, 75, 82, 98, 101, 104, 109, 115, 118, 119, 127
-Hotfixed         : Affects Spells
 #3 (id=1114575)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Bonus Multiplier (15)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 15 | Misc Value 2: 3052 (Label) | Target: Self (1)
                    Affected Spells (Label): Blade Flurry (429951)
@@ -10085,7 +10076,8 @@ Effects          :
 #2 (id=1017354)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #3 (id=1017355)  : Apply Aura (6) | Modify Mastery% (318)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #4 (id=1017356)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=1017357)  : Apply Aura (6) | Modify Versatility% (471)
@@ -11310,7 +11302,8 @@ Family Flags     : 76
 Attributes       : Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1034707)  : Apply Aura (6) | Modify Mastery% (318)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1034708)  : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : $@spelldesc384631
@@ -11514,7 +11507,6 @@ Effects          :
 Description      : Generate full combo points when you gain Adrenaline Rush, and full Energy when it ends.
 
 Name             : Improved Adrenaline Rush (id=395424) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12301,7 +12293,6 @@ Effects          :
 Description      : $@spelldesc424044
 
 Name             : Underhanded Upper Hand (Blade Flurry) (id=424080) [Spell Family (8), Hidden] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12318,7 +12309,6 @@ Effects          :
 Description      : $@spelldesc424044
 
 Name             : Underhanded Upper Hand (Adrenaline Rush) (id=424081) [Spell Family (8), Hidden] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -12335,7 +12325,6 @@ Effects          :
 Description      : $@spelldesc424044
 
 Name             : Crackshot (id=424254) [Spell Family (8), Hidden] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -13446,7 +13435,6 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452542) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13465,7 +13453,6 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452544) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13483,7 +13470,6 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452555) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : Magic
@@ -13502,7 +13488,6 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452557) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13519,7 +13504,6 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452558) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13536,7 +13520,6 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452559) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : Magic
@@ -13574,7 +13557,6 @@ Description      : $@spelldesc452536
 Tooltip          : Agility increased by $w1%.
 
 Name             : Fatebound Coin (id=452740) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13593,7 +13575,6 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452741) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13612,7 +13593,6 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=452742) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13631,7 +13611,6 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (Tails) (id=452917) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13657,7 +13636,6 @@ Description      : $@spelldesc452536
 Tooltip          : Fatebound Coin damage increased by $w1%.$?a454300[ Leech increased by ${$W2}.1%.][]
 
 Name             : Fatebound Coin (Heads) (id=452923) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13692,7 +13670,6 @@ Description      : $@spelldesc452536
 Tooltip          : Damage increased by ${$W1+$456479s~1}%.$?a454300[ Leech increased by ${$W3}.1%.][]
 
 Name             : Fatebound Coin (id=453010) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : Magic
@@ -13711,7 +13688,6 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=453012) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13730,7 +13706,6 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=453014) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -13749,7 +13724,6 @@ Effects          :
 Description      : $@spelldesc452536
 
 Name             : Fatebound Coin (id=453016) [Spell Family (8)] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -14292,7 +14266,6 @@ Description      : Increases the critical strike chance of your next two $?a1370
 Tooltip          : Critical strike chance of $?a137037[Envenom][Dispatch] increased by $s1%.
 
 Name             : Fatebound Coin (Heads) (id=456479) [Spell Family (8), Hidden] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Cosmic
 Spell Type       : None
@@ -15773,7 +15746,6 @@ Effects          :
 Description      : $@spelldesc453457
 
 Name             : Adrenaline Rush (id=470680) [Spell Family (8), Hidden] 
-Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : None

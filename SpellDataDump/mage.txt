@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57212 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57292 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -15979,10 +15979,8 @@ Attributes       : Not Shapeshifted (16), Allow While Mounted (24), Allow While 
 Effects          :
 #1 (id=1182508)  : School Damage (2): frostfire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.265 | PvP Coefficient: 2 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (1.1 -> 1.265)
 #2 (id=1182509)  : Apply Aura (6) | Periodic Damage (3): frostfire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.0575 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.05 -> 0.0575)
 #3 (id=1182510)  : Apply Aura (6) | Decrease Movement Speed% (33) | Attributes: Suppress Points Stacking (6)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc431044

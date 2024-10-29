@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57212 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57292 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -241231,7 +241231,6 @@ Effects          :
 Description      : Your melee attacks have a chance to inflict $s1 Nature damage.
 
 Name             : Mindtap (id=454798) 
-Hotfixed         : Cooldown (0 -> 120000), GCD (1000 -> 0), Category Cooldown (0 -> 20000), Category (0 -> 1141)
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
@@ -251681,7 +251680,6 @@ Effects          :
 Description      : $@spelldesc469922
 
 Name             : Burst of Knowledge (id=469925) 
-Hotfixed         : Cooldown (0 -> 20000), Category Cooldown (0 -> 20000), Category (0 -> 1141), Internal Cooldown (0 -> 1000)
 School           : Physical
 Spell Type       : Magic
 Duration         : 20 seconds

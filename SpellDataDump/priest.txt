@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57212 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57292 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -52,7 +52,8 @@ Family Flags     : 6, 126
 Attributes       : Not Shapeshifted (16), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Extra Initial Period (169), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=95)       : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32 | PvP Coefficient: 1.22 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32 | PvP Coefficient: 1.46 | Target: Friendly (21)
+Hotfixed         : PvP Coefficient (1.22 -> 1.46)
 #2 (id=256131)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Contrition (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Blessed Bolt (372847), Crystalline Reflection (373462), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676), Premonition of Solace (443526), Cauterizing Shadows (459992)
@@ -1008,7 +1009,8 @@ Family Flags     : 117, 126
 Attributes       : Do Not Sheath (18), Allow While Sitting (27), Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=22918)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.61 | PvP Coefficient: 1.5 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.61 | PvP Coefficient: 1.65 | Target: Friendly (21)
+Hotfixed         : PvP Coefficient (1.5 -> 1.65)
 Description      : $@spelldesc33076
 
 Name             : Pain Suppression (id=33206) [Spell Family (6)] 
@@ -3245,9 +3247,10 @@ Effects          :
                    Affected Spells: Focused Will (45242), Focused Will (426401)
                    Family Flags: 111
 #16 (id=1035935) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 63 | Scaled Value: 63 | Target: Self (1)
+                   Base Value: 88 | Scaled Value: 88 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
+Hotfixed         : Base Value (63 -> 88)
 #17 (id=1042533) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Renew (139)
@@ -3333,17 +3336,19 @@ Effects          :
 #7 (id=260938)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 #8 (id=260939)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.4 | Target: Self (1)
                    Affected Spells: Entropic Rift (447445), Entropic Rift (447448), Entropic Rift (450193), Entropic Rift (459314)
                    Family Flags: 44
+Hotfixed         : PvP Coefficient (1 -> 0.4)
 #9 (id=260940)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 600 | Scaled Value: 600 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Void Blast (450983)
                    Family Flags: 13
 #10 (id=260941)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Collapsing Void (448405)
                    Family Flags: 30
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #11 (id=1040379) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 9 | Scaled Value: 9 | Misc Value 2: 4004 (Label) | Target: Self (1)
                    Affected Spells (Label): Divine Star (122128), Divine Star (390845)
@@ -3838,7 +3843,7 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Lenience (238063 effect#1), Preemptive Care (440671 effect#1)
+Affecting Spells : Lenience (238063 effect#1)
 Family Flags     : 94
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Not an Attack (194), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Aura Interrupt   : Leave World (19)
@@ -3876,7 +3881,8 @@ Effects          :
 #1 (id=285534)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 #2 (id=298593)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.504 | Radius: 0 - 30 yards | Target: At Friendly (132) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.4048 | Radius: 0 - 30 yards | Target: At Friendly (132) -> At Friendly in Area (31)
+Hotfixed         : SP Coefficient (4.504 -> 5.4048)
 #3 (id=298594)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #4 (id=298595)   : Dummy (3)
@@ -4318,6 +4324,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=293563)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 30)
 Description      : Your direct damage spells inflict $s1% of their damage on all other targets afflicted by your Vampiric Touch within $199486A2 yards.
 
 Does not apply to damage from Shadowy Apparitions, Shadow Word: Pain, and Vampiric Touch.
@@ -5043,7 +5050,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 118
                  : 292
-Affecting Spells : Lenience (238063 effect#1), Preemptive Care (440671 effect#1)
+Affecting Spells : Lenience (238063 effect#1)
 Family Flags     : 94
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Limit N (165), Not an Attack (194), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19)
@@ -6086,7 +6093,7 @@ School           : Nature
 Spell Type       : None
 Range            : 60 yards
 Duration         : 15 seconds
-Affecting Spells : Lenience (238063 effect#1), Preemptive Care (440671 effect#1)
+Affecting Spells : Lenience (238063 effect#1)
 Family Flags     : 94
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Not an Attack (194)
 Aura Interrupt   : Leave World (19), Enter World (22)
@@ -13333,21 +13340,24 @@ Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Reset
 Aura Interrupt   : Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1112676)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (81751), Atonement (94472), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Contrition (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Blessed Bolt (372847), Crystalline Reflection (373462), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676), Premonition of Solace (443526), Cauterizing Shadows (459992)
                    Family Flags: 74, 126
+Hotfixed         : Base Value (15 -> 20)
 #2 (id=1134757)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Contrition (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Blessed Bolt (372847), Crystalline Reflection (373462), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676), Premonition of Solace (443526), Cauterizing Shadows (459992)
                    Family Flags: 126
+Hotfixed         : Base Value (15 -> 20)
 #3 (id=1138731)  : Apply Aura (6) | Dummy (4)
                    Base Value: 70 | Scaled Value: 70 | Target: Self (1)
 #4 (id=1138732)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #5 (id=1168801)  : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 24 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17), Luminous Barrier (271466), Premonition of Solace (443526)
                    Family Flags: 0, 4, 99
+Hotfixed         : Base Value (15 -> 20)
 Description      : Increases your healing done by $s1% and causes $s3% of overhealing on players to be redistributed to up to $s4 nearby allies for $d. 
 Tooltip          : Healing done increased by $w1%.
 
@@ -13703,10 +13713,9 @@ Labels           : 16: Class Spells
                  : 3985: Holy Priest (137031 effect#30)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1134710)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Atonement (194384), Atonement (214206), Lunar Purity (282786)
-                   Family Flags: 94
+#1 (id=1134710)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
+Hotfixed         : Sub Type (107 -> 4), Base Value (3000 -> 4000), Misc Value (1 -> 0), Affects Spells
 #2 (id=1134711)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Renew (139)
@@ -13931,11 +13940,13 @@ Family Flags     : 4, 126
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1139497)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 23.8 | Misc Value: 0x7f | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 23.8 | PvP Coefficient: 0.85 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
+Hotfixed         : PvP Coefficient (1 -> 0.85)
 #2 (id=1166490)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 0x7f | Target: Friendly (21)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.667 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
+Hotfixed         : PvP Coefficient (1 -> 0.667)
 #3 (id=1166491)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 20 | Scaled Value: 20 | Target: Friendly (21)
 Description      : $@spelldesc428934
@@ -14125,7 +14136,8 @@ Effects          :
 #1 (id=1149476)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #2 (id=1149477)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 1.5)
 Description      : While Entropic Rift is active, your $?c3[Shadow damage is increased by $s1%] [Atonement healing is increased by $s2%].
 
 Name             : Voidheart (id=449887) [Spell Family (6)] 
@@ -14144,9 +14156,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x20 | Target: Self (1)
                    Affected School(s): Shadow
 #2 (id=1149491)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.5 | Target: Self (1)
                    Affected Spells: Atonement (81751), Atonement (94472)
                    Family Flags: 74
+Hotfixed         : PvP Coefficient (1 -> 1.5)
 Description      : $@spelldesc449880
 Tooltip          : $?e0[Shadow damage increased by $s1%.][Atonement healing increased by $s2%.]
 
@@ -14497,8 +14510,9 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1151816)  : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+#1 (id=1151816)  : Apply Aura (6) | Periodic Dummy (226): every 3 seconds
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Period (2000 -> 3000), Base Value (3 -> 4), PvP Coefficient (1 -> 0.5)
 #2 (id=1151817)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #3 (id=1172575)  : Apply Aura (6) | Dummy (4)
