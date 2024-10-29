@@ -14222,7 +14222,7 @@ void shaman_t::init_action_list()
       init_action_list_enhancement();
       break;
     case SHAMAN_ELEMENTAL:
-      shaman_apl::elemental_ptr( this );
+      is_ptr() ? shaman_apl::elemental_ptr( this ) : shaman_apl::elemental( this );
       break;
     case SHAMAN_RESTORATION:
       init_action_list_restoration_dps();
