@@ -8415,6 +8415,8 @@ struct death_strike_t final : public death_knight_melee_attack_t
 
   void init_finished() override
   {
+    death_knight_melee_attack_t::init_finished();
+
     if ( p()->runeforge.rune_of_sanguination )
     {
       sanguination_pct = 1 + ( 0.25 * ( 1 + p()->talent.unholy_bond->effectN( 1 ).percent() ) );
