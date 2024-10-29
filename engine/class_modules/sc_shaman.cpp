@@ -14434,7 +14434,6 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
   if ( !guardian )
   {
     m *= 1.0 + spec.elemental_shaman->effectN( 3 ).percent();
-    m *= 1.0 + spec.elemental_shaman->effectN( 28 ).percent();
 
     m *= 1.0 + spec.enhancement_shaman->effectN( 3 ).percent();
 
@@ -14443,7 +14442,6 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
   else
   {
     m *= 1.0 + spec.elemental_shaman->effectN( 4 ).percent();
-    m *= 1.0 + spec.elemental_shaman->effectN( 28 ).percent();
 
     m *= 1.0 + spec.enhancement_shaman->effectN( 4 ).percent();
   }
