@@ -250664,16 +250664,18 @@ Duration         : 30 seconds
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Only On Player (104), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow While Stunned (163), Not On Player Controlled NPC (168), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Riding Vehicle (204), Aura Points On Client (268), Allow Cast While Channeling (308), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
-#1 (id=1172659)  : Apply Aura (6) | Modify Healing Received% (118)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Radius: 0 - 100 yards | Target: At Self (18) -> At Enemy in Area (16)
-                   Affected School(s): All
+#1 (id=1172659)  : Apply Aura (6) | Modify Versatility% (471)
+                   Base Value: 20 | Scaled Value: 20 | Radius: 0 - 100 yards | Target: At Self (18) -> At Enemy in Area (16)
+Hotfixed         : Sub Type (118 -> 471), Base Value (15 -> 20), Misc Value (127 -> 0)
 #2 (id=1172670)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (Label) (143)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 16 (Label) | Misc Value 2: 0xb90 | Radius: 0 - 100 yards | Target: At Self (18) -> At Enemy in Area (16)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 16 (Label) | Misc Value 2: 0xb90 | Radius: 0 - 100 yards | Target: At Self (18) -> At Enemy in Area (16)
                    Affected Spells (Label): Class Spells (16)
+Hotfixed         : Base Value (50 -> 30)
 #3 (id=1175902)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 500 | Misc Value 2: 0x1 | Radius: 0 - 100 yards | Target: At Self (18) -> At Enemy in Area (16)
 #4 (id=1191120)  : Apply Aura (6) | Modify Charge Cooldown Type Recharge Rate% (173)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 1 | Radius: 0 - 100 yards | Target: At Self (18) -> At Enemy in Area (16)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 1 | Radius: 0 - 100 yards | Target: At Self (18) -> At Enemy in Area (16)
+Hotfixed         : Base Value (50 -> 30)
 Description      : Blessed by the void, increases Versatility by $s1% and increases spell and ability cool down rate by $s2% for $d.
 Tooltip          : Versatility increased by $s1%.
 
@@ -251703,7 +251705,7 @@ Tooltip          : Chance to gain Intellect.
 Name             : Knowledge (id=469926) 
 School           : Arcane
 Spell Type       : None
-Duration         : Aura (infinite)
+Duration         : 10 seconds
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Triggered By     : Burst of Knowledge (469925)
