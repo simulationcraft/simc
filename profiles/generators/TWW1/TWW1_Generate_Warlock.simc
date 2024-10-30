@@ -9,21 +9,21 @@ talents=CkQAAAAAAAAAAAAAAAAAAAAAAAmZmZmZEzmBmtZmZY2GAAAwMjZWmZM2MzMLMzMDAYmxyyAD
 default_pet=sayaad
 
 head=hexflame_covens_allseeing_eye,id=212074,bonus_id=1540/10299/1808,gem_id=213743
-neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213455/213455
+neck=silken_advisors_favor,id=225575,bonus_id=1540/10299/10376/8781,gem_id=213482/213482
 shoulders=hexflame_covens_altar,id=212072,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant_id=7409
+back=hexflame_covens_shawl,id=212069,bonus_id=1540/10299
 chest=hexflame_covens_ritual_harness,id=212077,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7364
-wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960/1808/8791,gem_id=213479,enchant_id=7397,crafted_stats=32/36
+wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/11144/10222/1485/1808/8795/10520/8960,gem_id=213461,enchant_id=7397,crafted_stats=32/36
 hands=hexflame_covens_sleeves,id=212075,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-waist=burrowers_cinch,id=221158,bonus_id=4786/3131/10299/523,ilevel=639,gem_id=213455
-legs=e.d.n.a._stabilizers,id=221076,bonus_id=3131/10299/10376,enchant_id=7534
-feet=assimilated_eggshell_slippers,id=225582,bonus_id=1540/10299/10376,enchant_id=7418
-finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10395/8781,ilevel=639,gem_id=213455/213455,enchant_id=7346
-finger2=key_to_the_unseeming,id=212447,bonus_id=10256/11086/6652/1514/10255/10395/8781,ilevel=639,gem_id=213491/213473,enchant_id=7334
-trinket1=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
-trinket2=arakara_sacbrood,id=219314,bonus_id=3131/10299/10376
+waist=burrowers_cinch,id=221158,bonus_id=4786/3131/10299/523,ilevel=639,gem_id=213461
+legs=hexflame_covens_leggings,id=212073,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7534
+feet=consecrated_slippers,id=222814,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960,crafted_stats=32/40
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10395/8781,ilevel=639,gem_id=213461/213461,enchant_id=7340
+finger2=key_to_the_unseeming,id=212447,bonus_id=10256/11086/6652/1514/10255/10395/8781,ilevel=639,gem_id=213467/213491,enchant_id=7340
+trinket1=mad_queens_mandate,id=212454,bonus_id=1540/10299/10376
+trinket2=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
 main_hand=sovereigns_disdain,id=212394,bonus_id=1540/10299/10376,enchant_id=7460
-off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960/8791,crafted_stats=32/36
+off_hand=broodtwisters_grim_catalyst,id=212387,bonus_id=1540/10299/10376
 
 save=TWW1_Warlock_Affliction.simc
 
@@ -122,17 +122,17 @@ talents=CsQAAAAAAAAAAAAAAAAAAAAAAghZmZmZEzmhxsZmZY2mFzwMzsY2MWMzAAAAAjZmZZmZmBMm
 default_pet=sayaad
 
 head=hexflame_covens_allseeing_eye,id=212074,bonus_id=1540/10299/1808,gem_id=213743
-neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213467/213494
-shoulders=beacons_of_the_false_dawn,id=212439,bonus_id=1540/10299/10376
-back=royal_emblem_of_nerubar,id=212446,bonus_id=1540/10299/10376
+neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213455/213455
+shoulders=hexflame_covens_altar,id=212072,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant_id=7409
 chest=hexflame_covens_ritual_harness,id=212077,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7364
-wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960/1808/8791,gem_id=213491,enchant_id=7397,crafted_stats=32/36
+wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960/1808/8791,gem_id=213479,enchant_id=7397,crafted_stats=32/36
 hands=hexflame_covens_sleeves,id=212075,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-waist=burrowers_cinch,id=221158,bonus_id=4786/3131/10299/523,ilevel=639,gem_id=213491
-legs=hexflame_covens_leggings,id=212073,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7534
-feet=membranous_slippers,id=221149,bonus_id=3131/10299/10376,enchant_id=7418
-finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10395/8781,ilevel=639,gem_id=213491/213479,enchant_id=7334
-finger2=key_to_the_unseeming,id=212447,bonus_id=10256/11086/6652/1514/10255/10395/8781,ilevel=639,gem_id=213455/213458,enchant_id=7334
+waist=burrowers_cinch,id=221158,bonus_id=4786/3131/10299/523,ilevel=639,gem_id=213455
+legs=e.d.n.a._stabilizers,id=221076,bonus_id=3131/10299/10376,enchant_id=7534
+feet=assimilated_eggshell_slippers,id=225582,bonus_id=1540/10299/10376,enchant_id=7418
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10395/8781,ilevel=639,gem_id=213455/213455,enchant_id=7346
+finger2=key_to_the_unseeming,id=212447,bonus_id=10256/11086/6652/1514/10255/10395/8781,ilevel=639,gem_id=213491/213473,enchant_id=7334
 trinket1=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
 trinket2=arakara_sacbrood,id=219314,bonus_id=3131/10299/10376
 main_hand=sovereigns_disdain,id=212394,bonus_id=1540/10299/10376,enchant_id=7460
