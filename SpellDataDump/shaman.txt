@@ -18150,6 +18150,7 @@ Effects          :
 Description      : $@spelldesc188389
 
 Name             : Stormblast (id=470466) [Spell Family (11)] 
+Hotfixed         : Proc Flags 1 (4112 -> 0), Internal Cooldown (500 -> 0)
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -18158,10 +18159,8 @@ Duration         : 12 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Internal Cooldown: 0.5 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Generic Hostile Spell
 Triggered By     : Stormblast (319930)
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :
