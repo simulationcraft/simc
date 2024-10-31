@@ -16475,6 +16475,7 @@ Effects          :
 Description      : $@spelldesc212431
 
 Name             : Black Arrow (id=466930) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Shadow
 Spell Type       : Ranged
@@ -16491,7 +16492,7 @@ Labels           : 16: Class Spells
                  : 3022
 Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7, #9), Marksmanship Hunter (137016 effects: #1, #2, #8, #12, #13), Survival Hunter (137017 effects: #1, #2, #9), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Killer Accuracy (378765 effects: #1, #2), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Shadow Lash (444354 effect#1), Cornered Prey (452101 effect#1), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Outland Venom (459941 effect#1), Sic 'Em (461409 effect#1), Hunter's Prey (468219 effects: #1, #2, #3, #4)
 Family Flags     : 1, 11, 91, 106, 121
-Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Combat Feedback When Usable (137), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
+Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Combat Feedback When Usable (137), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=1179817)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.3328 | Target: Enemy (6)
@@ -16847,6 +16848,7 @@ Effects          :
 Description      : $@spelldesc467941
 
 Name             : Black Arrow (id=468037) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Shadow
 Spell Type       : Ranged
@@ -16858,7 +16860,7 @@ Labels           : 16: Class Spells
                  : 3022
 Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7, #9), Marksmanship Hunter (137016 effects: #1, #2, #8, #12, #13), Survival Hunter (137017 effects: #1, #2, #9), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Killer Accuracy (378765 effects: #1, #2), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Shadow Lash (444354 effect#1), Cornered Prey (452101 effect#1), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Outland Venom (459941 effect#1), Sic 'Em (461409 effect#1), Hunter's Prey (468219 effects: #1, #2, #3, #4)
 Family Flags     : 1, 11, 91, 106, 121
-Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Combat Feedback When Usable (137), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
+Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Combat Feedback When Usable (137), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
 #1 (id=1181483)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.44 | PvP Coefficient: 0.5 | Target: Enemy (6)
@@ -16959,6 +16961,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
+                 : 1218
                  : 3022
                  : 3993: Unnatural Causes (459527 effect#5), Unnatural Causes (459529 effect#2)
 Affecting Spells : Marksmanship Hunter (137016 effects: #12, #13), Mastery: Sniper Training (193468 effect#4), Shadow Lash (444354 effect#1), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1)
