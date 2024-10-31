@@ -6061,7 +6061,8 @@ Effects          :
 #1 (id=344372)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 #2 (id=344373)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.475042 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.57005 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.475042 -> 0.57005)
 #3 (id=344374)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 #4 (id=344375)   : Dummy (3)
