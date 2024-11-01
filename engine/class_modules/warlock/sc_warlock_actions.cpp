@@ -198,7 +198,7 @@ using namespace helpers;
           if ( demonology() )
             adjustment = -timespan_t::from_seconds( p()->hero.diabolic_ritual->effectN( 1 ).base_value() ) * shards_used;
 
-          if ( destruction() && shards_used > 0 )
+          if ( destruction() )
             adjustment = -timespan_t::from_seconds( p()->hero.diabolic_ritual->effectN( 2 ).base_value() );
 
           if ( demonology() && p()->hero.infernal_machine.ok() && p()->warlock_pet_list.demonic_tyrants.n_active_pets() > 0 )
@@ -207,7 +207,7 @@ using namespace helpers;
           if ( destruction() && p()->hero.infernal_machine.ok() && p()->warlock_pet_list.infernals.n_active_pets() > 0 )
             adjustment += -p()->hero.infernal_machine->effectN( 1 ).time_value();
 
-          if ( destruction() && p()->hero.touch_of_rancora.ok() && shards_used > 0 && triggers.rancora_cb_bonus )
+          if ( destruction() && p()->hero.touch_of_rancora.ok() && triggers.rancora_cb_bonus )
             adjustment += -timespan_t::from_seconds( p()->hero.touch_of_rancora->effectN( 3 ).base_value() );
 
           switch( p()->diabolic_ritual )
