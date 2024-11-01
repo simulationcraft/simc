@@ -19109,6 +19109,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
+                 : 1218
                  : 1219
 Attributes       : Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Ignore Damage Taken Modifiers (136), Ignore Healing Modifiers (219), Ignore Caster Damage Modifiers (221), Do Not Count For PvP Scoreboard (252), Ignore Caster Healing Modifiers (312), Cannot Kill Target (316), Ignore Positive Damage Taken Modifiers (321)
 Effects          :
