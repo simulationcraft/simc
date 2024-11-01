@@ -462,5 +462,4 @@ void frost( player_t* p )
 }
 //frost_apl_end
 
-
 }  // namespace mage_apl
