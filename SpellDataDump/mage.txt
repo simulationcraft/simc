@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57292 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57388 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -7654,7 +7654,6 @@ Effects          :
 Description      : Consuming Clearcasting increases the damage of your next 2 Arcane Blasts by |cFFFFFFFF$s1%|r.
 
 Name             : Nether Precision (id=336889) [Spell Family (3)] 
-Hotfixed         : Tooltip
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -9940,7 +9939,6 @@ Effects          :
 Description      : Consuming Clearcasting increases the damage of your next 2 Arcane Blasts or Arcane Barrages by $s1%.
 
 Name             : Nether Precision (id=383783) [Spell Family (3)] 
-Hotfixed         : Tooltip
 Class            : Mage
 School           : Arcane
 Spell Type       : None

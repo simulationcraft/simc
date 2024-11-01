@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57292 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57388 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -47,7 +47,6 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 #3 (id=830260)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.1725 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.138 -> 0.1725), PvP Coefficient (1.25 -> 1)
 Description      : Corrupts the target, causing $s3 Shadow damage and $?a196103[$146739s1 Shadow damage every $146739t1 sec.][an additional $146739o1 Shadow damage over $146739d.]
 
 Name             : Immolate (id=348) [Spell Family (5)] 
@@ -67,7 +66,6 @@ Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Aura Icon (60)
 Effects          :
 #1 (id=145)      : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.813483 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.650786 -> 0.813483)
 #2 (id=371976)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 Description      : Burns the enemy, causing $s1 Fire damage immediately and an additional $157736o1 Fire damage over $157736d.
@@ -313,7 +311,6 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.02741 | PvP Coefficient: 0.85 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.023835 -> 0.02741), PvP Coefficient (1 -> 0.85)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$s1*$d/$t1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -912,7 +909,6 @@ Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Show Mechanic a
 Effects          :
 #1 (id=9553)     : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.10921 | PvP Coefficient: 0.75 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (1.68737 -> 2.10921), PvP Coefficient (1 -> 0.75)
 Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
 
 Reduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]
@@ -1226,7 +1222,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=288276)   : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.80282 | PvP Coefficient: 1.15 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : SP Coefficient (1.50235 -> 1.80282)
 #3 (id=371982)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Draws fire toward the enemy, dealing $s2 Fire damage.
@@ -1526,7 +1521,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=33883)    : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.333936 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.27828 -> 0.333936)
 Description      : $@spelldesc5740
 
 Name             : Seed of Corruption (id=43991) [Spell Family (5)] 
@@ -2025,7 +2019,6 @@ Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflectio
 Effects          :
 #1 (id=87492)    : School Damage (2): shadowflame | Attributes: Is Harmful (12), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.464063 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : SP Coefficient (0.37125 -> 0.464063)
 Description      : $@spelldesc105174
 
 Name             : Nethermancy (desc=Passive) (id=86091) [Passive, Hidden] 
@@ -3013,7 +3006,6 @@ Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Aura Poin
 Effects          :
 #1 (id=132079)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.88633 | PvP Coefficient: 1.955 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (2.62394 -> 2.88633)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
 #3 (id=283496)   : Energize Power% (137)
@@ -3517,7 +3509,6 @@ Attributes       : Aura Is Debuff (26), Ignore Line of Sight (66), Not a Proc (1
 Effects          :
 #1 (id=198369)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds | Attributes: Is Harmful (12)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.1625 | Target: Any Target (25)
-Hotfixed         : SP Coefficient (0.13 -> 0.1625), PvP Coefficient (1.25 -> 1)
 Description      : $@spelldesc172
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -3583,7 +3574,6 @@ Attributes       : Not Shapeshifted (16), Do Not Display Range (126), Aura Never
 Effects          :
 #1 (id=219942)   : Apply Aura (6) | Periodic Damage (3): fire every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.508426 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.406741 -> 0.508426)
 #2 (id=839431)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Shadowburn (17877), Incinerate (29722), Chaos Bolt (116858), Incinerate (244670), Infernal Bolt (434506)
@@ -5024,7 +5014,6 @@ Effects          :
 #1 (id=321564)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 125 | Scaled Value: 125 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : Base Value (60 -> 125)
 Description      : $@spelldesc108501
 Tooltip          : Summoned by a Grimoire of Service.
 Damage done increased by $s1%.
@@ -6193,7 +6182,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 10 | Target: Self (1)
 #2 (id=718907)   : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 10 | Target: Self (1)
-Hotfixed         : Base Value (50 -> 100)
 Description      : When your Wild Imps expend all of their energy or are imploded, you have a $s1% chance to absorb their life essence, granting you a stack of Demonic Core. 
 
 When your summoned Dreadstalkers fade away, you have a $s2% chance to absorb their life essence, granting you a stack of Demonic Core.
@@ -7460,7 +7448,6 @@ Effects          :
                    Base Value: 3447 | Scaled Value: 3447 | Target: Enemy (6)
 #2 (id=800326)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.532666 | PvP Coefficient: 1.625 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.443888 -> 0.532666), PvP Coefficient (1.95 -> 1.625)
 #3 (id=800327)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
 #4 (id=1087592)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
@@ -14499,7 +14486,6 @@ Attributes       : Not Shapeshifted (16), No Aura Cancel (31), No Aura Icon (60)
 Effects          :
 #1 (id=1142350)  : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.198375 | PvP Coefficient: 0.75 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.1587 -> 0.198375), PvP Coefficient (1 -> 0.75)
 #2 (id=1142354)  : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #3 (id=1142413)  : Trigger Spell (64): Wither
@@ -14531,7 +14517,6 @@ Attributes       : Aura Is Debuff (26), Ignore Line of Sight (66), DoT Stacking 
 Effects          :
 #1 (id=1142358)  : Apply Aura (6) | Periodic Damage (3): shadowflame every 2 seconds | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.329493 | PvP Coefficient: 0.75 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.263594 -> 0.329493), PvP Coefficient (1 -> 0.75)
 #2 (id=1142389)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Shadowburn (17877), Incinerate (29722), Chaos Bolt (116858), Incinerate (244670), Infernal Bolt (434506)

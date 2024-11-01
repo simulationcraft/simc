@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57292 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57388 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1861,7 +1861,6 @@ Attributes       : Not Shapeshifted (16), Heal Prediction (280), Allow Class Abi
 Effects          :
 #1 (id=68093)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.46 | PvP Coefficient: 1.518 | Target: Chain Friendly (45)
-Hotfixed         : PvP Coefficient (1.32 -> 1.518)
 Description      : An efficient wave of healing energy that restores $s1 of a friendly target’s health.
 
 Name             : Earthquake (id=77478) [Spell Family (11)] 
@@ -2334,7 +2333,6 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.1667 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Mastery: Elemental Overload (168534)
                    Family Flags: 14
-Hotfixed         : PvP Coefficient (0.5 -> 0.1667)
 #9 (id=1181696)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #10 (id=1181818) : Apply Aura (6) | Dummy (4)
@@ -3009,7 +3007,6 @@ Effects          :
                    Base Value: 22 | Scaled Value: 22 | PvP Coefficient: 1.83 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
-Hotfixed         : PvP Coefficient (1 -> 1.83)
 #20 (id=1040711) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
@@ -3101,7 +3098,6 @@ Effects          :
                    Base Value: -53 | Scaled Value: -53 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Lightning Bolt Overload (45284), Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0, 96
-Hotfixed         : Base Value (-48 -> -53)
 #13 (id=1026048) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -17 | Scaled Value: -17 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452), Lava Burst Overload (285466)
@@ -3141,7 +3137,6 @@ Hotfixed         : Base Value (-48 -> -53)
                    Base Value: 155 | Scaled Value: 155 | Target: Self (1)
                    Affected Spells: Lightning Bolt Overload (45284), Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0, 96
-Hotfixed         : Base Value (132 -> 155)
 #23 (id=1070608) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Chain Heal (1064)
@@ -3155,16 +3150,12 @@ Hotfixed         : Base Value (132 -> 155)
 #26 (id=1142940) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 12 | Misc Value 2: 4240 (Label) | Target: Self (1)
                    Affected Spells (Label): Preeminence (462443)
-Hotfixed         : Sub Type (108 -> 219), Base Value (0 -> -5), Misc Value (0 -> 12), Misc Value 2 (0 -> 4240), Affects Spells, PvP Coefficient (0 -> 1)
 #27 (id=1142941) : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Sub Type (108 -> 4), Misc Value (22 -> 0), Affects Spells, PvP Coefficient (0 -> 1)
 #28 (id=1142942) : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Sub Type (429 -> 4), PvP Coefficient (0 -> 1)
 #29 (id=1173197) : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Sub Type (531 -> 4), PvP Coefficient (0 -> 1)
 #30 (id=1177227) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Healing Stream (5672), Healing Stream Totem (52042), Healing Stream (273847), Poison Cleansing (383014), Poison Cleansing (403922)
@@ -3176,7 +3167,6 @@ Hotfixed         : Sub Type (531 -> 4), PvP Coefficient (0 -> 1)
 #32 (id=1196261) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 3 | Misc Value 2: 4239 (Label) | Target: Self (1)
                    Affected Spells (Label): Voltaic Surge (454919)
-Hotfixed         : NEW EFFECT
 Description      : Elemental Shaman baseline passive
 
 Name             : Enhancement Shaman (id=137041) [Spell Family (11), Passive, Hidden] 
@@ -5946,7 +5936,6 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
                    Affected Spells: Frost Shock (196840)
                    Family Flags: 31
-Hotfixed         : Base Value (150 -> 200)
 #3 (id=845774)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: maelstrom | Target: Self (1)
 #4 (id=1173035)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
@@ -15043,12 +15032,10 @@ Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416), 
 Effects          :
 #1 (id=1145367)  : School Damage (2): fire
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.3156 | PvP Coefficient: 0.44 | Target: Any Target (25)
-Hotfixed         : SP Coefficient (1.144 -> 1.3156), PvP Coefficient (0.5 -> 0.44)
 #2 (id=1146251)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=1146252)  : Dummy (3)
                    Base Value: 44 | Scaled Value: 44
-Hotfixed         : Base Value (50 -> 44)
 Description      : Hurls molten lava at the target, critically dealing $?a134735[${$s1*(1+$s3/100)}][${$s1*(1+$s2/100)}] Fire damage.
 
 Name             : Chain Lightning (id=447425) [Spell Family (11)] 
@@ -15065,7 +15052,6 @@ Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416), 
 Effects          :
 #1 (id=1145374)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.1021 | PvP Coefficient: 0.714 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (1.5015 -> 2.1021), PvP Coefficient (1 -> 0.714)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
 
 Name             : Elemental Blast (id=447427) [Spell Family (11), Hidden] 
@@ -15227,7 +15213,6 @@ Effects          :
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Flame Shock (188389), Flame Shock (470411)
                    Family Flags: 28
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1160080)  : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 #3 (id=1181480)  : Apply Aura (6) | Dummy (4)
@@ -15696,7 +15681,6 @@ Effects          :
 Description      : Tempest causes your next $?s137040[$455097u Chain Lightning or Lightning Bolt spells to be instant cast and deal $455097s2% increased damage.][Chain Lightning or Lightning Bolt to be instant cast, deal $455097s2% increased damage, and cast an additional time.]
 
 Name             : Arc Discharge (id=455097) [Spell Family (11)] 
-Hotfixed         : Max stacks (2 -> 1)
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -18150,7 +18134,6 @@ Effects          :
 Description      : $@spelldesc188389
 
 Name             : Stormblast (id=470466) [Spell Family (11)] 
-Hotfixed         : Proc Flags 1 (4112 -> 0), Internal Cooldown (500 -> 0)
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -18214,7 +18197,6 @@ Description      : $@spelldesc455096
 Tooltip          : Your next $s3 Chain Lightning or Lightning Bolt spells are instant cast and will deal $s2% increased damage.
 
 Name             : Enhancement Shaman (id=1214207) [Spell Family (11), Passive, Hidden] 
-Hotfixed         : NEW SPELL
 Class            : Enhancement Shaman
 School           : Physical
 Spell Type       : None
@@ -18227,26 +18209,21 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0
-Hotfixed         : NEW EFFECT
 #2 (id=1196251)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0
-Hotfixed         : NEW EFFECT
 #3 (id=1196252)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443)
                    Family Flags: 1
-Hotfixed         : NEW EFFECT
 #4 (id=1196253)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
-Hotfixed         : NEW EFFECT
 #5 (id=1196254)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
-Hotfixed         : NEW EFFECT
 
 
