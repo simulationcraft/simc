@@ -774,6 +774,13 @@ public:
     std::array<proc_t*, 21> magma_chamber;
 
     proc_t* ascendance_tempest_overload;
+    proc_t* ascendance_lightning_bolt_overload;
+    proc_t* ascendance_chain_ligtning_overload;
+    proc_t* ascendance_lava_burst_overload;
+    proc_t* ascendance_earth_shock_overload;
+    proc_t* ascendance_elemental_blast_overload;
+    proc_t* ascendance_icefury_overload;
+    proc_t* ascendance_earthquake_overload;
     proc_t* potm_tempest_overload;
     proc_t* surge_of_power_lightning_bolt;
     proc_t* surge_of_power_sk_lightning_bolt;
@@ -2202,18 +2209,6 @@ public:
     return m;
   }
 
-  double composite_crit_chance_multiplier() const override
-  {
-    double m = ab::composite_crit_chance_multiplier();
-
-    if ( affected_by_ele_tww1_4pc_cc )
-    {
-      m *= 1.0 + p()->buff.tww1_4pc_ele->value();
-    }
-
-    return m;
-  }
-
   double composite_crit_damage_bonus_multiplier() const override
   {
     double m = ab::composite_crit_damage_bonus_multiplier();
@@ -2821,6 +2816,17 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     return m;
   }
 
+  double composite_crit_chance() const override
+  {
+    double cc = shaman_spell_base_t::composite_crit_chance();
+
+    if ( affected_by_ele_tww1_4pc_cc )
+    {
+      cc += p()->buff.tww1_4pc_ele->value();
+    }
+    return cc;
+  }
+
   double execute_time_pct_multiplier() const override
   {
     auto mul = base_t::execute_time_pct_multiplier();
@@ -2861,11 +2867,35 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   {
     trigger_elemental_overload( s );
 
-    if ( p()->buff.ascendance->up() )
+    if ( p()->buff.ascendance->up() && s->chain_target == 0 )
     {
-      if ( id == 452201 )
+      switch ( id ) //needs refactoring. bind it at overload spell initialization
       {
-        p()->proc.ascendance_tempest_overload->occur();
+          case 452201:
+            p()->proc.ascendance_tempest_overload->occur();
+            break;
+          case 51505:
+            p()->proc.ascendance_lava_burst_overload->occur();
+            break;
+          case 8042:
+            p()->proc.ascendance_earth_shock_overload->occur();
+            break;
+          case 210714:
+            p()->proc.ascendance_icefury_overload->occur();
+            break;
+          case 188196:
+            p()->proc.ascendance_lightning_bolt_overload->occur();
+            break;
+          case 117014:
+            p()->proc.ascendance_elemental_blast_overload->occur();
+            break;
+          case 61882:
+          case 462620:
+            p()->proc.ascendance_earthquake_overload->occur();
+            break;
+          case 188443:
+            p()->proc.ascendance_chain_ligtning_overload->occur();
+            break;
       }
 
       trigger_elemental_overload( s, 1.0 );
@@ -13057,9 +13087,9 @@ void shaman_t::create_buffs()
     ->set_default_value_from_effect( 2 ); // Damage bonus as default value
 
   buff.tww1_4pc_ele =
-    make_buff( this, "maelstrom_surge", sets->set( SHAMAN_ELEMENTAL, TWW1, B4 )->effectN( 1 ).trigger() )
-        ->set_default_value_from_effect( 1 )
-        ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, TWW1, B4 ) );
+      make_buff( this, "maelstrom_surge", sets->set( SHAMAN_ELEMENTAL, TWW1, B4 )->effectN( 1 ).trigger() )
+          ->set_default_value_from_effect( 1 )
+          ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, TWW1, B4 ) );
 
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
     ->set_default_value( talent.primordial_wave->effectN( specialization() == SHAMAN_ELEMENTAL ? 3 : 4 ).percent() )
@@ -13354,6 +13384,14 @@ void shaman_t::init_procs()
   proc.deeply_rooted_elements                   = get_proc( "Deeply Rooted Elements" );
 
   proc.ascendance_tempest_overload      = get_proc( "Ascendance: Tempest" );
+  proc.ascendance_lightning_bolt_overload      = get_proc( "Ascendance: Lightning" );
+  proc.ascendance_chain_ligtning_overload      = get_proc( "Ascendance: Chain Lightning" );
+  proc.ascendance_lava_burst_overload      = get_proc( "Ascendance: Lava Burst" );
+  proc.ascendance_earth_shock_overload         = get_proc( "Ascendance: Earth Shock" );
+  proc.ascendance_elemental_blast_overload     = get_proc( "Ascendance: Elemental Blast" );
+  proc.ascendance_icefury_overload      = get_proc( "Ascendance: Icefury" );
+  proc.ascendance_earthquake_overload      = get_proc( "Ascendance: Earthquake" );
+
   proc.potm_tempest_overload            = get_proc( "PotM: Tempest" );
   proc.surge_of_power_lightning_bolt = get_proc( "Surge of Power: Lightning Bolt" );
   proc.surge_of_power_sk_lightning_bolt = get_proc( "Surge of Power: SK Lightning Bolt" );
