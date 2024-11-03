@@ -68,7 +68,6 @@ actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buf
 
 #Two Target
 actions.aoe+=/elemental_blast,target_if=min:debuff.lightning_rod.remains,if=spell_targets.chain_lightning=2&(maelstrom>variable.mael_cap-30|cooldown.primordial_wave.remains<gcd&talent.surge_of_power.enabled|(buff.stormkeeper.up&spell_targets.chain_lightning>=6|buff.tempest.up)&talent.surge_of_power.enabled)
-actions.aoe+=/earth_shock,target_if=min:debuff.lightning_rod.remains,if=spell_targets.chain_lightning=2&(maelstrom>variable.mael_cap-30|cooldown.primordial_wave.remains<gcd&talent.surge_of_power.enabled|(buff.stormkeeper.up&spell_targets.chain_lightning>=6|buff.tempest.up)&talent.surge_of_power.enabled)
 # Activate Surge of Power if next global is Primordial wave. Respect Echoes of Great Sundering.
 actions.aoe+=/earthquake,if=cooldown.primordial_wave.remains<gcd&talent.surge_of_power.enabled&(buff.echoes_of_great_sundering_es.up|buff.echoes_of_great_sundering_eb.up|!talent.echoes_of_great_sundering.enabled)
 # Spend if all Lightning Rods ran out or you are close to overcaping. Respect Echoes of Great Sundering.
