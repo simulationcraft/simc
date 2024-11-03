@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57212 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57388 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -42,7 +42,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 3 seconds
-Category         : 19
+Category         : 19 (Type 0x0)
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -142,7 +142,7 @@ Spell Level      : 44
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 180 seconds
-Category         : 1650
+Category         : 1650 (Type 0x0)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -151,7 +151,7 @@ Stance Mask      : 0x01000000
 Family Flags     : 11
 Attributes       : Not Shapeshifted (16), No Threat (42), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=34352)    : : Apply Aura (6) | Periodic Trigger Spell (23): Army of the Dead every 0.5 seconds
+#1 (id=34352)    : Apply Aura (6) | Periodic Trigger Spell (23): Army of the Dead every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 42651 | Target: Self (1)
 Description      : Summons a legion of ghouls who swarms your enemies, fighting anything they can for $42651d.
 Tooltip          : Summoning ghouls.
@@ -185,7 +185,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 1877: Blood Death Knight (137008 effect#5), Death's Echo (356367 effect#1), Mawsworn Menace (444099 effect#1)
+Category         : 1877 (Type 0x1): Blood Death Knight (137008 effect#5), Death's Echo (356367 effect#1), Mawsworn Menace (444099 effect#1)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -288,7 +288,7 @@ Spell Level      : 12
 Range            : 30 yards
 Duration         : 60 seconds
 Cooldown         : 120 seconds
-Category         : 1245
+Category         : 1245 (Type 0x0)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -406,7 +406,7 @@ Spell Level      : 7
 Range            : 15 yards
 Duration         : 3 seconds
 Cooldown         : 15 seconds
-Category         : 88
+Category         : 88 (Type 0x0)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -458,7 +458,8 @@ Velocity         : 4 yards/sec
 Duration         : 20 seconds
 Cooldown         : 120 seconds
 Charges          : 0 (120 seconds cooldown)
-Category         : 1614: Seal of Necrofantasia (212216 effect#1), Seal of Necrofantasia (212216 effect#2), Strive for Perfection (296320 effect#5), Strive for Perfection (299367 effect#5), Strive for Perfection (299369 effect#5), Benevolent Faerie (327710 effect#5), Accelerated Cold (337822 effect#2), Benevolent Faerie Fermata (345453 effect#5), Haunted Mask (356968 effect#5)
+Category         : 1614 (Type 0x1): Seal of Necrofantasia (212216 effect#1), Seal of Necrofantasia (212216 effect#2), Strive for Perfection (296320 effect#5), Strive for Perfection (299367 effect#5), Strive for Perfection (299369 effect#5), Benevolent Faerie (327710 effect#5), Accelerated Cold (337822 effect#2), Benevolent Faerie Fermata (345453 effect#5), Haunted Mask (356968 effect#5)
+Category Flags   : Reset Charges on Encounter End (4)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -552,7 +553,7 @@ Spell Level      : 9
 Duration         : 10 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (45 seconds cooldown)
-Category         : 1941: Death's Echo (356367 effect#3), Time Spiral (375226 effect#1), Blessing of the Bronze (381732 effect#1)
+Category         : 1941 (Type 0x9): Death's Echo (356367 effect#3), Time Spiral (375226 effect#1), Blessing of the Bronze (381732 effect#1)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 219
@@ -945,7 +946,7 @@ Range            : 30 yards
 GCD              : 0.5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (25 seconds cooldown)
-Category         : 1428: Blood Death Knight (137008 effect#4), Blood Death Knight (137008 effect#9), Grip of the Everlasting (334724 effect#1), Death's Echo (356367 effect#2)
+Category         : 1428 (Type 0x1): Blood Death Knight (137008 effect#4), Blood Death Knight (137008 effect#9), Grip of the Everlasting (334724 effect#1), Death's Echo (356367 effect#2)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -981,7 +982,7 @@ Family Flags     : 4, 43, 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=42113)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.464256 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.557107 | Target: Enemy (6)
 #2 (id=42114)    : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Enemy (6)
 #3 (id=287354)   : Dummy (3)
@@ -1062,7 +1063,7 @@ Spell Type       : Magic
 Spell Level      : 17
 GCD              : 1.5 seconds
 Charges          : 2 (7.5 seconds cooldown)
-Category         : 1611: Death Knight (137005 effect#3)
+Category         : 1611 (Type 0x1): Death Knight (137005 effect#3)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -1074,7 +1075,7 @@ Family Flags     : 18, 43, 48
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=43101)    : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.56304 | Radius: 0 - 10 yards | Target: At Self (18) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.647496 | Radius: 0 - 10 yards | Target: At Self (18) -> At Enemy in Area (16)
 Description      : Deals $s1 Shadow damage$?s212744[ to all enemies within $A1 yds.][ and infects all enemies within $A1 yds with Blood Plague.
 
 $@spellicon55078 |cFFFFFFFF$@spellname55078|r
@@ -1091,7 +1092,7 @@ Cast Time        : 4 seconds
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 60 seconds
-Category         : 511
+Category         : 511 (Type 0x0)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -1408,7 +1409,7 @@ Family Flags     : 43, 57, 65
 Attributes       : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Suppress Weapon Procs (151), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Do Not Log Full Overheal (323), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=47999)    : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1.25 | AP Coefficient: 0.08822 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1.25 | AP Coefficient: 0.097042 | Target: Any Target (25)
 #2 (id=48000)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.051761 | Target: Any Target (25)
 #3 (id=836125)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
@@ -1494,7 +1495,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Category         : 1641
+Category         : 1641 (Type 0x0)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -1528,7 +1529,7 @@ Spell Level      : 9
 Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
-Category         : 82
+Category         : 82 (Type 0x0)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -1604,7 +1605,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
-Category         : 133
+Category         : 133 (Type 0x0)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -1621,7 +1622,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
-Category         : 133
+Category         : 133 (Type 0x0)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -1835,7 +1836,7 @@ Spell Level      : 19
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 600 seconds
-Category         : 1555
+Category         : 1555 (Type 0x0)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -2805,7 +2806,7 @@ Triggered By     : Unholy Blight (460448)
 Family Flags     : 43, 78, 93
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), Not In Spellbook (143), Extra Initial Period (169), No Target Aura Icon (188), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=130545)   : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
+#1 (id=130545)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Active Pet (5)
 Description      : $@spelldesc460448
 Tooltip          : Surrounded by a vile swarm of insects, infecting enemies within $115994a1 yds with Virulent Plague and an unholy disease that deals damage to enemies.
@@ -3166,6 +3167,12 @@ Effects          :
 #19 (id=1191525) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Misc Value 2: 4192 (Label) | Target: Self (1)
                    Affected Spells (Label): Frenzied Bloodthirst (434075)
+#20 (id=1196234) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
+                   Base Value: 5000 | Scaled Value: 5000 | Misc Value: 1 | Misc Value 2: 3134 (Label) | Target: Self (1)
+                   Affected Spells (Label): Essence of the Blood Queen (433925)
+#21 (id=1196316) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Misc Value 2: 4242 (Label) | Target: Self (1)
+                   Affected Spells (Label): Vampiric Strike (433901)
 
 Name             : Anti-Magic Zone (desc=PvP Talent) (id=145629) [Spell Family (15)] 
 Class            : Death Knight
@@ -3216,7 +3223,7 @@ School           : Physical
 Spell Type       : None
 Cast Time        : 1.5 seconds
 Cooldown         : 1.5 seconds
-Category         : 133
+Category         : 133 (Type 0x0)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -3247,7 +3254,7 @@ Family Flags     : 113
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Extra Initial Period (169), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Aura Interrupt   : Leave World (19)
 Effects          :
-#1 (id=210837)   : : Apply Aura (6) | Periodic Trigger Spell (23): Breath of Sindragosa every 1 seconds
+#1 (id=210837)   : Apply Aura (6) | Periodic Trigger Spell (23): Breath of Sindragosa every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 155166 | Target: Self (1)
 #2 (id=291656)   : Trigger Spell (64): Breath of Sindragosa
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 303753 | Target: Self (1)
@@ -3270,7 +3277,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Charges          : 1 (20 seconds cooldown)
-Category         : 1927: Death's Echo (356367 effect#4), Mawsworn Menace (444099 effect#2)
+Category         : 1927 (Type 0x1): Death's Echo (356367 effect#4), Mawsworn Menace (444099 effect#2)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 52
@@ -3838,7 +3845,7 @@ Spell Level      : 19
 Duration         : 4 seconds
 Cooldown         : 1.5 seconds
 Charges          : 2 (25 seconds cooldown)
-Category         : 1645
+Category         : 1645 (Type 0x1)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -3874,7 +3881,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #2 (id=288454)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#3 (id=288455)   : : Apply Aura (6) | Periodic Trigger Spell (23): Bonestorm every 1 seconds
+#3 (id=288455)   : Apply Aura (6) | Periodic Trigger Spell (23): Bonestorm every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 196528 | Target: Self (1)
 #4 (id=753734)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -4284,7 +4291,7 @@ Attributes       : Not Shapeshifted (16), No Aura Cancel (31), Allow While Not S
 Effects          :
 #1 (id=288888)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-#2 (id=288889)   : : Apply Aura (6) | Periodic Trigger Spell (23): Remorseless Winter every 1 seconds
+#2 (id=288889)   : Apply Aura (6) | Periodic Trigger Spell (23): Remorseless Winter every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 196771 | Target: Self (1)
 #3 (id=313811)   : Apply Aura (6) | Unknown(395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6917 | Target: Self (1)
@@ -4688,7 +4695,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Category         : 1207
+Category         : 1207 (Type 0x0)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -4702,7 +4709,7 @@ Effects          :
 #1 (id=306039)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 #2 (id=306040)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.475042 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.57005 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 #3 (id=306041)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #4 (id=312174)   : Dummy (3)
@@ -5492,7 +5499,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 30 yards
 Duration         : Aura (infinite)
-Category         : 1245
+Category         : 1245 (Type 0x0)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -5885,7 +5892,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : None
 Charges          : 2 (60 seconds cooldown)
-Category         : 1644
+Category         : 1644 (Type 0x1)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -6040,7 +6047,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Category         : 1207
+Category         : 1207 (Type 0x0)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -6052,7 +6059,7 @@ Effects          :
 #1 (id=344372)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 #2 (id=344373)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.475042 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.57005 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 #3 (id=344374)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 #4 (id=344375)   : Dummy (3)
@@ -6937,7 +6944,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72)
 Effects          :
-#1 (id=739465)   : : Apply Aura (6) | Periodic Trigger Spell (23): Cold Heart every 2 seconds
+#1 (id=739465)   : Apply Aura (6) | Periodic Trigger Spell (23): Cold Heart every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 281209 | Target: Self (1)
 Description      : Every $t1 sec, gain a stack of Cold Heart, causing your next Chains of Ice to deal $281210s1 Frost damage. Stacks up to $281209u times.
 
@@ -7206,7 +7213,7 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=749675)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Active Pet (5)
-#2 (id=749676)   : : Apply Aura (6) | Periodic Trigger Spell (23): Helchains every 1 seconds
+#2 (id=749676)   : Apply Aura (6) | Periodic Trigger Spell (23): Helchains every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 286978 | Target: Self (1)
 Description      : $@spelldesc286832
 Tooltip          : Deals $s1 Fire damage.
@@ -7645,7 +7652,7 @@ Family Flags     : 127
 Attributes       : Is Ability (4), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Extra Initial Period (169), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19)
 Effects          :
-#1 (id=792742)   : : Apply Aura (6) | Periodic Trigger Spell (23): Swarming Mist every 1 seconds
+#1 (id=792742)   : Apply Aura (6) | Periodic Trigger Spell (23): Swarming Mist every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 311730 | Target: Self (1)
 #2 (id=794097)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -7777,7 +7784,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 120 seconds
-Category         : 2040
+Category         : 2040 (Type 0x0)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -7789,9 +7796,9 @@ Affecting Spells : Death Knight (137005 effect#2)
 Family Flags     : 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Extra Initial Period (169), Not In Spellbook Until Learned (269), Missile Speed is Delay (in sec) (292), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (450)
 Effects          :
-#1 (id=799203)   : : Apply Aura (6) | Periodic Trigger Spell (23): Abomination Limb every 1 seconds
+#1 (id=799203)   : Apply Aura (6) | Periodic Trigger Spell (23): Abomination Limb every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 323710 | Target: Self (1)
-#2 (id=812970)   : : Apply Aura (6) | Periodic Trigger Spell (23): Abomination Limb every 1 seconds
+#2 (id=812970)   : Apply Aura (6) | Periodic Trigger Spell (23): Abomination Limb every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 323798 | Target: Self (1)
 #3 (id=872099)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
@@ -8264,7 +8271,7 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=805568)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Active Pet (5)
-#2 (id=805569)   : : Apply Aura (6) | Periodic Trigger Spell (23): Unholy Pact every 1 seconds
+#2 (id=805569)   : Apply Aura (6) | Periodic Trigger Spell (23): Unholy Pact every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 319240 | Target: Self (1)
 Description      : $@spelldesc319230
 Tooltip          : Deals $s1 Fire damage.
@@ -8440,7 +8447,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 1877: Blood Death Knight (137008 effect#5), Death's Echo (356367 effect#1), Mawsworn Menace (444099 effect#1)
+Category         : 1877 (Type 0x1): Blood Death Knight (137008 effect#5), Death's Echo (356367 effect#1), Mawsworn Menace (444099 effect#1)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -11432,7 +11439,7 @@ Stacks           : 1 maximum
 Proc Chance      : 101%
 Affecting Spells : Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #6, #7), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2)
 Family Flags     : 43, 120
-Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Suppress Caster Procs (112), Do Not Display Range (126), Allow While Stunned (163), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), Aura Unique Per Caster (189), Allow While Riding Vehicle (204), Allow While Charmed (261), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Do Not Display Cast Time (441)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Suppress Caster Procs (112), Do Not Display Range (126), Allow While Stunned (163), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Aura Unique Per Caster (189), Allow While Riding Vehicle (204), Allow While Charmed (261), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1004974)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (delta=0.15) | AP Coefficient: 0.42 | Target: Enemy (6)
@@ -12044,7 +12051,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 120 seconds
-Category         : 2040
+Category         : 2040 (Type 0x0)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
@@ -12055,9 +12062,9 @@ Affecting Spells : Death Knight (137005 effect#2)
 Family Flags     : 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Extra Initial Period (169), Not In Spellbook Until Learned (269), Missile Speed is Delay (in sec) (292), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Unknown (450)
 Effects          :
-#1 (id=1015063)  : : Apply Aura (6) | Periodic Trigger Spell (23): Abomination Limb every 1 seconds
+#1 (id=1015063)  : Apply Aura (6) | Periodic Trigger Spell (23): Abomination Limb every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 383312 | Target: Self (1)
-#2 (id=1015064)  : : Apply Aura (6) | Periodic Trigger Spell (23): Abomination Limb every 1 seconds
+#2 (id=1015064)  : Apply Aura (6) | Periodic Trigger Spell (23): Abomination Limb every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 383313 | Target: Self (1)
 #3 (id=1015065)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
@@ -13692,6 +13699,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
+                 : 4242: Blood Death Knight (137008 effect#21)
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Magic Hostile Spell
 Attributes       : Passive (6), Allow Class Ability Procs (416)
@@ -13709,7 +13717,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 20 seconds
 Labels           : 27: Death Knight Spells
-                 : 3134: Frenzied Bloodthirst (434075 effect#1), Frenzied Bloodthirst (434075 effect#2), Gift of the San'layn (434153 effect#1), Gift of the San'layn (434153 effect#2), Gift of the San'layn (434153 effect#4), Gift of the San'layn (434153 effect#5)
+                 : 3134: Blood Death Knight (137008 effect#20), Frenzied Bloodthirst (434075 effect#1), Frenzied Bloodthirst (434075 effect#2), Gift of the San'layn (434153 effect#1), Gift of the San'layn (434153 effect#2), Gift of the San'layn (434153 effect#4), Gift of the San'layn (434153 effect#5)
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Triggered By     : Vampiric Strike (433895)
@@ -14019,10 +14027,10 @@ Effects          :
                    Affected Spells: Scourge Strike (55090), Heart Strike (206930), Clawing Shadows (207311), Heart Strike (228645), Vampiric Strike (433895), Heart Strike (460501)
                    Family Flags: 24, 59
 #4 (id=1124611)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: 150 | Scaled Value: 150 | Misc Value: 3 | Misc Value 2: 3134 (Label) | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | Misc Value: 3 | Misc Value 2: 3134 (Label) | Target: Self (1)
                    Affected Spells (Label): Essence of the Blood Queen (433925)
 #5 (id=1124612)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
-                   Base Value: 150 | Scaled Value: 150 | Misc Value: 12 | Misc Value 2: 3134 (Label) | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | Misc Value: 12 | Misc Value 2: 3134 (Label) | Target: Self (1)
                    Affected Spells (Label): Essence of the Blood Queen (433925)
 #6 (id=1124832)  : Apply Aura (6) | Unknown(285)
                    Base Value: 433895 | Scaled Value: 433895 | Trigger Spell: 434674 | Target: Self (1)
@@ -14422,10 +14430,8 @@ Attributes       : Passive (6), Not In Spellbook (143), Allow Class Ability Proc
 Effects          :
 #1 (id=1128925)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Hotfixed         : Base Value (20 -> 10)
 #2 (id=1128929)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 20)
 #3 (id=1132112)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : When Reaper's Mark explodes, it deals $?a137008[$s1][$s2]% of the damage dealt to nearby enemies and causes them to deal $s3% reduced Physical damage to you for 10 sec.
@@ -15051,7 +15057,7 @@ Labels           : 16: Class Spells
                  : 3022
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
+Attributes       : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), DoT Stacking Rule (103), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1139275)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3236 (Label) | Target: Enemy (6)
@@ -15356,7 +15362,7 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : Passive (6)
 Effects          :
-#1 (id=1140359)  : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
+#1 (id=1140359)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #2 (id=1146068)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -15532,7 +15538,7 @@ Spell Level      : 1
 Duration         : 10 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (45 seconds cooldown)
-Category         : 1941: Death's Echo (356367 effect#3), Time Spiral (375226 effect#1), Blessing of the Bronze (381732 effect#1)
+Category         : 1941 (Type 0x9): Death's Echo (356367 effect#3), Time Spiral (375226 effect#1), Blessing of the Bronze (381732 effect#1)
 Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 67
@@ -17338,7 +17344,7 @@ Effects          :
 #1 (id=1168231)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 #2 (id=1168232)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.42513 | PvP Coefficient: 1.2 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.71016 | PvP Coefficient: 1.2 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 #3 (id=1168233)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #4 (id=1168234)  : Dummy (3)

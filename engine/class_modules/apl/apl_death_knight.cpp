@@ -269,7 +269,7 @@ void frost( player_t* p )
   cooldowns->add_action( "potion,if=(talent.pillar_of_frost&buff.pillar_of_frost.up|!talent.pillar_of_frost&buff.empower_rune_weapon.up|!talent.pillar_of_frost&!talent.empower_rune_weapon|active_enemies>=2&buff.pillar_of_frost.up)|fight_remains<25", "Cooldowns" );
   cooldowns->add_action( "abomination_limb,if=talent.obliteration&!buff.pillar_of_frost.up&variable.sending_cds&(!hero_tree.deathbringer|cooldown.reapers_mark.remains<5)|fight_remains<15" );
   cooldowns->add_action( "abomination_limb,if=!talent.obliteration&variable.sending_cds" );
-  cooldowns->add_action( "remorseless_winter,if=variable.rw_buffs&variable.sending_cds&(!talent.arctic_assault|!buff.pillar_of_frost.up)&(cooldown.pillar_of_frost.remains>20|cooldown.pillar_of_frost.remains<4)&fight_remains>10" );
+  cooldowns->add_action( "remorseless_winter,if=variable.rw_buffs&variable.sending_cds&(!talent.arctic_assault|!buff.pillar_of_frost.up)&(cooldown.pillar_of_frost.remains>20|cooldown.pillar_of_frost.remains<4|(buff.gathering_storm.stack=10&buff.remorseless_winter.remains<gcd.max))&fight_remains>10" );
   cooldowns->add_action( "chill_streak,if=variable.sending_cds&(!talent.arctic_assault|!buff.pillar_of_frost.up)" );
   cooldowns->add_action( "empower_rune_weapon,if=talent.obliteration&!talent.breath_of_sindragosa&buff.pillar_of_frost.up|fight_remains<20" );
   cooldowns->add_action( "empower_rune_weapon,if=buff.breath_of_sindragosa.up&(runic_power<40|runic_power<variable.erw_breath_rp_trigger&rune<variable.erw_breath_rune_trigger)" );
@@ -285,7 +285,7 @@ void frost( player_t* p )
   cooldowns->add_action( "frostwyrms_fury,if=!talent.apocalypse_now&talent.obliteration&(talent.pillar_of_frost&buff.pillar_of_frost.up&!main_hand.2h|!buff.pillar_of_frost.up&main_hand.2h&cooldown.pillar_of_frost.remains|!talent.pillar_of_frost)&variable.fwf_buffs&(!raid_event.adds.exists|raid_event.adds.in>cooldown.frostwyrms_fury.duration+raid_event.adds.duration)" );
   cooldowns->add_action( "raise_dead,use_off_gcd=1" );
   cooldowns->add_action( "soul_reaper,if=talent.reaper_of_souls&buff.reaper_of_souls.up&buff.killing_machine.react<2" );
-  cooldowns->add_action( "soul_reaper,if=fight_remains>5&target.time_to_pct_35<5&target.time_to_pct_0>5&active_enemies<=1&rune>2&(talent.obliteration&(buff.pillar_of_frost.up&!buff.killing_machine.react|!buff.pillar_of_frost.up|buff.killing_machine.react<2&!buff.exterminate.up&buff.pillar_of_frost.remains<gcd)|talent.breath_of_sindragosa&(buff.breath_of_sindragosa.up&runic_power>50|!buff.breath_of_sindragosa.up)|!talent.breath_of_sindragosa&!talent.obliteration)" );
+  cooldowns->add_action( "soul_reaper,if=fight_remains>5&target.time_to_pct_35<5&target.time_to_pct_0>5&active_enemies<=1&rune>2&(talent.obliteration&(buff.pillar_of_frost.up&!buff.killing_machine.react|!buff.pillar_of_frost.up)|talent.breath_of_sindragosa&(!talent.obliteration|!buff.pillar_of_frost.up)&(buff.breath_of_sindragosa.up&runic_power>50|!buff.breath_of_sindragosa.up)|!talent.breath_of_sindragosa&!talent.obliteration)" );
   cooldowns->add_action( "frostscythe,if=!buff.killing_machine.react&!buff.pillar_of_frost.up" );
   cooldowns->add_action( "any_dnd,if=hero_tree.deathbringer&!buff.death_and_decay.up&variable.st_planning&cooldown.reapers_mark.remains<gcd.max*2" );
   cooldowns->add_action( "any_dnd,if=!buff.death_and_decay.up&variable.adds_remain&(buff.pillar_of_frost.up&buff.killing_machine.react&(talent.enduring_strength|buff.pillar_of_frost.remains>5)|!buff.pillar_of_frost.up&(cooldown.death_and_decay.charges=2|cooldown.pillar_of_frost.remains>cooldown.death_and_decay.duration|!talent.the_long_winter&cooldown.pillar_of_frost.remains<gcd.max*2)|fight_remains<15)&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)" );
@@ -454,7 +454,7 @@ void unholy( player_t* p )
 
   cds->add_action( "dark_transformation,if=variable.st_planning&(cooldown.apocalypse.remains<8|!talent.apocalypse|active_enemies>=1)|fight_remains<20", "Non-San'layn Cooldowns" );
   cds->add_action( "unholy_assault,if=variable.st_planning&(cooldown.apocalypse.remains<gcd*2|!talent.apocalypse|active_enemies>=2&buff.dark_transformation.up)|fight_remains<20" );
-  cds->add_action( "apocalypse,if=variable.st_planning" );
+  cds->add_action( "apocalypse,if=variable.st_planning|fight_remains<20" );
   cds->add_action( "outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&dot.virulent_plague.ticks_remain<5,if=(dot.virulent_plague.refreshable|talent.superstrain&(dot.frost_fever.refreshable|dot.blood_plague.refreshable))&(!talent.unholy_blight|talent.plaguebringer)&(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains>dot.virulent_plague.ticks_remain*3)" );
   cds->add_action( "abomination_limb,if=variable.st_planning&!buff.sudden_doom.react&(buff.festermight.up&buff.festermight.stack>8|!talent.festermight)&(pet.apoc_ghoul.remains<5|!talent.apocalypse)&debuff.festering_wound.stack<=2|fight_remains<12" );
 
@@ -474,7 +474,7 @@ void unholy( player_t* p )
 
   cds_san->add_action( "dark_transformation,if=active_enemies>=1&variable.st_planning&(talent.apocalypse&pet.apoc_ghoul.active|!talent.apocalypse)|fight_remains<20", "San'layn Cooldowns" );
   cds_san->add_action( "unholy_assault,if=variable.st_planning&(buff.dark_transformation.up&buff.dark_transformation.remains<12)|fight_remains<20" );
-  cds_san->add_action( "apocalypse,if=variable.st_planning&debuff.festering_wound.stack>=3|fight_remains<20" );
+  cds_san->add_action( "apocalypse,if=variable.st_planning|fight_remains<20" );
   cds_san->add_action( "outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&dot.virulent_plague.ticks_remain<5,if=(dot.virulent_plague.refreshable|talent.morbidity&buff.infliction_of_sorrow.up&talent.superstrain&dot.frost_fever.refreshable&dot.blood_plague.refreshable)&(!talent.unholy_blight|talent.unholy_blight&cooldown.dark_transformation.remains)&(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains)" );
   cds_san->add_action( "abomination_limb,if=active_enemies>=1&variable.st_planning&!buff.gift_of_the_sanlayn.up&!buff.sudden_doom.react&buff.festermight.up&debuff.festering_wound.stack<=2|!buff.gift_of_the_sanlayn.up&fight_remains<12" );
 
@@ -482,7 +482,7 @@ void unholy( player_t* p )
   cds_shared->add_action( "invoke_external_buff,name=power_infusion,if=active_enemies>=1&(variable.st_planning|variable.adds_remain)&(pet.gargoyle.active&pet.gargoyle.remains<=22|!talent.summon_gargoyle&talent.army_of_the_dead&(talent.raise_abomination&pet.abomination.active&pet.abomination.remains<18|!talent.raise_abomination&pet.army_ghoul.active&pet.army_ghoul.remains<=18)|!talent.summon_gargoyle&!talent.army_of_the_dead&buff.dark_transformation.up|!talent.summon_gargoyle&buff.dark_transformation.up|!pet.gargoyle.active&cooldown.summon_gargoyle.remains+10>cooldown.invoke_external_buff_power_infusion.duration|active_enemies>=3&(buff.dark_transformation.up|death_and_decay.ticking))", "Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=49206/summon-gargoyle'>Gargoyle</a> is up, as well as <a href='https://www.wowhead.com/spell=275699/apocalypse'>Apocalypse</a> or with <a href='https://www.wowhead.com/spell=63560/dark-transformation'>Dark Transformation</a> if <a href='https://www.wowhead.com/spell=275699/apocalypse'>Apocalypse</a> or <a href='https://www.wowhead.com/spell=49206/summon-gargoyle'>Gargoyle</a> are not talented" );
   cds_shared->add_action( "army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(talent.commander_of_the_dead&cooldown.dark_transformation.remains<5|!talent.commander_of_the_dead&active_enemies>=1)|fight_remains<35" );
   cds_shared->add_action( "raise_abomination,if=(variable.st_planning|variable.adds_remain)|fight_remains<30" );
-  cds_shared->add_action( "summon_gargoyle,use_off_gcd=1,if=(variable.st_planning|variable.adds_remain)&(buff.commander_of_the_dead.up|!talent.commander_of_the_dead&active_enemies>=1)" );
+  cds_shared->add_action( "summon_gargoyle,use_off_gcd=1,if=(variable.st_planning|variable.adds_remain)&(buff.commander_of_the_dead.up|!talent.commander_of_the_dead&active_enemies>=1)|fight_remains<25" );
   cds_shared->add_action( "antimagic_shell,if=death_knight.ams_absorb_percent>0&runic_power<30&rune<2" );
 
   cleave->add_action( "any_dnd,if=!death_and_decay.ticking", "Cleave" );
@@ -509,11 +509,12 @@ void unholy( player_t* p )
   san_fishing->add_action( "festering_strike,if=debuff.festering_wound.stack<3-pet.abomination.active" );
 
   san_st->add_action( "any_dnd,if=!death_and_decay.ticking&talent.unholy_ground&cooldown.dark_transformation.remains<5", "Single Target San'layn" );
-  san_st->add_action( "death_coil,if=buff.sudden_doom.react&buff.gift_of_the_sanlayn.remains&(talent.doomed_bidding|talent.rotten_touch)|rune<2&!buff.runic_corruption.up" );
-  san_st->add_action( "wound_spender,if=buff.essence_of_the_blood_queen.remains<3&buff.vampiric_strike.react|talent.gift_of_the_sanlayn&buff.dark_transformation.up&buff.dark_transformation.remains<gcd" );
+  san_st->add_action( "death_coil,if=buff.sudden_doom.react&buff.gift_of_the_sanlayn.remains&(talent.doomed_bidding|talent.rotten_touch)|rune<3&!buff.runic_corruption.up" );
+  san_st->add_action( "wound_spender,if=buff.gift_of_the_sanlayn.up&buff.vampiric_strike.react|talent.gift_of_the_sanlayn&buff.dark_transformation.up&buff.dark_transformation.remains<gcd" );
   san_st->add_action( "soul_reaper,if=target.health.pct<=35&!buff.gift_of_the_sanlayn.up&fight_remains>5" );
-  san_st->add_action( "festering_strike,if=(debuff.festering_wound.stack<4&cooldown.apocalypse.remains<variable.apoc_timing)|(talent.gift_of_the_sanlayn&!buff.gift_of_the_sanlayn.up|!talent.gift_of_the_sanlayn)&(buff.festering_scythe.react|debuff.festering_wound.stack<=1-pet.abomination.active)" );
-  san_st->add_action( "wound_spender,if=(debuff.festering_wound.stack>=3-pet.abomination.active&cooldown.apocalypse.remains>variable.apoc_timing)|buff.vampiric_strike.react&cooldown.apocalypse.remains>variable.apoc_timing" );
+  san_st->add_action( "wound_spender,if=buff.vampiric_strike.react&debuff.festering_wound.stack>=1" );
+  san_st->add_action( "festering_strike,if=(debuff.festering_wound.stack=0&cooldown.apocalypse.remains<variable.apoc_timing)|(talent.gift_of_the_sanlayn&!buff.gift_of_the_sanlayn.up|!talent.gift_of_the_sanlayn)&(buff.festering_scythe.react|debuff.festering_wound.stack<=1)" );
+  san_st->add_action( "wound_spender,if=(!talent.apocalypse|cooldown.apocalypse.remains>variable.apoc_timing)&(debuff.festering_wound.stack>=3-pet.abomination.active|buff.vampiric_strike.react)" );
   san_st->add_action( "death_coil,if=!variable.pooling_runic_power&debuff.death_rot.remains<gcd|(buff.sudden_doom.react&debuff.festering_wound.stack>=1|rune<2)" );
   san_st->add_action( "wound_spender,if=debuff.festering_wound.stack>4" );
   san_st->add_action( "death_coil,if=!variable.pooling_runic_power" );

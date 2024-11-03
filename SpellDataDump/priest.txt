@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57212 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57388 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -52,7 +52,7 @@ Family Flags     : 6, 126
 Attributes       : Not Shapeshifted (16), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Extra Initial Period (169), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=95)       : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32 | PvP Coefficient: 1.22 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32 | PvP Coefficient: 1.46 | Target: Friendly (21)
 #2 (id=256131)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Contrition (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Blessed Bolt (372847), Crystalline Reflection (373462), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676), Premonition of Solace (443526), Cauterizing Shadows (459992)
@@ -92,7 +92,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
 Charges          : 1 (8 seconds cooldown)
-Category         : 1509
+Category         : 1509 (Type 0x1)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -309,7 +309,7 @@ Spell Level      : 11
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 1673: Miracle Worker (235587 effect#1)
+Category         : 1673 (Type 0x1): Miracle Worker (235587 effect#1)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -454,7 +454,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
-Category         : 1602: Priest (137030 effect#2), Discipline Priest (137032 effect#26), Mangaza's Madness (207701 effect#1), Voidform (250844 effect#5), Voidform (284508 effect#6), Dark Thought (341207 effect#1), Thought Harvester (406788 effect#1)
+Category         : 1602 (Type 0x1): Priest (137030 effect#2), Discipline Priest (137032 effect#26), Mangaza's Madness (207701 effect#1), Voidform (250844 effect#5), Voidform (284508 effect#6), Dark Thought (341207 effect#1), Thought Harvester (406788 effect#1)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -689,7 +689,7 @@ Spell Type       : Magic
 Spell Level      : 8
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Category         : 671: Angel's Mercy (238100 effect#1)
+Category         : 671 (Type 0x0): Angel's Mercy (238100 effect#1)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -896,7 +896,7 @@ Spell Level      : 14
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (10 seconds cooldown)
-Category         : 1169: Kiss of Death (336133 effect#2), Deathspeaker (392511 effect#3)
+Category         : 1169 (Type 0x1): Kiss of Death (336133 effect#2), Deathspeaker (392511 effect#3)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -974,7 +974,7 @@ Spell Level      : 43
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
-Category         : 1181
+Category         : 1181 (Type 0x0)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -1008,7 +1008,7 @@ Family Flags     : 117, 126
 Attributes       : Do Not Sheath (18), Allow While Sitting (27), Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=22918)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.61 | PvP Coefficient: 1.5 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.61 | PvP Coefficient: 1.65 | Target: Friendly (21)
 Description      : $@spelldesc33076
 
 Name             : Pain Suppression (id=33206) [Spell Family (6)] 
@@ -1022,7 +1022,8 @@ Range            : 40 yards
 Duration         : 8 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (180 seconds cooldown)
-Category         : 2105: Protector of the Frail (373035 effect#3)
+Category         : 2105 (Type 0x1): Protector of the Frail (373035 effect#3)
+Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -1062,7 +1063,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Category         : 1417
+Category         : 1417 (Type 0x0)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -1097,7 +1098,7 @@ Spell Level      : 41
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 2075: Miracle Worker (235587 effect#2)
+Category         : 2075 (Type 0x1): Miracle Worker (235587 effect#2)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -1289,7 +1290,7 @@ Spell Level      : 11
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Category         : 1230
+Category         : 1230 (Type 0x0)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -1445,7 +1446,7 @@ Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), U
 Effects          :
 #1 (id=40005)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=40006)    : : Apply Aura (6) | Periodic Trigger Spell (23): Penance every 1 seconds
+#2 (id=40006)    : Apply Aura (6) | Periodic Trigger Spell (23): Penance every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 47666 | Target: Self (1)
 
 Name             : Guardian Spirit (id=47788) [Spell Family (6)] 
@@ -1670,7 +1671,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
-Category         : 1243
+Category         : 1243 (Type 0x0)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -1783,7 +1784,7 @@ Family Flags     : 54
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled (38), Name in Channel Bar (61), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Do Not Display Range (126), Cannot Be Stolen (134), Extra Initial Period (169), Spell Haste Affects Periodic (173), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13)
 Effects          :
-#1 (id=59162)    : : Apply Aura (6) | Periodic Trigger Spell (23): Divine Hymn every 2 seconds
+#1 (id=59162)    : Apply Aura (6) | Periodic Trigger Spell (23): Divine Hymn every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 64844 | Target: Self (1)
 #2 (id=59163)    : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -1845,7 +1846,7 @@ Attributes       : Not Shapeshifted (16), Is Channelled (34), Is Self Channelled
 Aura Interrupt   : Mount (17)
 Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13)
 Effects          :
-#1 (id=59238)    : : Apply Aura (6) | Periodic Trigger Spell (23): Symbol of Hope every 1 seconds
+#1 (id=59238)    : Apply Aura (6) | Periodic Trigger Spell (23): Symbol of Hope every 1 seconds
                    Base Value: 30 | Scaled Value: 30 | Trigger Spell: 265144 | Target: Self (1)
 #2 (id=709101)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
@@ -1939,7 +1940,7 @@ Range            : 40 yards
 Duration         : 4 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (90 seconds cooldown)
-Category         : 2308: Move with Grace (337678 effect#1), Time Spiral (375254 effect#1), Move with Grace (390620 effect#1), Save the Day (458650 effect#1)
+Category         : 2308 (Type 0x1): Move with Grace (337678 effect#1), Time Spiral (375254 effect#1), Move with Grace (390620 effect#1), Save the Day (458650 effect#1)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -2361,7 +2362,7 @@ Range            : 27 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 15 seconds
-Category         : 1380
+Category         : 1380 (Type 0x0)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -2581,7 +2582,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 2.5 seconds
 Cooldown         : 60 seconds
-Category         : 1366
+Category         : 1366 (Type 0x0)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -2636,7 +2637,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 2.5 seconds
 Cooldown         : 60 seconds
-Category         : 1366
+Category         : 1366 (Type 0x0)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -2730,7 +2731,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 3 (20 seconds cooldown)
-Category         : 1373
+Category         : 1373 (Type 0x9)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 219
@@ -2773,7 +2774,7 @@ Range            : 27 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 15 seconds
-Category         : 1380
+Category         : 1380 (Type 0x0)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -2827,7 +2828,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Cooldown         : 60 seconds
-Category         : 1417
+Category         : 1417 (Type 0x0)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -3244,7 +3245,7 @@ Effects          :
                    Affected Spells: Focused Will (45242), Focused Will (426401)
                    Family Flags: 111
 #16 (id=1035935) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 63 | Scaled Value: 63 | Target: Self (1)
+                   Base Value: 88 | Scaled Value: 88 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
 #17 (id=1042533) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3340,7 +3341,7 @@ Effects          :
                    Affected Spells: Mind Blast (8092), Void Blast (450983)
                    Family Flags: 13
 #10 (id=260941)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.4 | Target: Self (1)
                    Affected Spells: Collapsing Void (448405)
                    Family Flags: 30
 #11 (id=1040379) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
@@ -3837,7 +3838,7 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Lenience (238063 effect#1), Preemptive Care (440671 effect#1)
+Affecting Spells : Lenience (238063 effect#1)
 Family Flags     : 94
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Not an Attack (194), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Aura Interrupt   : Leave World (19)
@@ -3863,7 +3864,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (18 seconds cooldown)
-Category         : 1690: Light's Promise (322115 effect#1), Bright Pupil (390684 effect#1)
+Category         : 1690 (Type 0x1): Light's Promise (322115 effect#1), Bright Pupil (390684 effect#1)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -3875,7 +3876,7 @@ Effects          :
 #1 (id=285534)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 #2 (id=298593)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.504 | Radius: 0 - 30 yards | Target: At Friendly (132) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.4048 | Radius: 0 - 30 yards | Target: At Friendly (132) -> At Friendly in Area (31)
 #3 (id=298594)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #4 (id=298595)   : Dummy (3)
@@ -4316,7 +4317,7 @@ Proc Flags       : Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=293563)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : Your direct damage spells inflict $s1% of their damage on all other targets afflicted by your Vampiric Touch within $199486A2 yards.
 
 Does not apply to damage from Shadowy Apparitions, Shadow Word: Pain, and Vampiric Touch.
@@ -4343,7 +4344,7 @@ Spell Type       : None
 Range            : 100 yards
 GCD              : 1 seconds
 Cooldown         : 1 seconds
-Category         : 1833
+Category         : 1833 (Type 0x0)
 Labels           : 18: Priest Spells
                  : 292
 Category Cooldown: 1 seconds
@@ -4423,7 +4424,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
-Category         : 1417
+Category         : 1417 (Type 0x0)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -4763,7 +4764,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 6 seconds
-Category         : 1660
+Category         : 1660 (Type 0x0)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -4866,7 +4867,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Charges          : 2 (45 seconds cooldown)
-Category         : 1604
+Category         : 1604 (Type 0x0)
 Labels           : 77
                  : 293
 Attributes       : Do Not Sheath (18), No Aura Cancel (31), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -4998,7 +4999,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
 Charges          : 1 (8 seconds cooldown)
-Category         : 1509
+Category         : 1509 (Type 0x1)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -5042,7 +5043,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 118
                  : 292
-Affecting Spells : Lenience (238063 effect#1), Preemptive Care (440671 effect#1)
+Affecting Spells : Lenience (238063 effect#1)
 Family Flags     : 94
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Limit N (165), Not an Attack (194), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19)
@@ -6085,7 +6086,7 @@ School           : Nature
 Spell Type       : None
 Range            : 60 yards
 Duration         : 15 seconds
-Affecting Spells : Lenience (238063 effect#1), Preemptive Care (440671 effect#1)
+Affecting Spells : Lenience (238063 effect#1)
 Family Flags     : 94
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Not an Attack (194)
 Aura Interrupt   : Leave World (19), Enter World (22)
@@ -6912,7 +6913,7 @@ Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Category         : 691
+Category         : 691 (Type 0x0)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -8262,7 +8263,7 @@ Triggered By     : Living Shadow (363574)
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Extra Initial Period (169), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
 Aura Interrupt   : Enter World (22), Raid Encounter Start or M+ Start (40)
 Effects          :
-#1 (id=903038)   : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
+#1 (id=903038)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc363469
 Tooltip          : Your shadow is animated.
@@ -8280,7 +8281,7 @@ Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: 
 Family Flags     : 72
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Cast While Casting (135), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Taps immediately (215), Reflection Only Defends (253), Always Cast Log (255), Periodic Can Crit (265), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=903187)   : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
+#1 (id=903187)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.173 | Target: Any Target (25)
 #2 (id=903188)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
@@ -8900,7 +8901,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 120 seconds
 Cooldown         : 120 seconds
-Category         : 1145
+Category         : 1145 (Type 0x0)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -8947,7 +8948,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=997682)   : : Apply Aura (6) | Periodic Trigger Spell (23): Lightwell Trigger every 1 seconds
+#1 (id=997682)   : Apply Aura (6) | Periodic Trigger Spell (23): Lightwell Trigger every 1 seconds
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 372845 | Target: Self (1)
 
 Name             : Lightwell Trigger (id=372845) [Spell Family (6), Hidden] 
@@ -9190,7 +9191,7 @@ Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), U
 Effects          :
 #1 (id=998149)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=998150)   : : Apply Aura (6) | Periodic Trigger Spell (23): Dark Reprimand every 1 seconds
+#2 (id=998150)   : Apply Aura (6) | Periodic Trigger Spell (23): Dark Reprimand every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 373130 | Target: Self (1)
 Description      : $@spelldesc400169
 Variables        : $castigation=$?a193134[${1}][${0}]
@@ -12034,7 +12035,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Not Shapeshifted (16), Is Channelled (34), No Reflection (39), Track Target in Channel (46), Name in Channel Bar (61), Allow While Not Shapeshifted (caster form) (83), Taps immediately (215), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=1035084)  : : Apply Aura (6) | Periodic Trigger Spell (23): Mind Sear every 1.5 seconds | Attributes: Is Harmful (12)
+#1 (id=1035084)  : Apply Aura (6) | Periodic Trigger Spell (23): Mind Sear every 1.5 seconds | Attributes: Is Harmful (12)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 394979 | Target: Enemy (6)
 #2 (id=1035085)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
@@ -12104,7 +12105,7 @@ Spell Level      : 11
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Category         : 1230
+Category         : 1230 (Type 0x0)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -12141,7 +12142,7 @@ Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), U
 Effects          :
 #1 (id=1044891)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
-#2 (id=1044892)  : : Apply Aura (6) | Periodic Trigger Spell (23): Dark Reprimand every 1 seconds
+#2 (id=1044892)  : Apply Aura (6) | Periodic Trigger Spell (23): Dark Reprimand every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 400187 | Target: Self (1)
 #3 (id=1044893)  : Trigger Spell (64): Dark Reprimand
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 400187 | Target: Friendly (21)
@@ -13156,7 +13157,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Holy Word: Serenity (2050), Holy Word: Sanctify (34861)
                    Family Flags: 10, 28
-#3 (id=1107590)  : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
+#3 (id=1107590)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc422902
 Tooltip          : Your next Holy Word: Sanctify or Holy Word: Serenity does not consume a charge when cast and costs $s2% less Mana.
@@ -13288,7 +13289,8 @@ School           : Holy
 Spell Type       : Magic
 Duration         : 12 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 2271: Perfect Vision (440661 effect#1), Divine Providence (440742 effect#1)
+Category         : 2271 (Type 0x1): Perfect Vision (440661 effect#1), Divine Providence (440742 effect#1)
+Category Flags   : Reset Charges on Encounter End (4), Unknown (7)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -13315,7 +13317,8 @@ Spell Type       : Magic
 Duration         : 15 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 2271: Perfect Vision (440661 effect#1), Divine Providence (440742 effect#1)
+Category         : 2271 (Type 0x1): Perfect Vision (440661 effect#1), Divine Providence (440742 effect#1)
+Category Flags   : Reset Charges on Encounter End (4), Unknown (7)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -13330,11 +13333,11 @@ Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Reset
 Aura Interrupt   : Login (29), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1112676)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (81751), Atonement (94472), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Contrition (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Blessed Bolt (372847), Crystalline Reflection (373462), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676), Premonition of Solace (443526), Cauterizing Shadows (459992)
                    Family Flags: 74, 126
 #2 (id=1134757)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Power Word: Radiance (194509), Healing Light (196809), Dazzling Lights (196810), Blessed Light (196813), Tranquil Light (196816), Circle of Healing (204883), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Moment of Repose (272776), Twist Magic (280198), Holy Nova (281265), Contrition (281469), Unholy Nova (324724), Ascended Nova (325041), Unholy Transfusion (325118), Cauterizing Shadows (336373), Crystalline Reflection (336509), Unholy Nova (347788), Divine Word: Sanctuary (372787), Blessed Bolt (372847), Crystalline Reflection (373462), Power Word: Life (373481), Halo (390971), Divine Star (390981), Holy Mending (391156), Dark Reprimand (400187), Essence Devourer (415673), Essence Devourer (415676), Ultimate Penitence (421544), Overloaded with Light (421676), Premonition of Solace (443526), Cauterizing Shadows (459992)
                    Family Flags: 126
 #3 (id=1138731)  : Apply Aura (6) | Dummy (4)
@@ -13342,7 +13345,7 @@ Effects          :
 #4 (id=1138732)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #5 (id=1168801)  : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 24 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17), Luminous Barrier (271466), Premonition of Solace (443526)
                    Family Flags: 0, 4, 99
 Description      : Increases your healing done by $s1% and causes $s3% of overhealing on players to be redistributed to up to $s4 nearby allies for $d. 
@@ -13357,7 +13360,8 @@ Spell Type       : Magic
 Duration         : 20 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 2271: Perfect Vision (440661 effect#1), Divine Providence (440742 effect#1)
+Category         : 2271 (Type 0x1): Perfect Vision (440661 effect#1), Divine Providence (440742 effect#1)
+Category Flags   : Reset Charges on Encounter End (4), Unknown (7)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -13385,7 +13389,8 @@ Spell Type       : Magic
 Duration         : 20 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 2271: Perfect Vision (440661 effect#1), Divine Providence (440742 effect#1)
+Category         : 2271 (Type 0x1): Perfect Vision (440661 effect#1), Divine Providence (440742 effect#1)
+Category Flags   : Reset Charges on Encounter End (4), Unknown (7)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -13569,7 +13574,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
 Charges          : 1 (8 seconds cooldown)
-Category         : 1509
+Category         : 1509 (Type 0x1)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -13698,10 +13703,8 @@ Labels           : 16: Class Spells
                  : 3985: Holy Priest (137031 effect#30)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1134710)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Atonement (194384), Atonement (214206), Lunar Purity (282786)
-                   Family Flags: 94
+#1 (id=1134710)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 #2 (id=1134711)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 3000 | Scaled Value: 3000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Renew (139)
@@ -13786,7 +13789,8 @@ School           : Holy
 Spell Type       : Magic
 Cooldown         : 1 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 2271: Perfect Vision (440661 effect#1), Divine Providence (440742 effect#1)
+Category         : 2271 (Type 0x1): Perfect Vision (440661 effect#1), Divine Providence (440742 effect#1)
+Category Flags   : Reset Charges on Encounter End (4), Unknown (7)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -13925,12 +13929,12 @@ Family Flags     : 4, 126
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1139497)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 23.8 | Misc Value: 0x7f | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 23.8 | PvP Coefficient: 0.85 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
 #2 (id=1166490)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 0x7f | Target: Friendly (21)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.667 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
-#3 (id=1166491)  : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
+#3 (id=1166491)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 20 | Scaled Value: 20 | Target: Friendly (21)
 Description      : $@spelldesc428934
 Tooltip          : Absorbs $w1 damage.
@@ -14119,7 +14123,7 @@ Effects          :
 #1 (id=1149476)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #2 (id=1149477)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.5 | Target: Self (1)
 Description      : While Entropic Rift is active, your $?c3[Shadow damage is increased by $s1%] [Atonement healing is increased by $s2%].
 
 Name             : Voidheart (id=449887) [Spell Family (6)] 
@@ -14138,7 +14142,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x20 | Target: Self (1)
                    Affected School(s): Shadow
 #2 (id=1149491)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.5 | Target: Self (1)
                    Affected Spells: Atonement (81751), Atonement (94472)
                    Family Flags: 74
 Description      : $@spelldesc449880
@@ -14343,7 +14347,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
-Category         : 1602: Priest (137030 effect#2), Discipline Priest (137032 effect#26), Mangaza's Madness (207701 effect#1), Voidform (250844 effect#5), Voidform (284508 effect#6), Dark Thought (341207 effect#1), Thought Harvester (406788 effect#1)
+Category         : 1602 (Type 0x1): Priest (137030 effect#2), Discipline Priest (137032 effect#26), Mangaza's Madness (207701 effect#1), Voidform (250844 effect#5), Voidform (284508 effect#6), Dark Thought (341207 effect#1), Thought Harvester (406788 effect#1)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
@@ -14491,8 +14495,8 @@ Labels           : 16: Class Spells
                  : 3022
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1151816)  : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+#1 (id=1151816)  : Apply Aura (6) | Periodic Dummy (226): every 3 seconds
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1151817)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #3 (id=1172575)  : Apply Aura (6) | Dummy (4)

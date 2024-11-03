@@ -4931,6 +4931,166 @@ void heart_of_roccor( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Wayward Vrykul's Lantern
+// 467767 Driver
+// 472360 Buff
+void wayward_vrykuls_lantern( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  struct wayward_vrykuls_lantern_cb_t : public dbc_proc_callback_t
+  {
+    std::set<unsigned> proc_spell_id;
+    buff_t* buff;
+    double duration_multiplier;
+    timespan_t last_activation_time;
+    timespan_t max_dur;
+
+    wayward_vrykuls_lantern_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        proc_spell_id(),
+        buff( nullptr ),
+        duration_multiplier( 0 ),
+        last_activation_time( timespan_t::zero() ),
+        max_dur( timespan_t::zero() )
+    {
+      for ( auto& s : e.player->dbc->spells_by_label( 690 ) )
+        if ( s->is_class( e.player->type ) )
+          proc_spell_id.insert( s->id() );
+
+      buff = create_buff<stat_buff_t>( e.player, e.trigger(), e.item )
+                 ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) );
+
+      // Odd formula, but, appears to be 0.222222~ seconds added to the buff duration per 1 second of time between
+      // activations.
+      duration_multiplier = buff->data().duration().total_seconds() / 36;
+      max_dur             = buff->data().duration() * 5;
+    }
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( range::contains( proc_spell_id, a->data().id() ) )
+        return dbc_proc_callback_t::trigger( a, s );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      // Assume for the first proc its been at least 3 minutes since the last proc, triggering it at the maximum
+      // duration.
+      if ( last_activation_time == timespan_t::zero() )
+      {
+        buff->trigger( max_dur );
+        last_activation_time = listener->sim->current_time();
+        return;
+      }
+
+      // If there was a valid last activation time, calculate the duration based on the time since the last activation.
+      timespan_t trigger_dur = std::max(
+          buff->buff_duration(),
+          std::min( max_dur, ( listener->sim->current_time() - last_activation_time ) * duration_multiplier ) );
+
+      // Only trigger the buff if the new duration would be greater than the current remaining duration.
+      if ( buff->remains() < trigger_dur )
+      {
+        buff->trigger( trigger_dur );
+        last_activation_time = listener->sim->current_time();
+      }
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      last_activation_time = timespan_t::zero();
+    }
+  };
+
+  new wayward_vrykuls_lantern_cb_t( effect );
+}
+
+// Cursed Pirate Skull
+// 468035 Driver
+// 472228 Buff
+// 472232 Damage
+void cursed_pirate_skull( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto damage_spell   = effect.trigger()->effectN( 1 ).trigger();
+  auto damage         = create_proc_action<generic_proc_t>( "cursed_pirate_skull", effect, damage_spell );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->aoe         = damage_spell->max_targets();
+  // No Role Mult currently, likely to change in the future.
+  // damage->base_multiplier *= role_mult( effect );
+
+  auto buff = create_buff<buff_t>( effect.player, effect.trigger(), effect.item )
+                  ->set_tick_callback( [ damage ]( buff_t*, int, timespan_t ) { damage->execute(); } );
+
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Runecaster's Stormbound Rune
+// 468033 Driver
+// 472636 Periodic Trigger Buff
+// 472637 Damage
+void runecasters_stormbound_rune( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto damage_spell   = effect.player->find_spell( 472637 );
+  auto damage         = create_proc_action<generic_proc_t>( "runecasters_stormbound_rune", effect, damage_spell );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  // No Role Mult currently, likely to change in the future.
+  // damage->base_multiplier *= role_mult( effect );
+
+  auto buff_spell = effect.player->find_spell( 472636 );
+  auto buff       = create_buff<buff_t>( effect.player, buff_spell )
+                  ->set_tick_on_application( true )
+                  ->set_tick_callback( [ &, damage ]( buff_t*, int, timespan_t ) {
+                    if ( effect.player->sim->target_non_sleeping_list.size() > 0 )
+                    {
+                      auto target = effect.player->rng().range( effect.player->sim->target_non_sleeping_list );
+                      damage->execute_on_target( target );
+                    }
+                  } );
+
+  // TODO: Test if initial hit is truly on hit, or only enter combat. Proc flags on the driver are combat start.
+  effect.player->register_on_combat_state_callback( [ buff ]( player_t* p, bool c ) {
+    if ( c )
+      buff->trigger();
+    else
+      buff->expire();
+  } );
+}
+
+
+// Darktide Wavebender's Orb
+// 468034 Driver
+// 472336 Missile
+// 472337 Damage
+void darktide_wavebenders_orb( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto damage_spell   = effect.player->find_spell( 472337 );
+  auto damage         = create_proc_action<generic_proc_t>( "darktide_wavebenders_orb", effect, damage_spell );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect );
+  damage->aoe         = damage_spell->max_targets();
+  // No Role Mult currently, likely to change in the future.
+  // damage->base_multiplier *= role_mult( effect );
+
+  auto missile_spell = effect.player->find_spell( 472336 );
+  auto missile       = create_proc_action<generic_proc_t>( "darktide_wavebenders_orb_missile", effect, missile_spell );
+  missile->impact_action = damage;
+
+  effect.execute_action = missile;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 // 443384 driver
 // 443585 damage
@@ -5186,6 +5346,19 @@ void flame_wrath( special_effect_t& effect )
   effect.execute_action = damage;
 
   // TODO: damage reflect shield NYI
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 470647 Driver
+// 470648 Damage
+void force_of_magma( special_effect_t& effect )
+{
+  auto damage         = create_proc_action<generic_proc_t>( "force_of_magma", effect, effect.trigger() );
+  damage->base_dd_min = damage->base_dd_max =
+      effect.driver()->effectN( 1 ).average( effect ) + effect.trigger()->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = damage;
   new dbc_proc_callback_t( effect.player, effect );
 }
 
@@ -5868,6 +6041,10 @@ void register_special_effects()
   register_special_effect( 469922, items::doperels_calling_rune );
   register_special_effect( 469925, items::burst_of_knowledge );
   register_special_effect( 469768, items::heart_of_roccor );
+  register_special_effect( 467767, items::wayward_vrykuls_lantern );
+  register_special_effect( 468035, items::cursed_pirate_skull );
+  register_special_effect( 468033, items::runecasters_stormbound_rune );
+  register_special_effect( 468034, items::darktide_wavebenders_orb );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );
@@ -5876,6 +6053,7 @@ void register_special_effects()
   register_special_effect( 455819, items::harvesters_interdiction );
   register_special_effect( 469936, items::guiding_stave_of_wisdom );
   register_special_effect( 470641, items::flame_wrath );
+  register_special_effect( 470647, items::force_of_magma );
 
   // Armor
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );

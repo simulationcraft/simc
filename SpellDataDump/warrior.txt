@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57212 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57388 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -33,7 +33,7 @@ Spell Level      : 2
 Range            : 8 - 25 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
-Category         : 1386: Double Time (103827 effect#1), Double Time (103827 effect#2)
+Category         : 1386 (Type 0x9): Double Time (103827 effect#1), Double Time (103827 effect#2)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 219
@@ -70,7 +70,7 @@ Spell Level      : 8
 Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
-Category         : 82
+Category         : 82 (Type 0x0)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -146,7 +146,7 @@ Family Flags     : 8, 9, 18, 22
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=357)      : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.43442 | Radius: 8 yards | Target: Cone to Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.721304 | Radius: 8 yards | Target: Cone to Enemy (104)
 #2 (id=722907)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Strikes all enemies in front of you for $s1 Physical damage, inflicting Deep Wounds. Cleave will consume your Overpower effect to deal increased damage. Deals reduced damage beyond $s2 targets.
@@ -160,7 +160,8 @@ Spell Level      : 1
 Duration         : 8 seconds
 Cooldown         : 8 seconds
 Charges          : 1 (210 seconds cooldown)
-Category         : 1929: Symbol of Hope (265144 effect#3), Stalwart Guardian (334993 effect#2), Unbreakable Will (335629 effect#2), Honed Reflexes (391271 effect#4), Defender's Aegis (397103 effect#1), Defender's Aegis (397103 effect#2)
+Category         : 1929 (Type 0x1): Symbol of Hope (265144 effect#3), Stalwart Guardian (334993 effect#2), Unbreakable Will (335629 effect#2), Honed Reflexes (391271 effect#4), Defender's Aegis (397103 effect#1), Defender's Aegis (397103 effect#2)
+Category Flags   : Reset Charges on Encounter End (4)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -257,7 +258,7 @@ Family Flags     : 8, 9, 18, 21, 52
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=462)      : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.16725 | PvP Coefficient: 1.85 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.16725 | PvP Coefficient: 2.5 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=1024888)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: rage | Target: Self (1)
 Description      : Slams an opponent, causing $s1 Physical damage.$?s388903[
@@ -374,7 +375,7 @@ Spell Level      : 6
 Requires armor   : Shield 
 Cooldown         : 1 seconds
 Charges          : 1 (16 seconds cooldown)
-Category         : 1385: Warrior (137047 effect#4), Shield Block (231847 effect#1), Ararat's Bloodmirrors (248117 effect#1)
+Category         : 1385 (Type 0x1): Warrior (137047 effect#4), Shield Block (231847 effect#1), Ararat's Bloodmirrors (248117 effect#1)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -410,7 +411,7 @@ Spell Level      : 43
 Range            : 25 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 2192: Honed Reflexes (391271 effect#3)
+Category         : 2192 (Type 0x9): Honed Reflexes (391271 effect#3)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 219
@@ -537,7 +538,7 @@ Spell Type       : Melee
 Resource         : 20 Rage (1) (id=306017)
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Category         : 2242
+Category         : 2242 (Type 0x0)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -573,7 +574,7 @@ Spell Level      : 33
 Range            : 8 - 40 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (45 seconds cooldown)
-Category         : 1211: Bounding Stride (202163 effect#1), Timeless Strategem (208091 effect#1), Leaper (335214 effect#1), Time Spiral (375258 effect#1), Blessing of the Bronze (381758 effect#1)
+Category         : 1211 (Type 0x9): Bounding Stride (202163 effect#1), Timeless Strategem (208091 effect#1), Leaper (335214 effect#1), Time Spiral (375258 effect#1), Blessing of the Bronze (381758 effect#1)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 219
@@ -600,7 +601,7 @@ Spell Level      : 7
 Range            : 5 yards
 Duration         : 3 seconds
 Cooldown         : 15 seconds
-Category         : 88
+Category         : 88 (Type 0x0)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -673,7 +674,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (12 seconds cooldown)
-Category         : 1680: Improved Overpower (385571 effect#2)
+Category         : 1680 (Type 0x1): Improved Overpower (385571 effect#2)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -685,7 +686,7 @@ Family Flags     : 2, 8, 9, 52
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Requires Main-Hand Weapon (106), Can Proc From Procs (122), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=2780)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.76408 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.02869 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=126946)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
                    Affected Spells: Cleave (845), Mortal Strike (12294), Mortal Strike (339385), Cleave (458459)
@@ -719,7 +720,7 @@ Family Flags     : 8, 9, 18, 25, 52
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=5274)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.04816 | PvP Coefficient: 1.55 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.50538 | PvP Coefficient: 1.55 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : A vicious strike that deals $s1 Physical damage and reduces the effectiveness of healing on the target by $115804s1% for $115804d.
 Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 
@@ -772,7 +773,7 @@ School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
 Cooldown         : 180 seconds
-Category         : 1251
+Category         : 1251 (Type 0x0)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -886,7 +887,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 4.5 seconds
-Category         : 1837
+Category         : 1837 (Type 0x0)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -898,7 +899,7 @@ Family Flags     : 8, 9, 18, 42
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=14120)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.94062 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.32874 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=134421)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | Resource: rage | Target: Self (1)
 Description      : Assault the target in a bloodthirsty craze, dealing $s1 Physical damage and restoring $117313s1% of your health.
@@ -914,7 +915,7 @@ Spell Type       : None
 Duration         : 5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (25 seconds cooldown)
-Category         : 1692: Vanguard (71 effect#4), Rebound (213915 effect#2), Ararat's Bloodmirrors (248117 effect#2), Honed Reflexes (391271 effect#2)
+Category         : 1692 (Type 0x1): Vanguard (71 effect#4), Rebound (213915 effect#2), Ararat's Bloodmirrors (248117 effect#2), Honed Reflexes (391271 effect#2)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -1128,7 +1129,7 @@ Affecting Spells : Recklessness (1719 effects: #7, #8), Warrior (137047 effect#2
 Family Flags     : 8, 46
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Immunity Purges Effect (47), Requires Main-Hand Weapon (106), Extra Initial Period (169), Spell Haste Affects Periodic (173), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=39082)    : : Apply Aura (6) | Periodic Trigger Spell (23): Bladestorm every 1 seconds
+#1 (id=39082)    : Apply Aura (6) | Periodic Trigger Spell (23): Bladestorm every 1 seconds
                    Base Value: 8 | Scaled Value: 8 | Trigger Spell: 50622 | Target: Self (1)
 #2 (id=39083)    : Apply Aura (6) | Mechanic Immunity (147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1733 | Target: Self (1)
@@ -1664,7 +1665,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (8 seconds cooldown)
-Category         : 1672: Fury Warrior (137050 effect#5), Inner Rage (215573 effect#1), Frenzied Destruction (364554 effect#1), Improved Raging Blow (383854 effect#1)
+Category         : 1672 (Type 0x1): Fury Warrior (137050 effect#5), Inner Rage (215573 effect#1), Frenzied Destruction (364554 effect#1), Improved Raging Blow (383854 effect#1)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -2757,7 +2758,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Misc Value 2: 3952 (Label) | Target: Self (1)
                    Affected Spells (Label): Pain and Gain (382549)
 #14 (id=1181948) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value 2: 3164 (Label) | Target: Self (1)
+                   Base Value: 95 | Scaled Value: 95 | Misc Value 2: 3164 (Label) | Target: Self (1)
                    Affected Spells (Label): Lightning Strike (435791)
 #15 (id=1181949) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Misc Value 2: 3927 (Label) | Target: Self (1)
@@ -2973,7 +2974,7 @@ Family Flags     : 9, 29, 115
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Chain From Caster (76), Always Hit (114), Requires Off-Hand Weapon (120), Combat Feedback When Usable (137), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=230085)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.19074 | PvP Coefficient: 1.8 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.14038 | PvP Coefficient: 1.8 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc5308
 
 Name             : Colossus Smash (id=167105) [Spell Family (4)] 
@@ -2993,7 +2994,7 @@ Family Flags     : 8, 9, 52, 62
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Enforce Shapeshift Requirements (434), Unknown (465)
 Effects          :
 #1 (id=236210)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.06263 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.06263 | PvP Coefficient: 1.6 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Smashes the enemy's armor, dealing $s1 Physical damage, and increasing damage you deal to them by $208086s1% for $208086d.
 
 Name             : PvP Rules Enabled for Dummy (id=178806) 
@@ -3152,7 +3153,7 @@ Family Flags     : 9, 108
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Not a Proc (105), Requires Off-Hand Weapon (120), No Cast Log (128), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=267757)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.29493 | PvP Coefficient: 1.5 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.42442 | PvP Coefficient: 1.5 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=184709) [Spell Family (4)] 
@@ -3172,7 +3173,7 @@ Family Flags     : 9, 108
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=267761)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.755376 | PvP Coefficient: 1.5 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.830914 | PvP Coefficient: 1.5 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc184367
 
 Name             : Tactician (id=184783) [Spell Family (4), Passive] 
@@ -3213,7 +3214,7 @@ Spell Type       : Melee
 Spell Level      : 10
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Category         : 891
+Category         : 891 (Type 0x0)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -3296,7 +3297,7 @@ Spell Level      : 16
 Range            : 8 - 25 yards
 Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
-Category         : 1386: Double Time (103827 effect#1), Double Time (103827 effect#2)
+Category         : 1386 (Type 0x9): Double Time (103827 effect#1), Double Time (103827 effect#2)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 219
@@ -3539,7 +3540,7 @@ Family Flags     : 9, 108, 119
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=296642)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.971197 | PvP Coefficient: 1.5 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.06832 | PvP Coefficient: 1.5 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc184367
 
 Name             : Rampage (id=201364) [Spell Family (4)] 
@@ -3559,7 +3560,7 @@ Family Flags     : 9, 108
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Not a Proc (105), Requires Off-Hand Weapon (120), No Cast Log (128), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=296644)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.72658 | PvP Coefficient: 1.5 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.89924 | PvP Coefficient: 1.5 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc184367
 
 Name             : Indomitable (id=202095) [Spell Family (4), Passive] 
@@ -3919,7 +3920,7 @@ Channel Interrupt: Moving (3)
 Effects          :
 #1 (id=300181)   : Apply Aura (6) | Modify Block% (51)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
-#2 (id=300182)   : : Apply Aura (6) | Periodic Trigger Spell (23): Neltharion's Fury every 0.5 seconds
+#2 (id=300182)   : Apply Aura (6) | Periodic Trigger Spell (23): Neltharion's Fury every 0.5 seconds
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 203526 | Target: Self (1)
 #3 (id=300247)   : Apply Aura (6) | Modify Critical Block Chance (253)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -3952,7 +3953,7 @@ Max Targets      : Unlimited(-1)
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 45 seconds
-Category         : 891
+Category         : 891 (Type 0x0)
 Labels           : 81
                  : 203
                  : 293
@@ -4455,7 +4456,7 @@ Duration         : 6 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
 Charges          : 1 (90 seconds cooldown)
-Category         : 2270: Storm of Steel (382953 effect#7)
+Category         : 2270 (Type 0x1): Storm of Steel (382953 effect#7)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -4463,7 +4464,7 @@ Affecting Spells : Recklessness (1719 effects: #7, #8), Warrior (137047 effect#2
 Family Flags     : 8, 46
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Immunity Purges Effect (47), Requires Main-Hand Weapon (106), Extra Initial Period (169), Spell Haste Affects Periodic (173), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=342669)   : : Apply Aura (6) | Periodic Trigger Spell (23): Bladestorm every 1 seconds
+#1 (id=342669)   : Apply Aura (6) | Periodic Trigger Spell (23): Bladestorm every 1 seconds
                    Base Value: 8 | Scaled Value: 8 | Trigger Spell: 50622 | Target: Self (1)
 #2 (id=342670)   : Apply Aura (6) | Mechanic Immunity (147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1733 | Target: Self (1)
@@ -4509,7 +4510,7 @@ Duration         : 12 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
 Charges          : 1 (90 seconds cooldown)
-Category         : 2073: Storm of Steel (382953 effect#2)
+Category         : 2073 (Type 0x1): Storm of Steel (382953 effect#2)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 52
@@ -5035,7 +5036,7 @@ Family Flags     : 9, 29, 52, 116
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Active Threat (94), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), No Attack Miss (249), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=486196)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.08441 | PvP Coefficient: 1.15 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.29285 | PvP Coefficient: 1.15 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc163201
 Variables        : $damage=${2.0*$260798s1}
 
@@ -5645,7 +5646,7 @@ Family Flags     : 8, 9, 29, 116
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Active Threat (94), Not a Proc (105), Requires Main-Hand Weapon (106), No Cast Log (128), No Attack Miss (249), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=738696)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.9458 | PvP Coefficient: 1.8 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.14038 | PvP Coefficient: 1.8 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc5308
 
 Name             : Execute (id=281000) [Spell Family (4)] 
@@ -6033,7 +6034,7 @@ Family Flags     : 9, 85
 Attributes       : No Active Defense (21), No AutoCast (AI) (49), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=800084)   : School Damage (2): physical | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.302016 | Radius: 0 - 10 yards | Target: Unknown(87) -> Line to Enemy (134)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.347318 | Radius: 0 - 10 yards | Target: Unknown(87) -> Line to Enemy (134)
 #2 (id=818173)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Unknown(87)
 Description      : $@spelldesc262150
@@ -7107,7 +7108,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 4.5 seconds
-Category         : 1837
+Category         : 1837 (Type 0x0)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -7117,7 +7118,7 @@ Family Flags     : 8, 9, 18, 42
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Spellcast Override In Spellbook (310), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=831435)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.32875 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.7945 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=831436)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | Resource: rage | Target: Self (1)
 Description      : Assault the target in a bloodthirsty craze, dealing $s1 Physical damage and restoring $117313s1% of your health.
@@ -7133,7 +7134,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Charges          : 1 (8 seconds cooldown)
-Category         : 1672: Fury Warrior (137050 effect#5), Inner Rage (215573 effect#1), Frenzied Destruction (364554 effect#1), Improved Raging Blow (383854 effect#1)
+Category         : 1672 (Type 0x1): Fury Warrior (137050 effect#5), Inner Rage (215573 effect#1), Frenzied Destruction (364554 effect#1), Improved Raging Blow (383854 effect#1)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -7356,7 +7357,7 @@ Max Targets      : 1
 Duration         : 5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (25 seconds cooldown)
-Category         : 1692: Vanguard (71 effect#4), Rebound (213915 effect#2), Ararat's Bloodmirrors (248117 effect#2), Honed Reflexes (391271 effect#2)
+Category         : 1692 (Type 0x1): Vanguard (71 effect#4), Rebound (213915 effect#2), Ararat's Bloodmirrors (248117 effect#2), Honed Reflexes (391271 effect#2)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -8195,7 +8196,7 @@ Labels           : 16: Class Spells
 Triggered By     : Conqueror's Banner (324143)
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity Purges Effect (47), Do Not Display Range (126), Extra Initial Period (169), Spell Haste Affects Periodic (173), Aura Points On Client (268), Allow during spell override (404), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=880316)   : : Apply Aura (6) | Periodic Trigger Spell (23): Repulsive Pennant every 3 seconds
+#1 (id=880316)   : Apply Aura (6) | Periodic Trigger Spell (23): Repulsive Pennant every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 333860 | Target: Friendly (21)
 Description      : $@spelldesc333858
 Tooltip          : Dealing Shadow damage to nearby enemies every $t1 sec.
@@ -10258,7 +10259,7 @@ Family Flags     : 8, 9, 91
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1016832)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.5056 | Radius: 0 - 12 yards | Target: At Self (18) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.5056 | PvP Coefficient: 0.85 | Radius: 0 - 12 yards | Target: At Self (18) -> At Enemy in Area (16)
 #2 (id=1016833)  : Trigger Spell (64): Thunderous Roar
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 397364 | Target: Self (1)
 #3 (id=1180323)  : Dummy (3)
@@ -11020,7 +11021,7 @@ School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Cooldown         : 3 seconds
-Category         : 2057
+Category         : 2057 (Type 0x0)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -11047,7 +11048,7 @@ School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Cooldown         : 3 seconds
-Category         : 2057
+Category         : 2057 (Type 0x0)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -11080,7 +11081,7 @@ School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Cooldown         : 3 seconds
-Category         : 2057
+Category         : 2057 (Type 0x0)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -13848,7 +13849,7 @@ Spell Type       : Melee
 Resource         : 30 Rage (1) (id=306019)
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Category         : 2242
+Category         : 2242 (Type 0x0)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -14507,7 +14508,7 @@ Family Flags     : 9, 52, 126
 Attributes       : Is Ability (4), Chain From Caster (76), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1135042)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.22737 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.56148 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc436358
 
 Name             : Demolish (id=440886) [Spell Family (4)] 
@@ -14524,7 +14525,7 @@ Family Flags     : 9, 52, 126
 Attributes       : Is Ability (4), Chain From Caster (76), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1135045)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.22737 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.56148 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc436358
 
 Name             : Demolish (id=440888) [Spell Family (4)] 
@@ -14853,7 +14854,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1141376)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 2 | Target: Self (1)
 Description      : Each strike of Bladestorm deals an additional $s1% damage evenly split across all targets.
 
 Name             : Slayer's Malice (id=444779) [Spell Family (4), Passive, Hidden] 
@@ -14912,7 +14913,7 @@ Family Flags     : 9
 Attributes       : Is Ability (4)
 Effects          :
 #1 (id=1142515)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.9 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.335 | Target: Enemy (6)
 #2 (id=1142522)  : Trigger Spell (64): Marked for Execution
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 445584 | Target: Enemy (6)
 Description      : $@spelldesc444767
@@ -15011,7 +15012,7 @@ Family Flags     : 9
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow Cast While Casting (135), Treat as Area Effect (175), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1143165)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.28375 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.85469 | PvP Coefficient: 0.8 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
 Description      : $@spelldesc444775
 
 Name             : Bladestorm (id=446035) [Spell Family (4)] 
@@ -15023,7 +15024,7 @@ Duration         : 6 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
 Charges          : 1 (90 seconds cooldown)
-Category         : 2270: Storm of Steel (382953 effect#7)
+Category         : 2270 (Type 0x1): Storm of Steel (382953 effect#7)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
@@ -15031,7 +15032,7 @@ Affecting Spells : Recklessness (1719 effects: #7, #8), Warrior (137047 effect#2
 Family Flags     : 8, 46
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Immunity Purges Effect (47), Requires Main-Hand Weapon (106), Extra Initial Period (169), Spell Haste Affects Periodic (173), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=1143207)  : : Apply Aura (6) | Periodic Trigger Spell (23): Bladestorm every 1 seconds
+#1 (id=1143207)  : Apply Aura (6) | Periodic Trigger Spell (23): Bladestorm every 1 seconds
                    Base Value: 8 | Scaled Value: 8 | Trigger Spell: 50622 | Target: Self (1)
 #2 (id=1143208)  : Apply Aura (6) | Mechanic Immunity (147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1733 | Target: Self (1)
@@ -15656,7 +15657,7 @@ Family Flags     : 9, 22
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1164474)  : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.43442 | Radius: 8 yards | Target: Cone to Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.7213 | Radius: 8 yards | Target: Cone to Enemy (104)
 Description      : $@spelldesc845
 
 Name             : Boneshaker (id=458480) [Spell Family (4)] 

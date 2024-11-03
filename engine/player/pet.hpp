@@ -156,6 +156,7 @@ public:
 
   void acquire_target( retarget_source /* event */, player_t* /* context */ = nullptr ) override;
   
+  void arise() override;
   void demise() override;
   
   friend void sc_format_to( const pet_t&, fmt::format_context::iterator );

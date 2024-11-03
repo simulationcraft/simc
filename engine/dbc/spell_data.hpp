@@ -437,8 +437,10 @@ struct spell_data_t
   unsigned    _gcd;                // GCD in milliseconds
   unsigned    _category_cooldown;  // Category cooldown in milliseconds
   // SpellCategory.dbc
+  unsigned    _category_flags;     // Category flags
   unsigned    _charges;            // Number of charges
   unsigned    _charge_cooldown;    // Cooldown duration of charges
+  unsigned    _category_type;      // Category type mask
   // SpellCategories.dbc
   unsigned    _category;           // Spell category (for shared cooldowns, effects?)
   unsigned    _dmg_class;          // Classification for the spell
@@ -495,6 +497,12 @@ struct spell_data_t
   // Direct member access functions
   unsigned category() const
   { return _category; }
+
+  unsigned category_type() const
+  { return _category_type; }
+
+  unsigned category_flags() const
+  { return _category_flags; }
 
   unsigned dmg_class() const
   { return _dmg_class; }

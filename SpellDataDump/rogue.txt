@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57212 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57388 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -41,7 +41,7 @@ GCD              : 1 seconds
 Duration         : 3 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 30 seconds
-Category         : 270
+Category         : 270 (Type 0x0)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -240,7 +240,7 @@ GCD              : 1 seconds
 Duration         : 4 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 25 seconds
-Category         : 33
+Category         : 33 (Type 0x0)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 184
@@ -354,7 +354,8 @@ Spell Type       : Melee
 Spell Level      : 17
 Cooldown         : 1 seconds
 Charges          : 1 (120 seconds cooldown)
-Category         : 2058: Without a Trace (382513 effect#1)
+Category         : 2058 (Type 0x1): Without a Trace (382513 effect#1)
+Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 184
@@ -443,7 +444,7 @@ Spell Level      : 12
 Duration         : 6 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (15 seconds cooldown)
-Category         : 2190: Graceful Guile (423647 effect#1)
+Category         : 2190 (Type 0x1): Graceful Guile (423647 effect#1)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 184
@@ -590,7 +591,7 @@ Spell Type       : None
 Spell Level      : 5
 Duration         : 8 seconds
 Cooldown         : 120 seconds
-Category         : 44
+Category         : 44 (Type 0x0)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 184
@@ -704,7 +705,7 @@ Spell Type       : None
 Spell Level      : 21
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Category         : 66
+Category         : 66 (Type 0x0)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -805,7 +806,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Charges          : 1 (30 seconds cooldown)
-Category         : 2086: Lightweight Shiv (394983 effect#1)
+Category         : 2086 (Type 0x1): Lightweight Shiv (394983 effect#1)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -989,10 +990,11 @@ Labels           : 16: Class Spells
                  : 184
                  : 292
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
+                 : 1387
                  : 2887: Underhanded Upper Hand (Adrenaline Rush) (424081 effect#1)
 Affecting Spells : Celerity (340087 effect#1)
 Family Flags     : 39
-Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Extra Initial Period (169), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Suppress Target Procs (113), Extra Initial Period (169), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=6149)     : Apply Aura (6) | Modify Power Regen (110)
@@ -1675,6 +1677,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged
 Family Flags     : 49
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cooldown On Event (25), Allow While Stealthed (37), No Threat (42), Exclude Caster (51), Require All Targets (58), Allow Low Level Buff (67), Only On Player (104), Aura Points On Client (268), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=51254)    : Redirect Threat (130)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 30000 | Target: Raid Target (57)
@@ -1834,6 +1837,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3304: So Tricky (441403 effect#2)
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Allow Low Level Buff (67), Limit N (165), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=53201)    : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 127 | Target: Self (1)
@@ -2347,7 +2351,7 @@ Affecting Spells : Stillshroud (423662 effect#1), Don't Be Suspicious (441415 ef
 Family Flags     : 71
 Attributes       : Not Shapeshifted (16), Allow While Stealthed (37), Not In Arena or Rated Battleground (144), Extra Initial Period (169), Always Show Ground Texture (190), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=127108)   : : Apply Aura (6) | Periodic Trigger Spell (23): Shroud of Concealment every 0.5 seconds
+#1 (id=127108)   : Apply Aura (6) | Periodic Trigger Spell (23): Shroud of Concealment every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 115834 | Target: Self (1)
 #2 (id=1034512)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -3111,7 +3115,8 @@ Spell Level      : 22
 Duration         : 6 seconds
 Cooldown         : 6 seconds
 Charges          : 1 (60 seconds cooldown)
-Category         : 1615: Enveloping Shadows (238104 effect#2), Double Dance (394930 effect#1)
+Category         : 1615 (Type 0x1): Enveloping Shadows (238104 effect#2), Double Dance (394930 effect#1)
+Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -3380,7 +3385,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=283680)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3 | Target: Self (1)
@@ -3419,7 +3424,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=283681)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 7 | Target: Self (1)
@@ -3442,7 +3447,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=283682)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -3475,7 +3480,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=283683)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Target: Self (1)
@@ -3659,8 +3664,9 @@ Spell Type       : None
 Spell Level      : 16
 Range            : 40 yards
 Velocity         : 80 yards/sec
+Cooldown         : 0.8 seconds
 Charges          : 1 (45 seconds cooldown)
-Category         : 2303: Retractable Hook (256188 effect#1), Quick Decisions (341531 effect#2), Thrill Seeking (394931 effect#2), Death's Arrival (454433 effect#3), Death's Arrival (457343 effect#2)
+Category         : 2303 (Type 0x9): Retractable Hook (256188 effect#1), Quick Decisions (341531 effect#2), Thrill Seeking (394931 effect#2), Death's Arrival (454433 effect#3), Death's Arrival (457343 effect#2)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 184
@@ -4076,7 +4082,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=293719)   : Apply Aura (6) | Restore Power (85)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Target: Self (1)
@@ -4093,7 +4099,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
 Attributes       : Is Ability (4), Do Not Sheath (18), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Always Hit (114), Do Not Display Range (126), No Harmful Threat (132), Not an Attack (194), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=293724)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 23 | Target: Self (1)
@@ -4122,7 +4128,7 @@ School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Cooldown         : 1.5 seconds
-Category         : 1238
+Category         : 1238 (Type 0x0)
 Category Cooldown: 1.5 seconds
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No AutoCast (AI) (49), No Aura Icon (60), Suppress Caster Procs (112), Allow Aura While Dead (116), Not In Spellbook (143), Allow Entering Arena (149), Floating Combat Text On Cast (198), Allow While Riding Vehicle (204), Allow Aura On Level Scale (444)
 Effects          :
@@ -4340,7 +4346,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Duration         : 6 seconds
 Cooldown         : 60 seconds
-Category         : 30
+Category         : 30 (Type 0x0)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 173: Ephemeral Bond (426563 effect#3)
@@ -4362,7 +4368,7 @@ Spell Type       : None
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 3 (60 seconds cooldown)
-Category         : 1613
+Category         : 1613 (Type 0x0)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 118
@@ -4400,7 +4406,7 @@ Spell Level      : 25
 Duration         : 10 seconds
 Cooldown         : 0.5 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 1694: Swift Death (394309 effect#1), Death Perception (469642 effect#1)
+Category         : 1694 (Type 0x1): Swift Death (394309 effect#1), Death Perception (469642 effect#1)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -5067,11 +5073,12 @@ Duration         : 45 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Generic Heal
 Triggered By     : Loaded Dice (256170)
-Attributes       : Aura Points On Client (268)
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113), Aura Points On Client (268)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=478589)   : Apply Aura (6) | Dummy (4)
@@ -5118,11 +5125,11 @@ Labels           : 16: Class Spells
 Attributes       : Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Not an Action (92), Aura Points On Client (268), Do Not Log Aura Refresh (291), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=479461)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Shiv (5938), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade Off-hand (121474), Internal Bleeding (154953), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Eviscerate (196819), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Double Dose (273009), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Nothing Personal (286581), Echoing Blades (287653), Between the Eyes (315341), Instant Poison (315585), Black Powder (319175), Black Powder (319190), Shiv (319504), Echoing Reprimand (323547), Flagellation (323654), Slaughter Poison (323660), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Blade Flurry (331850), Serrated Bone Spike (341277), Sinister Strike (341541), Shadowstrike (345121), Flagellation (345316), Rupture (360826), Garrote (360830), Internal Bleeding (381628), Amplifying Poison (383414), Flagellation (384631), Serrated Bone Spike (385424), Kingsbane (385627), Ambush (385897), Rupture (394031), Serrated Bone Spike (394036), Deadly Poison (394324), Deadly Poison (394325), Instant Poison (394326), Wound Poison (394327), Amplifying Poison (394328), Flagellation (394757), Shiv (400789), Caustic Spatter (421979), Envenomous Explosion (426581), Goremaw's Bite (426592), Blade Flurry (429951), Ambush (430023), Unseen Blade (441144), Coup de Grace (441776), Coup de Grace (450743), Fatebound Coin (Tails) (452538), Fatebound Coin (452559), Corrupt the Blood (457133), Deathstalker's Mark (457157), Clear the Witnesses (457179), Hunt Them Down (457193), Singular Focus (457236), Lucky Coin (461818), Fatal Intent (461984), Dispatch (Coup de Grace) (462140), Dispatch (Coup de Grace) (462239), Dispatch (Coup de Grace) (462240), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Killing Spree (463781), Dispatch (467059), Echoing Reprimand (470672)
                    Family Flags: 54
 #2 (id=730848)   : Apply Aura (6) | Modify Auto Attack Critical Chance (334)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : $@spelldesc255989
 Tooltip          : Critical strike chance increased by $w1%.
 
@@ -5391,7 +5398,7 @@ Labels           : 16: Class Spells
 Family Flags     : 30
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=733360)   : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
+#1 (id=733360)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Focus intently, then release a Shuriken Storm every sec for the next $d. 
 Tooltip          : Releasing a Shuriken Storm every sec.
@@ -5874,7 +5881,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Recuperator (341312 effect#1), Tight Spender (381621 effect#1), Swift Slasher (381988 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effect#1), Devious Stratagem (394321 effect#1), Goremaw's Bite (426593 effect#2), Thousand Cuts (441346 effect#1), Sanguine Stratagem (457512 effect#1)
 Family Flags     : 18, 89
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), Allow While Stealthed (37), No Threat (42), Finishing Move - Duration (54), Do Not Display Range (126), Not an Attack (194), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436), Always Allow Negative Healing Percent Modifiers (442)
-Aura Interrupt   : Change Specialization (38), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
 Effects          :
 #1 (id=799272)   : Apply Aura (6) | Modify Ranged and Melee Auto Attack Speed% (342)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
@@ -6129,7 +6136,7 @@ Proc Flags       : White Melee, Yellow Melee, Yellow Ranged
 Affecting Spells : Adrenaline Rush (13750 effect#3), Grand Melee (193358 effect#2), Dancing Steel (272026 effect#2), Ambidexterity (341542 effect#1), Ambidexterity (381822 effect#1)
 Family Flags     : 30, 43
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Include In Advanced Combat Log (72), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=806204)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.6 | Radius: 0 - 10 yards | Target: At Self (18) -> At Enemy in Area (16)
@@ -6520,7 +6527,7 @@ Velocity         : 40 yards/sec
 Duration         : Aura (infinite)
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Charges          : 3 (30 seconds cooldown)
-Category         : 1889: Deathspike (354731 effect#1)
+Category         : 1889 (Type 0x1): Deathspike (354731 effect#1)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -8835,7 +8842,8 @@ Spell Type       : Magic
 Duration         : 6 seconds
 Cooldown         : 1 seconds
 Charges          : 3 (60 seconds cooldown)
-Category         : 2032
+Category         : 2032 (Type 0x1)
+Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
 Triggered By     : Thistle Tea (469779)
@@ -9581,7 +9589,7 @@ Effects          :
 #2 (id=1013523)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Gouge (1776), Mutilate (5374), Shiv (5938), Ambush (8676), Mutilate (27576), Fan of Knives (51723), Quaking Palm (107079), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Ghostly Strike (196937), Sinister Strike (197834), Shuriken Storm (197835), Gloomblade (200758), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Serrated Bone Spike (324073), Serrated Bone Spike (324074), Sepsis (328305), Sepsis (328306), Serrated Bone Spike (328547), Sinister Strike (341541), Dreadblades (343142), Shadowstrike (345121), Echoing Reprimand (354835), Echoing Reprimand (354838), Garrote (360830), Serrated Bone Spike (385424), Kingsbane (385627), Ambush (385897), Serrated Bone Spike (394036), Goremaw's Bite (426591), Goremaw's Bite (426592), Ambush (430023), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672)
-                   Family Flags: 1, 2, 3, 8, 9, 23, 26, 29, 33, 34, 50, 53, 67, 75, 82, 85, 98, 101, 104, 109, 115, 118, 119, 127
+                   Family Flags: 1, 2, 3, 8, 9, 23, 26, 29, 33, 34, 50, 53, 67, 75, 82, 98, 101, 104, 109, 115, 118, 119, 127
 #3 (id=1114575)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Critical Bonus Multiplier (15)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 15 | Misc Value 2: 3052 (Label) | Target: Self (1)
                    Affected Spells (Label): Blade Flurry (429951)
@@ -10064,7 +10072,7 @@ Effects          :
 #2 (id=1017354)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #3 (id=1017355)  : Apply Aura (6) | Modify Mastery% (318)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.5 | Target: Self (1)
 #4 (id=1017356)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=1017357)  : Apply Aura (6) | Modify Versatility% (471)
@@ -11289,7 +11297,7 @@ Family Flags     : 76
 Attributes       : Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1034707)  : Apply Aura (6) | Modify Mastery% (318)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1034708)  : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : $@spelldesc384631
@@ -11499,7 +11507,8 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Attributes       : Allow Class Ability Procs (416)
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1035888)  : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: combo_points | Target: Self (1)
@@ -12285,7 +12294,8 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : 1387
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Suppress Target Procs (113), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1100520)  : Apply Aura (6) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 2886 (Label) | Target: Self (1)
@@ -12300,7 +12310,8 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : 1387
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Suppress Target Procs (113), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1100521)  : Apply Aura (6) | Modify Time Rate (Label) (470)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 2887 (Label) | Target: Self (1)
@@ -12315,7 +12326,8 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Cancel (31), Not In Spellbook (143), No Aura Log (202), Allow Class Ability Procs (416)
+                 : 1387
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Cancel (31), Allow While Stealthed (37), Suppress Target Procs (113), Not In Spellbook (143), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1100839)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self (1)
@@ -13404,7 +13416,7 @@ Name             : Fatebound Coin (Tails) (id=452538) [Spell Family (8)]
 Class            : Rogue
 School           : Cosmic
 Spell Type       : Melee
-Range            : 30 yards
+Range            : 20 yards
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -13425,6 +13437,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1153785)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13441,7 +13455,9 @@ Duration         : 2 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
 Triggered By     : Fatebound Coin (452559)
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1153788)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 33612 | Target: Unknown(87)
@@ -13456,6 +13472,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1153832)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13472,6 +13490,8 @@ Duration         : 2 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1153835)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 33612 | Target: Unknown(87)
@@ -13486,6 +13506,8 @@ Duration         : 2 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1153837)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 33612 | Target: Unknown(87)
@@ -13500,8 +13522,10 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
 Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Potent Assassin (76803 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), Shiv (319504 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Grudge Match (364668 effect#1), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #1, #2, #3), Poisoned Edges (409587 effects: #1, #3), Natureblight (426568 effects: #2, #3), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Vile Tincture (458475 effects: #1, #2), Master Assassin (470676 effect#1)
 Family Flags     : 54, 97
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1153838)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13535,6 +13559,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1154108)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13551,6 +13577,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1154110)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13567,6 +13595,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1154112)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13582,9 +13612,10 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
 Stacks           : 99 maximum
 Proc Chance      : 101%
-Attributes       : No Aura Cancel (31), Aura Points On Client (268)
+Attributes       : No Aura Cancel (31), Allow While Stealthed (37), Suppress Target Procs (113), Aura Points On Client (268)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Enter Instance (43), Change Talent (46)
 Effects          :
 #1 (id=1154405)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -13606,12 +13637,13 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
                  : 3641
 Stacks           : 99 maximum
 Proc Chance      : 101%
 Affecting Spells : Fatebound Coin (Heads) (456479 effects: #1, #2)
 Family Flags     : 56
-Attributes       : No Aura Cancel (31), Aura Points On Client (268)
+Attributes       : No Aura Cancel (31), Allow While Stealthed (37), Suppress Target Procs (113), Aura Points On Client (268)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Enter Instance (43), Change Talent (46)
 Effects          :
 #1 (id=1154414)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -13640,6 +13672,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1154537)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13656,6 +13690,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1154540)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13672,6 +13708,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1154543)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13688,6 +13726,8 @@ Velocity         : 13 yards/sec
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
+Attributes       : Allow While Stealthed (37), Suppress Target Procs (113)
 Effects          :
 #1 (id=1154546)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -14227,8 +14267,9 @@ Duration         : 3600 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
 Proc Chance      : 101%
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268), Update Passives on Apply/Remove (344)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Cancel (31), Allow While Stealthed (37), Suppress Target Procs (113), Do Not Display Duration (170), Aura Points On Client (268), Update Passives on Apply/Remove (344)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Enter Instance (43), Change Talent (46)
 Effects          :
 #1 (id=1160701)  : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
@@ -14253,8 +14294,6 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 3022
-Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Generic Hostile Spell
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1161655)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
@@ -15656,7 +15695,7 @@ Labels           : 16: Class Spells
 Attributes       : No Aura Cancel (31), Allow While Stealthed (37), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Enter Combat (28), Change Talent (46)
 Effects          :
-#1 (id=1186207)  : : Apply Aura (6) | Periodic Trigger Spell (23): The First Dance every 6 seconds
+#1 (id=1186207)  : Apply Aura (6) | Periodic Trigger Spell (23): The First Dance every 6 seconds
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 470678 | Target: Self (1)
 Description      : $@spelldesc382505
 Tooltip          : Preparing a potent Shadow Dance.
@@ -15708,9 +15747,10 @@ Resource         : 1 Energy (3) (id=308850)
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
+                 : 1387
 Affecting Spells : Celerity (340087 effect#1)
 Family Flags     : 39
-Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Suppress Target Procs (113), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1186211)  : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: energy | Target: Self (1)

@@ -65,7 +65,7 @@ timeofday=night
 role=tank
 position=front
 spec=guardian
-talents=CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmxMzMzsMPwYGzwMW8ADzYxyAYAzMmMNzYMzMjlZYjBAAAAAAMmZAAAAQNz2sMzsMAAWYmB
+talents=CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzYmxMzy8ADjZYGLmhZmFLDgBMzYy0MzMmZmhBbMAAAAAAgxMDAAAAqZ2mlZmlBAwCzMDA
 
 head=mask_of_the_greatlynx,id=212056,bonus_id=4800/4786/10257/10298/1537/1808,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,bonus_id=4800/4786/1540/10299/8781,gem_id=213467/213491

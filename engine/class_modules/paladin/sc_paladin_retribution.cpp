@@ -1400,7 +1400,7 @@ struct templar_slash_t : public base_templar_strike_t
 
     dot->target = s->target;
     // TODO: figure out where this formula comes from
-    double mult = p()->bugs ? 1.0 : 0.5;
+    double mult = 0.5;
     dot->base_td = ( s->result_total * mult ) / 4;
     dot->execute();
   }
@@ -1703,6 +1703,25 @@ void paladin_t::init_spells_retribution()
   talents.burn_to_ash                 = find_talent_spell( talent_tree::SPECIALIZATION, "Burn to Ash" );
 
   talents.vengeful_wrath = find_talent_spell( talent_tree::CLASS, "Vengeful Wrath" );
+  // for some reason find_talent_spell does not seem to work for vengeful wrath.
+  // do the lookup manually, similarly to rogues with Ghostly Strike.
+  if ( specialization() == PALADIN_RETRIBUTION && !talents.vengeful_wrath->ok() )
+  {
+    uint32_t class_idx, spec_idx;
+    dbc->spec_idx( PALADIN_RETRIBUTION, class_idx, spec_idx );
+    auto traits = trait_data_t::find_by_spell( talent_tree::CLASS, 406835, class_idx, PALADIN_RETRIBUTION, dbc->ptr );
+    for ( auto trait : traits )
+    {
+      auto it = range::find_if( player_traits, [ trait ]( const auto& entry ) {
+        return std::get<1>( entry ) == trait->id_trait_node_entry;
+      });
+
+      if ( it != player_traits.end() && std::get<2>( *it ) != 0U )
+      {
+        talents.vengeful_wrath = find_talent_spell( trait->id_trait_node_entry );
+      }
+    }
+  }
   talents.healing_hands  = find_talent_spell( talent_tree::CLASS, "Healing Hands" );
   // Spec passives and useful spells
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );

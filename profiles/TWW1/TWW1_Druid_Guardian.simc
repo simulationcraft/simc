@@ -6,7 +6,7 @@ race=night_elf
 timeofday=night
 role=tank
 position=front
-talents=CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmxMzMzsMPwYGzwMW8ADzYxyAYAzMmMNzYMzMjlZYjBAAAAAAMmZAAAAQNz2sMzsMAAWYmB
+talents=CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzYmxMzy8ADjZYGLmhZmFLDgBMzYy0MzMmZmhBbMAAAAAAgxMDAAAAqZ2mlZmlBAwCzMDA
 
 # Default consumables
 potion=tempered_potion_3

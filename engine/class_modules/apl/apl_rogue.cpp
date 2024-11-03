@@ -112,7 +112,7 @@ void assassination( player_t* p )
   cds->add_action( "thistle_tea,if=!buff.thistle_tea.up&(dot.kingsbane.ticking|debuff.shiv.remains>=4)|spell_targets.fan_of_knives>=4&debuff.shiv.remains>=6|fight_remains<=cooldown.thistle_tea.charges*6", "Avoid overcapped energy, use with shiv, or dump charges at the end of a fight" );
   cds->add_action( "call_action_list,name=misc_cds", "Potion/Racials/Other misc cooldowns" );
   cds->add_action( "call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0" );
-  cds->add_action( "cold_blood,if=cooldown.deathmark.remains>10&!buff.darkest_night.up&combo_points>=variable.effective_spend_cp&(variable.not_pooling|debuff.amplifying_poison.stack>=20|!variable.single_target)&!buff.vanish.up&(!cooldown.kingsbane.up|!variable.single_target)&!cooldown.deathmark.up", "Cold Blood with similar conditions to Envenom, avoiding munching Edge Case" );
+  cds->add_action( "cold_blood,use_off_gcd=1,if=(buff.fatebound_coin_tails.stack>0&buff.fatebound_coin_heads.stack>0)|debuff.shiv.up&(cooldown.deathmark.remains>50|!talent.inevitabile_end&effective_combo_points>=variable.effective_spend_cp)", "Cold Blood for Edge Case or Envenoms during shiv" );
 
   core_dot->add_action( "garrote,if=combo_points.deficit>=1&(pmultiplier<=1)&refreshable&target.time_to_die-remains>12", "Core damage over time abilities used everywhere Maintain Garrote" );
   core_dot->add_action( "rupture,if=combo_points>=variable.effective_spend_cp&(pmultiplier<=1)&refreshable&target.time_to_die-remains>(4+(talent.dashing_scoundrel*5)+(variable.regen_saturated*6))&(!buff.darkest_night.up|talent.caustic_spatter&!debuff.caustic_spatter.up)", "Maintain Rupture unless darkest night is up" );
@@ -173,7 +173,7 @@ void assassination( player_t* p )
   stealthed->add_action( "garrote,if=stealthed.improved_garrote&(pmultiplier<=1|refreshable)&combo_points.deficit>=1+2*talent.shrouded_suffocation" );
 
   vanish->add_action( "pool_resource,for_next=1,extra_amount=45", "Stealth Cooldowns Vanish Sync for Improved Garrote with Deathmark" );
-  vanish->add_action( "vanish,if=!buff.fatebound_lucky_coin.up&(buff.fatebound_coin_tails.stack>=5|buff.fatebound_coin_heads.stack>=5)", "Vanish to fish for Fateful Ending" );
+  vanish->add_action( "vanish,if=!buff.fatebound_lucky_coin.up&effective_combo_points>=variable.effective_spend_cp&(buff.fatebound_coin_tails.stack>=5|buff.fatebound_coin_heads.stack>=5)", "Vanish to fish for Fateful Ending" );
   vanish->add_action( "vanish,if=!talent.master_assassin&!talent.indiscriminate_carnage&talent.improved_garrote&cooldown.garrote.up&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&(debuff.deathmark.up|cooldown.deathmark.remains<4)&combo_points.deficit>=(spell_targets.fan_of_knives>?4)", "Vanish to spread Garrote during Deathmark without Indiscriminate Carnage" );
   vanish->add_action( "pool_resource,for_next=1,extra_amount=45" );
   vanish->add_action( "vanish,if=talent.indiscriminate_carnage&talent.improved_garrote&cooldown.garrote.up&(dot.garrote.pmultiplier<=1|dot.garrote.refreshable)&spell_targets.fan_of_knives>2&(target.time_to_die-remains>15|raid_event.adds.in>20)", "Vanish for cleaving Garrotes with Indiscriminate Carnage" );
@@ -316,7 +316,7 @@ void subtlety( player_t* p )
 
   cds->add_action( "cold_blood,if=cooldown.secret_technique.up&buff.shadow_dance.up&combo_points>=6&variable.secret", "Cooldowns" );
   cds->add_action( "potion,if=buff.bloodlust.react|fight_remains<30|buff.flagellation_buff.up" );
-  cds->add_action( "symbols_of_death,if=(buff.symbols_of_death.remains<=3&variable.maintenance&(buff.flagellation_buff.up|!talent.flagellation|cooldown.flagellation.remains>=30-15*!talent.death_perception&cooldown.secret_technique.remains<=8|!talent.death_perception)|fight_remains<=15)" );
+  cds->add_action( "symbols_of_death,if=(buff.symbols_of_death.remains<=3&variable.maintenance&(buff.flagellation_buff.up&cooldown.secret_technique.remains<8|!talent.flagellation|buff.flagellation_persist.up&talent.unseen_blade|cooldown.flagellation.remains>=30-15*!talent.death_perception&cooldown.secret_technique.remains<8|!talent.death_perception)|fight_remains<=15)" );
   cds->add_action( "shadow_blades,if=variable.maintenance&variable.shd_cp&buff.shadow_dance.up&!buff.premeditation.up" );
   cds->add_action( "thistle_tea,if=buff.shadow_dance.remains>2&!buff.thistle_tea.up" );
   cds->add_action( "flagellation,if=combo_points>=5|fight_remains<=25" );
@@ -345,7 +345,7 @@ void subtlety( player_t* p )
   finish->add_action( "coup_de_grace,if=debuff.fazed.up" );
   finish->add_action( "eviscerate" );
 
-  build->add_action( "shadowstrike,cycle_targets=1,if=debuff.find_weakness.remains<=2&variable.targets=2&talent.unseen_blade|!used_for_danse&talent.danse_macabre", "Combo Point Builder" );
+  build->add_action( "shadowstrike,cycle_targets=1,if=debuff.find_weakness.remains<=2&variable.targets=2&talent.unseen_blade|!used_for_danse&!talent.premeditation", "Combo Point Builder" );
   build->add_action( "shuriken_storm,if=talent.deathstalkers_mark&!buff.premeditation.up&variable.targets>=(2+3*buff.shadow_dance.up)|buff.clear_the_witnesses.up&!buff.symbols_of_death.up|buff.flawless_form.up&variable.targets>=3&!variable.stealth" );
   build->add_action( "shuriken_tornado,if=buff.lingering_darkness.up|talent.deathstalkers_mark&cooldown.shadow_blades.remains>=32&variable.targets>=2|talent.unseen_blade&buff.symbols_of_death.up&variable.targets>=4" );
   build->add_action( "shadowstrike" );

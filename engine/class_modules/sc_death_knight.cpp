@@ -184,6 +184,19 @@ enum rider_of_the_apocalypse
   ALL_RIDERS
 };
 
+enum drw_actions
+{
+  DRW_ACTION_BLOOD_BOIL,
+  DRW_ACTION_DEATHS_CARESS,
+  DRW_ACTION_DEATH_STRIKE,
+  DRW_ACTION_HEART_STRIKE,
+  DRW_ACTION_MARROWREND,
+  DRW_ACTION_SOUL_REAPER,
+  DRW_ACTION_CONSUMPTION,
+  DRW_ACTION_VAMPIRIC_STRIKE,
+  DRW_ACTION_MAX
+};
+
 // ==========================================================================
 // Death Knight Runes ( part 1 )
 // ==========================================================================
@@ -1530,6 +1543,7 @@ public:
   struct modified_spells_t
   {
     modified_spell_data_t* infliction_of_sorrow;
+    modified_spell_data_t* vampiric_strike;
   } modified_spell;
 
   // RPPM
@@ -1840,6 +1854,8 @@ public:
   void reapers_mark_explosion_wrapper( player_t* target, player_t* source, int stacks );
   // Blood
   void bone_shield_handler( const action_state_t* ) const;
+  void drw_action_execute( pets::dancing_rune_weapon_pet_t* drw, drw_actions action );
+  void trigger_drw_action( drw_actions action );
   // Frost
   void trigger_killing_machine( bool predictable, proc_t* proc, proc_t* wasted_proc );
   void consume_killing_machine( proc_t* proc, timespan_t total_delay );
@@ -3667,6 +3683,18 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     bool is_reaper_of_souls;
   };
 
+  struct drw_auto_attack_t : public auto_attack_melee_t<dancing_rune_weapon_pet_t>
+  {
+    drw_auto_attack_t( dancing_rune_weapon_pet_t* p ) : auto_attack_melee_t( p )
+    {
+      weapon = &p->main_hand_weapon;
+      weapon->slot = SLOT_MAIN_HAND;
+      base_execute_time = p->main_hand_weapon.swing_time;
+    }
+  }; 
+
+  action_t* drw_auto_attack;
+
   struct abilities_t
   {
     action_t* blood_plague;
@@ -3681,7 +3709,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   } ability;
 
   dancing_rune_weapon_pet_t( death_knight_t* owner, std::string_view drw_name = "dancing_rune_weapon" )
-    : death_knight_pet_t( owner, drw_name, true, true ), ability()
+    : death_knight_pet_t( owner, drw_name, true, false ), ability()
   {
     // The pet wields the same weapon type as its owner for spells with weapon requirements
     main_hand_weapon.type       = owner->main_hand_weapon.type;
@@ -3691,9 +3719,11 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     resource_regeneration  = regen_type::DISABLED;
   }
 
-  void init_spells() override
+  void create_actions() override
   {
-    death_knight_pet_t::init_spells();
+    death_knight_pet_t::create_actions();
+
+    drw_auto_attack = new drw_auto_attack_t( this );
 
     // Dont init spells that dont exist, breaks reporting for auto's
     if ( dk()->talent.blood.blood_boil.ok() )
@@ -3739,6 +3769,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   void arise() override
   {
     death_knight_pet_t::arise();
+    reschedule_drw();
     dk()->buffs.dancing_rune_weapon->trigger();
     if ( dk()->talent.sanlayn.gift_of_the_sanlayn.ok() )
       dk()->buffs.gift_of_the_sanlayn->trigger();
@@ -3752,9 +3783,21 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       dk()->buffs.gift_of_the_sanlayn->expire();
   }
 
-  attack_t* create_main_hand_auto_attack() override
+  void reschedule_drw()
   {
-    return new auto_attack_melee_t<dancing_rune_weapon_pet_t>( this );
+    if ( executing || is_sleeping() || buffs.movement->check() || buffs.stunned->check() )
+      return;
+
+    else
+    {
+      drw_auto_attack->set_target( dk()->target );
+      drw_auto_attack->schedule_execute();
+    }
+  }
+
+  void schedule_ready( timespan_t /* delta_time */, bool /* waiting */ ) override
+  {
+    reschedule_drw();
   }
 };
 
@@ -4771,7 +4814,9 @@ struct death_knight_action_t : public parse_action_effects_t<Base>
     }
 
     if ( p()->talent.deathbringer.reapers_mark.ok() && this->data().id() != p()->spell.reapers_mark_explosion->id() &&
-         this->data().id() != 66198 && this->data().id() != 439539 )  // TODO-TWW verify if offhand obliterate bug is fixed
+         this->data().id() != 66198 /* Obliterate offhand does not count */ &&
+         this->data().id() != p()->spell.hyperpyrexia_damage->id() &&
+         this->data().id() != p()->spell.icy_death_torrent_damage->id() )
     {
       death_knight_td_t* td = get_td( s->target );
       if ( td->debuff.reapers_mark->check() )
@@ -6329,8 +6374,7 @@ public:
 
 struct undeath_dot_t final : public death_knight_spell_t
 {
-  undeath_dot_t( std::string_view name, death_knight_t* p )
-    : death_knight_spell_t( name, p, p->pet_spell.undeath_dot )
+  undeath_dot_t( std::string_view name, death_knight_t* p ) : death_knight_spell_t( name, p, p->pet_spell.undeath_dot )
   {
     background = true;
     may_miss = may_dodge = may_parry = false;
@@ -7140,18 +7184,7 @@ struct blood_boil_t final : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
-    {
-      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.blood_boil->execute_on_target( target );
-    }
-
-    if ( p()->talent.blood.everlasting_bond.ok() )
-    {
-      if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
-      {
-        p()->pets.everlasting_bond_pet.active_pet()->ability.blood_boil->execute_on_target( target );
-      }
-    }
+    p()->trigger_drw_action( DRW_ACTION_BLOOD_BOIL );
   }
 
   void impact( action_state_t* state ) override
@@ -7699,18 +7732,7 @@ struct consumption_t final : public death_knight_melee_attack_t
     p()->buffs.consumption->trigger();
     p()->replenish_rune( rune_gen, p()->gains.consumption );
 
-    if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
-    {
-      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.consumption->execute_on_target( target );
-    }
-
-    if ( p()->talent.blood.everlasting_bond.ok() )
-    {
-      if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
-      {
-        p()->pets.everlasting_bond_pet.active_pet()->ability.consumption->execute_on_target( target );
-      }
-    }
+    p()->trigger_drw_action( DRW_ACTION_CONSUMPTION );
   }
 
 private:
@@ -8114,18 +8136,7 @@ struct deaths_caress_t final : public death_knight_spell_t
     if ( p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ) )
       p()->buffs.piledriver_tww1_4pc->trigger( stacks );
 
-    if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
-    {
-      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.deaths_caress->execute_on_target( target );
-    }
-
-    if ( p()->talent.blood.everlasting_bond.ok() )
-    {
-      if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
-      {
-        p()->pets.everlasting_bond_pet.active_pet()->ability.deaths_caress->execute_on_target( target );
-      }
-    }
+    p()->trigger_drw_action( DRW_ACTION_DEATHS_CARESS );
   }
 
 private:
@@ -8409,10 +8420,15 @@ struct death_strike_t final : public death_knight_melee_attack_t
         improved_death_strike_reduction +=
             p->talent.improved_death_strike->effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
     }
+  }
 
-    if ( p->runeforge.rune_of_sanguination )
+  void init_finished() override
+  {
+    death_knight_melee_attack_t::init_finished();
+
+    if ( p()->runeforge.rune_of_sanguination )
     {
-      sanguination_pct = 1 + ( 0.25 * ( 1 + p->talent.unholy_bond->effectN( 1 ).percent() ) );
+      sanguination_pct = 1 + ( 0.25 * ( 1 + p()->talent.unholy_bond->effectN( 1 ).percent() ) );
     }
   }
 
@@ -8469,18 +8485,7 @@ struct death_strike_t final : public death_knight_melee_attack_t
     if ( oh_attack )
       oh_attack->execute_on_target( execute_state->target );
 
-    if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
-    {
-      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.death_strike->execute_on_target( target );
-    }
-
-    if ( p()->talent.blood.everlasting_bond.ok() )
-    {
-      if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
-      {
-        p()->pets.everlasting_bond_pet.active_pet()->ability.death_strike->execute_on_target( target );
-      }
-    }
+    p()->trigger_drw_action( DRW_ACTION_DEATH_STRIKE );
 
     if ( hit_any_target )
     {
@@ -9361,18 +9366,7 @@ struct vampiric_strike_blood_t : public heart_strike_base_t
   {
     heart_strike_base_t::execute();
 
-    if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
-    {
-      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.vampiric_strike->execute_on_target( target );
-    }
-
-    if ( p()->talent.blood.everlasting_bond.ok() )
-    {
-      if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
-      {
-        p()->pets.everlasting_bond_pet.active_pet()->ability.vampiric_strike->execute_on_target( target );
-      }
-    }
+    p()->trigger_drw_action( DRW_ACTION_VAMPIRIC_STRIKE );
   }
 };
 
@@ -9412,18 +9406,7 @@ struct heart_strike_t : public heart_strike_base_t
     }
     heart_strike_base_t::execute();
 
-    if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
-    {
-      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.heart_strike->execute_on_target( target );
-    }
-
-    if ( p()->talent.blood.everlasting_bond.ok() )
-    {
-      if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
-      {
-        p()->pets.everlasting_bond_pet.active_pet()->ability.heart_strike->execute_on_target( target );
-      }
-    }
+    p()->trigger_drw_action( DRW_ACTION_HEART_STRIKE );
   }
 
 private:
@@ -9658,18 +9641,7 @@ struct marrowrend_t final : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
-    {
-      p()->pets.dancing_rune_weapon_pet.active_pet()->ability.marrowrend->execute_on_target( target );
-    }
-
-    if ( p()->talent.blood.everlasting_bond.ok() )
-    {
-      if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
-      {
-        p()->pets.everlasting_bond_pet.active_pet()->ability.marrowrend->execute_on_target( target );
-      }
-    }
+    p()->trigger_drw_action( DRW_ACTION_MARROWREND );
 
     if ( p()->talent.deathbringer.dark_talons.ok() && p()->talent.icy_talons->ok() &&
          rng().roll( p()->talent.deathbringer.dark_talons->effectN( 1 ).percent() ) )
@@ -10636,28 +10608,14 @@ struct soul_reaper_action_t final : public soul_reaper_t
   void execute() override
   {
     soul_reaper_t::execute();
-    if ( p()->specialization() == DEATH_KNIGHT_BLOOD )
-    {
-      if ( p()->pets.dancing_rune_weapon_pet.active_pet() != nullptr )
-      {
-        p()->pets.dancing_rune_weapon_pet.active_pet()->ability.soul_reaper->execute_on_target( execute_state->target );
-      }
-
-      if ( p()->talent.blood.everlasting_bond.ok() )
-      {
-        if ( p()->pets.everlasting_bond_pet.active_pet() != nullptr )
-        {
-          p()->pets.everlasting_bond_pet.active_pet()->ability.soul_reaper->execute_on_target( execute_state->target );
-        }
-      }
-    }
-    if (p()->talent.deathbringer.reaper_of_souls.ok() && p()->buffs.reaper_of_souls->check() )
+    p()->trigger_drw_action( DRW_ACTION_SOUL_REAPER );
+    if ( p()->talent.deathbringer.reaper_of_souls.ok() && p()->buffs.reaper_of_souls->check() )
     {
       p()->buffs.reaper_of_souls->expire();
     }
   }
 
-  double composite_energize_amount( const action_state_t* s) const override
+  double composite_energize_amount( const action_state_t* s ) const override
   {
     double c = death_knight_melee_attack_t::composite_energize_amount( s );
     if ( p()->talent.deathbringer.reaper_of_souls.ok() && p()->buffs.reaper_of_souls->up() )
@@ -12048,7 +12006,7 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vam
 
 void death_knight_t::trigger_vampiric_strike_proc( player_t* target )
 {
-  double chance    = talent.sanlayn.vampiric_strike->effectN( 1 ).percent();
+  double chance    = modified_spell.vampiric_strike->effectN( 1 ).percent();
   double target_hp = target->health_percentage();
 
   if ( talent.sanlayn.sanguine_scent.ok() && target_hp <= talent.sanlayn.sanguine_scent->effectN( 1 ).base_value() )
@@ -12133,6 +12091,59 @@ void death_knight_t::reapers_mark_explosion_wrapper( player_t* target, player_t*
     debug_cast<reapers_mark_explosion_t*>( active_spells.reapers_mark_explosion )->execute_wrapper( target, stacks );
   }
 }
+
+void death_knight_t::drw_action_execute( pets::dancing_rune_weapon_pet_t* drw, drw_actions action )
+{
+  switch ( action )
+  {
+    case DRW_ACTION_BLOOD_BOIL:
+      drw->ability.blood_boil->execute();
+      break;
+    case DRW_ACTION_DEATHS_CARESS:
+      drw->ability.deaths_caress->execute();
+      break;
+    case DRW_ACTION_DEATH_STRIKE:
+      drw->ability.death_strike->execute();
+      break;
+    case DRW_ACTION_HEART_STRIKE:
+      drw->ability.heart_strike->execute();
+      break;
+    case DRW_ACTION_MARROWREND:
+      drw->ability.marrowrend->execute();
+      break;
+    case DRW_ACTION_SOUL_REAPER:
+      drw->ability.soul_reaper->execute();
+      break;
+    case DRW_ACTION_CONSUMPTION:
+      drw->ability.consumption->execute();
+      break;
+    case DRW_ACTION_VAMPIRIC_STRIKE:
+      drw->ability.vampiric_strike->execute();
+      break;
+    default:
+      assert( false && "DRW Action Does not Exist" );
+      break;
+  }
+}
+
+void death_knight_t::trigger_drw_action( drw_actions action )
+{
+  if ( specialization() != DEATH_KNIGHT_BLOOD || !talent.blood.dancing_rune_weapon.ok() )
+    return;
+
+  if ( pets.dancing_rune_weapon_pet.active_pet() == nullptr )
+    return;
+
+  drw_action_execute( pets.dancing_rune_weapon_pet.active_pet(), action );
+
+  if ( !talent.blood.everlasting_bond.ok() )
+    return;
+
+  if ( pets.everlasting_bond_pet.active_pet() == nullptr )
+    return;
+
+  drw_action_execute( pets.everlasting_bond_pet.active_pet(), action );
+};
 
 double death_knight_t::psuedo_random_p_from_c( double c )
 {
@@ -14803,6 +14814,9 @@ void death_knight_t::apply_effect_modifying_effects()
 {
   modified_spell.infliction_of_sorrow =
       get_modified_spell( talent.sanlayn.infliction_of_sorrow )->parse_effects( spec.blood_death_knight );
+
+  modified_spell.vampiric_strike =
+      get_modified_spell( talent.sanlayn.vampiric_strike )->parse_effects( spec.blood_death_knight );
 }
 
 template <class Base>
@@ -14849,6 +14863,8 @@ void death_knight_action_t<Base>::apply_action_effects()
   parse_effects(
       p()->buffs.essence_of_the_blood_queen,
       [ & ]( double v ) {
+        if ( p()->spec.blood_death_knight->ok() )
+          v += p()->spec.blood_death_knight->effectN( 19 ).percent();
         if ( p()->buffs.gift_of_the_sanlayn->check() )
           v *= 1.0 + p()->buffs.gift_of_the_sanlayn->check_value();
         return v;

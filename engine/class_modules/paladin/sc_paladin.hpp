@@ -109,7 +109,6 @@ public:
     action_t* inner_light_damage;
     action_t* sanctified_wrath;
     action_t* virtuous_command;
-    action_t* create_aw_expression;
 
     // Required for seraphim
     action_t* sotr;
@@ -241,6 +240,7 @@ public:
       buff_t* rite_of_sanctification;
       buff_t* rite_of_adjuration;
       buff_t* blessing_of_the_forge;  // Sacred Weapon doodad, pseudo invisible buff
+      buff_t* fake_solidarity; // Stackable buff that fakes other people having a Sacred Weapon buff
     } lightsmith;
 
     struct
@@ -783,8 +783,7 @@ public:
     double proc_chance_ret_aura_sera      = 0.10;
     int min_dg_heal_targets               = 1;
     int max_dg_heal_targets               = 5;
-    bool sacred_weapon_prefer_new_targets = false;
-    bool fake_solidarity                  = false;
+    bool fake_solidarity                  = true;
   } options;
   player_t* beacon_target;
 
@@ -885,6 +884,7 @@ public:
   std::unique_ptr<expr_t> create_consecration_expression( util::string_view expr_str );
   std::unique_ptr<expr_t> create_ashen_hallow_expression( util::string_view expr_str );
   std::unique_ptr<expr_t> create_aw_expression( util::string_view expr_str );
+  std::unique_ptr<expr_t> create_vw_expression( util::string_view expr_str );
 
   ground_aoe_event_t* active_consecration;
   ground_aoe_event_t* active_boj_cons;
@@ -1125,6 +1125,14 @@ struct sentinel_buff_t : public buff_t
   {
     return damage_modifier;
   }
+  double get_healing_mod() const
+  {
+    return healing_modifier;
+  }
+  double get_crit_bonus() const
+  {
+    return crit_bonus;
+  }
   double get_damage_reduction_mod() const
   {
     return damage_reduction_modifier * ( this->check() );
@@ -1138,6 +1146,8 @@ struct sentinel_buff_t : public buff_t
 
 private:
   double damage_modifier;
+  double healing_modifier;
+  double crit_bonus;
   double damage_reduction_modifier;
   double health_bonus;
 };
@@ -1244,6 +1254,7 @@ public:
     this->affected_by.judgment            = this->data().affected_by( p->spells.judgment_debuff->effectN( 1 ) );
     this->clears_judgment                 = this->affected_by.judgment;
     this->affected_by.avenging_wrath      = this->data().affected_by( p->spells.avenging_wrath->effectN( 2 ) );
+    this->affected_by.sentinel            = this->data().affected_by( p->spells.sentinel->effectN( 1 ) );
     this->affected_by.divine_purpose_cost = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 1 ) );
     this->affected_by.divine_purpose      = this->data().affected_by( p->spells.divine_purpose_buff->effectN( 2 ) );
     this->affected_by.seal_of_reprisal    = this->data().affected_by( p->talents.seal_of_reprisal->effectN( 1 ) );
@@ -1420,11 +1431,14 @@ public:
       }
     }
 
-    // Class talent's Avenging Wrath damage multiplier affects only if base talent is talented (Could still use AW with
-    // only Sentinel/AWM/Crusade/AC talented)
-    if ( affected_by.avenging_wrath && ( p()->buffs.avenging_wrath->up() || p()->buffs.sentinel->up() ) )
+    if ( affected_by.avenging_wrath && p()->buffs.avenging_wrath->up() )
     {
       am *= 1.0 + p()->buffs.avenging_wrath->get_damage_mod();
+    }
+
+    if (affected_by.sentinel && p()->buffs.sentinel->up())
+    {
+      am *= 1.0 + p()->buffs.sentinel->get_damage_mod();
     }
 
     if ( affected_by.rise_from_ash && p()->buffs.rise_from_ash->up() )

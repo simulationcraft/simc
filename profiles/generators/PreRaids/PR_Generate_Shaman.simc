@@ -30,11 +30,11 @@
 
 shaman="PR_Shaman_Enhancement_Totemic"
 level=80
-race=goblin
+race=orc
 spec=enhancement
 role=attack
 position=back
-talents=CcQAYp+JUk5Lea12OyacsLNThMzAMzYsNzMzglZGbz2MAAAAAAAAAA2gFssMjZmtNNLbDzoZmGsBgZZyMwiZMzgZmZ2GWmZmswyYhZGAgZmB
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMgZGDzMzMYZmx2sNDAAAAAAAAAgNYBWgZspx2AYmgNAMLTGGWMMjhZmZMjtZmJbsMWGzMAAzMD
 
 head=cryptbound_headpiece,id=221156,ilevel=593
 neck=emergency_stop_keychain,id=221077,ilevel=593
@@ -57,11 +57,11 @@ save=PR_Shaman_Enhancement_Totemic.simc
 
 shaman="PR_Shaman_Enhancement"
 level=80
-race=goblin
+race=orc
 spec=enhancement
 role=attack
 position=back
-talents=CcQAYp+JUk5Lea12OyacsLNThMzMzCmhZ2mZmZYWmZWWGAAAAAAAAAAYDgNzYYjsAzohGsAgZZyMwiZMzgZmZ2mxyMzkFWGYmBAYGD
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzCmhZ2mZmZY2mZWWGAAAAAAAAAAYDgFzYYjsAzwQDWAwsMZALmxMzwMzMbDbzMT2YZswMDAwMG
 
 head=cryptbound_headpiece,id=221156,ilevel=593
 neck=emergency_stop_keychain,id=221077,ilevel=593

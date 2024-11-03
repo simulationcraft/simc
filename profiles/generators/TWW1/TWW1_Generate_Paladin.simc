@@ -56,7 +56,7 @@ race=draenei
 role=tank
 position=front
 spec=protection
-talents=CIEAAAAAAAAAAAAAAAAAAAAAAsMmZMjHYegFmZmZssxMjZwwMAAADAAAAAAAphZmhBmBzMLGmZGAwYgZAYwMADAACwMzyySbzMWMD
+talents=CIEAAAAAAAAAAAAAAAAAAAAAAsMzMjZWmHYhZmZmx2MzMMYYAAAAAAAAAAQyMDDzMMmZmtAAjBGAzgtBMAAIAzMLLLtNzYxAYAzgxwA
 
 head=entombed_seraphs_casque,id=211993,bonus_id=1540/10299/10878,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10879,gem_id=213470/213491
@@ -83,7 +83,7 @@ race=draenei
 spec=protection
 role=tank
 position=front
-talents=CIEAAAAAAAAAAAAAAAAAAAAAAsMmZMjHYegFmZmZssxMjZwwMAAADAAAAAAAphZmhBmBzMLGmZGAwYgZAYwMADAwMTbzysNDQgNzA
+talents=CIEAAAAAAAAAAAAAAAAAAAAAAsMzMjZWmHYhZmZmx2MzMMYYAAAAAAAAAAQyMDDzMMmZmtAAjBGAzgtBMAAzMtNLz2MAB2MAGwMYMM
 
 head=visor_of_the_ascended_captain,id=212427,bonus_id=1540/10299/10878,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10879,gem_id=213485/213485

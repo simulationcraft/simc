@@ -147,7 +147,7 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
 {
   healing_modifier = p->talents.avenging_wrath->effectN( 1 ).percent();
   damage_modifier  = p->talents.avenging_wrath->effectN( 1 ).percent();
-  crit_bonus       = p->talents.avenging_wrath->ok() ? p->talents.avenging_wrath->effectN( 3 ).percent() : 0;
+  crit_bonus       = p->talents.avenging_wrath->effectN( 3 ).percent();
 
   if ( p->talents.sanctified_wrath->ok() )
   {
@@ -2127,13 +2127,6 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
         else
           p()->buffs.templar.shake_the_heavens->execute();
       }
-
-      // Since Hammer of Light's damage component is a background action, we need to call reset AA ourselves.
-      // This doesn't seem intentional, so gating behind bugs=1.
-      if ( p()->bugs )
-      {
-        p()->reset_auto_attacks( 0_ms, player->procs.reset_aa_cast );
-      }
     }
 
     void impact( action_state_t* s ) override
@@ -2431,7 +2424,7 @@ struct sacred_weapon_proc_damage_t : public paladin_spell_t
     double m = paladin_spell_t::composite_da_multiplier( s );
     // If we're faking Solidarity, we double the amount 
     if ( p()->talents.lightsmith.solidarity->ok() && p()->options.fake_solidarity )
-      m *= 2.0;
+      m *= 1.0 + p()->buffs.lightsmith.fake_solidarity->stack();
     return m;
   }
 };
@@ -2460,7 +2453,7 @@ struct sacred_weapon_proc_heal_t : public paladin_heal_t
     double m = paladin_heal_t::composite_da_multiplier( s );
     // If we're faking Solidarity, we double the amount 
     if ( p()->talents.lightsmith.solidarity->ok() && p()->options.fake_solidarity )
-      m *= 2.0;
+      m *= 1.0 + p()->buffs.lightsmith.fake_solidarity->stack();
     return m;
   }
 };
@@ -2575,77 +2568,80 @@ void paladin_t::cast_holy_armaments( player_t* target, armament usedArmament, bo
       nextArmament->execute_on_target( this );
       sim->print_debug( "Player {} cast Holy Armaments on self via Solidarity", name() );
     }
-    else if ( sim->player_no_pet_list.size() > 1 )
+    else if ( sim->player_non_sleeping_list.size() > 1 )
     {
-      // We try to do this twice for the new option. In case every target is invalid per options.sacred_weapon_prefer_new_targets, we ignore the option and just take the first target we find.
+      // We try to do this twice. In case every target is invalid, we just take the first target we find.
       for ( int i = 0; i < 2; i++ )
       {
-        // We do not know who to cast Weapon/Bulwark randomly on. Determine it
-        if ( random_weapon_target == nullptr || ( options.sacred_weapon_prefer_new_targets && i == 0 ) )
+        player_t* first_dps    = nullptr;
+        player_t* first_healer = nullptr;
+        player_t* first_tank   = nullptr;
+        for ( auto& _p : sim->player_no_pet_list )
         {
-          player_t* first_dps    = nullptr;
-          player_t* first_healer = nullptr;
-          player_t* first_tank   = nullptr;
-          for ( auto& _p : sim->player_no_pet_list )
+          if ( _p->is_sleeping() || _p == this )
+            continue;
+
+          // Random targetting prefers targets without a buff. Only try to find a valid target on the first iteration.
+          if ( i == 0 )
           {
-            if ( _p->is_sleeping() || _p == this )
+            if ( ( usedArmament == SACRED_WEAPON && get_target_data( _p )->buffs.sacred_weapon->up() ) ||
+                  ( usedArmament == HOLY_BULWARK && get_target_data( _p )->buffs.holy_bulwark->up() ) )
               continue;
-
-            // We prefer our random targets to have no buff, this can be done ingame via hugging them over any other
-            // target, since it prefers to target closeby targets
-            if ( options.sacred_weapon_prefer_new_targets && i == 0 )
-            {
-              if ( ( usedArmament == SACRED_WEAPON && get_target_data( _p )->buffs.sacred_weapon->up() ) ||
-                   ( usedArmament == HOLY_BULWARK && get_target_data( _p )->buffs.holy_bulwark->up() ) )
-                continue;
-            }
-
-            switch ( _p->role )
-            {
-              case ROLE_HEAL:
-                if ( first_healer == nullptr )
-                  first_healer = _p;
-                break;
-              case ROLE_TANK:
-                if ( first_tank == nullptr )
-                  first_tank = _p;
-                break;
-              default:
-                if ( first_dps == nullptr )
-                  first_dps = _p;
-                break;
-            }
           }
-          if ( first_dps != nullptr )
-            random_weapon_target = first_dps;
-          else if ( first_healer != nullptr )
-            random_weapon_target = first_healer;
-          else
-            random_weapon_target = first_tank;
 
-          if ( first_tank != nullptr )
-            random_bulwark_target = first_tank;
-          else if ( first_healer != nullptr )
-            random_bulwark_target = first_healer;
-          else
-            random_bulwark_target = first_dps;
+          switch ( _p->role )
+          {
+            case ROLE_HEAL:
+              if ( first_healer == nullptr )
+                first_healer = _p;
+              break;
+            case ROLE_TANK:
+              if ( first_tank == nullptr )
+                first_tank = _p;
+              break;
+            default:
+              if ( first_dps == nullptr )
+                first_dps = _p;
+              break;
+          }
+        }
+        if ( first_dps != nullptr )
+          random_weapon_target = first_dps;
+        else if ( first_healer != nullptr )
+          random_weapon_target = first_healer;
+        else
+          random_weapon_target = first_tank;
+
+        if ( first_tank != nullptr )
+          random_bulwark_target = first_tank;
+        else if ( first_healer != nullptr )
+          random_bulwark_target = first_healer;
+        else
+          random_bulwark_target = first_dps;
+      }
+      if ( random_weapon_target != nullptr )
+      {
+        if ( usedArmament == SACRED_WEAPON )
+        {
+          nextArmament->execute_on_target( random_weapon_target );
+          sim->print_debug( "Player {} cast Holy Armaments (Sacred Weapon) on {} via Solidarity", name(),
+                            random_weapon_target->name() );
+        }
+        else
+        {
+          nextArmament->execute_on_target( random_bulwark_target );
+          sim->print_debug( "Player {} cast Holy Armaments (Holy Bulwark) on {} via Solidarity", name(),
+                            random_bulwark_target->name() );
         }
       }
-      if ( usedArmament == SACRED_WEAPON )
-      {
-        nextArmament->execute_on_target( random_weapon_target );
-        sim->print_debug( "Player {} cast Holy Armaments (Sacred Weapon) on {} via Solidarity", name(),
-                          random_weapon_target->name() );
-      }
-      else
-      {
-        nextArmament->execute_on_target( random_bulwark_target );
-        sim->print_debug( "Player {} cast Holy Armaments (Holy Bulwark) on {} via Solidarity", name(),
-                          random_bulwark_target->name() );
-      }
-        
     }
   }
+
+  if (options.fake_solidarity)
+  {
+    buffs.lightsmith.fake_solidarity->trigger();
+  }
+
   if ( changeArmament )
     next_armament = armament( ( next_armament + 1 ) % NUM_ARMAMENT );
   if ( random )
@@ -3863,7 +3859,11 @@ void paladin_t::create_buffs()
                                                  if ( new_ )
                                                    cast_holy_armaments( this, armament::SACRED_WEAPON, false, false );
                                                } );
-
+  buffs.lightsmith.fake_solidarity = make_buff( this, "fake_solidarity" )
+                                         ->set_duration( buffs.lightsmith.sacred_weapon->base_buff_duration )
+                                         ->set_chance( 1 )
+                                         ->set_max_stack( 10 )
+                                         ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
 
   buffs.templar.hammer_of_light_ready =
       make_buff( this, "hammer_of_light_ready", find_spell( 427453 ) )
@@ -4530,7 +4530,10 @@ double paladin_t::composite_spell_crit_chance() const
     h += talents.holy_aegis->effectN( 1 ).percent();
 
   if ( buffs.avenging_wrath -> up() )
-    h += buffs.avenging_wrath -> get_crit_bonus();
+    h += buffs.avenging_wrath->get_crit_bonus();
+
+  if ( buffs.sentinel->up() )
+    h += buffs.sentinel->get_crit_bonus();
 
   return h;
 }
@@ -4544,6 +4547,9 @@ double paladin_t::composite_melee_crit_chance() const
 
   if ( buffs.avenging_wrath -> up() )
     h += buffs.avenging_wrath -> get_crit_bonus();
+
+  if ( buffs.sentinel->up() )
+    h += buffs.sentinel->get_crit_bonus();
 
   return h;
 }
@@ -4980,7 +4986,6 @@ void paladin_t::create_options()
   add_option( opt_float( "proc_chance_ret_aura_sera", options.proc_chance_ret_aura_sera, 0.0, 1.0 ) );
   add_option( opt_int( "min_dg_heal_targets", options.min_dg_heal_targets, 0, 5 ) );
   add_option( opt_int( "max_dg_heal_targets", options.max_dg_heal_targets, 0, 5 ) );
-  add_option( opt_bool( "sacred_weapon_prefer_new_targets", options.sacred_weapon_prefer_new_targets ) );
   add_option( opt_bool( "fake_solidarity", options.fake_solidarity ) );
 
   player_t::create_options();
@@ -5117,6 +5122,28 @@ std::unique_ptr<expr_t> paladin_t::create_aw_expression( util::string_view name_
   }
   return player_t::create_expression( util::string_join( expr, "." ) );
 }
+
+std::unique_ptr<expr_t> paladin_t::create_vw_expression( util::string_view name_str )
+{
+  auto expr = util::string_split<util::string_view>( name_str, "." );
+  if ( expr.size() < 2 )
+  {
+    return nullptr;
+  }
+
+  if ( !util::str_compare_ci( expr[ 1 ], "vengeful_wrath" ) )
+  {
+    return nullptr;
+  }
+
+  if ( expr.size() >= 2 && util::str_compare_ci( expr[ 1 ], "vengeful_wrath" ) && util::str_compare_ci( expr[ 0 ], "talent" ) )
+  {
+    return make_fn_expr( "talent.vengeful_wrath", [ this ]() { return this->talents.vengeful_wrath->ok() ; } );
+  }
+
+  return player_t::create_expression( util::string_join( expr, "." ) );
+}
+
 std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str )
 {
   struct paladin_expr_t : public expr_t
@@ -5304,6 +5331,7 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
 
   auto cons_expr = create_consecration_expression( name_str );
   auto aw_expr   = create_aw_expression( name_str );
+  auto vw_expr   = create_vw_expression( name_str );
   if ( cons_expr )
   {
     return cons_expr;
@@ -5311,6 +5339,10 @@ std::unique_ptr<expr_t> paladin_t::create_expression( util::string_view name_str
   if ( aw_expr )
   {
     return aw_expr;
+  }
+  if ( vw_expr )
+  {
+    return vw_expr;
   }
 
   struct time_until_next_csaa_expr_t : public paladin_expr_t

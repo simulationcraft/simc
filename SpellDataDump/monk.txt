@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57212 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57388 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -17,7 +17,7 @@ Spell Level      : 1
 Range            : 30 yards
 Duration         : 3 seconds
 Cooldown         : 8 seconds
-Category         : 82
+Category         : 82 (Type 0x0)
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -486,7 +486,7 @@ Spell Level      : 2
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
-Category         : 1561: Fluidity of Motion (387230 effect#3)
+Category         : 1561 (Type 0x0): Fluidity of Motion (387230 effect#3)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -575,7 +575,7 @@ Family Flags     : 63
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Is Channelled (34), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Allow Actions During Channel (160), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Aura Log (202), Aura Points On Client (268), Haste Affects Duration (273), Don't Cancel When All Effects are Disabled (353), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Aura Interrupt   : Shapeshifting (15), Transform (36)
 Effects          :
-#1 (id=110004)   : : Apply Aura (6) | Periodic Trigger Spell (23): Spinning Crane Kick every 0.5 seconds
+#1 (id=110004)   : Apply Aura (6) | Periodic Trigger Spell (23): Spinning Crane Kick every 0.5 seconds
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 107270 | Target: Self (1)
 #2 (id=328540)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -694,7 +694,7 @@ Spell Type       : None
 Spell Level      : 3
 Cooldown         : 0.8 seconds
 Charges          : 2 (20 seconds cooldown)
-Category         : 1365: Celerity (115173 effect#1), Celerity (115173 effect#2), Roll Buff (222625 effect#1), Time Spiral (375252 effect#1), Blessing of the Bronze (381751 effect#1), Lighter Than Air (449582 effect#1)
+Category         : 1365 (Type 0x9): Celerity (115173 effect#1), Celerity (115173 effect#2), Roll Buff (222625 effect#1), Time Spiral (375252 effect#1), Blessing of the Bronze (381751 effect#1), Lighter Than Air (449582 effect#1)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 219
@@ -781,7 +781,7 @@ Spell Type       : None
 Spell Level      : 1
 Duration         : 1.1 seconds
 Charges          : 2 (20 seconds cooldown)
-Category         : 1365: Celerity (115173 effect#1), Celerity (115173 effect#2), Roll Buff (222625 effect#1), Time Spiral (375252 effect#1), Blessing of the Bronze (381751 effect#1), Lighter Than Air (449582 effect#1)
+Category         : 1365 (Type 0x9): Celerity (115173 effect#1), Celerity (115173 effect#2), Roll Buff (222625 effect#1), Time Spiral (375252 effect#1), Blessing of the Bronze (381751 effect#1), Lighter Than Air (449582 effect#1)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 219
@@ -821,7 +821,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Do Not Log (8), Not Shapeshifted (16), No Redirection (35), No Reflection (39), No Aura Icon (60), Bypass Visibility Check (320), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=128686)   : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 0.2 seconds
+#1 (id=128686)   : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 0.2 seconds
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Land yourself, dealing $123586m1 damage to all enemies within $123586A1 yards, and slowing them by $123586s2% for $123586d.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
@@ -875,7 +875,7 @@ Max Targets      : 1
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 45 seconds
-Category         : 33
+Category         : 33 (Type 0x0)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 181
@@ -946,7 +946,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Charges          : 2 (9 seconds cooldown)
-Category         : 1517: Pool of Mists (173841 effect#1), Heart of the Jade Serpent (443421 effect#3), Heart of the Jade Serpent (443616 effect#3)
+Category         : 1517 (Type 0x1): Pool of Mists (173841 effect#1), Heart of the Jade Serpent (443421 effect#3), Heart of the Jade Serpent (443616 effect#3)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -1151,7 +1151,7 @@ Spell Type       : None
 Spell Level      : 14
 Cooldown         : 1 seconds
 Charges          : 2 (20 seconds cooldown)
-Category         : 1562: Brewmaster Monk (137023 effect#5), Light Brewing (325093 effect#1)
+Category         : 1562 (Type 0x1): Brewmaster Monk (137023 effect#5), Light Brewing (325093 effect#1)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -1174,7 +1174,8 @@ Resource         : 4.374% Base Mana (0) (id=5718)
 GCD              : 1.5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (180 seconds cooldown)
-Category         : 1933: Benevolent Faerie (327710 effect#6), Benevolent Faerie Fermata (345453 effect#6)
+Category         : 1933 (Type 0x1): Benevolent Faerie (327710 effect#6), Benevolent Faerie Fermata (345453 effect#6)
+Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -1288,7 +1289,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
-Category         : 1511
+Category         : 1511 (Type 0x1)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -1533,7 +1534,7 @@ School           : Nature
 Spell Type       : Magic
 Duration         : 30 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 2294: Heart of the Jade Serpent (443421 effect#7), Heart of the Jade Serpent (443616 effect#7), Endless Draught (450892 effect#1)
+Category         : 2294 (Type 0x0): Heart of the Jade Serpent (443421 effect#7), Heart of the Jade Serpent (443616 effect#7), Endless Draught (450892 effect#1)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -1747,7 +1748,7 @@ Family Flags     : 5, 76
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Extra Initial Period (169), Spell Haste Affects Periodic (173), Haste Affects Duration (273), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
-#1 (id=132057)   : : Apply Aura (6) | Periodic Trigger Spell (23): Rushing Jade Wind every 0.75 seconds
+#1 (id=132057)   : Apply Aura (6) | Periodic Trigger Spell (23): Rushing Jade Wind every 0.75 seconds
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 148187 | Target: Self (1)
 #2 (id=359689)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
@@ -1774,7 +1775,8 @@ Range            : 40 yards
 Duration         : 12 seconds
 Cooldown         : 0.75 seconds
 Charges          : 1 (120 seconds cooldown)
-Category         : 2198: Chrysalis (202424 effect#1), Heart of the Jade Serpent (443421 effect#4), Heart of the Jade Serpent (443616 effect#4)
+Category         : 2198 (Type 0x1): Chrysalis (202424 effect#1), Heart of the Jade Serpent (443421 effect#4), Heart of the Jade Serpent (443616 effect#4)
+Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -2019,7 +2021,7 @@ Spell Type       : Magic
 Spell Level      : 23
 Cooldown         : 1 seconds
 Charges          : 2 (20 seconds cooldown)
-Category         : 1562: Brewmaster Monk (137023 effect#5), Light Brewing (325093 effect#1)
+Category         : 1562 (Type 0x1): Brewmaster Monk (137023 effect#5), Light Brewing (325093 effect#1)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -2249,7 +2251,7 @@ Velocity         : 30 yards/sec
 Duration         : 15 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (8 seconds cooldown)
-Category         : 1490: Brewmaster Monk (137023 effect#4), Stormstout's Last Gasp (248044 effect#1), Stormstout's Last Keg (337288 effect#2), Stormstout's Last Keg (383707 effect#2)
+Category         : 1490 (Type 0x1): Brewmaster Monk (137023 effect#4), Stormstout's Last Gasp (248044 effect#1), Stormstout's Last Keg (337288 effect#2), Stormstout's Last Keg (383707 effect#2)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -2397,7 +2399,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Charges          : 2 (30 seconds cooldown)
-Category         : 1646
+Category         : 1646 (Type 0x1)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -2662,7 +2664,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee, Magic Hostile Spell
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Wearer Casts Proc Trigger (11), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow Cast While Casting (135), Extra Initial Period (169), Spell Haste Affects Periodic (173), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=156723)   : : Apply Aura (6) | Periodic Trigger Spell (23): Crackling Tiger Lightning every 1 seconds
+#1 (id=156723)   : Apply Aura (6) | Periodic Trigger Spell (23): Crackling Tiger Lightning every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 123996 | Target: Self (1)
 #2 (id=288827)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: At Self (18)
@@ -3536,11 +3538,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179708)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48
 #2 (id=191104)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Gust of Mists (191894), Zen Pulse (198487), Soothing Mist (198533), Surging Mist (227344), Overflowing Mists (273354), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Burst of Life (278564), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Gust of Mists (328748), Yu'lon's Whisper (337268), Tear of Morning (337993), Soothing Breath (343737), Gust of Mists (343819), Faeline Stomp (345727), Enveloping Breath (358560), Tear of Morning (387995), Yu'lon's Whisper (388044), Jadefire Stomp (388207), Overflowing Mists (388514), Restoral (388615), Zen Pulse (388668), Burst of Life (399230), Sheilun's Gift (399491), Thunderous Focus Tea (407058), Invigorating Mists (425804), Celestial Conduit (443039), Flight of the Red Crane (443272), Flight of the Red Crane (443614), Renewing Mist (448430), Mantra of Purity (451452), Expel Harm (451968)
                    Family Flags: 48
 #3 (id=191105)   : Apply Aura (6) | Unknown(312)
@@ -3779,7 +3781,8 @@ Spell Level      : 27
 Duration         : 15 seconds
 Cooldown         : 16 seconds
 Charges          : 2 (90 seconds cooldown)
-Category         : 1592: Strive for Perfection (296320 effect#4), Strive for Perfection (299367 effect#4), Strive for Perfection (299369 effect#4), Benevolent Faerie (327710 effect#3), Benevolent Faerie Fermata (345453 effect#3), Haunted Mask (356968 effect#3)
+Category         : 1592 (Type 0x1): Strive for Perfection (296320 effect#4), Strive for Perfection (299367 effect#4), Strive for Perfection (299369 effect#4), Benevolent Faerie (327710 effect#3), Benevolent Faerie Fermata (345453 effect#3), Haunted Mask (356968 effect#3)
+Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -4444,7 +4447,7 @@ Labels           : 95
                  : 293
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Ignore Line of Sight (66), Haste Affects Duration (273), Melee Haste Affects Periodic (278), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=287189)   : : Apply Aura (6) | Periodic Trigger Spell (23): Crosswinds every 0.5 seconds
+#1 (id=287189)   : Apply Aura (6) | Periodic Trigger Spell (23): Crosswinds every 0.5 seconds
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 195653 | Target: Self (1)
 Description      : $@spelldesc195650
 
@@ -4539,7 +4542,7 @@ Family Flags     : 76
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Extra Initial Period (169), Spell Haste Affects Periodic (173), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
-#1 (id=288818)   : : Apply Aura (6) | Periodic Trigger Spell (23): Refreshing Jade Wind every 0.75 seconds
+#1 (id=288818)   : Apply Aura (6) | Periodic Trigger Spell (23): Refreshing Jade Wind every 0.75 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 162530 | Target: Self (1)
 #2 (id=763870)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -5053,7 +5056,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, Polearm, One-handed Sword, Staff, Fist Weapon
 Charges          : 1 (4 seconds cooldown)
-Category         : 1561: Fluidity of Motion (387230 effect#3)
+Category         : 1561 (Type 0x1): Fluidity of Motion (387230 effect#3)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -5176,7 +5179,7 @@ Duration         : 3 seconds
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Is Channelled (34), Is Self Channelled (38), Initiates Combat (Enables Auto-Attack) (41), Hide Channel Bar (109), Extra Initial Period (169), Aura Points On Client (268), Hide Shapeshift Requirements (356)
 Aura Interrupt   : Shapeshifting (15), Transform (36)
 Effects          :
-#1 (id=314485)   : : Apply Aura (6) | Periodic Trigger Spell (23): Spinning Crane Kick every 0.5 seconds
+#1 (id=314485)   : Apply Aura (6) | Periodic Trigger Spell (23): Spinning Crane Kick every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 212141 | Target: Self (1)
 Description      : Spins while kicking in the air, dealing damage over $d to enemies within $212141A1 yds.
 Tooltip          : Attacking all nearby enemies for Physical damage every $t1 sec.
@@ -5345,7 +5348,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (8 seconds cooldown)
-Category         : 1511
+Category         : 1511 (Type 0x1)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -6802,7 +6805,7 @@ Spell Type       : None
 GCD              : 1 seconds
 Duration         : 8 seconds
 Charges          : 1 (45 seconds cooldown)
-Category         : 2293: Light Brewing (325093 effect#2), Endless Draught (450892 effect#2)
+Category         : 2293 (Type 0x0): Light Brewing (325093 effect#2), Endless Draught (450892 effect#2)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -6884,7 +6887,7 @@ Family Flags     : 63
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Is Channelled (34), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Aura Log (202), Aura Points On Client (268), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Defense While Channeling (338), Don't Cancel When All Effects are Disabled (353), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Prevent Jumping During Precast (448)
 Aura Interrupt   : Shapeshifting (15), Transform (36)
 Effects          :
-#1 (id=811180)   : : Apply Aura (6) | Periodic Trigger Spell (23): Spinning Crane Kick every 0.5 seconds
+#1 (id=811180)   : Apply Aura (6) | Periodic Trigger Spell (23): Spinning Crane Kick every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 107270 | Target: Self (1)
 #2 (id=811181)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -7445,7 +7448,7 @@ GCD              : 1 seconds
 Duration         : 30 seconds
 Cooldown         : 0.5 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 1910: Mistweaver Monk (137024 effect#22), Windwalker Monk (137025 effect#31)
+Category         : 1910 (Type 0x1): Mistweaver Monk (137024 effect#22), Windwalker Monk (137025 effect#31)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -7690,7 +7693,7 @@ Velocity         : 30 yards/sec
 Duration         : 15 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (8 seconds cooldown)
-Category         : 1490: Brewmaster Monk (137023 effect#4), Stormstout's Last Gasp (248044 effect#1), Stormstout's Last Keg (337288 effect#2), Stormstout's Last Keg (383707 effect#2)
+Category         : 1490 (Type 0x1): Brewmaster Monk (137023 effect#4), Stormstout's Last Gasp (248044 effect#1), Stormstout's Last Keg (337288 effect#2), Stormstout's Last Keg (383707 effect#2)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -8149,7 +8152,7 @@ Labels           : 931
 Triggered By     : Yu'lon's Whisper (337225)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169)
 Effects          :
-#1 (id=835205)   : : Apply Aura (6) | Periodic Trigger Spell (23): Yu'lon's Whisper every 1 seconds
+#1 (id=835205)   : Apply Aura (6) | Periodic Trigger Spell (23): Yu'lon's Whisper every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 337268 | Target: Self (1)
 Description      : $@spelldesc337225
 
@@ -10313,7 +10316,7 @@ Effects          :
 #1 (id=1023475)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 5 | Scaled Value: 5 | Misc Value 2: 0x4 | Target: Self (1)
 #2 (id=1180344)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 140 | Scaled Value: 140 | Misc Value: 3 | Misc Value 2: 2577 (Label) | Target: Self (1)
+                   Base Value: 160 | Scaled Value: 160 | Misc Value: 3 | Misc Value 2: 2577 (Label) | Target: Self (1)
                    Affected Spells (Label): Ancient Teachings (388023)
 Description      : $@spelldesc467293
 Tooltip          : Ancient Teachings transfers an additional $w2% damage to healing.
@@ -10333,7 +10336,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1023483)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | Misc Value 2: 0x471 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 0x471 | Target: Self (1)
 #2 (id=1023484)  : Apply Aura (6) | Dummy (4)
                    Base Value: -500 | Scaled Value: -500 | Target: Self (1)
 #3 (id=1147040)  : Apply Aura (6) | Dummy (4)
@@ -10370,7 +10373,7 @@ Labels           : 16: Class Spells
 Triggered By     : Yu'lon's Whisper (388038)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169), Spell Haste Affects Periodic (173)
 Effects          :
-#1 (id=1023499)  : : Apply Aura (6) | Periodic Trigger Spell (23): Yu'lon's Whisper every 0.5 seconds
+#1 (id=1023499)  : Apply Aura (6) | Periodic Trigger Spell (23): Yu'lon's Whisper every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 388044 | Target: Self (1)
 Description      : $@spelldesc388038
 
@@ -10387,7 +10390,7 @@ Family Flags     : 48
 Attributes       : Do Not Display Range (126)
 Effects          :
 #1 (id=1023503)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.0455 | Radius: 15 yards | Target: Cone to Friendly (136)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.182 | Radius: 15 yards | Target: Cone to Friendly (136)
 Description      : $@spelldesc388038
 
 Name             : Jadefire Stomp (id=388193) [Spell Family (53)] 
@@ -10402,7 +10405,7 @@ GCD              : 1 seconds
 Duration         : 30 seconds
 Cooldown         : 0.5 seconds
 Charges          : 1 (30 seconds cooldown)
-Category         : 1910: Mistweaver Monk (137024 effect#22), Windwalker Monk (137025 effect#31)
+Category         : 1910 (Type 0x1): Mistweaver Monk (137024 effect#22), Windwalker Monk (137025 effect#31)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -11056,7 +11059,7 @@ Internal Cooldown: 1 seconds
 Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Magic Hostile Spell
-Attributes       : Cooldown On Event (25), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Allow Cast While Casting (135), Aura Points On Client (268), Heal Prediction (280)
+Attributes       : Cooldown On Event (25), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Can Proc From Procs (122), Allow Cast While Casting (135), Aura Points On Client (268), Heal Prediction (280)
 Effects          :
 #1 (id=1024266)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11) | Attributes: Suppress Points Stacking (6)
                    Base Value: -9000 | Scaled Value: -9000 | Misc Value: 11 | Target: Self (1)
@@ -11161,7 +11164,8 @@ Resource         : 4.374% Base Mana (0) (id=265570)
 GCD              : 1.5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (180 seconds cooldown)
-Category         : 1933: Benevolent Faerie (327710 effect#6), Benevolent Faerie Fermata (345453 effect#6)
+Category         : 1933 (Type 0x1): Benevolent Faerie (327710 effect#6), Benevolent Faerie Fermata (345453 effect#6)
+Category Flags   : Reset Charges on Encounter End (4), Reset Coooldown on Encounter End (5)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -11373,7 +11377,7 @@ Attributes       : Passive (6), Not In Spellbook (143)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1024677)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 90 | Scaled Value: 90 | Target: Self (1)
+                   Base Value: 110 | Scaled Value: 110 | Target: Self (1)
 #2 (id=1024678)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 #3 (id=1024679)  : Apply Aura (6) | Dummy (4)
@@ -11432,7 +11436,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Suppress Caster Procs (112), Suppress Target Procs (113), Not In Spellbook (143), Suppress Weapon Procs (151), Extra Initial Period (169), Do Not Log Aura Refresh (291), Do Not Log on Learn (355)
 Effects          :
-#1 (id=1024731)  : : Apply Aura (6) | Periodic Trigger Spell (23): Vivacious Vivification every 10 seconds
+#1 (id=1024731)  : Apply Aura (6) | Periodic Trigger Spell (23): Vivacious Vivification every 10 seconds
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 392883 | Target: Self (1)
 Description      : Every $t1 sec, your next Vivify becomes instant and its healing is increased by $392883s2%.$?c1[
 
@@ -13723,7 +13727,7 @@ Labels           : 16: Class Spells
                  : 2917: Mistweaver Monk (137024 effect#27), Mistweaver Monk (137024 effect#28), Windwalker Monk (137025 effect#19), Windwalker Monk (137025 effect#23)
 Attributes       : Passive (6)
 Effects          :
-#1 (id=1082937)  : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 3 seconds
+#1 (id=1082937)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 3 seconds
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1082949)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -14221,7 +14225,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Charges          : 2 (30 seconds cooldown)
-Category         : 1646
+Category         : 1646 (Type 0x1)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
@@ -14264,7 +14268,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6)
 Effects          :
-#1 (id=1120519)  : : Apply Aura (6) | Periodic Trigger Spell (23): Dance of the Wind every 4 seconds
+#1 (id=1120519)  : Apply Aura (6) | Periodic Trigger Spell (23): Dance of the Wind every 4 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 432180 | Target: Self (1)
 #2 (id=1120530)  : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -14543,7 +14547,7 @@ Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : Not Shapeshifted (16), Is Self Channelled (38), Can Proc From Procs (122), Allow Actions During Channel (160), Extra Initial Period (169), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Allow Defense While Channeling (338), Unbreakable Channel (358), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1138648)  : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
+#1 (id=1138648)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 #2 (id=1138649)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
@@ -15387,7 +15391,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Effects          :
-#1 (id=1148921)  : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 0.1 seconds
+#1 (id=1148921)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 0.1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc449582
 Tooltip          : You may jump twice to dash forward a short distance.
@@ -15793,7 +15797,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6)
 Effects          :
-#1 (id=1150539)  : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 3 seconds
+#1 (id=1150539)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : While out of combat, your movement speed is increased by $450552s1%.
 
@@ -17651,7 +17655,7 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : No Aura Icon (60), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308)
 Effects          :
-#1 (id=1153042)  : : Apply Aura (6) | Periodic Trigger Spell (23): Flurry of Xuen every 0.3 seconds
+#1 (id=1153042)  : Apply Aura (6) | Periodic Trigger Spell (23): Flurry of Xuen every 0.3 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 452130 | Target: Self (1)
 #2 (id=1153043)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -17816,7 +17820,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In
 Effects          :
 #1 (id=1155102)  : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 12 | Target: Self (1)
-#2 (id=1155114)  : : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 8 seconds
+#2 (id=1155114)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 8 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc121817
 
@@ -18921,13 +18925,13 @@ Attributes       : Aura Points On Client (268)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1180408)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1180409)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 800 | Scaled Value: 800 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
                    Family Flags: 32
 #3 (id=1190455)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 17 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.4 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
                    Family Flags: 32
 Description      : $@spelldesc467316
@@ -18944,7 +18948,7 @@ Labels           : 16: Class Spells
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1180452)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renewing Mist (115151), Renewing Mist (119611), Renewing Mist (448430)
                    Family Flags: 23
 Description      : $@spelldesc467307
@@ -18963,7 +18967,7 @@ Family Flags     : 39
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1181673)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.438 | PvP Coefficient: 3 | Radius: 25 yards | Target: Cone to Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.595 | PvP Coefficient: 1.2 | Radius: 25 yards | Target: Cone to Enemy (104)
 Description      : $@spelldesc467307
 
 Name             : Glyph of Tiger Palm (id=468605) [Spell Family (53)] 

@@ -42,7 +42,7 @@ actions+=/call_action_list,name=build
 actions+=/call_action_list,name=fill,if=!variable.stealth
 
 # Combo Point Builder
-actions.build=shadowstrike,cycle_targets=1,if=debuff.find_weakness.remains<=2&variable.targets=2&talent.unseen_blade|!used_for_danse&talent.danse_macabre
+actions.build=shadowstrike,cycle_targets=1,if=debuff.find_weakness.remains<=2&variable.targets=2&talent.unseen_blade|!used_for_danse&!talent.premeditation
 actions.build+=/shuriken_storm,if=talent.deathstalkers_mark&!buff.premeditation.up&variable.targets>=(2+3*buff.shadow_dance.up)|buff.clear_the_witnesses.up&!buff.symbols_of_death.up|buff.flawless_form.up&variable.targets>=3&!variable.stealth
 actions.build+=/shuriken_tornado,if=buff.lingering_darkness.up|talent.deathstalkers_mark&cooldown.shadow_blades.remains>=32&variable.targets>=2|talent.unseen_blade&buff.symbols_of_death.up&variable.targets>=4
 actions.build+=/shadowstrike
@@ -53,7 +53,7 @@ actions.build+=/backstab
 # Cooldowns
 actions.cds=cold_blood,if=cooldown.secret_technique.up&buff.shadow_dance.up&combo_points>=6&variable.secret
 actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|buff.flagellation_buff.up
-actions.cds+=/symbols_of_death,if=(buff.symbols_of_death.remains<=3&variable.maintenance&(buff.flagellation_buff.up|!talent.flagellation|cooldown.flagellation.remains>=30-15*!talent.death_perception&cooldown.secret_technique.remains<=8|!talent.death_perception)|fight_remains<=15)
+actions.cds+=/symbols_of_death,if=(buff.symbols_of_death.remains<=3&variable.maintenance&(buff.flagellation_buff.up&cooldown.secret_technique.remains<8|!talent.flagellation|buff.flagellation_persist.up&talent.unseen_blade|cooldown.flagellation.remains>=30-15*!talent.death_perception&cooldown.secret_technique.remains<8|!talent.death_perception)|fight_remains<=15)
 actions.cds+=/shadow_blades,if=variable.maintenance&variable.shd_cp&buff.shadow_dance.up&!buff.premeditation.up
 actions.cds+=/thistle_tea,if=buff.shadow_dance.remains>2&!buff.thistle_tea.up
 actions.cds+=/flagellation,if=combo_points>=5|fight_remains<=25

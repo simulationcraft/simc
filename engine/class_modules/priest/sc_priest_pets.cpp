@@ -216,6 +216,24 @@ struct priest_pet_melee_t : public melee_attack_t
   {
     return static_cast<priest_pet_t&>( *player );
   }
+
+  virtual double composite_atonement_multiplier( action_state_t* s )
+  {
+    double mul = p().o().talents.discipline.atonement->effectN( 1 ).percent();
+
+    if ( !p().o().options.discipline_in_raid )
+      mul *= 1 + p().o().talents.discipline.atonement->effectN( 3 ).percent();
+
+    // TODO: Check if applies
+    //if ( p().o().talents.discipline.abyssal_reverie.enabled() &&
+    //     ( dbc::get_school_mask( s->action->school ) & SCHOOL_SHADOW ) != SCHOOL_SHADOW )
+    //  mul *= 1 + p().o().talents.discipline.abyssal_reverie->effectN( 1 ).percent();
+
+    if ( p().o().talents.voidweaver.voidheart.enabled() && p().o().buffs.voidheart->check() )
+      mul *= 1.0 + p().o().talents.voidweaver.voidheart->effectN( 2 ).percent();
+
+    return mul;
+  }
 };
 
 struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
@@ -352,6 +370,23 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
     return ttm;
   }
 
+  virtual double composite_atonement_multiplier( action_state_t* s )
+  {
+    double mul = p().o().talents.discipline.atonement->effectN( 1 ).percent();
+
+    if ( !p().o().options.discipline_in_raid )
+      mul *= 1 + p().o().talents.discipline.atonement->effectN( 3 ).percent();
+
+    if ( p().o().talents.discipline.abyssal_reverie.enabled() &&
+         ( dbc::get_school_mask( s->action->school ) & SCHOOL_SHADOW ) != SCHOOL_SHADOW )
+      mul *= 1 + p().o().talents.discipline.abyssal_reverie->effectN( 1 ).percent();
+
+    if ( p().o().talents.voidweaver.voidheart.enabled() && p().o().buffs.voidheart->check() )
+      mul *= 1.0 + p().o().talents.voidweaver.voidheart->effectN( 2 ).percent();
+
+    return mul;
+  }
+
   void impact( action_state_t* s ) override
   {
     ab::impact( s );
@@ -359,7 +394,7 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
     if ( result_is_hit( s->result ) )
     {
       if ( triggers_atonement && s->chain_target == 0 )
-        p().o().trigger_atonement( s );
+        p().o().trigger_atonement( s, composite_atonement_multiplier( s ) );
     }
   }
 
@@ -546,7 +581,7 @@ struct void_flay_t final : public priest_pet_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      p().o().trigger_atonement( s );
+      p().o().trigger_atonement( s, composite_atonement_multiplier( s ) );
 
       p().o().trigger_essence_devourer();
 
@@ -744,7 +779,7 @@ struct fiend_melee_t : public priest_pet_melee_t
         p().o().trigger_shadow_weaving( s );
       }
 
-      p().o().trigger_atonement( s );
+      p().o().trigger_atonement( s, composite_atonement_multiplier( s ) );
 
       p().o().trigger_essence_devourer();
 

@@ -11689,7 +11689,7 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
   switch ( specialization() )
   {
     case DRUID_BALANCE:
-      if ( style != FIGHT_STYLE_PATCHWERK )
+      if ( style != FIGHT_STYLE_PATCHWERK && style != FIGHT_STYLE_DUNGEON_ROUTE )
         return false;
 
       break;

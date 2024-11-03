@@ -115,6 +115,9 @@ endif
 ifneq (${LTO},)
   OPTS_INTERNAL += -flto
 endif
+ifneq (${LTO_AUTO},)
+  OPTS_INTERNAL += -flto=auto
+endif
 
 ifneq (${LTO_THIN},)
   OPTS_INTERNAL += -flto=thin

@@ -2,7 +2,7 @@ deathknight="TWW1_Death_Knight_Frost_Rider"
 source=default
 spec=frost
 level=80
-race=blood_elf
+race=mechagnome
 role=attack
 position=back
 talents=CsPAAAAAAAAAAAAAAAAAAAAAAAAzMjZmxYYGzMzMzMGmJzYYwgZGzMMzMzMzMLzMAAAAAAAAAAAAgFzihBGY20QDbYmZGzMA
@@ -98,7 +98,7 @@ actions.cold_heart+=/chains_of_ice,if=talent.obliteration&!buff.pillar_of_frost.
 actions.cooldowns=potion,if=(talent.pillar_of_frost&buff.pillar_of_frost.up|!talent.pillar_of_frost&buff.empower_rune_weapon.up|!talent.pillar_of_frost&!talent.empower_rune_weapon|active_enemies>=2&buff.pillar_of_frost.up)|fight_remains<25
 actions.cooldowns+=/abomination_limb,if=talent.obliteration&!buff.pillar_of_frost.up&variable.sending_cds&(!hero_tree.deathbringer|cooldown.reapers_mark.remains<5)|fight_remains<15
 actions.cooldowns+=/abomination_limb,if=!talent.obliteration&variable.sending_cds
-actions.cooldowns+=/remorseless_winter,if=variable.rw_buffs&variable.sending_cds&(!talent.arctic_assault|!buff.pillar_of_frost.up)&(cooldown.pillar_of_frost.remains>20|cooldown.pillar_of_frost.remains<4)&fight_remains>10
+actions.cooldowns+=/remorseless_winter,if=variable.rw_buffs&variable.sending_cds&(!talent.arctic_assault|!buff.pillar_of_frost.up)&(cooldown.pillar_of_frost.remains>20|cooldown.pillar_of_frost.remains<4|(buff.gathering_storm.stack=10&buff.remorseless_winter.remains<gcd.max))&fight_remains>10
 actions.cooldowns+=/chill_streak,if=variable.sending_cds&(!talent.arctic_assault|!buff.pillar_of_frost.up)
 actions.cooldowns+=/empower_rune_weapon,if=talent.obliteration&!talent.breath_of_sindragosa&buff.pillar_of_frost.up|fight_remains<20
 actions.cooldowns+=/empower_rune_weapon,if=buff.breath_of_sindragosa.up&(runic_power<40|runic_power<variable.erw_breath_rp_trigger&rune<variable.erw_breath_rune_trigger)
@@ -114,7 +114,7 @@ actions.cooldowns+=/frostwyrms_fury,if=!talent.apocalypse_now&active_enemies>=2&
 actions.cooldowns+=/frostwyrms_fury,if=!talent.apocalypse_now&talent.obliteration&(talent.pillar_of_frost&buff.pillar_of_frost.up&!main_hand.2h|!buff.pillar_of_frost.up&main_hand.2h&cooldown.pillar_of_frost.remains|!talent.pillar_of_frost)&variable.fwf_buffs&(!raid_event.adds.exists|raid_event.adds.in>cooldown.frostwyrms_fury.duration+raid_event.adds.duration)
 actions.cooldowns+=/raise_dead,use_off_gcd=1
 actions.cooldowns+=/soul_reaper,if=talent.reaper_of_souls&buff.reaper_of_souls.up&buff.killing_machine.react<2
-actions.cooldowns+=/soul_reaper,if=fight_remains>5&target.time_to_pct_35<5&target.time_to_pct_0>5&active_enemies<=1&rune>2&(talent.obliteration&(buff.pillar_of_frost.up&!buff.killing_machine.react|!buff.pillar_of_frost.up|buff.killing_machine.react<2&!buff.exterminate.up&buff.pillar_of_frost.remains<gcd)|talent.breath_of_sindragosa&(buff.breath_of_sindragosa.up&runic_power>50|!buff.breath_of_sindragosa.up)|!talent.breath_of_sindragosa&!talent.obliteration)
+actions.cooldowns+=/soul_reaper,if=fight_remains>5&target.time_to_pct_35<5&target.time_to_pct_0>5&active_enemies<=1&rune>2&(talent.obliteration&(buff.pillar_of_frost.up&!buff.killing_machine.react|!buff.pillar_of_frost.up)|talent.breath_of_sindragosa&(!talent.obliteration|!buff.pillar_of_frost.up)&(buff.breath_of_sindragosa.up&runic_power>50|!buff.breath_of_sindragosa.up)|!talent.breath_of_sindragosa&!talent.obliteration)
 actions.cooldowns+=/frostscythe,if=!buff.killing_machine.react&!buff.pillar_of_frost.up
 actions.cooldowns+=/any_dnd,if=hero_tree.deathbringer&!buff.death_and_decay.up&variable.st_planning&cooldown.reapers_mark.remains<gcd.max*2
 actions.cooldowns+=/any_dnd,if=!buff.death_and_decay.up&variable.adds_remain&(buff.pillar_of_frost.up&buff.killing_machine.react&(talent.enduring_strength|buff.pillar_of_frost.remains>5)|!buff.pillar_of_frost.up&(cooldown.death_and_decay.charges=2|cooldown.pillar_of_frost.remains>cooldown.death_and_decay.duration|!talent.the_long_winter&cooldown.pillar_of_frost.remains<gcd.max*2)|fight_remains<15)&(active_enemies>5|talent.cleaving_strikes&active_enemies>=2)
@@ -220,7 +220,7 @@ hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
 waist=nether_bountys_greatbelt,id=225589,bonus_id=7187/1520/6935,ilevel=639,gem_id=213458
 legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=stormbound_armor_kit_3
 feet=boots_of_the_black_bulwark,id=225590,bonus_id=1540
-finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213458/213458,enchant=radiant_critical_strike_3
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213458/213458,enchant=radiant_haste_3
 finger2=band_of_the_roving_scalawag,id=162541,bonus_id=1514/3317/6646/8781,ilevel=639,gem_id=213482/213482,enchant=radiant_critical_strike_3
 trinket1=treacherous_transmitter,id=221023,bonus_id=7187/1520,ilevel=639
 trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
@@ -231,8 +231,8 @@ off_hand=charged_slicer,id=222451,bonus_id=11144/9627/9633/8902/10222/11300/8960
 # gear_ilvl=638.63
 # gear_strength=32574
 # gear_stamina=237354
-# gear_crit_rating=17541
-# gear_haste_rating=8834
+# gear_crit_rating=17226
+# gear_haste_rating=9149
 # gear_mastery_rating=14296
 # gear_versatility_rating=147
 # gear_armor=56297

@@ -2759,6 +2759,7 @@ void sim_t::init()
                                ->add_invalidate( CACHE_INTELLECT );
 
   auras.battle_shout = make_buff( this, "battle_shout", dbc::find_spell( this, 6673 ) )
+                           ->set_cooldown( 0_ms )
                            ->set_default_value_from_effect( 1 )
                            ->add_invalidate( CACHE_ATTACK_POWER );
 

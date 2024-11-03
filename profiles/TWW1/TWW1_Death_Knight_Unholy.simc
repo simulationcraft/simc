@@ -90,7 +90,7 @@ actions.aoe_setup+=/epidemic,if=!variable.pooling_runic_power
 # Non-San'layn Cooldowns
 actions.cds=dark_transformation,if=variable.st_planning&(cooldown.apocalypse.remains<8|!talent.apocalypse|active_enemies>=1)|fight_remains<20
 actions.cds+=/unholy_assault,if=variable.st_planning&(cooldown.apocalypse.remains<gcd*2|!talent.apocalypse|active_enemies>=2&buff.dark_transformation.up)|fight_remains<20
-actions.cds+=/apocalypse,if=variable.st_planning
+actions.cds+=/apocalypse,if=variable.st_planning|fight_remains<20
 actions.cds+=/outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&dot.virulent_plague.ticks_remain<5,if=(dot.virulent_plague.refreshable|talent.superstrain&(dot.frost_fever.refreshable|dot.blood_plague.refreshable))&(!talent.unholy_blight|talent.plaguebringer)&(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains>dot.virulent_plague.ticks_remain*3)
 actions.cds+=/abomination_limb,if=variable.st_planning&!buff.sudden_doom.react&(buff.festermight.up&buff.festermight.stack>8|!talent.festermight)&(pet.apoc_ghoul.remains<5|!talent.apocalypse)&debuff.festering_wound.stack<=2|fight_remains<12
 
@@ -113,7 +113,7 @@ actions.cds_aoe_san+=/abomination_limb,if=variable.adds_remain
 # San'layn Cooldowns
 actions.cds_san=dark_transformation,if=active_enemies>=1&variable.st_planning&(talent.apocalypse&pet.apoc_ghoul.active|!talent.apocalypse)|fight_remains<20
 actions.cds_san+=/unholy_assault,if=variable.st_planning&(buff.dark_transformation.up&buff.dark_transformation.remains<12)|fight_remains<20
-actions.cds_san+=/apocalypse,if=variable.st_planning&debuff.festering_wound.stack>=3|fight_remains<20
+actions.cds_san+=/apocalypse,if=variable.st_planning|fight_remains<20
 actions.cds_san+=/outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&dot.virulent_plague.ticks_remain<5,if=(dot.virulent_plague.refreshable|talent.morbidity&buff.infliction_of_sorrow.up&talent.superstrain&dot.frost_fever.refreshable&dot.blood_plague.refreshable)&(!talent.unholy_blight|talent.unholy_blight&cooldown.dark_transformation.remains)&(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains)
 actions.cds_san+=/abomination_limb,if=active_enemies>=1&variable.st_planning&!buff.gift_of_the_sanlayn.up&!buff.sudden_doom.react&buff.festermight.up&debuff.festering_wound.stack<=2|!buff.gift_of_the_sanlayn.up&fight_remains<12
 
@@ -123,7 +123,7 @@ actions.cds_shared=potion,if=active_enemies>=1&(!talent.summon_gargoyle|cooldown
 actions.cds_shared+=/invoke_external_buff,name=power_infusion,if=active_enemies>=1&(variable.st_planning|variable.adds_remain)&(pet.gargoyle.active&pet.gargoyle.remains<=22|!talent.summon_gargoyle&talent.army_of_the_dead&(talent.raise_abomination&pet.abomination.active&pet.abomination.remains<18|!talent.raise_abomination&pet.army_ghoul.active&pet.army_ghoul.remains<=18)|!talent.summon_gargoyle&!talent.army_of_the_dead&buff.dark_transformation.up|!talent.summon_gargoyle&buff.dark_transformation.up|!pet.gargoyle.active&cooldown.summon_gargoyle.remains+10>cooldown.invoke_external_buff_power_infusion.duration|active_enemies>=3&(buff.dark_transformation.up|death_and_decay.ticking))
 actions.cds_shared+=/army_of_the_dead,if=(variable.st_planning|variable.adds_remain)&(talent.commander_of_the_dead&cooldown.dark_transformation.remains<5|!talent.commander_of_the_dead&active_enemies>=1)|fight_remains<35
 actions.cds_shared+=/raise_abomination,if=(variable.st_planning|variable.adds_remain)|fight_remains<30
-actions.cds_shared+=/summon_gargoyle,use_off_gcd=1,if=(variable.st_planning|variable.adds_remain)&(buff.commander_of_the_dead.up|!talent.commander_of_the_dead&active_enemies>=1)
+actions.cds_shared+=/summon_gargoyle,use_off_gcd=1,if=(variable.st_planning|variable.adds_remain)&(buff.commander_of_the_dead.up|!talent.commander_of_the_dead&active_enemies>=1)|fight_remains<25
 actions.cds_shared+=/antimagic_shell,if=death_knight.ams_absorb_percent>0&runic_power<30&rune<2
 
 # Cleave
@@ -154,11 +154,12 @@ actions.san_fishing+=/festering_strike,if=debuff.festering_wound.stack<3-pet.abo
 
 # Single Target San'layn
 actions.san_st=any_dnd,if=!death_and_decay.ticking&talent.unholy_ground&cooldown.dark_transformation.remains<5
-actions.san_st+=/death_coil,if=buff.sudden_doom.react&buff.gift_of_the_sanlayn.remains&(talent.doomed_bidding|talent.rotten_touch)|rune<2&!buff.runic_corruption.up
-actions.san_st+=/wound_spender,if=buff.essence_of_the_blood_queen.remains<3&buff.vampiric_strike.react|talent.gift_of_the_sanlayn&buff.dark_transformation.up&buff.dark_transformation.remains<gcd
+actions.san_st+=/death_coil,if=buff.sudden_doom.react&buff.gift_of_the_sanlayn.remains&(talent.doomed_bidding|talent.rotten_touch)|rune<3&!buff.runic_corruption.up
+actions.san_st+=/wound_spender,if=buff.gift_of_the_sanlayn.up&buff.vampiric_strike.react|talent.gift_of_the_sanlayn&buff.dark_transformation.up&buff.dark_transformation.remains<gcd
 actions.san_st+=/soul_reaper,if=target.health.pct<=35&!buff.gift_of_the_sanlayn.up&fight_remains>5
-actions.san_st+=/festering_strike,if=(debuff.festering_wound.stack<4&cooldown.apocalypse.remains<variable.apoc_timing)|(talent.gift_of_the_sanlayn&!buff.gift_of_the_sanlayn.up|!talent.gift_of_the_sanlayn)&(buff.festering_scythe.react|debuff.festering_wound.stack<=1-pet.abomination.active)
-actions.san_st+=/wound_spender,if=(debuff.festering_wound.stack>=3-pet.abomination.active&cooldown.apocalypse.remains>variable.apoc_timing)|buff.vampiric_strike.react&cooldown.apocalypse.remains>variable.apoc_timing
+actions.san_st+=/wound_spender,if=buff.vampiric_strike.react&debuff.festering_wound.stack>=1
+actions.san_st+=/festering_strike,if=(debuff.festering_wound.stack=0&cooldown.apocalypse.remains<variable.apoc_timing)|(talent.gift_of_the_sanlayn&!buff.gift_of_the_sanlayn.up|!talent.gift_of_the_sanlayn)&(buff.festering_scythe.react|debuff.festering_wound.stack<=1)
+actions.san_st+=/wound_spender,if=(!talent.apocalypse|cooldown.apocalypse.remains>variable.apoc_timing)&(debuff.festering_wound.stack>=3-pet.abomination.active|buff.vampiric_strike.react)
 actions.san_st+=/death_coil,if=!variable.pooling_runic_power&debuff.death_rot.remains<gcd|(buff.sudden_doom.react&debuff.festering_wound.stack>=1|rune<2)
 actions.san_st+=/wound_spender,if=debuff.festering_wound.stack>4
 actions.san_st+=/death_coil,if=!variable.pooling_runic_power

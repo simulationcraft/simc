@@ -15,6 +15,8 @@ namespace paladin {
   sentinel_buff_t::sentinel_buff_t( paladin_t* p )
     : buff_t( p, "sentinel", p->spells.sentinel ),
       damage_modifier( 0.0 ),
+      healing_modifier( 0.0 ),
+      crit_bonus( 0.0 ),
       damage_reduction_modifier( 0.0 ),
       health_bonus( 0.0 )
   {
@@ -23,8 +25,9 @@ namespace paladin {
       set_chance( 0 );
     }
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
-    /* if ( p->talents.avenging_wrath->ok() )
-      damage_modifier = p->talents.avenging_wrath->effectN( 1 ).percent() / 10.0;*/
+    damage_modifier           = data().effectN( 1 ).percent();
+    healing_modifier          = data().effectN( 1 ).percent();
+    crit_bonus                = data().effectN( 3 ).percent();
     health_bonus              = data().effectN( 11 ).percent();
     damage_reduction_modifier = data().effectN( 12 ).percent();
 

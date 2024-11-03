@@ -246,6 +246,7 @@ public:
     propagate_const<buff_t*> darkflame_shroud;
     propagate_const<buff_t*> deaths_torment;
     propagate_const<buff_t*> devouring_chorus;
+    propagate_const<buff_t*> darkness_from_light;
 
     // Archon
     propagate_const<buff_t*> power_surge;
@@ -256,7 +257,6 @@ public:
     propagate_const<buff_t*> entropic_rift;
     propagate_const<buff_t*> darkening_horizon;
     propagate_const<buff_t*> collapsing_void;
-    propagate_const<buff_t*> void_empowerment;
   } buffs;
 
   // Talents
@@ -574,6 +574,7 @@ public:
       player_talent_t dark_energy;
       player_talent_t void_blast;
       const spell_data_t* void_blast_shadow;
+      const spell_data_t* void_blast_disc;
       player_talent_t inner_quietus;
       player_talent_t devour_matter;
       player_talent_t void_empowerment;
@@ -673,6 +674,7 @@ public:
 
     // Discipline
     propagate_const<cooldown_t*> penance;
+    propagate_const<cooldown_t*> ultimate_penitence;
 
     // Holy
     propagate_const<cooldown_t*> holy_fire;
@@ -827,8 +829,6 @@ public:
     // Only takes into account if you have not overriden initial_resource=insanity=X to something greater than 0
     bool init_insanity = true;
 
-    int disc_minimum_allies = 5;
-
     // Forces Idol of Y'Shaarj to give a particular buff for every cast
     // default, pride, anger, despair, fear (NYI), violence
     std::string forced_yshaarj_type = "default";
@@ -850,6 +850,9 @@ public:
     // Additional Crystalline Reflection Damage Multiplier (Because its bugged and doesnt always do full damage)
     double crystalline_reflection_damage_mult = 0.5;
     bool no_channel_macro_mfi = false;
+
+    // Controls whether Discipline is "in a raid" or not.
+    bool discipline_in_raid = false;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
@@ -942,7 +945,7 @@ public:
   void trigger_inescapable_torment( player_t* target, bool echo = false, double mod = 1.0 );
   void trigger_idol_of_yshaarj( player_t* target );
   void trigger_idol_of_cthun( action_state_t* );
-  void trigger_atonement( action_state_t* );
+  void trigger_atonement( action_state_t*, double );
   void trigger_divine_aegis( action_state_t* );
   void spawn_idol_of_cthun( action_state_t* );
   void trigger_shadowy_apparitions( proc_t* proc, bool gets_crit_mod );
@@ -1205,6 +1208,11 @@ public:
       parse_effects( p().buffs.twilight_equilibrium_holy_amp );
       parse_effects( p().buffs.light_weaving );
       parse_effects( p().buffs.weal_and_woe );
+
+      if ( p().sets->has_set_bonus( PRIEST_DISCIPLINE, TWW1, B4 ) )
+      {
+        parse_effects( p().buffs.darkness_from_light );
+      }
     }
 
     // HOLY BUFF EFFECTS
@@ -1482,6 +1490,23 @@ struct priest_spell_t : public priest_action_t<spell_t>
     base_t::last_tick( d );
   }
 
+  virtual double composite_atonement_multiplier( action_state_t* s )
+  {
+    double mul = p().talents.discipline.atonement->effectN( 1 ).percent();
+
+    if ( !p().options.discipline_in_raid )
+      mul *= 1 + p().talents.discipline.atonement->effectN( 3 ).percent();
+
+    if ( p().talents.discipline.abyssal_reverie.enabled() &&
+         ( dbc::get_school_mask( s->action->school ) & SCHOOL_SHADOW ) != SCHOOL_SHADOW )
+      mul *= 1 + p().talents.discipline.abyssal_reverie->effectN( 1 ).percent();
+
+    if ( p().talents.voidweaver.voidheart.enabled() && p().buffs.voidheart->check() )
+      mul *= 1.0 + p().talents.voidweaver.voidheart->effectN( 2 ).percent();
+
+    return mul;
+  }
+
   void execute() override
   {
     base_t::execute();
@@ -1519,8 +1544,8 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest().buffs.twist_of_fate->trigger();
       }
 
-      if ( triggers_atonement && s->chain_target == 0 )
-        p().trigger_atonement( s );
+      if ( triggers_atonement && ( s->chain_target == 0 || split_aoe_damage ) )
+        p().trigger_atonement( s, composite_atonement_multiplier( s ) );
     }
   }
 
@@ -1530,7 +1555,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( triggers_atonement && result_is_hit( d->state->result ) )
     {
-      p().trigger_atonement( d->state );
+      p().trigger_atonement( d->state, composite_atonement_multiplier( d->state ) );
     }
   }
 

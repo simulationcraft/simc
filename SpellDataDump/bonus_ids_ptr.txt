@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57171 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.57361 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -5585,7 +5585,7 @@ bonus_id={ 10367 }, quality={ epic }, ilevel={ 447 @plvl 50 - 545 @plvl 90 }
 bonus_id={ 10381 }, quality={ common }, effects={ Health Brew (id=438407, index=0, type=equip) }
 bonus_id={ 10382 }, ilevel={ 356 @plvl 55 - 551 @plvl 90 }
 bonus_id={ 10385 }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
-bonus_id={ 10391 }, quality={ common }, effects={ Slash (id=431147, index=0, type=equip) }
+bonus_id={ 10391 }, quality={ common }, effects={ Combo Attack (id=471633, index=0, type=equip) }
 bonus_id={ 10397 }, socket={ 1 }
 bonus_id={ 10405 }, effects={ Fervor (id=429389, index=0, type=equip) }
 bonus_id={ 10406 }, effects={ Arcanist's Edge (id=429270, index=0, type=equip) }
@@ -6935,6 +6935,30 @@ bonus_id={ 12008 }, desc={ Rank 1/4 }, effects={ Adding (id=464659, index=0, typ
 bonus_id={ 12009 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=464725, index=0, type=use) }
 bonus_id={ 12010 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=464726, index=0, type=use) }
 bonus_id={ 12011 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=464727, index=0, type=use) }
+bonus_id={ 12012 }, quality={ epic }
+bonus_id={ 12013 }, quality={ epic }
+bonus_id={ 12014 }, quality={ epic }
+bonus_id={ 12025 }, quality={ epic }
+bonus_id={ 12026 }, quality={ epic }
+bonus_id={ 12027 }, quality={ epic }
+bonus_id={ 12028 }, quality={ epic }
 bonus_id={ 12057 }, ilevel={ 356 @plvl 55 - 551 @plvl 90 }
 bonus_id={ 12058 }, quality={ rare }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
+bonus_id={ 12062 }, quality={ common }, effects={ Celestial Barrage (id=471717, index=0, type=equip) }
+bonus_id={ 12063 }, quality={ uncommon }, effects={ Celestial Barrage (id=472390, index=0, type=equip) }
+bonus_id={ 12064 }, quality={ rare }, effects={ Celestial Barrage (id=472403, index=0, type=equip) }
+bonus_id={ 12065 }, quality={ epic }, effects={ Celestial Barrage (id=472406, index=0, type=equip) }
 bonus_id={ 12070 }, quality={ epic }, ilevel={ 369 @plvl 55 - 554 @plvl 90 }
+bonus_id={ 12085 }, quality={ common }, effects={ Void Tear (id=472696, index=0, type=equip) }
+bonus_id={ 12086 }, quality={ uncommon }, effects={ Void Tear (id=472852, index=0, type=equip) }
+bonus_id={ 12087 }, quality={ rare }, effects={ Void Tear (id=472859, index=0, type=equip) }
+bonus_id={ 12088 }, quality={ epic }, effects={ Void Tear (id=472866, index=0, type=equip) }
+bonus_id={ 12089 }, quality={ common }, effects={ G.R.A.V. Glove (id=472908, index=0, type=equip) }
+bonus_id={ 12097 }, quality={ common }, effects={ Aura of Zealotry (id=473810, index=0, type=equip) }
+bonus_id={ 12098 }, quality={ uncommon }, effects={ Aura of Zealotry (id=473819, index=0, type=equip) }
+bonus_id={ 12099 }, quality={ rare }, effects={ Aura of Zealotry (id=473823, index=0, type=equip) }
+bonus_id={ 12100 }, quality={ epic }, effects={ Aura of Zealotry (id=473828, index=0, type=equip) }
+bonus_id={ 12101 }, quality={ common }, effects={ Call Galefeather (id=474121, index=0, type=equip) }
+bonus_id={ 12106 }, quality={ uncommon }, effects={ Call Galefeather (id=474650, index=0, type=equip) }
+bonus_id={ 12107 }, quality={ rare }, effects={ Call Galefeather (id=474651, index=0, type=equip) }
+bonus_id={ 12108 }, quality={ epic }, effects={ Call Galefeather (id=474652, index=0, type=equip) }

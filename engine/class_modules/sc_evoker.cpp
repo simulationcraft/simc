@@ -783,6 +783,7 @@ struct evoker_t : public player_t
     timespan_t simulate_bombardments_time_between_procs_stddev = 0.10_s;
     timespan_t allied_virtual_cd_time                          = 118_s;
     double simulate_bombardments_fixed_crit                    = 0.21;
+    int flameshaper_extra_dots                                 = 0;
   } option;
 
   // Action pointers
@@ -1160,6 +1161,8 @@ struct evoker_t : public player_t
   {
     propagate_const<proc_t*> ruby_essence_burst;
     propagate_const<proc_t*> azure_essence_burst;
+    propagate_const<proc_t*> titanic_precision_ruby_essence_burst;
+    propagate_const<proc_t*> titanic_precision_azure_essence_burst;
     propagate_const<proc_t*> emerald_trance;
     propagate_const<proc_t*> anachronism_essence_burst;
     propagate_const<proc_t*> echoing_strike;
@@ -3914,7 +3917,7 @@ struct azure_strike_t : public evoker_spell_t
          rng().roll( rng().roll( eb_chance ) ) )
     {
       p()->buff.essence_burst->trigger();
-      p()->proc.azure_essence_burst->occur();
+      p()->proc.titanic_precision_azure_essence_burst->occur();
     }
 
     if ( p()->talent.azure_essence_burst.ok() && ( p()->buff.dragonrage->up() || rng().roll( eb_chance ) ) )
@@ -4726,7 +4729,7 @@ struct living_flame_t : public evoker_spell_t
              rng().roll( composite_target_crit_chance( target ) && rng().roll( eb_chance ) ) )
         {
           p()->buff.essence_burst->trigger();
-          p()->proc.ruby_essence_burst->occur();
+          p()->proc.titanic_precision_ruby_essence_burst->occur();
         }
 
         if ( p()->buff.dragonrage->up() || rng().roll( eb_chance ) )
@@ -6142,9 +6145,10 @@ struct engulf_t : public evoker_spell_t
       const evoker_td_t* td = p()->find_target_data( target );
 
       if ( !td )
-        return 0;
+        return p()->option.flameshaper_extra_dots;
 
-      return td->dots.fire_breath->is_ticking() + td->dots.fire_breath_traveling_flame->is_ticking() + td->dots.enkindle->is_ticking() +
+      return p()->option.flameshaper_extra_dots + td->dots.fire_breath->is_ticking() +
+             td->dots.fire_breath_traveling_flame->is_ticking() + td->dots.enkindle->is_ticking() +
              td->dots.living_flame->is_ticking();
     }
 
@@ -7713,21 +7717,23 @@ void evoker_t::init_gains()
   player_t::init_gains();
 
   gain.roar_of_exhilaration = get_gain( "Roar of Exhilaration" );
-  gain.energizing_flame = get_gain( "Energizing Flame" );
+  gain.energizing_flame     = get_gain( "Energizing Flame" );
 }
 
 void evoker_t::init_procs()
 {
   player_t::init_procs();
 
-  proc.ruby_essence_burst         = get_proc( "Ruby Essence Burst" );
-  proc.azure_essence_burst        = get_proc( "Azure Essence Burst" );
-  proc.emerald_trance             = get_proc( "Emerald Trance" );
-  proc.anachronism_essence_burst  = get_proc( "Anachronism" );
-  proc.echoing_strike             = get_proc( "Echoing Strike" );
-  proc.overwritten_leaping_flames = get_proc( "Overwritten Leaping Flames" );
-  proc.diverted_power             = get_proc( "Diverted Power" );
-  proc.destroyers_scarred_wards   = get_proc( "Evoker Devastation 11.0 Class Set 4pc" );
+  proc.ruby_essence_burst                    = get_proc( "Ruby Essence Burst" );
+  proc.azure_essence_burst                   = get_proc( "Azure Essence Burst" );
+  proc.titanic_precision_ruby_essence_burst  = get_proc( "Titanic Precision Ruby Essence Burst" );
+  proc.titanic_precision_azure_essence_burst = get_proc( "Titanic Precision Azure Essence Burst" );
+  proc.emerald_trance                        = get_proc( "Emerald Trance" );
+  proc.anachronism_essence_burst             = get_proc( "Anachronism" );
+  proc.echoing_strike                        = get_proc( "Echoing Strike" );
+  proc.overwritten_leaping_flames            = get_proc( "Overwritten Leaping Flames" );
+  proc.diverted_power                        = get_proc( "Diverted Power" );
+  proc.destroyers_scarred_wards              = get_proc( "Evoker Devastation 11.0 Class Set 4pc" );
 }
 
 void evoker_t::init_base_stats()
@@ -8427,6 +8433,7 @@ void evoker_t::create_options()
   add_option( opt_timespan( "evoker.allied_virtual_cd_time", option.allied_virtual_cd_time, 0_s, 9999_s ) );
   add_option(
       opt_float( "evoker.simulate_bombardments_fixed_crit", option.simulate_bombardments_fixed_crit, 0.05, 1.0 ) );
+  add_option( opt_int( "evoker.flameshaper_extra_dots", option.flameshaper_extra_dots, 0, 4096 ) );
 }
 
 void evoker_t::analyze( sim_t& sim )

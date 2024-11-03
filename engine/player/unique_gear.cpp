@@ -4245,7 +4245,7 @@ struct item_cast_time_expr_t : public item_effect_expr_t
         }
         else
         {
-          v = e->execute_action->execute_time().total_seconds();
+          v = e->execute_action->base_execute_time.value().total_seconds();
         }
         break;
       }

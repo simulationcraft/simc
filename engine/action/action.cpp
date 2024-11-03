@@ -5565,6 +5565,13 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         value_ = effect.percent();
         break;
 
+      case P_SPELL_POWER:
+        sim->print_debug( "{} spell_power modified by {}%", *this, effect.base_value() );
+        base_dd_multiplier *= 1.0 + effect.percent();
+        base_td_multiplier *= 1.0 + effect.percent();
+        value_ = effect.percent();
+        break;
+
       case P_DURATION:
         if ( base_tick_time > timespan_t::zero() )
         {

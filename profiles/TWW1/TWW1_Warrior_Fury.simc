@@ -120,8 +120,6 @@ actions.slayer_ra_mt+=/rampage,if=talent.bladestorm&cooldown.bladestorm.remains<
 actions.slayer_ra_mt+=/bladestorm,if=buff.enrage.up&cooldown.avatar.remains>=9&buff.enrage.remains>3
 actions.slayer_ra_mt+=/whirlwind,if=buff.meat_cleaver.stack=0&talent.meat_cleaver
 actions.slayer_ra_mt+=/execute,if=talent.ashen_juggernaut&buff.ashen_juggernaut.remains<=gcd&buff.enrage.up
-actions.slayer_ra_mt+=/rampage,if=talent.bladestorm&cooldown.bladestorm.remains<=gcd&!debuff.champions_might.up|!buff.enrage.up
-actions.slayer_ra_mt+=/bladestorm,if=buff.enrage.up&cooldown.avatar.remains>=9&buff.enrage.remains>3
 actions.slayer_ra_mt+=/onslaught,if=talent.tenderize&buff.brutal_finish.up
 actions.slayer_ra_mt+=/rampage,if=!buff.enrage.up
 actions.slayer_ra_mt+=/bloodbath,if=active_enemies>=6

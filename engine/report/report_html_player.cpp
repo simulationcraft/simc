@@ -1346,22 +1346,44 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       }
     }
 
-    if ( !item.parsed.gem_color.empty() && range::find( item.parsed.gem_color, SOCKET_COLOR_PRIMORDIAL ) != item.parsed.gem_color.end() )
+    // Handle items with special effect gems
+    if ( !item.parsed.gem_color.empty() )
     {
-      item_sim_desc += ", primordial_stones: { ";
-      bool first = true;
-      for ( const auto e : item.parsed.special_effects )
+      bool has_primordial_stone = false;
+      bool has_singing_citrine = false;
+
+      for ( auto c : item.parsed.gem_color )
       {
-        if ( !e->driver() || !e->driver()->affected_by_label( LABEL_PRIMORDIAL_STONE ) )
-          continue;
-
-        if ( !first )
-          item_sim_desc += ", ";
-
-        item_sim_desc += report_decorators::decorated_spell_data_item( *item.sim, e->driver(), item );
-        first = false;
+        switch ( c )
+        {
+          case SOCKET_COLOR_PRIMORDIAL:      has_primordial_stone = true; break;
+          case SOCKET_COLOR_THUNDER_CITRINE:
+          case SOCKET_COLOR_SEA_CITRINE:
+          case SOCKET_COLOR_WIND_CITRINE:    has_singing_citrine = true;  break;
+          default:                           break;
+        }
       }
-      item_sim_desc += " }";
+
+      auto gem_effects_str = [ & ]( bool has_gems, int label, std::string_view gem_str ) {
+        if ( has_gems )
+        {
+          std::vector<std::string> str_list;
+          for ( auto gem_id : item.parsed.gem_id )
+          {
+            const auto& gem = item.player->dbc->item( gem_id );
+            const auto& prop = item.player->dbc->gem_property( gem.gem_properties );
+            const auto& data = item.player->dbc->item_enchantment( prop.enchant_id );
+            if ( auto spell = item.player->find_spell( data.ench_prop[ 0 ] ); spell->affected_by_label( label ) )
+              str_list.emplace_back( report_decorators::decorated_spell_data_item( *item.sim, spell, item ) );
+          }
+
+          if ( !str_list.empty() )
+            item_sim_desc += fmt::format( ", {}: {{ {} }}", gem_str, fmt::join( str_list, ", " ) );
+        }
+      };
+
+      gem_effects_str( has_primordial_stone, LABEL_PRIMORDIAL_STONE, "primordial_stones" );
+      gem_effects_str( has_singing_citrine, LABEL_SINGING_CITRINE, "singing citrines" );
     }
 
     {

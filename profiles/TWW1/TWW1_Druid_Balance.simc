@@ -45,7 +45,7 @@ actions.precombat+=/stellar_flare
 actions=variable,name=passive_asp,value=6%spell_haste+talent.natures_balance+talent.orbit_breaker*dot.moonfire.ticking*(buff.orbit_breaker.stack>(27-2*buff.solstice.up))*24
 actions+=/variable,name=ca_effective_cd,value=cooldown.ca_inc.remains<?cooldown.force_of_nature.remains
 actions+=/variable,name=last_ca_inc,value=fight_remains<cooldown.ca_inc.duration+variable.ca_effective_cd
-actions+=/variable,name=cd_condition,value=(fight_remains<(15+5*talent.incarnation_chosen_of_elune)*(1-talent.whirling_stars*0.2)|target.time_to_die>10&(!hero_tree.keeper_of_the_grove|(buff.harmony_of_the_grove.up&cooldown.convoke_the_spirits.remains<60&(!talent.new_moon|cooldown.new_moon.charges_fractional>=2)))&(!talent.whirling_stars|!talent.convoke_the_spirits|talent.whirling_stars&cooldown.convoke_the_spirits.remains<gcd.max*2|cooldown.convoke_the_spirits.remains>cooldown.ca_inc.full_recharge_time))&cooldown.ca_inc.ready&!buff.ca_inc.up
+actions+=/variable,name=cd_condition,value=(fight_remains<(15+5*talent.incarnation_chosen_of_elune)*(1-talent.whirling_stars*0.2)|target.time_to_die>10&(!hero_tree.keeper_of_the_grove|buff.harmony_of_the_grove.up)&(!talent.whirling_stars|!talent.convoke_the_spirits|cooldown.convoke_the_spirits.remains<gcd.max*2|fight_remains<cooldown.convoke_the_spirits.remains+3|cooldown.convoke_the_spirits.remains>cooldown.ca_inc.full_recharge_time))&cooldown.ca_inc.ready&!buff.ca_inc.up
 actions+=/use_item,name=aberrant_spellforge
 actions+=/do_treacherous_transmitter_task,if=cooldown.ca_inc.remains>10|buff.ca_inc.up
 actions+=/use_item,name=spymasters_web,if=fight_remains<20
@@ -100,17 +100,17 @@ actions.pre_cd+=/potion,if=variable.cd_condition
 actions.pre_cd+=/use_item,slot=trinket1,if=!trinket.1.is.spymasters_web&!trinket.1.is.imperfect_ascendancy_serum&!trinket.1.is.treacherous_transmitter&(variable.on_use_trinket=1|variable.on_use_trinket=3)&variable.cd_condition
 actions.pre_cd+=/use_item,slot=trinket2,if=!trinket.2.is.spymasters_web&!trinket.2.is.imperfect_ascendancy_serum&!trinket.2.is.treacherous_transmitter&variable.on_use_trinket=2&variable.cd_condition
 
-actions.st=wrath,if=variable.enter_lunar&variable.eclipse&variable.eclipse_remains<cast_time
-actions.st+=/starfire,if=!variable.enter_lunar&variable.eclipse&variable.eclipse_remains<cast_time
+actions.st=wrath,if=variable.enter_lunar&variable.eclipse&variable.eclipse_remains<cast_time&!variable.cd_condition
+actions.st+=/starfire,if=!variable.enter_lunar&variable.eclipse&variable.eclipse_remains<cast_time&!variable.cd_condition
 actions.st+=/sunfire,target_if=remains<3
 actions.st+=/moonfire,target_if=remains<3&(!talent.treants_of_the_moon|cooldown.force_of_nature.remains>3&!buff.harmony_of_the_grove.up)
-actions.st+=/wrath,if=variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
-actions.st+=/starfire,if=!variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
 actions.st+=/call_action_list,name=pre_cd
 actions.st+=/celestial_alignment,if=variable.cd_condition
 actions.st+=/incarnation,if=variable.cd_condition
+actions.st+=/wrath,if=variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
+actions.st+=/starfire,if=!variable.enter_lunar&(!variable.eclipse|variable.eclipse_remains<cast_time)
 actions.st+=/starsurge,if=variable.cd_condition&astral_power.deficit>variable.passive_asp+action.force_of_nature.energize_amount
-actions.st+=/force_of_nature,if=cooldown.ca_inc.remains<gcd.max&(!variable.eclipse|variable.eclipse_remains>6)|variable.eclipse_remains>=3&(cooldown.ca_inc.remains>10+15*talent.control_of_the_dream&(fight_remains>cooldown+5|cooldown.ca_inc.remains>fight_remains)|talent.whirling_stars&talent.convoke_the_spirits&cooldown.convoke_the_spirits.remains>cooldown.force_of_nature.duration-10)
+actions.st+=/force_of_nature,if=cooldown.ca_inc.remains<gcd.max&(!talent.convoke_the_spirits|cooldown.convoke_the_spirits.remains<gcd.max*3|cooldown.convoke_the_spirits.remains>cooldown.ca_inc.full_recharge_time|fight_remains<cooldown.convoke_the_spirits.remains+3)|cooldown.ca_inc.full_recharge_time+5+15*talent.control_of_the_dream>cooldown&(!talent.convoke_the_spirits|cooldown.convoke_the_spirits.remains+10+15*talent.control_of_the_dream>cooldown|fight_remains<cooldown.convoke_the_spirits.remains+cooldown.convoke_the_spirits.duration+5)&(fight_remains>cooldown+5|fight_remains<cooldown.ca_inc.remains+7)|talent.whirling_stars&talent.convoke_the_spirits&cooldown.convoke_the_spirits.remains>cooldown.force_of_nature.duration-10&fight_remains>cooldown.convoke_the_spirits.remains+6
 actions.st+=/fury_of_elune,if=5+variable.passive_asp<astral_power.deficit
 actions.st+=/starfall,if=buff.starweavers_warp.up
 actions.st+=/starsurge,if=talent.starlord&buff.starlord.stack<3
