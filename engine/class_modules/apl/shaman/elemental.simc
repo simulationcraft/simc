@@ -79,7 +79,7 @@ actions.aoe+=/earthquake,if=(buff.stormkeeper.up&spell_targets.chain_lightning>=
 actions.aoe+=/elemental_blast,target_if=min:debuff.lightning_rod.remains,if=talent.echoes_of_great_sundering.enabled&!buff.echoes_of_great_sundering_eb.up&(lightning_rod=0|maelstrom>variable.mael_cap-30|(buff.stormkeeper.up&spell_targets.chain_lightning>=6|buff.tempest.up)&talent.surge_of_power.enabled)
 actions.aoe+=/earth_shock,target_if=min:debuff.lightning_rod.remains,if=talent.echoes_of_great_sundering.enabled&!buff.echoes_of_great_sundering_es.up&(lightning_rod=0|maelstrom>variable.mael_cap-30|(buff.stormkeeper.up&spell_targets.chain_lightning>=6|buff.tempest.up)&talent.surge_of_power.enabled)
 # Use Icefury for Fusion of Elements proc.
-actions.aoe+=/icefury,if=talent.fusion_of_elements.enabled&!(buff.fusion_of_elements_nature.up|buff.fusion_of_elements_fire.up)&cooldown.primordial_wave.remains<5
+actions.aoe+=/icefury,if=talent.fusion_of_elements.enabled&!(buff.fusion_of_elements_nature.up|buff.fusion_of_elements_fire.up)&(cooldown.primordial_wave.remains<5|((spell_targets.chain_lightning=2|(!spell_targets.chain_lightning>=5&talent.echoes_of_great_sundering.enabled&!buff.echoes_of_great_sundering_eb.up))&talent.elemental_blast.enabled))
 # *{Fire} Proc Master of the Elements outside Ascendance.
 actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains>2,if=talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&!buff.ascendance.up&talent.fire_elemental.enabled
 actions.aoe+=/chain_lightning
