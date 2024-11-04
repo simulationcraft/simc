@@ -1,5 +1,5 @@
 // Item effects, wow build 11.0.5.57388
-static const std::array<item_effect_t, 9757> __item_effect_data { {
+static const std::array<item_effect_t, 9756> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -9749,7 +9749,6 @@ static const std::array<item_effect_t, 9757> __item_effect_data { {
   { 191751, 470631, 231492,   0,   1,    0,      -1,      -1 }, // Barman Shanker
   { 191753, 470634, 231497,   0,   1,    0,      -1,      -1 }, // Searing Dagger
   { 191754, 470645, 231498,   0,   0,    0,      -1,      -1 }, // Gift of Stone
-  { 192376, 418948, 232066,   0,  10,    0,      -1,      -1 }, // Energy Projection Regulator
   { 192894, 470696, 232491,   1,   0,    0,      -1,      -1 }, // Jab
   { 192928, 470970, 232521,   1,   0,    0,      -1,      -1 }, // Glyph of Arcane Familiar
   { 192938, 471066, 232527,   1,   0,    0,      -1,      -1 }, // Traditional Ascendance
@@ -9759,7 +9758,7 @@ static const std::array<item_effect_t, 9757> __item_effect_data { {
   { 193208, 472303, 232905,   0,   1,    0,      -1,      -1 }, // Malown's Slam
 } };
 
-static const std::array<uint16_t, 9757> __item_effect_id_index { {
+static const std::array<uint16_t, 9756> __item_effect_id_index { {
     842,   843,   844,   845,   846,   847,   848,   851,
     852,   853,   854,   855,   856,   857,   858,   859,
     860,   861,   862,   863,   866,   867,   868,   869,
@@ -10977,8 +10976,8 @@ static const std::array<uint16_t, 9757> __item_effect_id_index { {
    9270,  9271,  9272,  9273,  9274,   765,   766,   767,
     768,  9520,  9547,  8376,  8391,  9726,  9727,  9728,
    9729,  9730,  9731,  9732,  9733,  9734,  9735,  9736,
-   9737,  9739,  9745,  9746,  9747,  9748,  9749,  9741,
-   9740,  9742,  9743,  9744,  9738,  9750,  9751,  9752,
-   9546,  9753,  9754,  9755,  9756,
+   9737,  9739,  9745,  9746,  9747,  9748,  9741,  9740,
+   9742,  9743,  9744,  9738,  9749,  9750,  9751,  9546,
+   9752,  9753,  9754,  9755,
 } };
 
