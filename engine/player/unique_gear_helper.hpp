@@ -428,7 +428,9 @@ struct proc_action_t : public T_ACTION
     }
 
     if ( has_role_mult( e ) )
-      this->base_multiplier *= role_mult( e );
+    {
+      this->base_multiplier = role_mult( e );
+    }
   }
 };
 
@@ -531,11 +533,23 @@ struct base_generic_proc_t : public BASE
 {
   base_generic_proc_t( const special_effect_t& effect, ::util::string_view name, unsigned spell_id )
     : BASE( name, effect.player, effect.player->find_spell( spell_id ), effect.item )
-  { }
+  {
+    check_role_mult( effect );
+  }
 
   base_generic_proc_t( const special_effect_t& effect, ::util::string_view name, const spell_data_t* s )
     : BASE( name, effect.player, s, effect.item )
-  { }
+  {
+    check_role_mult( effect );
+  }
+
+  void check_role_mult( const special_effect_t& effect )
+  {
+    if ( has_role_mult( effect ) )
+    {
+      this->base_multiplier = role_mult( effect );
+    }
+  }
 };
 
 template <typename BASE = proc_spell_t>

@@ -5313,18 +5313,6 @@ void flame_wrath( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// 470647 Driver
-// 470648 Damage
-void force_of_magma( special_effect_t& effect )
-{
-  auto damage         = create_proc_action<generic_proc_t>( "force_of_magma", effect, effect.trigger() );
-  damage->base_dd_min = damage->base_dd_max =
-      effect.driver()->effectN( 1 ).average( effect ) + effect.trigger()->effectN( 1 ).average( effect );
-
-  effect.execute_action = damage;
-  new dbc_proc_callback_t( effect.player, effect );
-}
-
 // Armor
 // 457815 driver
 // 457918 nature damage driver
@@ -6704,7 +6692,6 @@ void register_special_effects()
   register_special_effect( 455819, items::harvesters_interdiction );
   register_special_effect( 469936, items::guiding_stave_of_wisdom );
   register_special_effect( 470641, items::flame_wrath );
-  register_special_effect( 470647, items::force_of_magma );
 
   // Armor
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );

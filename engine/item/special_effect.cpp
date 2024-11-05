@@ -620,7 +620,7 @@ heal_t* special_effect_t::initialize_heal_action() const
   else if ( driver()->id() > 0 )
     s = driver();
 
-  auto heal = new unique_gear::proc_heal_t( name(), player, s, source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
+  auto heal = new unique_gear::proc_heal_t( *this );
   heal->init();
   return heal;
 }
@@ -655,8 +655,7 @@ attack_t* special_effect_t::initialize_attack_action() const
   else if ( driver()->id() > 0 )
     s = driver();
 
-  auto attack =
-      new unique_gear::proc_attack_t( name(), player, s, source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
+  auto attack = new unique_gear::proc_attack_t( *this );
   attack->init();
   return attack;
 }
