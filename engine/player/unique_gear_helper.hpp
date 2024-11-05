@@ -429,7 +429,7 @@ struct proc_action_t : public T_ACTION
 
     if ( has_role_mult( e ) )
     {
-      this->base_multiplier = role_mult( e );
+      this->base_multiplier *= role_mult( e );
     }
   }
 };
@@ -547,7 +547,7 @@ struct base_generic_proc_t : public BASE
   {
     if ( has_role_mult( effect ) )
     {
-      this->base_multiplier = role_mult( effect );
+      this->base_multiplier *= role_mult( effect );
     }
   }
 };
