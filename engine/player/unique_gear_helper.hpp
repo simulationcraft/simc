@@ -426,6 +426,9 @@ struct proc_action_t : public T_ACTION
         }
       }
     }
+
+    if ( has_role_mult( e ) )
+      this->base_multiplier *= role_mult( e );
   }
 };
 

@@ -9340,6 +9340,10 @@ struct use_item_t : public action_t
              action_t::has_periodic_damage_effect( *e->driver() ) ) )
       {
         action->not_a_proc = true;
+        if ( unique_gear::has_role_mult( player, e->driver() ) )
+        {
+          action->base_multiplier *= unique_gear::role_mult( player, e->driver() );
+        }
       }
 
       stats = player->get_stats( name_str, this );
