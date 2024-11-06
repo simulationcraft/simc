@@ -81,7 +81,7 @@ public:
   action_t* execute_action; // Allows custom action to be executed on use
   buff_t* custom_buff; // Allows custom action
 
-  bool action_disabled, buff_disabled;
+  bool action_disabled, buff_disabled, parsed_role_mult_disabled;
   bool has_use_buff_override, has_use_damage_override;
 
   std::string cooldown_group_name_override;
@@ -114,6 +114,8 @@ public:
   { action_disabled = true; }
   void disable_buff()
   { buff_disabled = true; }
+  void disable_parsed_role_mult()
+  { parsed_role_mult_disabled = true; }
 
   void reset();
 

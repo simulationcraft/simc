@@ -339,6 +339,7 @@ struct proc_action_t : public T_ACTION
     this->item     = e.item;
     this->cooldown = e.player->get_cooldown( e.cooldown_name() );
     check_role_mult( e ); 
+
     __initialize();
   }
 
@@ -359,10 +360,10 @@ struct proc_action_t : public T_ACTION
     __initialize();
   }
 
-  proc_action_t( util::string_view token, player_t* p, const spell_data_t* s, const special_effect_t& e, const item_t* i = nullptr )
+  proc_action_t( util::string_view token, player_t* p, const spell_data_t* s, const special_effect_t& e )
     : super( token, p, s ), effect( &e )
   {
-    this->item = i;
+    this->item = e.item;
     check_role_mult( e );
 
     __initialize();
@@ -460,8 +461,8 @@ struct proc_spell_t : public proc_action_t<spell_t>
   {
   }
 
-  proc_spell_t( util::string_view token, player_t* p, const spell_data_t* s, const special_effect_t& e, const item_t* i = nullptr )
-    : super( token, p, s, e, i )
+  proc_spell_t( util::string_view token, player_t* p, const spell_data_t* s, const special_effect_t& e )
+    : super( token, p, s, e )
   {
   }
 };
@@ -479,8 +480,8 @@ struct proc_heal_t : public proc_action_t<heal_t>
   {
   }
 
-  proc_heal_t( util::string_view token, player_t* p, const spell_data_t* s, const special_effect_t& e, const item_t* i = nullptr )
-    : super( token, p, s, e, i )
+  proc_heal_t( util::string_view token, player_t* p, const spell_data_t* s, const special_effect_t& e )
+    : super( token, p, s, e )
   {
   }
 };
@@ -498,8 +499,8 @@ struct proc_attack_t : public proc_action_t<attack_t>
   {
   }
 
-  proc_attack_t( util::string_view token, player_t* p, const spell_data_t* s, const special_effect_t& e, const item_t* i = nullptr )
-    : super( token, p, s, e, i )
+  proc_attack_t( util::string_view token, player_t* p, const spell_data_t* s, const special_effect_t& e )
+    : super( token, p, s, e )
   {
   }
 

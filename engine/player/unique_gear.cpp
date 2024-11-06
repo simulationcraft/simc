@@ -5321,6 +5321,9 @@ bool unique_gear::has_role_mult( player_t* player, const spell_data_t* s_data )
 
 bool unique_gear::has_role_mult( const special_effect_t& effect )
 {
+  if ( effect.parsed_role_mult_disabled )
+    return false;
+
   return has_role_mult( effect.player, effect.driver() );
 }
 
