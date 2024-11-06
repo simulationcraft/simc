@@ -845,7 +845,7 @@ void bottled_flayedwing_toxin( special_effect_t& effect )
   struct flayedwing_toxin_t : public proc_spell_t
   {
     flayedwing_toxin_t( const special_effect_t& e )
-      : proc_spell_t( "flayedwing_toxin", e.player, e.trigger(), e.item )
+      : proc_spell_t( "flayedwing_toxin", e.player, e.trigger(), e, e.item )
     {
       // Tick behavior is odd, it always ticks on refresh but is not rescheduled
       tick_zero = true;
