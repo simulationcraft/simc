@@ -416,7 +416,7 @@ void arms( player_t* p )
   slayer_st->add_action( "avatar,if=cooldown.colossus_smash.remains<=5|debuff.colossus_smash.up" );
   slayer_st->add_action( "colossus_smash" );
   slayer_st->add_action( "warbreaker" );
-  slayer_st->add_action( "execute,if=execute,if=debuff.marked_for_execution.stack=3|buff.juggernaut.remains<=gcd*3&talent.juggernaut|buff.sudden_death.stack=2|buff.sudden_death.remains<=gcd*3" );
+  slayer_st->add_action( "execute,if=debuff.marked_for_execution.stack=3|buff.juggernaut.remains<=gcd*3&talent.juggernaut|buff.sudden_death.stack=2|buff.sudden_death.remains<=gcd*3" );
   slayer_st->add_action( "bladestorm,if=(cooldown.colossus_smash.remains>=gcd*4|cooldown.warbreaker.remains>=gcd*4)|debuff.colossus_smash.remains>=gcd*4" );
   slayer_st->add_action( "overpower,if=buff.opportunist.up|charges=2&talent.fierce_followthrough" );
   slayer_st->add_action( "mortal_strike" );
