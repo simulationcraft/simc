@@ -218957,6 +218957,7 @@ Description      : Your spells and abilities have a low chance to grant Annihila
 Damage and cap increased per enemy struck, up to 5.
 
 Name             : Overload Empowered Deposit (id=423394) 
+Hotfixed         : Category Flags (0 -> 128)
 School           : Physical
 Spell Type       : None
 Range            : 5 yards
@@ -218965,6 +218966,7 @@ GCD              : 1.5 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (43200 seconds cooldown)
 Category         : 2211 (Type 0x0)
+Category Flags   : Unknown (7)
 Labels           : 969
                  : 1762
                  : 2862
@@ -218977,6 +218979,7 @@ Description      : Overload a nearby elemental ore deposit.
 $?pc106420[The cooldown of this ability is reduced whenever you mine ore native to Khaz Algar.][Specialize into Master of the Elements to gain significant cooldown reduction on this ability whenever you mine ore native to Khaz Algar.]
 
 Name             : Overload Empowered Herb (id=423395) 
+Hotfixed         : Category Flags (0 -> 128)
 School           : Physical
 Spell Type       : None
 Range            : 5 yards
@@ -218985,6 +218988,7 @@ GCD              : 1.5 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (43200 seconds cooldown)
 Category         : 2212 (Type 0x0)
+Category Flags   : Unknown (7)
 Labels           : 969
                  : 1930
                  : 2858
