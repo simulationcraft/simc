@@ -851,7 +851,6 @@ void bottled_flayedwing_toxin( special_effect_t& effect )
       tick_zero = true;
       // Tick damage value lives in a different spell for some reason
       base_td = e.player->find_spell( 345547 )->effectN( 1 ).average( e.item );
-      base_multiplier *= role_mult( e );
     }
   };
 
@@ -1922,7 +1921,6 @@ void instructors_divine_bell( special_effect_t& effect )
 void spare_meat_hook( special_effect_t& effect )
 {
   auto dot = create_proc_action<generic_proc_t>( "spare_meat_hook", effect, effect.driver() );
-  dot->base_multiplier *= role_mult( effect );
 
   effect.execute_action = dot;
 }
