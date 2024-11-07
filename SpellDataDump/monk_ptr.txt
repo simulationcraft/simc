@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.57361 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.57409 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -18934,13 +18934,13 @@ Attributes       : Aura Points On Client (268)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1180408)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1180409)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
                    Base Value: 800 | Scaled Value: 800 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
                    Family Flags: 32
 #3 (id=1190455)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 17 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.4 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
                    Family Flags: 32
 Description      : $@spelldesc467316
@@ -18976,7 +18976,7 @@ Family Flags     : 39
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1181673)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.595 | PvP Coefficient: 2 | Radius: 25 yards | Target: Cone to Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.595 | PvP Coefficient: 1.2 | Radius: 25 yards | Target: Cone to Enemy (104)
 Description      : $@spelldesc467307
 
 Name             : Glyph of Tiger Palm (id=468605) [Spell Family (53)] 

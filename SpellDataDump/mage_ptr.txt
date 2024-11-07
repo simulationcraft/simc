@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.57361 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.57409 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -12409,7 +12409,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #2 (id=1118782)  : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | Target: Self (1)
-Description      : Your Frost and Fire spells have a chance to activate Frostfire Empowerment, causing your next Frostfire Bolt to be instant cast, deal $431177s3% increased damage, explode for $s2% of its damage to nearby enemies, and grant you maximum benefit of Frostfire Mastery and refresh its duration.
+Description      : Your Frost and Fire spells have a chance to activate Frostfire Empowerment, causing your next Frostfire Bolt to be instant cast, deal $431177s3% increased damage, explode for $s2% of its damage to nearby enemies.
 
 Name             : Frostfire Empowerment (id=431177) [Spell Family (3)] 
 Class            : Mage

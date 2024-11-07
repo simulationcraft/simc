@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.57361 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.57409 PTR
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -3333,7 +3333,7 @@ Effects          :
 #7 (id=260938)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 #8 (id=260939)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.4 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Entropic Rift (447445), Entropic Rift (447448), Entropic Rift (450193), Entropic Rift (459314)
                    Family Flags: 44
 #9 (id=260940)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
@@ -3341,7 +3341,7 @@ Effects          :
                    Affected Spells: Mind Blast (8092), Void Blast (450983)
                    Family Flags: 13
 #10 (id=260941)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.4 | Target: Self (1)
                    Affected Spells: Collapsing Void (448405)
                    Family Flags: 30
 #11 (id=1040379) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)

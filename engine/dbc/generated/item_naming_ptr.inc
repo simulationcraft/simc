@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 11.0.7.57361
-static const std::array<item_name_description_t, 935> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 11.0.7.57409
+static const std::array<item_name_description_t, 939> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -935,5 +935,9 @@ static const std::array<item_name_description_t, 935> __ptr_item_name_descriptio
   { 14213, "Dungeons - Green"                            },
   { 14214, "Rare Monsters"                               },
   { 14220, "Snapdragon Treat"                            },
+  { 14222, "Timewalking Vendor - Black"                  },
+  { 14223, "Timewalking Vendor - Red"                    },
+  { 14224, "Timewalking Vendor - Dark"                   },
+  { 14225, "Timewalking Vendor - Orange"                 },
 } };
 

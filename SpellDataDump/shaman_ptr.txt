@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.57361 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.57409 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -2330,7 +2330,7 @@ Effects          :
 #7 (id=1181670)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 #8 (id=1181671)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.25 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 0.1667 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Mastery: Elemental Overload (168534)
                    Family Flags: 14
 #9 (id=1181696)  : Apply Aura (6) | Dummy (4)
@@ -11849,7 +11849,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1013225)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Mastery: Elemental Overload (168534)
                    Family Flags: 14
 Description      : Increases the damage dealt by your Elemental Overloads by $s1%.
@@ -18147,10 +18147,8 @@ Duration         : 12 seconds
 Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
-Internal Cooldown: 0.5 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Proc Flags       : Yellow Melee, Generic Hostile Spell
 Triggered By     : Stormblast (319930)
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428)
 Effects          :

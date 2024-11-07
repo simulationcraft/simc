@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.57361 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.57409 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -132247,7 +132247,7 @@ School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Proc Chance      : 101%
-Real PPM         : 8 (Haste multiplier)
+Real PPM         : 12 (Haste multiplier)
 Proc Flags       : Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : Is Ability (4), No Aura Cancel (31), Allow Aura While Dead (116), Ignore Default Arena Restrictions (145), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
@@ -166518,7 +166518,7 @@ Attributes       : Do Not Display Range (126), Aura Points On Client (268), Not 
 Effects          :
 #1 (id=841769)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Wildfire Bomb (265157), Pheromone Bomb (270329), Shrapnel Bomb (270338), Volatile Bomb (271048), Bleak Powder (467914), Bleak Powder (472084)
+                   Affected Spells: Wildfire Bomb (265157), Pheromone Bomb (270329), Shrapnel Bomb (270338), Volatile Bomb (271048)
                    Family Flags: 25
 Description      : $@spelldesc341399
 Tooltip          : Wildfire's Explosion damage increased by ${$w1}.1%.
@@ -223522,10 +223522,10 @@ Spell Type       : None
 Range            : 15 yards
 GCD              : 1 seconds
 Duration         : 0.8 seconds
-Cooldown         : 12 seconds
+Cooldown         : 14 seconds
 Category         : 2223 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 12 seconds
+Category Cooldown: 14 seconds
 Attributes       : No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), No Cast Log (128), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1121223)  : Apply Aura (6) | Unknown(191)
@@ -223536,7 +223536,7 @@ Description      : |CFFFFFFFF- Frontal cone|R
 |CFFFFFFFF- Melee|R
 |CFFFFFFFF- High damage|R
 
-|CFFFFFFFF12 sec cooldown|R
+|CFFFFFFFF14 sec cooldown|R
 Slam down a molten axe, spewing molten lava forward that damages and knocks back enemies struck.
 
 Name             : Searing Axe (id=432493) 
@@ -223992,10 +223992,10 @@ Spell Type       : None
 Range            : 15 yards
 GCD              : 1 seconds
 Duration         : 0.8 seconds
-Cooldown         : 10 seconds
+Cooldown         : 12 seconds
 Category         : 2223 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 10 seconds
+Category Cooldown: 12 seconds
 Attributes       : No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), No Cast Log (128), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1121667)  : Apply Aura (6) | Unknown(191)
@@ -224006,7 +224006,7 @@ Description      : |CFFFFFFFF- Frontal cone|R
 |CFFFFFFFF- Melee|R
 |CFFFFFFFF- High damage|R
 
-|CFFFFFFFF10 sec cooldown|R
+|CFFFFFFFF12 sec cooldown|R
 Slam down a molten axe, spewing molten lava forward that damages and knocks back enemies struck.
 
 Name             : Searing Axe (id=432753) 
@@ -224029,10 +224029,10 @@ Spell Type       : None
 Range            : 15 yards
 GCD              : 1 seconds
 Duration         : 0.8 seconds
-Cooldown         : 8 seconds
+Cooldown         : 10 seconds
 Category         : 2223 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 8 seconds
+Category Cooldown: 10 seconds
 Attributes       : Is Ability (4), Do Not Log (8), Cooldown On Event (25), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), No Cast Log (128), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1121670)  : Apply Aura (6) | Unknown(191)
@@ -224043,7 +224043,7 @@ Description      : |CFFFFFFFF- Frontal cone|R
 |CFFFFFFFF- Melee|R
 |CFFFFFFFF- High damage|R
 
-|CFFFFFFFF8 sec cooldown|R
+|CFFFFFFFF10 sec cooldown|R
 Slam down a molten axe, spewing molten lava forward that damages and knocks back enemies struck.
 
 Name             : Searing Axe (id=432755) 
@@ -224066,10 +224066,10 @@ Spell Type       : None
 Range            : 15 yards
 GCD              : 1 seconds
 Duration         : 0.8 seconds
-Cooldown         : 6 seconds
+Cooldown         : 8 seconds
 Category         : 2223 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 6 seconds
+Category Cooldown: 8 seconds
 Attributes       : Is Ability (4), Do Not Log (8), Cooldown On Event (25), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), No Cast Log (128), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1121673)  : Apply Aura (6) | Unknown(191)
@@ -224080,7 +224080,7 @@ Description      : |CFFFFFFFF- Frontal cone|R
 |CFFFFFFFF- Melee|R
 |CFFFFFFFF- High damage|R
 
-|CFFFFFFFF6 sec cooldown|R
+|CFFFFFFFF8 sec cooldown|R
 Slam down a molten axe, spewing molten lava forward that damages and knocks back enemies struck.
 
 Name             : Explosive Caltrops (id=432758) 
@@ -224553,10 +224553,10 @@ School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 1.4 seconds
-Cooldown         : 12 seconds
+Cooldown         : 14 seconds
 Category         : 2231 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 12 seconds
+Category Cooldown: 14 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), Force Display Castbar (155), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17)
 Effects          :
@@ -224568,7 +224568,7 @@ Description      : |CFFFFFFFF- Forward lunge|R
 |CFFFFFFFF- Hold to charge|R
 |CFFFFFFFF- Mobility|R
 
-|CFFFFFFFF12 sec cooldown|R
+|CFFFFFFFF14 sec cooldown|R
 Envelop yourself in razor-sharp winds, then lunge forward damaging enemies in your path.
 
 Hold to increase lunge distance.
@@ -224588,10 +224588,10 @@ School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 1.4 seconds
-Cooldown         : 10 seconds
+Cooldown         : 12 seconds
 Category         : 2231 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 10 seconds
+Category Cooldown: 12 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), Force Display Castbar (155), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17)
 Effects          :
@@ -224603,7 +224603,7 @@ Description      : |CFFFFFFFF- Forward lunge|R
 |CFFFFFFFF- Hold to charge|R
 |CFFFFFFFF- Mobility|R
 
-|CFFFFFFFF10 sec cooldown|R
+|CFFFFFFFF12 sec cooldown|R
 Envelop yourself in razor-sharp winds, then lunge forward damaging enemies in your path.
 
 Hold to increase lunge distance.
@@ -224613,10 +224613,10 @@ School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 1.4 seconds
-Cooldown         : 8 seconds
+Cooldown         : 10 seconds
 Category         : 2231 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 8 seconds
+Category Cooldown: 10 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), Force Display Castbar (155), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17)
 Effects          :
@@ -224628,7 +224628,7 @@ Description      : |CFFFFFFFF- Forward lunge|R
 |CFFFFFFFF- Hold to charge|R
 |CFFFFFFFF- Mobility|R
 
-|CFFFFFFFF8 sec cooldown|R
+|CFFFFFFFF10  sec cooldown|R
 Envelop yourself in razor-sharp winds, then lunge forward damaging enemies in your path.
 
 Hold to increase lunge distance.
@@ -224638,10 +224638,10 @@ School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 1.4 seconds
-Cooldown         : 6 seconds
+Cooldown         : 8 seconds
 Category         : 2231 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 6 seconds
+Category Cooldown: 8 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), Force Display Castbar (155), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17)
 Effects          :
@@ -224653,7 +224653,7 @@ Description      : |CFFFFFFFF- Forward lunge|R
 |CFFFFFFFF- Hold to charge|R
 |CFFFFFFFF- Mobility|R
 
-|CFFFFFFFF6 sec cooldown|R
+|CFFFFFFFF8 sec cooldown|R
 Envelop yourself in razor-sharp winds, then lunge forward damaging enemies in your path.
 
 Hold to increase lunge distance.
@@ -225702,10 +225702,10 @@ School           : Physical
 Spell Type       : None
 Range            : 20 yards
 GCD              : 1 seconds
-Cooldown         : 18 seconds
+Cooldown         : 16 seconds
 Category         : 2240 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 18 seconds
+Category Cooldown: 16 seconds
 Attributes       : Do Not Log (8), No Threat (42), No Aura Icon (60), No Initial Threat (86), Do Not Display Range (126), No Cast Log (128), No Helpful Threat (131), No Harmful Threat (132), Force Display Castbar (155), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1125139)  : Dummy (3)
@@ -225714,7 +225714,7 @@ Description      : |CFFFFFFFF- Close range|R
 |CFFFFFFFF- High damage|R
 |CFFFFFFFF- Long cast time|R
 
-|CFFFFFFFF18 sec cooldown|R
+|CFFFFFFFF16 sec cooldown|R
 Channel the cosmic void, compressing it into a bomb that explodes after a short delay. Enemies struck are pulled into the blast.
 
 Name             : Star Bomb (id=434892) 
@@ -225735,11 +225735,11 @@ Spell Type       : None
 Range            : 12 yards
 GCD              : 1 seconds
 Duration         : 2 seconds
-Cooldown         : 18 seconds
+Cooldown         : 16 seconds
 Category         : 2232 (Type 0x0)
 Labels           : 3136
                  : 3519
-Category Cooldown: 18 seconds
+Category Cooldown: 16 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1125391)  : Apply Aura (6) | Unknown(191)
@@ -225752,7 +225752,7 @@ Description      : |CFFFFFFFF- Caster AoE|R
 |CFFFFFFFF- Stuns|R
 |CFFFFFFFF- Crowd Control Immunity|R
 
-|CFFFFFFFF18 sec cooldown|R
+|CFFFFFFFF16 sec cooldown|R
 Sunder the earth in an area around the caster, damaging and stunning enemies hit.
 
 While casting, you are immune to crowd control.
@@ -225781,11 +225781,11 @@ Spell Type       : None
 Range            : 12 yards
 GCD              : 1 seconds
 Duration         : 2 seconds
-Cooldown         : 16 seconds
+Cooldown         : 14 seconds
 Category         : 2232 (Type 0x0)
 Labels           : 3136
                  : 3519
-Category Cooldown: 16 seconds
+Category Cooldown: 14 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1125402)  : Apply Aura (6) | Unknown(191)
@@ -225798,7 +225798,7 @@ Description      : |CFFFFFFFF- Caster AoE|R
 |CFFFFFFFF- Stuns|R
 |CFFFFFFFF- Crowd Control Immunity|R
 
-|CFFFFFFFF16 sec cooldown|R
+|CFFFFFFFF14 sec cooldown|R
 Sunder the earth in an area around the caster, damaging and stunning enemies hit.
 
 While casting, you are immune to crowd control.
@@ -225827,11 +225827,11 @@ Spell Type       : None
 Range            : 12 yards
 GCD              : 1 seconds
 Duration         : 2 seconds
-Cooldown         : 14 seconds
+Cooldown         : 12 seconds
 Category         : 2232 (Type 0x0)
 Labels           : 3136
                  : 3519
-Category Cooldown: 14 seconds
+Category Cooldown: 12 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1125407)  : Apply Aura (6) | Unknown(191)
@@ -225844,7 +225844,7 @@ Description      : |CFFFFFFFF- Caster AoE|R
 |CFFFFFFFF- Stuns|R
 |CFFFFFFFF-Crowd Control Immunity|R
 
-|CFFFFFFFF14 sec cooldown|R
+|CFFFFFFFF12 sec cooldown|R
 Sunder the earth in an area around the caster, damaging and stunning enemies hit. 
 
 While casting, you are immune to crowd control.
@@ -225874,11 +225874,11 @@ Spell Type       : None
 Range            : 12 yards
 GCD              : 1 seconds
 Duration         : 2 seconds
-Cooldown         : 12 seconds
+Cooldown         : 10 seconds
 Category         : 2232 (Type 0x0)
 Labels           : 3136
                  : 3519
-Category Cooldown: 12 seconds
+Category Cooldown: 10 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1125412)  : Apply Aura (6) | Unknown(191)
@@ -225891,7 +225891,7 @@ Description      : |CFFFFFFFF- Caster AoE|R
 |CFFFFFFFF- Stuns|R
 |CFFFFFFFF- Crowd Control Immunity|R
 
-|CFFFFFFFF12 sec cooldown|R
+|CFFFFFFFF10 sec cooldown|R
 Sunder the earth in an area around the caster, damaging and stunning enemies hit.
 
 While casting, you are immune to crowd control.
@@ -225913,10 +225913,10 @@ School           : Physical
 Spell Type       : None
 Range            : 20 yards
 GCD              : 1 seconds
-Cooldown         : 16 seconds
+Cooldown         : 14 seconds
 Category         : 2240 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 16 seconds
+Category Cooldown: 14 seconds
 Attributes       : Do Not Log (8), No Threat (42), No Aura Icon (60), No Initial Threat (86), Do Not Display Range (126), No Cast Log (128), No Helpful Threat (131), No Harmful Threat (132), Force Display Castbar (155), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1125418)  : Dummy (3)
@@ -225925,7 +225925,7 @@ Description      : |CFFFFFFFF- Close range|R
 |CFFFFFFFF- High damage|R
 |CFFFFFFFF- Long cast time|R
 
-|CFFFFFFFF16 sec cooldown|R
+|CFFFFFFFF14 sec cooldown|R
 Channel the cosmic void, compressing it into a bomb that explodes after a short delay. Enemies struck are pulled into the blast.
 
 
@@ -225934,10 +225934,10 @@ School           : Physical
 Spell Type       : None
 Range            : 20 yards
 GCD              : 1 seconds
-Cooldown         : 14 seconds
+Cooldown         : 12 seconds
 Category         : 2240 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 14 seconds
+Category Cooldown: 12 seconds
 Attributes       : Do Not Log (8), No Threat (42), No Aura Icon (60), No Initial Threat (86), Do Not Display Range (126), No Cast Log (128), No Helpful Threat (131), No Harmful Threat (132), Force Display Castbar (155), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1125420)  : Dummy (3)
@@ -225946,7 +225946,7 @@ Description      : |CFFFFFFFF- Close range|R
 |CFFFFFFFF- High damage|R
 |CFFFFFFFF- Long cast time|R
 
-|CFFFFFFFF14 sec cooldown|R
+|CFFFFFFFF12 sec cooldown|R
 Channel the cosmic void, compressing it into a bomb that explodes after a short delay. Enemies struck are pulled into the blast.
 
 
@@ -225967,10 +225967,10 @@ School           : Physical
 Spell Type       : None
 Range            : 20 yards
 GCD              : 1 seconds
-Cooldown         : 12 seconds
+Cooldown         : 10 seconds
 Category         : 2240 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 12 seconds
+Category Cooldown: 10 seconds
 Attributes       : Do Not Log (8), No Threat (42), No Aura Icon (60), No Initial Threat (86), Do Not Display Range (126), No Cast Log (128), No Helpful Threat (131), No Harmful Threat (132), Force Display Castbar (155), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1125422)  : Dummy (3)
@@ -225979,7 +225979,7 @@ Description      : |CFFFFFFFF- Close range|R
 |CFFFFFFFF- High damage|R
 |CFFFFFFFF- Long cast time|R
 
-|CFFFFFFFF12 sec cooldown|R
+|CFFFFFFFF10 sec cooldown|R
 Channel the cosmic void, compressing it into a bomb that explodes after a short delay. Enemies struck are pulled into the blast.
 
 
@@ -227303,12 +227303,12 @@ Spell Type       : None
 Range            : 15 yards
 Cast Time        : 0.5 seconds
 GCD              : 1 seconds
-Cooldown         : 5.5 seconds
+Cooldown         : 7 seconds
 Category         : 2252 (Type 0x0)
 Labels           : 3136
                  : 3170
                  : 3237
-Category Cooldown: 5.5 seconds
+Category Cooldown: 7 seconds
 Attributes       : No Aura Icon (60), Can't Crit (93), Do Not Display Range (126), No Cast Log (128), Force Display Castbar (155), No Cooldown On Tooltip (192), Prevent Client Cast Cancel (350), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1127458)  : School Damage (2): nature
@@ -227317,7 +227317,7 @@ Description      : |CFFFFFFFF- Frontal cone|R
 |CFFFFFFFF- Melee attack|R
 |CFFFFFFFF- Poisons|R
 
-|CFFFFFFFF5.5 sec cooldown|R
+|CFFFFFFFF7 sec cooldown|R
 Smack targets in front of you with a toxic mackerel, poisoning them and inflicting damage.
 
 Poison inflicts damage-over-time. If a target is already poisoned, Toxic Smackerel deals bonus damage.
@@ -227351,11 +227351,11 @@ Spell Type       : None
 Range            : 15 yards
 Cast Time        : 0.5 seconds
 GCD              : 1 seconds
-Cooldown         : 5 seconds
+Cooldown         : 6.5 seconds
 Category         : 2252 (Type 0x0)
 Labels           : 3136
                  : 3237
-Category Cooldown: 5 seconds
+Category Cooldown: 6.5 seconds
 Attributes       : No Aura Icon (60), Can't Crit (93), Do Not Display Range (126), No Cast Log (128), Force Display Castbar (155), No Cooldown On Tooltip (192), Prevent Client Cast Cancel (350), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1127548)  : School Damage (2): nature
@@ -227364,7 +227364,7 @@ Description      : |CFFFFFFFF- Frontal cone|R
 |CFFFFFFFF- Melee attack|R
 |CFFFFFFFF- Poisons|R
 
-|CFFFFFFFF5 sec cooldown|R
+|CFFFFFFFF6.5 sec cooldown|R
 Smack targets in front of you with a toxic mackerel, poisoning them and inflicting damage.
 
 Poison inflicts damage-over-time. If a target is already poisoned, Toxic Smackerel deals bonus damage.
@@ -227385,12 +227385,12 @@ Spell Type       : None
 Range            : 15 yards
 Cast Time        : 0.5 seconds
 GCD              : 1 seconds
-Cooldown         : 4.5 seconds
+Cooldown         : 6 seconds
 Category         : 2252 (Type 0x0)
 Labels           : 3136
                  : 3170
                  : 3237
-Category Cooldown: 4.5 seconds
+Category Cooldown: 6 seconds
 Attributes       : No Aura Icon (60), Can't Crit (93), Do Not Display Range (126), No Cast Log (128), Force Display Castbar (155), No Cooldown On Tooltip (192), Prevent Client Cast Cancel (350), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1127551)  : School Damage (2): nature
@@ -227399,7 +227399,7 @@ Description      : |CFFFFFFFF- Frontal cone|R
 |CFFFFFFFF- Melee attack|R
 |CFFFFFFFF- Poisons|R
 
-|CFFFFFFFF4.5 sec cooldown|R
+|CFFFFFFFF6 sec cooldown|R
 Smack targets in front of you with a toxic mackerel, poisoning them and inflicting damage.
 
 Poison inflicts damage-over-time. If a target is already poisoned, Toxic Smackerel deals bonus damage.
@@ -227420,12 +227420,12 @@ Spell Type       : None
 Range            : 10 yards
 Cast Time        : 0.5 seconds
 GCD              : 1 seconds
-Cooldown         : 4 seconds
+Cooldown         : 5.5 seconds
 Category         : 2252 (Type 0x0)
 Labels           : 3136
                  : 3170
                  : 3237
-Category Cooldown: 4 seconds
+Category Cooldown: 5.5 seconds
 Attributes       : No Aura Icon (60), Can't Crit (93), Do Not Display Range (126), No Cast Log (128), Force Display Castbar (155), No Cooldown On Tooltip (192), Prevent Client Cast Cancel (350), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1127554)  : School Damage (2): nature
@@ -227434,7 +227434,7 @@ Description      : |CFFFFFFFF- Frontal cone|R
 |CFFFFFFFF- Melee attack|R
 |CFFFFFFFF- Poisons|R
 
-|CFFFFFFFF4 sec cooldown|R
+|CFFFFFFFF5.5 sec cooldown|R
 Smack targets in front of you with a toxic mackerel, poisoning them and inflicting damage.
 
 Poison inflicts damage-over-time. If a target is already poisoned, Toxic Smackerel deals bonus damage.
@@ -230225,9 +230225,9 @@ School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 0.75 seconds
-Cooldown         : 20 seconds
+Cooldown         : 18 seconds
 Category         : 2280 (Type 0x0)
-Category Cooldown: 20 seconds
+Category Cooldown: 18 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1137651)  : Apply Aura (6) | Unknown(191)
@@ -230242,7 +230242,7 @@ Description      : |CFFFFFFFF- Line AoE|R
 |CFFFFFFFF- Recast actions|R
 |CFFFFFFFF- Multicast|R
 
-|CFFFFFFFF20 sec cooldown|R
+|CFFFFFFFF18 sec cooldown|R
 Call forth the elements, unleashing a destructive barrage in front of the caster.
 
 Recast Storm Archon to call another element. Can be recast twice.
@@ -230484,9 +230484,9 @@ School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 0.75 seconds
-Cooldown         : 18 seconds
+Cooldown         : 16 seconds
 Category         : 2280 (Type 0x0)
-Category Cooldown: 18 seconds
+Category Cooldown: 16 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1138312)  : Apply Aura (6) | Unknown(191)
@@ -230501,7 +230501,7 @@ Description      : |CFFFFFFFF- Line AoE|R
 |CFFFFFFFF- Recast actions|R
 |CFFFFFFFF- Multicast|R
 
-|CFFFFFFFF18 sec cooldown|R
+|CFFFFFFFF16 sec cooldown|R
 Call forth the elements, unleashing a destructive barrage in front of the caster.
 
 Recast Storm Archon to call another element. Can be recast twice.
@@ -230688,9 +230688,9 @@ School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 0.75 seconds
-Cooldown         : 16 seconds
+Cooldown         : 14 seconds
 Category         : 2280 (Type 0x0)
-Category Cooldown: 16 seconds
+Category Cooldown: 14 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1138344)  : Apply Aura (6) | Unknown(191)
@@ -230705,7 +230705,7 @@ Description      : |CFFFFFFFF- Line AoE|R
 |CFFFFFFFF- Recast actions|R
 |CFFFFFFFF- Multicast|R
 
-|CFFFFFFFF16 sec cooldown|R
+|CFFFFFFFF14 sec cooldown|R
 Call forth the elements, unleashing a destructive barrage in front of the caster.
 
 Recast Storm Archon to call another element. Can be recast twice.
@@ -230842,9 +230842,9 @@ School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 0.75 seconds
-Cooldown         : 14 seconds
+Cooldown         : 12 seconds
 Category         : 2280 (Type 0x0)
-Category Cooldown: 14 seconds
+Category Cooldown: 12 seconds
 Attributes       : Do Not Log (8), No Aura Icon (60), Do Not Display Range (126), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1138381)  : Apply Aura (6) | Unknown(191)
@@ -230859,7 +230859,7 @@ Description      : |CFFFFFFFF- Line AoE|R
 |CFFFFFFFF- Recast actions|R
 |CFFFFFFFF- Multicast|R
 
-|CFFFFFFFF14 sec cooldown|R
+|CFFFFFFFF12 sec cooldown|R
 Call forth the elements, unleashing a destructive barrage in front of the caster.
 
 Recast Storm Archon to call another element. Can be recast twice.
@@ -232882,7 +232882,7 @@ Effects          :
 #1 (id=1141654)  : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 0 | Stat: Int | Target: Self (1)
 Description      : Use your accumulated knowledge to strike when the time is right, granting $444958s2 Intellect per report for $d and consuming their passive effect.
-Tooltip          : $pri increased by $w1.
+Tooltip          : Intellect increased by $w1.
 
 Name             : Precipice of Madness (id=444982) [Passive, Hidden] 
 School           : Shadow
@@ -237930,7 +237930,7 @@ Effects          :
 #2 (id=1152253)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc444958
-Tooltip          : $pri increased by $w1.
+Tooltip          : Intellect increased by $w1.
 
 Name             : High Speaker's Accretion (id=451247) 
 School           : Physical
@@ -241551,8 +241551,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.45 | Radius: 0 - 10 yards | Target: At Self (22) -> Enemy in Area (15)
 #2 (id=1158475)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 455211 | Target: Self (1)
-Description      : The stored energy released $w1 damage between all enemies.
-Tooltip          : The stored energy released $w1 damage between all enemies.
 
 Name             : Energy Redistribution Beacon (id=455227) 
 School           : Arcane
@@ -246593,7 +246591,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.45 | Target: Enemy (6)
 #2 (id=1164728)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 453573 | Target: Self (1)
-Description      : $@spelldesc408711
+Description      : $@spelldesc453573
+Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Siphoning Stiletto (id=458630) 
 School           : Shadow
@@ -250709,7 +250708,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 504.2626 (coefficient=0.19715) | Trigger Spell: 462960 | Target: Self (1)
 #2 (id=1172391)  : Dummy (3)
                    Base Value: 1362 | Scaled Value: 1362 | PvP Coefficient: 0.25
-Description      : Your spells and abilities have a chance to bathe an ally in restorative water that jumps to ${$462960x1-1} nearby allies, restoring $?a462342[${$462342w1*($s2/100)}][${$462342s3*($s2/100)}] health to each of them.
+Description      : Your spells and abilities have a chance to bathe an ally in restorative water that jumps to ${$462960x1-1} nearby allies, restoring $?a462342[${$462342w1*($s2/100)*$<healingrolemult>}][${$462342s3*($s2/100)*$<healingrolemult>}] health to each of them.
+Variables        : $healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]
 
 Name             : Old Salt's Bardic Citrine (id=462531) [Passive, Hidden] 
 School           : Froststorm
@@ -250728,7 +250728,8 @@ Effects          :
                    Base Value: 1143 | Scaled Value: 1143 | PvP Coefficient: 0.25 | Target: Self (1)
 #3 (id=1174950)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Your spells and abilities have a chance to whisper a sea shanty to $s3 nearby allies, healing them for $?a462342[${$462342w1*($s2/100)}][${$462342s3*($s2/100)}] health over $462959d.
+Description      : Your spells and abilities have a chance to whisper a sea shanty to $s3 nearby allies, healing them for $?a462342[${$462342w1*($s2/100)*$<healingrolemult>}][${$462342s3*($s2/100)*$<healingrolemult>}] health over $462959d.
+Variables        : $healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]
 
 Name             : Storm Sewer's Citrine (id=462532) [Passive, Hidden] 
 School           : Froststorm
@@ -250748,9 +250749,10 @@ Effects          :
                    Base Value: 2451 | Scaled Value: 2451 | PvP Coefficient: 0.25
 #3 (id=1178453)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
-Description      : Your spells and abilities have a chance to shield an ally with lightning, absorbing the next $?a462342[${$462342w1*($s2/100)}][${$462342s3*($s2/100)}] damage taken for $462958d.
+Description      : Your spells and abilities have a chance to shield an ally with lightning, absorbing the next $?a462342[${$462342w1*($s2/100)*$<healingrolemult>}][${$462342s3*($s2/100)*$<healingrolemult>}] damage taken for $462958d.
 
 While the shield persists, attackers take $s3% of the amount absorbed as Nature damage.
+Variables        : $healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]
 
 Name             : Windsinger's Runed Citrine (id=462534) [Passive, Hidden] 
 School           : Froststorm
@@ -252126,7 +252128,7 @@ Attributes       : Do Not Log (8), Allow While Mounted (24), Allow While Sitting
 Aura Interrupt   : Spline or Free Flight (52)
 Effects          :
 #1 (id=1184380)  : Apply Aura (6) | Unknown(293)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 3065 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | Misc Value: 3065 | Misc Value 2: 0x1 | Target: Self (1)
 Description      : Equip Experimental Go-Pack.
 
 Tooltip          : You have equipped an experimental rocket glider.
@@ -252193,7 +252195,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=1184606)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 32989.41 (coefficient=12.89777)
-Description      : The gearbox is Wound each time you cause a critical strike.  When Wound $s1 times, unleash a Torrent of Flames dealing ${$<rolemult>*$s2} Fire damage. The gearbox cannot be Wound more than once every 2.5 sec.
+Description      : The gearbox is Wound each time you cause a critical strike. When Wound $s1 times, unleash a Torrent of Flames dealing ${$<rolemult>*$s2} Fire damage. The gearbox cannot be Wound more than once every 2.5 sec.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Winding Up (id=469917) 
@@ -252288,7 +252290,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Scales with Castin
 Effects          :
 #1 (id=1184611)  : Apply Aura (6) | Proc Trigger Spell (42): Knowledge
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1 | Trigger Spell: 469926 | Target: Self (1)
-Description      : Each spell cast within 20 seconds will grant a stacking bonus of $469926s1 Intellect up to $469926u stacks. Expires after $d. Abilities with no mana cost will not trigger this trinket.
+Description      : Each spell cast within 20 seconds will grant a stacking bonus of $469926s1 Intellect up to $469926u stacks. Expires after $d. 
 Tooltip          : Chance to gain Intellect.
 
 Name             : Knowledge (id=469926) 
@@ -252848,7 +252850,7 @@ Description      : |CFFFFFFFF- Line Attack|R
 |CFFFFFFFF- Extreme range|R
 
 |CFFFFFFFF18 sec cooldown|R
-Call down a barrage of moon beams, damaging enemies. Enemy pirates are revealed to everyone when damaged.  
+Call down a barrage of moonbeams, damaging enemies. 
 
 Hold to increase range.
 
@@ -253052,7 +253054,7 @@ Description      : |CFFFFFFFF- Line Attack|R
 |CFFFFFFFF- Extreme range|R
 
 |CFFFFFFFF16 sec cooldown|R
-Call down a barrage of moon beams, damaging enemies. Enemy pirates are revealed to everyone when damaged.  
+Call down a barrage of moonbeams, damaging enemies.
 
 Hold to increase range.
 
@@ -253081,7 +253083,7 @@ Description      : |CFFFFFFFF- Line Attack|R
 |CFFFFFFFF- Extreme range|R
 
 |CFFFFFFFF14 sec cooldown|R
-Call down a barrage of moon beams, damaging enemies. Enemy pirates are revealed to everyone when damaged.  
+Call down a barrage of moonbeams, damaging enemies.
 
 Hold to increase range.
 
@@ -253111,7 +253113,7 @@ Description      : |CFFFFFFFF- Line Attack|R
 |CFFFFFFFF- Extreme range|R
 
 |CFFFFFFFF12 sec cooldown|R
-Call down a barrage of moon beams, damaging enemies. Enemy pirates are revealed to everyone when damaged.  
+Call down a barrage of moonbeams, damaging enemies.
 
 Hold to increase range.
 
@@ -253146,7 +253148,7 @@ Name             : Void Tear (desc=Utility) (id=472696)
 School           : Physical
 Spell Type       : None
 GCD              : 0.5 seconds
-Duration         : 16 seconds
+Duration         : 10 seconds
 Cooldown         : 18 seconds
 Category         : 2341 (Type 0x0)
 Labels           : 3136
@@ -253389,6 +253391,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 35738 | Target: At Self (18) -> Unknown(138)
 #2 (id=1192982)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1197484)  : Create Area Trigger (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 35954 | Target: At Self (18) -> Unknown(138)
 Description      : |CFFFFFFFF- Passive Aura|R
 |CFFFFFFFF- Caster AoE|R
 |CFFFFFFFF- Melee Boost|R
@@ -253413,6 +253417,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 35740 | Target: At Self (18) -> Unknown(138)
 #2 (id=1192992)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1197485)  : Create Area Trigger (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 35954 | Target: At Self (18) -> Unknown(138)
 Description      : |CFFFFFFFF- Passive Aura|R
 |CFFFFFFFF- Caster AoE|R
 |CFFFFFFFF- Melee Boost|R
@@ -253437,6 +253443,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 35741 | Target: At Self (18) -> Unknown(138)
 #2 (id=1192998)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1197487)  : Create Area Trigger (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 35954 | Target: At Self (18) -> Unknown(138)
 Description      : |CFFFFFFFF- Passive Aura|R
 |CFFFFFFFF- Caster AoE|R
 |CFFFFFFFF- Melee Boost|R
@@ -253461,6 +253469,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 35742 | Target: At Self (18) -> Unknown(138)
 #2 (id=1193005)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1197488)  : Create Area Trigger (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 35954 | Target: At Self (18) -> Unknown(138)
 Description      : |CFFFFFFFF- Passive Aura|R
 |CFFFFFFFF- Caster AoE|R
 |CFFFFFFFF- Melee Boost|R
