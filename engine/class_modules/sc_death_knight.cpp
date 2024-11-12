@@ -14780,6 +14780,18 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
   // Rider of the Apocalypse
   parse_effects( dk()->buffs.mograines_might );
   parse_effects( dk()->buffs.a_feast_of_souls );
+
+  // San'layn
+  parse_effects(
+      dk()->buffs.essence_of_the_blood_queen,
+      [ & ]( double v ) {
+        if ( dk()->spec.blood_death_knight->ok() )
+          v += dk()->spec.blood_death_knight->effectN( 19 ).percent();
+        if ( dk()->buffs.gift_of_the_sanlayn->check() )
+          v *= 1.0 + dk()->buffs.gift_of_the_sanlayn->check_value();
+        return v;
+      },
+      dk()->talent.sanlayn.frenzied_bloodthirst );
 }
 
 template <class T_PET, class Base>
