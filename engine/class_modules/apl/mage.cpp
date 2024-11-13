@@ -361,17 +361,17 @@ void frost( player_t* p )
   aoe_ff->add_action( "frostbolt" );
   aoe_ff->add_action( "call_action_list,name=movement" );
 
-  aoe_ss->add_action( "cone_of_cold,if=talent.coldest_snap&!action.frozen_orb.cooldown_react&(prev_gcd.1.comet_storm|prev_gcd.1.frozen_orb&cooldown.comet_storm.remains>5)&(!talent.deaths_chill|buff.icy_veins.remains<8|buff.deaths_chill.stack>=12)", "Hold CoC if CMS is coming up in the next 5 seconds + superhuman orb reaction fixed" );
+  aoe_ss->add_action( "cone_of_cold,if=talent.coldest_snap&!action.frozen_orb.cooldown_react&(prev_gcd.1.comet_storm|prev_gcd.1.frozen_orb&cooldown.comet_storm.remains>5)&(!talent.deaths_chill|buff.icy_veins.remains<8|buff.deaths_chill.stack>=12)" );
   aoe_ss->add_action( "freeze,if=freezable&debuff.frozen.down&prev_gcd.1.glacial_spike" );
   aoe_ss->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0&prev_gcd.1.glacial_spike" );
-  aoe_ss->add_action( "ice_nova,if=active_enemies<5&freezable&prev_gcd.1.glacial_spike&remaining_winters_chill=0&debuff.winters_chill.down|active_enemies>=5&time-action.cone_of_cold.last_used<6&time-action.cone_of_cold.last_used>6-gcd.max", "Shatter Glacial Spike with Ice Nova at 4 or less freezable targets; at 5 and more targets (freezable and unfreezable) instead use Ice Nova to consume all winters chills from Cone of Cold in the last global cooldown of the debuff remaining" );
+  aoe_ss->add_action( "ice_nova,if=active_enemies<5&freezable&prev_gcd.1.glacial_spike&remaining_winters_chill=0&debuff.winters_chill.down|active_enemies>=5&time-action.cone_of_cold.last_used<6&time-action.cone_of_cold.last_used>6-gcd.max" );
   aoe_ss->add_action( "frozen_orb,if=cooldown_react" );
   aoe_ss->add_action( "frostbolt,if=talent.deaths_chill&buff.icy_veins.remains>8&(buff.deaths_chill.stack<9|buff.deaths_chill.stack=9&!action.frostbolt.in_flight)" );
   aoe_ss->add_action( "comet_storm" );
   aoe_ss->add_action( "blizzard" );
-  aoe_ss->add_action( "shifting_power,if=cooldown.icy_veins.remains>10&(fight_remains+10>cooldown.icy_veins.remains)", "Shifting Power end of fight optimizations" );
-  aoe_ss->add_action( "glacial_spike,if=buff.icicles.react=5&(action.flurry.cooldown_react|remaining_winters_chill|active_enemies<5&freezable&cooldown.ice_nova.ready&!buff.fingers_of_frost.react)", "Shatter Glacial Spike with Ice Nova at 4 or less freezable targets but work through Fingers of Frost proccs first" );
-  aoe_ss->add_action( "ice_lance,if=buff.fingers_of_frost.react&!prev_gcd.1.glacial_spike|remaining_winters_chill", "Ice lance into WC for intuitive gameplay (was only with FoF before)" );
+  aoe_ss->add_action( "shifting_power,if=cooldown.icy_veins.remains>10&(fight_remains+10>cooldown.icy_veins.remains)" );
+  aoe_ss->add_action( "glacial_spike,if=buff.icicles.react=5&(action.flurry.cooldown_react|remaining_winters_chill|active_enemies<5&freezable&cooldown.ice_nova.ready&!buff.fingers_of_frost.react)" );
+  aoe_ss->add_action( "ice_lance,if=buff.fingers_of_frost.react&!prev_gcd.1.glacial_spike|remaining_winters_chill" );
   aoe_ss->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0" );
   aoe_ss->add_action( "frostbolt" );
   aoe_ss->add_action( "call_action_list,name=movement" );
