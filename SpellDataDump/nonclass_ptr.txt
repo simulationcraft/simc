@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.57409 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.57528 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -219023,6 +219023,7 @@ GCD              : 1.5 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (43200 seconds cooldown)
 Category         : 2211 (Type 0x0)
+Category Flags   : Unknown (7)
 Labels           : 969
                  : 1762
                  : 2862
@@ -219043,6 +219044,7 @@ GCD              : 1.5 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (43200 seconds cooldown)
 Category         : 2212 (Type 0x0)
+Category Flags   : Unknown (7)
 Labels           : 969
                  : 1930
                  : 2858
@@ -250708,7 +250710,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 504.2626 (coefficient=0.19715) | Trigger Spell: 462960 | Target: Self (1)
 #2 (id=1172391)  : Dummy (3)
                    Base Value: 1362 | Scaled Value: 1362 | PvP Coefficient: 0.25
-Description      : Your spells and abilities have a chance to bathe an ally in restorative water that jumps to ${$462960x1-1} nearby allies, restoring $?a462342[${$462342w1*($s2/100)*$<healingrolemult>}][${$462342s3*($s2/100)*$<healingrolemult>}] health to each of them.
+Description      : Your spells and abilities have a chance to bathe an ally in restorative water that jumps to ${$462960x1-1} nearby allies, restoring $?a462342[${$462342w1*($s2/100)}][${$462342s3*($s2/100)}] health to each of them.
 Variables        : $healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]
 
 Name             : Old Salt's Bardic Citrine (id=462531) [Passive, Hidden] 
@@ -250728,7 +250730,7 @@ Effects          :
                    Base Value: 1143 | Scaled Value: 1143 | PvP Coefficient: 0.25 | Target: Self (1)
 #3 (id=1174950)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Your spells and abilities have a chance to whisper a sea shanty to $s3 nearby allies, healing them for $?a462342[${$462342w1*($s2/100)*$<healingrolemult>}][${$462342s3*($s2/100)*$<healingrolemult>}] health over $462959d.
+Description      : Your spells and abilities have a chance to whisper a sea shanty to $s3 nearby allies, healing them for $?a462342[${$462342w1*($s2/100)}][${$462342s3*($s2/100)}] health over $462959d.
 Variables        : $healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]
 
 Name             : Storm Sewer's Citrine (id=462532) [Passive, Hidden] 
@@ -250749,7 +250751,7 @@ Effects          :
                    Base Value: 2451 | Scaled Value: 2451 | PvP Coefficient: 0.25
 #3 (id=1178453)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
-Description      : Your spells and abilities have a chance to shield an ally with lightning, absorbing the next $?a462342[${$462342w1*($s2/100)*$<healingrolemult>}][${$462342s3*($s2/100)*$<healingrolemult>}] damage taken for $462958d.
+Description      : Your spells and abilities have a chance to shield an ally with lightning, absorbing the next $?a462342[${$462342w1*($s2/100)}][${$462342s3*($s2/100)}] damage taken for $462958d.
 
 While the shield persists, attackers take $s3% of the amount absorbed as Nature damage.
 Variables        : $healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]
@@ -250904,7 +250906,7 @@ Range            : 50 yards
 Labels           : 3959: Item Effects
                  : 3965
 Triggered By     : Thunderlord's Crackling Citrine (462540)
-Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1173203)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
@@ -250919,34 +250921,34 @@ Velocity         : 30 yards/sec
 Labels           : 3959: Item Effects
                  : 3965
 Triggered By     : Squall Sailor's Citrine (462539)
-Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1173205)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Self (18) -> At Enemy in Area (16)
 Description      : $@spelldesc462539
 
 Name             : Undersea Overseer's Citrine (id=462953) 
-School           : Nature
+School           : Frost
 Spell Type       : Magic
 Range            : 50 yards
 Labels           : 3959: Item Effects
                  : 3965
 Triggered By     : Undersea Overseer's Citrine (462538)
-Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354), Chain by Most Hit (440)
 Effects          :
-#1 (id=1173207)  : School Damage (2): nature
+#1 (id=1173207)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
 Description      : $@spelldesc462538
 
 Name             : Storm Sewer's Citrine (id=462958) 
-School           : Physical
+School           : Nature
 Spell Type       : None
 Range            : 50 yards
 Duration         : 10 seconds
 Labels           : 3959: Item Effects
                  : 3961
 Triggered By     : Storm Sewer's Citrine (462532)
-Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1173217)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Friendly (21)
@@ -250955,7 +250957,7 @@ Description      : $@spelldesc462532
 Tooltip          : Absorbing the next $w1 damage received and dealing $462532s3% of the amount absorbed as Nature damage back to attackers.
 
 Name             : Old Salt's Bardic Citrine (id=462959) 
-School           : Physical
+School           : Nature
 Spell Type       : None
 Range            : 50 yards
 Max Targets      : 5
@@ -250964,7 +250966,7 @@ Duration         : 5 seconds
 Labels           : 3959: Item Effects
                  : 3961
 Triggered By     : Old Salt's Bardic Citrine (462531)
-Attributes       : Extra Initial Period (169), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Extra Initial Period (169), Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1173219)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Self (18) -> At Friendly in Area (31)
@@ -250972,13 +250974,13 @@ Description      : $@spelldesc462531
 Tooltip          : Restoring $w1 every sec.
 
 Name             : Mariner's Hallowed Citrine (id=462960) 
-School           : Physical
+School           : Nature
 Spell Type       : None
 Range            : 50 yards
 Labels           : 3959: Item Effects
                  : 3961
 Triggered By     : Mariner's Hallowed Citrine (462530)
-Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1173221)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Friendly (21)
@@ -252114,7 +252116,7 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Aura Interrupt   : Under Water (7), Mount (17), Landing (25), Swimming (33), Spline or Free Flight (52)
 Effects          :
 #1 (id=1184374)  : Apply Aura (6) | Unknown(293)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3064 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3064 | Misc Value 2: 0x1 | Target: Self (1)
 Description      : Dive to the ground below you.
 
 Name             : Experimental Go-Pack (id=469809) 
@@ -253729,5 +253731,25 @@ Effects          :
 #1 (id=1195281)  : Unknown(74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1469
 Description      : $@spelldesc1213569
+
+Name             : Splash! (id=1215906) [Passive, Hidden] 
+School           : Frost
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : White Melee
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not an Action (92), Not In Arena or Rated Battleground (144), Remove Entering Arena (162), Not In Arena (297)
+Effects          :
+#1 (id=1199117)  : Apply Aura (6) | Proc Trigger Spell (42): Splash!
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1215908 | Target: Self (1)
+
+Name             : Splash! (id=1215908) [Hidden] 
+School           : Frost
+Spell Type       : None
+Range            : 20 yards
+Triggered By     : Splash! (1215906)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not an Action (92), Not In Arena or Rated Battleground (144), Remove Entering Arena (162), Not In Arena (297)
+Effects          :
+#1 (id=1199120)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 
 
