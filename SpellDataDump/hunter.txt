@@ -621,7 +621,8 @@ Family Flags     : 121
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Taps immediately (215), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=11021)    : Dispel (38)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25 | Misc Value: 9 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 9 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.25 -> 0)
 #2 (id=11022)    : Dispel (38)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Enemy (6)
 Description      : Removes $s1 Enrage and $s2 Magic effect from an enemy target.$?s343244[
