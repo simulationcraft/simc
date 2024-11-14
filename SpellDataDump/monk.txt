@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57388 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57534 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1533,6 +1533,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Duration         : 30 seconds
+Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 2294 (Type 0x0): Heart of the Jade Serpent (443421 effect#7), Heart of the Jade Serpent (443616 effect#7), Endless Draught (450892 effect#1)
 Labels           : 16: Class Spells
