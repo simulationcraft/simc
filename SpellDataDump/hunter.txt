@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57534 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57689 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -622,7 +622,6 @@ Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack)
 Effects          :
 #1 (id=11021)    : Dispel (38)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 9 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.25 -> 0)
 #2 (id=11022)    : Dispel (38)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Enemy (6)
 Description      : Removes $s1 Enrage and $s2 Magic effect from an enemy target.$?s343244[
@@ -16906,7 +16905,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Kill Shot (53351), Kill Shot (320976), Black Arrow (466930), Black Arrow (468037)
                    Family Flags: 11
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #4 (id=1181779)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Kill Shot (53351), Kill Shot (320976), Black Arrow (466930), Black Arrow (468037)

@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57534 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57689 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -18715,7 +18715,6 @@ Description      : $@spelldesc441691
 Tooltip          : When you have $s1 stacks, the next time you transform into Bear Form, your next Mangle deals $441698s1% increased damage or your next $?s202028[Brutal Slash][Swipe] deals $441698s2% increased damage. Either generates ${$442562s1/10} extra Rage.
 
 Name             : Ursine Potential (id=441698) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -18763,7 +18762,6 @@ Description      : $@spelldesc441691
 Tooltip          : When you have $s1 stacks, the next time you transform into Cat Form, gain $441704s1 combo points and your next Ferocious Bite or Rip deals $441702s1% increased damage for its full duration.
 
 Name             : Feline Potential (id=441702) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Physical
 Spell Type       : None
