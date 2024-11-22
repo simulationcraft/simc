@@ -1320,6 +1320,9 @@ using namespace helpers;
       }
     }
 
+    wither_t(warlock_t* p, bool havoc, util::string_view options_str ) : wither_t( p, options_str )
+    { affected_by.havoc = havoc; }
+
     dot_t* get_dot( player_t* t ) override
     { return impact_action->get_dot( t ); }
 
@@ -3496,6 +3499,9 @@ using namespace helpers;
       triggers.decimation = p->talents.decimation.ok() && !dual;
     }
 
+    immolate_t( warlock_t* p, bool havoc, util::string_view options_str ) : immolate_t( p, options_str )
+    { affected_by.havoc = havoc; }
+
     dot_t* get_dot( player_t* t ) override
     { return impact_action->get_dot( t ); }
   };
@@ -3880,9 +3886,9 @@ using namespace helpers;
       affected_by.chaotic_energies = true;
 
       if ( p->hero.wither.ok() )
-        applied_dot = new wither_t( p, "" );
+        applied_dot = new wither_t( p, false, "" );
       else
-        applied_dot = new immolate_t( p, "" );
+        applied_dot = new immolate_t( p, false, "" );
 
       applied_dot->background = true;
       applied_dot->dual = true;
