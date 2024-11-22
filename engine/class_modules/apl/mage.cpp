@@ -386,7 +386,7 @@ void frost( player_t* p )
   cds->add_action( "invoke_external_buff,name=blessing_of_summer,if=buff.blessing_of_summer.down" );
   cds->add_action( "blood_fury" );
   cds->add_action( "berserking,if=buff.icy_veins.remains>10&buff.icy_veins.remains<15|fight_remains<15" );
-  cds->add_action( "fireblood", "actions.cds+=/lights_judgment" );
+  cds->add_action( "fireblood" );
   cds->add_action( "ancestral_call" );
 
   cleave_ff->add_action( "comet_storm,if=prev_gcd.1.flurry|prev_gcd.1.cone_of_cold" );
