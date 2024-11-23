@@ -116,7 +116,7 @@ void protection( player_t* p )
   defensives->add_action( "ardent_defender" );
 
   standard->add_action( "judgment,target_if=charges>=2|full_recharge_time<=gcd.max" );
-  standard->add_action( "hammer_of_light,if=buff.hammer_of_light_free.remains<2|buff.shake_the_heavens.duration<1|!buff.shake_the_heavens.up|cooldown.eye_of_tyr.remains<1.5|fight_remains<2" );
+  standard->add_action( "hammer_of_light,if=buff.hammer_of_light_free.remains<2|buff.shake_the_heavens.remains<1|!buff.shake_the_heavens.up|cooldown.eye_of_tyr.remains<1.5|fight_remains<2" );
   standard->add_action( "eye_of_tyr,if=(hpg_to_2dawn=5|!talent.of_dusk_and_dawn.enabled)&talent.lights_guidance.enabled" );
   standard->add_action( "eye_of_tyr,if=(hpg_to_2dawn=1|buff.blessing_of_dawn.stack>0)&talent.lights_guidance.enabled" );
   standard->add_action( "shield_of_the_righteous,if=(!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&!buff.hammer_of_light_ready.up" );
