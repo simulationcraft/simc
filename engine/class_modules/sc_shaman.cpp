@@ -7058,7 +7058,11 @@ struct lightning_bolt_t : public shaman_spell_t
 
       if ( !p()->sk_during_cast )
       {
-        p()->buff.stormkeeper->decrement();
+        if ( p()->buff.stormkeeper->stack() == 3 &&
+             ( !p()->bugs || ( p()->buff.stormkeeper->remains() > p()->buff.stormkeeper->buff_duration() * 0.97 ) ) )
+        {
+          p()->buff.stormkeeper->decrement();
+        }
       }
       p()->sk_during_cast = false;
 
