@@ -2358,9 +2358,9 @@ public:
     }
 
     if ( affected_by_storm_frenzy && !this->background && exec_type == spell_variant::NORMAL &&
-         !( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() ) && !ab::background )
+         !( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() ) && !ab::background && !bugs)
     {
-      this->p()->buff.storm_frenzy->decrement();
+      p()->buff.storm_frenzy->decrement();
     }
   }
 
@@ -2369,6 +2369,12 @@ public:
     ab::impact( state );
 
     p()->trigger_stormbringer( state );
+
+    if ( affected_by_storm_frenzy && !this->background && exec_type == spell_variant::NORMAL &&
+         !( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() ) && !ab::background && bugs )
+    {
+      p()->buff.storm_frenzy->decrement();
+    }
   }
 
   void schedule_execute( action_state_t* execute_state = nullptr ) override
