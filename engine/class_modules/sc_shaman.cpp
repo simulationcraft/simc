@@ -8892,9 +8892,14 @@ struct ascendance_dre_t : public ascendance_t
     }
 
     //for Elemental, the damage portion of Asc is not executed. this is intented to model a bug
-
+    auto tl = target_list();
     for ( size_t i = 0; i < 6; i++ )
     {
+      for ( size_t i = 0; as<size_t>( data().effectN( 7 ).base_value()); ++i )
+      {
+        int index = rng().range( tl.size() );
+        p()->trigger_secondary_flame_shock( tl[ index ], spell_variant::ASCENDANCE );
+      }
       p()->trigger_maelstrom_gain( lvb->maelstrom_gain );
       p()->trigger_maelstrom_gain( lvb_ol->maelstrom_gain );
 
