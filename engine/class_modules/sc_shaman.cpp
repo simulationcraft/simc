@@ -2729,7 +2729,7 @@ public:
 
     this->p()->consume_maelstrom_weapon( this->execute_state, mw_consumed_stacks );
 
-    if ( this->exec_type == spell_variant::NORMAL && !this->background )
+    if ( this->exec_type == spell_variant::NORMAL && (!this->background || this->execute_state->action->id == 188389))
     {
       this->p()->trigger_ancestor( ancestor_trigger, this->execute_state );
     }
@@ -8742,7 +8742,6 @@ struct ascendance_t : public shaman_spell_t
   void init() override
   {
     shaman_spell_t::init();
-    lvb_ol = new lava_burst_overload_t( p(), spell_variant::NORMAL, nullptr );
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
       if ( auto trigger_spell = p()->find_action( "lava_burst_ascendance" ) )
@@ -8865,6 +8864,8 @@ struct ascendance_dre_t : public ascendance_t
         lvb = new lava_burst_t( p(), spell_variant::DEEPLY_ROOTED_ELEMENTS );
         add_child( lvb );
       }
+
+      lvb_ol = debug_cast<lava_burst_overload_t*>(p()->find_action("lava_burst_overload"));
     }
 
     if ( p()->specialization() == SHAMAN_ENHANCEMENT )
@@ -8894,16 +8895,17 @@ struct ascendance_dre_t : public ascendance_t
       ascendance_t::execute();
       return;
     }
-
+    
     //for Elemental, the damage portion of Asc is not executed. this is intented to model a bug
     auto tl = target_list();
-    for ( size_t i = 0; i < 6; i++ )
+    auto fs_cap = p()->action.ascendance->data().effectN( 7 ).base_value();
+    for ( size_t i = 0; i < fs_cap; i++ )
     {
-      for ( size_t i = 0; as<size_t>( data().effectN( 7 ).base_value()); ++i )
-      {
-        int index = rng().range( tl.size() );
-        p()->trigger_secondary_flame_shock( tl[ index ], spell_variant::ASCENDANCE );
-      }
+      
+      int index = rng().range( tl.size() );
+      p()->trigger_secondary_flame_shock( tl[ index ], spell_variant::ASCENDANCE );
+      
+      
       p()->trigger_maelstrom_gain( lvb->maelstrom_gain );
       p()->trigger_maelstrom_gain( lvb_ol->maelstrom_gain );
 
@@ -8913,6 +8915,7 @@ struct ascendance_dre_t : public ascendance_t
       {
         p()->trigger_maelstrom_gain( lvb_ol->maelstrom_gain );
       }
+
     }
     
   }
@@ -11072,9 +11075,6 @@ void shaman_t::create_actions()
   action.flame_shock->background = true;
   action.flame_shock->cooldown = get_cooldown( "flame_shock_secondary" );
   action.flame_shock->base_costs[ RESOURCE_MANA ] = 0;
-
-  action.lava_burst = new lava_burst_t( this, spell_variant::NORMAL );
-  action.lava_burst_ol = new lava_burst_overload_t( this, spell_variant::NORMAL, nullptr );
 }
 
 // shaman_t::create_options =================================================
