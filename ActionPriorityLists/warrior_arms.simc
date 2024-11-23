@@ -164,7 +164,7 @@ actions.slayer_execute+=/champions_spear
 actions.slayer_execute+=/avatar,if=cooldown.colossus_smash.remains<=5|debuff.colossus_smash.up
 actions.slayer_execute+=/warbreaker
 actions.slayer_execute+=/colossus_smash
-actions.slayer_execute+=/execute,if=buff.juggernaut.remains<=gcd
+actions.slayer_execute+=/execute,if=buff.juggernaut.remains<=gcd&talent.juggernaut
 actions.slayer_execute+=/bladestorm,if=debuff.executioners_precision.stack=2&debuff.colossus_smash.remains>4|debuff.executioners_precision.stack=2&cooldown.colossus_smash.remains>15|!talent.executioners_precision
 actions.slayer_execute+=/skullsplitter,if=rage<85
 actions.slayer_execute+=/mortal_strike,if=dot.rend.remains<2|(debuff.executioners_precision.stack=2&buff.lethal_blows.stack=2)
@@ -180,7 +180,7 @@ actions.slayer_st+=/champions_spear
 actions.slayer_st+=/avatar,if=cooldown.colossus_smash.remains<=5|debuff.colossus_smash.up
 actions.slayer_st+=/colossus_smash
 actions.slayer_st+=/warbreaker
-actions.slayer_st+=/execute,if=debuff.marked_for_execution.stack=3|buff.juggernaut.remains<=gcd*3|buff.sudden_death.stack=2|buff.sudden_death.remains<=gcd*3
+actions.slayer_st+=/execute,if=debuff.marked_for_execution.stack=3|buff.juggernaut.remains<=gcd*3&talent.juggernaut|buff.sudden_death.stack=2|buff.sudden_death.remains<=gcd*3
 actions.slayer_st+=/bladestorm,if=(cooldown.colossus_smash.remains>=gcd*4|cooldown.warbreaker.remains>=gcd*4)|debuff.colossus_smash.remains>=gcd*4
 actions.slayer_st+=/overpower,if=buff.opportunist.up|charges=2&talent.fierce_followthrough
 actions.slayer_st+=/mortal_strike

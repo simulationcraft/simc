@@ -15,6 +15,67 @@
 
 namespace priestspace
 {
+namespace buffs
+{
+// ==========================================================================
+// Power Word: Shield
+// ==========================================================================
+struct power_word_shield_buff_t : public priest_buff_t<absorb_buff_t>
+{
+  double initial_size;
+  double energize_amount;
+  using ab = priest_buff_t<absorb_buff_t>;
+
+  power_word_shield_buff_t( priest_t* player, player_t* target )
+    : ab( actor_pair_t( target, player ), "power_word_shield", player->find_class_spell( "Power Word: Shield" ) ),
+      energize_amount( player->find_spell( 47755 )->effectN( 1 ).percent() / 100 *
+                       priest().resources.max[ RESOURCE_MANA ] )
+  {
+    set_absorb_source( player->get_stats( "power_word_shield" ) );
+    set_cooldown( 0_s );
+    initial_size = 0;
+    buff_period = 0_s;  // TODO: Work out why Power Word: Shield has buff period. Work out why shields ticking refreshes
+                        // them to full value.
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    sim->print_debug( "{} changes stored Power Word: Shield maximum from {} to {}", *player, initial_size, value );
+    initial_size = value;
+
+    return ab::trigger( stacks, value, chance, duration );
+  }
+
+  void trigger_void_shield( double result_amount )
+  {
+    // The initial amount of the shield and our "cap" is stored in the Void Shield buff
+    double left_to_refill = initial_size - current_value;
+    double refill_amount  = std::min( left_to_refill, result_amount );
+
+    if ( refill_amount > 0 )
+    {
+      sim->print_debug( "{} adds value to Power Word: Shield. original={}, left_to_refill={}, refill_amount={}",
+                        *player, current_value, left_to_refill, refill_amount );
+      current_value += refill_amount;
+    }
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    if ( remaining_duration > timespan_t::zero() )
+    {
+      if ( priest().talents.discipline.shield_discipline.enabled() )
+      {
+        priest().resource_gain( RESOURCE_MANA, energize_amount, priest().gains.shield_discipline );
+      }
+    }
+
+    ab::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
+}  // namespace buffs
+
 namespace actions
 {
 namespace spells
@@ -2255,16 +2316,12 @@ struct power_word_shield_t final : public priest_absorb_t
 {
   double insanity;
   timespan_t atonement_duration;
-  action_t* crystalline_reflection_heal;
-  action_t* crystalline_reflection_damage;
 
   power_word_shield_t( priest_t& p, util::string_view options_str )
     : priest_absorb_t( "power_word_shield", p, p.find_class_spell( "Power Word: Shield" ) ),
       insanity( priest().specs.hallucinations->effectN( 1 ).resource() ),
       atonement_duration( timespan_t::from_seconds( p.talents.discipline.atonement_buff->effectN( 3 ).base_value() +
-                                                    p.talents.discipline.indemnity->effectN( 1 ).base_value() ) ),
-      crystalline_reflection_heal( nullptr ),
-      crystalline_reflection_damage( nullptr )
+                                                    p.talents.discipline.indemnity->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
 
@@ -2273,21 +2330,35 @@ struct power_word_shield_t final : public priest_absorb_t
 
     disc_mastery = true;
     harmful      = false;
-
-    if ( p.talents.crystalline_reflection.enabled() )
-    {
-      crystalline_reflection_heal   = new crystalline_reflection_heal_t( p );
-      crystalline_reflection_damage = new crystalline_reflection_damage_t( p );
-
-      add_child( crystalline_reflection_heal );
-      add_child( crystalline_reflection_damage );
-    }
   }
 
   // Manually create the buff so we can reference it with Void Shield
-  absorb_buff_t* create_buff( const action_state_t* ) override
+  absorb_buff_t* create_buff( const action_state_t* s ) override
   {
-    return priest().buffs.power_word_shield;
+    if ( s->target == player )
+    {
+      if ( priest().buffs.power_word_shield->absorb_source != stats )
+        priest().buffs.power_word_shield->set_absorb_source( stats );
+      return priest().buffs.power_word_shield;
+    }
+
+    buff_t* b = buff_t::find( s->target, name_str, player );
+    if ( b )
+      return debug_cast<absorb_buff_t*>( b );
+
+    std::string stats_obj_name = name_str;
+    if ( s->target != player )
+      stats_obj_name += "_" + player->name_str;
+    stats_t* stats_obj = player->get_stats( stats_obj_name, this );
+    if ( stats != stats_obj )
+    {
+      // Add absorb target stats as a child to the main stats object for reporting
+      stats->add_child( stats_obj );
+    }
+    auto buff = make_buff<buffs::power_word_shield_buff_t>( &priest(), s->target );
+    buff->set_absorb_source( stats_obj );
+
+    return buff;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -2331,13 +2402,14 @@ struct power_word_shield_t final : public priest_absorb_t
     }
 
     priest().buffs.weal_and_woe->expire();
+    priest().buffs.rapture->decrement();
   }
 
   void impact( action_state_t* s ) override
   {
-    if ( crystalline_reflection_heal )
+    if ( priest().talents.crystalline_reflection.enabled() )
     {
-      crystalline_reflection_heal->execute_on_target( s->target );
+      priest().background_actions.crystalline_reflection_heal->execute_on_target( s->target );
     }
 
     priest_absorb_t::impact( s );
@@ -2347,7 +2419,7 @@ struct power_word_shield_t final : public priest_absorb_t
       s->target->buffs.body_and_soul->trigger();
     }
 
-    if ( crystalline_reflection_damage )
+    if ( priest().talents.crystalline_reflection.enabled() )
     {
       auto cr_damage = s->result_amount * p().talents.crystalline_reflection->effectN( 1 ).percent() *
                        p().options.crystalline_reflection_damage_mult;
@@ -2369,7 +2441,7 @@ struct power_word_shield_t final : public priest_absorb_t
 
         if ( target )
         {
-          crystalline_reflection_damage->execute_on_target( target, cr_damage );
+          priest().background_actions.crystalline_reflection_damage->execute_on_target( target, cr_damage );
         }
       } );
     }
@@ -2384,6 +2456,35 @@ struct power_word_shield_t final : public priest_absorb_t
     {
       priest().buffs.light_weaving->trigger();
     }
+  }
+};
+
+// ==========================================================================
+// Rapture
+// TODO: add Rapture and Weal and Woe bonuses
+// ==========================================================================
+struct rapture_t : public priest_heal_t
+{
+  action_t* power_word_shield;
+  rapture_t( priest_t& p, util::string_view options_str ) : priest_heal_t( "rapture", p, p.talents.discipline.rapture )
+  {
+    parse_options( options_str );
+    power_word_shield = new power_word_shield_t( p, {} );
+    power_word_shield->background = true;
+    power_word_shield->base_costs[ RESOURCE_MANA ] = 0;
+  }
+
+  void execute() override
+  {
+    priest().buffs.rapture->trigger();
+    priest_heal_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_heal_t::impact( s );
+    power_word_shield->execute_on_target( s->target );
+    priest().cooldowns.power_word_shield->reset( false );
   }
 };
 
@@ -2566,45 +2667,6 @@ struct cauterizing_shadows_t final : public priest_heal_t
 
 namespace buffs
 {
-// ==========================================================================
-// Power Word: Shield
-// ==========================================================================
-struct power_word_shield_buff_t : public absorb_buff_t
-{
-  double initial_size;
-
-  power_word_shield_buff_t( priest_t* player )
-    : absorb_buff_t( player, "power_word_shield", player->find_class_spell( "Power Word: Shield" ) )
-  {
-    set_absorb_source( player->get_stats( "power_word_shield" ) );
-    set_cooldown( 0_s );
-    initial_size = 0;
-    buff_period = 0_s;  // TODO: Work out why Power Word: Shield has buff period. Work out why shields ticking refreshes
-                        // them to full value.
-  }
-
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    sim->print_debug( "{} changes stored Power Word: Shield maximum from {} to {}", *player, initial_size, value );
-    initial_size = value;
-
-    return absorb_buff_t::trigger( stacks, value, chance, duration );
-  }
-
-  void trigger_void_shield( double result_amount )
-  {
-    // The initial amount of the shield and our "cap" is stored in the Void Shield buff
-    double left_to_refill = initial_size - current_value;
-    double refill_amount  = std::min( left_to_refill, result_amount );
-
-    if ( refill_amount > 0 )
-    {
-      sim->print_debug( "{} adds value to Power Word: Shield. original={}, left_to_refill={}, refill_amount={}",
-                        *player, current_value, left_to_refill, refill_amount );
-      current_value += refill_amount;
-    }
-  }
-};
 
 // ==========================================================================
 // Desperate Prayer - Health Increase buff
@@ -2872,6 +2934,7 @@ void priest_t::create_gains()
   gains.insanity_maddening_touch         = get_gain( "Maddening Touch" );
   gains.insanity_t30_2pc                 = get_gain( "Insanity Gained from T30 2PC" );
   gains.cauterizing_shadows_health       = get_gain( "Health from Cauterizing Shadows" );
+  gains.shield_discipline                = get_gain( "Shield Discipline" );
 }
 
 /** Construct priest procs */
@@ -3426,6 +3489,10 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
     if ( specialization() == PRIEST_DISCIPLINE )
       return new void_blast_disc_t( *this, options_str );
   }
+  if ( name == "rapture" && specialization() == PRIEST_DISCIPLINE )
+  {
+    return new rapture_t( *this, options_str );
+  }
 
   return base_t::create_action( name, options_str );
 }
@@ -3798,7 +3865,7 @@ void priest_t::create_buffs()
 
   // Generic buffs
   buffs.desperate_prayer  = make_buff<buffs::desperate_prayer_t>( *this );
-  buffs.power_word_shield = new buffs::power_word_shield_buff_t( this );
+  buffs.power_word_shield = new buffs::power_word_shield_buff_t( this, this );
   buffs.fade              = make_buff( this, "fade", find_class_spell( "Fade" ) )->set_default_value_from_effect( 1 );
   buffs.levitate          = make_buff( this, "levitate", specs.levitate_buff )->set_duration( timespan_t::zero() );
 
@@ -3943,6 +4010,12 @@ void priest_t::init_background_actions()
   if ( talents.discipline.divine_aegis.enabled() )
   {
     background_actions.divine_aegis = new actions::heals::divine_aegis_t( *this );
+  }
+
+  if ( talents.crystalline_reflection.enabled() )
+  {
+    background_actions.crystalline_reflection_heal   = new actions::heals::crystalline_reflection_heal_t( *this );
+    background_actions.crystalline_reflection_damage = new actions::heals::crystalline_reflection_damage_t( *this );
   }
 
   background_actions.shadow_word_death->background = true;

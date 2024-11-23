@@ -4551,6 +4551,18 @@ struct black_arrow_withering_fire_secondary_t final : black_arrow_base_t
     aoe        = as<int>( p->talents.withering_fire->effectN( 3 ).base_value() );
   }
 
+  //Each secondary Withering Fire projectile can be multiplied by effects such as Hunter's Prey
+  int n_targets() const override
+  {
+    int n = black_arrow_base_t::n_targets();
+
+    if ( p()->talents.hunters_prey.ok() )
+    {
+      return n * aoe;
+    }
+    return n;
+  }
+
   size_t available_targets( std::vector<player_t*>& tl ) const override
   {
     black_arrow_base_t::available_targets( tl );
@@ -5084,16 +5096,15 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     {
       serpent_sting_t::available_targets( tl );
 
+      // Remove the cast target as it will get hit by Serpentstalker's Trickery
+      range::erase_remove( tl, target );
+
       if ( is_aoe() && tl.size() > 1 )
       {
         // Prefer targets without Serpent Sting ticking.
         auto start = tl.begin();
         std::partition( *start == target ? std::next( start ) : start, tl.end(),
                         [ this ]( player_t* t ) { return !( this->td( t )->dots.serpent_sting->is_ticking() ); } );
-
-        // Remove the cast target if it is already ticking, otherwise it remains as the first target.
-        if ( p()->get_target_data( target )->dots.serpent_sting->is_ticking() )
-          range::erase_remove( tl, target );
       }
 
       return tl.size();
@@ -6156,7 +6167,7 @@ struct fury_of_the_eagle_t : public hunter_melee_attack_t
     if ( procced_at_max_tip )
       p()->buffs.tip_of_the_spear->increment();
     
-    if ( p()->talents.ruthless_marauder )
+    if ( p()->talents.ruthless_marauder.ok() )
       p()->buffs.ruthless_marauder->trigger();
   }
 };

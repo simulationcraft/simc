@@ -469,7 +469,7 @@ public:
     bool treat_bloodlust_as_time_warp = false;
     unsigned initial_spellfire_spheres = 5;
     arcane_phoenix_rotation arcane_phoenix_rotation_override = arcane_phoenix_rotation::DEFAULT;
-    bool ice_nova_consumes_winters_chill = false;
+    bool ice_nova_consumes_winters_chill = true;
   } options;
 
   // Pets
@@ -7867,6 +7867,8 @@ void mage_t::create_pets()
   {
     int images = as<int>( talents.mirror_image->effectN( 2 ).base_value() );
     images += as<int>( talents.phantasmal_image->effectN( 1 ).base_value() );
+    if ( bugs && talents.phantasmal_image.ok() )
+      images += 1;
     for ( int i = 0; i < images; i++ )
     {
       auto image = new pets::mirror_image::mirror_image_pet_t( sim, this );

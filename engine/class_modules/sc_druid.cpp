@@ -268,6 +268,10 @@ struct eclipse_handler_t
   unsigned starfire_counter_base;
   uint8_t state = 0;
 
+  double harmony_val = 0.0;
+  double harmony_cap = 0.0;
+  double harmony_cur = 0.0;
+
   std::array<uptime_t*, 4> uptimes;
 
   eclipse_handler_t( druid_t* player ) : data(), iter(), p( player ) {}
@@ -283,10 +287,9 @@ struct eclipse_handler_t
   void tick_fury_of_elune();
 
   template <eclipse_e E> buff_t* get_boat() const;
-  template <eclipse_e E> buff_t* get_harmony() const;
   template <eclipse_e E> buff_t* get_eclipse() const;
   template <eclipse_e E> void advance_eclipse( bool active );
-  template <eclipse_e E> void update_eclipse();
+  void trigger_harmony();
 
   bool in_none( uint8_t state_ ) const { return state_ == 0; }
   bool in_none() const { return state == 0; }
@@ -297,7 +300,7 @@ struct eclipse_handler_t
   bool in_both() const { return in_lunar() && in_solar(); }
 
   void reset_stacks();
-  void reset_state();
+  void reset();
 
   void datacollection_begin();
   void datacollection_end();
@@ -695,8 +698,6 @@ public:
     buff_t* eclipse_lunar;
     buff_t* eclipse_solar;
     buff_t* fury_of_elune;  // AP ticks
-    buff_t* harmony_of_the_heavens_lunar;  // proxy tracker buff
-    buff_t* harmony_of_the_heavens_solar;  // proxy tracker buff
     buff_t* incarnation_moonkin;
     buff_t* natures_balance;
     buff_t* orbit_breaker;
@@ -3335,12 +3336,14 @@ struct celestial_alignment_buff_t final : public druid_buff_t
     p()->buff.eclipse_lunar->trigger( dur_ );
     if ( in_lunar )
       eclipse_handler.advance_eclipse<eclipse_e::LUNAR>( true );
-    eclipse_handler.update_eclipse<eclipse_e::LUNAR>();
 
     p()->buff.eclipse_solar->trigger( dur_ );
     if ( in_solar )
       eclipse_handler.advance_eclipse<eclipse_e::SOLAR>( true );
-    eclipse_handler.update_eclipse<eclipse_e::SOLAR>();
+
+    // harmony of the heavens counter resets if solar eclipse was active before CA is triggered
+    if ( !p()->bugs || in_solar )
+      eclipse_handler.harmony_cur = 0.0;
 
     if ( p()->active.orbital_strike )
       p()->active.orbital_strike->execute_on_target( p()->target );
@@ -6716,11 +6719,7 @@ public:
 
     p()->buff.starlord->trigger( this );
 
-    if ( p()->eclipse_handler.in_lunar() )
-      p()->buff.harmony_of_the_heavens_lunar->trigger( this );
-
-    if ( p()->eclipse_handler.in_solar() )
-      p()->buff.harmony_of_the_heavens_solar->trigger( this );
+    p()->eclipse_handler.trigger_harmony();
 
     if ( weaver_buff->check() && weaver_buff->can_expire( this ) )
       weaver_buff->expire();
@@ -7057,9 +7056,6 @@ struct celestial_alignment_base_t : public trigger_control_of_the_dream_t<druid_
     base_t::execute();
 
     buff->trigger();
-
-    p()->buff.harmony_of_the_heavens_lunar->expire();
-    p()->buff.harmony_of_the_heavens_solar->expire();
   }
 };
 
@@ -10650,28 +10646,6 @@ void druid_t::create_buffs()
       active.sundered_firmament->execute_on_target( target );
     } );
 
-  int harmony_of_the_heavens_max_stacks =
-    !talent.harmony_of_the_heavens.ok() ? 1 : ( as<int>( talent.harmony_of_the_heavens->effectN( 2 ).base_value() /
-                                                         talent.harmony_of_the_heavens->effectN( 1 ).base_value() ) );
-
-  buff.harmony_of_the_heavens_lunar = make_fallback( talent.harmony_of_the_heavens.ok(),
-    this, "harmony_of_the_heavens_lunar", talent.harmony_of_the_heavens )
-      ->set_default_value_from_effect( 1 )
-      ->set_max_stack( harmony_of_the_heavens_max_stacks )
-      ->set_name_reporting( "Lunar" )
-      ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
-        eclipse_handler.update_eclipse<eclipse_e::LUNAR>();
-      } );
-
-  buff.harmony_of_the_heavens_solar = make_fallback( talent.harmony_of_the_heavens.ok(),
-    this, "harmony_of_the_heavens_solar", talent.harmony_of_the_heavens )
-      ->set_default_value_from_effect( 1 )
-      ->set_max_stack( harmony_of_the_heavens_max_stacks )
-      ->set_name_reporting( "Solar" )
-      ->set_stack_change_callback( [ this ]( buff_t*, int, int ) {
-        eclipse_handler.update_eclipse<eclipse_e::SOLAR>();
-      } );
-
   buff.natures_balance = make_fallback( talent.natures_balance.ok(), this, "natures_balance", talent.natures_balance )
     ->set_quiet( true )
     ->set_freeze_stacks( true );
@@ -12254,8 +12228,7 @@ void druid_t::reset()
   // Reset druid_t variables to their original state.
   form = NO_FORM;
   base_gcd = 1.5_s;
-  eclipse_handler.reset_stacks();
-  eclipse_handler.reset_state();
+  eclipse_handler.reset();
 
   // Restore main hand attack / weapon to normal state
   main_hand_attack = caster_melee_attack;
@@ -13462,6 +13435,12 @@ void eclipse_handler_t::init()
   wrath_counter_base = wrath_counter = p->find_spell( 326055 )->max_stacks();
   starfire_counter_base = starfire_counter = p->find_spell( 326053 )->max_stacks();
 
+  if ( p->talent.harmony_of_the_heavens.ok() )
+  {
+    harmony_val = p->talent.harmony_of_the_heavens->effectN( 1 ).percent();
+    harmony_cap = p->talent.harmony_of_the_heavens->effectN( 2 ).percent();
+  }
+
   uptimes[ 0 ] = p->get_uptime( "No Eclipse" )->collect_uptime( *p->sim );
   uptimes[ eclipse_e::LUNAR ] = p->get_uptime( "Eclipse Lunar" )->collect_uptime( *p->sim );
   uptimes[ eclipse_e::SOLAR ] = p->get_uptime( "Eclipse Solar" )->collect_uptime( *p->sim );
@@ -13577,17 +13556,6 @@ buff_t* eclipse_handler_t::get_boat() const
 }
 
 template <eclipse_e E>
-buff_t* eclipse_handler_t::get_harmony() const
-{
-  if constexpr ( E == eclipse_e::LUNAR )
-    return p->buff.harmony_of_the_heavens_lunar;
-  else if ( E == eclipse_e::SOLAR )
-    return p->buff.harmony_of_the_heavens_solar;
-  else
-    return nullptr;
-}
-
-template <eclipse_e E>
 buff_t* eclipse_handler_t::get_eclipse() const
 {
   if constexpr ( E == eclipse_e::LUNAR )
@@ -13621,11 +13589,12 @@ void eclipse_handler_t::advance_eclipse( bool active )
   {
     state &= ~E;
 
-    get_harmony<E>()->expire();
-
     // only when completely leaving eclipse
     if ( !in_eclipse() )
+    {
+      harmony_cur = 0.0;
       p->buff.dreamstate->trigger();
+    }
   }
 
   if ( old_state ^ state )
@@ -13637,16 +13606,18 @@ void eclipse_handler_t::advance_eclipse( bool active )
   }
 }
 
-template <eclipse_e E>
-void eclipse_handler_t::update_eclipse()
+void eclipse_handler_t::trigger_harmony()
 {
-  if ( !enabled() ) return;
-
-  auto buff = get_eclipse<E>();
-  if ( !buff->check() )
+  if ( harmony_cur >= harmony_cap )
     return;
 
-  buff->current_value = buff->default_value + get_harmony<E>()->check_stack_value();
+  harmony_cur += harmony_val;
+
+  if ( in_lunar() )
+    p->buff.eclipse_lunar->current_value += harmony_val;
+
+  if ( in_solar() )
+    p->buff.eclipse_solar->current_value += harmony_val;
 }
 
 void eclipse_handler_t::reset_stacks()
@@ -13655,9 +13626,12 @@ void eclipse_handler_t::reset_stacks()
   starfire_counter = starfire_counter_base;
 }
 
-void eclipse_handler_t::reset_state()
+void eclipse_handler_t::reset()
 {
+  reset_stacks();
+
   state = 0;
+  harmony_cur = 0.0;
 }
 
 void eclipse_handler_t::datacollection_begin()

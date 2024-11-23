@@ -445,7 +445,8 @@ using namespace helpers;
     {
       double m = spell_t::composite_persistent_multiplier( s );
 
-      if ( diabolist() && affected_by.touch_of_rancora )
+      // Demonology only has Hand of Gul'dan affected by Touch of Rancora, which requires special handling
+      if ( diabolist() && destruction() && affected_by.touch_of_rancora )
       {
         if ( p()->buffs.art_overlord->check() )
           m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
@@ -1319,6 +1320,9 @@ using namespace helpers;
         base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 2 ).percent();
       }
     }
+
+    wither_t(warlock_t* p, bool havoc, util::string_view options_str ) : wither_t( p, options_str )
+    { affected_by.havoc = havoc; }
 
     dot_t* get_dot( player_t* t ) override
     { return impact_action->get_dot( t ); }
@@ -2459,13 +2463,28 @@ using namespace helpers;
       {
         double m = warlock_spell_t::action_multiplier();
 
-        m *= shards_used;
+        double gloom = 0.0;
 
         if ( p()->hero.gloom_of_nathreza.ok() )
-          m *= 1.0 + shards_used * p()->hero.gloom_of_nathreza->effectN( 1 ).percent();
+           gloom = shards_used * p()->hero.gloom_of_nathreza->effectN( 1 ).percent();
+
+        m *= shards_used * ( 1.0 + gloom );
 
         if ( soul_harvester() && p()->buffs.succulent_soul->check() )
           m *= 1.0 + p()->hero.succulent_soul->effectN( 3 ).percent();
+
+        // NOTE: Touch of Rancora is a +100% ADDITION to the MULTIPLIER, we currently believe this must be done at the end of calculation
+        if ( diabolist() && affected_by.touch_of_rancora )
+        {
+          if ( p()->buffs.art_overlord->check() )
+            m += p()->hero.touch_of_rancora->effectN( 1 ).percent();
+
+          if ( p()->buffs.art_mother->check() )
+            m += p()->hero.touch_of_rancora->effectN( 1 ).percent();
+
+          if ( p()->buffs.art_pit_lord->check() )
+            m += p()->hero.touch_of_rancora->effectN( 1 ).percent();
+        }
 
         return m;
       }
@@ -3496,6 +3515,9 @@ using namespace helpers;
       triggers.decimation = p->talents.decimation.ok() && !dual;
     }
 
+    immolate_t( warlock_t* p, bool havoc, util::string_view options_str ) : immolate_t( p, options_str )
+    { affected_by.havoc = havoc; }
+
     dot_t* get_dot( player_t* t ) override
     { return impact_action->get_dot( t ); }
   };
@@ -3880,9 +3902,9 @@ using namespace helpers;
       affected_by.chaotic_energies = true;
 
       if ( p->hero.wither.ok() )
-        applied_dot = new wither_t( p, "" );
+        applied_dot = new wither_t( p, false, "" );
       else
-        applied_dot = new immolate_t( p, "" );
+        applied_dot = new immolate_t( p, false, "" );
 
       applied_dot->background = true;
       applied_dot->dual = true;

@@ -1,28 +1,28 @@
-# deathknight="TWW1_Death_Knight_Blood"
-# level=80
-# race=goblin
-# spec=blood
-# role=tank
-# position=front
-# talents=3131133
+deathknight="TWW1_Death_Knight_Blood"
+level=80
+race=mechagnome
+spec=blood
+role=tank
+position=front
+talents=CoPAAAAAAAAAAAAAAAAAAAAAAghBzYMjZmZsMjZmZaGGmZMjBAAAAAzMzMzwMzmZmxMAAAMzMzMAAAgZW2GDjZMLNW2WGmsNMsBwMGbA
 
-# head=shadowghast_helm,id=171415,bonus_id=6716/8119/6647/6649/1588/6935,gem_id=173128
-# neck=sin_stained_pendant,id=178827,bonus_id=1592/6646/6935,gem_id=173128
-# shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524,enchant=soul_vitality
-# chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
-# wrists=unstable_giants_cuffs,id=189777,bonus_id=1524/6808/6935,gem_id=173128
-# hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
-# waist=shadowghast_waistguard,id=171418,bonus_id=6941/6649/6647/6935/7882/1588/8156,gem_id=173128
-# legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1505
-# feet=muckwallow_stompers,id=178774,bonus_id=6646/1592
-# finger1=bloodoath_signet,id=178871,bonus_id=1592/6646/6935,gem_id=173128,enchant=tenet_of_haste
-# finger2=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_haste
-# trinket1=scars_of_fraternal_strife,id=188253,bonus_id=4800/4786/1524
-# trinket2=old_warriors_soul,id=186438,bonus_id=7187/6652/1498/6646
-# main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
+head=exhumed_centurions_galea,id=212002,bonus_id=1540/10299/1808,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213482/213482
+shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540/10870
+back=wings_of_shattered_sorrow,id=225574,bonus_id=1540/10870
+chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540/10870,enchant=crystalline_radiance_3
+wrists=everforged_vambraces,id=222435,bonus_id=10421/9633/8902/11144/10222/1485/1808/10520/8960,gem_id=213482,crafted_stats=40/36
+hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540/10299
+waist=nether_bountys_greatbelt,id=225589,bonus_id=1540/10299/10376/1808,gem_id=213482
+legs=bloodbound_horrors_legplates,id=212422,bonus_id=1540/10299/10376,enchant=stormbound_armor_kit_3
+feet=boots_of_the_black_bulwark,id=225590,bonus_id=1540/10299/10376
+finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10870/10879,gem_id=213482/213482,enchant=radiant_mastery_3
+finger2=ring_of_earthen_craftsmanship,id=215135,bonus_id=10421/9633/8902/11144/10222/1485/8781/10520/8960/8792,gem_id=213482/213482,crafted_stats=32/49,enchant=radiant_mastery_3
+trinket1=arakara_sacbrood,id=219314,bonus_id=3131/10299/10376
+trinket2=ovinaxs_mercurial_egg,id=220305,bonus_id=1540/10299/10376
+main_hand=ulgraxs_morselmasher,id=212388,bonus_id=1540/10299/10376,enchant=rune_of_the_fallen_crusader
 
-# save=TWW1_Death_Knight_Blood.simc
+save=TWW1_Death_Knight_Blood.simc
 
 
 deathknight="TWW1_Death_Knight_Frost_Breath_Deathbringer"

@@ -5,7 +5,7 @@ level=80
 race=draenei
 role=tank
 position=front
-talents=CIEAAAAAAAAAAAAAAAAAAAAAAsMzMjZWmHYhZmZmx2MzMMYYAAAAAAAAAAQyMDDzMMmZmtAAjBGAzgtBMAAzMtNLz2MAB2MAGwMYMM
+talents=CIEA5ba6OK14IUITjS1kSUVJctMzMjZWmHYhZmZmx2MzMMYYAAAAAAAAAAQyMDDzMMmZmtAAjBGAzgtBMAAzMtNLz2MAB2MAAmBjZM
 
 # Default consumables
 potion=tempered_potion_3
@@ -52,21 +52,11 @@ actions.cooldowns+=/fireblood,if=buff.avenging_wrath.remains>8
 
 actions.defensives=ardent_defender
 
-actions.hammer_of_light=hammer_of_light,if=(buff.blessing_of_dawn.stack>0|!talent.of_dusk_and_dawn.enabled)|spell_targets.shield_of_the_righteous>=5
-actions.hammer_of_light+=/eye_of_tyr,if=hpg_to_2dawn=5|!talent.of_dusk_and_dawn.enabled
-actions.hammer_of_light+=/shield_of_the_righteous,if=hpg_to_2dawn=4
-actions.hammer_of_light+=/eye_of_tyr,if=hpg_to_2dawn=1|buff.blessing_of_dawn.stack>0
-actions.hammer_of_light+=/hammer_of_wrath
-actions.hammer_of_light+=/judgment
-actions.hammer_of_light+=/blessed_hammer
-actions.hammer_of_light+=/hammer_of_the_righteous
-actions.hammer_of_light+=/crusader_strike
-actions.hammer_of_light+=/divine_toll
-
-actions.standard=call_action_list,name=hammer_of_light,if=talent.lights_guidance.enabled&(cooldown.eye_of_tyr.remains<2|buff.hammer_of_light_ready.up)&(!talent.redoubt.enabled|buff.redoubt.stack>=2|!talent.bastion_of_light.enabled)&!buff.hammer_of_light_free.up
-actions.standard+=/hammer_of_light,if=buff.hammer_of_light_free.remains<2|buff.shake_the_heavens.duration<1|!buff.shake_the_heavens.up|cooldown.eye_of_tyr.remains<1.5|fight_remains<2
+actions.standard=judgment,target_if=charges>=2|full_recharge_time<=gcd.max
+actions.standard+=/hammer_of_light,if=buff.hammer_of_light_free.remains<2|buff.shake_the_heavens.remains<1|!buff.shake_the_heavens.up|cooldown.eye_of_tyr.remains<1.5|fight_remains<2
+actions.standard+=/eye_of_tyr,if=(hpg_to_2dawn=5|!talent.of_dusk_and_dawn.enabled)&talent.lights_guidance.enabled
+actions.standard+=/eye_of_tyr,if=(hpg_to_2dawn=1|buff.blessing_of_dawn.stack>0)&talent.lights_guidance.enabled
 actions.standard+=/shield_of_the_righteous,if=(!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&!buff.hammer_of_light_ready.up
-actions.standard+=/holy_armaments,if=next_armament=sacred_weapon&(!buff.sacred_weapon.up|(buff.sacred_weapon.remains<6&!buff.avenging_wrath.up&cooldown.avenging_wrath.remains<=30))
 actions.standard+=/judgment,target_if=min:debuff.judgment.remains,if=spell_targets.shield_of_the_righteous>3&buff.bulwark_of_righteous_fury.stack>=3&holy_power<3
 actions.standard+=/avengers_shield,if=!buff.bulwark_of_righteous_fury.up&talent.bulwark_of_righteous_fury.enabled&spell_targets.shield_of_the_righteous>=3
 actions.standard+=/hammer_of_the_righteous,if=buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<3&!buff.avenging_wrath.up
@@ -74,14 +64,17 @@ actions.standard+=/blessed_hammer,if=buff.blessed_assurance.up&spell_targets.shi
 actions.standard+=/crusader_strike,if=buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<2&!buff.avenging_wrath.up
 actions.standard+=/judgment,target_if=min:debuff.judgment.remains,if=charges>=2|full_recharge_time<=gcd.max
 actions.standard+=/consecration,if=buff.divine_guidance.stack=5
+actions.standard+=/holy_armaments,if=next_armament=sacred_weapon&(!buff.sacred_weapon.up|(buff.sacred_weapon.remains<6&!buff.avenging_wrath.up&cooldown.avenging_wrath.remains<=30))
 actions.standard+=/hammer_of_wrath
-actions.standard+=/holy_armaments,if=next_armament=holy_bulwark&charges=2
 actions.standard+=/divine_toll,if=(!raid_event.adds.exists|raid_event.adds.in>10)
+actions.standard+=/avengers_shield,if=talent.refining_fire.enabled&talent.lights_guidance.enabled
+actions.standard+=/judgment,target_if=min:debuff.judgment.remains,if=(buff.avenging_wrath.up&talent.hammer_and_anvil.enabled)
+actions.standard+=/holy_armaments,if=next_armament=holy_bulwark&charges=2
 actions.standard+=/judgment,target_if=min:debuff.judgment.remains
-actions.standard+=/hammer_of_the_righteous,if=buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<3
-actions.standard+=/blessed_hammer,if=buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<3
-actions.standard+=/crusader_strike,if=buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<2
-# In single target, Templar should prioritize maintaining Shake the Heavens by casting spells listed in Higher Calling.
+actions.standard+=/avengers_shield,if=!buff.shake_the_heavens.up&talent.shake_the_heavens.enabled
+actions.standard+=/hammer_of_the_righteous,if=(buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<3)|buff.shake_the_heavens.up
+actions.standard+=/blessed_hammer,if=(buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<3)|buff.shake_the_heavens.up
+actions.standard+=/crusader_strike,if=(buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<2)|buff.shake_the_heavens.up
 actions.standard+=/avengers_shield,if=!talent.lights_guidance.enabled
 actions.standard+=/consecration,if=!consecration.up
 actions.standard+=/eye_of_tyr,if=(talent.inmost_light.enabled&raid_event.adds.in>=45|spell_targets.shield_of_the_righteous>=3)&!talent.lights_deliverance.enabled

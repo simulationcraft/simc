@@ -5351,6 +5351,11 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
             return make_fn_expr( name, [ this, a ] { return tracked_first_remains( a ); } );
           }
         }
+        else
+        {
+          sim->error( "No action found for 'hyperthread_wristwraps' action expression: '{}'", splits[ 1 ] );
+          return expr_t::create_constant( name, 0 );
+        }
       }
 
       return proc_spell_t::create_expression( name );

@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.57361 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.57409 PTR
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -3147,7 +3147,7 @@ Effects          :
                    Base Value: -90 | Scaled Value: -90 | Target: Raid Target (57)
 #2 (id=982114)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(87)
-Description      : Swoop to an ally and fly with them to the target location. Clears movement impairing effects from you and your ally.
+Description      : Swoop to an ally and fly with them to the target location.
 Tooltip          : About to be picked up!
 
 Name             : Imminent Destruction (id=370781) [Spell Family (224), Passive] 
@@ -12400,7 +12400,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1155674)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
-Description      : Temporal Compression increases the healing of your next empower spell by $s1% per stack. In addition, Fire Breath no longer consumes any stacks of Temporal Compression.
+Description      : Temporal Compression increases the healing of your next empower spell by $s1% per stack.
 
 Name             : Evoker Devastation 11.0 Class Set 4pc (id=453675) [Spell Family (224), Passive, Hidden] 
 Class            : Evoker

@@ -5303,6 +5303,27 @@ void unique_gear::sort_special_effects()
   range::sort( __fallback_effect_db, cmp_special_effect );
 }
 
+bool unique_gear::has_role_mult( player_t* player, const spell_data_t* s_data )
+{
+  // Failsafe if driver is spell_data_t::nil() or spell_data_t::not_found()
+  if ( !s_data->ok() )
+    return false;
+
+  auto vars = player->dbc->spell_desc_vars( s_data->id() ).desc_vars();
+  if( !vars )
+    return false;
+
+  std::cmatch m;
+  std::regex get_var( R"(\$(?:healing)?rolemult=\$(.*))" );
+
+  return std::regex_search( vars, m, get_var );
+}
+
+bool unique_gear::has_role_mult( const special_effect_t& effect )
+{
+  return has_role_mult( effect.player, effect.driver() );
+}
+
 double unique_gear::role_mult( player_t* player, const spell_data_t* s_data )
 {
   static constexpr const char* role_mult_str =
@@ -5316,7 +5337,7 @@ double unique_gear::role_mult( player_t* player, const spell_data_t* s_data )
   if ( vars )
   {
     std::cmatch m;
-    std::regex get_var( R"(\$rolemult=\$(.*))" );  // find the $rolemult= variable
+    std::regex get_var( R"(\$(?:healing)rolemult=\$(.*))" );  // find the $rolemult= variable
     if ( std::regex_search( vars, m, get_var ) )
     {
       const auto var = m.str( 1 );

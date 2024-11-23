@@ -78,6 +78,8 @@ struct essence_devourer_t;
 struct atonement_t;
 struct divine_aegis_t;
 struct cauterizing_shadows_t;
+struct crystalline_reflection_heal_t;
+struct crystalline_reflection_damage_t;
 }  // namespace actions::heals
 
 /**
@@ -200,6 +202,7 @@ public:
     propagate_const<buff_t*> train_of_thought;
     propagate_const<buff_t*> wrath_unleashed;
     propagate_const<buff_t*> weal_and_woe;
+    propagate_const<buff_t*> rapture;
 
     // Holy
     propagate_const<buff_t*> apotheosis;
@@ -712,6 +715,7 @@ public:
     propagate_const<gain_t*> insanity_maddening_touch;
     propagate_const<gain_t*> insanity_t30_2pc;
     propagate_const<gain_t*> cauterizing_shadows_health;
+    propagate_const<gain_t*> shield_discipline;
   } gains;
 
   // Benefits
@@ -783,6 +787,8 @@ public:
     propagate_const<actions::spells::collapsing_void_damage_t*> collapsing_void;
     propagate_const<actions::spells::halo_t*> halo;
     propagate_const<actions::heals::cauterizing_shadows_t*> cauterizing_shadows;
+    propagate_const<actions::heals::crystalline_reflection_heal_t*> crystalline_reflection_heal;
+    propagate_const<actions::heals::crystalline_reflection_damage_t*> crystalline_reflection_damage;
   } background_actions;
 
   // Items
@@ -1212,6 +1218,10 @@ public:
       if ( p().sets->has_set_bonus( PRIEST_DISCIPLINE, TWW1, B4 ) )
       {
         parse_effects( p().buffs.darkness_from_light );
+      }
+      if ( p().talents.discipline.rapture.enabled() )
+      {
+        parse_effects( p().buffs.rapture );
       }
     }
 
@@ -1666,6 +1676,11 @@ public:
   priest_buff_t( priest_td_t& td, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
                  const item_t* item = nullptr )
     : Base( td, name, s, item )
+  {
+  }
+  priest_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
+                 const item_t* item = nullptr )
+    : Base( q, name, s, item )
   {
   }
 

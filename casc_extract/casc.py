@@ -10,6 +10,7 @@ import io
 import math
 import mmap
 import os
+import random
 import re
 import socket
 import struct
@@ -518,6 +519,10 @@ class CASCObject:
                 sys.stdout.write('Fetching %s ...\n' % url)
                 r = _S.get(url, headers=headers)
 
+                # Handle a 404 like a communication error, will retry and change the CDN
+                if r.status_code == 404:
+                    raise Exception('404')
+
                 if r.status_code not in [200, 206]:
                     self.options.parser.error(
                         'HTTP request for %s returns %u' %
@@ -530,6 +535,15 @@ class CASCObject:
                     file=sys.stderr)
                 if attempt + 1 < maxAttempts:
                     print(f"Retrying {url} ...")
+                    # try a random, different CDN host
+                    if len(self.cdn_host):
+                        cur_host = ''
+                        for host in self.cdn_host:
+                            if url.find(host):
+                                cur_host = host
+                        if cur_host:
+                            other_hosts = [host for host in self.cdn_host if host != cur_host]
+                            url = url.replace(cur_host, random.choice(other_hosts))
                     time.sleep(2**attempt)
                     attempt += 1
         self.options.parser.error(

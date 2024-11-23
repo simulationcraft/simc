@@ -736,6 +736,15 @@ void priest_t::create_buffs_discipline()
     buffs.shadow_covenant->set_duration( scov_duration );
   }
 
+  buffs.rapture =
+      make_buff_fallback( talents.discipline.rapture.enabled(), this, "rapture", talents.discipline.rapture );
+
+  if ( talents.discipline.rapture.enabled() )
+  {
+    buffs.rapture->set_cooldown( 0_s );
+    buffs.rapture->set_reverse( true );
+  }
+
   // 280391 has the correct 40% damage increase value, but does not apply it to any spells.
   // 280398 applies the damage to the correct spells, but does not contain the correct value (12% instead of 40%).
   // That 12% represents the damage REDUCTION taken from the 40% buff for each attonement that has been applied.

@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.5.57388 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.5.57534 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -218965,10 +218965,11 @@ GCD              : 1.5 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (43200 seconds cooldown)
 Category         : 2211 (Type 0x0)
+Category Flags   : Unknown (7)
 Labels           : 969
                  : 1762
                  : 2862
-Attributes       : Do Not Reset Cooldown In Arena (193)
+Attributes       : No AutoCast (AI) (49), Do Not Reset Cooldown In Arena (193)
 Effects          :
 #1 (id=1099373)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(40)
@@ -218985,10 +218986,11 @@ GCD              : 1.5 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (43200 seconds cooldown)
 Category         : 2212 (Type 0x0)
+Category Flags   : Unknown (7)
 Labels           : 969
                  : 1930
                  : 2858
-Attributes       : Do Not Reset Cooldown In Arena (193)
+Attributes       : No AutoCast (AI) (49), Do Not Reset Cooldown In Arena (193)
 Effects          :
 #1 (id=1099374)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(40)
@@ -228867,7 +228869,7 @@ Duration         : 300 seconds
 Charges          : 1 (3600 seconds cooldown)
 Category         : 2273 (Type 0x0): Hideseeker's Tote (456864 effect#1)
 Category Flags   : Unknown (7)
-Attributes       : Allow Aura While Dead (116), Do Not Reset Cooldown In Arena (193)
+Attributes       : No AutoCast (AI) (49), Allow Aura While Dead (116), Do Not Reset Cooldown In Arena (193)
 Effects          :
 #1 (id=1135180)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
