@@ -2358,7 +2358,7 @@ public:
     }
 
     if ( affected_by_storm_frenzy && !this->background && exec_type == spell_variant::NORMAL &&
-         !( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() ) && !ab::background && !bugs)
+         !( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() ) && !ab::background && !p()->bugs)
     {
       p()->buff.storm_frenzy->decrement();
     }
@@ -2371,7 +2371,7 @@ public:
     p()->trigger_stormbringer( state );
 
     if ( affected_by_storm_frenzy && !this->background && exec_type == spell_variant::NORMAL &&
-         !( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() ) && !ab::background && bugs )
+         !( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() ) && !ab::background && p()->bugs )
     {
       p()->buff.storm_frenzy->decrement();
     }
@@ -12974,7 +12974,12 @@ void shaman_t::trigger_arc_discharge( const action_state_t* state )
     } );
 
   }
-  buff.arc_discharge->decrement();
+
+  if ( specialization() == SHAMAN_ENHANCEMENT || !bugs || state->action->execute_time() != 
+      timespan_t::zero())
+  {
+    buff.arc_discharge->decrement();
+  }
 }
 
 //Flowing Spirits logic is real round-about all around the module, when Windfury procs it, it reports
