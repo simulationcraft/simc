@@ -487,6 +487,8 @@ public:
     action_t* flame_shock_lmt;
     action_t* flame_shock;
     action_t* elemental_blast;
+    action_t* lava_burst;
+    action_t* lava_burst_ol;
 
     action_t* lightning_rod;
     action_t* tempest_strikes;
@@ -8704,10 +8706,13 @@ struct ascendance_t : public shaman_spell_t
 {
   ascendance_damage_t* ascendance_damage;
   lava_burst_t* lvb;
+  lava_burst_overload_t* lvb_ol;
 
   ascendance_t( shaman_t* player, util::string_view name_str, util::string_view options_str = {} ) :
     shaman_spell_t( name_str, player, player->spell.ascendance ),
-    ascendance_damage( nullptr ), lvb( nullptr )
+      ascendance_damage( nullptr ),
+      lvb( nullptr ),
+      lvb_ol( nullptr )
   {
     parse_options( options_str );
     harmful = false;
@@ -8727,7 +8732,7 @@ struct ascendance_t : public shaman_spell_t
   void init() override
   {
     shaman_spell_t::init();
-
+    lvb_ol = new lava_burst_overload_t( p(), spell_variant::NORMAL, nullptr );
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
       if ( auto trigger_spell = p()->find_action( "lava_burst_ascendance" ) )
@@ -8864,6 +8869,37 @@ struct ascendance_dre_t : public ascendance_t
         add_child( ascendance_damage );
       }
     }
+  }
+
+  void execute() override
+  {
+    if ( p()->specialization() == SHAMAN_ENHANCEMENT || !p()->bugs )
+    {
+      ascendance_t::execute();
+      return;
+    }
+
+    if (!p()->buff.ascendance->up())
+    {
+      ascendance_t::execute();
+      return;
+    }
+
+    //for Elemental, the damage portion of Asc is not executed. this is intented to model a bug
+
+    for ( size_t i = 0; i < 6; i++ )
+    {
+      p()->trigger_maelstrom_gain( lvb->maelstrom_gain );
+      p()->trigger_maelstrom_gain( lvb_ol->maelstrom_gain );
+
+      double ol_chance = overload_chance( execute_state );
+
+      if ( !rng().roll( ol_chance ) )
+      {
+        p()->trigger_maelstrom_gain( lvb_ol->maelstrom_gain );
+      }
+    }
+    
   }
 };
 
@@ -11021,6 +11057,9 @@ void shaman_t::create_actions()
   action.flame_shock->background = true;
   action.flame_shock->cooldown = get_cooldown( "flame_shock_secondary" );
   action.flame_shock->base_costs[ RESOURCE_MANA ] = 0;
+
+  action.lava_burst = new lava_burst_t( this, spell_variant::NORMAL );
+  action.lava_burst_ol = new lava_burst_overload_t( this, spell_variant::NORMAL, nullptr );
 }
 
 // shaman_t::create_options =================================================
