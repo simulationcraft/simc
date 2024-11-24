@@ -5678,7 +5678,9 @@ struct fire_blast_t final : public fire_mage_spell_t
       p()->state.trigger_glorious_incandescence = true;
 
     fire_mage_spell_t::execute();
+
     p()->buffs.glorious_incandescence->decrement();
+    p()->buffs.feel_the_burn->trigger();
 
     if ( p()->specialization() == MAGE_FIRE )
       p()->trigger_time_manipulation();
@@ -5706,8 +5708,6 @@ struct fire_blast_t final : public fire_mage_spell_t
 
     if ( result_is_hit( s->result ) && s->chain_target == 0 )
     {
-      p()->buffs.feel_the_burn->trigger();
-
       if ( p()->buffs.excess_fire->check() )
       {
         p()->action.frostfire_burst->execute_on_target( s->target );
@@ -6075,8 +6075,6 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      p()->buffs.feel_the_burn->trigger();
-
       if ( s->chain_target == 0 && p()->buffs.excess_frost->check() )
       {
         p()->action.excess_ice_nova->execute_on_target( s->target );
@@ -6156,7 +6154,9 @@ struct phoenix_flames_t final : public fire_mage_spell_t
   void execute() override
   {
     fire_mage_spell_t::execute();
+
     p()->buffs.majesty_of_the_phoenix->trigger();
+    p()->buffs.feel_the_burn->trigger();
   }
 
   void impact( action_state_t* s ) override

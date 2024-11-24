@@ -4055,7 +4055,7 @@ struct adaptive_swarm_t final : public cat_attack_t
       if ( d->remains() > 0_ms && !d->target->is_sleeping() )
         return;
 
-      if ( d->current_stack() > 1 )
+      if ( d->current_stack() > 1 && !BASE::p()->is_sleeping() )
         jump_swarm( d );
       else if ( BASE::sim->log )
         BASE::sim->print_log( "ADAPTIVE_SWARM: {} expiring on final stack", heal ? "heal" : "damage" );
