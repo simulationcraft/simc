@@ -25,7 +25,7 @@ trinket2=,id=219314,ilevel=639
 main_hand=,id=222445,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960,enchant=authority_of_the_depths_3,crafted_stats=49/36
 off_hand=,id=178712,bonus_id=9948/10299/10376
 
-save=TWW1_Shaman_Elemental_Farseer.simc
+save=TWW1_Shaman_Elemental.simc
 
 shaman="TWW1_Shaman_Elemental_Farseer"
 level=80
