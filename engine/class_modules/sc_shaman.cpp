@@ -2346,22 +2346,26 @@ public:
     {
       p()->buff.flurry->trigger( p()->buff.flurry->max_stack() );
     }
-
-    if ( ( affected_by_ns_cast_time || affected_by_ns_cost ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()) && !ab::background)
+    if (!p()->buff.stormkeeper->up() || !affected_by_stormkeeper_cast_time)
     {
-      p()->buff.natures_swiftness->decrement();
+      if ( ( affected_by_ns_cast_time || affected_by_ns_cost ) && !ab::background )
+      {
+        p()->buff.natures_swiftness->decrement();
+      }
+
+      if ( ( affected_by_ans_cast_time || affected_by_ans_cost ) &&
+           !( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() ) && !ab::background )
+      {
+        p()->buff.ancestral_swiftness->decrement();
+      }
+      
+      if ( affected_by_arc_discharge && p()->buff.arc_discharge->up() && !ab::background && p()->specialization() == SHAMAN_ELEMENTAL)
+      {
+        p()->buff.arc_discharge->decrement();
+      }
     }
 
-    if ( ( affected_by_ans_cast_time || affected_by_ans_cost ) && !(affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up()) && !ab::background)
-    {
-      p()->buff.ancestral_swiftness->decrement();
-    }
 
-    if ( affected_by_storm_frenzy && !this->background && exec_type == spell_variant::NORMAL &&
-         !( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() ) && !ab::background && !p()->bugs)
-    {
-      p()->buff.storm_frenzy->decrement();
-    }
   }
 
   void impact( action_state_t* state ) override
@@ -2370,8 +2374,8 @@ public:
 
     p()->trigger_stormbringer( state );
 
-    if ( affected_by_storm_frenzy && !this->background && exec_type == spell_variant::NORMAL &&
-         !( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() ) && !ab::background && p()->bugs )
+    if ( affected_by_storm_frenzy && exec_type == spell_variant::NORMAL &&
+         !p()->buff.stormkeeper->up()&& !ab::background )
     {
       p()->buff.storm_frenzy->decrement();
     }
@@ -12984,8 +12988,7 @@ void shaman_t::trigger_arc_discharge( const action_state_t* state )
 
   }
 
-  if ( specialization() == SHAMAN_ENHANCEMENT || !bugs || state->action->execute_time() != 
-      timespan_t::zero())
+  if ( specialization() == SHAMAN_ENHANCEMENT )
   {
     buff.arc_discharge->decrement();
   }
