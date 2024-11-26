@@ -3807,7 +3807,8 @@ Family Flags     : 43, 78, 119
 Attributes       : Is Ability (4), Allow Dead Target (64), Ignore Line of Sight (66), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Suppress Weapon Procs (151), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=285232)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.23845 | PvP Coefficient: 2.9 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.23845 | PvP Coefficient: 3.34 | Target: Any Target (25)
+Hotfixed         : PvP Coefficient (2.9 -> 3.34)
 #2 (id=338558)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Any Target (25)
 Description      : $@spelldesc194310
@@ -11736,7 +11737,8 @@ Attributes       : No Aura Cancel (31), Allow Low Level Buff (67), Aura Points O
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1005518)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Misc Value 2: 0x1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.65 | Misc Value 2: 0x1 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.5 -> 0.65)
 Description      : $@spelldesc377590
 Tooltip          : Strength increased by $w1%.
 

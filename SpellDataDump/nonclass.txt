@@ -111537,7 +111537,7 @@ Labels           : 292
                  : 374
                  : 375
                  : 376
-Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
 Triggered By     : Soothing Waters (273018)
 Family Flags     : 41
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -113995,7 +113995,7 @@ Labels           : 292
                  : 374
                  : 376
                  : 378
-Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
 Triggered By     : Serene Spirit (274823)
 Family Flags     : 41
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -115162,7 +115162,7 @@ Labels           : 292
                  : 374
                  : 375
                  : 376
-Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
 Family Flags     : 41
 Attributes       : Exclude Caster (51), Do Not Display Range (126), AI Doesn't Face Target (179), Aura Points On Client (268), Scales with Casting Item's Level (354), Chain by Most Hit (440)
 Effects          :
@@ -117454,7 +117454,7 @@ Labels           : 292
                  : 375
                  : 376
                  : 611
-Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
 Triggered By     : Overflowing Shores (278077)
 Family Flags     : 41
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -121064,7 +121064,7 @@ Labels           : 292
                  : 374
                  : 375
                  : 376
-Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Praetorian's Tidecallers (210604 effect#1), Spouting Spirits (279504 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Praetorian's Tidecallers (210604 effect#1), Spouting Spirits (279504 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
 Family Flags     : 41, 116
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
@@ -123542,7 +123542,7 @@ Labels           : 292
                  : 374
                  : 376
                  : 378
-Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
 Triggered By     : Pack Spirit (280203)
 Family Flags     : 41
 Attributes       : No Aura Icon (60), Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log Full Overheal (323), Scales with Casting Item's Level (354)

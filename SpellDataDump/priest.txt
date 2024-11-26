@@ -321,7 +321,8 @@ Family Flags     : 10, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=611)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 12.7674 | PvP Coefficient: 1.4 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 15.9593 | PvP Coefficient: 1.4 | Target: Friendly (21)
+Hotfixed         : SP Coefficient (12.7674 -> 15.9593)
 #2 (id=709474)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 Description      : Perform a miracle, healing an ally for $s1.$?s63733[
@@ -349,7 +350,8 @@ Family Flags     : 12, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=612)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 8.68626 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 8.68626 | PvP Coefficient: 1.1 | Target: Friendly (21)
+Hotfixed         : PvP Coefficient (1 -> 1.1)
 Description      : An efficient spell that heals an ally for $s1.
 
 Name             : Flash Heal (id=2061) [Spell Family (6)] 
@@ -1109,7 +1111,8 @@ Family Flags     : 28, 126
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=24949)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.5793 | PvP Coefficient: 1.4 | Radius: 10 yards | Target: At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.47412 | PvP Coefficient: 1.4 | Radius: 10 yards | Target: At Friendly in Area (31)
+Hotfixed         : SP Coefficient (3.5793 -> 4.47412)
 #2 (id=288932)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=709475)   : Dummy (3)
@@ -3132,13 +3135,15 @@ Effects          :
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
 #16 (id=1040388) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Target: Self (1)
+                   Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
+Hotfixed         : Base Value (0 -> -9)
 #17 (id=1074585) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 61 | Scaled Value: 61 | Target: Self (1)
+                   Base Value: 77 | Scaled Value: 77 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
+Hotfixed         : Base Value (61 -> 77)
 #18 (id=1079592) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 192 | Scaled Value: 192 | Target: Self (1)
                    Affected Spells: Smite (585), Smite (425529), Void Blast (450215)
@@ -3148,9 +3153,10 @@ Effects          :
 #20 (id=1081585) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #21 (id=1084907) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 23 | Scaled Value: 23 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self (1)
                    Affected Spells: Power Word: Life (373481)
                    Family Flags: 79
+Hotfixed         : Base Value (23 -> 35)
 #22 (id=1093858) : Apply Aura (6) | Modify Cooldown Time (Category) (341)
                    Base Value: -30000 | Scaled Value: -30000 | Misc Value: 1182 (Category) | Target: Self (1)
                    Affected Spells (Category): PvP Trinket (42292), Honorable Medallion (195710), Gladiator's Medallion (336126), Gladiator's Fastidious Resolve (363117)
@@ -3181,6 +3187,11 @@ Effects          :
 #30 (id=1176319) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 3000 | Scaled Value: 3000 | Misc Value: 12 | Misc Value 2: 3985 (Label) | Target: Self (1)
                    Affected Spells (Label): Preemptive Care (440671)
+#31 (id=1202480) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 0 | Target: Self (1)
+                   Affected Spells: Power Word: Life (373481)
+                   Family Flags: 79
+Hotfixed         : NEW EFFECT
 Description      : Holy Priest core passive
 
 Name             : Discipline Priest (id=137032) [Spell Family (6), Passive, Hidden] 
@@ -9866,7 +9877,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Stance Mask      : 0x80000000
-Affecting Spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #21, #25, #26), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Miraculous Recovery (440674 effect#1), Resonant Energy (453846 effect#1), Perfected Form (453983 effects: #1, #2)
+Affecting Spells : Renew (139 effect#2), Holy Priest (137031 effects: #1, #2, #21, #25, #26, #31), Discipline Priest (137032 effects: #1, #2), Apotheosis (200183 effects: #3, #4), Dejahna's Inspiration (281456 effects: #1, #2), Kam Xi'raff (281457 effect#1), Lunar Purity (282786 effects: #2, #3), Twist of Fate (390978 effects: #1, #2), Light Weaving (394609 effect#1), Benevolence (415416 effects: #1, #2), Initial Priest (417191 effects: #3, #4), Premonition of Piety (428930 effects: #1, #2), Miraculous Recovery (440674 effect#1), Resonant Energy (453846 effect#1), Perfected Form (453983 effects: #1, #2)
 Family Flags     : 79, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Vehicle Immunity Category (218), Allow Class Ability Procs (416)
 Effects          :
@@ -9941,13 +9952,15 @@ Effects          :
 #1 (id=1002578)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3 | Target: Enemy (6)
 #2 (id=1002579)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 750 | Scaled Value: 750 | Target: Enemy (6)
+                   Base Value: 1050 | Scaled Value: 1050 | Target: Enemy (6)
+Hotfixed         : Base Value (750 -> 1050)
 #3 (id=1002580)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Target: Enemy (6)
 #4 (id=1002581)  : Trigger Spell (64): Mindgames
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 375902 | Target: Self (1)
 #5 (id=1002582)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 750 | Scaled Value: 750 | Target: Enemy (6)
+                   Base Value: 1050 | Scaled Value: 1050 | Target: Enemy (6)
+Hotfixed         : Base Value (750 -> 1050)
 #6 (id=1002583)  : Apply Aura (6) | Dummy (4)
                    Base Value: 450 | Scaled Value: 450 | Target: Any Target (25)
 #7 (id=1002584)  : Trigger Spell (64): Mindgames
