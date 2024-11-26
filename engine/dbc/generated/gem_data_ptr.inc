@@ -1,4 +1,4 @@
-// Gem properties, wow build 11.0.7.57409
+// Gem properties, wow build 11.0.7.57788
 static const std::array<gem_property_data_t, 2283> __ptr_gem_property_data { {
   {    2,  2686, 0x00000002, 0 }, // +$k1 Strength
   {    3,  2687, 0x00000008, 0 }, // +$k1 Agility
@@ -2272,16 +2272,16 @@ static const std::array<gem_property_data_t, 2283> __ptr_gem_property_data { {
   { 4250,  7559, 0x04000000, 0 }, // Volatile Fragrance
   { 4251,  7558, 0x04000000, 0 }, // Robust Fragrance
   { 4252,  7571, 0x08000000, 14185 }, // |C00fff569Thunderlord's Crackling Citrine
-  { 4253,  7572, 0x20000000, 14190 }, // |C00fff569Squall Sailor's Citrine
-  { 4254,  7573, 0x10000000, 14189 }, // |C00fff569Undersea Overseer's Citrine
-  { 4256,  7575, 0x08000000, 14185 }, // |C00f58cbaStormbringer's Runed Citrine
-  { 4257,  7576, 0x10000000, 14189 }, // |C00f58cbaFathomdweller's Runed Citrine
+  { 4253,  7572, 0x20000000, 14190 }, // |C00f58cbaSquall Sailor's Citrine
+  { 4254,  7573, 0x10000000, 14189 }, // |C003fc7ebUndersea Overseer's Citrine
+  { 4256,  7575, 0x08000000, 14185 }, // |C00fff569Stormbringer's Runed Citrine
+  { 4257,  7576, 0x10000000, 14189 }, // |C003fc7ebFathomdweller's Runed Citrine
   { 4258,  7577, 0x20000000, 14190 }, // |C00f58cbaWindsinger's Runed Citrine
-  { 4260,  7579, 0x08000000, 14185 }, // |C00ff8000Storm Sewer's Citrine
-  { 4261,  7580, 0x20000000, 14190 }, // |C00ff8000Old Salt's Citrine
-  { 4262,  7581, 0x10000000, 14189 }, // |C00ff8000Mariner's Hallowed Citrine
-  { 4264,  7583, 0x20000000, 14190 }, // |C003fc7ebLegendary Skipper's Citrine
+  { 4260,  7579, 0x08000000, 14185 }, // |C00fff569Storm Sewer's Citrine
+  { 4261,  7580, 0x20000000, 14190 }, // |C00f58cbaOld Salt's Bardic Citrine
+  { 4262,  7581, 0x10000000, 14189 }, // |C003fc7ebMariner's Hallowed Citrine
+  { 4264,  7583, 0x20000000, 14190 }, // |C00f58cbaLegendary Skipper's Citrine
   { 4265,  7584, 0x10000000, 14189 }, // |C003fc7ebSeabed Leviathan's Citrine
-  { 4266,  7585, 0x08000000, 14185 }, // |C003fc7ebRoaring War-Queen's Citrine
+  { 4266,  7585, 0x08000000, 14185 }, // |C00fff569Roaring War-Queen's Citrine
 } };
 

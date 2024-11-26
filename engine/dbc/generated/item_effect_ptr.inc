@@ -1,5 +1,5 @@
-// Item effects, wow build 11.0.7.57409
-static const std::array<item_effect_t, 9799> __ptr_item_effect_data { {
+// Item effects, wow build 11.0.7.57788
+static const std::array<item_effect_t, 9801> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -9795,13 +9795,15 @@ static const std::array<item_effect_t, 9799> __ptr_item_effect_data { {
   { 193343, 473813, 233331,   1,   9,    0,      -1,      -1 }, // Aura of Zealotry
   { 203150, 474653, 233650,   0,   9,    0,      -1,      -1 }, // Utility: Call Galefeather
   { 203400, 418948, 233805,   0,  10,    0,      -1,      -1 }, // Energy Projection Regulator
+  { 204568, 1215906, 233814,   0,   1,    0,      -1,      -1 }, // Splash!
+  { 204569, 1215906, 233815,   0,   1,    0,      -1,      -1 }, // Splash!
   { 203780, 1213561, 234245,   0,   0,    0,      -1,      -1 }, // Glyph of the Ashvane Pistol Shot
   { 203781, 1213583, 234246,   0,   0,    0,      -1,      -1 }, // Glyph of the Admiral's Pistol Shot
   { 203782, 1213582, 234247,   0,   0,    0,      -1,      -1 }, // Glyph of the Gilded Pistol Shot
   { 203783, 1213581, 234248,   0,   0,    0,      -1,      -1 }, // Glyph of the Twilight Pistol Shot
 } };
 
-static const std::array<uint16_t, 9799> __ptr_item_effect_id_index { {
+static const std::array<uint16_t, 9801> __ptr_item_effect_id_index { {
     859,   860,   861,   862,   863,   864,   865,   868,
     869,   870,   871,   872,   873,   874,   875,   876,
     877,   878,   879,   880,   883,   884,   885,   886,
@@ -11026,6 +11028,7 @@ static const std::array<uint16_t, 9799> __ptr_item_effect_id_index { {
     770,   771,   772,  9785,  9786,  9787,  9788,  9789,
     773,   774,   775,   776,  9790,   777,  9791,   778,
    9792,   779,   780,   781,  9793,   782,  9794,   783,
-    784,   785,  9795,  9796,  9797,  9798,  9485,
+    784,   785,  9797,  9798,  9799,  9800,  9485,  9795,
+   9796,
 } };
 
