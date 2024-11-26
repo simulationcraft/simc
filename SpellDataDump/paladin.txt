@@ -2559,6 +2559,14 @@ Effects          :
 #24 (id=1189211) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Misc Value 2: 1830 (Label) | Target: Self (1)
                    Affected Spells (Label): Shield of the Righteous (132403)
+#25 (id=1202498) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: -6 | Scaled Value: -6 | Misc Value: 3 | Misc Value 2: 4182 (Label) | Target: Self (1)
+                   Affected Spells (Label): Divine Guidance (433106)
+Hotfixed         : NEW EFFECT
+#26 (id=1202502) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value 2: 4345 (Label) | Target: Self (1)
+                   Affected Spells (Label): Forge's Reckoning (447258)
+Hotfixed         : NEW EFFECT
 
 Name             : Holy Paladin (id=137029) [Spell Family (10), Passive, Hidden] 
 Class            : Holy Paladin
@@ -16891,7 +16899,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-                 : 4182
+                 : 4182: Protection Paladin (137028 effect#25)
 Attributes       : Passive (6), No Aura Icon (60)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
@@ -17485,6 +17493,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 3465
+                 : 4345: Protection Paladin (137028 effect#26)
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2)
 Family Flags     : 65
 Attributes       : Do Not Display Range (126), Bouncy Chain Missiles (146), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -18792,7 +18801,8 @@ Family Flags     : 65
 Attributes       : No Redirection (35), No Reflection (39), Can Proc From Procs (122), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1183581)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.35 | PvP Coefficient: 2.5 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.35 | PvP Coefficient: 3.75 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (2.5 -> 3.75)
 Description      : $@spelldesc469309
 
 Name             : Stoicism (id=469316) [Spell Family (10), Passive, Hidden] 
@@ -19206,7 +19216,8 @@ Triggered By     : Refining Fire (469883)
 Attributes       : Aura Is Debuff (26), Suppress Caster Procs (112), Always Hit (114), Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Rolling Periodic (334), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1184536)  : Apply Aura (6) | Periodic Damage (3): holyfire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.225 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.25 -> 0.225)
 Description      : Enemies struck by Avenger's Shield burn with holy fire, suffering $o1 damage over $d.
 Tooltip          : Suffering $w1 Radiant damage every $t sec.
 

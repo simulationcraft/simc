@@ -13730,8 +13730,9 @@ Effects          :
 #3 (id=1135813)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #4 (id=1135814)  : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : Base Value (-25 -> -50)
 #5 (id=1135815)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : You deal $s1% more damage and take ${$s4/-10}.1% less damage.
@@ -15152,8 +15153,9 @@ Proc Chance      : 101%
 Attributes       : DoT Stacking Rule (103), Aura Icon Only For Caster (Limit 10) (212), Aura Points On Client (268), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1145538)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 0x7f | Target: Enemy (6)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
+Hotfixed         : Base Value (-5 -> -10)
 #2 (id=1145539)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All

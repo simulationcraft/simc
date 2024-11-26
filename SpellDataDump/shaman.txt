@@ -3249,9 +3249,10 @@ Effects          :
                    Base Value: 250 | Scaled Value: 250 | Misc Value 2: 2938 (Label) | Target: Self (1)
                    Affected Spells (Label): Primordial Wave (375984)
 #22 (id=1123761) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Target: Self (1)
+                   Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Elemental Blast (117014)
                    Family Flags: 98
+Hotfixed         : Base Value (0 -> -8)
 #23 (id=1123762) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Elemental Blast (117014)
@@ -18210,20 +18211,23 @@ Effects          :
                    Affected Spells: Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0
 #2 (id=1196251)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0 | Target: Self (1)
+                   Base Value: -17 | Scaled Value: -17 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Lightning Bolt (188196), Lightning Bolt (214815), Lightning Bolt Overload (214816)
                    Family Flags: 0
+Hotfixed         : Base Value (-10 -> -17)
 #3 (id=1196252)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0 | Target: Self (1)
+                   Base Value: -17 | Scaled Value: -17 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443)
                    Family Flags: 1
+Hotfixed         : Base Value (-10 -> -17)
 #4 (id=1196253)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
 #5 (id=1196254)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0 | Target: Self (1)
+                   Base Value: -22 | Scaled Value: -22 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
+Hotfixed         : Base Value (-15 -> -22)
 
 
