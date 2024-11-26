@@ -418,7 +418,8 @@ Family Flags     : 3, 22, 67
 Attributes       : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=4785)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.9845 | PvP Coefficient: 1.2 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.143 | PvP Coefficient: 1.2 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (1.9845 -> 2.143)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].
 
 Name             : Ice Barrier (id=11426) [Spell Family (3)] 
@@ -8317,7 +8318,8 @@ Family Flags     : 3, 96, 122
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=881233)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.9601 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.7 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
+Hotfixed         : SP Coefficient (2.9601 -> 3.7)
 Description      : $@spelldesc153561
 
 Name             : Visage (desc=Racial) (id=351239) 
@@ -12203,12 +12205,14 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
                  : 3081
+                 : 4338
 Stacks           : 6 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1118520)  : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Base Value (1 -> 2), PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc431038
 Tooltip          : Haste increased by $w1%.
 
@@ -12295,9 +12299,11 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1118612)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-#2 (id=1131295)  : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
+Hotfixed         : Base Value (100 -> 150)
+#2 (id=1131295)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+Hotfixed         : Base Value (150 -> 200)
 Description      : Comet Storm now also calls down a Meteor at $s1% effectiveness onto your target's location.
 
 Meteor now also calls down a Comet Storm at $s2% effectiveness onto your target location.
@@ -12384,7 +12390,8 @@ Family Flags     : 3, 84
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1118762)  : School Damage (2): frostfire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.45 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.675 | PvP Coefficient: 0.667 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.45 -> 0.675), PvP Coefficient (1 -> 0.667)
 Description      : $@spelldesc431166
 
 Name             : Frostfire Empowerment (id=431176) [Spell Family (3), Passive, Hidden] 
@@ -12537,7 +12544,8 @@ Effects          :
 #1 (id=1131310)  : Apply Aura (6) | Dummy (4)
                    Base Value: 125 | Scaled Value: 125 | Target: Self (1)
 #2 (id=1131311)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Base Value (5 -> 10), PvP Coefficient (1 -> 0.5)
 Description      : Reaching maximum stacks of Frost Mastery causes your next $?c2[Phoenix Flames]?c3[Flurry][] to also cast Ice Nova at $s1% effectiveness.
 
 When you consume Excess Frost, the cooldown of $?c2[Meteor]?c3[Comet Storm][] is reduced by $s2 sec.
@@ -12557,7 +12565,8 @@ Family Flags     : 3, 96, 122
 Attributes       : Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1131321)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.404 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.55 | PvP Coefficient: 0.667 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
+Hotfixed         : SP Coefficient (3.404 -> 5.55), PvP Coefficient (1 -> 0.667)
 Description      : $@spelldesc153561
 
 Name             : Meteor (id=438608) [Spell Family (3)] 
@@ -12596,7 +12605,8 @@ Family Flags     : 3, 120
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always Line of Sight (185), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Missile Speed is Delay (in sec) (292), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1131326)  : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.86 | PvP Coefficient: 1.4 | Radius: 0 - 6 yards | Target: Unknown(87) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.1 | PvP Coefficient: 1.095 | Radius: 0 - 6 yards | Target: Unknown(87) -> At Enemy in Area (16)
+Hotfixed         : SP Coefficient (0.86 -> 1.1), PvP Coefficient (1.4 -> 1.095)
 Description      : $@spelldesc153595
 
 Name             : Excess Frost (id=438611) [Spell Family (3)] 
@@ -14076,7 +14086,8 @@ Effects          :
 #1 (id=1150967)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1155019)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 50)
 #3 (id=1155020)  : Apply Aura (6) | Dummy (4)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 Description      : If Phoenix Flames only hits $s1 target, it deals $s2% increased damage and applies Ignite at $s3% effectiveness.
@@ -16012,9 +16023,11 @@ Affecting Spells : Shatter (12982 effect#1), Rune of Power (116014 effects: #1, 
 Family Flags     : 3
 Effects          :
 #1 (id=1186028)  : School Damage (2): frostfire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.25 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.5625 | PvP Coefficient: 0.8 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : SP Coefficient (1.25 -> 1.5625), PvP Coefficient (1 -> 0.8)
 #2 (id=1186029)  : School Damage (2): frostfire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.5625 | PvP Coefficient: 0.8 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : SP Coefficient (1 -> 1.5625), PvP Coefficient (1 -> 0.8)
 #3 (id=1187095)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc438595
