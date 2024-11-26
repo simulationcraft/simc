@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.57409 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.57788 PTR
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -419,7 +419,7 @@ Labels           : 16: Class Spells
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
                  : 1468: Fire Breath (357209 effect#6), Might of the Black Dragonflight (441705 effect#1), Might of the Black Dragonflight (441705 effect#2)
 Affecting Spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Initial Evoker (356816 effects: #3, #4), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Lay Waste (371034 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Ebon Might (395296 effects: #1, #5), Augmentation Evoker (396186 effects: #1, #2), Evoker Augmentation 10.0 Class Set 4pc (415221 effects: #1, #2), Emerald Trance (424155 effects: #1, #2), Emerald Trance (424402 effects: #1, #2)
-Triggered By     : Deep Breath (362010), Deep Breath (433874), Aerial Bombardment (440263)
+Triggered By     : Deep Breath (362010), Aerial Bombardment (440263)
 Family Flags     : 0, 34
 Attributes       : DoT Stacking Rule (103), Extra Initial Period (169), Spell Haste Affects Periodic (173), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -3807,6 +3807,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 292
 Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Can't Crit (93), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Ignore Healing Modifiers (219), Disable Aura While Dead (226), Do Not Log Full Overheal (323), Always Allow Negative Healing Percent Modifiers (442)
+Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=996412)   : Unknown(271) | Periodic Heal% (20): every 2 seconds
                    Base Value: 2 | Scaled Value: 2 | Radius: 40 yards | Target: Self (1)
@@ -11113,7 +11114,7 @@ Effects          :
 #4 (id=1123477)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -200 | Scaled Value: -200 | Target: Self (1)
 #5 (id=1149053)  : Apply Aura (6) | Periodic Dummy (226): every 0.2 seconds
-                   Base Value: -200 | Scaled Value: -200 | Trigger Spell: 353759 | Target: Self (1)
+                   Base Value: -200 | Scaled Value: -200 | Target: Self (1)
 #6 (id=1149054)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 #7 (id=1149055)  : Apply Aura (6) | Forced Movement (241)
@@ -11725,7 +11726,7 @@ Effects          :
 #1 (id=1137191)  : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1137192)  : Apply Aura (6) | Periodic Dummy (226): every 0.2 seconds
-                   Base Value: -200 | Scaled Value: -200 | Trigger Spell: 409560 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 409560 | Target: Self (1)
 #3 (id=1137193)  : Apply Aura (6) | Mechanic Immunity (147)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2360 | Target: Self (1)
 #4 (id=1137194)  : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -11735,7 +11736,7 @@ Effects          :
 #6 (id=1137196)  : Apply Aura (6) | Unknown(488)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=1137197)  : Apply Aura (6) | Forced Movement (241)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Unknown(120)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=1149061)  : Apply Aura (6) | Unknown(634)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #9 (id=1149062)  : Apply Aura (6) | Unknown(406)

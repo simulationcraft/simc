@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.57409 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.57788 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1999,7 +1999,7 @@ Family Flags     : 34, 43, 110, 120
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Always Hit (114), Requires Off-Hand Weapon (120), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=60368)    : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.696672 | PvP Coefficient: 2.07446 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.780272 | PvP Coefficient: 2.07446 | Target: Enemy (6)
 Description      : $@spelldesc49143
 
 Name             : Obliterate Off-Hand (id=66198) [Spell Family (15)] 
@@ -2018,7 +2018,7 @@ Family Flags     : 43, 49, 111
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Always Hit (114), Requires Off-Hand Weapon (120), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=60372)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.787888 | PvP Coefficient: 1.13192 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.882426 | PvP Coefficient: 1.13192 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc49020
 
 Name             : Viciousness (desc=Racial Passive) (id=68975) [Passive] 
@@ -2052,7 +2052,7 @@ Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Cooldown         : 120 seconds
+Cooldown         : 90 seconds
 Labels           : 219
 Attributes       : Allow While Stealthed (37), Reset cooldown upon ending an encounter (333)
 Effects          :
@@ -3118,7 +3118,7 @@ Effects          :
                    Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Breath of Sindragosa (155166), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Chill Streak (204167), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Unholy Assault (207289), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Obliterate (222024), Frost Strike (222026), Heart Strike (228645), Howling Blast (237680), Inexorable Assault (253597), Bone Spike Graveyard (273089), Horrid Experimentation (273096), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Echoing Howl (275918), Harrowing Decay (275931), Frostwyrm's Fury (279303), Cold Heart (281209), Cold Heart (281210), Helchains (286836), Helchains (286954), Helchains (286978), Helchains (286979), Helchains (287142), Frostwhelp's Indignation (287320), Helchains (290813), Helchains (290814), Swarming Mist (311730), Shackle the Unworthy (312202), Rune Strike (316239), Unholy Pact (319236), Unholy Pact (319238), Unholy Pact (319240), Unholy Pact (319243), Unholy Pact (319245), Unholy Pact (319248), Unholy Pact (319249), Abomination Limb (323710), Abomination Limb (323798), Obliterate (325461), Frost Strike (325464), Sacrificial Pact (327611), Death's Due (341340), Soul Reaper (343294), Soul Reaper (343295), Dark Transformation (344955), Cold Heart (358109), Blood Draw (374606), Frostwhelp's Aid (377245), Shattering Bone (377642), Abomination Limb (383312), Abomination Limb (383313), Glacial Advance (394500), Frostwyrm's Fury (410790), Vampiric Strike (433895), Wave of Souls (435802), Reaper's Mark (436304), Reaper's Mark (439594), Reaper's Mark (439843), Blood Fever (440005), Exterminate (441424), Exterminate (441426), Chains of Ice (444826), Trollbane's Icy Fury (444834), Soul Reaper (448229), Festering Scythe (458128), Unholy Blight (460448), Heart Strike (460501)
                    Family Flags: 43
 #3 (id=191167)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 139 | Scaled Value: 139 | Target: Self (1)
+                   Base Value: 139 | Scaled Value: 139 | PvP Coefficient: 0.396 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
 #4 (id=191168)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
@@ -3335,7 +3335,7 @@ Effects          :
 #1 (id=215544)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Radius: 12 yards | Target: Cone to Enemy (104)
 #2 (id=215545)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.17664 | PvP Coefficient: 0.666667 | Radius: 12 yards | Target: Cone to Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.059 | PvP Coefficient: 0.666667 | Radius: 12 yards | Target: Cone to Enemy (104)
 Description      : $@spelldesc152279
 
 Name             : Breath of Sindragosa (id=155168) [Spell Family (15)] 
@@ -3714,7 +3714,7 @@ Proc Flags       : Generic Heal Taken, Magic Heal Taken, Helpful Periodic Taken
 Affecting Spells : Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #6, #7), Blood Death Knight (137008 effects: #1, #2), Festering Wound (194310 effect#2), Ebon Fever (207269 effects: #1, #2, #3), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Lingering Plague (338566 effects: #1, #2), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Death Rot (377540 effect#1), Morbidity (377592 effects: #1, #2, #3), Plaguebringer (390178 effect#1), Sanguine Ground (391459 effects: #1, #3), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Hungering Thirst (444037 effects: #1, #2), Foul Infections (455396 effects: #1, #2, #3)
 Triggered By     : Outbreak (77575)
 Family Flags     : 40, 43, 65, 78
-Attributes       : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log Aura Refresh (291), Bypass Visibility Check (320), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428), Periodic Refresh Extends Duration (436)
+Attributes       : Is Ability (4), Aura Is Debuff (26), Ignore Line of Sight (66), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Suppress Weapon Procs (151), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log Aura Refresh (291), Bypass Visibility Check (320), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Consume Aura Stack On Proc (428), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=281049)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.1725 | PvP Coefficient: 0.85 | Misc Value: 127 | Radius: 0 - 10 yards | Target: At Target (63) -> At Enemy in Area (16)
@@ -3803,7 +3803,7 @@ Family Flags     : 43, 78, 119
 Attributes       : Is Ability (4), Allow Dead Target (64), Ignore Line of Sight (66), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Suppress Weapon Procs (151), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=285232)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.23845 | PvP Coefficient: 2.9 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.23845 | PvP Coefficient: 3.34 | Target: Any Target (25)
 #2 (id=338558)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Any Target (25)
 Description      : $@spelldesc194310
@@ -5923,7 +5923,7 @@ Family Flags     : 7, 43, 49
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=331344)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.787888 | PvP Coefficient: 1.13192 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.882426 | PvP Coefficient: 1.13192 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc49020
 
 
@@ -5943,7 +5943,7 @@ Family Flags     : 34, 43, 120
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=331347)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.696672 | PvP Coefficient: 2.07446 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.780272 | PvP Coefficient: 2.07446 | Target: Enemy (6)
 Description      : $@spelldesc49143
 
 Name             : Wraith Walk (id=223804) [Spell Family (15), Hidden] 
@@ -8551,7 +8551,7 @@ Family Flags     : 7, 43, 49
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=815754)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.16635 | PvP Coefficient: 1.13192 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.30631 | PvP Coefficient: 1.13192 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc49020
 
 
@@ -8571,7 +8571,7 @@ Family Flags     : 34, 43, 120
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Discount Power On Miss (59), Requires Main-Hand Weapon (106), Always Hit (114), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=815761)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.990628 | PvP Coefficient: 2.07446 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.1095 | PvP Coefficient: 2.07446 | Target: Enemy (6)
 Description      : $@spelldesc49143
 
 Name             : Dark Transformation (desc=Rank 2) (id=325554) [Spell Family (15), Passive] 
@@ -11733,7 +11733,7 @@ Attributes       : No Aura Cancel (31), Allow Low Level Buff (67), Aura Points O
 Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1005518)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Misc Value 2: 0x1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.65 | Misc Value 2: 0x1 | Target: Self (1)
 Description      : $@spelldesc377590
 Tooltip          : Strength increased by $w1%.
 
@@ -14357,7 +14357,7 @@ Family Flags     : 43, 120
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1126738)  : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.5382 | PvP Coefficient: 1.2821 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.67275 | PvP Coefficient: 1.2821 | Target: Enemy (6)
 #2 (id=1174044)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.773663 | PvP Coefficient: 1.2821 | Target: Enemy (6)
 Description      : $@spelldesc434711
@@ -14378,7 +14378,7 @@ Family Flags     : 43, 120
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1127543)  : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.085176 | PvP Coefficient: 0.6 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.10647 | PvP Coefficient: 0.6 | Target: Enemy (6)
 #2 (id=1144448)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.191646 | PvP Coefficient: 0.6 | Target: Enemy (6)
 Description      : $@spelldesc439843
@@ -14516,7 +14516,7 @@ Family Flags     : 43, 120
 Attributes       : Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1133377)  : School Damage (2): shadowfrost | Attributes: Chain from Initial Target (7), Enforce Line of Sight To Chain Targets (16)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.17 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.4625 | Target: Enemy (6)
 #2 (id=1133380)  : Trigger Spell (64): Reaper's Mark
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 434765 | Target: Enemy (6)
 #3 (id=1138466)  : Energize Power (30)
@@ -14959,7 +14959,7 @@ Family Flags     : 43, 120
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1135880)  : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.14812 | PvP Coefficient: 0.7 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.68515 | PvP Coefficient: 0.7 | Target: Enemy (6)
 #2 (id=1174046)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 3.35643 | PvP Coefficient: 0.7 | Target: Enemy (6)
 Description      : $@spelldesc441378
@@ -14979,7 +14979,7 @@ Family Flags     : 43, 120
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1135882)  : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.14566 | PvP Coefficient: 0.7 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.43208 | PvP Coefficient: 0.7 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #2 (id=1174049)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.14566 | PvP Coefficient: 0.7 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc441378

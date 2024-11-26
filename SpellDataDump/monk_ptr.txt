@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.57409 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.57788 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -398,7 +398,7 @@ Race             : Worgen (0x200000)
 School           : Physical
 Spell Type       : None
 Duration         : 10 seconds
-Cooldown         : 120 seconds
+Cooldown         : 90 seconds
 Labels           : 219
 Attributes       : Allow While Stealthed (37), Reset cooldown upon ending an encounter (333)
 Effects          :
@@ -1533,6 +1533,7 @@ Class            : Monk
 School           : Nature
 Spell Type       : Magic
 Duration         : 30 seconds
+Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 2294 (Type 0x0): Heart of the Jade Serpent (443421 effect#7), Heart of the Jade Serpent (443616 effect#7), Endless Draught (450892 effect#1)
 Labels           : 16: Class Spells
@@ -1817,7 +1818,7 @@ Family Flags     : 20, 103
 Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143), Do Not Display Duration (170), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=133162)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.15 | Radius: 0 - 8 yards | Target: At Self (22) -> Cone Enemy (24)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.38 | Radius: 0 - 8 yards | Target: At Self (22) -> Cone Enemy (24)
 #2 (id=155264)   : Trigger Spell (64): Fists of Fury Visual Target
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 123154 | Radius: 0 - 8 yards | Target: At Self (22) -> Cone Enemy (24)
 Description      : $@spelldesc113656
@@ -3723,7 +3724,7 @@ Effects          :
                    Base Value: -4 | Scaled Value: -4 | Misc Value: 12 | Misc Value 2: 2917 (Label) | Target: Self (1)
                    Affected Spells (Label): Yu'lon's Grace (414131)
 #24 (id=1080993) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 32 | Scaled Value: 32 | Target: Self (1)
+                   Base Value: 43 | Scaled Value: 43 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
 #25 (id=1082767) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
@@ -12098,11 +12099,11 @@ Effects          :
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
 #2 (id=1031599)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
 #3 (id=1155573)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 70 | Scaled Value: 70 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | Target: Self (1)
 Description      : Blackout Kick damage increased by $s2% and strikes an additional $s1 $ltarget;targets at $s3% effectiveness.
 
 Name             : Strike of the Windlord (id=392983) [Spell Family (53)] 
@@ -14260,7 +14261,7 @@ Attributes       : Can Proc From Procs (122), Do Not Display Duration (170), Aur
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1120518)  : Apply Aura (6) | Modify Dodge% (49)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.2 | Target: Self (1)
 Description      : $@spelldesc432181
 Tooltip          : Your dodge chance is increased by $w1% until you dodge an attack.
 
@@ -14768,7 +14769,7 @@ Family Flags     : 103
 Attributes       : Is Ability (4), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1138821)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc443110
 
 Name             : Flight of the Red Crane (id=443255) [Spell Family (53), Passive] 
@@ -14805,7 +14806,7 @@ Family Flags     : 36, 103
 Attributes       : Bouncy Chain Missiles (146), Allow Class Ability Procs (416), Chain by Most Hit (440)
 Effects          :
 #1 (id=1139056)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Enemy (6)
 Description      : $@spelldesc443255
 
 Name             : Flight of the Red Crane (id=443272) [Spell Family (53)] 
@@ -15123,7 +15124,7 @@ Family Flags     : 36, 103
 Attributes       : Bouncy Chain Missiles (146), Allow Class Ability Procs (416), Chain by Most Hit (440)
 Effects          :
 #1 (id=1139667)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Enemy (6)
 Description      : $@spelldesc443260
 
 Name             : Flight of the Red Crane (id=443614) [Spell Family (53)] 
@@ -15715,6 +15716,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
+                 : 3023
 Attributes       : Aura Is Buff (140), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Aura Always Shown (438)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
@@ -15731,6 +15733,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
+                 : 3023
 Attributes       : Aura Is Buff (140), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423), Aura Always Shown (438)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
@@ -15768,6 +15771,7 @@ Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
+                 : 3023
                  : 3536
 Attributes       : Aura Is Buff (140), Nameplate Personal Buffs/Debuffs (423), Aura Always Shown (438)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
@@ -16089,8 +16093,8 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1150646)  : Unknown(108)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 11 | Target: Self (1)
+#1 (id=1150646)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc450622
 
 Name             : Energy Transfer (id=450631) [Spell Family (53), Passive] 
@@ -17214,7 +17218,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1152125)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 125 | Scaled Value: 125 | PvP Coefficient: 0.6 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.6 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Blackout Kick! (116768)
                    Family Flags: 21
 Description      : The Blackout Kick! effect also increases the damage of your next Blackout Kick by $s1%.
@@ -17681,7 +17685,7 @@ Family Flags     : 103
 Attributes       : Suppress Weapon Procs (151), Aura Points On Client (268), Area Effects Use Target Radius (328)
 Effects          :
 #1 (id=1153059)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.28 | Radius: 10 yards | Target: Cone to Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.392 | Radius: 10 yards | Target: Cone to Enemy (104)
 Description      : $@spelldesc452137
 
 Name             : Flurry of Xuen (id=452137) [Spell Family (53), Passive, Hidden] 
@@ -18435,7 +18439,7 @@ Family Flags     : 36, 103
 Attributes       : Is Ability (4), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1163531)  : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.5 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.375 | Target: Enemy (6)
 Description      : $@spelldesc443087
 
 Name             : Jadefire Fists (id=457974) [Spell Family (53), Passive] 

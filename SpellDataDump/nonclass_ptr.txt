@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.57409 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.57788 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -90030,7 +90030,7 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=357399)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
-                   Affected Spells: Invisibility (66), Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Remove Curse (475), Arcane Explosion (1449), Blink (1953), Flamestrike (2120), Counterspell (2139), Scorch (2948), Arcane Missiles (5143), Arcane Missiles (7268), Pyroblast (11366), Ice Barrier (11426), Evocation (12051), Icy Veins (12472), Blizzard (12486), Ignite (12654), Spellsteal (30449), Arcane Blast (30451), Ice Lance (30455), Slow (31589), Dragon's Breath (31661), Waterbolt (31707), Invisibility (32612), Freeze (33395), Arcane Charge (36032), Arcane Barrage (44425), Living Bomb (44457), Living Bomb (44461), Fingers of Frost (44544), Flurry (44614), Ice Block (45438), Hot Streak! (48108), Mirror Image (55342), Gift of the Naaru (59548), Clearcasting (79684), Time Warp (80353), Ring of Frost (82691), Frozen Orb (84714), Frozen Orb (84721), Cauterize (86949), Blazing Speed (108843), Fire Blast (108853), Alter Time (108978), Greater Invisibility (110959), Greater Invisibility (110960), Fingers of Frost (112965), Ring of Frost (113724), Greater Invisibility (113862), Nether Tempest (114923), Nether Tempest (114954), Critical Mass (117216), Blink (119415), Greater Invisibility (122293), Fingers of Frost (126084), Conjure Familiar (126578), Alter Time (127140), Water Jet (135029), Ring of Frost (136511), Ring of Frost (140384), Icicle (148022), Meteor (153561), Meteor (153564), Comet Storm (153595), Comet Storm (153596), Arcane Orb (153626), Arcane Orb (153640), Meteor Burn (155158), Pyrotechnics (157642), Pyrotechnics (157644), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Combustion (190319), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Brain Freeze (190446), Brain Freeze (190447), Ice Form (198144), Cinderstorm (198928), Cinderstorm (198929), Glacial Spike (199786), Ray of Frost (205021), Lonely Winter (205024), Presence of Mind (205025), Ice Ward (205036), Conflagration Flare Up (205345), Flame Patch (205472), Chilled (205708), Shimmer (212653), Cone of Cold (212792), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Flurry (228596), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Comet Storm (228601), Cold Snap (235219), Frost Nova (235235), Blazing Barrier (235313), Blazing Barrier (235314), Prismatic Barrier (235450), Time and Space (240689), Living Bomb (244813), Ebonbolt (257537), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Clearcasting (277726), Glacial Assault (279856), Frozen Orb (289308), GGO - Test - Void Blink (307072), Radiant Spark (307443), Shifting Power (314791), Mirrors of Torment (314793), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Touch of the Magi (321507), Pyroblast (321712), Deathborne (324220), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Alter Time (342245), Alter Time (342247), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Frostbite (378756), Frostbite (378760), Glacial Assault (379029), Shifting Power (382440), Shifting Power (382445), Blast Wave (389631), Displacement (389713), Displacement Beacon (389714), Mass Slow (391104), Icebind (397252), Icebind (397253), Icebind (397254), Icebind (397255), Icebind (397256), Icebind (397257), Icebind (397259), Icebind (397260), Alter Time (397321), Alter Time (397322), Alter Time (397323), Arcane Explosion (414381), Ice Cold (414658), Mass Barrier (414660), Ice Barrier (414661), Mass Invisibility (414664), Gift of the Naaru (416250), Summon Water Elemental (417486), Frostfire Bolt (431044), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438673), Living Bomb (438674), Arcane Orb (440552), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Gravity Lapse (449700), Gravity Lapse (449715), Flamestrike (450462), Phoenix Flames (450506), Lit Fuse (453207), Living Bomb (453251), Arcane Surge (453326), Magi's Spark (453925), Nether Munitions (454004), Homebrewed Blink Vial (457733), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostfire Burst (470596)
+                   Affected Spells: Invisibility (66), Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Remove Curse (475), Arcane Explosion (1449), Blink (1953), Flamestrike (2120), Counterspell (2139), Scorch (2948), Arcane Missiles (5143), Arcane Missiles (7268), Pyroblast (11366), Ice Barrier (11426), Evocation (12051), Icy Veins (12472), Blizzard (12486), Ignite (12654), Spellsteal (30449), Arcane Blast (30451), Ice Lance (30455), Slow (31589), Dragon's Breath (31661), Waterbolt (31707), Invisibility (32612), Freeze (33395), Arcane Charge (36032), Arcane Barrage (44425), Living Bomb (44457), Living Bomb (44461), Fingers of Frost (44544), Flurry (44614), Ice Block (45438), Hot Streak! (48108), Mirror Image (55342), Gift of the Naaru (59548), Clearcasting (79684), Time Warp (80353), Ring of Frost (82691), Frozen Orb (84714), Frozen Orb (84721), Cauterize (86949), Blazing Speed (108843), Fire Blast (108853), Alter Time (108978), Greater Invisibility (110959), Greater Invisibility (110960), Fingers of Frost (112965), Ring of Frost (113724), Greater Invisibility (113862), Nether Tempest (114923), Nether Tempest (114954), Critical Mass (117216), Blink (119415), Greater Invisibility (122293), Fingers of Frost (126084), Conjure Familiar (126578), Alter Time (127140), Water Jet (135029), Ring of Frost (136511), Ring of Frost (140384), Icicle (148022), Meteor (153561), Meteor (153564), Comet Storm (153595), Comet Storm (153596), Arcane Orb (153626), Arcane Orb (153640), Meteor Burn (155158), Pyrotechnics (157642), Pyrotechnics (157644), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Combustion (190319), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Brain Freeze (190446), Brain Freeze (190447), Ice Form (198144), Cinderstorm (198928), Cinderstorm (198929), Glacial Spike (199786), Ray of Frost (205021), Lonely Winter (205024), Presence of Mind (205025), Ice Ward (205036), Conflagration Flare Up (205345), Flame Patch (205472), Chilled (205708), Shimmer (212653), Cone of Cold (212792), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Flurry (228596), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Comet Storm (228601), Cold Snap (235219), Frost Nova (235235), Blazing Barrier (235313), Blazing Barrier (235314), Prismatic Barrier (235450), Time and Space (240689), Living Bomb (244813), Ebonbolt (257537), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Blast Wave (268467), Blast Wave (268473), Blast Wave (268474), Blast Wave (268475), Trailing Embers (277703), Clearcasting (277726), Glacial Assault (279856), Frozen Orb (289308), GGO - Test - Void Blink (307072), Radiant Spark (307443), Shifting Power (314791), Mirrors of Torment (314793), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Touch of the Magi (321507), Pyroblast (321712), Deathborne (324220), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Alter Time (342245), Alter Time (342247), Tormenting Backlash (342375), Meteor (351140), Arcane Surge (365350), Frostbite (378756), Frostbite (378760), Glacial Assault (379029), Shifting Power (382440), Shifting Power (382445), Blast Wave (389631), Displacement (389713), Displacement Beacon (389714), Mass Slow (391104), Icebind (397252), Icebind (397253), Icebind (397254), Icebind (397255), Icebind (397256), Icebind (397257), Icebind (397259), Icebind (397260), Alter Time (397321), Alter Time (397322), Alter Time (397323), Arcane Explosion (414381), Ice Cold (414658), Mass Barrier (414660), Ice Barrier (414661), Mass Invisibility (414664), Gift of the Naaru (416250), Summon Water Elemental (417486), Frostfire Bolt (431044), Frostfire Infusion (431171), Meteor (438607), Meteor (438608), Comet Storm (438609), Living Bomb (438671), Living Bomb (438672), Living Bomb (438673), Living Bomb (438674), Arcane Orb (440552), Frost Splinter (443722), Embedded Frost Splinter (443740), Splinterstorm (443747), Arcane Splinter (443763), Splinterstorm (444713), Embedded Arcane Splinter (444735), Volatile Magic (444966), Volatile Magic (444967), Volatile Magic (444968), Meteorite (449559), Meteorite (449560), Meteorite Burn (449561), Meteorite (449569), Gravity Lapse (449700), Gravity Lapse (449715), Flamestrike (450462), Phoenix Flames (450506), Lit Fuse (453207), Living Bomb (453251), Arcane Surge (453326), Magi's Spark (453925), Nether Munitions (454004), Homebrewed Blink Vial (457733), Pyroblast (460475), Flamestrike (460476), Frigid Pulse (460623), Arcane Explosion (461508), Arcane Orb (463357), Living Bomb (464884), Frostfire Bolt (468655), Frostfire Burst (470596), Gravity Lapse (473291)
                    Family Flags: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127
 Description      : $@spelldesc236373
 Tooltip          : Your spells may be castable while moving.
@@ -111541,7 +111541,7 @@ Labels           : 292
                  : 374
                  : 375
                  : 376
-Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
 Triggered By     : Soothing Waters (273018)
 Family Flags     : 41
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -113999,7 +113999,7 @@ Labels           : 292
                  : 374
                  : 376
                  : 378
-Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
 Triggered By     : Serene Spirit (274823)
 Family Flags     : 41
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -115167,7 +115167,7 @@ Labels           : 292
                  : 374
                  : 375
                  : 376
-Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
 Family Flags     : 41
 Attributes       : Exclude Caster (51), Do Not Display Range (126), AI Doesn't Face Target (179), Aura Points On Client (268), Scales with Casting Item's Level (354), Chain by Most Hit (440)
 Effects          :
@@ -117459,7 +117459,7 @@ Labels           : 292
                  : 375
                  : 376
                  : 611
-Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
 Triggered By     : Overflowing Shores (278077)
 Family Flags     : 41
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
@@ -121069,7 +121069,7 @@ Labels           : 292
                  : 374
                  : 375
                  : 376
-Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Praetorian's Tidecallers (210604 effect#1), Spouting Spirits (279504 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Praetorian's Tidecallers (210604 effect#1), Spouting Spirits (279504 effect#1), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
 Family Flags     : 41, 116
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
@@ -123547,7 +123547,7 @@ Labels           : 292
                  : 374
                  : 376
                  : 378
-Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2, #28, #29), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
+Affecting Spells : Earth Shield (974 effect#1), Mastery: Deep Healing (77226 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #1, #2), Undercurrent (383235 effects: #1, #2), Earth Shield (383648 effect#1), Tide Turner (404072 effect#1), Initial Shaman (417374 effects: #3, #4), Amplification Core (456369 effects: #1, #2), Tidecaller's Guard (457496 effects: #2, #3), Earthsurge (457566 effect#1)
 Triggered By     : Pack Spirit (280203)
 Family Flags     : 41
 Attributes       : No Aura Icon (60), Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log Full Overheal (323), Scales with Casting Item's Level (354)
@@ -126523,7 +126523,7 @@ Labels           : 292
                  : 411
 Proc Chance      : 100%
 Proc Flags       : White Melee
-Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Dance of Death (459572 effect#1)
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effect#2), Dance of Death (459572 effect#1)
 Triggered By     : Reckless Flurry (279632)
 Family Flags     : 9
 Attributes       : No Attack Miss (249), Aura Points On Client (268)
@@ -173913,7 +173913,7 @@ Labels           : 25: Warrior Spells
                  : 931
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Dance of Death (459572 effect#1)
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effect#2), Dance of Death (459572 effect#1)
 Family Flags     : 9
 Attributes       : DoT Stacking Rule (103), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268)
 Effects          :
@@ -192799,7 +192799,7 @@ Labels           : 16: Class Spells
                  : 881
 Stacks           : 1 maximum
 Proc Chance      : 100%
-Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effects: #1, #3), Glory (325787 effect#1), Cruelty (335070 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Dance of Death (459572 effect#1)
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effects: #1, #3), Glory (325787 effect#1), Cruelty (335070 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Avatar (401150 effects: #1, #9), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effect#2), Dance of Death (459572 effect#1)
 Triggered By     : Annihilator (383916)
 Family Flags     : 9, 101
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -219023,6 +219023,7 @@ GCD              : 1.5 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (43200 seconds cooldown)
 Category         : 2211 (Type 0x0)
+Category Flags   : Unknown (7)
 Labels           : 969
                  : 1762
                  : 2862
@@ -219043,6 +219044,7 @@ GCD              : 1.5 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (43200 seconds cooldown)
 Category         : 2212 (Type 0x0)
+Category Flags   : Unknown (7)
 Labels           : 969
                  : 1930
                  : 2858
@@ -235528,7 +235530,7 @@ Labels           : 969
                  : 3411
                  : 3412
                  : 3959: Item Effects
-Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : No Redirection (35), No Reflection (39), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1147404)  : School Damage (2): holyfire
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
@@ -236390,7 +236392,7 @@ Labels           : 969
                  : 3959: Item Effects
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Attributes       : Aura Is Debuff (26), Not an Action (92), DoT Stacking Rule (103), Suppress Caster Procs (112), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Aura Is Debuff (26), No Redirection (35), No Reflection (39), Not an Action (92), DoT Stacking Rule (103), Suppress Caster Procs (112), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1148189)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds | Attributes: Aura Points Stack (9)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
@@ -243833,7 +243835,7 @@ Name             : Become Well Fed (id=456961) [Hidden]
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 80
-Duration         : 3600 seconds
+Duration         : Aura (infinite)
 Labels           : 959: Exacting Preparation (331580 effect#2)
 Proc Chance      : 101%
 Proc Flags       : Death
@@ -243850,17 +243852,17 @@ Effects          :
                    Base Value: 0 | Scaled Value: 313.3322 (coefficient=0.081832) | Target: Self (1)
 #5 (id=1161772)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 50 | Scaled Value: 155.9999 (coefficient=0.040742) | Target: Self (1)
-#6 (id=1161773)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#6 (id=1161773)  : Dummy (3) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=1161784)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 50 | Scaled Value: 892.0006 (coefficient=0.232961) | Target: Self (1)
 #8 (id=1161785)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 50 | Scaled Value: 445.9984 (coefficient=0.11648) | Target: Self (1)
-#9 (id=1170531)  : Apply Aura (6) | Dummy (4)
+#9 (id=1170531)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#10 (id=1170688) : Apply Aura (6) | Dummy (4)
+#10 (id=1170688) : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#11 (id=1170689) : Apply Aura (6) | Dummy (4)
+#11 (id=1170689) : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Increases stats and grants additional effects depending on the type of Khaz Algar Food consumed.
 Tooltip          : Increases stats and grants additional effects depending on the type of Khaz Algar Food consumed.
@@ -250708,7 +250710,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 504.2626 (coefficient=0.19715) | Trigger Spell: 462960 | Target: Self (1)
 #2 (id=1172391)  : Dummy (3)
                    Base Value: 1362 | Scaled Value: 1362 | PvP Coefficient: 0.25
-Description      : Your spells and abilities have a chance to bathe an ally in restorative water that jumps to ${$462960x1-1} nearby allies, restoring $?a462342[${$462342w1*($s2/100)*$<healingrolemult>}][${$462342s3*($s2/100)*$<healingrolemult>}] health to each of them.
+Description      : Your spells and abilities have a chance to bathe an ally in restorative water that jumps to ${$462960x1-1} nearby allies, restoring $?a462342[${$462342w1*($s2/100)}][${$462342s3*($s2/100)}] health to each of them.
 Variables        : $healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]
 
 Name             : Old Salt's Bardic Citrine (id=462531) [Passive, Hidden] 
@@ -250728,7 +250730,7 @@ Effects          :
                    Base Value: 1143 | Scaled Value: 1143 | PvP Coefficient: 0.25 | Target: Self (1)
 #3 (id=1174950)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Your spells and abilities have a chance to whisper a sea shanty to $s3 nearby allies, healing them for $?a462342[${$462342w1*($s2/100)*$<healingrolemult>}][${$462342s3*($s2/100)*$<healingrolemult>}] health over $462959d.
+Description      : Your spells and abilities have a chance to whisper a sea shanty to $s3 nearby allies, healing them for $?a462342[${$462342w1*($s2/100)}][${$462342s3*($s2/100)}] health over $462959d.
 Variables        : $healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]
 
 Name             : Storm Sewer's Citrine (id=462532) [Passive, Hidden] 
@@ -250749,7 +250751,7 @@ Effects          :
                    Base Value: 2451 | Scaled Value: 2451 | PvP Coefficient: 0.25
 #3 (id=1178453)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
-Description      : Your spells and abilities have a chance to shield an ally with lightning, absorbing the next $?a462342[${$462342w1*($s2/100)*$<healingrolemult>}][${$462342s3*($s2/100)*$<healingrolemult>}] damage taken for $462958d.
+Description      : Your spells and abilities have a chance to shield an ally with lightning, absorbing the next $?a462342[${$462342w1*($s2/100)}][${$462342s3*($s2/100)}] damage taken for $462958d.
 
 While the shield persists, attackers take $s3% of the amount absorbed as Nature damage.
 Variables        : $healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]
@@ -250904,7 +250906,7 @@ Range            : 50 yards
 Labels           : 3959: Item Effects
                  : 3965
 Triggered By     : Thunderlord's Crackling Citrine (462540)
-Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1173203)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
@@ -250919,34 +250921,34 @@ Velocity         : 30 yards/sec
 Labels           : 3959: Item Effects
                  : 3965
 Triggered By     : Squall Sailor's Citrine (462539)
-Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1173205)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Self (18) -> At Enemy in Area (16)
 Description      : $@spelldesc462539
 
 Name             : Undersea Overseer's Citrine (id=462953) 
-School           : Nature
+School           : Frost
 Spell Type       : Magic
 Range            : 50 yards
 Labels           : 3959: Item Effects
                  : 3965
 Triggered By     : Undersea Overseer's Citrine (462538)
-Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354), Chain by Most Hit (440)
 Effects          :
-#1 (id=1173207)  : School Damage (2): nature
+#1 (id=1173207)  : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
 Description      : $@spelldesc462538
 
 Name             : Storm Sewer's Citrine (id=462958) 
-School           : Physical
+School           : Nature
 Spell Type       : None
 Range            : 50 yards
 Duration         : 10 seconds
 Labels           : 3959: Item Effects
                  : 3961
 Triggered By     : Storm Sewer's Citrine (462532)
-Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1173217)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Friendly (21)
@@ -250955,7 +250957,7 @@ Description      : $@spelldesc462532
 Tooltip          : Absorbing the next $w1 damage received and dealing $462532s3% of the amount absorbed as Nature damage back to attackers.
 
 Name             : Old Salt's Bardic Citrine (id=462959) 
-School           : Physical
+School           : Nature
 Spell Type       : None
 Range            : 50 yards
 Max Targets      : 5
@@ -250964,7 +250966,7 @@ Duration         : 5 seconds
 Labels           : 3959: Item Effects
                  : 3961
 Triggered By     : Old Salt's Bardic Citrine (462531)
-Attributes       : Extra Initial Period (169), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Extra Initial Period (169), Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1173219)  : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Self (18) -> At Friendly in Area (31)
@@ -250972,13 +250974,13 @@ Description      : $@spelldesc462531
 Tooltip          : Restoring $w1 every sec.
 
 Name             : Mariner's Hallowed Citrine (id=462960) 
-School           : Physical
+School           : Nature
 Spell Type       : None
 Range            : 50 yards
 Labels           : 3959: Item Effects
                  : 3961
 Triggered By     : Mariner's Hallowed Citrine (462530)
-Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1173221)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Friendly (21)
@@ -250989,7 +250991,7 @@ School           : Physical
 Spell Type       : None
 Range            : 50 yards
 Labels           : 3959: Item Effects
-Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Do Not Log (8), No Redirection (35), No Reflection (39), No Threat (42), Not an Action (92), Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1173225)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Any Target (25)
@@ -251899,7 +251901,7 @@ Effects          :
 Description      : Activate the Go-Pack to propel yourself upwards into the air. Usable only on the Siren Island.
 
 Name             : Experimental Go-Pack (id=467295) 
-School           : Physical
+School           : None
 Spell Type       : None
 Duration         : 60 seconds
 Triggered By     : Experimental Go-Pack (467294)
@@ -252114,7 +252116,7 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Aura Interrupt   : Under Water (7), Mount (17), Landing (25), Swimming (33), Spline or Free Flight (52)
 Effects          :
 #1 (id=1184374)  : Apply Aura (6) | Unknown(293)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3064 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3064 | Misc Value 2: 0x1 | Target: Self (1)
 Description      : Dive to the ground below you.
 
 Name             : Experimental Go-Pack (id=469809) 
@@ -253385,7 +253387,7 @@ Duration         : 8 seconds
 Cooldown         : 18 seconds
 Category         : 2350 (Type 0x0)
 Category Cooldown: 18 seconds
-Attributes       : Extra Initial Period (169)
+Attributes       : No Aura Icon (60), Do Not Display Range (126), Extra Initial Period (169), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1192979)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 35738 | Target: At Self (18) -> Unknown(138)
@@ -253411,7 +253413,7 @@ Duration         : 8 seconds
 Cooldown         : 16 seconds
 Category         : 2350 (Type 0x0)
 Category Cooldown: 16 seconds
-Attributes       : Extra Initial Period (169)
+Attributes       : No Aura Icon (60), Do Not Display Range (126), Extra Initial Period (169), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1192991)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 35740 | Target: At Self (18) -> Unknown(138)
@@ -253437,7 +253439,7 @@ Duration         : 8 seconds
 Cooldown         : 14 seconds
 Category         : 2350 (Type 0x0)
 Category Cooldown: 14 seconds
-Attributes       : Extra Initial Period (169)
+Attributes       : No Aura Icon (60), Do Not Display Range (126), Extra Initial Period (169), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1192997)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 35741 | Target: At Self (18) -> Unknown(138)
@@ -253463,7 +253465,7 @@ Duration         : 8 seconds
 Cooldown         : 12 seconds
 Category         : 2350 (Type 0x0)
 Category Cooldown: 12 seconds
-Attributes       : Extra Initial Period (169)
+Attributes       : No Aura Icon (60), Do Not Display Range (126), Extra Initial Period (169), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1193004)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 35742 | Target: At Self (18) -> Unknown(138)
@@ -253590,7 +253592,7 @@ Labels           : 969
                  : 975
                  : 2859
                  : 3232
-Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
+Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
 Effects          :
 #1 (id=1195206)  : Unknown(288)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2480 | Target: Self (1)
@@ -253603,7 +253605,7 @@ Labels           : 969
                  : 975
                  : 2859
                  : 3232
-Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
+Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
 Effects          :
 #1 (id=1195208)  : Unknown(288)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2479 | Target: Self (1)
@@ -253616,7 +253618,7 @@ Labels           : 969
                  : 975
                  : 2859
                  : 3232
-Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
+Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
 Effects          :
 #1 (id=1195209)  : Unknown(288)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2478 | Target: Self (1)
@@ -253629,7 +253631,7 @@ Labels           : 969
                  : 975
                  : 2859
                  : 3232
-Attributes       : Is Ability (4), Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
+Attributes       : Is Tradeskill (5), Not Shapeshifted (16), No Threat (42)
 Effects          :
 #1 (id=1195211)  : Unknown(288)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2476 | Target: Self (1)
@@ -253729,5 +253731,25 @@ Effects          :
 #1 (id=1195281)  : Unknown(74)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1469
 Description      : $@spelldesc1213569
+
+Name             : Splash! (id=1215906) [Passive, Hidden] 
+School           : Frost
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : White Melee
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not an Action (92), Not In Arena or Rated Battleground (144), Remove Entering Arena (162), Not In Arena (297)
+Effects          :
+#1 (id=1199117)  : Apply Aura (6) | Proc Trigger Spell (42): Splash!
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1215908 | Target: Self (1)
+
+Name             : Splash! (id=1215908) [Hidden] 
+School           : Frost
+Spell Type       : None
+Range            : 20 yards
+Triggered By     : Splash! (1215906)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not an Action (92), Not In Arena or Rated Battleground (144), Remove Entering Arena (162), Not In Arena (297)
+Effects          :
+#1 (id=1199120)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 
 
