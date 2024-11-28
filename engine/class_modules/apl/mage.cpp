@@ -331,7 +331,6 @@ void frost( player_t* p )
   precombat->add_action( "variable,name=boltspam,value=talent.splinterstorm&talent.cold_front&talent.slick_ice&talent.deaths_chill&talent.frozen_touch|talent.frostfire_bolt&talent.deep_shatter&talent.slick_ice&talent.deaths_chill" );
   precombat->add_action( "variable,name=treacherous_transmitter_precombat_cast,value=12*!variable.boltspam" );
   precombat->add_action( "use_item,name=treacherous_transmitter" );
-  precombat->add_action( "mirror_image" );
   precombat->add_action( "blizzard,if=active_enemies>=3" );
   precombat->add_action( "frostbolt,if=active_enemies<=2" );
 
