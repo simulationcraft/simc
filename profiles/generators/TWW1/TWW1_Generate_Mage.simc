@@ -64,7 +64,7 @@ off_hand=vagabonds_torch,id=222566,ilevel=636,bonus_id=11300,crafted_stats=36/49
 
 save=TWW1_Mage_Arcane_Sunfury.simc
 
-mage="TWW1_Mage_Fire"
+mage="TWW1_Mage_Fire_Sunfury"
 spec=fire
 level=80
 race=dwarf
@@ -95,7 +95,40 @@ trinket2=spymasters_web,id=220202,ilevel=639
 main_hand=sovereigns_disdain,id=212394,ilevel=639,enchant_id=7460
 off_hand=vagabonds_torch,id=222566,bonus_id=11300,ilevel=636,crafted_stats=36/49
 
-save=TWW1_Mage_Fire.simc
+save=TWW1_Mage_Fire_Sunfury.simc
+
+mage="TWW1_Mage_Fire_Frostfire"
+spec=fire
+level=80
+race=dwarf
+role=spell
+position=ranged_back
+talents=C8DAAAAAAAAAAAAAAAAAAAAAAYGYzCmxMmFDjZGmGzMmZAAAAAAMzyMNzsMLQAAALGzgZmZMzMWMLjxMPAmZZGMLMDAAAAAAA
+
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=feast_of_the_divine_day
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3
+
+head=cocoonsilk_cowl,id=178693,bonus_id=10835,ilevel=639,gem_id=213743
+neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213455/213494
+shoulder=beacons_of_violet_rebirth,id=212090,ilevel=639
+back=anvilhide_cape,id=221088,ilevel=639,enchant_id=7403
+chest=runecoat_of_violet_rebirth,id=212095,ilevel=639,enchant_id=7364
+wrist=consecrated_cuffs,id=222815,bonus_id=11109,ilevel=636,gem_id=213470,enchant_id=7385,crafted_stats=36/40
+hands=jeweled_gauntlets_of_violet_rebirth,id=212093,ilevel=639
+waist=cord_of_the_pious_warder,id=159245,ilevel=639,gem_id=213485
+legs=coattails_of_violet_rebirth,id=212091,ilevel=639,enchant_id=7534
+feet=tainted_earthshard_walkers,id=221082,ilevel=639,enchant_id=7418
+finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=10836,ilevel=639,gem_id=213485/213470,enchant_id=7340
+finger2=experiment_08752s_band,id=221189,bonus_id=3131/10299/10376/8781,gem_id=213494/213455,enchant_id=7340
+trinket1=candle_confidant,id=225648,ilevel=626
+trinket2=spymasters_web,id=220202,ilevel=639
+main_hand=sovereigns_disdain,id=212394,ilevel=639,enchant_id=7460
+off_hand=vagabonds_torch,id=222566,bonus_id=11300/8792,ilevel=636,crafted_stats=36/49
+
+save=TWW1_Mage_Fire_Frostfire.simc
 
 mage="TWW1_Mage_Frost"
 spec=frost
