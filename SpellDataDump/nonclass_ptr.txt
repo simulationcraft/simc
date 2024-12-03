@@ -252116,7 +252116,8 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Aura Interrupt   : Under Water (7), Mount (17), Landing (25), Swimming (33), Spline or Free Flight (52)
 Effects          :
 #1 (id=1184374)  : Apply Aura (6) | Unknown(293)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3064 | Misc Value 2: 0x1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3064 | Misc Value 2: 0xb | Target: Self (1)
+Hotfixed         : Misc Value 2 (1 -> 11)
 Description      : Dive to the ground below you.
 
 Name             : Experimental Go-Pack (id=469809) 
