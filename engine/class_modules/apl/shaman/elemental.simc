@@ -93,7 +93,7 @@ actions.single_target+=/stormkeeper
 # Use Primordial Wave as much as possible.
 actions.single_target+=/primordial_wave,if=!buff.surge_of_power.up
 actions.single_target+=/ancestral_swiftness
-actions.single_target+=/ascendance,if=(buff.spymasters_web.up|!(variable.spymaster_in_1st|variable.spymaster_in_2nd))&(buff.stormkeeper.up&cooldown.stormkeeper.remains>40|!talent.fury_of_the_storms)&(buff.primordial_wave.up|!talent.primordial_wave)
+actions.single_target+=/ascendance,if=(time<10|buff.spymasters_web.up|!(variable.spymaster_in_1st|variable.spymaster_in_2nd))&(buff.stormkeeper.up&cooldown.stormkeeper.remains>40|!talent.fury_of_the_storms)&(buff.primordial_wave.up|!talent.primordial_wave)
 
 # Surge of Power is strong and should be used.©
 actions.single_target+=/tempest,if=buff.surge_of_power.up
