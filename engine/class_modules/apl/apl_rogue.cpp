@@ -70,6 +70,7 @@ void assassination( player_t* p )
   action_priority_list_t* stealthed = p->get_action_priority_list( "stealthed" );
   action_priority_list_t* vanish = p->get_action_priority_list( "vanish" );
 
+  precombat->add_action( "apply_poison" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)&!trinket.2.is.treacherous_transmitter|trinket.1.is.treacherous_transmitter", "Check which trinket slots have Stat Values" );
   precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)&!trinket.1.is.treacherous_transmitter|trinket.2.is.treacherous_transmitter" );

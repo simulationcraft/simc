@@ -1039,8 +1039,8 @@ action_t* create_action( player_t* p, std::string_view name, std::string_view op
 void create_consumeable_actions( player_t* p )
 {
   // Create consumable actions for effects without APL actions
-  new food_t( p );
-  new flask_t( p );
-  new augmentation_t( p );
+  p->consumables.food_action = new food_t( p );
+  p->consumables.flask_action = new flask_t( p );
+  p->consumables.augmentation_action = new augmentation_t( p );
 }
 }  // namespace consumable

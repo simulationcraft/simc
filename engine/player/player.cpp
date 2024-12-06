@@ -6593,11 +6593,11 @@ void player_t::arise()
   current_auto_attack_speed = cache.auto_attack_speed();
 
   if ( consumables.flask )
-    consumables.flask->trigger();
+    consumables.flask_action->execute();
   if ( consumables.food )
-    consumables.food->trigger();
+    consumables.food_action->execute();
   if ( consumables.augmentation )
-    consumables.augmentation->trigger();
+    consumables.augmentation_action->execute();
 
   // Requires index-based lookup since on-arise callbacks may
   // insert new on-arise callbacks to the vector.

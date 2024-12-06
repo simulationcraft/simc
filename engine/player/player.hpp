@@ -434,6 +434,10 @@ struct player_t : public actor_t
     stat_buff_t* battle_elixir;
     buff_t* food;
     buff_t* augmentation;
+
+    action_t* flask_action;
+    action_t* food_action;
+    action_t* augmentation_action;
   } consumables;
 
   struct buffs_t
