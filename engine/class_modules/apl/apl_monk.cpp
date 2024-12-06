@@ -265,15 +265,6 @@ void mistweaver( player_t *p )
 {
   action_priority_list_t *pre = p->get_action_priority_list( "precombat" );
 
-  // Flask
-  pre->add_action( "flask" );
-
-  // Food
-  pre->add_action( "food" );
-
-  // Rune
-  pre->add_action( "augmentation" );
-
   // Snapshot stats
   pre->add_action( "snapshot_stats" );
 
@@ -431,13 +422,6 @@ void windwalker( player_t *p )
   //============================================================================
 
   action_priority_list_t *pre = p->get_action_priority_list( "precombat" );
-
-  // Flask
-  pre->add_action( "flask" );
-  // Food
-  pre->add_action( "food" );
-  // Rune
-  pre->add_action( "augmentation" );
 
   // Snapshot stats
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
