@@ -70,10 +70,6 @@ void assassination( player_t* p )
   action_priority_list_t* stealthed = p->get_action_priority_list( "stealthed" );
   action_priority_list_t* vanish = p->get_action_priority_list( "vanish" );
 
-  precombat->add_action( "apply_poison" );
-  precombat->add_action( "flask" );
-  precombat->add_action( "augmentation" );
-  precombat->add_action( "food" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)&!trinket.2.is.treacherous_transmitter|trinket.1.is.treacherous_transmitter", "Check which trinket slots have Stat Values" );
   precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)&!trinket.1.is.treacherous_transmitter|trinket.2.is.treacherous_transmitter" );
@@ -194,9 +190,6 @@ void outlaw( player_t* p )
   action_priority_list_t* stealth_cds = p->get_action_priority_list( "stealth_cds" );
 
   precombat->add_action( "apply_poison,nonlethal=none,lethal=instant" );
-  precombat->add_action( "flask" );
-  precombat->add_action( "augmentation" );
-  precombat->add_action( "food" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "use_item,name=imperfect_ascendancy_serum" );
   precombat->add_action( "stealth,precombat_seconds=2" );
@@ -289,9 +282,6 @@ void subtlety( player_t* p )
   action_priority_list_t* fill = p->get_action_priority_list( "fill" );
 
   precombat->add_action( "apply_poison" );
-  precombat->add_action( "flask" );
-  precombat->add_action( "augmentation" );
-  precombat->add_action( "food" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=priority_rotation,value=priority_rotation" );
   precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.is.treacherous_transmitter|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)" );

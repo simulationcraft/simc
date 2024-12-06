@@ -2,7 +2,6 @@
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
-
 #include "player.hpp"
 
 #include "action/action.hpp"
@@ -3381,6 +3380,9 @@ void player_t::init_background_actions()
 
 void player_t::create_actions()
 {
+  if( is_player() && !is_enemy() && !is_pet() )
+    consumable::create_consumeable_actions( this );
+
   if ( action_list_str.empty() )
     no_action_list_provided = true;
 
@@ -6589,6 +6591,13 @@ void player_t::arise()
   }
 
   current_auto_attack_speed = cache.auto_attack_speed();
+
+  if ( consumables.flask )
+    consumables.flask->trigger();
+  if ( consumables.food )
+    consumables.food->trigger();
+  if ( consumables.augmentation )
+    consumables.augmentation->trigger();
 
   // Requires index-based lookup since on-arise callbacks may
   // insert new on-arise callbacks to the vector.

@@ -11525,9 +11525,6 @@ void druid_t::apl_precombat()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
   // Consumables
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 }
 

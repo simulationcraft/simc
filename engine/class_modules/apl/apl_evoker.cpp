@@ -55,9 +55,6 @@ void devastation( player_t* p )
   action_priority_list_t* st = p->get_action_priority_list( "st" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit|trinket.1.is.mirror_of_fractured_tomorrows" );
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit|trinket.2.is.mirror_of_fractured_tomorrows" );
@@ -175,9 +172,6 @@ void augmentation( player_t* p )
   action_priority_list_t* items = p->get_action_priority_list( "items" );
   action_priority_list_t* opener_filler = p->get_action_priority_list( "opener_filler" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=spam_heal,default=1,op=reset" );
   precombat->add_action( "variable,name=minimum_opener_delay,op=reset,default=0" );

@@ -58,9 +58,6 @@ void havoc( player_t* p )
   action_priority_list_t* meta = p->get_action_priority_list( "meta" );
   action_priority_list_t* opener = p->get_action_priority_list( "opener" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "augmentation" );
-  precombat->add_action( "food" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=trinket1_steroids,value=trinket.1.has_stat.any_dps" );
   precombat->add_action( "variable,name=trinket2_steroids,value=trinket.2.has_stat.any_dps" );
@@ -242,9 +239,6 @@ void vengeance( player_t* p )
   action_priority_list_t* rg_sequence = p->get_action_priority_list( "rg_sequence" );
   action_priority_list_t* rg_sequence_filler = p->get_action_priority_list( "rg_sequence_filler" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "augmentation" );
-  precombat->add_action( "food" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=single_target,value=spell_targets.spirit_bomb=1" );
   precombat->add_action( "variable,name=small_aoe,value=spell_targets.spirit_bomb>=2&spell_targets.spirit_bomb<=5" );

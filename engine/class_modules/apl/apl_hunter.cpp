@@ -61,9 +61,6 @@ void beast_mastery( player_t* p )
   action_priority_list_t* st = p->get_action_priority_list( "st" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "augmentation" );
-  precombat->add_action( "food" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))" );
@@ -136,9 +133,6 @@ void beast_mastery_ptr( player_t* p )
   action_priority_list_t* st = p->get_action_priority_list( "st" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "augmentation" );
-  precombat->add_action( "food" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))" );
@@ -211,9 +205,6 @@ void marksmanship( player_t* p )
   action_priority_list_t* trickshots = p->get_action_priority_list( "trickshots" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "augmentation" );
-  precombat->add_action( "food" );
   precombat->add_action( "summon_pet,if=!talent.lone_wolf" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))", "Determine the stronger trinket to sync with cooldowns. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times." );
@@ -291,9 +282,6 @@ void marksmanship_ptr( player_t* p )
   action_priority_list_t* trickshots = p->get_action_priority_list( "trickshots" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "augmentation" );
-  precombat->add_action( "food" );
   precombat->add_action( "summon_pet,if=!talent.lone_wolf" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))", "Determine the stronger trinket to sync with cooldowns. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times." );
@@ -372,9 +360,6 @@ void survival( player_t* p )
   action_priority_list_t* sentst = p->get_action_priority_list( "sentst" );
   action_priority_list_t* sentcleave = p->get_action_priority_list( "sentcleave" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "augmentation" );
-  precombat->add_action( "food" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "use_item,name=imperfect_ascendancy_serum" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -482,9 +467,6 @@ void survival_ptr( player_t* p )
   action_priority_list_t* sentst = p->get_action_priority_list( "sentst" );
   action_priority_list_t* sentcleave = p->get_action_priority_list( "sentcleave" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "augmentation" );
-  precombat->add_action( "food" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "use_item,name=imperfect_ascendancy_serum" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );

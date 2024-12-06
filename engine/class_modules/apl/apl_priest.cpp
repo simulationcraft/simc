@@ -50,9 +50,6 @@ void shadow( player_t* p )
   action_priority_list_t* heal_for_tof = p->get_action_priority_list( "heal_for_tof" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "shadowform,if=!buff.shadowform.up" );
   precombat->add_action( "variable,name=dr_force_prio,default=0,op=reset" );
@@ -174,9 +171,6 @@ void shadow_ptr( player_t* p )
   action_priority_list_t* heal_for_tof = p->get_action_priority_list( "heal_for_tof" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "shadowform,if=!buff.shadowform.up" );
   precombat->add_action( "variable,name=dr_force_prio,default=0,op=reset" );
@@ -292,9 +286,6 @@ void discipline( player_t* p )
   action_priority_list_t* main = p->get_action_priority_list( "main" );
   action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "smite" );
 
@@ -332,9 +323,6 @@ void holy( player_t* p )
   action_priority_list_t* generic = p->get_action_priority_list( "generic" );
   action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
 
-  precombat->add_action( "flask", "otion=elemental_potion_of_ultimate_power_ ood=fated_fortune_cooki lask=phial_of_tepid_versatility_ ugmentation=draconic_augment_run emporary_enchant=main_hand:howling_rune_" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   default_->add_action( "run_action_list,name=main", "RUN ACTIONS" );
@@ -402,9 +390,6 @@ void no_spec( player_t* p )
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* def       = p->get_action_priority_list( "default" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "smite" );
   def->add_action( "mana_potion,if=mana.pct<=75" );

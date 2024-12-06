@@ -207,9 +207,6 @@ void brewmaster( player_t *p )
 
   action_priority_list_t *item_actions = p->get_action_priority_list( "item_actions" );
   action_priority_list_t *race_actions = p->get_action_priority_list( "race_actions" );
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "potion" );
   precombat->add_action( "chi_burst" );

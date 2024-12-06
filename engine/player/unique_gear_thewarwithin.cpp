@@ -6637,35 +6637,29 @@ void fathomdwellers_runed_citrine( special_effect_t& effect )
                   ->add_stat_from_effect( 1, stat_value );
 
   effect.player->register_on_arise_callback( effect.player, [ buff ] { buff->trigger(); } );
-  /*TODO: This all Likely needs to be run after flask and food, but before effects like Ovinax are applied.
-  In game it will snapshot on player arise, equiping the ring, or when changing zones.
-  Due to this behavior its fairly safe to assume in raids, players will spend most of the time
-  with its value calculated at that point. */
-  effect.player->register_precombat_begin( []( player_t* p ) {
-    make_event( *p->sim, 0_ms, [ p ] {
-      auto stormbringer = buff_t::find( p, "stormbringers_runed_citrine", p );
-      // TODO: Check if highest stat has changed after flask and food have been applied. If so, flip Windsinger's buff
-      // to that stat.
-      std::string suffix          = util::stat_type_abbrev( util::highest_stat( p, secondary_ratings ) );
-      std::string windsinger_name = "windsingers_runed_citrine_" + suffix;
-      auto windsinger             = buff_t::find( p, windsinger_name, p );
-      p->sim->print_debug( "Fathomdwellers Runed Citrine is active: Recalculating passive buffs" );
-      p->sim->print_debug( "Stormbringers Runed Citrine: {}", stormbringer ? "Found" : "Not Found" );
-      p->sim->print_debug( "Windsingers Runed Citrine: {}", windsinger ? "Found" : "Not Found" );
-      for ( int i = 0; i < 3; i++ )
+  effect.player->precombat_begin_functions.insert( effect.player->precombat_begin_functions.begin(), []( player_t* p ) {
+    auto stormbringer = buff_t::find( p, "stormbringers_runed_citrine", p );
+    // TODO: Check if highest stat has changed after flask and food have been applied. If so, flip Windsinger's
+    // buff to that stat.
+    std::string suffix          = util::stat_type_abbrev( util::highest_stat( p, secondary_ratings ) );
+    std::string windsinger_name = "windsingers_runed_citrine_" + suffix;
+    auto windsinger             = buff_t::find( p, windsinger_name, p );
+    p->sim->print_debug( "Fathomdwellers Runed Citrine is active: Recalculating passive buffs" );
+    p->sim->print_debug( "Stormbringers Runed Citrine: {}", stormbringer ? "Found" : "Not Found" );
+    p->sim->print_debug( "Windsingers Runed Citrine: {}", windsinger ? "Found" : "Not Found" );
+    for ( int i = 0; i < 3; i++ )
+    {
+      if ( windsinger && windsinger->check() )
       {
-        if ( windsinger && windsinger->check() )
-        {
-          p->sim->print_debug( "Recalculating Windsinger's Runed Citrine Value" );
-          debug_cast<stat_buff_current_value_t*>( windsinger )->force_recalculate();
-        }
-        if ( stormbringer && stormbringer->check() )
-        {
-          p->sim->print_debug( "Recalculating Stormbringer's Runed Citrine Value" );
-          debug_cast<stat_buff_current_value_t*>( stormbringer )->force_recalculate();
-        }
+        p->sim->print_debug( "Recalculating Windsinger's Runed Citrine Value" );
+        debug_cast<stat_buff_current_value_t*>( windsinger )->force_recalculate();
       }
-    } );
+      if ( stormbringer && stormbringer->check() )
+      {
+        p->sim->print_debug( "Recalculating Stormbringer's Runed Citrine Value" );
+        debug_cast<stat_buff_current_value_t*>( stormbringer )->force_recalculate();
+      }
+    }
   } );
 }
 

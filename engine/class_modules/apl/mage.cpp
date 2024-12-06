@@ -60,9 +60,6 @@ void arcane( player_t* p )
   action_priority_list_t* sunfury = p->get_action_priority_list( "sunfury" );
   action_priority_list_t* sunfury_aoe = p->get_action_priority_list( "sunfury_aoe" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "arcane_intellect" );
   precombat->add_action( "variable,name=aoe_target_count,op=reset,default=2" );
   precombat->add_action( "variable,name=aoe_target_count,op=set,value=9,if=!talent.arcing_cleave" );
@@ -183,9 +180,6 @@ void fire( player_t* p )
   action_priority_list_t* firestarter_fire_blasts = p->get_action_priority_list( "firestarter_fire_blasts" );
   action_priority_list_t* standard_rotation = p->get_action_priority_list( "standard_rotation" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "arcane_intellect" );
   precombat->add_action( "variable,name=firestarter_combustion,default=-1,value=talent.sun_kings_blessing,if=variable.firestarter_combustion<0", "APL Variable Option: This variable specifies whether Combustion should be used during Firestarter." );
   precombat->add_action( "variable,name=hot_streak_flamestrike,if=variable.hot_streak_flamestrike=0,value=4*(talent.quickflame|talent.flame_patch)+999*(!talent.flame_patch&!talent.quickflame)", "APL Variable Option: This variable specifies the number of targets at which Hot Streak Flamestrikes outside of Combustion should be used." );
@@ -323,9 +317,6 @@ void frost( player_t* p )
   action_priority_list_t* st_ff = p->get_action_priority_list( "st_ff" );
   action_priority_list_t* st_ss = p->get_action_priority_list( "st_ss" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "arcane_intellect" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=boltspam,value=talent.splinterstorm&talent.cold_front&talent.slick_ice&talent.deaths_chill&talent.frozen_touch|talent.frostfire_bolt&talent.deep_shatter&talent.slick_ice&talent.deaths_chill" );

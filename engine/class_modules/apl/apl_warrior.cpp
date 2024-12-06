@@ -23,9 +23,6 @@ void fury( player_t* p )
   action_priority_list_t* trinkets  = p->get_action_priority_list( "trinkets" );
   action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "berserker_stance,toggle=on" );
   precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.treacherous_transmitter" );
@@ -288,9 +285,6 @@ void arms( player_t* p )
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
   action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.treacherous_transmitter" );
   precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.treacherous_transmitter" );
@@ -513,9 +507,6 @@ void protection( player_t* p )
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* generic = p->get_action_priority_list( "generic" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "battle_stance,toggle=on" );
 

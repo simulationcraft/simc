@@ -49,9 +49,6 @@ void affliction( player_t* p )
   action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
   action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "variable,name=cleave_apl,default=0,op=reset" );
   precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff", "Used to set Trinket in slot 1 as Buff Trinkets for the automatic logic" );
@@ -219,9 +216,6 @@ void demonology( player_t* p )
   action_priority_list_t* tyrant = p->get_action_priority_list( "tyrant" );
   action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=first_tyrant_time,op=set,value=12", "Sets the expected Tyrant Setup on pull to take a total 12 seconds long" );
@@ -368,9 +362,6 @@ void destruction( player_t* p )
   action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
   action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "summon_pet" );
   precombat->add_action( "variable,name=cleave_apl,default=0,op=reset" );
   precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff", "Automatic Logic for Buff Trinkets in Trinket Slot 1" );

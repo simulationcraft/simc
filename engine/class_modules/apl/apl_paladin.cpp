@@ -15,9 +15,6 @@ void retribution( player_t* p )
   action_priority_list_t* finishers = p->get_action_priority_list( "finishers" );
   action_priority_list_t* generators = p->get_action_priority_list( "generators" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "shield_of_vengeance" );
   precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit" );
@@ -85,9 +82,6 @@ void protection( player_t* p )
   action_priority_list_t* standard = p->get_action_priority_list( "standard" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "rite_of_sanctification" );
   precombat->add_action( "rite_of_adjuration" );
   precombat->add_action( "snapshot_stats" );

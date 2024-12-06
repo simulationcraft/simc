@@ -113,9 +113,6 @@ void blood( player_t* p )
   action_priority_list_t* deathbringer = p->get_action_priority_list( "deathbringer" );
   action_priority_list_t* sanlayn = p->get_action_priority_list( "sanlayn" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "deaths_caress" );
 
@@ -209,9 +206,6 @@ void frost( player_t* p )
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
   action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=trinket.1.has_use_buff&(talent.pillar_of_frost&!talent.breath_of_sindragosa&(trinket.1.cooldown.duration%%cooldown.pillar_of_frost.duration=0)|talent.breath_of_sindragosa&(cooldown.breath_of_sindragosa.duration%%trinket.1.cooldown.duration=0))", "Evaluates a trinkets cooldown, divided by pillar of frost, empower rune weapon, or breath of sindragosa's cooldown. If it's value has no remainder return 1, else return 0.5." );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=trinket.2.has_use_buff&(talent.pillar_of_frost&!talent.breath_of_sindragosa&(trinket.2.cooldown.duration%%cooldown.pillar_of_frost.duration=0)|talent.breath_of_sindragosa&(cooldown.breath_of_sindragosa.duration%%trinket.2.cooldown.duration=0))" );
@@ -396,9 +390,6 @@ void unholy( player_t* p )
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
   action_priority_list_t* variables = p->get_action_priority_list( "variables" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "raise_dead" );
   precombat->add_action( "army_of_the_dead,precombat_time=2" );

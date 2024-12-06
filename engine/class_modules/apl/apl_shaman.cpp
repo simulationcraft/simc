@@ -40,9 +40,6 @@ void elemental( player_t* p )
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* single_target = p->get_action_priority_list( "single_target" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "flametongue_weapon,if=talent.improved_flametongue_weapon.enabled", "Ensure weapon enchant is applied if you've selected Improved Flametongue Weapon." );
   precombat->add_action( "lightning_shield" );
@@ -134,9 +131,6 @@ void elemental_ptr( player_t* p )
   action_priority_list_t* aoe = p->get_action_priority_list( "aoe" );
   action_priority_list_t* single_target = p->get_action_priority_list( "single_target" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "flametongue_weapon,if=talent.improved_flametongue_weapon.enabled", "Ensure weapon enchant is applied if you've selected Improved Flametongue Weapon." );
   precombat->add_action( "lightning_shield" );

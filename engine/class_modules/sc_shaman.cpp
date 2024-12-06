@@ -13800,11 +13800,6 @@ void shaman_t::init_action_list_enhancement()
 
   // action_priority_list_t* cds              = get_action_priority_list( "cds" );
 
-  // Consumables
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
-
   // Self-buffs
   precombat->add_action( "windfury_weapon" );
   precombat->add_action( "flametongue_weapon" );
@@ -14084,9 +14079,6 @@ void shaman_t::init_action_list_restoration_dps()
   action_priority_list_t* def       = get_action_priority_list( "default" );
 
   // Grabs whatever Elemental is using
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( this, "Earth Elemental" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "potion" );
