@@ -16897,6 +16897,7 @@ Description      : $@spelldesc433015
 Tooltip          : Damage and healing of your next $?s204019[Blessed Hammer]?s53595[Hammer of the Righteous][Crusader Strike] increased by $w1%.
 
 Name             : Divine Guidance (id=433106) [Spell Family (10), Passive] 
+Hotfixed         : Variables
 Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Paladin
 School           : Holy
@@ -16914,7 +16915,8 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : For each Holy Power ability cast, your next Consecration deals $?a137029[$<holy>][$<prot>] damage or healing immediately, split across all enemies and allies.
 Variables        : $prot=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}
-$holy=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}
+$holy=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}
+$value=$?a137028[${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}][${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}]
 
 Name             : Rite of Sanctification (id=433550) [Spell Family (10)] 
 Class            : Paladin
@@ -18241,6 +18243,7 @@ Effects          :
 Description      : Turn Evil's cast time is reduced by $s1%.
 
 Name             : Divine Guidance (id=460822) [Spell Family (10)] 
+Hotfixed         : Variables
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -18258,7 +18261,8 @@ Effects          :
 Description      : $@spelldesc433106
 Tooltip          : Your next Consecration will deal $<value> additional damage or healing.
 Variables        : $prot=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}
-$holy=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}
+$holy=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}
+$value=$?a137028[${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}][${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}]
 
 Name             : Light's Protection (id=461243) [Spell Family (10), Passive] 
 Talent Entry     : Holy [tree=spec, row=6, col=4, max_rank=1, req_points=8]
