@@ -6639,8 +6639,6 @@ void fathomdwellers_runed_citrine( special_effect_t& effect )
   effect.player->register_on_arise_callback( effect.player, [ buff ] { buff->trigger(); } );
   effect.player->precombat_begin_functions.insert( effect.player->precombat_begin_functions.begin(), []( player_t* p ) {
     auto stormbringer = buff_t::find( p, "stormbringers_runed_citrine", p );
-    // TODO: Check if highest stat has changed after flask and food have been applied. If so, flip Windsinger's
-    // buff to that stat.
     std::string suffix          = util::stat_type_abbrev( util::highest_stat( p, secondary_ratings ) );
     std::string windsinger_name = "windsingers_runed_citrine_" + suffix;
     auto windsinger             = buff_t::find( p, windsinger_name, p );

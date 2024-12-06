@@ -6592,11 +6592,11 @@ void player_t::arise()
 
   current_auto_attack_speed = cache.auto_attack_speed();
 
-  if ( consumables.flask )
+  if ( consumables.flask && consumables.flask_action )
     consumables.flask_action->execute();
-  if ( consumables.food )
+  if ( consumables.food && consumables.food_action )
     consumables.food_action->execute();
-  if ( consumables.augmentation )
+  if ( consumables.augmentation && consumables.augmentation_action )
     consumables.augmentation_action->execute();
 
   // Requires index-based lookup since on-arise callbacks may
