@@ -5008,6 +5008,9 @@ double player_t::composite_player_multiplier( school_e school ) const
   if ( buffs.coldhearted && buffs.coldhearted->check() )
     m *= 1.0 + buffs.coldhearted->check_value();
 
+  if ( buffs.entropic_embrace && buffs.entropic_embrace->check() )
+    m *= 1.0 + buffs.entropic_embrace->data().effectN( 1 ).percent();
+
   return m;
 }
 
@@ -5074,6 +5077,9 @@ double player_t::composite_player_heal_multiplier( const action_state_t* ) const
   if ( buffs.blessing_of_spring->check() )
     m *= 1.0 + buffs.blessing_of_spring->data().effectN( 1 ).percent();
 
+  if ( buffs.entropic_embrace && buffs.entropic_embrace->check() )
+    m *= 1.0 + buffs.entropic_embrace->data().effectN( 3 ).percent();
+
   return m;
 }
 
@@ -5084,7 +5090,12 @@ double player_t::composite_player_th_multiplier( school_e /* school */ ) const
 
 double player_t::composite_player_absorb_multiplier( const action_state_t* ) const
 {
-  return 1.0;
+  double m = 1.0;
+
+  if ( buffs.entropic_embrace && buffs.entropic_embrace->check() )
+    m *= 1.0 + buffs.entropic_embrace->data().effectN( 4 ).percent();
+
+  return m;
 }
 
 double player_t::composite_player_target_crit_chance( player_t* t ) const
