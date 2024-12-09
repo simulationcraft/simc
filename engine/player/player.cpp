@@ -8849,8 +8849,12 @@ struct ancestral_call_t : public racial_spell_t
   {
     racial_spell_t::execute();
 
+    std::array<std::pair<buff_t*, double>, std::tuple_size_v<decltype( player->buffs.ancestral_call )>> stat_values;
     auto& buffs = player->buffs.ancestral_call;
-    buffs[ rng().range( buffs.size() ) ] -> trigger();
+    for ( int i = 0; i < buffs.size(); i++ )
+      stat_values[ i ] = { buffs[ i ], util::stat_value( player, debug_cast<stat_buff_t*>( buffs[ i ] )->stats.front().stat ) };
+    std::sort( stat_values.begin(), stat_values.end(), [] ( auto& a, auto& b ) { return a.second > b.second; } );
+    stat_values[ rng().range( 2 ) ].first->trigger();
   }
 };
 
