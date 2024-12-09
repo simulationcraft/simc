@@ -3112,6 +3112,7 @@ void player_t::init_spells()
   racials.awakened              = find_racial_spell( "Awakened" );
   racials.azerite_surge         = find_racial_spell( "Azerite Surge" );
   racials.titanwrought_frame    = find_racial_spell( "Titan-Wrought Frame" );
+  racials.holy_providence       = find_racial_spell( "Holy Providence" );
 
   if ( is_player() )
   {
@@ -5067,6 +5068,8 @@ double player_t::composite_player_target_multiplier( player_t* t, school_e /* sc
 double player_t::composite_player_heal_multiplier( const action_state_t* ) const
 {
   double m = 1.0;
+
+  m *= 1.0 + racials.holy_providence->effectN( 2 ).percent();
 
   if ( buffs.blessing_of_spring->check() )
     m *= 1.0 + buffs.blessing_of_spring->data().effectN( 1 ).percent();
@@ -8702,9 +8705,10 @@ struct lights_judgment_t : public racial_spell_t
     {
       background = may_crit = true;
       aoe                   = -1;
+      reduced_aoe_targets   = 8;
       // these are sadly hardcoded in the tooltip
-      attack_power_mod.direct = 3.0;
-      spell_power_mod.direct = 3.0;
+      attack_power_mod.direct = 4.2;
+      spell_power_mod.direct = 4.2;
     }
 
     double attack_direct_power_coefficient( const action_state_t* s ) const override
