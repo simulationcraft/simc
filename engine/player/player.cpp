@@ -5164,9 +5164,6 @@ double player_t::non_stacking_movement_modifier() const
 
   if ( !is_enemy() && !is_pet() && type != HEALING_ENEMY )
   {
-    if ( buffs.darkflight->check() )
-      speed = std::max( buffs.darkflight->data().effectN( 1 ).percent(), speed );
-
     if ( buffs.nitro_boosts && buffs.nitro_boosts->check() )
       speed = std::max( buffs.nitro_boosts->data().effectN( 1 ).percent(), speed );
 
@@ -5212,6 +5209,9 @@ double player_t::stacking_movement_modifier() const
 
   if ( buffs.elemental_chaos_air )
     speed += buffs.elemental_chaos_air->check_value();
+
+  if ( buffs.darkflight && buffs.darkflight->check() )
+    speed += buffs.darkflight->data().effectN( 1 ).percent();
 
   return speed;
 }
