@@ -8942,8 +8942,8 @@ struct bag_of_tricks_t : public racial_spell_t
     }
     else
     {
-      attack_power_mod.direct = 1.8;
-      spell_power_mod.direct  = 1.8;
+      attack_power_mod.direct = 2.52;
+      spell_power_mod.direct  = 2.52;
     }
 
     may_crit = true;
