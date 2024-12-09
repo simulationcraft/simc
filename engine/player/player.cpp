@@ -8791,8 +8791,8 @@ struct arcane_pulse_t : public racial_spell_t
     may_crit = true;
     aoe      = -1;
     // these are sadly hardcoded in the tooltip
-    attack_power_mod.direct = 0.5;
-    spell_power_mod.direct = 0.25;
+    attack_power_mod.direct = 1.5;
+    spell_power_mod.direct = 0.75;
   }
 
   double attack_direct_power_coefficient( const action_state_t* s ) const override
