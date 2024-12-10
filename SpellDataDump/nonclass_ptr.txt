@@ -250707,9 +250707,11 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Update Passives on Apply/Remove (344), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1172390)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 504.2626 (coefficient=0.19715) | Trigger Spell: 462960 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 725.6624 (coefficient=0.28371) | Trigger Spell: 462960 | Target: Self (1)
+Hotfixed         : Coefficient (0.19715 -> 0.28371)
 #2 (id=1172391)  : Dummy (3)
-                   Base Value: 1362 | Scaled Value: 1362 | PvP Coefficient: 0.25
+                   Base Value: 1960 | Scaled Value: 1960 | PvP Coefficient: 0.25
+Hotfixed         : Base Value (1362 -> 1960)
 Description      : Your spells and abilities have a chance to bathe an ally in restorative water that jumps to ${$462960x1-1} nearby allies, restoring $?a462342[${$462342w1*($s2/100)}][${$462342s3*($s2/100)}] health to each of them.
 Variables        : $healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]
 
@@ -250725,9 +250727,11 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Update Passives on Apply/Remove (344), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1172392)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 423.179 (coefficient=0.165449) | PvP Coefficient: 0.25 | Trigger Spell: 462959 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 604.9667 (coefficient=0.236522) | PvP Coefficient: 0.25 | Trigger Spell: 462959 | Target: Self (1)
+Hotfixed         : Coefficient (0.165449 -> 0.236522)
 #2 (id=1172393)  : Dummy (3)
-                   Base Value: 1143 | Scaled Value: 1143 | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 1634 | Scaled Value: 1634 | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Base Value (1143 -> 1634)
 #3 (id=1174950)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Your spells and abilities have a chance to whisper a sea shanty to $s3 nearby allies, healing them for $?a462342[${$462342w1*($s2/100)}][${$462342s3*($s2/100)}] health over $462959d.
@@ -250746,9 +250750,11 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Update Passives on Apply/Remove (344), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1172394)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 907.4501 (coefficient=0.354783) | PvP Coefficient: 0.25 | Trigger Spell: 462958 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1088.864 (coefficient=0.42571) | PvP Coefficient: 0.25 | Trigger Spell: 462958 | Target: Self (1)
+Hotfixed         : Coefficient (0.354783 -> 0.42571)
 #2 (id=1172395)  : Dummy (3)
-                   Base Value: 2451 | Scaled Value: 2451 | PvP Coefficient: 0.25
+                   Base Value: 2941 | Scaled Value: 2941 | PvP Coefficient: 0.25
+Hotfixed         : Base Value (2451 -> 2941)
 #3 (id=1178453)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : Your spells and abilities have a chance to shield an ally with lightning, absorbing the next $?a462342[${$462342w1*($s2/100)}][${$462342s3*($s2/100)}] damage taken for $462958d.
@@ -250819,9 +250825,11 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Update Passives on Apply/Remove (344), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1172406)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 336.0079 (coefficient=0.131368) | Trigger Spell: 462953 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 483.6982 (coefficient=0.18911) | Trigger Spell: 462953 | Target: Self (1)
+Hotfixed         : Coefficient (0.131368 -> 0.18911)
 #2 (id=1172407)  : Dummy (3)
-                   Base Value: 908 | Scaled Value: 908 | PvP Coefficient: 0.25
+                   Base Value: 1306 | Scaled Value: 1306 | PvP Coefficient: 0.25
+Hotfixed         : Base Value (908 -> 1306)
 Description      : Your spells and abilities have a chance to drench an enemy in freezing seawater that bounces to ${$462953X-1} nearby enemies, dealing $?a462342[${$462342w1*($s2/100)*$<rolemult>}][${$462342s3*($s2/100)*$<rolemult>}] Frost damage to each of them.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -250837,9 +250845,11 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Update Passives on Apply/Remove (344), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1172408)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 282.4894 (coefficient=0.110444) | Trigger Spell: 462952 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 403.208 (coefficient=0.157641) | Trigger Spell: 462952 | Target: Self (1)
+Hotfixed         : Coefficient (0.110444 -> 0.157641)
 #2 (id=1172409)  : Dummy (3)
-                   Base Value: 763 | Scaled Value: 763 | PvP Coefficient: 0.25
+                   Base Value: 1089 | Scaled Value: 1089 | PvP Coefficient: 0.25
+Hotfixed         : Base Value (763 -> 1089)
 #3 (id=1175022)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Your spells and abilities have a chance to slice $s3 enemies with a rushing seabreeze, dealing $?a462342[${$462342w1*($s2/100)*$<rolemult>}][${$462342s3*($s2/100)*$<rolemult>}] Nature damage to each of them.
@@ -250858,9 +250868,11 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Update Passives on Apply/Remove (344), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1172410)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 604.9667 (coefficient=0.236522) | Trigger Spell: 462951 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 725.9258 (coefficient=0.283813) | Trigger Spell: 462951 | Target: Self (1)
+Hotfixed         : Coefficient (0.236522 -> 0.283813)
 #2 (id=1172411)  : Dummy (3)
-                   Base Value: 1634 | Scaled Value: 1634 | PvP Coefficient: 0.25
+                   Base Value: 1961 | Scaled Value: 1961 | PvP Coefficient: 0.25
+Hotfixed         : Base Value (1634 -> 1961)
 Description      : Your spells and abilities have a chance to zap an enemy dealing $?a462342[${$462342w1*($s2/100)*$<rolemult>}][${$462342s3*($s2/100)*$<rolemult>}] Nature damage.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
