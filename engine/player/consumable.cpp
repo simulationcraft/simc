@@ -1020,8 +1020,7 @@ action_t* create_action( player_t* p, std::string_view name, std::string_view op
 {
   if ( name == "flask" || name == "phial" )
   {
-    if ( p->sim->thread_index == 0 )
-      printf( "Flask Action has been depreciated and is no longer needed in the Precombat APL\n" );
+    p->sim->error( "Flask Action has been depreciated and is no longer needed in the Precombat APL\n" );
     // Since the buff was already triggered early in player_t::arise(), its safe to return the action here
     // as flask_t::ready() checks if the buff is already active. This prevents the sim from erroring out
     // due to failing to "create" the action.
@@ -1029,8 +1028,7 @@ action_t* create_action( player_t* p, std::string_view name, std::string_view op
   }
   if ( name == "food" )
   {
-    if ( p->sim->thread_index == 0 )
-      printf( "Food Action has been depreciated and is no longer needed in the Precombat APL\n" );
+    p->sim->error( "Food Action has been depreciated and is no longer needed in the Precombat APL\n" );
     // Since the buff was already triggered early in player_t::arise(), its safe to return the action here
     // as food_t::ready() checks if the buff is already active. This prevents the sim from erroring out
     // due to failing to "create" the action.
@@ -1038,8 +1036,7 @@ action_t* create_action( player_t* p, std::string_view name, std::string_view op
   }
   if ( name == "augmentation" )
   {
-    if ( p->sim->thread_index == 0 )
-      printf( "Augmentation Rune Action has been depreciated and is no longer needed in the Precombat APL\n" );
+    p->sim->error( "Augmentation Rune Action has been depreciated and is no longer needed in the Precombat APL\n" );
     // Since the buff was already triggered early in player_t::arise(), its safe to return the action here
     // as augmentation_t::ready() checks if the buff is already active. This prevents the sim from erroring out
     // due to failing to "create" the action.
