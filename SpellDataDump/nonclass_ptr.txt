@@ -250593,7 +250593,8 @@ Effects          :
 #4 (id=1172536)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Target: Self (1)
 #5 (id=1181037)  : Dummy (3)
-                   Base Value: 5282 | Scaled Value: 5282 | PvP Coefficient: 0.25 | Target: Self (1)
+                   Base Value: 5663 | Scaled Value: 5663 | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Base Value (5282 -> 5663)
 
 Name             : Severed Strands (id=462513) 
 School           : Physical
