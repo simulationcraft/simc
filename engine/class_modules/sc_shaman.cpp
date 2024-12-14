@@ -14465,7 +14465,7 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
 
     m *= 1.0 + spec.enhancement_shaman->effectN( 3 ).percent();
 
-    m *= 1.0 + mastery.elemental_overload->effectN( 5 ).mastery_value() * s->action->player->cache.mastery();
+    m *= 1.0 + mastery.elemental_overload->effectN( 5 ).mastery_value() * cache.mastery();
     //m *= 1.0 + buff.elemental_equilibrium->value();  TODO: check what this was doing here
   }
   else
@@ -14474,7 +14474,7 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
 
     m *= 1.0 + spec.enhancement_shaman->effectN( 4 ).percent();
 
-    m *= 1.0 + mastery.elemental_overload->effectN( 6 ).mastery_value() * s->action->player->cache.mastery();
+    m *= 1.0 + mastery.elemental_overload->effectN( 6 ).mastery_value() * cache.mastery();
   }
 
   return m;
