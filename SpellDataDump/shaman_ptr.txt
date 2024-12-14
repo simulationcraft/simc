@@ -14520,7 +14520,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1139369)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Misc Value 2: 3494 (Label) | Target: Self (1)
-                   Affected Spells (Label): Hydrobubble (444490), Lava Burst (447419), Chain Lightning (447425)
+                   Affected Spells (Label): Hydrobubble (444490), Lava Burst (447419), Chain Lightning (447425), Elemental Blast (465717)
 Description      : Your Ancestors' spells are $s1% more powerful.
 
 Name             : Call of the Ancestors (id=443450) [Spell Family (11), Passive, Hidden] 
@@ -17379,6 +17379,24 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 6336 | Target: Self (1)
 Description      : $@spelldesc207399
 Tooltip          : Granting allies $207498s1% increased health and the possibility of resurrection.
+
+Name             : Elemental Blast (id=465717) [Spell Family (11)] 
+Class            : Shaman
+School           : Elemental
+Spell Type       : Magic
+Range            : 100 yards
+Max Targets      : 1
+Velocity         : 40 yards/sec
+Labels           : 16: Class Spells
+                 : 24: Shaman Spells
+                 : 292
+                 : 3022
+                 : 3494: Latent Wisdom (443449 effect#1)
+Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1177886)  : School Damage (2): elemental
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.60489 | PvP Coefficient: 0.44 | Target: Enemy (6)
+Description      : Harnesses the raw power of the elements, dealing $s1 Elemental damage and increasing your Critical Strike or Haste by $118522s1% or Mastery by ${$173184s1*$168534bc1}% for $118522d.
 
 Name             : Windfury (id=466440) [Spell Family (11), Hidden] 
 Class            : Shaman
