@@ -3214,14 +3214,45 @@ struct pet_action_t : public T_ACTION
 {
   using super = pet_action_t<T_PET, T_ACTION>;
 
+  bool affected_by_elemental_unity_fe_da;
+  bool affected_by_elemental_unity_fe_ta;
+  bool affected_by_elemental_unity_se_da;
+  bool affected_by_elemental_unity_se_ta;
+  bool affected_by_lightning_elemental_da;
+  bool affected_by_lightning_elemental_ta;
+
   pet_action_t( T_PET* pet, util::string_view name, const spell_data_t* spell = spell_data_t::nil(),
                 util::string_view options = {} )
-    : T_ACTION( name, pet, spell )
+    : T_ACTION( name, pet, spell ),
+      affected_by_elemental_unity_fe_da( false ),
+      affected_by_elemental_unity_fe_ta( false ),
+      affected_by_elemental_unity_se_da( false ),
+      affected_by_elemental_unity_se_ta( false ),
+      affected_by_lightning_elemental_da( false ),
+      affected_by_lightning_elemental_ta( false )
   {
     this->parse_options( options );
 
     this->special  = true;
     this->may_crit = true;
+    
+        affected_by_elemental_unity_fe_da =
+        T_ACTION::data().affected_by( o()->buff.fire_elemental->data().effectN( 4 ) ) ||
+        T_ACTION::data().affected_by( o()->buff.lesser_fire_elemental->data().effectN( 4 ) );
+    affected_by_elemental_unity_fe_ta =
+        T_ACTION::data().affected_by( o()->buff.fire_elemental->data().effectN( 5 ) ) ||
+        T_ACTION::data().affected_by( o()->buff.lesser_fire_elemental->data().effectN( 5 ) );
+    affected_by_elemental_unity_se_da =
+        T_ACTION::data().affected_by( o()->buff.storm_elemental->data().effectN( 4 ) ) ||
+        T_ACTION::data().affected_by( o()->buff.lesser_storm_elemental->data().effectN( 4 ) );
+    affected_by_elemental_unity_se_ta =
+        T_ACTION::data().affected_by( o()->buff.storm_elemental->data().effectN( 5 ) ) ||
+        T_ACTION::data().affected_by( o()->buff.lesser_storm_elemental->data().effectN( 5 ) );
+
+    affected_by_lightning_elemental_da =
+        T_ACTION::data().affected_by( o()->buff.fury_of_the_storms->data().effectN( 2 ) );
+    affected_by_lightning_elemental_ta =
+        T_ACTION::data().affected_by( o()->buff.fury_of_the_storms->data().effectN( 3 ) );
     // this -> crit_bonus_multiplier *= 1.0 + p() -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
   }
 
@@ -3247,6 +3278,64 @@ struct pet_action_t : public T_ACTION
         this->stats = ( *it )->get_stats( this->name(), this );
       }
     }
+  }
+
+  double action_da_multiplier() const override
+  {
+    double m = T_ACTION::action_da_multiplier();
+
+        if ( ( affected_by_elemental_unity_fe_da && o()->talent.elemental_unity.ok() &&
+           o()->buff.fire_elemental->check() ) ||
+         ( affected_by_elemental_unity_fe_da && o()->talent.elemental_unity.ok() &&
+           o()->buff.lesser_fire_elemental->check() ) )
+    {
+      m *= 1.0 + std::max( o()->buff.fire_elemental->data().effectN( 4 ).percent(),
+                           o()->buff.lesser_fire_elemental->data().effectN( 4 ).percent() );
+    }
+
+    if ( ( affected_by_elemental_unity_se_da && o()->talent.elemental_unity.ok() &&
+           o()->buff.storm_elemental->check() ) ||
+         ( affected_by_elemental_unity_se_da && o()->talent.elemental_unity.ok() &&
+           o()->buff.lesser_storm_elemental->check() ) )
+    {
+      m *= 1.0 + std::max( o()->buff.storm_elemental->data().effectN( 4 ).percent(),
+                           o()->buff.lesser_storm_elemental->data().effectN( 4 ).percent() );
+    }
+
+    if ( affected_by_lightning_elemental_da && o()->buff.fury_of_the_storms->up() &&
+         !o()->buff.storm_elemental->check() && !o()->buff.lesser_storm_elemental->up() )
+    {
+      m *= 1.0 + o()->buff.fury_of_the_storms->data().effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
+  double action_ta_multiplier() const override
+  {
+    double m = T_ACTION::action_ta_multiplier();
+
+        if ( affected_by_elemental_unity_fe_ta && o()->talent.elemental_unity.ok() &&
+         ( o()->buff.fire_elemental->check() || o()->buff.lesser_fire_elemental->check() ) )
+    {
+      m *= 1.0 + std::max( o()->buff.fire_elemental->data().effectN( 5 ).percent(),
+                           o()->buff.lesser_fire_elemental->data().effectN( 5 ).percent() );
+    }
+
+    if ( affected_by_elemental_unity_se_ta && o()->talent.elemental_unity.ok() &&
+         ( o()->buff.storm_elemental->check() || o()->buff.lesser_storm_elemental->check() ) )
+    {
+      m *= 1.0 + std::max( o()->buff.storm_elemental->data().effectN( 5 ).percent(),
+                           o()->buff.lesser_storm_elemental->data().effectN( 5 ).percent() );
+    }
+
+    if ( affected_by_lightning_elemental_ta && o()->buff.fury_of_the_storms->up() &&
+         !o()->buff.storm_elemental->up() && !o()->buff.lesser_storm_elemental->up() )
+    {
+      m *= 1.0 + o()->buff.fury_of_the_storms->data().effectN( 3 ).percent();
+    }
+
+    return m;
   }
 
   double cost() const override
