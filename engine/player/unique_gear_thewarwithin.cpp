@@ -6653,11 +6653,28 @@ void fathomdwellers_runed_citrine( special_effect_t& effect )
   auto buff = create_buff<stat_buff_t>( effect.player, "fathomdwellers_runed_citrine", effect.driver() )
                   ->add_stat_from_effect( 1, stat_value );
 
+  const auto& desired_stat = effect.player->thewarwithin_opts.windsingers_passive_stat;
+  std::string suffix = "";
+  if ( util::str_compare_ci( desired_stat, "haste" ) )
+    suffix = "Haste";
+
+  if ( util::str_compare_ci( desired_stat, "mastery" ) )
+    suffix = "Mastery";
+
+  if ( util::str_compare_ci( desired_stat, "critical_strike" ) || util::str_compare_ci( desired_stat, "crit" ) )
+    suffix = "Crit";
+
+  if ( util::str_compare_ci( desired_stat, "versatility" ) || util::str_compare_ci( desired_stat, "vers" ) )
+    suffix = "Vers";
+
   effect.player->register_on_arise_callback( effect.player, [ buff ] { buff->trigger(); } );
-  effect.player->precombat_begin_functions.insert( effect.player->precombat_begin_functions.begin(), []( player_t* p ) {
+  effect.player->precombat_begin_functions.insert( effect.player->precombat_begin_functions.begin(), [ &, suffix ]( player_t* p ) {
     auto stormbringer = buff_t::find( p, "stormbringers_runed_citrine", p );
-    std::string suffix          = util::stat_type_abbrev( util::highest_stat( p, secondary_ratings ) );
-    std::string windsinger_name = "windsingers_runed_citrine_" + suffix;
+    std::string windsinger_name = "windsingers_runed_citrine_";
+    if ( suffix == "" )
+      windsinger_name += util::stat_type_abbrev( util::highest_stat( p, secondary_ratings ) );
+    else
+      windsinger_name += suffix;
     auto windsinger             = buff_t::find( p, windsinger_name, p );
     p->sim->print_debug( "Fathomdwellers Runed Citrine is active: Recalculating passive buffs" );
     p->sim->print_debug( "Stormbringers Runed Citrine: {}", stormbringer ? "Found" : "Not Found" );
