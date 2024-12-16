@@ -6614,9 +6614,26 @@ void windsingers_runed_citrine( special_effect_t& effect )
                                                       b->default_value = stat_value;
                                                       buffs[ s ]       = b;
                                                     } );
+  const auto& desired_stat = effect.player->thewarwithin_opts.windsingers_passive_stat;
+  stat_e stat              = STAT_NONE;
+  if ( util::str_compare_ci( desired_stat, "haste" ) )
+    stat = STAT_HASTE_RATING;
 
-  effect.player->register_on_arise_callback(
-      effect.player, [ &, buffs ] { buffs.at( util::highest_stat( effect.player, secondary_ratings ) )->trigger(); } );
+  if ( util::str_compare_ci( desired_stat, "mastery" ) )
+    stat = STAT_MASTERY_RATING;
+
+  if ( util::str_compare_ci( desired_stat, "critical_strike" ) || util::str_compare_ci( desired_stat, "crit" ) )
+    stat = STAT_CRIT_RATING;
+
+  if ( util::str_compare_ci( desired_stat, "versatility" ) || util::str_compare_ci( desired_stat, "vers" ) )
+    stat = STAT_VERSATILITY_RATING;
+
+  if ( stat != STAT_NONE )
+    effect.player->register_on_arise_callback( effect.player, [ buffs, stat ] { buffs.at( stat )->trigger(); } );
+  else
+    effect.player->register_on_arise_callback( effect.player, [ &, buffs ] {
+      buffs.at( util::highest_stat( effect.player, secondary_ratings ) )->trigger();
+    } );
 }
 
 /** Fathomdwellers Runed Citrine

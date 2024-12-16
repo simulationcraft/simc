@@ -879,6 +879,7 @@ struct player_t : public actor_t
     // currently bugged to trigger on them.
     double mereldars_toll_ally_trigger_chance = 0.7;
     double sureki_zealots_insignia_rppm_multiplier = 0.9;
+    player_option_t<std::string> windsingers_passive_stat = "";
   } thewarwithin_opts;
 
 private:

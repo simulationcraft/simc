@@ -12830,6 +12830,8 @@ void player_t::create_options()
                          thewarwithin_opts.mereldars_toll_ally_trigger_chance, 0, 1 ) );
   add_option( opt_float( "thewarwithin.sureki_zealots_insignia_rppm_multiplier",
                          thewarwithin_opts.sureki_zealots_insignia_rppm_multiplier, 0, 1 ) );
+  add_option( opt_string( "thewarwithin.windsingers_passive_stat",
+                          thewarwithin_opts.windsingers_passive_stat ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )
