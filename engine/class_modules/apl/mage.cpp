@@ -387,14 +387,14 @@ void frost( player_t* p )
   cleave_ff->add_action( "frostfire_bolt,if=talent.deaths_chill&buff.icy_veins.remains>9&(buff.deaths_chill.stack<6|buff.deaths_chill.stack=6&!action.frostfire_bolt.in_flight)" );
   cleave_ff->add_action( "freeze,if=freezable&prev_gcd.1.glacial_spike" );
   cleave_ff->add_action( "ice_nova,if=freezable&prev_gcd.1.glacial_spike&remaining_winters_chill=0&debuff.winters_chill.down&!prev_off_gcd.freeze" );
-  cleave_ff->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&(prev_gcd.1.glacial_spike|buff.icicles.react>=3)&!prev_off_gcd.freeze" );
+  cleave_ff->add_action( "flurry,if=cooldown_react&remaining_winters_chill=0&debuff.winters_chill.down&(prev_gcd.1.glacial_spike|buff.icicles.react>=3|!talent.glacial_spike&prev_gcd.1.frostfire_bolt)&!prev_off_gcd.freeze" );
   cleave_ff->add_action( "flurry,target_if=min:debuff.winters_chill.stack,if=cooldown_react&prev_gcd.1.glacial_spike&!prev_off_gcd.freeze" );
   cleave_ff->add_action( "glacial_spike,if=buff.icicles.react=5" );
   cleave_ff->add_action( "ray_of_frost,target_if=max:debuff.winters_chill.stack,if=remaining_winters_chill" );
   cleave_ff->add_action( "frostfire_bolt,if=buff.frostfire_empowerment.react&!buff.excess_frost.react&!buff.excess_fire.react" );
   cleave_ff->add_action( "frozen_orb,if=!buff.fingers_of_frost.react" );
   cleave_ff->add_action( "shifting_power,if=cooldown.icy_veins.remains>10&cooldown.frozen_orb.remains>10&(!talent.comet_storm|cooldown.comet_storm.remains>10)&(!talent.ray_of_frost|cooldown.ray_of_frost.remains>10)&(fight_remains+10>cooldown.icy_veins.remains)" );
-  cleave_ff->add_action( "ice_lance,target_if=max:debuff.winters_chill.stack,if=buff.fingers_of_frost.react&!prev_gcd.1.glacial_spike|remaining_winters_chill&!variable.boltspam" );
+  cleave_ff->add_action( "ice_lance,target_if=max:debuff.winters_chill.stack,if=buff.fingers_of_frost.react&(!prev_gcd.1.glacial_spike|remaining_winters_chill=0&debuff.winters_chill.down)|remaining_winters_chill&!variable.boltspam" );
   cleave_ff->add_action( "frostfire_bolt" );
   cleave_ff->add_action( "call_action_list,name=movement" );
 
@@ -421,14 +421,14 @@ void frost( player_t* p )
   movement->add_action( "ice_lance" );
 
   st_ff->add_action( "comet_storm,if=prev_gcd.1.flurry" );
-  st_ff->add_action( "flurry,if=variable.boltspam&cooldown_react&buff.icicles.react<5&remaining_winters_chill=0" );
-  st_ff->add_action( "flurry,if=!variable.boltspam&cooldown_react&buff.icicles.react<5&remaining_winters_chill=0&debuff.winters_chill.down&(prev_gcd.1.frostfire_bolt|prev_gcd.1.glacial_spike)" );
+  st_ff->add_action( "flurry,if=variable.boltspam&cooldown_react&(buff.icicles.react<5|!talent.glacial_spike)&remaining_winters_chill=0" );
+  st_ff->add_action( "flurry,if=!variable.boltspam&cooldown_react&(buff.icicles.react<5|!talent.glacial_spike)&remaining_winters_chill=0&debuff.winters_chill.down&(prev_gcd.1.frostfire_bolt|prev_gcd.1.glacial_spike)" );
   st_ff->add_action( "ice_lance,if=variable.boltspam&buff.excess_fire.react&!buff.brain_freeze.react" );
   st_ff->add_action( "glacial_spike,if=buff.icicles.react=5" );
   st_ff->add_action( "ray_of_frost,if=remaining_winters_chill&(!variable.boltspam|buff.icy_veins.remains<15)" );
   st_ff->add_action( "frozen_orb,if=variable.boltspam&buff.icy_veins.down|!variable.boltspam&!buff.fingers_of_frost.react" );
   st_ff->add_action( "shifting_power,if=(buff.icy_veins.down|!variable.boltspam)&cooldown.icy_veins.remains>10&cooldown.frozen_orb.remains>10&(!talent.comet_storm|cooldown.comet_storm.remains>10)&(!talent.ray_of_frost|cooldown.ray_of_frost.remains>10)&(fight_remains+10>cooldown.icy_veins.remains)" );
-  st_ff->add_action( "ice_lance,if=!variable.boltspam&(buff.fingers_of_frost.react&!prev_gcd.1.glacial_spike|remaining_winters_chill)" );
+  st_ff->add_action( "ice_lance,if=!variable.boltspam&(buff.fingers_of_frost.react&remaining_winters_chill=0&debuff.winters_chill.down|remaining_winters_chill)" );
   st_ff->add_action( "frostfire_bolt" );
   st_ff->add_action( "call_action_list,name=movement" );
 
