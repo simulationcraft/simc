@@ -119,7 +119,8 @@ Family Flags     : 5, 8, 9, 52, 99
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), No AutoCast (AI) (49), Discount Power On Miss (59), Chain From Caster (76), Requires Main-Hand Weapon (106), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=310)      : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.24581 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.24581 | PvP Coefficient: 1.15 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.15)
 #2 (id=357783)   : Trigger Spell (64): Rend
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 388539 | Target: Enemy (6)
 Description      : Wounds the target, causing $s1 Physical damage instantly and an additional $388539o1 Bleed damage over $388539d.$?s6343[
@@ -686,7 +687,8 @@ Family Flags     : 2, 8, 9, 52
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Chain From Caster (76), Requires Main-Hand Weapon (106), Can Proc From Procs (122), Aura Points On Client (268), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=2780)     : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.02869 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.02869 | PvP Coefficient: 1.2 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=126946)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
                    Affected Spells: Cleave (845), Mortal Strike (12294), Mortal Strike (339385), Cleave (458459)
@@ -11439,7 +11441,8 @@ Family Flags     : 5, 9, 52, 120
 Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Ignore Line of Sight (66), Do Not Report Spell Failure (71), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), Do Not Display Range (126), Not In Spellbook (143), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1024287)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.380931 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.380931 | PvP Coefficient: 1.15 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.15)
 Description      : $@spelldesc772
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
@@ -14173,9 +14176,10 @@ Effects          :
                    Affected Spells: Demoralizing Shout (1160)
                    Family Flags: 17
 #4 (id=1160302)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.5 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881), Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364), Rampage (218617), Bloodbath (335096)
                    Family Flags: 42, 108
+Hotfixed         : PvP Coefficient (1 -> 1.5)
 Description      : Shield Slam damage increased by $s1%.$?a137048[
 
 Demoralizing Shout reduces damage enemies deal to you by an additional ${-$s2}%.][

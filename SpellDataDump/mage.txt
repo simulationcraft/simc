@@ -14168,13 +14168,15 @@ Attributes       : Can Proc From Procs (122), Allow Cast While Casting (135), Al
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Encounter Start (55)
 Effects          :
 #1 (id=1151371)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 2 | Target: Self (1)
                    Affected Spells: Pyroblast (11366), Pyroblast (460475)
                    Family Flags: 22
+Hotfixed         : PvP Coefficient (1 -> 2)
 #2 (id=1151372)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 2 | Target: Self (1)
                    Affected Spells: Arcane Blast (30451)
                    Family Flags: 29
+Hotfixed         : PvP Coefficient (1 -> 2)
 #3 (id=1153725)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Flamestrike (2120), Flamestrike (450462), Flamestrike (460476)
