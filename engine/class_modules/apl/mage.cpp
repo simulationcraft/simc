@@ -125,6 +125,7 @@ void arcane( player_t* p )
   spellslinger->add_action( "arcane_missiles,if=buff.clearcasting.react&buff.nether_precision.down&((cooldown.touch_of_the_magi.remains>gcd.max*7&cooldown.arcane_surge.remains>gcd.max*7)|buff.clearcasting.react>1|(cooldown.touch_of_the_magi.remains<gcd.max*4&buff.aether_attunement.down))|fight_remains<5,interrupt_if=tick_time>gcd.remains&buff.aether_attunement.down,interrupt_immediate=1,interrupt_global=1,chain=1", "Missiles if you dont have Nether Precision and always clip off GCD unless you have Aether Attunement, save missiles before cooldowns unless you have more than 1 stack of Clearcasting" );
   spellslinger->add_action( "arcane_orb,if=buff.arcane_charge.stack<((5-active_enemies)<?1)" );
   spellslinger->add_action( "arcane_explosion,if=(talent.reverberate|buff.arcane_charge.stack<1)&active_enemies>=4" );
+  spellslinger->add_action( "arcane_barrage,if=buff.arcane_charge.stack=4&target.health.pct<35&buff.nether_precision.down&talent.orb_barrage&talent.arcane_bombardment&talent.arcing_cleave&active_enemies>2" );
   spellslinger->add_action( "arcane_blast" );
   spellslinger->add_action( "arcane_barrage" );
 
