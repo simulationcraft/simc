@@ -12544,7 +12544,8 @@ Effects          :
 #1 (id=1131310)  : Apply Aura (6) | Dummy (4)
                    Base Value: 125 | Scaled Value: 125 | Target: Self (1)
 #2 (id=1131311)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Hotfixed         : Base Value (5 -> 10)
 Description      : Reaching maximum stacks of Frost Mastery causes your next $?c2[Phoenix Flames]?c3[Flurry][] to also cast Ice Nova at $s1% effectiveness. Ice Novas cast this way do not freeze enemies in place.
 
 When you consume Excess Frost, the cooldown of $?c2[Meteor]?c3[Comet Storm][] is reduced by $s2 sec.
