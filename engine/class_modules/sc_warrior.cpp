@@ -1114,88 +1114,100 @@ public:
     // Shared
     parse_effects( p()->buff.avatar, effect_mask_t( true ).disable( 8 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
 
-    // Arms
-    // Add Flat Modifier (107): Spell Cooldown (11) isn't yet supported by parse_effects.
-    // This one is for Blademaster's Torment, effect 8 is dynamically enabled
-    // parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 8 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force,  [ this ] { return p()->talents.warrior.blademasters_torment->ok(); } );
-
-    parse_effects( p()->buff.dance_of_death_bladestorm );
-    parse_effects( p()->buff.juggernaut );
-    parse_effects( p()->buff.merciless_bonegrinder );
-    parse_effects( p()->buff.storm_of_swords );
-    // Gating this to keep the report cleaner
     if ( p()->specialization() == WARRIOR_ARMS )
+    {
+      // Add Flat Modifier (107): Spell Cooldown (11) isn't yet supported by parse_effects.
+      // This one is for Blademaster's Torment, effect 8 is dynamically enabled
+      // parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 8 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force,  [ this ] { return p()->talents.warrior.blademasters_torment->ok(); } );
+
+      parse_effects( p()->buff.dance_of_death_bladestorm );
+      parse_effects( p()->buff.juggernaut );
+      parse_effects( p()->buff.merciless_bonegrinder );
+      parse_effects( p()->buff.storm_of_swords );
       parse_effects( p()->buff.recklessness_warlords_torment );
 
-    parse_effects( p()->buff.strike_vulnerabilities ); // T29 arms
-    parse_effects( p()->buff.crushing_advance ); // T30 Arms 4pc
+      parse_effects( p()->buff.strike_vulnerabilities ); // T29 arms
+      parse_effects( p()->buff.crushing_advance ); // T30 Arms 4pc
 
-    // Fury
-    parse_effects( p()->mastery.unshackled_fury, [ this ] { return p()->buff.enrage->check(); } );
-    parse_effects( p()->buff.ashen_juggernaut );
-    parse_effects( p()->buff.berserker_stance );
-    parse_effects( p()->buff.bloodcraze, p()->talents.fury.bloodcraze );
-    parse_effects( p()->buff.dancing_blades );
-    // Action-scoped Enrage effects(#4, #5) only apply with Powerful Enrage
-    if ( p()->talents.fury.powerful_enrage->ok() )
-      parse_effects( p()->buff.enrage, effect_mask_t( false ).enable( 4, 5 ) );
-    // Gating this to keep the report cleaner
-    if ( p()->specialization() == WARRIOR_FURY)
+      // TWW1 Tier
+      parse_effects( p()->buff.overpowering_might );  // Arms 2pc
+      parse_effects( p()->buff.lethal_blows );        // Arms 4pc
+    }
+    else if ( p()->specialization() == WARRIOR_FURY )
+    {
+      parse_effects( p()->mastery.unshackled_fury, [ this ] { return p()->buff.enrage->check(); } );
+      parse_effects( p()->buff.ashen_juggernaut );
+      parse_effects( p()->buff.berserker_stance );
+      parse_effects( p()->buff.bloodcraze, p()->talents.fury.bloodcraze );
+      parse_effects( p()->buff.dancing_blades );
+      // Action-scoped Enrage effects(#4, #5) only apply with Powerful Enrage
+      if ( p()->talents.fury.powerful_enrage->ok() )
+        parse_effects( p()->buff.enrage, effect_mask_t( false ).enable( 4, 5 ) );
       parse_effects( p()->buff.recklessness );
-    parse_effects( p()->buff.slaughtering_strikes );
-    parse_effects( p()->talents.fury.wrath_and_fury, effect_mask_t( false ).enable( 2 ), [ this ] { return p()->buff.enrage->check(); } );
+      parse_effects( p()->buff.slaughtering_strikes );
+      parse_effects( p()->talents.fury.wrath_and_fury, effect_mask_t( false ).enable( 2 ), [ this ] { return p()->buff.enrage->check(); } );
 
-    parse_effects( p()->buff.merciless_assault );
+      parse_effects( p()->buff.merciless_assault );
 
-    // Protection
-    parse_effects( p()->buff.battering_ram );
-    parse_effects( p()->buff.juggernaut_prot );
-    parse_effects( p()->buff.seismic_reverberation_revenge );
-    parse_effects( p()->buff.vanguards_determination );
+      // TWW1 Tier
+      parse_effects( p()->buff.bloody_rampage );      // Fury 2pc
+      parse_effects( p()->buff.deep_thirst );         // Fury 4pc
+    }
+    else if ( p()->specialization() == WARRIOR_PROTECTION )
+    {
+      parse_effects( p()->buff.battering_ram );
+      parse_effects( p()->buff.juggernaut_prot );
+      parse_effects( p()->buff.seismic_reverberation_revenge );
+      parse_effects( p()->buff.vanguards_determination );
+
+      // TWW1 Tier
+      parse_effects( p()->buff.expert_strategist );   // Prot 2pc
+      parse_effects( p()->buff.brutal_followup );     // Prot 4pc
+    }
 
     // Colossus
-    parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 1 ), p()->spec.protection_warrior );
-    if ( p()->talents.colossus.arterial_bleed->ok() )
+    if ( p()->talents.colossus.demolish->ok() )
     {
-      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 2 ), p()->spec.protection_warrior );
+      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 1 ), p()->spec.protection_warrior );
+      if ( p()->talents.colossus.arterial_bleed->ok() )
+      {
+        parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 2 ), p()->spec.protection_warrior );
+      }
+      if ( p()->talents.colossus.tide_of_battle->ok() )
+      {
+        parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 3, 4 ), p()->spec.protection_warrior );
+      }
+      // Effect 3 is the auto attack mod
+      parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars, effect_mask_t( false ).enable( 3 ) );
+      parse_effects( p()->talents.colossus.practiced_strikes );
     }
-    if ( p()->talents.colossus.tide_of_battle->ok() )
-    {
-      parse_effects( p()->buff.colossal_might, effect_mask_t( false ).enable( 3, 4 ), p()->spec.protection_warrior );
-    }
-    // Effect 3 is the auto attack mod
-    parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars, effect_mask_t( false ).enable( 3 ) );
-    parse_effects( p()->talents.colossus.practiced_strikes );
 
     // Slayer
-    parse_effects( p()->buff.brutal_finish );
-    parse_effects( p()->buff.fierce_followthrough );
-    parse_effects( p()->buff.opportunist );
+    if ( p()->talents.slayer.slayers_dominance->ok() )
+    {
+      parse_effects( p()->buff.brutal_finish );
+      parse_effects( p()->buff.fierce_followthrough );
+      parse_effects( p()->buff.opportunist );
+    }
 
     // Mountain Thane
-    // Crashing Thunder
-    // Damage amps
-    parse_effects( p()->talents.mountain_thane.crashing_thunder, effect_mask_t( false ).enable( 1, 2, 3, 9 ) );
-    // Reduce TC rage cost by 100%
-    parse_effects( p()->talents.mountain_thane.crashing_thunder, effect_mask_t( false ).enable( 5 ) );
-    if ( p()->specialization() == WARRIOR_FURY )
+    if ( p()->talents.mountain_thane.lightning_strikes->ok() )
     {
-      // Add 5 rage gain to TC for Fury
-      parse_effects( p()->talents.mountain_thane.crashing_thunder, effect_mask_t( false ).enable( 4 ) );
-      // Update various talents
-      parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 3, 4 ), p()->talents.mountain_thane.crashing_thunder );
-      parse_effects( p()->talents.fury.meat_cleaver, effect_mask_t( false ).enable( 4 ), p()->talents.mountain_thane.crashing_thunder );
+      // Crashing Thunder
+      // Damage amps
+      parse_effects( p()->talents.mountain_thane.crashing_thunder, effect_mask_t( false ).enable( 1, 2, 3, 9 ) );
+      // Reduce TC rage cost by 100%
+      parse_effects( p()->talents.mountain_thane.crashing_thunder, effect_mask_t( false ).enable( 5 ) );
+      if ( p()->specialization() == WARRIOR_FURY )
+      {
+        // Add 5 rage gain to TC for Fury
+        parse_effects( p()->talents.mountain_thane.crashing_thunder, effect_mask_t( false ).enable( 4 ) );
+        // Update various talents
+        parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 3, 4 ), p()->talents.mountain_thane.crashing_thunder );
+        parse_effects( p()->talents.fury.meat_cleaver, effect_mask_t( false ).enable( 4 ), p()->talents.mountain_thane.crashing_thunder );
+      }
+      parse_effects( p()->buff.burst_of_power, effect_mask_t( false ).enable( 2 ) );
     }
-    parse_effects( p()->buff.burst_of_power, effect_mask_t( false ).enable( 2 ) );
-
-
-    // TWW1 Tier
-    parse_effects( p()->buff.overpowering_might );  // Arms 2pc
-    parse_effects( p()->buff.lethal_blows );        // Arms 4pc
-    parse_effects( p()->buff.bloody_rampage );      // Fury 2pc
-    parse_effects( p()->buff.deep_thirst );         // Fury 4pc
-    parse_effects( p()->buff.expert_strategist );   // Prot 2pc
-    parse_effects( p()->buff.brutal_followup );     // Prot 4pc
   }
 
   void apply_debuff_effects()
@@ -1240,21 +1252,30 @@ public:
                           p()->talents.protection.booming_voice );
 
     // Colossus
-
-    // Slayer
-    parse_target_effects( d_fn( &warrior_td_t::debuffs_marked_for_execution ),
-                          p()->spell.marked_for_execution_debuff,
-                          effect_mask_t( false ).enable( 1 ) );
-
-    if ( p()->talents.slayer.show_no_mercy->ok() )
+    if ( p()->talents.colossus.demolish->ok() )
     {
-      parse_target_effects( d_fn( &warrior_td_t::debuffs_marked_for_execution ),
-                          p()->spell.marked_for_execution_debuff,
-                          effect_mask_t( false ).enable( 2, 3 ) );
+      // Wrecked has a value of 10 in spelldata, but it needs to be interpreted as 1% per stack
+      parse_target_effects( d_fn( &warrior_td_t::debuffs_wrecked ),
+                            p()->spell.wrecked_debuff, effect_mask_t( false ).enable( 2 ), p()->spell.wrecked_debuff->effectN( 2 ).base_value() / 1000, p()->spec.protection_warrior );
     }
 
-    parse_target_effects( d_fn( &warrior_td_t::debuffs_overwhelmed ),
-                          p()->spell.overwhelmed_debuff );
+    // Slayer
+    if ( p()->talents.slayer.slayers_dominance->ok() )
+    {
+      parse_target_effects( d_fn( &warrior_td_t::debuffs_marked_for_execution ),
+                            p()->spell.marked_for_execution_debuff,
+                            effect_mask_t( false ).enable( 1 ) );
+
+      if ( p()->talents.slayer.show_no_mercy->ok() )
+      {
+        parse_target_effects( d_fn( &warrior_td_t::debuffs_marked_for_execution ),
+                            p()->spell.marked_for_execution_debuff,
+                            effect_mask_t( false ).enable( 2, 3 ) );
+      }
+
+      parse_target_effects( d_fn( &warrior_td_t::debuffs_overwhelmed ),
+                            p()->spell.overwhelmed_debuff );
+    }
 
     // Mountain Thane
   }
@@ -10510,13 +10531,8 @@ void warrior_t::parse_player_effects()
   }
 
   // Colossus
-  // Wrecked has a value of 10 in spelldata, but it needs to be interpreted as 1% per stack
-  parse_target_effects( d_fn( &warrior_td_t::debuffs_wrecked ),
-                          spell.wrecked_debuff, effect_mask_t( false ).enable( 2 ), spell.wrecked_debuff->effectN( 2 ).base_value() / 1000, spec.protection_warrior );
 
   // Slayer
-  parse_target_effects( d_fn( &warrior_td_t::debuffs_overwhelmed ),
-                         spell.overwhelmed_debuff );
 
   // Mountain Thane
   parse_effects( talents.mountain_thane.steadfast_as_the_peaks );
