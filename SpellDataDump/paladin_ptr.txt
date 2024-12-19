@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.58046 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.58187 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -2613,9 +2613,10 @@ Effects          :
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779), Ashen Hallow (317221), Hallowed Discernment (340203), Boundless Judgment (383970), Judgment (383991)
                    Family Flags: 18, 23, 39
 #11 (id=260932)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 48 | Scaled Value: 48
+                   Base Value: 92 | Scaled Value: 92
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (243597), Consecration (387881), Consecration (419810)
                    Family Flags: 5
+Hotfixed         : Base Value (48 -> 92)
 #12 (id=260933)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0
 #13 (id=1032420) : Apply Aura (6) | Modify Guardian Damage Done% (531)
@@ -2945,8 +2946,9 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=218989)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 9 | Misc Value: 0x7f | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 10.35 | PvP Coefficient: 0.87 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
+Hotfixed         : SP Coefficient (9 -> 10.35), PvP Coefficient (1 -> 0.87)
 Description      : $@spelldesc157047
 Tooltip          : Absorbs $w1 damage.
 
@@ -14701,7 +14703,8 @@ Effects          :
 #1 (id=1083442)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #2 (id=1083443)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+                   Base Value: 225 | Scaled Value: 225 | Target: Self (1)
+Hotfixed         : Base Value (200 -> 225)
 Description      : $@spelldesc392938
 
 Name             : Shining Righteousness (id=414443) [Spell Family (10), Passive] 
@@ -18522,8 +18525,9 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Line of Sight (66), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1170166)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3 | Misc Value: 0x7f | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.45 | PvP Coefficient: 0.87 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
+Hotfixed         : SP Coefficient (3 -> 3.45), PvP Coefficient (1 -> 0.87)
 Description      : $@spelldesc157047
 Tooltip          : Absorbs $w1 damage.
 
