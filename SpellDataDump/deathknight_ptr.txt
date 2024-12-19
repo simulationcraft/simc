@@ -496,7 +496,8 @@ Family Flags     : 13, 43, 64, 78
 Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Active Threat (94), Not a Proc (105), Always Hit (114), Not In Spellbook (143), Do Not Consume Resources (197), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=39872)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.596 | PvP Coefficient: 1.49 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.64368 | PvP Coefficient: 1.49 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.596 -> 0.64368)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Death Coil (id=47633) [Spell Family (15)] 
@@ -1451,7 +1452,8 @@ Effects          :
 #1 (id=48018)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=48019)    : School Damage (2): physical | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.58344 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.641784 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : AP Coefficient (0.58344 -> 0.641784)
 #3 (id=48020)    : Trigger Spell (64): Scourge Strike
                    Base Value: 25 | Scaled Value: 25 | Trigger Spell: 70890 | Target: Enemy (6)
 #4 (id=840915)   : Dummy (3)
@@ -2081,7 +2083,8 @@ Effects          :
 #1 (id=64510)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=214692)   : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.3214 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.35354 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : AP Coefficient (0.3214 -> 0.35354)
 Description      : $@spelldesc55090
 
 Name             : Mastery: Master of Beasts (id=76657) [Spell Family (9), Passive] 
@@ -5273,7 +5276,8 @@ Effects          :
 #1 (id=306601)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=324719)   : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.07 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.177 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : AP Coefficient (1.07 -> 1.177)
 Description      : Deals $s2 Shadow damage and causes 1 Festering Wound to burst.
 
 Name             : Sludge Belcher (id=207313) [Spell Family (15), Passive] 
@@ -12418,9 +12422,10 @@ Labels           : 16: Class Spells
 Attributes       : Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1026981)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.6 | Target: Enemy (6)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.6 | Target: Enemy (6)
                    Affected Spells: Scourge Strike (55090), Scourge Strike (70890), Clawing Shadows (207311), Vampiric Strike (433895)
                    Family Flags: 59, 71
+Hotfixed         : Base Value (50 -> 60)
 Description      : $@spelldesc390275
 Tooltip          : Scourge Strike damage taken from $@auracaster is increased by $s1%.
 
@@ -13664,7 +13669,8 @@ Family Flags     : 0, 24, 43, 59, 78, 127
 Attributes       : Do Not Sheath (18), No Aura Icon (60), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1123513)  : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.04 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.144 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : AP Coefficient (1.04 -> 1.144)
 #2 (id=1123558)  : Trigger Spell (64): Vampiric Strike
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 434422 | Target: Self (1)
 #3 (id=1123562)  : Trigger Spell (64): Essence of the Blood Queen
@@ -14357,9 +14363,11 @@ Family Flags     : 43, 120
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Treat as Area Effect (175), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1126738)  : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.67275 | PvP Coefficient: 1.2821 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.67275 | PvP Coefficient: 1.54 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.2821 -> 1.54)
 #2 (id=1174044)  : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.773663 | PvP Coefficient: 1.2821 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.773663 | PvP Coefficient: 1.54 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1.2821 -> 1.54)
 Description      : $@spelldesc434711
 
 Name             : Reaper's Mark (id=436304) [Spell Family (15)] 
@@ -14378,9 +14386,11 @@ Family Flags     : 43, 120
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Not a Proc (105), Do Not Display Range (126), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1127543)  : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.10647 | PvP Coefficient: 0.6 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.10647 | PvP Coefficient: 0.72 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (0.6 -> 0.72)
 #2 (id=1144448)  : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.191646 | PvP Coefficient: 0.6 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.191646 | PvP Coefficient: 0.72 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (0.6 -> 0.72)
 Description      : $@spelldesc439843
 
 Name             : Dark Talons (id=436687) [Spell Family (15), Passive] 
