@@ -1,5 +1,5 @@
-// Spell text, wow build 11.0.7.58046
-static const std::array<spelltext_data_t, 26603> __ptr_spelltext_data { {
+// Spell text, wow build 11.0.7.58187
+static const std::array<spelltext_data_t, 26610> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -25131,6 +25131,7 @@ static const std::array<spelltext_data_t, 26603> __ptr_spelltext_data { {
   {  454851, "Casting Anti-Magic Shell grants $454863i nearby allies a Lesser Anti-Magic Shell that Absorbs up to $454863s1 magic damage and reduces the duration of harmful Magic effects against them by $454863s2%. ", 0, 0 },
   {  454857, "Your damaging spells and abilities have the chance to grant Vivaciousness, increasing secondary stats by $s1 and Speed or Avoidance by $s2 based on the school it was activated from.", 0, 0 },
   {  454859, "$@spelldesc454558", 0, 0 },
+  {  454862, "Granted $w1 Haste and $w2 Speed.", "Granted $w1 Haste and $w2 Speed.", 0 },
   {  454863, "$@spelldesc454851", "Absorbing up to $w1 magic damage.\r\nDuration of harmful magic effects reduced by $s2%.", 0 },
   {  454871, "$@spelldesc374598", "Damage taken reduced by $w1% and Death Strike cost reduced by ${$s2/-10}.", 0 },
   {  454886, "$@spelldesc374049", "Damage taken from area of effect attacks reduced by an additional $w1%.", 0 },
@@ -25139,6 +25140,12 @@ static const std::array<spelltext_data_t, 26603> __ptr_spelltext_data { {
   {  454957, "$@spelldesc454839", "Direct damage of your next Ferocious Bite and Rampant Ferocity or Primal Wrath increased by $w1%.", 0 },
   {  454969, "Tiger Palm's chance to activate Blackout Kick! is increased by $s1% and consuming Teachings of the Monastery grants you ${$454970s1}.1% haste for $454970d equal to the amount of stacks consumed.", 0, 0 },
   {  454970, "$@spelldesc454969", "Haste increased by ${$w1}.1%.", 0 },
+  {  454975, "Granted $w1 Haste and $w2 Avoidance.", "Granted $w1 Haste and $w2 Avoidance.", 0 },
+  {  454976, "Granted $w1 Critical Strike and $w2 Speed.", "Granted $w1 Critical Strike and $w2 Speed.", 0 },
+  {  454977, "Granted $w1 Critical Strike and $w2 Avoidance.", "Granted $w1 Critical Strike and $w2 Avoidance.", 0 },
+  {  454978, "Granted $w1 Mastery and $w2 Speed.", "Granted $w1 Mastery and $w2 Speed.", 0 },
+  {  454979, "Granted $w1 Mastery and $w2 Avoidance.", "Granted $w1 Mastery and $w2 Avoidance.", 0 },
+  {  454980, "Granted $w1 Versatility and $w2 Speed.", "Granted $w1 Versatility and $w2 Speed.", 0 },
   {  454982, "$@spelldesc454857", "Granted $w1 Versatility and $w2 Avoidance.", 0 },
   {  454983, "The range of your helpful magics is increased by $s1 yards.", 0, 0 },
   {  455011, "$@spelldesc453665", "Damage dealt increased by $w1% and damage taken reduced by $w2%", 0 },
@@ -26605,11 +26612,11 @@ static const std::array<spelltext_data_t, 26603> __ptr_spelltext_data { {
   { 1213583, "$@spelldesc1213569", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.0.7.58046
+// spelltext hotfix entries, wow build 11.0.7.58187
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.0.7.58046
+// Spell description variables, wow build 11.0.7.58187
 static const std::array<spelldesc_vars_data_t, 617> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -27230,7 +27237,7 @@ static const std::array<spelldesc_vars_data_t, 617> __ptr_spelldesc_vars_data { 
   {  472302, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.0.7.58046
+// spelldesc_vars hotfix entries, wow build 11.0.7.58187
 static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelldesc_vars_hotfix_data { {
   {  433106,  0, "$prot=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}\r\n$holy=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}", "$prot=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}\r\n$holy=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}\r\n$value=$?a137028[${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}][${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}]" },
   {  460822,  0, "$prot=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}\r\n$holy=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}", "$prot=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}\r\n$holy=${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}\r\n$value=$?a137028[${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137028s1/100)}][${($SP*$433106s1/10)*(1+$@versadmg)*(1+$137029s9/100)}]" },
