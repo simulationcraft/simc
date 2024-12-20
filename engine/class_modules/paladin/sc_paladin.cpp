@@ -2989,27 +2989,12 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     if ( p()->sets->set( PALADIN_PROTECTION, TWW2, B4 ) && p()->buffs.pp_2pc_luck_of_the_draw->up() )
     {
       timespan_t trigger_duration = timespan_t::from_seconds( 0.5 );
-      //TODO Add Max Extension
-      p()->buffs.pp_2pc_luck_of_the_draw->extend_duration( p(), trigger_duration );
+      // TODO Add Max Extension
 
-      if ( rng().roll( 0.33 ) )
-      {
-        p()->sim->print_log( "Rolled 3" );
-        p()->resource_gain( RESOURCE_HOLY_POWER, as<int>( 3 ), p()->gains.luck_of_the_draw );
-        return;
-      }
-      else if ( rng().roll( 0.5 ) )
-      {
-        p()->sim->print_log( "Rolled 2" );
-        p()->resource_gain( RESOURCE_HOLY_POWER, as<int>( 2 ), p()->gains.luck_of_the_draw );
-        return;
-      }
-      else      
-      {
-        p()->sim->print_log( "Rolled 1" );
-        p()->resource_gain( RESOURCE_HOLY_POWER, as<int>( 1 ), p()->gains.luck_of_the_draw );
-        return;
-      }
+      p()->buffs.pp_2pc_luck_of_the_draw->extend_duration( p(), trigger_duration );
+      int randomNum = int( rng().range( 1.00, 3.99 ) );
+      p()->sim->print_log( "randomNum: {}", randomNum );
+      p()->resource_gain( RESOURCE_HOLY_POWER, as<int>( randomNum ), p()->gains.luck_of_the_draw );
     }
   }
 
