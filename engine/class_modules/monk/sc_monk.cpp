@@ -592,6 +592,15 @@ void monk_action_t<Base>::execute()
 
   trigger_storm_earth_and_fire( this );
 
+  // TWW S2 WW 2pc
+  if ( p()->tier.tww2.winning_streak->up() &&
+       base_t::data().affected_by( p()->tier.tww2.ww_2pc_winning_streak->effectN( 1 ) ) )
+    if ( p()->rng().roll( p()->tier.tww2.ww_2pc->effectN( 1 ).percent() ) )
+    {
+      p()->sim->print_debug( "ws: removed by {}", base_t::id );
+      p()->tier.tww2.winning_streak->expire();
+    }
+
   // TWW S1 Windwalker 2PC
   if ( p()->buff.tiger_strikes->up() )
   {
@@ -2173,6 +2182,11 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     trigger_gcd                = timespan_t::zero();
 
     parse_effects( p->buff.momentum_boost_damage );
+    if ( const auto &effect = p->tier.tww2.ww_4pc_cashout->effectN( 1 ); effect.ok() && p->tier.tww2.ww_4pc->ok() )
+      add_parse_entry( da_multiplier_effects )
+          .set_buff( p->tier.tww2.cashout )
+          .set_value( effect.percent() )
+          .set_eff( &effect );
   }
 
   double composite_target_multiplier( player_t *target ) const override
@@ -2231,8 +2245,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     ability_lag = p->world_lag;
 
-    tick_action        = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
-    tick_action->stats = stats;
+    tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
   }
 
   bool usable_moving() const override
@@ -2242,6 +2255,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
   void execute() override
   {
+    if ( p()->tier.tww2.ww_4pc->ok() )
+      p()->tier.tww2.winning_streak->trigger();
+
     monk_melee_attack_t::execute();
 
     if ( p()->buff.fury_of_xuen_stacks->up() && rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
@@ -2263,10 +2279,15 @@ struct fists_of_fury_t : public monk_melee_attack_t
     // Delay the expiration of the buffs until after the tick action happens.
     // Otherwise things trigger before the tick action happens; which is not intended.
     make_event( p()->sim, timespan_t::from_millis( 1 ), [ & ] {
+      p()->tier.tww2.cashout->expire();
       p()->buff.transfer_the_power->expire();
       p()->buff.pressure_point->trigger();
       p()->buff.momentum_boost_damage->expire();
       p()->buff.momentum_boost_speed->trigger();
+
+      // TODO: Make sure this doesn't happen if FoF is cancelled.
+      if ( p()->tier.tww2.ww_4pc->ok() )
+        p()->tier.tww2.winning_streak->trigger();
     } );
   }
 };
@@ -8119,17 +8140,25 @@ void monk_t::create_buffs()
   // TWW S2 Tier Buffs
   // WW
   tier.tww2.winning_streak =
-      make_buff_fallback( tier.tww2.ww_2pc->ok(), this, "winning_streak", tier.tww2.ww_2pc_winning_streak );
+      make_buff_fallback( tier.tww2.ww_2pc->ok(), this, "winning_streak", tier.tww2.ww_2pc_winning_streak )
+          ->set_stack_change_callback( [ & ]( buff_t *, int old, int new_ ) {
+            if ( old && !new_ )
+              tier.tww2.cashout->trigger( old );
+          } )
+          ->set_expire_at_max_stack( tier.tww2.ww_4pc->ok() );
   tier.tww2.cashout = make_buff_fallback( tier.tww2.ww_4pc->ok(), this, "cashout", tier.tww2.ww_4pc_cashout );
   // BrM
   tier.tww2.luck_of_the_draw =
       make_buff_fallback( tier.tww2.brm_2pc->ok(), this, "luck_of_the_draw", tier.tww2.brm_2pc_luck_of_the_draw )
-          ->set_stack_change_callback( [ & ]( buff_t *, int old, int ) {
-            if ( !old )
-            {
-              buff.fortifying_brew->trigger( tier.tww2.brm_2pc->effectN( 1 ).time_value() );
+          ->set_stack_change_callback( [ & ]( buff_t *, int old, int new_ ) {
+            if ( new_ )
               tier.tww2.opportunistic_strike->trigger();
-            }
+            if ( !old )
+              buff.fortifying_brew->trigger( tier.tww2.brm_2pc->effectN( 1 ).time_value() );
+          } )
+          ->set_refresh_duration_callback( [ & ]( const buff_t *b, timespan_t duration ) {
+            tier.tww2.opportunistic_strike->trigger();
+            return std::max( b->remains(), duration );
           } );
   tier.tww2.opportunistic_strike = make_buff_fallback( tier.tww2.brm_4pc->ok(), this, "opportunistic_strike",
                                                        tier.tww2.brm_4pc_opportunistic_strike )
@@ -8570,6 +8599,8 @@ void monk_t::init_special_effects()
   }
 
   // TWW2 Tier
+  if ( tier.tww2.ww_2pc->ok() )
+    create_proc_callback( tier.tww2.ww_2pc, []( monk_t *, action_state_t * ) { return true; } );
   if ( tier.tww2.brm_2pc->ok() )
     create_proc_callback( tier.tww2.brm_2pc, []( monk_t *, action_state_t * ) { return true; }, PF2_ALL_HIT );
 
