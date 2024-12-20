@@ -596,10 +596,7 @@ void monk_action_t<Base>::execute()
   if ( p()->tier.tww2.winning_streak->up() &&
        base_t::data().affected_by( p()->tier.tww2.ww_2pc_winning_streak->effectN( 1 ) ) )
     if ( p()->rng().roll( p()->tier.tww2.ww_2pc->effectN( 1 ).percent() ) )
-    {
-      p()->sim->print_debug( "ws: removed by {}", base_t::id );
       p()->tier.tww2.winning_streak->expire();
-    }
 
   // TWW S1 Windwalker 2PC
   if ( p()->buff.tiger_strikes->up() )
