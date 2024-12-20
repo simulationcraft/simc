@@ -5448,8 +5448,9 @@ struct upheaval_t : public empowered_charge_spell_t
     action_t* chrono_flames;
     int max_afterimage_targets;
     bool is_rumbling_earth;
+    bool is_tierset;
 
-    upheaval_damage_t( evoker_t* p, std::string_view name, bool is_rumbling_earth )
+    upheaval_damage_t( evoker_t* p, std::string_view name, bool is_rumbling_earth, bool is_tierset )
       : base_t( name, p, p->find_spell( 396288 ) ),
         reverberations( nullptr ),
         reverb_mul( p->talent.chronowarden.reverberations->effectN( 2 ).percent() ),
@@ -5457,35 +5458,56 @@ struct upheaval_t : public empowered_charge_spell_t
         rumbling_earth( nullptr ),
         chrono_flames( nullptr ),
         max_afterimage_targets( as<int>( p->talent.chronowarden.afterimage->effectN( 1 ).base_value() ) ),
-        is_rumbling_earth( is_rumbling_earth )
+        is_rumbling_earth( is_rumbling_earth ),
+        is_tierset( is_tierset )
     {
       aoe = -1;
 
       if ( p->talent.chronowarden.reverberations.enabled() )
       {
-        reverberations = p->get_secondary_action<reverberations_t>( "upheaval_dot" );
+        reverberations = p->get_secondary_action<reverberations_t>( fmt::format( "{}_dot", name ) );
       }
 
       if ( is_rumbling_earth )
       {
-        sands = nullptr;
+        sands           = nullptr;
         threads_of_fate = nullptr;
         base_dd_multiplier *= p->talent.rumbling_earth->effectN( 1 ).percent();
         extend_ebon = 0_s;
       }
       else if ( p->talent.rumbling_earth.enabled() )
       {
-        rumbling_earth =
-            p->get_secondary_action<upheaval_damage_t>( "upheaval_rumbling_earth", "upheaval_rumbling_earth", true );
+        rumbling_earth = p->get_secondary_action<upheaval_damage_t>( fmt::format( "{}_rumbling_earth", name ),
+                                                                     fmt::format( "{}_rumbling_earth", name ), true, is_tierset );
       }
 
       if ( p->talent.chronowarden.afterimage.enabled() && !is_rumbling_earth )
       {
-        chrono_flames = p->get_secondary_action<living_flame_damage_t>( "afterimage_upheaval", "afterimage_upheaval", true );
+        chrono_flames = p->get_secondary_action<living_flame_damage_t>( fmt::format( "afterimage_{}", name ),
+                                                                        fmt::format( "afterimage_{}", name ), true );
+      }
+
+      if ( is_tierset && !is_rumbling_earth )
+      {
+        base_dd_multiplier *= p->sets->set( EVOKER_AUGMENTATION, TWW2, B2 )->effectN( 1 ).percent();
+
+        if ( rumbling_earth )
+        {
+          add_child( rumbling_earth );
+        }
+        if ( chrono_flames )
+        {
+          add_child( chrono_flames );
+        }
+        if ( reverberations )
+        {
+          add_child( reverberations );
+        }
+
       }
     }
 
-    upheaval_damage_t( evoker_t* p ) : upheaval_damage_t( p, "upheaval_damage", false )
+    upheaval_damage_t( evoker_t* p ) : upheaval_damage_t( p, "upheaval_damage", false, false )
     {
     }
 
@@ -5536,7 +5558,6 @@ struct upheaval_t : public empowered_charge_spell_t
             rumbling_earth->schedule_execute( emp_state );
           } );
         }
-
       }
 
       empowered_release_spell_t::execute();
@@ -5555,18 +5576,18 @@ struct upheaval_t : public empowered_charge_spell_t
 
     if ( p->talent.chronowarden.reverberations.enabled() )
     {
-      add_child( p->get_secondary_action<reverberations_t>( "upheaval_dot" ) );
+      add_child( p->get_secondary_action<reverberations_t>( "upheaval_damage_dot" ) );
     }
 
     if ( p->talent.rumbling_earth.enabled() )
     {
       add_child(
-          p->get_secondary_action<upheaval_damage_t>( "upheaval_rumbling_earth", "upheaval_rumbling_earth", true ) );
+          p->get_secondary_action<upheaval_damage_t>( "upheaval_damage_rumbling_earth", "upheaval_damage_rumbling_earth", true, false ) );
     }
 
     if ( p->talent.chronowarden.afterimage.enabled() )
     {
-      add_child( p->get_secondary_action<living_flame_damage_t>( "afterimage_upheaval", "afterimage_upheaval", true ) );
+      add_child( p->get_secondary_action<living_flame_damage_t>( "afterimage_upheaval_damage", "afterimage_upheaval_damage", true ) );
     }
   }
 };
@@ -8158,6 +8179,51 @@ void evoker_t::init_spells()
 void evoker_t::init_special_effects()
 {
   player_t::init_special_effects();
+
+  if ( is_ptr() && sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B2 ) )
+  {
+    struct augmentation_tww2_2pc : public dbc_proc_callback_t
+    {
+      spells::upheaval_t::upheaval_damage_t* upheaval_set;
+
+      augmentation_tww2_2pc( evoker_t* p, const special_effect_t& e )
+        : dbc_proc_callback_t( p, e ), upheaval_set( nullptr )
+      {
+        allow_pet_procs = false;
+        initialize();
+        activate();
+
+        upheaval_set = p->get_secondary_action<spells::upheaval_t::upheaval_damage_t>(
+            "upheaval_tww2_2pc", "upheaval_tww2_2pc", false, true );
+        upheaval_set->dual = false;
+      }
+
+      void execute( action_t*, action_state_t* s ) override
+      {
+        if ( s->target->is_sleeping() )
+          return;
+
+        double da = s->result_amount;
+        if ( da > 0 )
+        {
+          auto emp_state       = upheaval_set->get_state();
+          emp_state->target    = s->target;
+          upheaval_set->target = s->target;
+          upheaval_set->snapshot_state( emp_state, upheaval_set->amount_type( emp_state ) );
+          upheaval_set->cast_state( emp_state )->empower = EMPOWER_1;
+          upheaval_set->schedule_execute( emp_state );
+        }
+      }
+    };
+
+    auto set_spell       = sets->set( EVOKER_AUGMENTATION, TWW2, B2 );
+    auto set_effect      = new special_effect_t( this );
+    set_effect->name_str = set_spell->name_cstr();
+    set_effect->type     = SPECIAL_EFFECT_EQUIP;
+    set_effect->spell_id = set_spell->id();
+
+    auto cb = new augmentation_tww2_2pc( this, *set_effect );
+  }
 }
 
 void evoker_t::init_assessors()
