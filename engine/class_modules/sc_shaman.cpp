@@ -487,6 +487,8 @@ public:
     action_t* flame_shock_lmt;
     action_t* flame_shock;
     action_t* elemental_blast;
+    action_t* fire_elemental;
+    action_t* storm_elemental;
 
     action_t* lightning_rod;
     action_t* tempest_strikes;
@@ -618,6 +620,7 @@ public:
     buff_t* thunderstrike_ward;
 
     buff_t* tww1_4pc_ele;
+    buff_t* jackpot;
 
     // Enhancement
     buff_t* maelstrom_weapon;
@@ -792,6 +795,7 @@ public:
     proc_t* surge_of_power_flame_shock;
     proc_t* surge_of_power_tempest;
     proc_t* surge_of_power_wasted;
+    proc_t* jackpot;
 
     proc_t* elemental_blast_haste;
     proc_t* elemental_blast_crit;
@@ -1098,6 +1102,11 @@ public:
     player_talent_t ancestral_swiftness;
 
   } talent;
+
+  struct rppms_t
+  {
+    real_ppm_t* jackpot;
+  } rppm;
 
   // Misc Spells
   struct
@@ -1803,6 +1812,8 @@ public:
   bool affected_by_ele_tww1_4pc_cc;
   bool affected_by_ele_tww1_4pc_cd;
 
+  bool affected_by_ele_tww2_4pc_da;
+
   bool affected_by_elemental_weapons_da;
   bool affected_by_elemental_weapons_ta;
 
@@ -1850,6 +1861,7 @@ public:
       affected_by_lightning_elemental_ta( false ),
       affected_by_ele_tww1_4pc_cc( false ),
       affected_by_ele_tww1_4pc_cd( false ),
+      affected_by_ele_tww2_4pc_da( false ),
       affected_by_elemental_weapons_da( false ),
       affected_by_elemental_weapons_ta( false ),
       may_proc_flowing_spirits( false ),
@@ -1938,6 +1950,8 @@ public:
       player->sets->set( SHAMAN_ELEMENTAL, TWW1, B4 )->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by_ele_tww1_4pc_cd = ab::data().affected_by(
       player->sets->set( SHAMAN_ELEMENTAL, TWW1, B4 )->effectN( 1 ).trigger()->effectN( 2 ) );
+
+    affected_by_ele_tww2_4pc_da = ab::data().affected_by( player->buff.jackpot->data().effectN( 1 ) );
 
     affected_by_elemental_weapons_da = p()->talent.elemental_weapons.ok() && ab::data().affected_by(
       p()->spell.elemental_weapons->effectN( 1 ) );
@@ -2114,6 +2128,11 @@ public:
          !p()->buff.storm_elemental->check() && !p()->buff.lesser_storm_elemental->up())
     {
       m *= 1.0 + p()->buff.fury_of_the_storms->data().effectN( 2 ).percent();
+    }
+
+    if (affected_by_ele_tww2_4pc_da && p()->buff.jackpot->up())
+    {
+      m *= 1.0 + p()->buff.jackpot->data().effectN( 1 ).percent();
     }
 
     if ( affected_by_elemental_weapons_da )
@@ -2863,6 +2882,19 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     if ( may_proc_flowing_spirits )
     {
       p()->trigger_flowing_spirits( execute_state );
+    }
+
+    if ( p()->is_ptr() && p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, TWW2, B2 ) && p()->rppm.jackpot->trigger() )
+    {
+      p()->proc.jackpot->occur();
+      if ( p()->talent.storm_elemental->ok() )
+      {
+        p()->action.storm_elemental->execute();
+      }
+      else
+      {
+        p()->action.fire_elemental->execute();
+      }
     }
   }
 
@@ -4655,7 +4687,7 @@ struct elemental_overload_spell_t : public shaman_spell_t
 
     if ( p()->buff.ascendance->up() )
     {
-      m *= 1.0 + p()->talent.ascendance->effectN( 8 ).percent();
+      m *= 1.0 + p()->spell.ascendance->effectN( 8 ).percent();
     }
 
     return m;
@@ -5878,6 +5910,10 @@ struct fire_elemental_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->summon_elemental( elemental::GREATER_FIRE );
+    if ( p()->is_ptr() && p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, TWW2, B4 ) )
+    {
+      p()->buff.jackpot->trigger();
+    }
   }
 
   bool ready() override
@@ -5913,6 +5949,10 @@ struct storm_elemental_t : public shaman_spell_t
     p()->buff.wind_gust->expire();
 
     p()->summon_elemental( elemental::GREATER_STORM );
+    if ( p()->is_ptr() && p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, TWW2, B4 ) )
+    {
+      p()->buff.jackpot->trigger();
+    }
   }
 };
 
@@ -6504,7 +6544,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
     if ( exec_type == spell_variant::ASCENDANCE )
     {
-      m *= p()->talent.ascendance->effectN( 10 ).percent();
+      m *= p()->spell.ascendance->effectN( 10 ).percent();
     }
 
     m *= 1.0 + p()->buff.flux_melting->value();
@@ -8846,6 +8886,19 @@ struct ascendance_t : public shaman_spell_t
 
   void execute() override
   {
+    if ( p()->is_ptr() && p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, TWW2, B2 ) )
+    {
+      p()->proc.jackpot->occur();
+      if ( p()->talent.storm_elemental->ok() )
+      {
+        p()->action.storm_elemental->execute();
+      }
+      else
+      {
+        p()->action.fire_elemental->execute();
+      }
+    }
+
     shaman_spell_t::execute();
 
     p()->cooldown.strike->reset( false );
@@ -8868,6 +8921,7 @@ struct ascendance_t : public shaman_spell_t
       // Apparently the Flame Shock durations get set to current Flame Shock max duration,
       // bypassing normal dot refresh behavior.
       auto tl = target_list();
+      auto test = data();
       for ( size_t i = 0; i < std::min( tl.size(), as<size_t>( data().effectN( 7 ).base_value() ) ); ++i )
       {
         p()->trigger_secondary_flame_shock( tl[ i ], spell_variant::ASCENDANCE );
@@ -11105,6 +11159,12 @@ void shaman_t::create_actions()
     action.reactivity = new sundering_reactivity_t( this );
   }
 
+  if (sets->has_set_bonus(SHAMAN_ELEMENTAL, TWW2, B2))
+  {
+    action.fire_elemental = new fire_elemental_t( this, {});
+    action.storm_elemental = new storm_elemental_t( this, {} );
+  }
+
   // Generic Actions
   action.flame_shock = new flame_shock_t( this, spell_variant::NORMAL );
   action.flame_shock->background = true;
@@ -11690,17 +11750,16 @@ void shaman_t::init_spells()
   //
   // Misc spells
   //
-  spell.ascendance          = talent.ascendance.spell();
-  if ( !spell.ascendance->ok() && talent.deeply_rooted_elements.ok() )
-  {
+
     switch ( specialization() )
     {
-      case SHAMAN_ELEMENTAL:   spell.ascendance = find_spell( 114050 ); break;
+      case SHAMAN_ELEMENTAL:
+        spell.ascendance = find_spell( 1219480 );
+        break;
       case SHAMAN_ENHANCEMENT: spell.ascendance = find_spell( 114051 ); break;
       case SHAMAN_RESTORATION: spell.ascendance = find_spell( 114052 ); break;
       default:                 break;
     }
-  }
 
   spell.resurgence          = find_spell( 101033 );
   spell.maelstrom_weapon    = find_spell( 187881 );
@@ -13186,6 +13245,11 @@ void shaman_t::create_buffs()
           ->set_default_value_from_effect( 1 )
           ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, TWW1, B4 ) );
 
+  buff.jackpot = make_buff( this, "jackpot!", find_spell( 1218612 ) );
+      
+
+  rppm.jackpot = get_rppm( "jackpot", find_spell( 1215675 ) );
+
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
     ->set_default_value( talent.primordial_wave->effectN( specialization() == SHAMAN_ELEMENTAL ? 3 : 4 ).percent() )
     ->set_trigger_spell( talent.primordial_wave );
@@ -13486,6 +13550,8 @@ void shaman_t::init_procs()
   proc.ascendance_elemental_blast_overload     = get_proc( "Ascendance: Elemental Blast" );
   proc.ascendance_icefury_overload      = get_proc( "Ascendance: Icefury" );
   proc.ascendance_earthquake_overload      = get_proc( "Ascendance: Earthquake" );
+
+  proc.jackpot = get_proc( "JACKPOT!" );
 
   proc.potm_tempest_overload            = get_proc( "PotM: Tempest" );
   proc.surge_of_power_lightning_bolt = get_proc( "Surge of Power: Lightning Bolt" );
