@@ -159,8 +159,6 @@ void monk_action_t<Base>::apply_buff_effects()
   // TWW S1 Set Effects
   apply_affecting_aura( p()->sets->set( MONK_BREWMASTER, TWW1, B2 ) );
 
-  // TWW S2 Set Effects
-
   // TWW S3 Set Effects
 
   // TWW S4 Set Effects
@@ -236,6 +234,8 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.flow_of_battle_damage );
 
   // TWW S2 Set Effects
+  parse_effects( p()->tier.tww2.winning_streak );
+  parse_effects( p()->tier.tww2.luck_of_the_draw );
 
   // TWW S3 Set Effects
 
@@ -1743,6 +1743,8 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     apply_affecting_aura( p->talent.brewmaster.fluidity_of_motion );
     apply_affecting_aura( p->talent.brewmaster.shadowboxing_treads );
     apply_affecting_aura( p->talent.brewmaster.elusive_footwork );
+
+    parse_effects( p->tier.tww2.opportunistic_strike, DECREMENT_BUFF );
 
     if ( player->sets->set( MONK_BREWMASTER, TWW1, B4 )->ok() )
       keg_smash_cooldown = player->get_cooldown( "keg_smash" );
@@ -4003,11 +4005,11 @@ struct flurry_of_xuen_t : public monk_spell_t
   {
     double da = monk_spell_t::composite_da_multiplier( s );
 
-      if ( p()->buff.storm_earth_and_fire->check() )
-      {
-        // Tested 23/10/2024. Flurry of Xuen deals additional damage during SEF.
-        da *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
-      }
+    if ( p()->buff.storm_earth_and_fire->check() )
+    {
+      // Tested 23/10/2024. Flurry of Xuen deals additional damage during SEF.
+      da *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
+    }
     return da;
   }
 };
@@ -5944,7 +5946,7 @@ void aspect_of_harmony_t::construct_actions( monk_t *player )
   damage = new spender_t::tick_t<monk_spell_t>( player, "aspect_of_harmony_damage",
                                                 player->talent.master_of_harmony.aspect_of_harmony_damage );
   heal   = new spender_t::tick_t<monk_heal_t>( player, "aspect_of_harmony_heal",
-                                             player->talent.master_of_harmony.aspect_of_harmony_heal );
+                                               player->talent.master_of_harmony.aspect_of_harmony_heal );
 
   if ( player->specialization() == MONK_BREWMASTER )
     purified_spirit = new spender_t::purified_spirit_t<monk_spell_t>(
@@ -7262,6 +7264,15 @@ void monk_t::init_spells()
     tier.tww1.ww_4pc_dmg                  = find_spell( 454508 );
     tier.tww1.brm_4pc_damage_buff         = find_spell( 457257 );
     tier.tww1.brm_4pc_free_keg_smash_buff = find_spell( 457271 );
+
+    tier.tww2.ww_2pc                       = sets->set( MONK_WINDWALKER, TWW2, B2 );
+    tier.tww2.ww_2pc_winning_streak        = tier.tww2.ww_2pc->effectN( 1 ).trigger();
+    tier.tww2.ww_4pc                       = sets->set( MONK_WINDWALKER, TWW2, B4 );
+    tier.tww2.ww_4pc_cashout               = find_spell( 1216498 );
+    tier.tww2.brm_2pc                      = sets->set( MONK_BREWMASTER, TWW2, B2 );
+    tier.tww2.brm_2pc_luck_of_the_draw     = tier.tww2.brm_2pc->effectN( 1 ).trigger();
+    tier.tww2.brm_4pc                      = sets->set( MONK_BREWMASTER, TWW2, B4 );
+    tier.tww2.brm_4pc_opportunistic_strike = find_spell( 1217999 );
   }
 
   // Passives =========================================
@@ -8104,6 +8115,29 @@ void monk_t::create_buffs()
                                                         "wisdom_of_the_wall_mastery", find_spell( 452685 ) )
                                         ->set_trigger_spell( talent.shado_pan.wisdom_of_the_wall )
                                         ->set_default_value_from_effect( 1 );
+
+  // TWW S2 Tier Buffs
+  // WW
+  tier.tww2.winning_streak =
+      make_buff_fallback( tier.tww2.ww_2pc->ok(), this, "winning_streak", tier.tww2.ww_2pc_winning_streak );
+  tier.tww2.cashout = make_buff_fallback( tier.tww2.ww_4pc->ok(), this, "cashout", tier.tww2.ww_4pc_cashout );
+  // BrM
+  tier.tww2.luck_of_the_draw =
+      make_buff_fallback( tier.tww2.brm_2pc->ok(), this, "luck_of_the_draw", tier.tww2.brm_2pc_luck_of_the_draw )
+          ->set_stack_change_callback( [ & ]( buff_t *, int old, int ) {
+            if ( !old )
+            {
+              buff.fortifying_brew->trigger( tier.tww2.brm_2pc->effectN( 1 ).time_value() );
+              tier.tww2.opportunistic_strike->trigger();
+            }
+          } );
+  tier.tww2.opportunistic_strike = make_buff_fallback( tier.tww2.brm_4pc->ok(), this, "opportunistic_strike",
+                                                       tier.tww2.brm_4pc_opportunistic_strike )
+                                       ->set_stack_change_callback( [ & ]( buff_t *b, int, int new_ ) {
+                                         if ( new_ < b->max_stack() )
+                                           cooldown.blackout_kick->adjust( -b->data().effectN( 1 ).time_value() );
+                                       } );
+
   // ------------------------------
   // Movement
   // ------------------------------
@@ -8534,6 +8568,10 @@ void monk_t::init_special_effects()
           buff.inner_compass_crane_stance->trigger();
         } );
   }
+
+  // TWW2 Tier
+  if ( tier.tww2.brm_2pc->ok() )
+    create_proc_callback( tier.tww2.brm_2pc, []( monk_t *, action_state_t * ) { return true; }, PF2_ALL_HIT );
 
   // ======================================
 

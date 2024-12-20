@@ -1278,6 +1278,23 @@ public:
       const spell_data_t *brm_4pc_damage_buff;
       const spell_data_t *brm_4pc_free_keg_smash_buff;
     } tww1;
+
+    struct
+    {
+      const spell_data_t *ww_2pc;
+      const spell_data_t *ww_2pc_winning_streak;
+      const spell_data_t *ww_4pc;
+      const spell_data_t *ww_4pc_cashout;
+      propagate_const<buff_t *> winning_streak;
+      propagate_const<buff_t *> cashout;
+
+      const spell_data_t *brm_2pc;
+      const spell_data_t *brm_2pc_luck_of_the_draw;
+      const spell_data_t *brm_4pc;
+      const spell_data_t *brm_4pc_opportunistic_strike;
+      propagate_const<buff_t *> luck_of_the_draw;
+      propagate_const<buff_t *> opportunistic_strike;
+    } tww2;
   } tier;
 
   struct pets_t
