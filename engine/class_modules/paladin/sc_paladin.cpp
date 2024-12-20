@@ -2908,6 +2908,8 @@ void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, tim
 
 struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
+  timespan_t luck_of_the_draw_extend;
+  timespan_t luck_of_the_draw_max_duration;
   struct forges_reckoning_t : public paladin_spell_t
   {
     forges_reckoning_t( paladin_t* p ) : paladin_spell_t( "forges_reckoning", p, p->spells.lightsmith.forges_reckoning )
@@ -2931,6 +2933,8 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
 
     aoe         = -1;
     use_off_gcd = is_sotr = true;
+    luck_of_the_draw_extend       = 0.5_s;
+    luck_of_the_draw_max_duration = 20_s;
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
@@ -2988,10 +2992,12 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     }
     if ( p()->sets->set( PALADIN_PROTECTION, TWW2, B4 ) && p()->buffs.pp_2pc_luck_of_the_draw->up() )
     {
-      timespan_t trigger_duration = timespan_t::from_seconds( 0.5 );
-      // TODO Add Max Extension
+        timespan_t luck_of_the_draw_time =  p()->buffs.pp_2pc_luck_of_the_draw->elapsed( sim->current_time() ) + p()->buffs.pp_2pc_luck_of_the_draw->remains();
+        timespan_t extend_by = std::min( luck_of_the_draw_time + luck_of_the_draw_extend, luck_of_the_draw_max_duration ) - luck_of_the_draw_time;
+        p()->sim->print_debug( "Luck Of The Draw Extended By: {}", extend_by );
+        p()->buffs.pp_2pc_luck_of_the_draw->extend_duration( p(), extend_by );
 
-      p()->buffs.pp_2pc_luck_of_the_draw->extend_duration( p(), trigger_duration );
+      //Refunds Holy Power
       int randomNum = int( rng().range( 1.00, 3.99 ) );
       p()->sim->print_log( "randomNum: {}", randomNum );
       p()->resource_gain( RESOURCE_HOLY_POWER, as<int>( randomNum ), p()->gains.luck_of_the_draw );
