@@ -2986,6 +2986,31 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     {
       forges_reckoning->execute_on_target( target );
     }
+    if ( p()->sets->set( PALADIN_PROTECTION, TWW2, B4 ) && p()->buffs.pp_2pc_luck_of_the_draw->up() )
+    {
+      timespan_t trigger_duration = timespan_t::from_seconds( 0.5 );
+      //TODO Add Max Extension
+      p()->buffs.pp_2pc_luck_of_the_draw->extend_duration( p(), trigger_duration );
+
+      if ( rng().roll( 0.33 ) )
+      {
+        p()->sim->print_log( "Rolled 3" );
+        p()->resource_gain( RESOURCE_HOLY_POWER, as<int>( 3 ), p()->gains.luck_of_the_draw );
+        return;
+      }
+      else if ( rng().roll( 0.5 ) )
+      {
+        p()->sim->print_log( "Rolled 2" );
+        p()->resource_gain( RESOURCE_HOLY_POWER, as<int>( 2 ), p()->gains.luck_of_the_draw );
+        return;
+      }
+      else      
+      {
+        p()->sim->print_log( "Rolled 1" );
+        p()->resource_gain( RESOURCE_HOLY_POWER, as<int>( 1 ), p()->gains.luck_of_the_draw );
+        return;
+      }
+    }
   }
 
   double action_multiplier() const override
@@ -3708,6 +3733,7 @@ void paladin_t::init_gains()
   gains.hp_crusading_strikes       = get_gain( "crusading_strikes" );
   gains.hp_divine_auxiliary        = get_gain( "divine_auxiliary" );
   gains.eye_of_tyr                 = get_gain( "eye_of_tyr" );
+  gains.luck_of_the_draw           = get_gain( "luck_of_the_draw" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -4162,7 +4188,36 @@ void paladin_t::init_special_effects()
     auto cb = new divine_inspiration_cb_t( this, *divine_inspiration_driver );
     cb->initialize();
   }
-}
+
+  if ( sets->set( PALADIN_PROTECTION, TWW2, B2 ) )
+    {
+      struct luck_of_the_draw_cb_t : public dbc_proc_callback_t
+      {
+        paladin_t* p;
+
+        luck_of_the_draw_cb_t( paladin_t* player, const special_effect_t& effect )
+          : dbc_proc_callback_t( player, effect ), p( player )
+        {
+        }
+
+        void execute( action_t*, action_state_t* ) override
+        {
+          p->buffs.pp_2pc_luck_of_the_draw->trigger();
+        }
+      };
+
+      auto const luck_of_the_draw_driver = new special_effect_t( this );
+      luck_of_the_draw_driver->name_str  = "luck_of_the_draw_driver";
+      luck_of_the_draw_driver->spell_id  = 1215987;
+      special_effects.push_back( luck_of_the_draw_driver );
+
+      auto cb = new luck_of_the_draw_cb_t( this, *luck_of_the_draw_driver );
+      cb->initialize();
+    }
+  }
+
+
+
 
 void paladin_t::init_rng()
 {
@@ -4887,6 +4942,15 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
     player_t::assess_damage( school, dtype, s );
     return;
   }
+  
+  if (sets->set(PALADIN_PROTECTION, TWW2, B2))
+  {
+   //Just writing a % for now, figure out how to do rppm effects
+      if (rng().roll(0.1))
+      {
+    //    buffs.pp_2pc_luck_of_the_draw->trigger();
+    }
+  } 
 
   // On a block event, trigger Holy Shield
   if ( s->block_result == BLOCK_RESULT_BLOCKED )

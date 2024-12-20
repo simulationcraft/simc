@@ -204,7 +204,9 @@ public:
     buff_t* sanctification_empower;  // T31 2pc consecration effect
     buff_t* rising_wrath; // TWW1 4pc
     buff_t* heightened_wrath; // TWW1 4pc
-
+    buff_t* pp_2pc_luck_of_the_draw; // TWW2 2pc Protection
+    //buff_t* dunno_name; //TWW2 4pc Protection
+    
     // Ret
     buffs::crusade_buff_t* crusade;
     buffs::shield_of_vengeance_buff_t* shield_of_vengeance;
@@ -292,6 +294,7 @@ public:
     gain_t* hp_crusading_strikes;
     gain_t* hp_divine_auxiliary;
     gain_t* eye_of_tyr;
+    gain_t* luck_of_the_draw;
   } gains;
 
   // Spec Passives
@@ -1181,7 +1184,7 @@ public:
     bool crusade, highlords_judgment, highlords_judgment_hidden, final_reckoning_st, final_reckoning_aoe,
       blades_of_light, divine_hammer, ret_t29_2p, ret_t29_4p, rise_from_ash; // Ret
     bool avenging_crusader;                                                                // Holy
-    bool bastion_of_light, sentinel, heightened_wrath;                                     // Prot
+    bool bastion_of_light, sentinel, heightened_wrath, pp_2pc_luck_of_the_draw;  // Prot
     bool gleaming_rays; // Herald of the Sun
   } affected_by;
 
