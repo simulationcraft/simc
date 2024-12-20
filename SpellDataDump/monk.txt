@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.58187 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.58238 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -3464,7 +3464,8 @@ Effects          :
 #11 (id=260842)  : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 45 | Scaled Value: 45 | Misc Value 2: 0x4 | Target: Self (1)
 #12 (id=260843)  : Apply Aura (6) | Threat (10)
-                   Base Value: 650 | Scaled Value: 650 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 815 | Scaled Value: 815 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (650 -> 815)
 #13 (id=260844)  : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 #14 (id=260845)  : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
