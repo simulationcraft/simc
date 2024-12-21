@@ -23,7 +23,7 @@ waist=shattered_eye_cincture,id=212430,ilevel=639,gem_id=213494
 legs=coattails_of_violet_rebirth,id=212091,ilevel=639,enchant_id=7534
 feet=tainted_earthshard_walkers,id=221082,ilevel=639,enchant_id=7424
 finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213482/213482,enchant_id=7340
-finger2=,id=228411,gem_id=228638/228639/228646,bonus_id=12025/1511,enchant_id=7340
+finger2=,id=228411,gem_id=228634/228639/228646,bonus_id=12025/1511,enchant_id=7340
 trinket2=treacherous_transmitter,id=221023,ilevel=639
 trinket1=spymasters_web,id=220202,ilevel=639
 main_hand=sovereigns_disdain,id=212394,enchant_id=7460,ilevel=639
@@ -56,7 +56,7 @@ waist=shattered_eye_cincture,id=212430,ilevel=639,gem_id=213494
 legs=coattails_of_violet_rebirth,id=212091,ilevel=639,enchant_id=7534
 feet=tainted_earthshard_walkers,id=221082,ilevel=639,enchant_id=7424
 finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213482/213482,enchant_id=7340
-finger2=,id=228411,gem_id=228638/228639/228646,bonus_id=12025/1511,enchant_id=7340
+finger2=,id=228411,gem_id=228634/228639/228646,bonus_id=12025/1511,enchant_id=7340
 trinket2=treacherous_transmitter,id=221023,ilevel=639
 trinket1=spymasters_web,id=220202,ilevel=639
 main_hand=sovereigns_disdain,id=212394,enchant_id=7460,ilevel=639
