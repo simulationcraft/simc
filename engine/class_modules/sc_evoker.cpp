@@ -1091,7 +1091,7 @@ struct evoker_t : public player_t
     const spell_data_t* temporal_wound;
     // Defy Fate - Non DPS
     // Timelessness - Non DPS
-    // Seismic Slam - Non DPS
+    player_talent_t rockfall;
     player_talent_t volcanism;
     // Perilous Fate / Chrono Ward - Non DPS
     // Stretch Time - Non DPS
@@ -1255,6 +1255,8 @@ struct evoker_t : public player_t
     propagate_const<proc_t*> overwritten_leaping_flames;
     propagate_const<proc_t*> diverted_power;
     propagate_const<proc_t*> destroyers_scarred_wards;
+    propagate_const<proc_t*> rockfall;
+    propagate_const<proc_t*> tww2_4pc;
     
   } proc;
 
@@ -3445,7 +3447,7 @@ public:
 
     for ( auto& t : p()->allies_with_my_prescience )
     {
-      if ( t != player &&
+      if ( t != player && ( !p()->is_ptr() || t->role != ROLE_TANK && t->role != ROLE_HEAL ) &&
            ( std::count_if( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
                             [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.ebon_might->up(); } ) +
              p()->get_target_data( t )->buffs.ebon_might->up() ) <= 2 )
@@ -3460,6 +3462,9 @@ public:
 
     for ( const auto& t : sim->player_no_pet_list )
     {
+      if ( p()->is_ptr() && ( t->role == ROLE_TANK || t->role == ROLE_HEAL ) )
+        continue;
+
       if ( !t->is_sleeping() && t != player && !p()->get_target_data( t )->buffs.ebon_might->up() )
       {
         if ( range::find( p()->allies_with_my_prescience, t ) == p()->allies_with_my_prescience.end() )
@@ -5252,8 +5257,13 @@ struct eruption_t : public essence_spell_t
 
   struct eruption_mass_eruption_t : public evoker_spell_t
   {
+    double tww2_4pc_mult;
+
     eruption_mass_eruption_t( evoker_t* p, std::string_view n )
-      : evoker_spell_t( n, p, p->talent.scalecommander.mass_eruption_damage )
+      : evoker_spell_t( n, p, p->talent.scalecommander.mass_eruption_damage ),
+        tww2_4pc_mult( p->is_ptr() && p->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 )
+                           ? p->sets->set( EVOKER_AUGMENTATION, TWW2, B4 )->effectN( 2 ).percent()
+                           : 0.0 )
     {
       aoe              = -1;
       split_aoe_damage = true;
@@ -5269,6 +5279,9 @@ struct eruption_t : public essence_spell_t
                             p()->talent.ricocheting_pyroclast->effectN( 2 ).base_value() ) *
                       p()->talent.ricocheting_pyroclast->effectN( 1 ).percent();
       }
+
+    if ( p()->buff.essence_burst->check() && p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 ) )
+        da *= 1.0 + tww2_4pc_mult;
 
       return da;
     }
@@ -5287,6 +5300,7 @@ struct eruption_t : public essence_spell_t
   int mass_eruption_max_targets;
   double motes_chance;
   bool is_overlord;
+  double tww2_4pc_mult;
 
   eruption_t( evoker_t* p, std::string_view name ) : eruption_t( p, name, {} )
   {
@@ -5301,7 +5315,10 @@ struct eruption_t : public essence_spell_t
       mass_eruption_mult( p->talent.scalecommander.mass_eruption->effectN( 2 ).percent() ),
       mass_eruption_max_targets( as<int>( p->talent.scalecommander.mass_eruption_buff->effectN( 1 ).base_value() ) ),
       motes_chance( p->talent.motes_of_possibility->proc_chance() ),
-      is_overlord( false )
+      is_overlord( false ),
+      tww2_4pc_mult( p->is_ptr() && p->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 )
+                         ? p->sets->set( EVOKER_AUGMENTATION, TWW2, B4 )->effectN( 2 ).percent()
+                         : 0.0 )
   {
     aoe              = -1;
     split_aoe_damage = true;
@@ -5343,6 +5360,9 @@ struct eruption_t : public essence_spell_t
     {
       da *= 1 + ( mass_eruption_max_targets - mass_eruption_targets() ) * mass_eruption_mult;
     }
+
+    if ( p()->buff.essence_burst->check() && p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 ) )
+      da *= 1.0 + tww2_4pc_mult;
 
     return da;
   }
@@ -5561,9 +5581,23 @@ struct upheaval_t : public empowered_charge_spell_t
 
       empowered_release_spell_t::execute();
 
-      if ( !is_rumbling_earth && p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW1, B2 ) )
+      if ( !is_rumbling_earth )
       {
-        p()->buff.volcanic_upsurge->trigger();
+        if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW1, B2 ) )
+          p()->buff.volcanic_upsurge->trigger();
+
+        if ( p()->talent.rockfall.enabled() && rng().roll( p()->talent.rockfall->effectN( 2 ).percent() ) )
+        {
+          p()->buff.essence_burst->trigger();
+          p()->proc.rockfall->occur();
+        }
+
+        if ( p()->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B4 ) &&
+             rng().roll( p()->sets->set( EVOKER_AUGMENTATION, TWW2, B4 )->effectN( 1 ).percent() ) )
+        {
+          p()->buff.essence_burst->trigger();
+          p()->proc.tww2_4pc->occur();
+        }
       }
     }
   };
@@ -5867,12 +5901,14 @@ struct breath_of_eons_t : public evoker_spell_t
   timespan_t plot_duration;
   action_t* melt_armor_dot;
   cooldown_t* virtual_cooldown;
+  upheaval_t::upheaval_damage_t* upheaval_set;
 
   breath_of_eons_t( evoker_t* p, std::string_view options_str )
     : evoker_spell_t( "breath_of_eons", p, p->talent.breath_of_eons, options_str ),
       ebon( nullptr ),
       eruption( nullptr ),
-      melt_armor_dot( nullptr )
+      melt_armor_dot( nullptr ),
+      upheaval_set( nullptr )
   {
     travel_delay = 0.9;   // guesstimate, TODO: confirm
     travel_speed = 19.5;  // guesstimate, TODO: confirm
@@ -5903,6 +5939,14 @@ struct breath_of_eons_t : public evoker_spell_t
       add_child( melt_armor_dot );
     }
 
+    if ( p->is_ptr() && p->sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B2 ) )
+    {
+      upheaval_set = p->get_secondary_action<spells::upheaval_t::upheaval_damage_t>(
+          "upheaval_tww2_2pc_eons", "upheaval_tww2_2pc_eons", false, true );
+
+      add_child( upheaval_set );
+    }
+
     plot_duration = timespan_t::from_seconds( p->talent.plot_the_future->effectN( 1 ).base_value() );
   }
 
@@ -5911,6 +5955,16 @@ struct breath_of_eons_t : public evoker_spell_t
     evoker_spell_t::impact( s );
 
     p()->get_target_data( s->target )->debuffs.temporal_wound->trigger();
+
+    if ( s->chain_target == 0 && upheaval_set )
+    {
+      auto emp_state       = upheaval_set->get_state();
+      emp_state->target    = s->target;
+      upheaval_set->target = s->target;
+      upheaval_set->snapshot_state( emp_state, upheaval_set->amount_type( emp_state ) );
+      upheaval_set->cast_state( emp_state )->empower = EMPOWER_1;
+      upheaval_set->schedule_execute( emp_state );
+    }
 
     if ( eruption && s->chain_target < p()->talent.overlord->effectN( 1 ).base_value() )
     {
@@ -7842,6 +7896,8 @@ void evoker_t::init_procs()
   proc.overwritten_leaping_flames            = get_proc( "Overwritten Leaping Flames" );
   proc.diverted_power                        = get_proc( "Diverted Power" );
   proc.destroyers_scarred_wards              = get_proc( "Evoker Devastation 11.0 Class Set 4pc" );
+  proc.rockfall                              = get_proc( "Rockfall" );
+  proc.tww2_4pc                              = get_proc( "Essence Bursts from TWW Season 2 4pc" );
 }
 
 void evoker_t::init_base_stats()
@@ -8011,6 +8067,7 @@ void evoker_t::init_spells()
   // Defy Fate - Non DPS
   // Timelessness - Non DPS
   // Seismic Slam - Non DPS
+  talent.rockfall = ST( "Rockfall" );
   talent.volcanism = ST( "Volcanism" );
   // Perilous Fate / Chrono Ward - Non DPS
   // Stretch Time - Non DPS
@@ -8771,6 +8828,7 @@ void evoker_t::apply_affecting_auras_late( action_t& action )
   // Augmentation
   action.apply_affecting_aura( talent.dream_of_spring );
   action.apply_affecting_aura( talent.unyielding_domain );
+  action.apply_affecting_aura( talent.rockfall );
   action.apply_affecting_aura( talent.volcanism );
   action.apply_affecting_aura( talent.interwoven_threads );
   action.apply_affecting_aura( talent.arcane_reach );
