@@ -991,7 +991,7 @@ public:
   template <typename T, typename... Ts>
   T* get_secondary_action( std::string_view n, Ts&&... args )
   {
-    auto pair = get_secondary_action_pair<T>( n, std::forward<Ts>( args ) );
+    auto pair = get_secondary_action_pair<T>( n, args );
     return pair.first;
   }
 
