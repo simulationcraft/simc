@@ -3647,6 +3647,7 @@ void priest_t::init_special_effects()
       469925, dbc_proc_callback_t::trigger_fn_type::CONDITION,
       []( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) { return a->data().id() != 447448; } );
 
+  init_special_effects_shadow();
   base_t::init_special_effects();
 }
 
