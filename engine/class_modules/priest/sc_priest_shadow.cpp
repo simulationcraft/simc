@@ -2607,7 +2607,7 @@ void priest_t::init_special_effects_shadow()
     set_effect->type     = SPECIAL_EFFECT_EQUIP;
     set_effect->spell_id = set_spell->id();
 
-    auto cb = new shadow_tww2_2pc( this, *set_effect );
+    new shadow_tww2_2pc( this, *set_effect );
   }
 }
 
