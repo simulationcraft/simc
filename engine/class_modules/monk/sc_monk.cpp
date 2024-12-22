@@ -2068,7 +2068,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       add_child( chi_x );
     }
 
-    if ( p->baseline.windwalker.mark_of_the_crane->ok() && p->user_options.motc_override == 0 )
+    if ( !p->is_ptr() && p->baseline.windwalker.mark_of_the_crane->ok() && p->user_options.motc_override == 0 )
     {
       p->register_on_kill_callback( [ p ]( player_t *target ) {
         if ( p->sim->event_mgr.canceled )
@@ -2593,7 +2593,7 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
 
     p()->buff.tigers_ferocity->trigger();
 
-    if ( p()->talent.windwalker.darting_hurricane.ok() )
+    if ( p()->talent.windwalker.darting_hurricane.ok()  && !p()->is_ptr())
       p()->buff.darting_hurricane->increment(
           as<int>( p()->talent.windwalker.darting_hurricane->effectN( 2 )
                        .base_value() ) );  // increment is used to not incur the rppm cooldown
@@ -6631,6 +6631,9 @@ void monk_t::trigger_celestial_fortune( action_state_t *s )
 
 void monk_t::trigger_mark_of_the_crane( action_state_t *s )
 {
+  if ( is_ptr() )
+      return;
+
   if ( !baseline.windwalker.mark_of_the_crane->ok() )
     return;
 
@@ -6644,6 +6647,8 @@ void monk_t::trigger_mark_of_the_crane( action_state_t *s )
 player_t *monk_t::next_mark_of_the_crane_target( action_state_t *state )
 {
   std::vector<player_t *> targets = state->action->target_list();
+  if ( is_ptr() )
+    return nullptr;
   if ( targets.empty() )
   {
     return nullptr;
@@ -6699,6 +6704,8 @@ player_t *monk_t::next_mark_of_the_crane_target( action_state_t *state )
 // Currently at maximum stacks for target count
 bool monk_t::mark_of_the_crane_max()
 {
+  if ( is_ptr() )
+    return true;
   if ( !baseline.windwalker.mark_of_the_crane->ok() )
     return true;
 
@@ -8462,6 +8469,8 @@ void monk_t::init_special_effects()
 
   if ( talent.windwalker.darting_hurricane.ok() )
     create_proc_callback( talent.windwalker.darting_hurricane.spell(), []( monk_t *p, action_state_t *state ) {
+      if ( p->is_ptr() )
+        return false;
       if ( state->action->id == p->talent.windwalker.strike_of_the_windlord->id() ||
            state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger_spell_id() ||
            state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger_spell_id() ||
@@ -8686,6 +8695,10 @@ std::vector<player_t *> monk_t::create_storm_earth_and_fire_target_list() const
     auto td_right = find_target_data( r );
     bool lcs      = td_left ? td_left->debuff.mark_of_the_crane->check() : false;
     bool rcs      = td_right ? td_right->debuff.mark_of_the_crane->check() : false;
+    // Mark of the Crane is removed on 11.1, so just sort by the actor index.
+    if ( is_ptr() )
+      return l->actor_index < r->actor_index;
+
     // Neither has cyclone strike
     if ( !lcs && !rcs )
     {
@@ -8751,7 +8764,7 @@ void monk_t::retarget_storm_earth_and_fire( pet_t *pet, std::vector<player_t *> 
     // already has Mark of the Crane. https://us.battle.net/forums/en/wow/topic/20752377961?page=29#post-573
     auto td = find_target_data( pet->target );
 
-    if ( !td || !td->debuff.mark_of_the_crane->check() )
+    if ( !td || !td->debuff.mark_of_the_crane->check() || is_ptr() )
       return;
 
     for ( auto it = targets.begin(); it != targets.end(); ++it )
@@ -9331,7 +9344,7 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
 std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
 {
   auto splits = util::string_split<util::string_view>( name_str, "." );
-  if ( splits.size() == 2 && splits[ 0 ] == "spinning_crane_kick" )
+  if ( splits.size() == 2 && splits[ 0 ] == "spinning_crane_kick" && !is_ptr() )
   {
     if ( splits[ 1 ] == "count" )
       return make_fn_expr( name_str, [ this ] { return buff.cyclone_strikes->current_stack; } );
