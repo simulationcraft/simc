@@ -3507,7 +3507,7 @@ struct breath_of_fire_t : public monk_spell_t
 
   breath_of_fire_t( monk_t *p, util::string_view options_str )
     : monk_spell_t( p, "breath_of_fire", p->talent.brewmaster.breath_of_fire ),
-      dragonfire_brew( new dragonfire_brew_t( p ) ),
+      dragonfire_brew( nullptr ),
       no_bof_hit( false )
   {
     add_option( opt_bool( "no_bof_hit", no_bof_hit ) );
@@ -3519,8 +3519,12 @@ struct breath_of_fire_t : public monk_spell_t
     full_amount_targets = 1;
     cast_during_sck     = true;
 
+    if ( p->talent.brewmaster.dragonfire_brew->ok() )
+      dragonfire_brew = new dragonfire_brew_t( p );
+
     add_child( p->active_actions.breath_of_fire );
-    add_child( dragonfire_brew );
+    if ( dragonfire_brew )
+      add_child( dragonfire_brew );
   }
 
   double action_multiplier() const override
@@ -3540,7 +3544,8 @@ struct breath_of_fire_t : public monk_spell_t
       return;
 
     monk_spell_t::execute();
-    dragonfire_brew->execute();
+    if ( dragonfire_brew )
+      dragonfire_brew->execute();
 
     if ( p()->buff.blackout_combo->up() )
       p()->proc.blackout_combo_breath_of_fire->occur();
