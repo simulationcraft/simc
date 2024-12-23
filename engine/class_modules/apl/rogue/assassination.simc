@@ -1,8 +1,5 @@
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=apply_poison
-actions.precombat+=/flask
-actions.precombat+=/augmentation
-actions.precombat+=/food
 actions.precombat+=/snapshot_stats
 # Check which trinket slots have Stat Values
 actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)&!trinket.2.is.treacherous_transmitter|trinket.1.is.treacherous_transmitter
@@ -152,7 +149,7 @@ actions.shiv+=/shiv,if=fight_remains<=cooldown.shiv.charges*8
 # Stealthed Actions
 actions.stealthed=pool_resource,for_next=1
 # Apply Deathstalkers Mark if it has fallen off or waiting for Rupture in AoE
-actions.stealthed+=/ambush,if=!debuff.deathstalkers_mark.up&talent.deathstalkers_mark&combo_points<variable.effective_spend_cp&(dot.rupture.ticking|variable.single_target)
+actions.stealthed+=/ambush,if=!debuff.deathstalkers_mark.up&talent.deathstalkers_mark&combo_points<variable.effective_spend_cp&(dot.rupture.ticking|variable.single_target|!talent.subterfuge)
 # Make sure to have Shiv up during Kingsbane as a final check
 actions.stealthed+=/shiv,if=talent.kingsbane&dot.kingsbane.ticking&dot.kingsbane.remains<8&(!debuff.shiv.up&debuff.shiv.remains<1)&buff.envenom.up
 # Envenom to maintain the buff during Subterfuge
