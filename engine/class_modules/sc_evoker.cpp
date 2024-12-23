@@ -914,6 +914,7 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> feed_the_flames_pyre;
     propagate_const<buff_t*> emerald_trance_stacking;
     propagate_const<buff_t*> emerald_trance;
+    propagate_const<buff_t*> jackpot;
 
     // Preservation
 
@@ -3082,12 +3083,29 @@ struct empowered_release_spell_t : public empowered_release_t<evoker_spell_t>
     animosity_max_duration = p->talent.dragonrage->duration() + p->talent.animosity->effectN( 2 ).time_value();
   }
 
+  double composite_persistent_multiplier( const action_state_t* s ) const override
+  {
+    auto m = empowered_release_t::composite_persistent_multiplier( s );
+    
+    if ( p()->is_ptr() && !background && p()->sets->has_set_bonus( EVOKER_DEVASTATION, TWW2, B4 ) )
+    {
+      m *= 1 + p()->buff.jackpot->check_stack_value();
+    }
+
+    return m;
+  }
+
   void execute() override
   {
     empowered_release_t::execute();
 
     if ( background )
       return;
+
+    if ( p()->is_ptr() && p()->sets->has_set_bonus( EVOKER_DEVASTATION, TWW2, B4 ) )
+    {
+      p()->buff.jackpot->expire();
+    }
 
     p()->buff.limitless_potential->trigger();
 
@@ -4927,11 +4945,22 @@ struct quell_t : public evoker_spell_t
 
 struct shattering_star_t : public evoker_spell_t
 {
-  shattering_star_t( evoker_t* p, std::string_view options_str )
-    : evoker_spell_t( "shattering_star", p, p->talent.shattering_star, options_str )
+  shattering_star_t( evoker_t* p, std::string_view name, bool tier_set_proc, std::string_view options_str = {} )
+    : evoker_spell_t( name, p, p->talent.shattering_star, options_str )
   {
-    aoe = as<int>( data().effectN( 1 ).base_value() * ( 1.0 + p->talent.eternitys_span->effectN( 2 ).percent() ) );
+    aoe = as<int>( data().effectN( 1 ).base_value() );
+    if ( tier_set_proc )
+    {
+      aoe = as<int>( p->sets->set( EVOKER_DEVASTATION, TWW2, B2 )->effectN( 2 ).base_value() );
+      base_multiplier *= p->sets->set( EVOKER_DEVASTATION, TWW2, B2 )->effectN( 1 ).percent();
+    }
+    aoe = as<int>( aoe * ( 1.0 + p->talent.eternitys_span->effectN( 2 ).percent() ) );
     aoe = ( aoe == 1 ) ? 0 : aoe;
+  }
+
+  shattering_star_t( evoker_t* p, std::string_view options_str )
+    : shattering_star_t( p, "shattering_star", false, options_str )
+  {
   }
 
   void execute() override
@@ -4941,6 +4970,11 @@ struct shattering_star_t : public evoker_spell_t
     if ( p()->talent.arcane_vigor.ok() )
     {
       p()->buff.essence_burst->trigger();
+    }
+
+    if ( p()->is_ptr() && p()->sets->has_set_bonus( EVOKER_DEVASTATION, TWW2, B4 ) )
+    {
+      p()->buff.jackpot->trigger();
     }
   }
 
@@ -5198,10 +5232,12 @@ struct dragonrage_t : public evoker_spell_t
 
   action_t* damage;
   unsigned max_targets;
+  spells::shattering_star_t* shattering_star;
 
   dragonrage_t( evoker_t* p, std::string_view options_str )
     : evoker_spell_t( "dragonrage", p, p->talent.dragonrage, options_str ),
-      max_targets( as<unsigned>( data().effectN( 2 ).trigger()->effectN( 1 ).base_value() ) )
+      max_targets( as<unsigned>( data().effectN( 2 ).trigger()->effectN( 1 ).base_value() ) ),
+      shattering_star( nullptr )
   {
     if ( !data().ok() )
       return;
@@ -5210,6 +5246,13 @@ struct dragonrage_t : public evoker_spell_t
     add_child( damage );
 
     school = damage->school;
+
+    if ( p->is_ptr() && p->sets->has_set_bonus( EVOKER_DEVASTATION, TWW2, B2 ) )
+    {
+      shattering_star = p->get_secondary_action<spells::shattering_star_t>( "shattering_star_2pc_dragonrage", "shattering_star_2pc_dragonrage",
+                                                                         true );
+      add_child( shattering_star );
+    }
   }
 
   void execute() override
@@ -5224,6 +5267,11 @@ struct dragonrage_t : public evoker_spell_t
     }
 
     damage->execute_on_target( target );
+
+    if ( shattering_star )
+    {
+      shattering_star->execute_on_target( target );
+    }
   }
 };
 
@@ -8299,6 +8347,52 @@ void evoker_t::init_special_effects()
 
     auto cb = new augmentation_tww2_2pc( this, *set_effect );
   }
+
+  
+  if ( is_ptr() && sets->has_set_bonus( EVOKER_DEVASTATION, TWW2, B2 ) )
+  {
+    struct devastation_tww2_2pc : public dbc_proc_callback_t
+    {
+      spells::shattering_star_t* damage_spell;
+
+      devastation_tww2_2pc( evoker_t* p, const special_effect_t& e )
+        : dbc_proc_callback_t( p, e ), damage_spell( nullptr )
+      {
+        allow_pet_procs = false;
+        initialize();
+        activate();
+
+        damage_spell =
+            p->get_secondary_action<spells::shattering_star_t>( "shattering_star_2pc", "shattering_star_2pc", true );
+      }
+
+      void execute( action_t*, action_state_t* s ) override
+      {
+        if ( s->target->is_sleeping() )
+          return;
+
+        double da = s->result_amount;
+        if ( da > 0 )
+        {
+          auto emp_state       = damage_spell->get_state();
+          emp_state->target    = s->target;
+          damage_spell->target = s->target;
+          damage_spell->snapshot_state( emp_state, damage_spell->amount_type( emp_state ) );
+          damage_spell->schedule_execute( emp_state );
+        }
+      }
+    };
+
+    auto set_spell           = sets->set( EVOKER_DEVASTATION, TWW2, B2 );
+    auto set_effect          = new special_effect_t( this );
+    set_effect->name_str     = set_spell->name_cstr();
+    set_effect->type         = SPECIAL_EFFECT_EQUIP;
+    set_effect->spell_id     = set_spell->id();
+    // TODO: Check on PTR when live. Not proccing on periodic damage currently without.
+    set_effect->proc_flags2_ = PF2_ALL_HIT;
+
+    auto cb = new devastation_tww2_2pc( this, *set_effect );
+  }
 }
 
 void evoker_t::init_assessors()
@@ -8531,6 +8625,9 @@ void evoker_t::create_buffs()
             proc.emerald_trance->occur();
           } )
           ->set_freeze_stacks( true );
+
+  buff.jackpot = MBF( is_ptr() && sets->has_set_bonus( EVOKER_DEVASTATION, TWW2, B4 ), this, "jackpot", find_spell( 1217769 ) )
+                     ->set_default_value_from_effect( 1, 0.01 );
 
   // Preservation
 
