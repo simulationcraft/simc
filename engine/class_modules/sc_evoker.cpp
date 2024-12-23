@@ -9366,6 +9366,9 @@ double evoker_t::get_molten_embers_multiplier( player_t* target, bool recalculat
 
     auto firebreath_duration = 20_s + timespan_t::from_seconds( talent.blast_furnace->effectN( 1 ).base_value() ) - ( static_cast<int>( empower ) - 1 ) * 6_s;
 
+    if ( talent.flameshaper.fulminous_roar.enabled() )
+      firebreath_duration *= 1 + talent.flameshaper.fulminous_roar->effectN( 2 ).percent();
+
     mul *= 1 + 2.4_s / firebreath_duration;
 
     sim->print_debug( "{} set molten_embers_multiplier on {} to {} from {}", this->name_str, target->name_str, mul,
