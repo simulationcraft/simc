@@ -1065,6 +1065,7 @@ struct evoker_t : public player_t
     player_talent_t font_of_magic;
     player_talent_t titanic_wrath;
     player_talent_t hoarded_power;
+    player_talent_t azure_celerity;
     player_talent_t power_swell;
     player_talent_t imminent_destruction;   // row 10
     player_talent_t scorching_embers;
@@ -1171,6 +1172,7 @@ struct evoker_t : public player_t
       player_talent_t trailblazer;
       player_talent_t shape_of_flame;
       player_talent_t traveling_flame;
+      player_talent_t flame_siphon;
       const spell_data_t* traveling_flame_fire_breath;  // 444249
       player_talent_t enkindle;
       const spell_data_t* enkindle_damage;  // 444017
@@ -1179,6 +1181,7 @@ struct evoker_t : public player_t
       const spell_data_t* burning_adrenaline_buff;  // 444019
       player_talent_t fan_the_flames;
       player_talent_t expanded_lungs;
+      player_talent_t fulminous_roar;
       player_talent_t titanic_precision;
       player_talent_t red_hot;
       player_talent_t lifecinders;
@@ -1998,7 +2001,7 @@ public:
       parse_target_effects( d_fn( &evoker_td_t::debuffs_t::melt_armor ), p()->talent.scalecommander.melt_armor_debuff );
     }
     
-    if ( p()->talent.scorching_embers.ok() )
+    if ( p()->talent.scorching_embers.ok() && !p()->is_ptr() )
     {
       parse_target_effects(
           []( actor_target_data_t* t ) {
@@ -2049,6 +2052,11 @@ public:
     auto mul = ab::composite_target_multiplier( t );
 
     if ( p()->talent.molten_embers.ok() && spell_color == SPELL_BLACK )
+    {
+      mul *= p()->get_molten_embers_multiplier( t );
+    }
+
+    if ( p()->is_ptr() && p()->talent.scorching_embers.ok() && spell_color == SPELL_RED )
     {
       mul *= p()->get_molten_embers_multiplier( t );
     }
@@ -3831,7 +3839,7 @@ struct fire_breath_t : public empowered_charge_spell_t
       base_t::trigger_dot( state );
       p()->get_target_data( state->target )->dots.fire_breath_traveling_flame->cancel();
 
-      if ( p()->talent.molten_embers.enabled() )
+      if ( p()->talent.molten_embers.enabled() || p()->is_ptr() && p()->talent.scorching_embers.enabled() )
       {
         auto td = p()->get_target_data( state->target );
         if ( td )
@@ -6334,10 +6342,13 @@ struct engulf_t : public evoker_spell_t
   action_t* damage;
   action_t* heal;
   bool cast_heal;
+  timespan_t flame_siphon_cdr;
 
   engulf_t( evoker_t* p, std::string_view options_str )
     : evoker_spell_t( "engulf", p, p->talent.flameshaper.engulf ),
-      cast_heal( false )
+      cast_heal( false ),
+      flame_siphon_cdr( -timespan_t::from_seconds( p->talent.flameshaper.flame_siphon->effectN( 1 ).base_value() )
+    )
   {
     damage        = p->get_secondary_action<engulf_damage_t>( "engulf_damage" );
     damage->stats = stats;
@@ -6369,6 +6380,11 @@ struct engulf_t : public evoker_spell_t
     if ( p()->talent.flameshaper.burning_adrenaline.ok() )
     {
       p()->buff.burning_adrenaline->trigger();
+    }
+
+    if ( p()->talent.flameshaper.flame_siphon.ok() )
+    {
+      p()->cooldown.fire_breath->adjust( flame_siphon_cdr, false );
     }
   }
 };
@@ -8042,6 +8058,7 @@ void evoker_t::init_spells()
   talent.font_of_magic             = ST( "Font of Magic" );
   talent.titanic_wrath             = ST( "Titanic Wrath" );
   talent.hoarded_power             = ST( "Hoarded Power" );
+  talent.azure_celerity            = ST( "Azure Celerity" );
   talent.power_swell               = ST( "Power Swell" );
   talent.imminent_destruction      = ST( "Imminent Destruction" );  // Row 10
   talent.scorching_embers          = ST( "Scorching Embers" );
@@ -8166,26 +8183,28 @@ void evoker_t::init_spells()
   talent.chronowarden.afterimage                      = HT( "Afterimage" );
 
   // flameshaper
-  talent.flameshaper.engulf                       = HT( "Engulf" );
-  talent.flameshaper.engulf_damage                = find_spell( 443329 );
-  talent.flameshaper.engulf_heal                  = find_spell( 443330 );
-  talent.flameshaper.trailblazer                  = HT( "Trailblazer" );
-  talent.flameshaper.shape_of_flame               = HT( "Shape of flame" );
+  talent.flameshaper.engulf                      = HT( "Engulf" );
+  talent.flameshaper.engulf_damage               = find_spell( 443329 );
+  talent.flameshaper.engulf_heal                 = find_spell( 443330 );
+  talent.flameshaper.trailblazer                 = HT( "Trailblazer" );
+  talent.flameshaper.flame_siphon                = HT( "Flame Siphon" );
+  talent.flameshaper.shape_of_flame              = HT( "Shape of flame" );
   talent.flameshaper.traveling_flame             = HT( "Traveling Flame" );
   talent.flameshaper.traveling_flame_fire_breath = find_spell( 444249 );
-  talent.flameshaper.enkindle                     = HT( "Enkindle" );
-  talent.flameshaper.enkindle_damage              = find_spell( 444017 );
-  talent.flameshaper.conduit_of_flame             = HT( "Conduit of Flame" );
-  talent.flameshaper.burning_adrenaline           = HT( "Burning Adrenaline" );
-  talent.flameshaper.burning_adrenaline_buff      = find_spell( 444019 );
-  talent.flameshaper.fan_the_flames               = HT( "Fan the Flames" );
-  talent.flameshaper.expanded_lungs               = HT( "Expanded Lungs" );
-  talent.flameshaper.titanic_precision            = HT( "Titanic Precision" );
-  talent.flameshaper.red_hot                      = HT( "Red Hot" );
-  talent.flameshaper.lifecinders                  = HT( "Lifecinders" );
-  talent.flameshaper.draconic_instincts           = HT( "Draconic Instincts" );
-  talent.flameshaper.consume_flame                = HT( "Consume Flame" );
-  talent.flameshaper.consume_flame_damage         = find_spell( 444089 );
+  talent.flameshaper.enkindle                    = HT( "Enkindle" );
+  talent.flameshaper.enkindle_damage             = find_spell( 444017 );
+  talent.flameshaper.conduit_of_flame            = HT( "Conduit of Flame" );
+  talent.flameshaper.burning_adrenaline          = HT( "Burning Adrenaline" );
+  talent.flameshaper.burning_adrenaline_buff     = find_spell( 444019 );
+  talent.flameshaper.fulminous_roar              = HT( "Fulminous Roar" );
+  talent.flameshaper.fan_the_flames              = HT( "Fan the Flames" );
+  talent.flameshaper.expanded_lungs              = HT( "Expanded Lungs" );
+  talent.flameshaper.titanic_precision           = HT( "Titanic Precision" );
+  talent.flameshaper.red_hot                     = HT( "Red Hot" );
+  talent.flameshaper.lifecinders                 = HT( "Lifecinders" );
+  talent.flameshaper.draconic_instincts          = HT( "Draconic Instincts" );
+  talent.flameshaper.consume_flame               = HT( "Consume Flame" );
+  talent.flameshaper.consume_flame_damage        = find_spell( 444089 );
 
   // Scalecommander
   talent.scalecommander.mass_disintegrate               = HT( "Mass Disintegrate" );
@@ -8845,6 +8864,7 @@ void evoker_t::apply_affecting_auras_late( action_t& action )
   action.apply_affecting_aura( talent.onyx_legacy );
   action.apply_affecting_aura( talent.spellweavers_dominance );
   action.apply_affecting_aura( talent.event_horizon );
+  action.apply_affecting_aura( talent.azure_celerity );
   action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, T29, B2 ) );
   action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, T30, B4 ) );
   action.apply_affecting_aura( sets->set( EVOKER_DEVASTATION, TWW1, B2 ) );
@@ -8853,6 +8873,7 @@ void evoker_t::apply_affecting_auras_late( action_t& action )
   // Flameshaper
   action.apply_affecting_aura( talent.flameshaper.red_hot );
   action.apply_affecting_aura( talent.flameshaper.expanded_lungs );
+  action.apply_affecting_aura( talent.flameshaper.fulminous_roar );
 
   // Scalecommander
   action.apply_affecting_aura( talent.scalecommander.might_of_the_black_dragonflight );
@@ -9229,7 +9250,7 @@ void evoker_t::extend_ebon( timespan_t extend )
 
 double evoker_t::get_molten_embers_multiplier( player_t* target, bool recalculate ) const
 {
-  if ( !talent.molten_embers.enabled() )
+  if ( !( talent.molten_embers.enabled() || is_ptr() && talent.scorching_embers.enabled() ) )
     return 1.0;
 
   auto td = get_target_data( target );
