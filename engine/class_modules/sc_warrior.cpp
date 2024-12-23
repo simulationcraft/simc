@@ -322,6 +322,14 @@ public:
     buff_t* deep_thirst;        // Fury 4pc
     buff_t* expert_strategist;  // Prot 2pc
     buff_t* brutal_followup;    // Prot 4pc
+
+    // TWW2 Tier
+    buff_t* winning_streak_arms; // Arms 2pc
+    buff_t* hedged_bets;         // Arms 4pc
+    buff_t* winning_streak_fury; // Fury 2pc
+    buff_t* double_down_bt;      // Fury 4pc Bloodthirst
+    buff_t* double_down_rb;      // Fury 4pc Raging Blow
+    buff_t* luck_of_the_draw;    // Prot 2pc
   } buff;
 
   struct rppm_t
@@ -331,6 +339,7 @@ public:
     real_ppm_t* sudden_death;
     real_ppm_t* t31_sudden_death;
     real_ppm_t* slayers_dominance;
+    real_ppm_t* tww2_arms_2pc;
   } rppm;
 
   // Cooldowns
@@ -1132,6 +1141,11 @@ public:
       // TWW1 Tier
       parse_effects( p()->buff.overpowering_might );  // Arms 2pc
       parse_effects( p()->buff.lethal_blows );        // Arms 4pc
+      if ( p()->is_ptr() )
+      {
+        parse_effects( p()->buff.winning_streak_arms );
+        parse_effects( p()->buff.hedged_bets );
+      }
     }
     else if ( p()->specialization() == WARRIOR_FURY )
     {
@@ -1645,6 +1659,11 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
       p()->buff.sudden_death->trigger();
       p()->cooldown.sudden_death_icd->start();
       p()->cooldown.execute->reset( true );
+    }
+
+    if ( p()->is_ptr() && p()->sets->has_set_bonus( WARRIOR_ARMS, TWW2, B2 ) && p()->rppm.tww2_arms_2pc->trigger() )
+    {
+      p()->buff.winning_streak_arms->trigger();
     }
   }
 
@@ -5837,6 +5856,11 @@ struct overpower_t : public warrior_attack_t
 
     p()->buff.overpowering_might->expire();
     p()->buff.opportunist->decrement();
+
+    if ( p()->is_ptr() && p()->buff.winning_streak_arms->up() && p()->rng().roll( p()->sets->set( WARRIOR_ARMS, TWW2, B2 )->effectN( 1 ).trigger()->proc_chance() ) )
+    {
+      p()->buff.winning_streak_arms->expire();
+    }
   }
 
   bool ready() override
@@ -9351,6 +9375,23 @@ void warrior_t::create_buffs()
   buff.deep_thirst        = make_buff( this, "deep_thirst", find_spell( 455495 ) );         // Fury 4pc
   buff.expert_strategist  = make_buff( this, "expert_strategist", find_spell( 455499 ) );   // Prot 2pc
   buff.brutal_followup    = make_buff( this, "brutal_followup", find_spell( 455501 ) );     // Prot 4pc
+
+  // TWW2 Tier
+  buff.winning_streak_arms = make_buff( this, "winning_streak_arms", find_spell( 1216552 ) )  // Arms 2pc
+                                ->set_chance( 1.0 )
+                                ->set_expire_callback( [ & ]( buff_t*, int stacks, timespan_t ) {
+                                  if ( sets -> has_set_bonus( WARRIOR_ARMS, TWW2, B4 ) )
+                                    buff.hedged_bets -> trigger( timespan_t::from_seconds( sets->set( WARRIOR_ARMS, TWW2, B4 )->effectN( 1 ).base_value() * stacks ) );
+                                });
+  buff.hedged_bets = make_buff( this, "hedged_bets", find_spell( 1216556) );                  // Arms 4pc
+  buff.winning_streak_fury = make_buff( this, "winning_streak_fury", find_spell( 1216561 ) ); // Fury 2pc
+  buff.double_down_bt = make_buff( this, "double_down_bt", find_spell( 1216565 ) );           // Fury 4pc Bloodthirst
+  buff.double_down_rb = make_buff( this, "double_down_rb", find_spell( 1216569 ) );           // Fury 4pc Raging Blow
+  buff.luck_of_the_draw = make_buff( this, "luck_of_the_draw", find_spell( 1218163 ) );       // Prot 2pc
+  if ( is_ptr() && sets->has_set_bonus( WARRIOR_PROTECTION, TWW2, B4 ) )
+  {
+    buff.luck_of_the_draw->apply_affecting_aura( sets->set( WARRIOR_PROTECTION, TWW2, B4 ) );
+  }
 }
 
 // warrior_t::init_finished =============================================
@@ -9369,8 +9410,10 @@ void warrior_t::init_rng()
   rppm.sudden_death     = get_rppm( "sudden death", specialization() == WARRIOR_FURY ? talents.fury.sudden_death : 
                                                     specialization() == WARRIOR_ARMS ? talents.arms.sudden_death : 
                                                     talents.protection.sudden_death );
-  rppm.t31_sudden_death = get_rppm( "t31_sudden_death", find_spell( 422923 ) );
+  rppm.t31_sudden_death  = get_rppm( "t31_sudden_death", find_spell( 422923 ) );
   rppm.slayers_dominance = get_rppm( "slayers_dominance", talents.slayer.slayers_dominance );
+  if( is_ptr() )
+    rppm.tww2_arms_2pc     = get_rppm( "tww2_arms_2pc", find_spell( 1215713 ) );
 }
 
 // warrior_t::validate_fight_style ==========================================
