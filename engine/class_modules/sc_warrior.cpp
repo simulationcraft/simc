@@ -6002,6 +6002,10 @@ struct rampage_parent_t : public warrior_attack_t
       add_child( rampage_attack );
     }
     track_cd_waste = false;
+
+    if ( p->is_ptr() )
+      rage_from_frothing_berserker = p->talents.warrior.frothing_berserker->effectN( 2 ).percent();
+
   }
 
   void execute() override
@@ -6211,6 +6215,9 @@ struct revenge_t : public warrior_attack_t
           lightning_strike = get_action<lightning_strike_t>( "lightning_strike_revenge", p );
         add_child( lightning_strike );
       }
+
+      if ( p->is_ptr() )
+        rage_from_frothing_berserker = p->talents.warrior.frothing_berserker->effectN( 3 ).percent();
   }
 
   double cost_pct_multiplier() const override
