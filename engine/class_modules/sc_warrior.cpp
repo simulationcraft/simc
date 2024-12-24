@@ -9996,7 +9996,15 @@ double warrior_t::composite_attribute( attribute_e attr ) const
     // As we have it implemented properly in the armor calcs, this can be globally enabled.
     // get_attribute -> composite_attribute -> bonus_armor -> composite_bonus_armor -> strength -> get_attribute
     //if ( specialization() != WARRIOR_PROTECTION )
-    p += ( talents.warrior.armored_to_the_teeth->effectN( 2 ).percent() * cache.armor() );
+    if ( !is_ptr() )
+      p += ( talents.warrior.armored_to_the_teeth->effectN( 2 ).percent() * cache.armor() );
+    else  // If on ptr, the spell was merged
+    {
+      if ( specialization() == WARRIOR_PROTECTION )
+        p += ( talents.warrior.armored_to_the_teeth->effectN( 3 ).percent() * cache.armor() );
+      else
+        p += ( talents.warrior.armored_to_the_teeth->effectN( 2 ).percent() * cache.armor() );
+    }
   }
 
   return p;
@@ -10056,13 +10064,24 @@ double warrior_t::composite_armor_multiplier() const
   // Arma 2022 Nov 10.  To avoid an infinite loop, we manually calculate the str benefit of armored to the teeth here, and apply the armor we would gain from it
   if ( talents.warrior.armored_to_the_teeth->ok() && specialization() == WARRIOR_PROTECTION )
   {
-    auto q = spec.vanguard -> effectN( 1 ).percent() *
-              talents.warrior.armored_to_the_teeth -> effectN( 2 ).percent() *
-              ( 1+talents.warrior.reinforced_plates->effectN( 1 ).percent()) *
-              ( 1+talents.protection.focused_vigor->effectN( 3 ).percent() ) *
-              ( 1+talents.protection.enduring_alacrity->effectN( 3 ).percent() );
-
-    ar *= 1 + ( 1+talents.protection.focused_vigor->effectN( 3 ).percent()) * ( q/(1 - q) );
+    if ( is_ptr() )
+    {
+      auto q = spec.vanguard -> effectN( 1 ).percent() *
+                talents.warrior.armored_to_the_teeth -> effectN( 3 ).percent() *
+                ( 1+talents.warrior.reinforced_plates->effectN( 1 ).percent()) *
+                ( 1+talents.protection.focused_vigor->effectN( 3 ).percent() ) *
+                ( 1+talents.protection.enduring_alacrity->effectN( 3 ).percent() );
+      ar *= 1 + ( 1+talents.protection.focused_vigor->effectN( 3 ).percent()) * ( q/(1 - q) );
+    }
+    else
+    {
+      auto q = spec.vanguard -> effectN( 1 ).percent() *
+                talents.warrior.armored_to_the_teeth -> effectN( 2 ).percent() *
+                ( 1+talents.warrior.reinforced_plates->effectN( 1 ).percent()) *
+                ( 1+talents.protection.focused_vigor->effectN( 3 ).percent() ) *
+                ( 1+talents.protection.enduring_alacrity->effectN( 3 ).percent() );
+      ar *= 1 + ( 1+talents.protection.focused_vigor->effectN( 3 ).percent()) * ( q/(1 - q) );
+    }
   }
 
  // Generally Modify Armor% (101)
