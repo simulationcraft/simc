@@ -1121,7 +1121,7 @@ public:
   void apply_buff_effects()
   {
     // Shared
-    parse_effects( p()->buff.avatar, effect_mask_t( true ).disable( 8 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
+    parse_effects( p()->buff.avatar, effect_mask_t( true ).disable( 8, 9, 10, 11, 12 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
 
     if ( p()->specialization() == WARRIOR_ARMS )
     {
@@ -1162,6 +1162,9 @@ public:
       parse_effects( p()->talents.fury.wrath_and_fury, effect_mask_t( false ).enable( 2 ), [ this ] { return p()->buff.enrage->check(); } );
 
       parse_effects( p()->buff.merciless_assault );
+
+      if ( p()->is_ptr() && p()->talents.warrior.titans_torment->ok() )
+        parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 10 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force);
 
       // TWW1 Tier
       parse_effects( p()->buff.bloody_rampage );      // Fury 2pc
@@ -5681,7 +5684,7 @@ struct odyns_fury_t : warrior_attack_t
     mh_attack2->execute();
     oh_attack2->execute();
 
-    if ( p()->talents.warrior.titans_torment->ok() )
+    if ( !p()->is_ptr() && p()->talents.warrior.titans_torment->ok() )
     {
       action_t* torment_ability = p()->active.torment_avatar;
       torment_ability->schedule_execute();
@@ -7341,7 +7344,7 @@ struct avatar_t : public warrior_spell_t
     {
       p()->buff.sweeping_strikes->extend_duration_or_trigger( p()->talents.warrior.blademasters_torment->effectN( 1 ).time_value() );
     }
-    if ( p()->talents.warrior.titans_torment->ok() )
+    if ( !p()->is_ptr() && p()->talents.warrior.titans_torment->ok() )
     {
       action_t* torment_ability = p()->active.torment_odyns_fury;
       torment_ability->schedule_execute();
@@ -7391,7 +7394,7 @@ struct torment_avatar_t : public warrior_spell_t
       const timespan_t trigger_duration = p()->talents.warrior.berserkers_torment->effectN( 2 ).time_value();
       p()->buff.avatar->extend_duration_or_trigger( trigger_duration );
     }
-    if ( p()->talents.warrior.titans_torment->ok() )
+    if ( !p()->is_ptr() && p()->talents.warrior.titans_torment->ok() )
     {
       const timespan_t trigger_duration = p()->talents.warrior.titans_torment->effectN( 1 ).time_value();
       p()->buff.avatar->extend_duration_or_trigger( trigger_duration );   
@@ -9107,18 +9110,30 @@ void warrior_t::create_buffs()
       ->apply_affecting_aura( talents.arms.spiteful_serenity )
       -> set_stack_change_callback(
         [ this ]( buff_t*, int old_, int new_ ) {
-          if ( talents.warrior.blademasters_torment->ok() )
-          {
             if ( old_ == 0 )  // Gained Avatar
             {
-              cooldown.cleave->duration += talents.warrior.avatar->effectN( 8 ).time_value();
+              if ( talents.warrior.blademasters_torment->ok() )
+                cooldown.cleave->duration += talents.warrior.avatar->effectN( 8 ).time_value();
+
+              if ( is_ptr() && talents.warrior.titans_torment->ok() )
+              {
+                cooldown.bloodthirst->duration += talents.warrior.avatar->effectN( 9 ).time_value();
+                cooldown.bloodbath->duration += talents.warrior.avatar->effectN( 9 ).time_value();
+              }
             }
             else if ( new_ == 0 )  // Lost Avatar
             {
-              cooldown.cleave->duration -= talents.warrior.avatar->effectN( 8 ).time_value();
+              if ( talents.warrior.blademasters_torment->ok() )
+                cooldown.cleave->duration -= talents.warrior.avatar->effectN( 8 ).time_value();
+
+              if ( is_ptr() && talents.warrior.titans_torment->ok() )
+              {
+                cooldown.bloodthirst->duration -= talents.warrior.avatar->effectN( 9 ).time_value();
+                cooldown.bloodbath->duration -= talents.warrior.avatar->effectN( 9 ).time_value();
+              }
             }
           }
-        } );
+        );
 
   buff.collateral_damage = make_buff( this, "collateral_damage", find_spell( 334783 ) )
       -> set_default_value_from_effect( 1 );
@@ -9813,7 +9828,7 @@ void warrior_t::create_actions()
       action->trigger_gcd = timespan_t::zero();
     }
   }
-  if ( talents.warrior.titans_torment->ok() )
+  if ( !is_ptr() && talents.warrior.titans_torment->ok() )
   {
     active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ) );
     active.torment_odyns_fury   = new torment_odyns_fury_t( this, "", "odyns_fury_torment", find_spell( 385059 ) );
