@@ -151,11 +151,11 @@ back=wings_of_shattered_sorrow,id=225574,bonus_id=1540/10299/10376,enchant_id=74
 chest=shadowed_orators_tunic,id=221095,bonus_id=4786/3131/10299,enchant_id=7364
 wrists=consecrated_cuffs,id=222815,bonus_id=11109,ilevel=636,gem_id=213479,enchant_id=7397,crafted_stats=32/36
 hands=jeweled_gauntlets_of_violet_rebirth,id=212093,ilevel=639
-waist=sigil_of_violet_rebirth,id=212089,bonus_id=4800/4786/1540/10299/523,ilevel=639,gem_id=213482
+waist=sigil_of_violet_rebirth,id=212089,bonus_id=4800/4786/1540/10299/523,ilevel=639,gem_id=213494
 legs=coattails_of_violet_rebirth,id=212091,ilevel=639,enchant_id=7534
 feet=tainted_earthshard_walkers,id=221082,bonus_id=4786/3131/10299,ilevel=639,enchant_id=7418
 finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213473/213509,enchant_id=7340
-finger2=experiment_08752s_band,id=221189,ilevel=639,gem_id=213494/213455,enchant_id=7340
+finger2=cyrces_circlet,id=228411,ilevel=658,gem_id=228646/228634/228639,enchant_id=7340
 trinket1=treacherous_transmitter,id=221023,ilevel=639
 trinket2=spymasters_web,id=220202,ilevel=639
 main_hand=unceremonious_bloodletter,id=221165,bonus_id=4786/3131/10299,enchant_id=7460
@@ -184,11 +184,11 @@ back=wings_of_shattered_sorrow,id=225574,bonus_id=1540/10299/10376,enchant_id=74
 chest=shadowed_orators_tunic,id=221095,bonus_id=4786/3131/10299,enchant_id=7364
 wrists=consecrated_cuffs,id=222815,bonus_id=11109,ilevel=636,gem_id=213479,enchant_id=7397,crafted_stats=32/36
 hands=jeweled_gauntlets_of_violet_rebirth,id=212093,ilevel=639
-waist=sigil_of_violet_rebirth,id=212089,bonus_id=4800/4786/1540/10299/523,ilevel=639,gem_id=213482
+waist=sigil_of_violet_rebirth,id=212089,bonus_id=4800/4786/1540/10299/523,ilevel=639,gem_id=213494
 legs=coattails_of_violet_rebirth,id=212091,ilevel=639,enchant_id=7534
 feet=tainted_earthshard_walkers,id=221082,bonus_id=4786/3131/10299,ilevel=639,enchant_id=7418
 finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213473/213509,enchant_id=7340
-finger2=experiment_08752s_band,id=221189,ilevel=639,gem_id=213494/213455,enchant_id=7340
+finger2=cyrces_circlet,id=228411,ilevel=658,gem_id=228646/228634/228636,enchant_id=7340
 trinket1=candle_confidant,id=225648,bonus_id=40/6652/10256/3155/10255
 trinket2=spymasters_web,id=220202,ilevel=639
 main_hand=unceremonious_bloodletter,id=221165,bonus_id=4786/3131/10299,enchant_id=7460
