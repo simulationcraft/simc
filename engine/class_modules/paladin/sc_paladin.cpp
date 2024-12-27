@@ -282,6 +282,25 @@ struct blessing_of_protection_t : public paladin_spell_t
 // Avenging Wrath ===========================================================
 // Most of this can be found in buffs::avenging_wrath_buff_t, this spell just triggers the buff
 
+struct avenging_wrath_state_t : public action_state_t
+{
+  using action_state_t::action_state_t;
+
+  proc_types2 cast_proc_type2() const override
+  {
+    // This spell can trigger on-cast procs even if it is backgrounded
+    return PROC2_CAST_GENERIC;
+  }
+};
+
+avenging_wrath_t::avenging_wrath_t( paladin_t* p )
+  : paladin_spell_t( "avenging_wrath", p, p->find_spell( 454351 ) )
+{
+  background = true;
+  is_proc_background = true;
+  harmful = false;
+}
+
 avenging_wrath_t::avenging_wrath_t( paladin_t* p, util::string_view options_str )
   : paladin_spell_t( "avenging_wrath", p, p->find_spell( 31884 ) )
 {
@@ -298,14 +317,22 @@ avenging_wrath_t::avenging_wrath_t( paladin_t* p, util::string_view options_str 
     background = true;
 
   harmful = false;
+  is_proc_background = false;
 
   // link needed for Righteous Protector / SotR cooldown reduction
   cooldown = p->cooldowns.avenging_wrath;
 }
 
+action_state_t* avenging_wrath_t::new_state()
+{
+  return new avenging_wrath_state_t( this, target );
+}
+
 void avenging_wrath_t::execute()
 {
   paladin_spell_t::execute();
+  if ( is_proc_background )
+    return;
 
   p()->buffs.avenging_wrath->trigger();
   if ( p()->talents.lightsmith.blessing_of_the_forge->ok() )
@@ -3467,6 +3494,12 @@ void paladin_t::create_actions()
   {
     paladin_t::create_ret_actions();
   }
+
+  if ( talents.avenging_wrath->ok() )
+  {
+    active.background_avenging_wrath = new avenging_wrath_t( this );
+  }
+
   // Hero Talents
   //Lightsmith
   if ( talents.lightsmith.holy_armaments->ok() )

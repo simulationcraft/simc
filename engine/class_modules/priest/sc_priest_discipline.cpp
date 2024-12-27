@@ -63,6 +63,8 @@ struct power_word_radiance_t final : public priest_heal_t
 
     rng().shuffle( target_list.begin() + 1, target_list.end() );*/
 
+
+    // Don't include pets for the ease of writing APLs
     if ( as<int>( sim->healing_no_pet_list.size() ) <= n_targets() )
     {
       for ( auto t : sim->healing_no_pet_list )
@@ -73,7 +75,7 @@ struct power_word_radiance_t final : public priest_heal_t
 
       for ( auto t : sim->healing_pet_list )
       {
-        if ( t != target && ( t->is_active() || ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
+        if ( t != target && ( ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
           target_list.push_back( t );
       }
 

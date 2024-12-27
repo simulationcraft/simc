@@ -259184,6 +259184,7 @@ Labels           : 292
 Proc Chance      : 101%
 Real PPM         : 2.5
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell
+Triggered By     : Thwack! (1217638), Gutstab (1217675)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1201371)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
@@ -259212,6 +259213,96 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 237262 | Misc Value 2: 0x1827 | Radius: 3 yards | Target: At Radius (73)
 #2 (id=1201982)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
+Name             : Call Pocket Ace (id=1217431) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Labels           : 292
+                 : 3959: Item Effects
+Proc Chance      : 101%
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Item Cast With Owner Skill (88)
+Effects          :
+#1 (id=1201499)  : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 237263 | Misc Value 2: 0x1828 | Radius: 3 yards | Target: At Radius (73)
+#2 (id=1201981)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
+Name             : Call Snake Eyes (id=1217432) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Labels           : 292
+                 : 3959: Item Effects
+Proc Chance      : 101%
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Item Cast With Owner Skill (88)
+Effects          :
+#1 (id=1201500)  : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 237264 | Misc Value 2: 0x1829 | Radius: 10 yards | Target: Unknown(43)
+#2 (id=1201979)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
+Name             : Thwack! (id=1217638) 
+School           : Physical
+Spell Type       : Melee
+Range            : 5 yards
+Labels           : 292
+                 : 3959: Item Effects
+Effects          :
+#1 (id=1201851)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+#2 (id=1201887)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1217356
+Description      : $@spelldesc1217356
+
+Name             : Thwack Thwack Thwack! (id=1217665) 
+School           : Physical
+Spell Type       : Melee
+Range            : 5 yards
+Labels           : 292
+                 : 3959: Item Effects
+Attributes       : Always AOE Line of Sight (186)
+Effects          :
+#1 (id=1201898)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: Enemy in Area (15)
+Description      : $@spelldesc1217356
+
+Name             : Gutstab (id=1217675) 
+School           : Physical
+Spell Type       : Melee
+Range            : 5 yards
+Labels           : 292
+                 : 3959: Item Effects
+Effects          :
+#1 (id=1201923)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+#2 (id=1201924)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1217356
+Description      : $@spelldesc1217356
+
+Name             : Fan of Stabs (id=1217676) 
+School           : Physical
+Spell Type       : Melee
+Range            : 5 yards
+Labels           : 292
+                 : 3959: Item Effects
+Attributes       : Always AOE Line of Sight (186)
+Effects          :
+#1 (id=1201925)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: Enemy in Area (15)
+Description      : $@spelldesc1217356
+
+Name             : Trick Shot (id=1217723) 
+School           : Physical
+Spell Type       : Melee
+Range            : 50 yards
+Velocity         : 70 yards/sec
+Labels           : 292
+                 : 3959: Item Effects
+Effects          :
+#1 (id=1201998)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 6 | Target: Enemy (6)
+Description      : $@spelldesc1217356
 
 Name             : Zee's Thug Hotline (id=1217829) [Passive] 
 School           : Physical

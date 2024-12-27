@@ -868,6 +868,7 @@ public:
   void init_resources( bool force ) override;
   void init_spells() override;
   void init_special_effects() override;
+  void init_special_effects_shadow();
   void create_buffs() override;
   void init_scaling() override;
   void init_finished() override;
@@ -971,6 +972,21 @@ public:
   void extend_entropic_rift();
   void expand_entropic_rift();
   void trigger_cauterizing_shadows();
+
+  std::vector<action_t*> secondary_action_list;
+
+  template <typename T, typename... Ts>
+  std::pair<T*, bool> get_secondary_action_pair( std::string_view n, Ts&&... args )
+  {
+    auto it = range::find( secondary_action_list, n, &action_t::name_str );
+    if ( it != secondary_action_list.cend() )
+      return { dynamic_cast<T*>( *it ), false };
+
+    auto a        = new T( *this, std::forward<Ts>( args )... );
+    a->background = true;
+    secondary_action_list.push_back( a );
+    return { a, true };
+  }
 
   unsigned int specialization_aura_id()
   {
@@ -1200,6 +1216,11 @@ public:
       {
         parse_effects( p().buffs.devouring_chorus );
       }
+
+      if ( p().is_ptr() && p().sets->has_set_bonus( PRIEST_SHADOW, TWW2, B4 ) )
+      {
+        parse_effects( ab::player->buffs.power_infusion, p().sets->set( PRIEST_SHADOW, TWW2, B4 ) );
+      }
     }
 
     // DISCIPLINE BUFF EFFECTS
@@ -1374,9 +1395,10 @@ public:
         target_list.push_back( t );
     }
 
+    // Remove non Healing Enemy pets from valid target list
     for ( const auto& t : sim->healing_pet_list )
     {
-      if ( t != target && ( t->is_active() || ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
+      if ( t != target && ( ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
         target_list.push_back( t );
     }
 
@@ -1431,9 +1453,10 @@ struct priest_heal_t : public priest_action_t<heal_t>
         target_list.push_back( t );
     }
 
+    // Remove non Healing Enemy pets from valid target list
     for ( const auto& t : sim->healing_pet_list )
     {
-      if ( t != target && ( t->is_active() || ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
+      if ( t != target && ( ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
         target_list.push_back( t );
     }
 

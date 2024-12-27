@@ -4278,7 +4278,7 @@ void candle_confidant( special_effect_t& effect )
 
     double composite_crit_chance() const override
     {
-      // Currently their auto attacks dont seem to scale with player crit chance. 
+      // Currently their auto attacks dont seem to scale with player crit chance.
       return this->player->base.attack_crit_chance;
     }
 
@@ -4956,7 +4956,10 @@ void wayward_vrykuls_lantern( special_effect_t& effect )
     {
       for ( auto& s : e.player->dbc->spells_by_label( 690 ) )
         if ( s->is_class( e.player->type ) )
+        {
           proc_spell_id.insert( s->id() );
+          e.player->sim->print_debug( "Wayward Vrykul's can Proc off of Spell: {}: {}\n", s->name_cstr(), s->id() );
+        }
 
       buff = create_buff<stat_buff_t>( e.player, e.trigger(), e.item )
                  ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) );
@@ -5003,6 +5006,8 @@ void wayward_vrykuls_lantern( special_effect_t& effect )
       last_activation_time = timespan_t::zero();
     }
   };
+
+  effect.proc_flags2_ = PF2_ALL_CAST;
 
   new wayward_vrykuls_lantern_cb_t( effect );
 }
@@ -5129,6 +5134,8 @@ void torqs_big_red_button( special_effect_t& effect )
       : generic_proc_t( e.player, name, spell ), stat_buff( nullptr ), stack_buff( nullptr )
     {
       auto value_spell = e.player->find_spell( 470042 );
+      assert( value_spell && "Torq's Big Red Button missing value spell" );
+
       stat_buff        = create_buff<stat_buff_t>( e.player, e.driver(), e.item )
                       ->add_stat_from_effect( 1, value_spell->effectN( 1 ).average( e ) );
 
@@ -5158,6 +5165,67 @@ void torqs_big_red_button( special_effect_t& effect )
 
   effect.execute_action = create_proc_action<torqs_big_red_button_t>( "torqs_big_red_button", effect,
                                                                       "torqs_big_red_button", effect.driver() );
+}
+
+// House of Cards
+// 466681 Driver
+// 466680 Values
+// 1219158 Stacking Mastery
+void house_of_cards( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto value_spell = effect.player->find_spell( 466680 );
+  assert( value_spell && "House of Cards missing value spell" );
+
+  auto stacking_buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 1219158 ) );
+
+  effect.player->register_on_combat_state_callback( [ stacking_buff ]( player_t* p, bool c ) {
+    if ( !c && !p->sim->event_mgr.canceled )
+      stacking_buff->expire();
+  } );
+
+  struct house_of_cards_buff_t : public stat_buff_t
+  {
+    double range_min;
+    double range_max;
+    double stack_buff_mod;
+    buff_t* stack_buff;
+
+    house_of_cards_buff_t( player_t* p, std::string_view n, const special_effect_t& e, const spell_data_t* s,
+                           buff_t* stack )
+      : stat_buff_t( p, n, e.driver(), e.item ),
+        range_min( 0 ),
+        range_max( 0 ),
+        stack_buff_mod( 0 ),
+        stack_buff( stack )
+    {
+      add_stat_from_effect_type( A_MOD_RATING, s->effectN( 1 ).average( e ) );
+      default_value  = s->effectN( 1 ).average( e );
+      range_min      = 1.0 - ( s->effectN( 2 ).base_value() / 100 );
+      range_max      = 1.0 + ( s->effectN( 2 ).base_value() / 100 );
+      stack_buff_mod = default_value * ( s->effectN( 2 ).base_value() / 100 / 3 );
+    }
+
+    double randomize_stat_value()
+    {
+      double v = default_value * rng().range( range_min, range_max );
+      if ( stack_buff->check() )
+        v += stack_buff_mod * stack_buff->check();
+
+      return v;
+    }
+
+    void start( int s, double, timespan_t d ) override
+    {
+      stat_buff_t::start( s, randomize_stat_value(), d );
+      stack_buff->trigger();
+    }
+  };
+
+  effect.custom_buff =
+      create_buff<house_of_cards_buff_t>( effect.player, "house_of_cards", effect, value_spell, stacking_buff );
 }
 
 // Weapons
@@ -6420,10 +6488,20 @@ struct absorb_citrine_t : citrine_base_t<absorb_t>
     {
       target                = player;
       target_cache.is_valid = false;
-      target = rng().range( target_list() );
+      target                = rng().range( target_list() );
     }
 
     citrine_base_t::execute();
+  }
+
+  absorb_buff_t* create_buff( const action_state_t* s ) override
+  {
+    absorb_buff_t* b = absorb_t::create_buff( s );
+
+    if ( s->target->is_pet() )
+      b->set_quiet( true );
+
+    return b;
   }
 };
 
@@ -6518,7 +6596,7 @@ struct storm_sewers_citrine_t : public absorb_citrine_t
           break;
         }
       }
-      if ( potential_target && potential_target->is_enemy() && !potential_target->is_sleeping() )
+      if ( potential_target && potential_target->is_enemy() && !potential_target->is_sleeping() && !potential_target->is_pet() )
       {
         damage->execute_on_target( potential_target, s->result_amount * driver_spell->effectN( 3 ).percent() );
       }
@@ -6728,8 +6806,8 @@ struct roaring_warqueen_citrine_t : public spell_t
   }
 };
 
-// Proxy action just to trigger the highest stat buff. Mostly for reporting purposes. 
-// Might be a better way to do this, but this will do for now. 
+// Proxy action just to trigger the highest stat buff. Mostly for reporting purposes.
+// Might be a better way to do this, but this will do for now.
 struct windsingers_runed_citrine_proc_t : public generic_proc_t
 {
   std::unordered_map<stat_e, buff_t*> buffs;
@@ -7259,7 +7337,7 @@ void seabed_leviathans_citrine( special_effect_t& effect )
   auto damage = create_citrine_action( effect, SEABED_LEVIATHANS_CITRINE );
   // Manually setting the proc flags, Driver appears to use a 0 value absorb buff
   // to check for incoming damage, rather than traditional proc flags.
-  effect.proc_flags_    = PF_DAMAGE_TAKEN;
+  effect.proc_flags_    = PF_DAMAGE_TAKEN | PF_PERIODIC_TAKEN;
   effect.proc_flags2_   = PF2_ALL_HIT;
   effect.proc_chance_   = 1.0;
   effect.execute_action = damage;
@@ -7434,6 +7512,7 @@ void register_special_effects()
   register_special_effect( 468033, items::runecasters_stormbound_rune );
   register_special_effect( 468034, items::darktide_wavebenders_orb );
   register_special_effect( 470286, items::torqs_big_red_button );
+  register_special_effect( 466681, items::house_of_cards );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );
