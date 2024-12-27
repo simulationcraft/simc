@@ -3182,6 +3182,7 @@ void summon( const T& container, timespan_t duration, size_t n = 1 )
 struct shaman_pet_t : public pet_t
 {
   bool use_auto_attack;
+  timespan_t spawn_time;
 
   shaman_pet_t( shaman_t* owner, util::string_view name, bool guardian = true, bool auto_attack = true )
     : pet_t( owner->sim, owner, name, guardian ), use_auto_attack( auto_attack )
@@ -3214,6 +3215,12 @@ struct shaman_pet_t : public pet_t
     {
       create_default_apl();
     }
+  }
+
+  void summon(timespan_t duration) override
+  {
+    pet_t::summon( duration );
+    spawn_time = sim->current_time();
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
@@ -3843,7 +3850,7 @@ struct fire_elemental_t : public primal_elemental_t
 
     if ( variant == elemental_variant::GREATER && o()->talent.echo_of_the_elementals.ok() && expired )
     {
-      o()->summon_lesser_elemental( type );
+      o()->summon_lesser_elemental( type, ( sim->current_time() - spawn_time ) / 2 );
     }
   }
 };
@@ -4013,7 +4020,7 @@ struct storm_elemental_t : public primal_elemental_t
 
     if ( variant == elemental_variant::GREATER && o()->talent.echo_of_the_elementals.ok() && expired )
     {
-      o()->summon_lesser_elemental( type );
+      o()->summon_lesser_elemental( type, ( sim->current_time() - spawn_time ) / 2 );
     }
 
     if ( o()->pet.storm_elemental.n_active_pets() + o()->pet.lesser_storm_elemental.n_active_pets() == 0 )
