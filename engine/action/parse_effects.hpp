@@ -100,6 +100,7 @@ struct player_effect_t
 struct target_effect_t
 {
   std::function<int( actor_target_data_t* )> func = nullptr;
+  std::function<double( actor_target_data_t* )> value_func = nullptr;
   double value = 0.0;
   uint16_t type = USE_DATA;  // for internal flags only
   bool mastery = false;
@@ -108,6 +109,9 @@ struct target_effect_t
 
   target_effect_t& set_func( std::function<int( actor_target_data_t* )> f )
   { func = std::move( f ); return *this; }
+
+  target_effect_t& set_value_func( std::function<double( actor_target_data_t* )> f )
+  { value_func = std::move( f ); return *this; }
 
   target_effect_t& set_value( double v )
   { value = v; return *this; }
@@ -361,7 +365,12 @@ struct parse_base_t
       pack.list.push_back( mod );
     }
     else if constexpr ( std::is_convertible_v<T, std::function<double( double )>> &&
-                        is_detected_v<detect_value_func, U> )
+                        is_detected_v<detect_value_func, U> && std::is_same_v<U, player_effect_t> )
+    {
+      pack.data.value_func = std::move( mod );
+    }
+    else if constexpr ( std::is_convertible_v<T, std::function<double( actor_target_data_t* )>> &&
+                        is_detected_v<detect_value_func, U> && std::is_same_v<U, target_effect_t> )
     {
       pack.data.value_func = std::move( mod );
     }

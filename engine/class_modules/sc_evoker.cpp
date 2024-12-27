@@ -184,6 +184,22 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
   }
 }
 
+template <typename T>
+static std::function<double( actor_target_data_t* )> d_value_fn( T d, bool stack = true )
+{
+  if constexpr ( std::is_invocable_v<T, evoker_td_t::debuffs_t> )
+  {
+    return [ d ]( actor_target_data_t* t ) {
+      return std::invoke( d, static_cast<evoker_td_t*>( t )->debuffs )->check_stack_value();
+    };
+  }
+  else
+  {
+    static_assert( static_false<T>, "Not a valid debuff member of evoker_td_t" );
+    return nullptr;
+  }
+}
+
 template <typename Data, typename Base = action_state_t>
 struct evoker_action_state_t : public Base, public Data
 {
@@ -1995,7 +2011,8 @@ public:
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
   void apply_debuffs_effects()
   {
-    parse_target_effects( d_fn( &evoker_td_t::debuffs_t::shattering_star ), p()->talent.shattering_star );
+    parse_target_effects( d_fn( &evoker_td_t::debuffs_t::shattering_star ), p()->talent.shattering_star,
+                          d_value_fn( &evoker_td_t::debuffs_t::shattering_star ) );
 
     if ( p()->talent.scalecommander.melt_armor.ok() )
     {
@@ -4983,7 +5000,7 @@ struct shattering_star_t : public evoker_spell_t
     evoker_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) )
-      td( s->target )->debuffs.shattering_star->trigger();
+      td( s->target )->debuffs.shattering_star->trigger( -1, td( s->target )->debuffs.shattering_star->default_value * base_multiplier );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -7227,7 +7244,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   debuffs.shattering_star = make_buff_fallback( evoker->talent.shattering_star.ok(), *this, "shattering_star_debuff",
                                                 evoker->talent.shattering_star )
                                 ->set_cooldown( 0_ms )
-                                ->apply_affecting_aura( evoker->talent.focusing_iris );
+                                ->apply_affecting_aura( evoker->talent.focusing_iris )
+                                ->set_default_value_from_effect( 3, 0.01 );
 
   debuffs.in_firestorm = make_buff_fallback( evoker->talent.firestorm.ok(), *this, "in_firestorm" )
                              ->set_max_stack( 20 )
