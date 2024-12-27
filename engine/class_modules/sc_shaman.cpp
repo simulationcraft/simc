@@ -2740,7 +2740,7 @@ public:
 
     this->p()->consume_maelstrom_weapon( this->execute_state, mw_consumed_stacks );
 
-    if ( this->exec_type == spell_variant::NORMAL && !this->background )
+    if ( (this->execute_state->action->id == 188389) || (this->exec_type == spell_variant::NORMAL && !this->background) )
     {
       this->p()->trigger_ancestor( ancestor_trigger, this->execute_state );
     }
@@ -8825,10 +8825,11 @@ struct ascendance_t : public shaman_spell_t
 {
   ascendance_damage_t* ascendance_damage;
   lava_burst_t* lvb;
+  lava_burst_overload_t* lvb_ol;
 
   ascendance_t( shaman_t* player, util::string_view name_str, util::string_view options_str = {} ) :
     shaman_spell_t( name_str, player, player->spell.ascendance ),
-    ascendance_damage( nullptr ), lvb( nullptr )
+    ascendance_damage( nullptr ), lvb( nullptr ), lvb_ol(nullptr)
   {
     parse_options( options_str );
     harmful = false;
@@ -8984,6 +8985,7 @@ struct ascendance_dre_t : public ascendance_t
         lvb = new lava_burst_t( p(), spell_variant::DEEPLY_ROOTED_ELEMENTS );
         add_child( lvb );
       }
+      lvb_ol = debug_cast<lava_burst_overload_t*>( p()->find_action( "lava_burst_overload" ) );
     }
 
     if ( p()->specialization() == SHAMAN_ENHANCEMENT )
@@ -8996,6 +8998,41 @@ struct ascendance_dre_t : public ascendance_t
       {
         ascendance_damage = new ascendance_damage_t( p(), "ascendance_damage_dre" );
         add_child( ascendance_damage );
+      }
+    }
+  }
+
+  void execute() override
+  {
+    if (p()->specialization() == SHAMAN_ENHANCEMENT || !p()->bugs)
+    {
+      ascendance_t::execute();
+      return;
+    }
+
+    if (!p()->buff.ascendance->up()) {
+      ascendance_t::execute();
+      return;
+    }
+
+    // Elemental: if DRE procs while Asc is active, it does not trigger a damage event but instead applies 6 Flame Shocks
+    // to what seems to be random targets, each of which trigger Ancestors
+
+    auto &tl    = target_list();
+    auto fs_cap = p()->action.ascendance->data().effectN( 7 ).base_value();
+    for ( size_t i = 0; i < fs_cap; i++ )
+    {
+      int index = rng().range( tl.size() );
+      p()->trigger_secondary_flame_shock( tl[ index ], spell_variant::ASCENDANCE );
+
+      p()->trigger_maelstrom_gain( lvb->maelstrom_gain );
+      p()->trigger_maelstrom_gain( lvb_ol->maelstrom_gain );
+
+      double ol_chance = overload_chance( execute_state );
+
+      if ( !rng().roll( ol_chance ) )
+      {
+        p()->trigger_maelstrom_gain( lvb_ol->maelstrom_gain );
       }
     }
   }
