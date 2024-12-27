@@ -12459,7 +12459,7 @@ void death_knight_t::create_actions()
     }
     if ( talent.blood.bloodworms.ok() )
     {
-      pet_summon.bloodworm = get_action<bloodworm_summon_t>( "bloodworms_summon", this );
+      pet_summon.bloodworm = get_action<bloodworm_summon_t>( "bloodworm_summon", this );
     }
   }
 
