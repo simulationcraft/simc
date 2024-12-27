@@ -13268,9 +13268,12 @@ void shaman_t::create_buffs()
       : as<int>( find_spell( 455097 ) -> effectN( 3 ).base_value() )
     )
     ->set_default_value_from_effect( 2 );
+
   buff.storm_swell = make_buff( this, "storm_swell", find_spell( 455089 ) )
     ->set_default_value_from_effect_type(A_MOD_MASTERY_PCT)
-    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
+    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+    ->set_trigger_spell( talent.storm_swell );
+
   buff.amplification_core = make_buff( this, "amplification_core", find_spell( 456369 ) )
     ->set_default_value_from_effect( 1 )
     ->set_trigger_spell( talent.amplification_core );
@@ -13292,11 +13295,6 @@ void shaman_t::create_buffs()
     ->set_default_value_from_effect( 1 );
 
   buff.flametongue_weapon = make_buff( this, "flametongue_weapon", find_class_spell( "Flametongue Weapon") );
-
-  buff.storm_swell = make_buff<stat_buff_t>( this, "storm_swell", find_spell( 455089 ) )
-    ->set_default_value_from_effect( 1 )
-    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-    ->set_trigger_spell( talent.storm_swell );
 
   //
   // Elemental
