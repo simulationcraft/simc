@@ -1,15 +1,15 @@
 name: CI
 
-on:
-  pull_request:
-    branches: [ thewarwithin ]
-  push:
-    branches: [ thewarwithin ]
-    paths-ignore:
-      - 'ActionPriorityLists/**'
-      - 'SpellDataDump/*.txt'
-      - 'dbc_extract3/**'
-      - 'casc_extract/**'
+# on:
+#   pull_request:
+#     branches: [ thewarwithin ]
+#   push:
+#     branches: [ thewarwithin ]
+#     paths-ignore:
+#       - 'ActionPriorityLists/**'
+#       - 'SpellDataDump/*.txt'
+#       - 'dbc_extract3/**'
+#       - 'casc_extract/**'
 
 env:
   SIMC_PROFILE: profiles/CI.simc
