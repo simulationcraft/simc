@@ -8879,15 +8879,15 @@ struct ascendance_t : public shaman_spell_t
 
   void execute() override
   {
-    if ( p()->is_ptr() && p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, TWW2, B2 ) )
+    if ( p()->is_ptr() && p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, TWW2, B2 ))
     {
       if ( p()->talent.storm_elemental->ok() )
       {
-        p()->action.storm_elemental->execute();
+        p()->summon_elemental( elemental::GREATER_STORM, p()->find_spell( 1215675 )->effectN( 1 ).time_value() );
       }
       else
       {
-        p()->action.fire_elemental->execute();
+        p()->summon_elemental( elemental::GREATER_FIRE, p()->find_spell( 1215675 )->effectN( 1 ).time_value() );
       }
     }
 
