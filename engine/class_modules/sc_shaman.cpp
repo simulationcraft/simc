@@ -487,8 +487,6 @@ public:
     action_t* flame_shock_lmt;
     action_t* flame_shock;
     action_t* elemental_blast;
-    action_t* fire_elemental;
-    action_t* storm_elemental;
 
     action_t* lightning_rod;
     action_t* tempest_strikes;
@@ -8913,7 +8911,6 @@ struct ascendance_t : public shaman_spell_t
       // Apparently the Flame Shock durations get set to current Flame Shock max duration,
       // bypassing normal dot refresh behavior.
       auto tl = target_list();
-      auto test = data();
       for ( size_t i = 0; i < std::min( tl.size(), as<size_t>( data().effectN( 7 ).base_value() ) ); ++i )
       {
         p()->trigger_secondary_flame_shock( tl[ i ], spell_variant::ASCENDANCE );
@@ -11185,12 +11182,6 @@ void shaman_t::create_actions()
   if ( talent.reactivity.ok() )
   {
     action.reactivity = new sundering_reactivity_t( this );
-  }
-
-  if (sets->has_set_bonus(SHAMAN_ELEMENTAL, TWW2, B2))
-  {
-    action.fire_elemental = new fire_elemental_t( this, {});
-    action.storm_elemental = new storm_elemental_t( this, {} );
   }
 
   // Generic Actions
