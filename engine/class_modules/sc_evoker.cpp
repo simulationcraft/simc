@@ -2011,8 +2011,7 @@ public:
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
   void apply_debuffs_effects()
   {
-    parse_target_effects( d_fn( &evoker_td_t::debuffs_t::shattering_star ), p()->talent.shattering_star,
-                          d_value_fn( &evoker_td_t::debuffs_t::shattering_star ) );
+    parse_target_effects( d_value_fn( &evoker_td_t::debuffs_t::shattering_star ), p()->talent.shattering_star, 1.0 );
 
     if ( p()->talent.scalecommander.melt_armor.ok() )
     {

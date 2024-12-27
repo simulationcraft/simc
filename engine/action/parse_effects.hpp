@@ -365,11 +365,6 @@ struct parse_base_t
     {
       pack.data.value_func = std::move( mod );
     }
-    else if constexpr ( std::is_convertible_v<T, std::function<double( actor_target_data_t* )>> && std::is_same_v<U, target_effect_t> )
-    {
-      pack.data.func = std::move( mod );
-      pack.data.value = 1.0;
-    }
     else if constexpr ( ( std::is_convertible_v<T, std::function<bool()>> ||
                           std::is_convertible_v<T, std::function<bool( const action_t*, const action_state_t* )>> ) &&
                         is_detected_v<detect_func, U> )
