@@ -99,19 +99,15 @@ struct player_effect_t
 // effects dependent on target state
 struct target_effect_t
 {
-  std::function<int( actor_target_data_t* )> func = nullptr;
-  std::function<double( actor_target_data_t* )> value_func = nullptr;
+  std::function<double( actor_target_data_t* )> func = nullptr;
   double value = 0.0;
   uint16_t type = USE_DATA;  // for internal flags only
   bool mastery = false;
   const spelleffect_data_t* eff = &spelleffect_data_t::nil();
   uint32_t opt_enum = UINT32_MAX;
 
-  target_effect_t& set_func( std::function<int( actor_target_data_t* )> f )
+  target_effect_t& set_func( std::function<double( actor_target_data_t* )> f )
   { func = std::move( f ); return *this; }
-
-  target_effect_t& set_value_func( std::function<double( actor_target_data_t* )> f )
-  { value_func = std::move( f ); return *this; }
 
   target_effect_t& set_value( double v )
   { value = v; return *this; }
@@ -365,14 +361,14 @@ struct parse_base_t
       pack.list.push_back( mod );
     }
     else if constexpr ( std::is_convertible_v<T, std::function<double( double )>> &&
-                        is_detected_v<detect_value_func, U> && std::is_same_v<U, player_effect_t> )
+                        is_detected_v<detect_value_func, U> )
     {
       pack.data.value_func = std::move( mod );
     }
-    else if constexpr ( std::is_convertible_v<T, std::function<double( actor_target_data_t* )>> &&
-                        is_detected_v<detect_value_func, U> && std::is_same_v<U, target_effect_t> )
+    else if constexpr ( std::is_convertible_v<T, std::function<double( actor_target_data_t* )>> && std::is_same_v<U, target_effect_t> )
     {
-      pack.data.value_func = std::move( mod );
+      pack.data.func = std::move( mod );
+      pack.data.value = 1.0;
     }
     else if constexpr ( ( std::is_convertible_v<T, std::function<bool()>> ||
                           std::is_convertible_v<T, std::function<bool( const action_t*, const action_state_t* )>> ) &&
@@ -655,7 +651,7 @@ public:
   //   (const spell_data_t*) spells: List of spells with redirect effects that modify the effects on the debuff
   //   (unsigned)       ignore_mask: Bitmask to skip effect# n corresponding to the n'th bit
   template <typename... Ts>
-  void parse_target_effects( const std::function<int( actor_target_data_t* )>& fn, const spell_data_t* spell,
+  void parse_target_effects( const std::function<double( actor_target_data_t* )>& fn, const spell_data_t* spell,
                              Ts... mods )
   {
     if ( !spell || !spell->ok() )
@@ -677,7 +673,7 @@ public:
   }
 
   template <typename... Ts>
-  void force_target_effect( const std::function<int( actor_target_data_t* )>& fn, const spell_data_t* spell,
+  void force_target_effect( const std::function<double( actor_target_data_t* )>& fn, const spell_data_t* spell,
                             unsigned idx, Ts... mods )
   {
     if ( !spell || !spell->ok() || !can_force( spell->effectN( idx ) ) )

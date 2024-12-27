@@ -170,9 +170,6 @@ void target_effect_t::print_parsed_line( report::sc_html_stream& os, const sim_t
   if ( type & MANUAL_ENTRY )
     notes.emplace_back( "Manual" );
 
-  if ( value_func )
-    notes.emplace_back( "Value-function" );
-
   if ( note_fn )
   {
     if ( auto str = note_fn( opt_enum ); !str.empty() )
@@ -728,7 +725,7 @@ double parse_effects_t::get_effect_value( const target_effect_t& i, actor_target
 {
   if ( auto check = i.func( td ) )
   {
-    auto eff_val = i.value_func ? i.value_func( td ) : i.value * check;
+    auto eff_val = i.value * check;
 
     if ( i.mastery )
       eff_val *= _player->cache.mastery();
