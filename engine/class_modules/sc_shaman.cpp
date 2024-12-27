@@ -7901,7 +7901,7 @@ struct earthquake_overload_damage_t : public earthquake_damage_base_t
 
     if ( p()->buff.ascendance->up() )
     {
-      m *= (1.0 + p()->talent.ascendance->effectN( 8 ).percent());
+      m *= (1.0 + p()->spell.ascendance->effectN( 8 ).percent());
     }
 
     return m;
