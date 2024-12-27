@@ -3850,7 +3850,7 @@ struct fire_elemental_t : public primal_elemental_t
 
     if ( variant == elemental_variant::GREATER && o()->talent.echo_of_the_elementals.ok() && expired )
     {
-      o()->summon_lesser_elemental( type, ( sim->current_time() - spawn_time ) / 2 );
+      o()->summon_lesser_elemental( type, ( sim->current_time() - spawn_time ) / 3 );
     }
   }
 };
@@ -4020,7 +4020,7 @@ struct storm_elemental_t : public primal_elemental_t
 
     if ( variant == elemental_variant::GREATER && o()->talent.echo_of_the_elementals.ok() && expired )
     {
-      o()->summon_lesser_elemental( type, ( sim->current_time() - spawn_time ) / 2 );
+      o()->summon_lesser_elemental( type, ( sim->current_time() - spawn_time ) / 3 );
     }
 
     if ( o()->pet.storm_elemental.n_active_pets() + o()->pet.lesser_storm_elemental.n_active_pets() == 0 )
