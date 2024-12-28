@@ -1008,6 +1008,15 @@ struct flurry_strikes_t : public monk_melee_attack_t
     shuffled_rng_t *deck;
     flurry_strike_wisdom_t *wisdom_flurry;
 
+    /*
+     * [shadow] buff application tends to be a bit late, thus up cannot reliably
+     * detect if the buff is applied, and shadow wotw triggers should occur.
+     *
+     * this serves as an easy check for whether or not shadow was pulled in the
+     * current chain of flurries, without having to refactor everything
+     */
+    bool recent_shadow_trigger;
+
     flurry_strike_t( monk_t *p, action_t *parent )
       : monk_melee_attack_t( p, "flurry_strike", p->talent.shado_pan.flurry_strikes_hit ),
         flurry_strikes_counter( p->user_options.shado_pan_initial_charge_accumulator ),
@@ -1015,7 +1024,8 @@ struct flurry_strikes_t : public monk_melee_attack_t
         deck( p->get_shuffled_rng( "wisdom_of_the_wall", { { WISDOM_OF_THE_WALL_CRIT, 1 },
                                                            { WISDOM_OF_THE_WALL_DODGE, 1 },
                                                            { WISDOM_OF_THE_WALL_FLURRY, 1 },
-                                                           { WISDOM_OF_THE_WALL_MASTERY, 1 } } ) )
+                                                           { WISDOM_OF_THE_WALL_MASTERY, 1 } } ) ),
+        recent_shadow_trigger( false )
     {
       background = dual = true;
 
@@ -1029,6 +1039,9 @@ struct flurry_strikes_t : public monk_melee_attack_t
     void impact( action_state_t *s ) override
     {
       monk_melee_attack_t::impact( s );
+
+      if ( last_used + 10 * 150_ms < sim->current_time() )
+        recent_shadow_trigger = false;
 
       if ( p()->talent.shado_pan.wisdom_of_the_wall->ok() )
       {
@@ -1049,6 +1062,7 @@ struct flurry_strikes_t : public monk_melee_attack_t
               p()->buff.wisdom_of_the_wall_dodge->trigger();
               break;
             case WISDOM_OF_THE_WALL_FLURRY:
+              recent_shadow_trigger = true;
               p()->buff.wisdom_of_the_wall_flurry->trigger();
               break;
             case WISDOM_OF_THE_WALL_MASTERY:
@@ -1065,8 +1079,16 @@ struct flurry_strikes_t : public monk_melee_attack_t
       if ( auto target_data = p()->get_target_data( s->target ); target_data )
         target_data->debuff.high_impact->trigger();
 
-      if ( p()->buff.wisdom_of_the_wall_flurry->up() )
+      if ( p()->buff.wisdom_of_the_wall_flurry->up() || recent_shadow_trigger )
         wisdom_flurry->execute_on_target( s->target );
+    }
+
+    void reset() override
+    {
+      monk_melee_attack_t::reset();
+
+      // this shouldn't get offset, but just in case :)
+      flurry_strikes_counter = p()->user_options.shado_pan_initial_charge_accumulator;
     }
   };
 
@@ -2593,7 +2615,7 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
 
     p()->buff.tigers_ferocity->trigger();
 
-    if ( p()->talent.windwalker.darting_hurricane.ok()  && !p()->is_ptr())
+    if ( p()->talent.windwalker.darting_hurricane.ok() && !p()->is_ptr() )
       p()->buff.darting_hurricane->increment(
           as<int>( p()->talent.windwalker.darting_hurricane->effectN( 2 )
                        .base_value() ) );  // increment is used to not incur the rppm cooldown
@@ -6632,7 +6654,7 @@ void monk_t::trigger_celestial_fortune( action_state_t *s )
 void monk_t::trigger_mark_of_the_crane( action_state_t *s )
 {
   if ( is_ptr() )
-      return;
+    return;
 
   if ( !baseline.windwalker.mark_of_the_crane->ok() )
     return;
