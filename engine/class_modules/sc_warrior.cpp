@@ -1121,7 +1121,10 @@ public:
   void apply_buff_effects()
   {
     // Shared
-    parse_effects( p()->buff.avatar, effect_mask_t( true ).disable( 8, 9, 10, 11, 12 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
+    if ( !p()->is_ptr() )
+      parse_effects( p()->buff.avatar, effect_mask_t( true ).disable( 8 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
+    else
+      parse_effects( p()->buff.avatar, effect_mask_t( true ).disable( 8, 9, 10, 11, 12 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force );
 
     if ( p()->specialization() == WARRIOR_ARMS )
     {
