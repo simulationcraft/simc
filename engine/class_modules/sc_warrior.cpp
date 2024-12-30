@@ -1129,6 +1129,11 @@ public:
       // This one is for Blademaster's Torment, effect 8 is dynamically enabled
       // parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 8 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force,  [ this ] { return p()->talents.warrior.blademasters_torment->ok(); } );
 
+      if ( p()->is_ptr() )
+      {
+        parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 1, 2 ) );
+      }
+
       parse_effects( p()->buff.dance_of_death_bladestorm );
       parse_effects( p()->buff.juggernaut );
       parse_effects( p()->buff.merciless_bonegrinder );
@@ -1166,6 +1171,11 @@ public:
       if ( p()->is_ptr() && p()->talents.warrior.titans_torment->ok() )
         parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 10 ), p()->talents.arms.spiteful_serenity, p()->talents.warrior.unstoppable_force);
 
+      if ( p()->is_ptr() )
+      {
+        parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 5, 6 ) );
+      }
+
       // TWW1 Tier
       parse_effects( p()->buff.bloody_rampage );      // Fury 2pc
       parse_effects( p()->buff.deep_thirst );         // Fury 4pc
@@ -1176,6 +1186,11 @@ public:
       parse_effects( p()->buff.juggernaut_prot );
       parse_effects( p()->buff.seismic_reverberation_revenge );
       parse_effects( p()->buff.vanguards_determination );
+
+      if ( p()->is_ptr() )
+      {
+        parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 7, 8 ) );
+      }
 
       // TWW1 Tier
       parse_effects( p()->buff.expert_strategist );   // Prot 2pc
@@ -6356,7 +6371,8 @@ struct shield_charge_damage_t : public warrior_attack_t
     // this spell has both coefficients in it, force #1
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
 
-    rage_gain += p->talents.protection.champions_bulwark->effectN( 2 ).resource( RESOURCE_RAGE );
+    if ( !p->is_ptr() )
+      rage_gain += p->talents.protection.champions_bulwark->effectN( 2 ).resource( RESOURCE_RAGE );
   }
 
   double action_multiplier() const override
@@ -6365,7 +6381,10 @@ struct shield_charge_damage_t : public warrior_attack_t
 
     if ( p()->talents.protection.champions_bulwark->ok() )
     {
-      am *= 1.0 + p()->talents.protection.champions_bulwark->effectN( 3 ).percent();
+      if( !p()->is_ptr() )
+        am *= 1.0 + p()->talents.protection.champions_bulwark->effectN( 3 ).percent();
+      else
+        am *= 1.0 + p()->talents.protection.champions_bulwark->effectN( 2 ).percent();
     }
     return am;
   }
@@ -10663,7 +10682,8 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.protection.battering_ram );
 
   // Shared Auras
-  action.apply_affecting_aura( talents.warrior.barbaric_training );
+  if ( !is_ptr() )
+    action.apply_affecting_aura( talents.warrior.barbaric_training );
   action.apply_affecting_aura( talents.warrior.champions_might );
   action.apply_affecting_aura( talents.warrior.concussive_blows );
   action.apply_affecting_aura( talents.warrior.crackling_thunder );
