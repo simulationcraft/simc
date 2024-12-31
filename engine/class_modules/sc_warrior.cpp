@@ -2017,6 +2017,9 @@ struct melee_t : public warrior_attack_t
     }
     rage_gain *= 1.0 + p()->talents.warrior.war_machine->effectN( 2 ).percent();
 
+    if ( p()->is_ptr() && p()->buff.unnerving_focus->up())
+      rage_gain *= 1.0 + p()->talents.protection.unnerving_focus->effectN( 1 ).percent();
+
     rage_gain = util::round( rage_gain, 1 );
 
     if ( p()->specialization() == WARRIOR_ARMS && s->result == RESULT_CRIT )
@@ -10368,7 +10371,21 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
 
   if ( buff.unnerving_focus->up() )
   {
-    a *= 1.0 + buff.unnerving_focus->stack_value();//Spell data lists all the abilities it provides rage gain to separately - currently it is all of our abilities.
+    if ( !is_ptr() )
+      a *= 1.0 + buff.unnerving_focus->stack_value();//Spell data lists all the abilities it provides rage gain to separately - currently it is all of our abilities.
+    else
+    {
+      if ( action && action->data().affected_by( talents.protection.unnerving_focus->effectN( 1 ).trigger()->effectN( 2 )) )
+        a *= 1.0 + talents.protection.unnerving_focus->effectN( 1 ).trigger()->effectN( 2 ).percent();
+      if ( action && action->data().affected_by( talents.protection.unnerving_focus->effectN( 1 ).trigger()->effectN( 3 )) )
+        a *= 1.0 + talents.protection.unnerving_focus->effectN( 1 ).trigger()->effectN( 3 ).percent();
+      if ( action && action->data().affected_by( talents.protection.unnerving_focus->effectN( 1 ).trigger()->effectN( 4 )) )
+        a *= 1.0 + talents.protection.unnerving_focus->effectN( 1 ).trigger()->effectN( 4 ).percent();
+      if ( action && action->data().affected_by( talents.protection.unnerving_focus->effectN( 1 ).trigger()->effectN( 5 )) )
+        a *= 1.0 + talents.protection.unnerving_focus->effectN( 1 ).trigger()->effectN( 5 ).percent();
+      if ( action && action->data().affected_by( talents.protection.unnerving_focus->effectN( 1 ).trigger()->effectN( 6 )) )
+        a *= 1.0 + talents.protection.unnerving_focus->effectN( 1 ).trigger()->effectN( 6 ).percent();
+    }
   }
   return parse_player_effects_t::resource_gain( r, a, g, action );
 }
