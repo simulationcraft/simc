@@ -1193,6 +1193,8 @@ public:
       if ( p()->is_ptr() )
       {
         parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 7, 8 ) );
+        if ( p()->talents.warrior.unstoppable_force )
+          parse_effects( p()->talents.warrior.avatar, effect_mask_t( false ).enable( 11, 12 ) );
       }
 
       // TWW1 Tier
