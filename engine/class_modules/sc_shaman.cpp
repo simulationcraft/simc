@@ -12611,7 +12611,6 @@ void shaman_t::trigger_splintered_elements( action_t* secondary )
   {
     return;
   }
-
   auto count_duplicates = secondary->target_list().size();
   if ( count_duplicates == 0 )
   {
@@ -12764,6 +12763,7 @@ void shaman_t::trigger_primordial_wave_damage( shaman_spell_t* spell )
   }
 
   damage_spell->set_target( spell->target );
+  regenerate_flame_shock_dependent_target_list( damage_spell );
   if ( !damage_spell->target_list().empty() )
   {
     damage_spell->execute();
