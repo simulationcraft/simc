@@ -5893,6 +5893,126 @@ void sureki_zealots_insignia( special_effect_t& e )
   new dbc_proc_callback_t( e.player, e );
 }
 
+// The Jastors Diamond
+// 1214161 Value Spell
+// 1214822 Driver
+// 1214823 Self Buff
+// 1214826 Ally Buff
+void the_jastor_diamond( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  struct i_did_that_buff_t : public stat_buff_t
+  {
+    int fake_stacks;
+    int max_fake_stacks;
+
+    i_did_that_buff_t( player_t* p, std::string_view n, const spell_data_t* s ) : stat_buff_t( p, n, s ), fake_stacks( 0 ), max_fake_stacks( 0 )
+    {
+      set_default_value( 0 );
+      add_stat_from_effect( 1, 0 );
+      add_stat_from_effect( 2, 0 );
+      add_stat_from_effect( 3, 0 );
+      add_stat_from_effect( 4, 0 );
+      max_fake_stacks = as<int>( p->find_spell( 1214161 )->effectN( 2 ).base_value() );
+    }
+
+    void add_ally_stat( stat_e s, double val )
+    {
+      if ( ++fake_stacks < max_fake_stacks )
+      {
+        auto& buff_stat = get_stat( s );
+        buff_stat.current_value += val;
+        buff_stat.amount = buff_stat.current_value;
+        // Only handle stat gain here, stat loss will be handled in i_did_that_buff_t::expire_override()
+        player->stat_gain( buff_stat.stat, val, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+      }
+    }
+
+    void reset() override
+    {
+      stat_buff_t::reset();
+      fake_stacks = 0;
+    }
+
+    void expire_override( int s, timespan_t d ) override
+    {
+      fake_stacks = 0;
+
+      for ( auto& buff_stat : stats )
+      {
+        player->stat_loss( buff_stat.stat, buff_stat.current_value, stat_gain, nullptr,
+                           buff_duration() > timespan_t::zero() );
+
+        buff_stat.current_value = 0;
+      }
+
+      // Purposely skip over stat_buff_t::expire_override() as we do the lost stat calculations manually
+      buff_t::expire_override( s, d );
+    }
+
+    buff_stat_t& get_stat( stat_e s )
+    {
+      for ( auto& buff_stat : stats )
+      {
+        if ( buff_stat.stat == s )
+          return buff_stat;
+      }
+    }
+
+    void bump( int stacks, double /* value */ ) override
+    {
+      // Purposely skip over stat_buff_t::bump() as we do the added stat calculations manually
+      buff_t::bump( stacks );
+    }
+
+    double buff_stat_stack_amount( const buff_stat_t&, int) const override
+    {
+      return 0;
+    }
+  };
+
+  struct the_jastor_diamond_cb_t : public dbc_proc_callback_t
+  {
+    i_did_that_buff_t* self_buff;
+    const spell_data_t* value_spell;
+    double buff_value;
+
+    the_jastor_diamond_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        self_buff( nullptr ),
+        value_spell( e.player->find_spell( 1214161 ) ),
+        buff_value( 0 )
+    {
+      assert( value_spell && "The Jastor Diamond missing value spell." );
+      buff_value = value_spell->effectN( 1 ).average( e );
+
+      self_buff = create_buff<i_did_that_buff_t>( e.player, "i_did_that", e.player->find_spell( 1214823 ) );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      // TODO: Implement triggering the ally buff if a friendly player exists in the sim
+      if ( rng().roll( value_spell->effectN( 3 ).percent() ) )
+      {
+        self_buff->expire();
+      }
+
+      // TODO: Implement checking friendly players highest stat if a friendly player exists in the sim
+      else
+      {
+        auto stat_roll = rng().range( secondary_ratings );
+        self_buff->add_ally_stat( stat_roll, buff_value );
+        self_buff->trigger();
+      }
+    }
+  };
+
+  effect.spell_id = 1214822;
+  new the_jastor_diamond_cb_t( effect );
+}
+
 }  // namespace items
 
 namespace sets
@@ -7531,7 +7651,7 @@ void register_special_effects()
   register_special_effect( 457918, DISABLED_EFFECT );  // seal of the poisoned pact
   register_special_effect( 455799, items::excavation );
   register_special_effect( 457683, items::sureki_zealots_insignia );
-
+  register_special_effect( 1214161, items::the_jastor_diamond );
 
   // Sets
   register_special_effect( 444067, sets::void_reapers_contract );    // kye'veza's cruel implements trinket

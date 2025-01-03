@@ -909,6 +909,7 @@ struct smite_base_t : public priest_spell_t
   timespan_t void_summoner_cdr;
   timespan_t train_of_thought_cdr;
   timespan_t t31_2pc_extend;
+  timespan_t divine_procession_extend;
   propagate_const<action_t*> child_holy_fire;
   action_t* child_searing_light;
 
@@ -921,6 +922,8 @@ struct smite_base_t : public priest_spell_t
               .time_value() ),
       train_of_thought_cdr( priest().talents.discipline.train_of_thought->effectN( 2 ).time_value() ),
       t31_2pc_extend( priest().sets->set( PRIEST_DISCIPLINE, T31, B2 )->effectN( 1 ).time_value() ),
+      divine_procession_extend(
+          priest().is_ptr() ? priest().talents.discipline.divine_procession->effectN( 1 ).time_value() : 0_s ),
       child_holy_fire( priest().background_actions.holy_fire ),
       child_searing_light( priest().background_actions.searing_light )
 
@@ -975,7 +978,7 @@ struct smite_base_t : public priest_spell_t
     // Weal and Woe can be Spell Queue'd into another (instant) spell to get more effect.
     priest().buffs.weal_and_woe->expire( 250_ms );
 
-    if ( priest().talents.discipline.void_summoner.enabled() )
+    if ( !priest().is_ptr() && priest().talents.discipline.void_summoner.enabled() )
     {
       priest().cooldowns.fiend->adjust( void_summoner_cdr );
     }
@@ -984,6 +987,7 @@ struct smite_base_t : public priest_spell_t
     {
       priest().cooldowns.penance->adjust( train_of_thought_cdr );
     }
+
     // If we have divine word, have triggered divine favor: chastise, and proc the holy fire effect
     if ( child_holy_fire && priest().talents.holy.divine_word.enabled() &&
          priest().buffs.divine_favor_chastise->check() &&
@@ -1028,6 +1032,29 @@ struct smite_base_t : public priest_spell_t
           if ( atone->remains() < 30_s )
           {
             atone->extend_duration( player, t31_2pc_extend );
+          }
+        }
+      }
+
+      
+      if ( priest().is_ptr() && priest().talents.discipline.divine_procession.enabled() )
+      {
+        if ( p().allies_with_atonement.size() > 0 )
+        {
+          /*auto it = *( std::min_element( p().allies_with_atonement.begin(), p().allies_with_atonement.end(),
+                                         [ this ]( player_t* a, player_t* b ) {
+                                           return a->health_percentage() < b->health_percentage() &&
+                                                  priest().find_target_data( b )->buffs.atonement->remains() < 30_s;
+                                         } ) );*/
+
+          auto idx = rng().range( 0U, as<unsigned>( p().allies_with_atonement.size() ) );
+
+          auto it = p().allies_with_atonement[ idx ];
+
+          auto atone = priest().find_target_data( it )->buffs.atonement;
+          if ( atone->remains() < 30_s )
+          {
+            atone->extend_duration( player, divine_procession_extend );
           }
         }
       }
@@ -2531,6 +2558,7 @@ struct atonement_t final : public priest_heal_t
     background                                  = true;
     crit_bonus                                  = 0.0;
     disc_mastery                                = true;
+    divine_aegis                                = false;
   }
 
   void init() override
@@ -2593,20 +2621,12 @@ struct divine_aegis_t final : public priest_absorb_t
     if ( b )
       return debug_cast<absorb_buff_t*>( b );
 
-    std::string stats_obj_name = name_str;
-    if ( s->target != player )
-      stats_obj_name += "_" + player->name_str;
-    stats_t* stats_obj = player->get_stats( stats_obj_name, this );
-    if ( stats != stats_obj )
-    {
-      // Add absorb target stats as a child to the main stats object for reporting
-      stats->add_child( stats_obj );
-    }
     auto buff = make_buff<absorb_buff_t>( s->target, name_str, p().talents.discipline.divine_aegis_buff );
-    buff->set_absorb_source( stats_obj );
+    buff->set_absorb_source( stats );
 
     return buff;
   }
+
 
   void assess_damage( result_amount_type /*heal_type*/, action_state_t* s ) override
   {
@@ -3812,14 +3832,16 @@ void priest_t::init_spells()
   talents.oracle.waste_no_time         = HT( "Waste No Time" );          // NYI
   talents.oracle.miraculous_recovery   = HT( "Miraculous Recovery" );    // NYI
   talents.oracle.assured_safety        = HT( "Assured Safety" );         // NYI
-  talents.oracle.prompt_deliverance    = HT( "Prompt Deliverance" );     // NYI
   talents.oracle.divine_feathers       = HT( "Divine Feathers" );        // NYI
+  talents.oracle.save_the_day          = HT( "Save the Day" );           // NYI
   talents.oracle.forseen_circumstances = HT( "Forseen Circumstances" );  // NYI
+  talents.oracle.prophets_will         = HT( "Prophets Will" );          // NYI
+  talents.oracle.desperate_measures    = HT( "Desperate Measures" );     // NYI
+  talents.oracle.divine_providence     = HT( "Divine Providence" );      // NYI
+  talents.oracle.twinsight             = HT( "Twinsight" );              // NYI
+  talents.oracle.fatebender            = HT( "Fatebender" );             // NYI
   talents.oracle.perfect_vision        = HT( "Perfect Vision" );         // NYI
   talents.oracle.clairvoyance          = HT( "Clairvoyance" );           // NYI
-  talents.oracle.narrowed_visions      = HT( "Narrowed Visions" );       // NYI
-  talents.oracle.fatebender            = HT( "Fatebender" );             // NYI
-  talents.oracle.grand_reveal          = HT( "Grand Reveal" );           // NYI
 
   // Voidweaver Hero Talents (Discipline/Shadow)
   talents.voidweaver.entropic_rift          = HT( "Entropic Rift" );
@@ -4042,6 +4064,9 @@ void priest_t::apply_affecting_auras_late( action_t& action )
   action.apply_affecting_aura( talents.discipline.dark_indulgence );
   action.apply_affecting_aura( talents.discipline.expiation );
   action.apply_affecting_aura( talents.discipline.blaze_of_light );
+  action.apply_affecting_aura( talents.discipline.revel_in_darkness );
+  action.apply_affecting_aura( talents.discipline.eternal_barrier );
+  action.apply_affecting_aura( talents.discipline.inner_focus );
 
   // Holy Talents
   action.apply_affecting_aura( talents.holy.miracle_worker );

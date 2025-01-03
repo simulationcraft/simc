@@ -1525,6 +1525,7 @@ class SpellDataGenerator(DataGenerator):
          469917, 469920, # golem gearbox
          # 11.1
          1217431, 1217432, 1217427, 1217638, 1217665, 1217675, 1217676, 1217723, # Zee's Thug Hotline
+         1214823, 1214826, # The Jastor Diamond
         ),
 
         # Warrior:

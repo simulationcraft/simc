@@ -1729,7 +1729,6 @@ public:
     ab::parse_effects( p()->buff.tww1_havoc_4pc );
     ab::parse_effects( p()->buff.winning_streak );
     ab::parse_effects( p()->buff.winning_streak_residual );
-    ab::parse_effects( p()->buff.necessary_sacrifice );
 
     // Vengeance
     ab::parse_effects( p()->buff.soul_furnace_damage_amp );
@@ -9796,6 +9795,9 @@ void demon_hunter_t::parse_player_effects()
   parse_effects( buff.thrill_of_the_fight_attack_speed );
 
   // Fel-scarred
+
+  // Set Bonuses
+  parse_effects( buff.necessary_sacrifice );
 }
 
 // demon_hunter_sigil_t::create_sigil_expression ==================================

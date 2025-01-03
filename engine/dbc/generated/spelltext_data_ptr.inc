@@ -1,5 +1,5 @@
 // Spell text, wow build 11.1.0.58221
-static const std::array<spelltext_data_t, 27201> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 27202> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26824,6 +26824,7 @@ static const std::array<spelltext_data_t, 27201> __ptr_spelltext_data { {
   { 1214796, "$@spelldesc467037", 0, 0 },
   { 1214802, "$@spelldesc467037", "Pursuing an intruder. Self-destructs on contact.", 0 },
   { 1214806, 0, "Increases Critical Strike Rating by $w1.", 0 },
+  { 1214823, "$@spelldesc1214161", "Claiming credit from allies! $?e0[Critical Strike increased by $w1. ]$?e1[Haste increased by $w2. ]$?e2[Mastery increased by $w3. ]$?e3[Versatility increased by $w4.]", 0 },
   { 1214826, "$@spelldesc1214161", "Reclaimed credit from $@auracaster! $?e0[Critical Strike increased by $w1. ]$?e1[Haste increased by $w2. ]$?e2[Mastery increased by $w3. ]$?e3[Versatility increased by $w4.]", 0 },
   { 1214849, "$@spelldesc53480", "You've commanded your Eagle to protect someone and cannot benefit from Spotter's Mark.", 0 },
   { 1214852, "Damaging an Elite creature below $s1% health creates an imperfect copy of it at $s2% power to fight by your side. Only $s3 $Lcopy:copies; can exist at the same time.", 0, "Rank 1/4" },
