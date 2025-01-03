@@ -10101,7 +10101,10 @@ double warrior_t::composite_attribute_multiplier( attribute_e attr ) const
   if ( attr == ATTR_STAMINA )
   {
     m *= 1.0 + spec.vanguard -> effectN( 2 ).percent();
-    m *= 1.0 + talents.warrior.endurance_training -> effectN( 1 ).percent();
+    if( !is_ptr() )
+      m *= 1.0 + talents.warrior.endurance_training -> effectN( 1 ).percent();
+    if( is_ptr() )
+      m *= 1.0 + talents.warrior.reinforced_plates -> effectN( 1 ).percent();
   }
 
   return m;
@@ -10144,7 +10147,7 @@ double warrior_t::composite_armor_multiplier() const
     {
       auto q = spec.vanguard -> effectN( 1 ).percent() *
                 talents.warrior.armored_to_the_teeth -> effectN( 3 ).percent() *
-                ( 1+talents.warrior.reinforced_plates->effectN( 1 ).percent()) *
+                ( 1+talents.warrior.reinforced_plates->effectN( 2 ).percent()) *
                 ( 1+talents.protection.focused_vigor->effectN( 3 ).percent() ) *
                 ( 1+talents.protection.enduring_alacrity->effectN( 3 ).percent() );
       ar *= 1 + ( 1+talents.protection.focused_vigor->effectN( 3 ).percent()) * ( q/(1 - q) );
@@ -10162,7 +10165,11 @@ double warrior_t::composite_armor_multiplier() const
 
  // Generally Modify Armor% (101)
 
-  ar *= 1.0 + talents.warrior.reinforced_plates->effectN( 1 ).percent();
+  if ( is_ptr() )
+    ar *= 1.0 + talents.warrior.reinforced_plates->effectN( 2 ).percent();
+  else
+    ar *= 1.0 + talents.warrior.reinforced_plates->effectN( 1 ).percent();
+
   ar *= 1.0 + talents.protection.enduring_alacrity -> effectN( 3 ).percent();
   ar *= 1.0 + talents.protection.focused_vigor -> effectN( 3 ).percent();
 
