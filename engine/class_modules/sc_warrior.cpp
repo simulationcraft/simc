@@ -480,6 +480,7 @@ public:
     const spell_data_t* shield_wall;
     const spell_data_t* sudden_death_arms;
     const spell_data_t* sudden_death_fury;
+    const spell_data_t* devastator;
 
     // DF Tier
     // T31
@@ -4202,6 +4203,12 @@ struct thunder_blast_t : public warrior_attack_t
     {
       seismic_action = new thunder_blast_seismic_reverberation_t( "thunder_blast_seismic_reverberation", p );
       add_child( seismic_action );
+    }
+
+    if ( p->is_ptr() && p->talents.protection.strategist->ok() )
+    {
+      // For some reason on PTR strategist is referencing shield slam reset chance from devastator
+      shield_slam_reset = p->spell.devastator->effectN( 2 ).percent();
     }
   }
 
@@ -8345,6 +8352,7 @@ void warrior_t::init_spells()
   spec.shield_block_2           = find_specialization_spell( 231847 ); // extra charge
   spell.shield_wall             = find_spell( 871 );
   spell.seismic_reverberation_revenge = find_spell( 384730 );
+  spell.devastator              = find_spell( 236279 );
 
   // Colossus Spells
   spell.wrecked_debuff              = find_spell( 447513 );
