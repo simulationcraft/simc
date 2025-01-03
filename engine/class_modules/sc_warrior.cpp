@@ -2670,10 +2670,15 @@ struct bloodthirst_t : public warrior_attack_t
 
   bool ready() override
   {
-    if ( p()->buff.bloodbath->check() && !background )
+    if ( !p()->is_ptr() && p()->buff.bloodbath->check() && !background )
     {
       return false;
     }
+    if ( p()->is_ptr() && p()->buff.recklessness->check() && !background )
+    {
+      return false;
+    }
+
     return warrior_attack_t::ready();
   }
 };
@@ -2939,7 +2944,9 @@ struct bloodbath_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    p()->buff.bloodbath->decrement();
+    if ( !p()->is_ptr() )
+      p()->buff.bloodbath->decrement();
+
     if ( !unhinged )
       p()->buff.meat_cleaver->decrement();
 
@@ -2974,7 +2981,11 @@ struct bloodbath_t : public warrior_attack_t
 
   bool ready() override
   {
-    if ( !p()->buff.bloodbath->check() )
+    if ( !p()->is_ptr() && !p()->buff.bloodbath->check() )
+    {
+      return false;
+    }
+    if ( p()->is_ptr() && !p()->buff.recklessness->check() )
     {
       return false;
     }
@@ -3394,7 +3405,9 @@ struct bladestorm_t : public warrior_attack_t
           mortal_strike->execute_on_target( t );
         if ( bloodthirst || bloodbath )
         {
-          if ( bloodbath && p()->buff.bloodbath->check() )
+          if ( !p()->is_ptr() && bloodbath && p()->buff.bloodbath->check() )
+            bloodbath->execute_on_target( t );
+          else if ( p()->is_ptr() && bloodbath && p()->buff.recklessness->check() )
             bloodbath->execute_on_target( t );
           else
             bloodthirst->execute_on_target( t );
@@ -5430,7 +5443,11 @@ struct raging_blow_t : public warrior_attack_t
     {
       return false;
     }
-    if ( p()->buff.crushing_blow->check() )
+    if ( !p()->is_ptr() && p()->buff.crushing_blow->check() )
+    {
+      return false;
+    }
+    if ( p()->is_ptr() && p()->buff.recklessness->check() )
     {
       return false;
     }
@@ -5563,7 +5580,8 @@ struct crushing_blow_t : public warrior_attack_t
           p()->buff.deep_thirst->trigger();
     }
 
-    p()->buff.crushing_blow->decrement();
+    if ( !p()->is_ptr() )
+      p()->buff.crushing_blow->decrement();
     p()->buff.meat_cleaver->decrement();
 
     if ( p()->talents.fury.slaughtering_strikes->ok() )
@@ -5597,7 +5615,11 @@ struct crushing_blow_t : public warrior_attack_t
     {
       return false;
     }
-    if ( !p()->buff.crushing_blow->check() )
+    if ( !p()->is_ptr() && !p()->buff.crushing_blow->check() )
+    {
+      return false;
+    }
+    if ( p()->is_ptr() && !p()->buff.recklessness->check() )
     {
       return false;
     }
@@ -6105,7 +6127,7 @@ struct rampage_parent_t : public warrior_attack_t
       p()->buff.recklessness->extend_duration_or_trigger( trigger_duration );
     }
 
-    if ( p()->talents.fury.reckless_abandon->ok() )
+    if ( !p()->is_ptr() && p()->talents.fury.reckless_abandon->ok() )
     {
       p()->buff.bloodbath->trigger();
       p()->buff.crushing_blow->trigger();
@@ -6237,7 +6259,9 @@ struct ravager_t : public warrior_attack_t
           mortal_strike->execute_on_target( t );
         if ( bloodthirst || bloodbath )
         {
-          if ( bloodbath && p()->buff.bloodbath->check() )
+          if ( !p()->is_ptr() && bloodbath && p()->buff.bloodbath->check() )
+            bloodbath->execute_on_target( t );
+          else if ( p()->is_ptr() && bloodbath && p()->buff.recklessness->check() )
             bloodbath->execute_on_target( t );
           else
             bloodthirst->execute_on_target( t );
@@ -9262,10 +9286,21 @@ void warrior_t::create_buffs()
     ->set_default_value( talents.warrior.berserker_stance->effectN( 1 ).percent() );
 
   // Reckless Abandon
-  buff.bloodbath = make_buff( this, "bloodbath", talents.fury.reckless_abandon->effectN( 3 ).trigger() )
-                      ->apply_affecting_aura( talents.fury.depths_of_insanity );
-  buff.crushing_blow = make_buff( this, "crushing_blow", talents.fury.reckless_abandon->effectN( 2 ).trigger() )
-                      ->apply_affecting_aura( talents.fury.depths_of_insanity );
+  if ( !is_ptr() )
+  {
+    buff.bloodbath = make_buff( this, "bloodbath", talents.fury.reckless_abandon->effectN( 3 ).trigger() )
+                        ->apply_affecting_aura( talents.fury.depths_of_insanity );
+    buff.crushing_blow = make_buff( this, "crushing_blow", talents.fury.reckless_abandon->effectN( 2 ).trigger() )
+                        ->apply_affecting_aura( talents.fury.depths_of_insanity );
+  }
+  if ( is_ptr() )
+  {
+    // Delete these once the APL is updated for PTR
+    buff.bloodbath = make_buff( this, "bloodbath", find_spell( 461288 ) )
+                        ->apply_affecting_aura( talents.fury.depths_of_insanity );
+    buff.crushing_blow = make_buff( this, "crushing_blow", find_spell( 396752) )
+                        ->apply_affecting_aura( talents.fury.depths_of_insanity );
+  }
 
   buff.defensive_stance = make_buff( this, "defensive_stance", talents.warrior.defensive_stance )
     ->set_activated( true )
