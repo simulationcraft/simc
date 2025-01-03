@@ -5711,7 +5711,7 @@ void cirral_concoctory( special_effect_t& effect )
 
   struct cirral_concoctory_cb_t : public dbc_proc_callback_t
   {
-    const enum cirral_outcomes_e
+    enum cirral_outcomes_e
     {
         LORD_PROC,
         ASCENDED_PROC,
@@ -5741,7 +5741,7 @@ void cirral_concoctory( special_effect_t& effect )
       std::vector<std::pair<cirral_outcomes_e, double>> normalised_vector;
       auto total_weight = 0.0;
 
-      for ( auto [ outcome, weight ] : to_norm )
+      for ( auto [ _, weight ] : to_norm )
       {
         assert( weight >= 0 && "Weights must be positive" );
         total_weight += weight;
