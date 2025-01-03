@@ -1825,6 +1825,7 @@ struct melee_t : public warrior_attack_t
   warrior_attack_t* sidearm;
   bool mh_lost_melee_contact, oh_lost_melee_contact;
   double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier, prot_rage_multiplier, seasoned_soldier_crit_mult;
+  double war_machine_rage_multiplier;
   double sidearm_chance, enrage_chance;
   devastator_t* devastator;
   melee_t( util::string_view name, warrior_t* p, int sw )
@@ -1839,6 +1840,7 @@ struct melee_t : public warrior_attack_t
       fury_rage_multiplier( 1.0 + p->spec.fury_warrior->effectN( 3 ).percent() ),
       prot_rage_multiplier( 1.0 + p->spec.protection_warrior->effectN( 5 ).percent() ),
       seasoned_soldier_crit_mult( p->spec.seasoned_soldier->effectN( 1 ).percent() ),
+      war_machine_rage_multiplier( 1.0 ),
       sidearm_chance( p->talents.warrior.sidearm->proc_chance() ),
       devastator( nullptr )
   {
@@ -1867,6 +1869,24 @@ struct melee_t : public warrior_attack_t
     if ( p->talents.warrior.sidearm->ok() )
     {
       sidearm = new sidearm_t( p );
+    }
+
+    if ( p->is_ptr() && p->talents.warrior.war_machine->ok() )
+    {
+      switch ( p->specialization() )
+      {
+        case WARRIOR_ARMS:
+          war_machine_rage_multiplier = 1.0 + p->talents.warrior.war_machine->effectN( 2 ).percent();
+          break;
+        case WARRIOR_FURY:
+          war_machine_rage_multiplier = 1.0 + p->talents.warrior.war_machine->effectN( 3 ).percent();
+          break;
+        case WARRIOR_PROTECTION:
+          war_machine_rage_multiplier = 1.0 + p->talents.warrior.war_machine->effectN( 4 ).percent();
+          break;
+        default:
+          break;
+      }
     }
 
     // explicitly apply here as the calls in warrior_action_t require valid spell data
@@ -2017,7 +2037,14 @@ struct melee_t : public warrior_attack_t
     {
       rage_gain *= prot_rage_multiplier;
     }
-    rage_gain *= 1.0 + p()->talents.warrior.war_machine->effectN( 2 ).percent();
+
+    if ( !p()->is_ptr() && p()->talents.warrior.war_machine->ok() )
+      rage_gain *= 1.0 + p()->talents.warrior.war_machine->effectN( 2 ).percent();
+
+    if ( p()->is_ptr() && p()->talents.warrior.war_machine->ok() )
+    {
+      rage_gain *= war_machine_rage_multiplier;
+    }
 
     if ( p()->is_ptr() && p()->buff.unnerving_focus->up())
       rage_gain *= 1.0 + p()->talents.protection.unnerving_focus->effectN( 1 ).percent();
