@@ -5008,6 +5008,7 @@ struct heroic_leap_t : public warrior_attack_t
     attack_power_mod.direct                      = heroic_leap_damage->effectN( 1 ).ap_coeff();
     radius                                       = heroic_leap_damage->effectN( 1 ).radius();
 
+    // This bug is likely fixed in spelldata for 11.1 PTR.  Recheck after PTR is up.
     cooldown->duration = data().charge_cooldown();  // Fixes bug in spelldata for now.
     cooldown->duration += p->talents.warrior.bounding_stride->effectN( 1 ).time_value();
   }
