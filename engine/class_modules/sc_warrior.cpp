@@ -6485,8 +6485,12 @@ struct shield_charge_damage_aoe_t : public warrior_attack_t
 
     if ( p()->talents.protection.champions_bulwark->ok() )
     {
-      am *= 1.0 + p()->talents.protection.champions_bulwark->effectN( 3 ).percent();
+      if( !p()->is_ptr() )
+        am *= 1.0 + p()->talents.protection.champions_bulwark->effectN( 3 ).percent();
+      else
+        am *= 1.0 + p()->talents.protection.champions_bulwark->effectN( 2 ).percent();
     }
+
     return am;
   }
 };
