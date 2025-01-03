@@ -8924,6 +8924,29 @@ struct ascendance_t : public shaman_spell_t
       }
     }
 
+    if (p()->specialization() == SHAMAN_ELEMENTAL && background && p()->buff.ascendance->up())
+    {
+      auto& tl    = target_list();
+      auto fs_cap = p()->action.ascendance->data().effectN( 7 ).base_value();
+      for ( size_t i = 0; i < fs_cap; i++ )
+      {
+        int index = i%tl.size();
+        p()->trigger_secondary_flame_shock( tl[ index ], spell_variant::ASCENDANCE );
+
+        p()->trigger_maelstrom_gain( lvb->maelstrom_gain );
+        p()->trigger_maelstrom_gain( lvb_ol->maelstrom_gain );
+
+        double ol_chance = overload_chance( execute_state );
+
+        if ( !rng().roll( ol_chance ) )
+        {
+          p()->trigger_maelstrom_gain( lvb_ol->maelstrom_gain );
+        }
+      }
+
+      return;
+    }
+
     if ( lvb )
     {
       lvb->set_target( player->target );
@@ -9002,41 +9025,6 @@ struct ascendance_dre_t : public ascendance_t
       {
         ascendance_damage = new ascendance_damage_t( p(), "ascendance_damage_dre" );
         add_child( ascendance_damage );
-      }
-    }
-  }
-
-  void execute() override
-  {
-    if (p()->specialization() == SHAMAN_ENHANCEMENT || !p()->bugs)
-    {
-      ascendance_t::execute();
-      return;
-    }
-
-    if (!p()->buff.ascendance->up()) {
-      ascendance_t::execute();
-      return;
-    }
-
-    // Elemental: if DRE procs while Asc is active, it does not trigger a damage event but instead applies 6 Flame Shocks
-    // to what seems to be random targets, each of which trigger Ancestors
-
-    auto &tl    = target_list();
-    auto fs_cap = p()->action.ascendance->data().effectN( 7 ).base_value();
-    for ( size_t i = 0; i < fs_cap; i++ )
-    {
-      int index = rng().range( tl.size() );
-      p()->trigger_secondary_flame_shock( tl[ index ], spell_variant::ASCENDANCE );
-
-      p()->trigger_maelstrom_gain( lvb->maelstrom_gain );
-      p()->trigger_maelstrom_gain( lvb_ol->maelstrom_gain );
-
-      double ol_chance = overload_chance( execute_state );
-
-      if ( !rng().roll( ol_chance ) )
-      {
-        p()->trigger_maelstrom_gain( lvb_ol->maelstrom_gain );
       }
     }
   }
