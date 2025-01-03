@@ -197,7 +197,7 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.bok_proc, p()->talent.windwalker.courageous_impulse );
 
   // Conduit of the Celestials
-  parse_effects( p()->buff.august_dynasty, CONSUME_BUFF );
+  parse_effects( p()->buff.august_dynasty, EXPIRE_BUFF );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
                  [ & ] { return !p()->buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
   parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
@@ -1850,6 +1850,7 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
             p()->buff.teachings_of_the_monastery->trigger();
         }
       }
+    }
 
     if ( p()->specialization() == MONK_WINDWALKER )
     {
@@ -7093,6 +7094,7 @@ void monk_t::init_spells()
     shared.teachings_of_the_monastery = baseline.mistweaver.teachings_of_the_monastery;
   else
     shared.teachings_of_the_monastery = spell_data_t::not_found();
+}
 
 void monk_t::init_background_actions()
 {
