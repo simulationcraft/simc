@@ -5679,47 +5679,15 @@ template <typename T>
 struct external_proc_cb_t : public dbc_proc_callback_t
 {
   player_t* source;
-  external_scaling_proc_t<T>* external_action;
-  external_proc_cb_t( const special_effect_t& e, player_t* source, external_scaling_proc_t<T>* action )
-    : dbc_proc_callback_t( e.player, e ), source( source ), external_action( action )
+  external_proc_cb_t( const special_effect_t& e, player_t* source )
+    : dbc_proc_callback_t( e.player, e ), source( source )
   {
   }
 
   void execute( action_t* action, action_state_t* state ) override
   {
-    if ( state && state->target->is_sleeping() )
-    {
-      return;
-    }
-
-    if ( execute_fn )
-    {
-      ( *execute_fn )( this, action, state );
-    }
-    else
-    {
-      bool triggered = proc_buff == nullptr;
-      if ( proc_buff )
-        triggered = proc_buff->trigger();
-
-      if ( state && triggered && external_action && ( !proc_buff || proc_buff->check() == proc_buff->max_stack() ) )
-      {
-        // Snapshot a new state for schedule_execute() as AoE-triggered procs may require different targets
-        external_action->set_target( target( state ) );
-        external_action->faked_player = source;
-        auto proc_state               = external_action->get_state();
-        proc_state->target            = external_action->target;
-        external_action->snapshot_state( proc_state, external_action->amount_type( proc_state ) );
-        external_action->schedule_execute( proc_state );
-
-        // Decide whether to expire the buff even with 1 max stack
-        if ( expire_on_max_stack )
-        {
-          assert( proc_buff );
-          proc_buff->expire();
-        }
-      }
-    }
+    debug_cast<external_scaling_proc_t<T>*>( proc_action )->faked_player = source;
+    dbc_proc_callback_t::execute( action, state );
   }
 };
 
@@ -5897,16 +5865,17 @@ void cirral_concoctory( special_effect_t& effect )
 
           auto buff_name = util::tokenize_fn( driver_spell->name_cstr() );
 
-          auto driver_effect      = new special_effect_t( buff_player );
-          driver_effect->name_str = buff_name;
-          driver_effect->spell_id     = driver_spell->id();
+          auto driver_effect             = new special_effect_t( buff_player );
+          driver_effect->name_str        = buff_name;
+          driver_effect->spell_id        = driver_spell->id();
+          driver_effect->execute_action  = healing_action;
           buff_player->special_effects.push_back( driver_effect );
 
           auto buff = make_buff( actor_pair_t{ buff_player, effect.player }, buff_name, driver_spell );
           buff->set_chance( 1.0 )->set_rppm( RPPM_NONE );
           proc_driver_buffs[ buff_player ] = buff;
 
-          auto healer_cb = new external_proc_cb_t<generic_heal_t>( *driver_effect, listener, healing_action );
+          auto healer_cb = new external_proc_cb_t<generic_heal_t>( *driver_effect, listener );
           healer_cb->activate_with_buff( buff, true );
           break;
         }
@@ -5917,35 +5886,37 @@ void cirral_concoctory( special_effect_t& effect )
 
           auto buff_name = util::tokenize_fn( driver_spell->name_cstr() );
 
-          auto driver_effect      = new special_effect_t( buff_player );
-          driver_effect->name_str = buff_name;
-          driver_effect->spell_id = driver_spell->id();
-          driver_effect->proc_flags_ = dps_driver_spell->proc_flags();
+          auto driver_effect             = new special_effect_t( buff_player );
+          driver_effect->name_str        = buff_name;
+          driver_effect->spell_id        = driver_spell->id();
+          driver_effect->execute_action  = tank_action;
+          driver_effect->proc_flags_     = dps_driver_spell->proc_flags();
           buff_player->special_effects.push_back( driver_effect );
 
           auto buff = make_buff( actor_pair_t{ buff_player, effect.player }, buff_name, driver_spell );
           buff->set_chance( 1.0 )->set_rppm( RPPM_NONE );
           proc_driver_buffs[ buff_player ] = buff;
 
-          auto tank_cb = new external_proc_cb_t<generic_aoe_proc_t>( *driver_effect, listener, tank_action );
+          auto tank_cb = new external_proc_cb_t<generic_aoe_proc_t>( *driver_effect, listener );
           tank_cb->activate_with_buff( buff, true );
           break;
         }
         default:
         {
           auto driver_spell = effect.player->find_spell( 452365 );
-          auto buff_name = util::tokenize_fn( driver_spell->name_cstr() );
+          auto buff_name    = util::tokenize_fn( driver_spell->name_cstr() );
 
-          auto driver_effect      = new special_effect_t( buff_player );
-          driver_effect->name_str = buff_name;
-          driver_effect->spell_id     = driver_spell->id();
+          auto driver_effect             = new special_effect_t( buff_player );
+          driver_effect->name_str        = buff_name;
+          driver_effect->spell_id        = driver_spell->id();
+          driver_effect->execute_action  = dps_action;
           buff_player->special_effects.push_back( driver_effect );
 
           auto buff = make_buff( actor_pair_t{ buff_player, effect.player }, buff_name, driver_spell );
           buff->set_chance( 1.0 )->set_rppm( RPPM_NONE );
           proc_driver_buffs[ buff_player ] = buff;
 
-          auto dps_cb = new external_proc_cb_t<generic_proc_t>( *driver_effect, listener, dps_action );
+          auto dps_cb = new external_proc_cb_t<generic_proc_t>( *driver_effect, listener );
           dps_cb->activate_with_buff( buff, true );
           break;
         }

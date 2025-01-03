@@ -563,17 +563,7 @@ struct base_generic_aoe_proc_t : public base_generic_proc_t<BASE>
     this->split_aoe_damage = true;
   }
 
-  base_generic_aoe_proc_t( player_t* p, ::util::string_view name, const spell_data_t* s,
-                           bool aoe_damage_increase_ = false )
-    : base_generic_proc_t<BASE>( p, name, s ),
-      aoe_damage_increase( aoe_damage_increase_ ),
-      max_scaling_targets( 5 )
-  {
-    this->aoe              = -1;
-    this->split_aoe_damage = true;
-  }
-
-  base_generic_aoe_proc_t( player_t* p, ::util::string_view name, const spell_data_t* s, const item_t* i,
+  base_generic_aoe_proc_t( player_t* p, ::util::string_view name, const spell_data_t* s, const item_t* i = nullptr,
                            bool aoe_damage_increase_ = false )
     : base_generic_proc_t<BASE>( p, name, s, i ), aoe_damage_increase( aoe_damage_increase_ ), max_scaling_targets( 5 )
   {
