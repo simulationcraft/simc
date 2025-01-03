@@ -2679,11 +2679,21 @@ struct bloodthirst_t : public warrior_attack_t
 };
 
 // Bloodbath ==============================================================
+struct bloodbath_dot_t : public warrior_attack_t
+{
+  bloodbath_dot_t( warrior_t* p ) : warrior_attack_t( "bloodbath_dot", p, p->find_spell( 113344 ) )
+  {
+    background = true;
+    hasted_ticks = false;
+    may_miss = false;
+  }
+};
 
 struct bloodbath_t : public warrior_attack_t
 {
   bloodthirst_heal_t* bloodthirst_heal;
   warrior_attack_t* gushing_wound;
+  warrior_attack_t* bloodbath_dot;
   int aoe_targets;
   double enrage_chance;
   double rage_from_cold_steel_hot_blood;
@@ -2695,6 +2705,7 @@ struct bloodbath_t : public warrior_attack_t
     : warrior_attack_t( "bloodbath", p, p->spec.bloodbath ),
       bloodthirst_heal( nullptr ),
       gushing_wound( nullptr ),
+      bloodbath_dot( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
@@ -2730,6 +2741,11 @@ struct bloodbath_t : public warrior_attack_t
       gushing_wound = new gushing_wound_dot_t( p );
     }
 
+    if ( p->is_ptr() )
+    {
+      bloodbath_dot = new bloodbath_dot_t( p );
+    }
+
     if ( p->talents.fury.swift_strikes->ok() )
     {
       energize_amount += p->talents.fury.swift_strikes->effectN( 2 ).resource( RESOURCE_RAGE );
@@ -2752,6 +2768,7 @@ struct bloodbath_t : public warrior_attack_t
     : warrior_attack_t( name, p, p->spec.bloodbath ),
       bloodthirst_heal( nullptr ),
       gushing_wound( nullptr ),
+      bloodbath_dot( nullptr ),
       aoe_targets( as<int>( p->spell.whirlwind_buff->effectN( 1 ).base_value() ) ),
       enrage_chance( p->spec.enrage->effectN( 2 ).percent() ),
       rage_from_cold_steel_hot_blood( p->find_spell( 383978 )->effectN( 1 ).base_value() / 10.0 ),
@@ -2781,6 +2798,11 @@ struct bloodbath_t : public warrior_attack_t
     if ( p->talents.fury.cold_steel_hot_blood.ok() )
     {
       gushing_wound = new gushing_wound_dot_t( p );
+    }
+
+    if ( p->is_ptr() )
+    {
+      bloodbath_dot = new bloodbath_dot_t( p );
     }
 
     if ( p->talents.fury.swift_strikes->ok() )
@@ -2843,6 +2865,11 @@ struct bloodbath_t : public warrior_attack_t
     {
       gushing_wound->set_target( s->target );
       gushing_wound->execute();
+    }
+
+    if ( bloodbath_dot && p()->is_ptr() )
+    {
+      bloodbath_dot->execute_on_target( s->target );
     }
 
     if ( p()->talents.fury.cold_steel_hot_blood.ok() && execute_state->result == RESULT_CRIT &&
