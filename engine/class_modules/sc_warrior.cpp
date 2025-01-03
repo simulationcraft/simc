@@ -340,6 +340,7 @@ public:
     real_ppm_t* t31_sudden_death;
     real_ppm_t* slayers_dominance;
     real_ppm_t* tww2_arms_2pc;
+    real_ppm_t* tww2_fury_2pc;
   } rppm;
 
   // Cooldowns
@@ -1178,6 +1179,7 @@ public:
       if ( p()->is_ptr() )
       {
         parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 5, 6 ) );
+        parse_effects( p()->buff.winning_streak_fury );
       }
 
       // TWW1 Tier
@@ -1688,6 +1690,10 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     if ( p()->is_ptr() && p()->sets->has_set_bonus( WARRIOR_ARMS, TWW2, B2 ) && p()->rppm.tww2_arms_2pc->trigger() )
     {
       p()->buff.winning_streak_arms->trigger();
+    }
+    if ( p()->is_ptr() && p()->sets->has_set_bonus( WARRIOR_FURY, TWW2, B2 ) && p()->rppm.tww2_fury_2pc->trigger() )
+    {
+      p()->buff.winning_streak_fury->trigger();
     }
   }
 
@@ -6069,6 +6075,11 @@ struct rampage_attack_t : public warrior_attack_t
       p()->buff.slaughtering_strikes->expire();
       p()->buff.brutal_finish->expire();
       p()->buff.bloody_rampage->expire();
+
+      if ( p()->is_ptr() && p()->buff.winning_streak_fury->up() && p()->rng().roll( p()->sets->set( WARRIOR_FURY, TWW2, B2 )->effectN( 1 ).trigger()->proc_chance() ) )
+      {
+        p()->buff.winning_streak_fury->expire();
+      }
     }
   }
 
@@ -9536,7 +9547,8 @@ void warrior_t::create_buffs()
                                     buff.hedged_bets -> trigger( timespan_t::from_seconds( sets->set( WARRIOR_ARMS, TWW2, B4 )->effectN( 1 ).base_value() * stacks ) );
                                 });
   buff.hedged_bets = make_buff( this, "hedged_bets", find_spell( 1216556) );                  // Arms 4pc
-  buff.winning_streak_fury = make_buff( this, "winning_streak_fury", find_spell( 1216561 ) ); // Fury 2pc
+  buff.winning_streak_fury = make_buff( this, "winning_streak_fury", find_spell( 1216561 ) )  // Fury 2pc
+                                ->set_chance( 1.0 );
   buff.double_down_bt = make_buff( this, "double_down_bt", find_spell( 1216565 ) );           // Fury 4pc Bloodthirst
   buff.double_down_rb = make_buff( this, "double_down_rb", find_spell( 1216569 ) );           // Fury 4pc Raging Blow
   buff.luck_of_the_draw = make_buff( this, "luck_of_the_draw", find_spell( 1218163 ) );       // Prot 2pc
@@ -9565,7 +9577,10 @@ void warrior_t::init_rng()
   rppm.t31_sudden_death  = get_rppm( "t31_sudden_death", find_spell( 422923 ) );
   rppm.slayers_dominance = get_rppm( "slayers_dominance", talents.slayer.slayers_dominance );
   if( is_ptr() )
+  {
     rppm.tww2_arms_2pc     = get_rppm( "tww2_arms_2pc", find_spell( 1215713 ) );
+    rppm.tww2_fury_2pc     = get_rppm( "tww2_fury_2pc", find_spell( 1215714 ) );
+  }
 }
 
 // warrior_t::validate_fight_style ==========================================
