@@ -3267,6 +3267,7 @@ struct special_delivery_t : public monk_spell_t
   {
     background   = true;
     travel_delay = player->talent.brewmaster.special_delivery_missile->missile_speed();
+    aoe          = -1;
   }
 
   void execute() override
