@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58221 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.58187 PTR
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -5476,50 +5476,50 @@ bonus_id={ 10249 }, base_ilevel={ 489 }, desc={ Awakened Crafted }
 bonus_id={ 10250 }, base_ilevel={ 438 }
 bonus_id={ 10254 }, quality={ rare }
 bonus_id={ 10255 }, quality={ epic }
-bonus_id={ 10256 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10257 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10258 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10259 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10260 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10261 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10262 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10263 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10264 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10265 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10266 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10267 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10268 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10269 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10270 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10271 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10272 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10273 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10274 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10275 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10276 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10277 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10278 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10279 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10280 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10281 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10282 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10283 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10284 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10285 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10286 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10287 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10288 }, desc={ The War Within Season 1 }, quality={ uncommon }
-bonus_id={ 10289 }, desc={ The War Within Season 1 }, quality={ uncommon }
-bonus_id={ 10290 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10291 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10292 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10293 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10294 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10295 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10296 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10297 }, desc={ The War Within Season 1 }, quality={ rare }
-bonus_id={ 10298 }, desc={ The War Within Season 1 }, quality={ epic }
-bonus_id={ 10299 }, desc={ The War Within Season 1 }, quality={ epic }
+bonus_id={ 10256 }, quality={ epic }
+bonus_id={ 10257 }, quality={ epic }
+bonus_id={ 10258 }, quality={ epic }
+bonus_id={ 10259 }, quality={ epic }
+bonus_id={ 10260 }, quality={ epic }
+bonus_id={ 10261 }, quality={ epic }
+bonus_id={ 10262 }, quality={ epic }
+bonus_id={ 10263 }, quality={ epic }
+bonus_id={ 10264 }, quality={ epic }
+bonus_id={ 10265 }, quality={ epic }
+bonus_id={ 10266 }, quality={ epic }
+bonus_id={ 10267 }, quality={ epic }
+bonus_id={ 10268 }, quality={ epic }
+bonus_id={ 10269 }, quality={ epic }
+bonus_id={ 10270 }, quality={ epic }
+bonus_id={ 10271 }, quality={ epic }
+bonus_id={ 10272 }, quality={ epic }
+bonus_id={ 10273 }, quality={ epic }
+bonus_id={ 10274 }, quality={ epic }
+bonus_id={ 10275 }, quality={ epic }
+bonus_id={ 10276 }, quality={ epic }
+bonus_id={ 10277 }, quality={ epic }
+bonus_id={ 10278 }, quality={ epic }
+bonus_id={ 10279 }, quality={ epic }
+bonus_id={ 10280 }, quality={ epic }
+bonus_id={ 10281 }, quality={ epic }
+bonus_id={ 10282 }, quality={ rare }
+bonus_id={ 10283 }, quality={ rare }
+bonus_id={ 10284 }, quality={ rare }
+bonus_id={ 10285 }, quality={ rare }
+bonus_id={ 10286 }, quality={ rare }
+bonus_id={ 10287 }, quality={ rare }
+bonus_id={ 10288 }, quality={ uncommon }
+bonus_id={ 10289 }, quality={ uncommon }
+bonus_id={ 10290 }, quality={ epic }
+bonus_id={ 10291 }, quality={ epic }
+bonus_id={ 10292 }, quality={ epic }
+bonus_id={ 10293 }, quality={ epic }
+bonus_id={ 10294 }, quality={ rare }
+bonus_id={ 10295 }, quality={ rare }
+bonus_id={ 10296 }, quality={ rare }
+bonus_id={ 10297 }, quality={ rare }
+bonus_id={ 10298 }, quality={ epic }
+bonus_id={ 10299 }, quality={ epic }
 bonus_id={ 10300 }, desc={ Beginner Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 450 @plvl 80 }
 bonus_id={ 10301 }, ilevel={ 0 @plvl 0 - 453 @plvl 80 }
 bonus_id={ 10302 }, desc={ Beginner Crafted }, quality={ heirloom }, ilevel={ 0 @plvl 0 - 456 @plvl 80 }
@@ -6923,50 +6923,6 @@ bonus_id={ 11938 }, ilevel_adjust={ -898 }
 bonus_id={ 11939 }, ilevel_adjust={ -899 }
 bonus_id={ 11940 }, ilevel_adjust={ -900 }
 bonus_id={ 11941 }, effects={ Griftah's All-Purpose Embellishing Powder (id=463429, index=0, type=equip) }
-bonus_id={ 11942 }, quality={ uncommon }
-bonus_id={ 11943 }, quality={ uncommon }
-bonus_id={ 11944 }, quality={ rare }
-bonus_id={ 11945 }, quality={ rare }
-bonus_id={ 11946 }, quality={ rare }
-bonus_id={ 11947 }, quality={ rare }
-bonus_id={ 11948 }, quality={ rare }
-bonus_id={ 11949 }, quality={ rare }
-bonus_id={ 11950 }, quality={ epic }
-bonus_id={ 11951 }, quality={ rare }
-bonus_id={ 11952 }, quality={ rare }
-bonus_id={ 11953 }, quality={ rare }
-bonus_id={ 11954 }, quality={ rare }
-bonus_id={ 11955 }, quality={ epic }
-bonus_id={ 11956 }, quality={ epic }
-bonus_id={ 11957 }, quality={ epic }
-bonus_id={ 11969 }, quality={ epic }
-bonus_id={ 11970 }, quality={ epic }
-bonus_id={ 11971 }, quality={ epic }
-bonus_id={ 11972 }, quality={ epic }
-bonus_id={ 11973 }, quality={ epic }
-bonus_id={ 11974 }, quality={ epic }
-bonus_id={ 11975 }, quality={ epic }
-bonus_id={ 11976 }, quality={ epic }
-bonus_id={ 11977 }, quality={ epic }
-bonus_id={ 11978 }, quality={ epic }
-bonus_id={ 11979 }, quality={ epic }
-bonus_id={ 11980 }, quality={ epic }
-bonus_id={ 11981 }, quality={ epic }
-bonus_id={ 11982 }, quality={ epic }
-bonus_id={ 11983 }, quality={ epic }
-bonus_id={ 11984 }, quality={ epic }
-bonus_id={ 11985 }, quality={ epic }
-bonus_id={ 11986 }, quality={ epic }
-bonus_id={ 11987 }, quality={ epic }
-bonus_id={ 11988 }, quality={ epic }
-bonus_id={ 11989 }, quality={ epic }
-bonus_id={ 11990 }, quality={ epic }
-bonus_id={ 11991 }, quality={ epic }
-bonus_id={ 11992 }, quality={ epic }
-bonus_id={ 11993 }, quality={ epic }
-bonus_id={ 11994 }, quality={ epic }
-bonus_id={ 11995 }, quality={ epic }
-bonus_id={ 11996 }, quality={ epic }
 bonus_id={ 11999 }, quality={ epic }
 bonus_id={ 12001 }, quality={ epic }
 bonus_id={ 12002 }, quality={ epic }
@@ -6982,115 +6938,27 @@ bonus_id={ 12011 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=46
 bonus_id={ 12012 }, quality={ epic }
 bonus_id={ 12013 }, quality={ epic }
 bonus_id={ 12014 }, quality={ epic }
-bonus_id={ 12015 }, base_ilevel={ 571 }, quality={ uncommon }
-bonus_id={ 12016 }, base_ilevel={ 584 }, quality={ rare }
-bonus_id={ 12017 }, base_ilevel={ 623 }, quality={ epic }
-bonus_id={ 12024 }, base_ilevel={ 593 }, quality={ rare }
 bonus_id={ 12025 }, quality={ epic }
 bonus_id={ 12026 }, quality={ epic }
 bonus_id={ 12027 }, quality={ epic }
 bonus_id={ 12028 }, quality={ epic }
-bonus_id={ 12040 }, base_ilevel={ 632 }, desc={ Fortune Crafted }
-bonus_id={ 12041 }, base_ilevel={ 616 }, quality={ epic }
-bonus_id={ 12042 }, base_ilevel={ 645 }
-bonus_id={ 12043 }, base_ilevel={ 662 }
-bonus_id={ 12047 }, ilevel={ 15 @plvl 10 - 587 @plvl 80 }
-bonus_id={ 12048 }, ilevel={ 15 @plvl 10 - 590 @plvl 80 }
-bonus_id={ 12049 }, ilevel={ 15 @plvl 10 - 593 @plvl 80 }
-bonus_id={ 12055 }, socket={ 1 }
-bonus_id={ 12056 }, socket={ 1 }
 bonus_id={ 12057 }, ilevel={ 356 @plvl 55 - 551 @plvl 90 }
 bonus_id={ 12058 }, quality={ rare }, ilevel={ 363 @plvl 55 - 554 @plvl 90 }
 bonus_id={ 12062 }, quality={ common }, effects={ Celestial Barrage (id=471717, index=0, type=equip) }
 bonus_id={ 12063 }, quality={ uncommon }, effects={ Celestial Barrage (id=472390, index=0, type=equip) }
 bonus_id={ 12064 }, quality={ rare }, effects={ Celestial Barrage (id=472403, index=0, type=equip) }
 bonus_id={ 12065 }, quality={ epic }, effects={ Celestial Barrage (id=472406, index=0, type=equip) }
-bonus_id={ 12067 }, quality={ rare }, ilevel={ 21 @plvl 1 - 593 @plvl 80 }
-bonus_id={ 12068 }, quality={ rare }, ilevel={ 21 @plvl 1 - 593 @plvl 80 }
 bonus_id={ 12070 }, quality={ epic }, ilevel={ 369 @plvl 55 - 554 @plvl 90 }
-bonus_id={ 12071 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12072 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12073 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12074 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12075 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12076 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12077 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12078 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12079 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12080 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12081 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12082 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12083 }, desc={ The War Within Season 2 }, quality={ epic }
-bonus_id={ 12084 }, desc={ The War Within Season 2 }, quality={ epic }
 bonus_id={ 12085 }, quality={ common }, effects={ Void Tear (id=472696, index=0, type=equip) }
 bonus_id={ 12086 }, quality={ uncommon }, effects={ Void Tear (id=472852, index=0, type=equip) }
 bonus_id={ 12087 }, quality={ rare }, effects={ Void Tear (id=472859, index=0, type=equip) }
 bonus_id={ 12088 }, quality={ epic }, effects={ Void Tear (id=472866, index=0, type=equip) }
 bonus_id={ 12089 }, quality={ common }, effects={ G.R.A.V. Glove (id=472908, index=0, type=equip) }
-bonus_id={ 12096 }, ilevel={ 15 @plvl 10 - 593 @plvl 80 }
 bonus_id={ 12097 }, quality={ common }, effects={ Aura of Zealotry (id=473810, index=0, type=equip) }
 bonus_id={ 12098 }, quality={ uncommon }, effects={ Aura of Zealotry (id=473819, index=0, type=equip) }
 bonus_id={ 12099 }, quality={ rare }, effects={ Aura of Zealotry (id=473823, index=0, type=equip) }
 bonus_id={ 12100 }, quality={ epic }, effects={ Aura of Zealotry (id=473828, index=0, type=equip) }
 bonus_id={ 12101 }, quality={ common }, effects={ Call Galefeather (id=474121, index=0, type=equip) }
-bonus_id={ 12102 }, desc={ Rank 1/4 }, effects={ Adding (id=474559, index=0, type=use) }
-bonus_id={ 12103 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=474561, index=0, type=use) }
-bonus_id={ 12104 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474562, index=0, type=use) }
-bonus_id={ 12105 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474563, index=0, type=use) }
 bonus_id={ 12106 }, quality={ uncommon }, effects={ Call Galefeather (id=474650, index=0, type=equip) }
 bonus_id={ 12107 }, quality={ rare }, effects={ Call Galefeather (id=474651, index=0, type=equip) }
 bonus_id={ 12108 }, quality={ epic }, effects={ Call Galefeather (id=474652, index=0, type=equip) }
-bonus_id={ 12113 }, desc={ Rank 1/4 }, effects={ Adding (id=474572, index=0, type=use) }
-bonus_id={ 12114 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=474580, index=0, type=use) }
-bonus_id={ 12115 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474579, index=0, type=use) }
-bonus_id={ 12116 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474581, index=0, type=use) }
-bonus_id={ 12117 }, desc={ Rank 1/4 }, effects={ Adding (id=474573, index=0, type=use) }
-bonus_id={ 12118 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=474582, index=0, type=use) }
-bonus_id={ 12119 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474583, index=0, type=use) }
-bonus_id={ 12120 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474584, index=0, type=use) }
-bonus_id={ 12121 }, desc={ Rank 1/4 }, effects={ Adding (id=474574, index=0, type=use) }
-bonus_id={ 12122 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=474588, index=0, type=use) }
-bonus_id={ 12123 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474589, index=0, type=use) }
-bonus_id={ 12124 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474590, index=0, type=use) }
-bonus_id={ 12125 }, desc={ Rank 1/4 }, effects={ Adding (id=474576, index=0, type=use) }
-bonus_id={ 12126 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=474585, index=0, type=use) }
-bonus_id={ 12127 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474586, index=0, type=use) }
-bonus_id={ 12128 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474587, index=0, type=use) }
-bonus_id={ 12129 }, desc={ Rank 1/4 }, effects={ Adding (id=474577, index=0, type=use) }
-bonus_id={ 12130 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=474594, index=0, type=use) }
-bonus_id={ 12131 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474595, index=0, type=use) }
-bonus_id={ 12132 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474596, index=0, type=use) }
-bonus_id={ 12133 }, desc={ Rank 1/4 }, effects={ Adding (id=474578, index=0, type=use) }
-bonus_id={ 12134 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=474591, index=0, type=use) }
-bonus_id={ 12135 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474592, index=0, type=use) }
-bonus_id={ 12136 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474593, index=0, type=use) }
-bonus_id={ 12137 }, desc={ Rank 1/4 }, effects={ Adding (id=474608, index=0, type=use) }
-bonus_id={ 12138 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=474612, index=0, type=use) }
-bonus_id={ 12139 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474613, index=0, type=use) }
-bonus_id={ 12140 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474614, index=0, type=use) }
-bonus_id={ 12141 }, desc={ Rank 1/4 }, effects={ Adding (id=474607, index=0, type=use) }
-bonus_id={ 12142 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=474609, index=0, type=use) }
-bonus_id={ 12143 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474610, index=0, type=use) }
-bonus_id={ 12144 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474611, index=0, type=use) }
-bonus_id={ 12145 }, desc={ Rank 1/4 }, effects={ Adding (id=474606, index=0, type=use) }
-bonus_id={ 12146 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=474618, index=0, type=use) }
-bonus_id={ 12147 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474619, index=0, type=use) }
-bonus_id={ 12148 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474620, index=0, type=use) }
-bonus_id={ 12149 }, desc={ Rank 1/4 }, effects={ Adding (id=474605, index=0, type=use) }
-bonus_id={ 12150 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=474615, index=0, type=use) }
-bonus_id={ 12151 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474616, index=0, type=use) }
-bonus_id={ 12152 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474617, index=0, type=use) }
-bonus_id={ 12153 }, desc={ Rank 1/4 }, effects={ Adding (id=474601, index=0, type=use) }
-bonus_id={ 12154 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=474624, index=0, type=use) }
-bonus_id={ 12155 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474625, index=0, type=use) }
-bonus_id={ 12156 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474626, index=0, type=use) }
-bonus_id={ 12157 }, desc={ Rank 1/4 }, effects={ Adding (id=474600, index=0, type=use) }
-bonus_id={ 12158 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=474621, index=0, type=use) }
-bonus_id={ 12159 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474622, index=0, type=use) }
-bonus_id={ 12160 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474623, index=0, type=use) }
-bonus_id={ 12161 }, desc={ Rank 1/4 }, effects={ Adding (id=474599, index=0, type=use) }
-bonus_id={ 12162 }, desc={ Rank 2/4 }, quality={ uncommon }, effects={ Adding (id=474627, index=0, type=use) }
-bonus_id={ 12163 }, desc={ Rank 3/4 }, quality={ rare }, effects={ Adding (id=474628, index=0, type=use) }
-bonus_id={ 12164 }, desc={ Rank 4/4 }, quality={ epic }, effects={ Adding (id=474629, index=0, type=use) }
-bonus_id={ 12173 }, effects={ C.H.E.T.T. List (id=1217214, index=0, type=use) }
-bonus_id={ 12174 }, effects={ C.H.E.T.T. List (id=1219241, index=0, type=unknown) }
