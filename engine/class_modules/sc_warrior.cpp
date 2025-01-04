@@ -438,6 +438,9 @@ public:
     gain_t* lord_of_war;
     gain_t* simmering_rage;
     gain_t* conquerors_banner;
+
+    // TWW2 Tier
+    gain_t* double_down;
   } gain;
 
   // Spells
@@ -1180,6 +1183,8 @@ public:
       {
         parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 5, 6 ) );
         parse_effects( p()->buff.winning_streak_fury );
+        parse_effects( p()->buff.double_down_bt );
+        parse_effects( p()->buff.double_down_rb );
       }
 
       // TWW1 Tier
@@ -1694,6 +1699,14 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     if ( p()->is_ptr() && p()->sets->has_set_bonus( WARRIOR_FURY, TWW2, B2 ) && p()->rppm.tww2_fury_2pc->trigger() )
     {
       p()->buff.winning_streak_fury->trigger();
+      if ( p()->sets->has_set_bonus( WARRIOR_FURY, TWW2, B4 ) )
+      {
+        // 50% chance for either isn't in spell data, only spell description
+        if ( p()->rng().roll(0.5) )
+          p()->buff.double_down_bt->trigger();
+        else
+          p()->buff.double_down_rb->trigger();
+      }
     }
   }
 
@@ -2673,6 +2686,9 @@ struct bloodthirst_t : public warrior_attack_t
     {
       p()->buff.thunder_blast->trigger();
     }
+
+    if ( p()->buff.double_down_bt->up() )
+      p()->buff.double_down_bt->decrement();
   }
 
   bool ready() override
@@ -2984,6 +3000,9 @@ struct bloodbath_t : public warrior_attack_t
     {
       p()->buff.thunder_blast->trigger();
     }
+
+    if ( p()->buff.double_down_bt->up() )
+      p()->buff.double_down_bt->decrement();
   }
 
   bool ready() override
@@ -5344,6 +5363,7 @@ struct raging_blow_t : public warrior_attack_t
   double cd_reset_chance;
   double wrath_and_fury_reset_chance;
   bool opportunist_up;
+  double rage_gain;
   raging_blow_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "raging_blow", p, p->talents.fury.raging_blow ),
       mh_attack( nullptr ),
@@ -5351,7 +5371,8 @@ struct raging_blow_t : public warrior_attack_t
       lightning_strike( nullptr ),
       cd_reset_chance( p->talents.fury.raging_blow->effectN( 1 ).percent() ),
       wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->effectN( 1 ).percent() ),
-      opportunist_up( false )
+      opportunist_up( false ),
+      rage_gain( 0 )
   {
     parse_options( options_str );
 
@@ -5372,6 +5393,11 @@ struct raging_blow_t : public warrior_attack_t
       lightning_strike = get_action<lightning_strike_t>( "lightning_strike_raging_blow", p );
       add_child( lightning_strike );
     }
+
+    if ( p->is_ptr() && p->sets->has_set_bonus( WARRIOR_FURY, TWW2, B4 ) )
+    {
+      rage_gain += p->find_spell( 1216569 )->effectN( 2 ).resource( RESOURCE_RAGE );
+    }
   }
 
   void init() override
@@ -5385,6 +5411,11 @@ struct raging_blow_t : public warrior_attack_t
     opportunist_up = p()->buff.opportunist->check();
 
     warrior_attack_t::execute();
+
+    if ( p()->is_ptr() && p()->buff.double_down_rb->up() && rage_gain > 0)
+    {
+      p()->resource_gain( RESOURCE_RAGE, rage_gain, p()->gain.double_down );
+    }
 
     if ( result_is_hit( execute_state->result ) )
     {
@@ -5447,6 +5478,9 @@ struct raging_blow_t : public warrior_attack_t
         lightning_strike->execute();
       }
     }
+
+    if ( p()->buff.double_down_rb->up() )
+      p()->buff.double_down_rb->decrement();
   }
 
   bool ready() override
@@ -5513,6 +5547,7 @@ struct crushing_blow_t : public warrior_attack_t
   action_t* lightning_strike;
   double cd_reset_chance, wrath_and_fury_reset_chance;
   bool opportunist_up;
+  double rage_gain;
   crushing_blow_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "crushing_blow", p, p->spec.crushing_blow ),
       mh_attack( nullptr ),
@@ -5520,7 +5555,8 @@ struct crushing_blow_t : public warrior_attack_t
       lightning_strike( nullptr ),
       cd_reset_chance( p->spec.crushing_blow->effectN( 1 ).percent() ),
       wrath_and_fury_reset_chance( p->talents.fury.wrath_and_fury->effectN( 1 ).percent() ),
-      opportunist_up( false )
+      opportunist_up( false ),
+      rage_gain( 0 )
   {
     parse_options( options_str );
 
@@ -5544,6 +5580,11 @@ struct crushing_blow_t : public warrior_attack_t
       lightning_strike = get_action<lightning_strike_t>( "lightning_strike_crushing_blow", p );
       add_child( lightning_strike );
     }
+
+    if ( p->is_ptr() && p->sets->has_set_bonus( WARRIOR_FURY, TWW2, B4 ) )
+    {
+      rage_gain += p->find_spell( 1216569 )->effectN( 2 ).resource( RESOURCE_RAGE );
+    }
   }
 
   void init() override
@@ -5557,6 +5598,11 @@ struct crushing_blow_t : public warrior_attack_t
     opportunist_up = p()->buff.opportunist->check();
 
     warrior_attack_t::execute();
+
+    if ( p()->is_ptr() && p()->buff.double_down_rb->up() && rage_gain > 0)
+    {
+      p()->resource_gain( RESOURCE_RAGE, rage_gain, p()->gain.double_down );
+    }
 
     if ( result_is_hit( execute_state->result ) )
     {
@@ -5619,6 +5665,9 @@ struct crushing_blow_t : public warrior_attack_t
         lightning_strike->execute();
       }
     }
+
+    if ( p()->buff.double_down_rb->up() )
+      p()->buff.double_down_rb->decrement();
   }
 
   bool ready() override
@@ -9665,6 +9714,9 @@ void warrior_t::init_gains()
   gain.merciless_assault      = get_gain( "merciless_assault" );
   gain.thorims_might          = get_gain( "thorims_might" );
   gain.burst_of_power         = get_gain( "burst_of_power" );
+
+  // TWW2 Tier
+  gain.double_down            = get_gain( "double_down" );
 }
 
 // warrior_t::init_position ====================================================
