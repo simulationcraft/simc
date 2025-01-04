@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 11.1.0.58221
-static const std::array<item_enchantment_data_t, 5058> __ptr_spell_item_ench_data { {
+// Item enchantment data, wow build 11.0.7.58187
+static const std::array<item_enchantment_data_t, 5054> __ptr_spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },       0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },       0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 320,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720f,  0.0000f,  0.0000f },    2831, "Reinforced (+$k1 Armor)"           },
@@ -4491,9 +4491,9 @@ static const std::array<item_enchantment_data_t, 5058> __ptr_spell_item_ench_dat
   { 6608,      0,  0,   0,  70, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 390102,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Rider's Reassurance |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
   { 6609,      0,  0,   0,  70, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 390103,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Rider's Reassurance |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
   { 6610,      0,  0,   0,  70, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 390104,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Rider's Reassurance |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
-  { 6611,      0, -7,  10,  70, 10, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      7,      0,      0 }, {  0.2020f,  0.0000f,  0.0000f },       0, "Watcher's Loam |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
-  { 6612,      0, -7,  10,  70, 10, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      7,      0,      0 }, {  0.2450f,  0.0000f,  0.0000f },       0, "Watcher's Loam |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
-  { 6613,      0, -7,  10,  70, 10, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      7,      0,      0 }, {  0.2880f,  0.0000f,  0.0000f },       0, "Watcher's Loam |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
+  { 6611,      0, -7,  10,  70, 0, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      7,      0,      0 }, {  0.2020f,  0.0000f,  0.0000f },       0, "Watcher's Loam |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
+  { 6612,      0, -7,  10,  70, 0, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      7,      0,      0 }, {  0.2450f,  0.0000f,  0.0000f },       0, "Watcher's Loam |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
+  { 6613,      0, -7,  10,  70, 0, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {      7,      0,      0 }, {  0.2880f,  0.0000f,  0.0000f },       0, "Watcher's Loam |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
   { 6614,      0, -7,  10,  70, 10, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      3,     61,      0 }, {  0.1699f,  0.4412f,  0.0000f },       0, "Accelerated Agility |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
   { 6615,      0, -7,  10,  70, 10, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      3,     61,      0 }, {  0.2074f,  0.4963f,  0.0000f },       0, "Accelerated Agility |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
   { 6616,      0, -7,  10,  70, 10, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      3,     61,      0 }, {  0.2449f,  0.5515f,  0.0000f },       0, "Accelerated Agility |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
@@ -5054,9 +5054,5 @@ static const std::array<item_enchantment_data_t, 5058> __ptr_spell_item_ench_dat
   { 7599,      0, -7,   0,  70, 356, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      7,     72,      0 }, {  1.3786f,  1.4338f,  0.0000f },  451821, "+$k2 Agility/Strength & +$k1 Stamina |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
   { 7600,      0, -7,   0,  70, 356, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      7,     72,      0 }, {  1.6764f,  1.7426f,  0.0000f },  451824, "+$k2 Agility/Strength & +$k1 Stamina |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
   { 7601,      0, -7,   0,  70, 356, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      7,     72,      0 }, {  1.9742f,  2.0514f,  0.0000f },  451825, "+$k2 Agility/Strength & +$k1 Stamina |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
-  { 7640,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Jackpot"                           },
-  { 7652,      0, -7,   0,  70, 356, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      7,     71,      0 }, {  1.3786f,  1.3338f,  0.0000f }, 1216517, "+$k2 Agility/Strength/Intellect & +$k1 Stamina |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
-  { 7653,      0, -7,   0,  70, 356, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      7,     71,      0 }, {  1.6764f,  1.6426f,  0.0000f }, 1216518, "+$k2 Agility/Strength/Intellect & +$k1 Stamina |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
-  { 7654,      0, -7,   0,  70, 356, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      7,     72,      0 }, {  1.9742f,  1.9514f,  0.0000f }, 1216519, "+$k2 Agility/Strength/Intellect & +$k1 Stamina |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
 } };
 
