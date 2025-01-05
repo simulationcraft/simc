@@ -318,8 +318,8 @@ jobs:
         run: |
           ${{ runner.workspace }}/b/ninja/simc save_profiles=1 save_full_profile=0 \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
-            ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} \
-            save_actions=${{ matrix.spec }}.simc
+            allow_experimental_specializations=1  ${{ env.CLASS_STR }}=${{ matrix.spec }} \
+            spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} save_actions=${{ matrix.spec }}.simc
 
       - name: Upload APL
         if: steps.dump_apl.outcome == 'success'
@@ -352,7 +352,7 @@ jobs:
             style_arg: fight_style=DungeonSlice
     env:
       UBSAN_OPTIONS: print_stacktrace=1
-      SIMC_ARGS: output=/dev/null threads=2 iterations=10 cleanup_threads=1 ptr=1
+      SIMC_ARGS: output=/dev/null threads=2 iterations=10 cleanup_threads=1 ptr=1 allow_experimental_specializations=1
       PLAYER_ARGS: load_default_gear=1
     steps:
       - uses: actions/cache@v4
