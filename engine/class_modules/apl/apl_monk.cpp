@@ -13,12 +13,6 @@ std::string potion( const player_t *p )
     case MONK_BREWMASTER:
       if ( p->true_level > 70 )
         return "tempered_potion_3";
-      else if ( p->true_level > 60 )
-        return "elemental_potion_of_ultimate_power_3";
-      else if ( p->true_level > 50 )
-        return "phantom_fire";
-      else if ( p->true_level > 45 )
-        return "unbridled_fury";
       else
         return "disabled";
       break;
@@ -59,12 +53,6 @@ std::string flask( const player_t *p )
     case MONK_BREWMASTER:
       if ( p->true_level > 70 )
         return "flask_of_alchemical_chaos_3";
-      else if ( p->true_level > 60 )
-        return "iced_phial_of_corrupting_rage_3";
-      else if ( p->true_level > 50 )
-        return "spectral_flask_of_power";
-      else if ( p->true_level > 45 )
-        return "currents";
       else
         return "disabled";
       break;
@@ -105,12 +93,6 @@ std::string food( const player_t *p )
     case MONK_BREWMASTER:
       if ( p->true_level > 70 )
         return "feast_of_the_midnight_masquerade";
-      else if ( p->true_level > 60 )
-        return "fated_fortune_cookie";
-      else if ( p->true_level > 50 )
-        return "spinefin_souffle_and_fries";
-      else if ( p->true_level > 45 )
-        return "biltong";
       else
         return "disabled";
       break;
@@ -166,22 +148,11 @@ std::string temporary_enchant( const player_t *p )
     case MONK_BREWMASTER:
       if ( p->true_level > 70 )
         return "main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3";
-      else if ( p->true_level > 60 )
-        return "main_hand:buzzing_rune_3/off_hand:buzzing_rune_3";
-      else if ( p->true_level > 50 )
-        return "main_hand:shadowcore_oil/off_hand:shadowcore_oil";
       else
         return "disabled";
       break;
     case MONK_MISTWEAVER:
-      if ( p->true_level > 70 )
-        return "main_hand:howling_rune_3";
-      else if ( p->true_level > 60 )
-        return "main_hand:howling_rune_3";
-      else if ( p->true_level > 50 )
-        return "main_hand:shadowcore_oil";
-      else
-        return "disabled";
+      return "disabled";
       break;
     case MONK_WINDWALKER:
       if ( p->true_level > 70 )
@@ -574,7 +545,9 @@ void windwalker( player_t *p )
   default_aoe->add_action(
       "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.pressure_point.up&cooldown.fists_of_fury."
       "remains>2" );
-  default_aoe->add_action("blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=talent.shadowboxing_treads&talent.courageous_impulse&combo_strike&buff.bok_proc.stack=2" );
+  default_aoe->add_action(
+      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=talent.shadowboxing_treads&talent.courageous_"
+      "impulse&combo_strike&buff.bok_proc.stack=2" );
   default_aoe->add_action(
       "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&buff.dance_of_chiji.up&spinning_crane_kick."
       "max" );
@@ -599,7 +572,9 @@ void windwalker( player_t *p )
   default_aoe->add_action(
       "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&!cooldown.fists_of_fury.remains&"
       "chi<3" );
-  default_aoe->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=talent.shadowboxing_treads&talent.courageous_impulse&combo_strike&buff.bok_proc.up" );
+  default_aoe->add_action(
+      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=talent.shadowboxing_treads&talent.courageous_"
+      "impulse&combo_strike&buff.bok_proc.up" );
   default_aoe->add_action( "spinning_crane_kick,if=combo_strike&(chi>3|energy>55)" );
   default_aoe->add_action(
       "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.ordered_elements.up|buff.bok_"
@@ -682,13 +657,17 @@ void windwalker( player_t *p )
       "rising_sun_kick,target_if=max:target.time_to_die,if=chi>4&(active_enemies<3|talent.glory_of_the_dawn)|chi>2&"
       "energy>50&(active_enemies<3|talent.glory_of_the_dawn)|cooldown.fists_of_fury.remains>2&(active_enemies<3|talent."
       "glory_of_the_dawn)" );
-   default_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=talent.shadowboxing_treads&talent.courageous_impulse&combo_strike&buff.bok_proc.stack=2" );
+  default_cleave->add_action(
+      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=talent.shadowboxing_treads&talent.courageous_"
+      "impulse&combo_strike&buff.bok_proc.stack=2" );
   default_cleave->add_action(
       "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=4&!talent."
       "knowledge_of_the_broken_temple&talent.shadowboxing_treads&active_enemies<3" );
   default_cleave->add_action(
       "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&buff.dance_of_chiji.up" );
-  default_cleave->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=talent.shadowboxing_treads&talent.courageous_impulse&combo_strike&buff.bok_proc.up" );
+  default_cleave->add_action(
+      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=talent.shadowboxing_treads&talent.courageous_"
+      "impulse&combo_strike&buff.bok_proc.up" );
 
   default_cleave->add_action(
       "tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&energy.time_to_max<=gcd.max*3&talent."
@@ -795,7 +774,9 @@ void windwalker( player_t *p )
       "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack=4&!talent."
       "knowledge_of_the_broken_temple&cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>2" );
   default_st->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.stack=2&combo_strike" );
-  default_st->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=talent.courageous_impulse&combo_strike&buff.bok_proc.stack=2" );
+  default_st->add_action(
+      "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=talent.courageous_impulse&combo_strike&buff.bok_"
+      "proc.stack=2" );
   default_st->add_action(
       "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.ordered_elements.up&cooldown."
       "rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>2" );
