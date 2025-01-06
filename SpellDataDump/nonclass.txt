@@ -251052,7 +251052,8 @@ Triggered By     : Squall Sailor's Citrine (462539)
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1173205)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Self (18) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Radius: 0 - 50 yards | Target: At Self (18) -> At Enemy in Area (16)
+Hotfixed         : PvP Coefficient (1 -> 0.25)
 Description      : $@spelldesc462539
 
 Name             : Undersea Overseer's Citrine (id=462953) 
@@ -251065,7 +251066,8 @@ Triggered By     : Undersea Overseer's Citrine (462538)
 Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354), Chain by Most Hit (440)
 Effects          :
 #1 (id=1173207)  : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.25)
 Description      : $@spelldesc462538
 
 Name             : Storm Sewer's Citrine (id=462958) 
