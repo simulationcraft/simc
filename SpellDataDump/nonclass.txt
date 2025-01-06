@@ -251036,7 +251036,8 @@ Triggered By     : Thunderlord's Crackling Citrine (462540)
 Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1173203)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 0.25)
 Description      : $@spelldesc462540
 
 Name             : Squall Sailor's Citrine (id=462952) 
