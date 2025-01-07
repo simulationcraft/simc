@@ -1834,21 +1834,18 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     if ( int totm_stacks = p()->buff.teachings_of_the_monastery->current_stack;
          totm_stacks && p()->buff.teachings_of_the_monastery->up() )
     {
-      p()->buff.teachings_of_the_monastery->expire();
-
       if ( p()->bugs )
         p()->buff.memory_of_the_monastery->expire();
 
-      if ( p()->buff.teachings_of_the_monastery->up() )
-      {
-        int stacks = p()->buff.teachings_of_the_monastery->current_stack;
+      for ( int i = 0; i < totm_stacks; ++i )
+
         p()->buff.teachings_of_the_monastery->expire();
 
-        for ( int i = 0; i < stacks; ++i )
-        {
-          if ( p()->rng().roll( p()->talent.conduit_of_the_celestials.xuens_guidance->effectN( 1 ).percent() ) )
-            p()->buff.teachings_of_the_monastery->trigger();
-        }
+      for ( int i = 0; i < totm_stacks; ++i )
+      {
+        bok_totm_proc->execute_on_target( target );
+        if ( p()->rng().roll( p()->talent.conduit_of_the_celestials.xuens_guidance->effectN( 1 ).percent() ) )
+          p()->buff.teachings_of_the_monastery->trigger();
       }
     }
 
@@ -2149,8 +2146,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     if ( p()->buff.celestial_flames->up() )
       p()->active_actions.breath_of_fire->execute_on_target( execute_state->target );
 
-    if ( p()->talent.windwalker.transfer_the_power->ok() )
-      p()->buff.transfer_the_power->trigger();
+    p()->buff.transfer_the_power->trigger();
 
     p()->buff.tigers_ferocity->trigger();
   }
