@@ -78,7 +78,7 @@ actions.aoe+=/elemental_blast,target_if=min:debuff.lightning_rod.remains,if=tale
 actions.aoe+=/earth_shock,target_if=min:debuff.lightning_rod.remains,if=talent.lightning_rod&lightning_rod<active_enemies&(buff.stormkeeper.up|buff.tempest.up|!talent.surge_of_power)&talent.echoes_of_great_sundering&!buff.echoes_of_great_sundering_es.up
 
 # Use Icefury to proc Fusion of Elements.
-actions.aoe+=/icefury,if=talent.fusion_of_elements&!(buff.fusion_of_elements_nature.up|buff.fusion_of_elements_fire.up)
+actions.aoe+=/icefury,if=talent.fusion_of_elements&!(buff.fusion_of_elements_nature.up|buff.fusion_of_elements_fire.up)&(active_enemies<=4|!talent.elemental_blast|!talent.echoes_of_great_sundering)
 
 # [2-3t] Use Lava Surge procs to buff <anything> with MotE on 2-3 targets.
 actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&!buff.master_of_the_elements.up&talent.master_of_the_elements&active_enemies<=3
