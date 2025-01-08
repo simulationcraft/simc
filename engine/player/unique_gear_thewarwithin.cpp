@@ -8935,7 +8935,7 @@ void seabed_leviathans_citrine( special_effect_t& effect )
   auto damage = create_citrine_action( effect, SEABED_LEVIATHANS_CITRINE );
   // Manually setting the proc flags, Driver appears to use a 0 value absorb buff
   // to check for incoming damage, rather than traditional proc flags.
-  effect.proc_flags_    = PF_DAMAGE_TAKEN | PF_PERIODIC_TAKEN;
+  effect.proc_flags_    = PF_DAMAGE_TAKEN;
   effect.proc_flags2_   = PF2_ALL_HIT;
   effect.proc_chance_   = 1.0;
   effect.execute_action = damage;
