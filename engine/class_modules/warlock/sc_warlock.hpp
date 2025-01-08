@@ -497,7 +497,7 @@ public:
     player_talent_t cruelty_of_kerxan;
     player_talent_t infernal_machine;
 
-    player_talent_t flames_of_xoroth; // TODO: 2024-07-25 Flames of Xoroth spell data has unexpected labels for effects 3 and 4, may be causing unintended values in game
+    player_talent_t flames_of_xoroth;
     player_talent_t abyssal_dominion;
     const spell_data_t* abyssal_dominion_buff;
     const spell_data_t* infernal_fragmentation; // TODO: Re-check damage of Infernal Fragments
@@ -515,11 +515,11 @@ public:
     const spell_data_t* wither_direct; // TODO: Damage values are picking up some other weird effects similar to Flames of Xoroth. Check damage again after main implementation work is done
     const spell_data_t* wither_dot; // TODO: In-game, Affliction is picking up the Socrethar's Guile effect, which is almost certainly a bug
 
-    player_talent_t xalans_ferocity; // TODO: This has similar issues to Flames of Xoroth. Is/should this be affecting pets?
+    player_talent_t xalans_ferocity;
     player_talent_t blackened_soul;
     const spell_data_t* blackened_soul_trigger; // Contains interval for stack collapse
     const spell_data_t* blackened_soul_dmg;
-    player_talent_t xalans_cruelty; // TODO: Same concerns as Xalan's Ferocity
+    player_talent_t xalans_cruelty;
 
     player_talent_t hatefury_rituals;
     player_talent_t bleakheart_tactics;

@@ -363,11 +363,17 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
       m *= 1.0 + talents.summoners_embrace->effectN( 2 ).percent();
   }
 
-  if ( hero.flames_of_xoroth.ok() && !guardian )
-    m *= 1.0 + hero.flames_of_xoroth->effectN( 3 ).percent();
+  if ( hero.flames_of_xoroth.ok() )
+    m *= 1.0 + hero.flames_of_xoroth->effectN( guardian ? 3 : 4 ).percent();
 
   if ( hero.abyssal_dominion.ok() && buffs.abyssal_dominion->check() )
     m *= 1.0 + hero.abyssal_dominion_buff->effectN( guardian ? 1 : 2 ).percent();
+
+  if ( hero.xalans_ferocity.ok() )
+    m *= 1.0 + hero.xalans_ferocity->effectN( guardian ? 7 : 3 ).percent();
+
+  if ( hero.xalans_cruelty.ok() )
+    m *= 1.0 + hero.xalans_cruelty->effectN( guardian ? 6 : 5 ).percent();
 
   return m;
 }
