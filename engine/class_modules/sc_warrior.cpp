@@ -3220,10 +3220,9 @@ struct mortal_strike_t : public warrior_attack_t
       td( s->target )->debuffs_executioners_precision->expire();
     }
 
-    if ( p()->talents.arms.bloodletting->ok() && ( target->health_percentage() < 35 ) )
+    if ( p()->talents.arms.bloodletting->ok() && p()->talents.arms.rend->ok() && ( target->health_percentage() < 35 ) )
     {
-      rend_dot->set_target( s->target );
-      rend_dot->execute();
+      rend_dot->execute_on_target( s->target );
     }
 
     // We schedule this one to trigger after the action fully resolves, as we need to expire the buff if it already exists
