@@ -3,7 +3,7 @@ set -e
 
 alias py=python3
 
-ROOT=$(cd $(dirname $0)/.. && pwd)
+ROOT=$(cd $(dirname $0)/ && pwd)
 
 if [ "$(pwd)" != "${ROOT}" ]; then
   echo "you must run this script in the root directory for this repository" >&2
