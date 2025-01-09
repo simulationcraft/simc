@@ -2112,7 +2112,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         p()->buff.dance_of_chiji_hidden->trigger();
 
         if ( p()->rng().roll( p()->talent.windwalker.sequenced_strikes->effectN( 1 ).percent() ) )
-          p()->buff.bok_proc->increment();  // increment is used directly trigger without rolling chance
+          p()->buff.bok_proc->increment();  // increment is used to directly trigger without rolling chance
       }
     }
 
