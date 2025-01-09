@@ -1335,9 +1335,7 @@ public:
   struct
   {
     const spell_data_t *jadefire_stomp;
-    const spell_data_t *healing_elixir;
     const spell_data_t *invokers_delight;
-    const spell_data_t *rushing_jade_wind;
     const spell_data_t *teachings_of_the_monastery;
   } shared;
 
