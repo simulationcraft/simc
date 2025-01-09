@@ -1258,11 +1258,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     if ( result_is_miss( execute_state->result ) )
       return;
 
-    //-----------
-
-    //============
-    // Post-hit
-    //============
+    p()->buff.bok_proc->trigger();
 
     // Reduces the remaining cooldown on your Brews by 1 sec
     p()->baseline.brewmaster.brews.adjust(
@@ -2116,7 +2112,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         p()->buff.dance_of_chiji_hidden->trigger();
 
         if ( p()->rng().roll( p()->talent.windwalker.sequenced_strikes->effectN( 1 ).percent() ) )
-          p()->buff.bok_proc->increment();  // increment is used to not incur the rppm cooldown
+          p()->buff.bok_proc->increment();  // increment is used directly trigger without rolling chance
       }
     }
 
