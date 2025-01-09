@@ -1,4 +1,5 @@
-#!/usr/bin/env sh
+#!/bin/bash
+
 set -e
 
 alias py=python3
@@ -10,11 +11,10 @@ if [ "$(pwd)" != "${ROOT}" ]; then
   exit 1
 fi
 
-classes_to_generate=(
-  shaman
-)
+classes_to_generate=( shaman )
 
-for class in $classes_to_generate; do
+for class in "${classes_to_generate[@]}"
+do
   pushd "engine/class_modules/apl/${class}"
   ./generate_${class}.sh
   popd
