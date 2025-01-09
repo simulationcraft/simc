@@ -3023,9 +3023,12 @@ struct bloodbath_t : public warrior_attack_t
     {
       return false;
     }
-    if ( p()->is_ptr() && !p()->talents.fury.reckless_abandon->ok() && !p()->buff.recklessness->check() )
+    if ( p()->is_ptr() )
     {
-      return false;
+      if ( !p()->talents.fury.reckless_abandon->ok() )
+        return false;
+      if ( !p()->buff.recklessness->check() )
+        return false;
     }
     return warrior_attack_t::ready();
   }
@@ -5692,9 +5695,12 @@ struct crushing_blow_t : public warrior_attack_t
     {
       return false;
     }
-    if ( p()->is_ptr() && !p()->talents.fury.reckless_abandon->ok() && !p()->buff.recklessness->check() )
+    if ( p()->is_ptr() )
     {
-      return false;
+      if ( !p()->talents.fury.reckless_abandon->ok() )
+        return false;
+      if ( !p()->buff.recklessness->check() )
+        return false;
     }
     return warrior_attack_t::ready();
   }
