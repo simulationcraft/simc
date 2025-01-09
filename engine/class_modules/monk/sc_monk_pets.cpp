@@ -663,7 +663,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       double am = sef_melee_attack_t::action_multiplier();
 
       if ( p()->o()->buff.tigers_ferocity->check() )
-        am /= 1.0 + p()->o()->buff.tigers_ferocity->check_stack_value();
+        am /= 1.0 + p()->o()->buff.tigers_ferocity->check_stack_value_direct();
 
       return am;
     }
@@ -709,6 +709,16 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
         add_child( bok_totm_proc );
       }
+    }
+
+    double action_multiplier() const override
+    {
+      double am = sef_melee_attack_t::action_multiplier();
+
+      if ( p()->o()->talent.windwalker.courageous_impulse->ok() && p()->o()->buff.bok_proc->check() )
+        am /= 1.0 + p()->o()->talent.windwalker.courageous_impulse->effectN( 1 ).percent();
+
+      return am;
     }
 
     void impact( action_state_t *state ) override

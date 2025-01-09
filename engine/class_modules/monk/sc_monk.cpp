@@ -194,7 +194,9 @@ void monk_action_t<Base>::apply_buff_effects()
   parse_effects( p()->buff.pressure_point );
   parse_effects( p()->buff.storm_earth_and_fire, IGNORE_STACKS, effect_mask_t( false ).enable( 1, 2, 3, 7, 8 ),
                  affect_list_t( 1, 2 ).add_spell( p()->passives.chi_explosion->id() ) );
-  parse_effects( p()->buff.bok_proc, p()->talent.windwalker.courageous_impulse );
+  parse_effects(
+      p()->buff.bok_proc, p()->talent.windwalker.courageous_impulse,
+      affect_list_t( 1, 2, 3 ).remove_spell( p()->talent.windwalker.teachings_of_the_monastery_blackout_kick->id() ) );
 
   // Conduit of the Celestials
   parse_effects( p()->buff.august_dynasty, EXPIRE_BUFF );
@@ -1843,7 +1845,8 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
 
       for ( int i = 0; i < totm_stacks; ++i )
       {
-        bok_totm_proc->execute_on_target( target );
+        // quick estimate for delay between totm activations, not rigorously tested for
+        make_event<events::delayed_execute_event_t>( *sim, p(), bok_totm_proc, p()->target, i * 100_ms );
         if ( p()->rng().roll( p()->talent.conduit_of_the_celestials.xuens_guidance->effectN( 1 ).percent() ) )
           p()->buff.teachings_of_the_monastery->trigger();
       }
