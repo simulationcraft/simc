@@ -1264,14 +1264,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     // Post-hit
     //============
 
-    // Combo Breaker calculation
-    if ( p()->baseline.windwalker.combo_breaker->ok() && p()->buff.bok_proc->trigger() &&
-         p()->buff.storm_earth_and_fire->up() )
-    {
-      p()->trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e::SEF_FIRE );
-      p()->trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e::SEF_EARTH );
-    }
-
     // Reduces the remaining cooldown on your Brews by 1 sec
     p()->baseline.brewmaster.brews.adjust(
         timespan_t::from_seconds( p()->baseline.monk.tiger_palm->effectN( 3 ).base_value() ) );
@@ -1930,7 +1922,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   buff_t *buff;
 
   rushing_jade_wind_t( monk_t *player, util::string_view options_str )
-    : monk_melee_attack_t( player, "rushing_jade_wind", player->shared.rushing_jade_wind ),
+    : monk_melee_attack_t( player, "rushing_jade_wind", player->talent.brewmaster.rushing_jade_wind ),
       buff( player->buff.rushing_jade_wind )
   {
     parse_options( options_str );
@@ -5368,6 +5360,7 @@ struct rushing_jade_wind_buff_t : public monk_buff_t
     {
       ww_mastery = true;
 
+      sef_ability = actions::sef_ability_e::SEF_RJW_TICK;
       dual = background   = true;
       aoe                 = -1;
       reduced_aoe_targets = p->passives.rushing_jade_wind->effectN( 1 ).base_value();

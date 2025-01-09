@@ -349,20 +349,6 @@ public:
     return p().o();
   };
 };
-
-// ===============================================================================
-// Tier 28 Primordial Power Buff
-// ===============================================================================
-
-struct primordial_power_buff_t : public monk_pet_buff_t<buff_t>
-{
-  primordial_power_buff_t( monk_pet_t &p, util::string_view n, const spell_data_t *s ) : monk_pet_buff_t( p, n, s )
-  {
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    set_reverse( true );
-    set_reverse_stack_count( s->max_stacks() );
-  }
-};
 }  // namespace buffs
 
 // ==========================================================================
@@ -380,12 +366,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     using base_t  = sef_action_base_t<BASE>;
 
     const action_t *source_action;
-
-    // Windwalker Tier 28 4-piece info
-    // Currently Primordial Power is only a visual buff and not tied to any direct damage buff
-    // the buff is pulled from the player
-    // Currently the buff appears if SEF is summoned before Primordial Potential becomes Primordial Power
-    // buff does not appear if SEF is summoned after Primordial Power is active.
 
     sef_action_base_t( util::string_view n, storm_earth_and_fire_pet_t *p,
                        const spell_data_t *data = spell_data_t::nil() )
@@ -716,11 +696,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       sef_melee_attack_t::impact( state );
 
       if ( result_is_hit( state->result ) )
-      {
         o()->trigger_mark_of_the_crane( state );
-
-        p()->buff.bok_proc_sef->expire();
-      }
     }
   };
 
@@ -1126,27 +1102,11 @@ public:
 
   bool sticky_target;  // When enabled, SEF pets will stick to the target they have
 
-  struct
-  {
-    action_t *rushing_jade_wind_sef = nullptr;
-  } active_actions;
-
-  struct
-  {
-    propagate_const<buff_t *> bok_proc_sef          = nullptr;
-    propagate_const<buff_t *> pressure_point_sef    = nullptr;
-    propagate_const<buff_t *> rushing_jade_wind_sef = nullptr;
-    // Tier 28 Buff
-    propagate_const<buff_t *> primordial_power = nullptr;
-  } buff;
-
   storm_earth_and_fire_pet_t( util::string_view name, monk_t *owner, bool dual_wield, weapon_e weapon_type )
     : monk_pet_t( owner, name, PET_NONE, true, true ),
       attacks( (int)actions::sef_ability_e::SEF_ATTACK_MAX ),
       spells( (int)actions::sef_ability_e::SEF_SPELL_MAX - (int)actions::sef_ability_e::SEF_SPELL_MIN ),
-      sticky_target( false ),
-      active_actions(),
-      buff()
+      sticky_target( false )
   {
     // Storm, Earth, and Fire pets have to become "Windwalkers", so we can get
     // around some sanity checks in the action execution code, that prevents
@@ -1199,12 +1159,11 @@ public:
     attacks.at( (int)actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH ) =
         new sef_strike_of_the_windlord_oh_t( this );
     attacks.at( (int)actions::sef_ability_e::SEF_CELESTIAL_CONDUIT ) = new sef_celestial_conduit_t( this );
+    attacks.at( (int)actions::sef_ability_e::SEF_RJW_TICK )          = new sef_rushing_jade_wind_tick_t( this );
 
     spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CHI_WAVE ) ) = new sef_chi_wave_damage_t( this );
     spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING ) ) =
         new sef_crackling_jade_lightning_t( this );
-
-    active_actions.rushing_jade_wind_sef = new sef_rushing_jade_wind_tick_t( this );
   }
 
   void init_action_list() override
@@ -1228,12 +1187,6 @@ public:
 
     o()->buff.storm_earth_and_fire->trigger( 1, buff_t::DEFAULT_VALUE(), 1, duration );
 
-    if ( o()->buff.bok_proc->up() )
-      buff.bok_proc_sef->trigger( 1, buff_t::DEFAULT_VALUE(), 1, o()->buff.bok_proc->remains() );
-
-    if ( o()->buff.rushing_jade_wind->up() )
-      buff.rushing_jade_wind_sef->trigger( 1, buff_t::DEFAULT_VALUE(), 1, o()->buff.rushing_jade_wind->remains() );
-
     sticky_target = false;
   }
 
@@ -1242,31 +1195,6 @@ public:
     monk_pet_t::dismiss( expired );
 
     o()->buff.storm_earth_and_fire->decrement();
-  }
-
-  void create_buffs() override
-  {
-    monk_pet_t::create_buffs();
-
-    buff.bok_proc_sef =
-        make_buff( this, "bok_proc_sef", o()->passives.bok_proc )
-            ->set_trigger_spell( o()->baseline.windwalker.combo_breaker )
-            ->set_quiet( true );  // In-game does not show this buff but I would like to use it for background stuff;
-
-    buff.rushing_jade_wind_sef = make_buff( this, "rushing_jade_wind_sef", o()->passives.rushing_jade_wind )
-                                     ->set_can_cancel( true )
-                                     ->set_tick_zero( true )
-                                     ->set_cooldown( timespan_t::zero() )
-                                     ->set_period( o()->passives.rushing_jade_wind->effectN( 1 ).period() )
-                                     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-                                     ->set_duration( sim->expected_iteration_time * 2 )
-                                     ->set_tick_behavior( buff_tick_behavior::CLIP )
-                                     ->set_tick_callback( [ this ]( buff_t *d, int, timespan_t ) {
-                                       if ( o()->buff.rushing_jade_wind->up() )
-                                         active_actions.rushing_jade_wind_sef->execute();
-                                       else
-                                         d->expire( timespan_t::from_millis( 1 ) );
-                                     } );
   }
 
   void trigger_attack( actions::sef_ability_e ability, const action_t *source_action, bool combo_strike = false )
@@ -1879,10 +1807,6 @@ void sef_despawn_cb_t::operator()( player_t * )
       monk->retarget_storm_earth_and_fire( pet, targets );
     }
   } );
-}
-void monk_t::trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e sef_pet )
-{
-  pets.sef[ (int)sef_pet ]->buff.bok_proc_sef->trigger();
 }
 
 player_t *monk_t::storm_earth_and_fire_fixate_target( pets::sef_pet_e sef_pet )
