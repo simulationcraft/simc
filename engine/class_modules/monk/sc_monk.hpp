@@ -1506,6 +1506,26 @@ struct delayed_execute_event_t : event_t
     action->execute_on_target( target );
   }
 };
+
+struct delayed_cb_event_t : event_t
+{
+  std::function<void()> cb;
+
+  delayed_cb_event_t( monk_t *player, timespan_t delay, std::function<void()> cb )
+    : event_t( *player->sim, delay ), cb( std::move( cb ) )
+  {
+  }
+
+  const char *name() const override
+  {
+    return "delayed_cb_event_t";
+  }
+
+  void execute() override
+  {
+    cb();
+  }
+};
 }  // namespace events
 
 }  // namespace monk

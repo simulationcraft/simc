@@ -3415,18 +3415,21 @@ struct crackling_jade_lightning_t : public monk_spell_t
   {
     monk_spell_t::last_tick( dot );
 
-    p()->buff.the_emperors_capacitor->expire();
-
     if ( p()->talent.windwalker.power_of_the_thunder_king->ok() )
-    {
-      const auto &tl = target_list();
-      for ( const auto &t : tl )
-      {
-        get_td( t )->dot.crackling_jade_lightning_aoe->cancel();
-        get_td( t )->dot.crackling_jade_lightning_sef->cancel();
-        get_td( t )->dot.crackling_jade_lightning_sef_aoe->cancel();
-      }
-    }
+      // delay expiration so it occurs after final tick of cjl aoe
+      make_event<events::delayed_cb_event_t>( *sim, p(), 1_ms, [ & ]() {
+        p()->buff.the_emperors_capacitor->expire();
+        const auto &tl = target_list();
+        for ( const auto &t : tl )
+        {
+          get_td( t )->dot.crackling_jade_lightning_aoe->cancel();
+          get_td( t )->dot.crackling_jade_lightning_sef->cancel();
+          get_td( t )->dot.crackling_jade_lightning_sef_aoe->cancel();
+        }
+      } );
+    else
+      p()->buff.the_emperors_capacitor->expire();
+
     // Reset swing timer
     if ( player->main_hand_attack )
     {
