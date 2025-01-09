@@ -3352,6 +3352,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
       dual = background      = true;
       ww_mastery             = true;
       trigger_jadefire_stomp = true;
+      sef_ability            = actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING_AOE;
 
       parse_effects( p->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
       parse_effects( p->buff.the_emperors_capacitor );

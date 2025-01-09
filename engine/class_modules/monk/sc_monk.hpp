@@ -75,6 +75,7 @@ enum class sef_ability_e
   // Spells begin here
   SEF_CHI_WAVE,
   SEF_CRACKLING_JADE_LIGHTNING,
+  SEF_CRACKLING_JADE_LIGHTNING_AOE,
   SEF_SPELL_MAX,
   // Spells end here
 

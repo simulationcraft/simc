@@ -1032,46 +1032,17 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       }
     };
 
-    sef_crackling_jade_lightning_aoe_t *aoe_dot;
-
     sef_crackling_jade_lightning_t( storm_earth_and_fire_pet_t *player )
       : sef_spell_t( fmt::format( "crackling_jade_lightning_sef_{}", player->name() ), player,
-                     player->o()->baseline.monk.crackling_jade_lightning ),
-        aoe_dot( new sef_crackling_jade_lightning_aoe_t( player ) )
+                     player->o()->baseline.monk.crackling_jade_lightning )
     {
       interrupt_auto_attack = true;
       channeled             = true;
-
-      add_child( aoe_dot );
     }
 
     double cost_per_tick( resource_e ) const override
     {
       return 0;
-    }
-
-    void execute() override
-    {
-      sef_spell_t::execute();
-
-      if ( p()->o()->talent.windwalker.power_of_the_thunder_king->ok() )
-      {
-        const auto &tl = target_list();
-        double count   = 0;
-
-        for ( auto &t : tl )
-        {
-          // Don't apply AoE version to primary target
-          if ( t == target )
-            continue;
-
-          if ( count < p()->o()->talent.windwalker.power_of_the_thunder_king->effectN( 1 ).base_value() )
-          {
-            aoe_dot->execute_on_target( t );
-            count++;
-          }
-        }
-      }
     }
   };
 
@@ -1175,6 +1146,12 @@ public:
     spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CHI_WAVE ) ) = new sef_chi_wave_damage_t( this );
     spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING ) ) =
         new sef_crackling_jade_lightning_t( this );
+    spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING_AOE ) ) =
+        new sef_crackling_jade_lightning_t::sef_crackling_jade_lightning_aoe_t( this );
+
+    if ( o()->talent.windwalker.power_of_the_thunder_king->ok() )
+      spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING ) )
+          ->add_child( spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING_AOE ) ) );
   }
 
   void init_action_list() override
