@@ -548,6 +548,7 @@ jobs:
           UBSAN_OPTIONS: print_stacktrace=1
           SIMC_CLI_PATH: ${{ runner.workspace }}/b/ninja/simc
         run: ${{ github.workspace }}/generate_apl_modules_ci.sh
+        shell: sh
 
       - name: Commit code-generated APLs
         continue-on-error: true
