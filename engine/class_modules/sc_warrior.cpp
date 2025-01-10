@@ -4364,6 +4364,9 @@ struct thunder_blast_t : public warrior_attack_t
   {
     if ( ! p()->buff.thunder_blast->check() && !background )
       return false;
+    // Thunderclap is required.  TODO check if you need TC if it's a background action
+    if ( ! p()->talents.warrior.thunder_clap->ok() && !background )
+      return false;
     return warrior_attack_t::ready();
   }
 };
