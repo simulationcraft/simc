@@ -2582,10 +2582,8 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
     if ( result_is_hit( oh_attack->execute_state->result ) )
       mh_attack->execute();
 
-    if ( p()->talent.windwalker.rushing_jade_wind.ok() )
-    {
+    if ( p()->talent.windwalker.rushing_jade_wind->ok() )
       p()->buff.rushing_jade_wind->trigger();
-    }
 
     p()->buff.tigers_ferocity->trigger();
 
