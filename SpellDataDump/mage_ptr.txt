@@ -16264,6 +16264,21 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Frozen Orb deals $s1% increased damage to units affected by your Blizzard.
 
+Name             : Recently Damaged By Blizzard (id=1216988) [Spell Family (3), Hidden] 
+Class            : Mage
+School           : Frost
+Spell Type       : None
+Range            : 100 yards
+Duration         : 4 seconds
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), DoT Stacking Rule (103), Unknown (467)
+Effects          :
+#1 (id=1200742)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+Tooltip          : This unit has recently been damaged by $@auracaster's Blizzard.
+
 Name             : Enlightened (id=1217242) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
