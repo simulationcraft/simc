@@ -1,5 +1,5 @@
 // Spell text, wow build 11.1.0.58221
-static const std::array<spelltext_data_t, 27206> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 27207> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27087,6 +27087,7 @@ static const std::array<spelltext_data_t, 27206> __ptr_spelltext_data { {
   { 1216916, "Taking damage has a chance to erupt the ground, covering you in a layer of dark oil that absorbs $s2 damage for $1216921d1. When the shield is broken, it splatters nearby enemies for $s3 Shadow damage.", 0, 0 },
   { 1216921, "$@spelldesc1216916", "Absorbs $w1 damage.", 0 },
   { 1216953, "Frozen Orb deals $s1% increased damage to units affected by your Blizzard.", 0, 0 },
+  { 1216988, 0, "This unit has recently been damaged by $@auracaster's Blizzard.", 0 },
   { 1217011, "$@spelldesc1215731", "On a|cFFFFFFFF Winning Streak!|r Blade Dance and Chaos Strike damage increased by $w1%.", 0 },
   { 1217017, "Casting Barkskin $?a137012[or Ironbark][] sprouts thorns on $?a[its target][you] for $d. When victim to melee attacks, thorns deals $305496s1 Nature damage back to the attacker.\r\n\r\nAttackers also have their movement speed reduced by $232559s1% for $232559d.", 0, "PvP Talent" },
   { 1217055, "$@spelldesc1215732", "Sacrificed a |cFFFFFFFFWinning Streak!|r  to increase critical strike chance by $w1%.", 0 },
