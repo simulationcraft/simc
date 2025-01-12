@@ -60,7 +60,7 @@ template <class Base>
 template <typename... Args>
 monk_action_t<Base>::monk_action_t( Args &&...args )
   : parse_action_effects_t<Base>( std::forward<Args>( args )... ),
-    sef_ability( actions::sef_ability_e::SEF_NONE ),
+    sef_ability( actions::sef_ability_e::SEF_MIN ),
     ww_mastery( false ),
     may_combo_strike( false ),
     trigger_jadefire_stomp( false ),

@@ -55,8 +55,7 @@ namespace actions
 {
 enum class sef_ability_e
 {
-  SEF_NONE = -1,
-  // Attacks begin here
+  SEF_MIN = -1,
   SEF_TIGER_PALM,
   SEF_BLACKOUT_KICK,
   SEF_BLACKOUT_KICK_TOTM,
@@ -69,19 +68,9 @@ enum class sef_ability_e
   SEF_STRIKE_OF_THE_WINDLORD_OH,
   SEF_CELESTIAL_CONDUIT,
   SEF_RJW_TICK,
-  SEF_ATTACK_MAX,
-  // Attacks end here
-
-  // Spells begin here
   SEF_CHI_WAVE,
   SEF_CRACKLING_JADE_LIGHTNING,
   SEF_CRACKLING_JADE_LIGHTNING_AOE,
-  SEF_SPELL_MAX,
-  // Spells end here
-
-  // Misc
-  SEF_SPELL_MIN  = SEF_CHI_WAVE,
-  SEF_ATTACK_MIN = SEF_TIGER_PALM,
   SEF_MAX
 };
 
@@ -336,11 +325,6 @@ public:
   bool heal_ticking();
 };
 }  // namespace buffs
-
-inline int sef_spell_index( int x )
-{
-  return x - static_cast<int>( actions::sef_ability_e::SEF_SPELL_MIN );
-}
 
 struct monk_td_t : public actor_target_data_t
 {
