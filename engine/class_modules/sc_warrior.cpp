@@ -1148,7 +1148,7 @@ public:
       parse_effects( p()->buff.juggernaut );
       parse_effects( p()->buff.merciless_bonegrinder );
       parse_effects( p()->buff.storm_of_swords );
-      parse_effects( p()->buff.recklessness_warlords_torment );
+      parse_effects( p()->buff.recklessness_warlords_torment, effect_mask_t( true ).disable( 10, 11, 12 ) );
 
       parse_effects( p()->buff.strike_vulnerabilities ); // T29 arms
       parse_effects( p()->buff.crushing_advance ); // T30 Arms 4pc
@@ -1742,6 +1742,147 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
       auto random_idx = rng().range( size_t(), sim->target_non_sleeping_list.size() );
       return sim->target_non_sleeping_list[ random_idx ];
     }
+  }
+};
+
+// Avatar ===================================================================
+
+struct avatar_t : public warrior_spell_t
+{
+  timespan_t warlords_torment_duration;
+  timespan_t berserkers_torment_duration;
+  timespan_t titans_torment_duration;
+  timespan_t avatar_of_the_storm_duration;
+  timespan_t immovable_object_duration;
+  bool from_torment;
+  bool from_avatar_of_the_storm;
+  bool from_immovable_object;
+  avatar_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
+    : warrior_spell_t( n, p, spell ),
+    warlords_torment_duration( 0_s ),
+    berserkers_torment_duration( 0_s ),
+    titans_torment_duration( 0_s ),
+    avatar_of_the_storm_duration( 0_s ),
+    immovable_object_duration( 0_s ),
+    from_torment( false ),
+    from_avatar_of_the_storm( false ),
+    from_immovable_object( false )
+  {
+
+    parse_options( options_str );
+    harmful   = false;
+    target    = p;
+  }
+
+  avatar_t( util::string_view name, warrior_t* p )
+    : warrior_spell_t( name, p, p->talents.warrior.avatar ),
+    warlords_torment_duration( 0_s ),
+    berserkers_torment_duration( 0_s ),
+    titans_torment_duration( 0_s ),
+    avatar_of_the_storm_duration( 0_s ),
+    immovable_object_duration( 0_s ),
+    from_torment( false ),
+    from_avatar_of_the_storm( false ),
+    from_immovable_object( false )
+  {
+    background = true;
+    trigger_gcd = timespan_t::zero();
+    harmful    = false;
+    target     = p;
+
+    if ( p->talents.warrior.warlords_torment->ok() )
+      warlords_torment_duration = p->talents.warrior.warlords_torment->effectN( 1 ).time_value();
+
+    if ( p->talents.warrior.berserkers_torment->ok() )
+      berserkers_torment_duration = p->talents.warrior.berserkers_torment->effectN( 2 ).time_value();
+
+    if ( p->talents.warrior.titans_torment->ok() )
+      titans_torment_duration = p->talents.warrior.titans_torment->effectN( 1 ).time_value();
+
+    if ( p->talents.warrior.immovable_object->ok() )
+      immovable_object_duration = p->talents.warrior.immovable_object->effectN( 2 ).time_value();
+
+    if ( p->talents.mountain_thane.avatar_of_the_storm->ok() )
+      avatar_of_the_storm_duration = timespan_t::from_seconds( p->talents.mountain_thane.avatar_of_the_storm->effectN( 3 ).base_value() );
+  }
+
+  struct state_t : public action_state_t
+  {
+    using action_state_t::action_state_t;
+
+    proc_types2 cast_proc_type2() const override
+    {
+      // This spell can trigger on-cast procs even if it is backgrounded
+      return PROC2_CAST_GENERIC;
+    }
+  };
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  void execute() override
+  {
+    warrior_spell_t::execute();
+
+    if ( !background )  // For Hard Cast Avatar
+    {
+      // Trigger main buff
+      p()->buff.avatar->extend_duration_or_trigger();
+
+      // Arms
+      if ( p()->talents.warrior.blademasters_torment.ok() )
+        p()->buff.sweeping_strikes->extend_duration_or_trigger( p()->talents.warrior.blademasters_torment->effectN( 1 ).time_value() );
+
+      if ( p()->talents.warrior.warlords_torment->ok() )
+        p()->buff.recklessness_warlords_torment->extend_duration_or_trigger( warlords_torment_duration );
+
+      // Fury
+      if ( p()->talents.warrior.berserkers_torment.ok() )
+        p()->active.torment_recklessness->schedule_execute();
+
+      if ( !p()->is_ptr() && p()->talents.warrior.titans_torment->ok() )
+        p()->active.torment_odyns_fury->schedule_execute();
+
+      // Protection
+      if ( p()->talents.warrior.immovable_object->ok() )
+        p()->buff.shield_wall->extend_duration_or_trigger( immovable_object_duration );
+
+      // Hero Talents
+      // Mountain Thane
+      if ( p()->talents.mountain_thane.avatar_of_the_storm->ok() )
+      {
+        p()->buff.thunder_blast->trigger( as<int> ( p()->talents.mountain_thane.avatar_of_the_storm->effectN( 1 ).base_value() ) );
+        p()->cooldown.thunder_clap->reset( true );
+      }
+    }
+    else  // For background triggered avatar procs
+    {
+      // Fury
+      if ( p()->talents.warrior.berserkers_torment->ok() && from_torment )
+        p()->buff.avatar->extend_duration_or_trigger( berserkers_torment_duration );
+
+      if ( !p()->is_ptr() && p()->talents.warrior.titans_torment->ok() && from_torment )
+        p()->buff.avatar->extend_duration_or_trigger( titans_torment_duration );
+
+      // Protection
+      if ( p()->talents.warrior.immovable_object->ok() && from_immovable_object )
+        p()->buff.avatar->extend_duration_or_trigger( immovable_object_duration );
+
+      // Mountain Thane
+      if ( from_avatar_of_the_storm )
+        p()->buff.avatar->extend_duration_or_trigger( avatar_of_the_storm_duration );
+    }
+  }
+
+  bool verify_actor_spec() const override // no longer needed ?
+  {
+    // Do not check spec if Arms talent avatar is available, so that spec check on the spell (required: protection) does not fail.
+    if ( p()->talents.warrior.avatar->ok() && p()->specialization() == WARRIOR_ARMS )
+      return true;
+
+    return warrior_spell_t::verify_actor_spec();
   }
 };
 
@@ -2360,10 +2501,12 @@ struct ground_current_t : public warrior_attack_t
 struct lightning_strike_t : public warrior_attack_t
 {
   action_t* ground_current;
+  action_t* avatar;
   double rage_from_thorims_might;
   lightning_strike_t( util::string_view name, warrior_t* p )
     : warrior_attack_t( name, p, p->spell.lightning_strike ),
     ground_current( nullptr ),
+    avatar( nullptr ),
     rage_from_thorims_might( 0 )
   {
     background = true;
@@ -2378,6 +2521,12 @@ struct lightning_strike_t : public warrior_attack_t
     if ( p->talents.mountain_thane.thorims_might->ok() )
     {
       rage_from_thorims_might = p->talents.mountain_thane.thorims_might->effectN( 1 ).resource( RESOURCE_RAGE );
+    }
+
+    if ( p->talents.mountain_thane.avatar_of_the_storm->ok() )
+    {
+      avatar = new avatar_t( "avatar_avatar_of_the_storm", p );
+      debug_cast<avatar_t*>(avatar)->from_avatar_of_the_storm = true;
     }
   }
 
@@ -2405,7 +2554,7 @@ struct lightning_strike_t : public warrior_attack_t
     if ( p()->talents.mountain_thane.avatar_of_the_storm->ok() && !p()->buff.avatar->check() )
     {
       if ( rng().roll( p()->talents.mountain_thane.avatar_of_the_storm->effectN( 2 ).percent() ) )
-        p()->buff.avatar->extend_duration_or_trigger( timespan_t::from_seconds( p()->talents.mountain_thane.avatar_of_the_storm->effectN( 3 ).base_value() ) );
+        avatar->schedule_execute();
     }
   }
 };
@@ -5864,10 +6013,7 @@ struct odyns_fury_t : warrior_attack_t
     oh_attack2->execute();
 
     if ( !p()->is_ptr() && p()->talents.warrior.titans_torment->ok() )
-    {
-      action_t* torment_ability = p()->active.torment_avatar;
-      torment_ability->schedule_execute();
-    }
+      p()->active.torment_avatar->schedule_execute();
 
     if ( p()->tier_set.t31_fury_2pc->ok() )
     {
@@ -7518,96 +7664,6 @@ struct champions_spear_t : public warrior_attack_t
 // Warrior Spells
 // ==========================================================================
 
-// Avatar ===================================================================
-
-struct avatar_t : public warrior_spell_t
-{
-  avatar_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
-    : warrior_spell_t( n, p, spell )
-  {
-
-    parse_options( options_str );
-    callbacks = false;
-    harmful   = false;
-    target    = p;
-  }
-
-  void execute() override
-  {
-    warrior_spell_t::execute();
-
-    if ( p()->talents.warrior.immovable_object->ok() )
-      p()->buff.shield_wall->trigger( p()->talents.warrior.immovable_object->effectN( 2 ).time_value() );
-
-    p()->buff.avatar->extend_duration_or_trigger();
-
-    if ( p()->talents.warrior.berserkers_torment.ok() )
-    {
-      action_t* torment_ability = p()->active.torment_recklessness;
-      torment_ability->schedule_execute();
-    }
-    if ( p()->talents.warrior.blademasters_torment.ok() )
-    {
-      p()->buff.sweeping_strikes->extend_duration_or_trigger( p()->talents.warrior.blademasters_torment->effectN( 1 ).time_value() );
-    }
-    if ( !p()->is_ptr() && p()->talents.warrior.titans_torment->ok() )
-    {
-      action_t* torment_ability = p()->active.torment_odyns_fury;
-      torment_ability->schedule_execute();
-    }
-
-    if ( p()->talents.warrior.warlords_torment->ok() )
-    {
-      const timespan_t trigger_duration = p()->talents.warrior.warlords_torment->effectN( 1 ).time_value();
-      p()->buff.recklessness_warlords_torment->extend_duration_or_trigger( trigger_duration );
-    }
-
-    if ( p()->talents.mountain_thane.avatar_of_the_storm->ok() )
-    {
-      p()->buff.thunder_blast->trigger( as<int> ( p()->talents.mountain_thane.avatar_of_the_storm->effectN( 1 ).base_value() ) );
-      p()->cooldown.thunder_clap->reset( true );
-    }
-  }
-
-  bool verify_actor_spec() const override // no longer needed ?
-  {
-    // Do not check spec if Arms talent avatar is available, so that spec check on the spell (required: protection) does not fail.
-    if ( p()->talents.warrior.avatar->ok() && p()->specialization() == WARRIOR_ARMS )
-      return true;
-
-    return warrior_spell_t::verify_actor_spec();
-  }
-};
-
-// Torment Avatar ===================================================================
-
-struct torment_avatar_t : public warrior_spell_t
-{
-  torment_avatar_t( warrior_t* p, util::string_view options_str, util::string_view n, const spell_data_t* spell )
-    : warrior_spell_t( n, p, spell )
-  {
-    parse_options( options_str );
-    callbacks = false;
-    target    = p;
-  }
-
-  void execute() override
-  {
-    warrior_spell_t::execute();
-
-    if ( p()->talents.warrior.berserkers_torment->ok() )
-    {
-      const timespan_t trigger_duration = p()->talents.warrior.berserkers_torment->effectN( 2 ).time_value();
-      p()->buff.avatar->extend_duration_or_trigger( trigger_duration );
-    }
-    if ( !p()->is_ptr() && p()->talents.warrior.titans_torment->ok() )
-    {
-      const timespan_t trigger_duration = p()->talents.warrior.titans_torment->effectN( 1 ).time_value();
-      p()->buff.avatar->extend_duration_or_trigger( trigger_duration );   
-    }
-  }
-};
-
 // Battle Shout ===================================================================
 
 struct battle_shout_t : public warrior_spell_t
@@ -7980,15 +8036,10 @@ struct recklessness_t : public warrior_spell_t
     p()->buff.recklessness->extend_duration_or_trigger();
 
     if ( p()->talents.warrior.berserkers_torment.ok() )
-    {
-      action_t* torment_ability = p()->active.torment_avatar;
-      torment_ability->schedule_execute();
-    }
+      p()->active.torment_avatar->schedule_execute();
 
     if ( p()->talents.mountain_thane.snap_induction->ok() )
-    {
       p()->buff.thunder_blast->trigger();
-    }
   }
 
   bool verify_actor_spec() const override
@@ -8148,12 +8199,21 @@ struct shield_block_t : public warrior_spell_t
 
 struct shield_wall_t : public warrior_spell_t
 {
+  action_t* avatar;
   shield_wall_t( warrior_t* p, util::string_view options_str )
-    : warrior_spell_t( "shield_wall", p, p->talents.protection.shield_wall )
+    : warrior_spell_t( "shield_wall", p, p->talents.protection.shield_wall ),
+    avatar( nullptr )
   {
     parse_options( options_str );
     harmful = false;
     range   = -1;
+
+    if ( p->talents.warrior.immovable_object->ok() )
+    {
+      avatar = new avatar_t( "avatar_immovable_object", p );
+      debug_cast<avatar_t*>(avatar)->from_immovable_object = true;
+    }
+
   }
 
   void execute() override
@@ -8163,7 +8223,7 @@ struct shield_wall_t : public warrior_spell_t
     p()->buff.shield_wall->trigger( 1, p()->buff.shield_wall->data().effectN( 1 ).percent() );
 
     if ( p()->talents.warrior.immovable_object->ok() )
-      p()->buff.avatar->trigger( p()->talents.warrior.immovable_object->effectN( 2 ).time_value() );
+      avatar->schedule_execute();
   }
 };
 
@@ -10102,7 +10162,8 @@ void warrior_t::create_actions()
   if ( talents.warrior.berserkers_torment->ok() )
   {
     active.torment_recklessness = new torment_recklessness_t( this, "", "recklessness_torment", find_spell( 1719 ) );
-    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ) );
+    active.torment_avatar       = new avatar_t( "avatar_torment", this );
+    debug_cast<avatar_t*>(active.torment_avatar)->from_torment = true;
     for ( action_t* action : { active.torment_recklessness, active.torment_avatar } )
     {
       action->background  = true;
@@ -10111,7 +10172,8 @@ void warrior_t::create_actions()
   }
   if ( !is_ptr() && talents.warrior.titans_torment->ok() )
   {
-    active.torment_avatar       = new torment_avatar_t( this, "", "avatar_torment", find_spell( 107574 ) );
+    active.torment_avatar       = new avatar_t( "avatar_torment", this );
+    debug_cast<avatar_t*>(active.torment_avatar)->from_torment = true;
     active.torment_odyns_fury   = new torment_odyns_fury_t( this, "", "odyns_fury_torment", find_spell( 385059 ) );
     for ( action_t* action : { active.torment_avatar, active.torment_odyns_fury } )
     {
