@@ -1772,6 +1772,21 @@ struct avatar_t : public warrior_spell_t
     parse_options( options_str );
     harmful   = false;
     target    = p;
+
+    if ( p->talents.warrior.warlords_torment->ok() )
+      warlords_torment_duration = p->talents.warrior.warlords_torment->effectN( 1 ).time_value();
+
+    if ( p->talents.warrior.berserkers_torment->ok() )
+      berserkers_torment_duration = p->talents.warrior.berserkers_torment->effectN( 2 ).time_value();
+
+    if ( p->talents.warrior.titans_torment->ok() )
+      titans_torment_duration = p->talents.warrior.titans_torment->effectN( 1 ).time_value();
+
+    if ( p->talents.warrior.immovable_object->ok() )
+      immovable_object_duration = p->talents.warrior.immovable_object->effectN( 2 ).time_value();
+
+    if ( p->talents.mountain_thane.avatar_of_the_storm->ok() )
+      avatar_of_the_storm_duration = timespan_t::from_seconds( p->talents.mountain_thane.avatar_of_the_storm->effectN( 3 ).base_value() );
   }
 
   avatar_t( util::string_view name, warrior_t* p )
