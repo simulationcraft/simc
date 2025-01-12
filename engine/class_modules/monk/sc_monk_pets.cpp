@@ -53,9 +53,12 @@ struct pet_action_base_t : public BASE
     : BASE( n, p, data ), merge_report( true )
   {
     // No costs are needed either
-    this->base_costs[ RESOURCE_ENERGY ] = 0;
-    this->base_costs[ RESOURCE_CHI ]    = 0;
-    this->base_costs[ RESOURCE_MANA ]   = 0;
+    super_t::base_costs[ RESOURCE_ENERGY ]          = 0;
+    super_t::base_costs[ RESOURCE_CHI ]             = 0;
+    super_t::base_costs[ RESOURCE_MANA ]            = 0;
+    super_t::base_costs_per_tick[ RESOURCE_ENERGY ] = 0;
+    super_t::base_costs_per_tick[ RESOURCE_CHI ]    = 0;
+    super_t::base_costs_per_tick[ RESOURCE_MANA ]   = 0;
   }
 
   void init() override
@@ -1045,11 +1048,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
         sef_spell_t::init();
       }
-
-      double cost_per_tick( resource_e ) const override
-      {
-        return 0.0;
-      }
     };
 
     sef_crackling_jade_lightning_t( storm_earth_and_fire_pet_t *player )
@@ -1057,11 +1055,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       interrupt_auto_attack = true;
       channeled             = true;
-    }
-
-    double cost_per_tick( resource_e ) const override
-    {
-      return 0;
     }
   };
 
