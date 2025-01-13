@@ -3195,7 +3195,7 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
 
   bool ready() override
   {
-    if ( p()->talent.windwalker.slicing_winds )
+    if ( p()->talent.windwalker.slicing_winds->ok() )
       return false;
     if ( first_charge )  // Assumes that we fsk into combat, instead of setting initial distance to 20 yards.
       return monk_melee_attack_t::ready();
