@@ -3195,6 +3195,8 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
 
   bool ready() override
   {
+    if ( p()->talent.windwalker.slicing_winds )
+      return false;
     if ( first_charge )  // Assumes that we fsk into combat, instead of setting initial distance to 20 yards.
       return monk_melee_attack_t::ready();
 
@@ -3222,6 +3224,29 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
 
       first_charge = !first_charge;
     }
+  }
+};
+
+// ==========================================================================
+// Slicing Winds
+// ==========================================================================
+// TODO: Potentially add the "empowered" channel. "Empowered" channel increases
+// the "lunge" or movement of the attack, but also delays the actual attack by
+// as little as 500 milliseconds. Just pressing the attack; without the 
+// "empowered" channel, animation lasts 1 second.
+// Empowered channel has 4 stages; with each lasting about 350 milliseconds.
+
+struct slicing_winds_t : public monk_melee_attack_t
+{
+  slicing_winds_t( monk_t *p, util::string_view options_str )
+    : monk_melee_attack_t( p, "slicing_winds", p->talent.windwalker.slicing_winds )
+  {
+    parse_options( options_str );
+
+    ww_mastery             = true;
+    may_combo_strike       = true;
+    aoe                    = -1;
+    reduced_aoe_targets    = data().effectN( 3 ).base_value();
   }
 };
 }  // namespace attacks
@@ -6267,6 +6292,8 @@ action_t *monk_t::create_action( util::string_view name, util::string_view optio
     return new fists_of_fury_t( this, options_str );
   if ( name == "flying_serpent_kick" )
     return new flying_serpent_kick_t( this, options_str );
+  if ( name == "slicing_winds" )
+    return new slicing_winds_t( this, options_str );
   if ( name == "touch_of_karma" )
     return new touch_of_karma_t( this, options_str );
   if ( name == "touch_of_death" )
@@ -6913,6 +6940,7 @@ void monk_t::init_spells()
     talent.windwalker.jadefire_brand_dmg             = find_spell( 395414 );
     talent.windwalker.jadefire_brand_heal            = find_spell( 395413 );
     talent.windwalker.darting_hurricane              = _ST( "Darting Hurricane" );
+    talent.windwalker.slicing_winds                  = _ST( "Slicing Winds" );
   }
 
   current_spec = specialization();
