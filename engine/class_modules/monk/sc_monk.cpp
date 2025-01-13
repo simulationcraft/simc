@@ -585,7 +585,8 @@ void monk_action_t<Base>::execute()
   // TWW S2 WW 2pc
   if ( p()->tier.tww2.winning_streak->up() &&
        base_t::data().affected_by( p()->tier.tww2.ww_2pc_winning_streak->effectN( 1 ) ) )
-    if ( p()->rng().roll( p()->tier.tww2.ww_2pc->effectN( 1 ).percent() ) )
+    if ( p()->rng().roll( p()->tier.tww2.ww_2pc->effectN( 1 ).percent() ) ||
+         p()->tier.tww2.winning_streak->at_max_stacks() )
       p()->tier.tww2.winning_streak->expire();
 
   // TWW S1 Windwalker 2PC
@@ -7887,8 +7888,7 @@ void monk_t::create_buffs()
           ->set_stack_change_callback( [ & ]( buff_t *, int old, int new_ ) {
             if ( old && !new_ )
               tier.tww2.cashout->trigger( old );
-          } )
-          ->set_expire_at_max_stack( tier.tww2.ww_4pc->ok() );
+          } );
   tier.tww2.cashout = make_buff_fallback( tier.tww2.ww_4pc->ok(), this, "cashout", tier.tww2.ww_4pc_cashout );
   // BrM
   tier.tww2.luck_of_the_draw =
