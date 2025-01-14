@@ -1158,6 +1158,7 @@ public:
       const spell_data_t *jadefire_brand_heal;
       player_talent_t darting_hurricane;
       player_talent_t slicing_winds;
+      const spell_data_t *slicing_winds_damage;
     } windwalker;
 
     // Master of Harmony
