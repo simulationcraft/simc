@@ -8740,16 +8740,20 @@ struct roaring_warqueen_citrine_t : public spell_t
 
   target_specific_t<citrine_data_t> citrine_data;
   bool estimate_group_value;
-  action_t* thunder_gem;
+  thunderlords_crackling_citrine_t* thunder_gem;
 
   roaring_warqueen_citrine_t( const special_effect_t& e )
     : spell_t( "roaring_warqueens_citrine", e.player, e.player->find_spell( 462964 ) ),
       citrine_data{ true },
       estimate_group_value( e.player->thewarwithin_opts.estimate_roaring_warqueens_citrine ),
-      thunder_gem( create_citrine_action( e, THUNDERLORDS_CRACKLING_CITRINE ) )
+      thunder_gem( debug_cast<thunderlords_crackling_citrine_t*>( create_citrine_action( e, THUNDERLORDS_CRACKLING_CITRINE ) ) )
   {
     background = true;
     aoe        = as<int>( e.player->find_spell( ROARING_WARQUEENS_CITRINE )->effectN( 2 ).base_value() );
+
+    // role multiplier should be removed, assuming that
+    if ( has_role_mult( thunder_gem->player, thunder_gem->driver_spell ) )
+      thunder_gem->base_multiplier /= role_mult( thunder_gem->player, thunder_gem->driver_spell );
 
     setup_ally_gem( player );
   }
