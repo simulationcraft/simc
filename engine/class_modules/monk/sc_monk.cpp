@@ -200,9 +200,13 @@ void monk_action_t<Base>::apply_buff_effects()
 
   // Conduit of the Celestials
   parse_effects( p()->buff.august_dynasty, EXPIRE_BUFF );
-  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr,
-                 [ & ] { return !p()->buff.heart_of_the_jade_serpent_cdr_celestial->check(); } );
-  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial );
+
+  effect_mask_t hotjs_effect_mask =
+      p()->specialization() == MONK_WINDWALKER ? effect_mask_t( true ).disable( 8 ) : effect_mask_t( true );
+  parse_effects(
+      p()->buff.heart_of_the_jade_serpent_cdr,
+      [ & ] { return !p()->buff.heart_of_the_jade_serpent_cdr_celestial->check(); }, hotjs_effect_mask );
+  parse_effects( p()->buff.heart_of_the_jade_serpent_cdr_celestial, hotjs_effect_mask );
   parse_effects( p()->buff.jade_sanctuary );
   parse_effects( p()->buff.strength_of_the_black_ox );
 
