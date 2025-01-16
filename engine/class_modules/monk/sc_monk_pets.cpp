@@ -1219,7 +1219,7 @@ public:
 
     // Currently Xuen's Bond is triggering from SEF combo strikes, tooltip has been updated, assuming this is no longer
     // a bug.
-    if ( o()->talent.windwalker.xuens_bond->ok() )
+    if ( o()->talent.windwalker.xuens_bond->ok() && !p()->is_ptr() )
       o()->cooldown.invoke_xuen->adjust( o()->talent.windwalker.xuens_bond->effectN( 2 ).time_value(),
                                          true );  // Saved as -100
   }
