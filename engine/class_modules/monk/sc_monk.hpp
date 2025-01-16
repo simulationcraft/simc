@@ -827,6 +827,7 @@ public:
       const spell_data_t *mastery;
       const spell_data_t *aura;
       const spell_data_t *aura_2;
+      const spell_data_t *aura_3;
       const spell_data_t *blackout_kick_rank_2;
       const spell_data_t *blackout_kick_rank_3;
       const spell_data_t *combo_breaker;

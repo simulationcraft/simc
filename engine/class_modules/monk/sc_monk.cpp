@@ -130,10 +130,12 @@ void monk_action_t<Base>::apply_buff_effects()
   // Windwalker
   apply_affecting_aura( p()->baseline.windwalker.aura );
   apply_affecting_aura( p()->baseline.windwalker.aura_2 );
+  apply_affecting_aura( p()->baseline.windwalker.aura_3 );
   apply_affecting_aura( p()->talent.windwalker.brawlers_intensity );
   apply_affecting_aura( p()->talent.windwalker.hardened_soles );
   apply_affecting_aura( p()->talent.windwalker.shadowboxing_treads );
   apply_affecting_aura( p()->talent.windwalker.rising_star );
+  apply_affecting_aura( p()->talent.windwalker.xuens_bond );
 
   // Conduit of the Celestials
   apply_affecting_aura( p()->talent.conduit_of_the_celestials.temple_training );
@@ -438,7 +440,7 @@ void monk_action_t<Base>::combo_strikes_trigger()
 
     p()->buff.hit_combo->trigger();
 
-    if ( p()->talent.windwalker.xuens_bond->ok() )
+    if ( p()->talent.windwalker.xuens_bond->ok() && !p()->is_ptr() )
       p()->cooldown.invoke_xuen->adjust( p()->talent.windwalker.xuens_bond->effectN( 2 ).time_value(),
                                          true );  // Saved as -100
 
@@ -517,7 +519,8 @@ void monk_action_t<Base>::consume_resource()
     if ( base_cost )
     {
       // This triggers prior to cost reduction
-      p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( as<int>( base_cost ) );
+      if ( !p()->is_ptr() )
+        p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( as<int>( base_cost ) );
 
       if ( p()->talent.windwalker.spiritual_focus->ok() )
       {
@@ -2593,11 +2596,12 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
           as<int>( p()->talent.windwalker.darting_hurricane->effectN( 2 )
                        .base_value() ) );  // increment is used to not incur the rppm cooldown
 
-    if ( p()->buff.heart_of_the_jade_serpent->up() )
+    if ( p()->buff.heart_of_the_jade_serpent->up() || p()->is_ptr() )
     {
       p()->buff.heart_of_the_jade_serpent_cdr->trigger();
       p()->buff.inner_compass_serpent_stance->trigger();
-      p()->buff.heart_of_the_jade_serpent->decrement();
+      if ( !p()->is_ptr() )
+        p()->buff.heart_of_the_jade_serpent->decrement();
     }
   }
 };
@@ -3389,6 +3393,10 @@ struct crackling_jade_lightning_t : public monk_spell_t
       ww_mastery             = true;
       trigger_jadefire_stomp = true;
       sef_ability            = actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING_AOE;
+
+      // reduction for secondary targets
+      if ( p->is_ptr() )
+        base_td_multiplier *= p->talent.windwalker.power_of_the_thunder_king->effectN( 4 ).percent();
 
       parse_effects( p->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
       parse_effects( p->buff.the_emperors_capacitor );
@@ -6165,6 +6173,7 @@ void monk_t::parse_player_effects()
   // windwalker player auras
   parse_effects( baseline.windwalker.aura );
   parse_effects( baseline.windwalker.aura_2 );
+  parse_effects( baseline.windwalker.aura_3 );
   parse_effects( buff.hit_combo, effect_mask_t( true ).disable( 4 ) );
 
   // class talent auras
@@ -6635,6 +6644,7 @@ void monk_t::init_spells()
     baseline.windwalker.mastery                   = find_mastery_spell( MONK_WINDWALKER );
     baseline.windwalker.aura                      = find_specialization_spell( "Windwalker Monk" );
     baseline.windwalker.aura_2                    = find_specialization_spell( 462091 );
+    baseline.windwalker.aura_3                    = find_specialization_spell( 1222923 );
     baseline.windwalker.blackout_kick_rank_2      = find_rank_spell( "Blackout Kick", "Rank 2", MONK_WINDWALKER );
     baseline.windwalker.blackout_kick_rank_3      = find_rank_spell( "Blackout Kick", "Rank 3", MONK_WINDWALKER );
     baseline.windwalker.combo_breaker             = find_specialization_spell( "Combo Breaker" );
@@ -7763,10 +7773,18 @@ void monk_t::create_buffs()
   buff.heart_of_the_jade_serpent_cdr =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
                           "heart_of_the_jade_serpent_cdr", find_spell( 443421 ) );
+  // ->apply_affecting_aura( baseline.windwalker.aura_3 );
 
   buff.heart_of_the_jade_serpent_cdr_celestial =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
                           "heart_of_the_jade_serpent_cdr_celestial", find_spell( 443616 ) );
+  // ->apply_affecting_aura( baseline.windwalker.aura_3 );
+
+  if ( is_ptr() )
+  {
+    buff.heart_of_the_jade_serpent_cdr->apply_affecting_aura( baseline.windwalker.aura_3 );
+    buff.heart_of_the_jade_serpent_cdr_celestial->apply_affecting_aura( baseline.windwalker.aura_3 );
+  }
 
   buff.heart_of_the_jade_serpent_stack_mw =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
