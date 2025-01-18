@@ -3017,17 +3017,19 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
     {
       forges_reckoning->execute_on_target( target );
     }
-    if ( p()->sets->set( PALADIN_PROTECTION, TWW2, B4 ) && p()->buffs.pp_2pc_luck_of_the_draw->up() )
+    if ( p()->sets->has_set_bonus( PALADIN_PROTECTION, TWW2, B4 ) && p()->buffs.pp_2pc_luck_of_the_draw->up() )
     {
         timespan_t luck_of_the_draw_time =  p()->buffs.pp_2pc_luck_of_the_draw->elapsed( sim->current_time() ) + p()->buffs.pp_2pc_luck_of_the_draw->remains();
         timespan_t extend_by = std::min( luck_of_the_draw_time + luck_of_the_draw_extend, luck_of_the_draw_max_duration ) - luck_of_the_draw_time;
         p()->sim->print_debug( "Luck Of The Draw Extended By: {}", extend_by );
         p()->buffs.pp_2pc_luck_of_the_draw->extend_duration( p(), extend_by );
 
-      //Refunds Holy Power
-      int randomNum = int( rng().range( 1.00, 3.99 ) );
-      p()->sim->print_log( "randomNum: {}", randomNum );
-      p()->resource_gain( RESOURCE_HOLY_POWER, as<int>( randomNum ), p()->gains.luck_of_the_draw );
+        //Refunds Holy Power
+        double random_num = rng().roll( 1.0 );
+        int holy_power_gain = 0;
+        holy_power_gain     = random_num < .1 ? 3 : random_num < .3 ? 2 : 1;
+        p()->sim->print_log( "randomNum: {}, holy_power_gain: {}", random_num, holy_power_gain );
+        p()->resource_gain( RESOURCE_HOLY_POWER, holy_power_gain, p()->gains.luck_of_the_draw );
     }
   }
 
