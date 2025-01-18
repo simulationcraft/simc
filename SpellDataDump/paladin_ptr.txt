@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58221 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.58626 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -407,7 +407,7 @@ Aura Interrupt   : Damage (Script) (27), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=11180)    : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Target: Enemy (6)
-Description      : Forces an enemy target to meditate, incapacitating them for $d.
+Description      : Forces an enemy target to meditate, incapacitating them for $d. Damage may cancel the effect.
 
 Usable against Humanoids, Demons, Undead, Dragonkin, and Giants.
 Tooltip          : Incapacitated.
@@ -583,7 +583,7 @@ Family Flags     : 21, 65
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), Ignore Line of Sight (66), Active Threat (94), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=15851)    : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.08 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.16 | Target: Enemy (6)
 Description      : $@spelldesc20473
 
 Name             : Holy Shock (id=25914) [Spell Family (10)] 
@@ -601,7 +601,7 @@ Family Flags     : 46, 48
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=15852)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.266 | PvP Coefficient: 1.15 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.17 | Target: Friendly (21)
 Description      : $@spelldesc20473
 
 Name             : Consecration (id=26573) [Spell Family (10)] 
@@ -1480,7 +1480,7 @@ Name             : Holy Light (id=82326) [Spell Family (10)]
 Class            : Holy Paladin
 School           : Holy
 Spell Type       : Magic
-Resource         : 6.4% Base Mana (0) (id=3855)
+Resource         : 7% Base Mana (0) (id=3855)
 Spell Level      : 11
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -1495,7 +1495,7 @@ Family Flags     : 46, 74
 Attributes       : Not Shapeshifted (16), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=81809)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7.22 | PvP Coefficient: 1.2 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 8.664 | Target: Friendly (21)
 Description      : A powerful but expensive spell, healing a friendly target for $s1.
 
 Name             : Grand Crusader (id=85043) [Spell Family (10), Passive] 
@@ -2042,7 +2042,7 @@ Family Flags     : 65, 90
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Not an Action (92), Active Threat (94), Not a Proc (105), Always AOE Line of Sight (186), Not an Attack (194), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=128396)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.3 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7.56 | Target: Friendly (21)
 #2 (id=128397)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.89 | Radius: 0 - 30 yards | Target: At Friendly (132) -> At Enemy in Area (16)
 #3 (id=128398)   : Server Side Script (77)
@@ -2116,7 +2116,7 @@ Attributes       : Do Not Sheath (18), Cancels Auto Attack Combat (20), Allow Cl
 Effects          :
 #1 (id=129792)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Emits dazzling light in all directions, blinding enemies within $105421A1 yds, causing them to wander disoriented for $105421d.
+Description      : Emits dazzling light in all directions, blinding enemies within $105421A1 yds, causing them to wander disoriented for $105421d. Damage may cancel the effect.
 
 Name             : Fire From the Heavens (id=115995) [Spell Family (10), Hidden] 
 Class            : Paladin
@@ -4543,7 +4543,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Cooldown On Event 
 Aura Interrupt   : Change Specialization (38), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=311378)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=311382)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Holy Light (82326)
@@ -5124,7 +5124,7 @@ Family Flags     : 46, 82
 Attributes       : Not a Proc (105), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=337592)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.2 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.38 | Target: Friendly (21)
 Description      : $@spelldesc85222
 
 Name             : PvP Rules Enabled for Dummy (id=228695) [Hidden] 
@@ -5199,7 +5199,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Only In Spellbook Until Learned (240), Do Not Log on Learn (355), Cooldown Shared With AI Group (418)
 Effects          :
 #1 (id=349470)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 184 | Scaled Value: 184 | PvP Coefficient: 1.3 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 138 | Scaled Value: 138 | PvP Coefficient: 1.3 | Misc Value: 12 | Target: Self (1)
 Description      : Judgment deems the target unworthy, preventing the next $<shield> damage dealt by the target.
 
 Variables        : $shield=${($SPS*$231644s1/100)*(1+$@versadmg)}
@@ -11002,7 +11002,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Can Proc From Suppressed Target Procs (254), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1022798)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Light's Beacon (53651), Light's Beacon (465402)
                    Family Flags: 104
 Description      : Beacon of Light transfers an additional $s1% of the amount healed.
@@ -16387,7 +16387,7 @@ Talent Entry     : Templar (Protection, Retribution) [tree=hero, row=4, col=2, m
 Class            : Paladin
 School           : Physical
 Spell Type       : None
-Internal Cooldown: 1 seconds
+Internal Cooldown: 0.1 seconds
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
@@ -16399,16 +16399,6 @@ Effects          :
 Description      : $?a137028[Shield of the Righteous and Word of Glory]?s198034[Templar's Verdict, Divine Storm and Divine Hammer][Templar's Verdict and Divine Storm] calls down an Empyrean Hammer on a nearby enemy.
 
 While Shake the Heavens is active, this effect calls down an additional Empyrean Hammer.
-
-Name             : Hammerfall (id=432466) [Spell Family (10)] 
-Class            : Paladin
-School           : Physical
-Spell Type       : None
-Duration         : 1.5 seconds
-Effects          :
-#1 (id=1121181)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $@spelldesc432463
 
 Name             : Sacred Weapon (id=432472) [Spell Family (10)] 
 Class            : Paladin
@@ -16510,6 +16500,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 #4 (id=1184229)  : Apply Aura (6) | Trigger Spell Based on Health% (468)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 1 | Trigger Spell: 469703 | Target: Friendly (21)
+#5 (id=1208539)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 Description      : While wielding a Sacred Weapon, your spells and abilities have a chance to deal $432616s1 additional Holy damage or healing to nearby targets. Effect is increased when Sacred Weapon strikes a single target, and reduced above $432616s2. Lasts $d.
 Tooltip          : Your spells and abilities have a chance to deal $432616s1 additional Holy damage or healing to nearby targets.$?$w3<0[
 
@@ -18462,7 +18454,7 @@ Family Flags     : 41, 46
 Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1170099)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.4 | Target: Self (1)
 Description      : $@spelldesc461273
 
 Name             : Saved by the Light (id=461578) [Spell Family (10)] 
@@ -19048,7 +19040,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : When you or an ally wielding a Holy Bulwark are healed above maximum health, transfer $s1% of the overhealing to your ally.
 
-When you or an ally wielding a Sacred Weapon drop below $432502s4% health, redistribute your health immediately and every $469703t sec for $469703d.
+When you or an ally wielding a Sacred Weapon drop below $432502s4% health, redistribute your health immediately and every $469703t sec for $469703d. May only occur once per cast.
 
 Name             : Tempered in Battle (id=469703) [Spell Family (10)] 
 Class            : Paladin

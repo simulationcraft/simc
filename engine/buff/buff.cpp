@@ -449,6 +449,13 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
         return buff->max_stack();
       } );
   }
+  else if ( type == "at_max_stacks" )
+  {
+    return make_buff_expr( "buff_at_max_stacks", 
+      []( buff_t* buff ) { 
+        return buff->at_max_stacks(); 
+      } );
+  }
   else if ( type == "value" )
   {
     return make_buff_expr( "buff_value",
@@ -3325,6 +3332,10 @@ stat_buff_t* stat_buff_t::add_stat_from_effect( size_t i, double a, const stat_c
 
     if ( stat != STAT_NONE )
       return add_stat( stat, a, c );
+  }
+  else if ( eff.subtype() == A_MOD_INCREASE_HEALTH || eff.subtype() == A_MOD_INCREASE_HEALTH_2 )
+  {
+    return add_stat( STAT_MAX_HEALTH, a, c );
   }
 
   return do_error( "STAT_NONE" );

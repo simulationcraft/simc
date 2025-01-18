@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58221 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.58626 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -5139,7 +5139,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 881
 Stance Mask      : 0x01000000
-Affecting Spells : Killing Machine (51124 effect#1), Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effects: #2, #5), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #6, #7), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Winning Streak! (1217897 effect#3), Luck of the Draw! (1218601 effects: #1, #2)
+Affecting Spells : Killing Machine (51124 effect#1), Razorice (51714 effect#1), Blood Plague (55078 effect#4), Frost Fever (55095 effect#2), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Unholy Blight (115994 effect#2), Death Knight (137005 effects: #2, #5), Frost Death Knight (137006 effects: #1, #2, #6, #7), Unholy Death Knight (137007 effects: #1, #2, #6, #7), Blood Death Knight (137008 effects: #1, #2), Virulent Plague (191587 effect#3), Festering Wound (194310 effect#2), Unholy Assault (207289 effects: #4, #5), War (327096 effect#1), Deep Frost (373934 effect#1), Brittle (374557 effect#1), Sanguine Ground (391459 effects: #1, #3), Death Knight Frost Class Set 2pc (393623 effect#1), Vigorous Lifeblood (394570 effects: #1, #2), Ghoulish Infusion (394899 effects: #1, #3), Lingering Chill (410879 effect#1), Chilling Rage (424165 effects: #1, #2), Amplify Damage (424949 effects: #1, #2), Ashen Decay (425719 effect#2), Luck of the Draw! (1218601 effects: #1, #2)
 Family Flags     : 15, 43, 120, 127
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Requires Main-Hand Weapon (106), Allow Class Ability Procs (416)
 Effects          :
@@ -7087,7 +7087,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #3 (id=1168502)  : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
-Description      : While Pillar of Frost is active, Frost Strike$?s194913[, Glacial Advance,][]$?s343294[ Soul Reaper,][] and Howling Blast always grant Killing Machine and have a $s2% chance to generate a Rune.
+Description      : While Pillar of Frost is active, Frost Strike$?s194913[, Glacial Advance,][]$?s343294[, Soul Reaper,][] and Howling Blast always grant Killing Machine and have a $s2% chance to generate a Rune.
 Tooltip          : Frost Strike$?s194913[, Glacial Advance,][] and Howling Blast grant Killing Machine and have a $s2% chance to generate a Rune.
 
 Name             : Obliteration (id=281327) [Spell Family (15)] 
@@ -12889,7 +12889,7 @@ Max Aura Level   : 79
 Labels           : 27: Death Knight Spells
                  : 292
                  : 2317
-Affecting Spells : Killing Machine (51124 effect#1), Death Knight (137005 effect#5), Mawsworn Menace (444099 effect#4), Winning Streak! (1217897 effect#3)
+Affecting Spells : Killing Machine (51124 effect#1), Death Knight (137005 effect#5), Mawsworn Menace (444099 effect#4)
 Family Flags     : 7, 15, 111
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
@@ -17301,7 +17301,7 @@ Effects          :
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
 Description      : Parrying an attack grants you a charge of Bloodied Blade, increasing your Strength by ${$460499s1/10}.1%, up to ${$460499u*$460499s1/10}.1% for $460499d.
 
-At $460499U stacks, your next parry consumes all charges to unleash a Heart Strike at $s1% effectiveness, and increases your Strength by $460500s1% for $460500d.
+At $460499U stacks, your next parry consumes all charges to unleash a Heart Strike at ${100+$s1}% effectiveness, and increases your Strength by $460500s1% for $460500d.
 
 Name             : Festering Scythe (id=459238) [Spell Family (15)] 
 Class            : Death Knight
@@ -17385,9 +17385,7 @@ Attributes       : No Aura Cancel (31), Aura Points On Client (268), Allow Class
 Effects          :
 #1 (id=1168230)  : Apply Aura (6) | Modify Attribute% (80)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Parrying an attack grants you a charge of Bloodied Blade, increasing your Strength by ${$s1/10}.1%, up to 5%.
-
-At 10 stacks, your next parry consumes all charges to unleash a Heart Strike at 200% effectiveness and increase your Strength by 10% for 6 sec.
+Description      : $@spelldesc458753
 Tooltip          : Strength increased by ${$W1}.1%.
 
 Name             : Heart Strike (id=460501) [Spell Family (15)] 
@@ -17686,8 +17684,8 @@ Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Per
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198828)  : Apply Aura (6) | Proc Trigger Spell (42): Winning Streak!
-                   Base Value: 15 | Scaled Value: 15 | Trigger Spell: 1217897 | Target: Self (1)
-Description      : Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r increasing the damage of your Frost Strike and Glacial Advance by $1217897s1% stacking up to $1217897u times. Obliterate has a $s1% chance to remove|cFFFFFFFF Winning Streak!|r
+                   Base Value: 7 | Scaled Value: 7 | Trigger Spell: 1217897 | Target: Self (1)
+Description      : Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r increasing the damage of your Frost Strike and Glacial Advance by $1217897s1% stacking up to $1217897u times. Frost Strike and Glacial Advance have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r
 
 Name             : Death Knight Unholy 11.1 Class Set 4pc (id=1215728) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -17715,15 +17713,15 @@ Labels           : 16: Class Spells
                  : 295
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1198830)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 37 | Misc Value 2: 4336 (Label) | Target: Self (1)
-                   Affected Spells (Label): Winning Streak! (1217897)
-#2 (id=1202329)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.5 | Misc Value: 23 | Misc Value 2: 4336 (Label) | Target: Self (1)
-                   Affected Spells (Label): Winning Streak! (1217897)
+#1 (id=1198830)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Target: Self (1)
+#2 (id=1202329)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 #3 (id=1202394)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Description      : |cFFFFFFFF Winning Streak!|r stacks $s1 additional times. While on a |cFFFFFFFF Winning Streak!|r, your Frost Strike and Glacial Advance have a chance to cast Frostscythe at $s3% effectiveness. Frostscythe now also benefits from |cFFFFFFFF Winning Streak!|r
+                   Base Value: 125 | Scaled Value: 125 | PvP Coefficient: 0.5 | Target: Self (1)
+#4 (id=1210176)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : |cFFFFFFFFWinning Streak!|r causes Frost Strike and Glacial Advance to have a $s2% chance to cast Frostscythe per stack at $s1% effectiveness. Losing |cFFFFFFFFWinning Streak!|r sends you into a Murderous Frenzy, casting Frostscythe at $s3% effectiveness and gaining $1222698s1% Haste for $1222698d. Additionally, Frostscythe deals $s4% more damage to the first target struck.
 
 Name             : Death Knight Blood 11.1 Class Set 2pc (id=1215992) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -17757,7 +17755,7 @@ Effects          :
                    Affected Spells (Label): Luck of the Draw! (1218601)
 Description      : |cFFFFFFFFLuck of the Draw!|r has ${$s1/1000} sec increased duration.
 
-While |cFFFFFFFFLuck of the Draw!|r is active, Death Strike costs ${$1218601s3/-10} less Runic Power and can strike up to $1218601m3 additional nearby $Lenemy:enemies;.
+While |cFFFFFFFFLuck of the Draw!|r is active, Death Strike costs ${-$1218601S5/10} less Runic Power and can strike up to $1218601m4 additional nearby $Lenemy:enemies;.
 
 Name             : Winning Streak! (id=1216813) [Spell Family (15)] 
 Class            : Death Knight
@@ -17792,8 +17790,8 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 295
-                 : 4336: Death Knight Frost 11.1 Class Set 4pc (1215729 effect#1), Death Knight Frost 11.1 Class Set 4pc (1215729 effect#2)
-Stacks           : 5 maximum
+                 : 4336
+Stacks           : 8 maximum
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Death Knight Frost 11.1 Class Set 2pc (1215727)
@@ -17804,13 +17802,9 @@ Effects          :
                    Affected Spells: Frost Strike (49143), Frost Strike Off-Hand (66196), Glacial Advance (195975), Frost Strike (222026), Glacial Advance (232752), Frost Strike (325464), Glacial Advance (394500)
                    Family Flags: 34, 50
 #2 (id=1202283)  : Apply Aura (6) | Unknown(285) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 15 | Scaled Value: 15 | Trigger Spell: 1217956 | Target: Self (1)
-#3 (id=1202327)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Frostscythe (207230), Death Knight Frost Class Set 2pc (393623)
-                   Family Flags: 15
+                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 1217956 | Target: Self (1)
 Description      : $@spelldesc1215727
-Tooltip          : The damage of Frost Strike$?a1215729[, Glacial Advance and Frostscythe][ and Glacial Advance] is increased by $w1%.
+Tooltip          : The damage of Frost Strike and Glacial Advance is increased by $w1%.
 
 Name             : Winning Streak! (id=1217956) [Spell Family (15), Hidden] 
 Class            : Death Knight
@@ -17822,13 +17816,12 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
 Proc Chance      : 101%
-Real PPM         : 5
 Proc Flags       : Cast Successful
 Triggered By     : Winning Streak! (1217897)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1202389)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
 Description      : $@spelldesc1215727
 
 Name             : Luck of the Draw! (id=1218601) [Spell Family (15)] 
@@ -17863,6 +17856,24 @@ Effects          :
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
 Description      : $@spelldesc1215992
-Tooltip          : Damage increased by $s1%.$?a1215993[ Death Strike costs ${$s4/-10} less Runic Power and can strike up to $m3 additional nearby $Ltarget:targets;.][]
+Tooltip          : Damage increased by $s1%.$?a1215993[
+
+Death Strike costs ${-$S5/10} less Runic Power and strikes $m4 additional nearby $Ltarget:targets;.][]
+
+Name             : Murderous Frenzy (id=1222698) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Duration         : 6 seconds
+Labels           : 16: Class Spells
+                 : 27: Death Knight Spells
+                 : 292
+                 : 295
+Attributes       : Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=1210171)  : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.5 | Target: Self (1)
+Description      : $@spelldesc1215727
+Tooltip          : Your Haste is increased by $w1%.
 
 

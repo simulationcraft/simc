@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58221 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.58626 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -12802,7 +12802,7 @@ Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura 
 Effects          :
 #1 (id=26734)    : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1 | Misc Value: 15 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Bloodshed (346396), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Killer Companion (378955), Spearhead (378957), Murloc Stampede (388719), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Greater Mrgrglhjorn (396968), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Lunar Storm (453398), Lunar Storm (457978), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Lunar Storm (1217459)
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Bloodshed (346396), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Killer Companion (378955), Spearhead (378957), Murloc Stampede (388719), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Greater Mrgrglhjorn (396968), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Lunar Storm (453398), Lunar Storm (457978), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Lunar Storm (1217459), Spearhead (1221386)
                    Family Flags: 106
 Description      : Increases your ranged weapon critical strike damage bonus by $s1%.
 
@@ -97101,7 +97101,7 @@ Attributes       : Ignore Line of Sight (66), Include In Advanced Combat Log (72
 Effects          :
 #1 (id=464948)   : Apply Aura (6) | Modify Crit Chance% from Caster's Spells (308)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Bloodshed (346396), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Killer Companion (378955), Spearhead (378957), Murloc Stampede (388719), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Greater Mrgrglhjorn (396968), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Lunar Storm (453398), Lunar Storm (457978), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Lunar Storm (1217459)
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Bloodshed (346396), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Killer Companion (378955), Spearhead (378957), Murloc Stampede (388719), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Greater Mrgrglhjorn (396968), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Lunar Storm (453398), Lunar Storm (457978), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Lunar Storm (1217459), Spearhead (1221386)
                    Family Flags: 106
 Description      : $@spelldesc248089
 Tooltip          : $s1% increased chance for the Hunter to cause a critical strike.
@@ -163195,7 +163195,7 @@ Attributes       : Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
 #1 (id=832319)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 7 | Scaled Value: 7 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Heroic Leap (362043), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Thunderous Roar (384318), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Rend (394062), Rend (394063), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Thunderous Roar (397364), Max A FX Testing Warrior Spear - (2) Damage (409404), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Heroic Leap (362043), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Thunderous Roar (384318), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Rend (394062), Rend (394063), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Thunderous Roar (397364), Max A FX Testing Warrior Spear - (2) Damage (409404), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174)
                    Family Flags: 9
 #2 (id=872313)   : Apply Aura (6) | Modify Auto Attack Critical Chance (334)
                    Base Value: 7 | Scaled Value: 7 | Target: Self (1)
@@ -164203,7 +164203,7 @@ School           : Fire
 Spell Type       : Ranged
 Range            : 100 yards
 Labels           : 931
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Spearhead (1221386 effects: #2, #3)
 Family Flags     : 106
 Attributes       : Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
@@ -179229,18 +179229,6 @@ Effects          :
                    Family Flags: 8
 Description      : $@spelldesc361061
 Tooltip          : Vanished from sight.
-
-Name             : pscar test trinket (id=362332) 
-School           : Physical
-Spell Type       : None
-Max Aura Level   : 80
-Cooldown         : 120 seconds
-Effects          :
-#1 (id=900907)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
-Description      : Become Mudborne, rapidly absorbing <medium> damage and pulsing <medium> nature damage every second for 10 seconds.
-
-Periodic damage you take coalesces into pungent mud to feed the ritual, reducing this cooldown by 2 seconds.
 
 Name             : Fists of Earthen Fury (desc=Offensive) (id=362349) [Spell Family (227)] 
 School           : Nature
@@ -200057,13 +200045,13 @@ Proc Chance      : 101%
 Real PPM         : 1
 Proc Flags       : White Melee, White Melee Taken, Yellow Melee, Yellow Melee Taken, White Ranged, White Ranged Taken, Yellow Ranged, Yellow Ranged Taken, Generic Heal, Generic Hostile Spell, Generic Hostile Spell Taken, Magic Heal, Magic Hostile Spell, Magic Hostile Spell Taken, Periodic, Periodic Taken, Helpful Periodic
 Attributes       : No Aura Cancel (31), Allow Aura While Dead (116), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Log on Learn (355), Only Proc From Class Abilities (415)
-Aura Interrupt   : Enter Instance (43), Leave Arena or Battleground (45), Chromie Time (51)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1027638)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1045406)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 390764
-Description      : @spelldesc390643
+Description      : $@spelldesc390643
 Tooltip          : Taking damage as well as dealing harmful and helpful abilities have a chance to shield you for $w1 for $390785d.
 
 Name             : Turtle's Ritual Stone Earth Check (id=390762) 
@@ -200162,13 +200150,13 @@ Proc Chance      : 101%
 Real PPM         : 1
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : No Aura Cancel (31), Allow Aura While Dead (116), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Log on Learn (355), Only Proc From Class Abilities (415)
-Aura Interrupt   : Enter Instance (43), Leave Arena or Battleground (45), Chromie Time (51)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1027938)  : Apply Aura (6) | Proc Trigger Spell (42): Primal Turtle's Rage
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 390838 | Target: Self (1)
 #2 (id=1045405)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 390764
-Description      : @spelldesc390643
+Description      : $@spelldesc390643
 Tooltip          : Your harmful spells and abilities have a chance to deal an extra $w1 fire damage.
 
 Name             : Primal Turtle's Rage (id=390838) 
@@ -200224,14 +200212,14 @@ Duration         : Aura (infinite)
 Proc Chance      : 101%
 Real PPM         : 2
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
-Attributes       : No Aura Cancel (31), Allow Aura While Dead (116), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Log on Learn (355), Only Proc From Class Abilities (415)
-Aura Interrupt   : Enter Instance (43), Leave Arena or Battleground (45), Chromie Time (51)
+Attributes       : No Aura Cancel (31), Allow Aura While Dead (116), No Aura Log (202), Aura Points On Client (268), Do Not Log on Learn (355), Only Proc From Class Abilities (415)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1027995)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1045404)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 390764 | Target: Self (1)
-Description      : @spelldesc390643
+Description      : $@spelldesc390643
 Tooltip          : Your helpful and harmful abilities have a chance to heal you or an ally near your target for $w1.
 
 Name             : Monarch's Ritual Stone (id=390886) 
@@ -200290,13 +200278,13 @@ Proc Chance      : 101%
 Real PPM         : 1
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : No Aura Cancel (31), Allow Aura While Dead (116), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Do Not Log on Learn (355), Only Proc From Class Abilities (415)
-Aura Interrupt   : Enter Instance (43), Leave Arena or Battleground (45), Chromie Time (51)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1028043)  : Apply Aura (6) | Proc Trigger Spell (42): Primal Turtle's Wish
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 390936 | Target: Self (1)
 #2 (id=1045402)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 390764 | Target: Self (1)
-Description      : @spelldesc390643
+Description      : $@spelldesc390643
 Tooltip          : Your harmful spells and abilities have a chance to grant you $w1 mastery for $390936d.
 
 Name             : Primal Turtle's Wish (id=390936) 
@@ -241679,7 +241667,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
 #2 (id=1158002)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Avoidance | Target: Self (1)
-Description      : Granted $w1 Haste and $w2 Avoidance.
 Tooltip          : Granted $w1 Haste and $w2 Avoidance.
 
 Name             : Vivacity of Nature (id=454976) 
@@ -241697,7 +241684,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
 #2 (id=1158006)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed | Target: Self (1)
-Description      : Granted $w1 Critical Strike and $w2 Speed.
 Tooltip          : Granted $w1 Critical Strike and $w2 Speed.
 
 Name             : Vivacity of Frost (id=454977) 
@@ -241713,7 +241699,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
 #2 (id=1158008)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Avoidance | Target: Self (1)
-Description      : Granted $w1 Critical Strike and $w2 Avoidance.
 Tooltip          : Granted $w1 Critical Strike and $w2 Avoidance.
 
 Name             : Vivacity of Light (id=454978) 
@@ -241729,7 +241714,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
 #2 (id=1158010)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed | Target: Self (1)
-Description      : Granted $w1 Mastery and $w2 Speed.
 Tooltip          : Granted $w1 Mastery and $w2 Speed.
 
 Name             : Vivacity of Arcane (id=454979) 
@@ -241745,7 +241729,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
 #2 (id=1158012)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Avoidance | Target: Self (1)
-Description      : Granted $w1 Mastery and $w2 Avoidance.
 Tooltip          : Granted $w1 Mastery and $w2 Avoidance.
 
 Name             : Vivacity of Force (id=454980) 
@@ -241761,7 +241744,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
 #2 (id=1158014)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: RunSpeed | Target: Self (1)
-Description      : Granted $w1 Versatility and $w2 Speed.
 Tooltip          : Granted $w1 Versatility and $w2 Speed.
 
 Name             : Vivacity of the Faire (id=454982) 
@@ -241777,7 +241759,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
 #2 (id=1158018)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Avoidance | Target: Self (1)
-Description      : $@spelldesc454857
 Tooltip          : Granted $w1 Versatility and $w2 Avoidance.
 
 Name             : Filmless Camera (id=455023) 
@@ -243411,7 +243392,6 @@ GCD              : 1.5 seconds
 Duration         : 20 seconds
 Labels           : 2395
                  : 3640
-                 : 4187
 Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), No Aura Icon (60), Retain Item Cast (95), Aura Points On Client (268)
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
@@ -243419,12 +243399,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 452276 | Target: Self (1)
 #2 (id=1160588)  : Apply Aura (6) | Periodic Trigger Spell (23): Well Fed every 10 seconds | Scaling Class: -4
                    Base Value: 0 | Scaled Value: 74.68162 (coefficient=1.75) | Trigger Spell: 456410 | Target: Self (1)
-Description      : $@spelldesc452276
-
-$@spellicon461960 $@spellname461960
-If you spend at least 10 seconds eating you will become $@spellname461960 and a gain the stats equivalent to a random Khaz Algar Meal.
+Description      : $@spelldesc452276|n|n$@spellicon461960 $@spellname461960|nIf you spend at least 10 seconds eating you will become $@spellname461960 and a gain the stats equivalent to a random Khaz Algar Meal.
 
-Name             : Well Fed (id=456410) 
+Name             : Well Fed (id=456410) [Hidden] 
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 80
@@ -243433,7 +243410,7 @@ Labels           : 2854
 Proc Chance      : 101%
 Proc Flags       : Death
 Triggered By     : Refreshment (456409)
-Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Sitting (27), Allow While Stealthed (37), Include In Advanced Combat Log (72), Retain Item Cast (95), Allow Aura While Dead (116), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1160589)  : Apply Aura (6) | Dummy (4)
                    Base Value: 7 | Scaled Value: 7 | Target: Self (1)
@@ -251304,7 +251281,7 @@ Triggered By     : Squall Sailor's Citrine (462539)
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1173205)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Self (18) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Radius: 0 - 50 yards | Target: At Self (18) -> At Enemy in Area (16)
 Description      : $@spelldesc462539
 
 Name             : Undersea Overseer's Citrine (id=462953) 
@@ -251317,7 +251294,7 @@ Triggered By     : Undersea Overseer's Citrine (462538)
 Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354), Chain by Most Hit (440)
 Effects          :
 #1 (id=1173207)  : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
 Description      : $@spelldesc462538
 
 Name             : Storm Sewer's Citrine (id=462958) 
@@ -252269,7 +252246,7 @@ Effects          :
 Description      : $@spelldesc466607
 Tooltip          : Versatility increased by $w1.
 
-Name             : Pitbot Geardo (id=466646) [Passive] 
+Name             : Vexie's Pit Whistle (id=466646) [Passive] 
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -252283,7 +252260,7 @@ Effects          :
 #3 (id=1195731)  : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
 
-Name             : Vexie's Pit Whistle (id=466652) 
+Name             : Pitbot Geardo (id=466652) 
 School           : Physical
 Spell Type       : None
 Duration         : 5 seconds
@@ -252303,7 +252280,7 @@ Description      : Summon Pitbot Geardo to assist you for $d, coating nearby ene
 
 Geardo departs explosively to deal $466646s1 Fire damage split between nearby enemies, increased by $466646s3% if recently oiled.
 
-Name             : Scrapfield 9000 (id=466671) [Passive, Hidden] 
+Name             : Scrapfield 9001 (id=466671) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -252311,12 +252288,12 @@ Labels           : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1179396)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 331772.7 (coefficient=129.7121) | PvP Coefficient: 0.3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 364949.8 (coefficient=142.6833) | PvP Coefficient: 0.3 | Target: Self (1)
 #2 (id=1187001)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 3785.607 (coefficient=0.988675) | PvP Coefficient: 0.3 | Target: Self (1)
 #3 (id=1190104)  : Apply Aura (6) | Trigger Spell Based on Health% (468)
-                   Base Value: 75 | Scaled Value: 75 | Misc Value: 1 | Trigger Spell: 472170 | Target: Self (1)
-Description      : Falling below $s3% health surrounds with a protective vortex of junk, reducing damage taken by $466673s2% for $466673d or until $s1 damage is prevented. This effect may only occur every $472170d.
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: 1 | Trigger Spell: 472170 | Target: Self (1)
+Description      : Falling below $s3% health surrounds you with a protective vortex of junk, reducing damage taken by $466673s2% for $466673d or until $s1 damage is prevented. This effect may only occur every $472170d.
 
 After $472171d without activating while in combat, the Scrapfield overloads to energize you with $s2 Haste for $472167d.
 $?(a137048|a137028|a137023|a137010|a212613|a137008)[][|cnRED_FONT_COLOR:Valid only for tank specializations.|r]
@@ -252328,7 +252305,7 @@ Duration         : 15 seconds
 Cooldown         : 30 seconds
 Labels           : 292
                  : 3959: Item Effects
-Triggered By     : Scrapfield 9000 Recharging (472170)
+Triggered By     : Scrapfield 9001 Recharging (472170)
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1179398)  : Apply Aura (6) | Absorb Damage (69)
@@ -252467,7 +252444,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1179949)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Mislaid Curiosities now have a $1214434s1% chance to contain $1214434s2 Kaja'Colas and Brann now summons a Kaja'6 Pack when creating campfires.
+Description      : Mislaid Curiosities now have a $1214434s1% chance to contain $1214434s2 Kaja'Colas and once per delve Brann now summons a Kaja'6-Pack when creating campfires.
 
 There are various Kaja'Cola flavors, each one with its own effect that applies when collected.
 
@@ -252482,10 +252459,10 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1179951)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Brann's spells has a chance during combat to toss a GMB Grenade at an enemy target dealing moderate Nature damage with a $1215588s1% chance to stun for $1215627d. This has a $1215588s2% chance to bounce to a new target.
+Description      : Brann has a chance during combat to toss a GMB Grenade at an enemy target dealing moderate Nature damage with a $1215588s1% chance to stun for $1215627d. This has a $1215588s2% chance to bounce to a new target.
 
 The grenade can safely bounce on party members.
-Tooltip          : Brann's spells has a chance during combat to toss a GMB Grenade at an enemy target dealing moderate Nature damage with a $1215588w1% chance to stun for $1215627d. This has a $1215588w2% chance to bounce to a new target.
+Tooltip          : Brann has a chance during combat to toss a GMB Grenade at an enemy target dealing moderate Nature damage with a $1215588w1% chance to stun for $1215627d. This has a $1215588w2% chance to bounce to a new target.
 
 The grenade can safely bounce on party members.
 
@@ -252527,7 +252504,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1179959)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : When any player's heath falls below $1214930s1% health during combat, Brann throws a giant bomb that explodes on impact.
+Description      : When any player's health falls below $1214930s1% during combat, Brann throws a giant bomb that explodes on impact.
 
 The explosion knocks back and slows surrounding enemies by $1214975s1% for $1214975d and heals nearby party members for $1214975s3% of their maximum health. Can only occur every $1214994d.
 
@@ -252916,6 +252893,8 @@ Effects          :
 #1 (id=1181728)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
+Description      : $@spelldesc467033
+Tooltip          : Damage taken increased by $s1%.
 
 Name             : Storm Sewer's Citrine (id=468422) 
 School           : Nature
@@ -254104,7 +254083,7 @@ Labels           : 292
 Proc Chance      : 101%
 Real PPM         : 5
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Unknown 38
-Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
+Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Ignore Phase Shift (205), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1187560)  : Apply Aura (6) | Proc Trigger Spell (42): Vile Contamination | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 228.7789 (coefficient=0.089445) | PvP Coefficient: 0.5 | Trigger Spell: 473602 | Target: Self (1)
@@ -254262,7 +254241,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=1190194)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Upon entering combat, and every $472195t sec, players gain either $@spellname472185 or $@spellname472184 for 30 sec.
+Description      : Upon entering combat, and every $472195t sec, gain either $@spellname472185 or $@spellname472184 for 30 sec.
 
 $@spellicon472184$@spellname472184
 $@spelldesc472184
@@ -254298,7 +254277,7 @@ Effects          :
 Description      : $@spelldesc472125
 Tooltip          : Inflicting $w1 damage every $t1 sec.
 
-Name             : Scrapfield 9000 Overload (id=472167) 
+Name             : Scrapfield 9001 Overload (id=472167) 
 School           : Nature
 Spell Type       : None
 Duration         : 12 seconds
@@ -254311,22 +254290,22 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
 Tooltip          : Haste increased by $w1.
 
-Name             : Scrapfield 9000 Recharging (id=472170) 
+Name             : Scrapfield 9001 Recharging (id=472170) 
 School           : Nature
 Spell Type       : None
 Duration         : 30 seconds
 Labels           : 292
                  : 3959: Item Effects
-Triggered By     : Scrapfield 9000 (466671)
+Triggered By     : Scrapfield 9001 (466671)
 Attributes       : Aura Is Debuff (26), No Immunities (29), No Aura Cancel (31)
 Effects          :
 #1 (id=1190113)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1190115)  : Trigger Spell (64): Scrapfield Vortex
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 466673
-Tooltip          : The Scrapfield 9000 is recharging. Manufacturer's tip: "Consider taking less damage."
+Tooltip          : The Scrapfield 9001 is recharging. Manufacturer's tip: "Consider taking less damage."
 
-Name             : Scrapfield 9000 Recharging (id=472171) [Hidden] 
+Name             : Scrapfield 9001 Recharging (id=472171) [Hidden] 
 School           : Nature
 Spell Type       : None
 Duration         : 20 seconds
@@ -254339,7 +254318,7 @@ Effects          :
 Description      : $@spelldesc466671
 Tooltip          : Unable to benefit from $@spellname472167.
 
-Name             : Scrapfield 9000 Imminent Overload (id=472172) 
+Name             : Scrapfield 9001 Imminent Overload (id=472172) 
 School           : Nature
 Spell Type       : None
 Duration         : 20 seconds
@@ -254413,8 +254392,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
 #4 (id=1192615)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 472120
-Description      : Reduces your size by $s1%, increases movement speed by $472120s4, and your haste by $472120s3.
-Tooltip          : You feel a little smaller, increasing movement speed by $472120w4, and your haste by $472120w3.
+Description      : Reduces your size by $s1%, and increases your Speed by $472120s4 and Haste by $472120s3.
+Tooltip          : You feel a little smaller, increasing your Speed by $472120w4 and Haste by $472120w3.
 
 Name             : Massive (id=472185) 
 School           : Physical
@@ -254431,8 +254410,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Stat: StrAgiInt | Target: Self (1)
 #4 (id=1192614)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 472120
-Description      : Increases your size by $s1%, maximum health by $472120s1, and primary by $472120s2.
-Tooltip          : You feel a bit larger, increasing maximum health by $472120w1, and primary by $472120w2.
+Description      : Increases your size by $s1%, maximum health by $472120s1, and $pri by $472120s2.
+Tooltip          : You feel a bit larger, increasing maximum health by $472120w1, and $pri by $472120w2.
 
 Name             : Amorphous Relic (id=472195) [Hidden] 
 School           : Physical
@@ -254696,7 +254675,7 @@ $@spellicon472517$@spellname472517
 Increase your Versatility by $472517s1 when fighting the targeted raid boss. This effect lasts the entire week.
 
 
-Name             : Vantus Rune: Undermine (id=472517) [Hidden] 
+Name             : Vantus Rune: Liberation of Undermine (id=472517) [Hidden] 
 School           : Physical
 Spell Type       : None
 Max Scaling Level: 80
@@ -254708,9 +254687,38 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not
 Effects          :
 #1 (id=1190691)  : Apply Aura (6) | Dummy (4) | Scaling Class: -2
                    Base Value: 0 | Scaled Value: 1900.5 (coefficient=0.000724) | Target: Self (1)
-Description      : Attune yourself to the energies of the targeted Undermine raid boss, increasing your Versatility by $s1 when fighting that boss. This effect lasts for an entire week.
+Description      : Attune yourself to the energies of the targeted Liberation of Undermine raid boss, increasing your Versatility by $s1 when fighting that boss. This effect lasts for an entire week.
 
 You can only use one Vantus Rune per week.
+
+Name             : Vantus Rune: Liberation of Undermine (id=472534) [Hidden] 
+School           : Physical
+Spell Type       : None
+Max Scaling Level: 80
+Min Scaling Level: 80
+Range            : 50000 yards
+Cast Time        : 1.5 seconds
+Duration         : 86400 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Do Not Report Spell Failure (71), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Allow Aura While Dead (116), Aura Expires Offline (130), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Ignore For Mod Time Rate (196), No Aura Log (202), Allow While Riding Vehicle (204), Aura Points On Client (268)
+Effects          :
+#1 (id=1190718)  : Apply Aura (6) | Dummy (4) | Scaling Class: -2
+                   Base Value: 0 | Scaled Value: 1701 (coefficient=0.000648) | Target: Self (1)
+Description      : Attune yourself to the energies of the targeted Liberation of Undermine raid boss, increasing your Versatility by $s1 when fighting that boss. This effect lasts for an entire week.
+
+You can only use one Vantus Rune per week.
+
+Name             : Vantus Rune: Liberation of Undermine (id=472535) [Hidden] 
+School           : Physical
+Spell Type       : None
+Max Scaling Level: 80
+Min Scaling Level: 80
+Range            : 50000 yards
+Cast Time        : 1.5 seconds
+Duration         : 86400 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Do Not Report Spell Failure (71), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Allow Aura While Dead (116), Aura Expires Offline (130), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Ignore For Mod Time Rate (196), No Aura Log (202), Allow While Riding Vehicle (204), Aura Points On Client (268)
+Effects          :
+#1 (id=1190719)  : Apply Aura (6) | Dummy (4) | Scaling Class: -2
+                   Base Value: 0 | Scaled Value: 1498.875 (coefficient=0.000571) | Target: Self (1)
 
 Name             : Runecaster's Stormbound Rune (id=472636) [Hidden] 
 School           : Nature
@@ -255164,7 +255172,7 @@ Effects          :
 Description      : At any time, decipher the map and guarantee that you'll find a Hidden Trove at the end of the next Tier 4 Delve or above you complete.
 
 Hidden Trove's contents depend on the completed Delve's Tier.
-Tooltip          : You'll find a Hidden Trove at the end of the next Delve you complete.
+Tooltip          : You'll find a Hidden Trove at the end of the next Tier 4 Delve or above you complete.
 
 Hidden Trove's contents depend on the completed Delve's Tier.
 
@@ -255218,6 +255226,8 @@ Cast Time        : 5 seconds
 Cooldown         : 120 seconds
 Labels           : 292
                  : 3959: Item Effects
+Attributes       : Not In Combat (Only Peaceful) (28)
+Channel Interrupt: Enter Combat (28)
 Effects          :
 #1 (id=1192296)  : Summon Item (34)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -255230,6 +255240,8 @@ Cast Time        : 5 seconds
 Cooldown         : 120 seconds
 Labels           : 292
                  : 3959: Item Effects
+Attributes       : Not In Combat (Only Peaceful) (28)
+Channel Interrupt: Enter Combat (28)
 Effects          :
 #1 (id=1192297)  : Summon Item (34)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -255302,7 +255314,7 @@ Labels           : 292
 Stacks           : 25 maximum
 Proc Chance      : 101%
 Triggered By     : Vile Contamination (471316)
-Attributes       : DoT Stacking Rule (103), Suppress Caster Procs (112), Periodic Can Crit (265), Aura Points On Client (268)
+Attributes       : DoT Stacking Rule (103), Suppress Caster Procs (112), Ignore Phase Shift (205), Periodic Can Crit (265), Aura Points On Client (268)
 Effects          :
 #1 (id=1192627)  : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
@@ -256448,6 +256460,8 @@ Effects          :
 #1 (id=1195006)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
+Description      : $@spelldesc1213495
+Tooltip          : Damage taken increased by $s1%.
 
 Name             : Vulnerability Detected (id=1213371) 
 School           : Physical
@@ -256459,6 +256473,8 @@ Effects          :
 #1 (id=1195007)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
+Description      : $@spelldesc1213494
+Tooltip          : Damage taken increased by $s1%.
 
 Name             : Vulnerability Detected (id=1213372) 
 School           : Physical
@@ -256470,6 +256486,8 @@ Effects          :
 #1 (id=1195008)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Enemy (6)
                    Affected School(s): All
+Description      : $@spelldesc1213493
+Tooltip          : Damage taken increased by $s1%.
 
 Name             : Dr. Scrapheal (id=1213423) 
 School           : Physical
@@ -256534,6 +256552,20 @@ Effects          :
 #3 (id=1195096)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1214603
 Tooltip          : Critical Strike increased by $1214603w1.
+
+Name             : Funhouse Lens (id=1213434) 
+School           : Physical
+Spell Type       : None
+Duration         : 15 seconds
+Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=1195091)  : Apply Aura (6) | Scale% (Stacking) (61)
+                   Base Value: -20 | Scaled Value: -20 | Target: Self (1)
+#2 (id=1195092)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+#3 (id=1195095)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1214603
+Tooltip          : Haste increased by $1214603w2.
 
 Name             : Goo-blin Grenade (id=1213436) 
 School           : Nature
@@ -256714,6 +256746,18 @@ Effects          :
 Description      : Brann's spells and abilities have a chance to drop $s1 Footbombs on the field for $1214581d.
 
 Running into the Footbomb kicks it at your enemy target dealing significant Fire damage to all enemies in a $1214604a-yard radius.
+
+Name             : Mechasaur EZ-Build Kit (desc=Rank 1/4) (id=1213555) [Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Labels           : 3206
+                 : 3975
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Update Passives on Apply/Remove (344)
+Effects          :
+#1 (id=1195251)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc1215339
+Tooltip          : $@spelldesc1215339
 
 Name             : Glyph of the Ashvane Pistol Shot (id=1213556) [Spell Family (8), Passive, Hidden] 
 School           : Physical
@@ -257021,7 +257065,7 @@ Description      : $@spelldesc386692
 Name             : Funhouse Lens (id=1214603) [Passive] 
 School           : Physical
 Spell Type       : None
-Triggered By     : Funhouse Lens (1213433)
+Triggered By     : Funhouse Lens (1213433), Funhouse Lens (1213434)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1196937)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
@@ -257106,7 +257150,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1197093)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Mislaid Curiosities now have a $1214699s1% chance to contain $1214699s2 Kaja'Colas and Brann now summons a Kaja'6 Pack when creating campfires.
+Description      : Mislaid Curiosities now have a $1214699s1% chance to contain $1214699s2 Kaja'Colas and once per delve Brann now summons a Kaja'6-Pack when creating campfires.
 
 There are various Kaja'Cola flavors, each one with its own effect that applies when collected.
 
@@ -257135,7 +257179,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1197097)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Mislaid Curiosities now have a $1214698s1% chance to contain $1214698s2 Kaja'Colas and Brann now summons a Kaja'6 Pack when creating campfires.
+Description      : Mislaid Curiosities now have a $1214698s1% chance to contain $1214698s2 Kaja'Colas and once per delve Brann now summons a Kaja'6-Pack when creating campfires.
 
 There are various Kaja'Cola flavors, each one with its own effect that applies when collected.
 
@@ -257149,7 +257193,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1197099)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Mislaid Curiosities now have a $1214700s1% chance to contain $1214700s2 Kaja'Colas and Brann now summons a Kaja'6 Pack when creating campfires.
+Description      : Mislaid Curiosities now have a $1214700s1% chance to contain $1214700s2 Kaja'Colas and once per delve Brann now summons a Kaja'6-Pack when creating campfires.
 
 There are various Kaja'Cola flavors, each one with its own effect that applies when collected.
 
@@ -257206,19 +257250,68 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
 Tooltip          : Increases Critical Strike Rating by $w1.
 
+Name             : Mechano-Core Amplifier (id=1214807) 
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Attributes       : No Aura Cancel (31), Aura Points On Client (268)
+Effects          :
+#1 (id=1197277)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+Tooltip          : Increases Haste Rating by $w1.
+
+Name             : Mechano-Core Amplifier (id=1214808) 
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Attributes       : No Aura Cancel (31), Aura Points On Client (268)
+Effects          :
+#1 (id=1197278)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
+Tooltip          : Increases Mastery Rating by $w1.
+
+Name             : Mechano-Core Amplifier (id=1214810) 
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Attributes       : No Aura Cancel (31), Aura Points On Client (268)
+Effects          :
+#1 (id=1197280)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
+Tooltip          : Increases Versatility Rating by $w1.
+
 Name             : The Jastor Diamond (id=1214822) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Labels           : 292
                  : 3959: Item Effects
-Internal Cooldown: 12.5 seconds
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), DoT Stacking Rule (103), Can Proc From Procs (122)
 Effects          :
 #1 (id=1197301)  : Apply Raid Aura (65) | Proc Trigger Spell (42) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 185.8429 (coefficient=0.048536) | Radius: 45 yards | Target: Self (1)
+
+Name             : I Did That! (id=1214823) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 292
+                 : 3959: Item Effects
+Attributes       : Not an Action (92), Suppress Caster Procs (112), Aura Points On Client (268)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Effects          :
+#1 (id=1197306)  : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
+#2 (id=1197307)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 0 | Rating: Haste | Target: Self (1)
+#3 (id=1197308)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 0 | Rating: Mastery | Target: Self (1)
+#4 (id=1197309)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
+                   Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
+Description      : $@spelldesc1214161
+Tooltip          : Claiming credit from allies! $?e0[Critical Strike increased by $w1. ][]$?e1[Haste increased by $w2. ][]$?e2[Mastery increased by $w3. ][]$?e3[Versatility increased by $w4.][]
 
 Name             : No, I Did That! (id=1214826) 
 School           : Physical
@@ -257227,7 +257320,7 @@ Range            : 100 yards
 Duration         : 15 seconds
 Labels           : 292
                  : 3959: Item Effects
-Attributes       : Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Aura Points On Client (268)
+Attributes       : Not an Action (92), DoT Stacking Rule (103), Suppress Caster Procs (112), Suppress Target Procs (113), Aura Points On Client (268)
 Effects          :
 #1 (id=1197312)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Friendly (21)
@@ -257238,7 +257331,7 @@ Effects          :
 #4 (id=1197315)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Friendly (21)
 Description      : $@spelldesc1214161
-Tooltip          : Reclaimed credit from $@auracaster! $?e0[Critical Strike increased by $w1. ]$?e1[Haste increased by $w2. ]$?e2[Mastery increased by $w3. ]$?e3[Versatility increased by $w4.]
+Tooltip          : Reclaimed credit from $@auracaster! $?e0[Critical Strike increased by $w1. ][]$?e1[Haste increased by $w2. ][]$?e2[Mastery increased by $w3. ][]$?e3[Versatility increased by $w4.][]
 
 Name             : Three Dimensional Bioprinter (desc=Rank 1/4) (id=1214852) [Passive, Hidden] 
 School           : Physical
@@ -257258,10 +257351,12 @@ Description      : Damaging an Elite creature below $s1% health creates an imper
 Name             : Biofuel Rocket Gear (id=1214882) 
 School           : Physical
 Spell Type       : None
+Range            : 50000 yards
 Duration         : Aura (infinite)
+Labels           : 3957: Spatial Paradox (406732 effect#5)
 Proc Chance      : 100%
 Proc Flags       : Target Dies
-Attributes       : Do Not Log (8), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1197402)  : Apply Raid Aura (65) | Proc Trigger Spell (42)
                    Base Value: 1 | Scaled Value: 1 | Radius: 100 yards | Target: Self (1)
@@ -257546,7 +257641,7 @@ Name             : Pacifist Rig (id=1215044) [Hidden]
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
-Duration         : 4 seconds
+Duration         : 8 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1197729)  : Apply Aura (6) | Dummy (4)
@@ -257595,7 +257690,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1197824)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : When any player's health falls below $1215108s1% health during combat, Brann throws a giant bomb that explodes on impact.
+Description      : When any player's health falls below $1215108s1% during combat, Brann throws a giant bomb that explodes on impact.
 
 The explosion knocks back and slows surrounding enemies by $1215118s1% for $1215118d and heals nearby party members for $1215118s3% of their maximum health. Can only occur every $1214994d.
 
@@ -257608,7 +257703,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1197825)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : When any player's health falls below $1215109s1% health during combat, Brann throws a giant bomb that explodes on impact.
+Description      : When any player's health falls below $1215109s1% during combat, Brann throws a giant bomb that explodes on impact.
 
 The explosion knocks back and slows surrounding enemies by $1215119s1% for $1215119d and heals nearby party members for $1215119s3% of their maximum health. Can only occur every $1214994d.
 
@@ -257621,7 +257716,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1197826)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : When any player's health falls below $1215110s1% health during combat, Brann throws a giant bomb that explodes on impact.
+Description      : When any player's health falls below $1215110s1% during combat, Brann throws a giant bomb that explodes on impact.
 
 The explosion knocks back and slows surrounding enemies by $1215120s1% for $1215120d and heals nearby party members for $1215120s3% of their maximum health. Can only occur every $1214994d.
 
@@ -257902,11 +257997,11 @@ Duration         : Aura (infinite)
 Triggered By     : Impact Conversion Matrix (467029), Impact Conversion Matrix (1215861), Impact Conversion Matrix (1215863)
 Attributes       : Aura Unique (43), Cast When Learned (63), Ignore Line of Sight (66), Allow Aura While Dead (116), No Target Aura Icon (188), Aura Points On Client (268)
 Effects          :
-#1 (id=1198167)  : Apply Friendly Area Aura (128) | Dummy (4)
+#1 (id=1198167)  : Apply Raid Aura (65) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 100 yards | Target: Self (1)
-#2 (id=1199063)  : Apply Friendly Area Aura (128) | Dummy (4)
+#2 (id=1199063)  : Apply Raid Aura (65) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-#3 (id=1199064)  : Apply Friendly Area Aura (128) | Dummy (4)
+#3 (id=1199064)  : Apply Raid Aura (65) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : $@spelldesc467029
 Tooltip          : $@spelldesc467029
@@ -257954,6 +258049,31 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : $@spelldesc1215238
 Tooltip          : Movement speed increased by $w1%.
+
+Name             : Mechasaur EZ-Build Kit (id=1215339) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Labels           : 3957: Spatial Paradox (406732 effect#5)
+                 : 4299
+Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
+Effects          :
+#1 (id=1198235)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
+#2 (id=1200108)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : $@spellname421382 now houses $s2 mechasaurs that taunt enemies for ${$s1/1000} sec while within the egg.
+
+In addition to it's usual abilities, it will periodically stomp, dealing Moderate Fire damage split between nearby enemies. Affected enemies explode after $1215401d, taking Moderate Fire damage.
+
+$@spellicon421382$@spellname421382
+$@spelldesc421382
+Tooltip          : $@spellname421382 now houses $w2 mechasaurs that taunt enemies for ${$w1/1000} sec while within the egg.
+
+In addition to it's usual abilities, it will periodically stomp, dealing Moderate Fire damage split between nearby enemies. Affected enemies explode after $1215401d, taking Moderate Fire damage.
+
+$@spellicon421382$@spellname421382
+$@spelldesc421382
 
 Name             : Overdrive Pylon (id=1215531) 
 School           : Physical
@@ -258057,7 +258177,7 @@ Effects          :
 #1 (id=1198690)  : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Stun | Target: Enemy (6)
 Description      : $@spelldesc467026
-Tooltip          : Stuned
+Tooltip          : Stunned.
 
 Name             : Mister Lock-N-Stalk (id=1215637) [Hidden] 
 School           : Physical
@@ -258157,10 +258277,10 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198946)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Brann's spells has a chance during combat to toss a GMB Grenade at an enemy target dealing moderate Nature damage with a $1215795s1% chance to stun for $1215627d. This has a $1215795s2% chance to bounce to a new target.
+Description      : Brann has a chance during combat to toss a GMB Grenade at an enemy target dealing moderate Nature damage with a $1215795s1% chance to stun for $1215627d. This has a $1215795s2% chance to bounce to a new target.
 
 The grenade can safely bounce on party members.
-Tooltip          : Brann's spells has a chance during combat to toss a GMB Grenade at an enemy target dealing moderate Nature damage with a $1215795w1% chance to stun for $1215627d. This has a $1215795w2% chance to bounce to a new target.
+Tooltip          : Brann has a chance during combat to toss a GMB Grenade at an enemy target dealing moderate Nature damage with a $1215795w1% chance to stun for $1215627d. This has a $1215795w2% chance to bounce to a new target.
 
 The grenade can safely bounce on party members.
 
@@ -258193,10 +258313,10 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198950)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Brann's spells has a chance during combat to toss a GMB Grenade at an enemy target dealing moderate Nature damage with a $1215797s1% chance to stun for $1215627d. This has a $1215797s2% chance to bounce to a new target.
+Description      : Brann has a chance during combat to toss a GMB Grenade at an enemy target dealing moderate Nature damage with a $1215797s1% chance to stun for $1215627d. This has a $1215797s2% chance to bounce to a new target.
 
 The grenade can safely bounce on party members.
-Tooltip          : Brann's spells has a chance during combat to toss a GMB Grenade at an enemy target dealing moderate Nature damage with a $1215797w1% chance to stun for $1215627d. This has a $1215797w2% chance to bounce to a new target.
+Tooltip          : Brann has a chance during combat to toss a GMB Grenade at an enemy target dealing moderate Nature damage with a $1215797w1% chance to stun for $1215627d. This has a $1215797w2% chance to bounce to a new target.
 
 The grenade can safely bounce on party members.
 
@@ -258229,10 +258349,10 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198954)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Brann's spells has a chance during combat to toss a GMB Grenade at an enemy target dealing moderate Nature damage with a $1215799s1% chance to stun for $1215627d. This has a $1215799s2% chance to bounce to a new target.
+Description      : Brann has a chance during combat to toss a GMB Grenade at an enemy target dealing moderate Nature damage with a $1215799s1% chance to stun for $1215627d. This has a $1215799s2% chance to bounce to a new target.
 
 The grenade can safely bounce on party members.
-Tooltip          : Brann's spells has a chance during combat to toss a GMB Grenade at an enemy target dealing moderate Nature damage with a $1215799w1% chance to stun for $1215627d. This has a $1215799w2% chance to bounce to a new target.
+Tooltip          : Brann has a chance during combat to toss a GMB Grenade at an enemy target dealing moderate Nature damage with a $1215799w1% chance to stun for $1215627d. This has a $1215799w2% chance to bounce to a new target.
 
 The grenade can safely bounce on party members.
 
@@ -258557,8 +258677,8 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=1199218)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
-Description      : $@spelldesc1213551
-Tooltip          : $@spelldesc1213551
+Description      : $@spelldesc1215963
+Tooltip          : $@spelldesc1215963
 
 Name             : Pacifist Rig (id=1215959) 
 School           : Physical
@@ -258576,8 +258696,8 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #2 (id=1199214)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
-Description      : $@spelldesc1213551
-Tooltip          : $@spelldesc1213551
+Description      : $@spelldesc1215962
+Tooltip          : $@spelldesc1215962
 
 Name             : Pacifist Rig (id=1215960) 
 School           : Physical
@@ -258595,8 +258715,8 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #2 (id=1199217)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-Description      : $@spelldesc1213551
-Tooltip          : $@spelldesc1213551
+Description      : $@spelldesc1215964
+Tooltip          : $@spelldesc1215964
 
 Name             : Pacifist Rig (desc=Rank 4/4) (id=1215962) [Passive, Hidden] 
 School           : Physical
@@ -259184,6 +259304,7 @@ Labels           : 292
 Proc Chance      : 101%
 Real PPM         : 2.5
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell
+Triggered By     : Thwack! (1217638), Gutstab (1217675), Snipe (1217719)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1201371)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
@@ -259212,6 +259333,111 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 237262 | Misc Value 2: 0x1827 | Radius: 3 yards | Target: At Radius (73)
 #2 (id=1201982)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
+Name             : Call Pocket Ace (id=1217431) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Labels           : 292
+                 : 3959: Item Effects
+Proc Chance      : 101%
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Item Cast With Owner Skill (88)
+Effects          :
+#1 (id=1201499)  : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 237263 | Misc Value 2: 0x1828 | Radius: 3 yards | Target: At Radius (73)
+#2 (id=1201981)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
+Name             : Call Snake Eyes (id=1217432) [Hidden] 
+School           : Physical
+Spell Type       : None
+Duration         : 10 seconds
+Labels           : 292
+                 : 3959: Item Effects
+Proc Chance      : 101%
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Item Cast With Owner Skill (88)
+Effects          :
+#1 (id=1201500)  : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 237264 | Misc Value 2: 0x1829 | Radius: 10 yards | Target: Unknown(43)
+#2 (id=1201979)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
+Name             : Thwack! (id=1217638) 
+School           : Physical
+Spell Type       : Melee
+Range            : 5 yards
+Labels           : 292
+                 : 3959: Item Effects
+Effects          :
+#1 (id=1201851)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+#2 (id=1201887)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1217356
+Description      : $@spelldesc1217356
+
+Name             : Thwack Thwack Thwack! (id=1217665) 
+School           : Physical
+Spell Type       : Melee
+Range            : 5 yards
+Labels           : 292
+                 : 3959: Item Effects
+Attributes       : Always AOE Line of Sight (186)
+Effects          :
+#1 (id=1201898)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: Enemy in Area (15)
+Description      : $@spelldesc1217356
+
+Name             : Gutstab (id=1217675) 
+School           : Physical
+Spell Type       : Melee
+Range            : 5 yards
+Labels           : 292
+                 : 3959: Item Effects
+Effects          :
+#1 (id=1201923)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+#2 (id=1201924)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1217356
+Description      : $@spelldesc1217356
+
+Name             : Fan of Stabs (id=1217676) 
+School           : Physical
+Spell Type       : Melee
+Range            : 5 yards
+Labels           : 292
+                 : 3959: Item Effects
+Attributes       : Always AOE Line of Sight (186)
+Effects          :
+#1 (id=1201925)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | Radius: 6 yards | Target: Enemy in Area (15)
+Description      : $@spelldesc1217356
+
+Name             : Snipe (id=1217719) 
+School           : Physical
+Spell Type       : Ranged
+Range            : 50 yards
+Velocity         : 70 yards/sec
+Cooldown         : 0.5 seconds
+Category         : 1152 (Type 0x0)
+Category Cooldown: 0.5 seconds
+Attributes       : Is Ability (4), Do Not Sheath (18), Obsolete (158), AI Primary Ranged Attack (206), Uses Ranged Slot (Cosmetic Only) (322)
+Effects          :
+#1 (id=1201994)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+#2 (id=1202024)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1217356
+
+Name             : Trick Shot (id=1217723) 
+School           : Physical
+Spell Type       : Melee
+Range            : 50 yards
+Velocity         : 70 yards/sec
+Labels           : 292
+                 : 3959: Item Effects
+Effects          :
+#1 (id=1201998)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 6 | Target: Enemy (6)
+Description      : $@spelldesc1217356
 
 Name             : Zee's Thug Hotline (id=1217829) [Passive] 
 School           : Physical
@@ -259287,8 +259513,8 @@ Range            : 300 yards
 Triggered By     : Molten Gold Pool (470089)
 Attributes       : Do Not Sheath (18), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Always Hit (114), Treat As Periodic (121), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Defend Against Friendly Cast (336), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1203290)  : School Damage (2): fire
-                   Base Value: 8 | Scaled Value: 8 | Target: Any Target (25)
+#1 (id=1207998)  : School Damage (2): fire
+                   Base Value: 10 | Scaled Value: 10 | Target: Any Target (25)
 Description      : The molten gold drips to the ground and creates pools for $470088d. Contact with the gold inflicts $s1 Fire damage every $470089t1 sec and slows movement speed by $470089s3%.
 Tooltip          : Inflicting $s1 Fire damage every $470089t1 sec and movement speed decreased by $470089s3%.
 
@@ -259300,6 +259526,7 @@ Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Real PPM         : 1.5 (Haste multiplier)
 Proc Flags       : White Melee, Yellow Melee, Unknown 38
+Triggered By     : Machine Gob's Hiccup (1218463), Machine Gob's Big Grin (1218469), Machine Gob's Bellowing Laugh (1218471)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1203315)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
@@ -259311,6 +259538,42 @@ Effects          :
 Description      : Your harmful melee attacks and abilities have a chance to trigger the detonation mechanism, dealing up to $s3 Fire damage split between nearby enemies.
 
 Blast strength and radius may vary.
+
+Name             : Machine Gob's Hiccup (id=1218463) 
+School           : Fire
+Spell Type       : Magic
+Range            : 50000 yards
+Labels           : 292
+Attributes       : Aura Points On Client (268)
+Effects          :
+#1 (id=1203340)  : School Damage (2): fire
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 4 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+#2 (id=1203341)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1218442
+
+Name             : Machine Gob's Big Grin (id=1218469) 
+School           : Fire
+Spell Type       : Magic
+Range            : 50000 yards
+Labels           : 292
+Attributes       : Aura Points On Client (268)
+Effects          :
+#1 (id=1203357)  : School Damage (2): fire
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+#2 (id=1203358)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1218442
+
+Name             : Machine Gob's Bellowing Laugh (id=1218471) 
+School           : Fire
+Spell Type       : Magic
+Range            : 50000 yards
+Labels           : 292
+Attributes       : Aura Points On Client (268)
+Effects          :
+#1 (id=1203361)  : School Damage (2): fire
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+#2 (id=1203362)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1218442
 
 Name             : Undermine Clam (id=1218567) 
 School           : Physical
@@ -259437,13 +259700,18 @@ Proc Chance      : 100%
 Attributes       : Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1204551)  : Apply Aura (6) | Absorb Damage (69) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1383436 (coefficient=540.8777) | PvP Coefficient: 0.3 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 345698.6 (coefficient=135.1567) | PvP Coefficient: 0.3 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=1207489)  : Trigger Spell (64): Mud Echo
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1221146 | Target: Self (1)
 Description      : Become Mudborne, absorbing $s1 damage and pulsing for ${$1221145s1*$1221146d/$1221146t} Nature over 10 sec.
 
-Periodic damage you take coalesces into pungent mud to feed the ritual, reducing this cooldown by $?{$1221145s2%10}=0[${$1221145s2/10}][${$1221145s2/10}.1] seconds.
+Periodic damage you take coalesces into pungent mud to feed the ritual, reducing this cooldown by $?${$1221145s2%10}=0[${$1221145s2/10}][${$1221145s2/10}.1] seconds.
+Tooltip          : Become Mudborne, absorbing $s1 damage and pulsing for ${$1221145s1*$1221146d/$1221146t} Nature over 10 sec.
+
+Periodic damage you take coalesces into pungent mud to feed the ritual, reducing this cooldown by $?${$1221145s2%10}=0[${$1221145s2/10}][${$1221145s2/10}.1] seconds.
+
+${$1221145s2%10}
 
 Name             : Gigazap's Zap-Cap (id=1219103) [Passive] 
 School           : Physical
@@ -259494,6 +259762,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1220605
 #4 (id=1206699)  : Unknown(203)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1220539 | Target: Friendly (21)
+Description      : $@spelldesc1220488
 Tooltip          : Versatility increased by $w2. Absorb $w1 damage.
 
 Name             : Stacked Deck (id=1219158) 
@@ -259526,6 +259795,9 @@ Spell Type       : None
 Range            : 40 yards
 Velocity         : 50 yards/sec
 Duration         : 5 seconds
+Cooldown         : 120 seconds
+Category         : 1141 (Type 0x0)
+Category Cooldown: 20 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Aura Points On Client (268)
 Effects          :
 #1 (id=1204938)  : Apply Aura (6) | Dummy (4)
@@ -259537,12 +259809,24 @@ Description      : Fashion nearby garbage into a sphere and launch it into the s
 Name             : Garbagemancer's Last Resort (id=1219296) [Passive] 
 School           : Physical
 Spell Type       : None
+Triggered By     : Garbocalypse (1219299)
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1204940)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 623474 (coefficient=243.7577) | PvP Coefficient: 0.5 | Target: Self (1)
-#2 (id=1205003)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
+                   Base Value: 0 | Scaled Value: 575514.6 (coefficient=225.0072) | PvP Coefficient: 0.5 | Target: Self (1)
+#2 (id=1205003)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+
+Name             : Garbocalypse (id=1219299) 
+School           : Physical
+Spell Type       : Ranged
+Range            : 50000 yards
+Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268)
+Effects          :
+#1 (id=1204945)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: At Enemy in Area (16)
+#2 (id=1204946)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219296
 
 Name             : Garbagemancer's Last Resort (id=1219314) 
 School           : Physical
@@ -259568,9 +259852,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 166182.6 (coefficient=64.9719) | Target: Self (1)
 #2 (id=1205127)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 20330.13 (coefficient=7.948409) | Target: Self (1)
-Description      : Channel for 2 seconds, venting Fire damage to all enemies within 8 yds.
-
-Mechanical enemies become Superheated, taking bonus Fire damage from your next attack.
 Tooltip          : Roasting nearby enemies, inflicting Fire damage every $t1 sec.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -259640,11 +259921,14 @@ Name             : Darkfuse Medichopper (id=1220488)
 School           : Physical
 Spell Type       : None
 Range            : 45 yards
+Cooldown         : 120 seconds
+Category         : 1141 (Type 0x0)
+Category Cooldown: 20 seconds
 Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1206469)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
-Description      : Command the Medichopper to attach to your target, absorbing $1219104s1 damage and granting them $1219104s2 Versatility for $1219104d.
+Description      : Command the Medichopper to attach to your target, absorbing $1220605s1 damage and granting them $1220605s2 versatility for $1219104d.
 
 While attached, your healing spells have a chance to refuel the chopper, granting these bonuses to their host again.
 
@@ -259674,7 +259958,7 @@ Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1206545)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
-Tooltip          : Getting healed has a chance to refuel the chopper, granting X vers and a Y damage absorb shield.
+Tooltip          : Getting healed has a chance to refuel the chopper, granting $1220605w4 versatility and a $1220605w3 damage absorb shield.
 
 Name             : Darkfuse Medichopper (id=1220605) [Passive] 
 School           : Physical
@@ -259750,7 +260034,7 @@ Triggered By     : Mud Echo (1221151)
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1207485)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 167155.3 (coefficient=65.35218) | PvP Coefficient: 0.3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2765.589 (coefficient=1.081254) | PvP Coefficient: 0.3 | Target: Self (1)
 #2 (id=1207576)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 
@@ -259775,5 +260059,72 @@ Effects          :
 #2 (id=1207507)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1221145
 Description      : $@spelldesc1219102
+
+Name             : Feeling Lucky (id=1221429) [Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : Proc on jump
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Aura Required by Client (262), Don't Cancel When All Effects are Disabled (353), Do Not Re-apply Area Aura if it Persists Through Update (391)
+Effects          :
+#1 (id=1208054)  : Apply Aura (6) | Unknown(312)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1056 | Target: Self (1)
+#2 (id=1208055)  : Apply Aura (6) | Unknown(312)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1111 | Target: Self (1)
+#3 (id=1208056)  : Apply Aura (6) | Unknown(312)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1116 | Target: Self (1)
+#4 (id=1208057)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Tooltip          : You now flip on every jump! Yay!
+
+Name             : Tracking Quest (id=1221476) [Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow during spell override (404)
+Effects          :
+#1 (id=1208125)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
+Name             : Vantus Rune: Undermine (id=1222234) 
+School           : Physical
+Spell Type       : None
+Range            : 50000 yards
+Cast Time        : 1.5 seconds
+Attributes       : Do Not Log (8), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Hide Channel Bar (109), Allow On Charmed Targets (201)
+Effects          :
+#1 (id=1209436)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+Description      : Once per week, attune yourself to the energies of the targeted Undermine raid boss and gain the following aura:
+
+$@spellicon472535$@spellname472535
+Increase your Versatility by $472535s1 when fighting the targeted raid boss. This effect lasts the entire week.
+
+
+Name             : Vantus Rune: Undermine (id=1222239) 
+School           : Physical
+Spell Type       : None
+Range            : 50000 yards
+Cast Time        : 1.5 seconds
+Attributes       : Do Not Log (8), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Hide Channel Bar (109), Allow On Charmed Targets (201)
+Effects          :
+#1 (id=1209444)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+Description      : Once per week, attune yourself to the energies of the targeted Undermine raid boss and gain the following aura:
+
+$@spellicon472534$@spellname472534
+Increase your Versatility by $472534s1 when fighting the targeted raid boss. This effect lasts the entire week.
+
+
+Name             : NEW Goblin Hot Potato (id=1222637) 
+School           : Physical
+Spell Type       : None
+Range            : 40 yards
+Cast Time        : 1 seconds
+Velocity         : 16 yards/sec
+Attributes       : Not In Combat (Only Peaceful) (28), No Threat (42), Exclude Caster (51), Visible only to caster (conversations only) (343)
+Effects          :
+#1 (id=1210079)  : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | Target: Friendly (21)
+Description      : Attempt to throw the NEW Goblin Hot Potato to a friendly player. If they have free room in their pack they will catch it... assuming you manage to throw it safely!
 
 

@@ -1,5 +1,5 @@
-// Active class spells, wow build 11.1.0.58221
-static const std::array<active_class_spell_t, 316> __ptr_active_spells_data { {
+// Active class spells, wow build 11.1.0.58626
+static const std::array<active_class_spell_t, 315> __ptr_active_spells_data { {
   {  1,    0,     100,       0, "Charge"                             },
   {  1,    0,     355,       0, "Taunt"                              },
   {  1,    0,    1464,       0, "Slam"                               },
@@ -270,7 +270,6 @@ static const std::array<active_class_spell_t, 316> __ptr_active_spells_data { {
   { 11,    0,   33917,       0, "Mangle"                             },
   { 11,    0,   50769,       0, "Revive"                             },
   { 11,    0,  213764,       0, "Swipe"                              },
-  { 11,  102,   24858,       0, "Moonkin Form"                       },
   { 11,  102,  190984,    5176, "Wrath"                              },
   { 11,  102,  191034,       0, "Starfall"                           },
   { 11,  105,   18562,       0, "Swiftmend"                          },
@@ -318,7 +317,7 @@ static const std::array<active_class_spell_t, 316> __ptr_active_spells_data { {
   { 13, 1473,  361021,       0, "Sense Power"                        },
 } };
 
-// Pet active spells, wow build 11.1.0.58221
+// Pet active spells, wow build 11.1.0.58626
 static const std::array<active_pet_spell_t, 134> __ptr_active_pet_spells_data { {
   {  3,    2649, "Growl"                              },
   {  3,   16827, "Claw"                               },

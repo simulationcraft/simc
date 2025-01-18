@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58221 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.58626 PTR
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -259,7 +259,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=169690)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
-Description      : Gouges the eyes of an enemy target, incapacitating for $d. Damage will interrupt the effect.
+Description      : Gouges the eyes of an enemy target, incapacitating for $d. Damage may interrupt the effect.
 
 Must be in front of your target.
 
@@ -491,7 +491,7 @@ Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=616)      : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -60 | Scaled Value: -60 | Target: Enemy (6)
-Description      : Blinds $?a200733[all enemies near ][]the target, causing $?a200733[them][it] to wander disoriented for $d. Damage will interrupt the effect. Limit 1.
+Description      : Blinds $?a200733[all enemies near ][]the target, causing $?a200733[them][it] to wander disoriented for $d. Damage may interrupt the effect. Limit 1.
 Tooltip          : Disoriented.
 
 Name             : Dispatch (id=2098) [Spell Family (8)] 
@@ -13353,7 +13353,7 @@ School           : Physical
 Spell Type       : Melee
 Resource         : 35 Energy (3) (id=306433)
 Resource         : 1 - 5 Combo Points (4) (id=306434)
-Range            : 25 yards
+Range            : 5 yards
 GCD              : 1.2 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Labels           : 16: Class Spells
@@ -15957,7 +15957,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198823)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.5 | Misc Value: 12 | Target: Self (1)
-Description      : While Shadow Dance is active, you cannot lose |cFFFFFFFF Winning Streak!|r, gain an additional stack of |cFFFFFFFF Winning Streak!|r each time you would gain one, and deal an additional $s1% Shadow Damage per |cFFFFFFFF Winning Streak!|r stack.
+Description      : While Shadow Dance is active, you cannot lose|cFFFFFFFF Winning Streak!|r, gain an additional stack of|cFFFFFFFF Winning Streak!|r each time you would gain one, and deal an additional $s1% Shadow Damage per|cFFFFFFFF Winning Streak!|r stack.
 
 Name             : Rogue Assassination 11.1 Class Set 4pc (id=1215724) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue

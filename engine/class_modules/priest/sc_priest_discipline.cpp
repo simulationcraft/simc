@@ -63,6 +63,8 @@ struct power_word_radiance_t final : public priest_heal_t
 
     rng().shuffle( target_list.begin() + 1, target_list.end() );*/
 
+
+    // Don't include pets for the ease of writing APLs
     if ( as<int>( sim->healing_no_pet_list.size() ) <= n_targets() )
     {
       for ( auto t : sim->healing_no_pet_list )
@@ -73,7 +75,7 @@ struct power_word_radiance_t final : public priest_heal_t
 
       for ( auto t : sim->healing_pet_list )
       {
-        if ( t != target && ( t->is_active() || ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
+        if ( t != target && ( ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
           target_list.push_back( t );
       }
 
@@ -150,23 +152,53 @@ struct pain_suppression_t final : public priest_spell_t
   }
 };
 
-struct evangelism_t final : public priest_spell_t
+struct evangelism_t final : public priest_heal_t
 {
   timespan_t atonement_extend;
   evangelism_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "evangelism", p, p.talents.discipline.evangelism ),
+    : priest_heal_t( "evangelism", p, p.talents.discipline.evangelism ),
       atonement_extend( timespan_t::from_seconds( p.talents.discipline.evangelism->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
 
     target = &p;
 
-    harmful = false;
+    harmful          = false;
+    split_aoe_damage = 1;
+    aoe              = -1;
+  }
+
+  
+  int num_targets() const override
+  {
+    return std::max( 1, as<int>( p().allies_with_atonement.size() ) );
+  }
+
+  size_t available_targets( std::vector<player_t*>& target_list ) const override
+  {
+    target_list.clear();
+
+    for ( auto t : p().allies_with_atonement )
+    {
+      target_list.push_back( t );
+    }
+
+    if ( target_list.size() == 0 )
+      target_list.push_back( player );
+
+    return target_list.size();
+  }
+
+  void activate() override
+  {
+    priest_heal_t::activate();
+
+    priest().allies_with_atonement.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
   }
 
   void execute() override
   {
-    priest_spell_t::execute();
+    priest_heal_t::execute();
 
     target->buffs.pain_suppression->trigger();
 
@@ -357,7 +389,8 @@ public:
               .time_value() ),
       heavens_wrath_cdr(
           timespan_t::from_seconds( -priest().talents.discipline.heavens_wrath->effectN( 1 ).base_value() ) ),
-      max_spread_targets( as<unsigned>( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() ) )
+      max_spread_targets( as<unsigned>( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() +
+                                        priest().talents.discipline.revel_in_darkness->effectN( 2 ).base_value() ) )
   {
     cooldown = p.cooldowns.penance;
     if ( cooldown->duration != timespan_t::zero() )
@@ -503,6 +536,66 @@ public:
     return tmp.size() ? util::string_join( tmp, delim ) : "none";
   }
 
+  void spread_shadow_word_pain( const action_state_t* state, priest_t& p ) const
+  {
+    if ( !p.is_ptr() )
+      return;
+
+    // Exit if PTW isn't ticking
+    if ( !td( state->target )->dots.shadow_word_pain->is_ticking() )
+    {
+      return;
+    }
+    // Exit if there 1 or fewer targets
+    if ( target_list().size() <= 1 )
+    {
+      return;
+    }
+    // Targets to spread PTW to
+    std::vector<player_t*> targets;
+
+    // Targets without PTW
+    std::vector<player_t*> no_swp_targets,
+        // Targets that already have PTW
+        has_swp_targets;
+
+    // Categorize all available targets (within 8 yards of the main target) based on presence of PTW
+    range::for_each( target_list(), [ & ]( player_t* t ) {
+      // Ignore main target
+      if ( t == state->target )
+      {
+        return;
+      }
+
+      if ( !td( t )->dots.shadow_word_pain->is_ticking() )
+      {
+        no_swp_targets.push_back( t );
+      }
+      else if ( td( t )->dots.shadow_word_pain->is_ticking() )
+      {
+        has_swp_targets.push_back( t );
+      }
+    } );
+
+    // 1) Randomly select targets without PTW, unless there already are the maximum number of targets with PTW up.
+    while ( no_swp_targets.size() > 0 && targets.size() < max_spread_targets )
+    {
+      move_random_target( no_swp_targets, targets );
+    }
+
+    // 2) Randomly select targets that already have PTW on them
+    while ( has_swp_targets.size() > 0 && targets.size() < max_spread_targets )
+    {
+      move_random_target( has_swp_targets, targets );
+    }
+
+    sim->print_debug( "{} purge_the_wicked spread selected targets={{ {} }}", player->name(),
+                      actor_list_str( targets ) );
+
+    range::for_each(
+        targets, [ & ]( player_t* target ) { p.background_actions.purge_the_wicked->execute_on_target( target ); } );
+  }
+
   void spread_purge_the_wicked( const action_state_t* state, priest_t& p ) const
   {
     // Exit if PTW isn't ticking
@@ -581,9 +674,14 @@ public:
   {
     priest_spell_t::impact( state );
 
-    if ( p().talents.discipline.purge_the_wicked.enabled() )
+    if ( !p().is_ptr() && p().talents.discipline.purge_the_wicked.enabled() )
     {
       spread_purge_the_wicked( state, p() );
+    }
+
+    if ( p().is_ptr() && p().talents.discipline.encroaching_shadows.enabled() )
+    {
+      spread_shadow_word_pain( state, p() );
     }
 
     priest().trigger_inescapable_torment( state->target );
@@ -825,27 +923,32 @@ void priest_t::init_spells_discipline()
   talents.discipline.malicious_intent      = ST( "Malicious Intent" );
   // Row 5
   talents.discipline.purge_the_wicked     = ST( "Purge the Wicked" );
+  talents.discipline.encroaching_shadows  = ST( "Encroaching Shadows" );
+  talents.discipline.evangelism           = ST( "Evangelism" );
   talents.discipline.rapture              = ST( "Rapture" );
   talents.discipline.shadow_covenant      = ST( "Shadow Covenant" );
   talents.discipline.shadow_covenant_buff = find_spell( 322105 );
   talents.discipline.dark_reprimand       = find_spell( 373129 );
   // Row 6
   talents.discipline.revel_in_purity     = ST( "Revel in Purity" );
+  talents.discipline.revel_in_darkness   = ST( "Revel in Darkness" );
   talents.discipline.contrition          = ST( "Contrition" );
+  talents.discipline.divine_procession   = ST( "Divine Procession" );
   talents.discipline.exaltation          = ST( "Exaltation" );
   talents.discipline.indemnity           = ST( "Indemnity" );
   talents.discipline.pain_and_suffering  = ST( "Pain and Suffering" );
   talents.discipline.twilight_corruption = ST( "Twilight Corruption" );  // 373065
   // Row
-  talents.discipline.borrowed_time   = ST( "Borrowed Time" );
-  talents.discipline.castigation     = ST( "Castigation" );
-  talents.discipline.abyssal_reverie = ST( "Abyssal Reverie" );
-  // Row 8
-  talents.discipline.train_of_thought = ST( "Train of Thought" );
+  talents.discipline.borrowed_time    = ST( "Borrowed Time" );
   talents.discipline.ultimate_penance = ST( "Ultimate Penitence" );
-  talents.discipline.lenience         = ST( "Lenience" );
-  talents.discipline.evangelism       = ST( "Evangelism" );
-  talents.discipline.void_summoner    = ST( "Void Summoner" );
+  talents.discipline.abyssal_reverie  = ST( "Abyssal Reverie" );
+  // Row 8
+  talents.discipline.train_of_thought      = ST( "Train of Thought" );
+  talents.discipline.inner_focus           = ST( "Inner Focus" );
+  talents.discipline.castigation           = ST( "Castigation" );
+  talents.discipline.overloaded_with_light = ST( "Overloded with Light" );
+  talents.discipline.lenience              = ST( "Lenience" );
+  talents.discipline.void_summoner         = ST( "Void Summoner" );
   // Row 9
   talents.discipline.divine_aegis          = ST( "Divine Aegis" );
   talents.discipline.divine_aegis_buff     = find_spell( 47753 );
@@ -857,9 +960,9 @@ void priest_t::init_spells_discipline()
   // talents.discipline.inescapable_torment   = ST( "Inescapable Torment" ); - Shared Talent
   // Row 10
   talents.discipline.aegis_of_wrath                  = ST( "Aegis of Wrath" );
+  talents.discipline.eternal_barrier                 = ST( "Eternal Barrier" );
   talents.discipline.weal_and_woe                    = ST( "Weal and Woe" );
   talents.discipline.weal_and_woe_buff               = find_spell( 390787 );
-  talents.discipline.overloaded_with_light           = ST( "Overloded with Light" );
   talents.discipline.twilight_equilibrium            = ST( "Twilight Equilibrium" );
   talents.discipline.twilight_equilibrium_holy_amp   = find_spell( 390706 );
   talents.discipline.twilight_equilibrium_shadow_amp = find_spell( 390707 );

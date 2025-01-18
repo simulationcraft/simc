@@ -18,7 +18,7 @@ actions.precombat+=/variable,name=first_tyrant_time,op=add,value=action.summon_v
 actions.precombat+=/variable,name=first_tyrant_time,op=add,value=gcd.max,if=talent.grimoire_felguard.enabled|talent.summon_vilefiend.enabled
 # Accounts for Tyrant own Cast Time and an additional Shadowbolt cast time
 actions.precombat+=/variable,name=first_tyrant_time,op=sub,value=action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time
-# Sets an absolute minimun of 10s for the First Tyrant Setup
+# Sets an absolute minimum of 10s for the First Tyrant Setup
 actions.precombat+=/variable,name=first_tyrant_time,op=min,value=10
 actions.precombat+=/variable,name=in_opener,op=set,value=1
 # Defines if the the Trinket 1 is a buff Trinket in the trinket logic

@@ -1,4 +1,4 @@
-// Talent tree specialization abilities, wow build 11.1.0.58221
+// Talent tree specialization abilities, wow build 11.1.0.58626
 static const std::array<specialization_spell_entry_t, 518> __ptr_specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
@@ -392,8 +392,8 @@ static const std::array<specialization_spell_entry_t, 518> __ptr_specialization_
   { 10,  269,  346104,      0, "Windwalker Monk Two-Hand Adjustment", 0 },
   { 10,  269,  462088,      0, "Monk"                              , 0 },
   { 10,  269,  462091,      0, "Windwalker Monk"                   , 0 },
+  { 10,  269, 1222923,      0, "Windwalker Monk"                   , 0 },
   { 10, 1450,  362170,      0, "Initial Monk"                      , 0 },
-  { 11,  102,   24858,      0, "Moonkin Form"                      , 0 },
   { 11,  102,   86104,      0, "Leather Specialization"            , 0 },
   { 11,  102,  137013,      0, "Balance Druid"                     , 0 },
   { 11,  102,  162699,      0, "Stat Negation Aura - Intellect DPS", 0 },

@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58221 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.58626 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -662,7 +662,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 359
                  : 2835: Spatial Paradox (406789 effect#13)
-Affecting Spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #14, #26), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #12, #15), Storm, Earth, and Fire (137639 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tea of Plenty (388525 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Pressure Point (393053 effect#1), Kicks of Flowing Momentum (394944 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), August Dynasty (442850 effect#1), Heart of the Jade Serpent (443421 effect#8), Heart of the Jade Serpent (443616 effect#8), Ordered Elements (451462 effect#1), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Wisdom of the Wall (452684 effect#1), Tiger Strikes (454485 effect#1), Winning Streak! (1216182 effects: #1, #2)
+Affecting Spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #14, #26), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #12, #15), Storm, Earth, and Fire (137639 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tea of Plenty (388525 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Pressure Point (393053 effect#1), Kicks of Flowing Momentum (394944 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), August Dynasty (442850 effect#1), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Ordered Elements (451462 effect#1), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Wisdom of the Wall (452684 effect#1), Tiger Strikes (454485 effect#1), Winning Streak! (1216182 effects: #1, #2)
 Family Flags     : 39, 67
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Aura Points On Client (268), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416)
 Effects          :
@@ -897,7 +897,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60
 #3 (id=1150341)  : Dispel (38)
                    Base Value: 10 | Scaled Value: 10 | SP Coefficient: 0.25 | Misc Value: 9 | Target: Enemy (6)
-Description      : Incapacitates the target for $d. Limit 1. Damage will cancel the effect.
+Description      : Incapacitates the target for $d. Limit 1. Damage may cancel the effect.
 Tooltip          : Incapacitated.
 
 Name             : Chi Wave (id=115098) [Spell Family (53)] 
@@ -1887,7 +1887,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3566: Balanced Stratagem (451508 effect#1)
 Proc Chance      : 100%
-Affecting Spells : Brewmaster Monk (137023 effects: #1, #2, #14), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effects: #1, #2, #12), Storm, Earth, and Fire (137639 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Emperor's Capacitor (235054 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), The Emperor's Capacitor (337291 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), The Emperor's Capacitor (393039 effects: #1, #2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Press the Advantage (418361 effect#1), Mistweaver Monk (428200 effects: #24, #25, #26), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Efficient Training (450989 effects: #1, #2), Wisdom of the Wall (452684 effect#1), Flow of Battle (457257 effect#1), Power of the Thunder King (459809 effects: #1, #2, #3), Jade Empowerment (467317 effects: #2, #3), Luck of the Draw! (1217990 effects: #1, #2)
+Affecting Spells : Brewmaster Monk (137023 effects: #1, #2, #14), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effects: #1, #2, #12), Storm, Earth, and Fire (137639 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Emperor's Capacitor (235054 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), The Emperor's Capacitor (337291 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), The Emperor's Capacitor (393039 effects: #1, #2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Press the Advantage (418361 effect#1), Mistweaver Monk (428200 effects: #24, #25, #26), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Efficient Training (450989 effects: #1, #2), Wisdom of the Wall (452684 effect#1), Flow of Battle (457257 effect#1), Power of the Thunder King (459809 effects: #2, #3, #5), Jade Empowerment (467317 effects: #2, #3), Luck of the Draw! (1217990 effects: #1, #2)
 Family Flags     : 32, 70, 103
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Discount Power On Miss (59), Name in Channel Bar (61), No Target Per-Second Costs (75), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Do Not Chain To Crowd-Controlled Targets (200), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Chain by Most Hit (440)
 Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13), Damage Channel Duration (14)
@@ -2583,7 +2583,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
-Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Wisdom of the Wall (452684 effect#1)
+Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), No Aura Icon (60), Do Not Reset Combat Timers (81), Can Proc From Procs (122), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
@@ -3334,7 +3334,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
                  : 930
-Affecting Spells : Gift of the Celestials (388212 effects: #1, #2), Wisdom of the Wall (452684 effect#1)
+Affecting Spells : Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
 Triggered By     : Mighty Stomp (454523)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Do Not Reset Combat Timers (81), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
@@ -4341,7 +4341,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 3567: Balanced Stratagem (451514 effect#1)
-Affecting Spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #14, #26), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #1, #2, #12, #15), Storm, Earth, and Fire (137639 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Tea of Plenty (388525 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Pressure Point (393053 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Kicks of Flowing Momentum (394944 effect#1), Jadefire Brand (395414 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Press the Advantage (418361 effect#1), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), August Dynasty (442850 effect#1), Heart of the Jade Serpent (443421 effect#8), Heart of the Jade Serpent (443616 effect#8), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Ordered Elements (451462 effect#1), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Wisdom of the Wall (452684 effect#1), Tiger Strikes (454485 effect#1), Flow of Battle (457257 effect#1), Winning Streak! (1216182 effects: #1, #2), Luck of the Draw! (1217990 effects: #1, #2)
+Affecting Spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #14, #26), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #1, #2, #12, #15), Storm, Earth, and Fire (137639 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Tea of Plenty (388525 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Pressure Point (393053 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Kicks of Flowing Momentum (394944 effect#1), Jadefire Brand (395414 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Press the Advantage (418361 effect#1), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), August Dynasty (442850 effect#1), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Ordered Elements (451462 effect#1), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Wisdom of the Wall (452684 effect#1), Tiger Strikes (454485 effect#1), Flow of Battle (457257 effect#1), Winning Streak! (1216182 effects: #1, #2), Luck of the Draw! (1217990 effects: #1, #2)
 Triggered By     : Rising Sun Kick (107428)
 Family Flags     : 39, 103
 Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Aura Points On Client (268), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416)
@@ -5478,7 +5478,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 2369: Walk with the Ox (387219 effect#1)
-Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Wisdom of the Wall (452684 effect#1)
+Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 3
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Immunities (29), Initiates Combat (Enables Auto-Attack) (41), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
@@ -6740,11 +6740,11 @@ Resource         : 5% Base Mana (0) (id=215338)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 25 seconds
-Cooldown         : 180 seconds
+Cooldown         : 120 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Wisdom of the Wall (452684 effect#1)
+Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), No Aura Icon (60), Do Not Reset Combat Timers (81), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
@@ -6994,7 +6994,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Triggered By     : Clash (324383), Clash (324384)
 Attributes       : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Can Proc From Procs (122), No Attack Miss (249)
 Effects          :
-#1 (id=813916)   : Apply Aura (6) | Root (455)
+#1 (id=813916)   : Apply Aura (6) | Root (455) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 6 yards | Mechanic: Root | Target: At Self (22) -> Enemy in Area (15)
 Description      : $@spelldesc128845
 Tooltip          : Rooted.
@@ -7193,11 +7193,11 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 25 seconds
-Cooldown         : 180 seconds
+Cooldown         : 120 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Wisdom of the Wall (452684 effect#1)
+Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 3
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), No Aura Icon (60), Do Not Reset Combat Timers (81), No Aura Log (202), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Do Not Log Aura Refresh (291), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
@@ -10347,12 +10347,12 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1023483)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 0x471 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value 2: 0x471 | Target: Self (1)
 #2 (id=1023484)  : Apply Aura (6) | Dummy (4)
-                   Base Value: -500 | Scaled Value: -500 | Target: Self (1)
+                   Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 #3 (id=1147040)  : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 500 | Misc Value 2: 0x471 | Target: Self (1)
-Description      : Abilities that activate Gust of Mist reduce the cooldown on $?s325197[Invoke Chi-Ji, the Red Crane][Invoke Yul'on, the Jade Serpent] by ${$s2/-1000}.1 sec, and Chi-Ji's Gusts of Mists healing is increased by $s1% and Yu'lon's Soothing Breath healing is increased by $s3%.
+Description      : Chi Cocoons now apply Enveloping Mist for ${$s2/1000} sec when they expire or are consumed, and Chi-Ji's Gusts of Mists healing is increased by $s1% and Yu'lon's Soothing Breath healing is increased by $s3%.
 
 Name             : Yu'lon's Whisper (id=388038) [Spell Family (53), Passive] 
 Talent Entry     : Mistweaver [tree=spec, row=7, col=2, max_rank=1, req_points=8]
@@ -10401,7 +10401,7 @@ Family Flags     : 48
 Attributes       : Do Not Display Range (126)
 Effects          :
 #1 (id=1023503)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.364 | Radius: 15 yards | Target: Cone to Friendly (136)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.455 | Radius: 15 yards | Target: Cone to Friendly (136)
 Description      : $@spelldesc388038
 
 Name             : Jadefire Stomp (id=388193) [Spell Family (53)] 
@@ -10589,7 +10589,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1023740)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -120000 | Scaled Value: -120000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -60000 | Scaled Value: -60000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Invoke Xuen, the White Tiger (123904), Invoke Niuzao, the Black Ox (132578), Stomp (227291), Invoke Yu'lon, the Jade Serpent (322118), Invoke Chi-Ji, the Red Crane (325197), Invoke Niuzao, the Black Ox (395267)
                    Family Flags: 3
 #2 (id=1023741)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
@@ -10600,6 +10600,9 @@ Effects          :
                    Base Value: 7000 | Scaled Value: 7000 | Target: Self (1)
 #4 (id=1138150)  : Apply Aura (6) | Dummy (4)
                    Base Value: 25000 | Scaled Value: 25000 | Target: Self (1)
+#5 (id=1209039)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: -12 | Scaled Value: -12 | Misc Value: 12 | Misc Value 2: 4551 (Label) | Target: Self (1)
+                   Affected Spells (Label): Chi Cocoon (406139)
 Description      : Reduces the cooldown of $?s325197[Invoke Chi-Ji, the Red Crane][Invoke Yul'on, the Jade Serpent] by ${$s1/-60000} min, but decreases its duration to ${($s4+$s2)/1000} sec. 
 
 Name             : Calming Coalescence (id=388218) [Spell Family (53), Passive] 
@@ -12055,7 +12058,7 @@ Range            : 5 yards
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Affecting Spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #14, #26), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #1, #2, #12, #15), Storm, Earth, and Fire (137639 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Tea of Plenty (388525 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Pressure Point (393053 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Kicks of Flowing Momentum (394944 effect#1), Jadefire Brand (395414 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Press the Advantage (418361 effect#1), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), August Dynasty (442850 effect#1), Heart of the Jade Serpent (443421 effect#8), Heart of the Jade Serpent (443616 effect#8), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Ordered Elements (451462 effect#1), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Wisdom of the Wall (452684 effect#1), Tiger Strikes (454485 effect#1), Flow of Battle (457257 effect#1), Winning Streak! (1216182 effects: #1, #2), Luck of the Draw! (1217990 effects: #1, #2)
+Affecting Spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2, #14, #26), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #1, #2, #12, #15), Storm, Earth, and Fire (137639 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Tea of Plenty (388525 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Pressure Point (393053 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Kicks of Flowing Momentum (394944 effect#1), Jadefire Brand (395414 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Press the Advantage (418361 effect#1), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), August Dynasty (442850 effect#1), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Ordered Elements (451462 effect#1), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Wisdom of the Wall (452684 effect#1), Tiger Strikes (454485 effect#1), Flow of Battle (457257 effect#1), Winning Streak! (1216182 effects: #1, #2), Luck of the Draw! (1217990 effects: #1, #2)
 Family Flags     : 39, 103
 Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Aura Points On Client (268), Hide Shapeshift Requirements (356), Allow Class Ability Procs (416)
 Effects          :
@@ -12166,9 +12169,11 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1031606)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-#2 (id=1031607)  : Apply Aura (6) | Dummy (4)
-                   Base Value: -250 | Scaled Value: -250 | Target: Self (1)
-Description      : Abilities cast by you or your Storm, Earth, and Fire clones that activate Combo Strikes reduce the cooldown of Invoke Xuen, the White Tiger by ${$s2/-1000}.2 sec, and Xuen's damage is increased by ${$s1}%.
+#2 (id=1031607)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Invoke Xuen, the White Tiger (123904), Invoke Niuzao, the Black Ox (132578), Stomp (227291), Invoke Yu'lon, the Jade Serpent (322118), Invoke Chi-Ji, the Red Crane (325197), Invoke Niuzao, the Black Ox (395267)
+                   Family Flags: 3
+Description      : Invoke Xuen, the White Tiger's damage is increased by ${$s1}% and its cooldown is reduced by ${$s2/-1000} sec.
 
 Name             : Last Emperor's Capacitor (id=392989) [Spell Family (53), Passive] 
 Talent Entry     : Windwalker [tree=spec, row=9, col=1, max_rank=1, req_points=20]
@@ -12256,7 +12261,7 @@ Attributes       : Include In Advanced Combat Log (72)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1031700)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 200 | Scaled Value: 200 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
                    Family Flags: 32
 #2 (id=1031701)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
@@ -12820,7 +12825,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
-Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Wisdom of the Wall (452684 effect#1)
+Affecting Spells : Invoke Niuzao, the Black Ox (132578 effect#4), Gift of the Celestials (388212 effects: #1, #2), Xuen's Bond (392986 effect#2), Wisdom of the Wall (452684 effect#1)
 Family Flags     : 3
 Attributes       : No AutoCast (AI) (49), Do Not Reset Combat Timers (81), Can Proc From Procs (122), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Reset cooldown upon ending an encounter (333), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
 Effects          :
@@ -13574,6 +13579,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 741
+                 : 4551: Gift of the Celestials (388212 effect#5)
 Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Attributes       : Not Shapeshifted (16), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Cast While Channeling (308), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
@@ -13582,7 +13588,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Radius: 0 - 40 yards | Target: Friendly (21) -> At Friendly in Area (31)
                    Affected School(s): All
 #2 (id=1054861)  : Dummy (3)
-                   Base Value: 12 | Scaled Value: 12
+                   Base Value: 24 | Scaled Value: 24
 #3 (id=1054866)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Encases the target in a cocoon of Chi energy for $d, absorbing $<newshield> damage.
@@ -14207,7 +14213,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 12 | Misc Value 2: 3429 (Label) | Target: Self (1)
                    Affected Spells (Label): Courage of the White Tiger (443087)
 #21 (id=1141954) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: -80 | Scaled Value: -80 | Misc Value 2: 3441 (Label) | Target: Self (1)
+                   Base Value: -35 | Scaled Value: -35 | Misc Value 2: 3441 (Label) | Target: Self (1)
                    Affected Spells (Label): Celestial Conduit (443038)
 #22 (id=1150362) : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -240000 | Scaled Value: -240000 | Misc Value: 11 | Target: Self (1)
@@ -14842,13 +14848,14 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 3022
+Internal Cooldown: 2 seconds
 Proc Chance      : 100%
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
+Proc Flags       : Cast Successful
 Attributes       : Passive (6), Can Proc From Procs (122)
 Effects          :
 #1 (id=1139104)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Consuming $?c2[$443506u stacks of Sheilun's Gift calls]?c3[$443424u Chi causes your next Strike of the Windlord to call][] upon Yu'lon to decrease the cooldown time of $?c2[Renewing Mist, Rising Sun Kick, Life Cocoon, and Thunder Focus Tea]?c3[Fists of Fury, Strike of the Windlord, Flying Serpent Kick, and Whirling Dragon Punch][] by $443421s2% for $443421d.$?c3[ 
+                   Base Value: 8000 | Scaled Value: 8000 | Target: Self (1)
+Description      : $?c2[Sheilun's Gift calls]?c3[Strike of the Windlord calls][] upon Yu'lon to decrease the cooldown time of $?c2[Renewing Mist, Rising Sun Kick, Life Cocoon, and Thunder Focus Tea]?c3[Fists of Fury, Strike of the Windlord, Rising Sun Kick, Flying Serpent Kick, and Whirling Dragon Punch][] by $443421s2% for $?c2[up to ${$s1/1000} sec, based on the clouds of mist consumed]?c3[$443421d][].$?c3[ 
 
 The channel time of Fists of Fury is reduced by $443421s5% while Yu'lon is active.][]
 
@@ -14863,14 +14870,15 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 3385
+                 : 4586: Windwalker Monk (1222923 effect#1)
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1139298)  : Summon (28) | Attributes: Position is facing relative (1)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 221167 | Misc Value 2: 0x2cf | Target: At Self (18)
 #2 (id=1139299)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
-                   Affected Spells: Flying Serpent Kick (101545), Fists of Fury (113656), Thunder Focus Tea (116680), Life Cocoon (116849), Fists of Fury (120086), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Fists of Fury (232055), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521), Whirling Dragon Punch (451767), Slicing Winds (1217413)
-                   Family Flags: 6, 31, 55, 78, 118, 122
+                   Affected Spells: Flying Serpent Kick (101545), Rising Sun Kick (107428), Fists of Fury (113656), Thunder Focus Tea (116680), Life Cocoon (116849), Fists of Fury (120086), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Fists of Fury (232055), Glory of the Dawn (392959), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521), Whirling Dragon Punch (451767), Rushing Wind Kick (467307), Rushing Wind Kick (468179), Slicing Winds (1217413)
+                   Family Flags: 6, 31, 39, 55, 78, 118, 122
 #3 (id=1139300)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
                    Base Value: 75 | Scaled Value: 75 | Misc Value: 1517 (Category) | Target: Self (1)
                    Affected Spells (Category): Renewing Mist (115151)
@@ -14888,13 +14896,9 @@ Effects          :
 #7 (id=1166052)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
                    Base Value: 75 | Scaled Value: 75 | Misc Value: 2294 (Category) | Target: Self (1)
                    Affected Spells (Category): Thunder Focus Tea (116680)
-#8 (id=1203534)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
-                   Base Value: 75 | Scaled Value: 75 | Target: Self (1)
-                   Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
-                   Family Flags: 39
 Description      : $@spelldesc443294
 
-Tooltip          : Yu'lon is decreasing the cooldown time of $?c2[Renewing Mist, Rising Sun Kick, Life Cocoon, and Thunder Focus Tea]?c3[Fists of Fury, Strike of the Windlord, Flying Serpent Kick, and Whirling Dragon Punch][] by $w2%.
+Tooltip          : Yu'lon is decreasing the cooldown time of $?c2[Renewing Mist, Rising Sun Kick, Life Cocoon, and Thunder Focus Tea]?c3[Fists of Fury, Strike of the Windlord, Rising Sun Kick, Flying Serpent Kick, and Whirling Dragon Punch][] by $w2%.
 
 Name             : Heart of the Jade Serpent (id=443424) [Spell Family (53)] 
 Class            : Monk
@@ -15166,14 +15170,15 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 3385
+                 : 4586: Windwalker Monk (1222923 effect#1)
 Attributes       : No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1139673)  : Summon (28) | Attributes: Position is facing relative (1)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 221167 | Misc Value 2: 0x2cf | Target: At Self (18)
 #2 (id=1139674)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
-                   Affected Spells: Flying Serpent Kick (101545), Fists of Fury (113656), Thunder Focus Tea (116680), Life Cocoon (116849), Fists of Fury (120086), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Fists of Fury (232055), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521), Whirling Dragon Punch (451767), Slicing Winds (1217413)
-                   Family Flags: 6, 31, 55, 78, 118, 122
+                   Affected Spells: Flying Serpent Kick (101545), Rising Sun Kick (107428), Fists of Fury (113656), Thunder Focus Tea (116680), Life Cocoon (116849), Fists of Fury (120086), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Fists of Fury (232055), Glory of the Dawn (392959), Strike of the Windlord (392983), Strike of the Windlord (395519), Strike of the Windlord (395521), Whirling Dragon Punch (451767), Rushing Wind Kick (467307), Rushing Wind Kick (468179), Slicing Winds (1217413)
+                   Family Flags: 6, 31, 39, 55, 78, 118, 122
 #3 (id=1139675)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 1517 (Category) | Target: Self (1)
                    Affected Spells (Category): Renewing Mist (115151)
@@ -15191,13 +15196,9 @@ Effects          :
 #7 (id=1166053)  : Apply Aura (6) | Modify Charge Cooldown Recharge Rate% (Category) (148)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 2294 (Category) | Target: Self (1)
                    Affected Spells (Category): Thunder Focus Tea (116680)
-#8 (id=1203535)  : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
-                   Base Value: 75 | Scaled Value: 75 | Target: Self (1)
-                   Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099), Glory of the Dawn (392959), Rushing Wind Kick (467307), Rushing Wind Kick (468179)
-                   Family Flags: 39
 Description      : $@spelldesc443294
 
-Tooltip          : Yu'lon is decreasing the cooldown time of $?c2[Renewing Mist, Rising Sun Kick, Life Cocoon, and Thunder Focus Tea]?c3[Fists of Fury, Strike of the Windlord, Flying Serpent Kick, and Whirling Dragon Punch][] by $w2%.
+Tooltip          : Yu'lon is decreasing the cooldown time of $?c2[Renewing Mist, Rising Sun Kick, Life Cocoon, and Thunder Focus Tea]?c3[Fists of Fury, Strike of the Windlord, Rising Sun Kick, Flying Serpent Kick, and Whirling Dragon Punch][] by $w2%.
 
 Name             : Yu'lon's Knowledge (id=443625) [Spell Family (53), Passive] 
 Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=200]
@@ -18496,7 +18497,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1164425)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.5 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Renewing Mist (115151), Renewing Mist (119611), Renewing Mist (448430)
                    Family Flags: 23
 #2 (id=1164426)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
@@ -18563,10 +18564,8 @@ Labels           : 16: Class Spells
                  : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Cast While Dead (23), No Aura Cancel (31), No Threat (42), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268), Don't close loot window (379), Allow during spell override (404), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1166886)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Crackling Jade Lightning (117952)
-                   Family Flags: 32
+#1 (id=1166886)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #2 (id=1166887)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
@@ -18575,7 +18574,13 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
                    Family Flags: 32
-Description      : Crackling Jade Lightning now chains to $s1 additional targets and its channel time is reduced by $s2%.
+#4 (id=1210248)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 80 | Scaled Value: 80 | Target: Self (1)
+#5 (id=1210252)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 17 | Target: Self (1)
+                   Affected Spells: Crackling Jade Lightning (117952)
+                   Family Flags: 32
+Description      : Crackling Jade Lightning now chains to $s1 additional targets at $s4% effectiveness and its channel time is reduced by $s2%.
 
 Name             : Courage of the White Tiger (id=460127) [Spell Family (53)] 
 Class            : Monk
@@ -18873,7 +18878,7 @@ Cooldown         : 10 seconds
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Affecting Spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #14, #26), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #12, #15), Storm, Earth, and Fire (137639 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tea of Plenty (388525 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Pressure Point (393053 effect#1), Kicks of Flowing Momentum (394944 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), August Dynasty (442850 effect#1), Heart of the Jade Serpent (443421 effect#8), Heart of the Jade Serpent (443616 effect#8), Ordered Elements (451462 effect#1), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Wisdom of the Wall (452684 effect#1), Tiger Strikes (454485 effect#1), Winning Streak! (1216182 effects: #1, #2)
+Affecting Spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #14, #26), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #12, #15), Storm, Earth, and Fire (137639 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tea of Plenty (388525 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Pressure Point (393053 effect#1), Kicks of Flowing Momentum (394944 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), August Dynasty (442850 effect#1), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Ordered Elements (451462 effect#1), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Wisdom of the Wall (452684 effect#1), Tiger Strikes (454485 effect#1), Winning Streak! (1216182 effects: #1, #2)
 Family Flags     : 39
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Allow Class Ability Procs (416)
 Effects          :
@@ -18918,7 +18923,7 @@ Effects          :
 #1 (id=1180408)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1180409)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 3000 | Scaled Value: 3000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
                    Family Flags: 32
 #3 (id=1190455)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17) | Attributes: Suppress Points Stacking (6)
@@ -18926,7 +18931,7 @@ Effects          :
                    Affected Spells: Crackling Jade Lightning (117952)
                    Family Flags: 32
 #4 (id=1200765)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : $@spelldesc467316
 Tooltip          : Crackling Jade Lightning deals $w2% increased damage and cleaves to $m1 $lenemy:enemies; at $w4% effectiveness.
 
@@ -18954,7 +18959,7 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
-Affecting Spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #14, #26), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #12, #15), Storm, Earth, and Fire (137639 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tea of Plenty (388525 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Pressure Point (393053 effect#1), Kicks of Flowing Momentum (394944 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), August Dynasty (442850 effect#1), Heart of the Jade Serpent (443421 effect#8), Heart of the Jade Serpent (443616 effect#8), Ordered Elements (451462 effect#1), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Wisdom of the Wall (452684 effect#1), Tiger Strikes (454485 effect#1), Winning Streak! (1216182 effects: #1, #2)
+Affecting Spells : Thunder Focus Tea (116680 effect#1), Monk (137022 effect#1), Brewmaster Monk (137023 effects: #14, #26), Mistweaver Monk (137024 effects: #6, #10, #11), Windwalker Monk (137025 effects: #12, #15), Storm, Earth, and Fire (137639 effects: #1, #2), Weapons of Order (311054 effect#1), Pressure Point (337482 effect#1), Tea of Plenty (388525 effect#1), Fast Feet (388809 effect#1), Rising Star (388849 effects: #1, #2), Pressure Point (393053 effect#1), Kicks of Flowing Momentum (394944 effect#1), Monk Windwalker 10.1 Class Set 2pc (405543 effect#1), Leverage (408503 effects: #1, #2), Monk Windwalker 10.2 Class Set 4pc (422892 effect#2), August Dynasty (442850 effect#1), Heart of the Jade Serpent (443421 effect#2), Heart of the Jade Serpent (443616 effect#2), Ordered Elements (451462 effect#1), Brawler's Intensity (451485 effect#1), Knowledge of the Broken Temple (451859 effect#1), Wisdom of the Wall (452684 effect#1), Tiger Strikes (454485 effect#1), Winning Streak! (1216182 effects: #1, #2)
 Triggered By     : Rushing Wind Kick (467307)
 Family Flags     : 39
 Attributes       : Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Allow Class Ability Procs (416)
@@ -19293,7 +19298,7 @@ Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1199977)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $@spelldesc1215717
 Tooltip          : The damage of your next Fists of Fury is increased by $w1%.
 
@@ -19311,7 +19316,7 @@ Family Flags     : 69, 103
 Attributes       : Not a Proc (105), Do Not Display Range (126), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1201472)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 6 | PvP Coefficient: 2 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 8 | PvP Coefficient: 1.5 | Target: Any Target (25)
 Description      : $@spelldesc1217413
 
 Name             : Slicing Winds (id=1217413) [Spell Family (53)] 
@@ -19429,5 +19434,18 @@ Description      : The caster finds something quite valuable, increasing their d
 Tooltip          : Damage done increased by $s1%.
 
 One man's trash is another man's treasure.
+
+Name             : Windwalker Monk (id=1222923) [Spell Family (53), Passive, Hidden] 
+Class            : Windwalker Monk
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 22: Monk Spells
+                 : 292
+Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1210529)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
+                   Base Value: -2000 | Scaled Value: -2000 | Misc Value: 1 | Misc Value 2: 4586 (Label) | Target: Self (1)
+                   Affected Spells (Label): Heart of the Jade Serpent (443421), Heart of the Jade Serpent (443616)
 
 

@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58221 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.58626 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -3420,7 +3420,7 @@ Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=324244)   : Apply Aura (6) | Stun (12)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-Description      : Imprisons a demon, beast, or humanoid, incapacitating them for $d. Damage will cancel the effect. Limit 1.
+Description      : Imprisons a demon, beast, or humanoid, incapacitating them for $d. Damage may cancel the effect. Limit 1.
 Tooltip          : Incapacitated.
 
 Name             : Soul Rending (id=217996) [Spell Family (107), Passive] 
@@ -4359,7 +4359,7 @@ Effects          :
                    Base Value: 2500 | Scaled Value: 2500 | Target: Self (1)
 #2 (id=1197397)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Eye Beam reduces the cooldown of your next Eye Beam by ${$s1/1000}.1 sec, stacking up to $s2 sec.
+Description      : Activating Eye Beam reduces the cooldown of your next Eye Beam by ${$s1/1000}.1 sec, stacking up to $s2 sec.
 
 Name             : Immolation Aura (id=258920) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -11695,7 +11695,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 3594: Any Means Necessary (388114 effect#6), Any Means Necessary (388114 effect#7), Demonsurge (452416 effect#2)
-Stacks           : 5 maximum
+Stacks           : 4 maximum
 Proc Chance      : 101%
 Affecting Spells : Demon Soul (163073 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #12, #13), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Luck of the Draw! (1219012 effects: #1, #2)
 Triggered By     : Demonsurge (453323)
@@ -12744,7 +12744,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1199258)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 33 | Scaled Value: 33 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : The Hunt has a high chance to refresh its cooldown when you gain |cFFFFFFFFLuck of the Draw!|r
 
 Name             : Winning Streak! (id=1217011) [Spell Family (107)] 
@@ -12787,7 +12787,7 @@ Effects          :
 #1 (id=1200828)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $@spelldesc1215732
-Tooltip          : Sacrificed a |cFFFFFFFFWinning Streak!|r  to increase critical strike chance by $w1%.
+Tooltip          : Sacrificed a |cFFFFFFFFWinning Streak!|r to increase critical strike chance by $w1%.
 
 Name             : Luck of the Draw! (id=1219012) [Spell Family (107)] 
 Class            : Demon Hunter

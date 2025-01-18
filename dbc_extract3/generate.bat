@@ -27,8 +27,12 @@ echo.
 goto usage
 :okay
 
-py -3 %RUNFILE% -p %GTINPATH% -b %BUILD%                      %PTR% -t scale  -o %OUTPATH%\sc_scale_data%PTREXT%.inc
-py -3 %RUNFILE% -p %INPATH%   -b %BUILD% --hotfix=%CACHEFILE% %PTR% -t output %BATCHFILE%
+py -3 %RUNFILE% -p %GTINPATH% -b %BUILD% %PTR% -t scale -o %OUTPATH%\sc_scale_data%PTREXT%.inc
+IF EXIST %CACHEFILE% (
+    py -3 %RUNFILE% -p %INPATH% -b %BUILD% --hotfix=%CACHEFILE% %PTR% -t output %BATCHFILE%
+) ELSE (
+    py -3 %RUNFILE% -p %INPATH% -b %BUILD% %PTR% -t output %BATCHFILE%
+)
 
 echo Done!
 

@@ -749,6 +749,18 @@ class CDNIndex(CASCObject):
             self.write_cache(path, handle)
 
     def open_build_cfg(self):
+        if self.options.custom_build is not None:
+            with open(self.options.custom_build, 'rb') as f:
+                self.builds.append(BuildCfg(f))
+            match = re.match(r'WOW-(\d+)patch(\d+\.\d+\.\d+)', self.get_build_cfg().build_name)
+            if match:
+                self.build_number = int(match.group(1))
+                self.version = '{}.{}'.format(match.group(2), self.build_number)
+                print('Custom build version: %s [%d]' %
+                      (self.version, self.build_number))
+            else:
+                self.options.parser.error('Unable to load version from custom build')
+            return
         for cfg in self.build_cfg_hash:
             path = os.path.join(self.cache_dir('config'), cfg)
             url = self.cdn_url('config', cfg)
@@ -1411,7 +1423,7 @@ class CASCRootFile(CASCObject):
         n_md5s = 0
 
         hdr_size = 0
-        # version = 0
+        version = 0
         # total_file_count = 0
         # named_file_count = 0
         unk_h5 = 0
@@ -1426,7 +1438,7 @@ class CASCRootFile(CASCObject):
 
         if unk_h1 <= _ROOT_HEADER.size + _ROOT_HEADER_2.size:
             hdr_size = unk_h1
-            # version = unk_h2
+            version = unk_h2
             total_file_count, named_file_count, unk_h5 = _ROOT_HEADER_2.unpack_from(
                 data, offset)
             offset = hdr_size
@@ -1438,11 +1450,18 @@ class CASCRootFile(CASCObject):
         # print(magic, hdr_size, version, total_file_count, named_file_count, unk_h5)
 
         while offset < len(data):
-            n_entries, flags, locale = struct.unpack_from('<iII', data, offset)
+            if version < 2:
+                n_entries, flags, locale = struct.unpack_from('<iII', data, offset)
+                offset += 12
+            else:
+                # With version 2, the old "flags" is now split into three separate sets of flags.
+                # We can just assign "flags" to the second set because the only flag we use is there.
+                n_entries, locale, flags_1, flags, flags_3 = struct.unpack_from('<iIIIB', data, offset)
+                offset += 17
+
             # print('offset', offset, 'n-entries', n_entries, 'content_flags',
             #      '{:#8x}'.format(flags), 'locale', '{:#8x}'.format(locale))
 
-            offset += 12
             if n_entries == 0:
                 continue
 

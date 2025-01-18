@@ -1,8 +1,5 @@
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask
-actions.precombat+=/augmentation
-actions.precombat+=/food
-actions.precombat+=/snapshot_stats
+actions.precombat=snapshot_stats
 actions.precombat+=/variable,name=trinket1_steroids,value=trinket.1.has_stat.any_dps
 actions.precombat+=/variable,name=trinket2_steroids,value=trinket.2.has_stat.any_dps
 actions.precombat+=/variable,name=rg_ds,default=0,op=reset

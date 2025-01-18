@@ -2021,6 +2021,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
     action_t* one_time_action;
     unsigned tick;
     pet_t* pet;
+    timespan_t period;
 
     algari_pet_cast_event_t( pet_t* p, timespan_t time_to_execute, unsigned tick, action_t* st_action,
                              action_t* aoe_action, action_t* one_time_action )
@@ -2029,8 +2030,10 @@ void sigil_of_algari_concordance( special_effect_t& e )
         aoe_action( aoe_action ),
         one_time_action( one_time_action ),
         tick( tick ),
-        pet( p )
+        pet( p ), 
+        period( 0_ms )
     {
+      period = pet->find_spell( 452325 )->effectN( 1 ).period();
     }
 
     const char* name() const override
@@ -2058,7 +2061,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
         {
           st_action->execute();
         }
-        make_event<algari_pet_cast_event_t>( sim(), pet, pet->find_spell( 452325 )->effectN( 1 ).period(), tick,
+        make_event<algari_pet_cast_event_t>( sim(), pet, period, tick,
                                              st_action, aoe_action, one_time_action );
       }
     }
@@ -4278,7 +4281,7 @@ void candle_confidant( special_effect_t& effect )
 
     double composite_crit_chance() const override
     {
-      // Currently their auto attacks dont seem to scale with player crit chance. 
+      // Currently their auto attacks dont seem to scale with player crit chance.
       return this->player->base.attack_crit_chance;
     }
 
@@ -4956,7 +4959,10 @@ void wayward_vrykuls_lantern( special_effect_t& effect )
     {
       for ( auto& s : e.player->dbc->spells_by_label( 690 ) )
         if ( s->is_class( e.player->type ) )
+        {
           proc_spell_id.insert( s->id() );
+          e.player->sim->print_debug( "Wayward Vrykul's can Proc off of Spell: {}: {}\n", s->name_cstr(), s->id() );
+        }
 
       buff = create_buff<stat_buff_t>( e.player, e.trigger(), e.item )
                  ->add_stat_from_effect_type( A_MOD_RATING, e.driver()->effectN( 1 ).average( e ) );
@@ -5003,6 +5009,8 @@ void wayward_vrykuls_lantern( special_effect_t& effect )
       last_activation_time = timespan_t::zero();
     }
   };
+
+  effect.proc_flags2_ = PF2_ALL_CAST;
 
   new wayward_vrykuls_lantern_cb_t( effect );
 }
@@ -5081,7 +5089,1995 @@ void darktide_wavebenders_orb( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Torq's Big Red Button
+// 470042 Values
+// 470286 Driver & Stat Buff
+// 472787 Stacking Buff
+// 472784 Damage
+void torqs_big_red_button( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  struct spiteful_zapbolt_t : public generic_proc_t
+  {
+    buff_t* stack_buff;
+    const spell_data_t* value_spell;
+
+    spiteful_zapbolt_t( const special_effect_t& e, buff_t* b, const spell_data_t* value )
+      : generic_proc_t( e, "spiteful_zapbolt", 472784 ), stack_buff( b ), value_spell( value )
+    {
+      base_dd_min = base_dd_max = value_spell->effectN( 2 ).average( e );
+      base_multiplier *= role_mult( e );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double v = generic_proc_t::composite_da_multiplier( s );
+
+      // TODO: Double Check this formula is correct once this is testable. Might carry over to the next use?
+      v *= 1.0 + ( ( stack_buff->max_stack() - stack_buff->stack() ) * value_spell->effectN( 3 ).percent() );
+
+      return v;
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      stack_buff->decrement();
+    }
+  };
+
+  struct torqs_big_red_button_t : public generic_proc_t
+  {
+    buff_t* stat_buff;
+    buff_t* stack_buff;
+
+    torqs_big_red_button_t( const special_effect_t& e, std::string_view name, const spell_data_t* spell )
+      : generic_proc_t( e.player, name, spell ), stat_buff( nullptr ), stack_buff( nullptr )
+    {
+      auto value_spell = e.player->find_spell( 470042 );
+      assert( value_spell && "Torq's Big Red Button missing value spell" );
+
+      stat_buff        = create_buff<stat_buff_t>( e.player, e.driver(), e.item )
+                      ->add_stat_from_effect( 1, value_spell->effectN( 1 ).average( e ) );
+
+      stack_buff = create_buff<buff_t>( e.player, e.player->find_spell( 472787 ) )->set_reverse( true );
+
+      auto damage = create_proc_action<spiteful_zapbolt_t>( "spiteful_zapbolt", e, stack_buff, value_spell );
+
+      add_child( damage );
+
+      auto on_next            = new special_effect_t( e.player );
+      on_next->name_str       = stack_buff->name();
+      on_next->spell_id       = stack_buff->data().id();
+      on_next->execute_action = damage;
+      e.player->special_effects.push_back( on_next );
+
+      auto cb = new dbc_proc_callback_t( e.player, *on_next );
+      cb->activate_with_buff( stack_buff );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      stat_buff->trigger();
+      stack_buff->trigger();
+    }
+  };
+
+  effect.execute_action = create_proc_action<torqs_big_red_button_t>( "torqs_big_red_button", effect,
+                                                                      "torqs_big_red_button", effect.driver() );
+}
+
+// House of Cards
+// 466681 Driver
+// 466680 Values
+// 1219158 Stacking Mastery
+void house_of_cards( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto value_spell = effect.player->find_spell( 466680 );
+  assert( value_spell && "House of Cards missing value spell" );
+
+  auto stacking_buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 1219158 ) );
+
+  effect.player->register_on_combat_state_callback( [ stacking_buff ]( player_t* p, bool c ) {
+    if ( !c && !p->sim->event_mgr.canceled )
+      stacking_buff->expire();
+  } );
+
+  struct house_of_cards_buff_t : public stat_buff_t
+  {
+    double range_min;
+    double range_max;
+    double stack_buff_mod;
+    buff_t* stack_buff;
+
+    house_of_cards_buff_t( player_t* p, std::string_view n, const special_effect_t& e, const spell_data_t* s,
+                           buff_t* stack )
+      : stat_buff_t( p, n, e.driver(), e.item ),
+        range_min( 0 ),
+        range_max( 0 ),
+        stack_buff_mod( 0 ),
+        stack_buff( stack )
+    {
+      add_stat_from_effect_type( A_MOD_RATING, s->effectN( 1 ).average( e ) );
+      default_value  = s->effectN( 1 ).average( e );
+      range_min      = 1.0 - ( s->effectN( 2 ).base_value() / 100 );
+      range_max      = 1.0 + ( s->effectN( 2 ).base_value() / 100 );
+      stack_buff_mod = default_value * ( s->effectN( 2 ).base_value() / 100 / 3 );
+    }
+
+    double randomize_stat_value()
+    {
+      double v = default_value * rng().range( range_min, range_max );
+      if ( stack_buff->check() )
+        v += stack_buff_mod * stack_buff->check();
+
+      return v;
+    }
+
+    void start( int s, double, timespan_t d ) override
+    {
+      stat_buff_t::start( s, randomize_stat_value(), d );
+      stack_buff->trigger();
+    }
+  };
+
+  effect.custom_buff =
+      create_buff<house_of_cards_buff_t>( effect.player, "house_of_cards", effect, value_spell, stacking_buff );
+}
+
+struct external_action_state_t : public action_state_t
+{
+  player_t* faked_player;
+
+  external_action_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), faked_player( nullptr )
+  {
+  }
+
+  void initialize() override
+  {
+    action_state_t::initialize();
+    faked_player = nullptr;
+  }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    action_state_t::copy_state( o );
+    faked_player = static_cast<const external_action_state_t*>( o )->faked_player;
+  }
+};
+
+template <typename ab>
+struct external_scaling_proc_t : public ab
+{
+public:
+  player_t* faked_player;
+
+  external_scaling_proc_t( const special_effect_t& effect, ::util::string_view name, const spell_data_t* s )
+    : ab( effect, name, s ), faked_player( effect.player )
+  {
+  }
+
+  external_scaling_proc_t( player_t* p, ::util::string_view name, const spell_data_t* s, const item_t* i = nullptr )
+    : ab( p, name, s, i ), faked_player( p )
+  {
+  }
+
+  action_state_t* new_state() override
+  {
+    return new external_action_state_t( this, ab::target );
+  }
+
+  external_action_state_t* cast_state( action_state_t* s )
+  {
+    return static_cast<external_action_state_t*>( s );
+  }
+
+  const external_action_state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const external_action_state_t*>( s );
+  }
+
+  player_t* p( const action_state_t* state )
+  {
+    return cast_state( state )->faked_player;
+  }
+
+  player_t* p( const action_state_t* state ) const
+  {
+    return cast_state( state )->faked_player;
+  }
+
+private:
+  using ab::composite_crit_chance;
+  using ab::composite_crit_chance_multiplier;
+  using ab::composite_haste;
+  using ab::composite_target_armor;
+  using ab::composite_target_crit_chance;
+  using ab::composite_target_da_multiplier;
+  using ab::composite_target_multiplier;
+  using ab::composite_target_ta_multiplier;
+
+public:
+  double composite_attack_power( const action_state_t* s ) const
+  {
+    return p( s )->composite_total_attack_power_by_type( ab::get_attack_power_type() );
+  }
+
+  double composite_spell_power( const action_state_t* s ) const
+  {
+    double spell_power = 0;
+    double tmp;
+
+    auto _player = p( s );
+
+    for ( auto base_school : ab::base_schools )
+    {
+      tmp = _player->composite_total_spell_power( base_school );
+      if ( tmp > spell_power )
+        spell_power = tmp;
+    }
+
+    return spell_power;
+  }
+
+  double composite_versatility( const action_state_t* s ) const override
+  {
+    return action_t::composite_versatility( s ) + p( s )->cache.damage_versatility();
+  }
+
+  virtual double composite_crit_chance( const action_state_t* s ) const
+  {
+    return action_t::composite_crit_chance() + p( s )->cache.spell_crit_chance();
+  }
+
+  virtual double composite_haste( const action_state_t* s ) const
+  {
+    return action_t::composite_haste() * p( s )->cache.spell_cast_speed();
+  }
+
+  double composite_crit_chance_multiplier( const action_state_t* s ) const
+  {
+    return action_t::composite_crit_chance_multiplier() * p( s )->composite_spell_crit_chance_multiplier();
+  }
+
+  double composite_player_critical_multiplier( const action_state_t* s ) const override
+  {
+    return p( s )->composite_player_critical_damage_multiplier( s );
+  }
+
+  double composite_target_crit_chance( const action_state_t* s ) const
+  {
+    return p( s )->composite_player_target_crit_chance( s->target );
+  }
+
+  double composite_target_multiplier( const action_state_t* s ) const
+  {
+    return p( s )->composite_player_target_multiplier( s->target, ab::get_school() );
+  }
+
+  double composite_player_multiplier( const action_state_t* s ) const override
+  {
+    double player_school_multiplier = 0.0;
+    double tmp;
+
+    for ( auto base_school : ab::base_schools )
+    {
+      tmp = p( s )->cache.player_multiplier( base_school );
+      if ( tmp > player_school_multiplier )
+        player_school_multiplier = tmp;
+    }
+
+    return player_school_multiplier;
+  }
+
+  double composite_persistent_multiplier( const action_state_t* s ) const override
+  {
+    return p( s )->composite_persistent_multiplier( ab::get_school() );
+  }
+
+  virtual double composite_target_da_multiplier( const action_state_t* s ) const
+  {
+    return composite_target_multiplier( s );
+  }
+
+  virtual double composite_target_ta_multiplier( const action_state_t* s ) const
+  {
+    return composite_target_multiplier( s );
+  }
+
+  virtual double composite_target_armor( const action_state_t* s ) const
+  {
+    return p( s )->composite_player_target_armor( s->target );
+  }
+
+  void snapshot_internal( action_state_t* state, unsigned flags, result_amount_type rt ) override
+  {
+    assert( state );
+
+    cast_state( state )->faked_player = faked_player;
+
+    ab::snapshot_internal( state, flags, rt );
+
+    if ( flags & STATE_CRIT )
+      state->crit_chance = composite_crit_chance( state ) * composite_crit_chance_multiplier( state );
+
+    if ( flags & STATE_HASTE )
+      state->haste = composite_haste( state );
+
+    if ( flags & STATE_AP )
+      state->attack_power = composite_attack_power( state );
+
+    if ( flags & STATE_SP )
+      state->spell_power = composite_spell_power( state );
+
+    if ( flags & STATE_TGT_MUL_DA )
+      state->target_da_multiplier = composite_target_da_multiplier( state );
+
+    if ( flags & STATE_TGT_MUL_TA )
+      state->target_ta_multiplier = composite_target_ta_multiplier( state );
+
+    if ( flags & STATE_TGT_CRIT )
+      state->target_crit_chance = composite_target_crit_chance( state ) * composite_crit_chance_multiplier( state );
+
+    // if ( flags & STATE_TGT_ARMOR )
+    //   state->target_armor = composite_target_armor( state );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    ab::snapshot_state( s, rt );
+    cast_state( s )->faked_player = faked_player;
+  }
+};
+
+template <typename T>
+struct external_proc_cb_t : public dbc_proc_callback_t
+{
+  player_t* source;
+  external_proc_cb_t( const special_effect_t& e, player_t* source )
+    : dbc_proc_callback_t( e.player, e ), source( source )
+  {
+  }
+
+  void execute( action_t* action, action_state_t* state ) override
+  {
+    debug_cast<external_scaling_proc_t<T>*>( proc_action )->faked_player = source;
+    dbc_proc_callback_t::execute( action, state );
+  }
+};
+
+// 443559 Driver
+//  e1 - Primary
+//  e2 - Secondary
+//  e3 - Tertiary
+//  e4 - Damage?
+//  e5 - Healing?
+//  e6 - Mana?
+// 452365 DPS Proc Driver
+// 452800 DPS Proc Action
+// 452366 Healer Proc Driver - Healing
+// 452801 Healer Proc Action
+// 452361 Tank Proc Driver - Damage Taken - Overwrite with damage flags.
+// 452804 Tank Proc Action
+// 452337 Secondary Stat Proc - All Stats in effect, Grants Highest.
+// 452288 Primary Stat Proc
+void cirral_concoctory( special_effect_t& effect )
+{
+  struct cirral_concoctory_cb_t : public dbc_proc_callback_t
+  {
+    enum cirral_outcomes_e
+    {
+      LORD_PROC,
+      ASCENDED_PROC,
+      SUNDEERED_PROC,
+      QUEEN_PROC,
+      SAGE_PROC
+    };
+
+    const std::vector<std::pair<cirral_outcomes_e, double>> dps_cirral_weights = {
+        { LORD_PROC, 0.4 },
+        { ASCENDED_PROC, 0.4 },
+        { SUNDEERED_PROC, 0.25 },
+        { QUEEN_PROC, 0.02 },
+    };
+
+    const std::vector<std::pair<cirral_outcomes_e, double>> healer_cirral_weights = {
+        { LORD_PROC, 0.4 }, { ASCENDED_PROC, 0.4 }, { SUNDEERED_PROC, 0.25 }, { QUEEN_PROC, 0.02 }, { SAGE_PROC, 0.08 },
+    };
+
+    const std::vector<std::pair<cirral_outcomes_e, double>> normalise_weights(
+        const std::vector<std::pair<cirral_outcomes_e, double>>& to_norm )
+    {
+      std::vector<std::pair<cirral_outcomes_e, double>> normalised_vector;
+      auto total_weight = 0.0;
+
+      for ( auto [ _, weight ] : to_norm )
+      {
+        assert( weight >= 0 && "Weights must be positive" );
+        total_weight += weight;
+      }
+
+      auto running_weight = 0.0;
+      for ( auto [ outcome, weight ] : to_norm )
+      {
+        if ( weight > 0 )
+        {
+          running_weight += weight;
+          normalised_vector.push_back( { outcome, running_weight / total_weight } );
+        }
+      }
+
+      return normalised_vector;
+    }
+
+    const std::vector<std::pair<cirral_outcomes_e, double>> dps_cirral_normalised_weights;
+    const std::vector<std::pair<cirral_outcomes_e, double>> healer_cirral_normalised_weights;
+
+    target_specific_t<buff_t> primary_stat_buffs;
+    target_specific_t<std::unordered_map<stat_e, buff_t*>> secondary_stat_buffs;
+    target_specific_t<buff_t> proc_driver_buffs;
+    std::vector<player_t*> potential_targets;
+
+    external_scaling_proc_t<generic_heal_t>* healing_action;
+    external_scaling_proc_t<generic_proc_t>* dps_action;
+    external_scaling_proc_t<generic_aoe_proc_t>* tank_action;
+
+    cirral_concoctory_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        dps_cirral_normalised_weights( normalise_weights( ( dps_cirral_weights ) ) ),
+        healer_cirral_normalised_weights( normalise_weights( ( healer_cirral_weights ) ) ),
+        primary_stat_buffs{ false },
+        secondary_stat_buffs{ true },
+        proc_driver_buffs{ false },
+        potential_targets{},
+        healing_action( nullptr ),
+        dps_action( nullptr ),
+        tank_action( nullptr )
+    {
+      create_actions();
+    }
+
+    void create_actions()
+    {
+      auto healing_action_spell = listener->find_spell( 452801 );
+      healing_action = new external_scaling_proc_t<generic_heal_t>( listener, "strand_of_the_sundered_healer",
+                                                                    healing_action_spell );
+      healing_action->base_dd_min = healing_action->base_dd_max = effect.driver()->effectN( 5 ).average( effect );
+
+      auto dps_action_spell = listener->find_spell( 452800 );
+      dps_action =
+          new external_scaling_proc_t<generic_proc_t>( listener, "strand_of_the_sundered_dps", dps_action_spell );
+      dps_action->base_dd_min = dps_action->base_dd_max = effect.driver()->effectN( 4 ).average( effect );
+
+      auto tank_action_spell = listener->find_spell( 452804 );
+      tank_action =
+          new external_scaling_proc_t<generic_aoe_proc_t>( listener, "strand_of_the_sundered_tank", tank_action_spell );
+      tank_action->base_dd_min = tank_action->base_dd_max = effect.driver()->effectN( 4 ).average( effect );
+    }
+
+    buff_t* get_primary_buff( player_t* buff_player )
+    {
+      if ( primary_stat_buffs[ buff_player ] )
+        return primary_stat_buffs[ buff_player ];
+
+      auto buff_spell = effect.player->find_spell( 452288 );
+
+      auto buff = make_buff<stat_buff_t>( actor_pair_t{ buff_player, effect.player }, "strand_of_the_lord", buff_spell )
+                      ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) );
+
+      primary_stat_buffs[ buff_player ] = buff;
+
+      return buff;
+    }
+
+    buff_t* get_secondary_buff( player_t* buff_player )
+    {
+      if ( secondary_stat_buffs[ buff_player ] )
+        return secondary_stat_buffs[ buff_player ]->at( util::highest_stat( buff_player, secondary_ratings ) );
+
+      auto buff_spell = effect.player->find_spell( 452337 );
+      auto buff_name  = util::tokenize_fn( buff_spell->name_cstr() );
+      auto amount     = effect.driver()->effectN( 2 ).average( effect );
+
+      std::unordered_map<stat_e, buff_t*>* map_for_player = new std::unordered_map<stat_e, buff_t*>();
+
+      for ( const auto& eff : buff_spell->effects() )
+      {
+        if ( eff.type() != E_APPLY_AURA || eff.subtype() != A_MOD_RATING )
+          continue;
+
+        auto stats = util::translate_all_rating_mod( eff.misc_value1() );
+        auto stat  = stats.front();
+
+        std::vector<std::string_view> stat_strs;
+        range::transform( stats, std::back_inserter( stat_strs ), &util::stat_type_abbrev );
+
+        auto name = fmt::format( "{}_{}", buff_name, util::string_join( stat_strs, "_" ) );
+        auto buff = make_buff<stat_buff_t>( actor_pair_t{ buff_player, effect.player }, name, buff_spell )
+                        ->add_stat( stat, amount ? amount : eff.average( effect ) )
+                        ->set_name_reporting( util::string_join( stat_strs ) );
+
+        ( *map_for_player )[ stat ] = buff;
+      }
+
+      secondary_stat_buffs[ buff_player ] = std::move( map_for_player );
+      return secondary_stat_buffs[ buff_player ]->at( util::highest_stat( buff_player, secondary_ratings ) );
+    }
+
+    buff_t* get_proc_buff( player_t* buff_player )
+    {
+      if ( proc_driver_buffs[ buff_player ] )
+        return proc_driver_buffs[ buff_player ];
+
+      switch ( buff_player->primary_role() )
+      {
+        case ROLE_HEAL:
+        case ROLE_HYBRID:
+        {
+          auto driver_spell = effect.player->find_spell( 452366 );
+
+          auto buff_name = util::tokenize_fn( driver_spell->name_cstr() );
+
+          auto driver_effect            = new special_effect_t( buff_player );
+          driver_effect->name_str       = buff_name;
+          driver_effect->spell_id       = driver_spell->id();
+          driver_effect->execute_action = healing_action;
+          buff_player->special_effects.push_back( driver_effect );
+
+          auto buff = make_buff( actor_pair_t{ buff_player, effect.player }, buff_name, driver_spell );
+          buff->set_chance( 1.0 )->set_rppm( RPPM_NONE );
+          proc_driver_buffs[ buff_player ] = buff;
+
+          auto healer_cb = new external_proc_cb_t<generic_heal_t>( *driver_effect, listener );
+          healer_cb->activate_with_buff( buff, true );
+          break;
+        }
+        case ROLE_TANK:
+        {
+          auto driver_spell     = effect.player->find_spell( 452361 );
+          auto dps_driver_spell = effect.player->find_spell( 452365 );
+
+          auto buff_name = util::tokenize_fn( driver_spell->name_cstr() );
+
+          auto driver_effect            = new special_effect_t( buff_player );
+          driver_effect->name_str       = buff_name;
+          driver_effect->spell_id       = driver_spell->id();
+          driver_effect->execute_action = tank_action;
+          driver_effect->proc_flags_    = dps_driver_spell->proc_flags();
+          buff_player->special_effects.push_back( driver_effect );
+
+          auto buff = make_buff( actor_pair_t{ buff_player, effect.player }, buff_name, driver_spell );
+          buff->set_chance( 1.0 )->set_rppm( RPPM_NONE );
+          proc_driver_buffs[ buff_player ] = buff;
+
+          auto tank_cb = new external_proc_cb_t<generic_aoe_proc_t>( *driver_effect, listener );
+          tank_cb->activate_with_buff( buff, true );
+          break;
+        }
+        default:
+        {
+          auto driver_spell = effect.player->find_spell( 452365 );
+          auto buff_name    = util::tokenize_fn( driver_spell->name_cstr() );
+
+          auto driver_effect            = new special_effect_t( buff_player );
+          driver_effect->name_str       = buff_name;
+          driver_effect->spell_id       = driver_spell->id();
+          driver_effect->execute_action = dps_action;
+          buff_player->special_effects.push_back( driver_effect );
+
+          auto buff = make_buff( actor_pair_t{ buff_player, effect.player }, buff_name, driver_spell );
+          buff->set_chance( 1.0 )->set_rppm( RPPM_NONE );
+          proc_driver_buffs[ buff_player ] = buff;
+
+          auto dps_cb = new external_proc_cb_t<generic_proc_t>( *driver_effect, listener );
+          dps_cb->activate_with_buff( buff, true );
+          break;
+        }
+      }
+
+      return proc_driver_buffs[ buff_player ];
+    }
+
+    cirral_outcomes_e roll_for_outcome( const std::vector<std::pair<cirral_outcomes_e, double>> normalised_weights )
+    {
+      auto roll = rng().real();
+
+      for ( auto [ outcome, weight ] : normalised_weights )
+      {
+        if ( weight > roll )
+          return outcome;
+      }
+
+      assert( false && "This should be unreachable. Invalid Weights setup found." );
+      return LORD_PROC;
+    }
+
+    void trigger_for_player( player_t* buff_player, cirral_outcomes_e outcome )
+    {
+      switch ( outcome )
+      {
+        case LORD_PROC:
+          get_primary_buff( buff_player )->trigger();
+          break;
+        case ASCENDED_PROC:
+          get_secondary_buff( buff_player )->trigger();
+          break;
+        case SUNDEERED_PROC:
+          get_proc_buff( buff_player )->trigger();
+          break;
+        case QUEEN_PROC:
+        case SAGE_PROC:
+        default:
+          break;
+      }
+    }
+
+    void trigger_for_player( player_t* buff_player )
+    {
+      if ( buff_player->primary_role() == ROLE_HEAL || buff_player->primary_role() == ROLE_HYBRID )
+      {
+        trigger_for_player( buff_player, roll_for_outcome( healer_cirral_normalised_weights ) );
+      }
+      else
+      {
+        trigger_for_player( buff_player, roll_for_outcome( dps_cirral_normalised_weights ) );
+      }
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      potential_targets.clear();
+
+      for ( auto& potential_target : listener->sim->player_no_pet_list )
+      {
+        if ( potential_target != listener && !potential_target->is_sleeping() && potential_target->is_player() )
+        {
+          potential_targets.push_back( potential_target );
+        }
+      }
+
+      if ( potential_targets.size() == 0 )
+        return;
+
+      auto potential_target = rng().range( potential_targets );
+      // Healers are about one third as likely, probably. For now this is a good approximation.
+      if ( ( potential_target->primary_role() == ROLE_HEAL || potential_target->primary_role() == ROLE_HYBRID ) &&
+           rng().roll( 0.75 ) )
+        potential_target = rng().range( potential_targets );
+
+      trigger_for_player( potential_target );
+    }
+  };
+
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+
+  if ( !effect.player->sim->single_actor_batch )
+    new cirral_concoctory_cb_t( effect );
+}
+
+// Eye of Kezan
+// 469888 Driver
+// 469889 Buff
+// 1216593 Damage
+// 1216594 Heal
+void eye_of_kezan( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  struct eye_of_kezan_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* stat_buff;
+    action_t* damage;
+    action_t* heal;
+
+    eye_of_kezan_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), stat_buff( nullptr ), damage( nullptr ), heal( nullptr )
+    {
+      stat_buff = create_buff<stat_buff_t>( e.player, e.player->find_spell( 469889 ) )
+                      ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) );
+
+      auto out_of_combat_buff =
+          create_buff<stat_buff_t>( e.player, "eye_of_kezan_out_of_combat", e.player->find_spell( 469889 ) )
+              ->add_stat_from_effect_type( A_MOD_STAT, e.driver()->effectN( 1 ).average( e ) )
+              ->set_tick_callback(
+                  []( buff_t* b, int, timespan_t ) { make_event( *b->source->sim, 0_ms, [ b ] { b->decrement(); } ); } )
+              ->set_duration( 20_s );  // Doesnt appear to be in data
+
+      e.player->register_on_combat_state_callback( [ &, out_of_combat_buff ]( player_t* p, bool c ) {
+        if ( c && !stat_buff->check() && out_of_combat_buff->check() )
+        {
+          stat_buff->trigger( out_of_combat_buff->check() );
+          out_of_combat_buff->expire();
+        }
+        if ( !c && !p->sim->event_mgr.canceled && stat_buff->check() && !out_of_combat_buff->check() )
+        {
+          out_of_combat_buff->trigger( stat_buff->check() );
+          stat_buff->expire();
+        }
+      } );
+
+      damage              = create_proc_action<generic_proc_t>( "wrath_of_kezan", e, e.player->find_spell( 1216593 ) );
+      damage->base_dd_min = damage->base_dd_max = e.driver()->effectN( 2 ).average( e );
+      damage->base_multiplier *= role_mult( e );
+
+      heal              = new heal_t( "vigor_of_kezan", e.player, e.player->find_spell( 1216594 ) );
+      heal->base_dd_min = heal->base_dd_max = e.driver()->effectN( 3 ).average( e );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      if ( !stat_buff->at_max_stacks() )
+      {
+        stat_buff->trigger();
+        return;
+      }
+
+      switch ( s->target->is_enemy() )
+      {
+        case true:
+          damage->execute();
+          break;
+        case false:
+          heal->execute_on_target( s->target );
+          break;
+      }
+    }
+  };
+
+  new eye_of_kezan_cb_t( effect );
+}
+
+// Geargrinder's Remote
+// 471059 Driver
+// 471058 Value
+// 472030 Damage
+void geargrinders_remote( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto value_spell = effect.player->find_spell( 471058 );
+  assert( value_spell && "Geargrinder's Remote missing Value spell" );
+  auto damage_spell = effect.player->find_spell( 472030 );
+  assert( damage_spell && "Geargrinder's Remote missing Damage spell" );
+
+  auto damage         = create_proc_action<generic_aoe_proc_t>( "blaze_of_glory", effect, damage_spell, true );
+  damage->base_dd_min = damage->base_dd_max = value_spell->effectN( 1 ).average( effect );
+  damage->base_multiplier *= role_mult( effect );
+
+  effect.execute_action = damage;
+}
+
+// Improvised Seaforium Pacemaker
+// 1218714 Driver
+// 1218713 Buff
+void improvised_seaforium_pacemaker( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto buff_spell = effect.player->find_spell( 1218713 );
+  auto buff       = create_buff<stat_buff_t>( effect.player, buff_spell )
+                  ->set_stat_from_effect_type( A_MOD_RATING, effect.driver()->effectN( 1 ).average( effect ) );
+
+  struct explosive_adrenaline_cb_t : public dbc_proc_callback_t
+  {
+    buff_t* buff;
+    int max_extensions;
+    int extensions;
+    explosive_adrenaline_cb_t( const special_effect_t& e, buff_t* b )
+      : dbc_proc_callback_t( e.player, e ), buff( b ), max_extensions( 0 ), extensions( 0 )
+    {
+      // Max extensions doesnt appear to be in spell data, basing it off tooltip for now.
+      max_extensions = 15;
+      buff->set_expire_callback( [ & ]( buff_t*, int, timespan_t ) { extensions = 0; } );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      if ( extensions++ < max_extensions )
+      {
+        // Duration extension doesnt appear to be in spell data. Manually setting for now.
+        buff->extend_duration( listener, 1_s );
+      }
+    }
+
+    void reset() override
+    {
+      extensions = 0;
+    }
+  };
+
+  auto buff_extension          = new special_effect_t( effect.player );
+  buff_extension->name_str     = buff_spell->name_cstr();
+  buff_extension->spell_id     = buff_spell->id();
+  buff_extension->proc_flags_  = PF_ALL_DAMAGE | PF_ALL_HEAL;
+  buff_extension->proc_flags2_ = PF2_CRIT;
+  effect.player->special_effects.push_back( buff_extension );
+
+  auto cb = new explosive_adrenaline_cb_t( *buff_extension, buff );
+  cb->activate_with_buff( buff );
+
+  effect.cooldown_ = timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Reverb Radio
+// 471567 Driver
+// 1216212 Buff
+void reverb_radio( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  struct hyped_buff_t : public stat_buff_t
+  {
+    timespan_t amped_duration;
+    double amped_value;
+    bool amped;
+    hyped_buff_t( player_t* p, util::string_view name, const spell_data_t* s, const special_effect_t& e,
+                  const item_t* item = nullptr )
+      : stat_buff_t( p, name, s, item ), amped_duration( 0_ms ), amped_value( 0 ), amped( false )
+    {
+      amped_duration = timespan_t::from_seconds( e.driver()->effectN( 3 ).base_value() );
+      double value   = e.driver()->effectN( 1 ).average( e );
+      set_stat_from_effect_type( A_MOD_RATING, value );
+      amped_value = 1.0 + e.driver()->effectN( 2 ).percent();
+    }
+
+    void expire_override( int s, timespan_t d ) override
+    {
+      if ( amped )
+      {
+        for ( auto& buff_stat : stats )
+        {
+          player->stat_loss( buff_stat.stat, buff_stat.current_value, stat_gain, nullptr,
+                             buff_duration() > timespan_t::zero() );
+
+          buff_stat.current_value = 0;
+        }
+        amped = false;
+        set_refresh_behavior( buff_refresh_behavior::DURATION );
+        buff_t::expire_override( s, d );
+      }
+      else
+        stat_buff_t::expire_override( s, d );
+    }
+
+    void reset() override
+    {
+      stat_buff_t::reset();
+      amped = false;
+    }
+
+    void amp_it_up()
+    {
+      trigger( max_stack(), amped_duration );
+      amped = true;
+      set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+      for ( auto& buff_stat : stats )
+      {
+        if ( buff_stat.check_func && !buff_stat.check_func( *this ) )
+          continue;
+
+        player->stat_gain( buff_stat.stat, buff_stat_stack_amount( buff_stat, current_stack ), stat_gain, nullptr,
+                           buff_duration() > timespan_t::zero() );
+
+        buff_stat.current_value *= amped_value;
+      }
+    }
+
+    void bump( int stacks, double ) override
+    {
+      if ( at_max_stacks() && !amped )
+      {
+        make_event( *sim, 0_ms, [ & ] { expire(); } );
+        make_event( *sim, 0_ms, [ & ] { amp_it_up(); } );
+        return;
+      }
+
+      if ( !at_max_stacks() && !amped )
+        stat_buff_t::bump( stacks );
+    }
+  };
+
+  auto buff = create_buff<hyped_buff_t>( effect.player, "hyped", effect.player->find_spell( 1216212 ), effect );
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Mechano-core Amplifer
+// 1214787 Driver
+// e1: Highest stat value
+// e2: Lowest stat value
+// 1214806 Crit Buff
+// 1214807 Haste Buff
+// 1214808 Mastery Buff
+// 1214810 Vers Buff
+void mechanocore_amplifier( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  struct mechanocore_amplifier_buff_t : public stat_buff_t
+  {
+    double high_value;
+    double low_value;
+    mechanocore_amplifier_buff_t( player_t* p, util::string_view name, const spell_data_t* s, const special_effect_t& e,
+                                  const item_t* item = nullptr )
+      : stat_buff_t( p, name, s, item ), high_value( 0 ), low_value( 0 )
+    {
+      high_value = e.driver()->effectN( 1 ).average( e );
+      low_value  = e.driver()->effectN( 2 ).average( e );
+      set_default_value( 0 );
+    }
+
+    void set_given_stat_value( double val )
+    {
+      for ( auto& buffed_stat : stats )
+      {
+        buffed_stat.amount = val;
+      }
+    }
+
+    void trigger_high()
+    {
+      set_given_stat_value( high_value );
+      trigger();
+    }
+
+    void trigger_low()
+    {
+      set_given_stat_value( low_value );
+      trigger();
+    }
+  };
+
+  struct mechanocore_amplifier_cb_t : public dbc_proc_callback_t
+  {
+    std::unordered_map<stat_e, mechanocore_amplifier_buff_t*> buffs;
+
+    mechanocore_amplifier_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), buffs()
+    {
+      static constexpr std::array<std::pair<stat_e, int>, 4> buff_spells = {
+          std::make_pair( stat_e::STAT_CRIT_RATING, 1214806 ), std::make_pair( stat_e::STAT_HASTE_RATING, 1214807 ),
+          std::make_pair( stat_e::STAT_MASTERY_RATING, 1214808 ),
+          std::make_pair( stat_e::STAT_VERSATILITY_RATING, 1214810 ) };
+
+      for ( auto& spell : buff_spells )
+      {
+        auto buff_spell     = e.player->find_spell( spell.second );
+        auto buff_stat_name = util::stat_type_abbrev( spell.first );
+        auto name           = fmt::format( "{}_{}", buff_spell->name_cstr(), buff_stat_name );
+        auto buff           = create_buff<mechanocore_amplifier_buff_t>( e.player, name, buff_spell, e );
+        buff->add_stat_from_effect_type( A_MOD_RATING, 0 );
+        buff->set_name_reporting( buff_stat_name );
+        buffs.insert( { spell.first, buff } );
+      }
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      bool highest = rng().roll( 0.5 );
+      switch ( highest )
+      {
+        case true:
+          buffs.at( util::highest_stat( listener, secondary_ratings ) )->trigger_high();
+          break;
+        case false:
+          buffs.at( util::lowest_stat( listener, secondary_ratings ) )->trigger_low();
+          break;
+      }
+    }
+  };
+
+  new mechanocore_amplifier_cb_t( effect );
+}
+
+// Papa's Prized Putter
+// 1215238 Driver
+// 1215321 Damage
+void papas_prized_putter( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto damage         = create_proc_action<generic_proc_t>( "papas_prized_putter", effect, 1215321 );
+  damage->base_dd_min = damage->base_dd_max = effect.player->find_spell( 1215321 )->effectN( 1 ).average( effect );
+  damage->base_multiplier                   = role_mult( effect );
+
+  effect.execute_action = damage;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Turbo-Drain 5000
+// 472125 Driver
+// 472127 DoT
+void turbodrain_5000( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto dot_spell    = effect.player->find_spell( 472127 );
+  auto dot          = create_proc_action<generic_proc_t>( "turbodrain_5000", effect, dot_spell );
+  auto total_damage = effect.driver()->effectN( 1 ).average( effect );
+  auto ticks        = dot_spell->duration() / dot_spell->effectN( 1 ).period();
+  dot->base_td      = total_damage / ticks;
+  // currently has no role mult
+  // dot->base_td_multiplier = role_mult( effect );
+  effect.execute_action = dot;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Noggenfogger Ultimate Deluxe
+// 470675 Driver
+// 471404 Summon Pet spell
+// 233767 Pet NPC ID
+// Pet currently only melee attacks.
+void noggenfogger_ultimate_deluxe( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  struct blackwater_pirate_base_pet_t : public pet_t
+  {
+  protected:
+    const special_effect_t& effect;
+    action_t* parent_action;
+
+    blackwater_pirate_base_pet_t( std::string_view name, const special_effect_t& e, const spell_data_t* summon_spell )
+      : pet_t( e.player->sim, e.player, name, true, true ), effect( e ), parent_action( nullptr )
+    {
+      npc_id = summon_spell->effectN( 1 ).misc_value1();
+    }
+
+    resource_e primary_resource() const override
+    {
+      return RESOURCE_NONE;
+    }
+
+    virtual attack_t* create_auto_attack()
+    {
+      return nullptr;
+    }
+
+    struct auto_attack_t final : public melee_attack_t
+    {
+      auto_attack_t( blackwater_pirate_base_pet_t* p ) : melee_attack_t( "main_hand", p )
+      {
+        assert( p->main_hand_weapon.type != WEAPON_NONE );
+        p->main_hand_attack                    = p->create_auto_attack();
+        p->main_hand_attack->weapon            = &( p->main_hand_weapon );
+        p->main_hand_attack->base_execute_time = p->main_hand_weapon.swing_time;
+
+        ignore_false_positive = true;
+        trigger_gcd           = 0_ms;
+        school                = SCHOOL_PHYSICAL;
+      }
+
+      void execute() override
+      {
+        player->main_hand_attack->schedule_execute();
+      }
+
+      bool ready() override
+      {
+        return ( player->main_hand_attack->execute_event == nullptr );
+      }
+    };
+
+    action_t* create_action( std::string_view name, std::string_view options_str ) override
+    {
+      if ( name == "auto_attack" )
+        return new auto_attack_t( this );
+
+      return pet_t::create_action( name, options_str );
+    }
+
+    void init_action_list() override
+    {
+      action_priority_list_t* def = get_action_priority_list( "default" );
+      def->add_action( "auto_attack" );
+
+      pet_t::init_action_list();
+    }
+  };
+
+  struct auto_attack_melee_t : public melee_attack_t
+  {
+    auto_attack_melee_t( pet_t* p, std::string_view name = "main_hand", action_t* a = nullptr )
+      : melee_attack_t( name, p )
+    {
+      this->background = this->repeating = true;
+      this->not_a_proc = this->may_crit = true;
+      this->special                     = false;
+      this->weapon_multiplier           = 1.0;
+      this->trigger_gcd                 = 0_ms;
+      this->school                      = SCHOOL_PHYSICAL;
+      this->stats->school               = SCHOOL_PHYSICAL;
+      this->base_dd_min = this->base_dd_max = p->dbc->expected_stat( p->true_level ).creature_auto_attack_dps;
+      this->base_multiplier                 = p->main_hand_weapon.swing_time.total_seconds();
+
+      auto proxy = a;
+      auto it    = range::find( proxy->child_action, name, &action_t::name );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
+    }
+
+    void execute() override
+    {
+      if ( this->player->executing )
+        this->schedule_execute();
+      else
+        melee_attack_t::execute();
+    }
+  };
+
+  struct blackwater_pirate_pet_t : public blackwater_pirate_base_pet_t
+  {
+    blackwater_pirate_pet_t( const special_effect_t& e, action_t* parent = nullptr )
+      : blackwater_pirate_base_pet_t( "blackwater_pirate", e, e.player->find_spell( 471404 ) )
+    {
+      parent_action = parent;
+      main_hand_weapon.type = WEAPON_BEAST;
+      main_hand_weapon.swing_time = 2_s;
+    }
+
+    attack_t* create_auto_attack() override
+    {
+      auto a = new auto_attack_melee_t( this, "main_hand", parent_action );
+      a->name_str_reporting = "Melee";
+      return a;
+    }
+  };
+
+  struct noggenfogger_ultimate_deluxe_t : public generic_proc_t
+  {
+    spawner::pet_spawner_t<blackwater_pirate_pet_t> pirate_spawner;
+
+    noggenfogger_ultimate_deluxe_t( const special_effect_t& e )
+      : generic_proc_t( e, "noggenfogger_utimate_deluxe", e.driver() ), pirate_spawner( "blackwater_pirate", e.player )
+    {
+      auto summon_spell          = e.player->find_spell( 471404 );
+      auto pirate                = new action_t( action_e::ACTION_OTHER, "blackwater_pirate", e.player, summon_spell );
+      pirate->name_str_reporting = "blackwater_pirate";
+      pirate_spawner.set_creation_callback( [ &e, pirate ]( player_t* ) { return new blackwater_pirate_pet_t( e, pirate ); } );
+      pirate_spawner.set_default_duration( summon_spell->duration() );
+      add_child( pirate );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      pirate_spawner.spawn();
+    }
+  };
+
+  // Name is currently typod in spell data, might need fixed if the data name changes. 
+  effect.execute_action = create_proc_action<noggenfogger_ultimate_deluxe_t>( "noggenfogger_utimate_deluxe", effect );
+}
+
+// Ratfang Toxin
+// 1216605 Use Driver
+// 1216603 Equip Driver & Values
+// 1216604 Debuff
+// 1216606 DoT
+void ratfang_toxin( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto equip_driver = effect.player->find_spell( 1216603 );
+  assert( equip_driver && "Ratfang Toxing missing Equip Driver" );
+
+  struct ratfang_toxin_cb_t : public dbc_proc_callback_t
+  {
+    const spell_data_t* debuff_spell;
+
+    ratfang_toxin_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), debuff_spell( e.player->find_spell( 1216604 ) )
+    {
+    }
+
+    buff_t* create_debuff( player_t* t ) override
+    {
+      if ( t->is_enemy() )
+      {
+        return make_buff( actor_pair_t( t, listener ), "ratfang_toxin_debuff", debuff_spell );
+      }
+      else
+        return nullptr;
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      get_debuff( s->target )->trigger();
+    }
+  };
+
+  auto equip      = new special_effect_t( effect.player );
+  equip->name_str = "ratfang_toxin_equip";
+  equip->item     = effect.item;
+  equip->spell_id = equip_driver->id();
+  effect.player->special_effects.push_back( equip );
+
+  auto equip_cb = new ratfang_toxin_cb_t( *equip );
+  equip_cb->initialize();
+  equip_cb->activate();
+
+  struct ratfang_toxin_t : public generic_proc_t
+  {
+    buff_t* debuff;
+    const spell_data_t* value_spell;
+    double base_tick_damage;
+    double debuff_increase;
+    ratfang_toxin_cb_t& equip_callback;
+
+    ratfang_toxin_t( const special_effect_t& e, std::string_view name, const spell_data_t* spell,
+                     ratfang_toxin_cb_t& equip )
+      : generic_proc_t( e, name, spell ),
+        debuff( nullptr ),
+        value_spell( e.player->find_spell( 1216603 ) ),
+        base_tick_damage( 0 ),
+        debuff_increase( 0 ),
+        equip_callback( equip )
+    {
+      auto ticks = spell->duration() / spell->effectN( 1 ).period();
+      base_tick_damage = value_spell->effectN( 2 ).average( e ) / ticks;
+      base_td         = base_tick_damage;
+      debuff_increase = value_spell->effectN( 3 ).average( e ) / ticks;
+    }
+
+    void execute() override
+    {
+      debuff = equip_callback.get_debuff( target );
+      if ( debuff->up() )
+      {
+        base_td += debuff_increase * debuff->check();
+        debuff->expire();
+      }
+      generic_proc_t::execute();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      generic_proc_t::last_tick( d );
+      base_td = base_tick_damage;
+    }
+
+    void reset() override
+    {
+      generic_proc_t::reset();
+      base_td = base_tick_damage;
+    }
+  };
+
+  auto use = create_proc_action<ratfang_toxin_t>( "ratfang_toxin_dot", effect, "ratfang_toxin_dot", effect.player->find_spell( 1216606 ), *equip_cb );
+
+  effect.execute_action = use;
+}
+
+// Garbagemancer's Last Resort
+// 1219294 Driver
+// 1219314 Ground Trigger
+// 1219296 Value spell
+// 1219299 Damage
+void garbagemancers_last_resort( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  struct garbagemancers_last_resort_t : public generic_proc_t
+  {
+    ground_aoe_params_t params;
+    garbagemancers_last_resort_t( const special_effect_t& e, std::string_view n, const spell_data_t* s )
+      : generic_proc_t( e, n, s )
+    {
+      auto value_spell    = e.player->find_spell( 1219296 );
+      auto damage         = create_proc_action<generic_aoe_proc_t>( "garbocalypse", e, 1219299, true );
+      damage->base_dd_min = damage->base_dd_max = value_spell->effectN( 1 ).average( e );
+
+      auto ground_aoe = create_proc_action<generic_aoe_proc_t>( "garbagemancers_last_resort_ground", e, 1219314 );
+
+      // TODO: probably better ground targeting emulation for the damage, unlikely targets in a place will still be
+      // there after 10s
+      params.pulse_time( ground_aoe->data().duration() )
+          .duration( timespan_t::from_seconds( value_spell->effectN( 2 ).base_value() ) )
+          .action( ground_aoe )
+          .expiration_callback( [ damage ]( const action_state_t* ) { damage->execute(); } );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      generic_proc_t::impact( s );
+      params.start_time( timespan_t::min() ).target( target );  // reset start time
+      make_event<ground_aoe_event_t>( *sim, player, params );
+    }
+  };
+
+  auto use = create_proc_action<garbagemancers_last_resort_t>( "garbagemancers_last_resort", effect,
+                                                               "garbagemancers_last_resort", effect.driver() );
+
+  // Setting a random cooldown for now, its got none in data leading to sims spamming the hell out of it and getting
+  // stuck. Also has no cooldown in game...
+  // TODO - Remove once theres a cooldown in data.
+  effect.cooldown_      = 60_s;
+  effect.execute_action = use;
+}
+
+// Funhouse Lens
+// 1213432 Driver
+// 1214603 Value Spell
+// 1213433 Crit Buff
+// 1213434 Haste Buff
+void funhouse_lens( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  struct funhouse_lens_t : public spell_t
+  {
+    buff_t* crit_buff;
+    buff_t* haste_buff;
+    funhouse_lens_t( const special_effect_t& e, std::string_view n, const spell_data_t* s )
+      : spell_t( n, e.player, s ), crit_buff( nullptr ), haste_buff( nullptr )
+    {
+      crit_buff = create_buff<stat_buff_t>( e.player, "funhouse_lens_crit", e.player->find_spell( 1213433 ) )
+                      ->add_stat_from_effect_type( A_MOD_RATING, s->effectN( 1 ).average( e ) )
+                      ->set_name_reporting( "Crit" );
+
+      haste_buff = create_buff<stat_buff_t>( e.player, "funhouse_lens_haste", e.player->find_spell( 1213434 ) )
+                       ->add_stat_from_effect_type( A_MOD_RATING, s->effectN( 2 ).average( e ) )
+                       ->set_name_reporting( "Haste" );
+    }
+
+    void execute() override
+    {
+      spell_t::execute();
+      bool crit = rng().roll( 0.5 );
+      switch ( crit )
+      {
+        case true:
+          crit_buff->trigger();
+          break;
+        case false:
+          haste_buff->trigger();
+          break;
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<funhouse_lens_t>( "funhouse_lens", effect, "funhouse_lens",
+                                                               effect.player->find_spell( 1214603 ) );
+}
+
+// Suspicious Energy Drink
+// 1216625 Driver
+// 1216650 Buff
+void suspicious_energy_drink( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  struct suspicious_energy_drink_buff_t : public stat_buff_t
+  {
+    double bonus_value;
+    double hp_limit;
+    double base_buff_value;
+    suspicious_energy_drink_buff_t( player_t* p, util::string_view n, const special_effect_t& e, const spell_data_t* s )
+      : stat_buff_t( e.player, n, s ), bonus_value( 0 ), hp_limit( 0 )
+    {
+      base_buff_value = e.driver()->effectN( 1 ).average( e );
+      set_stat_from_effect_type( A_MOD_RATING, base_buff_value );
+      bonus_value = e.driver()->effectN( 2 ).average( e );
+      hp_limit    = e.driver()->effectN( 3 ).base_value();
+    }
+
+    void start( int s, double, timespan_t d ) override
+    {
+      double value = base_buff_value;
+      if ( player->health_percentage() < hp_limit )
+      {
+        value += bonus_value;
+      }
+
+      stat_buff_t::start( s, value, d );
+    }
+  };
+
+  auto buff = create_buff<suspicious_energy_drink_buff_t>( effect.player, "suspicious_energy_drink", effect,
+                                                           effect.player->find_spell( 1216650 ) );
+
+  effect.custom_buff = buff;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Mug's Moxie Jug
+// 471548 Driver
+// 474376 Hidden Buff Driver
+// 474285 Buff
+void mugs_moxie_jug( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto crit_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 474285 ) )
+                       ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
+                       ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+  auto buff_driver      = new special_effect_t( effect.player );
+  buff_driver->name_str = util::tokenize_fn( effect.driver()->effectN( 1 ).trigger()->name_cstr() );
+  buff_driver->spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
+  buff_driver->proc_flags2_ = PF2_ALL_HIT;
+  buff_driver->custom_buff  = crit_buff;
+  effect.player->special_effects.push_back( buff_driver );
+
+  auto second_proc = new dbc_proc_callback_t( effect.player, *buff_driver );
+  second_proc->activate_with_buff( crit_buff, true );
+  
+  effect.proc_flags2_ = PF2_ALL_HIT;
+  effect.custom_buff   = crit_buff;
+  auto main_proc = new dbc_proc_callback_t( effect.player, effect );
+}
+// Amorphous Relic
+// 472120 Driver
+// 472195 Periodic Trigger
+// 472184 Haste Buff
+// 472185 Primary Buff
+void amorphous_relic( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  struct amorphous_relic_event_t : public event_t
+  {
+    player_t* player;
+    buff_t* haste_buff;
+    buff_t* crit_buff;
+    timespan_t period;
+    event_t* next_event;
+
+    amorphous_relic_event_t( player_t* p, timespan_t time_to_execute, buff_t* haste, buff_t* crit )
+      : event_t( *p, time_to_execute ),
+        player( p ),
+        haste_buff( haste ),
+        crit_buff( crit ),
+        period( 0_ms ),
+        next_event( nullptr )
+    {
+      period = player->find_spell( 472195 )->effectN( 1 ).period();
+    }
+
+    const char* name() const override
+    {
+      return "amorphous_relic_event";
+    }
+
+    void execute() override
+    {
+      if ( next_event == nullptr )
+        next_event = make_event<amorphous_relic_event_t>( sim(), player, period, haste_buff, crit_buff );
+      else
+      {
+        // Reset the timer if combat was started again and the event triggered before the next secheduled time.
+        event_t::cancel( next_event );
+        next_event = make_event<amorphous_relic_event_t>( sim(), player, period, haste_buff, crit_buff );
+      }
+
+      if ( player->in_combat )
+      {
+        bool haste = player->rng().roll( 0.5 );
+        switch ( haste )
+        {
+          case true:
+            haste_buff->trigger();
+            break;
+          case false:
+            crit_buff->trigger();
+            break;
+        }
+      }
+    }
+  };
+
+  auto haste_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 472184 ) )
+                        ->add_stat_from_effect( 2, effect.driver()->effectN( 4 ).average( effect ) )
+                        ->add_stat_from_effect( 3, effect.driver()->effectN( 3 ).average( effect ) );
+
+  auto crit_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 472185 ) )
+                       ->add_stat_from_effect( 2, effect.driver()->effectN( 1 ).average( effect ) )
+                       ->add_stat_from_effect( 3, effect.driver()->effectN( 2 ).average( effect ) );
+
+  effect.player->register_on_combat_state_callback( [ haste_buff, crit_buff ]( player_t* p, bool c ) {
+    if ( c )
+    {
+      make_event<amorphous_relic_event_t>( *p->sim, p, 0_ms, haste_buff, crit_buff );
+    }
+  } );
+}
+
+// Zee's Thug Hotline
+// 1217356 Driver
+// Pocket Ace:
+// 1217431 Summon
+// 1217675 Gutstab - Only uses in ST
+// 1217676 Fan of Stabs - Only uses in AoE
+// Uses a basic auto attack as well
+// Snake Eyes:
+// 1217432 Summon
+// 1217719 Snipe - Only Ability
+// Does not auto attack
+// Thwack Jack:
+// 1217427 Summon
+// 1217638 Thwack! - Only uses in ST
+// 1217665 Thwack Thwack Thwack! - Only uses in AoE
+// Uses a basic auto attack as well
+void zees_thug_hotline( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  struct zees_thug_hotline_pet_t : public pet_t
+  {
+  protected:
+    using base_t = zees_thug_hotline_pet_t;
+
+  public:
+    bool use_auto_attack;
+    const special_effect_t& effect;
+    action_t* parent_action;
+
+    zees_thug_hotline_pet_t( std::string_view name, const special_effect_t& e, const spell_data_t* summon_spell )
+      : pet_t( e.player->sim, e.player, name, true, true ), effect( e ), parent_action( nullptr )
+    {
+      npc_id          = summon_spell->effectN( 1 ).misc_value1();
+      use_auto_attack = false;
+    }
+
+    resource_e primary_resource() const override
+    {
+      return RESOURCE_NONE;
+    }
+
+    virtual attack_t* create_auto_attack()
+    {
+      return nullptr;
+    }
+
+    struct auto_attack_t final : public melee_attack_t
+    {
+      auto_attack_t( zees_thug_hotline_pet_t* p ) : melee_attack_t( "main_hand", p )
+      {
+        assert( p->main_hand_weapon.type != WEAPON_NONE );
+        p->main_hand_attack                    = p->create_auto_attack();
+        p->main_hand_attack->weapon            = &( p->main_hand_weapon );
+        p->main_hand_attack->base_execute_time = p->main_hand_weapon.swing_time;
+
+        ignore_false_positive = true;
+        trigger_gcd           = 0_ms;
+        school                = SCHOOL_PHYSICAL;
+      }
+
+      void execute() override
+      {
+        player->main_hand_attack->schedule_execute();
+      }
+
+      bool ready() override
+      {
+        if ( player->is_moving() )
+          return false;
+
+        return ( player->main_hand_attack->execute_event == nullptr );
+      }
+    };
+
+    void create_buffs() override
+    {
+      pet_t::create_buffs();
+
+      buffs.movement->set_quiet( true );
+    }
+
+    void arise() override
+    {
+      pet_t::arise();
+
+      parent_action->stats->add_execute( 0_ms, owner );
+
+      if ( use_auto_attack && owner->base.distance > 8 )
+      {
+        trigger_movement( owner->base.distance, movement_direction_type::TOWARDS );
+        auto dur = time_to_move();
+        make_event( *sim, dur, [ this, dur ] { update_movement( dur ); } );
+      }
+    }
+
+    action_t* create_action( std::string_view name, std::string_view options_str ) override
+    {
+      if ( name == "auto_attack" )
+        return new auto_attack_t( this );
+
+      return pet_t::create_action( name, options_str );
+    }
+
+    void init_action_list() override
+    {
+      action_priority_list_t* def = get_action_priority_list( "default" );
+      if ( use_auto_attack )
+        def->add_action( "auto_attack" );
+
+      pet_t::init_action_list();
+    }
+  };
+
+  struct auto_attack_melee_t : public melee_attack_t
+  {
+    auto_attack_melee_t( pet_t* p, std::string_view name = "main_hand", action_t* a = nullptr,
+                         const special_effect_t* e = nullptr )
+      : melee_attack_t( name, p )
+    {
+      this->background = this->repeating = true;
+      this->not_a_proc = this->may_crit = true;
+      this->special                     = false;
+      this->weapon_multiplier           = 1.0;
+      this->trigger_gcd                 = 0_ms;
+      this->school                      = SCHOOL_PHYSICAL;
+      this->stats->school               = SCHOOL_PHYSICAL;
+      this->base_multiplier = p->main_hand_weapon.swing_time.total_seconds();
+      this->base_dd_min = this->base_dd_max = e->driver()->effectN( 5 ).average( *e ) * 0.375;
+
+      auto proxy = a;
+      auto it    = range::find( proxy->child_action, name, &action_t::name );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
+    }
+
+    void execute() override
+    {
+      if ( this->player->executing )
+        this->schedule_execute();
+      else
+        melee_attack_t::execute();
+    }
+  };
+
+  struct zees_thug_hotline_pet_spell_t : public spell_t
+  {
+    zees_thug_hotline_pet_spell_t( std::string_view n, pet_t* p, const spell_data_t* s, std::string_view options_str,
+                                   action_t* a )
+      : spell_t( n, p, s )
+    {
+      auto proxy = a;
+      auto it    = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
+
+      parse_options( options_str );
+
+      // Not 100% confident this is correct. Just what it appeared to be at a glance.
+      cooldown->duration = 4_s;
+      cooldown->hasted = true;
+    }
+  };
+
+  struct gutstab_t : public zees_thug_hotline_pet_spell_t
+  {
+    gutstab_t( const special_effect_t& e, zees_thug_hotline_pet_t* p, std::string_view options_str, action_t* a )
+      : zees_thug_hotline_pet_spell_t( "gutstab", p, p->find_spell( 1217675 ), options_str, a )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
+    }
+  };
+
+  struct fan_of_stabs_t : public zees_thug_hotline_pet_spell_t
+  {
+    fan_of_stabs_t( const special_effect_t& e, zees_thug_hotline_pet_t* p, std::string_view options_str, action_t* a )
+      : zees_thug_hotline_pet_spell_t( "fan_of_stabs", p, p->find_spell( 1217676 ), options_str, a )
+    {
+      aoe         = -1;
+      base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e );
+    }
+  };
+
+  struct snipe_t : public zees_thug_hotline_pet_spell_t
+  {
+    snipe_t( const special_effect_t& e, zees_thug_hotline_pet_t* p, std::string_view options_str, action_t* a )
+      : zees_thug_hotline_pet_spell_t( "snipe", p, p->find_spell( 1217719 ), options_str, a )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 3 ).average( e );
+    }
+  };
+
+  struct thwack_t : public zees_thug_hotline_pet_spell_t
+  {
+    thwack_t( const special_effect_t& e, zees_thug_hotline_pet_t* p, std::string_view options_str, action_t* a )
+      : zees_thug_hotline_pet_spell_t( "thwack", p, p->find_spell( 1217638 ), options_str, a )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e );
+    }
+  };
+
+  struct thwack_thwack_thwack_t : public zees_thug_hotline_pet_spell_t
+  {
+    thwack_thwack_thwack_t( const special_effect_t& e, zees_thug_hotline_pet_t* p, std::string_view options_str,
+                            action_t* a )
+      : zees_thug_hotline_pet_spell_t( "thwack_thwack_thwack", p, p->find_spell( 1217665 ), options_str, a )
+    {
+      aoe         = -1;
+      base_dd_min = base_dd_max = e.driver()->effectN( 4 ).average( e );
+    }
+  };
+
+  struct pocket_ace_pet_t : public zees_thug_hotline_pet_t
+  {
+    pocket_ace_pet_t( const special_effect_t& e, action_t* parent = nullptr )
+      : base_t( "pocket_ace", e, e.player->find_spell( 1217431 ) )
+    {
+      parent_action               = parent;
+      use_auto_attack             = true;
+      main_hand_weapon.type       = WEAPON_BEAST;
+      main_hand_weapon.swing_time = 1.6_s;
+    }
+
+    attack_t* create_auto_attack() override
+    {
+      auto a                = new auto_attack_melee_t( this, "main_hand_pocket_ace", parent_action, &effect );
+      a->name_str_reporting = "Melee";
+      return a;
+    }
+
+    action_t* create_action( std::string_view name, std::string_view options_str ) override
+    {
+      if ( name == "gutstab" )
+        return new gutstab_t( effect, this, options_str, parent_action );
+      if ( name == "fan_of_stabs" )
+        return new fan_of_stabs_t( effect, this, options_str, parent_action );
+
+      return base_t::create_action( name, options_str );
+    }
+
+    void init_action_list() override
+    {
+      base_t::init_action_list();
+      action_priority_list_t* def = get_action_priority_list( "default" );
+      def->add_action( "gutstab,if=active_enemies=1" );
+      def->add_action( "fan_of_stabs,if=active_enemies>1" );
+    }
+  };
+
+  struct snake_eyes_pet_t : public zees_thug_hotline_pet_t
+  {
+    snake_eyes_pet_t( const special_effect_t& e, action_t* parent = nullptr )
+      : base_t( "snake_eyes", e, e.player->find_spell( 1217432 ) )
+    {
+      parent_action = parent;
+    }
+
+    action_t* create_action( std::string_view name, std::string_view options_str ) override
+    {
+      if ( name == "snipe" )
+        return new snipe_t( effect, this, options_str, parent_action );
+
+      return base_t::create_action( name, options_str );
+    }
+
+    void init_action_list() override
+    {
+      base_t::init_action_list();
+      action_priority_list_t* def = get_action_priority_list( "default" );
+      def->add_action( "snipe" );
+    }
+  };
+
+  struct thwack_jack_pet_t : public zees_thug_hotline_pet_t
+  {
+    thwack_jack_pet_t( const special_effect_t& e, action_t* parent = nullptr )
+      : base_t( "thwack_jack", e, e.player->find_spell( 1217427 ) )
+    {
+      parent_action               = parent;
+      use_auto_attack             = true;
+      main_hand_weapon.type       = WEAPON_BEAST;
+      main_hand_weapon.swing_time = 2.6_s;
+    }
+
+    attack_t* create_auto_attack() override
+    {
+      auto a                = new auto_attack_melee_t( this, "main_hand_thwack_jack", parent_action, &effect );
+      a->name_str_reporting = "Melee";
+      return a;
+    }
+
+    action_t* create_action( std::string_view name, std::string_view options_str ) override
+    {
+      if ( name == "thwack" )
+        return new thwack_t( effect, this, options_str, parent_action );
+      if ( name == "thwack_thwack_thwack" )
+        return new thwack_thwack_thwack_t( effect, this, options_str, parent_action );
+
+      return base_t::create_action( name, options_str );
+    }
+
+    void init_action_list() override
+    {
+      base_t::init_action_list();
+      action_priority_list_t* def = get_action_priority_list( "default" );
+      def->add_action( "thwack,if=active_enemies=1" );
+      def->add_action( "thwack_thwack_thwack,if=active_enemies>=2" );
+    }
+  };
+
+  struct zees_thug_hotline_t : public generic_proc_t
+  {
+    spawner::pet_spawner_t<pocket_ace_pet_t> pocket_ace_spawner;
+    spawner::pet_spawner_t<snake_eyes_pet_t> snake_eyes_spawner;
+    spawner::pet_spawner_t<thwack_jack_pet_t> thwack_jack_spawner;
+
+    zees_thug_hotline_t( const special_effect_t& e )
+      : generic_proc_t( e, "zees_thug_hotline", e.driver() ),
+        pocket_ace_spawner( "pocket_ace", e.player ),
+        snake_eyes_spawner( "snake_eyes", e.player ),
+        thwack_jack_spawner( "thwack_jack", e.player )
+    {
+      auto pocket_ace_summon_spell = e.player->find_spell( 1217431 );
+      auto pocket_ace = new action_t( action_e::ACTION_OTHER, "call_pocket_ace", e.player, pocket_ace_summon_spell );
+      pocket_ace_spawner.set_creation_callback(
+          [ &e, pocket_ace ]( player_t* ) { return new pocket_ace_pet_t( e, pocket_ace ); } );
+      pocket_ace_spawner.set_default_duration( pocket_ace_summon_spell->duration() );
+      pocket_ace_spawner.set_max_pets( 1 );
+      pocket_ace_spawner.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
+      add_child( pocket_ace );
+
+      auto snake_eyes_summon_spell = e.player->find_spell( 1217432 );
+      auto snake_eyes = new action_t( action_e::ACTION_OTHER, "call_snake_eyes", e.player, snake_eyes_summon_spell );
+      snake_eyes_spawner.set_creation_callback(
+          [ &e, snake_eyes ]( player_t* ) { return new snake_eyes_pet_t( e, snake_eyes ); } );
+      snake_eyes_spawner.set_default_duration( snake_eyes_summon_spell->duration() );
+      snake_eyes_spawner.set_max_pets( 1 );
+      snake_eyes_spawner.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
+      add_child( snake_eyes );
+
+      auto thwack_jack_summon_spell = e.player->find_spell( 1217427 );
+      auto thwack_jack = new action_t( action_e::ACTION_OTHER, "call_thwack_jack", e.player, thwack_jack_summon_spell );
+      thwack_jack_spawner.set_creation_callback(
+          [ &e, thwack_jack ]( player_t* ) { return new thwack_jack_pet_t( e, thwack_jack ); } );
+      thwack_jack_spawner.set_default_duration( thwack_jack_summon_spell->duration() );
+      thwack_jack_spawner.set_max_pets( 1 );
+      thwack_jack_spawner.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
+      add_child( thwack_jack );
+
+      e.player->buffs.bloodlust->add_stack_change_callback( [ & ]( buff_t*, int, int new_ ) {
+          if ( new_ )
+          {
+            pocket_ace_spawner.spawn();
+            snake_eyes_spawner.spawn();
+            thwack_jack_spawner.spawn();
+          }
+        } );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      int pet_id = rng().range( 0, 3 );
+      switch ( pet_id )
+      {
+        case 0:
+          pocket_ace_spawner.spawn();
+          break;
+        case 1:
+          snake_eyes_spawner.spawn();
+          break;
+        case 2:
+          thwack_jack_spawner.spawn();
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<zees_thug_hotline_t>( "zees_thug_hotline", effect );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Mister Lock-n-Stalk
+// 467469 Equip Driver
+// 467485 Use Driver
+// 1215690 Precision Targeting damage
+// 1215733 Mass Destruction damage
+void mister_locknstalk( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  struct mister_locknstalk_cb_t : public dbc_proc_callback_t
+  {
+    action_t* st_damage;
+    action_t* aoe_damage;
+    action_t* proxy;
+    enum mister_locknstalk_modes_t
+    {
+      MODE_DYNAMIC,
+      MODE_SINGLE_TARGET,
+      MODE_AOE
+    };
+    mister_locknstalk_modes_t mode;
+    mister_locknstalk_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), st_damage( nullptr ), aoe_damage( nullptr ), proxy( nullptr ), mode( MODE_DYNAMIC )
+    {
+      proxy = new action_t( action_e::ACTION_OTHER, "mister_locknstalk", e.player, e.driver() );
+      st_damage              = create_proc_action<generic_proc_t>( "precision_targeting", e, 1215690 );
+      st_damage->base_dd_min = st_damage->base_dd_max = e.driver()->effectN( 1 ).average( e );
+      // st_damage->base_multiplier                      = role_mult( e );
+      proxy->add_child( st_damage );
+
+      aoe_damage              = create_proc_action<generic_aoe_proc_t>( "mass_destruction", e, 1215733, true );
+      aoe_damage->base_dd_min = aoe_damage->base_dd_max = e.driver()->effectN( 2 ).average( e );
+      // aoe_damage->base_multiplier                       = role_mult( e );
+      proxy->add_child( aoe_damage );
+
+      const auto& option = e.player->thewarwithin_opts.mister_locknstalk_mode;
+      if ( !option.is_default() )
+      {
+        if ( util::str_compare_ci( option, "dynamic" ) )
+          mode = MODE_DYNAMIC;
+        else if ( util::str_compare_ci( option, "single_target" ) )
+          mode = MODE_SINGLE_TARGET;
+        else if ( util::str_compare_ci( option, "aoe" ) )
+          mode = MODE_AOE;
+        else
+          throw std::invalid_argument( "Valid thewarwithin.mister_locknstalk_mode: dynamic, single_target, aoe" );
+      }
+    }
+
+    void execute( action_t*, action_state_t* s )
+    {
+      switch ( mode )
+      {
+        case MODE_DYNAMIC:
+          if ( listener->sim->target_non_sleeping_list.size() > 1 )
+            aoe_damage->execute_on_target( s->target );
+          else
+            st_damage->execute_on_target( s->target );
+          break;
+        case MODE_SINGLE_TARGET:
+          st_damage->execute_on_target( s->target );
+          break;
+        case MODE_AOE:
+          aoe_damage->execute_on_target( s->target );
+          break;
+        default:
+          break;
+      }
+
+      proxy->stats->add_execute( 0_ms, listener );
+    }
+  };
+
+  new mister_locknstalk_cb_t( effect );
+}
+
 // Weapons
+
 // 443384 driver
 // 443585 damage
 // 443515 unknown buff
@@ -5352,6 +7348,187 @@ void force_of_magma( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// Vile Contamination
+// 471316 Driver
+// 473602 DoT
+void vile_contamination( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto dot     = create_proc_action<generic_proc_t>( "vile_contamination", effect, effect.trigger() );
+  dot->base_td = effect.driver()->effectN( 1 ).average( effect );
+  // Setting a reasonably high non 0 duration so the DoT works as expected. Data contains no duration resulting in it
+  // never applying.
+  dot->dot_duration = 300_s;
+
+  effect.execute_action = dot;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Best-in-Slots
+// 473402 Use Driver & On Use Stat buff
+// 471063 Equip Driver & Values
+// 473492 Proc Stat Buff
+void best_in_slots( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  auto equip_driver = effect.player->find_spell( 471063 );
+  assert( equip_driver && "Best-in-Slots missing equip driver" );
+
+  struct best_in_slots_stat_buff_t : stat_buff_t
+  {
+    double range_min;
+    double range_max;
+
+    best_in_slots_stat_buff_t( const special_effect_t& e, util::string_view name, const spell_data_t* s,
+                               const item_t* item = nullptr )
+      : stat_buff_t( e.player, name, s, item ), range_min( 0 ), range_max( 0 )
+    {
+      auto equip_driver = e.player->find_spell( 471063 );
+      auto mod          = equip_driver->effectN( 2 ).base_value() / 100;
+      range_min         = 1 - mod;
+      range_max         = 1 + mod;
+    }
+
+    double randomize_stat_value()
+    {
+      return default_value * rng().range( range_min, range_max );
+    }
+
+    void start( int s, double, timespan_t d ) override
+    {
+      stat_buff_t::start( s, randomize_stat_value(), d );
+    }
+
+    void bump( int stacks, double ) override
+    {
+      buff_t::bump( stacks, randomize_stat_value() );
+    }
+  };
+
+  struct best_in_slots_cb_t : public dbc_proc_callback_t
+  {
+    std::unordered_map<stat_e, buff_t*> buffs;
+
+    best_in_slots_cb_t( const special_effect_t& equip, const special_effect_t& use, const spell_data_t* equip_driver )
+      : dbc_proc_callback_t( equip.player, equip ), buffs()
+    {
+      auto buff_value      = equip_driver->effectN( 1 ).average( use );
+      auto proc_buff_spell = equip.player->find_spell( 473492 );
+
+      create_all_stat_buffs<best_in_slots_stat_buff_t>( equip, proc_buff_spell, buff_value,
+                                                        [ &, buff_value ]( stat_e s, buff_t* b ) {
+                                                          b->default_value = buff_value;
+                                                          buffs[ s ]       = b;
+                                                        } );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      auto buff = buffs.at( rng().range( secondary_ratings ) );
+      if ( !buff->check() )
+      {
+        range::for_each( buffs, []( auto& b ) { b.second->expire(); } );
+      }
+      buff->trigger();
+    }
+  };
+
+  auto equip      = new special_effect_t( effect.player );
+  equip->name_str = equip_driver->name_cstr();
+  equip->spell_id = equip_driver->id();
+  effect.player->special_effects.push_back( equip );
+
+  auto cb = new best_in_slots_cb_t( *equip, effect, equip_driver );
+  cb->initialize();
+  cb->activate();
+
+  struct cheating_t : public generic_proc_t
+  {
+    std::unordered_map<stat_e, buff_t*> buffs;
+
+    cheating_t( const special_effect_t& e, const spell_data_t* equip_driver )
+      : generic_proc_t( e, "cheating", e.driver() ), buffs()
+    {
+      auto value_mod  = 1 + ( equip_driver->effectN( 2 ).base_value() / 100 );
+      auto buff_value = equip_driver->effectN( 1 ).average( e ) * value_mod;
+
+      create_all_stat_buffs( e, e.driver(), buff_value, [ &, buff_value ]( stat_e s, buff_t* b ) {
+        b->default_value = buff_value;
+        buffs[ s ]       = b;
+      } );
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      buffs.at( util::highest_stat( player, secondary_ratings ) )->trigger();
+    }
+  };
+
+  effect.spell_id       = 473402;
+  effect.execute_action = create_proc_action<cheating_t>( "cheating", effect, equip_driver );
+}
+
+// Machine Gob's Iron Grin
+// 1218442 Driver
+// 1218471 Big Damage
+// 1218469 Medium Damage
+// 1218463 Small Damage
+void machine_gobs_iron_grin( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  struct machine_gobs_iron_grin_cb_t : public dbc_proc_callback_t
+  {
+    action_t* big_damage;
+    action_t* medium_damage;
+    action_t* small_damage;
+    action_t* proxy;
+
+    machine_gobs_iron_grin_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ), big_damage( nullptr ), medium_damage( nullptr ), small_damage( nullptr ), proxy( nullptr )
+    {
+      proxy = new action_t( action_e::ACTION_OTHER, "machine_gobs_iron_grin", e.player, e.driver() );
+      big_damage = create_proc_action<generic_aoe_proc_t>( "machine_gobs_bellowing_laugh", e, 1218471, true );
+      big_damage->base_dd_min = big_damage->base_dd_max = e.driver()->effectN( 3 ).average( e );
+      proxy->add_child( big_damage );
+
+      medium_damage              = create_proc_action<generic_aoe_proc_t>( "machine_gobs_big_grin", e, 1218469, true );
+      medium_damage->base_dd_min = medium_damage->base_dd_max = e.driver()->effectN( 2 ).average( e );
+      proxy->add_child( medium_damage );
+
+      small_damage              = create_proc_action<generic_aoe_proc_t>( "machine_gobs_hiccup", e, 1218463, true );
+      small_damage->base_dd_min = small_damage->base_dd_max = e.driver()->effectN( 1 ).average( e );
+      proxy->add_child( small_damage );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      auto rand = rng().range( 0, 3 );
+      switch ( rand )
+      {
+        case 0:
+          big_damage->execute_on_target( s->target );
+          break;
+        case 1:
+          medium_damage->execute_on_target( s->target );
+          break;
+        case 2:
+          small_damage->execute_on_target( s->target );
+          break;
+      }
+      proxy->stats->add_execute( 0_ms, listener );
+    }
+  };
+
+  new machine_gobs_iron_grin_cb_t( effect );
+}
+
 // Armor
 // 457815 driver
 // 457918 nature damage driver
@@ -5619,6 +7796,210 @@ void sureki_zealots_insignia( special_effect_t& e )
   e.rppm_modifier_ = e.player->thewarwithin_opts.sureki_zealots_insignia_rppm_multiplier;
 
   new dbc_proc_callback_t( e.player, e );
+}
+
+// The Jastors Diamond
+// 1214161 Value Spell
+// 1214822 Driver
+// 1214823 Self Buff
+// 1214826 Ally Buff
+void the_jastor_diamond( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  struct jastor_diamond_buff_base_t : public stat_buff_t
+  {
+    jastor_diamond_buff_base_t( player_t* p, std::string_view n, const spell_data_t* s ) : stat_buff_t( p, n, s )
+    {
+      set_default_value( 0 );
+      add_stat_from_effect( 1, 0 );
+      add_stat_from_effect( 2, 0 );
+      add_stat_from_effect( 3, 0 );
+      add_stat_from_effect( 4, 0 );
+    }
+
+    virtual void add_ally_stat( stat_e s, double val )
+    {
+      auto& buff_stat = get_stat( s );
+      buff_stat.current_value += val;
+      buff_stat.amount = buff_stat.current_value;
+      // Only handle stat gain here, stat loss will be handled in i_did_that_buff_t::expire_override()
+      player->stat_gain( buff_stat.stat, val, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+    }
+
+    void expire_override( int s, timespan_t d ) override
+    {
+      for ( auto& buff_stat : stats )
+      {
+        player->stat_loss( buff_stat.stat, buff_stat.current_value, stat_gain, nullptr,
+                           buff_duration() > timespan_t::zero() );
+
+        buff_stat.current_value = 0;
+      }
+
+      // Purposely skip over stat_buff_t::expire_override() as we do the lost stat calculations manually
+      buff_t::expire_override( s, d );
+    }
+
+    buff_stat_t& get_stat( stat_e s )
+    {
+      for ( auto& buff_stat : stats )
+      {
+        if ( buff_stat.stat == s )
+          return buff_stat;
+      }
+      // Fallback if the above fails for any reason.
+      return stats[ 0 ];
+    }
+
+    void bump( int stacks, double /* value */ ) override
+    {
+      // Purposely skip over stat_buff_t::bump() as we do the added stat calculations manually
+      buff_t::bump( stacks );
+    }
+
+    double buff_stat_stack_amount( const buff_stat_t&, int ) const override
+    {
+      return 0;
+    }
+  };
+
+  struct i_did_that_buff_t : public jastor_diamond_buff_base_t
+  {
+    int fake_stacks;
+    int max_fake_stacks;
+
+    i_did_that_buff_t( player_t* p, std::string_view n, const spell_data_t* s )
+      : jastor_diamond_buff_base_t( p, n, s ), fake_stacks( 0 ), max_fake_stacks( 0 )
+    {
+      max_fake_stacks = as<int>( p->find_spell( 1214161 )->effectN( 2 ).base_value() );
+      set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+    }
+
+    void add_ally_stat( stat_e s, double val ) override
+    {
+      if ( fake_stacks++ < max_fake_stacks )
+      {
+        jastor_diamond_buff_base_t::add_ally_stat( s, val );
+      }
+    }
+
+    double get_current_stat_value( stat_e s )
+    {
+      auto stat = get_stat( s );
+      return stat.current_value;
+    }
+
+    void reset() override
+    {
+      jastor_diamond_buff_base_t::reset();
+      fake_stacks = 0;
+    }
+
+    void expire_override( int s, timespan_t d ) override
+    {
+      fake_stacks = 0;
+      jastor_diamond_buff_base_t::expire_override( s, d );
+    }
+  };
+
+  struct no_i_did_that_buff_t : public jastor_diamond_buff_base_t
+  {
+    no_i_did_that_buff_t( player_t* p, std::string_view n, const spell_data_t* s )
+      : jastor_diamond_buff_base_t( p, n, s )
+    {
+    }
+  };
+
+  struct the_jastor_diamond_cb_t : public dbc_proc_callback_t
+  {
+    i_did_that_buff_t* self_buff;
+    const spell_data_t* value_spell;
+    const spell_data_t* ally_buff_spell;
+    double buff_value;
+    std::unordered_map<player_t*, no_i_did_that_buff_t*> ally_buffs;
+    vector_with_callback<player_t*> ally_list;
+
+    the_jastor_diamond_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        self_buff( nullptr ),
+        value_spell( e.player->find_spell( 1214161 ) ),
+        ally_buff_spell( e.player->find_spell( 1214826 ) ),
+        buff_value( 0 ),
+        ally_buffs(),
+        ally_list()
+    {
+      assert( value_spell && "The Jastor Diamond missing value spell." );
+      buff_value = value_spell->effectN( 1 ).average( e );
+
+      self_buff = create_buff<i_did_that_buff_t>( e.player, "i_did_that", e.player->find_spell( 1214823 ) );
+
+      e.player->register_precombat_begin( [ & ]( player_t* p ) {
+        if ( p->sim->player_no_pet_list.size() > 1 && !p->sim->single_actor_batch )
+        {
+          ally_list = p->sim->player_no_pet_list;
+          ally_list.find_and_erase( p );
+          for ( auto& ally : ally_list )
+          {
+            auto ally_buff = create_buff<no_i_did_that_buff_t>( ally, "no_i_did_that", ally_buff_spell );
+            ally_buffs.insert( { { ally }, { ally_buff } } );
+          }
+        }
+      } );
+    }
+
+    player_t* pick_random_target()
+    {
+      std::vector<player_t*> eligible;
+      for ( auto p : ally_list )
+        if ( !p->is_sleeping() ) eligible.push_back( p );
+      assert( !eligible.empty() );
+      return rng().range( eligible );
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      if ( ally_list.size() > 0 )
+      {
+        player_t* random_target = pick_random_target();
+        if ( self_buff->check() && rng().roll( value_spell->effectN( 3 ).percent() ) )
+        {
+          no_i_did_that_buff_t* buff = ally_buffs.at( random_target );
+          for ( auto stat : secondary_ratings )
+          {
+            double val = self_buff->get_current_stat_value( stat );
+            buff->add_ally_stat( stat, val );
+          }
+          buff->trigger();
+          self_buff->expire();
+        }
+        else
+        {
+          auto stat = util::highest_stat( random_target, secondary_ratings );
+          self_buff->add_ally_stat( stat, buff_value );
+          self_buff->trigger();
+        }
+      }
+      else
+      {
+        if ( self_buff->check() && rng().roll( value_spell->effectN( 3 ).percent() ) )
+        {
+          self_buff->expire();
+        }
+        else
+        {
+          auto stat_roll = rng().range( secondary_ratings );
+          self_buff->add_ally_stat( stat_roll, buff_value );
+          self_buff->trigger();
+        }
+      }
+    }
+  };
+
+  effect.cooldown_ = 12.5_s; // Oddly got removed from spell data? manually overriding for now
+  effect.spell_id = 1214822;
+  new the_jastor_diamond_cb_t( effect );
 }
 
 }  // namespace items
@@ -6216,10 +8597,20 @@ struct absorb_citrine_t : citrine_base_t<absorb_t>
     {
       target                = player;
       target_cache.is_valid = false;
-      target = rng().range( target_list() );
+      target                = rng().range( target_list() );
     }
 
     citrine_base_t::execute();
+  }
+
+  absorb_buff_t* create_buff( const action_state_t* s ) override
+  {
+    absorb_buff_t* b = absorb_t::create_buff( s );
+
+    if ( s->target->is_pet() )
+      b->set_quiet( true );
+
+    return b;
   }
 };
 
@@ -6314,7 +8705,7 @@ struct storm_sewers_citrine_t : public absorb_citrine_t
           break;
         }
       }
-      if ( potential_target && potential_target->is_enemy() && !potential_target->is_sleeping() )
+      if ( potential_target && potential_target->is_enemy() && !potential_target->is_sleeping() && !potential_target->is_pet() )
       {
         damage->execute_on_target( potential_target, s->result_amount * driver_spell->effectN( 3 ).percent() );
       }
@@ -6354,7 +8745,7 @@ struct roaring_warqueen_citrine_t : public spell_t
   roaring_warqueen_citrine_t( const special_effect_t& e )
     : spell_t( "roaring_warqueens_citrine", e.player, e.player->find_spell( 462964 ) ),
       citrine_data{ true },
-      estimate_group_value( e.player->thewarwithin_opts.estimate_roaring_warqueens_citrine ),
+      estimate_group_value( false ),
       thunder_gem( create_citrine_action( e, THUNDERLORDS_CRACKLING_CITRINE ) )
   {
     background = true;
@@ -6387,7 +8778,7 @@ struct roaring_warqueen_citrine_t : public spell_t
       }
     }
 
-    if ( citrine == CITRINE_DRIVER_NONE )
+    if ( citrine == CITRINE_DRIVER_NONE || citrine == ROARING_WARQUEENS_CITRINE )
       return;
 
     if ( auto proc_buff = find_citrine_proc_buff( t, citrine ) )
@@ -6524,8 +8915,8 @@ struct roaring_warqueen_citrine_t : public spell_t
   }
 };
 
-// Proxy action just to trigger the highest stat buff. Mostly for reporting purposes. 
-// Might be a better way to do this, but this will do for now. 
+// Proxy action just to trigger the highest stat buff. Mostly for reporting purposes.
+// Might be a better way to do this, but this will do for now.
 struct windsingers_runed_citrine_proc_t : public generic_proc_t
 {
   std::unordered_map<stat_e, buff_t*> buffs;
@@ -7229,6 +9620,28 @@ void register_special_effects()
   register_special_effect( 468035, items::cursed_pirate_skull );
   register_special_effect( 468033, items::runecasters_stormbound_rune );
   register_special_effect( 468034, items::darktide_wavebenders_orb );
+  register_special_effect( 470286, items::torqs_big_red_button );
+  register_special_effect( 466681, items::house_of_cards );
+  register_special_effect( 443559, items::cirral_concoctory );
+  register_special_effect( 469888, items::eye_of_kezan );
+  register_special_effect( 471059, items::geargrinders_remote );
+  register_special_effect( 1218714, items::improvised_seaforium_pacemaker );
+  register_special_effect( 471567, items::reverb_radio );
+  register_special_effect( 1214787, items::mechanocore_amplifier );
+  register_special_effect( 1215238, items::papas_prized_putter );
+  register_special_effect( 472125, items::turbodrain_5000 );
+  register_special_effect( 470675, items::noggenfogger_ultimate_deluxe );
+  register_special_effect( 1216605, items::ratfang_toxin );
+  register_special_effect( 1216603, DISABLED_EFFECT ); // Ratfang toxin equip driver
+  register_special_effect( 1219294, items::garbagemancers_last_resort );
+  register_special_effect( 1213432, items::funhouse_lens );
+  register_special_effect( 1214603, DISABLED_EFFECT ); // Funhouse Lens value spell
+  register_special_effect( 1216625, items::suspicious_energy_drink );
+  register_special_effect( 472120, items::amorphous_relic );
+  register_special_effect( 1217356, items::zees_thug_hotline );
+  register_special_effect( 467469, items::mister_locknstalk );
+  register_special_effect( 467485, DISABLED_EFFECT );
+  register_special_effect( 471548, items::mugs_moxie_jug );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );
@@ -7238,13 +9651,17 @@ void register_special_effects()
   register_special_effect( 469936, items::guiding_stave_of_wisdom );
   register_special_effect( 470641, items::flame_wrath );
   register_special_effect( 470647, items::force_of_magma );
+  register_special_effect( 471316, items::vile_contamination );
+  register_special_effect( { 473400, 473401 }, items::best_in_slots );
+  register_special_effect( 471063, DISABLED_EFFECT );  // best in slots equip driver
+  register_special_effect( 1218442, items::machine_gobs_iron_grin );
 
   // Armor
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );
   register_special_effect( 457918, DISABLED_EFFECT );  // seal of the poisoned pact
   register_special_effect( 455799, items::excavation );
   register_special_effect( 457683, items::sureki_zealots_insignia );
-
+  register_special_effect( 1214161, items::the_jastor_diamond );
 
   // Sets
   register_special_effect( 444067, sets::void_reapers_contract );    // kye'veza's cruel implements trinket

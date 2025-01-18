@@ -1184,8 +1184,10 @@ struct bloodlust_check_t : public event_t
     {
       if ( !sim.single_actor_batch )
       {
-        for ( auto* p : sim.player_non_sleeping_list )
+        // use indices since it's possible to spawn new actors when bloodlust is triggered
+        for ( size_t i = 0; i < sim.player_non_sleeping_list.size(); i++ )
         {
+          auto* p = sim.player_non_sleeping_list[ i ];
           if ( p->is_pet() || p->buffs.exhaustion->check() )
             continue;
 

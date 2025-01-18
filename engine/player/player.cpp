@@ -12850,8 +12850,6 @@ void player_t::create_options()
   add_option( opt_float( "thewarwithin.sureki_zealots_insignia_rppm_multiplier",
                          thewarwithin_opts.sureki_zealots_insignia_rppm_multiplier, 0, 1 ) );
   add_option( opt_string( "thewarwithin.windsingers_passive_stat", thewarwithin_opts.windsingers_passive_stat ) );
-  add_option( opt_bool( "thewarwithin.estimate_roaring_warqueens_citrine",
-                        thewarwithin_opts.estimate_roaring_warqueens_citrine ) );
   add_option( opt_bool( "thewarwithin.force_estimate_skippers_group_benefit",
                         thewarwithin_opts.force_estimate_skippers_group_benefit ) );
   add_option( opt_bool( "thewarwithin.personal_estimate_skippers_group_benefit", 
@@ -12860,6 +12858,7 @@ void player_t::create_options()
                         thewarwithin_opts.estimate_skippers_group_benefit ) );
   add_option( opt_float( "thewarwithin.estimate_skippers_group_members",
                          thewarwithin_opts.estimate_skippers_group_members, 0, 999 ) );
+  add_option( opt_string( "thewarwithin.mister_locknstalk_mode", thewarwithin_opts.mister_locknstalk_mode ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

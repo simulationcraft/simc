@@ -881,11 +881,12 @@ struct player_t : public actor_t
     double mereldars_toll_ally_trigger_chance             = 0.7;
     double sureki_zealots_insignia_rppm_multiplier        = 0.9;
     player_option_t<std::string> windsingers_passive_stat = "";
-    bool estimate_roaring_warqueens_citrine               = false;
     bool force_estimate_skippers_group_benefit            = false;
     bool personal_estimate_skippers_group_benefit         = false;
     bool estimate_skippers_group_benefit                  = true;
     double estimate_skippers_group_members                = 4;
+    // Mister Lock-n-Stalk mode of operation
+    player_option_t<std::string> mister_locknstalk_mode = "dynamic";
   } thewarwithin_opts;
 
 private:

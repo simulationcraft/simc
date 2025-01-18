@@ -3125,6 +3125,9 @@ std::unique_ptr<expr_t> action_t::create_expression( std::string_view name )
   if ( name == "travel_time" )
     return make_mem_fn_expr( name, *this, &action_t::travel_time );
 
+  if ( name == "available_targets" )
+    return make_fn_expr( name, [ this ] { return target_list().size(); } );
+
   if ( name == "usable_in" )
   {
     return make_fn_expr( name, [this]() {

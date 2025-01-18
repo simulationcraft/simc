@@ -279,11 +279,13 @@ public:
     buff_t* inertia_trigger;  // hidden buff that determines if we can trigger inertia
     buff_t* initiative;
     buff_t* inner_demon;
+    buff_t* exergy;
     buff_t* momentum;
     buff_t* out_of_range;
     buff_t* restless_hunter;
     buff_t* tactical_retreat;
     buff_t* unbound_chaos;
+    buff_t* cycle_of_hatred;
 
     movement_buff_t* fel_rush_move;
     movement_buff_t* vengeful_retreat_move;
@@ -323,6 +325,10 @@ public:
     // Set Bonuses
     buff_t* tww1_havoc_4pc;
     buff_t* tww1_vengeance_4pc;
+    buff_t* luck_of_the_draw;
+    buff_t* winning_streak;
+    buff_t* winning_streak_residual;
+    buff_t* necessary_sacrifice;
   } buff;
 
   // Talents
@@ -426,7 +432,8 @@ public:
       player_talent_t burning_wound;
 
       player_talent_t momentum;
-      player_talent_t inertia;  // NYI
+      player_talent_t exergy;
+      player_talent_t inertia;
       player_talent_t chaos_theory;
       player_talent_t restless_hunter;
       player_talent_t inner_demon;
@@ -443,6 +450,7 @@ public:
       player_talent_t fel_barrage;  // Old implementation
       player_talent_t shattered_destiny;
       player_talent_t any_means_necessary;
+      player_talent_t screaming_brutality;
       player_talent_t a_fire_inside;
 
     } havoc;
@@ -633,6 +641,7 @@ public:
     const spell_data_t* initiative_buff;
     const spell_data_t* inner_demon_buff;
     const spell_data_t* inner_demon_damage;
+    const spell_data_t* exergy_buff;
     const spell_data_t* momentum_buff;
     const spell_data_t* inertia_buff;
     const spell_data_t* ragefire_damage;
@@ -641,7 +650,7 @@ public:
     const spell_data_t* tactical_retreat_buff;
     const spell_data_t* unbound_chaos_buff;
     const spell_data_t* chaotic_disposition_damage;
-    const spell_data_t* essence_break;
+    const spell_data_t* cycle_of_hatred_buff;
 
     // Vengeance
     const spell_data_t* vengeance_demon_hunter;
@@ -720,10 +729,16 @@ public:
     const spell_data_t* tww1_havoc_4pc;
     const spell_data_t* tww1_vengeance_2pc;
     const spell_data_t* tww1_vengeance_4pc;
+    const spell_data_t* tww2_havoc_2pc;
+    const spell_data_t* tww2_havoc_4pc;
+    const spell_data_t* tww2_vengeance_2pc;
+    const spell_data_t* tww2_vengeance_4pc;
 
     // Auxilliary
     const spell_data_t* tww1_havoc_4pc_buff;
     const spell_data_t* tww1_vengeance_4pc_buff;
+    const spell_data_t* winning_streak_residual_buff;
+    const spell_data_t* necessary_sacrifice_buff;
   } set_bonuses;
 
   // Mastery Spells
@@ -858,6 +873,9 @@ public:
 
     // Set Bonuses
     proc_t* soul_fragment_from_vengeance_twws1_2pc;
+    proc_t* metamorphosis_from_tww2_vengeance_2pc;
+    proc_t* the_hunt_reset_from_tww2_vengeance_4pc;
+    proc_t* winning_streak_drop_from_tww2_havoc_2pc;
   } proc;
 
   // RPPM objects
@@ -885,14 +903,17 @@ public:
     spell_t* collective_anguish      = nullptr;
 
     // Havoc
-    spell_t* burning_wound                      = nullptr;
-    attack_t* demon_blades                      = nullptr;
-    spell_t* fel_barrage                        = nullptr;
-    spell_t* inner_demon                        = nullptr;
-    spell_t* ragefire                           = nullptr;
-    attack_t* relentless_onslaught              = nullptr;
-    attack_t* relentless_onslaught_annihilation = nullptr;
-    action_t* soulscar                          = nullptr;
+    spell_t* burning_wound                                 = nullptr;
+    attack_t* demon_blades                                 = nullptr;
+    spell_t* fel_barrage                                   = nullptr;
+    spell_t* inner_demon                                   = nullptr;
+    spell_t* ragefire                                      = nullptr;
+    attack_t* relentless_onslaught                         = nullptr;
+    attack_t* relentless_onslaught_annihilation            = nullptr;
+    action_t* soulscar                                     = nullptr;
+    attack_t* screaming_brutality_blade_dance_throw_glaive = nullptr;
+    attack_t* screaming_brutality_death_sweep_throw_glaive = nullptr;
+    attack_t* screaming_brutality_slash_proc_throw_glaive  = nullptr;
 
     // Vengeance
     spell_t* infernal_armor = nullptr;
@@ -1011,6 +1032,7 @@ public:
                                               effect_type_t type           = E_APPLY_AURA );
   const spell_data_t* find_spell_override( const spell_data_t* base, const spell_data_t* passive );
   const spell_data_t* find_spell_override( const spell_data_t* base, std::vector<const spell_data_t*> passives );
+  const spell_data_t* conditional_spell_lookup( bool fn, int id );
   void set_out_of_range( timespan_t duration );
   void adjust_movement();
   double calculate_expected_max_health() const;
@@ -1701,14 +1723,18 @@ public:
     ab::parse_effects( p()->buff.empowered_demon_soul );
 
     // Havoc
+    ab::parse_effects( p()->buff.exergy );
     ab::parse_effects( p()->buff.momentum );
     ab::parse_effects( p()->buff.inertia );
     ab::parse_effects( p()->buff.restless_hunter );
     ab::parse_effects( p()->buff.tww1_havoc_4pc );
+    ab::parse_effects( p()->buff.winning_streak );
+    ab::parse_effects( p()->buff.winning_streak_residual );
 
     // Vengeance
     ab::parse_effects( p()->buff.soul_furnace_damage_amp );
     ab::parse_effects( p()->buff.tww1_vengeance_4pc );
+    ab::parse_effects( p()->buff.luck_of_the_draw );
 
     // Aldrachi Reaver
     ab::parse_effects( p()->buff.warblades_hunger );
@@ -2099,19 +2125,25 @@ struct demon_hunter_sigil_t : public demon_hunter_spell_t
         p()->proc.soul_fragment_from_soul_sigils->occur();
       }
     }
-    if ( hit_any_target && p()->talent.vengeance.cycle_of_binding->ok() )
+    if ( hit_any_target && !p()->is_ptr() && p()->talent.vengeance.cycle_of_binding->ok() )
     {
-      // this is an event so that cooldown tracking occurs correctly
-      make_event( *p()->sim, 0_ms, [this]() {
-        std::vector<cooldown_t*> sigils_on_cooldown;
-        range::copy_if( this->sigil_cooldowns, std::back_inserter( sigils_on_cooldown ),
-                        []( cooldown_t* c ) { return c->down(); } );
-        for ( auto sigil_cooldown : sigils_on_cooldown )
-        {
-          sigil_cooldown->adjust( this->sigil_cooldown_adjust );
-        }
-      });
+      trigger_cycle_of_binding_event();
     }
+  }
+
+  void trigger_cycle_of_binding_event()
+  {
+    p()->sim->print_debug( "triggering cycle of binding event" );
+    // this is an event so that cooldown tracking occurs correctly
+    make_event( *p()->sim, 0_ms, [ this ]() {
+      std::vector<cooldown_t*> sigils_on_cooldown;
+      range::copy_if( this->sigil_cooldowns, std::back_inserter( sigils_on_cooldown ),
+                      []( cooldown_t* c ) { return c->down(); } );
+      for ( auto sigil_cooldown : sigils_on_cooldown )
+      {
+        sigil_cooldown->adjust( this->sigil_cooldown_adjust );
+      }
+    } );
   }
 
   std::unique_ptr<expr_t> create_sigil_expression( util::string_view name );
@@ -2253,7 +2285,7 @@ struct cycle_of_hatred_trigger_t : public BASE
 
   virtual bool has_talents_for_cycle_of_hatred()
   {
-    return BASE::p()->talent.havoc.cycle_of_hatred->ok();
+    return !BASE::p()->is_ptr() && BASE::p()->talent.havoc.cycle_of_hatred->ok();
   }
 
   void execute() override
@@ -2291,6 +2323,131 @@ struct amn_full_mastery_bug_t : public BASE
         BASE::affected_by.any_means_necessary.periodic      = false;
         BASE::affected_by.any_means_necessary_full.periodic = true;
       }
+    }
+  }
+};
+
+template <typename BASE>
+struct momentum_trigger_t : public BASE
+{
+  using base_t = momentum_trigger_t<BASE>;
+
+  momentum_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  virtual bool can_trigger_momentum()
+  {
+    return !BASE::p()->is_ptr() && BASE::p()->talent.havoc.momentum->ok();
+  }
+
+  void execute() override
+  {
+    if ( can_trigger_momentum() )
+      BASE::p()->buff.momentum->trigger();
+
+    BASE::execute();
+  }
+};
+
+template <typename BASE>
+struct exergy_trigger_t : public BASE
+{
+  using base_t = exergy_trigger_t<BASE>;
+
+  exergy_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  virtual bool can_trigger_exergy()
+  {
+    return BASE::p()->is_ptr() && BASE::p()->talent.havoc.exergy->ok();
+  }
+
+  void execute() override
+  {
+    if ( can_trigger_exergy() )
+      BASE::p()->buff.exergy->trigger();
+
+    BASE::execute();
+  }
+};
+
+template <typename BASE>
+struct inertia_trigger_trigger_t : public BASE
+{
+  using base_t = inertia_trigger_trigger_t<BASE>;
+
+  inertia_trigger_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  virtual bool can_trigger_inertia_trigger()
+  {
+    return BASE::p()->is_ptr() && BASE::p()->talent.havoc.inertia->ok();
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( can_trigger_inertia_trigger() )
+      BASE::p()->buff.inertia_trigger->trigger();
+  }
+};
+
+template <typename BASE>
+struct inertia_trigger_t : public BASE
+{
+  using base_t = inertia_trigger_t<BASE>;
+
+  inertia_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  virtual bool can_trigger_inertia()
+  {
+    return BASE::p()->is_ptr() && BASE::p()->talent.havoc.inertia->ok() && BASE::p()->buff.inertia_trigger->up();
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( can_trigger_inertia() )
+    {
+      BASE::p()->buff.inertia_trigger->expire();
+      BASE::p()->buff.inertia->trigger();
+    }
+  }
+};
+
+template <typename BASE>
+struct unbound_chaos_trigger_t : public BASE
+{
+  using base_t = unbound_chaos_trigger_t<BASE>;
+
+  unbound_chaos_trigger_t( util::string_view n, demon_hunter_t* p, const spell_data_t* s, util::string_view o )
+    : BASE( n, p, s, o )
+  {
+  }
+
+  virtual bool can_trigger_unbound_chaos()
+  {
+    return BASE::p()->is_ptr() && BASE::p()->talent.havoc.unbound_chaos->ok();
+  }
+
+  void execute() override
+  {
+    BASE::execute();
+
+    if ( can_trigger_unbound_chaos() )
+    {
+      BASE::p()->buff.unbound_chaos->trigger();
     }
   }
 };
@@ -2798,11 +2955,22 @@ struct eye_beam_base_t : public demon_hunter_spell_t
       p()->active.collective_anguish->set_target( target );
       p()->active.collective_anguish->execute();
     }
+
+    if ( p()->is_ptr() && p()->talent.havoc.cycle_of_hatred->ok() )
+    {
+      p()->buff.cycle_of_hatred->trigger();
+    }
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
   {
     return result_amount_type::DMG_DIRECT;
+  }
+
+  timespan_t cooldown_duration() const override
+  {
+    return base_t::cooldown_duration() -
+           timespan_t::from_millis( as<int>( p()->buff.cycle_of_hatred->check_stack_value() ) );
   }
 };
 
@@ -3266,6 +3434,10 @@ struct sigil_of_flame_damage_base_t : public demon_hunter_sigil_t
     if ( p()->talent.felscarred.student_of_suffering->ok() )
     {
       p()->buff.student_of_suffering->trigger();
+    }
+    if ( hit_any_target && p()->is_ptr() && p()->talent.vengeance.cycle_of_binding->ok() )
+    {
+      trigger_cycle_of_binding_event();
     }
   }
 
@@ -4328,7 +4500,8 @@ struct sigil_of_spite_t : public demon_hunter_spell_t
 
 // The Hunt =================================================================
 
-struct the_hunt_t : public demon_hunter_spell_t
+struct the_hunt_t : public unbound_chaos_trigger_t<
+                        inertia_trigger_trigger_t<exergy_trigger_t<momentum_trigger_t<demon_hunter_spell_t>>>>
 {
   struct the_hunt_damage_t : public demon_hunter_spell_t
   {
@@ -4351,7 +4524,7 @@ struct the_hunt_t : public demon_hunter_spell_t
   };
 
   the_hunt_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "the_hunt", p, p->spell.the_hunt, options_str )
+    : base_t( "the_hunt", p, p->spell.the_hunt, options_str )
   {
     movement_directionality             = movement_direction_type::TOWARDS;
     impact_action                       = p->get_background_action<the_hunt_damage_t>( "the_hunt_damage" );
@@ -4361,9 +4534,7 @@ struct the_hunt_t : public demon_hunter_spell_t
 
   void execute() override
   {
-    p()->buff.momentum->trigger();
-
-    demon_hunter_spell_t::execute();
+    base_t::execute();
 
     p()->set_out_of_range( timespan_t::zero() );  // Cancel all other movement
 
@@ -4536,6 +4707,10 @@ struct demonsurge_t : public amn_full_mastery_bug_t<demon_hunter_spell_t>
   {
     background = dual = true;
     aoe               = -1;
+    if ( p->is_ptr() )
+    {
+      reduced_aoe_targets = data().effectN( 3 ).base_value();
+    }
   }
 
   void execute() override
@@ -5016,6 +5191,19 @@ struct blade_dance_base_t
         p()->proc.blade_dance_in_essence_break->occur();
     }
 
+    if ( p()->talent.havoc.screaming_brutality->ok() )
+    {
+      for ( auto& attack : ( p()->talent.havoc.first_blood->ok() ? first_blood_attacks : attacks ) )
+      {
+        double chance = p()->talent.havoc.screaming_brutality->effectN( 2 ).percent();
+        if ( rng().roll( chance ) )
+        {
+          make_event<delayed_execute_event_t>( *sim, p(), p()->active.screaming_brutality_slash_proc_throw_glaive,
+                                               target, attack->delay );
+        }
+      }
+    }
+
     // Create Strike Events
     if ( !p()->talent.havoc.first_blood->ok() || p()->sim->target_non_sleeping_list.size() > 1 )
     {
@@ -5041,6 +5229,14 @@ struct blade_dance_base_t
     if ( p()->set_bonuses.tww1_havoc_4pc->ok() )
     {
       p()->buff.tww1_havoc_4pc->expire();
+    }
+
+    if ( p()->set_bonuses.tww2_havoc_2pc->ok() && p()->buff.winning_streak->up() &&
+         rng().roll( p()->set_bonuses.tww2_havoc_2pc->effectN( 1 ).percent() ) )
+    {
+      p()->buff.winning_streak_residual->trigger( p()->buff.winning_streak->stack() );
+      p()->buff.winning_streak->expire();
+      p()->proc.winning_streak_drop_from_tww2_havoc_2pc->occur();
     }
   }
 
@@ -5074,6 +5270,9 @@ struct blade_dance_t : public blade_dance_base_t
       first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
           "blade_dance_first_blood_4", data().effectN( 5 ), p->spec.first_blood_blade_dance_2_damage ) );
     }
+
+    if ( p->talent.havoc.screaming_brutality->ok() && p->active.screaming_brutality_blade_dance_throw_glaive )
+      add_child( p->active.screaming_brutality_blade_dance_throw_glaive );
   }
 
   bool ready() override
@@ -5082,6 +5281,16 @@ struct blade_dance_t : public blade_dance_base_t
       return false;
 
     return !p()->buff.metamorphosis->check();
+  }
+
+  void execute() override
+  {
+    blade_dance_base_t::execute();
+
+    if ( p()->talent.havoc.screaming_brutality->ok() && p()->cooldown.throw_glaive->up() )
+    {
+      p()->active.screaming_brutality_blade_dance_throw_glaive->execute_on_target( target );
+    }
   }
 };
 
@@ -5113,6 +5322,9 @@ struct death_sweep_t : public blade_dance_base_t
       first_blood_attacks.push_back( p->get_background_action<blade_dance_damage_t>(
           "death_sweep_first_blood_4", data().effectN( 5 ), p->spec.first_blood_death_sweep_2_damage ) );
     }
+
+    if ( p->talent.havoc.screaming_brutality->ok() && p->active.screaming_brutality_death_sweep_throw_glaive )
+      add_child( p->active.screaming_brutality_death_sweep_throw_glaive );
   }
 
   void execute() override
@@ -5128,6 +5340,10 @@ struct death_sweep_t : public blade_dance_base_t
     blade_dance_base_t::execute();
 
     p()->trigger_demonsurge( demonsurge_ability::DEATH_SWEEP );
+    if ( p()->talent.havoc.screaming_brutality->ok() && p()->cooldown.throw_glaive->up() )
+    {
+      p()->active.screaming_brutality_death_sweep_throw_glaive->execute_on_target( target );
+    }
   }
 
   bool ready() override
@@ -5329,6 +5545,14 @@ struct chaos_strike_base_t
     {
       p()->buff.tww1_havoc_4pc->trigger();
       p()->cooldown.blade_dance->reset( true );
+    }
+
+    if ( p()->set_bonuses.tww2_havoc_2pc->ok() && p()->buff.winning_streak->up() &&
+         rng().roll( p()->set_bonuses.tww2_havoc_2pc->effectN( 1 ).percent() ) )
+    {
+      p()->buff.winning_streak_residual->trigger( p()->buff.winning_streak->stack() );
+      p()->buff.winning_streak->expire();
+      p()->proc.winning_streak_drop_from_tww2_havoc_2pc->occur();
     }
   }
 
@@ -5593,6 +5817,16 @@ struct felblade_t : public demon_hunter_attack_t
       background = dual = true;
       gain              = p->get_gain( "felblade" );
     }
+
+    double action_multiplier() const override
+    {
+      double am = base_t::action_multiplier();
+
+      if ( p()->is_ptr() )
+        am *= 1.0 + p()->buff.unbound_chaos->value();
+
+      return am;
+    }
   };
 
   unsigned max_fragments_consumed;
@@ -5622,12 +5856,14 @@ struct felblade_t : public demon_hunter_attack_t
       event_t::cancel( p()->soul_fragment_pick_up );
       p()->consume_soul_fragments( soul_fragment::ANY, false, max_fragments_consumed );
     }
+    if ( p()->is_ptr() )
+      p()->buff.unbound_chaos->expire();
   }
 };
 
 // Fel Rush =================================================================
 
-struct fel_rush_t : public demon_hunter_attack_t
+struct fel_rush_t : public inertia_trigger_t<momentum_trigger_t<demon_hunter_attack_t>>
 {
   struct fel_rush_damage_t : public demon_hunter_spell_t
   {
@@ -5641,7 +5877,7 @@ struct fel_rush_t : public demon_hunter_attack_t
 
     double action_multiplier() const override
     {
-      double am = demon_hunter_spell_t::action_multiplier();
+      double am = base_t::action_multiplier();
 
       am *= 1.0 + p()->buff.unbound_chaos->value();
 
@@ -5657,10 +5893,8 @@ struct fel_rush_t : public demon_hunter_attack_t
   timespan_t gcd_lag;
 
   fel_rush_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_attack_t( "fel_rush", p, p->spec.fel_rush )
+    : base_t( "fel_rush", p, p->spec.fel_rush, options_str )
   {
-    parse_options( options_str );
-
     may_miss = may_dodge = may_parry = may_block = false;
     min_gcd                                      = trigger_gcd;
 
@@ -5677,11 +5911,9 @@ struct fel_rush_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    p()->buff.momentum->trigger();
+    base_t::execute();
 
-    demon_hunter_attack_t::execute();
-
-    if ( p()->buff.inertia_trigger->up() && p()->talent.havoc.inertia->ok() )
+    if ( !p()->is_ptr() && p()->talent.havoc.inertia->ok() && p()->buff.inertia_trigger->up() )
     {
       p()->buff.inertia_trigger->expire();
       p()->buff.inertia->trigger();
@@ -5710,12 +5942,12 @@ struct fel_rush_t : public demon_hunter_attack_t
     if ( gcd_lag < 0_ms )
       gcd_lag = 0_ms;
 
-    demon_hunter_attack_t::schedule_execute( s );
+    base_t::schedule_execute( s );
   }
 
   timespan_t gcd() const override
   {
-    return demon_hunter_attack_t::gcd() + gcd_lag;
+    return base_t::gcd() + gcd_lag;
   }
 
   bool ready() override
@@ -5728,7 +5960,7 @@ struct fel_rush_t : public demon_hunter_attack_t
     if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
       return false;
 
-    return demon_hunter_attack_t::ready();
+    return base_t::ready();
   }
 };
 
@@ -6057,13 +6289,39 @@ struct soul_cleave_t : public soul_cleave_base_t
 
 struct throw_glaive_t : public cycle_of_hatred_trigger_t<demon_hunter_attack_t>
 {
+  enum class glaive_source
+  {
+    THROWN                                = 0,
+    SCREAMING_BRUTALITY_SLASH_PROC_THROW  = 1,
+    SCREAMING_BRUTALITY_BLADE_DANCE_THROW = 2,
+    SCREAMING_BRUTALITY_DEATH_SWEEP_THROW = 3
+  };
+
   struct throw_glaive_damage_t : public soulscar_trigger_t<burning_blades_trigger_t<demon_hunter_attack_t>>
   {
-    throw_glaive_damage_t( util::string_view name, demon_hunter_t* p )
-      : base_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() )
+    glaive_source source;
+
+    throw_glaive_damage_t( util::string_view name, demon_hunter_t* p, glaive_source source = glaive_source::THROWN )
+      : base_t( name, p, p->spell.throw_glaive->effectN( 1 ).trigger() ), source( source )
     {
       background = dual = true;
       radius            = 10.0;
+
+      switch ( source )
+      {
+        case glaive_source::SCREAMING_BRUTALITY_SLASH_PROC_THROW:
+          // slash procs have one multiplier
+          base_multiplier *= p->talent.havoc.screaming_brutality->effectN( 1 ).percent();
+          break;
+        case glaive_source::SCREAMING_BRUTALITY_BLADE_DANCE_THROW:
+        case glaive_source::SCREAMING_BRUTALITY_DEATH_SWEEP_THROW:
+          // regular procs have a different multiplier
+          base_multiplier *= p->talent.havoc.screaming_brutality->effectN( 3 ).percent();
+          break;
+        default:
+          // this handles THROWN (multiplier of 1 by default) and any new sources
+          break;
+      }
     }
 
     void impact( action_state_t* state ) override
@@ -6087,20 +6345,71 @@ struct throw_glaive_t : public cycle_of_hatred_trigger_t<demon_hunter_attack_t>
 
   throw_glaive_damage_t* furious_throws;
 
-  throw_glaive_t( util::string_view name, demon_hunter_t* p, util::string_view options_str )
+  throw_glaive_t( util::string_view name, demon_hunter_t* p, util::string_view options_str,
+                  glaive_source source = glaive_source::THROWN )
     : base_t( name, p, p->spell.throw_glaive, options_str ), furious_throws( nullptr )
   {
-    throw_glaive_damage_t* damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage" );
+    throw_glaive_damage_t* damage;
+
+    switch ( source )
+    {
+      case glaive_source::SCREAMING_BRUTALITY_SLASH_PROC_THROW:
+        damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage_sb_slash_proc_throw", source );
+        break;
+      case glaive_source::SCREAMING_BRUTALITY_BLADE_DANCE_THROW:
+        damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage_sb_bd_throw", source );
+        break;
+      case glaive_source::SCREAMING_BRUTALITY_DEATH_SWEEP_THROW:
+        damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage_sb_ds_throw", source );
+        break;
+      default:
+        damage = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_damage", source );
+        break;
+    }
 
     execute_action        = damage;
     execute_action->stats = stats;
 
+    if ( source == glaive_source::SCREAMING_BRUTALITY_BLADE_DANCE_THROW ||
+         source == glaive_source::SCREAMING_BRUTALITY_DEATH_SWEEP_THROW )
+    {
+      cooldown->duration = 0_s;
+      cooldown->charges  = 0;
+
+      cooldown = p->cooldown.throw_glaive;
+    }
+    if ( source == glaive_source::SCREAMING_BRUTALITY_SLASH_PROC_THROW )
+    {
+      cooldown->duration = 0_s;
+      cooldown->charges  = 0;
+    }
+
     if ( p->talent.havoc.furious_throws->ok() )
     {
-      resource_current            = RESOURCE_FURY;
-      base_costs[ RESOURCE_FURY ] = p->talent.havoc.furious_throws->effectN( 1 ).base_value();
+      if ( source == glaive_source::THROWN )
+      {
+        resource_current            = RESOURCE_FURY;
+        base_costs[ RESOURCE_FURY ] = p->talent.havoc.furious_throws->effectN( 1 ).base_value();
+      }
 
-      furious_throws = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws" );
+      switch ( source )
+      {
+        case glaive_source::SCREAMING_BRUTALITY_SLASH_PROC_THROW:
+          furious_throws = p->get_background_action<throw_glaive_damage_t>(
+              "throw_glaive_furious_throws_sb_slash_proc_throw", source );
+          break;
+        case glaive_source::SCREAMING_BRUTALITY_BLADE_DANCE_THROW:
+          furious_throws =
+              p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_sb_bd_throw", source );
+          break;
+        case glaive_source::SCREAMING_BRUTALITY_DEATH_SWEEP_THROW:
+          furious_throws =
+              p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws_sb_ds_throw", source );
+          break;
+        default:
+          furious_throws = p->get_background_action<throw_glaive_damage_t>( "throw_glaive_furious_throws", source );
+          break;
+      }
 
       add_child( furious_throws );
     }
@@ -6239,7 +6548,8 @@ struct burning_blades_t
 
 // Vengeful Retreat =========================================================
 
-struct vengeful_retreat_t : public demon_hunter_spell_t
+struct vengeful_retreat_t : public unbound_chaos_trigger_t<
+                                inertia_trigger_trigger_t<exergy_trigger_t<momentum_trigger_t<demon_hunter_spell_t>>>>
 {
   struct vengeful_retreat_damage_t : public demon_hunter_spell_t
   {
@@ -6268,7 +6578,7 @@ struct vengeful_retreat_t : public demon_hunter_spell_t
   };
 
   vengeful_retreat_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "vengeful_retreat", p, p->talent.demon_hunter.vengeful_retreat, options_str )
+    : base_t( "vengeful_retreat", p, p->talent.demon_hunter.vengeful_retreat, options_str )
   {
     execute_action        = p->get_background_action<vengeful_retreat_damage_t>( "vengeful_retreat_damage" );
     execute_action->stats = stats;
@@ -6282,9 +6592,7 @@ struct vengeful_retreat_t : public demon_hunter_spell_t
 
   void execute() override
   {
-    p()->buff.momentum->trigger();
-
-    demon_hunter_spell_t::execute();
+    base_t::execute();
 
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
     p()->cooldown.movement_shared->start( timespan_t::from_seconds( 1.0 ) );
@@ -6312,7 +6620,7 @@ struct vengeful_retreat_t : public demon_hunter_spell_t
     if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
       return false;
 
-    return demon_hunter_spell_t::ready();
+    return base_t::ready();
   }
 };
 
@@ -6596,7 +6904,7 @@ struct immolation_aura_buff_t : public demon_hunter_buff_t<buff_t>
 
       growing_inferno_ticks++;
 
-      if ( p()->talent.havoc.unbound_chaos->ok() )
+      if ( !p()->is_ptr() && p()->talent.havoc.unbound_chaos->ok() )
       {
         p()->buff.unbound_chaos->trigger();
         if ( p()->talent.havoc.inertia->ok() )
@@ -6797,6 +7105,12 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       p()->buff.enduring_torment->expire();
     }
+
+    if ( p()->set_bonuses.tww2_havoc_4pc->ok() && p()->buff.winning_streak->up() )
+    {
+      p()->buff.necessary_sacrifice->trigger( p()->buff.winning_streak->stack() );
+      p()->buff.winning_streak->expire();
+    }
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -6917,6 +7231,27 @@ struct fel_barrage_buff_t : public demon_hunter_buff_t<buff_t>
   }
 };
 
+struct luck_of_the_draw_buff_t : public demon_hunter_buff_t<buff_t>
+{
+  luck_of_the_draw_buff_t( demon_hunter_t* p )
+    : base_t( *p, "luck_of_the_draw", p->set_bonuses.tww2_vengeance_2pc->effectN( 1 ).trigger() )
+  {
+    base_t::set_default_value_from_effect_type( A_ADD_PCT_MODIFIER );
+  }
+
+  void bump( int stacks, double value ) override
+  {
+    buff_t::bump( stacks, value );
+
+    if ( p()->talent.demon_hunter.the_hunt->ok() && p()->set_bonuses.tww2_vengeance_4pc->ok() &&
+         rng().roll( p()->set_bonuses.tww2_vengeance_4pc->effectN( 1 ).percent() ) )
+    {
+      p()->cooldown.the_hunt->reset( true );
+      p()->proc.the_hunt_reset_from_tww2_vengeance_4pc->occur();
+    }
+  }
+};
+
 }  // end namespace buffs
 
 // Namespace Actions post buffs
@@ -6993,6 +7328,46 @@ movement_buff_t::movement_buff_t( demon_hunter_t* p, util::string_view name, con
                                   const item_t* item )
   : buff_t( p, name, spell_data, item ), yards_from_melee( 0.0 ), distance_moved( 0.0 ), dh( p )
 {
+}
+
+// ==========================================================================
+// Demon Hunter Proc Callbacks
+// ==========================================================================
+struct demon_hunter_proc_callback_t : public dbc_proc_callback_t
+{
+  demon_hunter_proc_callback_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e )
+  {
+    initialize();
+    activate();
+  }
+
+  demon_hunter_t* p() const
+  {
+    return debug_cast<demon_hunter_t*>( listener );
+  }
+  demon_hunter_t* p()
+  {
+    return debug_cast<demon_hunter_t*>( listener );
+  }
+};
+
+void tww2_vengeance_2pc( const special_effect_t& e )
+{
+  struct tww2_vengeance_2pc : demon_hunter_proc_callback_t
+  {
+    tww2_vengeance_2pc( const special_effect_t& e ) : demon_hunter_proc_callback_t( e )
+    {
+    }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      p()->buff.metamorphosis->trigger( p()->set_bonuses.tww2_vengeance_2pc->effectN( 1 ).time_value() );
+      p()->buff.luck_of_the_draw->trigger();
+      p()->proc.metamorphosis_from_tww2_vengeance_2pc->occur();
+    }
+  };
+
+  new tww2_vengeance_2pc( e );
 }
 
 // ==========================================================================
@@ -7288,6 +7663,12 @@ void demon_hunter_t::create_buffs()
                         ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
                         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
 
+  buff.exergy = make_buff( this, "exergy", spec.exergy_buff );
+  buff.exergy->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
+    // TODO: Verify if this behavior is correct
+    return std::min( b->remains() + d, 30_s );  // Capped to 30 seconds
+  } );
+
   buff.momentum = make_buff( this, "momentum", spec.momentum_buff );
   buff.momentum->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
     return std::min( b->remains() + d, 30_s );  // Capped to 30 seconds
@@ -7310,7 +7691,11 @@ void demon_hunter_t::create_buffs()
                               } );
 
   buff.unbound_chaos = make_buff( this, "unbound_chaos", spec.unbound_chaos_buff )
-                           ->set_default_value( talent.havoc.unbound_chaos->effectN( 2 ).percent() );
+                           ->set_default_value( is_ptr() ? spec.unbound_chaos_buff->effectN( 1 ).percent()
+                                                         : talent.havoc.unbound_chaos->effectN( 2 ).percent() );
+
+  buff.cycle_of_hatred = make_buff( this, "cycle_of_hatred", spec.cycle_of_hatred_buff )
+                             ->set_default_value( talent.havoc.cycle_of_hatred->effectN( 1 ).base_value() );
 
   buff.chaos_theory = make_buff( this, "chaos_theory", spec.chaos_theory_buff );
 
@@ -7395,13 +7780,12 @@ void demon_hunter_t::create_buffs()
     buff.enduring_torment->set_default_value_from_effect_type( A_HASTE_ALL )->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   }
 
-  buff.monster_rising =
-      make_buff( this, "monster_rising", hero_spec.monster_rising_buff )
-          ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
-          ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
-          ->set_allow_precombat( true )
-          ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-          ->add_invalidate( CACHE_AGILITY );
+  buff.monster_rising = make_buff( this, "monster_rising", hero_spec.monster_rising_buff )
+                            ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+                            ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
+                            ->set_allow_precombat( true )
+                            ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                            ->add_invalidate( CACHE_AGILITY );
 
   buff.pursuit_of_angryness =
       make_buff( this, "pursuit_of_angriness", talent.felscarred.pursuit_of_angriness )
@@ -7449,6 +7833,13 @@ void demon_hunter_t::create_buffs()
                                        set_bonuses.tww1_vengeance_4pc->ok() ? set_bonuses.tww1_vengeance_4pc_buff
                                                                             : spell_data_t::not_found() )
                                 ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+
+  buff.luck_of_the_draw = make_buff<buffs::luck_of_the_draw_buff_t>( this );
+  buff.winning_streak =
+      make_buff( this, "winning_streak", set_bonuses.tww2_havoc_2pc->effectN( 1 ).trigger() )->set_chance( 1.01 );
+  buff.winning_streak_residual =
+      make_buff( this, "winning_streak_residual", set_bonuses.winning_streak_residual_buff )->set_chance( 1.01 );
+  buff.necessary_sacrifice = make_buff( this, "necessary_sacrifice", set_bonuses.necessary_sacrifice_buff );
 }
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
@@ -7697,11 +8088,11 @@ void demon_hunter_t::init_action_list()
 
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
-    demon_hunter_apl::havoc( this );
+    is_ptr() ? demon_hunter_apl::havoc_ptr( this ) : demon_hunter_apl::havoc( this );
   }
   else if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
-    demon_hunter_apl::vengeance( this );
+    is_ptr() ? demon_hunter_apl::vengeance_ptr( this ) : demon_hunter_apl::vengeance( this );
   }
 
   use_default_action_list = true;
@@ -7779,7 +8170,10 @@ void demon_hunter_t::init_procs()
   // Fel-scarred
 
   // Set Bonuses
-  proc.soul_fragment_from_vengeance_twws1_2pc = get_proc( "soul_fragment_from_vengeance_twws1_2pc" );
+  proc.soul_fragment_from_vengeance_twws1_2pc  = get_proc( "soul_fragment_from_vengeance_twws1_2pc" );
+  proc.metamorphosis_from_tww2_vengeance_2pc   = get_proc( "metamorphosis_from_tww2_vengeance_2pc" );
+  proc.the_hunt_reset_from_tww2_vengeance_4pc  = get_proc( "the_hunt_reset_from_tww2_vengeance_4pc" );
+  proc.winning_streak_drop_from_tww2_havoc_2pc = get_proc( "winning_streak_drop_from_tww2_havoc_2pc" );
 }
 
 // demon_hunter_t::init_uptimes =============================================
@@ -7804,6 +8198,32 @@ void demon_hunter_t::init_resources( bool force )
 void demon_hunter_t::init_special_effects()
 {
   base_t::init_special_effects();
+
+  if ( set_bonuses.tww2_havoc_2pc->ok() )
+  {
+    auto set_data    = set_bonuses.tww2_havoc_2pc;
+    auto set         = new special_effect_t( this );
+    set->name_str    = set_data->name_cstr();
+    set->spell_id    = set_data->id();
+    set->type        = SPECIAL_EFFECT_EQUIP;
+    set->custom_buff = buff.winning_streak;
+    special_effects.push_back( set );
+
+    new demon_hunter_proc_callback_t( *set );
+  }
+
+  if ( set_bonuses.tww2_vengeance_2pc->ok() )
+  {
+    auto set_data     = set_bonuses.tww2_vengeance_2pc;
+    auto set          = new special_effect_t( this );
+    set->name_str     = set_data->name_cstr();
+    set->spell_id     = set_data->id();
+    set->type         = SPECIAL_EFFECT_EQUIP;
+    set->proc_flags2_ = PF2_ALL_HIT;
+    special_effects.push_back( set );
+
+    tww2_vengeance_2pc( *set );
+  }
 }
 
 // demon_hunter_t::init_rng =================================================
@@ -8019,6 +8439,7 @@ void demon_hunter_t::init_spells()
   talent.havoc.relentless_onslaught = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Onslaught" );
   talent.havoc.burning_wound        = find_talent_spell( talent_tree::SPECIALIZATION, "Burning Wound" );
 
+  talent.havoc.exergy          = find_talent_spell( talent_tree::SPECIALIZATION, "Exergy" );
   talent.havoc.momentum        = find_talent_spell( talent_tree::SPECIALIZATION, "Momentum" );
   talent.havoc.inertia         = find_talent_spell( talent_tree::SPECIALIZATION, "Inertia" );
   talent.havoc.chaos_theory    = find_talent_spell( talent_tree::SPECIALIZATION, "Chaos Theory" );
@@ -8037,6 +8458,7 @@ void demon_hunter_t::init_spells()
   talent.havoc.fel_barrage         = find_talent_spell( talent_tree::SPECIALIZATION, "Fel Barrage" );
   talent.havoc.shattered_destiny   = find_talent_spell( talent_tree::SPECIALIZATION, "Shattered Destiny" );
   talent.havoc.any_means_necessary = find_talent_spell( talent_tree::SPECIALIZATION, "Any Means Necessary" );
+  talent.havoc.screaming_brutality = find_talent_spell( talent_tree::SPECIALIZATION, "Screaming Brutality" );
   talent.havoc.a_fire_inside       = find_talent_spell( talent_tree::SPECIALIZATION, "A Fire Inside" );
 
   // Vengeance Talents
@@ -8177,6 +8599,7 @@ void demon_hunter_t::init_spells()
   spec.initiative_buff       = talent.havoc.initiative->ok() ? find_spell( 391215 ) : spell_data_t::not_found();
   spec.inner_demon_buff      = talent.havoc.inner_demon->ok() ? find_spell( 390145 ) : spell_data_t::not_found();
   spec.inner_demon_damage    = talent.havoc.inner_demon->ok() ? find_spell( 390137 ) : spell_data_t::not_found();
+  spec.exergy_buff           = talent.havoc.exergy->ok() ? find_spell( 208628 ) : spell_data_t::not_found();
   spec.momentum_buff         = talent.havoc.momentum->ok() ? find_spell( 208628 ) : spell_data_t::not_found();
   spec.inertia_buff          = talent.havoc.inertia->ok() ? find_spell( 427641 ) : spell_data_t::not_found();
   spec.ragefire_damage       = talent.havoc.ragefire->ok() ? find_spell( 390197 ) : spell_data_t::not_found();
@@ -8186,6 +8609,8 @@ void demon_hunter_t::init_spells()
   spec.unbound_chaos_buff    = talent.havoc.unbound_chaos->ok() ? find_spell( 347462 ) : spell_data_t::not_found();
   spec.chaotic_disposition_damage =
       talent.havoc.chaotic_disposition->ok() ? find_spell( 428493 ) : spell_data_t::not_found();
+  spec.cycle_of_hatred_buff =
+      is_ptr() && talent.havoc.cycle_of_hatred->ok() ? find_spell( 1214887 ) : spell_data_t::not_found();
 
   spec.demon_spikes_buff  = find_spell( 203819 );
   spec.fiery_brand_debuff = talent.vengeance.fiery_brand->ok() ? find_spell( 207771 ) : spell_data_t::not_found();
@@ -8301,12 +8726,20 @@ void demon_hunter_t::init_spells()
   set_bonuses.tww1_havoc_4pc     = sets->set( DEMON_HUNTER_HAVOC, TWW1, B4 );
   set_bonuses.tww1_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, TWW1, B2 );
   set_bonuses.tww1_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, TWW1, B4 );
+  set_bonuses.tww2_havoc_2pc     = sets->set( DEMON_HUNTER_HAVOC, TWW2, B2 );
+  set_bonuses.tww2_havoc_4pc     = sets->set( DEMON_HUNTER_HAVOC, TWW2, B4 );
+  set_bonuses.tww2_vengeance_2pc = sets->set( DEMON_HUNTER_VENGEANCE, TWW2, B2 );
+  set_bonuses.tww2_vengeance_4pc = sets->set( DEMON_HUNTER_VENGEANCE, TWW2, B4 );
 
   // Set Bonus Auxilliary ===================================================
 
   set_bonuses.tww1_havoc_4pc_buff = set_bonuses.tww1_havoc_4pc->ok() ? find_spell( 454628 ) : spell_data_t::not_found();
   set_bonuses.tww1_vengeance_4pc_buff =
       set_bonuses.tww1_vengeance_4pc->ok() ? find_spell( 454774 ) : spell_data_t::not_found();
+  set_bonuses.winning_streak_residual_buff =
+      set_bonuses.tww2_havoc_4pc->ok() ? find_spell( 1220706 ) : spell_data_t::not_found();
+  set_bonuses.necessary_sacrifice_buff =
+      set_bonuses.tww2_havoc_4pc->ok() ? find_spell( 1217055 ) : spell_data_t::not_found();
 
   // Spell Initialization ===================================================
 
@@ -8366,6 +8799,15 @@ void demon_hunter_t::init_spells()
   if ( talent.havoc.soulscar->ok() )
   {
     active.soulscar = get_background_action<soulscar_t>( "soulscar" );
+  }
+  if ( talent.havoc.screaming_brutality->ok() )
+  {
+    active.screaming_brutality_blade_dance_throw_glaive = get_background_action<throw_glaive_t>(
+        "throw_glaive_sb_bd_throw", "", throw_glaive_t::glaive_source::SCREAMING_BRUTALITY_BLADE_DANCE_THROW );
+    active.screaming_brutality_death_sweep_throw_glaive = get_background_action<throw_glaive_t>(
+        "throw_glaive_sb_ds_throw", "", throw_glaive_t::glaive_source::SCREAMING_BRUTALITY_DEATH_SWEEP_THROW );
+    active.screaming_brutality_slash_proc_throw_glaive = get_background_action<throw_glaive_t>(
+        "throw_glaive_sb_slash_proc_throw", "", throw_glaive_t::glaive_source::SCREAMING_BRUTALITY_SLASH_PROC_THROW );
   }
 
   if ( talent.vengeance.retaliation->ok() )
@@ -9370,6 +9812,9 @@ void demon_hunter_t::parse_player_effects()
   parse_effects( buff.thrill_of_the_fight_attack_speed );
 
   // Fel-scarred
+
+  // Set Bonuses
+  parse_effects( buff.necessary_sacrifice );
 }
 
 // demon_hunter_sigil_t::create_sigil_expression ==================================
@@ -9482,6 +9927,15 @@ const spell_data_t* demon_hunter_t::find_spell_override( const spell_data_t* bas
   }
 
   return base;
+}
+
+const spell_data_t* demon_hunter_t::conditional_spell_lookup( bool fn, int id )
+{
+  if ( !fn )
+  {
+    return spell_data_t::not_found();
+  }
+  return find_spell( id );
 }
 
 /* Report Extension Class

@@ -4904,7 +4904,7 @@ struct rip_t final : public trigger_thriving_growth_t<trigger_waning_twilight_t<
   {
     base_t::tick( d );
 
-    auto c = apex_pct / std::pow( p()->get_active_dots( d ), 0.3 );
+    auto c = apex_pct / std::pow( p()->get_active_dots( d ), 0.25 );
 
     if ( rng().roll( c ) )
       p()->buff.apex_predators_craving->trigger();
@@ -11671,8 +11671,7 @@ bool druid_t::validate_fight_style( fight_style_e style ) const
       break;
 
     case DRUID_RESTORATION:
-      sim->error( "Restoration Druid does not yet have an Action Priority List (APL)." );
-      return false;
+      break;
 
     default:
       break;
@@ -14112,6 +14111,7 @@ void druid_t::parse_player_effects()
     .set_eff( &find_effect( spec.bear_form_passive, A_MOD_TOTAL_STAT_PERCENTAGE ) );
 
   parse_effects( buff.bear_form );
+  parse_effects( buff.killing_strikes );
   parse_effects( buff.rage_of_the_sleeper );
   parse_effects( buff.ruthless_aggression );
   parse_effects( buff.ursine_vigor, talent.ursine_vigor );
