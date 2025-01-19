@@ -3037,7 +3037,7 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
         p()->buffs.pp_2pc_luck_of_the_draw->extend_duration( p(), extend_by );
 
         //Refunds Holy Power
-        double random_num = rng().roll( 1.0 );
+        double random_num = rng().range( 1.0 );
         int holy_power_gain = 0;
         holy_power_gain     = random_num < .1 ? 3 : random_num < .3 ? 2 : 1;
         p()->sim->print_log( "randomNum: {}, holy_power_gain: {}", random_num, holy_power_gain );
