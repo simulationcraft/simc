@@ -2105,9 +2105,9 @@ struct hammer_of_light_data_t
 struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
   using state_t = paladin_action_state_t<hammer_of_light_data_t>;
-  struct hammer_of_light_damage_t : public holy_power_consumer_t<paladin_melee_attack_t>
+  struct hammer_of_light_cleave_t : public holy_power_consumer_t<paladin_melee_attack_t>
   {
-    hammer_of_light_damage_t( paladin_t* p, util::string_view options_str )
+    hammer_of_light_cleave_t( paladin_t* p, util::string_view options_str )
       : holy_power_consumer_t( "hammer_of_light_damage", p, p->spells.templar.hammer_of_light )
     {
       parse_options( options_str );
@@ -2115,14 +2115,26 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
 
       auto hol                   = p->spells.templar.hammer_of_light;
       is_hammer_of_light         = true;
-      attack_power_mod.direct    = hol->effectN( 1 ).ap_coeff();
       aoe                        = 5;
-      base_aoe_multiplier        = hol->effectN( 2 ).ap_coeff() / hol->effectN( 1 ).ap_coeff();
       doesnt_consume_dp          = true;   // The driver consumes DP
       affected_by.divine_purpose = false;  // We handle this manually
-      base_execute_time =
-          timespan_t::from_millis( p->spells.templar.hammer_of_light_driver->effectN( 1 ).misc_value1() );
+      base_execute_time          = timespan_t::from_millis( 600 ); // Still has a 600ms execute time, for whatever reasons. Not in spell data anymore.
       dual                       = true;
+    }
+
+    
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+    holy_power_consumer_t::available_targets( tl );
+
+      // Does not hit the main target
+      auto it = range::find( tl, target );
+      if ( it != tl.end() )
+      {
+        tl.erase( it );
+      }
+
+      return tl.size();
     }
 
     action_state_t* new_state() override
@@ -2142,9 +2154,6 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     {
       snapshot_state( pre_execute_state, amount_type( pre_execute_state ) );
       holy_power_consumer_t::execute();
-      p()->trigger_empyrean_hammer(
-          target, as<int>( p()->talents.templar.lights_guidance->effectN( 2 ).base_value() ),
-          timespan_t::from_millis( p()->talents.templar.lights_guidance->effectN( 4 ).base_value() ), true );
       if ( p()->talents.templar.shake_the_heavens->ok() )
       {
         if ( p()->buffs.templar.shake_the_heavens->up() )
@@ -2163,38 +2172,32 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     void impact( action_state_t* s ) override
     {
       holy_power_consumer_t::impact( s );
-      if ( p()->talents.templar.undisputed_ruling->ok() )
+      if ( p()->specialization() == PALADIN_RETRIBUTION && p()->talents.templar.undisputed_ruling->ok() &&
+           p()->talents.greater_judgment->ok() )
       {
-        if ( p()->talents.greater_judgment->ok() )
-        {
-          p()->trigger_greater_judgment( td( s->target ) );
-        }
-        if ( s->chain_target < 2 )
-        {
-          p()->buffs.templar.undisputed_ruling->execute();
-        }
+        p()->trigger_greater_judgment( td( s->target ) );
       }
     }
   };
 
-  hammer_of_light_damage_t* direct_hammer;
+  hammer_of_light_cleave_t* cleave_hammer;
   double prot_cost;
   double ret_cost;
   hammer_of_light_t( paladin_t* p, util::string_view options_str )
-    : holy_power_consumer_t( "hammer_of_light", p, p->spells.templar.hammer_of_light_driver ), direct_hammer()
+    : holy_power_consumer_t( "hammer_of_light", p, p->spells.templar.hammer_of_light_driver ), cleave_hammer()
   {
     parse_options( options_str );
     is_hammer_of_light_driver = true;
     is_hammer_of_light        = true;
-    direct_hammer             = new hammer_of_light_damage_t( p, options_str );
+    cleave_hammer             = new hammer_of_light_cleave_t( p, options_str );
     background                = !p->talents.templar.lights_guidance->ok();
     hasted_gcd                = true;
     // This is not set by definition, since cost changes by spec
     resource_current = RESOURCE_HOLY_POWER;
     ret_cost         = data().powerN( 1 ).cost();
     prot_cost        = data().powerN( 2 ).cost();
-    direct_hammer->stats = stats;
-    add_child( direct_hammer );
+    cleave_hammer->stats = stats;
+    add_child( cleave_hammer );
 
     doesnt_consume_dp = false;
     hol_cost          = cost();
@@ -2231,11 +2234,11 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
    void execute() override
    {
      holy_power_consumer_t<paladin_melee_attack_t>::execute();
-     auto state            = static_cast<state_t*>(direct_hammer->get_state());
+     auto state            = static_cast<state_t*>(cleave_hammer->get_state());
      state->target         = execute_state->target;
      state->divine_purpose_mult =
          p()->buffs.divine_purpose->up() ? p()->spells.divine_purpose_buff->effectN( 2 ).percent() : 0.0;
-     direct_hammer->schedule_execute( state );
+     cleave_hammer->schedule_execute( state );
 
     if ( p()->buffs.templar.hammer_of_light_ready->up() )
     {
@@ -2253,6 +2256,10 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
     {
       p()->trigger_empyrean_hammer( target, 2, 0_ms, false );
     }
+    p()->trigger_empyrean_hammer(
+        target, as<int>( p()->talents.templar.lights_guidance->effectN( 2 ).base_value() ),
+        timespan_t::from_millis( p()->talents.templar.lights_guidance->effectN( 4 ).base_value() ), true );
+
     if ( p()->talents.templar.sacrosanct_crusade->ok() )
     {
       int heal_percent_effect = p()->specialization() == PALADIN_RETRIBUTION ? 5 : 2;
@@ -2267,6 +2274,11 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
       p()->active.sacrosanct_crusade_heal->base_dd_min = p()->active.sacrosanct_crusade_heal->base_dd_max = health;
       p()->active.sacrosanct_crusade_heal->execute();
     }
+   }
+   void impact(action_state_t* s) override
+   {
+     if ( p()->talents.templar.undisputed_ruling->ok() )
+       p()->buffs.templar.undisputed_ruling->execute();
    }
 };
 
