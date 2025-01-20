@@ -858,6 +858,7 @@ struct evoker_t : public player_t
 
   std::vector<evoker_t*> allied_augmentations;
   std::vector<std::function<void()>> allied_ebon_callbacks;
+  std::vector<std::function<void()>> allied_prescience_callbacks;
 
   struct heartbeat_t
   {
@@ -3497,13 +3498,13 @@ public:
 
     for ( auto& t : p()->allies_with_my_prescience )
     {
-      if ( t != player && ( !p()->is_ptr() || t->role != ROLE_TANK && t->role != ROLE_HEAL ) &&
+      if ( t == player || p()->is_ptr() && ( t->role == ROLE_TANK || t->role == ROLE_HEAL ) ||
            ( std::count_if( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
                             [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.ebon_might->up(); } ) +
-             p()->get_target_data( t )->buffs.ebon_might->up() ) <= 2 )
-      {
-        target_list.push_back( t );
-      }
+             p()->get_target_data( t )->buffs.ebon_might->up() ) >= 2 )
+        continue;
+
+      target_list.push_back( t );
     }
 
     // Clear helper vectors used to process in a single pass.
@@ -3512,26 +3513,26 @@ public:
 
     for ( const auto& t : sim->player_no_pet_list )
     {
-      if ( p()->is_ptr() && ( t->role == ROLE_TANK || t->role == ROLE_HEAL ) )
+      if ( t->is_sleeping() || p()->get_target_data( t )->buffs.ebon_might->up() || t == player || p()->is_ptr() && ( t->role == ROLE_TANK || t->role == ROLE_HEAL ) )
         continue;
 
-      if ( !t->is_sleeping() && t != player && !p()->get_target_data( t )->buffs.ebon_might->up() )
+      if ( range::find( p()->allies_with_my_prescience, t ) == p()->allies_with_my_prescience.end() )
       {
-        if ( range::find( p()->allies_with_my_prescience, t ) == p()->allies_with_my_prescience.end() )
+        auto allied_aug_buffs =
+            ( std::count_if( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                             [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.ebon_might->up(); } ) );
+
+        if ( allied_aug_buffs == 0 )
         {
-          if ( std::none_of( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
-                             [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.ebon_might->up(); } ) )
-          {
-            if ( t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
-                 t->specialization() != EVOKER_AUGMENTATION )
-              target_list.push_back( t );
-            else
-              secondary_list.push_back( t );
-          }
+          if ( t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
+               t->specialization() != EVOKER_AUGMENTATION )
+            target_list.push_back( t );
           else
-          {
-            tertiary_list.push_back( t );
-          }
+            secondary_list.push_back( t );
+        }
+        else if ( allied_aug_buffs < 2 )
+        {
+          tertiary_list.push_back( t );
         }
       }
     }
@@ -3550,14 +3551,9 @@ public:
     {
       for ( auto& t : tertiary_list )
       {
-        if ( ( std::count_if( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
-                              [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.ebon_might->up(); } ) +
-               p()->get_target_data( t )->buffs.ebon_might->up() ) <= 2 )
-        {
-          target_list.push_back( t );
-          if ( as<int>( target_list.size() ) >= n_targets() )
-            break;
-        }
+        target_list.push_back( t );
+        if ( as<int>( target_list.size() ) >= n_targets() )
+          break;
       }
     }
 
@@ -5872,16 +5868,28 @@ public:
     may_crit = true;
   }
 
-  void init() override
-
+  void activate() override
   {
-      evoker_augment_t::init();
+    evoker_augment_t::activate();
 
+    for ( auto e : p()->allied_augmentations )
+    {
+      e->allied_prescience_callbacks.push_back( [ this, e ]() {
+        sim->print_debug( "{} had target cache for prescience invalidated by {}", *p(), *e );
+        target_cache.is_valid = false;
+      } );
+    }
   }
 
   void impact( action_state_t* s ) override
   {
     evoker_augment_t::impact( s );
+
+    auto allied_aug_buffs =
+        ( std::count_if( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                         [ s ]( evoker_t* e ) { return e->get_target_data( s->target )->buffs.prescience->up(); } ) );
+
+    sim->print_debug( "{} - {} has {} prescience buffs at impact.", *p(), *target, allied_aug_buffs );
 
     double prescience_value = p()->get_target_data( s->target )->buffs.prescience->default_value;
     
@@ -5917,6 +5925,28 @@ public:
     }
   }
 
+  size_t available_targets( std::vector<player_t*>& target_list ) const override
+  {
+    target_list.clear();
+    // Player must always be the first target.
+    for ( const auto& t : sim->player_no_pet_list )
+    {
+      if ( t->is_sleeping() )
+        continue;
+
+      auto allied_aug_buffs =
+          ( std::count_if( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                           [ t ]( evoker_t* e ) { return e->get_target_data( t )->buffs.prescience->up(); } ) );
+
+      if ( allied_aug_buffs >= 2 )
+        continue;
+
+      target_list.push_back( t );
+    }
+
+    return target_list.size();
+  }
+
   bool ready() override
   {
     // Do not ever do this out of precombat, the order of entries in allies with my prescience is not preserved. During
@@ -5930,9 +5960,87 @@ public:
 
     return evoker_augment_t::ready();
   }
+  bool target_ready( player_t* candidate_target ) override
+  {
+    auto allied_aug_buffs = ( std::count_if( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                                             [ candidate_target ]( evoker_t* e ) {
+                                               return e->get_target_data( candidate_target )->buffs.prescience->up();
+                                             } ) );
+
+    if ( allied_aug_buffs >= 2 )
+    {
+      return false;
+    }
+
+    return evoker_augment_t::target_ready( candidate_target );
+  }
+
+  void queue_execute( execute_type et ) override
+  {
+    auto allied_aug_buffs =
+        ( std::count_if( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                         [ this ]( evoker_t* e ) { return e->get_target_data( target )->buffs.prescience->up(); } ) );
+
+    if ( allied_aug_buffs >= 2 )
+    {
+      if ( !select_target() )
+      {
+        sim->print_debug(
+            "{} had action {} schedule on a invalid target. No valid targets remain.",
+            *p(), name() );
+      }
+      else
+      {
+        sim->print_debug( "{} had action {} schedule on a invalid target. Retargeting action.", *p(), name() );
+      }
+    }
+
+    evoker_augment_t::queue_execute( et );
+  }
 
   void execute() override
   {
+    auto allied_aug_buffs =
+        ( std::count_if( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                         [ this ]( evoker_t* e ) { return e->get_target_data( target )->buffs.prescience->up(); } ) );
+
+    if ( allied_aug_buffs >= 2 )
+    {
+      target_cache.is_valid = false;
+
+      if ( !select_target() )
+      {
+        sim->print_debug( "{} had action {} execute on a invalid target. No valid targets remain. Cancel execution of the action.", *p(),
+                          name() );
+
+        return;
+      }
+      else
+      {
+        sim->print_debug( "{} had action {} execute on a invalid target. Retargeting action.", *p(), name() );
+        
+        // Update the sequence datas last executed spell to the new target
+        if ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) ||
+             ( sim->iterations > 1 && player->nth_iteration() == 1 ) )
+        {
+          // Find the last action sequence entry that matches the current action
+          auto& seq = player->collected_data.action_sequence;
+          auto it   = std::find_if(
+              seq.rbegin(), seq.rend(),
+              [ this ]( const player_collected_data_t::action_sequence_data_t& s ) { return s.action == this; } );
+          if ( it != seq.rend() )
+            ( *it ).target_name = target->name_str;
+        }
+      }
+    }
+
+    
+    allied_aug_buffs =
+        ( std::count_if( p()->allied_augmentations.begin(), p()->allied_augmentations.end(),
+                         [ this ]( evoker_t* e ) { return e->get_target_data( target )->buffs.prescience->up(); } ) );
+
+    sim->print_debug( "{} - {} has {} prescience buffs at execute.", *p(), *target, allied_aug_buffs );
+
     evoker_augment_t::execute();
 
     if ( p()->talent.anachronism.ok() && rng().roll( anachronism_chance ) )
@@ -7397,6 +7505,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   }
 
   buffs.prescience = make_buff_fallback<prescience_buff_t>( is_ally, *this, "prescience" );
+
   // TODO: Move into the buff itself
   if ( is_ally && evoker->talent.fate_mirror.ok() )
   {
@@ -7424,6 +7533,10 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
         fate_mirror_cb->deactivate();
         evoker->allies_with_my_prescience.find_and_erase_unordered( target );
       }
+      for ( auto& c : evoker->allied_prescience_callbacks )
+      {
+        c();
+      }
     } );
   }
   else
@@ -7436,6 +7549,10 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
       else
       {
         evoker->allies_with_my_prescience.find_and_erase_unordered( target );
+      }
+      for ( auto& c : evoker->allied_prescience_callbacks )
+      {
+        c();
       }
     } );
   }
@@ -7478,6 +7595,7 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
     naszuro(),
     allied_augmentations(),
     allied_ebon_callbacks(),
+    allied_prescience_callbacks(),
     heartbeat(),
     close_as_clutchmates( false ),
     option(),
