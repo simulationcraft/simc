@@ -5160,19 +5160,14 @@ player_t* action_t::select_target_if_target()
   }
 
   player_t* original_target = target;
-  player_t* proposed_target = target;
-  double current_target_v = target_if_expr->evaluate();
-
-  double max_ = current_target_v;
-  double min_ = current_target_v;
+  player_t* proposed_target = nullptr;
+    
+  double max_ = -std::numeric_limits<double>::infinity();
+  double min_ = std::numeric_limits<double>::infinity();
 
   for ( auto p : master_list )
   {
     target = p;
-
-    // No need to check current target
-    if ( target == original_target )
-      continue;
 
     if ( !target_ready( target ) )
     {
@@ -5181,14 +5176,8 @@ player_t* action_t::select_target_if_target()
 
     double v = target_if_expr->evaluate();
 
-    // Don't swap to targets that evaluate to identical value than the current
-    // target
-    if ( v == current_target_v )
-      continue;
-
     if ( target_if_mode == TARGET_IF_FIRST && v != 0 )
     {
-      current_target_v = v;
       proposed_target = target;
       break;
     }
@@ -5209,7 +5198,7 @@ player_t* action_t::select_target_if_target()
 
   // If "first available target" did not find anything useful, don't execute the
   // action
-  if (target_if_mode == TARGET_IF_FIRST && current_target_v == 0)
+  if ( !proposed_target )
   {
     sim->print_debug( "{} target_if no target found for {}", *player, signature_str );
 
