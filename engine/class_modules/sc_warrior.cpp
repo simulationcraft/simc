@@ -486,6 +486,7 @@ public:
     const spell_data_t* sudden_death_arms;
     const spell_data_t* sudden_death_fury;
     const spell_data_t* devastator;
+    const spell_data_t* bloodsurge_energize;
 
     // DF Tier
     // T31
@@ -2334,10 +2335,11 @@ struct rend_dot_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
-    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    if ( !p()->is_ptr() && p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
+
     if ( p()->tier_set.t31_arms_2pc->ok() && p()->rppm.t31_sudden_death->trigger() )
     {
       p()->buff.sudden_death->trigger();
@@ -2435,7 +2437,7 @@ struct rend_dot_prot_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
-    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    if ( !p()->is_ptr() && p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
@@ -4109,7 +4111,7 @@ struct deep_wounds_ARMS_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
-    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    if ( !p()->is_ptr() && p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
@@ -4160,7 +4162,7 @@ struct deep_wounds_PROT_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
-    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    if ( !p()->is_ptr() && p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
@@ -4295,7 +4297,7 @@ struct thunderous_roar_dot_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
-    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    if ( !p()->is_ptr() && p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
@@ -8553,6 +8555,9 @@ void warrior_t::init_spells()
   spell.seismic_reverberation_revenge = find_spell( 384730 );
   spell.devastator              = find_spell( 236279 );
 
+  // Shared Spells
+  spell.bloodsurge_energize     = find_spell( 384362 );
+
   // Colossus Spells
   spell.wrecked_debuff              = find_spell( 447513 );
 
@@ -10108,6 +10113,28 @@ void warrior_t::combat_begin()
   }
   parse_player_effects_t::combat_begin();
   buff.into_the_fray -> trigger( into_the_fray_friends < 0 ? buff.into_the_fray -> max_stack() : into_the_fray_friends + 1 );
+
+  if ( is_ptr() && talents.shared.bloodsurge->ok() )
+  {
+    make_repeating_event( sim, talents.shared.bloodsurge->effectN( 1 ).period(), [ this ]() {
+      double deep_wounds_targets = 0;
+      for ( auto t : sim->target_non_sleeping_list )
+      {
+        warrior_td_t* td = get_target_data( t );
+        if ( t->is_enemy() && td->dots_deep_wounds->is_ticking() )
+          deep_wounds_targets++;
+      }
+      if ( deep_wounds_targets > 0 )
+      {
+        double proc_chance = talents.shared.bloodsurge->effectN( 1 ).percent();
+        proc_chance *= std::sqrt( 1 / deep_wounds_targets ) * deep_wounds_targets;
+        if ( rng().roll( proc_chance ) )
+        {
+          resource_gain( RESOURCE_RAGE, spell.bloodsurge_energize->effectN( 1 ).resource( RESOURCE_RAGE ), gain.bloodsurge );
+        }
+      }
+      } );
+  }
 }
 
 // Into the fray
