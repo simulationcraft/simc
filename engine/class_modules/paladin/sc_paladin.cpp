@@ -2102,7 +2102,7 @@ struct hammer_of_light_data_t
   double divine_purpose_mult;
 };
 
-struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
+struct hammer_of_light_ptr_t : public holy_power_consumer_t<paladin_melee_attack_t>
 {
   using state_t = paladin_action_state_t<hammer_of_light_data_t>;
   struct hammer_of_light_cleave_t : public holy_power_consumer_t<paladin_melee_attack_t>
@@ -2183,7 +2183,7 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
   hammer_of_light_cleave_t* cleave_hammer;
   double prot_cost;
   double ret_cost;
-  hammer_of_light_t( paladin_t* p, util::string_view options_str )
+  hammer_of_light_ptr_t( paladin_t* p, util::string_view options_str )
     : holy_power_consumer_t( "hammer_of_light", p, p->spells.templar.hammer_of_light_driver ), cleave_hammer()
   {
     parse_options( options_str );
@@ -2282,7 +2282,174 @@ struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
    }
 };
 
+struct hammer_of_light_t : public holy_power_consumer_t<paladin_melee_attack_t>
+{
+  using state_t = paladin_action_state_t<hammer_of_light_data_t>;
+  struct hammer_of_light_damage_t : public holy_power_consumer_t<paladin_melee_attack_t>
+  {
+    hammer_of_light_damage_t( paladin_t* p, util::string_view options_str )
+      : holy_power_consumer_t( "hammer_of_light_damage", p, p->spells.templar.hammer_of_light )
+    {
+      parse_options( options_str );
+      background = true;
 
+      auto hol                   = p->spells.templar.hammer_of_light;
+      is_hammer_of_light         = true;
+      attack_power_mod.direct    = hol->effectN( 1 ).ap_coeff();
+      aoe                        = 5;
+      base_aoe_multiplier        = hol->effectN( 2 ).ap_coeff() / hol->effectN( 1 ).ap_coeff();
+      doesnt_consume_dp          = true;   // The driver consumes DP
+      affected_by.divine_purpose = false;  // We handle this manually
+      base_execute_time =
+          timespan_t::from_millis( p->spells.templar.hammer_of_light_driver->effectN( 1 ).misc_value1() );
+      dual = true;
+    }
+
+    action_state_t* new_state() override
+    {
+      return new state_t( this, target );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      auto da = paladin_melee_attack_t::composite_da_multiplier( s );
+      auto s_ = static_cast<const state_t*>( s );
+      da *= 1.0 + s_->divine_purpose_mult;
+      return da;
+    }
+
+    void execute() override
+    {
+      snapshot_state( pre_execute_state, amount_type( pre_execute_state ) );
+      holy_power_consumer_t::execute();
+      p()->trigger_empyrean_hammer(
+          target, as<int>( p()->talents.templar.lights_guidance->effectN( 2 ).base_value() ),
+          timespan_t::from_millis( p()->talents.templar.lights_guidance->effectN( 4 ).base_value() ), true );
+      if ( p()->talents.templar.shake_the_heavens->ok() )
+      {
+        if ( p()->buffs.templar.shake_the_heavens->up() )
+        {
+          // While Shake the Heavens is up, 8 seconds are added to the duration, up to 10.4 seconds (Pandemic limit). If
+          // the current duration is above the Pandemic Limit, it's duration does not change.
+          if ( p()->buffs.templar.shake_the_heavens->remains() <
+               p()->buffs.templar.shake_the_heavens->base_buff_duration * 1.3 )
+            p()->buffs.templar.shake_the_heavens->refresh();
+        }
+        else
+          p()->buffs.templar.shake_the_heavens->execute();
+      }
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      holy_power_consumer_t::impact( s );
+      if ( p()->talents.templar.undisputed_ruling->ok() )
+      {
+        if ( p()->talents.greater_judgment->ok() )
+        {
+          p()->trigger_greater_judgment( td( s->target ) );
+        }
+        if ( s->chain_target < 2 )
+        {
+          p()->buffs.templar.undisputed_ruling->execute();
+        }
+      }
+    }
+  };
+
+  hammer_of_light_damage_t* direct_hammer;
+  double prot_cost;
+  double ret_cost;
+  hammer_of_light_t( paladin_t* p, util::string_view options_str )
+    : holy_power_consumer_t( "hammer_of_light", p, p->spells.templar.hammer_of_light_driver ), direct_hammer()
+  {
+    parse_options( options_str );
+    is_hammer_of_light_driver = true;
+    is_hammer_of_light        = true;
+    direct_hammer             = new hammer_of_light_damage_t( p, options_str );
+    background                = !p->talents.templar.lights_guidance->ok();
+    hasted_gcd                = true;
+    // This is not set by definition, since cost changes by spec
+    resource_current     = RESOURCE_HOLY_POWER;
+    ret_cost             = data().powerN( 1 ).cost();
+    prot_cost            = data().powerN( 2 ).cost();
+    direct_hammer->stats = stats;
+    add_child( direct_hammer );
+
+    doesnt_consume_dp = false;
+    hol_cost          = cost();
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  double cost() const override
+  {
+    // double c = holy_power_consumer_t::cost();
+    // It costs 5 for Ret, 3 for Prot
+    double c = p()->specialization() == PALADIN_RETRIBUTION ? ret_cost : prot_cost;
+
+    if ( p()->buffs.templar.hammer_of_light_free->up() )
+      c *= 1.0 + p()->buffs.templar.hammer_of_light_free->value();
+    if ( affected_by.divine_purpose_cost && p()->buffs.divine_purpose->check() )
+      c = 0.0;
+
+    return c;
+  }
+
+  bool target_ready( player_t* candidate_target ) override
+  {
+    if ( !( p()->buffs.templar.hammer_of_light_ready->up() || p()->buffs.templar.hammer_of_light_free->up() ) )
+    {
+      return false;
+    }
+    return paladin_melee_attack_t::target_ready( candidate_target );
+  }
+
+  void execute() override
+  {
+    holy_power_consumer_t<paladin_melee_attack_t>::execute();
+    auto state    = static_cast<state_t*>( direct_hammer->get_state() );
+    state->target = execute_state->target;
+    state->divine_purpose_mult =
+        p()->buffs.divine_purpose->up() ? p()->spells.divine_purpose_buff->effectN( 2 ).percent() : 0.0;
+    direct_hammer->schedule_execute( state );
+
+    if ( p()->buffs.templar.hammer_of_light_ready->up() )
+    {
+      p()->buffs.templar.hammer_of_light_ready->expire();
+      if ( p()->buffs.templar.lights_deliverance->at_max_stacks() )
+      {
+        p()->trigger_lights_deliverance( true );
+      }
+    }
+    else if ( p()->buffs.templar.hammer_of_light_free->up() )
+    {
+      p()->buffs.templar.hammer_of_light_free->expire();
+    }
+    if ( p()->talents.templar.zealous_vindication->ok() )
+    {
+      p()->trigger_empyrean_hammer( target, 2, 0_ms, false );
+    }
+    if ( p()->talents.templar.sacrosanct_crusade->ok() )
+    {
+      int heal_percent_effect               = p()->specialization() == PALADIN_RETRIBUTION ? 5 : 2;
+      int additional_heal_per_target_effect = p()->specialization() == PALADIN_RETRIBUTION ? 6 : 3;
+
+      double heal_percent = p()->talents.templar.sacrosanct_crusade->effectN( heal_percent_effect ).percent();
+      double additional_heal_per_target =
+          p()->talents.templar.sacrosanct_crusade->effectN( additional_heal_per_target_effect ).percent();
+
+      double modifier = heal_percent + std::min( as<int>( p()->sim->target_non_sleeping_list.size() ), 5 ) *
+                                           additional_heal_per_target;
+      double health                                    = p()->resources.max[ RESOURCE_HEALTH ] * modifier;
+      p()->active.sacrosanct_crusade_heal->base_dd_min = p()->active.sacrosanct_crusade_heal->base_dd_max = health;
+      p()->active.sacrosanct_crusade_heal->execute();
+    }
+  }
+};
 // Empyrean Hammer
 struct empyrean_hammer_wd_t : public paladin_spell_t
 {
@@ -3650,7 +3817,12 @@ action_t* paladin_t::create_action( util::string_view name, util::string_view op
   if ( name == "holy_armaments" )
     return new holy_armaments_t( this, options_str );
   if ( name == "hammer_of_light" )
-    return new hammer_of_light_t( this, options_str );
+  {
+    if ( is_ptr() )
+      return new hammer_of_light_ptr_t( this, options_str );
+    else
+      return new hammer_of_light_t( this, options_str );
+  }
   if ( name == "rite_of_adjuration" )
     return new rite_of_adjuration_t( this, options_str );
   if ( name == "rite_of_sanctification" )
