@@ -6931,11 +6931,6 @@ struct shield_slam_t : public warrior_attack_t
       am *= 1.0 + sb_increase;
     }
 
-    if ( p()->talents.protection.punish.ok() )
-    {
-      am *= 1.0 + p()->talents.protection.punish->effectN( 1 ).percent();
-    }
-
     if ( p()->buff.violent_outburst->check() )
     {
       am *= 1.0 + p()->buff.violent_outburst->data().effectN( 1 ).percent();
@@ -9389,8 +9384,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this, &p );
 
-  debuffs_punish = make_buff( *this, "punish", p.talents.protection.punish -> effectN( 2 ).trigger() )
-    ->set_default_value( p.talents.protection.punish -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
+  debuffs_punish = make_buff( *this, "punish", p.talents.protection.punish -> effectN( 2 ).trigger() );
 
   debuffs_taunt = make_buff( *this, "taunt", p.find_class_spell( "Taunt" ) );
 
@@ -11073,6 +11067,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.protection.bloodborne );
   action.apply_affecting_aura( talents.protection.defenders_aegis );
   action.apply_affecting_aura( talents.protection.battering_ram );
+  action.apply_affecting_aura( talents.protection.punish );
 
   // Shared Auras
   if ( !is_ptr() )
