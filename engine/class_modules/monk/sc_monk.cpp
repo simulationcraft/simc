@@ -7129,7 +7129,7 @@ void monk_t::init_spells()
 
   if ( talent.windwalker.teachings_of_the_monastery->ok() )
     shared.teachings_of_the_monastery = talent.windwalker.teachings_of_the_monastery;
-  else if ( baseline.mistweaver.teachings_of_the_monastery->ok() )
+  else if ( specialization() == MONK_MISTWEAVER && baseline.mistweaver.teachings_of_the_monastery->ok() )
     shared.teachings_of_the_monastery = baseline.mistweaver.teachings_of_the_monastery;
   else
     shared.teachings_of_the_monastery = spell_data_t::not_found();
@@ -7950,8 +7950,9 @@ void monk_t::create_buffs()
             if ( old && !new_ )
               tier.tww2.cashout->trigger( old );
           } );
-  tier.tww2.cashout = make_buff_fallback( tier.tww2.ww_4pc->ok(), this, "cashout", tier.tww2.ww_4pc_cashout )
-      ->set_max_stack( 59 ); // Spell says it caps at 8, but have screenshots of it stacking to at least 59.
+  tier.tww2.cashout =
+      make_buff_fallback( tier.tww2.ww_4pc->ok(), this, "cashout", tier.tww2.ww_4pc_cashout )
+          ->set_max_stack( 59 );  // Spell says it caps at 8, but have screenshots of it stacking to at least 59.
   // BrM
   tier.tww2.luck_of_the_draw =
       make_buff_fallback( tier.tww2.brm_2pc->ok(), this, "luck_of_the_draw", tier.tww2.brm_2pc_luck_of_the_draw )
