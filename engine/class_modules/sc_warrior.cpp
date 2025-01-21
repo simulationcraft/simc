@@ -1238,7 +1238,8 @@ public:
       }
       // Effect 3 is the auto attack mod
       parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars, effect_mask_t( false ).enable( 3 ) );
-      parse_effects( p()->talents.colossus.practiced_strikes );
+      // Effect 3 is the increased rage gain.
+      parse_effects( p()->talents.colossus.practiced_strikes, effect_mask_t( true ).disable( 3 ) );
     }
 
     // Slayer
@@ -6900,6 +6901,9 @@ struct shield_slam_t : public warrior_attack_t
     rage_gain += p->talents.protection.heavy_repercussions->effectN( 2 ).resource( RESOURCE_RAGE );
     if( !p->is_ptr() )
       rage_gain += p->talents.protection.impenetrable_wall->effectN( 2 ).resource( RESOURCE_RAGE );
+
+    if ( p->is_ptr() && p->talents.colossus.practiced_strikes->ok() )
+      rage_gain += p->talents.colossus.practiced_strikes->effectN( 3 ).resource( RESOURCE_RAGE );
 
     if ( p -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B2 ) )
         base_multiplier *= 1.0 + p -> sets -> set( WARRIOR_PROTECTION, T30, B2 ) -> effectN( 1 ).percent();
