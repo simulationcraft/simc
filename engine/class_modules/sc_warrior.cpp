@@ -1808,7 +1808,6 @@ struct avatar_t : public warrior_spell_t
   {
     background = true;
     cooldown->duration = 0_s;
-    internal_cooldown->duration = 0_s;
     trigger_gcd = timespan_t::zero();
     harmful    = false;
     target     = p;
@@ -3288,7 +3287,6 @@ struct mortal_strike_t : public warrior_attack_t
     impact_action = p->active.deep_wounds_ARMS;
     rend_dot = new rend_dot_t( p );
     cooldown->duration = 0_s;
-    internal_cooldown->duration = 0_s;
     if ( p->talents.slayer.reap_the_storm->ok() )
     {
       std::string s = "reap_the_storm_";
