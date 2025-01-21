@@ -252941,14 +252941,13 @@ Effects          :
 Description      : Show off your swashbuckling prowess, attacking players in a short range in front of you.
 
 Name             : Celestial Barrage (desc=Offensive) (id=471717) 
+Hotfixed         : Cooldown (18000 -> 0), Category Cooldown (18000 -> 0)
 School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 2 seconds
-Cooldown         : 18 seconds
 Category         : 2340 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 18 seconds
 Triggered By     : Celestial Barrage (472881)
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), Force Display Castbar (155), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17)
@@ -253146,14 +253145,13 @@ Description      : $@spelldesc467767
 Tooltip          : Critical Strike increased by $w1.
 
 Name             : Celestial Barrage (desc=Offensive) (id=472390) 
+Hotfixed         : Cooldown (16000 -> 0), Category Cooldown (16000 -> 0)
 School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 2 seconds
-Cooldown         : 16 seconds
 Category         : 2340 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 16 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), Force Display Castbar (155), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17)
 Effects          :
@@ -253175,14 +253173,13 @@ Call down a barrage of moonbeams, damaging enemies.
 Hold to increase range.
 
 Name             : Celestial Barrage (desc=Offensive) (id=472403) 
+Hotfixed         : Cooldown (14000 -> 0), Category Cooldown (14000 -> 0)
 School           : Arcane
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 2 seconds
-Cooldown         : 14 seconds
 Category         : 2340 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 14 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), Force Display Castbar (155), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17)
 Effects          :
@@ -253205,14 +253202,13 @@ Hold to increase range.
 
 
 Name             : Celestial Barrage (desc=Offensive) (id=472406) 
+Hotfixed         : Cooldown (12000 -> 0), Category Cooldown (12000 -> 0)
 School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 2 seconds
-Cooldown         : 12 seconds
 Category         : 2340 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 12 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), Force Display Castbar (155), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17)
 Effects          :
