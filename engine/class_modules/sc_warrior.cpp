@@ -1201,6 +1201,7 @@ public:
     else if ( p()->specialization() == WARRIOR_PROTECTION )
     {
       parse_effects( p()->buff.battering_ram );
+      parse_effects( p()->buff.brace_for_impact, effect_mask_t( true ).disable( 2 ) );
       parse_effects( p()->buff.juggernaut_prot );
       parse_effects( p()->buff.seismic_reverberation_revenge );
       parse_effects( p()->buff.vanguards_determination );
@@ -6934,11 +6935,6 @@ struct shield_slam_t : public warrior_attack_t
     if ( p()->buff.violent_outburst->check() )
     {
       am *= 1.0 + p()->buff.violent_outburst->data().effectN( 1 ).percent();
-    }
-
-    if ( p() -> buff.brace_for_impact -> up() )
-    {
-      am *= 1.0 + p()->buff.brace_for_impact -> stack_value();
     }
 
     if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B2 ) && p() -> buff.last_stand -> up() )
