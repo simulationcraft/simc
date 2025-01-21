@@ -1787,9 +1787,14 @@ struct avatar_t : public warrior_spell_t
       immovable_object_duration = p->talents.warrior.immovable_object->effectN( 2 ).time_value();
 
     if ( p->talents.mountain_thane.avatar_of_the_storm->ok() )
+    {
       avatar_of_the_storm_duration = timespan_t::from_seconds( p->talents.mountain_thane.avatar_of_the_storm->effectN( 3 ).base_value() );
+      if ( p->is_ptr() && p->specialization() == WARRIOR_PROTECTION )
+        avatar_of_the_storm_duration += timespan_t::from_seconds( p->talents.mountain_thane.avatar_of_the_storm->effectN( 4 ).base_value() );
+    }
   }
 
+  // Background action version
   avatar_t( util::string_view name, warrior_t* p )
     : warrior_spell_t( name, p, p->talents.warrior.avatar ),
     warlords_torment_duration( 0_s ),
@@ -1802,6 +1807,8 @@ struct avatar_t : public warrior_spell_t
     from_immovable_object( false )
   {
     background = true;
+    cooldown->duration = 0_s;
+    internal_cooldown->duration = 0_s;
     trigger_gcd = timespan_t::zero();
     harmful    = false;
     target     = p;
@@ -1819,7 +1826,11 @@ struct avatar_t : public warrior_spell_t
       immovable_object_duration = p->talents.warrior.immovable_object->effectN( 2 ).time_value();
 
     if ( p->talents.mountain_thane.avatar_of_the_storm->ok() )
+    {
       avatar_of_the_storm_duration = timespan_t::from_seconds( p->talents.mountain_thane.avatar_of_the_storm->effectN( 3 ).base_value() );
+      if ( p->is_ptr() && p->specialization() == WARRIOR_PROTECTION )
+        avatar_of_the_storm_duration += timespan_t::from_seconds( p->talents.mountain_thane.avatar_of_the_storm->effectN( 4 ).base_value() );
+    }
   }
 
   struct state_t : public action_state_t
@@ -3276,6 +3287,7 @@ struct mortal_strike_t : public warrior_attack_t
     background = true;
     impact_action = p->active.deep_wounds_ARMS;
     rend_dot = new rend_dot_t( p );
+    cooldown->duration = 0_s;
     internal_cooldown->duration = 0_s;
     if ( p->talents.slayer.reap_the_storm->ok() )
     {
