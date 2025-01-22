@@ -6542,6 +6542,50 @@ struct ravager_t : public warrior_attack_t
 
 // Revenge ==================================================================
 
+struct revenge_seismic_reverberation_t : public warrior_attack_t
+{
+  revenge_seismic_reverberation_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->find_spell( 1215174 ) )
+  {
+    weapon = &( player->main_hand_weapon );
+    aoe = -1;
+    background = true;
+    proc = true;
+    impact_action = p->active.deep_wounds_PROT;
+    base_multiplier *= 1.0 + p -> talents.protection.best_served_cold -> effectN( 1 ).percent();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+    if( p() -> buff.revenge -> up() && p() -> talents.protection.best_served_cold -> ok() )
+    {
+      am /= 1.0 + p()->talents.protection.best_served_cold->effectN( 1 ).percent();
+      am *= 1.0 + p()->talents.protection.best_served_cold->effectN( 1 ).percent() +
+            p()->buff.revenge->data().effectN( 2 ).percent();
+    }
+
+    am *= 1.0 + p() -> talents.protection.show_of_force -> effectN( 2 ).percent();
+
+    am *= 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent();
+
+    return am;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    if ( p()->talents.colossus.one_against_many->ok() )
+    {
+      m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
+    }
+
+    return m;
+  }
+
+};
+
 struct revenge_t : public warrior_attack_t
 {
   double shield_slam_reset;
@@ -6568,7 +6612,11 @@ struct revenge_t : public warrior_attack_t
       }
       else if ( p -> talents.warrior.seismic_reverberation -> ok() )
       {
-        seismic_action = new revenge_t( p, "", true );
+        if ( ! p->is_ptr() )
+          seismic_action = new revenge_t( p, "", true );
+        else  // PTR uses a different spell id
+          seismic_action = new revenge_seismic_reverberation_t( "revenge_seismic_reverberation", p );
+
         add_child( seismic_action );
       }
 
@@ -6601,7 +6649,8 @@ struct revenge_t : public warrior_attack_t
     if ( p()->talents.warrior.seismic_reverberation->ok() && !background &&
     execute_state->n_targets >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
     {
-      p()->buff.seismic_reverberation_revenge->trigger();
+      if( !p()->is_ptr() )  // Remove the entire buff.seismic_reverberation_revenge after 11.1 releases, it's no longer used
+        p()->buff.seismic_reverberation_revenge->trigger();
       seismic_action->execute_on_target( target );
     }
 
