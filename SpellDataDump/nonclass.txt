@@ -253594,10 +253594,11 @@ Cast to consecrate the ground damaging enemies periodically. While in your conse
 
 
 Name             : Call Galefeather (desc=Utility) (id=474121) 
+Hotfixed         : Velocity (0.5 -> 0.2)
 School           : Physical
 Spell Type       : None
 Range            : 60 yards
-Travel Time      : 0.5 seconds
+Travel Time      : 0.2 seconds
 Duration         : 12 seconds
 Cooldown         : 22 seconds
 Category         : 2354 (Type 0x0)
@@ -253629,10 +253630,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 35766 | Target: Unknown(87) -> At Enemy in Area (16)
 
 Name             : Call Galefeather (desc=Utility) (id=474650) 
+Hotfixed         : Velocity (0.5 -> 0.2)
 School           : Physical
 Spell Type       : None
 Range            : 60 yards
-Travel Time      : 0.5 seconds
+Travel Time      : 0.2 seconds
 Duration         : 12 seconds
 Cooldown         : 20 seconds
 Category         : 2354 (Type 0x0)
@@ -253651,10 +253653,11 @@ Description      : |CFFFFFFFF- Ground targeted|R
 Call forth Galefeather to knock enemies back with heavy winds for a short duration.
 
 Name             : Call Galefeather (desc=Utility) (id=474651) 
+Hotfixed         : Velocity (0.5 -> 0.2)
 School           : Physical
 Spell Type       : None
 Range            : 60 yards
-Travel Time      : 0.5 seconds
+Travel Time      : 0.2 seconds
 Duration         : 12 seconds
 Cooldown         : 18 seconds
 Category         : 2354 (Type 0x0)
@@ -253673,10 +253676,11 @@ Description      : |CFFFFFFFF- Ground targeted|R
 Call forth Galefeather to knock enemies back with heavy winds for a short duration.
 
 Name             : Call Galefeather (desc=Utility) (id=474652) 
+Hotfixed         : Velocity (0.5 -> 0.2)
 School           : Physical
 Spell Type       : None
 Range            : 60 yards
-Travel Time      : 0.5 seconds
+Travel Time      : 0.2 seconds
 Duration         : 12 seconds
 Cooldown         : 16 seconds
 Category         : 2354 (Type 0x0)
