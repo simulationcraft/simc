@@ -2904,6 +2904,7 @@ struct bloodbath_dot_t : public warrior_attack_t
     background = true;
     hasted_ticks = false;
     may_miss = false;
+    dot_behavior = DOT_EXTEND;
   }
 };
 
