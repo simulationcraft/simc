@@ -223482,6 +223482,7 @@ Description      : $@spelldesc432430
 Tooltip          : Damage dealt increased by $w1% for defeating a powerful player.
 
 Name             : Flask of Saving Graces (id=432473) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
@@ -223489,7 +223490,7 @@ Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
 Proc Chance      : 101%
 Proc Flags       : Generic Heal, Magic Heal
-Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Entering Arena (149), Suppress Weapon Procs (151), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
+Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1121190)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
