@@ -325,7 +325,7 @@ public:
 
     // TWW2 Tier
     buff_t* winning_streak_arms; // Arms 2pc
-    buff_t* hedged_bets;         // Arms 4pc
+    buff_t* pay_them_back;       // Arms 4pc
     buff_t* winning_streak_fury; // Fury 2pc
     buff_t* double_down_bt;      // Fury 4pc Bloodthirst
     buff_t* double_down_rb;      // Fury 4pc Raging Blow
@@ -1160,7 +1160,7 @@ public:
       if ( p()->is_ptr() )
       {
         parse_effects( p()->buff.winning_streak_arms );
-        parse_effects( p()->buff.hedged_bets );
+        parse_effects( p()->buff.pay_them_back );
       }
     }
     else if ( p()->specialization() == WARRIOR_FURY )
@@ -9797,9 +9797,10 @@ void warrior_t::create_buffs()
                                 ->set_chance( 1.0 )
                                 ->set_expire_callback( [ & ]( buff_t*, int stacks, timespan_t ) {
                                   if ( sets -> has_set_bonus( WARRIOR_ARMS, TWW2, B4 ) )
-                                    buff.hedged_bets -> trigger( timespan_t::from_seconds( sets->set( WARRIOR_ARMS, TWW2, B4 )->effectN( 1 ).base_value() * stacks ) );
+                                    buff.pay_them_back -> trigger( stacks );
                                 });
-  buff.hedged_bets = make_buff( this, "hedged_bets", find_spell( 1216556) );                  // Arms 4pc
+  buff.pay_them_back = make_buff( this, "pay_them_back", find_spell( 1216556) )
+                          ->set_refresh_behavior( buff_refresh_behavior::DURATION );          // Arms 4pc
   buff.winning_streak_fury = make_buff( this, "winning_streak_fury", find_spell( 1216561 ) )  // Fury 2pc
                                 ->set_chance( 1.0 );
   buff.double_down_bt = make_buff( this, "double_down_bt", find_spell( 1216565 ) );           // Fury 4pc Bloodthirst
@@ -11055,6 +11056,10 @@ void warrior_t::parse_player_effects()
   parse_effects( spec.warrior );
   parse_effects( talents.warrior.wild_strikes );
   parse_effects( buff.wild_strikes, talents.warrior.wild_strikes );
+  if ( is_ptr() )
+  {
+    parse_effects( buff.pay_them_back );
+  }
 
   if ( specialization() == WARRIOR_ARMS )
   {
