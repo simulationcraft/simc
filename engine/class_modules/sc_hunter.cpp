@@ -1019,8 +1019,8 @@ public:
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
-  double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
-  double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t*, bool, bool ) const override;
+  double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian, bool scaling_guardian ) const override;
   double composite_leech() const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double stacking_movement_modifier() const override;
@@ -8839,16 +8839,19 @@ double hunter_t::composite_player_target_multiplier( player_t* target, school_e 
   return d;
 }
 
-double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
+double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian, bool scaling_guardian ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
+  double m = player_t::composite_player_pet_damage_multiplier( s, guardian, scaling_guardian );
 
-  if ( mastery.master_of_beasts->ok() )
-    m *= 1.0 + cache.mastery_value();
+  if ( !guardian || scaling_guardian )
+  {
+    if ( mastery.master_of_beasts->ok() )
+      m *= 1.0 + cache.mastery_value();
 
-  m *= 1 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
-  m *= 1 + specs.survival_hunter -> effectN( 3 ).percent();
-  m *= 1 + specs.marksmanship_hunter -> effectN( 3 ).percent();
+    m *= 1 + specs.beast_mastery_hunter->effectN( 3 ).percent();
+    m *= 1 + specs.survival_hunter->effectN( 3 ).percent();
+    m *= 1 + specs.marksmanship_hunter->effectN( 3 ).percent();
+  }
 
   if ( !guardian )
   {
@@ -8863,9 +8866,9 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   return m;
 }
 
-double hunter_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+double hunter_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian, bool scaling_guardian ) const
 {
-  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
+  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian, scaling_guardian );
 
   if ( !guardian )
   {

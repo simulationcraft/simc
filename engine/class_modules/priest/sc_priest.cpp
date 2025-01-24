@@ -3256,33 +3256,37 @@ double priest_t::composite_spell_crit_chance() const
   return sc;
 }
 
-double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
+double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian,
+                                                         bool scaling_guardian ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
+  double m = player_t::composite_player_pet_damage_multiplier( s, guardian, scaling_guardian );
 
   // Certain modifiers are only for Guardians, otherwise just give the Pet Modifier
 
-  if ( guardian )
+  if ( guardian && scaling_guardian )
   {
     m *= ( 1.0 + specs.shadow_priest->effectN( 4 ).percent() );
     m *= ( 1.0 + specs.discipline_priest->effectN( 15 ).percent() );
   }
-  else
+  else if ( !guardian )
   {
     m *= ( 1.0 + specs.shadow_priest->effectN( 3 ).percent() );
     m *= ( 1.0 + specs.discipline_priest->effectN( 3 ).percent() );
   }
 
-  // TWW1 Set Bonus for pet spells, this double dips with pet spells
-  if ( buffs.devouring_chorus->check() )
+  if ( scaling_guardian || !guardian )
   {
-    m *= ( 1.0 + buffs.devouring_chorus->check_stack_value() );
-  }
+    // TWW1 Set Bonus for pet spells, this double dips with pet spells
+    if ( buffs.devouring_chorus->check() )
+    {
+      m *= ( 1.0 + buffs.devouring_chorus->check_stack_value() );
+    }
 
-  // Auto parsing does not cover melee attacks, and other attacks double dip with this
-  if ( buffs.devoured_pride->check() )
-  {
-    m *= ( 1.0 + talents.shadow.devoured_pride->effectN( 2 ).percent() );
+    // Auto parsing does not cover melee attacks, and other attacks double dip with this
+    if ( buffs.devoured_pride->check() )
+    {
+      m *= ( 1.0 + talents.shadow.devoured_pride->effectN( 2 ).percent() );
+    }
   }
   return m;
 }

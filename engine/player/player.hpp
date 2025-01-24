@@ -1204,8 +1204,8 @@ public:
   virtual double composite_player_dh_multiplier( school_e ) const { return 1.0; }
   virtual double composite_player_th_multiplier( school_e ) const;
   virtual double composite_player_absorb_multiplier( const action_state_t* s ) const;
-  virtual double composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const;
-  virtual double composite_player_target_pet_damage_multiplier( player_t*, bool guardian ) const;
+  virtual double composite_player_pet_damage_multiplier( const action_state_t*, bool guardian, bool scaling_guardian ) const;
+  virtual double composite_player_target_pet_damage_multiplier( player_t*, bool guardian, bool scaling_guardian ) const;
   virtual double composite_player_target_crit_chance( player_t* ) const;
   virtual double composite_player_critical_damage_multiplier( const action_state_t* s ) const;
   virtual double composite_player_critical_healing_multiplier() const;

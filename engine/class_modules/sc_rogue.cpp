@@ -1291,7 +1291,7 @@ public:
   double    composite_leech() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    composite_player_multiplier( school_e school ) const override;
-  double    composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
+  double    composite_player_pet_damage_multiplier( const action_state_t*, bool guardian, bool scaling_guardian ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_target_crit_chance( player_t* target ) const override;
   double    composite_player_target_armor( player_t* target ) const override;
@@ -5552,7 +5552,7 @@ struct secret_technique_t : public rogue_attack_t
       if ( secondary_trigger_type == secondary_trigger::SECRET_TECHNIQUE_CLONE )
       {
         // Secret Technique clones count as pets and benefit from pet modifiers
-        m *= p()->composite_player_pet_damage_multiplier( state, true );
+        m *= p()->composite_player_pet_damage_multiplier( state, true, true );
       }
 
       return m;
@@ -9749,13 +9749,17 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 
 // rogue_t::composite_player_pet_damage_multiplier ==========================
 
-double rogue_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
+double rogue_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian,
+                                                        bool scaling_guardian ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
+  double m = player_t::composite_player_pet_damage_multiplier( s, guardian, scaling_guardian );
 
-  m *= 1.0 + spec.assassination_rogue->effectN( 6 ).percent();
-  m *= 1.0 + spec.outlaw_rogue->effectN( 3 ).percent();
-  m *= 1.0 + spec.subtlety_rogue->effectN( 8 ).percent();
+  if ( !guardian || scaling_guardian )
+  {
+    m *= 1.0 + spec.assassination_rogue->effectN( 6 ).percent();
+    m *= 1.0 + spec.outlaw_rogue->effectN( 3 ).percent();
+    m *= 1.0 + spec.subtlety_rogue->effectN( 8 ).percent();
+  }
 
   return m;
 }

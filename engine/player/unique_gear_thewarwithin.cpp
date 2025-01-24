@@ -2080,6 +2080,7 @@ void sigil_of_algari_concordance( special_effect_t& e )
         aoe_action( nullptr )
     {
       npc_id = summon_spell->effectN( 1 ).misc_value1();
+      player_effect_scaling_guardian = false;
     }
 
     resource_e primary_resource() const override
@@ -4164,6 +4165,7 @@ void candle_confidant( special_effect_t& effect )
     {
       npc_id = summon_spell->effectN( 1 ).misc_value1();
       use_auto_attack = false;
+      player_effect_scaling_guardian = false;
     }
 
     resource_e primary_resource() const override
@@ -6140,6 +6142,7 @@ void noggenfogger_ultimate_deluxe( special_effect_t& effect )
       : pet_t( e.player->sim, e.player, name, true, true ), effect( e ), parent_action( nullptr )
     {
       npc_id = summon_spell->effectN( 1 ).misc_value1();
+      player_effect_scaling_guardian = false;
     }
 
     resource_e primary_resource() const override
@@ -6645,6 +6648,7 @@ void zees_thug_hotline( special_effect_t& effect )
     {
       npc_id          = summon_spell->effectN( 1 ).misc_value1();
       use_auto_attack = false;
+      player_effect_scaling_guardian = false;
     }
 
     resource_e primary_resource() const override

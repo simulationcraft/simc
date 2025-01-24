@@ -324,93 +324,102 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
+double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian,
+                                                          bool scaling_guardian ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
+  double m = player_t::composite_player_pet_damage_multiplier( s, guardian, scaling_guardian );
 
-  if ( specialization() == WARLOCK_DESTRUCTION )
+  if ( !guardian || scaling_guardian )
   {
-    m *= 1.0 + warlock_base.destruction_warlock->effectN( guardian ? 4 : 3 ).percent();
+    if ( specialization() == WARLOCK_DESTRUCTION )
+    {
+      m *= 1.0 + warlock_base.destruction_warlock->effectN( guardian ? 4 : 3 ).percent();
 
-    // 2022-11-27 Rolling Havoc is missing the aura for guardians
-    if ( talents.rolling_havoc.ok() && !guardian )
-      m *= 1.0 + buffs.rolling_havoc->check_stack_value();
+      // 2022-11-27 Rolling Havoc is missing the aura for guardians
+      if ( talents.rolling_havoc.ok() && !guardian )
+        m *= 1.0 + buffs.rolling_havoc->check_stack_value();
+    }
+
+    if ( specialization() == WARLOCK_DEMONOLOGY )
+    {
+      m *= 1.0 + warlock_base.demonology_warlock->effectN( guardian ? 5 : 3 ).percent();
+
+      // Renormalize to use the guardian effect when appropriate, in case the values are ever different
+      if ( !guardian )
+        m *= 1.0 + cache.mastery_value();
+      else
+        m *= 1.0 + ( cache.mastery_value() ) * ( warlock_base.master_demonologist->effectN( 3 ).sp_coeff() /
+                                                 warlock_base.master_demonologist->effectN( 1 ).sp_coeff() );
+
+      if ( !guardian && talents.rune_of_shadows.ok() )
+        m *= 1.0 + talents.rune_of_shadows->effectN( 1 ).percent();
+
+      if ( !guardian && sets->has_set_bonus( WARLOCK_DEMONOLOGY, TWW1, B2 ) )
+        m *= 1.0 + tier.hexflame_demo_2pc->effectN( 1 ).percent();
+    }
+
+    if ( specialization() == WARLOCK_AFFLICTION )
+    {
+      m *= 1.0 + warlock_base.affliction_warlock->effectN( guardian ? 7 : 3 ).percent();
+
+      // 2024-07-06 Summoner's Embrace only affects main pet
+      if ( !guardian && talents.summoners_embrace.ok() )
+        m *= 1.0 + talents.summoners_embrace->effectN( 2 ).percent();
+    }
+
+    if ( hero.flames_of_xoroth.ok() )
+      m *= 1.0 + hero.flames_of_xoroth->effectN( guardian ? 3 : 4 ).percent();
+
+    if ( hero.abyssal_dominion.ok() && buffs.abyssal_dominion->check() )
+      m *= 1.0 + hero.abyssal_dominion_buff->effectN( guardian ? 1 : 2 ).percent();
+
+    if ( hero.xalans_ferocity.ok() )
+      m *= 1.0 + hero.xalans_ferocity->effectN( guardian ? 7 : 3 ).percent();
+
+    if ( hero.xalans_cruelty.ok() )
+      m *= 1.0 + hero.xalans_cruelty->effectN( guardian ? 6 : 5 ).percent();
   }
-
-  if ( specialization() == WARLOCK_DEMONOLOGY )
-  {
-    m *= 1.0 + warlock_base.demonology_warlock->effectN( guardian ? 5 : 3 ).percent();
-    
-    // Renormalize to use the guardian effect when appropriate, in case the values are ever different
-    if ( !guardian )
-      m *= 1.0 + cache.mastery_value();
-    else
-      m *= 1.0 + ( cache.mastery_value() ) * ( warlock_base.master_demonologist->effectN( 3 ).sp_coeff() / warlock_base.master_demonologist->effectN( 1 ).sp_coeff() );
-
-    if ( !guardian && talents.rune_of_shadows.ok() )
-      m *= 1.0 + talents.rune_of_shadows->effectN( 1 ).percent();
-
-    if ( !guardian && sets->has_set_bonus( WARLOCK_DEMONOLOGY, TWW1, B2 ) )
-      m *= 1.0 + tier.hexflame_demo_2pc->effectN( 1 ).percent();
-  }
-
-  if ( specialization() == WARLOCK_AFFLICTION )
-  {
-    m *= 1.0 + warlock_base.affliction_warlock->effectN( guardian ? 7 : 3 ).percent();
-
-    // 2024-07-06 Summoner's Embrace only affects main pet
-    if ( !guardian && talents.summoners_embrace.ok() )
-      m *= 1.0 + talents.summoners_embrace->effectN( 2 ).percent();
-  }
-
-  if ( hero.flames_of_xoroth.ok() )
-    m *= 1.0 + hero.flames_of_xoroth->effectN( guardian ? 3 : 4 ).percent();
-
-  if ( hero.abyssal_dominion.ok() && buffs.abyssal_dominion->check() )
-    m *= 1.0 + hero.abyssal_dominion_buff->effectN( guardian ? 1 : 2 ).percent();
-
-  if ( hero.xalans_ferocity.ok() )
-    m *= 1.0 + hero.xalans_ferocity->effectN( guardian ? 7 : 3 ).percent();
-
-  if ( hero.xalans_cruelty.ok() )
-    m *= 1.0 + hero.xalans_cruelty->effectN( guardian ? 6 : 5 ).percent();
-
   return m;
 }
 
-double warlock_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+double warlock_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian,
+                                                                 bool scaling_guardian ) const
 {
-  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
+  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian, scaling_guardian );
 
-  const warlock_td_t* td = get_target_data( target );
-
-  if ( specialization() == WARLOCK_AFFLICTION )
+  if ( !guardian || scaling_guardian )
   {
-    if ( talents.haunt.ok() && td->debuffs_haunt->check() )
-      m *= 1.0 + td->debuffs_haunt->data().effectN( guardian ? 4 : 3 ).percent();
+    const warlock_td_t* td = get_target_data( target );
 
-    if ( talents.shadow_embrace.ok() )
-      m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
+    if ( specialization() == WARLOCK_AFFLICTION )
+    {
+      if ( talents.haunt.ok() && td->debuffs_haunt->check() )
+        m *= 1.0 + td->debuffs_haunt->data().effectN( guardian ? 4 : 3 ).percent();
 
-    if ( talents.infirmity.ok() && !guardian )
-      m *= 1.0 + td->debuffs_infirmity->check_stack_value(); // Guardian effect is missing from spell data. Last checked 2024-07-07
+      if ( talents.shadow_embrace.ok() )
+        m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value();
+
+      if ( talents.infirmity.ok() && !guardian )
+        m *= 1.0 + td->debuffs_infirmity
+                       ->check_stack_value();  // Guardian effect is missing from spell data. Last checked 2024-07-07
+    }
+
+    if ( specialization() == WARLOCK_DESTRUCTION )
+    {
+      if ( talents.eradication.ok() )
+        m *= 1.0 + td->debuffs_eradication->check_value();
+    }
+
+    if ( specialization() == WARLOCK_DEMONOLOGY )
+    {
+      // Fel Sunder lacks guardian effect, so only main pet is benefitting. Last checked 2024-07-14
+      if ( talents.fel_sunder.ok() && ( !guardian || !bugs ) )
+        m *= 1.0 + td->debuffs_fel_sunder->check_stack_value();
+    }
+
+    if ( hero.cloven_souls.ok() && td->debuffs_cloven_soul->check() )
+      m *= 1.0 + hero.cloven_soul_debuff->effectN( guardian ? 3 : 2 ).percent();
   }
-
-  if ( specialization() == WARLOCK_DESTRUCTION )
-  {
-    if ( talents.eradication.ok() )
-      m *= 1.0 + td->debuffs_eradication->check_value();
-  }
-
-  if ( specialization() == WARLOCK_DEMONOLOGY )
-  {
-    // Fel Sunder lacks guardian effect, so only main pet is benefitting. Last checked 2024-07-14
-    if ( talents.fel_sunder.ok() && ( !guardian || !bugs ) )
-      m *= 1.0 + td->debuffs_fel_sunder->check_stack_value();
-  }
-
-  if ( hero.cloven_souls.ok() && td->debuffs_cloven_soul->check() )
-    m *= 1.0 + hero.cloven_soul_debuff->effectN( guardian ? 3 : 2 ).percent();
 
   return m;
 }

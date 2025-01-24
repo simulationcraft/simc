@@ -743,7 +743,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   double composite_heal_versatility() const override;
   double composite_mitigation_versatility() const override;
   double composite_player_multiplier( school_e ) const override;
-  double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t*, bool, bool ) const override;
   double composite_attack_power_multiplier() const override;
   double composite_melee_crit_chance() const override;
   double composite_spell_crit_chance() const override;
@@ -760,7 +760,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   double composite_dodge() const override;
   double matching_gear_multiplier( attribute_e ) const override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
-  double composite_player_target_pet_damage_multiplier( player_t*, bool ) const override;
+  double composite_player_target_pet_damage_multiplier( player_t*, bool, bool ) const override;
 
   void invalidate_cache( cache_e c ) override;
 

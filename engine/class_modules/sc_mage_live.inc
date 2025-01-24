@@ -960,8 +960,8 @@ public:
   double stacking_movement_modifier() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_player_multiplier( school_e ) const override;
-  double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
-  double composite_player_target_pet_damage_multiplier( player_t*, bool ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t*, bool, bool ) const override;
+  double composite_player_target_pet_damage_multiplier( player_t*, bool, bool ) const override;
   double composite_melee_crit_chance() const override;
   double composite_spell_crit_chance() const override;
   double composite_melee_haste() const override;
@@ -8795,13 +8795,16 @@ double mage_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
+double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian, bool scaling_guardian ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
+  double m = player_t::composite_player_pet_damage_multiplier( s, guardian, scaling_guardian );
 
-  m *= 1.0 + spec.arcane_mage->effectN( 3 ).percent();
-  m *= 1.0 + spec.fire_mage->effectN( 3 ).percent();
-  m *= 1.0 + spec.frost_mage->effectN( 3 ).percent();
+  if( !guardian || scaling_guardian )
+  {
+    m *= 1.0 + spec.arcane_mage->effectN( 3 ).percent();
+    m *= 1.0 + spec.fire_mage->effectN( 3 ).percent();
+    m *= 1.0 + spec.frost_mage->effectN( 3 ).percent();
+  }
 
   if ( !guardian )
   {
@@ -8812,9 +8815,9 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s, 
   return m;
 }
 
-double mage_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+double mage_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian, bool scaling_guardian ) const
 {
-  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
+  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian, scaling_guardian );
 
   if ( auto td = find_target_data( target ) )
   {

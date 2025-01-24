@@ -4158,8 +4158,8 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
 
   if ( flags & STATE_MUL_PET )
   {
-    state->pet_multiplier =
-      player->cast_pet()->owner->composite_player_pet_damage_multiplier( state, player->type == PLAYER_GUARDIAN );
+    state->pet_multiplier = player->cast_pet()->owner->composite_player_pet_damage_multiplier(
+        state, player->type == PLAYER_GUARDIAN, player->cast_pet()->player_effect_scaling_guardian );
   }
 
   if ( flags & STATE_TGT_MUL_DA )
@@ -4171,7 +4171,7 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
   if ( flags & STATE_TGT_MUL_PET )
   {
     state->target_pet_multiplier = player->cast_pet()->owner->composite_player_target_pet_damage_multiplier(
-      state->target, player->type == PLAYER_GUARDIAN );
+      state->target, player->type == PLAYER_GUARDIAN, player->cast_pet()->player_effect_scaling_guardian );
   }
 
   if ( flags & STATE_TGT_CRIT )

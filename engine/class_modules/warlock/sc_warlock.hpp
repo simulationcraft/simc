@@ -836,8 +836,8 @@ public:
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
-  double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
-  double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
+  double composite_player_pet_damage_multiplier( const action_state_t*, bool, bool ) const override;
+  double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian, bool ) const override;
   void invalidate_cache( cache_e ) override;
   double composite_spell_crit_chance() const override;
   double composite_melee_crit_chance() const override;

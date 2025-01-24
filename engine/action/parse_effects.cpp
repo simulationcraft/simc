@@ -812,13 +812,15 @@ double parse_player_effects_t::composite_player_multiplier( school_e school ) co
   return m;
 }
 
-double parse_player_effects_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
+double parse_player_effects_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian,
+                                                                       bool scaling_guardian ) const
 {
-  auto dm = player_t::composite_player_pet_damage_multiplier( s, guardian );
+  auto dm = player_t::composite_player_pet_damage_multiplier( s, guardian, scaling_guardian );
 
-  for ( const auto& i : pet_multiplier_effects )
-    if ( static_cast<bool>( i.opt_enum ) == guardian )
-      dm *= 1.0 + get_effect_value( i, true );
+  if ( scaling_guardian || !guardian )
+    for ( const auto& i : pet_multiplier_effects )
+      if ( static_cast<bool>( i.opt_enum ) == guardian )
+        dm *= 1.0 + get_effect_value( i, true );
 
   return dm;
 }
@@ -988,14 +990,16 @@ double parse_player_effects_t::composite_player_target_multiplier( player_t* t, 
   return tm;
 }
 
-double parse_player_effects_t::composite_player_target_pet_damage_multiplier( player_t* t, bool guardian ) const
+double parse_player_effects_t::composite_player_target_pet_damage_multiplier( player_t* t, bool guardian,
+                                                                              bool scaling_guardian ) const
 {
-  auto tm = player_t::composite_player_target_pet_damage_multiplier( t, guardian );
+  auto tm = player_t::composite_player_target_pet_damage_multiplier( t, guardian, scaling_guardian );
   auto td = get_target_data( t );
 
-  for ( const auto& i : target_pet_multiplier_effects )
-    if ( static_cast<bool>( i.opt_enum ) == guardian )
-      tm *= 1.0 + get_effect_value( i, td );
+  if ( scaling_guardian || !guardian )
+    for ( const auto& i : target_pet_multiplier_effects )
+      if ( static_cast<bool>( i.opt_enum ) == guardian )
+        tm *= 1.0 + get_effect_value( i, td );
 
   return tm;
 }

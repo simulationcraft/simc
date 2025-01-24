@@ -39,12 +39,8 @@ struct expiration_t : public event_t
 };
 }
 
-pet_t::pet_t( sim_t*             sim,
-              player_t*          owner,
-              util::string_view name,
-              bool               guardian,
-              bool               dynamic ) :
-  pet_t( sim, owner, name, PET_NONE, guardian, dynamic )
+pet_t::pet_t( sim_t* sim, player_t* owner, util::string_view name, bool guardian, bool dynamic )
+  : pet_t( sim, owner, name, PET_NONE, guardian, dynamic )
 {
 }
 
@@ -57,6 +53,7 @@ pet_t::pet_t( sim_t* sim, player_t* owner, util::string_view name, pet_e pet_typ
     summoned( false ),
     dynamic( dynamic ),
     can_dismiss( !guardian ),
+    player_effect_scaling_guardian( guardian ),
     affects_wod_legendary_ring( true ),
     pet_type( pet_type ),
     expiration( nullptr ),

@@ -4949,7 +4949,7 @@ double player_t::composite_total_corruption() const
   return cache.corruption() - cache.corruption_resistance();
 }
 
-double player_t::composite_player_pet_damage_multiplier( const action_state_t*, bool guardian ) const
+double player_t::composite_player_pet_damage_multiplier( const action_state_t*, bool guardian, bool scaling_guardian ) const
 {
   double m = 1.0;
 
@@ -4968,7 +4968,7 @@ double player_t::composite_player_pet_damage_multiplier( const action_state_t*, 
   return m;
 }
 
-double player_t::composite_player_target_pet_damage_multiplier( player_t*, bool ) const
+double player_t::composite_player_target_pet_damage_multiplier( player_t*, bool, bool ) const
 {
   return 1.0;
 }
