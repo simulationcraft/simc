@@ -11056,6 +11056,11 @@ struct rune_tap_t final : public death_knight_spell_t
 
   void execute() override
   {
+    // Sometimes due to queuing, off gcd casts that require runes will hit executebut have no runes, as when ready was called, runes were available.
+    // This prevents the action from executing if we do not have enough runes to do so.
+    if ( p()->_runes.runes_full() == 0 )
+      return;
+
     death_knight_spell_t::execute();
 
     p()->buffs.rune_tap->trigger();
