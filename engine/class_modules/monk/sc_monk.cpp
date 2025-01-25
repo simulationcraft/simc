@@ -1554,9 +1554,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     p()->active_actions.chi_wave->execute();
 
-    if ( p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
-      p()->buff.ordered_elements->trigger();
-
     p()->buff.tigers_ferocity->trigger();
   }
 };
@@ -7736,6 +7733,12 @@ void monk_t::create_buffs()
   buff.storm_earth_and_fire =
       make_buff_fallback( talent.windwalker.storm_earth_and_fire->ok(), this, "storm_earth_and_fire",
                           talent.windwalker.storm_earth_and_fire )
+          ->set_stack_change_callback( [ & ]( buff_t *, int new_, int old_ ) {
+            if ( new_ && talent.windwalker.ordered_elements->ok() )
+              buff.ordered_elements->trigger();
+            if ( old_ && !new_ && talent.windwalker.ordered_elements->ok() )
+              buff.ordered_elements->expire();
+          } )
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
           ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
           ->set_can_cancel( false )  // Undocumented hotfix 2018-09-28 - SEF can no longer be canceled.
