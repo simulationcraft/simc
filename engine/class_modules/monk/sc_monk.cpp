@@ -3461,6 +3461,12 @@ struct crackling_jade_lightning_t : public monk_spell_t
       const auto &tl = target_list();
       int count      = 0;
 
+      int cleave_targets = 0;
+      if ( const player_talent_t talent = p()->talent.windwalker.power_of_the_thunder_king; talent->ok() )
+        cleave_targets += talent->effectN( 1 ).base_value();
+      if ( const buff_t *buff = p()->buff.jade_empowerment; !buff->is_fallback )
+        cleave_targets += as<int>( buff->data().effectN( 1 ).base_value() );
+
       for ( auto &t : tl )
       {
         // Don't apply AoE version to primary target
@@ -3469,12 +3475,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
 
         if ( count >= cleave_targets )
           break;
-
-        int cleave_targets = 0;
-        if ( const player_talent_t talent = p()->talent.windwalker.power_of_the_thunder_king; talent->ok() )
-          cleave_targets += talent->effectN( 1 ).base_value();
-        if ( const buff_t *buff = p()->buff.jade_empowerment; !buff->is_fallback )
-          cleave_targets += as<int>( buff->data().effectN( 1 ).base_value() );
 
         if ( count < cleave_targets )
         {
