@@ -3392,10 +3392,10 @@ struct chi_torpedo_t : public monk_spell_t
 
 struct crackling_jade_lightning_t : public monk_spell_t
 {
-  struct crackling_jade_lightning_aoe_t : public monk_spell_t
+  struct aoe_dot_t : public monk_spell_t
   {
-    crackling_jade_lightning_aoe_t( monk_t *p )
-      : monk_spell_t( p, "crackling_jade_lightning_aoe", p->baseline.monk.crackling_jade_lightning )
+    aoe_dot_t( monk_t *player )
+      : monk_spell_t( player, "crackling_jade_lightning_aoe", player->baseline.monk.crackling_jade_lightning )
     {
       dual = background      = true;
       ww_mastery             = true;
@@ -3403,17 +3403,17 @@ struct crackling_jade_lightning_t : public monk_spell_t
       sef_ability            = actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING_AOE;
 
       // reduction for secondary targets
-      if ( p->is_ptr() )
+      if ( player->is_ptr() )
       {
-        if ( p->talent.windwalker.power_of_the_thunder_king.ok() )
-          base_td_multiplier *= p->talent.windwalker.power_of_the_thunder_king->effectN( 4 ).percent();
-        else if ( p->talent.mistweaver.jade_empowerment.ok() )
-          base_td_multiplier *= p->buff.jade_empowerment->data().effectN( 4 ).percent();
+        if ( player->talent.windwalker.power_of_the_thunder_king->ok() )
+          base_td_multiplier *= player->talent.windwalker.power_of_the_thunder_king->effectN( 4 ).percent();
+        if ( player->talent.mistweaver.jade_empowerment->ok() )
+          base_td_multiplier *= player->buff.jade_empowerment->data().effectN( 4 ).percent();
       }
 
-      parse_effects( p->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
-      parse_effects( p->buff.the_emperors_capacitor );
-      parse_effects( p->buff.jade_empowerment, effect_mask_t( true ).disable( 1 ) );
+      parse_effects( player->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
+      parse_effects( player->buff.the_emperors_capacitor );
+      parse_effects( player->buff.jade_empowerment );
     }
 
     double cost_per_tick( resource_e ) const override
@@ -3422,37 +3422,34 @@ struct crackling_jade_lightning_t : public monk_spell_t
     }
   };
 
-  crackling_jade_lightning_aoe_t *aoe_dot;
+  aoe_dot_t *aoe_dot;
 
-  crackling_jade_lightning_t( monk_t *p, util::string_view options_str )
-    : monk_spell_t( p, "crackling_jade_lightning", p->baseline.monk.crackling_jade_lightning ),
-      aoe_dot( new crackling_jade_lightning_aoe_t( p ) )
+  crackling_jade_lightning_t( monk_t *player, util::string_view options_str )
+    : monk_spell_t( player, "crackling_jade_lightning", player->baseline.monk.crackling_jade_lightning ),
+      aoe_dot( nullptr )
   {
+    parse_options( options_str );
+
     sef_ability           = actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING;
     may_combo_strike      = true;
     ww_mastery            = true;
     interrupt_auto_attack = true;
     channeled             = true;
 
-    parse_options( options_str );
-
-    // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd = timespan_t::from_millis( 750 );
 
-    parse_effects( p->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
-    parse_effects( p->buff.the_emperors_capacitor );
-    parse_effects( p->buff.jade_empowerment );
+    parse_effects( player->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
+    parse_effects( player->buff.the_emperors_capacitor );
+    parse_effects( player->buff.jade_empowerment );
 
-    if ( p->talent.windwalker.power_of_the_thunder_king->ok() )
+    if ( player->specialization() == MONK_MISTWEAVER )
+      base_costs_per_tick[ RESOURCE_MANA ] = 0.0;
+
+    if ( player->talent.windwalker.power_of_the_thunder_king->ok() || player->talent.mistweaver.jade_empowerment->ok() )
+    {
+      aoe_dot = new aoe_dot_t( player );
       add_child( aoe_dot );
-  }
-
-  double cost_per_tick( resource_e r ) const override
-  {
-    if ( p()->specialization() == MONK_MISTWEAVER )
-      return 0.0;
-
-    return base_t::cost_per_tick( r );
+    }
   }
 
   void execute() override
@@ -3470,9 +3467,14 @@ struct crackling_jade_lightning_t : public monk_spell_t
         if ( t == target )
           continue;
 
-        const double cleave_targets = p()->talent.windwalker.power_of_the_thunder_king->ok()
-                                          ? p()->talent.windwalker.power_of_the_thunder_king->effectN( 1 ).base_value()
-                                          : p()->buff.jade_empowerment->data().effectN( 1 ).base_value();
+        if ( count >= cleave_targets )
+          break;
+
+        int cleave_targets = 0;
+        if ( const player_talent_t talent = p()->talent.windwalker.power_of_the_thunder_king; talent->ok() )
+          cleave_targets += talent->effectN( 1 ).base_value();
+        if ( const buff_t *buff = p()->buff.jade_empowerment; !buff->is_fallback )
+          cleave_targets += as<int>( buff->data().effectN( 1 ).base_value() );
 
         if ( count < cleave_targets )
         {
