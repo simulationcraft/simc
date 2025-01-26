@@ -3404,10 +3404,16 @@ struct crackling_jade_lightning_t : public monk_spell_t
 
       // reduction for secondary targets
       if ( p->is_ptr() )
-        base_td_multiplier *= p->talent.windwalker.power_of_the_thunder_king->effectN( 4 ).percent();
+      {
+        if ( p->talent.windwalker.power_of_the_thunder_king.ok() )
+          base_td_multiplier *= p->talent.windwalker.power_of_the_thunder_king->effectN( 4 ).percent();
+        else if ( p->talent.mistweaver.jade_empowerment.ok() )
+          base_td_multiplier *= p->buff.jade_empowerment->data().effectN( 4 ).percent();
+      }
 
       parse_effects( p->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
       parse_effects( p->buff.the_emperors_capacitor );
+      parse_effects( p->buff.jade_empowerment, effect_mask_t( true ).disable( 1 ) );
     }
 
     double cost_per_tick( resource_e ) const override
@@ -3435,16 +3441,25 @@ struct crackling_jade_lightning_t : public monk_spell_t
 
     parse_effects( p->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
     parse_effects( p->buff.the_emperors_capacitor );
+    parse_effects( p->buff.jade_empowerment );
 
     if ( p->talent.windwalker.power_of_the_thunder_king->ok() )
       add_child( aoe_dot );
+  }
+
+  double cost_per_tick( resource_e r ) const override
+  {
+    if ( p()->specialization() == MONK_MISTWEAVER )
+      return 0.0;
+
+    return base_t::cost_per_tick( r );
   }
 
   void execute() override
   {
     monk_spell_t::execute();
 
-    if ( p()->talent.windwalker.power_of_the_thunder_king->ok() )
+    if ( p()->talent.windwalker.power_of_the_thunder_king->ok() || p()->buff.jade_empowerment->up() )
     {
       const auto &tl = target_list();
       int count      = 0;
@@ -3455,7 +3470,11 @@ struct crackling_jade_lightning_t : public monk_spell_t
         if ( t == target )
           continue;
 
-        if ( count < p()->talent.windwalker.power_of_the_thunder_king->effectN( 1 ).base_value() )
+        const double cleave_targets = p()->talent.windwalker.power_of_the_thunder_king->ok()
+                                          ? p()->talent.windwalker.power_of_the_thunder_king->effectN( 1 ).base_value()
+                                          : p()->buff.jade_empowerment->data().effectN( 1 ).base_value();
+
+        if ( count < cleave_targets )
         {
           aoe_dot->execute_on_target( t );
           count++;
@@ -3468,10 +3487,11 @@ struct crackling_jade_lightning_t : public monk_spell_t
   {
     monk_spell_t::last_tick( dot );
 
-    if ( p()->talent.windwalker.power_of_the_thunder_king->ok() )
+    if ( p()->talent.windwalker.power_of_the_thunder_king->ok() || p()->buff.jade_empowerment->up() )
       // delay expiration so it occurs after final tick of cjl aoe
       make_event<events::delayed_cb_event_t>( *sim, p(), 1_ms, [ & ]() {
         p()->buff.the_emperors_capacitor->expire();
+        p()->buff.jade_empowerment->expire();
         const auto &tl = target_list();
         for ( const auto &t : tl )
         {
@@ -3830,6 +3850,7 @@ struct thunder_focus_tea_t : public monk_spell_t
     monk_spell_t::execute();
 
     p()->buff.thunder_focus_tea->trigger( p()->buff.thunder_focus_tea->max_stack() );
+    p()->buff.jade_empowerment->trigger();
   }
 };
 
@@ -6884,6 +6905,8 @@ void monk_t::init_spells()
     talent.mistweaver.awakened_jadefire      = _ST( "Awakened Jadefire" );
     talent.mistweaver.awakened_jadefire_buff = find_spell( 389387 );
     talent.mistweaver.dance_of_chiji         = _ST( "Dance of Chi-Ji" );
+    talent.mistweaver.jade_empowerment       = _ST( "Jade Empowerment" );
+    talent.mistweaver.jade_empowerment_buff  = find_spell( 467317 );
     talent.mistweaver.tea_of_serenity        = _ST( "Tea of Serenity" );
     talent.mistweaver.tea_of_plenty          = _ST( "Tea of Plenty" );
     talent.mistweaver.unison                 = _ST( "Unison" );
@@ -7574,6 +7597,9 @@ void monk_t::create_buffs()
   // Mistweaver
   buff.awakened_jadefire = make_buff_fallback( talent.mistweaver.awakened_jadefire->ok(), this, "ancient_concordance",
                                                talent.mistweaver.awakened_jadefire_buff );
+
+  buff.jade_empowerment = make_buff_fallback( talent.mistweaver.jade_empowerment->ok(), this, "jade_empowerment",
+                                              talent.mistweaver.jade_empowerment_buff );
 
   buff.jadefire_stomp_reset =
       make_buff_fallback( talent.mistweaver.jadefire_stomp->ok(), this, "jadefire_stomp_reset", find_spell( 388193 ) )

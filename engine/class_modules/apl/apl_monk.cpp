@@ -238,9 +238,6 @@ void mistweaver( player_t *p )
   action_priority_list_t *def     = p->get_action_priority_list( "default" );
   action_priority_list_t *racials = p->get_action_priority_list( "race_actions" );
 
-  pre->add_action( "flask" );
-  pre->add_action( "food" );
-  pre->add_action( "augmentation" );
   pre->add_action( "snapshot_stats" );
   pre->add_action( "potion" );
 
@@ -261,6 +258,7 @@ void mistweaver( player_t *p )
   def->add_action( "rising_sun_kick,if=talent.secret_infusion&buff.thunder_focus_tea.up" );
   def->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.up" );
   def->add_action( "chi_burst,if=active_enemies>=2" );
+  def->add_action( "crackling_jade_lightning,if=buff.jade_empowerment.up" );
 
   def->add_action( "jadefire_stomp,if=active_enemies>=4&active_enemies<=10" );
   def->add_action( "spinning_crane_kick,if=active_enemies>=4" );

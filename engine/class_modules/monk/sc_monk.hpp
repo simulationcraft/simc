@@ -600,6 +600,7 @@ public:
     // Mistweaver
     propagate_const<absorb_buff_t *> life_cocoon;
     propagate_const<buff_t *> dance_of_chiji_mw;
+    propagate_const<buff_t *> jade_empowerment;
     propagate_const<buff_t *> jadefire_stomp_reset;
     propagate_const<buff_t *> secret_infusion_haste;
     propagate_const<buff_t *> secret_infusion_crit;
@@ -1073,6 +1074,8 @@ public:
       player_talent_t awakened_jadefire;
       const spell_data_t *awakened_jadefire_buff;
       player_talent_t dance_of_chiji;
+      player_talent_t jade_empowerment;
+      const spell_data_t *jade_empowerment_buff;
       player_talent_t tea_of_serenity;
       player_talent_t tea_of_plenty;
       player_talent_t unison;
