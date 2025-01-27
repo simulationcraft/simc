@@ -10145,6 +10145,45 @@ void warrior_t::arise()
 
 // warrior_t::combat_begin ==================================================
 
+  // Bloodsurge Event ========================================================
+
+  struct bloodsurge_event_t : public event_t
+  {
+    warrior_t* player;
+    bloodsurge_event_t( warrior_t* p, timespan_t delay )
+    : event_t ( *p, delay ),
+    player( p )
+    {
+    }
+
+    const char* name() const override
+    {
+      return "bloodsurge execute event";
+    }
+
+    void execute() override
+    {
+      double deep_wounds_targets = 0;
+      for ( auto t : player->sim->target_non_sleeping_list )
+      {
+        warrior_td_t* td = player->get_target_data( t );
+        if ( t->is_enemy() && td->dots_deep_wounds->is_ticking() )
+          deep_wounds_targets++;
+      }
+      if ( deep_wounds_targets > 0 )
+      {
+        double proc_chance = player->talents.shared.bloodsurge->effectN( 1 ).percent();
+        proc_chance *= std::sqrt( 1 / deep_wounds_targets ) * deep_wounds_targets;
+        if ( rng().roll( proc_chance ) )
+        {
+          player->resource_gain( RESOURCE_RAGE, player->spell.bloodsurge_energize->effectN( 1 ).resource( RESOURCE_RAGE ), player->gain.bloodsurge );
+        }
+      }
+
+      make_event<bloodsurge_event_t>( sim(), player, player->talents.shared.bloodsurge->effectN( 1 ).period() * player->cache.spell_haste() );
+    }
+  };
+
 void warrior_t::combat_begin()
 {
   if ( !sim->fixed_time )
@@ -10176,24 +10215,7 @@ void warrior_t::combat_begin()
 
   if ( is_ptr() && talents.shared.bloodsurge->ok() )
   {
-    make_repeating_event( sim, talents.shared.bloodsurge->effectN( 1 ).period(), [ this ]() {
-      double deep_wounds_targets = 0;
-      for ( auto t : sim->target_non_sleeping_list )
-      {
-        warrior_td_t* td = get_target_data( t );
-        if ( t->is_enemy() && td->dots_deep_wounds->is_ticking() )
-          deep_wounds_targets++;
-      }
-      if ( deep_wounds_targets > 0 )
-      {
-        double proc_chance = talents.shared.bloodsurge->effectN( 1 ).percent();
-        proc_chance *= std::sqrt( 1 / deep_wounds_targets ) * deep_wounds_targets;
-        if ( rng().roll( proc_chance ) )
-        {
-          resource_gain( RESOURCE_RAGE, spell.bloodsurge_energize->effectN( 1 ).resource( RESOURCE_RAGE ), gain.bloodsurge );
-        }
-      }
-      } );
+    make_event<bloodsurge_event_t>( *sim, this, talents.shared.bloodsurge->effectN( 1 ).period() * cache.spell_haste());
   }
 }
 
