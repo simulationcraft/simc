@@ -4181,7 +4181,7 @@ void candle_confidant( special_effect_t& effect )
       this->school                      = SCHOOL_PHYSICAL;
       this->stats->school               = SCHOOL_PHYSICAL;
       this->base_dd_min = this->base_dd_max = p->dbc->expected_stat( p->true_level ).creature_auto_attack_dps;
-      this->base_multiplier = p->main_hand_weapon.swing_time.total_seconds();
+      this->base_multiplier                 = p->main_hand_weapon.swing_time.total_seconds();
 
       auto proxy = a;
       auto it    = range::find( proxy->child_action, name, &action_t::name );
@@ -4195,6 +4195,23 @@ void candle_confidant( special_effect_t& effect )
     {
       // Currently their auto attacks dont seem to scale with player crit chance.
       return this->player->base.attack_crit_chance;
+    }
+
+    // Pet melee attacks seem to still scale with aura 380 and 531
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = melee_attack_t::composite_da_multiplier( s );
+      if ( player->is_ptr() )
+        m *= this->player->cast_pet()->owner->composite_player_pet_damage_multiplier( s, type == PLAYER_GUARDIAN );
+      return m;
+    }
+
+    double composite_target_multiplier( player_t* p ) const override
+    {
+      double m = melee_attack_t::composite_target_multiplier( p );
+      if ( player->is_ptr() )
+        m *= this->player->cast_pet()->owner->composite_player_target_pet_damage_multiplier( p, type == PLAYER_GUARDIAN );
+      return m;
     }
 
     void execute() override
@@ -6065,6 +6082,21 @@ void noggenfogger_ultimate_deluxe( special_effect_t& effect )
         proxy->add_child( this );
     }
 
+    // Pet melee attacks seem to still scale with aura 380 and 531
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = melee_attack_t::composite_da_multiplier( s );
+      m *= this->player->cast_pet()->owner->composite_player_pet_damage_multiplier( s, type == PLAYER_GUARDIAN );
+      return m;
+    }
+
+    double composite_target_multiplier( player_t* p ) const override
+    {
+      double m = melee_attack_t::composite_target_multiplier( p );
+      m *= this->player->cast_pet()->owner->composite_player_target_pet_damage_multiplier( p, type == PLAYER_GUARDIAN );
+      return m;
+    }
+
     void execute() override
     {
       if ( this->player->executing )
@@ -6502,6 +6534,21 @@ void zees_thug_hotline( special_effect_t& effect )
         stats = ( *it )->stats;
       else
         proxy->add_child( this );
+    }
+
+    // Pet melee attacks seem to still scale with aura 380 and 531
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = melee_attack_t::composite_da_multiplier( s );
+      m *= this->player->cast_pet()->owner->composite_player_pet_damage_multiplier( s, type == PLAYER_GUARDIAN );
+      return m;
+    }
+
+    double composite_target_multiplier( player_t* p ) const override
+    {
+      double m = melee_attack_t::composite_target_multiplier( p );
+      m *= this->player->cast_pet()->owner->composite_player_target_pet_damage_multiplier( p, type == PLAYER_GUARDIAN );
+      return m;
     }
 
     void execute() override

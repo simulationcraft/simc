@@ -6,10 +6,7 @@
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask
-actions.precombat+=/food
-actions.precombat+=/augmentation
-actions.precombat+=/snapshot_stats
+actions.precombat=snapshot_stats
 actions.precombat+=/potion
 
 # Executed every time the actor is available.
@@ -26,6 +23,7 @@ actions+=/celestial_conduit
 actions+=/rising_sun_kick,if=talent.secret_infusion&buff.thunder_focus_tea.up
 actions+=/spinning_crane_kick,if=buff.dance_of_chiji.up
 actions+=/chi_burst,if=active_enemies>=2
+actions+=/crackling_jade_lightning,if=buff.jade_empowerment.up
 actions+=/jadefire_stomp,if=active_enemies>=4&active_enemies<=10
 actions+=/spinning_crane_kick,if=active_enemies>=4
 actions+=/jadefire_stomp,if=buff.jadefire_stomp.down

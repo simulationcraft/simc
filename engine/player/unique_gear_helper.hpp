@@ -675,12 +675,13 @@ public:
     return owner->composite_player_pet_damage_multiplier( s, type == PLAYER_GUARDIAN );
   }
 
-  /* As of 23/1/2025 aura 380 affects pets summoned by trinkets, if that ever changes uncomment this code.
   double composite_owner_pet_target_damage_multiplier( player_t* t ) const override
   {
-    return 1.0;
+    if( owner->is_ptr() )
+      return 1.0;
+
+    return owner->composite_player_target_pet_damage_multiplier( t, type == PLAYER_GUARDIAN );
   }
-  */
 
   struct auto_attack_t final : public melee_attack_t
   {

@@ -472,7 +472,6 @@ public:
     unsigned initial_spellfire_spheres = 5;
     arcane_phoenix_rotation arcane_phoenix_rotation_override = arcane_phoenix_rotation::DEFAULT;
     bool ice_nova_consumes_winters_chill = true;
-    bool consume_wintertide = true;
   } options;
 
   // Pets
@@ -3261,8 +3260,6 @@ struct icicle_t final : public frost_mage_spell_t
       return;
 
     p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), p()->procs.fingers_of_frost_flash_freeze );
-    if ( p()->options.consume_wintertide )
-      p()->buffs.wintertide->expire();
   }
 
   double action_multiplier() const override
@@ -5384,8 +5381,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
     if ( consumed_wc )
       p()->trigger_splinter( s->target, as<int>( p()->talents.signature_spell->effectN( 2 ).base_value() ) );
 
-    if ( p()->options.consume_wintertide )
-      p()->buffs.wintertide->expire();
+    p()->buffs.wintertide->expire();
   }
 };
 
@@ -7828,7 +7824,6 @@ void mage_t::create_options()
                 return true;
               } ) );
   add_option( opt_bool( "mage.ice_nova_consumes_winters_chill", options.ice_nova_consumes_winters_chill ) );
-  add_option( opt_bool( "mage.consume_wintertide", options.consume_wintertide ) );
 
   player_t::create_options();
 }
@@ -8509,6 +8504,7 @@ void mage_t::create_buffs()
                                ->set_chance( talents.slick_ice.ok() );
   buffs.wintertide         = make_buff( this, "wintertide", find_spell( 1222865 ) )
                                ->set_default_value_from_effect( 1 )
+                               ->modify_max_stack( as<int>( talents.wintertide->effectN( 1 ).base_value() ) )
                                ->set_chance( talents.wintertide.ok() );
 
 
