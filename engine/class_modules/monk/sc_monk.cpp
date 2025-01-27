@@ -3463,7 +3463,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
 
       int cleave_targets = 0;
       if ( const player_talent_t talent = p()->talent.windwalker.power_of_the_thunder_king; talent->ok() )
-        cleave_targets += talent->effectN( 1 ).base_value();
+        cleave_targets += as<int>( talent->effectN( 1 ).base_value() );
       if ( const buff_t *buff = p()->buff.jade_empowerment; !buff->is_fallback )
         cleave_targets += as<int>( buff->data().effectN( 1 ).base_value() );
 
