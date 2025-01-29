@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.58238 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.58773 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -223489,7 +223489,7 @@ Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
 Proc Chance      : 101%
 Proc Flags       : Generic Heal, Magic Heal
-Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Allow Entering Arena (149), Suppress Weapon Procs (151), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
+Attributes       : Allow Item Spell In PvP (13), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Only Proc From Class Abilities (415), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1121190)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
@@ -250708,7 +250708,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Target: Self (1)
 #5 (id=1181037)  : Dummy (3)
                    Base Value: 5663 | Scaled Value: 5663 | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : Base Value (5282 -> 5663)
 
 Name             : Severed Strands (id=462513) 
 School           : Physical
@@ -250823,10 +250822,8 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1172390)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 725.6624 (coefficient=0.28371) | Trigger Spell: 462960 | Target: Self (1)
-Hotfixed         : Coefficient (0.19715 -> 0.28371)
 #2 (id=1172391)  : Dummy (3)
                    Base Value: 1960 | Scaled Value: 1960 | PvP Coefficient: 0.25
-Hotfixed         : Base Value (1362 -> 1960)
 Description      : Your spells and abilities have a chance to bathe an ally in restorative water that jumps to ${$462960x1-1} nearby allies, restoring $?a462342[${$462342w1*($s2/100)}][${$462342s3*($s2/100)}] health to each of them.
 Variables        : $healingrolemult=$?a137008|a137006|a137007|a212612|a212613|a137013|a137011|a137010|a396186|a356809|a137015|a137016|a137017|a137021|a137019|a137020|a137023|a137025|a137028|a137027|a137033|a137037|a137036|a137035|a137040|a137041|a137043|a137044|a137046|a137049|a137050|a137048[${0.66}.2][${1}]
 
@@ -250843,10 +250840,8 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1172392)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 604.9667 (coefficient=0.236522) | PvP Coefficient: 0.25 | Trigger Spell: 462959 | Target: Self (1)
-Hotfixed         : Coefficient (0.165449 -> 0.236522)
 #2 (id=1172393)  : Dummy (3)
                    Base Value: 1634 | Scaled Value: 1634 | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : Base Value (1143 -> 1634)
 #3 (id=1174950)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Your spells and abilities have a chance to whisper a sea shanty to $s3 nearby allies, healing them for $?a462342[${$462342w1*($s2/100)}][${$462342s3*($s2/100)}] health over $462959d.
@@ -250866,10 +250861,8 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1172394)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 1088.864 (coefficient=0.42571) | PvP Coefficient: 0.25 | Trigger Spell: 462958 | Target: Self (1)
-Hotfixed         : Coefficient (0.354783 -> 0.42571)
 #2 (id=1172395)  : Dummy (3)
                    Base Value: 2941 | Scaled Value: 2941 | PvP Coefficient: 0.25
-Hotfixed         : Base Value (2451 -> 2941)
 #3 (id=1178453)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : Your spells and abilities have a chance to shield an ally with lightning, absorbing the next $?a462342[${$462342w1*($s2/100)}][${$462342s3*($s2/100)}] damage taken for $462958d.
@@ -250941,10 +250934,8 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1172406)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 483.6982 (coefficient=0.18911) | Trigger Spell: 462953 | Target: Self (1)
-Hotfixed         : Coefficient (0.131368 -> 0.18911)
 #2 (id=1172407)  : Dummy (3)
                    Base Value: 1306 | Scaled Value: 1306 | PvP Coefficient: 0.25
-Hotfixed         : Base Value (908 -> 1306)
 Description      : Your spells and abilities have a chance to drench an enemy in freezing seawater that bounces to ${$462953X-1} nearby enemies, dealing $?a462342[${$462342w1*($s2/100)*$<rolemult>}][${$462342s3*($s2/100)*$<rolemult>}] Frost damage to each of them.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -250961,10 +250952,8 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1172408)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 403.208 (coefficient=0.157641) | Trigger Spell: 462952 | Target: Self (1)
-Hotfixed         : Coefficient (0.110444 -> 0.157641)
 #2 (id=1172409)  : Dummy (3)
                    Base Value: 1089 | Scaled Value: 1089 | PvP Coefficient: 0.25
-Hotfixed         : Base Value (763 -> 1089)
 #3 (id=1175022)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Your spells and abilities have a chance to slice $s3 enemies with a rushing seabreeze, dealing $?a462342[${$462342w1*($s2/100)*$<rolemult>}][${$462342s3*($s2/100)*$<rolemult>}] Nature damage to each of them.
@@ -250984,10 +250973,8 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1172410)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 725.9258 (coefficient=0.283813) | Trigger Spell: 462951 | Target: Self (1)
-Hotfixed         : Coefficient (0.236522 -> 0.283813)
 #2 (id=1172411)  : Dummy (3)
                    Base Value: 1961 | Scaled Value: 1961 | PvP Coefficient: 0.25
-Hotfixed         : Base Value (1634 -> 1961)
 Description      : Your spells and abilities have a chance to zap an enemy dealing $?a462342[${$462342w1*($s2/100)*$<rolemult>}][${$462342s3*($s2/100)*$<rolemult>}] Nature damage.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -251036,7 +251023,7 @@ Triggered By     : Thunderlord's Crackling Citrine (462540)
 Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1173203)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Target: Enemy (6)
 Description      : $@spelldesc462540
 
 Name             : Squall Sailor's Citrine (id=462952) 
@@ -251051,7 +251038,7 @@ Triggered By     : Squall Sailor's Citrine (462539)
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1173205)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 50 yards | Target: At Self (18) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Radius: 0 - 50 yards | Target: At Self (18) -> At Enemy in Area (16)
 Description      : $@spelldesc462539
 
 Name             : Undersea Overseer's Citrine (id=462953) 
@@ -251064,7 +251051,7 @@ Triggered By     : Undersea Overseer's Citrine (462538)
 Attributes       : Always Line of Sight (185), Aura Points On Client (268), Scales with Casting Item's Level (354), Chain by Most Hit (440)
 Effects          :
 #1 (id=1173207)  : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.25 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
 Description      : $@spelldesc462538
 
 Name             : Storm Sewer's Citrine (id=462958) 
@@ -252244,7 +252231,6 @@ Aura Interrupt   : Under Water (7), Mount (17), Landing (25), Swimming (33), Spl
 Effects          :
 #1 (id=1184374)  : Apply Aura (6) | Unknown(293)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3064 | Misc Value 2: 0xb | Target: Self (1)
-Hotfixed         : Misc Value 2 (1 -> 11)
 Description      : Dive to the ground below you.
 
 Name             : Experimental Go-Pack (id=469809) 
@@ -252959,10 +252945,8 @@ School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 2 seconds
-Cooldown         : 18 seconds
 Category         : 2340 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 18 seconds
 Triggered By     : Celestial Barrage (472881)
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), Force Display Castbar (155), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17)
@@ -253164,10 +253148,8 @@ School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 2 seconds
-Cooldown         : 16 seconds
 Category         : 2340 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 16 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), Force Display Castbar (155), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17)
 Effects          :
@@ -253193,10 +253175,8 @@ School           : Arcane
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 2 seconds
-Cooldown         : 14 seconds
 Category         : 2340 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 14 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), Force Display Castbar (155), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17)
 Effects          :
@@ -253223,10 +253203,8 @@ School           : Physical
 Spell Type       : None
 GCD              : 1 seconds
 Duration         : 2 seconds
-Cooldown         : 12 seconds
 Category         : 2340 (Type 0x0)
 Labels           : 3136
-Category Cooldown: 12 seconds
 Attributes       : Do Not Log (8), Is Self Channelled (38), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), Force Display Castbar (155), No Cooldown On Tooltip (192), Do Not Display Cast Time (441)
 Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Mount (17)
 Effects          :
@@ -253615,7 +253593,7 @@ Name             : Call Galefeather (desc=Utility) (id=474121)
 School           : Physical
 Spell Type       : None
 Range            : 60 yards
-Travel Time      : 0.5 seconds
+Travel Time      : 0.2 seconds
 Duration         : 12 seconds
 Cooldown         : 22 seconds
 Category         : 2354 (Type 0x0)
@@ -253650,7 +253628,7 @@ Name             : Call Galefeather (desc=Utility) (id=474650)
 School           : Physical
 Spell Type       : None
 Range            : 60 yards
-Travel Time      : 0.5 seconds
+Travel Time      : 0.2 seconds
 Duration         : 12 seconds
 Cooldown         : 20 seconds
 Category         : 2354 (Type 0x0)
@@ -253672,7 +253650,7 @@ Name             : Call Galefeather (desc=Utility) (id=474651)
 School           : Physical
 Spell Type       : None
 Range            : 60 yards
-Travel Time      : 0.5 seconds
+Travel Time      : 0.2 seconds
 Duration         : 12 seconds
 Cooldown         : 18 seconds
 Category         : 2354 (Type 0x0)
@@ -253694,7 +253672,7 @@ Name             : Call Galefeather (desc=Utility) (id=474652)
 School           : Physical
 Spell Type       : None
 Range            : 60 yards
-Travel Time      : 0.5 seconds
+Travel Time      : 0.2 seconds
 Duration         : 12 seconds
 Cooldown         : 16 seconds
 Category         : 2354 (Type 0x0)
@@ -253879,5 +253857,13 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not an
 Effects          :
 #1 (id=1199120)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+
+Name             : Tracking Quest (id=1221476) [Hidden] 
+School           : Physical
+Spell Type       : None
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Allow Entering Arena (149), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow during spell override (404)
+Effects          :
+#1 (id=1208125)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 
