@@ -875,6 +875,7 @@ public:
       player_talent_t rend;
       player_talent_t bloodsurge;
       player_talent_t dance_of_death;
+      player_talent_t sudden_death;
     } shared;
 
   } talents;
@@ -3579,7 +3580,7 @@ struct bladestorm_t : public warrior_attack_t
   {
     auto new_dot_duration = warrior_attack_t::composite_dot_duration( s );
 
-    if ( p() -> talents.slayer.imminent_demise -> ok() )
+    if ( p() -> talents.slayer.imminent_demise -> ok() && ( !p()->is_ptr() || p()->talents.shared.sudden_death->ok() ) )
     {
       new_dot_duration = tick_time( s ) * ( dot_duration.total_seconds() + p() -> buff.imminent_demise -> stack() );
     }
@@ -3592,7 +3593,7 @@ struct bladestorm_t : public warrior_attack_t
     auto new_base_tick_time = warrior_attack_t::tick_time( s );
 
     // Normally we get 6 ticks of bladestorm, but with imminent demise, we get 1-3 extra ticks, in the same amount of time
-    if ( p() -> talents.slayer.imminent_demise->ok() )
+    if ( p() -> talents.slayer.imminent_demise->ok() && ( !p()->is_ptr() || p()->talents.shared.sudden_death->ok() ) )
     {
       new_base_tick_time *= ( dot_duration.total_seconds() / ( dot_duration.total_seconds() + p() -> buff.imminent_demise -> stack() ) );
     }
@@ -3657,7 +3658,7 @@ struct bladestorm_t : public warrior_attack_t
       p()->buff.dance_of_death_bladestorm -> trigger( -1, p() -> spell.dance_of_death_bs_buff->duration() );
     }
 
-    if ( p()->talents.slayer.imminent_demise->ok() )
+    if ( p()->talents.slayer.imminent_demise->ok() && ( !p()->is_ptr() || p()->talents.shared.sudden_death->ok() ) )
     {
       p()->buff.imminent_demise->expire();
     }
@@ -4894,7 +4895,7 @@ struct execute_arms_t : public warrior_attack_t
     if ( p()->buff.sudden_death->up() )
     {
       p()->buff.sudden_death->decrement();
-      if ( p()->talents.slayer.imminent_demise->ok() )
+      if ( p()->talents.slayer.imminent_demise->ok() && ( !p()->is_ptr() || p()->talents.shared.sudden_death->ok() ) )
       {
         p()->buff.imminent_demise->trigger();
       }
@@ -5148,7 +5149,7 @@ struct execute_fury_t : public warrior_attack_t
     if ( p() -> buff.sudden_death -> up() )
     {
       p()->buff.sudden_death->decrement();
-      if ( p()->talents.slayer.imminent_demise->ok() )
+      if ( p()->talents.slayer.imminent_demise->ok() && ( !p()->is_ptr() || p()->talents.shared.sudden_death->ok() ) )
       {
         p()->buff.imminent_demise->trigger();
       }
@@ -7209,7 +7210,7 @@ struct slayers_strike_t : public warrior_attack_t
     special = true;
     background = true;
 
-    if( p->talents.slayer.imminent_demise -> ok() )
+    if( p->talents.slayer.imminent_demise -> ok() && ( !p->is_ptr() || p->talents.shared.sudden_death->ok() ) )
       imminent_demise_trigger_threshold = as<int>( p->talents.slayer.imminent_demise -> effectN( 1 ).base_value() );
   }
 
@@ -7227,7 +7228,7 @@ struct slayers_strike_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p() -> talents.slayer.imminent_demise -> ok() )
+    if ( p() -> talents.slayer.imminent_demise -> ok() && ( !p()->is_ptr() || p()->talents.shared.sudden_death->ok() ) )
     {
       imminent_demise_tracker++;
       if ( imminent_demise_tracker == imminent_demise_trigger_threshold )
@@ -8931,6 +8932,7 @@ void warrior_t::init_spells()
   talents.shared.rend = find_shared_talent( { &talents.arms.rend, &talents.protection.rend } );
   talents.shared.bloodsurge = find_shared_talent( { &talents.arms.bloodsurge, &talents.protection.bloodsurge } );
   talents.shared.dance_of_death = find_shared_talent( { &talents.arms.dance_of_death, &talents.protection.dance_of_death } );
+  talents.shared.sudden_death = find_shared_talent( { &talents.arms.sudden_death, &talents.fury.sudden_death, &talents.protection.sudden_death } );
 
   // Convenant Abilities
   covenant.conquerors_banner     = find_covenant_spell( "Conqueror's Banner" );
