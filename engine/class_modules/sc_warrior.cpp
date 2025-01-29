@@ -8167,7 +8167,7 @@ struct ignore_pain_buff_t : public absorb_buff_t
   // Custom consume implementation to allow minimum absorb amount.
   double consume( double amount, action_state_t* ) override
   {
-    // IP only absorbs up to 55% of the damage taken
+    // Effect 2 stores the % of damage that is absorbed
     amount *= debug_cast< warrior_t* >( player ) -> talents.protection.ignore_pain -> effectN( 2 ).percent();
     double absorbed = absorb_buff_t::consume( amount );
 
@@ -8203,14 +8203,9 @@ struct ignore_pain_t : public warrior_spell_t
 
   void impact( action_state_t* s ) override
   {
-    // With the buff to warrior on Jan 23 2024
-    // the amount gained is +5%.  Need to check cap as well.  This buff was stored in a dummy effect
-    // in the protection aura
-    // p() -> effectN( 23 ).percent();
-
     double new_ip = s -> result_amount;
 
-    if ( p()->talents.colossus.no_stranger_to_pain->ok() )
+    if ( !p()->is_ptr() && p()->talents.colossus.no_stranger_to_pain->ok() )
     {
       new_ip *= 1.0 + p()->talents.colossus.no_stranger_to_pain->effectN( 1 ).percent();
     }
@@ -10651,7 +10646,7 @@ double warrior_t::composite_block_reduction( action_state_t* s ) const
 
   if ( buff.brace_for_impact -> check() )
   {
-    br *= 1.0 + buff.brace_for_impact -> check() * talents.protection.brace_for_impact -> effectN( 2 ).percent();
+    br *= 1.0 + buff.brace_for_impact -> check() * talents.protection.brace_for_impact->effectN( 1 ).trigger() -> effectN( 2 ).percent();
   }
 
   if ( talents.protection.shield_specialization->ok() )
@@ -11193,6 +11188,8 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.colossus.martial_expert );
   action.apply_affecting_aura( talents.colossus.earthquaker );
   action.apply_affecting_aura( talents.colossus.mountain_of_muscle_and_scars );
+  if ( is_ptr() )
+    action.apply_affecting_aura( talents.colossus.no_stranger_to_pain );
 
   // Slayer
   action.apply_affecting_aura( talents.slayer.slayers_malice );
