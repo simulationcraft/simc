@@ -301,6 +301,7 @@ public:
     action_t* splinterstorm;
     action_t* touch_of_the_magi_explosion;
     action_t* volatile_magic;
+    action_t* arcane_rebound;
 
     struct icicles_t
     {
@@ -406,6 +407,7 @@ public:
 
     // Sunfury
     buff_t* arcane_soul;
+    buff_t* arcane_soul_counter;
     buff_t* burden_of_power;
     buff_t* glorious_incandescence;
     buff_t* lingering_embers;
@@ -714,6 +716,7 @@ public:
     player_talent_t leysight;
     player_talent_t aether_fragment;
     player_talent_t concentration;
+    player_talent_t arcane_rebound;
 
     // Row 10
     player_talent_t high_voltage;
@@ -2607,15 +2610,6 @@ struct arcane_mage_spell_t : public mage_spell_t
       return;
 
     p()->buffs.nether_precision->decrement();
-
-    if ( rng().roll( p()->talents.leydrinker->effectN( 1 ).percent() ) )
-    {
-      if ( p()->buffs.leydrinker->check() )
-        make_event( *sim, 150_ms, [ this ] { p()->buffs.leydrinker->trigger(); } );
-      else
-        p()->buffs.leydrinker->trigger();
-    }
-
     p()->trigger_splinter( t );
 
     if ( aethervision )
@@ -3421,6 +3415,7 @@ struct arcane_orb_t final : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
     p()->trigger_arcane_charge();
+    p()->buffs.intuition->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -3498,10 +3493,13 @@ struct arcane_barrage_t final : public dematerialize_spell_t
     {
       p()->trigger_clearcasting( 1.0, 0_ms );
       p()->trigger_arcane_charge( arcane_soul_charges );
+      p()->buffs.arcane_soul_counter->trigger( p()->buffs.arcane_soul->remains() );
     }
 
     p()->trigger_spellfire_spheres();
     p()->trigger_mana_cascade();
+    p()->consume_burden_of_power();
+    consume_nether_precision( target, true );
 
     if ( p()->buffs.glorious_incandescence->check() )
     {
@@ -3519,8 +3517,6 @@ struct arcane_barrage_t final : public dematerialize_spell_t
 
     if ( int av_stack = p()->buffs.aethervision->check() )
     {
-      if ( p()->buffs.aethervision->at_max_stacks() )
-        p()->trigger_splinter( target );
       p()->buffs.aethervision->expire();
       p()->trigger_arcane_charge( av_stack * aethervision_charges );
     }
@@ -3532,14 +3528,17 @@ struct arcane_barrage_t final : public dematerialize_spell_t
   {
     double m = dematerialize_spell_t::composite_da_multiplier( s );
 
-    m *= 1.0 + s->n_targets * p()->talents.resonance->effectN( 1 ).percent();
+    m *= 1.0 + (s->n_targets - 1) * p()->talents.resonance->effectN( 1 ).percent();
 
     if ( s->target->health_percentage() <= p()->talents.arcane_bombardment->effectN( 1 ).base_value() )
       m *= 1.0 + p()->talents.arcane_bombardment->effectN( 2 ).percent() + p()->talents.sunfury_execution->effectN( 1 ).percent();
 
     if ( p()->buffs.glorious_incandescence->check() )
       m *= 1.0 + p()->buffs.glorious_incandescence->data().effectN( 2 ).percent();
-
+    
+    if ( p()->buffs.burden_of_power->check() ) 
+      m *= 1.0 + p()->buffs.burden_of_power->data().effectN( 4 ).percent();
+    
     return m;
   }
 
@@ -3551,6 +3550,8 @@ struct arcane_barrage_t final : public dematerialize_spell_t
     am *= 1.0 + p()->buffs.aethervision->check_stack_value();
     am *= 1.0 + p()->buffs.arcane_harmony->check_stack_value();
     am *= 1.0 + p()->buffs.intuition->check_value();
+    am *= 1.0 + p()->buffs.nether_precision->check_value();
+    am *= 1.0 + p()->buffs.arcane_soul_counter->check_stack_value();
 
     return am;
   }
@@ -3558,8 +3559,11 @@ struct arcane_barrage_t final : public dematerialize_spell_t
   void impact( action_state_t* s ) override
   {
     dematerialize_spell_t::impact( s );
-    if ( result_is_hit( s->result ) )
+    if ( result_is_hit( s->result ) ) 
       trigger_glorious_incandescence( s->target );
+
+    if ( ( s->n_targets > 2 ) && result_is_hit( s->result ) && p()->talents.arcane_rebound.ok() )
+      p()->action.arcane_rebound->execute_on_target( s->target );
   }
 };
 
@@ -3714,6 +3718,7 @@ struct arcane_explosion_t final : public arcane_mage_spell_t
       make_event( *sim, 500_ms, [ this, t = target ] { echo->execute_on_target( t ); } );
 
     arcane_mage_spell_t::execute();
+    p()->buffs.intuition->trigger();
 
     if ( p()->buffs.static_cloud->at_max_stacks() )
       p()->buffs.static_cloud->expire();
@@ -3965,6 +3970,15 @@ struct arcane_missiles_t final : public custom_state_spell_t<arcane_mage_spell_t
     {
       p()->buffs.clearcasting_channel->trigger();
       p()->trigger_time_manipulation();
+      p()->buffs.intuition->trigger();
+
+      if ( rng().roll( p()->talents.leydrinker->effectN( 1 ).percent() ) )
+      {
+      if ( p()->buffs.leydrinker->check() )
+        make_event( *sim, 150_ms, [ this ] { p()->buffs.leydrinker->trigger(); } );
+      else
+        p()->buffs.leydrinker->trigger();
+      }
     }
     else
     {
@@ -4070,6 +4084,7 @@ struct arcane_surge_t final : public arcane_mage_spell_t
     p()->buffs.arcane_surge->trigger( arcane_surge_duration );
 
     p()->trigger_clearcasting( 1.0, 0_ms );
+    p()->buffs.intuition->trigger();
 
     if ( p()->pets.arcane_phoenix )
       p()->pets.arcane_phoenix->summon( arcane_surge_duration ); // TODO: The extra random pet duration can sometimes result in an extra cast.
@@ -6069,6 +6084,16 @@ struct meteorite_impact_t final : public mage_spell_t
   }
 };
 
+struct arcane_rebound_t final : public arcane_mage_spell_t
+{
+  arcane_rebound_t( std::string_view n, mage_t* p ) :
+    arcane_mage_spell_t( n, p, p->find_spell( 210817 ) )
+  {
+    background = proc = true;
+    aoe = -1;
+  }
+};
+
 struct meteorite_t final : public mage_spell_t
 {
   meteorite_t( std::string_view n, mage_t* p ) :
@@ -6680,6 +6705,7 @@ struct touch_of_the_magi_t final : public arcane_mage_spell_t
     p()->trigger_arcane_charge( as<int>( data().effectN( 2 ).base_value() ) );
     p()->buffs.leydrinker->trigger();
     p()->trigger_jackpot( true );
+    p()->buffs.intuition->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -7792,6 +7818,10 @@ void mage_t::create_actions()
   if ( talents.glorious_incandescence.ok() )
     action.meteorite = get_action<meteorite_t>( "meteorite", this );
 
+  if ( talents.arcane_rebound.ok() ) {
+    action.arcane_rebound = get_action<arcane_rebound_t>( "arcane_rebound", this );
+  }
+
   if ( specialization() == MAGE_FROST && sets->has_set_bonus( MAGE_FROST, TWW2, B2 ) )
     action.frostbolt_volley = get_action<frostbolt_volley_t>( "frostbolt_volley", this );
 
@@ -8066,6 +8096,7 @@ void mage_t::init_spells()
   talents.leysight                   = find_talent_spell( talent_tree::SPECIALIZATION, "Leysight"                   );
   talents.aether_fragment            = find_talent_spell( talent_tree::SPECIALIZATION, "Aether Fragment"            );
   talents.concentration              = find_talent_spell( talent_tree::SPECIALIZATION, "Concentration"              );
+  talents.arcane_rebound             = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Rebound"             );
   // Row 10
   talents.high_voltage               = find_talent_spell( talent_tree::SPECIALIZATION, "High Voltage"               );
   talents.arcane_harmony             = find_talent_spell( talent_tree::SPECIALIZATION, "Arcane Harmony"             );
@@ -8543,6 +8574,8 @@ void mage_t::create_buffs()
   // Sunfury
   buffs.arcane_soul            = make_buff( this, "arcane_soul", find_spell( 451038 ) )
                                    ->set_chance( specialization() == MAGE_ARCANE && talents.memory_of_alar.ok() );
+  buffs.arcane_soul_counter    = make_buff( this, "arcane_soul_counter", find_spell( 1223522 ) )
+                                   ->set_chance( specialization() == MAGE_ARCANE && talents.memory_of_alar.ok() );
   buffs.burden_of_power        = make_buff( this, "burden_of_power", find_spell( 451049 ) )
                                    ->set_chance( talents.burden_of_power.ok() );
   buffs.glorious_incandescence = make_buff( this, "glorious_incandescence", find_spell( 451073 ) )
@@ -8587,9 +8620,9 @@ void mage_t::create_buffs()
 
 
   // Set Bonuses
-  buffs.intuition = make_buff( this, "intuition", find_spell( 455681 ) )
+  buffs.intuition = make_buff( this, "intuition", find_spell( 1223797 ) )
                       ->set_default_value_from_effect( 1 )
-                      ->set_chance( sets->set( MAGE_ARCANE, TWW1, B4 )->effectN( 1 ).percent() );
+                      ->set_chance( find_spell( 1223798 )->effectN( 1 ).percent() );
   buffs.clarity   = make_buff( this, "clarity", find_spell( 1216178 ) )
                       ->set_default_value_from_effect( 1 )
                       ->set_chance( sets->has_set_bonus( MAGE_ARCANE, TWW2, B2 ) );
