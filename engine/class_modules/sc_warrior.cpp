@@ -1940,6 +1940,12 @@ struct devastate_t : public warrior_attack_t
     weapon        = &( p->main_hand_weapon );
     impact_action = p->active.deep_wounds_PROT;
     parse_options( options_str );
+
+    if ( p->is_ptr() && p->talents.protection.strategist->ok() )
+    {
+      // For some reason on PTR strategist is referencing shield slam reset chance from devastator
+      shield_slam_reset = p->spell.devastator->effectN( 2 ).percent();
+    }
   }
 
   void execute() override
@@ -4630,6 +4636,12 @@ struct thunder_clap_t : public warrior_attack_t
       seismic_action = new thunder_clap_seismic_reverberation_t( "thunder_clap_seismic_reverberation", p );
       add_child( seismic_action );
     }
+
+    if ( p->is_ptr() && p->talents.protection.strategist->ok() )
+    {
+      // For some reason on PTR strategist is referencing shield slam reset chance from devastator
+      shield_slam_reset = p->spell.devastator->effectN( 2 ).percent();
+    }
   }
 
   double action_multiplier() const override
@@ -4838,6 +4850,12 @@ struct execute_arms_t : public warrior_attack_t
     {
       lightning_strike = get_action<lightning_strike_t>( "lightning_strike_execute", p );
       add_child( lightning_strike );
+    }
+
+    if ( p->is_ptr() && p->talents.protection.strategist->ok() )
+    {
+      // For some reason on PTR strategist is referencing shield slam reset chance from devastator
+      shield_slam_reset = p->spell.devastator->effectN( 2 ).percent();
     }
   }
 
@@ -6637,6 +6655,12 @@ struct revenge_t : public warrior_attack_t
 
       if ( p->is_ptr() )
         rage_from_frothing_berserker = p->talents.warrior.frothing_berserker->effectN( 3 ).percent();
+
+      if ( p->is_ptr() && p->talents.protection.strategist->ok() )
+      {
+        // For some reason on PTR strategist is referencing shield slam reset chance from devastator
+        shield_slam_reset = p->spell.devastator->effectN( 2 ).percent();
+      }
   }
 
   double cost_pct_multiplier() const override
