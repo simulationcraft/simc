@@ -136,8 +136,9 @@ static const std::array<expected_stat_t, 133> __ptr_expected_stat_data { {
 } };
 
 // Expected stat mods, wow build 11.1.0.58819
-static const std::array<expected_stat_mod_t, 21> __ptr_expected_stat_mod_data { {
+static const std::array<expected_stat_mod_t, 22> __ptr_expected_stat_mod_data { {
   { 325, 1.689000f, 1.000000f, 1.434000f, 1.536000f, 1.365000f, 1.689000f, 8 },
+  { 333, 1.000000f, 1.000000f, 1.000000f, 1.000000f, 1.000000f, 1.000000f, 8 },
   {  16, 0.822000f, 1.000000f, 1.000000f, 1.000000f, 1.000000f, 0.822000f, 14 },
   { 284, 1.000000f, 1.000000f, 1.000000f, 1.000000f, 1.000000f, 1.000000f, 14 },
   { 306, 1.592000f, 1.000000f, 1.378000f, 1.483000f, 1.317000f, 1.592000f, 14 },

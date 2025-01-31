@@ -1,5 +1,5 @@
 // Spell text, wow build 11.1.0.58819
-static const std::array<spelltext_data_t, 27232> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 27233> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27229,6 +27229,7 @@ static const std::array<spelltext_data_t, 27232> __ptr_spelltext_data { {
   { 1223798, "Casting a damaging spell has a $s1% chance to make your next Arcane Barrage deal $1223797s1% increased damage and generate $1223799s1 Arcane Charges.", 0, 0 },
   { 1223799, "$@spelldesc449394", 0, 0 },
   { 1223800, "When Arcane Barrage hits more than $s1 targets, it explodes for $210817s1 additional Arcane damage to all enemies within $210817A1 yds of the primary target.", 0, 0 },
+  { 1223801, "Deals $s1 Arcane damage to enemies within $A1 yards.", "Deals $s1 Arcane damage to enemies within $A1 yards.", 0 },
   { 1224098, "$?s221622[Increases the target's damage by $221622m1%, and redirects][Redirects] all threat you cause to the targeted party or raid member, beginning with your next damaging attack within the next $d and lasting $59628d.", "Threat redirected from Rogue.", 0 },
   { 1224131, "$@spelldesc1218417", 0, 0 },
   { 1224451, "$?a427775[Chaos][Fire]", 0, 0 },
