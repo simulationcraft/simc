@@ -16455,4 +16455,20 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 188054 | Target: Self (1)
 Description      : When Arcane Barrage hits more than $s1 targets, it explodes for $210817s1 additional Arcane damage to all enemies within $210817A1 yds of the primary target.
 
+Name             : Arcane Rebound (id=1223801) [Spell Family (3)] 
+Class            : Mage
+School           : Arcane
+Spell Type       : Magic
+Range            : 100 yards
+Velocity         : 24 yards/sec
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+Attributes       : Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1212065)  : School Damage (2): arcane
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.5 | Radius: 0 - 10 yards | Target: At Target (63) -> At Enemy in Area (16)
+Description      : Deals $s1 Arcane damage to enemies within $A1 yards.
+Tooltip          : Deals $s1 Arcane damage to enemies within $A1 yards.
+
 

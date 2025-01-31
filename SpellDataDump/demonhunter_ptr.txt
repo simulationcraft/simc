@@ -12861,7 +12861,7 @@ Name             : Winning Streak! (id=1220706) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Duration         : 7 seconds
+Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
