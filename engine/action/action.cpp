@@ -1213,7 +1213,9 @@ timespan_t action_t::gcd() const
 }
 
 timespan_t action_t::cooldown_duration() const
-{ return cooldown ? cooldown->duration : timespan_t::zero(); }
+{
+  return cooldown ? cooldown->cooldown_duration( cooldown ) : timespan_t::zero();
+}
 
 /** False Positive skill chance, executes command regardless of expression. */
 double action_t::false_positive_pct() const
