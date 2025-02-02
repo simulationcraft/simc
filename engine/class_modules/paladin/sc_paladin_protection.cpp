@@ -1229,7 +1229,7 @@ void paladin_t::create_buffs_protection()
 
   buffs.sanctification_empower = make_buff( this, "sanctification_tier_empower", find_spell( 424622 ) );
 
-  buffs.pp_2pc_luck_of_the_draw = make_buff( this, "luck_of_the_draw", find_spell( 1218114 ) );
+  buffs.luck_of_the_draw = make_buff( this, "luck_of_the_draw", find_spell( 1218114 ) );
 }
 
 void paladin_t::init_spells_protection()
