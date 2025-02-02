@@ -2164,12 +2164,12 @@ struct hammer_of_light_ptr_t : public holy_power_consumer_t<paladin_melee_attack
 
     void impact( action_state_t* s ) override
     {
-      holy_power_consumer_t::impact( s );
       if ( p()->specialization() == PALADIN_RETRIBUTION && p()->talents.templar.undisputed_ruling->ok() &&
            p()->talents.greater_judgment->ok() )
       {
         p()->trigger_greater_judgment( td( s->target ) );
       }
+      holy_power_consumer_t::impact( s );
     }
   };
 
