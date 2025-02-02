@@ -9526,6 +9526,9 @@ double evoker_t::get_molten_embers_multiplier( player_t* target, bool recalculat
 
     mul *= 1 + 2.4_s / firebreath_duration;
 
+    if ( is_ptr() )
+      mul = std::min( 1.4, mul );
+
     sim->print_debug( "{} set molten_embers_multiplier on {} to {} from {}", this->name_str, target->name_str, mul,
                       td->molten_embers_multiplier );
 

@@ -16596,6 +16596,20 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 Description      : $@spelldesc471876
 
+Name             : Boar Charge (id=471947) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : Melee
+Range            : 100 yards
+Duration         : 3 seconds
+Labels           : 16: Class Spells
+                 : 23: Hunter Spells
+                 : 292
+                 : 3022
+Effects          :
+#1 (id=1189752)  : Create Area Trigger (179)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 35566 | Radius: 20 yards | Target: At Target Radius (75)
+
 Name             : Bear Summon (id=471990) [Spell Family (9), Hidden] 
 Class            : Hunter
 School           : Physical
@@ -16654,6 +16668,23 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
 Description      : $@spelldesc471876
 Tooltip          : Suffering $w1 damage every $t1 sec.
+
+Name             : Boar Charge (id=472020) [Spell Family (9), Hidden] 
+Class            : Hunter
+School           : Physical
+Spell Type       : Melee
+Range            : 40 yards
+Duration         : 6 seconds
+Labels           : 16: Class Spells
+                 : 23: Hunter Spells
+                 : 292
+                 : 3022
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169), Unknown (467)
+Effects          :
+#1 (id=1189845)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+#2 (id=1190685)  : Apply Aura (6) | Periodic Dummy (226): every 3 seconds
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1 | Target: Self (1)
 
 Name             : Bleak Powder (id=472084) [Spell Family (9)] 
 Class            : Hunter

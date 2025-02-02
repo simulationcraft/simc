@@ -1,0 +1,138 @@
+# shaman="TWW2_Shaman_Elemental"
+# level=80
+# race=tauren
+# spec=elemental
+# role=spell
+# position=ranged_back
+
+# # Stormbringer
+# talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAMbz2yMjZGzysMzMAzMDAAAAAAbmxwGsAzohGbAgZbaGw2iZmphZmZMsNzMDmlBLjxgxMz2YA
+
+# head=,id=212011,bonus_id=10299/1808/1540,gem_id=213743
+# neck=,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213470/213491
+# shoulder=,id=212009,ilevel=639
+# back=,id=225574,bonus_id=1540/10299/10376,enchant=chant_of_winged_grace_3
+# chest=,id=212421,bonus_id=1540/10299/10376,enchant=crystalline_radiance_3
+# wrist=,id=219342,bonus_id=10421/9633/8902/11144/10222/1485/1808/8793/11109/8960,enchant=chant_of_armored_avoidance_3,gem_id=213482,crafted_stats=36/40
+# hands=,id=212012,ilevel=639
+# waist=,id=221075,bonus_id=3131/10299/10376/1808,gem_id=213458
+# legs=,id=212010,ilevel=639,enchant=sunset_spellthread_3
+# feet=,id=212013,bonus_id=1540/10299,enchant=defenders_march_3
+# finger1=,id=225578,bonus_id=1540/10299/10376/8781,enchant=radiant_mastery_3,gem_id=213494/213494
+# finger2=,id=225576,bonus_id=1540/10299/10376/8781,enchant=radiant_mastery_3,gem_id=213494/213494
+# trinket1=,id=220202,ilevel=639
+# trinket2=,id=219314,ilevel=639
+# main_hand=,id=222445,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960,enchant=authority_of_the_depths_3,crafted_stats=49/36
+# off_hand=,id=178712,bonus_id=9948/10299/10376
+
+# save=TWW2_Shaman_Elemental.simc
+
+# shaman="TWW2_Shaman_Elemental_Farseer"
+# level=80
+# race=tauren
+# spec=elemental
+# role=spell
+# position=ranged_back
+
+# # Farseer
+# talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAMbzyyMjZGzysMGMYmZAAAAAwiZ2gBMgZjJkZBAMbTzA2WMzMNMzMjhtZmZwsMYZMzYmhZ2YA
+
+# head=,id=212011,bonus_id=10299/1808/1540,gem_id=213743
+# neck=,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213470/213491
+# shoulder=,id=212009,ilevel=639
+# back=,id=225574,bonus_id=1540/10299/10376,enchant=chant_of_winged_grace_3
+# chest=,id=212421,bonus_id=1540/10299/10376,enchant=crystalline_radiance_3
+# wrist=,id=219342,bonus_id=10421/9633/8902/11144/10222/1485/1808/8793/11109/8960,enchant=chant_of_armored_avoidance_3,gem_id=213482,crafted_stats=36/40
+# hands=,id=212012,ilevel=639
+# waist=,id=221075,bonus_id=3131/10299/10376/1808,gem_id=213458
+# legs=,id=212010,ilevel=639,enchant=sunset_spellthread_3
+# feet=,id=212013,bonus_id=1540/10299,enchant=defenders_march_3
+# finger1=,id=225578,bonus_id=1540/10299/10376/8781,enchant=radiant_mastery_3,gem_id=213494/213494
+# finger2=,id=225576,bonus_id=1540/10299/10376/8781,enchant=radiant_mastery_3,gem_id=213494/213494
+# trinket1=,id=220202,ilevel=639
+# trinket2=,id=219314,ilevel=639
+# main_hand=,id=222445,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960,enchant=authority_of_the_depths_3,crafted_stats=49/36
+# off_hand=,id=178712,bonus_id=9948/10299/10376
+
+# save=TWW2_Shaman_Elemental_Farseer.simc
+
+# shaman="TWW2_Shaman_Enhancement_Totemic"
+# level=80
+# race=orc
+# spec=enhancement
+# role=attack
+# position=back
+# talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMgZGDzMzMYZmx2sNDAAAAAAAAAgNYBWgZspx2AYmgNAMLTGGWMMjhZmZMjtZmJbsMWGzMAAzMD
+
+# head=noetic_of_the_forgotten_reservoir,id=212011,ilevel=639,gem_id=213743
+# neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213482/213482
+# shoulders=concourse_of_the_forgotten_reservoir,id=212009,ilevel=639
+# back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960,crafted_stats=49/36
+# chest=goresplattered_membrane,id=212421,ilevel=639,enchant=crystalline_radiance_3
+# wrists=throne_defenders_bangles,id=212415,ilevel=639,gem_id=213482
+# hands=covenant_of_the_forgotten_reservoir,id=212012,ilevel=639
+# waist=cinch_of_lingering_influence,id=221168,ilevel=639,gem_id=213482
+# legs=sarong_of_the_forgotten_reservoir,id=212010,ilevel=639,enchant=stormbound_armor_kit_3
+# feet=silksteel_striders,id=221152,ilevel=639
+# finger1=key_to_the_unseeming,id=212447,ilevel=639,gem_id=213482/213482,enchant=radiant_haste_3
+# finger2=writhing_ringworm,id=225576,ilevel=639,gem_id=213482/213482,enchant=radiant_haste_3
+# trinket1=skardyns_grace,id=133282,bonus_id=4786/11342/10299,ilevel=639
+# trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/6652/10383/1632/10255,ilevel=639
+# main_hand=void_reapers_warp_blade,id=219877,bonus_id=1540/10299/10376,enchant=authority_of_the_depths_3
+# off_hand=everforged_mace,id=222442,bonus_id=10421/9633/8902/9627/8793/10222/11144/11300/8960,enchant=authority_of_the_depths_3,crafted_stats=36/32
+
+# save=TWW2_Shaman_Enhancement_Totemic.simc
+
+# shaman="TWW2_Shaman_Enhancement"
+# level=80
+# race=orc
+# spec=enhancement
+# role=attack
+# position=back
+# talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMzCmhZ2mZmZY2mZWWGAAAAAAAAAAYDgFzYYjsAzwQDWAwsMZALmxMzwMzMbDbzMT2YZswMDAwMG
+
+# head=noetic_of_the_forgotten_reservoir,id=212011,ilevel=639,gem_id=213743
+# neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213482/213482
+# shoulders=concourse_of_the_forgotten_reservoir,id=212009,ilevel=639
+# back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960,crafted_stats=49/36
+# chest=goresplattered_membrane,id=212421,ilevel=639,enchant=crystalline_radiance_3
+# wrists=throne_defenders_bangles,id=212415,ilevel=639,gem_id=213482
+# hands=covenant_of_the_forgotten_reservoir,id=212012,ilevel=639
+# waist=cinch_of_lingering_influence,id=221168,ilevel=639,gem_id=213482
+# legs=sarong_of_the_forgotten_reservoir,id=212010,ilevel=639,enchant=stormbound_armor_kit_3
+# feet=silksteel_striders,id=221152,ilevel=639
+# finger1=key_to_the_unseeming,id=212447,ilevel=639,gem_id=213482/213482,enchant=radiant_haste_3
+# finger2=writhing_ringworm,id=225576,ilevel=639,gem_id=213482/213482,enchant=radiant_haste_3
+# trinket1=skardyns_grace,id=133282,bonus_id=4786/11342/10299,ilevel=639
+# trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/6652/10383/1632/10255,ilevel=639
+# main_hand=void_reapers_warp_blade,id=219877,bonus_id=1540/10299/10376,enchant=authority_of_the_depths_3
+# off_hand=everforged_mace,id=222442,bonus_id=10421/9633/8902/9627/8793/10222/11144/11300/8960,enchant=authority_of_the_depths_3,crafted_stats=36/32
+
+# save=TWW2_Shaman_Enhancement.simc
+
+# # shaman="TWW2_Shaman_Restoration"
+# # level=70
+# # race=tauren
+# # spec=restoration
+# # role=spell
+# # position=ranged_back
+# # talents=0100200
+
+# # head=nathrian_usurpers_mask,id=178816,bonus_id=6536/1540/6646,gem_id=173129
+# # neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646,gem_id=173129
+# # shoulder=plagueborne_shoulderguards,id=178764,bonus_id=6536/1540/6646
+# # back=blighted_margraves_cloak,id=178755,bonus_id=6536/1540/6646
+# # chest=forsworn_stalkers_hauberk,id=180100,bonus_id=6536/1540/6646,enchant=eternal_insight
+# # wrists=fallen_paragons_armguards,id=180114,bonus_id=6536/1540/6646,enchant=eternal_intellect,gem_id=173129
+# # hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=4800/4786/1498
+# # waist=loadbearing_belt,id=183016,bonus_id=4800/4786/1498,gem_id=173129
+# # legs=lichbone_legguards,id=178778,bonus_id=6536/1540/6646
+# # feet=boneshatter_treads,id=172323,bonus_id=6716/6986/6649/6650/1532
+# # finger1=ritual_commanders_ring,id=178781,bonus_id=6536/1540/6646,enchant=tenet_of_versatility,gem_id=173129
+# # finger2=stitchfleshs_misplaced_signet,id=178736,bonus_id=6536/1540/6646,enchant=tenet_of_versatility,gem_id=173129
+# # trinket1=glyph_of_assimilation,id=184021,bonus_id=4800/4786/1498
+# # trinket2=dreadfire_vessel,id=184030,bonus_id=4800/4786/1498
+# # main_hand=grasp_from_the_grave,id=184259,bonus_id=4800/4786/1531,enchant=sinful_revelation
+# # off_hand=burden_of_the_protectorate,id=184257,bonus_id=4800/4786/1531
+
+# # save=TWW2_Shaman_Restoration.simc

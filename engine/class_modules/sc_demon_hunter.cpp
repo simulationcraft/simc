@@ -2934,6 +2934,11 @@ struct eye_beam_base_t : public demon_hunter_spell_t
     // Trigger Meta before the execute so that the channel duration is affected by Meta haste
     p()->trigger_demonic();
 
+    if ( p()->is_ptr() && p()->talent.havoc.cycle_of_hatred->ok() )
+    {
+      p()->buff.cycle_of_hatred->trigger();
+    }
+
     demon_hunter_spell_t::execute();
     timespan_t duration = composite_dot_duration( execute_state );
 
@@ -2955,11 +2960,6 @@ struct eye_beam_base_t : public demon_hunter_spell_t
       p()->active.collective_anguish->set_target( target );
       p()->active.collective_anguish->execute();
     }
-
-    if ( p()->is_ptr() && p()->talent.havoc.cycle_of_hatred->ok() )
-    {
-      p()->buff.cycle_of_hatred->trigger();
-    }
   }
 
   result_amount_type amount_type( const action_state_t*, bool ) const override
@@ -2967,9 +2967,9 @@ struct eye_beam_base_t : public demon_hunter_spell_t
     return result_amount_type::DMG_DIRECT;
   }
 
-  timespan_t cooldown_duration() const override
+  timespan_t cooldown_base_duration( const cooldown_t& cd ) const override
   {
-    return base_t::cooldown_duration() -
+    return demon_hunter_spell_t::cooldown_base_duration( cd ) -
            timespan_t::from_millis( as<int>( p()->buff.cycle_of_hatred->check_stack_value() ) );
   }
 };
@@ -5807,7 +5807,7 @@ struct essence_break_t : public demon_hunter_attack_t
 // Felblade =================================================================
 // TODO: Real movement stuff.
 
-struct felblade_t : public demon_hunter_attack_t
+struct felblade_t : public inertia_trigger_t<demon_hunter_attack_t>
 {
   struct felblade_damage_t : public demon_hunter_attack_t
   {
@@ -5832,7 +5832,7 @@ struct felblade_t : public demon_hunter_attack_t
   unsigned max_fragments_consumed;
 
   felblade_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_attack_t( "felblade", p, p->talent.demon_hunter.felblade, options_str ),
+    : base_t( "felblade", p, p->talent.demon_hunter.felblade, options_str ),
       max_fragments_consumed(
           p->specialization() == DEMON_HUNTER_HAVOC && p->talent.aldrachi_reaver.warblades_hunger->ok()
               ? as<unsigned>( p->talent.aldrachi_reaver.warblades_hunger->effectN( 2 ).base_value() )
@@ -5849,7 +5849,7 @@ struct felblade_t : public demon_hunter_attack_t
 
   void execute() override
   {
-    demon_hunter_attack_t::execute();
+    base_t::execute();
     p()->set_out_of_range( timespan_t::zero() );  // Cancel all other movement
     if ( max_fragments_consumed > 0 )
     {

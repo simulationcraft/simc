@@ -1,0 +1,25 @@
+# evoker="TWW2_Evoker_Devastation"
+# level=80
+# race=dracthyr
+# role=spell
+# spec=devastation
+# talents=CsbBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzMzMYmNzYmBMYMTzYmJz2YZMzMjZMzyMgZMzGzMLzMgBGDWglxox2AyMIYDD
+
+# head=horns_of_the_destroyer,id=212029,bonus_id=1540/10299/1808,gem_id=213743
+# neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213473/213485
+# shoulder=fumaroles_of_the_destroyer,id=212027,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+# back=wings_of_shattered_sorrow,id=225574,bonus_id=6652/10376/10354/10269/1511/10255,ilevel=639
+# chest=scales_of_the_destroyer,id=212032,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant=crystalline_radiance_3
+# wrist=glyphetched_vambraces,id=219342,bonus_id=10421/9633/8902/11144/10222/1485/1808/11109/8960,gem_id=213455,crafted_stats=32/36
+# hands=rippers_of_the_destroyer,id=212030,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+# waist=core_of_the_destroyer,id=212026,bonus_id=1540/10299/1808,gem_id=213497
+# legs=liquified_defectors_leggings,id=212435,bonus_id=1540/10299/10376,enchant=sunset_spellthread_3
+# feet=rashanans_grotesque_talons,id=225586,bonus_id=1540/10299/10376,enchant_id=7424
+# finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10394/10879,ilevel=639,gem_id=213494/213494,enchant=radiant_critical_strike_3
+# finger2=devout_zealots_ring,id=221136,bonus_id=3131/10299/10376/8781,gem_id=213494/213494,enchant=radiant_critical_strike_3
+# trinket1=arakara_sacbrood,id=219314,bonus_id=10273/10390/6652/10383/1632/10255,ilevel=639
+# trinket2=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
+# main_hand=flawless_phase_blade,id=212405,bonus_id=1540/10299/10376,enchant=authority_of_the_depths_3
+# off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960,crafted_stats=32/36
+
+# save=TWW2_Evoker_Devastation.simc

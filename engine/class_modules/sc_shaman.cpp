@@ -620,10 +620,10 @@ struct totem_pulse_event_t;
 template <typename T>
 struct totem_pulse_action_t;
 
-using spell_totem_action_t = totem_pulse_action_t<spell_t>;
-using spell_totem_pet_t = shaman_totem_pet_t<spell_t>;
-using heal_totem_action_t = totem_pulse_action_t<heal_t>;
-using heal_totem_pet_t = shaman_totem_pet_t<heal_t>;
+using spell_totem_action_t = totem_pulse_action_t<parse_action_effects_t<spell_t>>;
+using spell_totem_pet_t = shaman_totem_pet_t<parse_action_effects_t<spell_t>>;
+using heal_totem_action_t = totem_pulse_action_t<parse_action_effects_t<heal_t>>;
+using heal_totem_pet_t = shaman_totem_pet_t<parse_action_effects_t<heal_t>>;
 
 namespace pet
 {
@@ -662,7 +662,7 @@ struct shaman_td_t : public actor_target_data_t
   }
 };
 
-struct shaman_t : public player_t
+struct shaman_t : public parse_player_effects_t
 {
 public:
   // Misc
@@ -824,8 +824,6 @@ public:
   // Constants
   struct
   {
-    /// Matching Gear multiplier
-    double mul_matching_gear;
     /// Lightning Rod damage_multiplier
     double mul_lightning_rod;
   } constant;
@@ -946,7 +944,7 @@ public:
   struct options_t
   {
     rotation_type_e rotation = ROTATION_STANDARD;
-    int dre_flat_chance = -1;
+    double dre_flat_chance = -1.0;
     unsigned dre_forced_failures = 2U;
 
     // Tempest options
@@ -1428,7 +1426,7 @@ public:
   shaman_attack_t* hailstorm;
 
   shaman_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN )
-    : player_t( sim, SHAMAN, name, r ),
+    : parse_player_effects_t( sim, SHAMAN, name, r ),
       lava_surge_during_lvb( false ),
       sk_during_cast(false),
       lotfw_counter( 0U ),
@@ -1594,6 +1592,7 @@ public:
   void trigger_legacy_of_the_frost_witch( const action_state_t* state, unsigned consumed_stacks );
   void trigger_elemental_equilibrium( const action_state_t* state );
   void trigger_deeply_rooted_elements( const action_state_t* state );
+  void trigger_deeply_rooted_elements1101( const action_state_t* state ); // 11.1 version
 
   void trigger_secondary_flame_shock( player_t* target, spell_variant variant = spell_variant::NORMAL ) const;
   void trigger_secondary_flame_shock( const action_state_t* state, spell_variant variant = spell_variant::NORMAL ) const;
@@ -1618,6 +1617,7 @@ public:
   void init_rng() override;
   void init_items() override;
   void init_special_effects() override;
+  void init_finished() override;
   std::string create_profile( save_e ) override;
   void create_special_effects() override;
   action_t* create_proc_action( util::string_view /* name */, const special_effect_t& /* effect */ ) override;
@@ -1639,22 +1639,19 @@ public:
   double resource_loss( resource_e resource_type, double amount, gain_t* source, action_t* ) override;
 
   void apply_affecting_auras( action_t& ) override;
+  void apply_action_effects( parse_effects_t* );
+  void apply_player_effects();
 
   void moving() override;
   void invalidate_cache( cache_e c ) override;
   double non_stacking_movement_modifier() const override;
   double stacking_movement_modifier() const override;
-  double composite_melee_crit_chance() const override;
-  double composite_melee_auto_attack_speed() const override;
   double composite_melee_haste() const override;
-  double composite_spell_crit_chance() const override;
   double composite_spell_haste() const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* target, school_e school ) const override;
-  double composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const override;
   double composite_maelstrom_gain_coefficient( const action_state_t* /* state */ = nullptr ) const
   { return 1.0; }
-  double matching_gear_multiplier( attribute_e attr ) const override;
   action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
   void create_pets() override;
@@ -2045,8 +2042,6 @@ struct shaman_action_t : public parse_action_effects_t<Base>
 {
 private:
   using ab = parse_action_effects_t<Base>;  // action base, eg. spell_t
-
-  void parse_action_effects();
 public:
   using base_t = shaman_action_t<Base>;
 
@@ -2067,17 +2062,12 @@ public:
   bool affected_by_ns_cast_time;
   bool affected_by_ans_cost;
   bool affected_by_ans_cast_time;
-  bool affected_by_enh_mastery_da;
-  bool affected_by_enh_mastery_ta;
   bool affected_by_lotfw_da;
   bool affected_by_lotfw_ta;
 
   bool affected_by_stormkeeper_cast_time;
   bool affected_by_stormkeeper_damage;
   bool affected_by_arc_discharge;
-
-  bool affected_by_amplification_core_da;
-  bool affected_by_amplification_core_ta;
 
   bool affected_by_enhanced_imbues_da;
 
@@ -2087,9 +2077,6 @@ public:
   bool affected_by_elemental_unity_fe_ta;
   bool affected_by_elemental_unity_se_da;
   bool affected_by_elemental_unity_se_ta;
-
-  bool affected_by_ele_mastery_da;
-  bool affected_by_ele_mastery_ta;
 
   bool affected_by_lightning_elemental_da;
   bool affected_by_lightning_elemental_ta;
@@ -2119,23 +2106,17 @@ public:
       affected_by_ns_cast_time( false ),
       affected_by_ans_cost( false ),
       affected_by_ans_cast_time( false ),
-      affected_by_enh_mastery_da( false ),
-      affected_by_enh_mastery_ta( false ),
       affected_by_lotfw_da( false ),
       affected_by_lotfw_ta( false ),
       affected_by_stormkeeper_cast_time( false ),
       affected_by_stormkeeper_damage( false ),
       affected_by_arc_discharge( false ),
-      affected_by_amplification_core_da( false ),
-      affected_by_amplification_core_ta( false ),
       affected_by_enhanced_imbues_da( false ), // Enhancement damage effects, Ele stuff is handled elsewhere
       affected_by_storm_frenzy( false ),
       affected_by_elemental_unity_fe_da( false ),
       affected_by_elemental_unity_fe_ta( false ),
       affected_by_elemental_unity_se_da( false ),
       affected_by_elemental_unity_se_ta( false ),
-      affected_by_ele_mastery_da( false ),
-      affected_by_ele_mastery_ta( false ),
       affected_by_lightning_elemental_da( false ),
       affected_by_lightning_elemental_ta( false ),
       affected_by_ele_tww1_4pc_cc( false ),
@@ -2177,15 +2158,10 @@ public:
     affected_by_ns_cast_time = ab::data().affected_by( player->talent.natures_swiftness->effectN( 2 ) );
     affected_by_ans_cast_time = ab::data().affected_by( player->buff.ancestral_swiftness->data().effectN( 2 ) );
 
-    affected_by_enh_mastery_da = ab::data().affected_by( player->mastery.enhanced_elements->effectN( 1 ) );
-    affected_by_enh_mastery_ta = ab::data().affected_by( player->mastery.enhanced_elements->effectN( 5 ) );
     affected_by_lotfw_da = ab::data().affected_by( player->find_spell( 384451 )->effectN( 1 ) );
     affected_by_lotfw_ta = ab::data().affected_by( player->find_spell( 384451 )->effectN( 2 ) );
 
     affected_by_arc_discharge = ab::data().affected_by( player->buff.arc_discharge->data().effectN( 1 ) );
-
-    affected_by_amplification_core_da = ab::data().affected_by( player->find_spell( 456369 )->effectN( 1 ) );
-    affected_by_amplification_core_ta = ab::data().affected_by( player->find_spell( 456369 )->effectN( 2 ) );
 
     affected_by_enhanced_imbues_da = ab::data().affected_by( player->talent.enhanced_imbues->effectN( 2 ) );
 
@@ -2199,9 +2175,6 @@ public:
                                         ab::data().affected_by( player->buff.lesser_storm_elemental->data().effectN( 4 ) );
     affected_by_elemental_unity_se_ta = ab::data().affected_by( player->buff.storm_elemental->data().effectN( 5 ) ) ||
                                         ab::data().affected_by( player->buff.lesser_storm_elemental->data().effectN( 5 ) );
-
-    affected_by_ele_mastery_da = ab::data().affected_by( player->mastery.elemental_overload->effectN( 3 ) );
-    affected_by_ele_mastery_ta = ab::data().affected_by( player->mastery.elemental_overload->effectN( 4 ) );
 
     affected_by_lightning_elemental_da = ab::data().affected_by( player->buff.fury_of_the_storms->data().effectN( 2 ) );
     affected_by_lightning_elemental_ta = ab::data().affected_by( player->buff.fury_of_the_storms->data().effectN( 3 ) );
@@ -2220,7 +2193,7 @@ public:
 
     if ( this->data().ok() )
     {
-      parse_action_effects();
+      p()->apply_action_effects( this );
     }
   }
 
@@ -2309,16 +2282,6 @@ public:
   {
     double m = ab::action_da_multiplier();
 
-    if ( affected_by_enh_mastery_da )
-    {
-      m *= 1.0 + p()->cache.mastery_value();
-    }
-
-    if ( affected_by_ele_mastery_da )
-    {
-      m *= 1.0 + p()->mastery.elemental_overload->effectN( 3 ).mastery_value() * p()->cache.mastery();
-    }
-
     if ( affected_by_lotfw_da && p()->buff.legacy_of_the_frost_witch->check() )
     {
       m *= 1.0 + p()->buff.legacy_of_the_frost_witch->value();
@@ -2327,11 +2290,6 @@ public:
     if ( affected_by_arc_discharge && p()->buff.arc_discharge->check() )
     {
       m *= 1.0 + p()->buff.arc_discharge->value();
-    }
-
-    if ( affected_by_amplification_core_da && p()->buff.amplification_core->check() )
-    {
-      m *= 1.0 + p()->buff.amplification_core->value();
     }
 
     if ( affected_by_enhanced_imbues_da )
@@ -2382,24 +2340,9 @@ public:
   {
     double m = ab::action_ta_multiplier();
 
-    if ( affected_by_enh_mastery_ta )
-    {
-      m *= 1.0 + p()->cache.mastery_value();
-    }
-
-    if ( affected_by_ele_mastery_ta )
-    {
-      m *= 1.0 + p()->mastery.elemental_overload->effectN( 4 ).mastery_value() * p()->cache.mastery();
-    }
-
     if ( affected_by_lotfw_ta && p()->buff.legacy_of_the_frost_witch->check() )
     {
       m *= 1.0 + p()->buff.legacy_of_the_frost_witch->value();
-    }
-
-    if ( affected_by_amplification_core_ta && p()->buff.amplification_core->check() )
-    {
-      m *= 1.0 + p()->buff.amplification_core->value();
     }
 
     if ( affected_by_elemental_unity_fe_ta && p()->talent.elemental_unity.ok() &&
@@ -2980,6 +2923,16 @@ public:
     }
 
     return mw_multiplier;
+  }
+
+  void consume_resource() override
+  {
+    ab::consume_resource();
+
+    if ( this->last_resource_cost > 0 && this->current_resource() == RESOURCE_MAELSTROM )
+    {
+      this->p()->trigger_deeply_rooted_elements1101( this->execute_state );
+    }
   }
 
   void execute() override
@@ -4479,7 +4432,6 @@ struct stormblast_t : public shaman_attack_t
     background = may_crit = callbacks = false;
 
     // Not handled by spell data
-    affected_by_enh_mastery_da = true;
     affected_by_elemental_weapons_da = true;
   }
 
@@ -9836,25 +9788,7 @@ struct totem_pulse_action_t : public T
   shaman_totem_pet_t<T>* totem;
   unsigned pulse;
 
-  bool affected_by_enh_mastery_da;
-  bool affected_by_enh_mastery_ta;
-
-  bool affected_by_ele_mastery_da;
-  bool affected_by_ele_mastery_ta;
-
   bool affected_by_totemic_rebound_da;
-
-  bool affected_by_amplification_core_da;
-  bool affected_by_amplification_core_ta;
-
-  bool affected_by_molten_weapon_da;
-  bool affected_by_molten_weapon_ta;
-
-  bool affected_by_crackling_surge_da;
-  bool affected_by_crackling_surge_ta;
-
-  bool affected_by_earthen_weapon_da;
-  bool affected_by_earthen_weapon_ta;
 
   bool affected_by_lotfw_da;
   bool affected_by_lotfw_ta;
@@ -9866,7 +9800,7 @@ struct totem_pulse_action_t : public T
     : T( token, p, s ), hasted_pulse( false ), pulse_multiplier( 1.0 ), totem( p ), pulse ( 0 )
   {
     this->may_crit = this->background = true;
-    this->callbacks             = false;
+    this->callbacks = false;
 
     if ( this->type == ACTION_HEAL )
     {
@@ -9878,20 +9812,8 @@ struct totem_pulse_action_t : public T
       this->harmful = true;
     }
 
-    affected_by_enh_mastery_da = T::data().affected_by( o()->mastery.enhanced_elements->effectN( 1 ) );
-    affected_by_enh_mastery_ta = T::data().affected_by( o()->mastery.enhanced_elements->effectN( 5 ) );
-    affected_by_ele_mastery_da        = T::data().affected_by( o()->mastery.elemental_overload->effectN( 3 ) );
-    affected_by_ele_mastery_ta        = T::data().affected_by( o()->mastery.elemental_overload->effectN( 4 ) );
-    affected_by_amplification_core_da = T::data().affected_by( o()->buff.amplification_core->data().effectN( 1 ) );
-    affected_by_amplification_core_ta = T::data().affected_by( o()->buff.amplification_core->data().effectN( 2 ) );
     affected_by_totemic_rebound_da = T::data().affected_by_all( o()->buff.totemic_rebound->data().effectN( 1 ) ) ||
                                      T::data().affected_by_all( o()->buff.totemic_rebound->data().effectN( 2 ) );
-    affected_by_molten_weapon_da = T::data().affected_by( o()->buff.molten_weapon->data().effectN( 1 ) );
-    affected_by_molten_weapon_ta = T::data().affected_by( o()->buff.molten_weapon->data().effectN( 2 ) );
-    affected_by_crackling_surge_da = T::data().affected_by( o()->buff.crackling_surge->data().effectN( 1 ) );
-    affected_by_crackling_surge_ta = T::data().affected_by( o()->buff.crackling_surge->data().effectN( 2 ) );
-    affected_by_earthen_weapon_da = T::data().affected_by( o()->buff.earthen_weapon->data().effectN( 1 ) );
-    affected_by_earthen_weapon_ta = T::data().affected_by( o()->buff.earthen_weapon->data().effectN( 2 ) );
     affected_by_lotfw_da = T::data().affected_by( o()->buff.legacy_of_the_frost_witch->data().effectN( 1 ) );
     affected_by_lotfw_ta = T::data().affected_by( o()->buff.legacy_of_the_frost_witch->data().effectN( 2 ) );
 
@@ -9899,6 +9821,14 @@ struct totem_pulse_action_t : public T
       o()->spell.elemental_weapons->effectN( 1 ) );
     affected_by_elemental_weapons_ta = o()->talent.elemental_weapons.ok() && T::data().affected_by(
       o()->spell.elemental_weapons->effectN( 2 ) );
+
+    if ( T::data().ok() )
+    {
+      // Override source of stats/state for parse_effects to the owner, since that's where the stats
+      // for totem actions come from.
+      this->_player = o();
+      o()->apply_action_effects( this );
+    }
   }
 
   void init() override
@@ -9942,16 +9872,6 @@ struct totem_pulse_action_t : public T
   {
     double m = T::action_da_multiplier();
 
-    if ( affected_by_enh_mastery_da )
-    {
-      m *= 1.0 + o()->cache.mastery_value();
-    }
-
-    if ( affected_by_ele_mastery_da )
-    {
-      m *= 1.0 + o()->mastery.elemental_overload->effectN( 3 ).mastery_value() * o()->cache.mastery();
-    }
-
     if ( affected_by_totemic_rebound_da )
     {
       m *= 1.0 + o()->buff.totemic_rebound->stack_value();
@@ -9960,29 +9880,6 @@ struct totem_pulse_action_t : public T
     if ( affected_by_lotfw_da && o()->buff.legacy_of_the_frost_witch->check() )
     {
       m *= 1.0 + o()->buff.legacy_of_the_frost_witch->value();
-    }
-
-    if ( affected_by_amplification_core_da && o()->buff.amplification_core->check() )
-    {
-      m *= 1.0 + o()->buff.amplification_core->value();
-    }
-
-    if ( affected_by_molten_weapon_da && o()->buff.molten_weapon->check() )
-    {
-      // Note, elemental_spirits_buff_t overrides value()
-      m *= 1.0 + o()->buff.molten_weapon->value();
-    }
-
-    if ( affected_by_crackling_surge_da && o()->buff.crackling_surge->check() )
-    {
-      // Note, elemental_spirits_buff_t overrides value()
-      m *= 1.0 + o()->buff.crackling_surge->value();
-    }
-
-    if ( affected_by_earthen_weapon_da && o()->buff.earthen_weapon->check() )
-    {
-      // Note, elemental_spirits_buff_t overrides value()
-      m *= 1.0 + o()->buff.earthen_weapon->value();
     }
 
     if ( affected_by_elemental_weapons_da )
@@ -9999,48 +9896,9 @@ struct totem_pulse_action_t : public T
   {
     double m = T::action_ta_multiplier();
 
-    if ( affected_by_enh_mastery_ta )
-    {
-      m *= 1.0 + o()->cache.mastery_value();
-    }
-
-    if ( affected_by_ele_mastery_ta )
-    {
-      m *= 1.0 + o()->mastery.elemental_overload->effectN( 4 ).mastery_value() * o()->cache.mastery();
-    }
-
     if ( affected_by_lotfw_ta && o()->buff.legacy_of_the_frost_witch->check() )
     {
       m *= 1.0 + o()->buff.legacy_of_the_frost_witch->value();
-    }
-
-    if ( affected_by_amplification_core_ta && o()->buff.amplification_core->check() )
-    {
-      m *= 1.0 + o()->buff.amplification_core->value();
-    }
-
-    if ( affected_by_molten_weapon_ta && o()->buff.molten_weapon->check() )
-    {
-      for ( int x = 1; x <= o()->buff.molten_weapon->check(); x++ )
-      {
-        m *= 1.0 + o()->buff.molten_weapon->value();
-      }
-    }
-
-    if ( affected_by_crackling_surge_ta && o()->buff.crackling_surge->check() )
-    {
-      for ( int x = 1; x <= o()->buff.crackling_surge->check(); x++ )
-      {
-        m *= 1.0 + o()->buff.crackling_surge->value();
-      }
-    }
-
-    if ( affected_by_earthen_weapon_ta && o()->buff.earthen_weapon->check() )
-    {
-      for ( int x = 1; x <= o()->buff.earthen_weapon->check(); x++ )
-      {
-        m *= 1.0 + o()->buff.earthen_weapon->value();
-      }
     }
 
     if ( affected_by_elemental_weapons_ta )
@@ -11482,7 +11340,7 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "ancestral_swiftness" )
     return new ancestral_swiftness_t( this, options_str );
 
-  return player_t::create_action( name, options_str );
+  return parse_player_effects_t::create_action( name, options_str );
 }
 
 // shaman_t::create_pet =====================================================
@@ -11501,7 +11359,7 @@ pet_t* shaman_t::create_pet( util::string_view pet_name, util::string_view /* pe
 
 void shaman_t::create_pets()
 {
-  player_t::create_pets();
+  parse_player_effects_t::create_pets();
 }
 
 // shaman_t::create_expression ==============================================
@@ -11653,14 +11511,14 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     return make_ref_expr( splits[ 0 ], buff_state_lightning_rod );
   }
 
-  return player_t::create_expression( name );
+  return parse_player_effects_t::create_expression( name );
 }
 
 // shaman_t::create_actions =================================================
 
 void shaman_t::create_actions()
 {
-  player_t::create_actions();
+  parse_player_effects_t::create_actions();
 
   if ( talent.crash_lightning->ok() )
   {
@@ -11780,7 +11638,7 @@ void shaman_t::create_actions()
 
 void shaman_t::create_options()
 {
-  player_t::create_options();
+  parse_player_effects_t::create_options();
   add_option( opt_bool( "raptor_glyph", raptor_glyph ) );
   // option allows Shamans to switch to a different APL
   add_option( opt_func( "rotation", [ this ]( sim_t*, util::string_view, util::string_view val ) {
@@ -11796,7 +11654,7 @@ void shaman_t::create_options()
   add_option( opt_int( "shaman.initial_tempest_counter", options.init_tempest_counter, -1, 299 ) );
 
   add_option( opt_obsoleted( "shaman.chain_harvest_allies" ) );
-  add_option( opt_int( "shaman.dre_flat_chance", options.dre_flat_chance, -1, 1 ) );
+  add_option( opt_float( "shaman.dre_flat_chance", options.dre_flat_chance, -1.0, 1.0 ) );
   add_option( opt_uint( "shaman.dre_forced_failures", options.dre_forced_failures, 0U, 10U ) );
 
   add_option( opt_uint( "shaman.icefury_positive", options.icefury_positive, 0U, 100U ) );
@@ -11850,7 +11708,7 @@ void shaman_t::create_options()
 
 std::string shaman_t::create_profile( save_e save_type )
 {
-  std::string profile = player_t::create_profile( save_type );
+  std::string profile = parse_player_effects_t::create_profile( save_type );
 
   if ( save_type & SAVE_PLAYER )
   {
@@ -11865,7 +11723,7 @@ std::string shaman_t::create_profile( save_e save_type )
 
 void shaman_t::copy_from( player_t* source )
 {
-  player_t::copy_from( source );
+  parse_player_effects_t::copy_from( source );
 
   shaman_t* p  = debug_cast<shaman_t*>( source );
 
@@ -11945,7 +11803,7 @@ struct maelstrom_weapon_cb_t : public dbc_proc_callback_t
 
 void shaman_t::create_special_effects()
 {
-  player_t::create_special_effects();
+  parse_player_effects_t::create_special_effects();
 
   if ( spec.maelstrom_weapon->ok() || talent.maelstrom_weapon->ok() )
   {
@@ -11985,7 +11843,7 @@ action_t* shaman_t::create_proc_action( util::string_view name, const special_ef
 
     return new quick_strike_t( this, effect );
   }
-  return player_t::create_proc_action( name, effect );
+  return parse_player_effects_t::create_proc_action( name, effect );
 }
 
 // shaman_t::action_init_finished ==========================================
@@ -12021,7 +11879,7 @@ void shaman_t::action_init_finished( action_t& action )
 
 void shaman_t::analyze( sim_t& sim )
 {
-  player_t::analyze( sim );
+  parse_player_effects_t::analyze( sim );
 
   int iterations = collected_data.total_iterations > 0
     ? collected_data.total_iterations
@@ -12077,7 +11935,7 @@ void shaman_t::analyze( sim_t& sim )
 
 void shaman_t::datacollection_end()
 {
-  player_t::datacollection_end();
+  parse_player_effects_t::datacollection_end();
 
   if ( buff.ascendance->iteration_uptime() > 0_ms )
   {
@@ -12394,8 +12252,6 @@ void shaman_t::init_spells()
   max_active_flame_shock   = as<unsigned>( find_class_spell( "Flame Shock" )->max_targets() );
 
   // Constants
-  constant.mul_matching_gear = spec.mail_specialization->effectN( 1 ).percent();
-
   constant.mul_lightning_rod = find_spell( 210689 )->effectN( 2 ).percent();
 
   if ( talent.charged_conduit->ok() )
@@ -12407,7 +12263,7 @@ void shaman_t::init_spells()
   constant.mul_lightning_rod += spec.enhancement_shaman->effectN( 27 ).percent();
 
 
-  player_t::init_spells();
+  parse_player_effects_t::init_spells();
 }
 
 // shaman_t::init_base ======================================================
@@ -12417,7 +12273,7 @@ void shaman_t::init_base_stats()
   if ( base.distance < 1 )
     base.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 5 : 30;
 
-  player_t::init_base_stats();
+  parse_player_effects_t::init_base_stats();
 
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
@@ -12443,7 +12299,7 @@ void shaman_t::init_base_stats()
 
 void shaman_t::init_scaling()
 {
-  player_t::init_scaling();
+  parse_player_effects_t::init_scaling();
 
   switch ( specialization() )
   {
@@ -12858,9 +12714,57 @@ void shaman_t::trigger_elemental_equilibrium( const action_state_t* state )
   }
 }
 
+void shaman_t::trigger_deeply_rooted_elements1101( const action_state_t* state )
+{
+  if ( !talent.deeply_rooted_elements.ok() || !dbc->ptr )
+  {
+    return;
+  }
+
+  double proc_chance = 0.0;
+  if ( options.dre_flat_chance == -1.0 )
+  {
+    auto spell = debug_cast<shaman_spell_t*>( state->action );
+
+    switch ( specialization() )
+    {
+      case SHAMAN_ELEMENTAL:
+        proc_chance = 0.01 * talent.deeply_rooted_elements->effectN( 2 ).base_value() * 0.01 *
+          spell->last_resource_cost;
+        break;
+      case SHAMAN_ENHANCEMENT:
+        proc_chance = 0.01 * talent.deeply_rooted_elements->effectN( 3 ).base_value() * 0.1 *
+          spell->mw_consumed_stacks;
+        break;
+      default:
+        break;
+    }
+  }
+  else
+  {
+    proc_chance = options.dre_flat_chance;
+  }
+
+  if ( proc_chance <= 0.0 )
+  {
+    return;
+  }
+
+  dre_attempts++;
+
+  if ( rng().roll( proc_chance ) )
+  {
+    dre_samples.add( as<double>( dre_attempts ) );
+    dre_attempts = 0U;
+
+    action.dre_ascendance->execute_on_target( state->target );
+    proc.deeply_rooted_elements->occur();
+  }
+}
+
 void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
 {
-  if ( !talent.deeply_rooted_elements.ok() )
+  if ( !talent.deeply_rooted_elements.ok() || dbc->ptr )
   {
     return;
   }
@@ -12887,7 +12791,7 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   dre_attempts++;
   if ( specialization() == SHAMAN_ELEMENTAL )
   {
-    if ( options.dre_flat_chance <= 0 )
+    if ( options.dre_flat_chance == -1.0 )
     {
       // per attempt there exists an ever growing 1% chance
       // proc curve is pushed down by 2%, so the first two attempts have a 0% chance to occur
@@ -13001,6 +12905,8 @@ void shaman_t::consume_maelstrom_weapon( const action_state_t* state, int stacks
     {
       buff.ice_strike_cast->trigger();
     }
+
+    trigger_deeply_rooted_elements1101( state );
   }
 
   if ( buff.tww2_enh_2pc->check() &&
@@ -13830,7 +13736,7 @@ void shaman_t::trigger_lively_totems( const action_state_t* state )
 
 void shaman_t::create_buffs()
 {
-  player_t::create_buffs();
+  parse_player_effects_t::create_buffs();
 
   //
   // Shared
@@ -14167,7 +14073,7 @@ void shaman_t::create_buffs()
 
 void shaman_t::init_gains()
 {
-  player_t::init_gains();
+  parse_player_effects_t::init_gains();
 
   gain.aftershock              = get_gain( "Aftershock" );
   gain.searing_flames          = get_gain( "Searing Flames" );
@@ -14184,7 +14090,7 @@ void shaman_t::init_gains()
 
 void shaman_t::init_procs()
 {
-  player_t::init_procs();
+  parse_player_effects_t::init_procs();
 
   proc.lava_surge                               = get_proc( "Lava Surge" );
   proc.wasted_lava_surge                        = get_proc( "Lava Surge: Wasted" );
@@ -14239,7 +14145,7 @@ void shaman_t::init_procs()
 // shaman_t::init_uptimes ====================================================
 void shaman_t::init_uptimes()
 {
-  player_t::init_uptimes();
+  parse_player_effects_t::init_uptimes();
 
   uptime.hot_hand = get_uptime( "Hot Hand" )->collect_uptime( *sim )->collect_duration( *sim );
 }
@@ -14248,7 +14154,7 @@ void shaman_t::init_uptimes()
 
 void shaman_t::init_assessors()
 {
-  player_t::init_assessors();
+  parse_player_effects_t::init_assessors();
 
   if ( talent.elemental_equilibrium.ok() )
   {
@@ -14267,7 +14173,7 @@ void shaman_t::init_assessors()
 
 void shaman_t::init_rng()
 {
-  player_t::init_rng();
+  parse_player_effects_t::init_rng();
 
   rng_obj.awakening_storms = get_rppm( "awakening_storms", talent.awakening_storms );
   rng_obj.lively_totems = get_rppm( "lively_totems", talent.lively_totems );
@@ -14318,7 +14224,7 @@ void shaman_t::init_rng()
 
 void shaman_t::init_items()
 {
-  player_t::init_items();
+  parse_player_effects_t::init_items();
 
   if ( sets->has_set_bonus( specialization(), DF4, B2 ) )
   {
@@ -14344,8 +14250,15 @@ void shaman_t::init_special_effects()
         return false;
       } );
 
-    player_t::init_special_effects();
+    parse_player_effects_t::init_special_effects();
 
+}
+
+void shaman_t::init_finished()
+{
+  parse_player_effects_t::init_finished();
+
+  apply_player_effects();
 }
 
 // shaman_t::apply_affecting_auras ==========================================
@@ -14436,17 +14349,46 @@ void shaman_t::apply_affecting_auras( action_t& action )
   }
 }
 
-template <class Base>
-void shaman_action_t<Base>::parse_action_effects()
+void shaman_t::apply_player_effects()
 {
-  // Enhancement
-  eff::source_eff_builder_t( p()->buff.crackling_surge ).set_flag( USE_CURRENT, IGNORE_STACKS ).build( this );
-  eff::source_eff_builder_t( p()->buff.molten_weapon ).set_flag( USE_CURRENT, IGNORE_STACKS ).build( this );
-  eff::source_eff_builder_t( p()->buff.icy_edge ).set_flag( USE_CURRENT, IGNORE_STACKS ).build( this );
-  eff::source_eff_builder_t( p()->buff.earthen_weapon ).set_flag( USE_CURRENT, IGNORE_STACKS ).build( this );
+  // Shared
+  eff::source_eff_builder_t( spec.mail_specialization ).build( this );
 
-  eff::source_eff_builder_t( p()->buff.tww2_enh_2pc ).build( this );
-  eff::source_eff_builder_t( p()->buff.tww2_enh_4pc_damage ).build( this );
+  // Enhancement
+  eff::source_eff_builder_t( buff.flurry ).set_flag( IGNORE_STACKS ).build( this );
+  eff::source_eff_builder_t( spec.enhancement_shaman ).build( this );
+  eff::source_eff_builder_t( spec.enhancement_shaman2 ).build( this );
+  eff::source_eff_builder_t( spec.critical_strikes ).build( this );
+
+  // Elemental
+  eff::source_eff_builder_t( spec.elemental_shaman ).build( this );
+  eff::source_eff_builder_t( mastery.elemental_overload ).build( this );
+  eff::source_eff_builder_t( buff.elemental_equilibrium )
+    .add_affecting_spell( talent.elemental_equilibrium )
+    .set_effect_mask( effect_mask_t( true ).disable( 2 ) )
+    .build( this );
+}
+
+void shaman_t::apply_action_effects( parse_effects_t* a )
+{
+  // Shared
+
+  // Enhancement
+  eff::source_eff_builder_t( mastery.enhanced_elements )
+    .add_affect_list( affect_list_t( 1 ).add_spell( 390287 ) ) // Stormblast
+    .build( a );
+
+  eff::source_eff_builder_t( buff.amplification_core ).build( a );
+  eff::source_eff_builder_t( buff.crackling_surge ).set_flag( USE_CURRENT, IGNORE_STACKS ).build( a );
+  eff::source_eff_builder_t( buff.molten_weapon ).set_flag( USE_CURRENT, IGNORE_STACKS ).build( a );
+  eff::source_eff_builder_t( buff.icy_edge ).set_flag( USE_CURRENT, IGNORE_STACKS ).build( a );
+  eff::source_eff_builder_t( buff.earthen_weapon ).set_flag( USE_CURRENT, IGNORE_STACKS ).build( a );
+
+  eff::source_eff_builder_t( buff.tww2_enh_2pc ).build( a );
+  eff::source_eff_builder_t( buff.tww2_enh_4pc_damage ).build( a );
+
+  // Elemental
+  eff::source_eff_builder_t( mastery.elemental_overload ).build( a );
 }
 
 // shaman_t::generate_bloodlust_options =====================================
@@ -14579,7 +14521,7 @@ std::string shaman_t::default_temporary_enchant() const
 
 double shaman_t::resource_loss( resource_e resource_type, double amount, gain_t* source, action_t* a )
 {
-  double loss = player_t::resource_loss( resource_type, amount, source, a );
+  double loss = parse_player_effects_t::resource_loss( resource_type, amount, source, a );
 
   if ( resource_type == RESOURCE_MAELSTROM && loss > 0 )
   {
@@ -14959,7 +14901,7 @@ void shaman_t::init_action_list()
 
   if ( !action_list_str.empty() )
   {
-    player_t::init_action_list();
+    parse_player_effects_t::init_action_list();
     return;
   }
 
@@ -14982,7 +14924,7 @@ void shaman_t::init_action_list()
 
   use_default_action_list = true;
 
-  player_t::init_action_list();
+  parse_player_effects_t::init_action_list();
 }
 
 // shaman_t::moving =========================================================
@@ -15030,39 +14972,11 @@ void shaman_t::moving()
   }
 }
 
-// shaman_t::matching_gear_multiplier =======================================
-
-double shaman_t::matching_gear_multiplier( attribute_e attr ) const
-{
-  switch ( specialization() )
-  {
-    case SHAMAN_ENHANCEMENT:
-      return attr == ATTR_AGILITY ? constant.mul_matching_gear : 0;
-    case SHAMAN_RESTORATION:
-      return attr == ATTR_INTELLECT ? constant.mul_matching_gear : 0;
-    case SHAMAN_ELEMENTAL:
-      return attr == ATTR_INTELLECT ? constant.mul_matching_gear : 0;
-    default:
-      return 0.0;
-  }
-}
-
-// shaman_t::composite_spell_crit_chance ===========================================
-
-double shaman_t::composite_spell_crit_chance() const
-{
-  double m = player_t::composite_spell_crit_chance();
-
-  m += spec.critical_strikes->effectN( 1 ).percent();
-
-  return m;
-}
-
 // shaman_t::non_stacking_movement_modifier ========================================
 
 double shaman_t::non_stacking_movement_modifier() const
 {
-  double ms = player_t::non_stacking_movement_modifier();
+  double ms = parse_player_effects_t::non_stacking_movement_modifier();
 
   if ( buff.spirit_walk->up() )
     ms = std::max( buff.spirit_walk->data().effectN( 1 ).percent(), ms );
@@ -15074,7 +14988,7 @@ double shaman_t::non_stacking_movement_modifier() const
 
 double shaman_t::stacking_movement_modifier() const
 {
-  double ms = player_t::stacking_movement_modifier();
+  double ms = parse_player_effects_t::stacking_movement_modifier();
 
   if ( buff.ghost_wolf->up() )
   {
@@ -15084,33 +14998,11 @@ double shaman_t::stacking_movement_modifier() const
   return ms;
 }
 
-// shaman_t::composite_melee_crit_chance ===========================================
-
-double shaman_t::composite_melee_crit_chance() const
-{
-  double m = player_t::composite_melee_crit_chance();
-
-  m += spec.critical_strikes->effectN( 1 ).percent();
-
-  return m;
-}
-
-// shaman_t::composite_attack_speed =========================================
-
-double shaman_t::composite_melee_auto_attack_speed() const
-{
-  double speed = player_t::composite_melee_auto_attack_speed();
-
-  speed *= 1.0 / ( 1.0 + buff.flurry->value() );
-
-  return speed;
-}
-
 // shaman_t::composite_melee_haste =========================================
 
 double shaman_t::composite_melee_haste() const
 {
-  double haste = player_t::composite_melee_haste();
+  double haste = parse_player_effects_t::composite_melee_haste();
 
   if ( buff.splintered_elements->up() )
   {
@@ -15131,7 +15023,7 @@ double shaman_t::composite_melee_haste() const
 
 double shaman_t::composite_spell_haste() const
 {
-  double haste = player_t::composite_spell_haste();
+  double haste = parse_player_effects_t::composite_spell_haste();
 
   if ( buff.splintered_elements->up() )
   {
@@ -15152,9 +15044,7 @@ double shaman_t::composite_spell_haste() const
 
 double shaman_t::composite_player_multiplier( school_e school ) const
 {
-  double m = player_t::composite_player_multiplier( school );
-
-  m *= 1.0 + buff.elemental_equilibrium->value();
+  double m = parse_player_effects_t::composite_player_multiplier( school );
 
   if ( dbc::is_school( school, SCHOOL_NATURE ) && buff.lightning_shield->up() &&
        talent.lightning_capacitor.ok() )
@@ -15169,34 +15059,7 @@ double shaman_t::composite_player_multiplier( school_e school ) const
 
 double shaman_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
-  double m = player_t::composite_player_target_multiplier( target, school );
-
-  return m;
-}
-
-// shaman_t::composite_player_pet_damage_multiplier =========================
-
-double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s, bool guardian ) const
-{
-  double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
-
-  if ( !guardian )
-  {
-    m *= 1.0 + spec.elemental_shaman->effectN( 3 ).percent();
-
-    m *= 1.0 + spec.enhancement_shaman->effectN( 3 ).percent();
-
-    m *= 1.0 + mastery.elemental_overload->effectN( 5 ).mastery_value() * cache.mastery();
-    //m *= 1.0 + buff.elemental_equilibrium->value();  TODO: check what this was doing here
-  }
-  else
-  {
-    m *= 1.0 + spec.elemental_shaman->effectN( 4 ).percent();
-
-    m *= 1.0 + spec.enhancement_shaman->effectN( 4 ).percent();
-
-    m *= 1.0 + mastery.elemental_overload->effectN( 6 ).mastery_value() * cache.mastery();
-  }
+  double m = parse_player_effects_t::composite_player_target_multiplier( target, school );
 
   return m;
 }
@@ -15205,7 +15068,7 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
 
 void shaman_t::invalidate_cache( cache_e c )
 {
-  player_t::invalidate_cache( c );
+  parse_player_effects_t::invalidate_cache( c );
 
   switch ( c )
   {
@@ -15213,7 +15076,7 @@ void shaman_t::invalidate_cache( cache_e c )
     case CACHE_STRENGTH:
     case CACHE_ATTACK_POWER:
       if ( specialization() == SHAMAN_ENHANCEMENT )
-        player_t::invalidate_cache( CACHE_SPELL_POWER );
+        parse_player_effects_t::invalidate_cache( CACHE_SPELL_POWER );
       break;
     default:
       break;
@@ -15253,7 +15116,7 @@ struct rt_event_t : public event_t
 
 void shaman_t::combat_begin()
 {
-  player_t::combat_begin();
+  parse_player_effects_t::combat_begin();
 
   buff.witch_doctors_ancestry->trigger();
 
@@ -15267,7 +15130,7 @@ void shaman_t::combat_begin()
 
 void shaman_t::reset()
 {
-  player_t::reset();
+  parse_player_effects_t::reset();
 
   lava_surge_during_lvb = false;
   sk_during_cast        = false;
@@ -15327,7 +15190,7 @@ void shaman_t::reset()
 
 void shaman_t::merge( player_t& other )
 {
-  player_t::merge( other );
+  parse_player_effects_t::merge( other );
 
   const shaman_t& s = static_cast<shaman_t&>( other );
 
@@ -15381,12 +15244,12 @@ void shaman_t::merge( player_t& other )
 
 role_e shaman_t::primary_role() const
 {
-  if ( player_t::primary_role() == ROLE_HEAL )
+  if ( parse_player_effects_t::primary_role() == ROLE_HEAL )
     return ROLE_HYBRID;  // To prevent spawning healing_target, as there is no support for healing.
 
   if ( specialization() == SHAMAN_RESTORATION )
   {
-    if ( player_t::primary_role() == ROLE_DPS || player_t::primary_role() == ROLE_SPELL )
+    if ( parse_player_effects_t::primary_role() == ROLE_DPS || parse_player_effects_t::primary_role() == ROLE_SPELL )
       return ROLE_SPELL;
 
     return ROLE_SPELL;
@@ -15398,7 +15261,7 @@ role_e shaman_t::primary_role() const
   else if ( specialization() == SHAMAN_ELEMENTAL )
     return ROLE_SPELL;
 
-  return player_t::primary_role();
+  return parse_player_effects_t::primary_role();
 }
 
 // shaman_t::convert_hybrid_stat ===========================================

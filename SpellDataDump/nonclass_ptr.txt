@@ -253565,11 +253565,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 35322 | Target: Unknown(87) -> Unknown(138)
 
 Name             : Molten Gold Pool (id=470089) 
+Hotfixed         : Attributes
 School           : Fire
 Spell Type       : Magic
 Range            : 300 yards
 Duration         : Aura (infinite)
-Attributes       : Do Not Sheath (18), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Always Hit (114), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Log Caster (141), Allow While Stunned (163), Extra Initial Period (169), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Defend Against Friendly Cast (336), Do Not Display Cast Time (441)
+Attributes       : Do Not Sheath (18), Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Always Hit (114), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Allow Cast While Casting (135), Do Not Log Caster (141), Allow While Stunned (163), Not On Player Controlled NPC (168), Extra Initial Period (169), Do Not Display Duration (170), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Defend Against Friendly Cast (336), Do Not Display Cast Time (441)
 Aura Interrupt   : Leave World (19), Enter World (22), Leave Combat (31), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=1184950)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds

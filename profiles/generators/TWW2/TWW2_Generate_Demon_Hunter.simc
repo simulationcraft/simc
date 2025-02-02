@@ -1,0 +1,53 @@
+# demonhunter="TWW2_Demon_Hunter_Havoc"
+# level=80
+# race=blood_elf
+# spec=havoc
+# role=attack
+# position=back
+# talents=CEkAAAAAAAAAAAAAAAAAAAAAAYGMzMzYMzMjxMNzYGAAAAAAwsNMMMzYZmZ2mtZZMzwMLYZb2mZZWmZmZbb2mmmhZmxgN
+
+# head=impalers_of_the_hypogeal_nemesis,id=212065,bonus_id=1808,gem_id=213743,ilevel=639
+# neck=trailspinner_pendant,id=178707,bonus_id=8781,gem_id=213473/213491,ilevel=639
+# shoulder=warmantle_of_the_hypogeal_nemesis,id=212063,ilevel=639
+# back=wings_of_shattered_sorrow,id=225574,enchant_id=7403,ilevel=639
+# chest=chestguard_of_the_hypogeal_nemesis,id=212068,enchant_id=7364,ilevel=639
+# wrist=polluted_spectres_wraps,id=212438,bonus_id=8780,enchant_id=7385,gem_id=213479,ilevel=639
+# hands=runebranded_grasps,id=219333,bonus_id=10222/8791/11109/8960,ilevel=636
+# waist=shadow_congregants_belt,id=221134,bonus_id=8780,gem_id=213482,ilevel=639
+# legs=pantaloons_of_the_hypogeal_nemesis,id=212064,enchant_id=7601,ilevel=639
+# feet=whisperers_echoing_steps,id=221169,enchant_id=7424,ilevel=639
+# finger1=seal_of_the_city_watch,id=162542,bonus_id=8781,enchant_id=7346,gem_id=213482/213482,ilevel=639
+# finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=8781,enchant_id=7346,gem_id=213482/213458,ilevel=639
+# trinket1=treacherous_transmitter,id=221023,ilevel=639
+# trinket2=mad_queens_mandate,id=212454,ilevel=639
+# main_hand=void_reapers_warp_blade,id=219877,enchant_id=7463,ilevel=639
+# off_hand=everforged_warglaive,id=222441,bonus_id=10222/11300/8960/8791,enchant_id=7463,ilevel=636
+
+# save=TWW2_Demon_Hunter_Havoc.simc
+
+# demonhunter="TWW2_Demon_Hunter_Vengeance"
+# level=80
+# race=night_elf
+# spec=vengeance
+# role=tank
+# position=front
+# talents=CUkAAAAAAAAAAAAAAAAAAAAAAAAGjZmZMMjMzMGDjZbGYsNjZmZMzwMjZmZZMDzgBAAAAYZWMjhZRTDMzMDbA
+
+# head=impalers_of_the_hypogeal_nemesis,id=212065,bonus_id=8780,ilevel=639,gem_id=213470
+# neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213485/213743
+# shoulders=warmantle_of_the_hypogeal_nemesis,id=212063,ilevel=639
+# back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant_id=7409
+# chest=omnivores_venomous_camouflage,id=212433,ilevel=639,enchant_id=7364
+# wrists=runebranded_armbands,id=219334,bonus_id=10520,ilevel=636,gem_id=213485,enchant_id=7391,crafted_stats=36/40
+# hands=claws_of_the_hypogeal_nemesis,id=212066,ilevel=639
+# waist=behemoths_eroded_cinch,id=225583,ilevel=639,gem_id=213485
+# legs=pantaloons_of_the_hypogeal_nemesis,id=212064,ilevel=639,enchant_id=7601
+# feet=chitinspiked_jackboots,id=212445,bonus_id=1540/10299
+# finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213485/213485,enchant_id=7340
+# finger2=key_to_the_unseeming,id=212447,ilevel=639,gem_id=213485/213485,enchant_id=7352
+# trinket1=arakara_sacbrood,id=219314,ilevel=639
+# trinket2=bottled_flayedwing_toxin,id=178742,ilevel=639
+# main_hand=void_reapers_warp_blade,id=219877,ilevel=639,enchant_id=7460
+# off_hand=everforged_warglaive,id=222441,bonus_id=10421/9633/8902/11144/10222/1485/11301/8960,enchant_id=7460,crafted_stats=36/40
+
+# save=TWW2_Demon_Hunter_Vengeance.simc

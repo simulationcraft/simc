@@ -1,0 +1,67 @@
+# TODO: remove when 11.1 goes live
+ptr=1
+optimal_raid=1
+default_actions=1
+
+# TWW2_Death_Knight_Blood.simc
+# TWW2_Death_Knight_Frost.simc
+# TWW2_Death_Knight_Frost_Rider.simc
+# TWW2_Death_Knight_Frost_Shattering_Deathbringer.simc
+TWW2_Death_Knight_Unholy.simc
+TWW2_Death_Knight_Unholy_Rider.simc
+
+# TWW2_Demon_Hunter_Havoc.simc
+# TWW2_Demon_Hunter_Vengeance.simc
+
+# TWW2_Druid_Balance.simc
+# TWW2_Druid_Feral.simc
+# TWW2_Druid_Guardian.simc
+
+# TWW2_Evoker_Devastation.simc
+
+# TWW2_Hunter_Beast_Mastery.simc
+# TWW2_Hunter_Marksmanship.simc
+# TWW2_Hunter_Survival.simc
+# TWW2_Hunter_Beast_Mastery_Dark_Ranger.simc
+# TWW2_Hunter_Marksmanship_Dark_Ranger.simc
+# TWW2_Hunter_Survival_Sentinel.simc
+
+# TWW2_Mage_Arcane.simc
+# TWW2_Mage_Arcane_Sunfury.simc
+# TWW2_Mage_Fire_Sunfury.simc
+# TWW2_Mage_Fire.simc
+# TWW2_Mage_Frost.simc
+# TWW2_Mage_Frost_Frostfire.simc
+
+# TWW2_Monk_Brewmaster.simc
+# TWW2_Monk_Windwalker.simc
+# TWW2_Monk_Windwalker_Celestial.simc
+
+# TWW2_Paladin_Protection.simc
+# TWW2_Paladin_Protection_Templar.simc
+# TWW2_Paladin_Retribution.simc
+# TWW2_Paladin_Retribution_Herald.simc
+
+TWW2_Priest_Shadow.simc
+
+# TWW2_Rogue_Assassination.simc
+# TWW2_Rogue_Assassination_Fatebound.simc
+# TWW2_Rogue_Outlaw.simc
+# TWW2_Rogue_Outlaw_HO.simc
+# TWW2_Rogue_Subtlety.simc
+
+# TWW2_Shaman_Elemental.simc
+# TWW2_Shaman_Elemental_Farseer.simc
+# TWW2_Shaman_Enhancement.simc
+# TWW2_Shaman_Enhancement_Totemic.simc
+
+# TWW2_Warlock_Affliction.simc
+# TWW2_Warlock_Affliction_Hellcaller.simc
+# TWW2_Warlock_Demonology.simc
+# TWW2_Warlock_Demonology_Diabolist.simc
+# TWW2_Warlock_Destruction.simc
+# TWW2_Warlock_Destruction_Hellcaller.simc
+
+# TWW2_Warrior_Arms.simc
+# TWW2_Warrior_Fury.simc
+# TWW2_Warrior_Protection.simc
