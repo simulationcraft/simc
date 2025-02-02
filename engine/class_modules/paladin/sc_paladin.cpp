@@ -487,6 +487,9 @@ struct consecration_t : public paladin_spell_t
     if ( p->specialization() == PALADIN_RETRIBUTION )
       background = true;
 
+    if ( source_type == HAMMER_OF_LIGHT )
+      background = true;
+
     add_child( damage_tick );
     if ( p->talents.lightsmith.divine_guidance->ok() )
     {
@@ -605,10 +608,6 @@ struct consecration_t : public paladin_spell_t
     // If this is an active Cons, cancel the current consecration if it exists
     if ( source_type == HARDCAST && p()->active_consecration != nullptr )
     {
-      if ( p()->buffs.sanctification_empower->up() )
-      {
-        p()->buffs.sanctification_empower->expire();
-      }
       p()->all_active_consecrations.erase( p()->active_consecration );
       event_t::cancel( p()->active_consecration );
     }
@@ -623,12 +622,6 @@ struct consecration_t : public paladin_spell_t
     {
       p()->all_active_consecrations.erase( p()->active_searing_light_cons );
       event_t::cancel( p()->active_searing_light_cons );
-    }
-
-    if (p()->buffs.sanctification->at_max_stacks())
-    {
-      p()->buffs.sanctification->expire();
-      p()->buffs.sanctification_empower->execute();
     }
 
     /*
@@ -2274,6 +2267,16 @@ struct hammer_of_light_ptr_t : public holy_power_consumer_t<paladin_melee_attack
       p()->active.sacrosanct_crusade_heal->base_dd_min = p()->active.sacrosanct_crusade_heal->base_dd_max = health;
       p()->active.sacrosanct_crusade_heal->execute();
     }
+    if ( p()->specialization() == PALADIN_PROTECTION )
+    {
+      // Cons has a 400ms delay, for whatever reasons
+      make_event<delayed_execute_event_t>( *sim, p(), p()->active.hammer_of_light_cons, execute_state->target, 400_ms );
+      if (p()->bugs)
+      {
+        p()->buffs.shield_of_the_righteous->expire();
+      }
+      p()->buffs.shield_of_the_righteous->execute();
+    }
    }
    void impact(action_state_t* s) override
    {
@@ -3092,7 +3095,13 @@ shield_of_the_righteous_buff_t::shield_of_the_righteous_buff_t( paladin_t* p )
 {
   add_invalidate( CACHE_BONUS_ARMOR );
   set_default_value_from_effect( 3 );
-  set_refresh_behavior( buff_refresh_behavior::EXTEND );
+  this->set_refresh_duration_callback( []( const buff_t* b, timespan_t d ) {
+    auto dur = b->remains() + d;
+    if ( dur > b->base_buff_duration * 3 )
+      dur = b->base_buff_duration * 3;
+    return dur;
+  } );
+  set_refresh_behavior( buff_refresh_behavior::CUSTOM );
   cooldown->duration = 0_ms;  // handled by the ability
   if ( p->sets->has_set_bonus( PALADIN_PROTECTION, TWW1, B2 ) )
   {
@@ -3750,6 +3759,7 @@ void paladin_t::create_actions()
 
   active.background_cons = new consecration_t( this, "blade_of_justice", BLADE_OF_JUSTICE );
   active.searing_light_cons = new consecration_t( this, "searing_light", SEARING_LIGHT );
+  active.hammer_of_light_cons = new consecration_t( this, "hammer_of_light", HAMMER_OF_LIGHT );
 
   player_t::create_actions();
 }

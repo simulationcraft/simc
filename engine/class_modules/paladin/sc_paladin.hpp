@@ -44,6 +44,7 @@ enum consecration_source : unsigned int
   HARDCAST         = 0,
   BLADE_OF_JUSTICE = 1,
   SEARING_LIGHT    = 2,
+  HAMMER_OF_LIGHT  = 3,
 };
 
 enum grand_crusader_source : unsigned int
@@ -129,6 +130,7 @@ public:
     action_t* divine_arbiter;
     action_t* searing_light;
     action_t* searing_light_cons;
+    action_t* hammer_of_light_cons;
 
     // Tier stuff
     action_t* cleansing_flame;  // Prot Tier 31 4pc
@@ -1779,7 +1781,8 @@ public:
     {
       int additionalTargets = 0;
       if ( p->buffs.templar.shake_the_heavens->up() )
-        additionalTargets += as<int>( p->talents.templar.hammerfall->effectN( 2 ).base_value() );
+        // Disappeared from spell data
+        additionalTargets += 1; //as<int>( p->talents.templar.hammerfall->effectN( 2 ).base_value() );
       p->trigger_empyrean_hammer( nullptr, 1 + additionalTargets,
                                   timespan_t::from_millis( p->talents.templar.hammerfall->effectN( 1 ).base_value() ),
                                   true );
