@@ -1854,6 +1854,7 @@ public:
     if ( p->talents.relentless_inquisitor->ok() && !ab::background )
       p->buffs.relentless_inquisitor->trigger();
 
+    // ToDo (Fluttershy): Check if this correctly increases Hammer of Light damage
     if ( num_hopo_spent > 0 && p->buffs.crusade->check() )
     {
       p->buffs.crusade->trigger( as<int>( num_hopo_spent ) );
