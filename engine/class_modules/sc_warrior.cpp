@@ -1206,6 +1206,7 @@ public:
       parse_effects( p()->buff.juggernaut_prot );
       parse_effects( p()->buff.seismic_reverberation_revenge );
       parse_effects( p()->buff.vanguards_determination );
+      parse_effects( p()->buff.violent_outburst, effect_mask_t( false ).enable( 1 ) );
 
       if ( p()->is_ptr() )
       {
@@ -1574,21 +1575,25 @@ public:
       // 11.1
       if ( p()->is_ptr() )
       {
-        const double rage_per_stack = 2.5;
-        double stack_gain = rage / rage_per_stack;
-        p()->sim->print_debug( "{} seeing_red has current_stacks {}, incrementing {} stacks from {} rage", p()->name(), p()->buff.seeing_red->check(), stack_gain, rage );
-        if ( p()->buff.seeing_red->check() + stack_gain >= p()->buff.seeing_red->max_stack() )
+        // Trigger the buff to create an empty buff if we don't already have it active so we can assume it's already up
+        if ( !p()->buff.seeing_red->check() )
         {
-          double overflow = p()->buff.seeing_red->check() + stack_gain - 100;
+          p()->buff.seeing_red->trigger();
+        }
+
+        double original_value = p()->buff.seeing_red->current_value;
+        p()->buff.seeing_red->current_value += rage;
+        p()->sim->print_debug( "{} increments seeing_red by {}. Old={} New={}", p()->name(), rage,
+                              original_value, p()->buff.seeing_red->current_value );
+
+        if ( p()->buff.seeing_red->current_value >= p()->talents.protection.violent_outburst->effectN( 1 ).base_value() )
+        {
+          double overflow = p()->buff.seeing_red->current_value - p()->talents.protection.violent_outburst->effectN( 1 ).base_value();
           p()->sim->print_debug( "{} seeing_red triggering violent outburst.  overflow rage {}", p()->name(), overflow );
           p()->buff.seeing_red->expire();
           p()->buff.violent_outburst->trigger();
           if( overflow > 0)
-            p()->buff.seeing_red->trigger( overflow );
-        }
-        else
-        {
-          p()->buff.seeing_red->trigger( stack_gain );
+            p()->buff.seeing_red->trigger( 1, overflow );
         }
       }
     }
@@ -4475,11 +4480,6 @@ struct thunder_blast_t : public warrior_attack_t
       am *= 1.0 + ( p()->buff.show_of_force->stack_value() );
     }
 
-    if ( p()->buff.violent_outburst->check() )
-    {
-      am *= 1.0 + p()->buff.violent_outburst->data().effectN( 1 ).percent();
-    }
-
     return am;
   }
 
@@ -4675,11 +4675,6 @@ struct thunder_clap_t : public warrior_attack_t
     if ( p()->buff.show_of_force->check() )
     {
       am *= 1.0 + ( p()->buff.show_of_force->stack_value() );
-    }
-
-    if ( p()->buff.violent_outburst->check() )
-    {
-      am *= 1.0 + p()->buff.violent_outburst->data().effectN( 1 ).percent();
     }
 
     return am;
@@ -7033,11 +7028,6 @@ struct shield_slam_t : public warrior_attack_t
     {
       double sb_increase = p() -> spell.shield_block_buff -> effectN( 2 ).percent();
       am *= 1.0 + sb_increase;
-    }
-
-    if ( p()->buff.violent_outburst->check() )
-    {
-      am *= 1.0 + p()->buff.violent_outburst->data().effectN( 1 ).percent();
     }
 
     if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B2 ) && p() -> buff.last_stand -> up() )
@@ -9738,6 +9728,14 @@ void warrior_t::create_buffs()
       ->set_duration( 20_s ); // Slightly longer than max extension;
 
   buff.seeing_red = make_buff( this, "seeing_red", find_spell( 386486 ) );
+          if ( is_ptr() )
+          {
+            // In game it looks like it tracks stacks dynamically, but the actual amount of rage spent is stored in the value
+            // As a result, rage tracking is accurate on the buff tooltip, but the number of stacks equals round(value / 2.5)
+            // We will treat this as a single stack in simc, and handle everything in the value
+            buff.seeing_red->set_max_stack( 1 )
+              ->set_default_value( 0 );
+          }
 
   // is_ptr() remove seeing_red_tracking with 11.1 release
   buff.seeing_red_tracking =
