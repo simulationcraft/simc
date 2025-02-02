@@ -282,13 +282,11 @@ void marksmanship_ptr( player_t* p )
   action_priority_list_t* trickshots = p->get_action_priority_list( "trickshots" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
-  precombat->add_action( "summon_pet,if=!talent.lone_wolf" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))", "Determine the stronger trinket to sync with cooldowns. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times." );
   precombat->add_action( "variable,name=trinket_2_stronger,value=!variable.trinket_1_stronger" );
-  precombat->add_action( "salvo,precast_time=10" );
-  precombat->add_action( "aimed_shot,if=active_enemies<3&(!talent.volley|active_enemies<2)", "Precast Aimed Shot on one or two targets unless we could cleave it with Volley on two targets." );
-  precombat->add_action( "steady_shot,if=active_enemies>2|talent.volley&active_enemies=2", "Otherwise precast Steady Shot on two targets if we are saving Aimed Shot to cleave with Volley, otherwise on three or more targets." );
+  precombat->add_action( "aimed_shot,if=active_enemies=1|active_enemies=2&!talent.volley", "Precast Aimed Shot on one target or two if we can't cleave it with Volley, otherwise precast Steady Shot." );
+  precombat->add_action( "steady_shot" );
 
   default_->add_action( "variable,name=trueshot_ready,value=cooldown.trueshot.ready&(!raid_event.adds.exists&(!talent.bullseye|fight_remains>cooldown.trueshot.duration_guess+buff.trueshot.duration%2|buff.bullseye.stack=buff.bullseye.max_stack)&(!trinket.1.has_use_buff|trinket.1.cooldown.remains>30|trinket.1.cooldown.ready)&(!trinket.2.has_use_buff|trinket.2.cooldown.remains>30|trinket.2.cooldown.ready)|raid_event.adds.exists&(!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<25|raid_event.adds.in>60)|raid_event.adds.up&raid_event.adds.remains>10)|fight_remains<25)", "Determine if it is a good time to use Trueshot. Raid event optimization takes priority so usage is saved for multiple targets as long as it won't delay over half its duration. Otherwise allow for small delays to line up buff effect trinkets, and when using Bullseye, delay the last usage of the fight for max stacks." );
   default_->add_action( "auto_shot" );
@@ -304,41 +302,31 @@ void marksmanship_ptr( player_t* p )
   cds->add_action( "fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9" );
   cds->add_action( "lights_judgment,if=buff.trueshot.down" );
   cds->add_action( "potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<31" );
-  cds->add_action( "salvo,if=active_enemies>2|cooldown.volley.remains<10" );
 
-  st->add_action( "black_arrow,if=buff.trueshot.down" );
-  st->add_action( "kill_shot,if=buff.razor_fragments.up" );
-  st->add_action( "steady_shot,if=talent.steady_focus&buff.steady_focus.remains<execute_time&buff.trueshot.down" );
-  st->add_action( "volley,if=active_enemies>1|buff.salvo.up" );
-  st->add_action( "explosive_shot,if=active_enemies>1&buff.trick_shots.down" );
-  st->add_action( "trueshot,if=variable.trueshot_ready&talent.multishot", "TODO: figure out why this is such a big gain for aoe builds in ST" );
-  st->add_action( "multishot,if=buff.salvo.up&!talent.volley", "Trigger Salvo if Volley isn't being used to trigger it." );
-  st->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=talent.black_arrow&talent.readiness&buff.trueshot.up", "As a Dark Ranger with Readiness, Aimed Shot over Rapid Fire in Trueshot to get more Deathblows." );
-  st->add_action( "rapid_fire,if=!talent.lunar_storm|(!cooldown.lunar_storm.remains|cooldown.lunar_storm.remains>8|(action.wailing_arrow.ready&talent.readiness)|buff.trueshot.up)", "Hold Rapid Fire for up to 8s to proc Lunar Storm. Ignore Lunar Storm if Rapid Fire's cooldown can be reset with Wailing Arrow. Ignore all of this in Trueshot or as a Dark Ranger." );
-  st->add_action( "wailing_arrow,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99", "With Wailing Arrow and Aimed Shot, target enemies without Serpent Sting or the enemy with the lowest remaining Serpent Sting." );
-  st->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99" );
-  st->add_action( "black_arrow" );
-  st->add_action( "kill_shot" );
-  st->add_action( "multishot,if=buff.precise_shots.up&active_enemies>1&(talent.symphonic_arsenal|talent.small_game_hunter)" );
-  st->add_action( "arcane_shot,if=buff.precise_shots.up" );
+  st->add_action( "volley,if=!talent.double_tap" );
   st->add_action( "trueshot,if=variable.trueshot_ready" );
-  st->add_action( "volley" );
+  st->add_action( "volley,if=talent.double_tap&buff.double_tap.down" );
+  st->add_action( "black_arrow,if=talent.headshot&buff.precise_shots.up|!talent.headshot&buff.razor_fragments.up" );
+  st->add_action( "kill_shot,if=talent.headshot&buff.precise_shots.up|!talent.headshot&buff.razor_fragments.up" );
+  st->add_action( "arcane_shot,if=buff.precise_shots.up" );
+  st->add_action( "rapid_fire,if=!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3|buff.lunar_storm_ready.up" );
+  st->add_action( "aimed_shot,if=buff.precise_shots.down" );
   st->add_action( "explosive_shot" );
+  st->add_action( "black_arrow,if=!talent.headshot" );
+  st->add_action( "kill_shot,if=!talent.headshot" );
   st->add_action( "steady_shot" );
 
-  trickshots->add_action( "black_arrow,if=buff.trick_shots.remains>execute_time&buff.razor_fragments.up" );
-  trickshots->add_action( "steady_shot,if=talent.steady_focus&buff.steady_focus.remains<execute_time&buff.trueshot.down" );
-  trickshots->add_action( "explosive_shot" );
-  trickshots->add_action( "volley" );
-  trickshots->add_action( "black_arrow,if=!talent.razor_fragments&buff.trick_shots.remains>execute_time" );
-  trickshots->add_action( "kill_shot,if=buff.razor_fragments.up" );
+  trickshots->add_action( "volley,if=!talent.double_tap" );
+  trickshots->add_action( "explosive_shot,if=talent.precision_detonation&action.aimed_shot.in_flight" );
   trickshots->add_action( "trueshot,if=variable.trueshot_ready" );
-  trickshots->add_action( "barrage,if=talent.rapid_fire_barrage&buff.trick_shots.remains>execute_time" );
-  trickshots->add_action( "rapid_fire,if=buff.trick_shots.remains>execute_time&(!talent.lunar_storm|(!cooldown.lunar_storm.remains|cooldown.lunar_storm.remains>5|(action.wailing_arrow.ready&talent.readiness)|buff.trueshot.up))", "Hold Rapid Fire for up to 5s to proc Lunar Storm. Ignore Lunar Storm if Rapid Fire's cooldown can be reset with Wailing Arrow. Ignore all of this in Trueshot or as a Dark Ranger." );
-  trickshots->add_action( "wailing_arrow,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99", "With Wailing Arrow and Aimed Shot, target enemies without Serpent Sting or the enemy with the lowest remaining Serpent Sting." );
-  trickshots->add_action( "aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.trick_shots.remains>execute_time&buff.precise_shots.down" );
+  trickshots->add_action( "volley,if=talent.double_tap&buff.double_tap.down" );
+  trickshots->add_action( "black_arrow,if=buff.withering_fire.up" );
   trickshots->add_action( "multishot,if=buff.precise_shots.up|buff.trick_shots.down" );
-  trickshots->add_action( "bag_of_tricks,if=buff.trueshot.down" );
+  trickshots->add_action( "rapid_fire,if=buff.trick_shots.up&(!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3|buff.lunar_storm_ready.up)" );
+  trickshots->add_action( "aimed_shot,if=buff.precise_shots.down&buff.trick_shots.up" );
+  trickshots->add_action( "explosive_shot" );
+  trickshots->add_action( "black_arrow" );
+  trickshots->add_action( "kill_shot" );
   trickshots->add_action( "steady_shot" );
 
   trinkets->add_action( "variable,name=sync_ready,value=variable.trueshot_ready", "True if effects that are desirable to sync a trinket buff with are ready." );

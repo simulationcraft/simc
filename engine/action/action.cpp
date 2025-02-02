@@ -1213,7 +1213,9 @@ timespan_t action_t::gcd() const
 }
 
 timespan_t action_t::cooldown_duration() const
-{ return cooldown ? cooldown->duration : timespan_t::zero(); }
+{
+  return cooldown ? cooldown->cooldown_duration( cooldown ) : timespan_t::zero();
+}
 
 /** False Positive skill chance, executes command regardless of expression. */
 double action_t::false_positive_pct() const
@@ -4157,10 +4159,7 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->persistent_multiplier = composite_persistent_multiplier( state );
 
   if ( flags & STATE_MUL_PET )
-  {
-    state->pet_multiplier =
-      player->cast_pet()->owner->composite_player_pet_damage_multiplier( state, player->type == PLAYER_GUARDIAN );
-  }
+    state->pet_multiplier = player->cast_pet()->composite_owner_pet_damage_multiplier( state );
 
   if ( flags & STATE_TGT_MUL_DA )
     state->target_da_multiplier = composite_target_da_multiplier( state->target );
@@ -4169,10 +4168,7 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, result_
     state->target_ta_multiplier = composite_target_ta_multiplier( state->target );
 
   if ( flags & STATE_TGT_MUL_PET )
-  {
-    state->target_pet_multiplier = player->cast_pet()->owner->composite_player_target_pet_damage_multiplier(
-      state->target, player->type == PLAYER_GUARDIAN );
-  }
+    state->target_pet_multiplier = player->cast_pet()->composite_owner_pet_target_damage_multiplier( state->target );
 
   if ( flags & STATE_TGT_CRIT )
     state->target_crit_chance = composite_target_crit_chance( state->target ) * composite_crit_chance_multiplier();
@@ -5160,19 +5156,14 @@ player_t* action_t::select_target_if_target()
   }
 
   player_t* original_target = target;
-  player_t* proposed_target = target;
-  double current_target_v = target_if_expr->evaluate();
-
-  double max_ = current_target_v;
-  double min_ = current_target_v;
+  player_t* proposed_target = nullptr;
+    
+  double max_ = -std::numeric_limits<double>::infinity();
+  double min_ = std::numeric_limits<double>::infinity();
 
   for ( auto p : master_list )
   {
     target = p;
-
-    // No need to check current target
-    if ( target == original_target )
-      continue;
 
     if ( !target_ready( target ) )
     {
@@ -5181,14 +5172,8 @@ player_t* action_t::select_target_if_target()
 
     double v = target_if_expr->evaluate();
 
-    // Don't swap to targets that evaluate to identical value than the current
-    // target
-    if ( v == current_target_v )
-      continue;
-
     if ( target_if_mode == TARGET_IF_FIRST && v != 0 )
     {
-      current_target_v = v;
       proposed_target = target;
       break;
     }
@@ -5209,7 +5194,7 @@ player_t* action_t::select_target_if_target()
 
   // If "first available target" did not find anything useful, don't execute the
   // action
-  if (target_if_mode == TARGET_IF_FIRST && current_target_v == 0)
+  if ( !proposed_target )
   {
     sim->print_debug( "{} target_if no target found for {}", *player, signature_str );
 

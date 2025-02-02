@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58626 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.58819 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -994,7 +994,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 54149 | Target: Self (1)
 Description      : Your critical Holy Shocks empower your next spell cast:
 
-$@spellname19750: Mana cost reduced by $54149s1%.
+$@spellname19750: healing increased by $54149s1%.
 $@spellname82326: healing increased by $54149s2%.
 $@spellname275773: Greater Judgment prevents an additional ${$54149s4-100}% damage dealt by the target.
 
@@ -2370,11 +2370,11 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179711)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Base Value: 11 | Scaled Value: 11 | Target: Self (1)
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Crusader Strike (132331), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Recompense (384914), Seal of the Crusader (385723), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Execution Sentence (387200), Blessing of Winter (388012), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun's Avatar (431911), Sacred Weapon (432616), Hammer and Anvil (433717), Divine Guidance (433808), Forge's Reckoning (447258), Sun's Avatar (463075), Eye for an Eye (469311), Refining Fire (469882)
                    Family Flags: 65
 #2 (id=191092)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 11 | Scaled Value: 11 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Crusader Strike (132331), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Tyr's Enforcer (378286), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Recompense (384914), Seal of the Crusader (385723), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Execution Sentence (387200), Blessing of Winter (388012), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun's Avatar (431911), Sacred Weapon (432616), Hammer and Anvil (433717), Divine Guidance (433808), Forge's Reckoning (447258), Sun's Avatar (463075), Eye for an Eye (469311), Refining Fire (469882)
                    Family Flags: 65
 #3 (id=191093)   : Apply Aura (6) | Hasted Cooldown Duration (416)
@@ -2623,7 +2623,7 @@ Effects          :
 #13 (id=1032420) : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0
 #14 (id=1032421) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 66 | Scaled Value: 66 | PvP Coefficient: 0.96 | Target: Self (1)
+                   Base Value: 91 | Scaled Value: 91 | Target: Self (1)
                    Affected Spells: Word of Glory (85673), Eternal Flame (156322), Afterimage (391309), Eternal Flame (461432)
                    Family Flags: 78, 89
 #15 (id=1039315) : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
@@ -3455,6 +3455,7 @@ Labels           : 16: Class Spells
                  : 219
                  : 292
                  : 373
+                 : 4638
 Affecting Spells : Retribution Paladin (137027 effect#20), Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
@@ -4856,6 +4857,7 @@ Labels           : 16: Class Spells
                  : 67
                  : 292
                  : 373
+                 : 4638
 Affecting Spells : Retribution Paladin (137027 effect#20), Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
@@ -4892,6 +4894,7 @@ Labels           : 16: Class Spells
                  : 67
                  : 292
                  : 373
+                 : 4638
 Affecting Spells : Retribution Paladin (137027 effect#20), Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
@@ -4928,6 +4931,7 @@ Labels           : 16: Class Spells
                  : 67
                  : 292
                  : 373
+                 : 4638
 Affecting Spells : Retribution Paladin (137027 effect#20), Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
@@ -4964,6 +4968,7 @@ Labels           : 16: Class Spells
                  : 67
                  : 292
                  : 373
+                 : 4638
 Affecting Spells : Retribution Paladin (137027 effect#20), Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
@@ -5124,7 +5129,7 @@ Family Flags     : 46, 82
 Attributes       : Not a Proc (105), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=337592)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.38 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.5456 | Target: Friendly (21)
 Description      : $@spelldesc85222
 
 Name             : PvP Rules Enabled for Dummy (id=228695) [Hidden] 
@@ -5504,6 +5509,7 @@ Labels           : 16: Class Spells
                  : 67
                  : 292
                  : 373
+                 : 4638
 Affecting Spells : Retribution Paladin (137027 effect#20), Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
@@ -5540,6 +5546,7 @@ Labels           : 16: Class Spells
                  : 67
                  : 292
                  : 373
+                 : 4638
 Affecting Spells : Retribution Paladin (137027 effect#20), Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
@@ -5576,6 +5583,7 @@ Labels           : 16: Class Spells
                  : 67
                  : 292
                  : 373
+                 : 4638
 Affecting Spells : Retribution Paladin (137027 effect#20), Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
@@ -5612,6 +5620,7 @@ Labels           : 16: Class Spells
                  : 67
                  : 292
                  : 373
+                 : 4638
 Affecting Spells : Retribution Paladin (137027 effect#20), Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
@@ -6051,6 +6060,7 @@ Labels           : 16: Class Spells
                  : 67
                  : 292
                  : 373
+                 : 4638
 Affecting Spells : Retribution Paladin (137027 effect#20), Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
@@ -6087,6 +6097,7 @@ Labels           : 16: Class Spells
                  : 67
                  : 292
                  : 373
+                 : 4638
 Affecting Spells : Retribution Paladin (137027 effect#20), Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
@@ -6415,6 +6426,7 @@ Labels           : 16: Class Spells
                  : 67
                  : 292
                  : 373
+                 : 4638
 Affecting Spells : Retribution Paladin (137027 effect#20), Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
@@ -6971,6 +6983,7 @@ Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
+Internal Cooldown: 0.5 seconds
 Stacks           : 1 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
@@ -8483,8 +8496,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.8875 | PvP Coefficient: 0.8 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
 #3 (id=845757)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
-                   Affected Spells: Ancient Fury (86704), Justicar's Vengeance (215661), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Hammer of Light (429826)
-                   Family Flags: 44, 88, 111, 112
+                   Affected Spells: Ancient Fury (86704), Justicar's Vengeance (215661), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Hammer of Light (427453), Hammer of Light (429826)
+                   Family Flags: 29, 44, 88, 111, 112
 #4 (id=1144778)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
                    Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Divine Hammer (198137), Shield of the Righteous (415091)
@@ -8868,6 +8881,7 @@ Labels           : 16: Class Spells
                  : 67
                  : 292
                  : 373
+                 : 4638
 Affecting Spells : Retribution Paladin (137027 effect#20), Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
@@ -9393,11 +9407,11 @@ Proc Chance      : 100%
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Icon (60), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1006821)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
-                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.67 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.67 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Lay on Hands (633), Divine Shield (642), Protection of the Fallen Dragons (392255), Lay on Hands (471195)
                    Family Flags: 15, 22
 #2 (id=1012224)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
-                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.67 | Misc Value: 1392 (Category) | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.67 | Misc Value: 1392 (Category) | Target: Self (1)
                    Affected Spells (Category): Blessing of Protection (1022), Blessing of Spellwarding (204018)
 Description      : Your Lay on Hands, Divine Shield, Blessing of Protection, and Blessing of Spellwarding have $s1% reduced cooldown.
 
@@ -11997,10 +12011,12 @@ Duration         : 15 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
+Stacks           : 5 maximum
+Proc Chance      : 101%
 Attributes       : Not In Spellbook (143), Aura Points On Client (268)
 Effects          :
 #1 (id=1031698)  : Apply Aura (6) | Modify Parry% (47)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : Parry increased by $s1%.
 Tooltip          : Parry increased by $w1%.
 
@@ -12016,7 +12032,7 @@ Proc Chance      : 101%
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1031765)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : For each target hit by Avenger's Shield, gain $s1% parry for $393038d.
 
 Name             : Guardian of Ancient Kings (id=393108) [Spell Family (10)] 
@@ -14353,6 +14369,9 @@ Effects          :
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
                    Affected Spells: Ancient Fury (86704), Radiant Decree (383469), Hammer of Light (429826)
                    Family Flags: 112
+#24 (id=1211801) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value 2: 3086 (Label) | Target: Self (1)
+                   Affected Spells (Label): Empyrean Hammer (431398)
 
 Name             : Aura Mastery (id=412629) [Spell Family (10), Hidden] 
 Class            : Paladin
@@ -15476,7 +15495,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 3022
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Paladin (137026 effect#8), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Judgment (197277 effect#1), Divine Purpose (223819 effects: #1, #2, #4), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Divine Purpose (408458 effect#1), Retribution Paladin (412314 effects: #14, #15, #22), Initial Paladin (417383 effects: #1, #2), Light's Deliverance (433732 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), All in! (1216837 effect#1), Luck of the Draw! (1218114 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Paladin (137026 effect#8), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Judgment (197277 effect#1), Divine Purpose (223819 effects: #1, #2, #4), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Divine Purpose (408458 effect#1), Retribution Paladin (412314 effects: #14, #15, #22), Initial Paladin (417383 effects: #1, #2), Light's Deliverance (433732 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), All in! (1216837 effect#1), Luck of the Draw! (1218114 effects: #1, #2)
 Family Flags     : 27, 29, 65
 Attributes       : Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -15700,7 +15719,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 2587: Penitence (403026 effect#2), Truth's Wake (403695 effect#6)
-                 : 3086: Sanctification (433671 effect#1), Sanctification (433671 effect#2)
+                 : 3086: Retribution Paladin (412314 effect#24), Sanctification (433671 effect#1), Sanctification (433671 effect#2)
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2)
 Family Flags     : 27, 65
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Can Proc From Procs (122), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
@@ -16393,9 +16412,7 @@ Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1121178)  : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 300 | Scaled Value: 300 | Target: Self (1)
-#2 (id=1121182)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $?a137028[Shield of the Righteous and Word of Glory]?s198034[Templar's Verdict, Divine Storm and Divine Hammer][Templar's Verdict and Divine Storm] calls down an Empyrean Hammer on a nearby enemy.
 
 While Shake the Heavens is active, this effect calls down an additional Empyrean Hammer.
@@ -17076,7 +17093,7 @@ Family Flags     : 41, 46
 Attributes       : Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1123227)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3 | AP Coefficient: 3 | Radius: 0 - 20 yards | Target: At Enemy (53) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2 | AP Coefficient: 2 | Radius: 0 - 20 yards | Target: At Enemy (53) -> At Friendly in Area (31)
 Description      : $@spelldesc433718
 
 Name             : Light's Deliverance (id=433732) [Spell Family (10)] 
@@ -17849,6 +17866,7 @@ Labels           : 16: Class Spells
                  : 67
                  : 292
                  : 373
+                 : 4638
 Affecting Spells : Retribution Paladin (137027 effect#20), Steed of Glory (199542 effect#1), Light's Barding (339268 effect#1), Seasoned Warhorse (376996 effect#1), Unrelenting Charger (432990 effect#1), Unrelenting Charger (442221 effect#1), Unrelenting Charger (442264 effects: #2, #3), Divine Spurs (469409 effect#2)
 Family Flags     : 36, 60
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Equip While Casting (209), Aura Points On Client (268), This Mount is NOT at the account level (349), Allow Class Ability Procs (416)
@@ -19175,7 +19193,7 @@ Family Flags     : 65
 Attributes       : Aura Is Debuff (26), Suppress Caster Procs (112), Always Hit (114), Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Rolling Periodic (334), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1184536)  : Apply Aura (6) | Periodic Damage (3): holyfire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.165 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.1155 | Target: Enemy (6)
 Description      : Enemies struck by Avenger's Shield burn with holy fire, suffering $o1 Radiant damage over $d.
 Tooltip          : Suffering $w1 Radiant damage every $t sec.
 
@@ -19317,7 +19335,7 @@ Effects          :
 #1 (id=1198670)  : Apply Aura (6) | Dummy (4)
                    Base Value: 8000 | Scaled Value: 8000 | Target: Self (1)
 #2 (id=1200718)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Divine Toll applies |cFFFFFFFFInsurance!|r to allies it heals for ${$s1/1000} sec. Divine Toll's cooldown is reduced by ${$s2/1000}.1 sec each time you spend Holy Power.
 
 Name             : Paladin Retribution 11.1 Class Set 2pc (id=1215707) [Spell Family (10), Passive, Hidden] 
@@ -19349,7 +19367,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198809)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
-Description      : When you lose your |cFFFFFFFFWinning Streak!|r you get the last Holy Power spent back, and for ${$1216837d }.1 you cannot lose Holy Power and the damage of your your Holy Power abilities are increased by $1216837s1%.
+Description      : When you lose your |cFFFFFFFFWinning Streak!|r you get the last Holy Power spent back, you cannot lose Holy Power for the next ${$1216837d }.1 sec, and the damage of your your Holy Power abilities are increased by $1216837s1%.
 
 Name             : Paladin Protection 11.1 Class Set 2pc (id=1215987) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
@@ -19367,7 +19385,7 @@ Effects          :
 #1 (id=1199254)  : Apply Aura (6) | Proc Trigger Spell (42): Luck of the Draw!
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1218114 | Target: Self (1)
 #2 (id=1202761)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
+                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Each time you take damage you have a chance to activate|cFFFFFFFF Luck of the Draw!|r causing you to cast Guardian of Ancient Kings for ${$s2/1000}.1 sec. Your damage done is increased by $1218114s1% for $1218114d after|cFFFFFFFF Luck of the Draw!|r activates.
 
 Name             : Paladin Protection 11.1 Class Set 4pc (id=1215989) [Spell Family (10), Passive, Hidden] 
@@ -19383,9 +19401,9 @@ Effects          :
 #1 (id=1199256)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=1202740)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.667 | Target: Self (1)
 #3 (id=1205022)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 500 | Scaled Value: 500 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : While you have |cFFFFFFFF Luck of the Draw!|r Shield of the Righteous refunds $s1-$s2 Holy Power and extends the duration of |cFFFFFFFF Luck of the Draw!|r by ${$s3/1000}.1 sec, up to $1218114d.
 
 Name             : Winning Streak! (id=1216828) [Spell Family (10)] 
@@ -19404,7 +19422,7 @@ Triggered By     : Paladin Retribution 11.1 Class Set 2pc (1215707)
 Attributes       : Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
 Effects          :
 #1 (id=1200474)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Divine Storm (53385), Divine Storm (224239), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Divine Storm (423593)
                    Family Flags: 44, 91
 #2 (id=1200475)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
@@ -19427,7 +19445,7 @@ Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal
 Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1200486)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Divine Storm (53385), Word of Glory (85673), Eternal Flame (156322), Divine Hammer (198034), Divine Storm (224239), Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Intercession (391054), Afterimage (391309), Divine Storm (423593), Hammer of Light (427453), Eternal Flame (461432)
                    Family Flags: 29, 44, 78, 89, 91, 108, 111
 #2 (id=1200487)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
@@ -19463,11 +19481,11 @@ Labels           : 16: Class Spells
 Triggered By     : Paladin Protection 11.1 Class Set 2pc (1215987)
 Effects          :
 #1 (id=1202741)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Crusader Strike (132331), Eternal Flame (156322), Holy Shield (157122), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Holy Ritual (199423), Tyr's Deliverance (200654), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Merciful Auras (210291), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Glimmer of Light (287286), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Seal of Charity (384810), Recompense (384914), Seal of the Crusader (385723), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Execution Sentence (387200), Blessing of Winter (388012), Barrier of Faith (395180), Lightforged Blessing (403460), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Lightforged Blessing (407467), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Glimmer of Light (416619), Seal of the Crusader (416771), Holy Reverberation (423377), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Dawnlight (431381), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun Sear (431415), Sun's Avatar (431911), Sun's Avatar (431939), Sacred Weapon (432616), Rite of Adjuration (433682), Hammer and Anvil (433717), Hammer and Anvil (433722), Divine Guidance (433807), Divine Guidance (433808), Sacred Weapon (441590), Sacred Word (447246), Forge's Reckoning (447258), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), Sun's Avatar (463075), Eye for an Eye (469311), A Just Reward (469413), Refining Fire (469882), Insurance! (1215534), Insurance! (1215535)
                    Family Flags: 46, 65
 #2 (id=1204385)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flash of Light (19750), Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Holy Shock (25914), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Light (82326), Word of Glory (85673), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Arcing Light (119952), Crusader Strike (132331), Eternal Flame (156322), Holy Shield (157122), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Holy Ritual (199423), Tyr's Deliverance (200654), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Merciful Auras (210291), Justicar's Vengeance (215661), Bestow Faith (223306), Divine Storm (224239), Templar's Verdict (224266), Light of Dawn (225311), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Radiant Incandescence (278147), Grace of the Justicar (278785), Light's Decree (286232), Glimmer of Light (287280), Glimmer of Light (287285), Glimmer of Light (287286), Ashen Hallow (317221), Ashen Hallow (317223), Glimmer of Light (325983), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Shock Barrier (337824), Hallowed Discernment (340203), Hallowed Discernment (340214), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Divine Toll (375576), Golden Path (377129), Tyr's Enforcer (378286), Light of the Titans (378412), Final Verdict (383328), Expurgation (383346), Radiant Decree (383469), Judgment (383991), Seal of Charity (384810), Recompense (384914), Seal of the Crusader (385723), Inner Light (386553), Execution Sentence (387113), Eye of Tyr (387174), Execution Sentence (387200), Blessing of Winter (388012), Barrier of Faith (395180), Lightforged Blessing (403460), Truth's Wake (403695), Blessed Hammers (404139), Blade of Justice (404358), Wake of Ashes (405345), Wake of Ashes (405350), Templar Slash (406647), Divine Arbiter (406983), Lightforged Blessing (407467), Searing Light (407478), Templar Strike (407480), Crusading Strikes (408385), Shining Righteousness (414448), Shield of the Righteous (415091), Glimmer of Light (416618), Glimmer of Light (416619), Seal of the Crusader (416771), Holy Reverberation (423377), Holy Reverberation (423379), Divine Storm (423593), Wrathful Sanction (424590), Hammer of Light (427453), Hammer of Light (429826), Dawnlight (431380), Dawnlight (431381), Empyrean Hammer (431398), Dawnlight (431399), Sun Sear (431414), Sun Sear (431415), Sun's Avatar (431911), Sun's Avatar (431939), Sacred Weapon (432616), Rite of Adjuration (433682), Hammer and Anvil (433717), Hammer and Anvil (433722), Divine Guidance (433807), Divine Guidance (433808), Sacred Weapon (441590), Sacred Word (447246), Forge's Reckoning (447258), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), Sun's Avatar (463075), Eye for an Eye (469311), A Just Reward (469413), Refining Fire (469882), Insurance! (1215534), Insurance! (1215535)
                    Family Flags: 46, 65
 Description      : $@spelldesc1215987

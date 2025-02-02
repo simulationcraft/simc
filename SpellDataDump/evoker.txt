@@ -7194,7 +7194,7 @@ Attributes       : Exclude Caster (51), Ignore Line of Sight (66), Only On Playe
 Aura Interrupt   : Leave World (19), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1035393)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 6.5 | Scaled Value: 6.5 | Radius: 0 - 100 yards | Target: At Self (18) -> At Friendly in Area (31)
+                   Base Value: 5 | Scaled Value: 5 | Radius: 0 - 100 yards | Target: At Self (18) -> At Friendly in Area (31)
 #2 (id=1035394)  : Apply Aura (6) | Modify Stat With Support Triggers (540)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Radius: 0 - 100 yards | Target: At Self (18) -> At Friendly in Area (31)
 Description      : Increase your $i nearest allies' primary stat by $<amount>% of your own, and cause you to deal $395296s1% more damage, for $d.

@@ -325,7 +325,7 @@ public:
 
     // TWW2 Tier
     buff_t* winning_streak_arms; // Arms 2pc
-    buff_t* hedged_bets;         // Arms 4pc
+    buff_t* pay_them_back;       // Arms 4pc
     buff_t* winning_streak_fury; // Fury 2pc
     buff_t* double_down_bt;      // Fury 4pc Bloodthirst
     buff_t* double_down_rb;      // Fury 4pc Raging Blow
@@ -486,6 +486,7 @@ public:
     const spell_data_t* sudden_death_arms;
     const spell_data_t* sudden_death_fury;
     const spell_data_t* devastator;
+    const spell_data_t* bloodsurge_energize;
 
     // DF Tier
     // T31
@@ -874,6 +875,7 @@ public:
       player_talent_t rend;
       player_talent_t bloodsurge;
       player_talent_t dance_of_death;
+      player_talent_t sudden_death;
     } shared;
 
   } talents;
@@ -1159,7 +1161,7 @@ public:
       if ( p()->is_ptr() )
       {
         parse_effects( p()->buff.winning_streak_arms );
-        parse_effects( p()->buff.hedged_bets );
+        parse_effects( p()->buff.pay_them_back );
       }
     }
     else if ( p()->specialization() == WARRIOR_FURY )
@@ -1200,13 +1202,15 @@ public:
     else if ( p()->specialization() == WARRIOR_PROTECTION )
     {
       parse_effects( p()->buff.battering_ram );
+      parse_effects( p()->buff.brace_for_impact, effect_mask_t( true ).disable( 2 ) );
       parse_effects( p()->buff.juggernaut_prot );
       parse_effects( p()->buff.seismic_reverberation_revenge );
       parse_effects( p()->buff.vanguards_determination );
+      parse_effects( p()->buff.violent_outburst, effect_mask_t( false ).enable( 1 ) );
 
       if ( p()->is_ptr() )
       {
-        parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 7, 8 ) );
+        parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 7 ) );
         if ( p()->talents.warrior.unstoppable_force )
           parse_effects( p()->talents.warrior.avatar, effect_mask_t( false ).enable( 11, 12 ) );
 
@@ -1236,7 +1240,8 @@ public:
       }
       // Effect 3 is the auto attack mod
       parse_effects( p()->talents.colossus.mountain_of_muscle_and_scars, effect_mask_t( false ).enable( 3 ) );
-      parse_effects( p()->talents.colossus.practiced_strikes );
+      // Effect 3 is the increased rage gain.
+      parse_effects( p()->talents.colossus.practiced_strikes, effect_mask_t( true ).disable( 3 ) );
     }
 
     // Slayer
@@ -1527,6 +1532,7 @@ public:
     {
       anger_management( rage );
     }
+
     if ( rage > 0 && !ab::aoe && ab::execute_state && ab::result_is_miss( ab::execute_state->result ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage * 0.8, p()->gain.avoided_attacks );
@@ -1535,33 +1541,60 @@ public:
     // Protection Warrior Violent Outburst Seeing Red Tracking
     if ( p()->specialization() == WARRIOR_PROTECTION && p()->talents.protection.violent_outburst.ok() && rage > 0 )
     {
-      // Trigger the buff if this is the first rage consumption of the iteration
-      if ( !p()->buff.seeing_red_tracking->check() )
+      // Live 11.0
+      if ( !p()->is_ptr() )
       {
-        p()->buff.seeing_red_tracking->trigger();
-      }
-
-      double original_value = p()->buff.seeing_red_tracking->current_value;
-      double rage_per_stack = p()->buff.seeing_red_tracking->data().effectN( 1 ).base_value();
-      p()->buff.seeing_red_tracking->current_value += rage;
-      p()->sim->print_debug( "{} increments seeing_red_tracking by {}. Old={} New={}", p()->name(), rage,
-                             original_value, p()->buff.seeing_red_tracking->current_value );
-
-      while ( p()->buff.seeing_red_tracking->current_value >= rage_per_stack )
-      {
-        p()->buff.seeing_red_tracking->current_value -= rage_per_stack;
-        p()->sim->print_debug(
-            "{} reaches seeing_red_tracking threshold, triggering seeing_red buff. New seeing_red_tracking value is {}",
-            p()->name(), p()->buff.seeing_red_tracking->current_value );
-
-        p()->buff.seeing_red->trigger();
-
-        if( p()->buff.seeing_red->at_max_stacks() )
+        // Trigger the buff if this is the first rage consumption of the iteration
+        if ( !p()->buff.seeing_red_tracking->check() )
         {
-          p()->buff.seeing_red->expire();
-          p()->buff.violent_outburst->trigger();
+          p()->buff.seeing_red_tracking->trigger();
         }
 
+        double original_value = p()->buff.seeing_red_tracking->current_value;
+        double rage_per_stack = p()->buff.seeing_red_tracking->data().effectN( 1 ).base_value();
+        p()->buff.seeing_red_tracking->current_value += rage;
+        p()->sim->print_debug( "{} increments seeing_red_tracking by {}. Old={} New={}", p()->name(), rage,
+                              original_value, p()->buff.seeing_red_tracking->current_value );
+
+        while ( p()->buff.seeing_red_tracking->current_value >= rage_per_stack )
+        {
+          p()->buff.seeing_red_tracking->current_value -= rage_per_stack;
+          p()->sim->print_debug(
+              "{} reaches seeing_red_tracking threshold, triggering seeing_red buff. New seeing_red_tracking value is {}",
+              p()->name(), p()->buff.seeing_red_tracking->current_value );
+
+          p()->buff.seeing_red->trigger();
+
+          if( p()->buff.seeing_red->at_max_stacks() )
+          {
+            p()->buff.seeing_red->expire();
+            p()->buff.violent_outburst->trigger();
+          }
+        }
+      }
+      // 11.1
+      if ( p()->is_ptr() )
+      {
+        // Trigger the buff to create an empty buff if we don't already have it active so we can assume it's already up
+        if ( !p()->buff.seeing_red->check() )
+        {
+          p()->buff.seeing_red->trigger();
+        }
+
+        double original_value = p()->buff.seeing_red->current_value;
+        p()->buff.seeing_red->current_value += rage;
+        p()->sim->print_debug( "{} increments seeing_red by {}. Old={} New={}", p()->name(), rage,
+                              original_value, p()->buff.seeing_red->current_value );
+
+        if ( p()->buff.seeing_red->current_value >= p()->talents.protection.violent_outburst->effectN( 1 ).base_value() )
+        {
+          double overflow = p()->buff.seeing_red->current_value - p()->talents.protection.violent_outburst->effectN( 1 ).base_value();
+          p()->sim->print_debug( "{} seeing_red triggering violent outburst.  overflow rage {}", p()->name(), overflow );
+          p()->buff.seeing_red->expire();
+          p()->buff.violent_outburst->trigger();
+          if( overflow > 0)
+            p()->buff.seeing_red->trigger( 1, overflow );
+        }
       }
     }
   }
@@ -1786,9 +1819,14 @@ struct avatar_t : public warrior_spell_t
       immovable_object_duration = p->talents.warrior.immovable_object->effectN( 2 ).time_value();
 
     if ( p->talents.mountain_thane.avatar_of_the_storm->ok() )
+    {
       avatar_of_the_storm_duration = timespan_t::from_seconds( p->talents.mountain_thane.avatar_of_the_storm->effectN( 3 ).base_value() );
+      if ( p->is_ptr() && p->specialization() == WARRIOR_PROTECTION )
+        avatar_of_the_storm_duration += timespan_t::from_seconds( p->talents.mountain_thane.avatar_of_the_storm->effectN( 4 ).base_value() );
+    }
   }
 
+  // Background action version
   avatar_t( util::string_view name, warrior_t* p )
     : warrior_spell_t( name, p, p->talents.warrior.avatar ),
     warlords_torment_duration( 0_s ),
@@ -1801,6 +1839,7 @@ struct avatar_t : public warrior_spell_t
     from_immovable_object( false )
   {
     background = true;
+    cooldown->duration = 0_s;
     trigger_gcd = timespan_t::zero();
     harmful    = false;
     target     = p;
@@ -1818,7 +1857,11 @@ struct avatar_t : public warrior_spell_t
       immovable_object_duration = p->talents.warrior.immovable_object->effectN( 2 ).time_value();
 
     if ( p->talents.mountain_thane.avatar_of_the_storm->ok() )
+    {
       avatar_of_the_storm_duration = timespan_t::from_seconds( p->talents.mountain_thane.avatar_of_the_storm->effectN( 3 ).base_value() );
+      if ( p->is_ptr() && p->specialization() == WARRIOR_PROTECTION )
+        avatar_of_the_storm_duration += timespan_t::from_seconds( p->talents.mountain_thane.avatar_of_the_storm->effectN( 4 ).base_value() );
+    }
   }
 
   struct state_t : public action_state_t
@@ -1926,6 +1969,12 @@ struct devastate_t : public warrior_attack_t
     weapon        = &( p->main_hand_weapon );
     impact_action = p->active.deep_wounds_PROT;
     parse_options( options_str );
+
+    if ( p->is_ptr() && p->talents.protection.strategist->ok() )
+    {
+      // For some reason on PTR strategist is referencing shield slam reset chance from devastator
+      shield_slam_reset = p->spell.devastator->effectN( 2 ).percent();
+    }
   }
 
   void execute() override
@@ -2334,10 +2383,11 @@ struct rend_dot_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
-    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    if ( !p()->is_ptr() && p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
+
     if ( p()->tier_set.t31_arms_2pc->ok() && p()->rppm.t31_sudden_death->trigger() )
     {
       p()->buff.sudden_death->trigger();
@@ -2435,7 +2485,7 @@ struct rend_dot_prot_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
-    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    if ( !p()->is_ptr() && p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
@@ -2890,6 +2940,7 @@ struct bloodbath_dot_t : public warrior_attack_t
     background = true;
     hasted_ticks = false;
     may_miss = false;
+    dot_behavior = DOT_EXTEND;
   }
 };
 
@@ -3274,7 +3325,7 @@ struct mortal_strike_t : public warrior_attack_t
     background = true;
     impact_action = p->active.deep_wounds_ARMS;
     rend_dot = new rend_dot_t( p );
-    internal_cooldown->duration = 0_s;
+    cooldown->duration = 0_s;
     if ( p->talents.slayer.reap_the_storm->ok() )
     {
       std::string s = "reap_the_storm_";
@@ -3564,7 +3615,7 @@ struct bladestorm_t : public warrior_attack_t
   {
     auto new_dot_duration = warrior_attack_t::composite_dot_duration( s );
 
-    if ( p() -> talents.slayer.imminent_demise -> ok() )
+    if ( p() -> talents.slayer.imminent_demise -> ok() && ( !p()->is_ptr() || p()->talents.shared.sudden_death->ok() ) )
     {
       new_dot_duration = tick_time( s ) * ( dot_duration.total_seconds() + p() -> buff.imminent_demise -> stack() );
     }
@@ -3577,7 +3628,7 @@ struct bladestorm_t : public warrior_attack_t
     auto new_base_tick_time = warrior_attack_t::tick_time( s );
 
     // Normally we get 6 ticks of bladestorm, but with imminent demise, we get 1-3 extra ticks, in the same amount of time
-    if ( p() -> talents.slayer.imminent_demise->ok() )
+    if ( p() -> talents.slayer.imminent_demise->ok() && ( !p()->is_ptr() || p()->talents.shared.sudden_death->ok() ) )
     {
       new_base_tick_time *= ( dot_duration.total_seconds() / ( dot_duration.total_seconds() + p() -> buff.imminent_demise -> stack() ) );
     }
@@ -3642,7 +3693,7 @@ struct bladestorm_t : public warrior_attack_t
       p()->buff.dance_of_death_bladestorm -> trigger( -1, p() -> spell.dance_of_death_bs_buff->duration() );
     }
 
-    if ( p()->talents.slayer.imminent_demise->ok() )
+    if ( p()->talents.slayer.imminent_demise->ok() && ( !p()->is_ptr() || p()->talents.shared.sudden_death->ok() ) )
     {
       p()->buff.imminent_demise->expire();
     }
@@ -3999,7 +4050,12 @@ struct cleave_t : public warrior_attack_t
 
     if ( p()->talents.slayer.reap_the_storm->ok() )
     {
-      if ( p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      if ( p()->is_ptr() && p()->cooldown.reap_the_storm_icd->is_ready() && execute_state->n_targets >= p()->talents.slayer.reap_the_storm->effectN( 2 ).base_value() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
+      {
+        reap_the_storm->execute();
+        p()->cooldown.reap_the_storm_icd->start();
+      }
+      if ( !p()->is_ptr() && p()->cooldown.reap_the_storm_icd->is_ready() && rng().roll( p()->talents.slayer.reap_the_storm->proc_chance() ) )
       {
         reap_the_storm->execute();
         p()->cooldown.reap_the_storm_icd->start();
@@ -4109,7 +4165,7 @@ struct deep_wounds_ARMS_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
-    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    if ( !p()->is_ptr() && p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
@@ -4160,7 +4216,7 @@ struct deep_wounds_PROT_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
-    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    if ( !p()->is_ptr() && p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
@@ -4295,7 +4351,7 @@ struct thunderous_roar_dot_t : public warrior_attack_t
   void tick( dot_t* d ) override
   {
     warrior_attack_t::tick( d );
-    if ( p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
+    if ( !p()->is_ptr() && p()->talents.shared.bloodsurge->ok() && rng().roll( bloodsurge_chance ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_bloodsurge, p()->gain.bloodsurge );
     }
@@ -4422,11 +4478,6 @@ struct thunder_blast_t : public warrior_attack_t
     if ( p()->buff.show_of_force->check() )
     {
       am *= 1.0 + ( p()->buff.show_of_force->stack_value() );
-    }
-
-    if ( p()->buff.violent_outburst->check() )
-    {
-      am *= 1.0 + p()->buff.violent_outburst->data().effectN( 1 ).percent();
     }
 
     return am;
@@ -4609,6 +4660,12 @@ struct thunder_clap_t : public warrior_attack_t
       seismic_action = new thunder_clap_seismic_reverberation_t( "thunder_clap_seismic_reverberation", p );
       add_child( seismic_action );
     }
+
+    if ( p->is_ptr() && p->talents.protection.strategist->ok() )
+    {
+      // For some reason on PTR strategist is referencing shield slam reset chance from devastator
+      shield_slam_reset = p->spell.devastator->effectN( 2 ).percent();
+    }
   }
 
   double action_multiplier() const override
@@ -4618,11 +4675,6 @@ struct thunder_clap_t : public warrior_attack_t
     if ( p()->buff.show_of_force->check() )
     {
       am *= 1.0 + ( p()->buff.show_of_force->stack_value() );
-    }
-
-    if ( p()->buff.violent_outburst->check() )
-    {
-      am *= 1.0 + p()->buff.violent_outburst->data().effectN( 1 ).percent();
     }
 
     return am;
@@ -4818,6 +4870,12 @@ struct execute_arms_t : public warrior_attack_t
       lightning_strike = get_action<lightning_strike_t>( "lightning_strike_execute", p );
       add_child( lightning_strike );
     }
+
+    if ( p->is_ptr() && p->talents.protection.strategist->ok() )
+    {
+      // For some reason on PTR strategist is referencing shield slam reset chance from devastator
+      shield_slam_reset = p->spell.devastator->effectN( 2 ).percent();
+    }
   }
 
   double tactician_cost() const override
@@ -4874,7 +4932,7 @@ struct execute_arms_t : public warrior_attack_t
     if ( p()->buff.sudden_death->up() )
     {
       p()->buff.sudden_death->decrement();
-      if ( p()->talents.slayer.imminent_demise->ok() )
+      if ( p()->talents.slayer.imminent_demise->ok() && ( !p()->is_ptr() || p()->talents.shared.sudden_death->ok() ) )
       {
         p()->buff.imminent_demise->trigger();
       }
@@ -5128,7 +5186,7 @@ struct execute_fury_t : public warrior_attack_t
     if ( p() -> buff.sudden_death -> up() )
     {
       p()->buff.sudden_death->decrement();
-      if ( p()->talents.slayer.imminent_demise->ok() )
+      if ( p()->talents.slayer.imminent_demise->ok() && ( !p()->is_ptr() || p()->talents.shared.sudden_death->ok() ) )
       {
         p()->buff.imminent_demise->trigger();
       }
@@ -6527,6 +6585,50 @@ struct ravager_t : public warrior_attack_t
 
 // Revenge ==================================================================
 
+struct revenge_seismic_reverberation_t : public warrior_attack_t
+{
+  revenge_seismic_reverberation_t( util::string_view name, warrior_t* p )
+    : warrior_attack_t( name, p, p->find_spell( 1215174 ) )
+  {
+    weapon = &( player->main_hand_weapon );
+    aoe = -1;
+    background = true;
+    proc = true;
+    impact_action = p->active.deep_wounds_PROT;
+    base_multiplier *= 1.0 + p -> talents.protection.best_served_cold -> effectN( 1 ).percent();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = warrior_attack_t::action_multiplier();
+    if( p() -> buff.revenge -> up() && p() -> talents.protection.best_served_cold -> ok() )
+    {
+      am /= 1.0 + p()->talents.protection.best_served_cold->effectN( 1 ).percent();
+      am *= 1.0 + p()->talents.protection.best_served_cold->effectN( 1 ).percent() +
+            p()->buff.revenge->data().effectN( 2 ).percent();
+    }
+
+    am *= 1.0 + p() -> talents.protection.show_of_force -> effectN( 2 ).percent();
+
+    am *= 1.0 + p()->talents.warrior.seismic_reverberation->effectN( 3 ).percent();
+
+    return am;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = warrior_attack_t::composite_da_multiplier( state );
+
+    if ( p()->talents.colossus.one_against_many->ok() )
+    {
+      m *= 1.0 + ( p()->talents.colossus.one_against_many->effectN( 1 ).percent() * std::min( state -> n_targets,  as<unsigned int>( p()->talents.colossus.one_against_many->effectN( 2 ).base_value() ) ) );
+    }
+
+    return m;
+  }
+
+};
+
 struct revenge_t : public warrior_attack_t
 {
   double shield_slam_reset;
@@ -6553,7 +6655,11 @@ struct revenge_t : public warrior_attack_t
       }
       else if ( p -> talents.warrior.seismic_reverberation -> ok() )
       {
-        seismic_action = new revenge_t( p, "", true );
+        if ( ! p->is_ptr() )
+          seismic_action = new revenge_t( p, "", true );
+        else  // PTR uses a different spell id
+          seismic_action = new revenge_seismic_reverberation_t( "revenge_seismic_reverberation", p );
+
         add_child( seismic_action );
       }
 
@@ -6568,6 +6674,12 @@ struct revenge_t : public warrior_attack_t
 
       if ( p->is_ptr() )
         rage_from_frothing_berserker = p->talents.warrior.frothing_berserker->effectN( 3 ).percent();
+
+      if ( p->is_ptr() && p->talents.protection.strategist->ok() )
+      {
+        // For some reason on PTR strategist is referencing shield slam reset chance from devastator
+        shield_slam_reset = p->spell.devastator->effectN( 2 ).percent();
+      }
   }
 
   double cost_pct_multiplier() const override
@@ -6586,7 +6698,8 @@ struct revenge_t : public warrior_attack_t
     if ( p()->talents.warrior.seismic_reverberation->ok() && !background &&
     execute_state->n_targets >= p()->talents.warrior.seismic_reverberation->effectN( 1 ).base_value() )
     {
-      p()->buff.seismic_reverberation_revenge->trigger();
+      if( !p()->is_ptr() )  // Remove the entire buff.seismic_reverberation_revenge after 11.1 releases, it's no longer used
+        p()->buff.seismic_reverberation_revenge->trigger();
       seismic_action->execute_on_target( target );
     }
 
@@ -6888,6 +7001,9 @@ struct shield_slam_t : public warrior_attack_t
     if( !p->is_ptr() )
       rage_gain += p->talents.protection.impenetrable_wall->effectN( 2 ).resource( RESOURCE_RAGE );
 
+    if ( p->is_ptr() && p->talents.colossus.practiced_strikes->ok() )
+      rage_gain += p->talents.colossus.practiced_strikes->effectN( 3 ).resource( RESOURCE_RAGE );
+
     if ( p -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B2 ) )
         base_multiplier *= 1.0 + p -> sets -> set( WARRIOR_PROTECTION, T30, B2 ) -> effectN( 1 ).percent();
 
@@ -6912,21 +7028,6 @@ struct shield_slam_t : public warrior_attack_t
     {
       double sb_increase = p() -> spell.shield_block_buff -> effectN( 2 ).percent();
       am *= 1.0 + sb_increase;
-    }
-
-    if ( p()->talents.protection.punish.ok() )
-    {
-      am *= 1.0 + p()->talents.protection.punish->effectN( 1 ).percent();
-    }
-
-    if ( p()->buff.violent_outburst->check() )
-    {
-      am *= 1.0 + p()->buff.violent_outburst->data().effectN( 1 ).percent();
-    }
-
-    if ( p() -> buff.brace_for_impact -> up() )
-    {
-      am *= 1.0 + p()->buff.brace_for_impact -> stack_value();
     }
 
     if ( p() -> sets -> has_set_bonus( WARRIOR_PROTECTION, T30, B2 ) && p() -> buff.last_stand -> up() )
@@ -7147,7 +7248,7 @@ struct slayers_strike_t : public warrior_attack_t
     special = true;
     background = true;
 
-    if( p->talents.slayer.imminent_demise -> ok() )
+    if( p->talents.slayer.imminent_demise -> ok() && ( !p->is_ptr() || p->talents.shared.sudden_death->ok() ) )
       imminent_demise_trigger_threshold = as<int>( p->talents.slayer.imminent_demise -> effectN( 1 ).base_value() );
   }
 
@@ -7165,7 +7266,7 @@ struct slayers_strike_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    if ( p() -> talents.slayer.imminent_demise -> ok() )
+    if ( p() -> talents.slayer.imminent_demise -> ok() && ( !p()->is_ptr() || p()->talents.shared.sudden_death->ok() ) )
     {
       imminent_demise_tracker++;
       if ( imminent_demise_tracker == imminent_demise_trigger_threshold )
@@ -8105,7 +8206,7 @@ struct ignore_pain_buff_t : public absorb_buff_t
   // Custom consume implementation to allow minimum absorb amount.
   double consume( double amount, action_state_t* ) override
   {
-    // IP only absorbs up to 55% of the damage taken
+    // Effect 2 stores the % of damage that is absorbed
     amount *= debug_cast< warrior_t* >( player ) -> talents.protection.ignore_pain -> effectN( 2 ).percent();
     double absorbed = absorb_buff_t::consume( amount );
 
@@ -8141,14 +8242,9 @@ struct ignore_pain_t : public warrior_spell_t
 
   void impact( action_state_t* s ) override
   {
-    // With the buff to warrior on Jan 23 2024
-    // the amount gained is +5%.  Need to check cap as well.  This buff was stored in a dummy effect
-    // in the protection aura
-    // p() -> effectN( 23 ).percent();
-
     double new_ip = s -> result_amount;
 
-    if ( p()->talents.colossus.no_stranger_to_pain->ok() )
+    if ( !p()->is_ptr() && p()->talents.colossus.no_stranger_to_pain->ok() )
     {
       new_ip *= 1.0 + p()->talents.colossus.no_stranger_to_pain->effectN( 1 ).percent();
     }
@@ -8553,6 +8649,9 @@ void warrior_t::init_spells()
   spell.seismic_reverberation_revenge = find_spell( 384730 );
   spell.devastator              = find_spell( 236279 );
 
+  // Shared Spells
+  spell.bloodsurge_energize     = find_spell( 384362 );
+
   // Colossus Spells
   spell.wrecked_debuff              = find_spell( 447513 );
 
@@ -8871,6 +8970,7 @@ void warrior_t::init_spells()
   talents.shared.rend = find_shared_talent( { &talents.arms.rend, &talents.protection.rend } );
   talents.shared.bloodsurge = find_shared_talent( { &talents.arms.bloodsurge, &talents.protection.bloodsurge } );
   talents.shared.dance_of_death = find_shared_talent( { &talents.arms.dance_of_death, &talents.protection.dance_of_death } );
+  talents.shared.sudden_death = find_shared_talent( { &talents.arms.sudden_death, &talents.fury.sudden_death, &talents.protection.sudden_death } );
 
   // Convenant Abilities
   covenant.conquerors_banner     = find_covenant_spell( "Conqueror's Banner" );
@@ -9374,8 +9474,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this, &p );
 
-  debuffs_punish = make_buff( *this, "punish", p.talents.protection.punish -> effectN( 2 ).trigger() )
-    ->set_default_value( p.talents.protection.punish -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
+  debuffs_punish = make_buff( *this, "punish", p.talents.protection.punish -> effectN( 2 ).trigger() );
 
   debuffs_taunt = make_buff( *this, "taunt", p.find_class_spell( "Taunt" ) );
 
@@ -9629,7 +9728,16 @@ void warrior_t::create_buffs()
       ->set_duration( 20_s ); // Slightly longer than max extension;
 
   buff.seeing_red = make_buff( this, "seeing_red", find_spell( 386486 ) );
+          if ( is_ptr() )
+          {
+            // In game it looks like it tracks stacks dynamically, but the actual amount of rage spent is stored in the value
+            // As a result, rage tracking is accurate on the buff tooltip, but the number of stacks equals round(value / 2.5)
+            // We will treat this as a single stack in simc, and handle everything in the value
+            buff.seeing_red->set_max_stack( 1 )
+              ->set_default_value( 0 );
+          }
 
+  // is_ptr() remove seeing_red_tracking with 11.1 release
   buff.seeing_red_tracking =
       make_buff( this, "seeing_red_tracking", find_spell( 386477 ) )
           ->set_quiet( true )
@@ -9733,9 +9841,10 @@ void warrior_t::create_buffs()
                                 ->set_chance( 1.0 )
                                 ->set_expire_callback( [ & ]( buff_t*, int stacks, timespan_t ) {
                                   if ( sets -> has_set_bonus( WARRIOR_ARMS, TWW2, B4 ) )
-                                    buff.hedged_bets -> trigger( timespan_t::from_seconds( sets->set( WARRIOR_ARMS, TWW2, B4 )->effectN( 1 ).base_value() * stacks ) );
+                                    buff.pay_them_back -> trigger( stacks );
                                 });
-  buff.hedged_bets = make_buff( this, "hedged_bets", find_spell( 1216556) );                  // Arms 4pc
+  buff.pay_them_back = make_buff( this, "pay_them_back", find_spell( 1216556) )
+                          ->set_refresh_behavior( buff_refresh_behavior::DURATION );          // Arms 4pc
   buff.winning_streak_fury = make_buff( this, "winning_streak_fury", find_spell( 1216561 ) )  // Fury 2pc
                                 ->set_chance( 1.0 );
   buff.double_down_bt = make_buff( this, "double_down_bt", find_spell( 1216565 ) );           // Fury 4pc Bloodthirst
@@ -10080,6 +10189,45 @@ void warrior_t::arise()
 
 // warrior_t::combat_begin ==================================================
 
+  // Bloodsurge Event ========================================================
+
+  struct bloodsurge_event_t : public event_t
+  {
+    warrior_t* player;
+    bloodsurge_event_t( warrior_t* p, timespan_t delay )
+    : event_t ( *p, delay ),
+    player( p )
+    {
+    }
+
+    const char* name() const override
+    {
+      return "bloodsurge execute event";
+    }
+
+    void execute() override
+    {
+      double deep_wounds_targets = 0;
+      for ( auto t : player->sim->target_non_sleeping_list )
+      {
+        warrior_td_t* td = player->get_target_data( t );
+        if ( t->is_enemy() && td->dots_deep_wounds->is_ticking() )
+          deep_wounds_targets++;
+      }
+      if ( deep_wounds_targets > 0 )
+      {
+        double proc_chance = player->talents.shared.bloodsurge->effectN( 1 ).percent();
+        proc_chance *= std::sqrt( 1 / deep_wounds_targets ) * deep_wounds_targets;
+        if ( rng().roll( proc_chance ) )
+        {
+          player->resource_gain( RESOURCE_RAGE, player->spell.bloodsurge_energize->effectN( 1 ).resource( RESOURCE_RAGE ), player->gain.bloodsurge );
+        }
+      }
+
+      make_event<bloodsurge_event_t>( sim(), player, player->talents.shared.bloodsurge->effectN( 1 ).period() * player->cache.spell_haste() );
+    }
+  };
+
 void warrior_t::combat_begin()
 {
   if ( !sim->fixed_time )
@@ -10108,6 +10256,11 @@ void warrior_t::combat_begin()
   }
   parse_player_effects_t::combat_begin();
   buff.into_the_fray -> trigger( into_the_fray_friends < 0 ? buff.into_the_fray -> max_stack() : into_the_fray_friends + 1 );
+
+  if ( is_ptr() && talents.shared.bloodsurge->ok() )
+  {
+    make_event<bloodsurge_event_t>( *sim, this, talents.shared.bloodsurge->effectN( 1 ).period() * cache.spell_haste());
+  }
 }
 
 // Into the fray
@@ -10542,7 +10695,7 @@ double warrior_t::composite_block_reduction( action_state_t* s ) const
 
   if ( buff.brace_for_impact -> check() )
   {
-    br *= 1.0 + buff.brace_for_impact -> check() * talents.protection.brace_for_impact -> effectN( 2 ).percent();
+    br *= 1.0 + buff.brace_for_impact -> check() * talents.protection.brace_for_impact->effectN( 1 ).trigger() -> effectN( 2 ).percent();
   }
 
   if ( talents.protection.shield_specialization->ok() )
@@ -10969,6 +11122,10 @@ void warrior_t::parse_player_effects()
   parse_effects( spec.warrior );
   parse_effects( talents.warrior.wild_strikes );
   parse_effects( buff.wild_strikes, talents.warrior.wild_strikes );
+  if ( is_ptr() )
+  {
+    parse_effects( buff.pay_them_back );
+  }
 
   if ( specialization() == WARRIOR_ARMS )
   {
@@ -11036,6 +11193,7 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.protection.bloodborne );
   action.apply_affecting_aura( talents.protection.defenders_aegis );
   action.apply_affecting_aura( talents.protection.battering_ram );
+  action.apply_affecting_aura( talents.protection.punish );
 
   // Shared Auras
   if ( !is_ptr() )
@@ -11079,6 +11237,8 @@ void warrior_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.colossus.martial_expert );
   action.apply_affecting_aura( talents.colossus.earthquaker );
   action.apply_affecting_aura( talents.colossus.mountain_of_muscle_and_scars );
+  if ( is_ptr() )
+    action.apply_affecting_aura( talents.colossus.no_stranger_to_pain );
 
   // Slayer
   action.apply_affecting_aura( talents.slayer.slayers_malice );

@@ -576,6 +576,16 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
 
     return m;
   }
+
+  double cost_pct_multiplier() const override
+  {
+    double c = warlock_pet_melee_attack_t::cost_pct_multiplier();
+
+    if ( !main_pet && p()->buffs.demonic_power->check() && p()->bugs )
+      c *= 1.0 + p()->o()->talents.demonic_power_buff->effectN( 4 ).percent();
+
+    return c;
+  }
 };
 
 struct immutable_hatred_t : public warlock_pet_melee_attack_t

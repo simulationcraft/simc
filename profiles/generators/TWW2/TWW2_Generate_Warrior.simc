@@ -1,0 +1,79 @@
+# warrior="TWW2_Warrior_Arms"
+# level=80
+# race=mechagnome
+# spec=arms
+# role=attack
+# position=back
+# talents=CcEAAAAAAAAAAAAAAAAAAAAAAAAzYmZMzMzsZZZZmBAAAADmGmZYbGzAzYMzMYmhBGmhBAAAAAAAPwYWmZmBQgxy2ALgBMDTIDwG
+
+# head=warsculptors_barbute,id=211984,bonus_id=10878,gem_id=213743,ilevel=639
+# neck=sureki_zealots_insignia,id=225577,bonus_id=10879,gem_id=213473/213485,,ilevel=639
+# shoulders=warsculptors_horned_spaulders,id=211982,ilevel=639
+# back=consecrated_cloak,id=222817,bonus_id=10222/8960/11304,ilevel=636,enchant=chant_of_winged_grace_3,crafted_stats=32/36
+# chest=warsculptors_furred_plastron,id=211987,ilevel=639,enchant=crystalline_radiance_3
+# wrists=everforged_vambraces,id=222435,bonus_id=10222/1087/11304/8960,ilevel=636,gem_id=213494,enchant=chant_of_armored_avoidance_3,crafted_stats=32/36
+# hands=black_blood_injectors,id=212418,ilevel=639
+# waist=crystalfissure_girdle,id=221079,bonus_id=10878,ilevel=639,gem_id=213482
+# legs=warsculptors_cuisses,id=211983,ilevel=639,enchant=defenders_armor_kit_3
+# feet=boots_of_the_black_bulwark,id=225590,ilevel=639,enchant=defenders_march_3
+# finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,ilevel=639,gem_id=213482/213482,enchant=radiant_haste_3
+# finger2=band_of_the_ancient_dredger,id=159461,bonus_id=10879,ilevel=639,gem_id=213458/213479,enchant=radiant_haste_3
+# trinket1=mad_queens_mandate,id=212454,ilevel=639
+# trinket2=treacherous_transmitter,id=221023,ilevel=639
+# main_hand=surgical_heartstopper,id=221184,ilevel=639,enchant=authority_of_the_depths_3
+
+# save=TWW2_Warrior_Arms.simc
+
+# warrior="TWW2_Warrior_Fury"
+# level=80
+# race=mechagnome
+# spec=fury
+# role=attack
+# position=back
+# talents=CgEAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAgRDMzAMMDjBmFYYGjZmHYYmZbbMmZmFMzMzMjZMbDPAjxAAAAhZssNwCYCmhJwYbYD
+
+# head=darkfrost_helmet,id=178777,bonus_id=10878,ilevel=639,gem_id=213743
+# neck=emergency_stop_keychain,id=221077,bonus_id=10879,ilevel=639,gem_id=213482/213473
+# shoulders=warsculptors_horned_spaulders,id=211982,ilevel=639
+# back=anvilhide_cape,id=221088,ilevel=639,enchant=chant_of_winged_grace_3
+# chest=warsculptors_furred_plastron,id=211987,ilevel=639,enchant=crystalline_radiance_3
+# wrists=everforged_vambraces,id=222435,bonus_id=10222/10878/11109/8960,ilevel=636,gem_id=213482,enchant=chant_of_armored_avoidance_3,crafted_stats=49/40
+# hands=warsculptors_crushers,id=211985,ilevel=639
+# waist=girdle_of_somber_ploys,id=221133,bonus_id=10878,ilevel=639,gem_id=213458
+# legs=warsculptors_cuisses,id=211983,ilevel=639,enchant=defenders_armor_kit_3
+# feet=boots_of_the_black_bulwark,id=225590,ilevel=639,enchant=defenders_march_3
+# finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,ilevel=639,gem_id=213494/213494,enchant=radiant_mastery_3
+# finger2=writhing_ringworm,id=225576,bonus_id=10879,ilevel=639,gem_id=213494/213494,enchant=radiant_mastery_3
+# trinket1=treacherous_transmitter,id=221023,ilevel=639
+# trinket2=arakara_sacbrood,id=219314,ilevel=639
+# main_hand=wild_hammer,id=133298,ilevel=639,enchant=authority_of_the_depths_3
+# off_hand=charged_claymore,id=222447,bonus_id=10222/11300/8960,ilevel=636,enchant=authority_of_the_depths_3,crafted_stats=49/40
+
+# save=TWW2_Warrior_Fury.simc
+
+# warrior="TWW2_Warrior_Protection"
+# level=80
+# race=mechagnome
+# spec=protection
+# role=tank
+# position=front
+# talents=CkEAmidFBOBFf5oKuZ7r/WeW7YgBAAAgZmZMzMDmtZWmZmZbzMGGzAzMDglBG2YmZgZmHYYAAAAAAAzMAALbbAGGssNjZZZbYmZYGWmNjNsB
+
+# head=warsculptors_barbute,id=211984,bonus_id=10878,ilevel=639,gem_id=213743
+# neck=sureki_zealots_insignia,id=225577,bonus_id=10879,ilevel=639,gem_id=213479/213479
+# shoulder=vile_butchers_pauldrons,id=178749,bonus_id=1538/10870/4786,ilevel=639
+# back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant=chant_of_winged_grace_3
+# chest=warsculptors_furred_plastron,id=211987,ilevel=639,enchant=crystalline_radiance_3
+# wrists=everforged_vambraces,id=222435,bonus_id=10222/10878/11304,ilevel=636,gem_id=213479,crafted_stats=32/36
+# hands=warsculptors_crushers,id=211985,,ilevel=639
+# waist=crystalfissure_girdle,id=221079,bonus_id=1672/10870/1808,gem_id=213470,ilevel=639
+# legs=warsculptors_cuisses,id=211983,ilevel=639,enchant=defenders_armor_kit_3
+# feet=everforged_sabatons,id=222429,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960,ilevel=636,crafted_stats=32/36,enchant=defenders_march_3
+# finger1=band_of_the_ancient_dredger,id=159461,bonus_id=10047/10299/8781,ilevel=639,gem_id=213479/213455,enchant=radiant_haste_3
+# finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=10879,ilevel=639,gem_id=213479/213479,enchant=radiant_haste_3
+# trinket1=arakara_sacbrood,id=219314,ilevel=639
+# trinket2=spare_meat_hook,id=178751,ilevel=639
+# main_hand=duelists_dancing_steel,id=212392,ilevel=639,enchant=authority_of_the_depths_3
+# off_hand=crest_of_the_caustic_despot,id=225579,ilevel=639
+
+# save=TWW2_Warrior_Protection.simc

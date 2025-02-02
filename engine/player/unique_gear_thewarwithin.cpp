@@ -16,16 +16,13 @@
 #include "dbc/spell_data.hpp"
 #include "ground_aoe.hpp"
 #include "item/item.hpp"
-#include "player/action_priority_list.hpp"
 #include "player/action_variable.hpp"
 #include "player/consumable.hpp"
-#include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
 #include "set_bonus.hpp"
 #include "sim/cooldown.hpp"
 #include "sim/proc_rng.hpp"
 #include "sim/sim.hpp"
-#include "stats.hpp"
 #include "unique_gear.hpp"
 #include "unique_gear_helper.hpp"
 #include "util/string_view.hpp"
@@ -2067,14 +2064,15 @@ void sigil_of_algari_concordance( special_effect_t& e )
     }
   };
 
-  struct sigil_of_algari_concordance_pet_t : public pet_t
+  struct sigil_of_algari_concordance_pet_t : public unique_gear_pet_t
   {
     action_t* st_action;
     action_t* one_time_action;
     action_t* aoe_action;
 
-    sigil_of_algari_concordance_pet_t( std::string_view name, const special_effect_t& e, const spell_data_t* summon_spell )
-      : pet_t( e.player->sim, e.player, name, true, true ),
+    sigil_of_algari_concordance_pet_t( std::string_view name, const special_effect_t& e,
+                                       const spell_data_t* summon_spell )
+      : unique_gear_pet_t( name, e, summon_spell ),
         st_action( nullptr ),
         one_time_action( nullptr ),
         aoe_action( nullptr )
@@ -2082,14 +2080,9 @@ void sigil_of_algari_concordance( special_effect_t& e )
       npc_id = summon_spell->effectN( 1 ).misc_value1();
     }
 
-    resource_e primary_resource() const override
-    {
-      return RESOURCE_NONE;
-    }
-
     void arise() override
     {
-      pet_t::arise();
+      unique_gear_pet_t::arise();
       make_event<algari_pet_cast_event_t>( *sim, this, 0_ms, 0, st_action, aoe_action, one_time_action );
     }
   };
@@ -4149,64 +4142,21 @@ void quickwick_candlestick( special_effect_t& effect )
 // Figure out the pets AP/SP coefficients for auto attacking pets
 void candle_confidant( special_effect_t& effect )
 {
-  struct candle_confidant_pet_t : public pet_t
+  struct candle_confidant_pet_t : public unique_gear_pet_t
   {
   protected:
     using base_t = candle_confidant_pet_t;
 
-  public:
-    bool use_auto_attack;
-    const special_effect_t& effect;
-    action_t* parent_action;
-
     candle_confidant_pet_t( std::string_view name, const special_effect_t& e, const spell_data_t* summon_spell )
-      : pet_t( e.player->sim, e.player, name, true, true ), effect( e ), parent_action( nullptr )
+      : unique_gear_pet_t( name, e, summon_spell )
     {
       npc_id = summon_spell->effectN( 1 ).misc_value1();
       use_auto_attack = false;
     }
 
-    resource_e primary_resource() const override
-    {
-      return RESOURCE_NONE;
-    }
-
-    virtual attack_t* create_auto_attack()
-    {
-      return nullptr;
-    }
-
-    struct auto_attack_t final : public melee_attack_t
-    {
-      auto_attack_t( candle_confidant_pet_t* p ) : melee_attack_t( "main_hand", p )
-      {
-        assert( p->main_hand_weapon.type != WEAPON_NONE );
-        p->main_hand_attack                    = p->create_auto_attack();
-        p->main_hand_attack->weapon            = &( p->main_hand_weapon );
-        p->main_hand_attack->base_execute_time = p->main_hand_weapon.swing_time;
-
-        ignore_false_positive = true;
-        trigger_gcd           = 0_ms;
-        school                = SCHOOL_PHYSICAL;
-      }
-
-      void execute() override
-      {
-        player->main_hand_attack->schedule_execute();
-      }
-
-      bool ready() override
-      {
-        if ( player->is_moving() )
-          return false;
-
-        return ( player->main_hand_attack->execute_event == nullptr );
-      }
-    };
-
     void update_stats() override
     {
-      pet_t::update_stats();
+      unique_gear_pet_t::update_stats();
       // Currently doesnt seem to scale with haste
       if ( owner->bugs )
       {
@@ -4215,44 +4165,6 @@ void candle_confidant( special_effect_t& effect )
         current_pet_stats.composite_melee_auto_attack_speed = 1;
         current_pet_stats.composite_spell_cast_speed        = 1;
       }
-    }
-
-    void create_buffs() override
-    {
-      pet_t::create_buffs();
-
-      buffs.movement->set_quiet( true );
-    }
-
-    void arise() override
-    {
-      pet_t::arise();
-
-      parent_action->stats->add_execute( 0_ms, owner );
-
-      if ( use_auto_attack && owner->base.distance > 8 )
-      {
-        trigger_movement( owner->base.distance, movement_direction_type::TOWARDS );
-        auto dur = time_to_move();
-        make_event( *sim, dur, [ this, dur ] { update_movement( dur ); } );
-      }
-    }
-
-    action_t* create_action( std::string_view name, std::string_view options_str ) override
-    {
-      if ( name == "auto_attack" )
-        return new auto_attack_t( this );
-
-      return pet_t::create_action( name, options_str );
-    }
-
-    void init_action_list() override
-    {
-      action_priority_list_t* def = get_action_priority_list( "default" );
-      if ( use_auto_attack )
-        def->add_action( "auto_attack" );
-
-      pet_t::init_action_list();
     }
   };
 
@@ -4269,7 +4181,7 @@ void candle_confidant( special_effect_t& effect )
       this->school                      = SCHOOL_PHYSICAL;
       this->stats->school               = SCHOOL_PHYSICAL;
       this->base_dd_min = this->base_dd_max = p->dbc->expected_stat( p->true_level ).creature_auto_attack_dps;
-      this->base_multiplier = p->main_hand_weapon.swing_time.total_seconds();
+      this->base_multiplier                 = p->main_hand_weapon.swing_time.total_seconds();
 
       auto proxy = a;
       auto it    = range::find( proxy->child_action, name, &action_t::name );
@@ -4283,6 +4195,23 @@ void candle_confidant( special_effect_t& effect )
     {
       // Currently their auto attacks dont seem to scale with player crit chance.
       return this->player->base.attack_crit_chance;
+    }
+
+    // Pet melee attacks seem to still scale with aura 380 and 531
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = melee_attack_t::composite_da_multiplier( s );
+      if ( player->is_ptr() )
+        m *= this->player->cast_pet()->owner->composite_player_pet_damage_multiplier( s, type == PLAYER_GUARDIAN );
+      return m;
+    }
+
+    double composite_target_multiplier( player_t* p ) const override
+    {
+      double m = melee_attack_t::composite_target_multiplier( p );
+      if ( player->is_ptr() )
+        m *= this->player->cast_pet()->owner->composite_player_target_pet_damage_multiplier( p, type == PLAYER_GUARDIAN );
+      return m;
     }
 
     void execute() override
@@ -6130,70 +6059,6 @@ void noggenfogger_ultimate_deluxe( special_effect_t& effect )
   if ( !effect.player->is_ptr() )
     return;
 
-  struct blackwater_pirate_base_pet_t : public pet_t
-  {
-  protected:
-    const special_effect_t& effect;
-    action_t* parent_action;
-
-    blackwater_pirate_base_pet_t( std::string_view name, const special_effect_t& e, const spell_data_t* summon_spell )
-      : pet_t( e.player->sim, e.player, name, true, true ), effect( e ), parent_action( nullptr )
-    {
-      npc_id = summon_spell->effectN( 1 ).misc_value1();
-    }
-
-    resource_e primary_resource() const override
-    {
-      return RESOURCE_NONE;
-    }
-
-    virtual attack_t* create_auto_attack()
-    {
-      return nullptr;
-    }
-
-    struct auto_attack_t final : public melee_attack_t
-    {
-      auto_attack_t( blackwater_pirate_base_pet_t* p ) : melee_attack_t( "main_hand", p )
-      {
-        assert( p->main_hand_weapon.type != WEAPON_NONE );
-        p->main_hand_attack                    = p->create_auto_attack();
-        p->main_hand_attack->weapon            = &( p->main_hand_weapon );
-        p->main_hand_attack->base_execute_time = p->main_hand_weapon.swing_time;
-
-        ignore_false_positive = true;
-        trigger_gcd           = 0_ms;
-        school                = SCHOOL_PHYSICAL;
-      }
-
-      void execute() override
-      {
-        player->main_hand_attack->schedule_execute();
-      }
-
-      bool ready() override
-      {
-        return ( player->main_hand_attack->execute_event == nullptr );
-      }
-    };
-
-    action_t* create_action( std::string_view name, std::string_view options_str ) override
-    {
-      if ( name == "auto_attack" )
-        return new auto_attack_t( this );
-
-      return pet_t::create_action( name, options_str );
-    }
-
-    void init_action_list() override
-    {
-      action_priority_list_t* def = get_action_priority_list( "default" );
-      def->add_action( "auto_attack" );
-
-      pet_t::init_action_list();
-    }
-  };
-
   struct auto_attack_melee_t : public melee_attack_t
   {
     auto_attack_melee_t( pet_t* p, std::string_view name = "main_hand", action_t* a = nullptr )
@@ -6217,6 +6082,21 @@ void noggenfogger_ultimate_deluxe( special_effect_t& effect )
         proxy->add_child( this );
     }
 
+    // Pet melee attacks seem to still scale with aura 380 and 531
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = melee_attack_t::composite_da_multiplier( s );
+      m *= this->player->cast_pet()->owner->composite_player_pet_damage_multiplier( s, type == PLAYER_GUARDIAN );
+      return m;
+    }
+
+    double composite_target_multiplier( player_t* p ) const override
+    {
+      double m = melee_attack_t::composite_target_multiplier( p );
+      m *= this->player->cast_pet()->owner->composite_player_target_pet_damage_multiplier( p, type == PLAYER_GUARDIAN );
+      return m;
+    }
+
     void execute() override
     {
       if ( this->player->executing )
@@ -6226,19 +6106,20 @@ void noggenfogger_ultimate_deluxe( special_effect_t& effect )
     }
   };
 
-  struct blackwater_pirate_pet_t : public blackwater_pirate_base_pet_t
+  struct blackwater_pirate_pet_t : public unique_gear_pet_t
   {
     blackwater_pirate_pet_t( const special_effect_t& e, action_t* parent = nullptr )
-      : blackwater_pirate_base_pet_t( "blackwater_pirate", e, e.player->find_spell( 471404 ) )
+      : unique_gear_pet_t( "blackwater_pirate", e, e.player->find_spell( 471404 ) )
     {
-      parent_action = parent;
-      main_hand_weapon.type = WEAPON_BEAST;
+      parent_action               = parent;
+      main_hand_weapon.type       = WEAPON_BEAST;
       main_hand_weapon.swing_time = 2_s;
+      use_auto_attack             = true;
     }
 
     attack_t* create_auto_attack() override
     {
-      auto a = new auto_attack_melee_t( this, "main_hand", parent_action );
+      auto a                = new auto_attack_melee_t( this, "main_hand", parent_action );
       a->name_str_reporting = "Melee";
       return a;
     }
@@ -6254,7 +6135,8 @@ void noggenfogger_ultimate_deluxe( special_effect_t& effect )
       auto summon_spell          = e.player->find_spell( 471404 );
       auto pirate                = new action_t( action_e::ACTION_OTHER, "blackwater_pirate", e.player, summon_spell );
       pirate->name_str_reporting = "blackwater_pirate";
-      pirate_spawner.set_creation_callback( [ &e, pirate ]( player_t* ) { return new blackwater_pirate_pet_t( e, pirate ); } );
+      pirate_spawner.set_creation_callback(
+          [ &e, pirate ]( player_t* ) { return new blackwater_pirate_pet_t( e, pirate ); } );
       pirate_spawner.set_default_duration( summon_spell->duration() );
       add_child( pirate );
     }
@@ -6266,7 +6148,7 @@ void noggenfogger_ultimate_deluxe( special_effect_t& effect )
     }
   };
 
-  // Name is currently typod in spell data, might need fixed if the data name changes. 
+  // Name is currently typod in spell data, might need fixed if the data name changes.
   effect.execute_action = create_proc_action<noggenfogger_ultimate_deluxe_t>( "noggenfogger_utimate_deluxe", effect );
 }
 
@@ -6630,100 +6512,6 @@ void zees_thug_hotline( special_effect_t& effect )
   if ( !effect.player->is_ptr() )
     return;
 
-  struct zees_thug_hotline_pet_t : public pet_t
-  {
-  protected:
-    using base_t = zees_thug_hotline_pet_t;
-
-  public:
-    bool use_auto_attack;
-    const special_effect_t& effect;
-    action_t* parent_action;
-
-    zees_thug_hotline_pet_t( std::string_view name, const special_effect_t& e, const spell_data_t* summon_spell )
-      : pet_t( e.player->sim, e.player, name, true, true ), effect( e ), parent_action( nullptr )
-    {
-      npc_id          = summon_spell->effectN( 1 ).misc_value1();
-      use_auto_attack = false;
-    }
-
-    resource_e primary_resource() const override
-    {
-      return RESOURCE_NONE;
-    }
-
-    virtual attack_t* create_auto_attack()
-    {
-      return nullptr;
-    }
-
-    struct auto_attack_t final : public melee_attack_t
-    {
-      auto_attack_t( zees_thug_hotline_pet_t* p ) : melee_attack_t( "main_hand", p )
-      {
-        assert( p->main_hand_weapon.type != WEAPON_NONE );
-        p->main_hand_attack                    = p->create_auto_attack();
-        p->main_hand_attack->weapon            = &( p->main_hand_weapon );
-        p->main_hand_attack->base_execute_time = p->main_hand_weapon.swing_time;
-
-        ignore_false_positive = true;
-        trigger_gcd           = 0_ms;
-        school                = SCHOOL_PHYSICAL;
-      }
-
-      void execute() override
-      {
-        player->main_hand_attack->schedule_execute();
-      }
-
-      bool ready() override
-      {
-        if ( player->is_moving() )
-          return false;
-
-        return ( player->main_hand_attack->execute_event == nullptr );
-      }
-    };
-
-    void create_buffs() override
-    {
-      pet_t::create_buffs();
-
-      buffs.movement->set_quiet( true );
-    }
-
-    void arise() override
-    {
-      pet_t::arise();
-
-      parent_action->stats->add_execute( 0_ms, owner );
-
-      if ( use_auto_attack && owner->base.distance > 8 )
-      {
-        trigger_movement( owner->base.distance, movement_direction_type::TOWARDS );
-        auto dur = time_to_move();
-        make_event( *sim, dur, [ this, dur ] { update_movement( dur ); } );
-      }
-    }
-
-    action_t* create_action( std::string_view name, std::string_view options_str ) override
-    {
-      if ( name == "auto_attack" )
-        return new auto_attack_t( this );
-
-      return pet_t::create_action( name, options_str );
-    }
-
-    void init_action_list() override
-    {
-      action_priority_list_t* def = get_action_priority_list( "default" );
-      if ( use_auto_attack )
-        def->add_action( "auto_attack" );
-
-      pet_t::init_action_list();
-    }
-  };
-
   struct auto_attack_melee_t : public melee_attack_t
   {
     auto_attack_melee_t( pet_t* p, std::string_view name = "main_hand", action_t* a = nullptr,
@@ -6746,6 +6534,21 @@ void zees_thug_hotline( special_effect_t& effect )
         stats = ( *it )->stats;
       else
         proxy->add_child( this );
+    }
+
+    // Pet melee attacks seem to still scale with aura 380 and 531
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = melee_attack_t::composite_da_multiplier( s );
+      m *= this->player->cast_pet()->owner->composite_player_pet_damage_multiplier( s, type == PLAYER_GUARDIAN );
+      return m;
+    }
+
+    double composite_target_multiplier( player_t* p ) const override
+    {
+      double m = melee_attack_t::composite_target_multiplier( p );
+      m *= this->player->cast_pet()->owner->composite_player_target_pet_damage_multiplier( p, type == PLAYER_GUARDIAN );
+      return m;
     }
 
     void execute() override
@@ -6780,7 +6583,7 @@ void zees_thug_hotline( special_effect_t& effect )
 
   struct gutstab_t : public zees_thug_hotline_pet_spell_t
   {
-    gutstab_t( const special_effect_t& e, zees_thug_hotline_pet_t* p, std::string_view options_str, action_t* a )
+    gutstab_t( const special_effect_t& e, unique_gear_pet_t* p, std::string_view options_str, action_t* a )
       : zees_thug_hotline_pet_spell_t( "gutstab", p, p->find_spell( 1217675 ), options_str, a )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e );
@@ -6789,7 +6592,7 @@ void zees_thug_hotline( special_effect_t& effect )
 
   struct fan_of_stabs_t : public zees_thug_hotline_pet_spell_t
   {
-    fan_of_stabs_t( const special_effect_t& e, zees_thug_hotline_pet_t* p, std::string_view options_str, action_t* a )
+    fan_of_stabs_t( const special_effect_t& e, unique_gear_pet_t* p, std::string_view options_str, action_t* a )
       : zees_thug_hotline_pet_spell_t( "fan_of_stabs", p, p->find_spell( 1217676 ), options_str, a )
     {
       aoe         = -1;
@@ -6799,7 +6602,7 @@ void zees_thug_hotline( special_effect_t& effect )
 
   struct snipe_t : public zees_thug_hotline_pet_spell_t
   {
-    snipe_t( const special_effect_t& e, zees_thug_hotline_pet_t* p, std::string_view options_str, action_t* a )
+    snipe_t( const special_effect_t& e, unique_gear_pet_t* p, std::string_view options_str, action_t* a )
       : zees_thug_hotline_pet_spell_t( "snipe", p, p->find_spell( 1217719 ), options_str, a )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 3 ).average( e );
@@ -6808,7 +6611,7 @@ void zees_thug_hotline( special_effect_t& effect )
 
   struct thwack_t : public zees_thug_hotline_pet_spell_t
   {
-    thwack_t( const special_effect_t& e, zees_thug_hotline_pet_t* p, std::string_view options_str, action_t* a )
+    thwack_t( const special_effect_t& e, unique_gear_pet_t* p, std::string_view options_str, action_t* a )
       : zees_thug_hotline_pet_spell_t( "thwack", p, p->find_spell( 1217638 ), options_str, a )
     {
       base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e );
@@ -6817,7 +6620,7 @@ void zees_thug_hotline( special_effect_t& effect )
 
   struct thwack_thwack_thwack_t : public zees_thug_hotline_pet_spell_t
   {
-    thwack_thwack_thwack_t( const special_effect_t& e, zees_thug_hotline_pet_t* p, std::string_view options_str,
+    thwack_thwack_thwack_t( const special_effect_t& e, unique_gear_pet_t* p, std::string_view options_str,
                             action_t* a )
       : zees_thug_hotline_pet_spell_t( "thwack_thwack_thwack", p, p->find_spell( 1217665 ), options_str, a )
     {
@@ -6826,7 +6629,7 @@ void zees_thug_hotline( special_effect_t& effect )
     }
   };
 
-  struct pocket_ace_pet_t : public zees_thug_hotline_pet_t
+  struct pocket_ace_pet_t : public unique_gear_pet_t
   {
     pocket_ace_pet_t( const special_effect_t& e, action_t* parent = nullptr )
       : base_t( "pocket_ace", e, e.player->find_spell( 1217431 ) )
@@ -6863,7 +6666,7 @@ void zees_thug_hotline( special_effect_t& effect )
     }
   };
 
-  struct snake_eyes_pet_t : public zees_thug_hotline_pet_t
+  struct snake_eyes_pet_t : public unique_gear_pet_t
   {
     snake_eyes_pet_t( const special_effect_t& e, action_t* parent = nullptr )
       : base_t( "snake_eyes", e, e.player->find_spell( 1217432 ) )
@@ -6887,7 +6690,7 @@ void zees_thug_hotline( special_effect_t& effect )
     }
   };
 
-  struct thwack_jack_pet_t : public zees_thug_hotline_pet_t
+  struct thwack_jack_pet_t : public unique_gear_pet_t
   {
     thwack_jack_pet_t( const special_effect_t& e, action_t* parent = nullptr )
       : base_t( "thwack_jack", e, e.player->find_spell( 1217427 ) )
@@ -7388,24 +7191,49 @@ void best_in_slots( special_effect_t& effect )
       : stat_buff_t( e.player, name, s, item ), range_min( 0 ), range_max( 0 )
     {
       auto equip_driver = e.player->find_spell( 471063 );
-      auto mod          = equip_driver->effectN( 2 ).base_value() / 100;
+      auto mod          = equip_driver->effectN( 2 ).percent();
       range_min         = 1 - mod;
       range_max         = 1 + mod;
     }
 
     double randomize_stat_value()
     {
-      return default_value * rng().range( range_min, range_max );
-    }
-
-    void start( int s, double, timespan_t d ) override
-    {
-      stat_buff_t::start( s, randomize_stat_value(), d );
+      double val = default_value * rng().range( range_min, range_max );
+      for ( auto& buff_stat : stats )
+      {
+        double delta            = val - buff_stat.current_value;
+        buff_stat.current_value = val;
+        buff_stat.amount        = val;
+        if ( delta > 0 )
+        {
+          player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+        else if ( delta < 0 )
+        {
+          player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr,
+                             buff_duration() > timespan_t::zero() );
+        }
+      }
+      return val;
     }
 
     void bump( int stacks, double ) override
     {
       buff_t::bump( stacks, randomize_stat_value() );
+    }
+
+    void expire_override( int s, timespan_t d ) override
+    {
+      for ( auto& buff_stat : stats )
+      {
+        player->stat_loss( buff_stat.stat, buff_stat.current_value, stat_gain, nullptr,
+                           buff_duration() > timespan_t::zero() );
+
+        buff_stat.current_value = 0;
+      }
+
+      // Purposely skip over stat_buff_t::expire_override() as we do the lost stat calculations manually
+      buff_t::expire_override( s, d );
     }
   };
 
@@ -7413,10 +7241,10 @@ void best_in_slots( special_effect_t& effect )
   {
     std::unordered_map<stat_e, buff_t*> buffs;
 
-    best_in_slots_cb_t( const special_effect_t& equip, const special_effect_t& use, const spell_data_t* equip_driver )
+    best_in_slots_cb_t( const special_effect_t& equip, const special_effect_t& use )
       : dbc_proc_callback_t( equip.player, equip ), buffs()
     {
-      auto buff_value      = equip_driver->effectN( 1 ).average( use );
+      auto buff_value      = equip.driver()->effectN( 1 ).average( use );
       auto proc_buff_spell = equip.player->find_spell( 473492 );
 
       create_all_stat_buffs<best_in_slots_stat_buff_t>( equip, proc_buff_spell, buff_value,
@@ -7442,33 +7270,35 @@ void best_in_slots( special_effect_t& effect )
   equip->spell_id = equip_driver->id();
   effect.player->special_effects.push_back( equip );
 
-  auto cb = new best_in_slots_cb_t( *equip, effect, equip_driver );
+  auto cb = new best_in_slots_cb_t( *equip, effect );
   cb->initialize();
   cb->activate();
 
-  struct cheating_t : public generic_proc_t
+  struct cheating_t : public spell_t
   {
     std::unordered_map<stat_e, buff_t*> buffs;
 
     cheating_t( const special_effect_t& e, const spell_data_t* equip_driver )
-      : generic_proc_t( e, "cheating", e.driver() ), buffs()
+      : spell_t( "cheating", e.player, e.driver() ), buffs()
     {
-      auto value_mod  = 1 + ( equip_driver->effectN( 2 ).base_value() / 100 );
+      auto value_mod  = 1 + equip_driver->effectN( 2 ).percent();
       auto buff_value = equip_driver->effectN( 1 ).average( e ) * value_mod;
 
       create_all_stat_buffs( e, e.driver(), buff_value, [ &, buff_value ]( stat_e s, buff_t* b ) {
         b->default_value = buff_value;
         buffs[ s ]       = b;
+        b->cooldown->duration = 0_ms; // Handled by the action
       } );
     }
 
     void execute() override
     {
-      generic_proc_t::execute();
+      spell_t::execute();
       buffs.at( util::highest_stat( player, secondary_ratings ) )->trigger();
     }
   };
 
+  effect.disable_buff();
   effect.spell_id       = 473402;
   effect.execute_action = create_proc_action<cheating_t>( "cheating", effect, equip_driver );
 }

@@ -13,12 +13,15 @@
 #include "buff/buff.hpp"
 #include "dbc/dbc.hpp"
 #include "item/special_effect.hpp"
+#include "player/action_priority_list.hpp"
 #include "player/player.hpp"
+#include "player/pet.hpp"
 #include "player/special_effect_db_item.hpp"
 #include "player/unique_gear.hpp"
 #include "player/wrapper_callback.hpp"
 #include "util/scoped_callback.hpp"
 #include "sim/sim.hpp"
+#include "stats.hpp"
 
 #include <type_traits>
 #include <utility>
@@ -639,4 +642,112 @@ BUFF* create_buff( player_t* p, const spell_data_t* s, ARGS&&... args )
 {
   return create_buff<BUFF>( p, util::tokenize_fn( s->name_cstr() ), s, std::forward<ARGS>( args )... );
 }
+
+struct unique_gear_pet_t : public pet_t
+{
+protected:
+  using base_t = unique_gear_pet_t;
+
+public:
+  bool use_auto_attack;
+  const special_effect_t& effect;
+  action_t* parent_action;
+
+  unique_gear_pet_t( std::string_view name, const special_effect_t& e, const spell_data_t* summon_spell = nullptr )
+    : pet_t( e.player->sim, e.player, name, true, true ), effect( e ), parent_action( nullptr )
+  {
+    if ( summon_spell )
+      npc_id = summon_spell->effectN( 1 ).misc_value1();
+    use_auto_attack = false;
+  }
+
+  resource_e primary_resource() const override
+  { return RESOURCE_NONE; }
+
+  virtual attack_t* create_auto_attack()
+  { return nullptr; }
+
+  double composite_owner_pet_damage_multiplier( const action_state_t* s ) const override
+  {
+    if ( owner->is_ptr() )
+      return 1.0;
+
+    return owner->composite_player_pet_damage_multiplier( s, type == PLAYER_GUARDIAN );
+  }
+
+  double composite_owner_pet_target_damage_multiplier( player_t* t ) const override
+  {
+    if( owner->is_ptr() )
+      return 1.0;
+
+    return owner->composite_player_target_pet_damage_multiplier( t, type == PLAYER_GUARDIAN );
+  }
+
+  struct auto_attack_t final : public melee_attack_t
+  {
+    auto_attack_t( unique_gear_pet_t* p ) : melee_attack_t( "main_hand", p )
+    {
+      assert( p->main_hand_weapon.type != WEAPON_NONE );
+      p->main_hand_attack                    = p->create_auto_attack();
+      p->main_hand_attack->weapon            = &( p->main_hand_weapon );
+      p->main_hand_attack->base_execute_time = p->main_hand_weapon.swing_time;
+
+      ignore_false_positive = true;
+      trigger_gcd           = 0_ms;
+      school                = SCHOOL_PHYSICAL;
+    }
+
+    void execute() override
+    {
+      player->main_hand_attack->schedule_execute();
+    }
+
+    bool ready() override
+    {
+      if ( player->is_moving() )
+        return false;
+
+      return ( player->main_hand_attack->execute_event == nullptr );
+    }
+  };
+
+  void create_buffs() override
+  {
+    pet_t::create_buffs();
+
+    buffs.movement->set_quiet( true );
+  }
+
+  void arise() override
+  {
+    pet_t::arise();
+
+    if ( parent_action )
+      parent_action->stats->add_execute( 0_ms, owner );
+
+    if ( use_auto_attack && owner->base.distance > 8 )
+    {
+      trigger_movement( owner->base.distance, movement_direction_type::TOWARDS );
+      auto dur = time_to_move();
+      make_event( *sim, dur, [ this, dur ] { update_movement( dur ); } );
+    }
+  }
+
+  action_t* create_action( std::string_view name, std::string_view options_str ) override
+  {
+    if ( name == "auto_attack" )
+      return new auto_attack_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+
+  void init_action_list() override
+  {
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    if ( use_auto_attack )
+      def->add_action( "auto_attack" );
+
+    pet_t::init_action_list();
+  }
+};
 } // unique_gear

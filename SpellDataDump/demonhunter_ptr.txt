@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58626 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.58819 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -394,11 +394,11 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Log (8), Mastery Affects Points (285), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=268563)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.8 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25 | Target: Self (1)
                    Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Essence Break (258860), Trail of Ruin (258883), Fel Barrage (258926), Unbound Chaos (275148), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Inner Demon (390137), Soulscar (390181), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Metamorphosis - Alex S Copy (418583)
                    Family Flags: 43
 #2 (id=294810)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.8 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Essence Break (258860), Trail of Ruin (258883), Fel Barrage (258926), Unbound Chaos (275148), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Inner Demon (390137), Soulscar (390181), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Metamorphosis - Alex S Copy (418583)
                    Family Flags: 43
 Description      : Increases your Chaos damage by ${$s1}.1%$?s320654[ and your movement speed by ${$320654s1}.1%.][.]
@@ -580,6 +580,7 @@ Category         : 1553 (Type 0x9): Abyssal Strike (207550 effect#1), Blazing Pa
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
+                 : 4638
 Category Cooldown: 0.8 seconds
 Family Flags     : 1
 Attributes       : Is Ability (4), Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), No Jump Pathing (208), Cheap Missile AOI (374), Allow Class Ability Procs (416)
@@ -694,6 +695,7 @@ Labels           : 16: Class Spells
                  : 219
                  : 292
                  : 2966
+                 : 4638
 Category Cooldown: 0.5 seconds
 Triggered By     : Fel Rush (344865)
 Family Flags     : 2
@@ -2005,11 +2007,14 @@ Family Flags     : 16, 33, 65, 70, 72
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Active Threat (94), DoT Stacking Rule (103), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), Taps immediately (215), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=301971)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.493358 | Radius: 8 yards | Target: At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.532827 | Radius: 8 yards | Target: At Enemy in Area (16)
+Hotfixed         : AP Coefficient (0.493358 -> 0.532827)
 #2 (id=301972)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Compute Points Only At Cast Time (15)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.308761 | Radius: 8 yards | Target: At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.333462 | Radius: 8 yards | Target: At Enemy in Area (16)
+Hotfixed         : AP Coefficient (0.308761 -> 0.333462)
 #3 (id=738599)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds | Attributes: Compute Points Only At Cast Time (15)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.308761
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.333462
+Hotfixed         : AP Coefficient (0.308761 -> 0.333462)
 #4 (id=1113254)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: At Enemy in Area (16)
 Description      : $@spelldesc204596
@@ -4398,7 +4403,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4 | Target: Self (1)
                    Affected Spells: Soul Cleave (228477), Soul Cleave (228478), Soul Sunder (452436)
                    Family Flags: 31, 34
-Description      : Engulf yourself in flames, $?a320364 [instantly causing $258921s1 $@spelldesc395020 damage to enemies within $258921A1 yards and ][]radiating ${$258922s1*$d} $@spelldesc395020 damage over $d.$?s320374[
+Description      : Engulf yourself in flames, $?a320364 [instantly causing $258921s1 $@spelldesc1224451 damage to enemies within $258921A1 yards and ][]radiating ${$258922s1*$d} $@spelldesc1224451 damage over $d.$?s320374[
 
 |cFFFFFFFFGenerates $<havocTalentFury> Fury over $d.|r][]$?(s212612 & !s320374)[
 
@@ -4421,12 +4426,13 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), A Fire Inside (427775 effect#5), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2), A Fire Inside (1224451 effects: #2, #3)
 Family Flags     : 11, 16, 49, 70, 72
 Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=483170)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.303459 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.327736 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
+Hotfixed         : AP Coefficient (0.303459 -> 0.327736)
 #2 (id=1042623)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
 Description      : $@spelldesc258920
@@ -4438,13 +4444,14 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), A Fire Inside (427775 effect#5), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2), A Fire Inside (1224451 effects: #2, #3)
 Triggered By     : Immolation Aura (258920)
 Family Flags     : 11, 16, 61, 70, 72
 Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), Not In Spellbook (143), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=483172)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.113316 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.12238 | Radius: 0 - 8 yards | Target: At Self (22) -> Enemy in Area (15)
+Hotfixed         : AP Coefficient (0.113316 -> 0.12238)
 #2 (id=483173)   : Energize Power (30)
                    Base Value: 4 | Scaled Value: 4 | Resource: fury | Target: Self (1)
 #3 (id=807415)   : Energize Power (30)
@@ -7604,7 +7611,7 @@ Proc Flags       : Yellow Melee
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1023596)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | Target: Self (1)
 Description      : Throw Glaive causes targets to take an additional $s1% of damage dealt as Chaos over $390181d.
 
 Name             : Ragefire (id=388107) [Spell Family (107), Passive] 
@@ -7717,11 +7724,11 @@ Effects          :
 #2 (id=1031483)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.8 | Target: Self (1)
 #3 (id=1114555)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.8 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25 | Target: Self (1)
                    Affected Spells: Soul Fragment (203795), Demon Blades (203796), Soul Fragment (204062), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fel Devastation (212105), Felblade (213241), Felblade (213243), Soul Fragment (219712), Soul Fragment (219739), Felblade (232893), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (307046), Sinful Brand (317009), The Hunt (323639), Soul Fragment (328957), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), The Hunt (345396), The Hunt (345422), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Spite (389860), Fodder to the Flame (391430), Fel Devastation (393834), Tip the Scales (408795), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Sigil of Doom (462030)
                    Family Flags: 30, 33, 44, 49, 61, 67, 81, 82, 83, 87
 #4 (id=1114556)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.8 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Soul Fragment (203795), Demon Blades (203796), Soul Fragment (204062), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fel Devastation (212105), Felblade (213241), Felblade (213243), Soul Fragment (219712), Soul Fragment (219739), Felblade (232893), Immolation Aura (258921), Immolation Aura (258922), Elysian Decree (307046), Sinful Brand (317009), The Hunt (323639), Soul Fragment (328957), Fodder to the Flame (329554), Fel Devastation (333110), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), The Hunt (345396), The Hunt (345422), Fel Devastation (346503), Fodder to the Flame (350631), Blind Faith (355894), The Hunt (370965), The Hunt (370966), The Hunt (370967), The Hunt (370968), The Hunt (370969), Sigil of Spite (389860), Fodder to the Flame (391430), Fel Devastation (393834), Tip the Scales (408795), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Sigil of Doom (462030)
                    Family Flags: 30, 33, 44, 49, 61, 67, 81, 82, 83, 87
 #5 (id=1114558)  : Apply Aura (6) | Unknown(285)
@@ -7778,8 +7785,8 @@ Description      : Gain critical strike damage equal to $s2% of your critical st
 
 Name             : Fiery Demise (id=389220) [Spell Family (107), Passive] 
 Talent Entry     : Vengeance [tree=spec, row=7, col=4, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(20, 40)]
-                 : Effect#2 [op=set, values=(20, 40)]
+                 : Effect#1 [op=set, values=(15, 30)]
+                 : Effect#2 [op=set, values=(15, 30)]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -7791,8 +7798,9 @@ Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1025405)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Misc Value 2: 2308 (Label) | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Misc Value 2: 2308 (Label) | Target: Self (1)
                    Affected Spells (Label): Fiery Brand (207744), Fiery Brand (207771)
+Hotfixed         : Base Value (20 -> 15)
 Description      : Fiery Brand also increases Fire damage you deal to the target by $s1%.
 
 Name             : Chaos Theory (id=389687) [Spell Family (107), Passive] 
@@ -8735,6 +8743,7 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
+                 : 4666: Flamebound (452413 effect#3)
 Affecting Spells : Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Fiery Demise (212818 effect#1), Any Means Necessary (388114 effect#1), Burning Blood (390213 effects: #1, #2), Fires of Fel (409645 effect#1), Demon Hide (428241 effects: #1, #3)
 Family Flags     : 72
 Attributes       : No Aura Cancel (31), Can't Crit (93), Always AOE Line of Sight (186), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Ignore Positive Damage Taken Modifiers (321), Allow Class Ability Procs (416)
@@ -8773,13 +8782,15 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), Not In Spellbook (143), No Aura Log (202), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1026865)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
                    Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Chaos Nova (344867), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Inner Demon (390137), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Metamorphosis - Alex S Copy (418583), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177), Sigil of Doom (462030)
                    Family Flags: 43, 72
+Hotfixed         : Base Value (10 -> 8)
 #2 (id=1040352)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Disrupt (183752), Infernal Strike (189112), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Fiery Brand (204021), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Spirit Bomb (247455), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Infernal Armor (320334), Bulk Extraction (320341), Fel Devastation (333110), Glaive Tempest (342857), Chaos Nova (344867), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Inner Demon (390137), Soulscar (390181), Ragefire (390197), Eye Beam (391058), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Metamorphosis - Alex S Copy (418583), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177), Sigil of Doom (462030)
                    Family Flags: 43, 72
+Hotfixed         : Base Value (10 -> 8)
 Description      : Fire damage increased by $s1%.
 
 Name             : Volatile Flameblood (id=390808) [Spell Family (107), Passive] 
@@ -9448,16 +9459,16 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1034170)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 23 | Misc Value 2: 2356 (Label) | Target: Self (1)
-                   Affected Spells (Label): Any Means Necessary (388114), Any Means Necessary (395020), Any Means Necessary (395039), Any Means Necessary (395041), Any Means Necessary (395042)
+                   Affected Spells (Label): Any Means Necessary (388114), Any Means Necessary (395020), Any Means Necessary (395039), Any Means Necessary (395041), Any Means Necessary (395042), A Fire Inside (1224451)
 #2 (id=1034379)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 4 (32)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 32 | Misc Value 2: 2356 (Label) | Target: Self (1)
-                   Affected Spells (Label): Any Means Necessary (388114), Any Means Necessary (395020), Any Means Necessary (395039), Any Means Necessary (395041), Any Means Necessary (395042)
+                   Affected Spells (Label): Any Means Necessary (388114), Any Means Necessary (395020), Any Means Necessary (395039), Any Means Necessary (395041), Any Means Necessary (395042), A Fire Inside (1224451)
 #3 (id=1035202)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 3 (23)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 23 | Misc Value 2: 2356 (Label) | Target: Self (1)
-                   Affected Spells (Label): Any Means Necessary (388114), Any Means Necessary (395020), Any Means Necessary (395039), Any Means Necessary (395041), Any Means Necessary (395042)
+                   Affected Spells (Label): Any Means Necessary (388114), Any Means Necessary (395020), Any Means Necessary (395039), Any Means Necessary (395041), Any Means Necessary (395042), A Fire Inside (1224451)
 #4 (id=1035203)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 4 (32)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 32 | Misc Value 2: 2356 (Label) | Target: Self (1)
-                   Affected Spells (Label): Any Means Necessary (388114), Any Means Necessary (395020), Any Means Necessary (395039), Any Means Necessary (395041), Any Means Necessary (395042)
+                   Affected Spells (Label): Any Means Necessary (388114), Any Means Necessary (395020), Any Means Necessary (395039), Any Means Necessary (395041), Any Means Necessary (395042), A Fire Inside (1224451)
 Description      : $@spelldesc388114
 
 Name             : Demon Muzzle (id=394933) [Spell Family (107)] 
@@ -10026,7 +10037,13 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #4 (id=1157661)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 2298 (Category) | Target: Self (1)
-Description      : Immolation Aura has $m1 additional $Lcharge:charges; and $s3% chance to refund a charge when used.
+#5 (id=1213094)  : Apply Aura (6) | Modify Spell School (220)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
+                   Affected Spells: Immolation Aura (258921), Immolation Aura (258922), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916)
+                   Family Flags: 49, 61
+#6 (id=1213095)  : Apply Aura (6) | Unknown(285)
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 1224451
+Description      : Immolation Aura has $m1 additional $Lcharge:charges;, $s3% chance to refund a charge when used, and deals Chaos damage instead of Fire.
 
 You can have multiple Immolation Auras active at a time.
 
@@ -10125,7 +10142,7 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), A Fire Inside (427775 effect#5), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2), A Fire Inside (1224451 effects: #2, #3)
 Family Flags     : 11, 16, 49, 70, 72
 Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
@@ -10142,7 +10159,7 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), A Fire Inside (427775 effect#5), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2), A Fire Inside (1224451 effects: #2, #3)
 Family Flags     : 11, 16, 49, 70, 72
 Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
@@ -10159,7 +10176,7 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), A Fire Inside (427775 effect#5), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2), A Fire Inside (1224451 effects: #2, #3)
 Family Flags     : 11, 16, 49, 70, 72
 Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
@@ -10176,7 +10193,7 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), A Fire Inside (427775 effect#5), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2), A Fire Inside (1224451 effects: #2, #3)
 Family Flags     : 11, 16, 49, 70, 72
 Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), Initiates Combat (Enables Auto-Attack) (41), Allow Cast While Casting (135), Always AOE Line of Sight (186), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
@@ -10193,7 +10210,7 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), A Fire Inside (427775 effect#5), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2), A Fire Inside (1224451 effects: #2, #3)
 Family Flags     : 11, 16, 61, 70, 72
 Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), Not In Spellbook (143), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
@@ -10214,7 +10231,7 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), A Fire Inside (427775 effect#5), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2), A Fire Inside (1224451 effects: #2, #3)
 Triggered By     : Immolation Aura (427913)
 Family Flags     : 11, 16, 61, 70, 72
 Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), Not In Spellbook (143), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
@@ -10236,7 +10253,7 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), A Fire Inside (427775 effect#5), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2), A Fire Inside (1224451 effects: #2, #3)
 Triggered By     : Immolation Aura (427914)
 Family Flags     : 11, 16, 61, 70, 72
 Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), Not In Spellbook (143), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
@@ -10399,7 +10416,7 @@ Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2)
+Affecting Spells : Demon Soul (163073 effects: #1, #2), Aura of Pain (207347 effect#1), Agonizing Flames (207548 effects: #1, #2), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Exergy (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #10, #12, #13, #14), Vengeance Demon Hunter (212613 effects: #1, #2), Fiery Demise (212818 effect#1), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Infernal Armor (320331 effect#1), Immolation Aura (320377 effect#1), Burning Wound (346278 effect#2), Demon Soul (347765 effects: #1, #2), Any Means Necessary (388114 effects: #1, #3, #4), Burning Blood (390213 effects: #1, #2), Burning Wound (391191 effect#2), Seething Chaos (394934 effects: #1, #2), Fires of Fel (409645 effect#1), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), A Fire Inside (427775 effect#5), Demon Hide (428241 effects: #1, #3), Immolation Aura (433721 effect#1), Immolation Aura (433724 effect#1), Immolation Aura (433737 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Flamebound (452413 effects: #1, #2), Demonsurge (452489 effect#5), Luck of the Draw! (1219012 effects: #1, #2), A Fire Inside (1224451 effects: #2, #3)
 Triggered By     : Immolation Aura (427915)
 Family Flags     : 11, 16, 61, 70, 72
 Attributes       : Is Ability (4), Do Not Sheath (18), No Redirection (35), No Reflection (39), Not In Spellbook (143), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
@@ -11648,9 +11665,14 @@ Effects          :
                    Affected Spells: Immolation Aura (258921), Immolation Aura (258922), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916)
                    Family Flags: 49, 61
 #2 (id=1154950)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Immolation Aura (258921), Immolation Aura (258922), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916)
                    Family Flags: 49, 61
+Hotfixed         : Base Value (25 -> 30)
+#3 (id=1213307)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Radius (6)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 6 | Misc Value 2: 4666 (Label) | Target: Self (1)
+                   Affected Spells (Label): Ragefire (390197)
+Hotfixed         : NEW EFFECT
 Description      : Immolation Aura has $s1 yd increased radius and $s2% increased critical strike damage bonus.
 
 Name             : Monster Rising (id=452414) [Spell Family (107), Passive] 
@@ -11703,7 +11725,8 @@ Family Flags     : 16, 70, 72
 Attributes       : Not In Spellbook (143), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
 #1 (id=1153560)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2 | Radius: 0 - 10 yards | Target: At Self (18) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.8 | Radius: 0 - 10 yards | Target: At Self (18) -> At Enemy in Area (16)
+Hotfixed         : AP Coefficient (2 -> 2.8)
 #2 (id=1153570)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Misc Value 2: 3594 (Label) | Target: Self (1)
                    Affected Spells (Label): Demonsurge (452416), Demonsurge (453323)
@@ -12174,6 +12197,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3022
+Mechanic         : Snare
 Attributes       : Aura Is Debuff (26), Aura Points On Client (268)
 Effects          :
 #1 (id=1154961)  : Apply Aura (6) | Decrease Movement Speed% (33)
@@ -12217,9 +12241,10 @@ Effects          :
 #1 (id=1155057)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #2 (id=1155058)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Blade Dance (188499), Chaos Strike (199547), Blade Dance (199552), Blade Dance (200685), Chaos Strike (222031), Blade Dance (391374), Blade Dance (391378)
                    Family Flags: 6, 12, 14, 25
+Hotfixed         : Base Value (10 -> 15)
 #3 (id=1155059)  : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #4 (id=1155060)  : Apply Aura (6) | Modify Base Resistance (142)
@@ -12642,7 +12667,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 4 maximum
 Proc Chance      : 101%
-Attributes       : No Aura Cancel (31), Aura Points On Client (268)
+Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Allow Dead Target (64), Allow Aura While Dead (116), Aura Points On Client (268)
 Effects          :
 #1 (id=1197411)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -12657,7 +12682,7 @@ Duration         : 60 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Cancel (31), No Cast Log (128), No Aura Log (202), Aura Points On Client (268), Do Not Log Aura Refresh (291)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), No Aura Cancel (31), Allow Dead Target (64), Allow Aura While Dead (116), No Cast Log (128), No Aura Log (202), Aura Points On Client (268), Do Not Log Aura Refresh (291)
 Effects          :
 #1 (id=1197415)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -12730,7 +12755,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1199257)  : Apply Aura (6) | Proc Trigger Spell (42): Luck of the Draw!
-                   Base Value: 4000 | Scaled Value: 4000 | Trigger Spell: 1219012 | Target: Self (1)
+                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 0.5 | Trigger Spell: 1219012 | Target: Self (1)
 Description      : Each time you take damage you have a chance to cast Metamorphosis for ${$s1/1000} sec and gain |cFFFFFFFFLuck of the Draw!|r which increases your damage dealt by $1219012s1% for $1219012d.
 
 Name             : Demon Hunter Vengeance 11.1 Class Set 4pc (id=1215991) [Spell Family (107), Passive, Hidden] 
@@ -12802,15 +12827,15 @@ Triggered By     : Demon Hunter Vengeance 11.1 Class Set 2pc (1215990)
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1204391)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Chaos Nova (179057), Infernal Strike (189112), Vengeful Retreat (198813), Shear (203782), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Fracture (225919), Fracture (225921), Soul Cleave (228478), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Infernal Armor (273239), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Eye Beam (391058), Demon Spikes (391159), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Wounded Quarry (442808), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177), Sigil of Doom (462030)
                    Family Flags: 70
 #2 (id=1204392)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Chaos Nova (179057), Infernal Strike (189112), Vengeful Retreat (198813), Shear (203782), Fiery Brand (204021), Throw Glaive (204157), Sigil of Flame (204598), Soul Carver (207407), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Soul Carver (214743), Fracture (225919), Fracture (225921), Soul Cleave (228478), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922), Infernal Armor (273239), Essence Sever (279450), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), Bulk Extraction (320341), The Hunt (323802), Elysian Decree (339893), Elysian Decree (339894), The Hunt (345335), Throw Glaive (346665), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Eye Beam (391058), Demon Spikes (391159), Sigil of Flame (425672), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Wounded Quarry (442808), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177), Sigil of Doom (462030)
                    Family Flags: 70
 #3 (id=1204393)  : Apply Aura (6) | Unknown(530)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $@spelldesc1215990
 Tooltip          : Damage increased by $s1%.
 
@@ -12836,7 +12861,7 @@ Name             : Winning Streak! (id=1220706) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Duration         : 7 seconds
+Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
@@ -12853,5 +12878,28 @@ Effects          :
                    Family Flags: 6, 12, 14, 25, 37, 38, 50, 127
 Description      : $@spelldesc1215731
 Tooltip          : Ending a|cFFFFFFFF Winning Streak!|r Blade Dance and Chaos Strike damage increased by $w1%.
+
+Name             : A Fire Inside (id=1224451) [Spell Family (107), Passive, Hidden] 
+Class            : Demon Hunter
+School           : Physical
+Spell Type       : None
+Labels           : 16: Class Spells
+                 : 66: Demon Hunter Spells
+                 : 292
+                 : 2356: Any Means Necessary (394486 effect#1), Any Means Necessary (394486 effect#2), Any Means Necessary (394486 effect#3), Any Means Necessary (394486 effect#4)
+Triggered By     : A Fire Inside (427775)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Mastery Affects Points (285), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1213098)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=1213116)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25 | Target: Self (1)
+                   Affected Spells: Immolation Aura (258921), Immolation Aura (258922), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916)
+                   Family Flags: 49, 61
+#3 (id=1213117)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Immolation Aura (258921), Immolation Aura (258922), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916)
+                   Family Flags: 49, 61
+Description      : $?a427775[Chaos][Fire]
 
 

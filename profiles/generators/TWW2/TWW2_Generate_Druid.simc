@@ -1,0 +1,86 @@
+# druid="TWW2_Druid_Balance"
+# source=default
+# spec=balance
+# level=80
+# race=night_elf
+# timeofday=night
+# role=spell
+# position=back
+# professions=alchemy=1/engineering=1
+# talents=CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALUYmZGGmZAzMMzYAbzMLsMz2M2YmZMzsYWmZMzM2AbMAjltZ222mZZ2mpZmlZCAAAwiZGDA
+
+# head=whispering_mask,id=221163,bonus_id=8780,ilevel=639,gem_id=213497
+# neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213497/213497
+# shoulders=maw_of_the_greatlynx,id=212054,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+# back=royal_emblem_of_nerubar,id=212446,ilevel=639,enchant_id=7403
+# chest=hide_of_the_greatlynx,id=212059,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7364
+# wrists=polluted_spectres_wraps,id=212438,bonus_id=8780,ilevel=639,gem_id=213497,enchant_id=7385
+# hands=eviscerators_of_the_greatlynx,id=212057,ilevel=639
+# waist=runebranded_waistband,id=219331,bonus_id=10222/8780/11109/8960/8791,ilevel=636,gem_id=213497
+# legs=leggings_of_the_greatlynx,id=212055,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7531
+# feet=chitinspiked_jackboots,id=212445,ilevel=639,enchant_id=7424
+# finger1=writhing_ringworm,id=225576,bonus_id=8781,ilevel=639,gem_id=213497/213497,enchant_id=7346
+# finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=8781,ilevel=639,gem_id=213497/213497,enchant_id=7346
+# trinket1=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
+# trinket2=unbound_changeling,id=178708,bonus_id=7214/6652/1501/5884/6646/6918,ilevel=639
+# main_hand=scithewood_scepter,id=178709,ilevel=639,enchant_id=7460
+# off_hand=vagabonds_torch,id=222566,bonus_id=10421/1515/11300/8960/8791
+
+# save=TWW2_Druid_Balance.simc
+
+# druid="TWW2_Druid_Feral"
+# source=default
+# spec=feral
+# level=80
+# race=night_elf
+# timeofday=night
+# role=attack
+# position=back
+# professions=alchemy=1/engineering=1
+# talents=CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmBmZZmZMzsNbjx2MmxMzAAAAAAsEMMgxMDNzYmxMjxMsZGAAAAAAAgBAAAQAwsNzSz2MLbYmZAA
+
+# head=mask_of_the_greatlynx,id=212056,bonus_id=6652/10876/10376/10354/10273/1498/10255/1808,ilevel=639,gem_id=213494
+# neck=sureki_zealots_insignia,id=225577,bonus_id=8781,ilevel=639,gem_id=213494/213494
+# shoulders=maw_of_the_greatlynx,id=212054,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
+# back=wings_of_shattered_sorrow,id=225574,bonus_id=4795,ilevel=639
+# chest=hide_of_the_greatlynx,id=212059,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7364
+# wrists=runebranded_armbands,id=219334,bonus_id=1808/8791/10520/8960,ilevel=636,gem_id=213494
+# hands=runebranded_grasps,id=219333,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960,crafted_stats=32/49
+# waist=shadow_congregants_belt,id=221134,bonus_id=4795/1808,ilevel=639,gem_id=213494
+# legs=leggings_of_the_greatlynx,id=212055,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant=930agi,enchant_id=7601
+# feet=whisperers_echoing_steps,id=221169,bonus_id=4795,ilevel=639,enchant_id=7418
+# finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=8781,ilevel=639,gem_id=213494/213494,enchant_id=7346
+# finger2=umbriss_band,id=133286,bonus_id=4795/8781,ilevel=639,gem_id=213494/213494,enchant_id=7346
+# trinket1=skardyns_grace,id=133282,bonus_id=4795,ilevel=639
+# trinket2=mad_queens_mandate,id=212454,bonus_id=4795,ilevel=639
+# main_hand=harvesters_interdiction,id=221159,bonus_id=4795,ilevel=639,enchant_id=7460
+
+# save=TWW2_Druid_Feral.simc
+
+
+# druid=TWW2_Druid_Guardian
+# level=80
+# race=night_elf
+# timeofday=night
+# role=tank
+# position=front
+# spec=guardian
+# talents=CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzYmxMzy8ADjZYGLmhZmFLDgBMzYy0MzMmZmhBbMAAAAAAgxMDAAAAqZ2mlZmlBAwCzMDA
+
+# head=mask_of_the_greatlynx,id=212056,bonus_id=4800/4786/10257/10298/1537/1808,gem_id=213743
+# neck=sureki_zealots_insignia,id=225577,bonus_id=4800/4786/1540/10299/8781,gem_id=213467/213491
+# shoulders=maw_of_the_greatlynx,id=212054,bonus_id=4800/4786/10259/10299/1540
+# back=wings_of_shattered_sorrow,id=225574,bonus_id=4800/4786/1540/10299,enchant_id=7409
+# chest=rainshadow_hauberk,id=178698,bonus_id=4786/9948/10299,enchant_id=7364
+# wrists=great_links_of_the_greatlynx,id=212052,bonus_id=1540/10299/1808,gem_id=213479,enchant_id=7391
+# hands=eviscerators_of_the_greatlynx,id=212057,bonus_id=4800/4786/10259/10299/1540
+# waist=adrenal_surge_clasp,id=219502,bonus_id=8960/10421/9633/8902/11144/10222/1485/1808,gem_id=213479,crafted_stats=32/36
+# legs=leggings_of_the_greatlynx,id=212055,bonus_id=4800/4786/10258/10299/1540,enchant_id=7595
+# feet=runebranded_kickers,id=219327,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960,enchant_id=7418,crafted_stats=32/36
+# finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=4800/4786/1540/10299/8781,gem_id=213479/213479,enchant_id=7340
+# finger2=key_to_the_unseeming,id=212447,bonus_id=4800/4786/10260/10299/1540/8781,gem_id=213479/213455,enchant_id=7340
+# trinket1=arakara_sacbrood,id=219314,bonus_id=4786/3131/10299
+# trinket2=bottled_flayedwing_toxin,id=178742,bonus_id=4786/9948/10299
+# main_hand=harvesters_interdiction,id=221159,bonus_id=3131/10299/10376,enchant_id=7460
+
+# save=TWW2_Druid_Guardian.simc

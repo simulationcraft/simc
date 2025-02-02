@@ -1681,6 +1681,7 @@ class SpellDataGenerator(DataGenerator):
           ( 442419, 0), # Shadow Hounds
           ( 468037, 0), # Withering Fire secondary Black Arrows
           ( 474293, 2 ), # Moving Target buff
+          ( 471947, 0 ), ( 472020, 0 ), # Boar Charge (Pack Leader)
         ),
 
         # Rogue:
@@ -2087,6 +2088,7 @@ class SpellDataGenerator(DataGenerator):
           ( 450421, 0 ),                            # Greater Pyroblast (Arcane Phoenix)
           ( 455137, 0 ),                            # Blessing of the Phoenix missile speed
           ( 1216988, 0 ),                           # Recently damaged by Blizzard (Freezing Winds talent)
+          ( 1223801, 0 ),                           # Arcane Rebound
         ),
 
         # Warlock:

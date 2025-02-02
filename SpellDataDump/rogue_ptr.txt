@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58626 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.58819 PTR
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -107,7 +107,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Mutilate (5374), Ambush (8676), Mutilate (27576), Ambush (385897), Ambush (430023)
                    Family Flags: 9, 33, 34
-Description      : Garrote the enemy, causing $o1 Bleed damage over $d.$?a231719[ Silences the target for $1330d when used from Stealth.][]
+Description      : Garrote the enemy, causing $o1 Bleed damage over $d.$?a196861[ Silences the target for $1330d when used from Stealth.][]
 
 |cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
 Tooltip          : Suffering $w1 damage every $t1 seconds.
@@ -601,6 +601,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1381: Blessing of the Bronze (381746 effect#1), Blessing of the Bronze (381749 effect#1), Blessing of the Bronze (381753 effect#1), Blessing of the Bronze (381754 effect#1), Blessing of the Bronze (381756 effect#1), Blessing of the Bronze (381757 effect#1)
                  : 1387
+                 : 4638
 Category Cooldown: 120 seconds
 Affecting Spells : Maneuverability (197000 effects: #1, #2), Improved Sprint (231691 effect#1), Time Spiral (375255 effect#1), Featherfoot (423683 effects: #1, #2)
 Family Flags     : 6
@@ -1677,6 +1678,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged
+Affecting Spells : So Tricky (441403 effect#3)
 Family Flags     : 49
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cooldown On Event (25), Allow While Stealthed (37), No Threat (42), Exclude Caster (51), Require All Targets (58), Allow Low Level Buff (67), Only On Player (104), Aura Points On Client (268), Allow Class Ability Procs (416)
 Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
@@ -9329,7 +9331,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1012937)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Hotfixed         : Base Value (16 -> 20)
 Description      : Roll the Bones has a $s1% increased chance of granting additional matches.
 
 Name             : Audacity (id=381845) [Spell Family (8), Passive] 
@@ -13221,6 +13224,10 @@ Effects          :
 #2 (id=1135837)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: 3594000 | Scaled Value: 3594000 | Misc Value: 1 | Misc Value 2: 3304 (Label) | Target: Self (1)
                    Affected Spells (Label): Tricks of the Trade (59628)
+#3 (id=1212570)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
+                   Base Value: 1224098 | Scaled Value: 1224098 | Target: Self (1)
+                   Affected Spells: Tricks of the Trade (57934), Tricks of the Trade (1224098)
+                   Family Flags: 49
 Description      : Tricks of the Trade's threat redirect duration is increased to $m1 $Lhour:min;.
 
 Name             : Don't Be Suspicious (id=441415) [Spell Family (8), Passive] 
@@ -13391,7 +13398,7 @@ Class            : Rogue
 School           : Physical
 Spell Type       : Melee
 Range            : 30 yards
-Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon
+Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, Fist Weapon, Dagger
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
@@ -14399,7 +14406,7 @@ Labels           : 16: Class Spells
                  : 3022
 Proc Chance      : 101%
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
-Attributes       : Passive (6), Allow Aura While Dead (116), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Can Proc from Suppressed Caster Procs (385)
+Attributes       : Passive (6), Allow While Stealthed (37), Not an Action (92), Allow Aura While Dead (116), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355), Can Proc from Suppressed Caster Procs (385)
 Effects          :
 #1 (id=1161717)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
@@ -14572,7 +14579,7 @@ Labels           : 16: Class Spells
                  : 3022
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Attributes       : DoT Stacking Rule (103), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Allow While Stealthed (37), Not an Action (92), DoT Stacking Rule (103), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1161846)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
@@ -14730,7 +14737,7 @@ Labels           : 16: Class Spells
                  : 3936: Mastery: Potent Assassin (76803 effect#4), Subtlety Rogue (137035 effect#12), Subtlety Rogue (137035 effect#13), Shiv (319504 effect#4), Veiltouched (382017 effect#5), Veiltouched (382017 effect#6), Dark Brew (382504 effect#6), Dark Brew (382504 effect#7), Deeper Daggers (383405 effect#5), Deeper Daggers (383405 effect#6), Vile Tincture (458475 effect#4)
 Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Master Assassin (470676 effect#1)
 Family Flags     : 54
-Attributes       : Allow Cast While Dead (23), Can't Crit (93), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221)
+Attributes       : Allow Cast While Dead (23), Allow While Stealthed (37), Not an Action (92), Can't Crit (93), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221)
 Effects          :
 #1 (id=1162111)  : School Damage (2): shadowstorm
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
@@ -14959,7 +14966,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
-Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Allow Dead Target (64), Do Not Report Spell Failure (71), Chain From Caster (76), No Initial Threat (86), Can't Crit (93), Not a Proc (105), Do Not Display Range (126), Treat as Area Effect (175), Ignore Caster Damage Modifiers (221), No Attack Miss (249), Not In Spellbook Until Learned (269), Ignore PvP Power (365), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), Allow Dead Target (64), Do Not Report Spell Failure (71), Chain From Caster (76), No Initial Threat (86), Can't Crit (93), Not a Proc (105), Do Not Display Range (126), Treat as Area Effect (175), Do Not Chain To Crowd-Controlled Targets (200), Ignore Caster Damage Modifiers (221), No Attack Miss (249), Not In Spellbook Until Learned (269), Ignore PvP Power (365), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1166346)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 8 | Target: Enemy (6)
@@ -15027,7 +15034,7 @@ Duration         : 60 seconds
 Stacks           : 999 maximum
 Proc Chance      : 101%
 Triggered By     : Fatal Intent (461980), Fatal Intent (461982)
-Attributes       : DoT Stacking Rule (103), Scales with Casting Item's Level (354)
+Attributes       : Allow While Stealthed (37), Not an Action (92), DoT Stacking Rule (103), Scales with Casting Item's Level (354)
 Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1171146)  : Apply Aura (6) | Dummy (4)
@@ -15434,7 +15441,7 @@ School           : Physical
 Spell Type       : Magic
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
-Attributes       : Passive (6), Allow While Stealthed (37), Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Visible only to caster (conversations only) (343)
+Attributes       : Passive (6), Allow While Stealthed (37), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Visible only to caster (conversations only) (343)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=1184332)  : Apply Aura (6) | Unknown(396)
@@ -15984,7 +15991,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198826)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Base Value (16 -> 40)
 #2 (id=1200925)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Roll the Bones has a $s1% increased chance of granting additional combat enhancements and also applies $m2 $Lstack:stacks; of |cFFFFFFFF Winning Streak!|r for each combat enhancement granted.
@@ -16026,7 +16034,7 @@ Labels           : 16: Class Spells
                  : 4354
 Stacks           : 10 maximum
 Proc Chance      : 15%
-Proc Flags       : Yellow Melee, Generic Hostile Spell
+Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Triggered By     : Rogue Subtlety 11.1 Class Set 2pc (1215721)
 Attributes       : No Aura Cancel (31), Can Proc From Procs (122), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
@@ -16038,6 +16046,8 @@ Effects          :
 #2 (id=1202820)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Misc Value: 0x20 | Target: Self (1)
                    Affected School(s): Shadow
+Description      : $@spelldesc1215721
+Tooltip          : On a|cFFFFFFFF Winning Streak!|r Eviscerate, Secret Technique, and Black Powder damage increased by $w1%.
 
 Name             : Winning Streak! (id=1218439) [Spell Family (8)] 
 Class            : Rogue
@@ -16064,5 +16074,35 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Envenom (32645), Crimson Tempest (121411), Rupture (360826), Rupture (394031)
                    Family Flags: 20, 35, 81
+Description      : $@spelldesc1215719
+Tooltip          : On a|cFFFFFFFF Winning Streak!|r Envenom, Rupture, and Crimson Tempest damage increased by $w1%.
+
+Name             : Tricks of the Trade (id=1224098) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Spell Level      : 48
+Range            : 100 yards
+Duration         : 30 seconds
+Cooldown         : 30 seconds
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 180
+                 : 292
+Proc Chance      : 100%
+Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged
+Affecting Spells : So Tricky (441403 effect#3)
+Family Flags     : 49
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cooldown On Event (25), Allow While Stealthed (37), No Threat (42), Exclude Caster (51), Require All Targets (58), Allow Low Level Buff (67), Only On Player (104), Aura Points On Client (268), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph (47)
+Effects          :
+#1 (id=1212565)  : Redirect Threat (130)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 600000 | Target: Raid Target (57)
+#2 (id=1212566)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#3 (id=1212567)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Target: Raid Target (57)
+Description      : $?s221622[Increases the target's damage by $221622m1%, and redirects][Redirects] all threat you cause to the targeted party or raid member, beginning with your next damaging attack within the next $d and lasting $59628d.
+Tooltip          : Threat redirected from Rogue.
 
 

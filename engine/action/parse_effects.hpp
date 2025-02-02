@@ -1113,16 +1113,6 @@ public:
     return BASE::tick_time_flat_modifier( s ) + timespan_t::from_millis( add );
   }
 
-  timespan_t cooldown_duration() const override
-  {
-    auto dur = BASE::cooldown_duration();
-
-    for ( const auto& i : recharge_multiplier_effects )
-      dur *= 1.0 + get_effect_value( i );
-
-    return std::max( 0_ms, dur );
-  }
-
   double recharge_multiplier( const cooldown_t& cd ) const override
   {
     auto rm = BASE::recharge_multiplier( cd );
