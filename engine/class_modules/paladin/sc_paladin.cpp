@@ -4406,7 +4406,7 @@ void paladin_t::init_special_effects()
     cb->initialize();
   }
 
-  if ( sets->set( PALADIN_PROTECTION, TWW2, B2 ) )
+  if ( sets->has_set_bonus( PALADIN_PROTECTION, TWW2, B2 ) )
     {
       struct luck_of_the_draw_cb_t : public dbc_proc_callback_t
       {
