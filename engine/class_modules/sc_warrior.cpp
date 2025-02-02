@@ -1531,6 +1531,7 @@ public:
     {
       anger_management( rage );
     }
+
     if ( rage > 0 && !ab::aoe && ab::execute_state && ab::result_is_miss( ab::execute_state->result ) )
     {
       p()->resource_gain( RESOURCE_RAGE, rage * 0.8, p()->gain.avoided_attacks );
@@ -1539,33 +1540,56 @@ public:
     // Protection Warrior Violent Outburst Seeing Red Tracking
     if ( p()->specialization() == WARRIOR_PROTECTION && p()->talents.protection.violent_outburst.ok() && rage > 0 )
     {
-      // Trigger the buff if this is the first rage consumption of the iteration
-      if ( !p()->buff.seeing_red_tracking->check() )
+      // Live 11.0
+      if ( !p()->is_ptr() )
       {
-        p()->buff.seeing_red_tracking->trigger();
-      }
-
-      double original_value = p()->buff.seeing_red_tracking->current_value;
-      double rage_per_stack = p()->buff.seeing_red_tracking->data().effectN( 1 ).base_value();
-      p()->buff.seeing_red_tracking->current_value += rage;
-      p()->sim->print_debug( "{} increments seeing_red_tracking by {}. Old={} New={}", p()->name(), rage,
-                             original_value, p()->buff.seeing_red_tracking->current_value );
-
-      while ( p()->buff.seeing_red_tracking->current_value >= rage_per_stack )
-      {
-        p()->buff.seeing_red_tracking->current_value -= rage_per_stack;
-        p()->sim->print_debug(
-            "{} reaches seeing_red_tracking threshold, triggering seeing_red buff. New seeing_red_tracking value is {}",
-            p()->name(), p()->buff.seeing_red_tracking->current_value );
-
-        p()->buff.seeing_red->trigger();
-
-        if( p()->buff.seeing_red->at_max_stacks() )
+        // Trigger the buff if this is the first rage consumption of the iteration
+        if ( !p()->buff.seeing_red_tracking->check() )
         {
-          p()->buff.seeing_red->expire();
-          p()->buff.violent_outburst->trigger();
+          p()->buff.seeing_red_tracking->trigger();
         }
 
+        double original_value = p()->buff.seeing_red_tracking->current_value;
+        double rage_per_stack = p()->buff.seeing_red_tracking->data().effectN( 1 ).base_value();
+        p()->buff.seeing_red_tracking->current_value += rage;
+        p()->sim->print_debug( "{} increments seeing_red_tracking by {}. Old={} New={}", p()->name(), rage,
+                              original_value, p()->buff.seeing_red_tracking->current_value );
+
+        while ( p()->buff.seeing_red_tracking->current_value >= rage_per_stack )
+        {
+          p()->buff.seeing_red_tracking->current_value -= rage_per_stack;
+          p()->sim->print_debug(
+              "{} reaches seeing_red_tracking threshold, triggering seeing_red buff. New seeing_red_tracking value is {}",
+              p()->name(), p()->buff.seeing_red_tracking->current_value );
+
+          p()->buff.seeing_red->trigger();
+
+          if( p()->buff.seeing_red->at_max_stacks() )
+          {
+            p()->buff.seeing_red->expire();
+            p()->buff.violent_outburst->trigger();
+          }
+        }
+      }
+      // 11.1
+      if ( p()->is_ptr() )
+      {
+        const double rage_per_stack = 2.5;
+        double stack_gain = rage / rage_per_stack;
+        p()->sim->print_debug( "{} seeing_red has current_stacks {}, incrementing {} stacks from {} rage", p()->name(), p()->buff.seeing_red->check(), stack_gain, rage );
+        if ( p()->buff.seeing_red->check() + stack_gain >= p()->buff.seeing_red->max_stack() )
+        {
+          double overflow = p()->buff.seeing_red->check() + stack_gain - 100;
+          p()->sim->print_debug( "{} seeing_red triggering violent outburst.  overflow rage {}", p()->name(), overflow );
+          p()->buff.seeing_red->expire();
+          p()->buff.violent_outburst->trigger();
+          if( overflow > 0)
+            p()->buff.seeing_red->trigger( overflow );
+        }
+        else
+        {
+          p()->buff.seeing_red->trigger( stack_gain );
+        }
       }
     }
   }
@@ -9715,6 +9739,7 @@ void warrior_t::create_buffs()
 
   buff.seeing_red = make_buff( this, "seeing_red", find_spell( 386486 ) );
 
+  // is_ptr() remove seeing_red_tracking with 11.1 release
   buff.seeing_red_tracking =
       make_buff( this, "seeing_red_tracking", find_spell( 386477 ) )
           ->set_quiet( true )
