@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.58238 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.58911 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -12545,7 +12545,6 @@ Effects          :
                    Base Value: 125 | Scaled Value: 125 | Target: Self (1)
 #2 (id=1131311)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Hotfixed         : Base Value (5 -> 10)
 Description      : Reaching maximum stacks of Frost Mastery causes your next $?c2[Phoenix Flames]?c3[Flurry][] to also cast Ice Nova at $s1% effectiveness. Ice Novas cast this way do not freeze enemies in place.
 
 When you consume Excess Frost, the cooldown of $?c2[Meteor]?c3[Comet Storm][] is reduced by $s2 sec.
@@ -14172,12 +14171,10 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 2 | Target: Self (1)
                    Affected Spells: Pyroblast (11366), Pyroblast (460475)
                    Family Flags: 22
-Hotfixed         : PvP Coefficient (1 -> 2)
 #2 (id=1151372)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 2 | Target: Self (1)
                    Affected Spells: Arcane Blast (30451)
                    Family Flags: 29
-Hotfixed         : PvP Coefficient (1 -> 2)
 #3 (id=1153725)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Flamestrike (2120), Flamestrike (450462), Flamestrike (460476)

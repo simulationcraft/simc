@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.58238 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.58911 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -578,10 +578,8 @@ Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste A
 Effects          :
 #1 (id=6990)     : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.426 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (2.97907 -> 3.426)
 #2 (id=6991)     : Apply Aura (6) | Periodic Damage (3): holy every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.1884 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.16385 -> 0.1884)
 #3 (id=808675)   : Apply Aura (6) | Unknown(395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 19526 | Target: Enemy (6)
 #4 (id=1167235)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
@@ -3141,7 +3139,6 @@ Effects          :
                    Base Value: 103 | Scaled Value: 103 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-Hotfixed         : Base Value (77 -> 103)
 #18 (id=1079592) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 192 | Scaled Value: 192 | Target: Self (1)
                    Affected Spells: Smite (585), Smite (425529), Void Blast (450215)
@@ -14026,7 +14023,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 2 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
-Hotfixed         : PvP Coefficient (1 -> 2)
 #3 (id=1158795)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914)

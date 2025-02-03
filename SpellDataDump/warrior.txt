@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.58238 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.58911 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -120,7 +120,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=310)      : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.24581 | PvP Coefficient: 1.15 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.15)
 #2 (id=357783)   : Trigger Spell (64): Rend
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 388539 | Target: Enemy (6)
 Description      : Wounds the target, causing $s1 Physical damage instantly and an additional $388539o1 Bleed damage over $388539d.$?s6343[
@@ -688,7 +687,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=2780)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 2.02869 | PvP Coefficient: 1.2 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=126946)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.33 | Target: Self (1)
                    Affected Spells: Cleave (845), Mortal Strike (12294), Mortal Strike (339385), Cleave (458459)
@@ -2577,7 +2575,6 @@ Effects          :
                    Family Flags: 14
 #4 (id=191018)   : Apply Aura (6) | Threat (10)
                    Base Value: 815 | Scaled Value: 815 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Base Value (650 -> 815)
 #5 (id=191019)   : Apply Aura (6) | Modify Rage Generated From Auto Attacks (213)
                    Base Value: -56 | Scaled Value: -56 | Target: Self (1)
 #6 (id=261027)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
@@ -11443,7 +11440,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), No Active Defense (21), I
 Effects          :
 #1 (id=1024287)  : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.380931 | PvP Coefficient: 1.15 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.15)
 Description      : $@spelldesc772
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
@@ -14180,7 +14176,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.5 | Target: Self (1)
                    Affected Spells: Bloodthirst (23881), Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364), Rampage (218617), Bloodbath (335096)
                    Family Flags: 42, 108
-Hotfixed         : PvP Coefficient (1 -> 1.5)
 Description      : Shield Slam damage increased by $s1%.$?a137048[
 
 Demoralizing Shout reduces damage enemies deal to you by an additional ${-$s2}%.][

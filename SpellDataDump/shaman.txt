@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.58238 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.58911 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1497,10 +1497,8 @@ Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), D
 Effects          :
 #1 (id=55127)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.652 | PvP Coefficient: 1.15 | Target: Friendly (21)
-Hotfixed         : PvP Coefficient (1 -> 1.15)
 #2 (id=55128)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.22 | PvP Coefficient: 1.39 | Target: Friendly (21)
-Hotfixed         : PvP Coefficient (1.21 -> 1.39)
 Description      : Restorative waters wash over a friendly target, healing them for $s1 and an additional $o2 over $d.
 Tooltip          : Heals $w2 every $t2 seconds.
 
@@ -3009,12 +3007,10 @@ Effects          :
                    Base Value: 68 | Scaled Value: 68 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
-Hotfixed         : Base Value (22 -> 68), PvP Coefficient (1.83 -> 1)
 #20 (id=1040711) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -34 | Scaled Value: -34 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
-Hotfixed         : Base Value (-9 -> -34)
 #21 (id=1080080) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 3 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #22 (id=1080081) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
@@ -3032,7 +3028,6 @@ Hotfixed         : Base Value (-9 -> -34)
                    Family Flags: 13
 #26 (id=1127193) : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : Sub Type (108 -> 4), Affects Spells
 #27 (id=1127194) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -23 | Scaled Value: -23 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Flame Shock (188389), Flame Shock (470411)
@@ -3109,7 +3104,6 @@ Effects          :
                    Base Value: 162 | Scaled Value: 162 | Target: Self (1)
                    Affected Spells: Tempest (452201), Tempest Overload (463351)
                    Family Flags: 64, 107
-Hotfixed         : Base Value (128 -> 162)
 #15 (id=1026055) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Misc Value 2: 2389 (Label) | Target: Self (1)
                    Affected Spells (Label): Elemental Blast: Critical Strike (118522), Elemental Blast: Haste (173183), Elemental Blast: Mastery (173184)
@@ -3168,7 +3162,6 @@ Hotfixed         : Base Value (128 -> 162)
                    Base Value: -24 | Scaled Value: -24 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Tempest (452201), Tempest Overload (463351)
                    Family Flags: 64, 107
-Hotfixed         : Base Value (-13 -> -24)
 #32 (id=1196261) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 3 | Misc Value 2: 4239 (Label) | Target: Self (1)
                    Affected Spells (Label): Voltaic Surge (454919)
@@ -14644,7 +14637,7 @@ Class            : Shaman
 School           : Nature
 Spell Type       : None
 Resource         : 0.4% Base Mana (0) (id=306931) w/ Enhancement Shaman (id=137041)
-Resource         : 6.5% Base Mana (0) (id=306932) w/ Restoration Shaman (id=137039)[Hotfixed: Percent Cost (8.64 -> 6.5)]
+Resource         : 6.5% Base Mana (0) (id=306932) w/ Restoration Shaman (id=137039)
 Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 24 seconds

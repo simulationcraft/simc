@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.58238 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.58911 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -563,7 +563,6 @@ Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=15691)    : Apply Aura (6) | Threat (10)
                    Base Value: 815 | Scaled Value: 815 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Base Value (650 -> 815)
 #2 (id=15692)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -2617,7 +2616,6 @@ Effects          :
                    Base Value: 92 | Scaled Value: 92
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (243597), Consecration (387881), Consecration (419810)
                    Family Flags: 5
-Hotfixed         : Base Value (48 -> 92)
 #12 (id=260933)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0
 #13 (id=1032420) : Apply Aura (6) | Modify Guardian Damage Done% (531)
@@ -2949,7 +2947,6 @@ Effects          :
 #1 (id=218989)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 10.35 | PvP Coefficient: 0.87 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
-Hotfixed         : SP Coefficient (9 -> 10.35), PvP Coefficient (1 -> 0.87)
 Description      : $@spelldesc157047
 Tooltip          : Absorbs $w1 damage.
 
@@ -14705,7 +14702,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #2 (id=1083443)  : Apply Aura (6) | Dummy (4)
                    Base Value: 225 | Scaled Value: 225 | Target: Self (1)
-Hotfixed         : Base Value (200 -> 225)
 Description      : $@spelldesc392938
 
 Name             : Shining Righteousness (id=414443) [Spell Family (10), Passive] 
@@ -16901,7 +16897,6 @@ Description      : $@spelldesc433015
 Tooltip          : Damage and healing of your next $?s204019[Blessed Hammer]?s53595[Hammer of the Righteous][Crusader Strike] increased by $w1%.
 
 Name             : Divine Guidance (id=433106) [Spell Family (10), Passive] 
-Hotfixed         : Variables
 Talent Entry     : Lightsmith (Holy, Protection) [tree=hero, row=2, col=3, max_rank=1, req_points=1, select_idx=100]
 Class            : Paladin
 School           : Holy
@@ -18247,7 +18242,6 @@ Effects          :
 Description      : Turn Evil's cast time is reduced by $s1%.
 
 Name             : Divine Guidance (id=460822) [Spell Family (10)] 
-Hotfixed         : Variables
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -18528,7 +18522,6 @@ Effects          :
 #1 (id=1170166)  : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3.45 | PvP Coefficient: 0.87 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
-Hotfixed         : SP Coefficient (3 -> 3.45), PvP Coefficient (1 -> 0.87)
 Description      : $@spelldesc157047
 Tooltip          : Absorbs $w1 damage.
 

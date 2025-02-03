@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.58238 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.58911 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1819,7 +1819,6 @@ Attributes       : Active Threat (94), Not a Proc (105), Not In Spellbook (143),
 Effects          :
 #1 (id=133162)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.38 | PvP Coefficient: 1.5 | Radius: 0 - 8 yards | Target: At Self (22) -> Cone Enemy (24)
-Hotfixed         : PvP Coefficient (1 -> 1.5)
 #2 (id=155264)   : Trigger Spell (64): Fists of Fury Visual Target
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 123154 | Radius: 0 - 8 yards | Target: At Self (22) -> Cone Enemy (24)
 Description      : $@spelldesc113656
@@ -2435,12 +2434,10 @@ Effects          :
                    Affected School(s): All
 #3 (id=220987)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
-Hotfixed         : PvP Coefficient (1.6 -> 1)
 #4 (id=753843)   : Dummy (3)
                    Base Value: 70 | Scaled Value: 70
 #5 (id=1094967)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-Hotfixed         : Base Value (160 -> 100)
 Description      : Absorbs all damage taken for $d, up to $s3% of your maximum health, and redirects $s4% of that amount to the enemy target as Nature damage over $124280d.
 Tooltip          : Damage dealt to the Monk is redirected to you as Nature damage over $124280d.
 
@@ -3465,7 +3462,6 @@ Effects          :
                    Base Value: 45 | Scaled Value: 45 | Misc Value 2: 0x4 | Target: Self (1)
 #12 (id=260843)  : Apply Aura (6) | Threat (10)
                    Base Value: 815 | Scaled Value: 815 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Base Value (650 -> 815)
 #13 (id=260844)  : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 #14 (id=260845)  : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
@@ -3731,7 +3727,6 @@ Effects          :
                    Base Value: 43 | Scaled Value: 43 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649)
                    Family Flags: 4
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #25 (id=1082767) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -90 | Scaled Value: -90 | Misc Value 2: 3448 (Label) | Target: Self (1)
                    Affected Spells (Label): Celestial Conduit (443039)
@@ -14618,7 +14613,6 @@ Attributes       : Do Not Sheath (18), Not a Proc (105), Not In Spellbook (143),
 Effects          :
 #1 (id=1138665)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 11 | PvP Coefficient: 1.5 | Target: Friendly (21)
-Hotfixed         : PvP Coefficient (1 -> 1.5)
 Description      : $@spelldesc443028
 
 Name             : Jade Sanctuary (id=443059) [Spell Family (53), Passive] 
@@ -16970,7 +16964,6 @@ Labels           : 16: Class Spells
 Effects          :
 #1 (id=1151723)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.6 | PvP Coefficient: 0.65 | Radius: 0 - 6 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (0.5 -> 0.65)
 Description      : Deals $s1 Shadow damage to all enemies within $a yds.
 
 Name             : Mantra of Purity (id=451253) [Spell Family (53)] 

@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.58238 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.58911 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -497,7 +497,6 @@ Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (4
 Effects          :
 #1 (id=39872)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.64368 | PvP Coefficient: 1.49 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.596 -> 0.64368)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Death Coil (id=47633) [Spell Family (15)] 
@@ -1453,7 +1452,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=48019)    : School Damage (2): physical | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.641784 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.58344 -> 0.641784)
 #3 (id=48020)    : Trigger Spell (64): Scourge Strike
                    Base Value: 25 | Scaled Value: 25 | Trigger Spell: 70890 | Target: Enemy (6)
 #4 (id=840915)   : Dummy (3)
@@ -2084,7 +2082,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=214692)   : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.35354 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.3214 -> 0.35354)
 Description      : $@spelldesc55090
 
 Name             : Mastery: Master of Beasts (id=76657) [Spell Family (9), Passive] 
@@ -3134,7 +3131,6 @@ Effects          :
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 #7 (id=260808)   : Apply Aura (6) | Threat (10)
                    Base Value: 815 | Scaled Value: 815 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : Base Value (650 -> 815)
 #8 (id=260809)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #9 (id=260810)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
@@ -5278,7 +5274,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=324719)   : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.177 | PvP Coefficient: 1.3 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (1.07 -> 1.177)
 Description      : Deals $s2 Shadow damage and causes 1 Festering Wound to burst.
 
 Name             : Sludge Belcher (id=207313) [Spell Family (15), Passive] 
@@ -12426,7 +12421,6 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.6 | Target: Enemy (6)
                    Affected Spells: Scourge Strike (55090), Scourge Strike (70890), Clawing Shadows (207311), Vampiric Strike (433895)
                    Family Flags: 59, 71
-Hotfixed         : Base Value (50 -> 60)
 Description      : $@spelldesc390275
 Tooltip          : Scourge Strike damage taken from $@auracaster is increased by $s1%.
 
@@ -13671,7 +13665,6 @@ Attributes       : Do Not Sheath (18), No Aura Icon (60), Not In Spellbook (143)
 Effects          :
 #1 (id=1123513)  : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.144 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (1.04 -> 1.144)
 #2 (id=1123558)  : Trigger Spell (64): Vampiric Strike
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 434422 | Target: Self (1)
 #3 (id=1123562)  : Trigger Spell (64): Essence of the Blood Queen
@@ -14365,10 +14358,8 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1126738)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.67275 | PvP Coefficient: 1.54 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.2821 -> 1.54)
 #2 (id=1174044)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.773663 | PvP Coefficient: 1.54 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.2821 -> 1.54)
 Description      : $@spelldesc434711
 
 Name             : Reaper's Mark (id=436304) [Spell Family (15)] 
@@ -14388,10 +14379,8 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1127543)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.10647 | PvP Coefficient: 0.72 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.6 -> 0.72)
 #2 (id=1144448)  : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.191646 | PvP Coefficient: 0.72 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (0.6 -> 0.72)
 Description      : $@spelldesc439843
 
 Name             : Dark Talons (id=436687) [Spell Family (15), Passive] 

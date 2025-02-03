@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.58238 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.58911 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2558,29 +2558,16 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | Misc Value 2: 3988 (Label) | Target: Self (1)
                    Affected Spells (Label): Symphonic Arsenal (451194)
 #12 (id=1196242) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 91
-Hotfixed         : Base Value (-10 -> 5)
 #13 (id=1196243) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 91
-Hotfixed         : Base Value (-10 -> 5)
 #14 (id=1196831) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Misc Value 2: 4251 (Label) | Target: Self (1)
                    Affected Spells (Label): Shadow Surge (444269)
-Hotfixed         : Base Value (25 -> 50)
-#15 (id=1207242) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-                   Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
-                   Family Flags: 91
-Hotfixed         : NEW EFFECT
-#16 (id=1207243) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
-                   Family Flags: 91
-Hotfixed         : NEW EFFECT
 
 Name             : Survival Hunter (id=137017) [Spell Family (9), Passive, Hidden] 
 Class            : Survival Hunter
@@ -5368,10 +5355,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 9 | Target: Self (1)
 #4 (id=738673)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Misc Value: 9 | Target: Self (1)
-Hotfixed         : Base Value (65 -> 75)
 #5 (id=753424)   : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | Misc Value: 9 | Target: Self (1)
-Hotfixed         : Base Value (65 -> 75)
 Description      : When Multi-Shot hits $s2 or more targets, your next Aimed Shot or Rapid Fire will ricochet and hit up to $s1 additional targets for $s4% of normal damage.
 
 Name             : Trick Shots (id=257622) [Spell Family (9)] 
@@ -11949,7 +11934,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #3 (id=1025025)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 35)
 Description      : $@spelldesc384790
 Tooltip          : Your next Kill Shot will deal $s1% increased damage, and shred up to $s2 targets near your Kill shot target for $s3% of the damage dealt by Kill Shot over $385638d.
 
@@ -13591,7 +13575,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Ignore Line of Sight (
 Effects          :
 #1 (id=1140607)  : School Damage (2): shadow | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.5 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (0.75 -> 1.5)
 Description      : $@spelldesc467936
 
 Name             : Shadow Lash (id=444354) [Spell Family (9), Hidden] 
@@ -16477,7 +16460,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
                  : 3022
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7, #9), Marksmanship Hunter (137016 effects: #1, #2, #8, #12, #13, #15, #16), Survival Hunter (137017 effects: #1, #2, #9), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Killer Accuracy (378765 effects: #1, #2), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Shadow Lash (444354 effect#1), Cornered Prey (452101 effect#1), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Outland Venom (459941 effect#1), Sic 'Em (461409 effect#1), Hunter's Prey (468219 effects: #1, #2, #3, #4)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7, #9), Marksmanship Hunter (137016 effects: #1, #2, #8, #12, #13), Survival Hunter (137017 effects: #1, #2, #9), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Killer Accuracy (378765 effects: #1, #2), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Shadow Lash (444354 effect#1), Cornered Prey (452101 effect#1), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Outland Venom (459941 effect#1), Sic 'Em (461409 effect#1), Hunter's Prey (468219 effects: #1, #2, #3, #4)
 Family Flags     : 1, 11, 91, 106, 121
 Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Combat Feedback When Usable (137), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
@@ -16759,7 +16742,6 @@ Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line
 Effects          :
 #1 (id=1181302)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 4.125 | PvP Coefficient: 0.7 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (2.5 -> 4.125)
 Description      : $@spelldesc467911
 
 Name             : Bleak Powder (id=467922) [Spell Family (9)] 
@@ -16840,7 +16822,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
                  : 3022
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7, #9), Marksmanship Hunter (137016 effects: #1, #2, #8, #12, #13, #15, #16), Survival Hunter (137017 effects: #1, #2, #9), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Killer Accuracy (378765 effects: #1, #2), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Shadow Lash (444354 effect#1), Cornered Prey (452101 effect#1), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Outland Venom (459941 effect#1), Sic 'Em (461409 effect#1), Hunter's Prey (468219 effects: #1, #2, #3, #4)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2, #7, #9), Marksmanship Hunter (137016 effects: #1, #2, #8, #12, #13), Survival Hunter (137017 effects: #1, #2, #9), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Flayer's Mark (324156 effects: #1, #2, #3), Empowered Release (339061 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Hunter's Prey (378215 effect#1), Killer Accuracy (378765 effects: #1, #2), Improved Deathblow (378769 effect#3), Deathblow (378770 effects: #1, #2, #3), Spearhead (378957 effects: #2, #3), Ranger (385695 effects: #1, #2), Razor Fragments (388998 effect#1), Hunter Marksmanship 10.1 Class Set 4pc (405527 effect#1), Fury Strikes (425830 effects: #1, #2), Shadow Lash (444354 effect#1), Cornered Prey (452101 effect#1), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Outland Venom (459941 effect#1), Sic 'Em (461409 effect#1), Hunter's Prey (468219 effects: #1, #2, #3, #4)
 Family Flags     : 1, 11, 91, 106, 121
 Attributes       : Uses Ranged Slot (1), Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Do Not Reset Combat Timers (81), Combat Feedback When Usable (137), Do Not Chain To Crowd-Controlled Targets (200), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Prevent Jumping During Precast (448)
 Effects          :
@@ -16945,7 +16927,7 @@ Labels           : 16: Class Spells
                  : 1218
                  : 3022
                  : 3993: Unnatural Causes (459527 effect#5), Unnatural Causes (459529 effect#2)
-Affecting Spells : Marksmanship Hunter (137016 effects: #12, #13, #15, #16), Mastery: Sniper Training (193468 effect#4), Shadow Lash (444354 effect#1), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1)
+Affecting Spells : Marksmanship Hunter (137016 effects: #12, #13), Mastery: Sniper Training (193468 effect#4), Shadow Lash (444354 effect#1), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1)
 Family Flags     : 91
 Attributes       : No Redirection (35), No Reflection (39), DoT Stacking Rule (103), Do Not Display Range (126), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -17208,7 +17190,6 @@ Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line
 Effects          :
 #1 (id=1189956)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 5.6 | PvP Coefficient: 0.7 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (4 -> 5.6)
 Description      : $@spelldesc467911
 
 

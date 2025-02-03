@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.0.7.58238 Live
+SimulationCraft 1100-02 for World of Warcraft 11.0.7.58911 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -597,12 +597,10 @@ Effects          :
                    Base Value: 13 | Scaled Value: 13 | PvP Coefficient: 0.6923 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), FX Poison Wave Test - SK [DNT] (439253), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657)
                    Family Flags: 0
-Hotfixed         : Base Value (9 -> 13), PvP Coefficient (1 -> 0.6923)
 #2 (id=910332)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 13 | Scaled Value: 13 | PvP Coefficient: 0.6923 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), FX Poison Wave Test - SK [DNT] (439253), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657)
                    Family Flags: 0
-Hotfixed         : Base Value (9 -> 13), PvP Coefficient (1 -> 0.6923)
 #3 (id=910333)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #4 (id=910446)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -920,7 +918,6 @@ Effects          :
 #6 (id=1166934)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (Label) (537) | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.274 | PvP Coefficient: 0.5 | Misc Value: 1468 (Label) | Radius: 2 - 30 yards | Target: Unknown(47) -> Cone to Enemy (104)
                    Affected Spells (Label): Deep Breath (353759), Landslide (355689), Deep Breath (357210), Landslide (358385), Blistering Scales (360827), Blistering Scales (360828), Deep Breath (362010), Deep Breath (362019), Landslide (363800), Obsidian Scales (363916), Oppressing Roar (372048), Terror of the Skies (372245), Ebon Might (395152), Eruption (395160), Upheaval (396286), Upheaval (396288), Black Attunement (403264), Oppressing Roar (406971), Upheaval (408092), Eruption (424428), Ebon Might (426404), Upheaval (431620), Deep Breath (433874), Bombardments (434481), Eruption (438653), FX Poison Wave Test - SK [DNT] (439253), Aerial Bombardment (440263), Aerial Bombardment (440283), Melt Armor (441172)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc357208
 Tooltip          : Burning for $w2 Fire damage every $t2 sec.$?$W3=1[ Silenced.][]$?e4[ Suffering $s5% increased damage from Red spells.][]$?e5[ Suffering $w6% increased damage from Black spells.][]
 
@@ -999,7 +996,6 @@ Attributes       : Do Not Display Range (126), Allow Cast While Casting (135), A
 Effects          :
 #1 (id=891602)   : School Damage (2): fire | Attributes: Always AOE Line of Sight (5)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.09 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
-Hotfixed         : SP Coefficient (1.73998 -> 2.09)
 Description      : $@spelldesc357211
 
 Name             : Hover (id=357302) [Spell Family (224)] 
@@ -7382,7 +7378,6 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), FX Poison Wave Test - SK [DNT] (439253), Melt Armor (441172)
                    Family Flags: 34
-Hotfixed         : NEW EFFECT
 
 Name             : Essence Burst (id=396187) [Spell Family (224), Passive] 
 Talent Entry     : Augmentation [tree=spec, row=2, col=2, max_rank=1, req_points=0]
@@ -12643,7 +12638,6 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1166747)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Fire Breath causes enemies to take up to $s1% increased damage from your Black spells, increased based on its empower level.
 
 Name             : Golden Opportunity (desc=Bronze) (id=459878) [Spell Family (224)] 
