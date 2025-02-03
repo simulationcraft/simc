@@ -23,8 +23,8 @@ WINDWALKER:
 - See about removing tick part of Crackling Tiger Lightning
 
 MISTWEAVER:
-- Sheilun's + Shaohao
 - Aspect of Harmony
+- Shaohao: track upcoming lesson so that it can be triggered early if it's a bad buff
 
 BREWMASTER:
 */
@@ -672,6 +672,42 @@ void monk_action_t<Base>::tick( dot_t *dot )
 
   if ( !base_t::result_is_miss( dot->state->result ) && dot->state->result_type == result_amount_type::DMG_OVER_TIME )
     p()->trigger_empowered_tiger_lightning( dot->state );
+}
+
+template <class Base>
+double monk_action_t<Base>::composite_target_multiplier( player_t *t ) const
+{
+  double tm = base_t::composite_target_multiplier( t );
+
+  if ( p()->buff.lesson_of_doubt->check() )
+  {
+    // Damage component of Lesson of Doubt is scripted
+    // Damage increase is based on target's current health percentage
+    // The damage increase scales linearly from 100% to 25%hp.
+    double possible_increase = p()->buff.lesson_of_doubt->data().effectN( 1 ).percent();
+    double max_damage_at     = 0.25;
+    double target_hp         = t->health_percentage();
+    double clamped_hp        = std::clamp( target_hp / 100, max_damage_at, 1.0 );  // [0.25, 1]
+    double amp_frac          = ( 1 - clamped_hp ) / ( 1 - max_damage_at );
+    double buff_amount       = amp_frac * possible_increase;
+    p()->sim->print_debug( "lesson_of_doubt: target {} at {}% hp, damage buffed by {}%", t->name(), target_hp,
+                           buff_amount * 100 );
+    tm *= 1.0 + buff_amount;
+  }
+
+  return tm;
+}
+
+template <class Base>
+void monk_action_t<Base>::assess_damage( result_amount_type typ, action_state_t *s )
+{
+  base_t::assess_damage( typ, s );
+
+  if ( p()->buff.lesson_of_anger->check() && base_t::id != p()->talent.mistweaver.lesson_of_anger_damage->id() )
+  {
+    monk_td_t *td = p()->get_target_data( s->target );
+    td->debuff.lesson_of_anger->accumulate_damage( s );
+  }
 }
 
 template <class Base>
@@ -4650,6 +4686,15 @@ struct gale_force_t : public monk_spell_t
     base_dd_min = base_dd_max = 1;
   }
 };
+
+struct lesson_of_anger_t : public monk_spell_t
+{
+  lesson_of_anger_t( monk_t *player )
+    : monk_spell_t( player, "lesson_of_anger", player->talent.mistweaver.lesson_of_anger_damage )
+  {
+    background = true;
+  }
+};
 }  // namespace spells
 
 namespace heals
@@ -4761,8 +4806,24 @@ struct vivify_t : public monk_heal_t
 
 struct sheiluns_gift_t : public monk_heal_t
 {
+  enum shaohao_buff_e
+  {
+    SHAOHAO_BUFF_ANGER,
+    SHAOHAO_BUFF_DESPAIR,
+    SHAOHAO_BUFF_DOUBT,
+    SHAOHAO_BUFF_FEAR,
+  };
+
+  shuffled_rng_t *shaohao_rng;
+
   sheiluns_gift_t( monk_t *player, util::string_view options_str )
-    : monk_heal_t( player, "sheiluns_gift", player->talent.mistweaver.sheiluns_gift )
+    : monk_heal_t( player, "sheiluns_gift", player->talent.mistweaver.sheiluns_gift ),
+      shaohao_rng( player->get_shuffled_rng( "shaohao_buff", {
+                                                                 { SHAOHAO_BUFF_ANGER, 1 },
+                                                                 { SHAOHAO_BUFF_DESPAIR, 1 },
+                                                                 { SHAOHAO_BUFF_DOUBT, 1 },
+                                                                 { SHAOHAO_BUFF_FEAR, 1 },
+                                                             } ) )
   {
     parse_options( options_str );
 
@@ -4772,12 +4833,45 @@ struct sheiluns_gift_t : public monk_heal_t
     apply_affecting_aura( player->talent.mistweaver.legacy_of_wisdom );
   }
 
+  bool ready() override
+  {
+    return base_t::ready() && p()->buff.sheiluns_gift->stack() != 0;
+  }
+
   void execute() override
   {
     base_t::execute();
 
-    p()->buff.heart_of_the_jade_serpent_stack_mw->increment( p()->buff.sheiluns_gift->stack() );
+    int stacks = p()->buff.sheiluns_gift->stack();
     p()->buff.sheiluns_gift->reset();
+
+    p()->buff.heart_of_the_jade_serpent_stack_mw->increment( stacks );
+
+    if ( p()->talent.mistweaver.shaohaos_lessons->ok() )
+    {
+      timespan_t max_duration =
+          timespan_t::from_seconds( p()->talent.mistweaver.shaohaos_lessons->effectN( 1 ).base_value() );
+      int max_stacks      = p()->buff.sheiluns_gift->max_stack();
+      timespan_t duration = max_duration * stacks / max_stacks;
+
+      switch ( shaohao_buff_e( shaohao_rng->trigger() ) )
+      {
+        case SHAOHAO_BUFF_ANGER:
+          p()->buff.lesson_of_anger->trigger( duration );
+          break;
+        case SHAOHAO_BUFF_DESPAIR:
+          p()->buff.lesson_of_despair->trigger( duration );
+          break;
+        case SHAOHAO_BUFF_DOUBT:
+          p()->buff.lesson_of_doubt->trigger( duration );
+          break;
+        case SHAOHAO_BUFF_FEAR:
+          p()->buff.lesson_of_fear->trigger( duration );
+          break;
+        default:
+          break;
+      }
+    }
   }
 };
 
@@ -5983,6 +6077,29 @@ aspect_of_harmony_t::spender_t::tick_t<base_action_t>::tick_t( monk_t *player, s
 {
 }
 
+lesson_of_anger_t::lesson_of_anger_t( monk_td_t *td, monk_t *player )
+  : td( td ), player( player ), accumulated_damage( 0.0 )
+{
+}
+
+void lesson_of_anger_t::reset()
+{
+  accumulated_damage = 0.0;
+}
+
+void lesson_of_anger_t::accumulate_damage( const action_state_t *s )
+{
+  player->sim->print_debug( "{} lesson_of_anger on {} accumulates {} damage: {} -> {}", player->name(),
+                            td->target->name(), s->result_total, accumulated_damage,
+                            accumulated_damage + s->result_total );
+
+  accumulated_damage += s->result_total;
+}
+
+double lesson_of_anger_t::get_accumulated_damage() const
+{
+  return accumulated_damage;
+}
 }  // namespace buffs
 
 namespace items
@@ -6073,6 +6190,9 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
   debuff.exploding_keg = make_buff( *this, "exploding_keg_debuff", p->talent.brewmaster.exploding_keg )
                              ->set_trigger_spell( p->talent.brewmaster.exploding_keg )
                              ->set_cooldown( timespan_t::zero() );
+
+  // Mistweaver
+  debuff.lesson_of_anger = new buffs::lesson_of_anger_t( this, p );
 
   // Shado-Pan
 
@@ -6223,6 +6343,8 @@ void monk_t::parse_player_effects()
   parse_effects( buff.secret_infusion_crit, USE_DEFAULT );
   parse_effects( buff.secret_infusion_mastery, USE_DEFAULT );
   parse_effects( buff.secret_infusion_versatility, USE_DEFAULT );
+  parse_effects( buff.lesson_of_despair );
+  parse_effects( buff.lesson_of_fear );
 
   // windwalker talent auras
   parse_target_effects( td_fn( &monk_td_t::debuff_t::acclamation ),
@@ -6437,6 +6559,24 @@ void monk_t::trigger_mark_of_the_crane( action_state_t *s )
 
   if ( get_target_data( s->target )->debuff.mark_of_the_crane->up() || !buff.cyclone_strikes->at_max_stacks() )
     get_target_data( s->target )->debuff.mark_of_the_crane->trigger();
+}
+
+void monk_t::trigger_anger_damage()
+{
+  double accum_percent = talent.mistweaver.lesson_of_anger_buff->effectN( 1 ).percent();
+
+  for ( player_t *target : sim->target_non_sleeping_list )
+  {
+    monk_td_t *td            = get_target_data( target );
+    double damage            = td->debuff.lesson_of_anger->get_accumulated_damage();
+    double duplicated_damage = damage * accum_percent;
+
+    sim->print_debug( "{} lesson_of_anger on {} duplicates {}% of {} = {} damage.", name(), target->name(),
+                      accum_percent * 100, damage, duplicated_damage );
+
+    active_actions.lesson_of_anger_damage->execute_on_target( target, duplicated_damage );
+    td->debuff.lesson_of_anger->reset();
+  }
 }
 
 player_t *monk_t::next_mark_of_the_crane_target( action_state_t *state )
@@ -6897,12 +7037,17 @@ void monk_t::init_spells()
     talent.mistweaver.secret_infusion_crit_buff    = find_spell( 388498 );
     talent.mistweaver.secret_infusion_mastery_buff = find_spell( 388499 );
     talent.mistweaver.secret_infusion_vers_buff    = find_spell( 388500 );
-    talent.mistweaver.secret_infusion_vers_buff    = _ST( "Sheilun's Gift" );
+    talent.mistweaver.sheiluns_gift                = _ST( "Sheilun's Gift" );
     talent.mistweaver.sheiluns_gift_stacks         = find_spell( 399497 );
     talent.mistweaver.misty_peaks                  = _ST( "Misty Peaks" );
     talent.mistweaver.peaceful_mending             = _ST( "Peaceful Mending" );
     talent.mistweaver.veil_of_pride                = _ST( "Veil of Pride" );
     talent.mistweaver.shaohaos_lessons             = _ST( "Shaohao's Lessons" );
+    talent.mistweaver.lesson_of_doubt_buff         = find_spell( 400097 );
+    talent.mistweaver.lesson_of_despair_buff       = find_spell( 400116 );
+    talent.mistweaver.lesson_of_fear_buff          = find_spell( 400103 );
+    talent.mistweaver.lesson_of_anger_buff         = find_spell( 400106 );
+    talent.mistweaver.lesson_of_anger_damage       = find_spell( 400145 );
     // Row 10
     talent.mistweaver.awakened_jadefire      = _ST( "Awakened Jadefire" );
     talent.mistweaver.awakened_jadefire_buff = find_spell( 389387 );
@@ -7221,6 +7366,12 @@ void monk_t::init_background_actions()
     active_actions.niuzao_call_to_arms_summon = new actions::niuzao_call_to_arms_summon_t( this );
 
     active_actions.chi_surge = new actions::spells::chi_surge_t( this );
+  }
+
+  // Mistweaver
+  if ( specialization() == MONK_MISTWEAVER )
+  {
+    active_actions.lesson_of_anger_damage = new actions::lesson_of_anger_t( this );
   }
 
   // Windwalker
@@ -7633,6 +7784,24 @@ void monk_t::create_buffs()
   buff.sheiluns_gift = make_buff_fallback( talent.mistweaver.sheiluns_gift->ok(), this, "sheiluns_gift",
                                            talent.mistweaver.sheiluns_gift_stacks )
                            ->set_trigger_spell( talent.mistweaver.sheiluns_gift );
+
+  buff.lesson_of_anger = make_buff_fallback( talent.mistweaver.shaohaos_lessons->ok(), this, "lesson_of_anger",
+                                             talent.mistweaver.lesson_of_anger_buff )
+                             ->set_trigger_spell( talent.mistweaver.sheiluns_gift )
+                             ->set_tick_callback( [ this ]( buff_t *, int, timespan_t ) { trigger_anger_damage(); } )
+                             ->set_expire_callback( [ this ]( buff_t *, int, timespan_t ) { trigger_anger_damage(); } );
+
+  buff.lesson_of_despair = make_buff_fallback( talent.mistweaver.shaohaos_lessons->ok(), this, "lesson_of_despair",
+                                               talent.mistweaver.lesson_of_despair_buff )
+                               ->set_trigger_spell( talent.mistweaver.sheiluns_gift );
+
+  buff.lesson_of_doubt = make_buff_fallback( talent.mistweaver.shaohaos_lessons->ok(), this, "lesson_of_doubt",
+                                             talent.mistweaver.lesson_of_doubt_buff )
+                             ->set_trigger_spell( talent.mistweaver.sheiluns_gift );
+
+  buff.lesson_of_fear = make_buff_fallback( talent.mistweaver.shaohaos_lessons->ok(), this, "lesson_of_fear",
+                                            talent.mistweaver.lesson_of_fear_buff )
+                            ->set_trigger_spell( talent.mistweaver.sheiluns_gift );
 
   buff.thunder_focus_tea =
       make_buff( this, "thunder_focus_tea", talent.mistweaver.thunder_focus_tea )

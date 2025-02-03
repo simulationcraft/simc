@@ -254,6 +254,12 @@ void mistweaver( player_t *p )
   def->add_action( "thunder_focus_tea" );
   def->add_action( "invoke_chiji,if=talent.invokers_delight" );
   def->add_action( "invoke_yulon,if=talent.invokers_delight" );
+  def->add_action(
+      "sheiluns_gift,if=talent.shaohaos_lessons&("
+      "buff.sheiluns_gift.stack>=10"
+      "|(buff.sheiluns_gift.stack*4>=fight_remains&buff.sheiluns_gift.stack>=3)"
+      "|(fight_style.dungeonslice&buff.sheiluns_gift.stack>=5&active_enemies>=4)"
+      ")" );
   def->add_action( "celestial_conduit" );
   def->add_action( "rising_sun_kick,if=talent.secret_infusion&buff.thunder_focus_tea.up" );
   def->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.up" );
