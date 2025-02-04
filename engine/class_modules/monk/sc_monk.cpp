@@ -4820,7 +4820,7 @@ struct sheiluns_gift_t : public monk_heal_t
 
   bool ready() override
   {
-    return base_t::ready() && p()->buff.sheiluns_gift->stack() != 0;
+    return base_t::ready() && p()->buff.sheiluns_gift->stack() > 0;
   }
 
   void execute() override
