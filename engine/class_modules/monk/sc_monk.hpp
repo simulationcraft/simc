@@ -324,21 +324,6 @@ public:
 
   bool heal_ticking();
 };
-
-struct lesson_of_anger_t
-{
-private:
-  monk_td_t *td;
-  monk_t *player;
-  double accumulated_damage;
-
-public:
-  lesson_of_anger_t( monk_td_t *td, monk_t *p );
-
-  void reset();
-  void accumulate_damage( const action_state_t *s );
-  double get_accumulated_damage() const;
-};
 }  // namespace buffs
 
 struct monk_td_t : public actor_target_data_t
@@ -373,7 +358,7 @@ public:
     propagate_const<buff_t *> touch_of_karma;
 
     // Mistweaver
-    buffs::lesson_of_anger_t *lesson_of_anger;
+    propagate_const<buff_t *> lesson_of_anger;
 
     // Shado-Pan
     propagate_const<buff_t *> high_impact;
@@ -1471,7 +1456,6 @@ public:
   void trigger_celestial_fortune( action_state_t * );
   void trigger_mark_of_the_crane( action_state_t * );
   void trigger_empowered_tiger_lightning( action_state_t * );
-  void trigger_anger_damage();
   player_t *next_mark_of_the_crane_target( action_state_t * );
   int mark_of_the_crane_counter();
   bool mark_of_the_crane_max();

@@ -690,7 +690,8 @@ void monk_action_t<Base>::assess_damage( result_amount_type typ, action_state_t 
   if ( p()->buff.lesson_of_anger->check() && base_t::id != p()->talent.mistweaver.lesson_of_anger_damage->id() )
   {
     monk_td_t *td = p()->get_target_data( s->target );
-    td->debuff.lesson_of_anger->accumulate_damage( s );
+    double amount = td->debuff.lesson_of_anger->check_value() + s->result_total;
+    td->debuff.lesson_of_anger->trigger( 1, amount );
   }
 }
 
@@ -6060,30 +6061,6 @@ aspect_of_harmony_t::spender_t::tick_t<base_action_t>::tick_t( monk_t *player, s
   : residual_action::residual_periodic_action_t<base_action_t>( player, name, spell_data )
 {
 }
-
-lesson_of_anger_t::lesson_of_anger_t( monk_td_t *td, monk_t *player )
-  : td( td ), player( player ), accumulated_damage( 0.0 )
-{
-}
-
-void lesson_of_anger_t::reset()
-{
-  accumulated_damage = 0.0;
-}
-
-void lesson_of_anger_t::accumulate_damage( const action_state_t *s )
-{
-  player->sim->print_debug( "{} lesson_of_anger on {} accumulates {} damage: {} -> {}", player->name(),
-                            td->target->name(), s->result_total, accumulated_damage,
-                            accumulated_damage + s->result_total );
-
-  accumulated_damage += s->result_total;
-}
-
-double lesson_of_anger_t::get_accumulated_damage() const
-{
-  return accumulated_damage;
-}
 }  // namespace buffs
 
 namespace items
@@ -6176,7 +6153,11 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
                              ->set_cooldown( timespan_t::zero() );
 
   // Mistweaver
-  debuff.lesson_of_anger = new buffs::lesson_of_anger_t( this, p );
+  debuff.lesson_of_anger = make_buff_fallback( p->talent.mistweaver.shaohaos_lessons->ok(), *this,
+                                               "lesson_of_anger_accumulator", spell_data_t::nil() )
+                               ->set_default_value( 0.0 )
+                               ->set_trigger_spell( p->talent.mistweaver.shaohaos_lessons )
+                               ->set_quiet( true );
 
   // Shado-Pan
 
@@ -6543,24 +6524,6 @@ void monk_t::trigger_mark_of_the_crane( action_state_t *s )
 
   if ( get_target_data( s->target )->debuff.mark_of_the_crane->up() || !buff.cyclone_strikes->at_max_stacks() )
     get_target_data( s->target )->debuff.mark_of_the_crane->trigger();
-}
-
-void monk_t::trigger_anger_damage()
-{
-  double accum_percent = talent.mistweaver.lesson_of_anger_buff->effectN( 1 ).percent();
-
-  for ( player_t *target : sim->target_non_sleeping_list )
-  {
-    monk_td_t *td            = get_target_data( target );
-    double damage            = td->debuff.lesson_of_anger->get_accumulated_damage();
-    double duplicated_damage = damage * accum_percent;
-
-    sim->print_debug( "{} lesson_of_anger on {} duplicates {}% of {} = {} damage.", name(), target->name(),
-                      accum_percent * 100, damage, duplicated_damage );
-
-    active_actions.lesson_of_anger_damage->execute_on_target( target, duplicated_damage );
-    td->debuff.lesson_of_anger->reset();
-  }
 }
 
 player_t *monk_t::next_mark_of_the_crane_target( action_state_t *state )
@@ -7769,11 +7732,22 @@ void monk_t::create_buffs()
                                            talent.mistweaver.sheiluns_gift_stacks )
                            ->set_trigger_spell( talent.mistweaver.sheiluns_gift );
 
+  auto anger_callback = [ this ]( buff_t *, int, timespan_t ) {
+    for ( player_t *target : sim->target_non_sleeping_list )
+    {
+      monk_td_t *td = get_target_data( target );
+      double amount =
+          td->debuff.lesson_of_anger->value() * talent.mistweaver.lesson_of_anger_buff->effectN( 1 ).percent();
+      active_actions.lesson_of_anger_damage->execute_on_target( target, amount );
+      td->debuff.lesson_of_anger->expire();
+    }
+  };
+
   buff.lesson_of_anger = make_buff_fallback( talent.mistweaver.shaohaos_lessons->ok(), this, "lesson_of_anger",
                                              talent.mistweaver.lesson_of_anger_buff )
                              ->set_trigger_spell( talent.mistweaver.sheiluns_gift )
-                             ->set_tick_callback( [ this ]( buff_t *, int, timespan_t ) { trigger_anger_damage(); } )
-                             ->set_expire_callback( [ this ]( buff_t *, int, timespan_t ) { trigger_anger_damage(); } );
+                             ->set_tick_callback( anger_callback )
+                             ->set_expire_callback( anger_callback );
 
   buff.lesson_of_despair = make_buff_fallback( talent.mistweaver.shaohaos_lessons->ok(), this, "lesson_of_despair",
                                                talent.mistweaver.lesson_of_despair_buff )
