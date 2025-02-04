@@ -3887,8 +3887,9 @@ Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Not Shapeshifted (16), No Threat (42), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=274045)   : Apply Aura (6) | Dummy (4)
+#1 (id=274045)   : Apply Aura (6) | Proc Trigger Spell (42): Crash Lightning
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 195592 | Target: Self (1)
+Hotfixed         : Sub Type (4 -> 42)
 #2 (id=1211189)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 4620 (Label) | Target: Self (1)
                    Affected Spells (Label): Crash Lightning (195592)
@@ -15755,6 +15756,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
+                 : 4700: Enhancement Shaman (1214207 effect#12)
 Proc Chance      : 101%
 Real PPM         : 5 (Haste multiplier)
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
@@ -15763,7 +15765,8 @@ Effects          :
 #1 (id=1158331)  : Apply Aura (6) | Proc Trigger Spell (42): Awakening Storms
                    Base Value: 50 | Scaled Value: 50 | Trigger Spell: 455130 | Target: Self (1)
 #2 (id=1158332)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+Hotfixed         : Base Value (4 -> 3)
 Description      : $?s137041[Stormstrike, ][]Lightning Bolt$?s137041[,][] and Chain Lightning have a chance to strike your target for $455130s1 Nature damage. Every $s2 times this occurs, your next Lightning Bolt is replaced by Tempest.
 
 Name             : Awakening Storms (id=455130) [Spell Family (11)] 
@@ -16336,6 +16339,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 3022
+                 : 4701: Enhancement Shaman (1214207 effect#13)
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31)
@@ -18267,19 +18271,29 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value: 3 | Misc Value 2: 4239 (Label) | Target: Self (1)
                    Affected Spells (Label): Voltaic Surge (454919)
 #8 (id=1213843)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: -2 | Scaled Value: -2 | Misc Value: 12 | Misc Value 2: 3986 (Label) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Misc Value 2: 3986 (Label) | Target: Self (1)
                    Affected Spells (Label): Lightning Rod (210689), Conductive Energy (455123)
+Hotfixed         : Base Value (-2 -> 0)
 #9 (id=1213844)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value: 12 | Misc Value 2: 3986 (Label) | Target: Self (1)
                    Affected Spells (Label): Lightning Rod (210689), Conductive Energy (455123)
 #10 (id=1213848) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
+Hotfixed         : Base Value (-10 -> 0)
 #11 (id=1213849) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
+#12 (id=1215591) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Misc Value 2: 4700 (Label) | Target: Self (1)
+                   Affected Spells (Label): Awakening Storms (455129)
+Hotfixed         : NEW EFFECT
+#13 (id=1215592) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Misc Value 2: 4701 (Label) | Target: Self (1)
+                   Affected Spells (Label): Awakening Storms (462131)
+Hotfixed         : NEW EFFECT
 
 Name             : Shaman Restoration 11.1 Class Set 2pc (id=1215538) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman

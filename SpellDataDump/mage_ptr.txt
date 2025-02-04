@@ -954,7 +954,8 @@ Family Flags     : 3, 47
 Attributes       : Not Shapeshifted (16), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=36330)    : School Damage (2): arcane | Attributes: Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.420354 | PvP Coefficient: 1.3225 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.504 | PvP Coefficient: 1.3225 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.420354 -> 0.504)
 #2 (id=726826)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | Chain Multiplier: 1 | Target: Enemy (6)
 Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. 
@@ -8819,6 +8820,7 @@ Effects          :
 Description      : Flurry now has ${$s1+1} charges. 
 
 Name             : Wintertide (id=378406) [Spell Family (3), Passive, Hidden] 
+Hotfixed         : Description
 Talent Entry     : Frost [tree=spec, row=6, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(0, 1)]
 Class            : Mage
@@ -8831,12 +8833,11 @@ Proc Chance      : 100%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1006796)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 37 | Misc Value 2: 4643 (Label) | Target: Self (1)
+#1 (id=1006796)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 3 | Misc Value 2: 4643 (Label) | Target: Self (1)
                    Affected Spells (Label): Wintertide (1222865)
-Description      : Damage from Frostbolt and Flurry increases the damage of your Icicles and Glacial Spike by $1222865s1%. Stacks up to $1222865u times.
-
-Damage from Glacial Spike consumes all stacks of Wintertide.
+Hotfixed         : Misc Value (37 -> 3)
+Description      : Damage from Frostbolt and Flurry increases the damage of your Icicles and Glacial Spike by $1222865s1%. Stacks up to $1222865u times.
 
 Name             : Fractured Frost (id=378445) [Spell Family (3), Hidden] 
 Class            : Mage
@@ -10019,7 +10020,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
 Proc Chance      : 100%
-Real PPM         : 0.85
+Real PPM         : 1.5
 Proc Flags       : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
@@ -10082,7 +10083,8 @@ Effects          :
 #1 (id=1016071)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #2 (id=1086457)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 280 | Scaled Value: 280 | PvP Coefficient: 0.4 | Target: Self (1)
+                   Base Value: 260 | Scaled Value: 260 | PvP Coefficient: 0.4 | Target: Self (1)
+Hotfixed         : Base Value (280 -> 260)
 Description      : $@spelldesc383886
 Tooltip          : Your next non-instant Pyroblast or Flamestrike will grant you Combustion and deal $w2% additional damage.
 
@@ -11542,9 +11544,10 @@ Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1087322)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.3 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 0.3 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Combustion (190319)
                    Family Flags: 58
+Hotfixed         : Base Value (60 -> 70)
 #2 (id=1087415)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1250 | Scaled Value: 1250 | Target: Self (1)
 #3 (id=1154661)  : Apply Aura (6) | Dummy (4)
@@ -12934,7 +12937,8 @@ Effects          :
 #5 (id=1190182)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #6 (id=1190183)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+Hotfixed         : Base Value (5 -> 4)
 Description      : Enemies damaged by your $?c1[Arcane Orb][Frozen Orb] conjure $?c1[$s4 Arcane][$s5 Frost] $LSplinter:Splinters;, up to $?c1[$s1][$s6].
 
 $?c1[Arcane Orb][Frozen Orb] damage is increased by $s2%.
@@ -13299,7 +13303,8 @@ Effects          :
 #2 (id=1210399)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #3 (id=1210400)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 20)
 Description      : Direct damage from $?c1[Arcane][Frost] Splinters has a $?c1[${$s2/10}.1][${$s3/10}.1]% chance to $?c1[launch an Arcane Orb at $s1% effectiveness][reset the cooldown of Frozen Orb] and increase all damage dealt by $?c1[Arcane Orb by $458411s1][Frozen Orb by $458411s2]% for $458411d.
 
 Name             : Spellfire Spheres (id=448601) [Spell Family (3), Passive, Hidden] 
@@ -16334,6 +16339,7 @@ Effects          :
 Description      : $@spelldesc108978
 
 Name             : Wintertide (id=1222865) [Spell Family (3)] 
+Hotfixed         : Proc Chance (100 -> 101), Proc Flags 1 (65536 -> 0)
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -16344,8 +16350,7 @@ Labels           : 16: Class Spells
                  : 3617
                  : 4643: Wintertide (378406 effect#1)
 Stacks           : 2 maximum
-Proc Chance      : 100%
-Proc Flags       : Magic Hostile Spell
+Proc Chance      : 101%
 Attributes       : Can Proc From Procs (122), Do Not Consume Aura Stack On Proc (428)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
@@ -16396,7 +16401,7 @@ Name             : Intuition (id=1223797) [Spell Family (3)]
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Duration         : 6 seconds
+Duration         : 3 seconds
 Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
@@ -16407,9 +16412,10 @@ Proc Flags       : Cast Successful
 Attributes       : Can Proc From Procs (122), Can Proc from Suppressed Caster Procs (385), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1212060)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Arcane Barrage (44425)
                    Family Flags: 47
+Hotfixed         : Base Value (20 -> 50)
 Description      : $@spelldesc453724
 Tooltip          : Your next Arcane Barrage deals $s1% increased damage and grants $455683s1 Arcane Charges.
 
