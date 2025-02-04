@@ -257,6 +257,14 @@ void monk_action_t<Base>::apply_debuff_effects()
 
   if ( p()->talent.windwalker.jadefire_harmony->ok() )
     parse_target_effects( td_fn( &monk_td_t::debuff_t::jadefire_brand ), p()->talent.windwalker.jadefire_brand_dmg );
+
+  if ( p()->talent.mistweaver.shaohaos_lessons->ok() )
+    parse_target_effects(
+        [ this ]( actor_target_data_t *td ) {
+          double interpolate = std::min( 100.0 - td->target->health_percentage(), 75.0 ) / 100.0;
+          return p()->buff.lesson_of_doubt->check() ? interpolate : 0.0;
+        },
+        p()->talent.mistweaver.lesson_of_doubt_buff );
 }
 
 template <class Base>
@@ -672,30 +680,6 @@ void monk_action_t<Base>::tick( dot_t *dot )
 
   if ( !base_t::result_is_miss( dot->state->result ) && dot->state->result_type == result_amount_type::DMG_OVER_TIME )
     p()->trigger_empowered_tiger_lightning( dot->state );
-}
-
-template <class Base>
-double monk_action_t<Base>::composite_target_multiplier( player_t *t ) const
-{
-  double tm = base_t::composite_target_multiplier( t );
-
-  if ( p()->buff.lesson_of_doubt->check() )
-  {
-    // Damage component of Lesson of Doubt is scripted
-    // Damage increase is based on target's current health percentage
-    // The damage increase scales linearly from 100% to 25%hp.
-    double possible_increase = p()->buff.lesson_of_doubt->data().effectN( 1 ).percent();
-    double max_damage_at     = 0.25;
-    double target_hp         = t->health_percentage();
-    double clamped_hp        = std::clamp( target_hp / 100, max_damage_at, 1.0 );  // [0.25, 1]
-    double amp_frac          = ( 1 - clamped_hp ) / ( 1 - max_damage_at );
-    double buff_amount       = amp_frac * possible_increase;
-    p()->sim->print_debug( "lesson_of_doubt: target {} at {}% hp, damage buffed by {}%", t->name(), target_hp,
-                           buff_amount * 100 );
-    tm *= 1.0 + buff_amount;
-  }
-
-  return tm;
 }
 
 template <class Base>

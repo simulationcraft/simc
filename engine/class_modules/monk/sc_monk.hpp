@@ -134,7 +134,6 @@ public:
   void execute() override;
   void impact( action_state_t *state ) override;
   void tick( dot_t *dot ) override;
-  double composite_target_multiplier( player_t *t ) const override;
   void assess_damage( result_amount_type typ, action_state_t *s ) override;
   void trigger_storm_earth_and_fire( const action_t *action );
   void trigger_mystic_touch( action_state_t *state );
@@ -395,7 +394,7 @@ public:
 // utility to create target_effect_t compatible functions from monk_td_t member references
 // adapted from sc_death_knight.cpp
 template <typename T>
-static std::function<int( actor_target_data_t * )> td_fn( T effect, bool stack = true )
+static std::function<double( actor_target_data_t * )> td_fn( T effect, bool stack = true )
 {
   if constexpr ( std::is_invocable_v<T, monk_td_t::debuff_t> )
   {
