@@ -17082,7 +17082,8 @@ Labels           : 16: Class Spells
                  : 295
 Effects          :
 #1 (id=1202123)  : Apply Aura (6) | Modify Mastery% (318)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Base Value (3 -> 1)
 Description      : $@spelldesc1215681
 Tooltip          : Mastery increased by $s1% and your spells gain maximum benefit from Mastery: Chaotic Energies.
 

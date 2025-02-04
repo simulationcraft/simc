@@ -496,7 +496,8 @@ Family Flags     : 13, 43, 64, 78
 Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Active Threat (94), Not a Proc (105), Always Hit (114), Not In Spellbook (143), Do Not Consume Resources (197), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=39872)    : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.6440018 | PvP Coefficient: 1.49 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.64368 | PvP Coefficient: 1.49 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.740232 -> 0.64368)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Death Coil (id=47633) [Spell Family (15)] 
@@ -1302,6 +1303,7 @@ Attributes       : AI Primary Ranged Attack (206), Allow Class Ability Procs (41
 Effects          :
 #1 (id=44400)    : School Damage (2): shadowstorm
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | AP Coefficient: 0.34776 | Target: Enemy (6)
+Hotfixed         : AP Coefficient (0.23184 -> 0.34776)
 Description      : Inflicts $s1 Plague damage to an enemy.
 
 Name             : On a Pale Horse (id=51986) [Spell Family (15), Passive] 
@@ -16689,6 +16691,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1158770)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6000 | Scaled Value: 6000 | Target: Self (1)
+Hotfixed         : Base Value (8000 -> 6000)
 Description      : Consuming Sudden Doom calls upon a Magus of the Dead to assist you for ${$s1/1000} sec.
 
 
@@ -17806,6 +17809,7 @@ Description      : $@spelldesc1215727
 Tooltip          : The damage of Frost Strike and Glacial Advance is increased by $w1%.
 
 Name             : Luck of the Draw! (id=1218601) [Spell Family (15)] 
+Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -17816,7 +17820,8 @@ Labels           : 16: Class Spells
                  : 295
                  : 4364: Death Knight Blood 11.1 Class Set 4pc (1215993 effect#1)
 Triggered By     : Death Knight Blood 11.1 Class Set 2pc (1215992)
-Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
+Attributes       : No Aura Cancel (31), Aura Points On Client (268), Allow Class Ability Procs (416)
+Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1203564)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -17836,6 +17841,9 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
+#6 (id=1215435)  : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1215992
 Tooltip          : Damage increased by $s1%.$?a1215993[
 
