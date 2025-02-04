@@ -18156,7 +18156,7 @@ static const std::array<spelltext_data_t, 27237> __ptr_spelltext_data { {
   {  378391, "Dealing damage with spells and abilities has a small chance to inflict a Tome-Wrought Rot upon your target, causing them to take $378393s1 Nature damage every $378393t1 sec. and slowing their movement speed by $378393s2% for $378393d.", 0, 0 },
   {  378393, "$@spelldesc378391", "Taking $w1 Nature damage every $t1 sec. Movement speed reduced by $w2%.", 0 },
   {  378405, "Word of Glory heals for an additional $s1% over $378412d.\r\n\r\nIncreased by $s2% if cast on yourself while you are afflicted by a harmful damage over time effect.", 0, 0 },
-  {  378406, "Damage from Frostbolt and Flurry increases the damage of your Icicles and Glacial Spike by $1222865s1%. Stacks up to $1222865u times.\r\n\r\nDamage from Glacial Spike consumes all stacks of Wintertide.", 0, 0 },
+  {  378406, "Damage from Frostbolt and Flurry increases the damage of your Icicles and Glacial Spike by $1222865s1%. Stacks up to $1222865u times.", 0, 0 },
   {  378412, "$@spelldesc378405", "Healing for $w1 every $t1 sec.", 0 },
   {  378423, "These boots ooze a toxic slime which slows your actions, reducing haste by $s2. Your attacks will occasionally splash slime onto your target, dealing $s3 Nature damage.\r\n\r\nThese effects are increased by $378758s2% if you equip an item crafted with a Toxified Armor Patch.", 0, 0 },
   {  378425, "Your Lay on Hands, Divine Shield, Blessing of Protection, and Blessing of Spellwarding have $s1% reduced cooldown.", 0, 0 },
@@ -27240,7 +27240,8 @@ static const std::array<spelltext_data_t, 27237> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.1.0.58945
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  378406,  0, "Damage from Frostbolt and Flurry increases the damage of your Icicles and Glacial Spike by $1222865s1%. Stacks up to $1222865u times.\r\n\r\nDamage from Glacial Spike consumes all stacks of Wintertide.", "Damage from Frostbolt and Flurry increases the damage of your Icicles and Glacial Spike by $1222865s1%. Stacks up to $1222865u times." },
 } };
 
 // Spell description variables, wow build 11.1.0.58945
