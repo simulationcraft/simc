@@ -3634,9 +3634,25 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   struct death_strike_t : public drw_action_t<melee_attack_t>
   {
     death_strike_t( std::string_view n, dancing_rune_weapon_pet_t* p )
-      : drw_action_t<melee_attack_t>( p, n, p->dk()->talent.death_strike )
+      : drw_action_t<melee_attack_t>( p, n, p->dk()->talent.death_strike ),
+      tww2_blood_4pc_cleave_targets( 0 )
     {
+      if( dk()->is_ptr() && dk()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW2, B4 ) )
+      {
+        tww2_blood_4pc_cleave_targets = data().effectN( 1 ).chain_target() +
+                                        as<int>( dk()->spell.luck_of_the_draw->effectN( 4 ).base_value() );
+      }
     }
+
+    int n_targets() const override
+    {
+      if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW2, B4 ) && dk()->buffs.luck_of_the_draw->check() )
+        return tww2_blood_4pc_cleave_targets;
+      return drw_action_t::n_targets();
+    }
+
+    private:
+      int tww2_blood_4pc_cleave_targets;
   };
 
   struct heart_strike_t : public drw_action_t<melee_attack_t>
@@ -8487,7 +8503,8 @@ struct death_strike_t final : public death_knight_melee_attack_t
       heal( get_action<death_strike_heal_t>( "death_strike_heal", p ) ),
       oh_attack( nullptr ),
       improved_death_strike_reduction( 0 ),
-      sanguination_pct( 0.0 )
+      sanguination_pct( 0.0 ),
+      tww2_blood_4pc_cleave_targets( 0 )
   {
     parse_options( options_str );
     may_parry = false;
@@ -8509,6 +8526,12 @@ struct death_strike_t final : public death_knight_melee_attack_t
         improved_death_strike_reduction +=
             p->talent.improved_death_strike->effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
     }
+
+    if( p->is_ptr() && p->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW2, B4 ) )
+      {
+        tww2_blood_4pc_cleave_targets = data().effectN( 1 ).chain_target() +
+                                        as<int>( p->spell.luck_of_the_draw->effectN( 4 ).base_value() );
+      }
   }
 
   void init_finished() override
@@ -8519,6 +8542,13 @@ struct death_strike_t final : public death_knight_melee_attack_t
     {
       sanguination_pct = 1 + ( 0.25 * ( 1 + p()->talent.unholy_bond->effectN( 1 ).percent() ) );
     }
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW2, B4 ) && p()->buffs.luck_of_the_draw->check() )
+      return tww2_blood_4pc_cleave_targets;
+    return death_knight_melee_attack_t::n_targets();
   }
 
   double action_multiplier() const override
@@ -8565,13 +8595,18 @@ struct death_strike_t final : public death_knight_melee_attack_t
     return c;
   }
 
+  void impact( action_state_t* state ) override
+  {
+    death_knight_melee_attack_t::impact( state );
+
+    p()->buffs.coagulopathy->trigger();
+  }
+
   void execute() override
   {
     p()->buffs.voracious->trigger();
 
     death_knight_melee_attack_t::execute();
-
-    p()->buffs.coagulopathy->trigger();
 
     if ( oh_attack )
       oh_attack->execute_on_target( execute_state->target );
@@ -8596,6 +8631,7 @@ private:
   propagate_const<action_t*> oh_attack;
   double improved_death_strike_reduction;
   double sanguination_pct;
+  int tww2_blood_4pc_cleave_targets;
 };
 
 // Empower Rune Weapon ======================================================
@@ -15112,7 +15148,7 @@ void pets::pet_action_t<T_PET, Base>::apply_pet_action_effects()
   parse_effects( dk()->buffs.heartrend, dk()->talent.blood.heartrend );
   parse_effects( dk()->buffs.hemostasis );
   parse_effects( dk()->buffs.ossuary );
-  parse_effects( dk()->buffs.luck_of_the_draw );
+  parse_effects( dk()->buffs.luck_of_the_draw, effect_mask_t( true ).disable( 4, 5 ) );
 
   // Don't auto parse coag, since there is some snapshot behavior when the weapon dies
   // parse_effects( dk()->buffs.coagulopathy );
@@ -15196,7 +15232,9 @@ void death_knight_action_t<Base>::apply_action_effects()
   parse_effects( p()->buffs.heartrend, p()->talent.blood.heartrend );
   parse_effects( p()->buffs.hemostasis );
   parse_effects( p()->buffs.ossuary );
-  parse_effects( p()->buffs.luck_of_the_draw );
+  parse_effects( p()->buffs.luck_of_the_draw, effect_mask_t( true ).disable( 4, 5 ) );
+  if ( p()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW2, B4 ) )
+    parse_effects( p()->buffs.luck_of_the_draw, effect_mask_t( false ).enable( 5 ) );
 
   // Frost
   parse_effects( p()->buffs.rime, p()->talent.frost.improved_rime );
