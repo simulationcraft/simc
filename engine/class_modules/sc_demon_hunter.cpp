@@ -25,6 +25,10 @@ namespace attacks
 {
 struct auto_attack_damage_t;
 }
+namespace spells
+{
+struct metamorphosis_t;
+}
 }  // namespace actions
 namespace items
 {
@@ -897,11 +901,12 @@ public:
   struct actives_t
   {
     // General
-    heal_t* consume_soul_greater     = nullptr;
-    heal_t* consume_soul_lesser      = nullptr;
-    spell_t* immolation_aura         = nullptr;
-    spell_t* immolation_aura_initial = nullptr;
-    spell_t* collective_anguish      = nullptr;
+    heal_t* consume_soul_greater                            = nullptr;
+    heal_t* consume_soul_lesser                             = nullptr;
+    spell_t* immolation_aura                                = nullptr;
+    spell_t* immolation_aura_initial                        = nullptr;
+    spell_t* collective_anguish                             = nullptr;
+    actions::spells::metamorphosis_t* metamorphosis_demonic = nullptr;
 
     // Havoc
     spell_t* burning_wound                                 = nullptr;
@@ -3986,6 +3991,20 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
 struct metamorphosis_t : public demon_hunter_spell_t
 {
+  // special action state specifically for vengeance that causes
+  // all meta actions to proc cast triggers
+  struct vengeance_state_t : public action_state_t
+  {
+    vengeance_state_t( action_t* action, player_t* target ) : action_state_t( action, target )
+    {
+    }
+
+    proc_types2 cast_proc_type2() const override
+    {
+      return PROC2_CAST_GENERIC;
+    }
+  };
+
   struct metamorphosis_impact_t : public demon_hunter_spell_t
   {
     metamorphosis_impact_t( util::string_view name, demon_hunter_t* p )
@@ -3998,9 +4017,11 @@ struct metamorphosis_t : public demon_hunter_spell_t
 
   double landing_distance;
   timespan_t gcd_lag;
+  bool from_demonic;
 
+  // active cast
   metamorphosis_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_spell_t( "metamorphosis", p, p->spec.metamorphosis ), landing_distance( 0.0 )
+    : demon_hunter_spell_t( "metamorphosis", p, p->spec.metamorphosis ), landing_distance( 0.0 ), from_demonic( false )
   {
     add_option( opt_float( "landing_distance", landing_distance, 0.0, 40.0 ) );
     parse_options( options_str );
@@ -4028,19 +4049,42 @@ struct metamorphosis_t : public demon_hunter_spell_t
     }
   }
 
+  // background trigger
+  metamorphosis_t( util::string_view name, demon_hunter_t* p )
+    : demon_hunter_spell_t( name, p, p->spec.metamorphosis ), landing_distance( 0.0 ), from_demonic( false )
+  {
+    background         = true;
+    cooldown->duration = 0_s;
+    trigger_gcd        = timespan_t::zero();
+
+    may_miss     = false;
+    dot_duration = timespan_t::zero();
+
+    harmful = false;
+  }
+
+  action_state_t* new_state() override
+  {
+    return p()->specialization() == DEMON_HUNTER_VENGEANCE ? new vengeance_state_t( this, target )
+                                                           : new action_state_t( this, target );
+  }
+
   // Meta leap travel time and self-pacify is a 1s hidden aura (201453) regardless of distance
   // This is affected by aura lag and will slightly delay execution of follow-up attacks
   // Not always relevant as GCD can be longer than the 1s + lag ability delay outside of lust
-  void schedule_execute( action_state_t* s ) override
+  void schedule_execute( action_state_t* execute_state = nullptr ) override
   {
-    gcd_lag = rng().gauss( sim->gcd_lag );
-    min_gcd = 1_s + gcd_lag;
-    demon_hunter_spell_t::schedule_execute( s );
+    if ( !background )
+    {
+      gcd_lag = rng().gauss( sim->gcd_lag );
+      min_gcd = 1_s + gcd_lag;
+    }
+    demon_hunter_spell_t::schedule_execute( execute_state );
   }
 
   timespan_t travel_time() const override
   {
-    if ( p()->specialization() == DEMON_HUNTER_HAVOC )
+    if ( p()->specialization() == DEMON_HUNTER_HAVOC && !background )
       return min_gcd;
     else  // DEMON_HUNTER_VENGEANCE
       return timespan_t::zero();
@@ -4050,75 +4094,95 @@ struct metamorphosis_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
 
-    if ( p()->specialization() == DEMON_HUNTER_HAVOC )
+    if ( !background )  // hardcast meta
     {
-      // 2023-01-31 -- Metamorphosis's "extension" mechanic technically fades and reapplies the buff
-      //               This means it (probably inadvertently) triggers Restless Hunter
-      if ( p()->talent.havoc.restless_hunter->ok() && p()->buff.metamorphosis->check() )
+      // hardcast meta removes the existing meta buff and then applies a pandemic-ed meta buff
+      timespan_t duration     = p()->buff.metamorphosis->buff_duration();
+      timespan_t residual     = std::min( duration * 0.3, p()->buff.metamorphosis->remains() );
+      timespan_t new_duration = duration + residual;
+      p()->buff.metamorphosis->expire();
+      p()->buff.metamorphosis->trigger( new_duration );
+
+      if ( p()->specialization() == DEMON_HUNTER_HAVOC )
       {
-        p()->cooldown.fel_rush->reset( false, 1 );
-        p()->buff.restless_hunter->trigger();
+        // 2025-01-31 -- Metamorphosis's "extension" mechanic technically fades and reapplies the buff
+        //               This means it triggers Restless Hunter
+        if ( p()->talent.havoc.restless_hunter->ok() && p()->buff.metamorphosis->check() )
+        {
+          p()->cooldown.fel_rush->reset( false, 1 );
+          p()->buff.restless_hunter->trigger();
+        }
+
+        for ( demonsurge_ability ability : demonsurge_havoc_abilities )
+        {
+          p()->buff.demonsurge_abilities[ ability ]->trigger();
+        }
+        p()->buff.demonsurge_demonic->trigger();
+        p()->buff.demonsurge_hardcast->trigger();
+        p()->buff.demonsurge->expire();
+
+        if ( p()->talent.havoc.chaotic_transformation->ok() )
+        {
+          p()->cooldown.eye_beam->reset( false );
+          p()->cooldown.blade_dance->reset( false );
+        }
+
+        if ( p()->talent.felscarred.violent_transformation->ok() )
+        {
+          p()->cooldown.immolation_aura->reset( false, -1 );
+          p()->cooldown.sigil_of_flame->reset( false );
+        }
+
+        // Cancel all previous movement events, as Metamorphosis is ground-targeted
+        // If we are landing outside point-blank range, trigger the movement buff
+        p()->set_out_of_range( timespan_t::zero() );
+        if ( landing_distance > 0.0 )
+        {
+          p()->buff.metamorphosis_move->distance_moved = landing_distance;
+          p()->buff.metamorphosis_move->trigger();
+        }
       }
-
-      for ( demonsurge_ability ability : demonsurge_havoc_abilities )
+      else  // DEMON_HUNTER_VENGEANCE
       {
-        p()->buff.demonsurge_abilities[ ability ]->trigger();
-      }
-      p()->buff.demonsurge_demonic->trigger();
-      p()->buff.demonsurge_hardcast->trigger();
-      p()->buff.demonsurge->expire();
+        for ( demonsurge_ability ability : demonsurge_vengeance_abilities )
+        {
+          p()->buff.demonsurge_abilities[ ability ]->trigger();
+        }
+        p()->buff.demonsurge_demonic->trigger();
+        p()->buff.demonsurge_hardcast->trigger();
+        p()->buff.metamorphosis->trigger();
+        p()->buff.demonsurge->expire();
 
-      // Buff is gained at the start of the leap.
-      p()->buff.metamorphosis->extend_duration_or_trigger();
-      p()->buff.inner_demon->trigger();
-
-      if ( p()->talent.havoc.chaotic_transformation->ok() )
-      {
-        p()->cooldown.eye_beam->reset( false );
-        p()->cooldown.blade_dance->reset( false );
-      }
-
-      if ( p()->talent.felscarred.violent_transformation->ok() )
-      {
-        p()->cooldown.immolation_aura->reset( false, -1 );
-        p()->cooldown.sigil_of_flame->reset( false );
-      }
-
-      // Cancel all previous movement events, as Metamorphosis is ground-targeted
-      // If we are landing outside of point-blank range, trigger the movement buff
-      p()->set_out_of_range( timespan_t::zero() );
-      if ( landing_distance > 0.0 )
-      {
-        p()->buff.metamorphosis_move->distance_moved = landing_distance;
-        p()->buff.metamorphosis_move->trigger();
+        if ( p()->talent.felscarred.violent_transformation->ok() )
+        {
+          p()->cooldown.fel_devastation->reset( false );
+          p()->cooldown.sigil_of_flame->reset( false, -1 );
+        }
       }
     }
-    else  // DEMON_HUNTER_VENGEANCE
+    else  // triggered meta
     {
-      for ( demonsurge_ability ability : demonsurge_vengeance_abilities )
+      if ( from_demonic )
       {
-        p()->buff.demonsurge_abilities[ ability ]->trigger();
-      }
-      p()->buff.demonsurge_demonic->trigger();
-      p()->buff.demonsurge_hardcast->trigger();
-      p()->buff.metamorphosis->trigger();
-      p()->buff.demonsurge->expire();
+        if ( !p()->buff.metamorphosis->up() )
+        {
+          if ( p()->specialization() == DEMON_HUNTER_HAVOC )
+          {
+            p()->buff.demonsurge_abilities[ demonsurge_ability::ANNIHILATION ]->trigger();
+            p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
+          }
+          else
+          {
+            p()->buff.demonsurge_abilities[ demonsurge_ability::SOUL_SUNDER ]->trigger();
+            p()->buff.demonsurge_abilities[ demonsurge_ability::SPIRIT_BURST ]->trigger();
+          }
+          p()->buff.demonsurge_demonic->trigger();
+        }
 
-      if ( p()->talent.felscarred.violent_transformation->ok() )
-      {
-        p()->cooldown.fel_devastation->reset( false );
-        p()->cooldown.sigil_of_flame->reset( false, -1 );
+        p()->buff.metamorphosis->extend_duration_or_trigger(
+            p()->talent.demon_hunter.demonic->effectN( 1 ).time_value() );
       }
     }
-  }
-
-  bool ready() override
-  {
-    // Not usable during the root effect of Stormeater's Boon
-    if ( p()->buffs.stormeaters_boon && p()->buffs.stormeaters_boon->check() )
-      return false;
-
-    return demon_hunter_spell_t::ready();
   }
 };
 
@@ -7077,31 +7141,9 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     }
   }
 
-  void trigger_demonic()
-  {
-    if ( !p()->buff.metamorphosis->up() )
-    {
-      if ( p()->specialization() == DEMON_HUNTER_HAVOC )
-      {
-        p()->buff.demonsurge_abilities[ demonsurge_ability::ANNIHILATION ]->trigger();
-        p()->buff.demonsurge_abilities[ demonsurge_ability::DEATH_SWEEP ]->trigger();
-      }
-      else
-      {
-        p()->buff.demonsurge_abilities[ demonsurge_ability::SOUL_SUNDER ]->trigger();
-        p()->buff.demonsurge_abilities[ demonsurge_ability::SPIRIT_BURST ]->trigger();
-      }
-      p()->buff.demonsurge_demonic->trigger();
-    }
-
-    const timespan_t extend_duration = p()->talent.demon_hunter.demonic->effectN( 1 ).time_value();
-    p()->buff.metamorphosis->extend_duration_or_trigger( extend_duration );
-    p()->buff.inner_demon->trigger();
-  }
-
   void start( int stacks, double value, timespan_t duration ) override
   {
-    demon_hunter_buff_t<buff_t>::start( stacks, value, duration );
+    base_t::start( stacks, value, duration );
 
     if ( p()->specialization() == DEMON_HUNTER_VENGEANCE )
     {
@@ -7122,6 +7164,16 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       p()->buff.necessary_sacrifice->trigger( p()->buff.winning_streak->stack() );
       p()->buff.winning_streak->expire();
+    }
+  }
+
+  void bump( int stacks, double value ) override
+  {
+    base_t::bump( stacks, value );
+
+    if ( p()->talent.havoc.inner_demon->ok() )
+    {
+      p()->buff.inner_demon->trigger();
     }
   }
 
@@ -7253,7 +7305,7 @@ struct luck_of_the_draw_buff_t : public demon_hunter_buff_t<buff_t>
 
   void bump( int stacks, double value ) override
   {
-    buff_t::bump( stacks, value );
+    base_t::bump( stacks, value );
 
     if ( p()->talent.demon_hunter.the_hunt->ok() && p()->set_bonuses.tww2_vengeance_4pc->ok() &&
          rng().roll( p()->set_bonuses.tww2_vengeance_4pc->effectN( 1 ).percent() ) )
@@ -8786,6 +8838,11 @@ void demon_hunter_t::init_spells()
   {
     active.collective_anguish = get_background_action<collective_anguish_t>( "collective_anguish" );
   }
+  if ( talent.demon_hunter.demonic->ok() )
+  {
+    active.metamorphosis_demonic               = get_background_action<metamorphosis_t>( "metamorphosis_demonic" );
+    active.metamorphosis_demonic->from_demonic = true;
+  }
 
   if ( talent.havoc.demon_blades->ok() )
   {
@@ -9774,10 +9831,10 @@ void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n, player
 
 void demon_hunter_t::trigger_demonic()
 {
-  if ( !talent.demon_hunter.demonic->ok() )
+  if ( !talent.demon_hunter.demonic->ok() || !active.metamorphosis_demonic )
     return;
 
-  debug_cast<buffs::metamorphosis_buff_t*>( buff.metamorphosis )->trigger_demonic();
+  active.metamorphosis_demonic->schedule_execute();
 }
 
 // demon_hunter_t::trigger_demonsurge =============================================
