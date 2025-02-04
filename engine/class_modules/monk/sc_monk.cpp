@@ -4827,8 +4827,8 @@ struct sheiluns_gift_t : public monk_heal_t
   {
     base_t::execute();
 
-    int stacks = p()->buff.sheiluns_gift->stack();
-    p()->buff.sheiluns_gift->reset();
+    double stacks = as<double>( p()->buff.sheiluns_gift->stack() );
+    p()->buff.sheiluns_gift->expire();
 
     p()->buff.heart_of_the_jade_serpent_stack_mw->increment( stacks );
 
@@ -4836,7 +4836,7 @@ struct sheiluns_gift_t : public monk_heal_t
     {
       timespan_t max_duration =
           timespan_t::from_seconds( p()->talent.mistweaver.shaohaos_lessons->effectN( 1 ).base_value() );
-      int max_stacks      = p()->buff.sheiluns_gift->max_stack();
+      double max_stacks   = as<double>( p()->buff.sheiluns_gift->max_stack() );
       timespan_t duration = max_duration * stacks / max_stacks;
 
       switch ( shaohao_buff_e( shaohao_rng->trigger() ) )
@@ -4854,6 +4854,7 @@ struct sheiluns_gift_t : public monk_heal_t
           p()->buff.lesson_of_fear->trigger( duration );
           break;
         default:
+          assert( "unknown shaohao buff drawn from deck" );
           break;
       }
     }
