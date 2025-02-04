@@ -261,7 +261,8 @@ void monk_action_t<Base>::apply_debuff_effects()
   if ( p()->talent.mistweaver.shaohaos_lessons->ok() )
     parse_target_effects(
         [ this ]( actor_target_data_t *td ) {
-          double interpolate = std::min( 100.0 - td->target->health_percentage(), 75.0 ) / 100.0;
+          // linear interpolation of hp% from [1, 0.25] to coefficient of [0, 1]
+          double interpolate = std::min( 4.0 / 3.0 * ( 1.0 - td->target->health_percentage() / 100.0 ), 1.0 );
           return p()->buff.lesson_of_doubt->check() ? interpolate : 0.0;
         },
         p()->talent.mistweaver.lesson_of_doubt_buff );
