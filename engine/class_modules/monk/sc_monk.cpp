@@ -581,16 +581,22 @@ void monk_action_t<Base>::execute()
       combo_strikes_trigger();
   }
 
-  base_t::execute();
-
-  trigger_storm_earth_and_fire( this );
+  static const std::array<unsigned, 2> winning_streak_cancel_list = {
+      p()->baseline.monk.spinning_crane_kick->id(),
+      p()->talent.monk.rising_sun_kick->id(),
+  };
 
   // TWW S2 WW 2pc
-  if ( p()->tier.tww2.winning_streak->up() &&
-       base_t::data().affected_by( p()->tier.tww2.ww_2pc_winning_streak->effectN( 1 ) ) )
+  if ( p()->tier.tww2.winning_streak->check() &&
+       std::find( winning_streak_cancel_list.begin(), winning_streak_cancel_list.end(), base_t::data().id() ) !=
+           winning_streak_cancel_list.end() )
     if ( p()->rng().roll( p()->tier.tww2.ww_2pc->effectN( 1 ).percent() ) ||
          p()->tier.tww2.winning_streak->at_max_stacks() )
       p()->tier.tww2.winning_streak->expire();
+
+  base_t::execute();
+
+  trigger_storm_earth_and_fire( this );
 
   // TWW S1 Windwalker 2PC
   if ( p()->buff.tiger_strikes->up() )
@@ -7764,7 +7770,7 @@ void monk_t::create_buffs()
   buff.storm_earth_and_fire =
       make_buff_fallback( talent.windwalker.storm_earth_and_fire->ok(), this, "storm_earth_and_fire",
                           talent.windwalker.storm_earth_and_fire )
-          ->set_stack_change_callback( [ & ]( buff_t *b, int old_, int new_ ) {
+          ->set_stack_change_callback( [ & ]( buff_t *, int old_, int new_ ) {
             if ( is_ptr() )
             {
               if ( new_ )
