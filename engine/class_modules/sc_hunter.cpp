@@ -1253,9 +1253,6 @@ public:
     affected_by.lead_from_the_front = parse_damage_affecting_aura( this, p->talents.lead_from_the_front_buff );
 
     affected_by.tww_s2_mm_2pc = parse_damage_affecting_aura( this, p -> tier_set.tww_s2_mm_2pc->effectN( 2 ).trigger() );
-    affected_by.tww_s2_sv_2pc = parse_damage_affecting_aura( this, p -> tier_set.tww_s2_sv_2pc ); // Winning Streak affects Wildfire Bomb
-    affected_by.tww_s2_sv_4pc = parse_damage_affecting_aura( this, p -> tier_set.tww_s2_sv_4pc ); // Strike It Rich affects Mongoose Bite
-
 
     // Hunter Tree passives
     ab::apply_affecting_aura( p -> talents.specialized_arsenal );
@@ -1297,8 +1294,6 @@ public:
     ab::apply_affecting_aura( p -> tier_set.tww_s1_mm_2pc );
     ab::apply_affecting_aura( p -> tier_set.tww_s1_mm_4pc );
     ab::apply_affecting_aura( p -> tier_set.tww_s1_sv_2pc );
-    ab::apply_affecting_aura( p -> tier_set.tww_s2_sv_2pc );
-    ab::apply_affecting_aura( p -> tier_set.tww_s2_sv_4pc );
 
     // Hero Tree passives
     ab::apply_affecting_aura( p->talents.sentinel_precision );
@@ -6253,7 +6248,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     am *= 1 + p() -> buffs.mongoose_fury -> stack_value();
         
     if ( p()->buffs.strike_it_rich->check() )
-      am *= 5.0;
+      am *= 1 + p() -> buffs.strike_it_rich -> value().percent();  
 
     return am;
   }
@@ -7856,6 +7851,8 @@ struct wildfire_bomb_base_t: public hunter_spell_t
 
       am *= 1 + p()->buffs.wildfire_arsenal->stack_value();
 
+      am *= 1 + p()->buffs.winning_streak->stack_value();
+
       return am;
     }
   };
@@ -9044,13 +9041,11 @@ void hunter_t::create_buffs()
 
   buffs.winning_streak = 
     make_buff( this, "winning_streak", find_spell( 1216874 ) ) 
-    -> set_max_stack( 6 )
-    -> set_duration( 30 );
+    ->set_default_value_from_effect( 1 ); // Damage increase per stack to wildfire bomb
 
   buffs.strike_it_rich = 
     make_buff( this, "strike_it_rich", find_spell( 1216879 ) ) 
-    -> set_duration( 10 ) 
-    -> set_default_value_from_effect( 1 );    
+    -> set_default_value_from_effect( 1 ); // Damage increase to mongoose/raptor strike
 
   // Hero Talents
 
