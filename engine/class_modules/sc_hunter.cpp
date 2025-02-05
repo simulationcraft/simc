@@ -428,6 +428,8 @@ public:
 
     spell_data_ptr_t tww_s2_mm_2pc;
     spell_data_ptr_t tww_s2_mm_4pc;
+    spell_data_ptr_t tww_s2_sv_2pc;
+    spell_data_ptr_t tww_s2_sv_4pc;
   } tier_set;
 
   struct buffs_t
@@ -493,6 +495,8 @@ public:
     buff_t* harmonize; // BM 4pc
     // TWW - S2
     buff_t* jackpot; // MM 2pc
+    buff_t* winning_streak;  // SV 2pc - Wildfire Bomb damage stacking buff
+    buff_t* strike_it_rich;  // SV 4pc - Mongoose Bite damage buff, consuming it reduces Wildfire Bomb cooldown
 
     // Hero Talents 
 
@@ -1249,6 +1253,9 @@ public:
     affected_by.lead_from_the_front = parse_damage_affecting_aura( this, p->talents.lead_from_the_front_buff );
 
     affected_by.tww_s2_mm_2pc = parse_damage_affecting_aura( this, p -> tier_set.tww_s2_mm_2pc->effectN( 2 ).trigger() );
+    affected_by.tww_s2_sv_2pc = parse_damage_affecting_aura( this, p -> tier_set.tww_s2_sv_2pc ); // Winning Streak affects Wildfire Bomb
+    affected_by.tww_s2_sv_4pc = parse_damage_affecting_aura( this, p -> tier_set.tww_s2_sv_4pc ); // Strike It Rich affects Mongoose Bite
+
 
     // Hunter Tree passives
     ab::apply_affecting_aura( p -> talents.specialized_arsenal );
@@ -1290,6 +1297,8 @@ public:
     ab::apply_affecting_aura( p -> tier_set.tww_s1_mm_2pc );
     ab::apply_affecting_aura( p -> tier_set.tww_s1_mm_4pc );
     ab::apply_affecting_aura( p -> tier_set.tww_s1_sv_2pc );
+    ab::apply_affecting_aura( p -> tier_set.tww_s2_sv_2pc );
+    ab::apply_affecting_aura( p -> tier_set.tww_s2_sv_4pc );
 
     // Hero Tree passives
     ab::apply_affecting_aura( p->talents.sentinel_precision );
@@ -6242,6 +6251,9 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     double am = hunter_melee_attack_t::action_multiplier();
 
     am *= 1 + p() -> buffs.mongoose_fury -> stack_value();
+        
+    if ( p()->buffs.strike_it_rich->check() )
+      am *= 5.0;
 
     return am;
   }
@@ -6298,6 +6310,12 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( 4 ).time_value() );
 
     p()->buffs.hogstrider->expire();
+
+        if ( p()->tier_set.tww_s2_sv_4pc.ok() && p()->buffs.strike_it_rich->check() )
+    {
+        p()->buffs.strike_it_rich->expire();
+        p()->cooldowns.wildfire_bomb->adjust( -10.0 );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -7858,6 +7876,15 @@ struct wildfire_bomb_base_t: public hunter_spell_t
     {
       p()->cooldowns.butchery->adjust( -timespan_t::from_seconds( p()->talents.covering_fire->effectN( 2 ).base_value() ) );
     }
+
+    
+    if ( p()->tier_set.tww_s2_sv_2pc.ok() )
+    {
+      if ( p()->buffs.winning_streak->check() && rng().roll( 0.15 ) )
+      {
+          p()->buffs.winning_streak->expire();  // Consume 2pc buff
+          p()->buffs.strike_it_rich->trigger(); // Apply 4pc buff
+    }
   }
 };
 
@@ -8621,6 +8648,8 @@ void hunter_t::init_spells()
 
   tier_set.tww_s2_mm_2pc = sets -> set( HUNTER_MARKSMANSHIP, TWW2, B2 );
   tier_set.tww_s2_mm_4pc = sets -> set( HUNTER_MARKSMANSHIP, TWW2, B4 );
+  tier_set.tww_s2_sv_2pc = sets -> set( HUNTER_SURVIVAL, TWW2, B2 );
+  tier_set.tww_s2_sv_4pc = sets -> set( HUNTER_SURVIVAL, TWW2, B4 );
 
   // Cooldowns
   cooldowns.target_acquisition->duration = talents.target_acquisition->internal_cooldown();
@@ -9013,6 +9042,16 @@ void hunter_t::create_buffs()
     = make_buff( this, "jackpot", tier_set.tww_s2_mm_2pc->effectN( 2 ).trigger() )
       ->set_default_value_from_effect( 1 );
 
+  buffs.winning_streak = 
+    make_buff( this, "winning_streak", find_spell( 1216874 ) ) 
+    -> set_max_stack( 6 )
+    -> set_duration( 30 );
+
+  buffs.strike_it_rich = 
+    make_buff( this, "strike_it_rich", find_spell( 1216879 ) ) 
+    -> set_duration( 10 ) 
+    -> set_default_value_from_effect( 1 );    
+
   // Hero Talents
 
   buffs.howl_of_the_pack_leader_wyvern_ready = 
@@ -9199,6 +9238,11 @@ void hunter_t::init_rng()
   
   rppm.shadow_hounds = get_rppm( "Shadow Hounds", talents.shadow_hounds );
   rppm.shadow_surge = get_rppm( "Shadow Surge", talents.shadow_surge );
+  if ( tier_set.tww_s2_sv_2pc.ok() )
+{
+    rppm.winning_streak = get_rppm( "Winning Streak", 10.0, 1.0, RPPM_HASTE );
+}
+
 }
 
 void hunter_t::init_scaling()
@@ -9423,6 +9467,39 @@ void hunter_t::init_special_effects()
 
     auto cb = new dbc_proc_callback_t( this, *effect );
     cb->initialize();
+  }
+
+  if ( tier_set.tww_s2_sv_2pc.ok() )
+  {
+      struct winning_streak_cb_t : public dbc_proc_callback_t
+      {
+          hunter_t* player;
+
+          winning_streak_cb_t( const special_effect_t& e, hunter_t* p )
+              : dbc_proc_callback_t( p, e ), player( p )
+          {
+          }
+
+          void execute( action_t* a, action_state_t* s ) override
+          {
+              dbc_proc_callback_t::execute( a, s );
+
+              // Winning Streak - 10 PPM scaling with Haste
+              if ( player->rppm.winning_streak->trigger() )
+              {
+                  player->buffs.winning_streak->increment();
+              }
+          }
+      };
+
+      auto const effect = new special_effect_t( this );
+      effect->name_str = "winning_streak";
+      effect->spell_id = tier_set.tww_s2_sv_2pc->id();
+      effect->custom_buff = buffs.winning_streak;
+      special_effects.push_back( effect );
+
+      auto cb = new winning_streak_cb_t( *effect, this );
+      cb->initialize();
   }
 }
 
