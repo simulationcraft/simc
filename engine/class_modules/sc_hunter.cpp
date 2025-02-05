@@ -9471,34 +9471,13 @@ void hunter_t::init_special_effects()
 
   if ( tier_set.tww_s2_sv_2pc.ok() )
   {
-      struct winning_streak_cb_t : public dbc_proc_callback_t
-      {
-          hunter_t* player;
-
-          winning_streak_cb_t( const special_effect_t& e, hunter_t* p )
-              : dbc_proc_callback_t( p, e ), player( p )
-          {
-          }
-
-          void execute( action_t* a, action_state_t* s ) override
-          {
-              dbc_proc_callback_t::execute( a, s );
-
-              // Winning Streak - 10 PPM scaling with Haste
-              if ( player->rppm.winning_streak->trigger() )
-              {
-                  player->buffs.winning_streak->increment();
-              }
-          }
-      };
-
       auto const effect = new special_effect_t( this );
       effect->name_str = "winning_streak";
       effect->spell_id = tier_set.tww_s2_sv_2pc->id();
       effect->custom_buff = buffs.winning_streak;
       special_effects.push_back( effect );
 
-      auto cb = new winning_streak_cb_t( *effect, this );
+      auto cb = new dbc_proc_callback_t( this, *effect );
       cb->initialize();
   }
 }
