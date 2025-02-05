@@ -17787,6 +17787,7 @@ Description      : $@spelldesc1215726
 Tooltip          : On a|cFFFFFFFF Winning Streak!|r Death Coil and Epidemic damage increased by $w1%.
 
 Name             : Winning Streak! (id=1217897) [Spell Family (15)] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -17801,6 +17802,7 @@ Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Death Knight Frost 11.1 Class Set 2pc (1215727)
 Attributes       : Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1202282)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.5 | Target: Self (1)
