@@ -12395,8 +12395,9 @@ Labels           : 16: Class Spells
 Attributes       : Include In Advanced Combat Log (72), Allow Aura While Dead (116), Do Not Display Range (126), Do Not Display Duration (170)
 Effects          :
 #1 (id=1026956)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 0x7f | Radius: 100 yards | Target: Unknown(120)
+                   Base Value: 45 | Scaled Value: 45 | Misc Value: 0x7f | Radius: 100 yards | Target: Unknown(120)
                    Affected School(s): All
+Hotfixed         : Base Value (35 -> 45)
 #2 (id=1026957)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 15 | Scaled Value: 15 | Radius: 25 yards | Target: Unknown(120)
 Description      : $@spelldesc390259
