@@ -6309,7 +6309,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
         if ( p()->tier_set.tww_s2_sv_4pc.ok() && p()->buffs.strike_it_rich->check() )
     {
         p()->buffs.strike_it_rich->expire();
-        p()->cooldowns.wildfire_bomb->adjust( -10.0 );
+        p()->cooldowns.wildfire_bomb->adjust( -p()->buffs.strike_it_rich->data().effectN( 2 ).time_value() );
     }
   }
 
@@ -9233,10 +9233,6 @@ void hunter_t::init_rng()
   
   rppm.shadow_hounds = get_rppm( "Shadow Hounds", talents.shadow_hounds );
   rppm.shadow_surge = get_rppm( "Shadow Surge", talents.shadow_surge );
-  if ( tier_set.tww_s2_sv_2pc.ok() )
-{
-    rppm.winning_streak = get_rppm( "Winning Streak", 10.0, 1.0, RPPM_HASTE );
-}
 
 }
 
