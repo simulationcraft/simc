@@ -7882,6 +7882,7 @@ struct wildfire_bomb_base_t: public hunter_spell_t
           p()->buffs.strike_it_rich->trigger(); // Apply 4pc buff
       }
     }
+  }
 };
 
 struct wildfire_bomb_t: public wildfire_bomb_base_t
