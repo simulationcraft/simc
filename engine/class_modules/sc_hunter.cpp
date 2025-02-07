@@ -6248,7 +6248,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     am *= 1 + p() -> buffs.mongoose_fury -> stack_value();
         
     if ( p()->buffs.strike_it_rich->check() )
-      am *= 1 + p() -> buffs.strike_it_rich -> value().percent();  
+      am *= 1 + p() -> buffs.strike_it_rich -> value();  
 
     return am;
   }
@@ -7874,15 +7874,14 @@ struct wildfire_bomb_base_t: public hunter_spell_t
       p()->cooldowns.butchery->adjust( -timespan_t::from_seconds( p()->talents.covering_fire->effectN( 2 ).base_value() ) );
     }
 
-    
     if ( p()->tier_set.tww_s2_sv_2pc.ok() )
     {
-      if ( p()->buffs.winning_streak->check() && rng().roll( 0.15 ) )
+      if ( p()->buffs.winning_streak->check() && rng().roll( p()->tier_set.tww_s2_sv_2pc->proc_chance() ) )
       {
           p()->buffs.winning_streak->expire();  // Consume 2pc buff
           p()->buffs.strike_it_rich->trigger(); // Apply 4pc buff
+      }
     }
-  }
 };
 
 struct wildfire_bomb_t: public wildfire_bomb_base_t
