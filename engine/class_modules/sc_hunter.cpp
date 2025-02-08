@@ -758,7 +758,7 @@ public:
     spell_data_ptr_t killer_instinct;
     spell_data_ptr_t master_handler;
     spell_data_ptr_t barbed_wrath;
-    spell_data_ptr_t thunderous_hooves; //TODO 
+    spell_data_ptr_t thundering_hooves; //TODO 
     spell_data_ptr_t explosive_venom; //TODO delete
     spell_data_ptr_t dire_frenzy;
     spell_data_ptr_t basilisk_collar; //TODO delete
@@ -2338,6 +2338,9 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
   {
     hunter_main_pet_base_t::summon( duration );
 
+    if ( o()->talents.trigger_finger.ok() )
+      o()->invalidate_cache( CACHE_AUTO_ATTACK_SPEED );
+
     o() -> pets.main = this;
     
     if ( o()->talents.solitary_companion.ok() )
@@ -2353,8 +2356,6 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
 
     spec_passive() -> trigger();
 
-    if ( o()->talents.trigger_finger.ok() )
-      o()->invalidate_cache( CACHE_AUTO_ATTACK_SPEED );
   }
 
   void demise() override
@@ -8452,7 +8453,7 @@ void hunter_t::init_spells()
     talents.killer_instinct                   = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Instinct", HUNTER_BEAST_MASTERY );
     talents.master_handler                    = find_talent_spell( talent_tree::SPECIALIZATION, "Master Handler", HUNTER_BEAST_MASTERY );
     talents.barbed_wrath                      = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Wrath", HUNTER_BEAST_MASTERY );
-    talents.thunderous_hooves                 = find_talent_spell( talent_tree::SPECIALIZATION, "Thunderous Hooves", HUNTER_BEAST_MASTERY );
+    talents.thundering_hooves                 = find_talent_spell( talent_tree::SPECIALIZATION, "Thundering Hooves", HUNTER_BEAST_MASTERY );
     talents.explosive_venom                   = find_talent_spell( talent_tree::SPECIALIZATION, "Explosive Venom", HUNTER_BEAST_MASTERY );
     talents.dire_frenzy                       = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Frenzy", HUNTER_BEAST_MASTERY );
     talents.basilisk_collar                   = find_talent_spell( talent_tree::SPECIALIZATION, "Basilisk Collar", HUNTER_BEAST_MASTERY );
