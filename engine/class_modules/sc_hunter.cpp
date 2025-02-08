@@ -461,7 +461,6 @@ public:
     buff_t* beast_cleave; 
     buff_t* serpentine_rhythm;
     buff_t* serpentine_blessing;
-    buff_t* explosive_venom;
     buff_t* a_murder_of_crows;
     buff_t* huntmasters_call; 
     buff_t* summon_fenryr;
@@ -755,7 +754,6 @@ public:
     spell_data_ptr_t master_handler;
     spell_data_ptr_t barbed_wrath;
     spell_data_ptr_t thundering_hooves; //TODO should this be done with effectiveness state flag like s2 mm tier?
-    spell_data_ptr_t explosive_venom; //TODO delete
     spell_data_ptr_t dire_frenzy;
     
     spell_data_ptr_t call_of_the_wild;
@@ -4265,33 +4263,26 @@ struct serpent_sting_t: public hunter_ranged_attack_t
 
 struct explosive_shot_base_t : public hunter_ranged_attack_t
 {
-  static const snapshot_state_e STATE_EXPLOSIVE_VENOM = STATE_USER_1;
   static const snapshot_state_e STATE_EFFECTIVENESS = STATE_USER_2;
 
   struct state_data_t
   {
-    bool explosive_venom_ready = false;
     double effectiveness = 1.0;
 
     friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out )
     {
-      fmt::format_to( out, "explosive_venom_ready={}, effectiveness={}", data.explosive_venom_ready, data.effectiveness );
+      fmt::format_to( out, "effectiveness={}", data.effectiveness );
     }
   };
   using state_t = hunter_action_state_t<state_data_t>;
 
   struct damage_t final : hunter_ranged_attack_t
   {
-    serpent_sting_t* explosive_venom = nullptr;
-
     damage_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.explosive_shot_damage )
     {
       background = dual = true;
       reduced_aoe_targets = p->talents.explosive_shot_cast->effectN( 2 ).base_value();
       aoe = -1;
-      
-      if ( p->talents.explosive_venom.ok() )
-        explosive_venom = p->get_background_action<serpent_sting_t>( "serpent_sting" );
     }
 
     void execute() override
@@ -4317,9 +4308,6 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
     void impact( action_state_t* s ) override
     {
       hunter_ranged_attack_t::impact( s );
-
-      if ( explosive_venom && debug_cast<state_t*>( s )->explosive_venom_ready )
-        explosive_venom->execute_on_target( s->target );
 
       td( s->target )->debuffs.shrapnel_shot->trigger();
     }
@@ -4367,7 +4355,7 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::init();
 
     // Don't let dot ticks lose our cast state.
-    snapshot_flags = STATE_EXPLOSIVE_VENOM | STATE_EFFECTIVENESS;
+    snapshot_flags = STATE_EFFECTIVENESS;
   }
 
   // We have a whole lot of Explosive Shot variations that all need to work with the same dot.
@@ -4412,17 +4400,8 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
 
   void execute() override
   {
-    if ( p()->talents.explosive_venom.ok() ) 
-    {
-      p()->buffs.explosive_venom->up(); // Benefit tracking
-      p()->buffs.explosive_venom->increment();
-    }
-
     hunter_ranged_attack_t::execute();
     
-    if ( p()->buffs.explosive_venom->at_max_stacks() )
-      p()->buffs.explosive_venom->expire();
-
     p()->cooldowns.wildfire_bomb->adjust( -grenade_juggler_reduction );
     p()->buffs.bombardier->decrement();
 
@@ -4435,19 +4414,6 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
     double c = hunter_ranged_attack_t::cost_pct_multiplier();
 
     return c;
-  }
-
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
-
-  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
-  {
-    hunter_ranged_attack_t::snapshot_internal( s, flags, rt );
-
-    if ( flags & STATE_EXPLOSIVE_VENOM )
-      debug_cast<state_t*>( s )->explosive_venom_ready = p()->buffs.explosive_venom->at_max_stacks();
   }
 
   int n_targets() const override
@@ -5090,18 +5056,6 @@ struct lunar_storm_periodic_t : hunter_ranged_attack_t
 
 struct multishot_bm_t: public hunter_ranged_attack_t
 {
-  struct state_data_t
-  {
-    bool explosive_venom_ready = false;
-
-    friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out ) {
-      fmt::format_to( out, "explosive_venom_ready={}", data.explosive_venom_ready );
-    }
-  };
-  using state_t = hunter_action_state_t<state_data_t>;
-
-  serpent_sting_t* explosive_venom = nullptr;
-
   multishot_bm_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "multishot", p, p -> talents.multishot_bm )
   {
@@ -5109,23 +5063,11 @@ struct multishot_bm_t: public hunter_ranged_attack_t
 
     aoe = -1;
     reduced_aoe_targets = data().effectN( 1 ).base_value();
-
-    if ( p -> talents.explosive_venom.ok() )
-      explosive_venom = p->get_background_action<serpent_sting_t>( "serpent_sting" );
   }
 
   void execute() override
   {
-    if ( p()->talents.explosive_venom.ok() ) 
-    {
-      p()->buffs.explosive_venom->up(); // Benefit tracking
-      p()->buffs.explosive_venom->increment();
-    }
-    
     hunter_ranged_attack_t::execute();
-
-    if ( p()->buffs.explosive_venom->at_max_stacks() )
-      p()->buffs.explosive_venom->expire();
 
     if ( p()->talents.beast_cleave->ok() && p()->buffs.beast_cleave->buff_duration() > p()->buffs.beast_cleave->remains() ) {
 
@@ -5148,14 +5090,6 @@ struct multishot_bm_t: public hunter_ranged_attack_t
     }
   }
 
-  void impact(action_state_t* s) override
-  {
-    hunter_ranged_attack_t::impact( s );
-
-    if ( explosive_venom && debug_cast<state_t*>( s )->explosive_venom_ready )
-      explosive_venom->execute_on_target( s->target );
-  }
-
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = hunter_ranged_attack_t::composite_da_multiplier( s );
@@ -5163,17 +5097,6 @@ struct multishot_bm_t: public hunter_ranged_attack_t
     m *= 1.0 + p() -> buffs.scattered_prey -> value();
 
     return m;
-  }
-
-  action_state_t* new_state() override
-  {
-    return new state_t( this, target );
-  }
-
-  void snapshot_state( action_state_t* s, result_amount_type type ) override
-  {
-    hunter_ranged_attack_t::snapshot_state( s, type );
-    debug_cast<state_t*>( s ) -> explosive_venom_ready = p() -> buffs.explosive_venom -> at_max_stacks();
   }
 };
 
@@ -8330,7 +8253,6 @@ void hunter_t::init_spells()
     talents.master_handler                    = find_talent_spell( talent_tree::SPECIALIZATION, "Master Handler", HUNTER_BEAST_MASTERY );
     talents.barbed_wrath                      = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Wrath", HUNTER_BEAST_MASTERY );
     talents.thundering_hooves                 = find_talent_spell( talent_tree::SPECIALIZATION, "Thundering Hooves", HUNTER_BEAST_MASTERY );
-    talents.explosive_venom                   = find_talent_spell( talent_tree::SPECIALIZATION, "Explosive Venom", HUNTER_BEAST_MASTERY );
     talents.dire_frenzy                       = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Frenzy", HUNTER_BEAST_MASTERY );
 
     talents.call_of_the_wild                  = find_talent_spell( talent_tree::SPECIALIZATION, "Call of the Wild", HUNTER_BEAST_MASTERY );
@@ -8820,10 +8742,6 @@ void hunter_t::create_buffs()
     make_buff( this, "serpentine_blessing", find_spell( 468704 ) )
     -> set_default_value_from_effect( 1 )
     -> set_chance( talents.serpentine_rhythm.ok() );
-
-  buffs.explosive_venom = 
-    make_buff( this, "explosive_venom", find_spell( 459689 ) )
-    -> set_default_value_from_effect( 1 );
 
   buffs.a_murder_of_crows = 
     make_buff( this, "a_murder_of_crows", talents.a_murder_of_crows->effectN( 1 ).trigger() );
