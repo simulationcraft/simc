@@ -2,7 +2,7 @@ actions.precombat=/summon_pet
 actions.precombat+=/snapshot_stats
 actions.precombat+=/variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))
 actions.precombat+=/variable,name=trinket_2_stronger,value=!variable.trinket_1_stronger
-actions.precombat+=/bestial_wrath,if=talent.vicious_hunt&talent.call_of_the_wild
+actions.precombat+=/bestial_wrath,if=talent.call_of_the_wild
 
 # Executed every time the actor is available.
 actions=auto_shot
@@ -26,7 +26,7 @@ actions.cleave+=/call_of_the_wild
 actions.cleave+=/bestial_wrath
 actions.cleave+=/bloodshed
 actions.cleave+=/kill_command,target_if=max:(target.health.pct<35|!talent.killer_instinct)*2+dot.a_murder_of_crows.refreshable
-actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.call_of_the_wild.up|talent.furious_assault|talent.black_arrow&(talent.barbed_scales|talent.savagery)|fight_remains<9
+actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.call_of_the_wild.up|talent.black_arrow&(talent.barbed_scales|talent.savagery)|fight_remains<9
 actions.cleave+=/kill_shot
 actions.cleave+=/explosive_shot
 actions.cleave+=/dire_beast
@@ -38,13 +38,11 @@ actions.cleave+=/arcane_torrent,if=(focus+focus.regen+30)<focus.max
 actions.st=barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready&(!pet.main.buff.frenzy.up|talent.scent_of_blood)|talent.call_of_the_wild&cooldown.call_of_the_wild.ready)
 actions.st+=/dire_beast
 actions.st+=/kill_command,if=talent.call_of_the_wild&cooldown.call_of_the_wild.remains<gcd+0.25
-actions.st+=/black_arrow,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.refreshable
-actions.st+=/kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.refreshable
 actions.st+=/call_of_the_wild
 actions.st+=/bloodshed
 actions.st+=/bestial_wrath
 actions.st+=/kill_command
-actions.st+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_call&charges_fractional>1.4|buff.call_of_the_wild.up|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|talent.furious_assault|talent.black_arrow&(talent.barbed_scales|talent.savagery)|fight_remains<9
+actions.st+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_call&charges_fractional>1.4|buff.call_of_the_wild.up|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|talent.black_arrow&(talent.barbed_scales|talent.savagery)|fight_remains<9
 actions.st+=/black_arrow
 actions.st+=/kill_shot
 actions.st+=/lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5

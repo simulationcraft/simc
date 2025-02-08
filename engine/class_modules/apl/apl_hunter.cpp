@@ -137,7 +137,7 @@ void beast_mastery_ptr( player_t* p )
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))" );
   precombat->add_action( "variable,name=trinket_2_stronger,value=!variable.trinket_1_stronger" );
-  precombat->add_action( "bestial_wrath,if=talent.vicious_hunt&talent.call_of_the_wild" );
+  precombat->add_action( "bestial_wrath,if=talent.call_of_the_wild" );
 
   default_->add_action( "auto_shot" );
   default_->add_action( "call_action_list,name=cds" );
@@ -160,7 +160,7 @@ void beast_mastery_ptr( player_t* p )
   cleave->add_action( "bestial_wrath" );
   cleave->add_action( "bloodshed" );
   cleave->add_action( "kill_command,target_if=max:(target.health.pct<35|!talent.killer_instinct)*2+dot.a_murder_of_crows.refreshable" );
-  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.call_of_the_wild.up|talent.furious_assault|talent.black_arrow&(talent.barbed_scales|talent.savagery)|fight_remains<9" );
+  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=buff.call_of_the_wild.up|talent.black_arrow&(talent.barbed_scales|talent.savagery)|fight_remains<9" );
   cleave->add_action( "kill_shot" );
   cleave->add_action( "explosive_shot" );
   cleave->add_action( "dire_beast" );
@@ -172,13 +172,11 @@ void beast_mastery_ptr( player_t* p )
   st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|pet.main.buff.frenzy.stack<3&(cooldown.bestial_wrath.ready&(!pet.main.buff.frenzy.up|talent.scent_of_blood)|talent.call_of_the_wild&cooldown.call_of_the_wild.ready)" );
   st->add_action( "dire_beast" );
   st->add_action( "kill_command,if=talent.call_of_the_wild&cooldown.call_of_the_wild.remains<gcd+0.25" );
-  st->add_action( "black_arrow,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.refreshable" );
-  st->add_action( "kill_shot,target_if=min:dot.serpent_sting.remains,if=talent.venoms_bite&dot.serpent_sting.refreshable" );
   st->add_action( "call_of_the_wild" );
   st->add_action( "bloodshed" );
   st->add_action( "bestial_wrath" );
   st->add_action( "kill_command" );
-  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_call&charges_fractional>1.4|buff.call_of_the_wild.up|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|talent.furious_assault|talent.black_arrow&(talent.barbed_scales|talent.savagery)|fight_remains<9" );
+  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_call&charges_fractional>1.4|buff.call_of_the_wild.up|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|talent.black_arrow&(talent.barbed_scales|talent.savagery)|fight_remains<9" );
   st->add_action( "black_arrow" );
   st->add_action( "kill_shot" );
   st->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
