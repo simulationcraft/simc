@@ -509,11 +509,11 @@ public:
     buff_t* hogstrider;
     buff_t* lead_from_the_front;
 
-    buff_t* vicious_hunt;
+    buff_t* vicious_hunt; //TODO delete
     buff_t* howl_of_the_pack;
     buff_t* frenzied_tear; 
     buff_t* scattered_prey;
-    buff_t* furious_assault;
+    buff_t* furious_assault; //TODO delete
     buff_t* beast_of_opportunity;
 
     // Sentinel
@@ -719,7 +719,7 @@ public:
     // Beast Mastery Tree
     spell_data_ptr_t cobra_shot;
     spell_data_ptr_t animal_companion;
-    spell_data_ptr_t solitary_companion; //TODO
+    spell_data_ptr_t solitary_companion;
     spell_data_ptr_t barbed_shot;
 
     spell_data_ptr_t pack_tactics;
@@ -906,7 +906,7 @@ public:
     spell_data_ptr_t lead_from_the_front;
     spell_data_ptr_t lead_from_the_front_buff;
 
-    spell_data_ptr_t vicious_hunt;
+    spell_data_ptr_t vicious_hunt; //TODO delete
 
     spell_data_ptr_t pack_coordination;
     spell_data_ptr_t howl_of_the_pack;
@@ -919,7 +919,7 @@ public:
 
     spell_data_ptr_t scattered_prey;
     spell_data_ptr_t covering_fire;
-    spell_data_ptr_t furious_assault;
+    spell_data_ptr_t furious_assault; //TODO delete
     spell_data_ptr_t beast_of_opportunity;
 
     spell_data_ptr_t pack_assault;
@@ -2084,6 +2084,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
 
   struct buffs_t
   {
+    buff_t* solitary_companion = nullptr;
     buff_t* frenzy = nullptr;
     buff_t* thrill_of_the_hunt = nullptr;
     buff_t* bestial_wrath = nullptr;
@@ -2165,6 +2166,9 @@ struct hunter_main_pet_base_t : public stable_pet_t
 
     if ( buffs.bestial_wrath -> has_common_school( school ) )
       m *= 1 + buffs.bestial_wrath -> check_value();
+
+    if ( buffs.solitary_companion->up() )
+      m *= 1 + buffs.solitary_companion->check_value();
     
     return m;
   }
@@ -2301,6 +2305,10 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     buffs.wild_attacks_dmg_amp = 
       make_buff( this, "wild_attacks_dmg_amp", o() -> talents.wild_attacks )
         -> set_default_value_from_effect( 1 );
+
+    buffs.solitary_companion = 
+      make_buff( this, "solitary_companion", find_spell( 474751 ) )
+      ->set_default_value_from_effect( 2 );
   }
 
   void init_action_list() override
@@ -2328,6 +2336,12 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     hunter_main_pet_base_t::summon( duration );
 
     o() -> pets.main = this;
+    
+    if ( o()->talents.solitary_companion.ok() )
+    {
+       o()->pets.main->buffs.solitary_companion->trigger();
+    }
+
     if ( o() -> pets.animal_companion )
     {
       o() -> pets.animal_companion -> summon();
