@@ -636,7 +636,7 @@ public:
     
     // BM + SV
     spell_data_ptr_t kill_command;
-    spell_data_ptr_t alpha_predator;
+    spell_data_ptr_t alpha_predator; //TDOO Alpha Predator now increase Kill Command’s damage multiplicatively rather than additively.
 
     // Marksmanship Tree
     spell_data_ptr_t aimed_shot;
@@ -719,6 +719,7 @@ public:
     // Beast Mastery Tree
     spell_data_ptr_t cobra_shot;
     spell_data_ptr_t animal_companion;
+    spell_data_ptr_t solitary_companion; //TODO
     spell_data_ptr_t barbed_shot;
 
     spell_data_ptr_t pack_tactics;
@@ -735,9 +736,10 @@ public:
     spell_data_ptr_t cobra_senses;
     spell_data_ptr_t beast_cleave;
     spell_data_ptr_t wild_call;
-    spell_data_ptr_t hunters_prey;
+    spell_data_ptr_t hunters_prey; //TODO Additional Kill Shots fired from Hunter’s Prey will now target enemies regardless of health percentage.
     spell_data_ptr_t hunters_prey_hidden_buff;
-    spell_data_ptr_t venoms_bite;
+    spell_data_ptr_t venoms_bite; //TODO delete
+    spell_data_ptr_t poisoned_barbs; //TODO
 
     spell_data_ptr_t stomp;
     spell_data_ptr_t serpentine_rhythm;
@@ -751,13 +753,15 @@ public:
     spell_data_ptr_t bestial_wrath;
     spell_data_ptr_t dire_command;
     spell_data_ptr_t huntmasters_call;
-    spell_data_ptr_t dire_frenzy;
+    spell_data_ptr_t dire_cleave; //TODO
 
     spell_data_ptr_t killer_instinct;
     spell_data_ptr_t master_handler;
     spell_data_ptr_t barbed_wrath;
-    spell_data_ptr_t explosive_venom;
-    spell_data_ptr_t basilisk_collar;
+    spell_data_ptr_t thunderous_hooves; //TODO 
+    spell_data_ptr_t explosive_venom; //TODO delete
+    spell_data_ptr_t dire_frenzy;
+    spell_data_ptr_t basilisk_collar; //TODO delete
     
     spell_data_ptr_t call_of_the_wild;
     spell_data_ptr_t killer_cobra;
@@ -8358,6 +8362,7 @@ void hunter_t::init_spells()
 
     talents.cobra_shot                        = find_talent_spell( talent_tree::SPECIALIZATION, "Cobra Shot", HUNTER_BEAST_MASTERY );
     talents.animal_companion                  = find_talent_spell( talent_tree::SPECIALIZATION, "Animal Companion", HUNTER_BEAST_MASTERY );
+    talents.solitary_companion                = find_talent_spell( talent_tree::SPECIALIZATION, "Solitary Companion", HUNTER_BEAST_MASTERY );
     talents.barbed_shot                       = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Shot", HUNTER_BEAST_MASTERY );
 
     talents.pack_tactics                      = find_talent_spell( talent_tree::SPECIALIZATION, "Pack Tactics", HUNTER_BEAST_MASTERY );
@@ -8378,6 +8383,7 @@ void hunter_t::init_spells()
     talents.hunters_prey                      = find_talent_spell( talent_tree::SPECIALIZATION, "Hunter's Prey", HUNTER_BEAST_MASTERY );
     talents.hunters_prey_hidden_buff          = find_spell( 468219 );
     talents.venoms_bite                       = find_talent_spell( talent_tree::SPECIALIZATION, "Venom's Bite", HUNTER_BEAST_MASTERY );
+    talents.poisoned_barbs                    = find_talent_spell( talent_tree::SPECIALIZATION, "Poisoned Barbs", HUNTER_BEAST_MASTERY );
 
     talents.stomp                             = find_talent_spell( talent_tree::SPECIALIZATION, "Stomp", HUNTER_BEAST_MASTERY );
     talents.serpentine_rhythm                 = find_talent_spell( talent_tree::SPECIALIZATION, "Serpentine Rhythm", HUNTER_BEAST_MASTERY );
@@ -8391,12 +8397,14 @@ void hunter_t::init_spells()
     talents.bestial_wrath                     = find_talent_spell( talent_tree::SPECIALIZATION, "Bestial Wrath", HUNTER_BEAST_MASTERY );
     talents.dire_command                      = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Command", HUNTER_BEAST_MASTERY );
     talents.huntmasters_call                  = find_talent_spell( talent_tree::SPECIALIZATION, "Huntmaster's Call", HUNTER_BEAST_MASTERY );
-    talents.dire_frenzy                       = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Frenzy", HUNTER_BEAST_MASTERY );
+    talents.dire_cleave                       = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Cleave", HUNTER_BEAST_MASTERY );
 
     talents.killer_instinct                   = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Instinct", HUNTER_BEAST_MASTERY );
     talents.master_handler                    = find_talent_spell( talent_tree::SPECIALIZATION, "Master Handler", HUNTER_BEAST_MASTERY );
     talents.barbed_wrath                      = find_talent_spell( talent_tree::SPECIALIZATION, "Barbed Wrath", HUNTER_BEAST_MASTERY );
+    talents.thunderous_hooves                 = find_talent_spell( talent_tree::SPECIALIZATION, "Thunderous Hooves", HUNTER_BEAST_MASTERY );
     talents.explosive_venom                   = find_talent_spell( talent_tree::SPECIALIZATION, "Explosive Venom", HUNTER_BEAST_MASTERY );
+    talents.dire_frenzy                       = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Frenzy", HUNTER_BEAST_MASTERY );
     talents.basilisk_collar                   = find_talent_spell( talent_tree::SPECIALIZATION, "Basilisk Collar", HUNTER_BEAST_MASTERY );
 
     talents.call_of_the_wild                  = find_talent_spell( talent_tree::SPECIALIZATION, "Call of the Wild", HUNTER_BEAST_MASTERY );
