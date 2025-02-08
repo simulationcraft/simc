@@ -739,7 +739,7 @@ public:
     spell_data_ptr_t hunters_prey; //TODO Additional Kill Shots fired from Hunter’s Prey will now target enemies regardless of health percentage.
     spell_data_ptr_t hunters_prey_hidden_buff;
     spell_data_ptr_t venoms_bite; //TODO delete
-    spell_data_ptr_t poisoned_barbs; //TODO
+    spell_data_ptr_t poisoned_barbs;
 
     spell_data_ptr_t stomp;
     spell_data_ptr_t serpentine_rhythm;
@@ -5322,7 +5322,29 @@ struct cobra_shot_snakeskin_quiver_t: public cobra_shot_t
 
 struct barbed_shot_t: public hunter_ranged_attack_t
 {
+  struct poisoned_barbs_t final : hunter_ranged_attack_t
+  {
+    serpent_sting_t* poisoned_barbs_serpent_sting = nullptr;
+
+    poisoned_barbs_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( "poisoned_barbs", p, p->find_spell( 1217549 ) )
+    {
+      background = dual = true;
+      aoe = -1;
+      reduced_aoe_targets = p->talents.poisoned_barbs->effectN( 2 ).base_value();
+
+      poisoned_barbs_serpent_sting = p->get_background_action<serpent_sting_t>( "serpent_sting" );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      hunter_ranged_attack_t::impact( s );
+
+      poisoned_barbs_serpent_sting->execute_on_target( s->target );
+    }
+  };
+
   timespan_t bestial_wrath_reduction;
+  action_t* poisoned_barbs = nullptr;
 
   barbed_shot_t( hunter_t* p, util::string_view options_str ) :
     hunter_ranged_attack_t( "barbed_shot", p, p -> talents.barbed_shot )
@@ -5334,6 +5356,9 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     tick_zero = true; 
 
     p -> actions.barbed_shot = this;
+
+    if ( p->talents.poisoned_barbs.ok() )
+      poisoned_barbs = p->get_background_action<poisoned_barbs_t>( "poisoned_barbs" );
   }
 
   void init_finished() override
@@ -5401,6 +5426,14 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     }
     
     return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( poisoned_barbs && rng().roll( p()->talents.poisoned_barbs->effectN( 1 ).percent() ) )
+      poisoned_barbs->execute_on_target( s->target );
   }
 
   void tick( dot_t* d ) override
