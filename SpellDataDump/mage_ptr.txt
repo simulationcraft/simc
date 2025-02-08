@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58945 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.58999 PTR
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -955,7 +955,6 @@ Attributes       : Not Shapeshifted (16), Do Not Chain To Crowd-Controlled Targe
 Effects          :
 #1 (id=36330)    : School Damage (2): arcane | Attributes: Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.504 | PvP Coefficient: 1.3225 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (0.420354 -> 0.504)
 #2 (id=726826)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | Chain Multiplier: 1 | Target: Enemy (6)
 Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. 
@@ -8820,7 +8819,6 @@ Effects          :
 Description      : Flurry now has ${$s1+1} charges. 
 
 Name             : Wintertide (id=378406) [Spell Family (3), Passive, Hidden] 
-Hotfixed         : Description
 Talent Entry     : Frost [tree=spec, row=6, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(0, 1)]
 Class            : Mage
@@ -8836,7 +8834,6 @@ Effects          :
 #1 (id=1006796)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 3 | Misc Value 2: 4643 (Label) | Target: Self (1)
                    Affected Spells (Label): Wintertide (1222865)
-Hotfixed         : Misc Value (37 -> 3)
 Description      : Damage from Frostbolt and Flurry increases the damage of your Icicles and Glacial Spike by $1222865s1%. Stacks up to $1222865u times.
 
 Name             : Fractured Frost (id=378445) [Spell Family (3), Hidden] 
@@ -10084,7 +10081,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #2 (id=1086457)  : Apply Aura (6) | Dummy (4)
                    Base Value: 260 | Scaled Value: 260 | PvP Coefficient: 0.4 | Target: Self (1)
-Hotfixed         : Base Value (280 -> 260)
 Description      : $@spelldesc383886
 Tooltip          : Your next non-instant Pyroblast or Flamestrike will grant you Combustion and deal $w2% additional damage.
 
@@ -11547,7 +11543,6 @@ Effects          :
                    Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 0.3 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Combustion (190319)
                    Family Flags: 58
-Hotfixed         : Base Value (60 -> 70)
 #2 (id=1087415)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1250 | Scaled Value: 1250 | Target: Self (1)
 #3 (id=1154661)  : Apply Aura (6) | Dummy (4)
@@ -12938,7 +12933,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #6 (id=1190183)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-Hotfixed         : Base Value (5 -> 4)
 Description      : Enemies damaged by your $?c1[Arcane Orb][Frozen Orb] conjure $?c1[$s4 Arcane][$s5 Frost] $LSplinter:Splinters;, up to $?c1[$s1][$s6].
 
 $?c1[Arcane Orb][Frozen Orb] damage is increased by $s2%.
@@ -13304,7 +13298,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #3 (id=1210400)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 20)
 Description      : Direct damage from $?c1[Arcane][Frost] Splinters has a $?c1[${$s2/10}.1][${$s3/10}.1]% chance to $?c1[launch an Arcane Orb at $s1% effectiveness][reset the cooldown of Frozen Orb] and increase all damage dealt by $?c1[Arcane Orb by $458411s1][Frozen Orb by $458411s2]% for $458411d.
 
 Name             : Spellfire Spheres (id=448601) [Spell Family (3), Passive, Hidden] 
@@ -16033,6 +16026,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
                  : 295
+                 : 4720
 Proc Chance      : 100%
 Real PPM         : 3
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
@@ -16052,6 +16046,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
                  : 295
+                 : 4720
 Proc Chance      : 100%
 Real PPM         : 1 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
@@ -16071,6 +16066,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
                  : 295
+                 : 4720
 Proc Chance      : 101%
 Real PPM         : 2
 Proc Flags       : Cast Successful
@@ -16088,6 +16084,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
                  : 295
+                 : 4720
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198687)  : Apply Aura (6) | Dummy (4)
@@ -16102,6 +16099,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
                  : 295
+                 : 4720
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
@@ -16118,6 +16116,7 @@ Labels           : 16: Class Spells
                  : 17: Mage Spells
                  : 292
                  : 295
+                 : 4720
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198697)  : Apply Aura (6) | Dummy (4)
@@ -16339,7 +16338,6 @@ Effects          :
 Description      : $@spelldesc108978
 
 Name             : Wintertide (id=1222865) [Spell Family (3)] 
-Hotfixed         : Proc Chance (100 -> 101), Proc Flags 1 (65536 -> 0)
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -16415,7 +16413,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Arcane Barrage (44425)
                    Family Flags: 47
-Hotfixed         : Base Value (20 -> 50)
 Description      : $@spelldesc453724
 Tooltip          : Your next Arcane Barrage deals $s1% increased damage and grants $455683s1 Arcane Charges.
 

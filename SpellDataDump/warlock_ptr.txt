@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58945 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.58999 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -2276,6 +2276,8 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 265931 | Misc Value 2: 0x46f54 | Target: Self (1)
 #21 (id=756162)  : Apply Aura (6) | Unknown(403)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 6353 | Misc Value 2: 0x46f55 | Target: Self (1)
+#22 (id=1215204) : Apply Aura (6) | Unknown(403)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1214467 | Misc Value 2: 0x1e639 | Target: Self (1)
 Description      : Corrupts all of your Warlock fire spells, infusing them with fel magic.
 
 Name             : Call Dreadstalkers (id=104316) [Spell Family (5)] 
@@ -16861,6 +16863,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 295
+                 : 4720
 Proc Chance      : 100%
 Real PPM         : 1 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
@@ -16878,6 +16881,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 295
+                 : 4720
 Proc Chance      : 100%
 Real PPM         : 0.5 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
@@ -16897,6 +16901,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 295
+                 : 4720
 Proc Chance      : 100%
 Real PPM         : 1 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
@@ -16916,11 +16921,12 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 295
+                 : 4720
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198768)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Target: Self (1)
-Description      : Hitting a |cFFFFFFFFJackpot!|r increases your Mastery by $1217798s1% and your spells gain maximum benefit from Mastery: Chaotic Energies for $1217798d.
+Description      : Hitting a |cFFFFFFFFJackpot!|r increases your Mastery by ${$1217798s1*$mas}.1% and your spells gain maximum benefit from Mastery: Chaotic Energies for $1217798d.
 
 Name             : Warlock Demonology 11.1 Class Set 4pc (id=1215682) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
@@ -16930,6 +16936,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 295
+                 : 4720
 Proc Chance      : 101%
 Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
@@ -16948,6 +16955,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 295
+                 : 4720
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198770)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
@@ -16993,10 +17001,10 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hos
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not On Player (167)
 Effects          :
 #1 (id=1201803)  : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 165 | Scaled Value: 165 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 265 | Scaled Value: 265 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=1201804)  : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 165 | Scaled Value: 165 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 265 | Scaled Value: 265 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $@spelldesc1215679
 
 Name             : Demonfire Flurry (id=1217731) [Spell Family (5)] 
@@ -17080,12 +17088,12 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 295
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1202123)  : Apply Aura (6) | Modify Mastery% (318)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Base Value (3 -> 1)
 Description      : $@spelldesc1215681
-Tooltip          : Mastery increased by $s1% and your spells gain maximum benefit from Mastery: Chaotic Energies.
+Tooltip          : Mastery increased by ${$s1*$mas}.1% and your spells gain maximum benefit from Mastery: Chaotic Energies.
 
 Name             : Jackpot! (id=1219034) [Spell Family (5)] 
 Class            : Warlock

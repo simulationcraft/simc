@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58945 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.58999 PTR
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -1270,7 +1270,7 @@ Effects          :
 #1 (id=894882)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=894883)   : School Damage (2): spellfrost
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 8.184 | Chain Multiplier: 1 | Chain Targets: 6 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 8.184 | PvP Coefficient: 0.8 | Chain Multiplier: 1 | Chain Targets: 6 | Target: Enemy (6)
 Description      : $@spelldesc359073
 
 Name             : [DNT] Activate GCD (id=359115) [Spell Family (224), Hidden] 
@@ -8177,7 +8177,7 @@ Effects          :
                    Affected Spells (Label): Class Spells (16)
 #5 (id=1081268)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Range (5)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 5 | Misc Value 2: 3957 (Label) | Target: Self (1)
-                   Affected Spells (Label): Dwarven Medicine (416224), Brann's Epic Egg (432647), Idol of the Earthmother (439237), Brute Force Idol (458465), Idol of the Earthmother (458918), Idol of the Earthmother (458923), Idol of the Earthmother (458927), Dwarven Medicine (460909), Veteran of Ironforge (473250), L00T RAID-R (473679), L00T RAID-R (1213486), L00T RAID-R (1213487), L00T RAID-R (1213488), Pinged Augment Chip (1214502), Pinged Augment Chip (1214796), Pinged Augment Chip (1214802), Biofuel Rocket Gear (1214882), Concussion (1214893), Pinged Augment Chip (1214905), Pinged Augment Chip (1214906), Pinged Augment Chip (1214907), Reverse Engineered Goblin Death Bomb (1214930), Reverse Engineered Goblin Death Bomb (1214932), Reverse Engineered Goblin Death Bomb (1214972), Reverse Engineered Goblin Death Bomb (1214994), Bomb Potion (1215011), Pacifist Rig (1215045), Reverse Engineered Goblin Death Bomb (1215108), Reverse Engineered Goblin Death Bomb (1215109), Reverse Engineered Goblin Death Bomb (1215110), Reverse Engineered Goblin Death Bomb (1215111), Reverse Engineered Goblin Death Bomb (1215112), Reverse Engineered Goblin Death Bomb (1215114), Silencing Potion (1215127), Mechasaur EZ-Build Kit (1215339), Mechasaur EZ-Build Kit (1215365), Mechasaur EZ-Build Kit (1215368), Mechasaur EZ-Build Kit (1215369), Pacifist Rig (1215958), Pacifist Rig (1215959), Pacifist Rig (1215960)
+                   Affected Spells (Label): Dwarven Medicine (416224), Brann's Epic Egg (432647), Idol of the Earthmother (439237), Brute Force Idol (458465), Idol of the Earthmother (458918), Idol of the Earthmother (458923), Idol of the Earthmother (458927), Dwarven Medicine (460909), Veteran of Ironforge (473250), L00T RAID-R (473679), L00T RAID-R (1213486), L00T RAID-R (1213487), L00T RAID-R (1213488), Pinged Augment Chip (1214502), Pinged Augment Chip (1214796), Pinged Augment Chip (1214802), Biofuel Rocket Gear (1214882), Concussion (1214893), Pinged Augment Chip (1214905), Pinged Augment Chip (1214906), Pinged Augment Chip (1214907), Reverse Engineered Goblin Death Bomb (1214930), Reverse Engineered Goblin Death Bomb (1214932), Reverse Engineered Goblin Death Bomb (1214972), Reverse Engineered Goblin Death Bomb (1214994), Bomb Potion (1215011), Pacifist Rig (1215045), Reverse Engineered Goblin Death Bomb (1215108), Reverse Engineered Goblin Death Bomb (1215109), Reverse Engineered Goblin Death Bomb (1215110), Reverse Engineered Goblin Death Bomb (1215111), Reverse Engineered Goblin Death Bomb (1215112), Reverse Engineered Goblin Death Bomb (1215114), Silencing Potion (1215127), Mechasaur EZ-Build Kit (1215339), Mechasaur EZ-Build Kit (1215365), Mechasaur EZ-Build Kit (1215368), Mechasaur EZ-Build Kit (1215369), Pacifist Rig (1215958), Pacifist Rig (1215959), Pacifist Rig (1215960), Dwarven Medicine (1226262)
 #6 (id=1081995)  : Apply Aura (6) | Modify UI UnitInRange (188)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #7 (id=1083267)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
@@ -11792,7 +11792,7 @@ Family Flags     : 0, 79
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1139174)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.81 | PvP Coefficient: 0.4 | Target: Any Target (25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.81 | PvP Coefficient: 0.3 | Target: Any Target (25)
 Description      : $@spelldesc443328
 
 Name             : Engulf (desc=Red) (id=443330) [Spell Family (224)] 
@@ -11969,7 +11969,7 @@ Labels           : 16: Class Spells
 Attributes       : Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221)
 Effects          :
 #1 (id=1140381)  : School Damage (2): fire | Attributes: Add Target (Dest) Combat Reach to AOE (11)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.6 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.4 | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
 Description      : $@spelldesc444088
 
 Name             : Flame Siphon (desc=Red) (id=444140) [Spell Family (224), Passive, Hidden] 
@@ -12680,6 +12680,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
+                 : 4720
 Proc Chance      : 100%
 Real PPM         : 4 (Haste multiplier)
 Proc Flags       : Generic Heal, Magic Heal
@@ -12705,9 +12706,10 @@ Affecting Spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evo
 Triggered By     : Evoker Preservation 11.1 Class Set 2pc (1215549)
 Family Flags     : 1
 Attributes       : Can Proc From Procs (122), Spell Haste Affects Periodic (173), Periodic Can Crit (265)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1198574)  : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.008 | PvP Coefficient: 0.5 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.8064 | PvP Coefficient: 0.5 | Target: Friendly (21)
 #2 (id=1198575)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Friendly (21)
 Description      : $@spelldesc1215549
@@ -12726,10 +12728,10 @@ Labels           : 16: Class Spells
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
 Affecting Spells : Devastation Evoker (356809 effects: #4, #5), Preservation Evoker (356810 effects: #1, #2), Initial Evoker (356816 effects: #5, #6), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Augmentation Evoker (396186 effects: #4, #5), Arcane Reach (454983 effect#1)
 Family Flags     : 1
-Attributes       : Can Proc From Procs (122)
+Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Unknown (452)
 Effects          :
 #1 (id=1198579)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 3 | PvP Coefficient: 0.5 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.4 | PvP Coefficient: 0.5 | Target: Friendly (21)
 Description      : $@spelldesc1215549
 
 Name             : Evoker Preservation 11.1 Class Set 4pc (id=1215610) [Spell Family (224), Passive, Hidden] 
@@ -12740,6 +12742,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
+                 : 4720
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198665)  : Apply Aura (6) | Dummy (4)
@@ -12758,9 +12761,10 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
+                 : 4720
 Proc Chance      : 100%
 Real PPM         : 2 (Haste multiplier)
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198778)  : Apply Aura (6) | Dummy (4)
@@ -12777,6 +12781,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
+                 : 4720
 Proc Chance      : 100%
 Real PPM         : 2 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
@@ -12794,6 +12799,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
+                 : 4720
 Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
@@ -12812,6 +12818,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
                  : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
+                 : 4720
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198785)  : Apply Aura (6) | Dummy (4)

@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58945 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.58999 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -46,7 +46,7 @@ Category         : 19 (Type 0x0)
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Hunter Pet (34902 effects: #2, #3), Aspect of the Beast (191384 effects: #1, #2), Mastery: Spirit Bond (263135 effect#2)
+Affecting Spells : Hunter Pet (34902 effects: #2, #3), Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 19
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Can Cause Silence (236), Allow Class Ability Procs (416)
 Effects          :
@@ -497,7 +497,6 @@ Attributes       : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (4
 Effects          :
 #1 (id=39872)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.64368 | PvP Coefficient: 1.49 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.740232 -> 0.64368)
 Description      : Fire a blast of unholy energy, causing Shadow damage to an enemy target or healing a friendly Undead target.
 
 Name             : Death Coil (id=47633) [Spell Family (15)] 
@@ -1303,7 +1302,6 @@ Attributes       : AI Primary Ranged Attack (206), Allow Class Ability Procs (41
 Effects          :
 #1 (id=44400)    : School Damage (2): shadowstorm
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | AP Coefficient: 0.34776 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (0.23184 -> 0.34776)
 Description      : Inflicts $s1 Plague damage to an enemy.
 
 Name             : On a Pale Horse (id=51986) [Spell Family (15), Passive] 
@@ -6319,7 +6317,7 @@ Internal Cooldown: 0.5 seconds
 Stacks           : 1 initial, 5 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee
-Attributes       : Not an Action (92), Extra Initial Period (169), Not an Attack (194), No Movement Radius Bonus (318)
+Attributes       : Not an Action (92), Can Proc From Procs (122), Extra Initial Period (169), Not an Attack (194), No Movement Radius Bonus (318)
 Aura Interrupt   : Change Talent (46)
 Effects          :
 #1 (id=474098)   : Apply Aura (6) | Dummy (4)
@@ -12397,7 +12395,6 @@ Effects          :
 #1 (id=1026956)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 45 | Scaled Value: 45 | Misc Value: 0x7f | Radius: 100 yards | Target: Unknown(120)
                    Affected School(s): All
-Hotfixed         : Base Value (35 -> 45)
 #2 (id=1026957)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 15 | Scaled Value: 15 | Radius: 25 yards | Target: Unknown(120)
 Description      : $@spelldesc390259
@@ -16692,7 +16689,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1158770)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6000 | Scaled Value: 6000 | Target: Self (1)
-Hotfixed         : Base Value (8000 -> 6000)
 Description      : Consuming Sudden Doom calls upon a Magus of the Dead to assist you for ${$s1/1000} sec.
 
 
@@ -17666,6 +17662,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 295
+                 : 4720
 Proc Chance      : 101%
 Real PPM         : 10
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
@@ -17673,7 +17670,9 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198827)  : Apply Aura (6) | Proc Trigger Spell (42): Winning Streak!
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 1216813 | Target: Self (1)
-Description      : Your spells and abilities have a chance to activate a |cFFFFFFFFWinning Streak!|r increasing the damage of your Death Coil and Epidemic by 3% stacking up to $1216813u times. Death Coil and Epidemic have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r
+#2 (id=1216606)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.5 | Trigger Spell: 1216813 | Target: Self (1)
+Description      : Your spells and abilities have a chance to activate a |cFFFFFFFFWinning Streak!|r increasing the damage of your Death Coil and Epidemic by $s2%, stacking up to $1216813u times. Death Coil and Epidemic have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r
 
 Name             : Death Knight Frost 11.1 Class Set 2pc (id=1215727) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -17683,6 +17682,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 295
+                 : 4720
 Proc Chance      : 101%
 Real PPM         : 10
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -17700,13 +17700,14 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 295
+                 : 4720
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198829)  : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
-Description      : Casting Dark Transformation grants up to, $1216813u  stacks of |cFFFFFFFFWinning Streak!|r and while Dark Transformation is active the effectiveness of |cFFFFFFFFWinning Streak!|r is increased by $s1% and no longer has a chance to reset.
+Description      : Casting Dark Transformation grants up to $1216813u stacks of |cFFFFFFFFWinning Streak!|r and while Dark Transformation is active, the effectiveness of |cFFFFFFFFWinning Streak!|r is increased by $s1% and it no longer has a chance to reset.
 
 Name             : Death Knight Frost 11.1 Class Set 4pc (id=1215729) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -17716,6 +17717,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 295
+                 : 4720
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198830)  : Apply Aura (6) | Dummy (4)
@@ -17736,6 +17738,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 295
+                 : 4720
 Proc Chance      : 100%
 Real PPM         : 1.5
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
@@ -17753,6 +17756,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 295
+                 : 4720
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1199260)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
@@ -17772,6 +17776,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
                  : 4304
+Internal Cooldown: 0.5 seconds
 Stacks           : 10 maximum
 Proc Chance      : 15%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
@@ -17801,6 +17806,7 @@ Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Death Knight Frost 11.1 Class Set 2pc (1215727)
 Attributes       : Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1202282)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -17810,7 +17816,6 @@ Description      : $@spelldesc1215727
 Tooltip          : The damage of Frost Strike and Glacial Advance is increased by $w1%.
 
 Name             : Luck of the Draw! (id=1218601) [Spell Family (15)] 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -17844,7 +17849,6 @@ Effects          :
                    Family Flags: 4
 #6 (id=1215435)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1215992
 Tooltip          : Damage increased by $s1%.$?a1215993[
 

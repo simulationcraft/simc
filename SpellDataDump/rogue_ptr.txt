@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58945 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.58999 PTR
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -855,7 +855,7 @@ Mechanic         : Sap
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
 Affecting Spells : Dirty Tricks (108216 effect#1), Shadow Dance (185313 effect#6), Rushed Setup (341534 effect#1), Sepsis (347037 effect#1), Rushed Setup (378803 effect#1), Don't Be Suspicious (441415 effect#2)
 Family Flags     : 7
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), No Active Defense (21), Allow While Stealthed (37), Only Peaceful Targets (40), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Discount Power On Miss (59), PvP Enabling (96), No Proc Equip Requirement (97), Suppress Caster Procs (112), Suppress Target Procs (113), Can Proc From Procs (122), Suppress Weapon Procs (151), Limit N (165), Show Mechanic as Combat Text (213), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Cancels Auto Attack Combat (20), No Active Defense (21), Allow While Stealthed (37), Only Peaceful Targets (40), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Discount Power On Miss (59), PvP Enabling (96), No Proc Equip Requirement (97), Suppress Caster Procs (112), Can Proc From Procs (122), Suppress Weapon Procs (151), Limit N (165), Show Mechanic as Combat Text (213), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
 Effects          :
 #1 (id=2442)     : Apply Aura (6) | Stun (12)
@@ -15914,6 +15914,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 295
+                 : 4720
 Proc Chance      : 100%
 Real PPM         : 10
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -15931,6 +15932,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 295
+                 : 4720
 Proc Chance      : 100%
 Real PPM         : 6
 Proc Flags       : Cast Successful
@@ -15950,6 +15952,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 295
+                 : 4720
 Proc Chance      : 100%
 Real PPM         : 10
 Proc Flags       : White Melee, Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -15967,6 +15970,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 295
+                 : 4720
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198823)  : Apply Aura (6) | Dummy (4)
@@ -15981,6 +15985,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 295
+                 : 4720
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198825)  : Apply Aura (6) | Dummy (4)
@@ -15995,6 +16000,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 295
+                 : 4720
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198826)  : Apply Aura (6) | Dummy (4)
@@ -16083,6 +16089,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
                  : 4380
+Internal Cooldown: 0.1 seconds
 Stacks           : 10 maximum
 Proc Chance      : 15%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Periodic
