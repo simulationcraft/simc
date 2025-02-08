@@ -753,7 +753,7 @@ public:
     spell_data_ptr_t bestial_wrath;
     spell_data_ptr_t dire_command;
     spell_data_ptr_t huntmasters_call;
-    spell_data_ptr_t dire_cleave; //TODO
+    spell_data_ptr_t dire_cleave;
 
     spell_data_ptr_t killer_instinct;
     spell_data_ptr_t master_handler;
@@ -1864,6 +1864,9 @@ struct dire_critter_t : public hunter_pet_t
         o()->buffs.huntmasters_call->expire();
       }
     }
+
+    if( o()->talents.dire_cleave.ok() )
+      this->buffs.beast_cleave->trigger( o()->talents.dire_cleave->effectN( 2 ).time_value() );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -2167,7 +2170,7 @@ struct hunter_main_pet_base_t : public stable_pet_t
     if ( buffs.bestial_wrath -> has_common_school( school ) )
       m *= 1 + buffs.bestial_wrath -> check_value();
 
-    if ( buffs.solitary_companion->up() )
+    if ( o()->talents.solitary_companion.ok() && buffs.solitary_companion->up() )
       m *= 1 + buffs.solitary_companion->check_value();
     
     return m;
@@ -7362,7 +7365,7 @@ struct dire_beast_t: public hunter_spell_t
     sim -> print_debug( "Dire Beast summoned with {} autoattacks", base_attacks_per_summon );
 
     p() -> pets.dire_beast.spawn( summon_duration );
-
+    
     if ( p()->talents.shadow_hounds.ok() && rng().roll( p()->talents.shadow_hounds->effectN( 1 ).percent() ) && p()->specialization() == HUNTER_BEAST_MASTERY )
     {
       p()->pets.dark_hound.spawn( shadow_hounds.duration );
