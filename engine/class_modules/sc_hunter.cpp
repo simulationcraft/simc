@@ -736,7 +736,6 @@ public:
     spell_data_ptr_t wild_call;
     spell_data_ptr_t hunters_prey; //TODO Additional Kill Shots fired from Hunter’s Prey will now target enemies regardless of health percentage.
     spell_data_ptr_t hunters_prey_hidden_buff;
-    spell_data_ptr_t venoms_bite; //TODO delete
     spell_data_ptr_t poisoned_barbs;
 
     spell_data_ptr_t stomp;
@@ -4567,7 +4566,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   };
 
   double health_threshold_pct;
-  serpent_sting_t* venoms_bite = nullptr;
   razor_fragments_t* razor_fragments = nullptr;
 
   kill_shot_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) :
@@ -4576,9 +4574,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   {
     if ( p->talents.razor_fragments.ok() )
       razor_fragments = p -> get_background_action<razor_fragments_t>( "razor_fragments" );
-
-    if ( p->talents.venoms_bite.ok() )
-      venoms_bite = p->get_background_action<serpent_sting_t>( "serpent_sting" );
   }
 
   void execute() override
@@ -4609,9 +4604,6 @@ struct kill_shot_base_t : hunter_ranged_attack_t
           residual_action::trigger( razor_fragments, t, amount );
       }
     }
-
-    if ( venoms_bite )
-      venoms_bite->execute_on_target( s->target );
 
     if ( debug_cast<state_t*>( s )->empowered_by_precise_shots )
       p()->trigger_spotters_mark( s->target );
@@ -8345,7 +8337,6 @@ void hunter_t::init_spells()
     talents.wild_call                         = find_talent_spell( talent_tree::SPECIALIZATION, "Wild Call", HUNTER_BEAST_MASTERY );
     talents.hunters_prey                      = find_talent_spell( talent_tree::SPECIALIZATION, "Hunter's Prey", HUNTER_BEAST_MASTERY );
     talents.hunters_prey_hidden_buff          = find_spell( 468219 );
-    talents.venoms_bite                       = find_talent_spell( talent_tree::SPECIALIZATION, "Venom's Bite", HUNTER_BEAST_MASTERY );
     talents.poisoned_barbs                    = find_talent_spell( talent_tree::SPECIALIZATION, "Poisoned Barbs", HUNTER_BEAST_MASTERY );
 
     talents.stomp                             = find_talent_spell( talent_tree::SPECIALIZATION, "Stomp", HUNTER_BEAST_MASTERY );
