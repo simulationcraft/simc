@@ -509,7 +509,6 @@ public:
     buff_t* hogstrider;
     buff_t* lead_from_the_front;
 
-    buff_t* vicious_hunt; //TODO delete
     buff_t* howl_of_the_pack;
     buff_t* frenzied_tear; 
     buff_t* scattered_prey;
@@ -905,8 +904,6 @@ public:
     spell_data_ptr_t lead_from_the_front;
     spell_data_ptr_t lead_from_the_front_buff;
 
-    spell_data_ptr_t vicious_hunt; //TODO delete
-
     spell_data_ptr_t pack_coordination;
     spell_data_ptr_t howl_of_the_pack;
     spell_data_ptr_t wild_attacks;
@@ -993,7 +990,6 @@ public:
     action_t* dire_command = nullptr;
     action_t* a_murder_of_crows = nullptr;
 
-    action_t* vicious_hunt = nullptr;
     action_t* wyverns_cry = nullptr;
     action_t* bear_summon = nullptr;
     action_t* boar_charge = nullptr;
@@ -5005,25 +5001,6 @@ struct boar_charge_t final : hunter_ranged_attack_t
   }
 };
 
-// Vicious Hunt (Pack Leader) ============================================================
-
-struct vicious_hunt_t final : hunter_ranged_attack_t
-{
-  vicious_hunt_t( hunter_t* p ) : hunter_ranged_attack_t( "vicious_hunt", p, p->find_spell( 445431 ) )
-  {
-    background = true;
-    attack_power_mod.direct = data().effectN( 1 ).ap_coeff() * ( 1 + p->specs.survival_hunter->effectN( 19 ).percent() );
-  }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    if ( p()->talents.pack_coordination.ok() && p()->pets.main )
-      p()->pets.main->buffs.pack_coordination->trigger();
-  }
-};
-
 // Sentinel (Sentinel) ==================================================================
 
 struct sentinel_t : hunter_ranged_attack_t
@@ -6756,9 +6733,6 @@ struct coordinated_assault_t: public hunter_melee_attack_t
     if ( p()->talents.beast_of_opportunity.ok() )
       p()->pets.boo_stable_pet.spawn( p()->buffs.beast_of_opportunity->buff_duration(), as<int>( p()->buffs.beast_of_opportunity->data().effectN( 1 ).base_value() ) );
 
-    if ( p()->talents.pack_assault.ok() )
-      p()->buffs.vicious_hunt->trigger();
-
     p()->buffs.wildfire_arsenal->trigger( p()->buffs.wildfire_arsenal->max_stack() );
 
     if ( p()->talents.lead_from_the_front->ok() )
@@ -7167,20 +7141,6 @@ struct kill_command_t: public hunter_spell_t
     p()->cooldowns.wildfire_bomb->adjust( -wildfire_infusion_reduction );
     p()->buffs.mongoose_fury->extend_duration( p(), bloody_claws_extension );
 
-    if ( p()->talents.vicious_hunt.ok() )
-    {
-      if ( p()->buffs.vicious_hunt->up() )
-      {
-        p()->actions.vicious_hunt->execute_on_target( target ); 
-        if ( !p()->talents.pack_assault.ok() || !p()->buffs.call_of_the_wild->check() )
-          p()->buffs.vicious_hunt->decrement(); 
-      }
-      else
-      {
-        p()->buffs.vicious_hunt->trigger();
-      }
-    }
-
     if ( p()->talents.covering_fire.ok() )
     {
       timespan_t duration = timespan_t::from_seconds( p()->talents.covering_fire->effectN( 1 ).base_value() );
@@ -7483,9 +7443,6 @@ struct call_of_the_wild_t: public hunter_spell_t
       for ( auto pet : p() -> pets.cotw_stable_pet.active_pets() )
         pet -> hunter_pet_t::buffs.beast_cleave -> trigger( duration );
     }
-
-    if ( p()->talents.pack_assault.ok() )
-      p()->buffs.vicious_hunt->trigger();
   }
 };
 
@@ -8573,8 +8530,6 @@ void hunter_t::init_spells()
     talents.lead_from_the_front = find_talent_spell( talent_tree::HERO, "Lead From the Front" );
     talents.lead_from_the_front_buff = talents.lead_from_the_front.ok() ? find_spell( 472743 ) : spell_data_t::not_found();
 
-    talents.vicious_hunt = find_talent_spell( talent_tree::HERO, "Vicious Hunt" );
-
     talents.pack_coordination = find_talent_spell( talent_tree::HERO, "Pack Coordination" );
     talents.howl_of_the_pack  = find_talent_spell( talent_tree::HERO, "Howl of the Pack" );
     talents.wild_attacks      = find_talent_spell( talent_tree::HERO, "Wild Attacks" );
@@ -8708,9 +8663,6 @@ void hunter_t::create_actions()
   
   if ( talents.a_murder_of_crows.ok() || talents.banshees_mark.ok() )
     actions.a_murder_of_crows = new spells::a_murder_of_crows_t( this );
-
-  if ( talents.vicious_hunt.ok() )
-    actions.vicious_hunt = new attacks::vicious_hunt_t( this );
 
   if ( talents.howl_of_the_pack_leader.ok() )
   {
@@ -9107,12 +9059,6 @@ void hunter_t::create_buffs()
   buffs.lead_from_the_front =
     make_buff( this, "lead_from_the_front", talents.lead_from_the_front_buff )
       ->set_default_value_from_effect( specialization() == HUNTER_BEAST_MASTERY ? 5 : 6 );
-
-  buffs.vicious_hunt = 
-    make_buff( this, "vicious_hunt", find_spell( 431917 ) )
-      -> apply_affecting_aura( talents.pack_assault )
-      -> set_initial_stack( 1 + as<int>( talents.pack_assault -> effectN( 1 ).base_value() ) )
-      -> set_default_value_from_effect( 1 );
 
   buffs.howl_of_the_pack
     = make_buff( this, "howl_of_the_pack", find_spell( 462515 ) )
