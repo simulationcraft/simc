@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 11.1.0.58945
+// Player trait definitions, wow build 11.1.0.58999
 static const std::array<trait_data_t, 3198> __ptr_trait_data_data { {
   { 1,  1, 112112,  90261, 1,  0, 117117,  386164,      0,      0,  1,  1,  -1,                          "Battle Stance", {   73,    0,    0,    0 }, {   73,    0,    0,    0 },  0, 0 },
   { 1,  1, 112179,  90322, 2, 20, 117184,  382896,      0,      0,  8,  1,  -1,       "Two-Handed Weapon Specialization", {   71,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
@@ -2372,7 +2372,7 @@ static const std::array<trait_data_t, 3198> __ptr_trait_data_data { {
   { 2, 12, 112896,  90980, 1, 20, 117901,  389985,      0,      0, 10,  1,  -1,                              "Soulcrush", {  581,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
   { 2, 12, 112897,  90981, 2, 20, 117902,  389976,      0,      0,  9,  1,  -1,                          "Vulnerability", {  581,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
   { 2, 12, 112898,  90982, 1, 20, 117903,  207407,      0,      0, 10,  2,  -1,                            "Soul Carver", {  581,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
-  { 2, 12, 112899,  90983, 2, 20, 117904,  218612,      0,      0,  9,  2,  -1,                         "Feed the Demon", {  581,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
+  { 2, 12, 112899,  90983, 1, 20, 117904,  218612,      0,      0,  9,  2,  -1,                         "Feed the Demon", {  581,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
   { 2, 12, 112900,  90984, 1, 20, 117905,  393827,      0,      0,  8,  3,  -1,                       "Stoke the Flames", {  581,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
   { 2, 12, 112901,  90985, 1, 20, 117906,  389708,      0,      0, 10,  4,  -1,                         "Darkglare Boon", {  581,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
   { 2, 12, 112902,  90986, 1,  8, 117907,  390808,      0,      0,  6,  4,  -1,                    "Volatile Flameblood", {  581,    0,    0,    0 }, {    0,    0,    0,    0 },  0, 0 },
@@ -3200,8 +3200,8 @@ static const std::array<trait_data_t, 3198> __ptr_trait_data_data { {
   { 4, 13, 123336,  99827, 1,  0,      0,       0,      0,      0,  1,  1,  -1,                                      "0", {    0, 1467,    0,    0 }, {    0,    0,    0,    0 }, 37, 3 },
 } };
 
-// Player trait definition effect entries, wow build 11.1.0.58945
-static const std::array<trait_definition_effect_entry_t, 380> __ptr_trait_definition_effect_data { {
+// Player trait definition effect entries, wow build 11.1.0.58999
+static const std::array<trait_definition_effect_entry_t, 379> __ptr_trait_definition_effect_data { {
   { 85156, 0, 0, 60989 },
   { 85156, 1, 0, 60988 },
   { 85159, 0, 0, 52496 },
@@ -3461,7 +3461,6 @@ static const std::array<trait_definition_effect_entry_t, 380> __ptr_trait_defini
   { 117882, 0, 0, 61271 },
   { 117897, 0, 0, 61275 },
   { 117902, 0, 0, 61276 },
-  { 117904, 0, 0, 61277 },
   { 117919, 0, 0, 61284 },
   { 117919, 1, 0, 61283 },
   { 117929, 0, 0, 71058 },
@@ -3987,7 +3986,7 @@ static const std::array<uint16_t, 3198> __ptr_trait_spell_id_index { {
    2525,  2333,  1837,  1163,  1825,  1796,
 } };
 
-// Hero trees, wow build 11.1.0.58945
+// Hero trees, wow build 11.1.0.58999
 static const std::array<std::pair<unsigned, std::string>, 39> __ptr_trait_sub_tree_data { {
   { 18, "Voidweaver" },
   { 19, "Archon" },
