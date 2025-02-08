@@ -513,7 +513,6 @@ public:
     buff_t* howl_of_the_pack;
     buff_t* frenzied_tear; 
     buff_t* scattered_prey;
-    buff_t* furious_assault; //TODO delete
     buff_t* beast_of_opportunity;
 
     // Sentinel
@@ -919,7 +918,6 @@ public:
 
     spell_data_ptr_t scattered_prey;
     spell_data_ptr_t covering_fire;
-    spell_data_ptr_t furious_assault; //TODO delete
     spell_data_ptr_t beast_of_opportunity;
 
     spell_data_ptr_t pack_assault;
@@ -2791,11 +2789,6 @@ struct kill_command_bm_t: public kill_command_base_t<hunter_main_pet_base_t>
       double amount = s -> result_mitigated * o() -> talents.frenzied_tear -> effectN( 2 ).percent() / (1 + s->result_crit_bonus);
       p()->active.frenzied_tear->execute_on_target( s -> target, amount );
       o()->buffs.frenzied_tear->decrement();
-      if ( o() -> talents.furious_assault.ok() && o() -> rng().roll( o() -> talents.furious_assault -> effectN( 1 ).percent() ) )
-      {
-        o()->buffs.furious_assault->trigger();
-        o()->cooldowns.barbed_shot->reset( true );
-      }
     }
 
     if ( o()->talents.phantom_pain.ok() )
@@ -2853,10 +2846,6 @@ struct kill_command_sv_t : public hunter_main_pet_attack_t
       double amount = s->result_mitigated * o()->talents.frenzied_tear->effectN( 2 ).percent() / (1 + s->result_crit_bonus);
       p()->active.frenzied_tear->execute_on_target( s->target, amount );
       o()->buffs.frenzied_tear->decrement();
-      if ( o()->talents.furious_assault.ok() && o()->rng().roll( o()->talents.furious_assault->effectN( 1 ).percent() ) )
-      {
-        o()->buffs.furious_assault->trigger();
-      }
     }
 
     if ( o()->talents.sentinel.ok() )
@@ -5413,23 +5402,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
       if ( !p()->talents.pack_assault.ok() || !p()->buffs.call_of_the_wild->check() )
         p()->pets.main->buffs.pack_coordination->decrement();
     }
-
-    if ( p()->buffs.furious_assault->check() )
-    {
-      p()->buffs.furious_assault->decrement();
-    }
-  }
-
-  double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    double m = hunter_ranged_attack_t::composite_ta_multiplier( s );
-
-    if ( p()->buffs.furious_assault->check() )
-    {
-      m *= 1 + p()->buffs.furious_assault->data().effectN( 4 ).percent();
-    }
-    
-    return m;
   }
 
   void impact( action_state_t* s ) override
@@ -6281,16 +6253,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     return n;
   }
 
-  double cost() const override
-  {
-    double cost = hunter_melee_attack_t::cost();
-
-    if ( p()->buffs.furious_assault->up() )
-      cost *= 1 + p()->buffs.furious_assault->data().effectN( 3 ).percent();
-
-    return cost; 
-  }
-
   double action_multiplier() const override
   {
     double am = hunter_melee_attack_t::action_multiplier();
@@ -6306,8 +6268,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = hunter_melee_attack_t::composite_da_multiplier( s );
-
-    m *= 1 + p()->buffs.furious_assault->value();
 
     if ( p()->talents.wild_attacks.ok() )
       m *= 1 + p()->talents.wild_attacks->effectN( 2 ).percent();
@@ -6345,11 +6305,6 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       p()->pets.main->active.pack_coordination_ba->execute_on_target( target );
       if ( !p()->talents.pack_assault.ok() || !p()->buffs.coordinated_assault->check() )
         p()->pets.main->buffs.pack_coordination->decrement();
-    }
-
-    if ( p()->buffs.furious_assault->check() )
-    {
-      p()->buffs.furious_assault->decrement();
     }
 
     p()->buffs.howl_of_the_pack_leader_cooldown->extend_duration( p(), -p()->talents.dire_summons->effectN( 4 ).time_value() );
@@ -8632,7 +8587,6 @@ void hunter_t::init_spells()
     talents.scattered_prey       = find_talent_spell( talent_tree::HERO, "Scattered Prey" );
     talents.covering_fire        = find_talent_spell( talent_tree::HERO, "Covering Fire" );
     talents.cull_the_herd        = find_talent_spell( talent_tree::HERO, "Cull the Herd" );
-    talents.furious_assault      = find_talent_spell( talent_tree::HERO, "Furious Assault" );
     talents.beast_of_opportunity = find_talent_spell( talent_tree::HERO, "Beast of Opportunity" );
 
     talents.pack_assault = find_talent_spell( talent_tree::HERO, "Pack Assault" );
@@ -9173,11 +9127,6 @@ void hunter_t::create_buffs()
     = make_buff( this, "scattered_prey", find_spell( 461866 ) )
       -> set_default_value_from_effect( 1 )
       -> apply_affecting_aura( specs.survival_hunter);
-
-  buffs.furious_assault
-    = make_buff( this, "furious_assault", find_spell( 448814 ) )
-      -> set_default_value_from_effect( 2 )
-      -> apply_affecting_aura( specs.survival_hunter );
 
   buffs.beast_of_opportunity
     = make_buff( this, "beast_of_opportunity", find_spell( 450143 ) )
