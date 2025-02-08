@@ -357,7 +357,6 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* cull_the_herd;
     buff_t* shredded_armor;
     buff_t* wild_instincts;
-    buff_t* basilisk_collar;
     buff_t* outland_venom;
 
     buff_t* spotters_mark;
@@ -758,7 +757,6 @@ public:
     spell_data_ptr_t thundering_hooves; //TODO 
     spell_data_ptr_t explosive_venom; //TODO delete
     spell_data_ptr_t dire_frenzy;
-    spell_data_ptr_t basilisk_collar; //TODO delete
     
     spell_data_ptr_t call_of_the_wild;
     spell_data_ptr_t killer_cobra;
@@ -1152,7 +1150,6 @@ public:
 
   void trigger_bloodseeker_update();
   int ticking_dots( hunter_td_t* td );
-  void trigger_basilisk_collar_update();
   void trigger_outland_venom_update();
   void consume_trick_shots();
   void trigger_deathblow( bool activated = false );
@@ -1698,13 +1695,6 @@ struct hunter_pet_t: public pet_t
 
     auto td = o()->get_target_data( target );
     bool guardian = type == PLAYER_GUARDIAN;
-
-    if ( o()->talents.basilisk_collar->ok() )
-    {   
-      double bonus = guardian ? o()->talents.basilisk_collar->effectN( 2 ).percent() : o()->talents.basilisk_collar->effectN( 1 ).percent();
-      int stacks = td->debuffs.basilisk_collar->stack();
-      m *= 1 + ( bonus * stacks );
-    }
 
     // TODO should these go in composite_player_target_pet_damage_multiplier (non-hunter pets)
 
@@ -3669,33 +3659,6 @@ int hunter_t::ticking_dots( hunter_td_t* td )
     dots += pets.bear->get_target_data( td->target )->dots.rend_flesh->is_ticking();
 
   return dots;
-}
-
-void hunter_t::trigger_basilisk_collar_update()
-{
-  if ( !talents.basilisk_collar.ok() )
-    return;
-
-  for ( player_t* t : sim -> target_non_sleeping_list )
-  {
-    if ( t -> is_enemy() )
-    {
-      auto td = get_target_data( t );
-      int current = td -> debuffs.basilisk_collar -> check(); 
-      int new_stacks = ticking_dots( td );
-
-      new_stacks = std::min( new_stacks, td -> debuffs.basilisk_collar -> max_stack() );
-
-      if ( current < new_stacks )
-      {
-        td -> debuffs.basilisk_collar -> trigger( new_stacks - current );
-      }
-      else if ( current > new_stacks )
-      {
-        td -> debuffs.basilisk_collar -> decrement( current - new_stacks ); 
-      }
-    }
-  }
 }
 
 void hunter_t::trigger_outland_venom_update()
@@ -7968,10 +7931,6 @@ hunter_td_t::hunter_td_t( player_t* t, hunter_t* p ) : actor_target_data_t( t, p
   debuffs.wild_instincts = make_buff( *this, "wild_instincts", p -> find_spell( 424567 ) )
     -> set_default_value_from_effect( 1 );
 
-  debuffs.basilisk_collar = make_buff( *this, "basilisk_collar", p -> find_spell( 459575 ) )
-    -> set_default_value( p -> talents.basilisk_collar -> effectN( 1 ).base_value() )
-    -> set_period( 0_s );
-
   debuffs.outland_venom = make_buff( *this, "outland_venom", p->talents.outland_venom_debuff )
     -> set_default_value( p->talents.outland_venom_debuff->effectN( 1 ).percent() )
     -> set_period( 0_s );
@@ -8359,7 +8318,6 @@ void hunter_t::init_spells()
     talents.thundering_hooves                 = find_talent_spell( talent_tree::SPECIALIZATION, "Thundering Hooves", HUNTER_BEAST_MASTERY );
     talents.explosive_venom                   = find_talent_spell( talent_tree::SPECIALIZATION, "Explosive Venom", HUNTER_BEAST_MASTERY );
     talents.dire_frenzy                       = find_talent_spell( talent_tree::SPECIALIZATION, "Dire Frenzy", HUNTER_BEAST_MASTERY );
-    talents.basilisk_collar                   = find_talent_spell( talent_tree::SPECIALIZATION, "Basilisk Collar", HUNTER_BEAST_MASTERY );
 
     talents.call_of_the_wild                  = find_talent_spell( talent_tree::SPECIALIZATION, "Call of the Wild", HUNTER_BEAST_MASTERY );
     talents.killer_cobra                      = find_talent_spell( talent_tree::SPECIALIZATION, "Killer Cobra", HUNTER_BEAST_MASTERY );
@@ -9438,11 +9396,6 @@ void hunter_t::combat_begin()
   if ( talents.bloodseeker.ok() && sim -> player_no_pet_list.size() > 1 )
   {
     make_repeating_event( *sim, 1_s, [ this ] { trigger_bloodseeker_update(); } );
-  }
-
-  if ( talents.basilisk_collar.ok() )
-  {
-    make_repeating_event( *sim, 1_s, [ this ] { trigger_basilisk_collar_update(); } );
   }
 
   if ( talents.outland_venom.ok() )
