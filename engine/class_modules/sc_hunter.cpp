@@ -754,7 +754,7 @@ public:
     spell_data_ptr_t killer_instinct;
     spell_data_ptr_t master_handler;
     spell_data_ptr_t barbed_wrath;
-    spell_data_ptr_t thundering_hooves; //TODO 
+    spell_data_ptr_t thundering_hooves; //TODO should this be done with effectiveness state flag like s2 mm tier?
     spell_data_ptr_t explosive_venom; //TODO delete
     spell_data_ptr_t dire_frenzy;
     
@@ -1982,6 +1982,7 @@ struct stable_pet_t : public hunter_pet_t
   struct actives_t
   {
     action_t* stomp = nullptr; 
+    action_t* thundering_hooves = nullptr; 
   } active;
 
   stable_pet_t( hunter_t* owner, util::string_view pet_name, pet_e pet_type ):
@@ -3198,10 +3199,10 @@ struct coordinated_assault_t: public hunter_main_pet_attack_t
 
 struct stomp_t : public hunter_pet_action_t<hunter_pet_t, attack_t>
 {
-  stomp_t( hunter_pet_t* p ) : hunter_pet_action_t( "stomp", p, p -> find_spell( 201754 ) )
+  stomp_t( hunter_pet_t* p, double effectiveness = 1.0, util::string_view n = "stomp"  ) : hunter_pet_action_t( n, p, p -> find_spell( 201754 ) )
   {
     aoe = -1;
-    base_dd_multiplier *= o() -> talents.stomp -> effectN( 1 ).base_value();
+    base_dd_multiplier *= o() -> talents.stomp -> effectN( 1 ).base_value() * effectiveness;
   }
 
   double bleed_amount = o() -> find_spell( 459555 ) -> effectN( 1 ).percent(); 
@@ -3418,6 +3419,9 @@ void stable_pet_t::init_spells()
 
   if ( o() -> talents.bloody_frenzy.ok() )
     active.stomp = new actions::stomp_t( this );
+
+  if ( o()->talents.thundering_hooves.ok() )
+    active.thundering_hooves = new actions::stomp_t( this, o()->talents.thundering_hooves->effectN( 1 ).percent(), "thundering_hooves" );
 }
 
 void hunter_main_pet_base_t::init_spells()
@@ -4298,6 +4302,16 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
       hunter_ranged_attack_t::execute();
       
       p()->buffs.tip_of_the_spear_explosive->decrement();
+
+      if ( p()->talents.thundering_hooves.ok() )
+      {
+        for ( auto pet : pets::active<pets::stable_pet_t>( p() -> pets.main, p() -> pets.animal_companion ) )
+        {
+          pet->active.thundering_hooves->execute();
+        }
+        for ( auto pet : p() -> pets.cotw_stable_pet.active_pets() )
+          pet->active.thundering_hooves->execute();
+      }
     }
 
     void impact( action_state_t* s ) override

@@ -45,6 +45,7 @@ actions.st+=/kill_command
 actions.st+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=talent.wild_call&charges_fractional>1.4|buff.call_of_the_wild.up|full_recharge_time<gcd&cooldown.bestial_wrath.remains|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|talent.black_arrow&(talent.barbed_scales|talent.savagery)|fight_remains<9
 actions.st+=/black_arrow
 actions.st+=/kill_shot
+actions.st+=/explosive_shot
 actions.st+=/lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.st+=/cobra_shot
 actions.st+=/bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5
