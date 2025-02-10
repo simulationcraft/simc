@@ -679,8 +679,6 @@ public:
     buff_t* matted_fur;
     buff_t* moonkin_form;
     buff_t* natures_vigil;
-    buff_t* rising_light_falling_night_day;
-    buff_t* rising_light_falling_night_night;
     buff_t* tiger_dash;
     buff_t* ursine_vigor;
     buff_t* wild_charge_movement;
@@ -884,6 +882,7 @@ public:
     player_talent_t matted_fur;
     player_talent_t mass_entanglement;
     player_talent_t mighty_bash;
+    player_talent_t moonkin_form;
     player_talent_t natural_recovery;
     player_talent_t natures_vigil;
     player_talent_t nurturing_instinct;
@@ -893,7 +892,6 @@ public:
     player_talent_t rejuvenation;
     player_talent_t remove_corruption;
     player_talent_t renewal;
-    player_talent_t rising_light_falling_night;
     player_talent_t rip;
     player_talent_t skull_bash;
     player_talent_t soothe;
@@ -1214,7 +1212,6 @@ public:
     const spell_data_t* full_moon;
     const spell_data_t* half_moon;
     const spell_data_t* incarnation_moonkin;
-    const spell_data_t* moonkin_form;
     const spell_data_t* shooting_stars_dmg;
     const spell_data_t* starfall;
     const spell_data_t* stellar_amplification;
@@ -3163,7 +3160,7 @@ struct cat_form_buff_t final : public druid_buff_t, public swap_melee_t
 // Moonkin Form =============================================================
 struct moonkin_form_buff_t final : public druid_buff_t
 {
-  moonkin_form_buff_t( druid_t* p ) : base_t( p, "moonkin_form", p->spec.moonkin_form )
+  moonkin_form_buff_t( druid_t* p ) : base_t( p, "moonkin_form", p->talent.moonkin_form )
   {
     add_invalidate( CACHE_ARMOR );
     add_invalidate( CACHE_EXP );
@@ -3648,7 +3645,7 @@ struct cat_form_t final : public trigger_call_of_the_elder_druid_t<druid_form_t>
 // Moonkin Form Spell =======================================================
 struct moonkin_form_t final : public druid_form_t
 {
-  DRUID_ABILITY( moonkin_form_t, druid_form_t, "moonkin_form", p->spec.moonkin_form )
+  DRUID_ABILITY( moonkin_form_t, druid_form_t, "moonkin_form", p->talent.moonkin_form )
   {
     set_form( MOONKIN_FORM );
   }
@@ -9930,6 +9927,7 @@ void druid_t::init_spells()
   talent.mass_entanglement              = CT( "Mass Entanglement" );
   talent.matted_fur                     = CT( "Matted Fur" );
   talent.mighty_bash                    = CT( "Mighty Bash" );
+  talent.moonkin_form                   = CT( "Moonkin Form" );
   talent.natural_recovery               = CT( "Natural Recovery" );
   talent.natures_vigil                  = CT( "Nature's Vigil" );
   talent.nurturing_instinct             = CT( "Nurturing Instinct" );
@@ -9939,7 +9937,6 @@ void druid_t::init_spells()
   talent.rejuvenation                   = CT( "Rejuvenation" );
   talent.remove_corruption              = CT( "Remove Corruption" );
   talent.renewal                        = CT( "Renewal" );
-  talent.rising_light_falling_night     = CT( "Rising Light, Falling Night" );
   talent.rip                            = CT( "Rip" );
   talent.skull_bash                     = CT( "Skull Bash" );
   talent.soothe                         = CT( "Soothe" );
@@ -10263,7 +10260,6 @@ void druid_t::init_spells()
   spec.full_moon                = check( talent.new_moon, 274283 );
   spec.half_moon                = check( talent.new_moon, 274282 );
   spec.incarnation_moonkin      = check( talent.incarnation_moonkin, 102560 );
-  spec.moonkin_form             = find_specialization_spell( "Moonkin Form" );
   spec.shooting_stars_dmg       = check( talent.shooting_stars, 202497 );  // shooting stars damage
   spec.stellar_amplification    = check( talent.stellar_amplification, 450214 );
   spec.waning_twilight          = check( talent.waning_twilight, 393957 );
@@ -10535,20 +10531,12 @@ void druid_t::create_buffs()
 
   buff.matted_fur = make_fallback<matted_fur_buff_t>( talent.matted_fur.ok(), this, "matted_fur" );
 
-  buff.moonkin_form = make_fallback<moonkin_form_buff_t>( spec.moonkin_form->ok(), this, "moonkin_form" );
+  buff.moonkin_form = make_fallback<moonkin_form_buff_t>( talent.moonkin_form->ok(), this, "moonkin_form" );
 
   buff.natures_vigil = make_fallback( talent.natures_vigil.ok(), this, "natures_vigil", talent.natures_vigil )
     ->set_default_value( 0 )
     ->set_cooldown( 0_ms )
     ->set_freeze_stacks( true );
-
-  buff.rising_light_falling_night_day = make_fallback( talent.rising_light_falling_night.ok(),
-    this, "rising_light_falling_night__day", find_spell( 417714 ) );
-
-  buff.rising_light_falling_night_night = make_fallback( talent.rising_light_falling_night.ok(),
-    this, "rising_light_falling_night__night", find_spell( 417715 ) )
-      ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
-      ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
 
   buff.tiger_dash = make_fallback( talent.tiger_dash.ok(), this, "tiger_dash", talent.tiger_dash )
     ->set_cooldown( 0_ms )
@@ -10674,8 +10662,8 @@ void druid_t::create_buffs()
     ->set_quiet( true )
     ->set_max_stack( std::max( 1, as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) ) );
 
-  buff.owlkin_frenzy = make_fallback( spec.moonkin_form->ok(), this, "owlkin_frenzy", find_spell( 157228 ) );
-
+   buff.owlkin_frenzy = make_buff_fallback( talent.moonkin_form.ok() && talent.moonkin_form->proc_flags(), this,
+   "owlkin_frenzy", find_spell( 157228 ) );
   buff.shooting_stars_moonfire = make_fallback<shooting_stars_buff_t>( talent.shooting_stars.ok(),
     this, "shooting_stars_moonfire", dot_lists.moonfire, active.shooting_stars_moonfire, active.crashing_star_moonfire );
 
@@ -11234,7 +11222,7 @@ void druid_t::create_actions()
   active.shift_to_cat = get_secondary_action<cat_form_t>( "cat_form_shift" );
   active.shift_to_cat->dual = true;
 
-  if ( spec.moonkin_form->ok() )
+  if ( talent.moonkin_form.ok() && talent.moonkin_form->proc_flags() )
   {
     active.shift_to_moonkin = get_secondary_action<moonkin_form_t>( "moonkin_form_shift" );
     active.shift_to_moonkin->dual = true;
@@ -11859,7 +11847,7 @@ void druid_t::init_special_effects()
     new denizen_of_the_dream_cb_t( this, *driver );
   }
 
-  if ( spec.moonkin_form->ok() )
+  if ( talent.moonkin_form.ok() && talent.moonkin_form->proc_flags() )
   {
     struct owlkin_frenzy_cb_t final : public druid_cb_t
     {
@@ -11874,7 +11862,7 @@ void druid_t::init_special_effects()
 
     const auto driver = new special_effect_t( this );
     driver->name_str = buff.owlkin_frenzy->name();
-    driver->spell_id = spec.moonkin_form->id();
+    driver->spell_id = talent.moonkin_form->id();
     driver->proc_chance_ =
       find_effect( find_specialization_spell( "Owlkin Frenzy" ), A_ADD_FLAT_MODIFIER, P_PROC_CHANCE ).percent();
     driver->custom_buff = buff.owlkin_frenzy;
@@ -12372,14 +12360,6 @@ void druid_t::precombat_init()
 
     if ( stacks )
       buff.orbit_breaker->trigger( stacks );
-  }
-
-  if ( talent.rising_light_falling_night.ok() )
-  {
-    if ( timeofday == timeofday_e::DAY_TIME )
-      buff.rising_light_falling_night_day->trigger();
-    else
-      buff.rising_light_falling_night_night->trigger();
   }
 
   auto start_buff = [ this ]( buff_t* b ) {
@@ -13905,7 +13885,6 @@ void druid_t::parse_action_effects( action_t* action )
   _a->parse_effects( spec.cat_form_passive_2, talent.hunt_beneath_the_open_skies,
                      [ this ] { return buff.cat_form->check(); } );
   _a->parse_effects( buff.moonkin_form );
-  _a->parse_effects( buff.rising_light_falling_night_day );
 
   auto hotw_mask = effect_mask_t( true );
   switch( specialization() )
