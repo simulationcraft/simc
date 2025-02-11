@@ -16,6 +16,7 @@ specList = ['blood', 'frost', 'unholy',  # Death Knight
             'elemental', 'elemental_ptr', # Elemental Shaman
             'havoc', 'vengeance', 'havoc_ptr', 'vengeance_ptr', # Demon Hunter
             'protection', 'fury', 'arms', # Warrior
+            'windwalker', 'windwalker_ptr', # Windwalker Monk
            ]
 
 ignored_comments = [
