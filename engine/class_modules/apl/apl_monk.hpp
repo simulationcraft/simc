@@ -14,7 +14,6 @@ std::string temporary_enchant( const player_t* );
 void brewmaster( player_t* );
 void mistweaver( player_t* );
 void windwalker( player_t* );
-void windwalker_ptr( player_t* );
 void no_spec( player_t* );
 
 }  // namespace monk_apl
