@@ -16088,7 +16088,7 @@ Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
                  : 295
-                 : 4380
+                 : 4380: Cashout! (1219264 effect#1)
 Internal Cooldown: 0.1 seconds
 Stacks           : 10 maximum
 Proc Chance      : 15%
@@ -16107,6 +16107,26 @@ Effects          :
                    Family Flags: 20, 35, 81
 Description      : $@spelldesc1215719
 Tooltip          : On a|cFFFFFFFF Winning Streak!|r Envenom, Rupture, and Crimson Tempest damage increased by $w1%.
+
+Name             : Cashout! (id=1219264) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Spell Type       : None
+Duration         : 4 seconds
+Labels           : 16: Class Spells
+                 : 20: Rogue Spells
+                 : 292
+                 : 295
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Attributes       : No Aura Cancel (31), Can Proc From Procs (122), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
+Effects          :
+#1 (id=1204892)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effects (8)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Misc Value: 8 | Misc Value 2: 4380 (Label) | Target: Self (1)
+                   Affected Spells (Label): Winning Streak! (1218439)
+Description      : $@spelldesc1215724
+Tooltip          : |cFFFFFFFF Winning Streak!|r increased by $w1%. You cannot lose |cFFFFFFFF Winning Streak!|r
 
 Name             : Tricks of the Trade (id=1224098) [Spell Family (8)] 
 Class            : Rogue
