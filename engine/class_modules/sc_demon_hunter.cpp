@@ -1797,8 +1797,11 @@ public:
                               p()->talent.havoc.serrated_glaive );
 
     // Vengeance
-    ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::frailty ), p()->spec.frailty_debuff,
-                              p()->talent.vengeance.vulnerability );
+    if ( p()->talent.vengeance.vulnerability->ok() )
+    {
+      ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::frailty ), p()->spec.frailty_debuff,
+                                effect_mask_t( false ).enable( 4, 5 ), p()->talent.vengeance.vulnerability->effectN( 1 ).percent() );
+    }
 
     // Vengeance Demon Hunter's DF S2 tier set spell data is baked into Fiery Brand's spell data at effect #4.
     // We exclude parsing effect #4 as that tier set is no longer active.
@@ -1917,7 +1920,7 @@ public:
   {
     ab::tick( d );
 
-    accumulate_spirit_bomb( d->state );
+    accumulate_frailty( d->state );
   }
 
   void impact( action_state_t* s ) override
@@ -1926,7 +1929,7 @@ public:
 
     if ( ab::result_is_hit( s->result ) )
     {
-      accumulate_spirit_bomb( s );
+      accumulate_frailty( s );
       trigger_chaos_brand( s );
       trigger_initiative( s );
     }
@@ -2017,9 +2020,9 @@ public:
     }
   }
 
-  void accumulate_spirit_bomb( action_state_t* s )
+  void accumulate_frailty( action_state_t* s )
   {
-    if ( !p()->talent.vengeance.spirit_bomb->ok() )
+    if ( !p()->talent.vengeance.frailty->ok() )
       return;
 
     if ( !( ab::harmful && s->result_amount > 0 ) )
@@ -7140,7 +7143,9 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
       {
         p()->buff.necessary_sacrifice->expire();
         p()->buff.necessary_sacrifice->trigger( winning_streak_stacks );
-      } else {
+      }
+      else
+      {
         p()->proc.winning_streak_wasted_from_tww2_havoc_4pc->occur();
         p()->proc.necessary_sacrifice_wasted_from_tww2_havoc_4pc->occur();
       }
