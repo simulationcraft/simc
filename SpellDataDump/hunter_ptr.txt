@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58999 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59095 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2020,7 +2020,7 @@ Family Flags     : 111
 Attributes       : Is Ability (4), Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=130467)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 90 | Scaled Value: 90 | Misc Value: 2 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | Misc Value: 2 | Target: Self (1)
 #2 (id=1021255)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 6000 | Scaled Value: 6000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Beast Cleave (115939), Beast Cleave (118455), Beast Cleave (118459), Kill Cleave (389448)
@@ -4184,7 +4184,7 @@ Family Flags     : 101, 106
 Attributes       : Active Threat (94), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Do Not Display Duration (170), Area Effects Use Target Radius (328), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=299987)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.58 | Radius: 0 - 8 yards | Target: At Self (22) -> Cone Enemy (24)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.9 | Radius: 0 - 8 yards | Target: At Self (22) -> Cone Enemy (24)
 Description      : $@spelldesc203415
 
 Name             : Fury of the Eagle (id=203415) [Spell Family (9)] 
@@ -4214,7 +4214,7 @@ Effects          :
 #4 (id=1022397)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 203413 | Target: Self (1)
 #5 (id=1022419)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 203413 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Trigger Spell: 203413 | Target: Self (1)
 Description      : Furiously strikes all enemies in front of you, dealing ${$203413s1*9} Physical damage over $d. Critical strike chance increased by $s3% against any target below $s4% health. Deals reduced damage beyond $s5 targets.
 
 Name             : Bullseye (id=204089) [Spell Family (9), Passive] 
@@ -5231,7 +5231,7 @@ Channel Interrupt: Action (2), Interacting (10), Damage Channel Duration (14)
 Effects          :
 #1 (id=479997)   : Dummy (3)
                    Base Value: 7 | Scaled Value: 7 | Target: Enemy (6)
-#2 (id=738873)   : Apply Aura (6) | Periodic Dummy (226): every 0.33 seconds
+#2 (id=738873)   : Apply Aura (6) | Periodic Dummy (226): every 0.333 seconds
                    Base Value: 40 | Scaled Value: 40 | Target: Enemy (6)
 #3 (id=1193565)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
@@ -5431,7 +5431,7 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Frenzy Strikes (294029 effect#2), Improved Kill Command (378010 effect#1), Killer Companion (378955 effect#1), Exposed Wound (410147 effect#1)
+Affecting Spells : Improved Kill Command (378010 effect#1), Killer Companion (378955 effect#1), Exposed Wound (410147 effect#1)
 Family Flags     : 37
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Melee Chain Targeting (172), Spell Haste Affects Periodic (173), Do Not Chain To Crowd-Controlled Targets (200), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -5750,7 +5750,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effect#1)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effects: #1, #2)
 Triggered By     : Wildfire Bomb (259496)
 Family Flags     : 22, 106
 Attributes       : Is Ability (4), Do Not Display Range (126), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
@@ -5789,7 +5789,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effect#1)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effects: #1, #2)
 Family Flags     : 22, 106
 Attributes       : Is Ability (4), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
@@ -5872,7 +5872,7 @@ Effects          :
                    Affected Spells: Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Resonating Arrow (308498), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121)
                    Family Flags: 39, 105
 #3 (id=737584)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14) | Attributes: Suppress Points Stacking (6)
-                   Base Value: -70 | Scaled Value: -70 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Multi-Shot (257620), Resonating Arrow (308498), Chimaera Shot (342049), Chimaera Shot (344120), Chimaera Shot (344121)
                    Family Flags: 12, 39, 105
 #4 (id=808871)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -6826,7 +6826,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
                  : 3968
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Guerrilla Tactics (264332 effect#2), Trueshot (288613 effect#5), Flame Infusion (341401 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effect#1), Wildfire Arsenal (1223701 effect#1)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Guerrilla Tactics (264332 effect#2), Trueshot (288613 effect#5), Flame Infusion (341401 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effects: #1, #2), Wildfire Arsenal (1223701 effect#1)
 Family Flags     : 22, 25, 106
 Attributes       : Not a Proc (105), Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -7190,7 +7190,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
                  : 4024
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effect#1)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effects: #1, #2)
 Family Flags     : 22, 106
 Attributes       : Is Ability (4), Ignore Line of Sight (66), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Rolling Periodic (334), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -7331,7 +7331,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
 Mechanic         : Bleed
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Guerrilla Tactics (264332 effect#2), Trueshot (288613 effect#5), Flame Infusion (341401 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effect#1), Wildfire Arsenal (1223701 effect#1)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Guerrilla Tactics (264332 effect#2), Trueshot (288613 effect#5), Flame Infusion (341401 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effects: #1, #2), Wildfire Arsenal (1223701 effect#1)
 Family Flags     : 22, 25, 106
 Attributes       : Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -7349,7 +7349,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effect#1)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effects: #1, #2)
 Family Flags     : 22, 106
 Attributes       : Is Ability (4), Ignore Line of Sight (66), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -7407,7 +7407,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
 Mechanic         : Bleed
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Guerrilla Tactics (264332 effect#2), Trueshot (288613 effect#5), Flame Infusion (341401 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effect#1), Wildfire Arsenal (1223701 effect#1)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Guerrilla Tactics (264332 effect#2), Trueshot (288613 effect#5), Flame Infusion (341401 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effects: #1, #2), Wildfire Arsenal (1223701 effect#1)
 Family Flags     : 22, 25, 106
 Attributes       : Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -7428,7 +7428,7 @@ Labels           : 16: Class Spells
                  : 3853
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee Taken, Yellow Ranged Taken
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effect#1)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effects: #1, #2)
 Family Flags     : 22, 106
 Attributes       : Is Ability (4), Ignore Line of Sight (66), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -7452,7 +7452,7 @@ Labels           : 16: Class Spells
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Mechanic         : Bleed
-Affecting Spells : Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Winning Streak! (1216874 effect#1)
+Affecting Spells : Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Winning Streak! (1216874 effects: #1, #2)
 Family Flags     : 22
 Attributes       : DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
@@ -7640,7 +7640,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Guerrilla Tactics (264332 effect#2), Trueshot (288613 effect#5), Flame Infusion (341401 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effect#1), Wildfire Arsenal (1223701 effect#1)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Tip of the Spear (260286 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Guerrilla Tactics (264332 effect#2), Trueshot (288613 effect#5), Flame Infusion (341401 effect#1), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Coordinated Assault (361738 effect#2), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effects: #1, #2), Wildfire Arsenal (1223701 effect#1)
 Family Flags     : 22, 25, 106
 Attributes       : Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -7657,7 +7657,7 @@ Duration         : 6 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effect#1)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Mad Bombardier (363667 effects: #1, #3), Explosives Expert (378937 effects: #1, #2), Tactical Advantage (378951 effects: #2, #3), Spearhead (378957 effects: #2, #3), Hunter Survival 10.1 Class Set 2pc (405528 effects: #1, #3), Shredded Armor (410167 effect#1), Fury Strikes (425830 effects: #1, #2), Sentinel Precision (450375 effects: #3, #4), Hunter Survival 11.0 Class Set 2pc (453652 effects: #1, #2), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Specialized Arsenal (459542 effects: #1, #2), Grenade Juggler (459843 effects: #1, #4), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2), Winning Streak! (1216874 effects: #1, #2)
 Family Flags     : 22, 106
 Attributes       : Is Ability (4), Ignore Line of Sight (66), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -8248,10 +8248,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Flanking Strike (259516), Flanking Strike (269752)
                    Family Flags: 62
-#2 (id=1216297)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
-                   Affected Spells: Kill Command (259277)
-                   Family Flags: 37
 Description      : Flanking Strike damage increased by $s1% and Flanking Strike now increases your attack speed by $1217377s1% for $1217377d.
 
 Butchery reduces the remaining cooldown on Wildfire Bomb by ${$212436s2/1000}.1 sec for each target hit, up to $212436s3 targets.
@@ -10285,7 +10281,7 @@ Effects          :
 #2 (id=899335)   : Apply Aura (6) | Periodic Trigger Spell (23): Call of the Wild every 4 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 361582 | Target: Self (1)
 #3 (id=1101626)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : You sound the call of the wild, summoning $s1 of your active pets for $d. During this time, a random pet from your stable will appear every $t2 sec to assault your target for $361582d. 
 
 Each time Call of the Wild summons a pet, the cooldown of Barbed Shot and Kill Command are reduced by $s3%.
@@ -10942,7 +10938,7 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1006524)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 90 | Scaled Value: 90 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | Target: Self (1)
 Description      : While Beast Cleave is active, Kill Command now also strikes nearby enemies for $s1% of damage dealt. Deals reduced damage beyond $389448s2 targets.
 
 Name             : Training Expert (id=378209) [Spell Family (9), Passive, Hidden] 
@@ -13573,6 +13569,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2)
 Family Flags     : 74, 106
 Attributes       : Ignore Line of Sight (66), Not a Proc (105), Treat As Periodic (121), Not In Spellbook (143), Aura Points On Client (268)
+Aura Interrupt   : Raid Encounter End or M+ Start (41), Leave Arena or Battleground (45)
 Effects          :
 #1 (id=1150295)  : School Damage (2): arcane | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.783 | Target: Enemy (6)
@@ -17708,7 +17705,6 @@ Effects          :
 #1 (id=1198831)  : Apply Aura (6) | Proc Trigger Spell (42): Winning Streak!
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1216874 | Target: Self (1)
 Description      : Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r increasing the damage of your Wildfire Bomb by $1216874s1% stacking up to $1216874U times. 
-
 Wildfire Bomb has a $1216874H% chance to end your|cFFFFFFFF Winning Streak!|r
 
 Name             : Hunter Survival 11.1 Class Set 4pc (id=1216064) [Spell Family (9), Passive, Hidden] 
@@ -17751,15 +17747,20 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
                  : 295
+                 : 3023
 Stacks           : 6 maximum
 Proc Chance      : 15%
 Proc Flags       : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Triggered By     : Hunter Survival 11.1 Class Set 2pc (1215730)
 Attributes       : No Aura Cancel (31), Aura Points On Client (268)
-Aura Interrupt   : Change Specialization (38)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1200557)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Affected Spells: Scorching Wildfire (259587), Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049)
+                   Family Flags: 22
+#2 (id=1216757)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Scorching Wildfire (259587), Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271048), Volatile Bomb (271049)
                    Family Flags: 22
 Description      : $@spelldesc1215730
@@ -17774,7 +17775,9 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
                  : 295
+                 : 3023
 Attributes       : No Aura Cancel (31), Aura Points On Client (268)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1200563)  : Apply Aura (6) | Dummy (4)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -18017,7 +18020,7 @@ Proc Chance      : 100%
 Proc Flags       : White Melee, White Ranged
 Attributes       : Not On Player (167)
 Effects          :
-#1 (id=1202493)  : Apply Aura (6) | Proc Trigger Spell (42): Potent Mutagen
+#1 (id=1202493)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1218004 | Target: Any Target (25)
 Description      : $@spelldesc1215644
 Tooltip          : Infused with a powerful mutagen, causing auto-attacks to deal $1218004s1 Nature damage to up to $1218004i nearby enemies. 

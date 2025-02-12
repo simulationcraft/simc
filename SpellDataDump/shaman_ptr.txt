@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58999 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59095 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -598,7 +598,7 @@ Family Flags     : 23, 39, 58
 Attributes       : Not a Proc (105), Requires Main-Hand Weapon (106), Do Not Display Range (126), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=15497)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.3105 | PvP Coefficient: 1.6 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.27945 | PvP Coefficient: 1.6 | Target: Enemy (6)
 Description      : $@spelldesc33757
 
 Name             : Gift of the Naaru (desc=Racial) (id=28880) [Spell Family (4)] 
@@ -1852,7 +1852,7 @@ Name             : Healing Wave (id=77472) [Spell Family (11)]
 Class            : Restoration Shaman
 School           : Nature
 Spell Type       : Magic
-Resource         : 3% Base Mana (0) (id=3361)
+Resource         : 2.5% Base Mana (0) (id=3361)[Hotfixed: Percent Cost (3 -> 2.5)]
 Spell Level      : 11
 Range            : 40 yards
 Cast Time        : 2.5 seconds
@@ -3236,7 +3236,7 @@ Effects          :
                    Affected Spells: Elemental Blast (117014)
                    Family Flags: 98
 #24 (id=1166446) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: -6 | Scaled Value: -6 | Target: Self (1)
                    Affected Spells: Chain Lightning (188443)
                    Family Flags: 1
 #25 (id=1172978) : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
@@ -12940,7 +12940,7 @@ Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1027132)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.33333 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Lava Lash (60103)
                    Family Flags: 66
 #2 (id=1179291)  : Apply Aura (6) | Unknown(408)
@@ -14822,14 +14822,14 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1141757)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value 2: 3704 (Label) | Target: Self (1)
+                   Base Value: 18 | Scaled Value: 18 | Misc Value 2: 3704 (Label) | Target: Self (1)
                    Affected Spells (Label): Tremor (455622)
 #2 (id=1161195)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Healing Rain (73921), Deluge (200075)
                    Family Flags: 87
 #3 (id=1164497)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value 2: 3791 (Label) | Target: Self (1)
+                   Base Value: 18 | Scaled Value: 18 | Misc Value 2: 3791 (Label) | Target: Self (1)
                    Affected Spells (Label): Surging Bolt (458267)
 Description      : $?a137041[Increases the damage of Surging Totem by $s1%.][Increases the healing done by Surging Totem by $s2%.]
 
@@ -15838,7 +15838,7 @@ Family Flags     : 39, 56, 58, 103
 Attributes       : AI Doesn't Face Target (179), Always AOE Line of Sight (186)
 Effects          :
 #1 (id=1159222)  : School Damage (2): flamestrike
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.647521 | Radius: 8 yards | Target: At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.582769 | Radius: 8 yards | Target: At Enemy in Area (16)
 #2 (id=1159269)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Surging Totem creates Tremors every $455593t1 sec, dealing $s1 Flamestrike damage to enemies within $A1 yards. Damage reduced beyond $s2 targets.
@@ -17656,6 +17656,7 @@ Effects          :
 Description      : $@spelldesc187880
 
 Name             : Swelling Tide (id=467665) [Spell Family (11)] 
+Hotfixed         : Aura Interrupt
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -17668,7 +17669,7 @@ Labels           : 16: Class Spells
 Stacks           : 99 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display Range (126), Do Not Display Duration (170), Do Not Display Cast Time (441)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1180944)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 20 | Target: Self (1)
@@ -18269,13 +18270,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value: 3 | Misc Value 2: 4239 (Label) | Target: Self (1)
                    Affected Spells (Label): Voltaic Surge (454919)
 #8 (id=1213843)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Misc Value 2: 3986 (Label) | Target: Self (1)
+                   Base Value: -2 | Scaled Value: -2 | Misc Value: 12 | Misc Value 2: 3986 (Label) | Target: Self (1)
                    Affected Spells (Label): Lightning Rod (210689), Conductive Energy (455123)
 #9 (id=1213844)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value: 12 | Misc Value 2: 3986 (Label) | Target: Self (1)
                    Affected Spells (Label): Lightning Rod (210689), Conductive Energy (455123)
 #10 (id=1213848) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tempest (452201)
                    Family Flags: 107
 #11 (id=1213849) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
@@ -18436,7 +18437,7 @@ Effects          :
 #1 (id=1198813)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 #2 (id=1204401)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.5 | Trigger Spell: 1223332 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Trigger Spell: 1223332 | Target: Self (1)
 Description      : When you lose your |cFFFFFFFFWinning Streak!|r the winds shift into Doom Winds for ${$s1/1000} sec. When Doom Winds deal damage, your next Crash Lightning deals ${$1223332s1}.1% increased damage, up to ${$1223332s1*$1223332u}.1%. This effect can be stored up to $1223410u stacks. Additionally, Crash Lightning deals $s2% more damage to your main target.
 
 Name             : Mana Tide (id=1217525) [Spell Family (11), Passive] 
@@ -18662,11 +18663,11 @@ Attributes       : Aura Points On Client (268), Do Not Consume Aura Stack On Pro
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1203591)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.6 | Target: Self (1)
                    Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Lava Lash (60103), Windstrike (115357), Windstrike Off-Hand (115360)
                    Family Flags: 66, 76
 #2 (id=1211381)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.5 | Misc Value 2: 4622 (Label) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.6 | Misc Value 2: 4622 (Label) | Target: Self (1)
                    Affected Spells (Label): Doom Winds (469270)
 Description      : $@spelldesc1215710
 Tooltip          : Stormstrike, Lava Lash and Doom Winds damage increased by ${$w1}.1%.
@@ -18817,7 +18818,7 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura P
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1211182)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 18 | Scaled Value: 18 | Misc Value 2: 1183 (Label) | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.6 | Misc Value 2: 1183 (Label) | Target: Self (1)
                    Affected Spells (Label): Crash Lightning (187874)
 Description      : $@spelldesc1215712
 Tooltip          : Crash Lightning damage increased by $w1%.

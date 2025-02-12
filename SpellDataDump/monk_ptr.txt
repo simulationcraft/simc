@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.58999 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59095 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1139,7 +1139,8 @@ Attributes       : Is Channelled (34), Is Self Channelled (38), Name in Channel 
 Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13), Shapeshifting (15), Leave World (19), Enter World (22)
 Effects          :
 #1 (id=129048)   : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds | Scaling Class: -2
-                   Base Value: 3 | Scaled Value: 52500 (coefficient=0.02) | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 44625 (coefficient=0.017) | Target: Self (1)
+Hotfixed         : Coefficient (0.02 -> 0.017)
 #2 (id=1095450)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40 | Target: Self (1)
 Description      : Consumes 1 stack of Mana Tea per $t1 sec to restore $s1 Mana and reduces the Mana cost of your spells by $197908s1% for ${$115869s3/1000}.2 sec per stack of Mana Tea consumed after drinking.
@@ -1863,13 +1864,15 @@ Proc Flags       : Generic Heal, Magic Heal
 Attributes       : Passive (6), Do Not Log (8), Can Proc From Procs (122), Mastery Affects Points (285), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=134001)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 7.7 | Misc Value: 24 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.93 | Misc Value: 24 | Target: Self (1)
+Hotfixed         : SP Coefficient (7.7 -> 6.93)
 #2 (id=287388)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=305755)   : Apply Aura (6) | Add Flat Modifier (107): Spell Power (24)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.077 | Misc Value: 24 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.0693 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Gust of Mists (191894), Gust of Mists (328748), Gust of Mists (343819)
                    Family Flags: 110
+Hotfixed         : SP Coefficient (0.077 -> 0.0693)
 Description      : Renewing Mist, Enveloping Mist, Rising Sun Kick,$?s322104[ Expel Harm,][]$?s115310[ Revival,][]$?s388615[ Restoral,][]$?s399491[ Sheilun's Gift,][]$?s388193[ Jadefire Stomp][] and Vivify cause a gust of healing mists, instantly healing the primary target for $191894s1.$?a388020[
 
 Gust of Mists has a $388020s2% chance to do $388020s1% more healing.][]
@@ -3430,15 +3433,15 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=179707)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 32 | Scaled Value: 32 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Glyph of Tiger Palm (468605), Slicing Winds (1217411)
                    Family Flags: 103
 #2 (id=191108)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 32 | Scaled Value: 32 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Breath of Fire (123725), Zen Pulse (124081), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Glory of the Dawn (288636), Exploding Keg (325153), Faeline Stomp (327264), Spinning Crane Kick (330903), Keg Smash (330911), Tiger Palm (331433), Chi Explosion (337342), Faeline Stomp (345727), Jadefire Stomp (388201), Jadefire Stomp (388207), Zen Pulse (388609), Exploding Keg (388867), Glory of the Dawn (392959), Chi Explosion (393056), Chi Surge (393400), Thunderfist (393566), Chi Surge (393786), Strike of the Windlord (395519), Strike of the Windlord (395521), Press the Advantage (418360), Celestial Conduit (443038), Courage of the White Tiger (443088), Strength of the Black Ox (443127), Flight of the Red Crane (443263), Flight of the Red Crane (443611), Whirling Dragon Punch (451767), Dual Threat (451839), Flurry of Xuen (452130), Courage of the White Tiger (457917), Glyph of Tiger Palm (468605), Slicing Winds (1217411)
                    Family Flags: 103, 125
 #3 (id=191109)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 72 | Scaled Value: 72 | Target: Self (1)
+                   Base Value: 98 | Scaled Value: 98 | Target: Self (1)
 #4 (id=191110)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1490 (Category) | Target: Self (1)
                    Affected Spells (Category): Keg Smash (121253), Keg Smash (330911)
@@ -3490,7 +3493,7 @@ Effects          :
                    Affected Spells: Chi Burst (130654), Chi Wave (132463)
                    Family Flags: 58, 89
 #20 (id=743520)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 72 | Scaled Value: 72 | Target: Self (1)
+                   Base Value: 98 | Scaled Value: 98 | Target: Self (1)
 #21 (id=745150)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -45 | Scaled Value: -45 | Misc Value 2: 2384 (Label) | Target: Self (1)
 #22 (id=1032358) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -10244,7 +10247,7 @@ Description      : $@spelldesc115151
 
 Name             : Resplendent Mist (id=388020) [Spell Family (53), Passive] 
 Talent Entry     : Mistweaver [tree=spec, row=9, col=3, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(75, 150)]
+                 : Effect#1 [op=set, values=(60, 120)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -10349,7 +10352,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1023483)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value 2: 0x471 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 0x471 | Target: Self (1)
+Hotfixed         : Base Value (40 -> 20)
 #2 (id=1023484)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 #3 (id=1147040)  : Apply Aura (6) | Dummy (4)
@@ -18947,9 +18951,10 @@ Labels           : 16: Class Spells
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1180452)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 150 | Scaled Value: 150 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renewing Mist (115151), Renewing Mist (119611), Renewing Mist (448430)
                    Family Flags: 23
+Hotfixed         : Base Value (100 -> 150)
 Description      : $@spelldesc467307
 Tooltip          : Renewing Mist healing increased by $w1%.
 
