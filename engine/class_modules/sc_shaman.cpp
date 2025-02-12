@@ -1060,6 +1060,7 @@ public:
     proc_t* surge_of_power_flame_shock;
     proc_t* surge_of_power_tempest;
     proc_t* surge_of_power_wasted;
+    proc_t* jackpot_rppm;
     proc_t* jackpot;
 
     proc_t* elemental_blast_haste;
@@ -3119,7 +3120,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
     if ( p()->is_ptr() && p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, TWW2, B2 ) && p()->rppm.jackpot->trigger() )
     {
-      p()->proc.jackpot->occur();
+      p()->proc.jackpot_rppm->occur();
       if ( p()->talent.storm_elemental->ok() )
       {
         p()->summon_elemental( elemental::GREATER_STORM, p()->find_spell( 1215675 )->effectN(1).time_value() );
@@ -3419,7 +3420,6 @@ void summon( const T& container, timespan_t duration, size_t n = 1 )
 struct shaman_pet_t : public pet_t
 {
   bool use_auto_attack;
-  timespan_t spawn_time;
 
   shaman_pet_t( shaman_t* owner, util::string_view name, bool guardian = true, bool auto_attack = true )
     : pet_t( owner->sim, owner, name, guardian ), use_auto_attack( auto_attack )
@@ -3457,7 +3457,6 @@ struct shaman_pet_t : public pet_t
   void summon(timespan_t duration) override
   {
     pet_t::summon( duration );
-    spawn_time = sim->current_time();
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
@@ -4089,9 +4088,11 @@ struct fire_elemental_t : public primal_elemental_t
   {
     primal_elemental_t::dismiss( expired );
 
+    o()->buff.fire_elemental->expire();
+
     if ( variant == elemental_variant::GREATER && o()->talent.echo_of_the_elementals.ok() && expired )
     {
-      o()->summon_lesser_elemental( type, ( sim->current_time() - spawn_time ) / 3 );
+      o()->summon_lesser_elemental( type );
     }
   }
 };
@@ -4259,9 +4260,11 @@ struct storm_elemental_t : public primal_elemental_t
   {
     primal_elemental_t::dismiss( expired );
 
+    o()->buff.storm_elemental->expire();
+
     if ( variant == elemental_variant::GREATER && o()->talent.echo_of_the_elementals.ok() && expired )
     {
-      o()->summon_lesser_elemental( type, ( sim->current_time() - spawn_time ) / 3 );
+      o()->summon_lesser_elemental( type );
     }
 
     if ( o()->pet.storm_elemental.n_active_pets() + o()->pet.lesser_storm_elemental.n_active_pets() == 0 )
@@ -9233,8 +9236,12 @@ struct ascendance_t : public shaman_spell_t
 
   void execute() override
   {
-    if ( p()->is_ptr() && p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, TWW2, B2 ))
+    shaman_spell_t::execute();
+
+    if ( p()->is_ptr() && p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, TWW2, B2 ) )
     {
+      p()->buff.jackpot->trigger();
+      p()->proc.jackpot->occur();
       if ( p()->talent.storm_elemental->ok() )
       {
         p()->summon_elemental( elemental::GREATER_STORM, p()->find_spell( 1215675 )->effectN( 1 ).time_value() );
@@ -9243,9 +9250,20 @@ struct ascendance_t : public shaman_spell_t
       {
         p()->summon_elemental( elemental::GREATER_FIRE, p()->find_spell( 1215675 )->effectN( 1 ).time_value() );
       }
-    }
 
-    shaman_spell_t::execute();
+      if ( p()->bugs )
+      {
+        p()->buff.jackpot->trigger();
+        p()->proc.jackpot->occur();
+        if ( p()->talent.storm_elemental->ok() )
+        {
+        }
+        else
+        {
+          p()->summon_elemental( elemental::GREATER_FIRE, p()->find_spell( 1215675 )->effectN( 1 ).time_value() );
+        }
+      }
+    }
 
     p()->cooldown.strike->reset( false );
 
@@ -12375,10 +12393,6 @@ void shaman_t::summon_elemental( elemental type, timespan_t override_duration )
       pet.earth_elemental.despawn();
       pet.storm_elemental.despawn();
       buff.storm_elemental->expire();
-      if ( is_ptr() && sets->has_set_bonus( SHAMAN_ELEMENTAL, TWW2, B4 ) )
-      {
-        buff.jackpot->trigger();
-      }
       break;
     }
     case elemental::GREATER_STORM:
@@ -12390,10 +12404,6 @@ void shaman_t::summon_elemental( elemental type, timespan_t override_duration )
       pet.earth_elemental.despawn();
       pet.fire_elemental.despawn();
       buff.fire_elemental->expire();
-      if ( is_ptr() && sets->has_set_bonus( SHAMAN_ELEMENTAL, TWW2, B4 ) )
-      {
-        buff.jackpot->trigger();
-      }
       break;
     }
     case elemental::GREATER_EARTH:
@@ -12421,6 +12431,10 @@ void shaman_t::summon_elemental( elemental type, timespan_t override_duration )
     elemental_buff->extend_duration( this,
       override_duration > 0_ms ? override_duration : elemental_buff->buff_duration() );
     spawner_ptr->active_pet()->expiration->reschedule( new_duration );
+    for (auto action : spawner_ptr->active_pet()->action_list)
+    {
+        action->cooldown->reset(false);
+    }
   }
   else
   {
@@ -14111,7 +14125,8 @@ void shaman_t::init_procs()
   proc.ascendance_icefury_overload      = get_proc( "Ascendance: Icefury" );
   proc.ascendance_earthquake_overload      = get_proc( "Ascendance: Earthquake" );
 
-  proc.jackpot = get_proc( "JACKPOT!" );
+  proc.jackpot_rppm = get_proc( "JACKPOT! rppm" );
+  proc.jackpot      = get_proc( "JACKPOT!" );
 
   proc.potm_tempest_overload            = get_proc( "PotM: Tempest" );
   proc.surge_of_power_lightning_bolt = get_proc( "Surge of Power: Lightning Bolt" );
