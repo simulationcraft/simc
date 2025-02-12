@@ -9257,6 +9257,7 @@ struct ascendance_t : public shaman_spell_t
         p()->proc.jackpot->occur();
         if ( p()->talent.storm_elemental->ok() )
         {
+          p()->summon_elemental( elemental::GREATER_STORM, p()->find_spell( 1215675 )->effectN( 1 ).time_value() );
         }
         else
         {
@@ -9291,7 +9292,7 @@ struct ascendance_t : public shaman_spell_t
       }
     }
 
-    if (p()->specialization() == SHAMAN_ELEMENTAL && background && p()->buff.ascendance->up())
+    if (p()->specialization() == SHAMAN_ELEMENTAL && background && p()->buff.ascendance->up() && !p()->is_ptr())
     {
       auto& tl    = target_list();
       auto fs_cap = p()->action.ascendance->data().effectN( 7 ).base_value();
