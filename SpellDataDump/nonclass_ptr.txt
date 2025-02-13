@@ -143268,10 +143268,12 @@ Labels           : 3959: Item Effects
 Attributes       : Is Channelled (34), Is Self Channelled (38), No Aura Icon (60), Aura Points On Client (268)
 Channel Interrupt: Action (2), Moving (3), Interacting (10), Attacking (12), Use Item (13), Damage Channel Duration (14)
 Effects          :
-#1 (id=774720)   : Apply Aura (6) | Periodic Energize Power (24): every 2 seconds | Scaling Class: -1
-                   Base Value: -5 | Scaled Value: -50429 (coefficient=-13.17038) | Target: Self (1)
-#2 (id=774721)   : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 25000 | Scaled Value: 201717 (coefficient=52.6818) | Target: Self (1)
+#1 (id=774720)   : Apply Aura (6) | Periodic Energize Power (24): every 2 seconds | Scaling Class: -10
+                   Base Value: -5 | Scaled Value: -49.13715 (coefficient=-0.019211) | Target: Self (1)
+Hotfixed         : Coefficient (-13.170383 -> -0.019211), Scaling Class (-1 -> -10)
+#2 (id=774721)   : Apply Aura (6) | Dummy (4) | Scaling Class: -10
+                   Base Value: 25000 | Scaled Value: 196.5486 (coefficient=0.076844) | Target: Self (1)
+Hotfixed         : Coefficient (52.681797 -> 0.076844), Scaling Class (-1 -> -10)
 Description      : Channel to store ${-1*$s1} mana in the Ingenious Mana Battery, up to a max of $s2.
 
 Name             : Ingenious Mana Battery (id=300969) [Passive, Hidden] 
@@ -143288,11 +143290,12 @@ Effects          :
 Description      : While your mana is above $s1%, gain $s3 Versatility, increased by up to $300970s3% by the mana stored in the battery. While your mana is under $s2%, siphon $300971s2 mana every $300971t1 sec from the Ingenious Mana Battery into your mana pool.
 
 Name             : Ingenious Mana Battery (id=300970) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Triggered By     : Ingenious Mana Battery (300969)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=774724)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Vers | Target: Self (1)
@@ -143328,11 +143331,13 @@ Description      : Empowers creatures formed from Mardivas's Arcane Coffer with 
 Tooltip          : Empowers creatures formed from Mardivas's Arcane Coffer with the power of arcane.
 
 Name             : Ingenious Mana Battery (id=300989) 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 3959: Item Effects
 Attributes       : Aura Points On Client (268)
+Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=774756)   : Apply Aura (6) | Dummy (4)
                    Base Value: 4096 | Scaled Value: 4096 | Target: Self (1)
