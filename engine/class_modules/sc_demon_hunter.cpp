@@ -7433,22 +7433,34 @@ struct wounded_quarry_cb_t : public demon_hunter_proc_callback_t
 {
   struct wounded_quarry_t : public actions::demon_hunter_attack_t
   {
+    double chance;
+
     wounded_quarry_t( util::string_view name, demon_hunter_t* p )
       : demon_hunter_attack_t( name, p, p->hero_spec.wounded_quarry_damage )
     {
+      chance         = p->hero_spec.wounded_quarry_proc_rate;
+    }
+
+    void impact(action_state_t *s) override {
+      demon_hunter_attack_t::impact(s);
+
+      if ( rng().roll( chance ) )
+      {
+        p()->proc.soul_fragment_from_wounded_quarry->occur();
+        p()->spawn_soul_fragment( soul_fragment::LESSER );
+      }
     }
   };
 
   school_e school;
 
   wounded_quarry_t* damage;
-  double chance;
   double damage_percent;
 
   wounded_quarry_cb_t( const special_effect_t& e )
-    : demon_hunter_proc_callback_t( e ), school( SCHOOL_PHYSICAL ), chance( 0 )
+    : demon_hunter_proc_callback_t( e ), school( SCHOOL_PHYSICAL )
   {
-    chance         = p()->hero_spec.wounded_quarry_proc_rate;
+
     damage_percent = p()->talent.aldrachi_reaver.wounded_quarry->effectN( 1 ).percent();
     damage         = p()->get_background_action<wounded_quarry_t>( "wounded_quarry" );
   }
@@ -7482,7 +7494,7 @@ struct wounded_quarry_cb_t : public demon_hunter_proc_callback_t
     if ( !p()->get_target_data( s->target )->debuffs.reavers_mark->up() )
       return;
 
-    // live is old trigger
+    // live only triggers
     if ( p()->is_ptr() )
     {
       double da = s->result_amount;
@@ -7491,16 +7503,8 @@ struct wounded_quarry_cb_t : public demon_hunter_proc_callback_t
         da *= damage_percent;
         damage->execute_on_target( s->target, da );
       }
-    }
-    else
-    {
+    } else {
       damage->execute_on_target( s->target );
-
-      if ( rng().roll( chance ) )
-      {
-        p()->proc.soul_fragment_from_wounded_quarry->occur();
-        p()->spawn_soul_fragment( soul_fragment::LESSER );
-      }
     }
   }
 };
