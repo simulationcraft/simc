@@ -18042,7 +18042,8 @@ Triggered By     : Potent Mutagen (1218003)
 Attributes       : Do Not Display Range (126)
 Effects          :
 #1 (id=1202494)  : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.03661 | PvP Coefficient: 0.5 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.362814 | PvP Coefficient: 0.5 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : AP Coefficient (1.03661 -> 0.362814)
 #2 (id=1202496)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : $@spelldesc1215644
