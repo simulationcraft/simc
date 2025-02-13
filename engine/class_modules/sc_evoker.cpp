@@ -4717,6 +4717,24 @@ struct firestorm_t : public evoker_spell_t
   }
 };
 
+struct fury_of_the_aspects_t : public evoker_spell_t
+{
+    fury_of_the_aspects_t( evoker_t* p, std::string_view options_str )
+        : evoker_spell_t( "fury_of_the_aspects_t", p, p->find_class_spell( "Fury of the Aspects" ), options_str )
+    {
+    }
+
+    void execute() override
+    {
+        evoker_spell_t::execute();
+
+        if (p()->talent.chronowarden.time_convergence.enabled())
+        {
+            p()->buff.time_convergence_intellect->trigger();
+        }
+    }
+};
+
 struct hover_t : public evoker_spell_t
 {
   hover_t( evoker_t* p, std::string_view options_str )
@@ -4946,6 +4964,24 @@ struct obsidian_shards_t : public residual_action::residual_periodic_action_t<ev
   }
 };
 
+struct oppressing_roar_t : public evoker_spell_t
+{
+    oppressing_roar_t( evoker_t* p, std::string_view options_str )
+        : evoker_spell_t( "oppressing_roar", p, p->talent.oppressing_roar, options_str )
+    {
+    }
+
+    void execute() override
+    {
+        evoker_spell_t::execute();
+
+        if (p()->talent.chronowarden.time_convergence.enabled())
+        {
+            p()->buff.time_convergence_intellect->trigger();
+        }
+    }
+};
+
 struct quell_t : public evoker_spell_t
 {
   quell_t( evoker_t* p, std::string_view options_str ) : evoker_spell_t( "quell", p, p->talent.quell, options_str )
@@ -5035,6 +5071,24 @@ struct shattering_star_t : public evoker_spell_t
 
     return da;
   }
+};
+
+struct time_spiral_t : public evoker_spell_t
+{
+    time_spiral_t( evoker_t* p, std::string_view options_str )
+        : evoker_spell_t( "time_spiral", p, p->talent.time_spiral, options_str )
+    {
+    }
+
+    void execute() override
+    {
+        evoker_spell_t::execute();
+
+        if (p()->talent.chronowarden.time_convergence.enabled())
+        {
+            p()->buff.time_convergence_intellect->trigger();
+        }
+    }
 };
 
 struct tip_the_scales_t : public evoker_spell_t
@@ -8244,8 +8298,11 @@ void evoker_t::init_spells()
   talent.ancient_flame        = CT( "Ancient Flame" );
   talent.protracted_talons    = CT( "Protracted Talons" );  // Row 8
   talent.lush_growth          = CT( "Lush Growth" );
+  talent.oppressing_roar      = CT( "Oppressing Roar" );
   talent.leaping_flames       = CT( "Leaping Flames" );  // Row 9
   talent.aerial_mastery       = CT( "Aerial Mastery" );
+  talent.overawe              = CT( "Overawe" );
+  talent.time_spiral          = CT( "Time Spiral" ); // Row 10
   // Devastation Traits
   talent.pyre                      = ST( "Pyre" );                // Row 1
   talent.ruby_essence_burst        = ST( "Ruby Essence Burst" );  // Row 2
@@ -9118,6 +9175,7 @@ void evoker_t::apply_affecting_auras_late( action_t& action )
   action.apply_affecting_aura( talent.lush_growth );
   action.apply_affecting_aura( talent.natural_convergence );
   action.apply_affecting_aura( talent.obsidian_bulwark );
+  action.apply_affecting_aura( talent.overawe );
 
   // Augmentation
   action.apply_affecting_aura( talent.dream_of_spring );
@@ -9211,6 +9269,12 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
     return new time_skip_t( this, options_str );
   if ( name == "engulf" )
     return new engulf_t( this, options_str );
+  if ( name == "time_spiral" )
+    return new time_spiral_t( this, options_str );
+  if ( name == "oppressing_roar" )
+    return new oppressing_roar_t( this, options_str );
+  if ( name == "fury_of_the_aspects" )
+    return new fury_of_the_aspects_t( this, options_str )
 
   return player_t::create_action( name, options_str );
 }
