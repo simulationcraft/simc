@@ -1215,8 +1215,10 @@ public:
           parse_effects( p()->talents.warrior.avatar, effect_mask_t( false ).enable( 11, 12 ) );
 
         // TWW2 Tier
-        // effect 3 is handled manually
-        parse_effects( p()->buff.luck_of_the_draw, effect_mask_t( true ).disable( 2, 3 ) );
+        // effect 2 is enabled by 4pc
+        // effect 3 is handled manually.  Shield Charge cooldown
+        // effect 4 seems to be a crit multiplier that is disabled
+        parse_effects( p()->buff.luck_of_the_draw, effect_mask_t( true ).disable( 2, 3, 4 ) );
         if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW2, B4 ) )
           parse_effects( p()->buff.luck_of_the_draw, effect_mask_t( false ).enable( 2 ), p()->sets->set( WARRIOR_PROTECTION, TWW2, B4 ) );
       }
