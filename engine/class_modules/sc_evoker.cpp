@@ -4728,7 +4728,7 @@ struct fury_of_the_aspects_t : public evoker_spell_t
     {
         evoker_spell_t::execute();
 
-        if (p()->talent.chronowarden.time_convergence.enabled())
+        if ( p()->talent.chronowarden.time_convergence.enabled() )
         {
             p()->buff.time_convergence_intellect->trigger();
         }
@@ -4975,7 +4975,7 @@ struct oppressing_roar_t : public evoker_spell_t
     {
         evoker_spell_t::execute();
 
-        if (p()->talent.chronowarden.time_convergence.enabled())
+        if ( p()->talent.chronowarden.time_convergence.enabled() )
         {
             p()->buff.time_convergence_intellect->trigger();
         }
@@ -5084,7 +5084,7 @@ struct time_spiral_t : public evoker_spell_t
     {
         evoker_spell_t::execute();
 
-        if (p()->talent.chronowarden.time_convergence.enabled())
+        if ( p()->talent.chronowarden.time_convergence.enabled() )
         {
             p()->buff.time_convergence_intellect->trigger();
         }
@@ -9274,7 +9274,7 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
   if ( name == "oppressing_roar" )
     return new oppressing_roar_t( this, options_str );
   if ( name == "fury_of_the_aspects" )
-    return new fury_of_the_aspects_t( this, options_str )
+    return new fury_of_the_aspects_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
