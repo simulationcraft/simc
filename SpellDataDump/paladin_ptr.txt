@@ -10448,8 +10448,9 @@ Attributes       : Aura Points On Client (268)
 Effects          :
 #1 (id=1018181)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Ancient Fury (86704), Eternal Flame (156322), Justicar's Vengeance (215661), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Afterimage (391309), Shield of the Righteous (415091), Hammer of Light (429826), Eternal Flame (461432)
-                   Family Flags: 44, 49, 52, 78, 82, 88, 89, 112
+                   Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Ancient Fury (86704), Eternal Flame (156322), Justicar's Vengeance (215661), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Afterimage (391309), Shield of the Righteous (415091), Hammer of Light (427453), Hammer of Light (429826), Eternal Flame (461432)
+                   Family Flags: 29, 44, 49, 52, 78, 82, 88, 89, 112
+Hotfixed         : Affects Spells
 Description      : Your next Holy Power spending ability deals $s1% additional increased damage and healing. This effect stacks.
 Tooltip          : Your next Holy Power spending ability deals $s1% additional increased damage and healing.
 
@@ -13115,6 +13116,7 @@ Effects          :
 Description      : When any party or raid member within $a1 yards dies, you gain Avenging Wrath for $s1 sec.
 
 Name             : Consecrated Blade (id=404834) [Spell Family (10), Passive] 
+Hotfixed         : Attributes
 Class            : Retribution Paladin
 School           : Holy
 Spell Type       : None
@@ -13122,7 +13124,7 @@ Spell Level      : 11
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Attributes       : Passive (6), Allow Class Ability Procs (416)
+Attributes       : Passive (6), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1052635)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -15502,7 +15504,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 3022
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Paladin (137026 effect#8), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Judgment (197277 effect#1), Divine Purpose (223819 effects: #1, #2, #4), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Divine Purpose (408458 effect#1), Retribution Paladin (412314 effects: #14, #15, #22), Initial Paladin (417383 effects: #1, #2), Light's Deliverance (433732 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), All in! (1216837 effect#1), Luck of the Draw! (1218114 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Paladin (137026 effect#8), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #9, #31), Judgment (197277 effect#1), Divine Purpose (223819 effects: #1, #2, #4), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Blessing of Dawn (337747 effects: #1, #2), Final Reckoning (343721 effect#3), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Divine Purpose (408458 effect#1), Retribution Paladin (412314 effects: #14, #15, #22), Initial Paladin (417383 effects: #1, #2), Light's Deliverance (433732 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), All in! (1216837 effect#1), Luck of the Draw! (1218114 effects: #1, #2)
 Family Flags     : 27, 29, 65
 Attributes       : Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :

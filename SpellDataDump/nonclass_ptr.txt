@@ -254113,14 +254113,13 @@ Description      : Your attacks have a very high chance to contaminate your targ
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Test Pilot's Go-Pack (id=471383) 
+Hotfixed         : Cooldown (20000 -> 0), Category Cooldown (20000 -> 0)
 School           : Physical
 Spell Type       : None
 Duration         : 1 seconds
 Cooldown         : 120 seconds
-Category         : 1141 (Type 0x0)
 Labels           : 292
                  : 3959: Item Effects
-Category Cooldown: 20 seconds
 Attributes       : Allow While Stealthed (37), No Threat (42), Suppress Caster Procs (112)
 Effects          :
 #1 (id=1187688)  : Apply Aura (6) | Increase Speed% (31)
