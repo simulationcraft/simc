@@ -257,6 +257,8 @@ public:
 
   double shattered_destiny_accumulator;
 
+  double wounded_quarry_accumulator;
+
   event_t* exit_melee_event;  // Event to disable melee abilities mid-VR.
 
   // Buffs
@@ -798,6 +800,7 @@ public:
 
     // Aldrachi Reaver
     cooldown_t* art_of_the_glaive_consumption_icd;
+    cooldown_t* wounded_quarry_trigger_icd;
 
     // Fel-scarred
   } cooldown;
@@ -870,6 +873,7 @@ public:
     // Aldrachi Reaver
     proc_t* soul_fragment_from_aldrachi_tactics;
     proc_t* soul_fragment_from_wounded_quarry;
+    proc_t* wounded_quarry_accumulator_reset;
 
     // Fel-scarred
 
@@ -1800,7 +1804,8 @@ public:
     if ( p()->talent.vengeance.vulnerability->ok() )
     {
       ab::parse_target_effects( d_fn( &demon_hunter_td_t::debuffs_t::frailty ), p()->spec.frailty_debuff,
-                                effect_mask_t( false ).enable( 4, 5 ), p()->talent.vengeance.vulnerability->effectN( 1 ).percent() );
+                                effect_mask_t( false ).enable( 4, 5 ),
+                                p()->talent.vengeance.vulnerability->effectN( 1 ).percent() );
     }
 
     // Vengeance Demon Hunter's DF S2 tier set spell data is baked into Fiery Brand's spell data at effect #4.
@@ -7438,11 +7443,12 @@ struct wounded_quarry_cb_t : public demon_hunter_proc_callback_t
     wounded_quarry_t( util::string_view name, demon_hunter_t* p )
       : demon_hunter_attack_t( name, p, p->hero_spec.wounded_quarry_damage )
     {
-      chance         = p->hero_spec.wounded_quarry_proc_rate;
+      chance = p->hero_spec.wounded_quarry_proc_rate;
     }
 
-    void impact(action_state_t *s) override {
-      demon_hunter_attack_t::impact(s);
+    void impact( action_state_t* s ) override
+    {
+      demon_hunter_attack_t::impact( s );
 
       if ( rng().roll( chance ) )
       {
@@ -7457,10 +7463,8 @@ struct wounded_quarry_cb_t : public demon_hunter_proc_callback_t
   wounded_quarry_t* damage;
   double damage_percent;
 
-  wounded_quarry_cb_t( const special_effect_t& e )
-    : demon_hunter_proc_callback_t( e ), school( SCHOOL_PHYSICAL )
+  wounded_quarry_cb_t( const special_effect_t& e ) : demon_hunter_proc_callback_t( e ), school( SCHOOL_PHYSICAL )
   {
-
     damage_percent = p()->talent.aldrachi_reaver.wounded_quarry->effectN( 1 ).percent();
     damage         = p()->get_background_action<wounded_quarry_t>( "wounded_quarry" );
   }
@@ -7501,9 +7505,18 @@ struct wounded_quarry_cb_t : public demon_hunter_proc_callback_t
       if ( da > 0 )
       {
         da *= damage_percent;
-        damage->execute_on_target( s->target, da );
+        p()->wounded_quarry_accumulator += da;
+        if ( p()->cooldown.wounded_quarry_trigger_icd->up() )
+        {
+          damage->execute_on_target( s->target, p()->wounded_quarry_accumulator );
+          p()->wounded_quarry_accumulator = 0.0;
+          // per dev communication, it's batched per second
+          p()->cooldown.wounded_quarry_trigger_icd->start( 1_s );
+        }
       }
-    } else {
+    }
+    else
+    {
       damage->execute_on_target( s->target );
     }
   }
@@ -7547,7 +7560,14 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
                              ->set_default_value_from_effect( 1 )
                              ->set_max_stack( 2 )
                              ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+                             ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                             ->set_stack_change_callback( [ &p ]( buff_t*, int, int new_ ) {
+                               if (!new_)
+                               {
+                                 p.wounded_quarry_accumulator = 0.0;
+                                 p.proc.wounded_quarry_accumulator_reset->occur();
+                               }
+                             } );
 
   dots.sigil_of_flame = target->get_dot( "sigil_of_flame", &p );
   dots.sigil_of_doom  = target->get_dot( "sigil_of_doom", &p );
@@ -7586,6 +7606,7 @@ demon_hunter_t::demon_hunter_t( sim_t* sim, util::string_view name, race_e r )
     frailty_accumulator( 0.0 ),
     frailty_driver( nullptr ),
     shattered_destiny_accumulator( 0.0 ),
+    wounded_quarry_accumulator( 0.0 ),
     exit_melee_event( nullptr ),
     buff(),
     talent(),
@@ -8307,6 +8328,7 @@ void demon_hunter_t::init_procs()
   // Aldrachi Reaver
   proc.soul_fragment_from_aldrachi_tactics = get_proc( "soul_fragment_from_aldrachi_tactics" );
   proc.soul_fragment_from_wounded_quarry   = get_proc( "soul_fragment_from_wounded_quarry" );
+  proc.wounded_quarry_accumulator_reset   = get_proc( "wounded_quarry_accumulator_reset" );
 
   // Fel-scarred
 
@@ -9191,6 +9213,7 @@ void demon_hunter_t::create_cooldowns()
 
   // Aldrachi Reaver
   cooldown.art_of_the_glaive_consumption_icd = get_cooldown( "art_of_the_glaive_consumption_icd" );
+  cooldown.wounded_quarry_trigger_icd        = get_cooldown( "wounded_quarry_trigger_icd" );
 
   // Fel-scarred
 }
@@ -9632,6 +9655,7 @@ void demon_hunter_t::reset()
   metamorphosis_health          = 0;
   frailty_accumulator           = 0.0;
   shattered_destiny_accumulator = 0.0;
+  wounded_quarry_accumulator    = 0.0;
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
