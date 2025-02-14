@@ -3121,6 +3121,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     if ( p()->is_ptr() && p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, TWW2, B2 ) && p()->rppm.jackpot->trigger() )
     {
       p()->proc.jackpot_rppm->occur();
+      p()->buff.jackpot->trigger();
       if ( p()->talent.storm_elemental->ok() )
       {
         p()->summon_elemental( elemental::GREATER_STORM, p()->find_spell( 1215675 )->effectN(1).time_value() );
@@ -4259,8 +4260,6 @@ struct storm_elemental_t : public primal_elemental_t
   void dismiss( bool expired ) override
   {
     primal_elemental_t::dismiss( expired );
-
-    o()->buff.storm_elemental->expire();
 
     if ( variant == elemental_variant::GREATER && o()->talent.echo_of_the_elementals.ok() && expired )
     {
