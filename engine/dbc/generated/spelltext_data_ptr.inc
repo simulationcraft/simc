@@ -1,4 +1,4 @@
-// Spell text, wow build 11.1.0.59095
+// Spell text, wow build 11.1.0.59184
 static const std::array<spelltext_data_t, 27241> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -27243,12 +27243,12 @@ static const std::array<spelltext_data_t, 27241> __ptr_spelltext_data { {
   { 1227062, "$@spelldesc442686", "Damage and healing increased by $w1%.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.1.0.59095
+// spelltext hotfix entries, wow build 11.1.0.59184
 static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
   {  442806,  0, "Expose weaknesses in the target of your $@spellname442624, causing your Physical damage to any enemy to also deal $s1% of the damage dealt to your marked target as Chaos.\r\n\r\n", "Expose weaknesses in the target of your $@spellname442624, causing your Physical damage to any enemy to also deal $s1% of the damage dealt to your marked target as Chaos, and sometimes shatter a Lesser Soul Fragment.\r\n\r\n" },
 } };
 
-// Spell description variables, wow build 11.1.0.59095
+// Spell description variables, wow build 11.1.0.59184
 static const std::array<spelldesc_vars_data_t, 635> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -27887,7 +27887,7 @@ static const std::array<spelldesc_vars_data_t, 635> __ptr_spelldesc_vars_data { 
   { 1219410, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.1.0.59095
+// spelldesc_vars hotfix entries, wow build 11.1.0.59184
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
