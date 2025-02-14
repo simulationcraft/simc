@@ -591,6 +591,8 @@ bool warlock_t::min_version_check( version_check_e version ) const
   {
     case VERSION_PTR:
       return is_ptr();
+    case VERSION_11_1_0:
+      return !( version_11_1_0_data == spell_data_t::not_found() );
     case VERSION_ANY:
       return true;
   }

@@ -78,6 +78,8 @@ namespace warlock
     warlock_t::init_spells_diabolist();
     warlock_t::init_spells_hellcaller();
     warlock_t::init_spells_soul_harvester();
+
+    version_11_1_0_data = find_spell( 1214442 ); // For 11.1 version checking, new talent: Demonfire Infusion
   }
 
   void warlock_t::init_spells_affliction()
