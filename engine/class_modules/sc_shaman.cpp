@@ -2473,7 +2473,7 @@ public:
       m *= 1.0 + p()->buff.fury_of_the_storms->data().effectN( 2 ).percent();
     }
 
-    if (affected_by_ele_tww2_4pc_da && p()->buff.jackpot->up())
+    if ( affected_by_ele_tww2_4pc_da && p()->buff.jackpot->up() && sets->has_set_bonus( SHAMAN_ENHANCEMENT, TWW2, B4 ) ))
     {
       m *= 1.0 + p()->buff.jackpot->data().effectN( 1 ).percent();
     }
