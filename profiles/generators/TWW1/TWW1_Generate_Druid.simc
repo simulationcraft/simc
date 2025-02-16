@@ -2,8 +2,8 @@ druid="TWW1_Druid_Balance"
 source=default
 spec=balance
 level=80
-race=mechagnome
-timeofday=night
+race=troll
+timeofday=day
 role=spell
 position=back
 professions=alchemy=1/engineering=1
