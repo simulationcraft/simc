@@ -2364,7 +2364,8 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      p()->buffs.soul_rot->trigger();
+      if ( !p()->min_version_check( VERSION_11_1_0 ) )
+        p()->buffs.soul_rot->trigger();
 
       if ( p()->talents.malign_omen.ok() )
         p()->buffs.malign_omen->trigger( as<int>( p()->talents.malign_omen->effectN( 2 ).base_value() ) );

@@ -109,7 +109,7 @@ public:
   struct base_t
   {
     // Shared
-    const spell_data_t* drain_life; // TOCHECK: 11.1 PTR - Drain Life damage increased
+    const spell_data_t* drain_life;
     const spell_data_t* corruption;
     const spell_data_t* shadow_bolt;
     const spell_data_t* nethermancy; // Int bonus for all cloth slots
@@ -623,7 +623,7 @@ public:
 
     // Affliction Buffs
     propagate_const<buff_t*> nightfall;
-    propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
+    propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe. TODO: After 11.1 goes live, remove old AoE Drain Life code
     propagate_const<buff_t*> tormented_crescendo;
     propagate_const<buff_t*> malign_omen;
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
