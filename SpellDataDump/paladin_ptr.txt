@@ -19371,6 +19371,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r increasing the damage of your Templar's Verdict and Divine Storm by $1216828s1% stacking up to $1216828u times. Spending Holy Power on damaging abilities has a $1216828s2% chance to remove |cFFFFFFFFWinning Streak!|r
 
 Name             : Paladin Retribution 11.1 Class Set 4pc (id=1215709) [Spell Family (10), Passive, Hidden] 
+Hotfixed         : Description
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -19383,7 +19384,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198809)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Self (1)
-Description      : When you lose your |cFFFFFFFFWinning Streak!|r you get the last Holy Power spent back, you cannot lose Holy Power for the next ${$1216837d }.1 sec, and the damage of your your Holy Power abilities are increased by $1216837s1%.
+Description      : When you lose your |cFFFFFFFFWinning Streak!|r you get the last Holy Power spent back, you cannot lose Holy Power for the next ${$1216837d }.1 sec, and the damage of your Holy Power abilities are increased by $1216837s1%.
 
 Name             : Paladin Protection 11.1 Class Set 2pc (id=1215987) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
