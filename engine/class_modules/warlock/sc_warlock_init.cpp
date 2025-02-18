@@ -994,6 +994,7 @@ namespace warlock
     procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );
     procs.umbral_blaze = get_proc( "umbral_blaze" );
     procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
+    procs.doom_eternal = get_proc( "doom_eternal" );
     procs.pact_of_the_eredruin = get_proc( "pact_of_the_eredruin" );
     procs.empowered_legion_strike = get_proc( "empowered_legion_strike" );
 

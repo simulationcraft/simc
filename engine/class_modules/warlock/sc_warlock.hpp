@@ -325,7 +325,7 @@ public:
     player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm
     const spell_data_t* fel_sunder_debuff;
 
-    player_talent_t doom; // TODO: 11.1 PTR - Change duration reduction to Soul Shard consume_resource, remove reduction on Demonic Core consumption
+    player_talent_t doom;
     const spell_data_t* doom_debuff;
     const spell_data_t* doom_dmg;
     player_talent_t pact_of_the_imp_mother; // Chance for Hand of Gul'dan to proc a second time on execute
@@ -339,7 +339,7 @@ public:
     const spell_data_t* antoran_armaments_buff;
     const spell_data_t* soul_cleave;
 
-    player_talent_t doom_eternal; // TODO: 11.1 PTR - Redesigned to have Demonic Core proc chance
+    player_talent_t doom_eternal;
     player_talent_t impending_doom;
     player_talent_t foul_mouth;
     player_talent_t the_houndmasters_gambit;
@@ -737,6 +737,7 @@ public:
     proc_t* spiteful_reconstitution;
     proc_t* umbral_blaze;
     proc_t* pact_of_the_imp_mother;
+    proc_t* doom_eternal;
     proc_t* pact_of_the_eredruin;
     proc_t* empowered_legion_strike; // TWW1 4pc buff
 

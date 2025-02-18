@@ -3299,6 +3299,14 @@ using namespace helpers;
 
       if ( p()->talents.impending_doom.ok() )
         p()->warlock_pet_list.wild_imps.spawn( as<int>( p()->talents.impending_doom->effectN( 2 ).base_value() ) );
+
+      if ( p()->talents.doom_eternal.ok() && p()->min_version_check( VERSION_11_1_0 ) )
+      {
+        bool success = p()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), p()->talents.doom_eternal->effectN( 1 ).percent() );
+
+        if ( success )
+          p()->procs.doom_eternal->occur();
+      }
     }
   };
 
