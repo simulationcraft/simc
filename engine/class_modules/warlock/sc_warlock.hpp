@@ -371,7 +371,7 @@ public:
 
     player_talent_t backdraft;
     const spell_data_t* backdraft_buff;
-    player_talent_t rain_of_fire; // TODO: 11.1 PTR - Choice node added to select targeting method. Make sure incoming talent strings are parsed correctly.
+    player_talent_t rain_of_fire;
     const spell_data_t* rain_of_fire_tick;
 
     player_talent_t roaring_blaze;

@@ -347,7 +347,9 @@ namespace warlock
     talents.backdraft = find_talent_spell( talent_tree::SPECIALIZATION, "Backdraft" ); // Should be ID 196406
     talents.backdraft_buff = find_spell( 117828 );
 
-    talents.rain_of_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Rain of Fire" ); // Should be ID 5740
+    talents.rain_of_fire = find_talent_spell( talent_tree::SPECIALIZATION, 5740 ); // Targeting reticle version
+    if ( talents.rain_of_fire == spell_data_t::not_found() )
+     talents.rain_of_fire = find_talent_spell( talent_tree::SPECIALIZATION, 1214467 ); // If targeting version not found, fall back to checking for on-target version
     talents.rain_of_fire_tick = find_spell( 42223 );
 
     talents.roaring_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Roaring Blaze" ); // Should be ID 205184
