@@ -26962,7 +26962,7 @@ static const std::array<spelltext_data_t, 27241> __ptr_spelltext_data { {
   { 1215702, "Your damaging spells have a chance to hit a |cFFFFFFFFJackpot!|r that fires a Void Bolt at an enemy at $s1% effectiveness. Casting Dark Ascension or Void Eruption always hits a |cFFFFFFFFJackpot!|r", 0, 0 },
   { 1215703, "Hitting a |cFFFFFFFFJackpot!|r grants you ${$s1/1000}.1 seconds of Power Infusion. Mind Blast$?a450405[, Void Blast,][] and Void Bolt deal $s2% increased damage while Power Infusion is active.", 0, 0 },
   { 1215707, "Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r increasing the damage of your Templar's Verdict and Divine Storm by $1216828s1% stacking up to $1216828u times. Spending Holy Power on damaging abilities has a $1216828s2% chance to remove |cFFFFFFFFWinning Streak!|r", 0, 0 },
-  { 1215709, "When you lose your |cFFFFFFFFWinning Streak!|r you get the last Holy Power spent back, you cannot lose Holy Power for the next ${$1216837d }.1 sec, and the damage of your your Holy Power abilities are increased by $1216837s1%.", 0, 0 },
+  { 1215709, "When you lose your |cFFFFFFFFWinning Streak!|r you get the last Holy Power spent back, you cannot lose Holy Power for the next ${$1216837d }.1 sec, and the damage of your Holy Power abilities are increased by $1216837s1%.", 0, 0 },
   { 1215710, "Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r increasing the damage of your Stormstrike, Lava Lash and Doom Winds by $1218616s1%, up to ${$1218616s1*$1218616u}%. Maelstrom Weapon spenders have a ${$s1/10}.1% chance to remove |cFFFFFFFFWinning Streak!|r per Maelstrom Weapon spent.", 0, 0 },
   { 1215712, "When you lose your |cFFFFFFFFWinning Streak!|r the winds shift into Doom Winds for ${$s1/1000} sec. When Doom Winds deal damage, your next Crash Lightning deals ${$1223332s1}.1% increased damage, up to ${$1223332s1*$1223332u}.1%. This effect can be stored up to $1223410u stacks. Additionally, Crash Lightning deals $s2% more damage to your main target.", 0, 0 },
   { 1215713, "Your abilities have a chance to begin a |cFFFFFFFFWinning Streak!|r, increasing the damage of Overpower by $1216552s1%, stacking up to $1216552U times. \r\nOverpower has a $1216552H% chance to end your |cFFFFFFFFWinning Streak!|r", 0, 0 },
@@ -27244,8 +27244,9 @@ static const std::array<spelltext_data_t, 27241> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.1.0.59184
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
   {  442806,  0, "Expose weaknesses in the target of your $@spellname442624, causing your Physical damage to any enemy to also deal $s1% of the damage dealt to your marked target as Chaos.\r\n\r\n", "Expose weaknesses in the target of your $@spellname442624, causing your Physical damage to any enemy to also deal $s1% of the damage dealt to your marked target as Chaos, and sometimes shatter a Lesser Soul Fragment.\r\n\r\n" },
+  { 1215709,  0, "When you lose your |cFFFFFFFFWinning Streak!|r you get the last Holy Power spent back, you cannot lose Holy Power for the next ${$1216837d }.1 sec, and the damage of your your Holy Power abilities are increased by $1216837s1%.", "When you lose your |cFFFFFFFFWinning Streak!|r you get the last Holy Power spent back, you cannot lose Holy Power for the next ${$1216837d }.1 sec, and the damage of your Holy Power abilities are increased by $1216837s1%." },
 } };
 
 // Spell description variables, wow build 11.1.0.59184
