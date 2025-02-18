@@ -319,7 +319,7 @@ public:
     const spell_data_t* umbral_blaze_dot;
     player_talent_t reign_of_tyranny;
     const spell_data_t* reign_of_tyranny_buff;
-    player_talent_t demonic_calling; //TOCHECK: 11.1 PTR - Updated proc chance
+    player_talent_t demonic_calling;
     const spell_data_t* demonic_calling_buff;
     player_talent_t fiendish_oblation;
     player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm

@@ -2565,6 +2565,15 @@ using namespace helpers;
 
       if ( p()->talents.dread_calling.ok() )
         p()->buffs.dread_calling->trigger( shards_used );
+
+      if ( p()->talents.doom.ok() && p()->min_version_check( VERSION_11_1_0 ) )
+      {
+        for ( const auto t : p()->sim->target_non_sleeping_list )
+        {
+          if ( td( t )->debuffs_doom->check() )
+            td( t )->debuffs_doom->extend_duration( p(), -p()->talents.doom->effectN( 1 ).time_value() * shards_used );
+        }
+      }
     }
 
     void consume_resource() override
@@ -2674,7 +2683,7 @@ using namespace helpers;
             debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->hatred_proc->execute_on_target( execute_state->target );
         }
 
-        if ( p()->talents.doom.ok() )
+        if ( p()->talents.doom.ok() && !p()->min_version_check( VERSION_11_1_0 ) )
         {
           for ( const auto t : p()->sim->target_non_sleeping_list )
           {
