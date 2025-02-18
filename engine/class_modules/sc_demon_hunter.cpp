@@ -258,6 +258,7 @@ public:
   double shattered_destiny_accumulator;
 
   double wounded_quarry_accumulator;
+  player_t* last_reavers_mark_applied;
 
   event_t* exit_melee_event;  // Event to disable melee abilities mid-VR.
 
@@ -7494,8 +7495,9 @@ struct wounded_quarry_cb_t : public demon_hunter_proc_callback_t
   {
     if ( s->target->is_sleeping() )
       return;
-
-    if ( !p()->get_target_data( s->target )->debuffs.reavers_mark->up() )
+    
+    if ( !p()->last_reavers_mark_applied ||
+         !p()->get_target_data( p()->last_reavers_mark_applied )->debuffs.reavers_mark->up() )
       return;
 
     // live only triggers
@@ -7561,11 +7563,20 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
                              ->set_max_stack( 2 )
                              ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                              ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
-                             ->set_stack_change_callback( [ &p ]( buff_t*, int, int new_ ) {
-                               if (!new_)
+                             ->set_stack_change_callback( [ &p ]( buff_t* b, int, int new_ ) {
+                               if ( !new_ )
                                {
                                  p.wounded_quarry_accumulator = 0.0;
                                  p.proc.wounded_quarry_accumulator_reset->occur();
+                               }
+                               else
+                               {
+                                 if ( p.last_reavers_mark_applied && p.last_reavers_mark_applied != b->player &&
+                                      p.get_target_data( p.last_reavers_mark_applied )->debuffs.reavers_mark->check() )
+                                 {
+                                   p.get_target_data( p.last_reavers_mark_applied )->debuffs.reavers_mark->expire();
+                                 }
+                                 p.last_reavers_mark_applied = b->player;
                                }
                              } );
 
@@ -9656,6 +9667,7 @@ void demon_hunter_t::reset()
   frailty_accumulator           = 0.0;
   shattered_destiny_accumulator = 0.0;
   wounded_quarry_accumulator    = 0.0;
+  last_reavers_mark_applied   = nullptr;
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
