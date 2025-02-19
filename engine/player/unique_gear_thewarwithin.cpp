@@ -8330,6 +8330,61 @@ void junkmaestros_mega_magnet( special_effect_t& effect )
   effect.execute_action = action;
 }
 
+// Gigazap's Zap-Cap
+void gigazaps_zapcap( special_effect_t& effect )
+{
+  struct zap_t : generic_proc_t
+  {
+    buff_t* max_stack;
+    const special_effect_t& effect;
+
+    zap_t( const special_effect_t& effect, buff_t* max_stack )
+      : generic_proc_t( effect, "zap", effect.player->find_spell( 1220419 ) ), max_stack( max_stack ), effect( effect )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+      base_multiplier *= role_mult( effect );
+      // the second impact is delayed 500ms, but snapshots multipliers as of
+      // the primary execute. this is not exactly that, but somewhat close
+      aoe = 1.0 + effect.driver()->effectN( 5 ).base_value();
+    }
+
+    double action_multiplier() const override
+    {
+      double m = generic_proc_t::action_multiplier();
+
+      if ( max_stack->check() )
+        m *= effect.driver()->effectN( 4 ).base_value();
+
+      return m;
+    }
+  };
+
+  auto max_stack_buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 1220413 ) );
+
+  auto ramp_buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 1220415 ) )
+                       ->set_expire_at_max_stack( true )
+                       ->set_stack_change_callback( [ max_stack_buff ]( buff_t*, int old_, int new_ ) {
+                         if ( old_ && !new_ )
+                           max_stack_buff->trigger();
+                       } );
+
+  effect.custom_buff = ramp_buff;
+  new dbc_proc_callback_t( effect.player, effect );
+
+  auto zap = create_proc_action<zap_t>( "zap", effect, max_stack_buff );
+
+  effect.player->register_combat_begin( [ effect, zap, max_stack_buff ]( player_t* player ) {
+    make_repeating_event( *player->sim, effect.driver()->effectN( 1 ).period(), [ player, zap, max_stack_buff ] {
+      if ( player->in_combat && !max_stack_buff->check() )
+        zap->execute();
+    } );
+    make_repeating_event( *player->sim, effect.driver()->effectN( 1 ).period() / 2.0, [ player, zap, max_stack_buff ] {
+      if ( player->in_combat && max_stack_buff->check() )
+        zap->execute();
+    } );
+  } );
+}
+
 }  // namespace items
 
 namespace sets
@@ -9979,6 +10034,7 @@ void register_special_effects()
   register_special_effect( 1221145, DISABLED_EFFECT );
   register_special_effect( 471212, items::junkmaestros_mega_magnet );
   register_special_effect( 471211, DISABLED_EFFECT );
+  register_special_effect( 1219103, items::gigazaps_zapcap );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );
