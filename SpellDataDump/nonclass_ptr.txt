@@ -252747,7 +252747,8 @@ Triggered By     : Wayward Vrykul's Lantern (472360)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1181086)  : Apply Aura (6) | Proc Trigger Spell (42): Wayward Vrykul's Lantern | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 5744.729 (coefficient=1.500333) | Trigger Spell: 472360 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4595.173 (coefficient=1.200107) | Trigger Spell: 472360 | Target: Self (1)
+Hotfixed         : Coefficient (1.500333 -> 1.200107)
 Description      : Casting a major class cooldown imbues you with the ferocity of vrykul spirits, granting $s1 Critical Strike for $472360d.
 
 This effect's duration is increased by up to ${$472360d*5} sec based on when you were last imbued.
