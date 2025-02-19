@@ -7495,7 +7495,7 @@ struct wounded_quarry_cb_t : public demon_hunter_proc_callback_t
   {
     if ( s->target->is_sleeping() )
       return;
-    
+
     if ( !p()->last_reavers_mark_applied ||
          !p()->get_target_data( p()->last_reavers_mark_applied )->debuffs.reavers_mark->up() )
       return;
@@ -7508,9 +7508,13 @@ struct wounded_quarry_cb_t : public demon_hunter_proc_callback_t
       {
         da *= damage_percent;
         p()->wounded_quarry_accumulator += da;
+        p()->sim->print_debug( "{} accumulates Wounded Quarry from {}: da={} total={}", p()->name(),
+                               s->action->name(), da, p()->wounded_quarry_accumulator );
         if ( p()->cooldown.wounded_quarry_trigger_icd->up() )
         {
-          damage->execute_on_target( s->target, p()->wounded_quarry_accumulator );
+          p()->sim->print_debug( "{} triggers Wounded Quarry from {} on target {}: {}", p()->name(),
+                                 s->action->name(), p()->last_reavers_mark_applied->name(), p()->wounded_quarry_accumulator );
+          damage->execute_on_target( p()->last_reavers_mark_applied, p()->wounded_quarry_accumulator );
           p()->wounded_quarry_accumulator = 0.0;
           // per dev communication, it's batched per second
           p()->cooldown.wounded_quarry_trigger_icd->start( 1_s );
@@ -8339,7 +8343,7 @@ void demon_hunter_t::init_procs()
   // Aldrachi Reaver
   proc.soul_fragment_from_aldrachi_tactics = get_proc( "soul_fragment_from_aldrachi_tactics" );
   proc.soul_fragment_from_wounded_quarry   = get_proc( "soul_fragment_from_wounded_quarry" );
-  proc.wounded_quarry_accumulator_reset   = get_proc( "wounded_quarry_accumulator_reset" );
+  proc.wounded_quarry_accumulator_reset    = get_proc( "wounded_quarry_accumulator_reset" );
 
   // Fel-scarred
 
@@ -9667,7 +9671,7 @@ void demon_hunter_t::reset()
   frailty_accumulator           = 0.0;
   shattered_destiny_accumulator = 0.0;
   wounded_quarry_accumulator    = 0.0;
-  last_reavers_mark_applied   = nullptr;
+  last_reavers_mark_applied     = nullptr;
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
