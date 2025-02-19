@@ -6782,15 +6782,25 @@ struct preemptive_strike_t : public demon_hunter_ranged_attack_t
   preemptive_strike_t( util::string_view name, demon_hunter_t* p )
     : demon_hunter_ranged_attack_t( name, p, p->talent.aldrachi_reaver.preemptive_strike->effectN( 1 ).trigger() )
   {
-    background = dual = true;
+    background = dual = aoe = true;
+  }
+
+  // 2025-02-19 -- Preemptive Strike does not hit the primary target
+  std::vector<player_t*>& target_list() const override
+  {
+    std::vector<player_t*>& target_list = action_t::target_list();
+    target_list.erase( std::remove( target_list.begin(), target_list.end(), target ), target_list.end() );
+
+    return target_list;
   }
 
   // 2024-09-06 -- Preemptive Strike is very bugged and is using the following damage conversion process:
   //               weapon dps -> AP conversion without mastery -> AP coeff -> vers
   //               it also does not split AoE damage
+  // 2025-02-19 -- This seems to be fixed on 11.1 PTR
   double calculate_direct_amount( action_state_t* state ) const override
   {
-    if ( !p()->bugs )
+    if ( p()->is_ptr() || !p()->bugs )
     {
       return demon_hunter_ranged_attack_t::calculate_direct_amount( state );
     }
