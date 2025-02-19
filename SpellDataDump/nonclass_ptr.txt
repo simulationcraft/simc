@@ -252699,12 +252699,13 @@ Effects          :
 Description      : Recalibrate for $?a467492[$@spellname467497]?a467497[$@spellname467492][$@spellname467497].
 
 Name             : Precision Blasting (id=467492) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 292
                  : 3959: Item Effects
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Allow Aura While Dead (116)
 Effects          :
 #1 (id=1180680)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -252712,12 +252713,13 @@ Description      : Your spells and abilities have a high chance to lase your tar
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Mass Destruction (id=467497) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 292
                  : 3959: Item Effects
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Allow Aura While Dead (116)
 Effects          :
 #1 (id=1180685)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -252747,7 +252749,8 @@ Triggered By     : Wayward Vrykul's Lantern (472360)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1181086)  : Apply Aura (6) | Proc Trigger Spell (42): Wayward Vrykul's Lantern | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 5744.729 (coefficient=1.500333) | Trigger Spell: 472360 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4595.173 (coefficient=1.200107) | Trigger Spell: 472360 | Target: Self (1)
+Hotfixed         : Coefficient (1.500333 -> 1.200107)
 Description      : Casting a major class cooldown imbues you with the ferocity of vrykul spirits, granting $s1 Critical Strike for $472360d.
 
 This effect's duration is increased by up to ${$472360d*5} sec based on when you were last imbued.
@@ -255228,12 +255231,15 @@ Description      : Place down the Scrambler, luring the Nemesis to its location.
 Only usable after activating the Restoration Stone inside of a Delve.
 
 Name             : Reconfiguring for Spell Casting (id=473400) 
+Hotfixed         : Cooldown (0 -> 20000), Category Cooldown (0 -> 20000)
 School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
 Cooldown         : 120 seconds
+Category         : 1141 (Type 0x0)
 Labels           : 292
                  : 3959: Item Effects
+Category Cooldown: 20 seconds
 Attributes       : Is Self Channelled (38), Suppress Caster Procs (112)
 Channel Interrupt: Enter Combat (28)
 Effects          :
@@ -255242,12 +255248,15 @@ Effects          :
 Description      : Cheat to immediately gain ${$471063s1*(1+$471063s2/100)} of your highest secondary stat for $473402d. While out of combat, reconfigure for spell casting instead.
 
 Name             : Reconfiguring for Melee Combat (id=473401) 
+Hotfixed         : Cooldown (0 -> 20000), Category Cooldown (0 -> 20000)
 School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
 Cooldown         : 120 seconds
+Category         : 1141 (Type 0x0)
 Labels           : 292
                  : 3959: Item Effects
+Category Cooldown: 20 seconds
 Attributes       : Is Self Channelled (38), Suppress Caster Procs (112)
 Channel Interrupt: Enter Combat (28)
 Effects          :
