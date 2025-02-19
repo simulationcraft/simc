@@ -4026,49 +4026,49 @@ using namespace helpers;
     }
   };
 
+  struct channel_demonfire_tick_t : public warlock_spell_t
+  {
+    channel_demonfire_tick_t( warlock_t* p )
+      : warlock_spell_t( "Channel Demonfire (tick)", p, p->talents.channel_demonfire_tick )
+    {
+      background = dual = true;
+      may_miss = false;
+      aoe = -1;
+      travel_speed = p->talents.channel_demonfire_travel->missile_speed();
+
+      affected_by.chaotic_energies = true;
+
+      triggers.decimation = false;
+
+      spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
+
+      base_dd_multiplier *= 1.0 + p->talents.demonfire_mastery->effectN( 1 ).percent();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
+        td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+
+      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_wither->is_ticking() )
+        td( s->target )->dots_wither->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_da_multiplier( s );
+
+      if ( s->chain_target != 0 )
+        m *= p()->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p()->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
+
+      return m;
+    }
+  };
+
   struct channel_demonfire_t : public warlock_spell_t
   {
-    struct channel_demonfire_tick_t : public warlock_spell_t
-    {
-      channel_demonfire_tick_t( warlock_t* p )
-        : warlock_spell_t( "Channel Demonfire (tick)", p, p->talents.channel_demonfire_tick )
-      {
-        background = dual = true;
-        may_miss = false;
-        aoe = -1;
-        travel_speed = p->talents.channel_demonfire_travel->missile_speed();
-
-        affected_by.chaotic_energies = true;
-
-        triggers.decimation = false;
-
-        spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
-
-        base_dd_multiplier *= 1.0 + p->talents.demonfire_mastery->effectN( 1 ).percent();
-      }
-
-      void impact( action_state_t* s ) override
-      {
-        warlock_spell_t::impact( s );
-
-        if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
-          td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
-
-        if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_wither->is_ticking() )
-          td( s->target )->dots_wither->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
-      }
-
-      double composite_da_multiplier( const action_state_t* s ) const override
-      {
-        double m = warlock_spell_t::composite_da_multiplier( s );
-
-        if ( s->chain_target != 0 )
-          m *= p()->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p()->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
-
-        return m;
-      }
-    };
-
     channel_demonfire_tick_t* channel_demonfire_tick;
 
     channel_demonfire_t( warlock_t* p, util::string_view options_str )

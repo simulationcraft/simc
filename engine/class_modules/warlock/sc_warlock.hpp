@@ -400,7 +400,7 @@ public:
     player_talent_t channel_demonfire;
     const spell_data_t* channel_demonfire_tick;
     const spell_data_t* channel_demonfire_travel; // Only holds travel speed
-    //player_talent_t demonfire_infusion; // TODO: 11.1 PTR - New choice node against CDF, procs Demonfire Bolts on certain spell events
+    player_talent_t demonfire_infusion; // TODO: 11.1 PTR - New choice node against CDF, procs Demonfire Bolts on certain spell events
 
     player_talent_t blistering_atrophy;
     player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit TODO: Review behavior
