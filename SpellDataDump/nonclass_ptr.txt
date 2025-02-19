@@ -255228,12 +255228,15 @@ Description      : Place down the Scrambler, luring the Nemesis to its location.
 Only usable after activating the Restoration Stone inside of a Delve.
 
 Name             : Reconfiguring for Spell Casting (id=473400) 
+Hotfixed         : Cooldown (0 -> 20000), Category Cooldown (0 -> 20000)
 School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
 Cooldown         : 120 seconds
+Category         : 1141 (Type 0x0)
 Labels           : 292
                  : 3959: Item Effects
+Category Cooldown: 20 seconds
 Attributes       : Is Self Channelled (38), Suppress Caster Procs (112)
 Channel Interrupt: Enter Combat (28)
 Effects          :
@@ -255242,12 +255245,15 @@ Effects          :
 Description      : Cheat to immediately gain ${$471063s1*(1+$471063s2/100)} of your highest secondary stat for $473402d. While out of combat, reconfigure for spell casting instead.
 
 Name             : Reconfiguring for Melee Combat (id=473401) 
+Hotfixed         : Cooldown (0 -> 20000), Category Cooldown (0 -> 20000)
 School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
 Cooldown         : 120 seconds
+Category         : 1141 (Type 0x0)
 Labels           : 292
                  : 3959: Item Effects
+Category Cooldown: 20 seconds
 Attributes       : Is Self Channelled (38), Suppress Caster Procs (112)
 Channel Interrupt: Enter Combat (28)
 Effects          :

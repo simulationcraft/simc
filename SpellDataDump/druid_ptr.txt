@@ -1488,7 +1488,7 @@ Labels           : 16: Class Spells
                  : 1220
 Category Cooldown: 180 seconds
 Proc Chance      : 101%
-Affecting Spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Berserk (343223 effect#1), Orbital Strike (390378 effect#2), Berserk: Heart of the Lion (391174 effect#1), Whirling Stars (468743 effect#1)
+Affecting Spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Nature's Swiftness (132158 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Berserk (343223 effect#1), Orbital Strike (390378 effect#2), Berserk: Heart of the Lion (391174 effect#1), Whirling Stars (468743 effect#1)
 Family Flags     : 43, 48
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity to Hostile & Friendly Effects (48), No shapeshift UI (65), Allow Entering Arena (149), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Allow Aura On Level Scale (444)
 Aura Interrupt   : Leave World (19), Raid Encounter End or M+ Start (41)
@@ -3995,8 +3995,9 @@ Aura Interrupt   : Change Specialization (38), Change Talent (46), Change Glyph 
 Effects          :
 #1 (id=170811)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Entangling Roots (339), Regrowth (8936), Rebirth (20484)
-                   Family Flags: 6, 9, 28
+                   Affected Spells: Entangling Roots (339), Regrowth (8936), Rebirth (20484), Incarnation: Tree of Life (33891)
+                   Family Flags: 6, 9, 28, 48
+Hotfixed         : Affects Spells
 #2 (id=170812)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.6 | Target: Self (1)
                    Affected Spells: Regrowth (8936)

@@ -16113,7 +16113,7 @@ Name             : Cashout! (id=1219264) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Spell Type       : None
-Duration         : 4 seconds
+Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 20: Rogue Spells
                  : 292
