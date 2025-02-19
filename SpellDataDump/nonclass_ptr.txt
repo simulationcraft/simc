@@ -252699,12 +252699,13 @@ Effects          :
 Description      : Recalibrate for $?a467492[$@spellname467497]?a467497[$@spellname467492][$@spellname467497].
 
 Name             : Precision Blasting (id=467492) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 292
                  : 3959: Item Effects
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Allow Aura While Dead (116)
 Effects          :
 #1 (id=1180680)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -252712,12 +252713,13 @@ Description      : Your spells and abilities have a high chance to lase your tar
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Mass Destruction (id=467497) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 292
                  : 3959: Item Effects
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Allow Aura While Dead (116)
 Effects          :
 #1 (id=1180685)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
