@@ -400,7 +400,7 @@ public:
     player_talent_t channel_demonfire;
     const spell_data_t* channel_demonfire_tick;
     const spell_data_t* channel_demonfire_travel; // Only holds travel speed
-    player_talent_t demonfire_infusion; // TODO: 11.1 PTR - New choice node against CDF, procs Demonfire Bolts on certain spell events
+    player_talent_t demonfire_infusion;
 
     player_talent_t blistering_atrophy;
     player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit TODO: Review behavior
@@ -569,6 +569,7 @@ public:
     action_t* demonic_soul;
     action_t* shared_fate;
     action_t* wicked_reaping;
+    action_t* demonfire_infusion;
   } proc_actions;
 
   struct tier_sets_t
@@ -749,6 +750,8 @@ public:
     proc_t* mayhem;
     proc_t* conflagration_of_chaos_cf;
     proc_t* conflagration_of_chaos_sb;
+    proc_t* demonfire_infusion_inc;
+    proc_t* demonfire_infusion_dot;
     proc_t* decimation;
     proc_t* dimension_ripper;
     proc_t* echo_of_the_azjaqir;
