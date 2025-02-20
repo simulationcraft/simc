@@ -752,6 +752,7 @@ public:
     proc_t* conflagration_of_chaos_cf;
     proc_t* conflagration_of_chaos_sb;
     proc_t* demonfire_infusion_inc;
+    proc_t* demonfire_infusion_inc_fnb;
     proc_t* demonfire_infusion_dot;
     proc_t* decimation;
     proc_t* dimension_ripper;

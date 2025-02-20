@@ -1010,13 +1010,14 @@ namespace warlock
 
   void warlock_t::init_procs_destruction()
   {
-    procs.reverse_entropy = get_proc( "reverse_entropy" );
-    procs.rain_of_chaos = get_proc( "rain_of_chaos" );
-    procs.demonfire_infusion_inc = get_proc( "demonfire_infusion_incinerate" );
-    procs.demonfire_infusion_dot = get_proc( "demonfire_infusion_dot" );
-    procs.decimation = get_proc( "decimation" );
-    procs.dimension_ripper = get_proc( "dimension_ripper" );
-    procs.echo_of_the_azjaqir = get_proc( "echo_of_the_azjaqir" );
+    procs.reverse_entropy            = get_proc( "reverse_entropy" );
+    procs.rain_of_chaos              = get_proc( "rain_of_chaos" );
+    procs.demonfire_infusion_inc     = get_proc( "demonfire_infusion_incinerate" );
+    procs.demonfire_infusion_inc_fnb = get_proc( "demonfire_infusion_incinerate_fire_and_brimstone" );
+    procs.demonfire_infusion_dot     = get_proc( "demonfire_infusion_dot" );
+    procs.decimation                 = get_proc( "decimation" );
+    procs.dimension_ripper           = get_proc( "dimension_ripper" );
+    procs.echo_of_the_azjaqir        = get_proc( "echo_of_the_azjaqir" );
   }
 
   void warlock_t::init_procs_diabolist()

@@ -3394,6 +3394,13 @@ using namespace helpers;
 
         if ( p()->bugs && p()->talents.diabolic_embers.ok() && s->result == RESULT_CRIT )
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits );
+
+        if ( p()->talents.demonfire_infusion.ok() &&
+             p()->rng().roll( p()->talents.demonfire_infusion->effectN( 2 ).percent() ) )
+        {
+          p()->proc_actions.demonfire_infusion->execute_on_target( s->target );
+          p()->procs.demonfire_infusion_inc_fnb->occur();
+        }
       }
 
       double action_multiplier() const override
