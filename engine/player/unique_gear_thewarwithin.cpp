@@ -8163,6 +8163,9 @@ void the_jastor_diamond( special_effect_t& effect )
 // NYI: CDR from periodic damage taken
 void ringing_ritual_mud( special_effect_t& effect )
 {
+  if ( !effect.player->is_ptr() )
+    return;
+
   struct mudborne_t : action_t
   {
     action_t* tick;
@@ -8219,6 +8222,9 @@ void ringing_ritual_mud( special_effect_t& effect )
 // Junkmaestro's Mega Magnet
 void junkmaestros_mega_magnet( special_effect_t& effect )
 {
+  if ( !effect.player->is_ptr() )
+    return;
+
   struct tick_t : generic_proc_t
   {
     tick_t( const special_effect_t& effect )
@@ -8313,11 +8319,11 @@ void junkmaestros_mega_magnet( special_effect_t& effect )
   const spell_data_t* equip_spell = effect.player->find_spell( 471211 );
   const spell_data_t* buff_spell  = effect.player->find_spell( 1219661 );
 
-  auto buff_effect         = new special_effect_t( effect.player );
-  buff_effect->name_str    = buff_spell->name_cstr();
-  buff_effect->spell_id    = buff_spell->id();
-  buff_effect->proc_flags_ = equip_spell->proc_flags();
-  buff_effect->ppm_        = equip_spell->real_ppm();
+  auto buff_effect          = new special_effect_t( effect.player );
+  buff_effect->name_str     = buff_spell->name_cstr();
+  buff_effect->spell_id     = buff_spell->id();
+  buff_effect->proc_flags_  = equip_spell->proc_flags();
+  buff_effect->ppm_         = equip_spell->real_ppm();
   buff_effect->player->special_effects.push_back( buff_effect );
 
   auto buff                = create_buff<buff_t>( effect.player, buff_spell );
@@ -8333,6 +8339,9 @@ void junkmaestros_mega_magnet( special_effect_t& effect )
 // Gigazap's Zap-Cap
 void gigazaps_zapcap( special_effect_t& effect )
 {
+  if ( !effect.player->is_ptr() )
+    return;
+
   struct zap_t : generic_proc_t
   {
     buff_t* max_stack;
@@ -8387,6 +8396,9 @@ void gigazaps_zapcap( special_effect_t& effect )
 
 void capos_molten_knuckles( special_effect_t& effect )
 {
+  if ( !effect.player->is_ptr() )
+    return;
+
   effect.execute_action = create_proc_action<generic_proc_t>( "capos_molten_knuckles", effect, effect.driver() );
   effect.execute_action->base_dd_min = effect.execute_action->base_dd_max =
       effect.driver()->effectN( 1 ).average( effect.item );
