@@ -7044,7 +7044,7 @@ void tome_of_lights_devotion( special_effect_t& effect )
         ->set_quiet( false );
 
         inner_resilience_buff = create_buff<stat_buff_with_multiplier_t>( e.player, e.player->find_spell( 450706 ) )
-        ->add_stat(STAT_BONUS_ARMOR, e.player->find_spell( 443533 )->effectN( 4 ).average( e.item ) )
+        ->set_stat(STAT_BONUS_ARMOR, e.player->find_spell( 443533 )->effectN( 4 ).average( e.item ) )
         ->set_rppm( RPPM_DISABLE )
         ->set_quiet( false );
 
