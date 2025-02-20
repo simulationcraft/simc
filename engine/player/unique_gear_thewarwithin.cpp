@@ -6965,6 +6965,239 @@ void mister_locknstalk( special_effect_t& effect )
   new mister_locknstalk_cb_t( effect );
 }
 
+// 443533 Equip Driver & Values
+// 443535 On Use
+// 443534 On Use Buff, radiance, double all effects
+// 450696 50 verses of Resillience tracking buff
+// 450699 50 verses of Radiance tracking buff
+// 450706 Inner Resillience Proc driver
+// 450720 Inner Radiance Proc driver
+// 450719 Magic Absorb buff
+// 450721 Ire of Devotion damage spell
+
+  // 443533 Values
+  // s1 - static value of 50
+  // s2 - crit strike amount increase - Used in 450720 buff
+  // s3 - devotion of ire damage - Used in 450721 spell
+  // s4 - armor increase - Used in 450706 buff
+  // s5 - magic absorb value - Used in 450719 buff
+void tome_of_lights_devotion( special_effect_t& effect )
+{
+  auto equip_driver = effect.player->find_spell( 443533 );
+  assert( equip_driver && "Tome of Lights Devotion equip driver not found" );
+
+  // Setup double value buff
+  auto radiance_buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 443534 ) );
+
+  struct inner_resilience_cb_t : public dbc_proc_callback_t
+  {
+    struct ward_of_devotion_buff_t : public absorb_buff_t
+    {
+      ward_of_devotion_buff_t( const special_effect_t& e, const spell_data_t* s, const spell_data_t* data )
+        : absorb_buff_t( e.player, "ward_of_devotion", s )
+      {
+        cumulative = false;
+        set_default_value( data->effectN( 5 ).average( e ) );
+      }
+    };
+    buff_t* ward_of_devotion_buff;
+
+    const spell_data_t* data;
+
+    inner_resilience_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+      ward_of_devotion_buff( nullptr )
+    {
+      data = e.player->find_spell( 443533 );
+      ward_of_devotion_buff = make_buff<ward_of_devotion_buff_t>( e, e.player->find_spell( 450719 ), data );
+    }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      ward_of_devotion_buff->trigger();
+    }
+  };
+
+  struct tome_of_lights_devotion_cb_t : public dbc_proc_callback_t
+  {
+    bool resilience_phase;
+    dbc_proc_callback_t* inner_resilience_cb;
+    dbc_proc_callback_t* inner_radiance_cb;
+
+    // Setup both tracking buffs
+    buff_t* resilience_verses_tracker;
+    buff_t* radiance_verses_tracker;
+
+    // Setup the armor and crit buffs
+    buff_t* inner_radiance_buff;    // Crit buff
+    buff_t* inner_resilience_buff;  // Armor buff
+
+    // Pointer to radiance buff
+    buff_t* radiance_buff;
+
+    struct ire_of_devotion_t : generic_proc_t
+    {
+      buff_t* radiance_buff;
+      ire_of_devotion_t( const special_effect_t& e, const spell_data_t* spell, const spell_data_t* data, buff_t* rb )
+        : generic_proc_t( e, "ire_of_devotion", spell ),
+          radiance_buff( nullptr )
+      {
+        radiance_buff = rb;
+        base_dd_min = base_dd_max = data->effectN( 3 ).average( e.item );
+      }
+
+      double composite_da_multiplier( const action_state_t* s ) const override
+      {
+        double m = generic_proc_t::composite_da_multiplier( s );
+
+        if ( radiance_buff->check() )
+           m *= 2;
+
+        return m;
+      }
+    };
+
+    tome_of_lights_devotion_cb_t( const special_effect_t& e, buff_t* rb )
+      : dbc_proc_callback_t( e.player, e ),
+        resilience_phase( true ),
+        resilience_verses_tracker( nullptr ),
+        radiance_verses_tracker( nullptr ),
+        inner_radiance_buff( nullptr ),
+        inner_resilience_buff( nullptr ),
+        radiance_buff( nullptr )
+      {
+        radiance_buff = rb;
+
+        inner_radiance_buff = create_buff<stat_buff_with_multiplier_t>( e.player, e.player->find_spell( 450720 ) )
+        ->set_stat_from_effect_type( A_MOD_RATING, e.player->find_spell( 443533 )->effectN( 2 ).average( e.item ) )
+        ->set_rppm( RPPM_DISABLE )
+        ->set_quiet( false );
+
+        inner_resilience_buff = create_buff<stat_buff_with_multiplier_t>( e.player, e.player->find_spell( 450706 ) )
+        ->add_stat(STAT_BONUS_ARMOR, e.player->find_spell( 443533 )->effectN( 4 ).average( e.item ) )
+        ->set_rppm( RPPM_DISABLE )
+        ->set_quiet( false );
+
+
+        resilience_verses_tracker = create_buff<buff_t>( e.player, e.player->find_spell( 450696 ) );
+        resilience_verses_tracker->expire_at_max_stack = true;
+        resilience_verses_tracker->set_expire_callback( [ this ]( buff_t* b, int, timespan_t ) {
+                                      resilience_phase = false;
+                                      inner_resilience_buff->expire();
+                                      inner_radiance_buff->trigger();
+                                      radiance_verses_tracker->trigger();
+                                      } );
+
+        radiance_verses_tracker = create_buff<buff_t>( e.player, e.player->find_spell( 450699 ) );
+        radiance_verses_tracker->expire_at_max_stack = true;
+        radiance_verses_tracker->set_expire_callback( [ this ]( buff_t* b, int, timespan_t ) {
+                                      resilience_phase = true;
+                                      inner_radiance_buff->expire();
+                                      inner_resilience_buff->trigger();
+                                      resilience_verses_tracker->trigger();
+                                      } );
+
+        auto inner_resilience = new special_effect_t( effect.player );
+        inner_resilience->name_str = "inner_resilience";
+        inner_resilience->spell_id = 450706;
+        inner_resilience->item = e.item;
+        inner_resilience->proc_flags2_ = PF2_ALL_HIT;
+        inner_resilience->disable_buff();
+        effect.player->special_effects.push_back( inner_resilience );
+
+        inner_resilience_cb = new inner_resilience_cb_t( *inner_resilience );
+        inner_resilience_cb->activate_with_buff( resilience_verses_tracker, true );
+
+        auto inner_radiance = new special_effect_t( effect.player );
+        inner_radiance->name_str = "inner_radiance";
+        inner_radiance->spell_id = 450720;
+        inner_radiance->item = e.item;
+        inner_radiance->proc_flags2_ = PF2_ALL_HIT;
+        inner_radiance->disable_buff();
+        inner_radiance->execute_action = create_proc_action<ire_of_devotion_t>( "ire_of_devotion", effect, e.player->find_spell( 450721 ), e.player->find_spell( 443533 ), radiance_buff );
+        effect.player->special_effects.push_back( inner_radiance );
+
+        inner_radiance_cb = new dbc_proc_callback_t( effect.player, *inner_radiance );
+        inner_radiance_cb->activate_with_buff( radiance_verses_tracker, true );
+      }
+
+    void execute( action_t*, action_state_t* s ) override
+    {
+      if ( resilience_phase )
+      {
+        inner_resilience_buff->trigger();
+        resilience_verses_tracker->trigger();
+      }
+      else
+      {
+        inner_radiance_buff->trigger();
+        radiance_verses_tracker->trigger();
+      }
+    }
+  };
+
+  struct tome_of_lights_devotion_t : public generic_proc_t
+  {
+    tome_of_lights_devotion_cb_t* equip_cb;
+    buff_t* radiance_buff;
+
+    tome_of_lights_devotion_t( const special_effect_t& e, const spell_data_t* spell, tome_of_lights_devotion_cb_t* cb, buff_t* rb )
+      : generic_proc_t( e, "tome_of_lights_devotion", spell )
+    {
+      equip_cb = cb;
+      radiance_buff = rb;
+    }
+
+    void execute() override
+    {
+      generic_proc_t::execute();
+      if ( equip_cb->resilience_phase )
+      {
+        if ( !equip_cb->resilience_verses_tracker->check() ) // New sim, no buffs up yet, force a trigger so we can expire cleanly
+          equip_cb->resilience_verses_tracker->trigger();
+        equip_cb->resilience_verses_tracker->expire();
+      }
+      else
+      {
+        if ( !equip_cb->radiance_verses_tracker->check() ) // New sim, no buffs up yet, force a trigger so we can expire cleanly
+          equip_cb->radiance_verses_tracker->trigger();
+        equip_cb->radiance_verses_tracker->expire();
+      }
+
+      radiance_buff->trigger();
+      debug_cast<stat_buff_with_multiplier_t*>(equip_cb->inner_radiance_buff)->stat_mul = 2.0;
+      debug_cast<stat_buff_with_multiplier_t*>(equip_cb->inner_resilience_buff)->stat_mul = 2.0;
+    }
+  };
+
+  auto equip = new special_effect_t( effect.player );
+  equip->name_str = "tome_of_lights_devotion_equip";
+  equip->item = effect.item;
+  equip->spell_id = equip_driver->id();
+  equip->proc_flags_ = equip_driver->proc_flags();
+  equip->proc_flags2_ = PF2_ALL_HIT;
+  effect.player->special_effects.push_back( equip );
+
+  auto equip_cb = new tome_of_lights_devotion_cb_t( *equip, radiance_buff );
+  equip_cb->initialize();
+  equip_cb->activate();
+
+  effect.player->register_combat_begin( [equip_cb] ( player_t* ) {
+    equip_cb->resilience_phase = true;
+    equip_cb->inner_resilience_buff->trigger();
+    equip_cb->resilience_verses_tracker->trigger();
+  } );
+
+  // Setup expire callback for radiance buff
+  radiance_buff->set_expire_callback( [ equip_cb ]( buff_t*, int, timespan_t ) {
+    debug_cast<stat_buff_with_multiplier_t*>(equip_cb->inner_radiance_buff)->stat_mul = 1.0;
+    debug_cast<stat_buff_with_multiplier_t*>(equip_cb->inner_resilience_buff)->stat_mul = 1.0;
+  } );
+
+  effect.type = SPECIAL_EFFECT_USE;
+  effect.execute_action = create_proc_action<tome_of_lights_devotion_t>( "tome_of_lights_devotion", effect, equip_driver, equip_cb, radiance_buff );
+}
+
 // Weapons
 
 // 443384 driver
@@ -9653,6 +9886,8 @@ void register_special_effects()
   register_special_effect( 471548, items::mugs_moxie_jug );
   register_special_effect( 471057, DISABLED_EFFECT ); // Effect Amount for Flarendo's Pilot Light
   register_special_effect( 471142, items::flarendos_pilot_light );
+  register_special_effect( 443533, DISABLED_EFFECT ); // Tome of Lights Devotion equip driver
+  register_special_effect( 443535, items::tome_of_lights_devotion );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );
