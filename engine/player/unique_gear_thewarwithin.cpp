@@ -8219,123 +8219,6 @@ void ringing_ritual_mud( special_effect_t& effect )
   effect.execute_action = create_proc_action<mudborne_t>("ringing_ritual_mud", effect );
 }
 
-// Junkmaestro's Mega Magnet
-void junkmaestros_mega_magnet( special_effect_t& effect )
-{
-  if ( !effect.player->is_ptr() )
-    return;
-
-  struct tick_t : generic_proc_t
-  {
-    tick_t( const special_effect_t& effect )
-      : generic_proc_t( effect, "junkmaestros_putrid_garbage_tick", effect.player->find_spell( 1220483 ) )
-    {
-    }
-
-    std::vector<player_t*>& target_list() const override
-    {
-      std::vector<player_t*>& target_list = generic_proc_t::target_list();
-      target_list.erase( std::remove( target_list.begin(), target_list.end(), target ), target_list.end() );
-
-      return target_list;
-    }
-  };
-
-  struct split_t : generic_proc_t
-  {
-    const spell_data_t* data_spell;
-
-    split_t( const special_effect_t& effect )
-      : generic_proc_t( effect, "junkmaestros_putrid_garbage_dot", effect.player->find_spell( 1220481 ) ),
-        data_spell( effect.player->find_spell( 471211 ) )
-    {
-      tick_action      = create_proc_action<tick_t>( "junkmaestros_putrid_garbage_tick", effect );
-      tick_action->aoe = player->find_spell( 471211 )->effectN( 2 ).base_value();
-    }
-
-    void execute_on_target( player_t* target, double amount )
-    {
-      tick_action->base_dd_min = tick_action->base_dd_max =
-          amount * data_spell->effectN( 3 ).percent() * data().effectN( 1 ).period() / data().duration();
-      tick_action->target = target;
-
-      generic_proc_t::execute();
-    }
-  };
-
-  struct impact_t : generic_proc_t
-  {
-    split_t* split_damage;
-    buff_t* buff;
-
-    impact_t( const special_effect_t& effect, buff_t* buff )
-      : generic_proc_t( effect, "junkmaestros_mega_magnet", effect.player->find_spell( 1219662 ) ),
-        split_damage( nullptr ),
-        buff( buff )
-    {
-      split_damage = debug_cast<split_t*>( create_proc_action<split_t>( "junkmaestros_putrid_garbage", effect ) );
-      base_dd_min = base_dd_max = player->find_spell( 471211 )->effectN( 1 ).average( effect.item );
-      base_multiplier *= role_mult( effect );
-
-      add_child( split_damage );
-    }
-
-    double action_multiplier() const override
-    {
-      double m = generic_proc_t::action_multiplier();
-
-      if ( buff )
-        m *= 1.0 * buff->check();
-
-      return m;
-    }
-
-    void impact( action_state_t* state ) override
-    {
-      generic_proc_t::impact( state );
-      split_damage->execute_on_target( state->target, state->result_raw );
-      buff->expire();
-    }
-  };
-
-  struct use_t : generic_proc_t
-  {
-    buff_t* buff;
-
-    use_t( const special_effect_t& effect, buff_t* buff )
-      : generic_proc_t( effect, "junkmaestros_mega_magnet_use", effect.player->find_spell( 471212 ) ), buff( buff )
-    {
-      impact_action = create_proc_action<impact_t>( "junkmaestros_mega_magnet", effect, buff );
-    }
-
-    bool ready() override
-    {
-      if ( buff->check() )
-        return generic_proc_t::ready();
-      return false;
-    }
-  };
-
-  const spell_data_t* equip_spell = effect.player->find_spell( 471211 );
-  const spell_data_t* buff_spell  = effect.player->find_spell( 1219661 );
-
-  auto buff_effect          = new special_effect_t( effect.player );
-  buff_effect->name_str     = buff_spell->name_cstr();
-  buff_effect->spell_id     = buff_spell->id();
-  buff_effect->proc_flags_  = equip_spell->proc_flags();
-  buff_effect->ppm_         = equip_spell->real_ppm();
-  buff_effect->player->special_effects.push_back( buff_effect );
-
-  auto buff                = create_buff<buff_t>( effect.player, buff_spell );
-  buff_effect->custom_buff = buff;
-
-  new dbc_proc_callback_t( buff_effect->player, *buff_effect );
-
-  auto action = create_proc_action<use_t>( "junkmaestros_mega_magnet_use", effect, buff );
-
-  effect.execute_action = action;
-}
-
 // Gigazap's Zap-Cap
 void gigazaps_zapcap( special_effect_t& effect )
 {
@@ -10071,8 +9954,6 @@ void register_special_effects()
   register_special_effect( 471211, DISABLED_EFFECT ); // junkmaestro's mega magnet
   register_special_effect( 1219102, items::ringing_ritual_mud );
   register_special_effect( 1221145, DISABLED_EFFECT );
-  register_special_effect( 471212, items::junkmaestros_mega_magnet );
-  register_special_effect( 471211, DISABLED_EFFECT );
   register_special_effect( 1219103, items::gigazaps_zapcap );
   register_special_effect( 467774, items::capos_molten_knuckles );
 
