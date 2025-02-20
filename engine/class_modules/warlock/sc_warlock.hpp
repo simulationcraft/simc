@@ -248,7 +248,7 @@ public:
     player_talent_t cull_the_weak;
 
     player_talent_t creeping_death; 
-    player_talent_t soul_rot; // TOCHECK: 11.1 PTR - Soul Rot updated, no longer triggers Drain Life interaction
+    player_talent_t soul_rot;
     player_talent_t tormented_crescendo; // Free, instant Malefic Rapture procs from Shadow Bolt/Drain Soul
     const spell_data_t* tormented_crescendo_buff;
 
@@ -456,6 +456,7 @@ public:
     const spell_data_t* chaos_barrage_tick;
     const spell_data_t* chaos_tear_summon; // This only creates the "pet"
     const spell_data_t* rift_chaos_bolt; // Separate ID from Warlock's Chaos Bolt
+    player_talent_t dimension_ripper; // TODO: After 11.1 goes live, removed outdated RNG option and outdated trigger flags
 
     player_talent_t decimation; // Crits can proc Soul Fire cooldown reset. Proc chance is not in spell data
     const spell_data_t* decimation_buff;
@@ -464,7 +465,6 @@ public:
     const spell_data_t* summon_overfiend;
     const spell_data_t* overfiend_buff; // Buff on Warlock while Overfiend is out, generates Soul Shards
     const spell_data_t* overfiend_cb; // Chaos Bolt cast by Overfiend
-    player_talent_t dimension_ripper; // TODO: 11.1 PTR - Redesigned. Also talent tree location change.
     player_talent_t unstable_rifts;
     const spell_data_t* dimensional_cinder;
   } talents;

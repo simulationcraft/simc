@@ -312,7 +312,7 @@ using namespace helpers;
         p()->procs.decimation->occur();
       }
 
-      if ( destruction() && triggers.dimension_ripper && rng().roll( p()->rng_settings.dimension_ripper.setting_value ) )
+      if ( destruction() && triggers.dimension_ripper && !p()->min_version_check( VERSION_11_1_0 ) && rng().roll( p()->rng_settings.dimension_ripper.setting_value )  )
       {
         if ( p()->talents.dimensional_rift.ok() )
         {
@@ -356,6 +356,28 @@ using namespace helpers;
       {
         if ( p()->buffs.reverse_entropy->trigger() )
           p()->procs.reverse_entropy->occur();
+      }
+
+      if ( destruction() && triggers.dimension_ripper && p()->min_version_check( VERSION_11_1_0 ) && rng().roll( p()->talents.dimension_ripper->effectN( 1 ).percent() ) )
+      {
+        int rift = rng().range( 3 );
+
+        switch ( rift )
+        {
+        case 0:
+          p()->warlock_pet_list.shadow_rifts.spawn( p()->talents.shadowy_tear_summon->duration() );
+          break;
+        case 1:
+          p()->warlock_pet_list.unstable_rifts.spawn( p()->talents.unstable_tear_summon->duration() );
+          break;
+        case 2:
+          p()->warlock_pet_list.chaos_rifts.spawn( p()->talents.chaos_tear_summon->duration() );
+          break;
+        default:
+          break;
+        }
+
+        p()->procs.dimension_ripper->occur();
       }
     }
 
@@ -1218,6 +1240,8 @@ using namespace helpers;
         dot_ignore_stack = true;
 
         affected_by.chaotic_energies = destruction();
+
+        triggers.dimension_ripper = p->talents.dimension_ripper.ok();
 
         base_td_multiplier *= 1.0 + p->hero.hatefury_rituals->effectN( 1 ).percent();
         base_td_multiplier *= 1.0 + p->hero.bleakheart_tactics->effectN( 2 ).percent();
@@ -3509,6 +3533,8 @@ using namespace helpers;
         background = dual = true;
 
         affected_by.chaotic_energies = true;
+
+        triggers.dimension_ripper = p->talents.dimension_ripper.ok();
 
         dot_duration += p->talents.scalding_flames->effectN( 3 ).time_value();
 
