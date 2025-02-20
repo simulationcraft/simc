@@ -454,8 +454,6 @@ namespace warlock
     talents.power_overwhelming = find_talent_spell( talent_tree::SPECIALIZATION, "Power Overwhelming" ); // Should be ID 387279
     talents.power_overwhelming_buff = find_spell( 387283 );
 
-    talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
-
     talents.dimensional_rift = find_talent_spell( talent_tree::SPECIALIZATION, "Dimensional Rift" ); // Should be ID 387976
     talents.shadowy_tear_summon = find_spell( 394235 );
     talents.shadow_barrage = find_spell( 394237 );
@@ -465,6 +463,8 @@ namespace warlock
     talents.chaos_barrage_tick = find_spell( 387985 );
     talents.chaos_tear_summon = find_spell( 394243 );
     talents.rift_chaos_bolt = find_spell( 394246 );
+
+    talents.dimension_ripper = find_talent_spell( talent_tree::SPECIALIZATION, "Dimension Ripper" ); // Should be ID 457025
 
     talents.decimation = find_talent_spell( talent_tree::SPECIALIZATION, "Decimation" ); // Should be ID 456985
     talents.decimation_buff = find_spell( 457555 );
@@ -476,7 +476,7 @@ namespace warlock
     talents.overfiend_buff = find_spell( 457578 );
     talents.overfiend_cb = find_spell( 434589 );
 
-    talents.dimension_ripper = find_talent_spell( talent_tree::SPECIALIZATION, "Dimension Ripper" ); // Should be ID 457025
+    talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
 
     talents.unstable_rifts = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Rifts" ); // Should be ID 457064
     talents.dimensional_cinder = find_spell( 460805 );

@@ -378,8 +378,8 @@ public:
     const spell_data_t* conflagrate_debuff; // Debuff associated with Roaring Blaze
     player_talent_t improved_conflagrate; // +1 charge for Conflagrate
     player_talent_t backlash; // Crit chance increase. NOT IMPLEMENTED: Instant Incinerate proc when physically attacked
-    player_talent_t mayhem; // It appears that the only spells that can proc Mayhem are ones that can be Havoc'd TOCHECK: 11.1 PTR - Proc chance increased
-    player_talent_t havoc; // Talent data for Havoc is both the debuff and the action TOCHECK: 11.1 PTR - Duration increased
+    player_talent_t mayhem; // It appears that the only spells that can proc Mayhem are ones that can be Havoc'd
+    player_talent_t havoc; // Talent data for Havoc is both the debuff and the action
     const spell_data_t* havoc_debuff; // This is a second copy of the talent data for use in places that are shared by Havoc and Mayhem
     player_talent_t pyrogenics; // Enemies affected by Rain of Fire receive debuff for increased Fire damage
     const spell_data_t* pyrogenics_debuff;
@@ -446,7 +446,7 @@ public:
     player_talent_t master_ritualist; // Reduces proc cost of Ritual of Ruin
     player_talent_t power_overwhelming; // Stacking mastery buff for spending Soul Shards
     const spell_data_t* power_overwhelming_buff;
-    player_talent_t diabolic_embers; // Incinerate generates more Soul Shards TOCHECK: 11.1 PTR - Behavior should be unchanged, but talent row has moved
+
     player_talent_t dimensional_rift;
     const spell_data_t* shadowy_tear_summon; // This only creates the "pet"
     const spell_data_t* shadow_barrage; // Casts Rift version of Shadow Bolt on ticks
@@ -465,6 +465,7 @@ public:
     const spell_data_t* summon_overfiend;
     const spell_data_t* overfiend_buff; // Buff on Warlock while Overfiend is out, generates Soul Shards
     const spell_data_t* overfiend_cb; // Chaos Bolt cast by Overfiend
+    player_talent_t diabolic_embers; // Incinerate generates more Soul Shards
     player_talent_t unstable_rifts;
     const spell_data_t* dimensional_cinder;
   } talents;
