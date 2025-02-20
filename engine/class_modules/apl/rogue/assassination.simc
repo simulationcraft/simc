@@ -21,16 +21,12 @@ actions+=/variable,name=single_target,value=spell_targets.fan_of_knives<2
 actions+=/variable,name=regen_saturated,value=energy.regen_combined>30
 # Pooling Setup, check for cooldowns
 actions+=/variable,name=in_cooldowns,value=dot.deathmark.ticking|dot.kingsbane.ticking|debuff.shiv.up
-# Check to clip envenom
-actions+=/variable,name=clip_envenom,value=buff.envenom.up&buff.envenom.remains.1<=1
 # Check upper bounds of energy to begin spending
 actions+=/variable,name=upper_limit_energy,value=energy.pct>=(50-10*talent.vicious_venoms.rank)
-# Variable to control avoiding auto-proc on Thistle Tea
-actions+=/variable,name=avoid_tea,value=energy>40+50+5*talent.vicious_venoms.rank
 # Checking for cooldowns soon
 actions+=/variable,name=cd_soon,value=cooldown.kingsbane.remains<3&!cooldown.kingsbane.ready
 # Pooling Condition all together
-actions+=/variable,name=not_pooling,value=variable.in_cooldowns|!variable.cd_soon&variable.avoid_tea&buff.darkest_night.up|!variable.cd_soon&variable.avoid_tea&variable.clip_envenom|variable.upper_limit_energy|fight_remains<=20
+actions+=/variable,name=not_pooling,value=variable.in_cooldowns|!variable.cd_soon&buff.darkest_night.up|variable.upper_limit_energy|fight_remains<=20
 # Check what the maximum Scent of Blood stacks is currently
 actions+=/variable,name=scent_effective_max_stacks,value=(spell_targets.fan_of_knives*talent.scent_of_blood.rank*2)>?20
 # We are Scent Saturated when our stack count is hitting the maximum
@@ -50,14 +46,13 @@ actions+=/arcane_pulse
 actions+=/lights_judgment
 actions+=/bag_of_tricks
 
-# AoE Damage over time abilities 
-# Helper Variable to check basic finisher conditions
-actions.aoe_dot+=/variable,name=dot_finisher_condition,value=combo_points>=variable.effective_spend_cp&(pmultiplier<=1)
-# Crimson Tempest on 2+ Targets if we have enough energy regen
+# AoE Damage over time abilities Helper Variable to check basic finisher conditions
+actions.aoe_dot=variable,name=dot_finisher_condition,value=combo_points>=variable.effective_spend_cp&(pmultiplier<=1)
+# Crimson Tempest on 2+ Targets
 actions.aoe_dot+=/crimson_tempest,target_if=min:remains,if=spell_targets>=2&variable.dot_finisher_condition&refreshable&target.time_to_die-remains>6
-# Garrote upkeep, also uses it in AoE to reach energy saturation
+# Garrote upkeep in AoE to reach energy saturation
 actions.aoe_dot+=/garrote,cycle_targets=1,if=combo_points.deficit>=1&(pmultiplier<=1)&refreshable&!variable.regen_saturated&target.time_to_die-remains>12
-# Rupture upkeep, also uses it in AoE to reach energy or scent of blood saturation
+# Rupture upkeep in AoE to reach energy or scent of blood saturation
 actions.aoe_dot+=/rupture,cycle_targets=1,if=variable.dot_finisher_condition&refreshable&(!dot.kingsbane.ticking|buff.cold_blood.up)&(!variable.regen_saturated&(talent.scent_of_blood.rank=2|talent.scent_of_blood.rank<=1&(buff.indiscriminate_carnage.up|target.time_to_die-remains>15)))&target.time_to_die-remains>(7+(talent.dashing_scoundrel*5)+(variable.regen_saturated*6))&!buff.darkest_night.up
 actions.aoe_dot+=/rupture,cycle_targets=1,if=variable.dot_finisher_condition&refreshable&(!dot.kingsbane.ticking|buff.cold_blood.up)&variable.regen_saturated&!variable.scent_saturation&target.time_to_die-remains>19&!buff.darkest_night.up
 # Garrote as a special generator for the last CP before a finisher for edge case handling
@@ -77,15 +72,16 @@ actions.cds+=/deathmark,if=(variable.deathmark_condition&target.time_to_die>=10)
 # Check for Applicable Shiv usage
 actions.cds+=/call_action_list,name=shiv
 actions.cds+=/kingsbane,if=(debuff.shiv.up|cooldown.shiv.remains<6)&(buff.envenom.up|spell_targets.fan_of_knives>1)&(cooldown.deathmark.remains>=50|dot.deathmark.ticking)|fight_remains<=15
-# Avoid overcapped energy, use with shiv, or dump charges at the end of a fight
-actions.cds+=/thistle_tea,if=!buff.thistle_tea.up&dot.kingsbane.ticking&dot.kingsbane.remains<8|!buff.thistle_tea.up&cooldown.thistle_tea.charges>=2&debuff.shiv.remains>6|!buff.thistle_tea.up&fight_remains<=cooldown.thistle_tea.charges*6
+# Use with shiv or in niche cases at the end of Kingsbane if not already up
+actions.cds+=/thistle_tea,if=!buff.thistle_tea.up&debuff.shiv.remains>=6|!buff.thistle_tea.up&dot.kingsbane.ticking&dot.kingsbane.remains<=6|!buff.thistle_tea.up&fight_remains<=cooldown.thistle_tea.charges*6
 # Potion/Racials/Other misc cooldowns
 actions.cds+=/call_action_list,name=misc_cds
 actions.cds+=/call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0
 # Cold Blood for Edge Case or Envenoms during shiv
 actions.cds+=/cold_blood,use_off_gcd=1,if=(buff.fatebound_coin_tails.stack>0&buff.fatebound_coin_heads.stack>0)|debuff.shiv.up&(cooldown.deathmark.remains>50|!talent.inevitabile_end&effective_combo_points>=variable.effective_spend_cp)
 
-# Core damage over time abilities used everywhere Maintain Garrote
+# Core damage over time abilities used everywhere 
+# Maintain Garrote
 actions.core_dot=garrote,if=combo_points.deficit>=1&(pmultiplier<=1)&refreshable&target.time_to_die-remains>12
 # Maintain Rupture unless darkest night is up
 actions.core_dot+=/rupture,if=combo_points>=variable.effective_spend_cp&(pmultiplier<=1)&refreshable&target.time_to_die-remains>(4+(talent.dashing_scoundrel*5)+(variable.regen_saturated*6))&(!buff.darkest_night.up|talent.caustic_spatter&!debuff.caustic_spatter.up)
@@ -140,7 +136,7 @@ actions.shiv+=/shiv,if=talent.arterial_precision&variable.shiv_condition&spell_t
 actions.shiv+=/shiv,if=!talent.lightweight_shiv.enabled&variable.shiv_kingsbane_condition&(dot.kingsbane.ticking&dot.kingsbane.remains<8|!dot.kingsbane.ticking&cooldown.kingsbane.remains>=20)&(!talent.crimson_tempest.enabled|variable.single_target|dot.crimson_tempest.ticking)
 # Shiv for big Darkest Night Envenom during Lingering Darkness
 actions.shiv+=/shiv,if=buff.darkest_night.up&combo_points>=variable.effective_spend_cp&buff.lingering_darkness.up
-actions.shiv+=/shiv,if=talent.lightweight_shiv.enabled&variable.shiv_kingsbane_condition&(dot.kingsbane.ticking|cooldown.kingsbane.remains<=1)
+actions.shiv+=/shiv,if=talent.lightweight_shiv.enabled&variable.shiv_kingsbane_condition&(dot.kingsbane.ticking&dot.kingsbane.remains<8|cooldown.kingsbane.remains<=1&cooldown.shiv.charges_fractional>=1.7)
 # Fallback shiv for arterial during deathmark
 actions.shiv+=/shiv,if=talent.arterial_precision&!debuff.shiv.up&dot.garrote.ticking&dot.rupture.ticking&debuff.deathmark.up
 # Fallback if no special cases apply
