@@ -7138,7 +7138,8 @@ Effects          :
 #2 (id=815255)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: -100 | Scaled Value: -100 | Radius: 8 yards | Target: At Enemy in Area (16)
 #3 (id=815256)   : Apply Aura (6) | Modify Hit% (54) | Attributes: Players Only (14)
-                   Base Value: -100 | Scaled Value: -100 | Radius: 8 yards | Target: At Enemy in Area (16)
+                   Base Value: -99 | Scaled Value: -99 | Radius: 8 yards | Target: At Enemy in Area (16)
+Hotfixed         : Base Value (-100 -> -99)
 #4 (id=1024392)  : Apply Aura (6) | Proc Trigger Spell (42): Exploding Keg
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.2 | Trigger Spell: 388867 | Target: Self (1)
 Description      : Hurls a flaming keg at the target location, dealing $s1 Fire damage to nearby enemies, causing your attacks against them to deal $388867s1 additional Fire damage, and causing their melee attacks to deal $s2% reduced damage for the next $d.
