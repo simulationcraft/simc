@@ -5934,6 +5934,7 @@ void reverb_radio( special_effect_t& effect )
 
   auto buff = create_buff<hyped_buff_t>( effect.player, "hyped", effect.player->find_spell( 1216212 ), effect );
   effect.custom_buff = buff;
+  effect.proc_flags2_ = PF2_ALL_HIT;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -6915,6 +6916,7 @@ void zees_thug_hotline( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<zees_thug_hotline_t>( "zees_thug_hotline", effect );
+  effect.proc_flags2_ = PF2_ALL_HIT;
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -7231,6 +7233,8 @@ void mister_locknstalk( special_effect_t& effect )
       proxy->stats->add_execute( 0_ms, listener );
     }
   };
+
+  effect.proc_flags2_ = PF2_ALL_HIT;
 
   new mister_locknstalk_cb_t( effect );
 }

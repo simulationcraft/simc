@@ -260031,6 +260031,30 @@ Effects          :
 Description      : $@spelldesc1219103
 Tooltip          : Every ${$1219103t/2} sec, Giga-Zap your target and $1219103s5 nearby enemy.
 
+Name             : Turbo-Actuation (id=1220415) 
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Stacks           : 30 maximum
+Proc Chance      : 101%
+Attributes       : Aura Points On Client (268)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
+Effects          :
+#1 (id=1206369)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc1219103
+Tooltip          : Become Turbo-Charged at $u stacks.
+
+Name             : Zap (id=1220419) 
+School           : Nature
+Spell Type       : Magic
+Range            : 100 yards
+Labels           : 292
+Effects          :
+#1 (id=1206375)  : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+Description      : $@spelldesc1219103
+
 Name             : Junkmaestro's Putrid Garbage (id=1220481) 
 School           : Shadowstorm
 Spell Type       : Magic

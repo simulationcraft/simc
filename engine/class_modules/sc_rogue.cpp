@@ -9557,7 +9557,8 @@ void actions::rogue_action_t<Base>::trigger_tww2_set_bonus_removal()
        p()->rng().roll( p()->set_bonuses.tww2_assassination_2pc->effectN( 1 ).percent() ) )
   {
     // 2025-02-08 -- Based on testing, 20% chance is nowhere in spell data currently
-    if ( p()->set_bonuses.tww2_assassination_4pc->ok() && p()->rng().roll( 0.2 ) )
+    // 2025-02-20 -- Updated to 66%
+    if ( p()->set_bonuses.tww2_assassination_4pc->ok() && p()->rng().roll( 0.66 ) )
     {
       // Buff stack change callback for the 4pc handles expiration and restoration of 2pc buff stacks
       p()->buffs.tww2_assassination_4pc->trigger( p()->buffs.tww2_assassination_4pc->max_stack() );
