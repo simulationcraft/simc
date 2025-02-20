@@ -1,5 +1,5 @@
 // Spell text, wow build 11.1.0.59241
-static const std::array<spelltext_data_t, 27244> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 27245> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27244,6 +27244,7 @@ static const std::array<spelltext_data_t, 27244> __ptr_spelltext_data { {
   { 1225790, "$@spelldesc386692", 0, 0 },
   { 1226262, "$@spelldesc421373", "Heals $w2 every $t2 sec.", 0 },
   { 1227062, "$@spelldesc442686", "Damage and healing increased by $w1%.", 0 },
+  { 1228321, "$@spelldesc66", "Invisible$?$w3=0[][ and moving $87833s1% faster].", 0 },
 } };
 
 // spelltext hotfix entries, wow build 11.1.0.59241
