@@ -6882,89 +6882,6 @@ void zees_thug_hotline( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-// Mister Lock-n-Stalk
-// 467469 Equip Driver
-// 467485 Use Driver
-// 1215690 Precision Targeting damage
-// 1215733 Mass Destruction damage
-void mister_locknstalk( special_effect_t& effect )
-{
-  if ( !effect.player->is_ptr() )
-    return;
-
-  struct mister_locknstalk_cb_t : public dbc_proc_callback_t
-  {
-    action_t* st_damage;
-    action_t* aoe_damage;
-    action_t* proxy;
-    enum mister_locknstalk_modes_t
-    {
-      MODE_DYNAMIC,
-      MODE_SINGLE_TARGET,
-      MODE_AOE
-    };
-    mister_locknstalk_modes_t mode;
-    mister_locknstalk_cb_t( const special_effect_t& e )
-      : dbc_proc_callback_t( e.player, e ),
-        st_damage( nullptr ),
-        aoe_damage( nullptr ),
-        proxy( nullptr ),
-        mode( MODE_DYNAMIC )
-    {
-      proxy                  = new action_t( action_e::ACTION_OTHER, "mister_locknstalk", e.player, e.driver() );
-      auto st_damage_spell   = e.player->find_spell( 1215690 );
-      st_damage              = create_proc_action<generic_proc_t>( "precision_targeting", e, st_damage_spell );
-      st_damage->base_dd_min = st_damage->base_dd_max = e.driver()->effectN( 1 ).average( e );
-      st_damage->base_multiplier                      = role_mult( e.player, e.player->find_spell( 467492 ) );
-      proxy->add_child( st_damage );
-
-      auto aoe_damage_spell   = e.player->find_spell( 1215733 );
-      aoe_damage              = create_proc_action<generic_aoe_proc_t>( "mass_destruction", e, aoe_damage_spell, true );
-      aoe_damage->base_dd_min = aoe_damage->base_dd_max = e.driver()->effectN( 2 ).average( e );
-      aoe_damage->base_multiplier                       = role_mult( e.player, e.player->find_spell( 467497 ) );
-      proxy->add_child( aoe_damage );
-
-      const auto& option = e.player->thewarwithin_opts.mister_locknstalk_mode;
-      if ( !option.is_default() )
-      {
-        if ( util::str_compare_ci( option, "dynamic" ) )
-          mode = MODE_DYNAMIC;
-        else if ( util::str_compare_ci( option, "single_target" ) )
-          mode = MODE_SINGLE_TARGET;
-        else if ( util::str_compare_ci( option, "aoe" ) )
-          mode = MODE_AOE;
-        else
-          throw std::invalid_argument( "Valid thewarwithin.mister_locknstalk_mode: dynamic, single_target, aoe" );
-      }
-    }
-
-    void execute( action_t*, action_state_t* s )
-    {
-      switch ( mode )
-      {
-        case MODE_DYNAMIC:
-          if ( listener->sim->target_non_sleeping_list.size() > 1 )
-            aoe_damage->execute_on_target( s->target );
-          else
-            st_damage->execute_on_target( s->target );
-          break;
-        case MODE_SINGLE_TARGET:
-          st_damage->execute_on_target( s->target );
-          break;
-        case MODE_AOE:
-          aoe_damage->execute_on_target( s->target );
-          break;
-        default:
-          break;
-      }
-
-      proxy->stats->add_execute( 0_ms, listener );
-    }
-  };
-
-  new mister_locknstalk_cb_t( effect );
-}
-
 // 443533 Equip Driver & Values
 // 443535 On Use
 // 443534 On Use Buff, radiance, double all effects
@@ -6975,12 +6892,12 @@ void mister_locknstalk( special_effect_t& effect )
 // 450719 Magic Absorb buff
 // 450721 Ire of Devotion damage spell
 
-  // 443533 Values
-  // s1 - static value of 50
-  // s2 - crit strike amount increase - Used in 450720 buff
-  // s3 - devotion of ire damage - Used in 450721 spell
-  // s4 - armor increase - Used in 450706 buff
-  // s5 - magic absorb value - Used in 450719 buff
+// 443533 Values
+// s1 - static value of 50
+// s2 - crit strike amount increase - Used in 450720 buff
+// s3 - devotion of ire damage - Used in 450721 spell
+// s4 - armor increase - Used in 450706 buff
+// s5 - magic absorb value - Used in 450719 buff
 void tome_of_lights_devotion( special_effect_t& effect )
 {
   auto equip_driver = effect.player->find_spell( 443533 );
@@ -7051,7 +6968,7 @@ void tome_of_lights_devotion( special_effect_t& effect )
         double m = generic_proc_t::composite_da_multiplier( s );
 
         if ( radiance_buff->check() )
-           m *= 2;
+            m *= 2;
 
         return m;
       }
@@ -7196,6 +7113,89 @@ void tome_of_lights_devotion( special_effect_t& effect )
 
   effect.type = SPECIAL_EFFECT_USE;
   effect.execute_action = create_proc_action<tome_of_lights_devotion_t>( "tome_of_lights_devotion", effect, equip_driver, equip_cb, radiance_buff );
+}
+
+// Mister Lock-n-Stalk
+// 467469 Equip Driver
+// 467485 Use Driver
+// 1215690 Precision Targeting damage
+// 1215733 Mass Destruction damage
+void mister_locknstalk( special_effect_t& effect )
+{
+  if ( !effect.player->is_ptr() )
+    return;
+
+  struct mister_locknstalk_cb_t : public dbc_proc_callback_t
+  {
+    action_t* st_damage;
+    action_t* aoe_damage;
+    action_t* proxy;
+    enum mister_locknstalk_modes_t
+    {
+      MODE_DYNAMIC,
+      MODE_SINGLE_TARGET,
+      MODE_AOE
+    };
+    mister_locknstalk_modes_t mode;
+    mister_locknstalk_cb_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        st_damage( nullptr ),
+        aoe_damage( nullptr ),
+        proxy( nullptr ),
+        mode( MODE_DYNAMIC )
+    {
+      proxy                  = new action_t( action_e::ACTION_OTHER, "mister_locknstalk", e.player, e.driver() );
+      auto st_damage_spell   = e.player->find_spell( 1215690 );
+      st_damage              = create_proc_action<generic_proc_t>( "precision_targeting", e, st_damage_spell );
+      st_damage->base_dd_min = st_damage->base_dd_max = e.driver()->effectN( 1 ).average( e );
+      st_damage->base_multiplier                      = role_mult( e.player, e.player->find_spell( 467492 ) );
+      proxy->add_child( st_damage );
+
+      auto aoe_damage_spell   = e.player->find_spell( 1215733 );
+      aoe_damage              = create_proc_action<generic_aoe_proc_t>( "mass_destruction", e, aoe_damage_spell, true );
+      aoe_damage->base_dd_min = aoe_damage->base_dd_max = e.driver()->effectN( 2 ).average( e );
+      aoe_damage->base_multiplier                       = role_mult( e.player, e.player->find_spell( 467497 ) );
+      proxy->add_child( aoe_damage );
+
+      const auto& option = e.player->thewarwithin_opts.mister_locknstalk_mode;
+      if ( !option.is_default() )
+      {
+        if ( util::str_compare_ci( option, "dynamic" ) )
+          mode = MODE_DYNAMIC;
+        else if ( util::str_compare_ci( option, "single_target" ) )
+          mode = MODE_SINGLE_TARGET;
+        else if ( util::str_compare_ci( option, "aoe" ) )
+          mode = MODE_AOE;
+        else
+          throw std::invalid_argument( "Valid thewarwithin.mister_locknstalk_mode: dynamic, single_target, aoe" );
+      }
+    }
+
+    void execute( action_t*, action_state_t* s )
+    {
+      switch ( mode )
+      {
+        case MODE_DYNAMIC:
+          if ( listener->sim->target_non_sleeping_list.size() > 1 )
+            aoe_damage->execute_on_target( s->target );
+          else
+            st_damage->execute_on_target( s->target );
+          break;
+        case MODE_SINGLE_TARGET:
+          st_damage->execute_on_target( s->target );
+          break;
+        case MODE_AOE:
+          aoe_damage->execute_on_target( s->target );
+          break;
+        default:
+          break;
+      }
+
+      proxy->stats->add_execute( 0_ms, listener );
+    }
+  };
+
+  new mister_locknstalk_cb_t( effect );
 }
 
 // Weapons
