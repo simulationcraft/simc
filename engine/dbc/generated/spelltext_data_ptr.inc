@@ -1,5 +1,5 @@
 // Spell text, wow build 11.1.0.59241
-static const std::array<spelltext_data_t, 27242> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 27244> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27204,6 +27204,8 @@ static const std::array<spelltext_data_t, 27242> __ptr_spelltext_data { {
   { 1219661, "$@spelldesc471212", "Charging the Mega Magnet for later use.", 0 },
   { 1219723, "Disintegrate ticks $s3 additional time, but deals $s2% less damage.", 0, 0 },
   { 1220413, "$@spelldesc1219103", "Every ${$1219103t/2} sec, Giga-Zap your target and $1219103s5 nearby enemy.", 0 },
+  { 1220415, "$@spelldesc1219103", "Become Turbo-Charged at $u stacks.", 0 },
+  { 1220419, "$@spelldesc1219103", 0, 0 },
   { 1220481, "$@spelldesc471212", "Covered with putrid garbage, dealing Plague damage to nearby enemies every $t1 sec.", 0 },
   { 1220483, "$@spelldesc471212", 0, 0 },
   { 1220488, "Command the Medichopper to attach to your target, absorbing $1220605s1 damage and granting them $1220605s2 versatility for $1219104d.\r\n\r\nWhile attached, your healing spells have a chance to refuel the chopper, granting these bonuses to their host again.", 0, 0 },

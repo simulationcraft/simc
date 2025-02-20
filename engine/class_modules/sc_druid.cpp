@@ -595,15 +595,15 @@ public:
     // Balance
     action_t* astral_smolder;
     action_t* denizen_of_the_dream;  // placeholder action
-    action_t* moons;                 // placeholder action
+    action_t* moons;  // placeholder action
     action_t* orbit_breaker;
     action_t* orbital_strike;
-    action_t* shooting_stars;        // placeholder action
     action_t* shooting_stars_moonfire;
     action_t* shooting_stars_sunfire;
     action_t* crashing_star_moonfire;
     action_t* crashing_star_sunfire;
     action_t* sundered_firmament;
+    action_t* fungal_growth;  // consolidated dot
     action_t* sunseeker_mushroom;
     action_t* jackpot_mushroom;  // TWW S2 Balance 2pc
 
@@ -8806,8 +8806,8 @@ struct wild_mushroom_t final : public druid_spell_t
   {
     uptime_t* uptime;
 
-    fungal_growth_t( druid_t* p, std::string_view n, flag_e f )
-      : base_t( n, p, p->find_spell( 81281 ), f ), uptime( p->get_uptime( "Fungal Growth" ) )
+    fungal_growth_t( druid_t* p, std::string_view n )
+      : base_t( n, p, p->find_spell( 81281 ) ), uptime( p->get_uptime( "Fungal Growth" ) )
     {
       name_str_reporting = "fungal_growth";
       dot_name = "fungal_growth";
@@ -8830,7 +8830,6 @@ struct wild_mushroom_t final : public druid_spell_t
 
   struct wild_mushroom_damage_t final : public druid_spell_t
   {
-    action_t* fungal = nullptr;
     double ap_max;
 
     wild_mushroom_damage_t( druid_t* p, std::string_view n, const spell_data_t* s, flag_e f )
@@ -8838,6 +8837,9 @@ struct wild_mushroom_t final : public druid_spell_t
     {
       background = proc = dual = true;
       aoe = -1;
+
+      if ( !p->active.fungal_growth )
+        p->active.fungal_growth = p->get_secondary_action<fungal_growth_t>( "fungal_growth" );
     }
 
     double ap_gain() const
@@ -8856,7 +8858,7 @@ struct wild_mushroom_t final : public druid_spell_t
     {
       druid_spell_t::impact( s );
 
-      fungal->execute_on_target( s->target );
+      p()->active.fungal_growth->execute_on_target( s->target );
     }
   };
 
@@ -8875,9 +8877,6 @@ struct wild_mushroom_t final : public druid_spell_t
         p->get_secondary_action<wild_mushroom_damage_t>( name_str + "_damage", find_trigger( &data() ).trigger(), f );
       replace_stats( damage );
       damage->gain = gain;
-
-      damage->fungal = p->get_secondary_action<fungal_growth_t>( name_str + "_fungal", f );
-      add_child( damage->fungal );
 
       params.pulse_time( delay )
         .duration( delay )
@@ -11413,16 +11412,16 @@ void druid_t::create_actions()
 
   if ( talent.shooting_stars.ok() )
   {
-    active.shooting_stars = new action_t( action_e::ACTION_OTHER, "shooting_stars", this, talent.shooting_stars );
+    auto shs_proxy = new action_t( action_e::ACTION_OTHER, "shooting_stars", this, talent.shooting_stars );
 
     auto mf = get_secondary_action<shooting_stars_t>( "shooting_stars_moonfire", spec.shooting_stars_dmg );
     mf->name_str_reporting = "Moonfire";
-    active.shooting_stars->add_child( mf );
+    shs_proxy->add_child( mf );
     active.shooting_stars_moonfire = mf;
 
     auto sf = get_secondary_action<shooting_stars_t>( "shooting_stars_sunfire", spec.shooting_stars_dmg );
     sf->name_str_reporting = "Sunfire";
-    active.shooting_stars->add_child( sf );
+    shs_proxy->add_child( sf );
     active.shooting_stars_sunfire = sf;
 
     if ( talent.orbit_breaker.ok() )
@@ -11434,7 +11433,7 @@ void druid_t::create_actions()
       fm->energize_amount *= talent.orbit_breaker->effectN( 2 ).percent();
       fm->background = true;
       fm->proc = true;
-      active.shooting_stars->add_child(fm );
+      shs_proxy->add_child(fm );
       active.orbit_breaker = fm;
     }
 
@@ -11468,17 +11467,17 @@ void druid_t::create_actions()
 
   if ( talent.sunseeker_mushroom.ok() )
   {
-    auto shroom = get_secondary_action<wild_mushroom_t>(
+    auto sunseeker = get_secondary_action<wild_mushroom_t>(
       "sunseeker_mushroom", find_trigger( talent.sunseeker_mushroom ).trigger() );
-    shroom->background = true;
-    shroom->proc = true;
-    active.sunseeker_mushroom = shroom;
+    sunseeker->background = true;
+    sunseeker->proc = true;
+    active.sunseeker_mushroom = sunseeker;
   }
 
   if ( sets->has_set_bonus( DRUID_BALANCE, TWW2, B2 ) )
   {
     // tww2_2pc uses same spell as the talent, so hardcode ID in case the talent isn't selected
-    auto jackpot = get_secondary_action<wild_mushroom_t>( "jackpot_mushrooms", find_spell( 88747 ) );
+    auto jackpot = get_secondary_action<wild_mushroom_t>( "jackpot_mushroom", find_spell( 88747 ) );
     jackpot->name_str_reporting = "Jackpot!";
     jackpot->background = true;
     jackpot->proc = true;
@@ -11606,7 +11605,7 @@ void druid_t::create_actions()
 
   // stat parent/child hookups
   auto find_parent = [ this ]( action_t* action, std::string_view n ) {
-    if ( action )
+    if ( action && !action->stats->parent )
     {
       if ( auto stat = find_stats( n ) )
       {
@@ -11629,6 +11628,14 @@ void druid_t::create_actions()
   find_parent( active.raze_tooth_and_claw, "raze" );
   find_parent( active.the_light_of_elune, "moonfire" );
   find_parent( active.thrash_bear_flashing, "thrash_bear" );
+
+  // shroom madness
+  find_parent( active.fungal_growth, "wild_mushroom" );
+  find_parent( active.fungal_growth, "sunseeker_mushroom" );
+  find_parent( active.fungal_growth, "jackpot_mushroom" );
+  find_parent( active.sunseeker_mushroom, "wild_mushroom" );
+  find_parent( active.jackpot_mushroom, "wild_mushroom" );
+  find_parent( active.jackpot_mushroom, "sunseeker_mushroom" );
 }
 
 // Default Consumables ======================================================
