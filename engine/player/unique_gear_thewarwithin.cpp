@@ -7022,6 +7022,12 @@ void tome_of_lights_devotion( special_effect_t& effect )
       {
         radiance_buff = rb;
 
+        auto inner_resilience_driver = effect.player->find_spell( 450706 );
+        assert( inner_resilience_driver && "Tome of Lights Devotion inner resilience driver not found" );
+
+        auto inner_radiance_driver = effect.player->find_spell( 450720 );
+        assert( inner_radiance_driver && "Tome of Lights Devotion inner radiance driver not found" );
+
         inner_radiance_buff = create_buff<stat_buff_with_multiplier_t>( e.player, e.player->find_spell( 450720 ) )
         ->set_stat_from_effect_type( A_MOD_RATING, e.player->find_spell( 443533 )->effectN( 2 ).average( e.item ) )
         ->set_rppm( RPPM_DISABLE )
@@ -7053,7 +7059,7 @@ void tome_of_lights_devotion( special_effect_t& effect )
 
         auto inner_resilience = new special_effect_t( effect.player );
         inner_resilience->name_str = "inner_resilience";
-        inner_resilience->spell_id = 450706;
+        inner_resilience->spell_id = inner_resilience_driver->id();
         inner_resilience->item = e.item;
         inner_resilience->proc_flags2_ = PF2_ALL_HIT;
         inner_resilience->disable_buff();
@@ -7064,7 +7070,7 @@ void tome_of_lights_devotion( special_effect_t& effect )
 
         auto inner_radiance = new special_effect_t( effect.player );
         inner_radiance->name_str = "inner_radiance";
-        inner_radiance->spell_id = 450720;
+        inner_radiance->spell_id = inner_radiance_driver->id();
         inner_radiance->item = e.item;
         inner_radiance->proc_flags2_ = PF2_ALL_HIT;
         inner_radiance->disable_buff();
