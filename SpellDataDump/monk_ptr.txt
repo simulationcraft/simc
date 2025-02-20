@@ -19389,6 +19389,7 @@ Description      : $@spelldesc1215997
 Tooltip          : Damage and healing increased by $s1%
 
 Name             : Opportunistic Strike (id=1217999) [Spell Family (53)] 
+Hotfixed         : Internal Cooldown (0 -> 100)
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -19397,6 +19398,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
                  : 295
+Internal Cooldown: 0.1 seconds
 Stacks           : 2 initial, 2 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee
