@@ -109,7 +109,7 @@ public:
   struct base_t
   {
     // Shared
-    const spell_data_t* drain_life; // TOCHECK: 11.1 PTR - Drain Life damage increased
+    const spell_data_t* drain_life;
     const spell_data_t* corruption;
     const spell_data_t* shadow_bolt;
     const spell_data_t* nethermancy; // Int bonus for all cloth slots
@@ -248,7 +248,7 @@ public:
     player_talent_t cull_the_weak;
 
     player_talent_t creeping_death; 
-    player_talent_t soul_rot; // TOCHECK: 11.1 PTR - Soul Rot updated, no longer triggers Drain Life interaction
+    player_talent_t soul_rot;
     player_talent_t tormented_crescendo; // Free, instant Malefic Rapture procs from Shadow Bolt/Drain Soul
     const spell_data_t* tormented_crescendo_buff;
 
@@ -319,13 +319,13 @@ public:
     const spell_data_t* umbral_blaze_dot;
     player_talent_t reign_of_tyranny;
     const spell_data_t* reign_of_tyranny_buff;
-    player_talent_t demonic_calling; //TOCHECK: 11.1 PTR - Updated proc chance
+    player_talent_t demonic_calling;
     const spell_data_t* demonic_calling_buff;
     player_talent_t fiendish_oblation;
     player_talent_t fel_sunder; // Increase damage taken debuff when hit by main pet Felstorm
     const spell_data_t* fel_sunder_debuff;
 
-    player_talent_t doom; // TODO: 11.1 PTR - Change duration reduction to Soul Shard consume_resource, remove reduction on Demonic Core consumption
+    player_talent_t doom;
     const spell_data_t* doom_debuff;
     const spell_data_t* doom_dmg;
     player_talent_t pact_of_the_imp_mother; // Chance for Hand of Gul'dan to proc a second time on execute
@@ -339,7 +339,7 @@ public:
     const spell_data_t* antoran_armaments_buff;
     const spell_data_t* soul_cleave;
 
-    player_talent_t doom_eternal; // TODO: 11.1 PTR - Redesigned to have Demonic Core proc chance
+    player_talent_t doom_eternal;
     player_talent_t impending_doom;
     player_talent_t foul_mouth;
     player_talent_t the_houndmasters_gambit;
@@ -371,15 +371,15 @@ public:
 
     player_talent_t backdraft;
     const spell_data_t* backdraft_buff;
-    player_talent_t rain_of_fire; // TODO: 11.1 PTR - Choice node added to select targeting method. Make sure incoming talent strings are parsed correctly.
+    player_talent_t rain_of_fire;
     const spell_data_t* rain_of_fire_tick;
 
     player_talent_t roaring_blaze;
     const spell_data_t* conflagrate_debuff; // Debuff associated with Roaring Blaze
     player_talent_t improved_conflagrate; // +1 charge for Conflagrate
     player_talent_t backlash; // Crit chance increase. NOT IMPLEMENTED: Instant Incinerate proc when physically attacked
-    player_talent_t mayhem; // It appears that the only spells that can proc Mayhem are ones that can be Havoc'd TOCHECK: 11.1 PTR - Proc chance increased
-    player_talent_t havoc; // Talent data for Havoc is both the debuff and the action TOCHECK: 11.1 PTR - Duration increased
+    player_talent_t mayhem; // It appears that the only spells that can proc Mayhem are ones that can be Havoc'd
+    player_talent_t havoc; // Talent data for Havoc is both the debuff and the action
     const spell_data_t* havoc_debuff; // This is a second copy of the talent data for use in places that are shared by Havoc and Mayhem
     player_talent_t pyrogenics; // Enemies affected by Rain of Fire receive debuff for increased Fire damage
     const spell_data_t* pyrogenics_debuff;
@@ -400,7 +400,7 @@ public:
     player_talent_t channel_demonfire;
     const spell_data_t* channel_demonfire_tick;
     const spell_data_t* channel_demonfire_travel; // Only holds travel speed
-    //player_talent_t demonfire_infusion; // TODO: 11.1 PTR - New choice node against CDF, procs Demonfire Bolts on certain spell events
+    player_talent_t demonfire_infusion;
 
     player_talent_t blistering_atrophy;
     player_talent_t conflagration_of_chaos; // Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit TODO: Review behavior
@@ -446,7 +446,7 @@ public:
     player_talent_t master_ritualist; // Reduces proc cost of Ritual of Ruin
     player_talent_t power_overwhelming; // Stacking mastery buff for spending Soul Shards
     const spell_data_t* power_overwhelming_buff;
-    player_talent_t diabolic_embers; // Incinerate generates more Soul Shards TOCHECK: 11.1 PTR - Behavior should be unchanged, but talent row has moved
+
     player_talent_t dimensional_rift;
     const spell_data_t* shadowy_tear_summon; // This only creates the "pet"
     const spell_data_t* shadow_barrage; // Casts Rift version of Shadow Bolt on ticks
@@ -456,6 +456,7 @@ public:
     const spell_data_t* chaos_barrage_tick;
     const spell_data_t* chaos_tear_summon; // This only creates the "pet"
     const spell_data_t* rift_chaos_bolt; // Separate ID from Warlock's Chaos Bolt
+    player_talent_t dimension_ripper; // TODO: After 11.1 goes live, removed outdated RNG option and outdated trigger flags
 
     player_talent_t decimation; // Crits can proc Soul Fire cooldown reset. Proc chance is not in spell data
     const spell_data_t* decimation_buff;
@@ -464,7 +465,7 @@ public:
     const spell_data_t* summon_overfiend;
     const spell_data_t* overfiend_buff; // Buff on Warlock while Overfiend is out, generates Soul Shards
     const spell_data_t* overfiend_cb; // Chaos Bolt cast by Overfiend
-    player_talent_t dimension_ripper; // TODO: 11.1 PTR - Redesigned. Also talent tree location change.
+    player_talent_t diabolic_embers; // Incinerate generates more Soul Shards
     player_talent_t unstable_rifts;
     const spell_data_t* dimensional_cinder;
   } talents;
@@ -569,6 +570,7 @@ public:
     action_t* demonic_soul;
     action_t* shared_fate;
     action_t* wicked_reaping;
+    action_t* demonfire_infusion;
   } proc_actions;
 
   struct tier_sets_t
@@ -623,7 +625,7 @@ public:
 
     // Affliction Buffs
     propagate_const<buff_t*> nightfall;
-    propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
+    propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe. TODO: After 11.1 goes live, remove old AoE Drain Life code
     propagate_const<buff_t*> tormented_crescendo;
     propagate_const<buff_t*> malign_omen;
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
@@ -737,6 +739,7 @@ public:
     proc_t* spiteful_reconstitution;
     proc_t* umbral_blaze;
     proc_t* pact_of_the_imp_mother;
+    proc_t* doom_eternal;
     proc_t* pact_of_the_eredruin;
     proc_t* empowered_legion_strike; // TWW1 4pc buff
 
@@ -748,6 +751,8 @@ public:
     proc_t* mayhem;
     proc_t* conflagration_of_chaos_cf;
     proc_t* conflagration_of_chaos_sb;
+    proc_t* demonfire_infusion_inc;
+    proc_t* demonfire_infusion_dot;
     proc_t* decimation;
     proc_t* dimension_ripper;
     proc_t* echo_of_the_azjaqir;

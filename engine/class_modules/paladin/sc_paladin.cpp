@@ -111,6 +111,9 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.righteous_cause_icd = get_cooldown( "righteous_cause_icd" );
   cooldowns.righteous_cause_icd->duration = find_spell( 402912 )->internal_cooldown();
 
+  cooldowns.divine_hammer_icd = get_cooldown( "divine_hammer_icd" );
+  cooldowns.divine_hammer_icd->duration = find_spell( 198034 )->internal_cooldown();
+
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
 }

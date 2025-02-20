@@ -347,7 +347,9 @@ namespace warlock
     talents.backdraft = find_talent_spell( talent_tree::SPECIALIZATION, "Backdraft" ); // Should be ID 196406
     talents.backdraft_buff = find_spell( 117828 );
 
-    talents.rain_of_fire = find_talent_spell( talent_tree::SPECIALIZATION, "Rain of Fire" ); // Should be ID 5740
+    talents.rain_of_fire = find_talent_spell( talent_tree::SPECIALIZATION, 5740 ); // Targeting reticle version
+    if ( talents.rain_of_fire == spell_data_t::not_found() )
+     talents.rain_of_fire = find_talent_spell( talent_tree::SPECIALIZATION, 1214467 ); // If targeting version not found, fall back to checking for on-target version
     talents.rain_of_fire_tick = find_spell( 42223 );
 
     talents.roaring_blaze = find_talent_spell( talent_tree::SPECIALIZATION, "Roaring Blaze" ); // Should be ID 205184
@@ -386,6 +388,8 @@ namespace warlock
     talents.channel_demonfire = find_talent_spell( talent_tree::SPECIALIZATION, "Channel Demonfire" ); // Should be ID 196447
     talents.channel_demonfire_tick = find_spell( 196448 ); // Includes both direct and splash damage values
     talents.channel_demonfire_travel = find_spell( 196449 );
+
+    talents.demonfire_infusion = find_talent_spell( talent_tree::SPECIALIZATION, "Demonfire Infusion" ); // Should be ID 1214442
 
     talents.blistering_atrophy = find_talent_spell( talent_tree::SPECIALIZATION, "Blistering Atrophy" ); // Should be ID 456939
 
@@ -450,8 +454,6 @@ namespace warlock
     talents.power_overwhelming = find_talent_spell( talent_tree::SPECIALIZATION, "Power Overwhelming" ); // Should be ID 387279
     talents.power_overwhelming_buff = find_spell( 387283 );
 
-    talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
-
     talents.dimensional_rift = find_talent_spell( talent_tree::SPECIALIZATION, "Dimensional Rift" ); // Should be ID 387976
     talents.shadowy_tear_summon = find_spell( 394235 );
     talents.shadow_barrage = find_spell( 394237 );
@@ -461,6 +463,8 @@ namespace warlock
     talents.chaos_barrage_tick = find_spell( 387985 );
     talents.chaos_tear_summon = find_spell( 394243 );
     talents.rift_chaos_bolt = find_spell( 394246 );
+
+    talents.dimension_ripper = find_talent_spell( talent_tree::SPECIALIZATION, "Dimension Ripper" ); // Should be ID 457025
 
     talents.decimation = find_talent_spell( talent_tree::SPECIALIZATION, "Decimation" ); // Should be ID 456985
     talents.decimation_buff = find_spell( 457555 );
@@ -472,7 +476,7 @@ namespace warlock
     talents.overfiend_buff = find_spell( 457578 );
     talents.overfiend_cb = find_spell( 434589 );
 
-    talents.dimension_ripper = find_talent_spell( talent_tree::SPECIALIZATION, "Dimension Ripper" ); // Should be ID 457025
+    talents.diabolic_embers = find_talent_spell( talent_tree::SPECIALIZATION, "Diabolic Embers" ); // Should be ID 387173
 
     talents.unstable_rifts = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Rifts" ); // Should be ID 457064
     talents.dimensional_cinder = find_spell( 460805 );
@@ -994,6 +998,7 @@ namespace warlock
     procs.spiteful_reconstitution = get_proc( "spiteful_reconstitution" );
     procs.umbral_blaze = get_proc( "umbral_blaze" );
     procs.pact_of_the_imp_mother = get_proc( "pact_of_the_imp_mother" );
+    procs.doom_eternal = get_proc( "doom_eternal" );
     procs.pact_of_the_eredruin = get_proc( "pact_of_the_eredruin" );
     procs.empowered_legion_strike = get_proc( "empowered_legion_strike" );
 
@@ -1007,6 +1012,8 @@ namespace warlock
   {
     procs.reverse_entropy = get_proc( "reverse_entropy" );
     procs.rain_of_chaos = get_proc( "rain_of_chaos" );
+    procs.demonfire_infusion_inc = get_proc( "demonfire_infusion_incinerate" );
+    procs.demonfire_infusion_dot = get_proc( "demonfire_infusion_dot" );
     procs.decimation = get_proc( "decimation" );
     procs.dimension_ripper = get_proc( "dimension_ripper" );
     procs.echo_of_the_azjaqir = get_proc( "echo_of_the_azjaqir" );

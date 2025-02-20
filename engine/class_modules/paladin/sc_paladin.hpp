@@ -368,6 +368,8 @@ public:
     cooldown_t* endless_wrath_icd;   // Needed for many random hammer procs
     cooldown_t* hammerfall_icd;
     cooldown_t* art_of_war;
+
+    cooldown_t* divine_hammer_icd;
   } cooldowns;
 
   // Passives
@@ -1397,7 +1399,7 @@ public:
       p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
     }
 
-    if ( affected_by.divine_hammer && p()->buffs.divine_hammer->up() )
+    if ( affected_by.divine_hammer && p()->buffs.divine_hammer->up() && !p()->dbc->ptr )
     {
       p()->buffs.divine_hammer->current_value = p()->buffs.divine_hammer->current_value * 1.15;
     }
@@ -1898,10 +1900,11 @@ public:
       }
     }
 
-    if ( p->dbc->ptr && p->talents.divine_hammer->ok() && p->buffs.divine_hammer->up() )
+    if ( p->dbc->ptr && p->talents.divine_hammer->ok() && p->buffs.divine_hammer->up() && p->cooldowns.divine_hammer_icd->up() )
     {
       unsigned base_cost = as<int>( ab::base_cost() );
       p->buffs.divine_hammer->extend_duration( p, timespan_t::from_millis( p->buffs.divine_hammer->data().effectN( 2 ).base_value() * base_cost ) );
+      p->cooldowns.divine_hammer_icd->start();
     }
 
     if ( p->talents.relentless_inquisitor->ok() && !ab::background )

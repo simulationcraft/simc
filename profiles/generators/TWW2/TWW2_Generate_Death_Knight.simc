@@ -25,93 +25,64 @@
 # save=TWW2_Death_Knight_Blood.simc
 
 
-# deathknight="TWW2_Death_Knight_Frost_Breath_Deathbringer"
-# spec=frost
-# level=80
-# race=maghar_orc
-# role=attack
-# position=back
-# talents=CsPAAAAAAAAAAAAAAAAAAAAAAMGAzMjZmxYYGzMzMzMGmJzYMjBMzYMjZmZmZmZxMAAAAAAAAAAAAjltBGwCYZYCZsgZYMDA
-# deathknight.ams_absorb_percent=1
-# deathknight.first_ams_cast=0
+deathknight="TWW2_Death_Knight_Frost_Deathbringer"
+spec=frost
+level=80
+race=maghar_orc
+role=attack
+position=back
+talents=CsPAAAAAAAAAAAAAAAAAAAAAAMGAzMjZmxYYGzMzMzMGmJzYMjBMzYMjZmZmZmZxMAAAAAAAAAAAAjltBGwCYZYCZsgZYMDA
+deathknight.ams_absorb_percent=1
+deathknight.first_ams_cast=0
 
-# head=everforged_helm,id=222433,bonus_id=10421/9633/8902/11144/10222/1485/1808/11109/8960,gem_id=213743,crafted_stats=32/49
-# neck=trailspinner_pendant,id=178707,bonus_id=9948/10299/10376/8781,gem_id=213467/213491
-# shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540/10299
-# back=troggstitched_drape,id=157597,bonus_id=11342/10299/10376
-# chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540/10299,enchant=crystalline_radiance_3
-# wrists=devoted_offerings_irons,id=225587,bonus_id=1540/10299/10376/1808,gem_id=213479
-# hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540/10299
-# waist=crystalfissure_girdle,id=221079,bonus_id=3131/10299/10376/1808,gem_id=213458
-# legs=exhumed_centurions_chausses,id=212001,bonus_id=1540/10299,enchant=stormbound_armor_kit_3
-# feet=everforged_sabatons,id=222429,bonus_id=10421/9633/8902/11144/10222/1485,crafted_stats=32/49
-# finger1=cyrces_circlet,id=228411,gem_id=228638/228639/228646,bonus_id=12025/1511,enchant=radiant_critical_strike_3
-# finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10299/10376/8781,gem_id=213458/213458,enchant=radiant_critical_strike_3
-# trinket1=ovinaxs_mercurial_egg,id=220305,bonus_id=7981/11143/5878/10299
-# trinket2=treacherous_transmitter,id=221023,bonus_id=1540/10299/10376
-# main_hand=ansureks_final_judgment,id=212401,bonus_id=1540/10299/10376,enchant=rune_of_the_stoneskin_gargoyle
-# off_hand=charged_slicer,id=222451,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=32/49
+head=fullthrottle_facerig,id=228858,bonus_id=10356/1527/6935,gem_id=213743
+neck=undermine_mercs_dog_tags,id=232663,bonus_id=10356/1527/8781,gem_id=213458/213458
+shoulders=cauldron_champions_screamplate,id=229251,bonus_id=11996/10356/11962/6652/1527/10255
+back=chef_chewies_towel,id=221054,bonus_id=4786/11996/3170
+chest=cauldron_champions_ribcage,id=229256,bonus_id=11996/10356/11958/6652/1527/10255,enchant=crystalline_radiance_3
+wrists=everforged_vambraces,id=222435,bonus_id=12043/9627/9633/8902/12040/11109/8960/10878,gem_id=213458,crafted_stats=49/32
+hands=cauldron_champions_fistguards,id=229254,bonus_id=11996/10356/11959/6652/1527/10255
+waist=heaviestweight_title_belt,id=228873,bonus_id=10356/1527/6935,gem_id=213458
+legs=cauldron_champions_tattered_cuisses,id=229252,bonus_id=11996/10356/11961/6652/1527/10255,enchant=stormbound_armor_kit_3
+feet=cutthroat_competition_stompers,id=228887,bonus_id=10356/1527
+finger1=cyrces_circlet,id=228411,bonus_id=12025/1511,gem_id=228638/228639/228646,enchant=radiant_critical_strike_3
+finger2=the_jastor_diamond,id=231265,bonus_id=10356/1527/6935,gem_id=213458/213458,enchant=radiant_critical_strike_3
+trinket1=eye_of_kezan,id=230198,bonus_id=10356/1527
+trinket2=house_of_cards,id=230027,bonus_id=10356/1527
+main_hand=remixed_ignition_saber,id=228895,bonus_id=10356/1527,enchant=rune_of_the_stoneskin_gargoyle
+off_hand=charged_slicer,id=222451,bonus_id=12043/9627/9633/8902/12040/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=49/32
 
-# save="TWW2_Death_Knight_Frost.simc"
+save="TWW2_Death_Knight_Frost_Deathbringer.simc"
 
-# deathknight="TWW2_Death_Knight_Frost_Shattering_Deathbringer"
-# spec=frost
-# level=80
-# race=maghar_orc
-# role=attack
-# position=back
-# talents=CsPAAAAAAAAAAAAAAAAAAAAAAwAYmZMzMGDzYmZmZmxwMZGjZwgZGzMMzMzMzMLzMAAAAAAAAAAAAjltBGwCYZYCZsgZMjZA
-# deathknight.ams_absorb_percent=1
-# deathknight.first_ams_cast=0
+deathknight="TWW2_Death_Knight_Frost_Rider"
+deathknight.ams_absorb_percent=1
+spec=frost
+level=80
+race=maghar_orc
+role=attack
+position=back
+talents=CsPAAAAAAAAAAAAAAAAAAAAAAAAzMjZmxYYGzMzMzMGmJzYYwgZGzMMzMzMzMLzMAAAAAAAAAAAAgFzihBGY20QDbYmZGzMA
+deathknight.ams_absorb_percent=1
+deathknight.first_ams_cast=0
 
-# head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213743
-# neck=trailspinner_pendant,id=178707,bonus_id=1611/8781,ilevel=639,gem_id=213473/213482
-# shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540
-# back=wings_of_shattered_sorrow,id=225574,bonus_id=7187/1520,ilevel=639
-# chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540,enchant=crystalline_radiance_3
-# wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11109/8960/10878,gem_id=213491,crafted_stats=49/32
-# hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
-# waist=crystalfissure_girdle,id=221079,bonus_id=1611/6935,ilevel=639,gem_id=213458
-# legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=stormbound_armor_kit_3
-# feet=everforged_sabatons,id=222429,bonus_id=10421/9633/8902/11144/10222/1485,crafted_stats=32/49
-# finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213458/213458,enchant=radiant_mastery_3
-# finger2=cyrces_circlet,id=228411,gem_id=228638/228639/228646,bonus_id=12025/1511,enchant=radiant_mastery_3
-# trinket1=treacherous_transmitter,id=221023,bonus_id=1540
-# trinket2=ovinaxs_mercurial_egg,id=220305,bonus_id=7981/11143/5878/10299
-# main_hand=ansureks_final_judgment,id=212401,ilevel=639,enchant=rune_of_razorice
-# off_hand=charged_slicer,id=222451,bonus_id=11144/9627/9633/8902/10222/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=49/32
+head=fullthrottle_facerig,id=228858,bonus_id=10356/1527/6935,gem_id=213743
+neck=semicharmed_amulet,id=228841,bonus_id=10356/1527/6935,gem_id=213458/213458
+shoulders=cauldron_champions_screamplate,id=229251,bonus_id=11996/10356/11962/6652/1527/10255
+back=undercircuit_racing_flag,id=228839,bonus_id=10356/1527
+chest=cauldron_champions_ribcage,id=229256,bonus_id=11996/10356/11958/6652/1527/10255,enchant=crystalline_radiance_3
+wrists=everforged_vambraces,id=222435,bonus_id=12043/9627/9633/8902/12040/11109/8960/10878,gem_id=213458,crafted_stats=32/36
+hands=cauldron_champions_fistguards,id=229254,bonus_id=11996/10356/11959/6652/1527/10255
+waist=venture_contractors_floodlight,id=234505,bonus_id=4786/1527/11996/6935,gem_id=213458
+legs=cauldron_champions_tattered_cuisses,id=229252,bonus_id=11996/10356/11961/6652/1527/10255,enchant=stormbound_armor_kit_3
+feet=cutthroat_competition_stompers,id=228887,bonus_id=10356/1527
+finger1=cyrces_circlet,id=228411,bonus_id=12025/1511,gem_id=228638/228639/228646,enchant=radiant_critical_strike_3
+finger2=the_jastor_diamond,id=231265,bonus_id=10356/1527/6935/1808,gem_id=213458/213479,enchant=radiant_critical_strike_3
+trinket1=eye_of_kezan,id=230198,bonus_id=10356/1527
+trinket2=house_of_cards,id=230027,bonus_id=10356/1527
+main_hand=remixed_ignition_saber,id=228895,bonus_id=10356/1527,enchant=rune_of_razorice
+off_hand=charged_slicer,id=222451,bonus_id=12043/9627/9633/8902/12040/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=49/32
 
-# save="TWW2_Death_Knight_Frost_Shattering_Deathbringer.simc"
-
-# deathknight="TWW2_Death_Knight_Frost_Rider"
-# deathknight.ams_absorb_percent=1
-# spec=frost
-# level=80
-# race=maghar_orc
-# role=attack
-# position=back
-# talents=CsPAAAAAAAAAAAAAAAAAAAAAAAAzMjZmxYYGzMzMzMGmJzYYwgZGzMMzMzMzMLzMAAAAAAAAAAAAgFzihBGY20QDbYmZGzMA
-# deathknight.ams_absorb_percent=1
-# deathknight.first_ams_cast=0
-
-# head=wrathbark_greathelm,id=178694,bonus_id=10878,ilevel=639,gem_id=213743
-# neck=trailspinner_pendant,id=178707,bonus_id=1611/8781,ilevel=639,gem_id=213473/213482
-# shoulders=exhumed_centurions_spikes,id=212000,bonus_id=1540
-# back=wings_of_shattered_sorrow,id=225574,bonus_id=7187/1520,ilevel=639
-# chest=exhumed_centurions_breastplate,id=212005,bonus_id=1540,enchant=crystalline_radiance_3
-# wrists=everforged_vambraces,id=222435,bonus_id=11144/9627/9633/8902/10222/11109/8960/10878,gem_id=213491,crafted_stats=49/32
-# hands=exhumed_centurions_gauntlets,id=212003,bonus_id=1540
-# waist=nether_bountys_greatbelt,id=225589,bonus_id=7187/1520/6935,ilevel=639,gem_id=213458
-# legs=exhumed_centurions_chausses,id=212001,bonus_id=1540,enchant=stormbound_armor_kit_3
-# feet=boots_of_the_black_bulwark,id=225590,bonus_id=1540
-# finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10879,gem_id=213458/213458,enchant=radiant_haste_3
-# finger2=cyrces_circlet,id=228411,gem_id=228638/228639/228646,bonus_id=12025/1511,enchant=radiant_critical_strike_3
-# trinket1=treacherous_transmitter,id=221023,bonus_id=7187/1520,ilevel=639
-# trinket2=arakara_sacbrood,id=219314,bonus_id=10273/10390/3131
-# main_hand=ansureks_final_judgment,id=212401,ilevel=639,enchant=rune_of_razorice
-# off_hand=charged_slicer,id=222451,bonus_id=11144/9627/9633/8902/10222/11300/8960,enchant=rune_of_the_fallen_crusader,crafted_stats=49/32
-
-# save="TWW2_Death_Knight_Frost_Rider.simc"
+save="TWW2_Death_Knight_Frost.simc"
 
 deathknight="TWW2_Death_Knight_Unholy_Rider"
 spec=unholy

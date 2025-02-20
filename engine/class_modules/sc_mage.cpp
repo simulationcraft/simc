@@ -4611,6 +4611,9 @@ struct fireball_t final : public fire_mage_spell_t
         trigger_frostfire_mastery();
         p()->buffs.severe_temperatures->expire();
 
+        if ( p()->bugs && tt_applicable( s, triggers.phoenix_reborn ) )
+          trigger_phoenix_reborn( s->target );
+
         if ( p()->state.trigger_ff_empowerment )
         {
           p()->state.trigger_ff_empowerment = false;

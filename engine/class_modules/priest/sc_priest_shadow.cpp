@@ -1337,7 +1337,9 @@ struct void_bolt_proc_t final : public void_bolt_base_t
     {
       if ( player->buffs.power_infusion->check() )
       {
-        player->buffs.power_infusion->extend_duration( player, tww2_pi_proc_duration );
+        auto extend_amount = std::min( tww2_pi_proc_duration, 30_s - player->buffs.power_infusion->remains() );
+        if ( extend_amount > 0_s )
+          player->buffs.power_infusion->extend_duration( player, extend_amount );
       }
       else
       {

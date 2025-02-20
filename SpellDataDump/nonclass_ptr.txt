@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59184 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59241 PTR
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -233014,9 +233014,11 @@ Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Per
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Can Proc from Suppressed Caster Procs (385)
 Effects          :
 #1 (id=1141651)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 56.32031 (coefficient=0.014709) | PvP Coefficient: 0.4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 50.75682 (coefficient=0.013256) | PvP Coefficient: 0.4 | Target: Self (1)
+Hotfixed         : Coefficient (0.014709 -> 0.013256)
 #2 (id=1141652)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 514.5714 (coefficient=0.134389) | PvP Coefficient: 0.4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 463.0832 (coefficient=0.120942) | PvP Coefficient: 0.4 | Target: Self (1)
+Hotfixed         : Coefficient (0.134389 -> 0.120942)
 #3 (id=1151807)  : Apply Aura (6) | Proc Trigger Spell (42): Spymaster's Report
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 451199 | Target: Self (1)
 Description      : Your damaging spells dispatch a spider to spy on your foes, increasing your Intellect by $s1 per report received. Stacks up to $451199u times. This effect may only occur every $proccooldown sec.
@@ -234539,7 +234541,8 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1143477)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 9013.452 (coefficient=2.354015) | PvP Coefficient: 0.4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 8562.882 (coefficient=2.236341) | PvP Coefficient: 0.4 | Target: Self (1)
+Hotfixed         : Coefficient (2.354015 -> 2.236341)
 
 Name             : Spark of Beledar (id=446224) 
 School           : Holyfire
@@ -252699,12 +252702,13 @@ Effects          :
 Description      : Recalibrate for $?a467492[$@spellname467497]?a467497[$@spellname467492][$@spellname467497].
 
 Name             : Precision Blasting (id=467492) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 292
                  : 3959: Item Effects
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Allow Aura While Dead (116)
 Effects          :
 #1 (id=1180680)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -252712,12 +252716,13 @@ Description      : Your spells and abilities have a high chance to lase your tar
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Mass Destruction (id=467497) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 292
                  : 3959: Item Effects
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Allow Aura While Dead (116)
 Effects          :
 #1 (id=1180685)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -252747,7 +252752,8 @@ Triggered By     : Wayward Vrykul's Lantern (472360)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1181086)  : Apply Aura (6) | Proc Trigger Spell (42): Wayward Vrykul's Lantern | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 5744.729 (coefficient=1.500333) | Trigger Spell: 472360 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4595.173 (coefficient=1.200107) | Trigger Spell: 472360 | Target: Self (1)
+Hotfixed         : Coefficient (1.500333 -> 1.200107)
 Description      : Casting a major class cooldown imbues you with the ferocity of vrykul spirits, granting $s1 Critical Strike for $472360d.
 
 This effect's duration is increased by up to ${$472360d*5} sec based on when you were last imbued.
@@ -254096,6 +254102,7 @@ Description      : Become the pinnacle of Gallagio service excellence and dole o
 Tooltip          : Bottle service! Doling out Kaja'Cola Mega-Lite to injured allies every $t1 sec.
 
 Name             : Vile Contamination (id=471316) [Passive] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -254103,10 +254110,11 @@ Labels           : 292
 Proc Chance      : 101%
 Real PPM         : 5
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Unknown 38
-Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Ignore Phase Shift (205), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
+Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1187560)  : Apply Aura (6) | Proc Trigger Spell (42): Vile Contamination | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 228.7789 (coefficient=0.089445) | PvP Coefficient: 0.5 | Trigger Spell: 473602 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 427.7983 (coefficient=0.167255) | PvP Coefficient: 0.5 | Trigger Spell: 473602 | Target: Self (1)
+Hotfixed         : Coefficient (0.089445 -> 0.167255)
 #2 (id=1196678)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20000 | Scaled Value: 20000 | Target: Self (1)
 Description      : Your attacks have a very high chance to contaminate your target with industrial runoff up to $473602u times, dealing ${$s1*$<rolemult>} Shadow damage per stack every $473602t1 sec until their demise.
@@ -255228,12 +255236,15 @@ Description      : Place down the Scrambler, luring the Nemesis to its location.
 Only usable after activating the Restoration Stone inside of a Delve.
 
 Name             : Reconfiguring for Spell Casting (id=473400) 
+Hotfixed         : Cooldown (0 -> 20000), Category Cooldown (0 -> 20000)
 School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
 Cooldown         : 120 seconds
+Category         : 1141 (Type 0x0)
 Labels           : 292
                  : 3959: Item Effects
+Category Cooldown: 20 seconds
 Attributes       : Is Self Channelled (38), Suppress Caster Procs (112)
 Channel Interrupt: Enter Combat (28)
 Effects          :
@@ -255242,12 +255253,15 @@ Effects          :
 Description      : Cheat to immediately gain ${$471063s1*(1+$471063s2/100)} of your highest secondary stat for $473402d. While out of combat, reconfigure for spell casting instead.
 
 Name             : Reconfiguring for Melee Combat (id=473401) 
+Hotfixed         : Cooldown (0 -> 20000), Category Cooldown (0 -> 20000)
 School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
 Cooldown         : 120 seconds
+Category         : 1141 (Type 0x0)
 Labels           : 292
                  : 3959: Item Effects
+Category Cooldown: 20 seconds
 Attributes       : Is Self Channelled (38), Suppress Caster Procs (112)
 Channel Interrupt: Enter Combat (28)
 Effects          :
@@ -255313,6 +255327,7 @@ Description      : $@spelldesc471063
 Tooltip          : $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $?e0[$w1]?e1[$w2]?e2[$w3]?e3[$w4][$471063s1].
 
 Name             : Vile Contamination (id=473602) 
+Hotfixed         : Attributes
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
@@ -255322,7 +255337,7 @@ Labels           : 292
 Stacks           : 25 maximum
 Proc Chance      : 101%
 Triggered By     : Vile Contamination (471316)
-Attributes       : DoT Stacking Rule (103), Suppress Caster Procs (112), Ignore Phase Shift (205), Periodic Can Crit (265), Aura Points On Client (268)
+Attributes       : DoT Stacking Rule (103), Suppress Caster Procs (112), Periodic Can Crit (265), Aura Points On Client (268)
 Effects          :
 #1 (id=1192627)  : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
@@ -256969,7 +256984,8 @@ Labels           : 292
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1196163)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 185.8429 (coefficient=0.048536) | PvP Coefficient: 0.2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 93.84422 (coefficient=0.024509) | PvP Coefficient: 0.2 | Target: Self (1)
+Hotfixed         : Coefficient (0.048536 -> 0.024509)
 #2 (id=1197545)  : Dummy (3) | Scaling Class: -7
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #3 (id=1197697)  : Dummy (3) | Scaling Class: -7
@@ -259150,12 +259166,13 @@ Name             : Suspicious Energy Drink (id=1216625) [Passive]
 School           : Shadow
 Spell Type       : None
 Proc Chance      : 101%
-Real PPM         : 3 (Haste multiplier)
+Real PPM         : 3
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1200176)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 996.629 (coefficient=0.389649) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1072.564 (coefficient=0.419337) | Target: Self (1)
+Hotfixed         : Coefficient (0.389649 -> 0.419337)
 #2 (id=1200182)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 157.5632 (coefficient=0.061602) | Target: Self (1)
 #3 (id=1200183)  : Apply Aura (6) | Dummy (4)
@@ -259409,15 +259426,20 @@ Triggered By     : Thwack! (1217638), Gutstab (1217675), Snipe (1217719)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1201371)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 27678.22 (coefficient=10.82127) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 29062.11 (coefficient=11.36233) | Target: Self (1)
+Hotfixed         : Coefficient (10.82127 -> 11.362326)
 #2 (id=1201372)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 27678.22 (coefficient=10.82127) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 29062.11 (coefficient=11.36233) | Target: Self (1)
+Hotfixed         : Coefficient (10.82127 -> 11.362326)
 #3 (id=1201373)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 34737.02 (coefficient=13.58103) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 36327.84 (coefficient=14.20298) | Target: Self (1)
+Hotfixed         : Coefficient (13.581027 -> 14.202983)
 #4 (id=1202597)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 5766.331 (coefficient=2.254445) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6054.576 (coefficient=2.367139) | Target: Self (1)
+Hotfixed         : Coefficient (2.254445 -> 2.367139)
 #5 (id=1202687)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 3459.799 (coefficient=1.352667) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3633.049 (coefficient=1.420402) | Target: Self (1)
+Hotfixed         : Coefficient (1.352667 -> 1.420402)
 Description      : Your abilities have a chance to call a member of the Goon Squad to attack your target for $1217427d. Gaining Bloodlust or a similar effect summons the whole crew.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -259732,6 +259754,20 @@ Description      : Repurpose a Seaforium charge to give your heart a kick, causi
 
 While exploding, Critical Strikes cause you to blow up again, extending this duration by 1 sec, up to 15 times.
 
+Name             : Maybe Stop Blowing Up (id=1218715) 
+School           : Fire
+Spell Type       : None
+Duration         : 60 seconds
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Attributes       : No Aura Cancel (31), No Aura Icon (60)
+Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter Start or M+ Start (40)
+Effects          :
+#1 (id=1203776)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : $@spelldesc1218714
+Tooltip          : You must wait before blowing up again.
+
 Name             : K.U.-J.O.'s Flame Vents (id=1218716) 
 School           : Physical
 Spell Type       : None
@@ -259973,6 +260009,16 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc471212
 Tooltip          : Charging the Mega Magnet for later use.
+
+Name             : Junkmaestro's Mega Magnet (id=1219662) 
+School           : Shadowstorm
+Spell Type       : Magic
+Range            : 100 yards
+Labels           : 292
+                 : 3959: Item Effects
+Effects          :
+#1 (id=1205526)  : School Damage (2): shadowstorm
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 
 Name             : Turbo-Charged (id=1220413) 
 School           : Physical

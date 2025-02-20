@@ -1,5 +1,5 @@
-// Spell text, wow build 11.1.0.59184
-static const std::array<spelltext_data_t, 27241> __ptr_spelltext_data { {
+// Spell text, wow build 11.1.0.59241
+static const std::array<spelltext_data_t, 27242> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -26962,7 +26962,7 @@ static const std::array<spelltext_data_t, 27241> __ptr_spelltext_data { {
   { 1215702, "Your damaging spells have a chance to hit a |cFFFFFFFFJackpot!|r that fires a Void Bolt at an enemy at $s1% effectiveness. Casting Dark Ascension or Void Eruption always hits a |cFFFFFFFFJackpot!|r", 0, 0 },
   { 1215703, "Hitting a |cFFFFFFFFJackpot!|r grants you ${$s1/1000}.1 seconds of Power Infusion. Mind Blast$?a450405[, Void Blast,][] and Void Bolt deal $s2% increased damage while Power Infusion is active.", 0, 0 },
   { 1215707, "Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r increasing the damage of your Templar's Verdict and Divine Storm by $1216828s1% stacking up to $1216828u times. Spending Holy Power on damaging abilities has a $1216828s2% chance to remove |cFFFFFFFFWinning Streak!|r", 0, 0 },
-  { 1215709, "When you lose your |cFFFFFFFFWinning Streak!|r you get the last Holy Power spent back, you cannot lose Holy Power for the next ${$1216837d }.1 sec, and the damage of your your Holy Power abilities are increased by $1216837s1%.", 0, 0 },
+  { 1215709, "When you lose your |cFFFFFFFFWinning Streak!|r you get the last Holy Power spent back, you cannot lose Holy Power for the next ${$1216837d }.1 sec, and the damage of your Holy Power abilities are increased by $1216837s1%.", 0, 0 },
   { 1215710, "Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r increasing the damage of your Stormstrike, Lava Lash and Doom Winds by $1218616s1%, up to ${$1218616s1*$1218616u}%. Maelstrom Weapon spenders have a ${$s1/10}.1% chance to remove |cFFFFFFFFWinning Streak!|r per Maelstrom Weapon spent.", 0, 0 },
   { 1215712, "When you lose your |cFFFFFFFFWinning Streak!|r the winds shift into Doom Winds for ${$s1/1000} sec. When Doom Winds deal damage, your next Crash Lightning deals ${$1223332s1}.1% increased damage, up to ${$1223332s1*$1223332u}.1%. This effect can be stored up to $1223410u stacks. Additionally, Crash Lightning deals $s2% more damage to your main target.", 0, 0 },
   { 1215713, "Your abilities have a chance to begin a |cFFFFFFFFWinning Streak!|r, increasing the damage of Overpower by $1216552s1%, stacking up to $1216552U times. \r\nOverpower has a $1216552H% chance to end your |cFFFFFFFFWinning Streak!|r", 0, 0 },
@@ -27167,6 +27167,7 @@ static const std::array<spelltext_data_t, 27241> __ptr_spelltext_data { {
   { 1218616, "$@spelldesc1215710", "Stormstrike, Lava Lash and Doom Winds damage increased by ${$w1}.1%.", 0 },
   { 1218713, "$@spelldesc1218714", "Critical Strike increased by $w1.", 0 },
   { 1218714, "Repurpose a Seaforium charge to give your heart a kick, causing your first ability every $s2 sec to trigger Explosive Adrenaline, granting $s1 Critical Strike for $1218713d.\r\n\r\nWhile exploding, Critical Strikes cause you to blow up again, extending this duration by 1 sec, up to 15 times.", 0, 0 },
+  { 1218715, "$@spelldesc1218714", "You must wait before blowing up again.", 0 },
   { 1218716, "Channel to vent flames for $d, dealing ${$1219410s1*($d/$t+1)} Fire damage split between all nearby enemies.\r\n\r\nMechanical enemies become Superheated, taking $1219410s2  additional Fire damage when struck by your next harmful ability.", "Roasting nearby enemies, inflicting Fire damage every $t1 sec.", 0 },
   { 1218717, "$@spelldesc1218716", 0, 0 },
   { 1219012, "$@spelldesc1215990", "Damage increased by $s1%.", 0 },
@@ -27243,12 +27244,13 @@ static const std::array<spelltext_data_t, 27241> __ptr_spelltext_data { {
   { 1227062, "$@spelldesc442686", "Damage and healing increased by $w1%.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.1.0.59184
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 11.1.0.59241
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
   {  442806,  0, "Expose weaknesses in the target of your $@spellname442624, causing your Physical damage to any enemy to also deal $s1% of the damage dealt to your marked target as Chaos.\r\n\r\n", "Expose weaknesses in the target of your $@spellname442624, causing your Physical damage to any enemy to also deal $s1% of the damage dealt to your marked target as Chaos, and sometimes shatter a Lesser Soul Fragment.\r\n\r\n" },
+  { 1215709,  0, "When you lose your |cFFFFFFFFWinning Streak!|r you get the last Holy Power spent back, you cannot lose Holy Power for the next ${$1216837d }.1 sec, and the damage of your your Holy Power abilities are increased by $1216837s1%.", "When you lose your |cFFFFFFFFWinning Streak!|r you get the last Holy Power spent back, you cannot lose Holy Power for the next ${$1216837d }.1 sec, and the damage of your Holy Power abilities are increased by $1216837s1%." },
 } };
 
-// Spell description variables, wow build 11.1.0.59184
+// Spell description variables, wow build 11.1.0.59241
 static const std::array<spelldesc_vars_data_t, 635> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -27887,7 +27889,7 @@ static const std::array<spelldesc_vars_data_t, 635> __ptr_spelldesc_vars_data { 
   { 1219410, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.1.0.59184
+// spelldesc_vars hotfix entries, wow build 11.1.0.59241
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

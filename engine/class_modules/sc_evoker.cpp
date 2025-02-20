@@ -365,10 +365,12 @@ struct simplified_player_t : public player_t
           { "one_mins_cds",      0.3, 15_s,  60_s, 3_s },
           { "one_mins_cds_lingering",      0.25, 30_s,  60_s, 3_s },
           { "two_mins_cds_two",  0.4, is_ptr() ? 65_s : 45_s, 120_s, 3_s } } } },
-      { "bm",      { ROLE_SPELL,  is_ptr() ? 7.85 : 6.7,  true, 1.5_s, 0.4,  -1, 8, 1, 0.5, 14000.0, 0.0011, {              // 243.5k
+      { "bm",      { ROLE_SPELL,  is_ptr() ? 7.35 : 6.7,  true, 1.5_s, 0.4,  -1, 8, 1, 0.5, 14000.0, 0.0011, {              // 243.5k
           { "two_mins_cds",           0.3,   20_s, 120_s, 3_s },
           { "two_mins_cds_lingering", 0.15,  30_s, 120_s, 3_s },
-          { "30s_cds",                0.35, 15_s,  30_s, 3_s } } } },
+          { "30s_cds",                0.35,  15_s, is_ptr() ? 15_s : 30_s, 3_s },
+          { "30s_cds_two",            0.15,   4_s, is_ptr() ? 15_s : 30_s, 3_s },
+          { "30s_cds_three",          0.12,   8_s, is_ptr() ? 15_s : 30_s, 3_s } } } },
       { "assa",    { ROLE_SPELL, is_ptr() ? 4.94 : 4.65, false,   1_s, 0.5,  -1, 8, 1, 0.8, 11100.0, 0.0011, {              // 234.6k
           { "two_mins_cds", 0.9 , 20_s, 120_s, 6_s },
           { "one_mins_cds", 0.65, 14_s,  60_s, 8_s } } } },
@@ -778,8 +780,7 @@ struct simplified_player_t : public player_t
         player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
         break;
       case CACHE_HASTE:
-        if ( haste_modifier > 0 )
-          player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
         break;
       default:
         break;
@@ -7528,9 +7529,9 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   debuffs.temporal_wound = make_buff_fallback<temporal_wound_buff_t>( make_temporal_wound, *this, "temporal_wound",
                                                                       evoker->talent.temporal_wound );
 
-  buffs.thread_of_fate = make_buff_fallback<thread_of_fate_buff_t>( is_ally, *this, "thread_of_fate_" + evoker->name_str );
+  buffs.thread_of_fate = make_buff_fallback<thread_of_fate_buff_t>( is_ally, *this, "thread_of_fate" );
 
-  buffs.shifting_sands = make_buff_fallback<e_buff_t>( is_ally, *this, "shifting_sands_" + evoker->name_str,
+  buffs.shifting_sands = make_buff_fallback<e_buff_t>( is_ally, *this, "shifting_sands",
                                                        evoker->find_spell( 413984 ) );
   if ( is_ally )
   {
@@ -7546,7 +7547,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
         ->set_freeze_stacks( true );
   }
 
-  buffs.ebon_might = make_buff_fallback<evoker_buff_t<stat_buff_t>>( is_ally, *this, "ebon_might_" + evoker->name_str,
+  buffs.ebon_might = make_buff_fallback<evoker_buff_t<stat_buff_t>>( is_ally, *this, "ebon_might",
                                                                      evoker->find_spell( 395152 ) );
   if ( is_ally )
   {
@@ -7635,7 +7636,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
 
   bool make_blistering_scales = is_ally && evoker->talent.blistering_scales.ok();
   buffs.blistering_scales = make_buff_fallback<blistering_scales_buff_t>(
-      make_blistering_scales, *this, "blistering_scales_" + evoker->name_str, evoker->talent.blistering_scales );
+      make_blistering_scales, *this, "blistering_scales", evoker->talent.blistering_scales );
 
   bool make_infernos_blessing = is_ally && evoker->talent.infernos_blessing.ok();
   buffs.infernos_blessing = make_buff_fallback<e_buff_t>( make_infernos_blessing, *this, "infernos_blessing",
@@ -8538,6 +8539,26 @@ void evoker_t::init_spells()
 
 void evoker_t::init_special_effects()
 {
+  if ( unique_gear::find_special_effect( this, 443393 ) && talent.pupil_of_alexstrasza.enabled() &&
+       talent.essence_burst.enabled() )
+  {
+    callbacks.register_callback_execute_function(
+        443393, [ this ]( const dbc_proc_callback_t* cb, action_t* a, const action_state_t* s ) {
+          // Only trigger this on Single Target (Pretending its a 2nd target)
+          if ( sim->target_non_sleeping_list.size() == 1 &&
+               rng().roll( talent.ruby_essence_burst->effectN( 1 ).percent() ) )
+          {
+            buff.essence_burst->trigger();
+          }
+
+          cb->proc_action->set_target( cb->target( s ) );
+          auto proc_state    = cb->proc_action->get_state();
+          proc_state->target = cb->proc_action->target;
+          cb->proc_action->snapshot_state( proc_state, cb->proc_action->amount_type( proc_state ) );
+          cb->proc_action->schedule_execute( proc_state );
+        } );
+  }
+
   player_t::init_special_effects();
 
   if ( is_ptr() && sets->has_set_bonus( EVOKER_AUGMENTATION, TWW2, B2 ) )

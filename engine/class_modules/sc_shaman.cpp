@@ -10572,6 +10572,12 @@ struct primordial_wave_t : public shaman_spell_t
     }
 
     p()->buff.primordial_storm->trigger();
+
+    if ( p()->is_ptr() )
+    {
+      p()->trigger_splintered_elements( impact_action );
+    }
+
   }
 
   bool ready() override
@@ -13259,7 +13265,10 @@ void shaman_t::trigger_primordial_wave_damage( shaman_spell_t* spell )
   {
     damage_spell->execute();
   }
-  trigger_splintered_elements( damage_spell );
+  if ( !is_ptr() )
+  {
+    trigger_splintered_elements( damage_spell );
+  }
 
   buff.primordial_wave->expire();
 }

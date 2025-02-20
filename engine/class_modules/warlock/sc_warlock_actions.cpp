@@ -312,7 +312,7 @@ using namespace helpers;
         p()->procs.decimation->occur();
       }
 
-      if ( destruction() && triggers.dimension_ripper && rng().roll( p()->rng_settings.dimension_ripper.setting_value ) )
+      if ( destruction() && triggers.dimension_ripper && !p()->min_version_check( VERSION_11_1_0 ) && rng().roll( p()->rng_settings.dimension_ripper.setting_value )  )
       {
         if ( p()->talents.dimensional_rift.ok() )
         {
@@ -356,6 +356,28 @@ using namespace helpers;
       {
         if ( p()->buffs.reverse_entropy->trigger() )
           p()->procs.reverse_entropy->occur();
+      }
+
+      if ( destruction() && triggers.dimension_ripper && p()->min_version_check( VERSION_11_1_0 ) && rng().roll( p()->talents.dimension_ripper->effectN( 1 ).percent() ) )
+      {
+        int rift = rng().range( 3 );
+
+        switch ( rift )
+        {
+        case 0:
+          p()->warlock_pet_list.shadow_rifts.spawn( p()->talents.shadowy_tear_summon->duration() );
+          break;
+        case 1:
+          p()->warlock_pet_list.unstable_rifts.spawn( p()->talents.unstable_tear_summon->duration() );
+          break;
+        case 2:
+          p()->warlock_pet_list.chaos_rifts.spawn( p()->talents.chaos_tear_summon->duration() );
+          break;
+        default:
+          break;
+        }
+
+        p()->procs.dimension_ripper->occur();
       }
     }
 
@@ -1219,6 +1241,8 @@ using namespace helpers;
 
         affected_by.chaotic_energies = destruction();
 
+        triggers.dimension_ripper = p->talents.dimension_ripper.ok();
+
         base_td_multiplier *= 1.0 + p->hero.hatefury_rituals->effectN( 1 ).percent();
         base_td_multiplier *= 1.0 + p->hero.bleakheart_tactics->effectN( 2 ).percent();
 
@@ -1273,6 +1297,12 @@ using namespace helpers;
 
           if ( p()->talents.flashpoint.ok() && d->state->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
             p()->buffs.flashpoint->trigger();
+
+          if ( p()->talents.demonfire_infusion.ok() && p()->rng().roll( p()->talents.demonfire_infusion->effectN( 1 ).percent() ) )
+          {
+            p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
+            p()->procs.demonfire_infusion_dot->occur();
+          }
         }
 
         if ( d->state->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && rng().roll( p()->rng_settings.mark_of_perotharn.setting_value ) )
@@ -2364,7 +2394,8 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      p()->buffs.soul_rot->trigger();
+      if ( !p()->min_version_check( VERSION_11_1_0 ) )
+        p()->buffs.soul_rot->trigger();
 
       if ( p()->talents.malign_omen.ok() )
         p()->buffs.malign_omen->trigger( as<int>( p()->talents.malign_omen->effectN( 2 ).base_value() ) );
@@ -2564,6 +2595,15 @@ using namespace helpers;
 
       if ( p()->talents.dread_calling.ok() )
         p()->buffs.dread_calling->trigger( shards_used );
+
+      if ( p()->talents.doom.ok() && p()->min_version_check( VERSION_11_1_0 ) )
+      {
+        for ( const auto t : p()->sim->target_non_sleeping_list )
+        {
+          if ( td( t )->debuffs_doom->check() )
+            td( t )->debuffs_doom->extend_duration( p(), -p()->talents.doom->effectN( 1 ).time_value() * shards_used );
+        }
+      }
     }
 
     void consume_resource() override
@@ -2673,7 +2713,7 @@ using namespace helpers;
             debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->hatred_proc->execute_on_target( execute_state->target );
         }
 
-        if ( p()->talents.doom.ok() )
+        if ( p()->talents.doom.ok() && !p()->min_version_check( VERSION_11_1_0 ) )
         {
           for ( const auto t : p()->sim->target_non_sleeping_list )
           {
@@ -3289,6 +3329,14 @@ using namespace helpers;
 
       if ( p()->talents.impending_doom.ok() )
         p()->warlock_pet_list.wild_imps.spawn( as<int>( p()->talents.impending_doom->effectN( 2 ).base_value() ) );
+
+      if ( p()->talents.doom_eternal.ok() && p()->min_version_check( VERSION_11_1_0 ) )
+      {
+        bool success = p()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), p()->talents.doom_eternal->effectN( 1 ).percent() );
+
+        if ( success )
+          p()->procs.doom_eternal->occur();
+      }
     }
   };
 
@@ -3427,6 +3475,12 @@ using namespace helpers;
       if ( p()->talents.fire_and_brimstone.ok() )
         fnb_action->execute_on_target( target );
 
+      if ( p()->talents.demonfire_infusion.ok() && p()->rng().roll( p()->talents.demonfire_infusion->effectN( 2 ).percent() ) )
+      {
+        p()->proc_actions.demonfire_infusion->execute_on_target( target );
+        p()->procs.demonfire_infusion_inc->occur();
+      }
+
       p()->buffs.backdraft->decrement();
       p()->buffs.burn_to_ashes->decrement(); // Must do after Fire and Brimstone execute so that child picks up buff
     }
@@ -3480,6 +3534,8 @@ using namespace helpers;
 
         affected_by.chaotic_energies = true;
 
+        triggers.dimension_ripper = p->talents.dimension_ripper.ok();
+
         dot_duration += p->talents.scalding_flames->effectN( 3 ).time_value();
 
         base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
@@ -3497,6 +3553,12 @@ using namespace helpers;
 
         if ( p()->talents.flashpoint.ok() && d->state->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
           p()->buffs.flashpoint->trigger();
+
+        if ( p()->talents.demonfire_infusion.ok() && p()->rng().roll( p()->talents.demonfire_infusion->effectN( 1 ).percent() ) )
+        {
+          p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
+          p()->procs.demonfire_infusion_dot->occur();
+        }
       }
     };
 
@@ -4008,49 +4070,60 @@ using namespace helpers;
     }
   };
 
+  struct channel_demonfire_tick_t : public warlock_spell_t
+  {
+    bool demonfire_infusion;
+
+    channel_demonfire_tick_t( warlock_t* p )
+      : warlock_spell_t( "Channel Demonfire (tick)", p, p->talents.channel_demonfire_tick )
+    {
+      background = dual = true;
+      may_miss = false;
+      aoe = -1;
+      travel_speed = p->talents.channel_demonfire_travel->missile_speed();
+
+      demonfire_infusion = false;
+
+      affected_by.chaotic_energies = true;
+
+      triggers.decimation = false;
+
+      spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
+
+      base_dd_multiplier *= 1.0 + p->talents.demonfire_mastery->effectN( 1 ).percent();
+    }
+
+    channel_demonfire_tick_t( warlock_t* p, bool dfi )
+      : channel_demonfire_tick_t( p )
+    { demonfire_infusion = dfi; }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
+        td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+
+      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_wither->is_ticking() )
+        td( s->target )->dots_wither->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_da_multiplier( s );
+
+      if ( s->chain_target != 0 )
+        m *= p()->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p()->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
+
+      if ( ( s->chain_target == 0 || !p()->bugs ) && demonfire_infusion )
+        m *= 1.0 + p()->talents.demonfire_infusion->effectN( 3 ).percent();
+
+      return m;
+    }
+  };
+
   struct channel_demonfire_t : public warlock_spell_t
   {
-    struct channel_demonfire_tick_t : public warlock_spell_t
-    {
-      channel_demonfire_tick_t( warlock_t* p )
-        : warlock_spell_t( "Channel Demonfire (tick)", p, p->talents.channel_demonfire_tick )
-      {
-        background = dual = true;
-        may_miss = false;
-        aoe = -1;
-        travel_speed = p->talents.channel_demonfire_travel->missile_speed();
-
-        affected_by.chaotic_energies = true;
-
-        triggers.decimation = false;
-
-        spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
-
-        base_dd_multiplier *= 1.0 + p->talents.demonfire_mastery->effectN( 1 ).percent();
-      }
-
-      void impact( action_state_t* s ) override
-      {
-        warlock_spell_t::impact( s );
-
-        if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
-          td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
-
-        if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_wither->is_ticking() )
-          td( s->target )->dots_wither->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
-      }
-
-      double composite_da_multiplier( const action_state_t* s ) const override
-      {
-        double m = warlock_spell_t::composite_da_multiplier( s );
-
-        if ( s->chain_target != 0 )
-          m *= p()->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p()->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
-
-        return m;
-      }
-    };
-
     channel_demonfire_tick_t* channel_demonfire_tick;
 
     channel_demonfire_t( warlock_t* p, util::string_view options_str )
@@ -4314,6 +4387,12 @@ using namespace helpers;
 
       if ( p()->talents.demonic_calling.ok() )
         p()->buffs.demonic_calling->trigger();
+
+      if ( p()->talents.demonfire_infusion.ok() && p()->rng().roll( p()->talents.demonfire_infusion->effectN( 2 ).percent() ) )
+      {
+        p()->proc_actions.demonfire_infusion->execute_on_target( target );
+        p()->procs.demonfire_infusion_inc->occur();
+      }
 
       p()->buffs.burn_to_ashes->decrement();
       p()->buffs.infernal_bolt->decrement();
@@ -4796,7 +4875,9 @@ using namespace helpers;
   }
 
   void warlock_t::create_destruction_proc_actions()
-  { }
+  {
+    proc_actions.demonfire_infusion = new channel_demonfire_tick_t( this, true );
+  }
 
   void warlock_t::create_diabolist_proc_actions()
   { }

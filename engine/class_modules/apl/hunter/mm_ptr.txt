@@ -25,25 +25,27 @@ actions.cds+=/lights_judgment,if=buff.trueshot.down
 actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<31
 
 actions.st=/volley,if=!talent.double_tap
+actions.st+=/rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_ready.up|talent.bulletstorm&buff.bulletstorm.down
 actions.st+=/trueshot,if=variable.trueshot_ready
 actions.st+=/volley,if=talent.double_tap&buff.double_tap.down
 actions.st+=/black_arrow,if=talent.headshot&buff.precise_shots.up|!talent.headshot&buff.razor_fragments.up
 actions.st+=/kill_shot,if=talent.headshot&buff.precise_shots.up|!talent.headshot&buff.razor_fragments.up
 actions.st+=/arcane_shot,if=buff.precise_shots.up
-actions.st+=/rapid_fire,if=!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3|buff.lunar_storm_ready.up
+actions.st+=/rapid_fire,if=!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3
+actions.st+=/explosive_shot,if=talent.precision_detonation&buff.precise_shots.down
 actions.st+=/aimed_shot,if=buff.precise_shots.down
-actions.st+=/explosive_shot
+actions.st+=/explosive_shot,if=talent.precision_detonation|active_enemies>1|buff.trueshot.down
 actions.st+=/black_arrow,if=!talent.headshot
 actions.st+=/kill_shot,if=!talent.headshot
 actions.st+=/steady_shot
 
 actions.trickshots=/volley,if=!talent.double_tap
-actions.trickshots+=/explosive_shot,if=talent.precision_detonation&action.aimed_shot.in_flight
 actions.trickshots+=/trueshot,if=variable.trueshot_ready
 actions.trickshots+=/volley,if=talent.double_tap&buff.double_tap.down
-actions.trickshots+=/black_arrow,if=buff.withering_fire.up
+actions.trickshots+=/black_arrow,if=buff.withering_fire.up&buff.trick_shots.up
 actions.trickshots+=/multishot,if=buff.precise_shots.up|buff.trick_shots.down
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.up&(!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3|buff.lunar_storm_ready.up)
+actions.trickshots+=/explosive_shot,if=talent.precision_detonation&buff.precise_shots.down&buff.trick_shots.up
 actions.trickshots+=/aimed_shot,if=buff.precise_shots.down&buff.trick_shots.up
 actions.trickshots+=/explosive_shot
 actions.trickshots+=/black_arrow

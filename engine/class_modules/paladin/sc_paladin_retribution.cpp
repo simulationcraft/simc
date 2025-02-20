@@ -1247,6 +1247,24 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     background  = true;
     may_crit    = true;
   }
+
+  void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    paladin_t* pal = p();
+    if ( pal->dbc->ptr && pal->talents.templar.hammerfall->ok() && pal->cooldowns.hammerfall_icd->up() )
+    {
+      int additionalTargets = 0;
+      if ( pal->buffs.templar.shake_the_heavens->up() )
+        additionalTargets += 1; // Disappeared from spell data
+      pal->trigger_empyrean_hammer(
+          nullptr, 1 + additionalTargets,
+          timespan_t::from_millis( pal->talents.templar.hammerfall->effectN( 1 ).base_value() ),
+          true );
+      pal->cooldowns.hammerfall_icd->start();
+    }
+  }
 };
 
 struct divine_hammer_t : public paladin_spell_t
@@ -1628,24 +1646,21 @@ void paladin_t::create_buffs_retribution()
                           ->set_trigger_spell( talents.empyrean_power );
   buffs.judge_jury_and_executioner = make_buff( this, "judge_jury_and_executioner", find_spell( 453433 ) );
   buffs.divine_hammer = make_buff( this, "divine_hammer", talents.divine_hammer )
+    ->set_tick_on_application( dbc->ptr )
+    ->set_partial_tick( dbc->ptr )
     ->set_max_stack( 1 )
     ->set_default_value( 1.0 )
-    ->set_period( timespan_t::from_millis( 2200 ) )
+    ->set_period( timespan_t::from_millis( dbc->ptr ? 2000 : 2200 ) )
     ->set_freeze_stacks( true )
-    ->set_tick_time_callback([](const buff_t* b, unsigned) -> timespan_t {
-      auto res = timespan_t::from_millis( 2200 );
-      res *= 1.0 / b->current_value;
-      return res;
-    })
     ->set_tick_callback([this](buff_t* b, int, const timespan_t&) {
-      // consume a holy power, if one isn't available then buff ends
-      if ( !resource_available( RESOURCE_HOLY_POWER, 1.0 ) ) {
+      if ( !dbc->ptr && !resource_available( RESOURCE_HOLY_POWER, 1.0 ) ) {
         b->expire();
       } else {
         active.divine_hammer_tick->schedule_execute();
       }
     })
     ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+      if ( dbc->ptr ) return;
       for ( size_t i = 2; i < 5; i++ )
       {
         double recharge_mult = 1.0 / ( 1.0 + b->data().effectN( i ).percent() );
@@ -1670,6 +1685,14 @@ void paladin_t::create_buffs_retribution()
       }
     }
   );
+  if ( dbc->ptr )
+    buffs.divine_hammer->set_tick_time_behavior( buff_tick_time_behavior::HASTED );
+  else
+    buffs.divine_hammer->set_tick_time_callback([](const buff_t* b, unsigned) -> timespan_t {
+      auto res = timespan_t::from_millis( 2200 );
+      res *= 1.0 / b->current_value;
+      return res;
+    });
 
   // legendaries
   buffs.empyrean_legacy = make_buff( this, "empyrean_legacy", find_spell( 387178 ) );

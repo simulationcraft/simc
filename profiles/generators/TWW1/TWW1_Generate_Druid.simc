@@ -2,8 +2,8 @@ druid="TWW1_Druid_Balance"
 source=default
 spec=balance
 level=80
-race=night_elf
-timeofday=night
+race=troll
+timeofday=day
 role=spell
 position=back
 professions=alchemy=1/engineering=1
@@ -19,7 +19,7 @@ hands=eviscerators_of_the_greatlynx,id=212057,ilevel=639
 waist=runebranded_waistband,id=219331,bonus_id=10222/8780/11109/8960/8791,ilevel=636,gem_id=213497
 legs=leggings_of_the_greatlynx,id=212055,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7531
 feet=chitinspiked_jackboots,id=212445,ilevel=639,enchant_id=7424
-finger1=writhing_ringworm,id=225576,bonus_id=8781,ilevel=639,gem_id=213497/213497,enchant_id=7346
+finger1=cyrces_circlet,id=228411,ilevel=658,gem_id=228646/228634/228639,enchant_id=7346
 finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=8781,ilevel=639,gem_id=213497/213497,enchant_id=7346
 trinket1=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
 trinket2=unbound_changeling,id=178708,bonus_id=7214/6652/1501/5884/6646/6918,ilevel=639
