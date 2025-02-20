@@ -8385,6 +8385,33 @@ void gigazaps_zapcap( special_effect_t& effect )
   } );
 }
 
+void capos_molten_knuckles( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<generic_proc_t>( "capos_molten_knuckles", effect, effect.driver() );
+  effect.execute_action->base_dd_min = effect.execute_action->base_dd_max =
+      effect.driver()->effectN( 1 ).average( effect.item );
+  effect.execute_action->base_multiplier *= role_mult( effect );
+
+  const spell_data_t* dot_spell         = effect.driver()->effectN( 1 ).trigger()->effectN( 2 ).trigger();
+  effect.execute_action->execute_action = create_proc_action<generic_proc_t>( "molten_gold", effect, dot_spell );
+
+  effect.execute_action->execute_action->tick_action =
+      create_proc_action<generic_proc_t>( "molten_gold_tick", effect, effect.player->find_spell( 473704 ) );
+  double tick_count = dot_spell->duration() / dot_spell->effectN( 1 ).period();
+  effect.execute_action->execute_action->tick_action->base_dd_min =
+      effect.execute_action->execute_action->tick_action->base_dd_max =
+          effect.driver()->effectN( 2 ).average( effect.item ) / tick_count;
+  effect.execute_action->execute_action->base_multiplier *= role_mult( effect );
+
+  // Not in spell data, needs to be tested.
+  effect.execute_action->execute_action->aoe = -1;
+  effect.execute_action->execute_action->reduced_aoe_targets = 8.0;
+
+  effect.execute_action->add_child( effect.execute_action->execute_action );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 }  // namespace items
 
 namespace sets
@@ -10035,6 +10062,7 @@ void register_special_effects()
   register_special_effect( 471212, items::junkmaestros_mega_magnet );
   register_special_effect( 471211, DISABLED_EFFECT );
   register_special_effect( 1219103, items::gigazaps_zapcap );
+  register_special_effect( 467774, items::capos_molten_knuckles );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );
