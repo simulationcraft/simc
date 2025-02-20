@@ -6956,21 +6956,29 @@ void tome_of_lights_devotion( special_effect_t& effect )
         set_default_value( data->effectN( 5 ).average( e ) );
       }
     };
+
+    buff_t* radiance_buff;
     buff_t* ward_of_devotion_buff;
 
     const spell_data_t* data;
 
-    inner_resilience_cb_t( const special_effect_t& e )
+    inner_resilience_cb_t( const special_effect_t& e, buff_t* rb )
       : dbc_proc_callback_t( e.player, e ),
+      radiance_buff( nullptr ),
       ward_of_devotion_buff( nullptr )
     {
+      radiance_buff = rb;
+
       data = e.player->find_spell( 443533 );
       ward_of_devotion_buff = make_buff<ward_of_devotion_buff_t>( e, e.player->find_spell( 450719 ), data );
     }
 
     void execute( action_t*, action_state_t* s ) override
     {
-      ward_of_devotion_buff->trigger();
+      if ( radiance_buff->check() )
+        ward_of_devotion_buff->trigger(-1, ward_of_devotion_buff->DEFAULT_VALUE() * 2 );
+      else
+        ward_of_devotion_buff->trigger();
     }
   };
 
@@ -7067,7 +7075,7 @@ void tome_of_lights_devotion( special_effect_t& effect )
         inner_resilience->disable_buff();
         effect.player->special_effects.push_back( inner_resilience );
 
-        inner_resilience_cb = new inner_resilience_cb_t( *inner_resilience );
+        inner_resilience_cb = new inner_resilience_cb_t( *inner_resilience, radiance_buff );
         inner_resilience_cb->activate_with_buff( resilience_verses_tracker, true );
 
         auto inner_radiance = new special_effect_t( effect.player );
