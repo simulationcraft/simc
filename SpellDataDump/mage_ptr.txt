@@ -16477,4 +16477,31 @@ Effects          :
 Description      : Deals $s1 Arcane damage to enemies within $A1 yards.
 Tooltip          : Deals $s1 Arcane damage to enemies within $A1 yards.
 
+Name             : Invisibility (id=1228321) [Spell Family (3)] 
+Hotfixed         : NEW SPELL
+Class            : Mage
+School           : Arcane
+Spell Type       : None
+Duration         : 3 seconds
+Labels           : 16: Class Spells
+                 : 17: Mage Spells
+                 : 292
+                 : 566
+Affecting Spells : Norgannon's Foresight (236380 effect#1)
+Family Flags     : 31, 54, 67
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Not a Proc (105), Aura Points On Client (268), Allow Class Ability Procs (416)
+Aura Interrupt   : Action (2), Interacting (10), Looting (11), Attacking (12), Use Item (13)
+Effects          :
+#1 (id=1219288)  : Unknown(176)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#2 (id=1219289)  : Apply Aura (6) | Invisibility (18)
+                   Base Value: 340 | Scaled Value: 740 | Points Per Level: 5 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+#3 (id=1219290)  : Apply Aura (6) | Unknown(335)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+Description      : $@spelldesc66
+Tooltip          : Invisible$?$w3=0[][ and moving $87833s1% faster].
+
 
