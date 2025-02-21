@@ -6942,6 +6942,10 @@ void tome_of_lights_devotion( special_effect_t& effect )
   auto equip_driver = effect.player->find_spell( 443533 );
   assert( equip_driver && "Tome of Lights Devotion equip driver not found" );
 
+  if ( unique_gear::create_fallback_buffs(
+    effect, { "inner_resilience", "inner_radiance", "ward_of_devotion" } ) )
+    return;
+
   // Setup double value buff
   auto radiance_buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 443534 ) );
 
@@ -10202,7 +10206,7 @@ void register_special_effects()
   register_special_effect( 471057, DISABLED_EFFECT ); // Effect Amount for Flarendo's Pilot Light
   register_special_effect( 471142, items::flarendos_pilot_light );
   register_special_effect( 443533, DISABLED_EFFECT ); // Tome of Lights Devotion equip driver
-  register_special_effect( 443535, items::tome_of_lights_devotion );
+  register_special_effect( 443535, items::tome_of_lights_devotion, true );
   register_special_effect( 443393, items::synergistic_brewterializer );
   register_special_effect( 471212, items::junkmaestros_mega_magnet, true );
   register_special_effect( 471211, DISABLED_EFFECT ); // junkmaestro's mega magnet
