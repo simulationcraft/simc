@@ -3233,13 +3233,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179717)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 24 | Scaled Value: 24 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Spike (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Crash (205386), Void Bolt (205448), Mind Blast (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Echoing Void (373304), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Mind Spike: Insanity (407466), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Shadow Crash (465522)
                    Family Flags: 72
+Hotfixed         : Base Value (10 -> 24)
 #2 (id=191068)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 24 | Scaled Value: 24 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Spike (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Crash (205386), Void Bolt (205448), Mind Blast (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Echoing Void (373304), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Mind Spike: Insanity (407466), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Shadow Crash (465522)
                    Family Flags: 72
+Hotfixed         : Base Value (10 -> 24)
 #3 (id=191069)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=191070)   : Apply Aura (6) | Dummy (4)
@@ -15747,12 +15749,13 @@ Labels           : 16: Class Spells
                  : 295
                  : 4720
 Proc Chance      : 100%
-Real PPM         : 2 (Haste multiplier)
+Real PPM         : 1.5
 Proc Flags       : Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198800)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Base Value (200 -> 100)
 Description      : Your damaging spells have a chance to hit a |cFFFFFFFFJackpot!|r that fires a Void Bolt at an enemy at $s1% effectiveness. Casting Dark Ascension or Void Eruption always hits a |cFFFFFFFFJackpot!|r
 
 Name             : Priest Shadow 11.1 Class Set 4pc (id=1215703) [Spell Family (6), Passive, Hidden] 
@@ -15771,9 +15774,10 @@ Effects          :
 #1 (id=1198801)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1200612)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Power Infusion (10060)
                    Family Flags: 61
+Hotfixed         : Base Value (15 -> 10), PvP Coefficient (0.5 -> 1)
 Description      : Hitting a |cFFFFFFFFJackpot!|r grants you ${$s1/1000}.1 seconds of Power Infusion. Mind Blast$?a450405[, Void Blast,][] and Void Bolt deal $s2% increased damage while Power Infusion is active.
 
 Name             : Divinity (id=1216314) [Spell Family (6)] 

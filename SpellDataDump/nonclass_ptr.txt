@@ -235801,8 +235801,8 @@ Triggered By     : Authority of Air (448833)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1147546)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 204141 (coefficient=79.8124) | Trigger Spell: 448833 | Target: Self (1)
-Hotfixed         : Coefficient (32.244999 -> 79.812401)
+                   Base Value: 0 | Scaled Value: 204141 (coefficient=79.8124) | PvP Coefficient: 0.4 | Trigger Spell: 448833 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.4)
 Description      : $@spelldesc445331
 
 Name             : Authority of Air (id=448831) [Passive] 
@@ -235820,8 +235820,8 @@ Triggered By     : Authority of Air (448833)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1147547)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 247885.4 (coefficient=96.915) | Trigger Spell: 448833 | Target: Self (1)
-Hotfixed         : Coefficient (46.063728 -> 96.915001)
+                   Base Value: 0 | Scaled Value: 247885.4 (coefficient=96.915) | PvP Coefficient: 0.48 | Trigger Spell: 448833 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.48)
 Description      : $@spelldesc445331
 
 Name             : Authority of Air (id=448832) [Passive] 
@@ -235839,8 +235839,8 @@ Triggered By     : Authority of Air (448833)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1147548)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 291631 (coefficient=114.0181) | Trigger Spell: 448833 | Target: Self (1)
-Hotfixed         : Coefficient (57.008846 -> 114.018082)
+                   Base Value: 0 | Scaled Value: 291631 (coefficient=114.0181) | PvP Coefficient: 0.5 | Trigger Spell: 448833 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc445331
 
 Name             : Authority of Air (id=448833) [Passive] 
@@ -236697,8 +236697,8 @@ Triggered By     : Authority of the Depths (449218)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1148197)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 24502.15 (coefficient=9.57953) | Trigger Spell: 449218 | Target: Self (1)
-Hotfixed         : Coefficient (5.518498 -> 9.57953)
+                   Base Value: 0 | Scaled Value: 24502.15 (coefficient=9.57953) | PvP Coefficient: 0.58 | Trigger Spell: 449218 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.58)
 Description      : $@spelldesc445341
 
 Name             : Authority of the Depths (id=449222) [Passive] 
@@ -236715,8 +236715,8 @@ Triggered By     : Authority of the Depths (449218)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1148198)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 35002.96 (coefficient=13.685) | Trigger Spell: 449218 | Target: Self (1)
-Hotfixed         : Coefficient (9.273737 -> 13.685)
+                   Base Value: 0 | Scaled Value: 35002.96 (coefficient=13.685) | PvP Coefficient: 0.68 | Trigger Spell: 449218 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.68)
 Description      : $@spelldesc445341
 
 Name             : Authority of the Depths (id=449223) [Passive] 
@@ -236733,8 +236733,8 @@ Triggered By     : Authority of the Depths (449218)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1148199)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 29752.64 (coefficient=11.6323) | Trigger Spell: 449218 | Target: Self (1)
-Hotfixed         : Coefficient (7.881894 -> 11.6323)
+                   Base Value: 0 | Scaled Value: 29752.64 (coefficient=11.6323) | PvP Coefficient: 0.68 | Trigger Spell: 449218 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.68)
 Description      : $@spelldesc445341
 
 Name             : Entropic Reclamation (id=449254) 
@@ -249307,8 +249307,8 @@ Labels           : 2860
 Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29), No Aura Cancel (31), No Threat (42), Not an Action (92), Not a Proc (105), Aura Is Buff (140), Allow Entering Arena (149), Not an Attack (194), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1168262)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 720789.8 (coefficient=281.805) | Trigger Spell: 460527 | Target: Self (1)
-Hotfixed         : Coefficient (66.054863 -> 281.804993)
+                   Base Value: 0 | Scaled Value: 720789.8 (coefficient=281.805) | PvP Coefficient: 0.23 | Trigger Spell: 460527 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.23)
 #2 (id=1168263)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #3 (id=1168264)  : Apply Aura (6) | Dummy (4)
@@ -254269,6 +254269,7 @@ Name             : Blaze of Glory (id=472030)
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Cooldown         : 1 seconds
 Labels           : 292
                  : 3959: Item Effects
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)
@@ -257737,7 +257738,7 @@ Tooltip          : $@spelldesc1213551
 Name             : Pacifist Rig (id=1215054) [Hidden] 
 School           : Physical
 Spell Type       : None
-Duration         : 20 seconds
+Duration         : 10 seconds
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Jump Pathing (208), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1197745)  : Apply Aura (6) | Dummy (4)
@@ -257969,7 +257970,8 @@ Range            : 100 yards
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=1198074)  : School Damage (2): physical
-                   Base Value: 20 | Scaled Value: 20 (delta=0.05) | Radius: 0 - 20 yards | Target: Unknown(87) -> At Enemy in Area (16)
+                   Base Value: 10 | Scaled Value: 10 (delta=0.05) | Radius: 0 - 20 yards | Target: Unknown(87) -> At Enemy in Area (16)
+Hotfixed         : Base Value (20 -> 10)
 #2 (id=1198075)  : Knock Back (98)
                    Base Value: 100 | Scaled Value: 100 | Misc Value 2: 0x12c | Radius: 0 - 10 yards | Mechanic: Knockback | Target: Unknown(87) -> At Enemy in Area (16)
 Description      : $@spelldesc456498
