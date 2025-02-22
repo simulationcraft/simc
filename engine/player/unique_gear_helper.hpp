@@ -654,11 +654,10 @@ public:
   action_t* parent_action;
 
   unique_gear_pet_t( std::string_view name, const special_effect_t& e, const spell_data_t* summon_spell = nullptr )
-    : pet_t( e.player->sim, e.player, name, true, true ), effect( e ), parent_action( nullptr )
+    : pet_t( e.player->sim, e.player, name, true, true ), use_auto_attack( false ), effect( e ), parent_action( nullptr )
   {
     if ( summon_spell )
       npc_id = summon_spell->effectN( 1 ).misc_value1();
-    use_auto_attack = false;
   }
 
   resource_e primary_resource() const override
@@ -669,18 +668,12 @@ public:
 
   double composite_owner_pet_damage_multiplier( const action_state_t* s ) const override
   {
-    if ( owner->is_ptr() )
-      return 1.0;
-
-    return owner->composite_player_pet_damage_multiplier( s, type == PLAYER_GUARDIAN );
+    return 1.0;
   }
 
   double composite_owner_pet_target_damage_multiplier( player_t* t ) const override
   {
-    if( owner->is_ptr() )
-      return 1.0;
-
-    return owner->composite_player_target_pet_damage_multiplier( t, type == PLAYER_GUARDIAN );
+    return 1.0;
   }
 
   struct auto_attack_t final : public melee_attack_t

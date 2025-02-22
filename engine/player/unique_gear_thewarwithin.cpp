@@ -4201,16 +4201,14 @@ void candle_confidant( special_effect_t& effect )
     double composite_da_multiplier( const action_state_t* s ) const override
     {
       double m = melee_attack_t::composite_da_multiplier( s );
-      if ( player->is_ptr() )
-        m *= this->player->cast_pet()->owner->composite_player_pet_damage_multiplier( s, type == PLAYER_GUARDIAN );
+      m *= this->player->cast_pet()->owner->composite_player_pet_damage_multiplier( s, type == PLAYER_GUARDIAN );
       return m;
     }
 
     double composite_target_multiplier( player_t* p ) const override
     {
       double m = melee_attack_t::composite_target_multiplier( p );
-      if ( player->is_ptr() )
-        m *= this->player->cast_pet()->owner->composite_player_target_pet_damage_multiplier( p, type == PLAYER_GUARDIAN );
+      m *= this->player->cast_pet()->owner->composite_player_target_pet_damage_multiplier( p, type == PLAYER_GUARDIAN );
       return m;
     }
 
@@ -5025,9 +5023,6 @@ void darktide_wavebenders_orb( special_effect_t& effect )
 // 472784 Damage
 void torqs_big_red_button( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   struct spiteful_zapbolt_t : public generic_proc_t
   {
     buff_t* stack_buff;
@@ -5105,9 +5100,6 @@ void torqs_big_red_button( special_effect_t& effect )
 // 1219158 Stacking Mastery
 void house_of_cards( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   auto value_spell = effect.player->find_spell( 466680 );
   assert( value_spell && "House of Cards missing value spell" );
 
@@ -5697,9 +5689,6 @@ void cirral_concoctory( special_effect_t& effect )
 // 1216594 Heal
 void eye_of_kezan( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   struct eye_of_kezan_cb_t : public dbc_proc_callback_t
   {
     buff_t* stat_buff;
@@ -5770,9 +5759,6 @@ void eye_of_kezan( special_effect_t& effect )
 // 472030 Damage
 void geargrinders_remote( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   auto value_spell = effect.player->find_spell( 471058 );
   assert( value_spell && "Geargrinder's Remote missing Value spell" );
   auto damage_spell = effect.player->find_spell( 472030 );
@@ -5792,9 +5778,6 @@ void geargrinders_remote( special_effect_t& effect )
 // 1218712 extension driver
 void improvised_seaforium_pacemaker( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   if ( unique_gear::create_fallback_buffs( effect, { "maybe_stop_blowing_up" } ) )
     return;
 
@@ -5857,9 +5840,6 @@ void improvised_seaforium_pacemaker( special_effect_t& effect )
 // 1216212 Buff
 void reverb_radio( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   struct hyped_buff_t : public stat_buff_t
   {
     timespan_t amped_duration;
@@ -5949,9 +5929,6 @@ void reverb_radio( special_effect_t& effect )
 // 1214810 Vers Buff
 void mechanocore_amplifier( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   struct mechanocore_amplifier_buff_t : public stat_buff_t
   {
     double high_value;
@@ -6032,9 +6009,6 @@ void mechanocore_amplifier( special_effect_t& effect )
 // 1215321 Damage
 void papas_prized_putter( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   auto damage         = create_proc_action<generic_proc_t>( "papas_prized_putter", effect, 1215321 );
   damage->base_dd_min = damage->base_dd_max = effect.player->find_spell( 1215321 )->effectN( 1 ).average( effect );
   damage->base_multiplier                   = role_mult( effect );
@@ -6049,9 +6023,6 @@ void papas_prized_putter( special_effect_t& effect )
 // 472127 DoT
 void turbodrain_5000( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   auto dot_spell    = effect.player->find_spell( 472127 );
   auto dot          = create_proc_action<generic_proc_t>( "turbodrain_5000", effect, dot_spell );
   auto total_damage = effect.driver()->effectN( 1 ).average( effect );
@@ -6070,9 +6041,6 @@ void turbodrain_5000( special_effect_t& effect )
 // Pet currently only melee attacks.
 void noggenfogger_ultimate_deluxe( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   struct auto_attack_melee_t : public melee_attack_t
   {
     auto_attack_melee_t( pet_t* p, std::string_view name = "main_hand", action_t* a = nullptr )
@@ -6173,9 +6141,6 @@ void noggenfogger_ultimate_deluxe( special_effect_t& effect )
 // 1216606 DoT
 void ratfang_toxin( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   auto equip_driver = effect.player->find_spell( 1216603 );
   assert( equip_driver && "Ratfang Toxin missing Equip Driver" );
 
@@ -6275,9 +6240,6 @@ void ratfang_toxin( special_effect_t& effect )
 // 1219299 Damage
 void garbagemancers_last_resort( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   struct garbagemancers_last_resort_t : public generic_proc_t
   {
     timespan_t pulse_time;
@@ -6319,9 +6281,6 @@ void garbagemancers_last_resort( special_effect_t& effect )
 // 1213434 Haste Buff
 void funhouse_lens( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   struct funhouse_lens_t : public spell_t
   {
     buff_t* crit_buff;
@@ -6363,9 +6322,6 @@ void funhouse_lens( special_effect_t& effect )
 // 1216650 Buff
 void suspicious_energy_drink( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   struct suspicious_energy_drink_buff_t : public stat_buff_t
   {
     double bonus_value;
@@ -6405,9 +6361,6 @@ void suspicious_energy_drink( special_effect_t& effect )
 // 474285 Buff
 void mugs_moxie_jug( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   auto crit_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 474285 ) )
                        ->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) )
                        ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
@@ -6515,9 +6468,6 @@ void flarendos_pilot_light( special_effect_t& effect )
 // 472185 Primary Buff
 void amorphous_relic( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   struct amorphous_relic_event_t : public event_t
   {
     player_t* player;
@@ -6625,9 +6575,6 @@ void synergistic_brewterializer( special_effect_t& effect )
 // Uses a basic auto attack as well
 void zees_thug_hotline( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   struct auto_attack_melee_t : public melee_attack_t
   {
     auto_attack_melee_t( pet_t* p, std::string_view name = "main_hand", action_t* a = nullptr,
@@ -7179,9 +7126,6 @@ void tome_of_lights_devotion( special_effect_t& effect )
 // 1215733 Mass Destruction damage
 void mister_locknstalk( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   struct mister_locknstalk_cb_t : public dbc_proc_callback_t
   {
     action_t* st_damage;
@@ -7269,9 +7213,6 @@ void mister_locknstalk( special_effect_t& effect )
 // 1220483 tick damage spell
 void junkmaestros_mega_magnet( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   if ( unique_gear::create_fallback_buffs( effect, { "junkmaestros_mega_magnet" } ) )
     return;
 
@@ -7644,9 +7585,6 @@ void force_of_magma( special_effect_t& effect )
 // 473602 DoT
 void vile_contamination( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   auto dot     = create_proc_action<generic_proc_t>( "vile_contamination", effect, effect.trigger() );
   dot->base_td = effect.driver()->effectN( 1 ).average( effect );
   // Setting a reasonably high non 0 duration so the DoT works as expected. Data contains no duration resulting in it
@@ -7665,9 +7603,6 @@ void vile_contamination( special_effect_t& effect )
 // 473492 Proc Stat Buff
 void best_in_slots( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   auto equip_driver = effect.player->find_spell( 471063 );
   assert( equip_driver && "Best-in-Slots missing equip driver" );
 
@@ -7800,9 +7735,6 @@ void best_in_slots( special_effect_t& effect )
 // 1218463 Small Damage
 void machine_gobs_iron_grin( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   struct machine_gobs_iron_grin_cb_t : public dbc_proc_callback_t
   {
     action_t* big_damage;
@@ -8129,9 +8061,6 @@ void sureki_zealots_insignia( special_effect_t& e )
 // TODO: Appears to dynamically update the stat value given if the targeted players highest stat changes. This might be an absolute headache.
 void the_jastor_diamond( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   auto equip_driver = effect.player->find_spell( 1214822 );
   assert( equip_driver && "Jastor Diamond Equip Driver not found." );
 
@@ -8418,9 +8347,6 @@ void the_jastor_diamond( special_effect_t& effect )
 // NYI: CDR from periodic damage taken
 void ringing_ritual_mud( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   struct mudborne_t : action_t
   {
     action_t* tick;
@@ -8477,9 +8403,6 @@ void ringing_ritual_mud( special_effect_t& effect )
 // Gigazap's Zap-Cap
 void gigazaps_zapcap( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   struct zap_t : generic_proc_t
   {
     buff_t* max_stack;
@@ -8534,9 +8457,6 @@ void gigazaps_zapcap( special_effect_t& effect )
 
 void capos_molten_knuckles( special_effect_t& effect )
 {
-  if ( !effect.player->is_ptr() )
-    return;
-
   effect.execute_action = create_proc_action<generic_proc_t>( "capos_molten_knuckles", effect, effect.driver() );
   effect.execute_action->base_dd_min = effect.execute_action->base_dd_max =
       effect.driver()->effectN( 1 ).average( effect.item );
