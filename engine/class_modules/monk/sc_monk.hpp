@@ -1327,7 +1327,6 @@ public:
     double expel_harm_effectiveness;
     double jadefire_stomp_uptime;
     int chi_burst_healing_targets;
-    int motc_override;
     double squirm_frequency;
 
     int shado_pan_initial_charge_accumulator;
