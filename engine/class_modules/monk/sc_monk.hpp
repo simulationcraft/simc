@@ -626,10 +626,8 @@ public:
     propagate_const<buff_t *> chi_energy;
     propagate_const<buff_t *> combat_wisdom;
     propagate_const<buff_t *> combo_strikes;
-    propagate_const<buff_t *> cyclone_strikes;
     propagate_const<buff_t *> dance_of_chiji_ww;
     propagate_const<buff_t *> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
-    propagate_const<buff_t *> darting_hurricane;
     propagate_const<buff_t *> dizzying_kicks;
     propagate_const<buff_t *> dual_threat;
     propagate_const<buff_t *> ferociousness;
@@ -846,7 +844,6 @@ public:
       const spell_data_t *combat_conditioning;
       const spell_data_t *empowered_tiger_lightning;
       const spell_data_t *flying_serpent_kick;
-      const spell_data_t *mark_of_the_crane;
       const spell_data_t *touch_of_death_rank_3;
       const spell_data_t *touch_of_karma;
     } windwalker;
@@ -1176,7 +1173,6 @@ public:
       player_talent_t jadefire_harmony;
       const spell_data_t *jadefire_brand_dmg;
       const spell_data_t *jadefire_brand_heal;
-      player_talent_t darting_hurricane;
       player_talent_t slicing_winds;
       const spell_data_t *slicing_winds_damage;
     } windwalker;
@@ -1374,7 +1370,6 @@ public:
     const spell_data_t *hidden_masters_forbidden_touch;
     const spell_data_t *hit_combo;
     const spell_data_t *improved_touch_of_death;
-    const spell_data_t *mark_of_the_crane;
     const spell_data_t *summon_white_tiger_statue;
     const spell_data_t *power_strikes_chi;
     const spell_data_t *thunderfist;
@@ -1454,13 +1449,7 @@ public:
                              bool ( *trigger )( monk_t *player, action_state_t *state ), proc_flag2 PF2_OVERRIDE,
                              action_t *proc_action_override = nullptr );
   void trigger_celestial_fortune( action_state_t * );
-  void trigger_mark_of_the_crane( action_state_t * );
   void trigger_empowered_tiger_lightning( action_state_t * );
-  player_t *next_mark_of_the_crane_target( action_state_t * );
-  int mark_of_the_crane_counter();
-  bool mark_of_the_crane_max();
-  double sck_modifier();
-  double calculate_last_stagger_tick_damage( int n ) const;
   bool affected_by_sef( spell_data_t data ) const;  // Custom handler for SEF bugs
 
   // Storm Earth and Fire targeting logic

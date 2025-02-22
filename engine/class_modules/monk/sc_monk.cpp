@@ -19,7 +19,6 @@ GENERAL:
 - See other options of modeling Spinning Crane Kick
 
 WINDWALKER:
-- Add Cyclone Strike Counter as an expression
 - See about removing tick part of Crackling Tiger Lightning
 
 MISTWEAVER:
@@ -449,10 +448,6 @@ void monk_action_t<Base>::combo_strikes_trigger()
 
     p()->buff.hit_combo->trigger();
 
-    if ( p()->talent.windwalker.xuens_bond->ok() && !p()->is_ptr() )
-      p()->cooldown.invoke_xuen->adjust( p()->talent.windwalker.xuens_bond->effectN( 2 ).time_value(),
-                                         true );  // Saved as -100
-
     if ( p()->talent.windwalker.meridian_strikes->ok() )
       p()->cooldown.touch_of_death->adjust(
           -1 * timespan_t::from_seconds( p()->talent.windwalker.meridian_strikes->effectN( 2 ).base_value() / 100 ),
@@ -527,10 +522,6 @@ void monk_action_t<Base>::consume_resource()
 
     if ( base_cost )
     {
-      // This triggers prior to cost reduction
-      if ( !p()->is_ptr() )
-        p()->buff.heart_of_the_jade_serpent_stack_ww->trigger( as<int>( base_cost ) );
-
       if ( p()->talent.windwalker.spiritual_focus->ok() )
       {
         p()->spiritual_focus_count += base_cost;
@@ -1224,8 +1215,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
   {
     parse_options( options_str );
 
-    // allow Darting Hurricane to reduce GCD all the way down to 500ms
-    min_gcd                = 500_ms;
     ww_mastery             = true;
     may_combo_strike       = true;
     trigger_jadefire_stomp = true;
@@ -1249,7 +1238,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
           .set_eff( &effect );
     parse_effects( p->buff.combat_wisdom );
     parse_effects( p->buff.martial_mixture );
-    parse_effects( p->buff.darting_hurricane );
 
     if ( p->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
     {
@@ -1307,8 +1295,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
       p()->buff.combat_wisdom->expire();
     }
 
-    p()->buff.darting_hurricane->decrement();
-
     // T33 Windwalker Set Bonus
     p()->buff.tiger_strikes->trigger();
     p()->buff.tigers_ferocity->expire();
@@ -1321,9 +1307,6 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
     base_t::impact( s );
 
     p()->buff.teachings_of_the_monastery->trigger();
-
-    // Apply Mark of the Crane
-    p()->trigger_mark_of_the_crane( s );
 
     if ( p()->sets->has_set_bonus( MONK_WINDWALKER, TWW1, B4 ) )
     {
@@ -1532,9 +1515,6 @@ struct rising_sun_kick_dmg_t : public overwhelming_force_t<monk_melee_attack_t>
     if ( p()->baseline.windwalker.combat_conditioning->ok() )
       s->target->debuffs.mortal_wounds->trigger();
 
-    // Apply Mark of the Crane
-    p()->trigger_mark_of_the_crane( s );
-
     if ( p()->talent.windwalker.acclamation.ok() )
       get_td( s->target )->debuff.acclamation->trigger();
   }
@@ -1581,9 +1561,6 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     p()->buff.whirling_dragon_punch->trigger();
 
     p()->active_actions.chi_wave->execute();
-
-    if ( !p()->is_ptr() && p()->buff.storm_earth_and_fire->up() && p()->talent.windwalker.ordered_elements->ok() )
-      p()->buff.ordered_elements->trigger();
 
     p()->buff.tigers_ferocity->trigger();
   }
@@ -1660,10 +1637,6 @@ struct blackout_kick_totm_proc_t : public monk_melee_attack_t
         p()->proc.rsk_reset_totm->occur();
       }
     }
-
-    // Mark of the Crane is only triggered on the initial target
-    if ( s->chain_target == 0 )
-      p()->trigger_mark_of_the_crane( s );
 
     // Martial Mixture triggers from each ToTM impact
     p()->buff.martial_mixture->trigger();
@@ -1892,7 +1865,6 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     base_t::impact( s );
 
     p()->buff.hit_scheme->trigger();
-    p()->trigger_mark_of_the_crane( s );
 
     if ( p()->talent.brewmaster.elusive_footwork->ok() && s->result == RESULT_CRIT )
     {
@@ -2027,8 +1999,6 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
 
     add_docj_parse_entry( p->talent.mistweaver.dance_of_chiji );
     add_docj_parse_entry( p->talent.windwalker.dance_of_chiji );
-
-    parse_effects( p->buff.cyclone_strikes, USE_CURRENT );
   }
 
   result_amount_type report_amount_type( const action_state_t * ) const override
@@ -2097,24 +2067,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     {
       chi_x = new chi_explosion_t( p );
       add_child( chi_x );
-    }
-
-    if ( !p->is_ptr() && p->baseline.windwalker.mark_of_the_crane->ok() && p->user_options.motc_override == 0 )
-    {
-      p->register_on_kill_callback( [ p ]( player_t *target ) {
-        if ( p->sim->event_mgr.canceled )
-          return;
-
-        if ( auto target_data = p->get_target_data( target );
-             target_data && target_data->debuff.mark_of_the_crane->up() )
-        {
-          make_event( p->sim, target_data->debuff.mark_of_the_crane->remains(), [ p, target_data ]() {
-            p->sim->print_debug( "mark of the crane fell off dead target: {} ", target_data->target->name_str );
-            p->buff.cyclone_strikes->decrement();
-          } );
-          target_data->debuff.mark_of_the_crane->expire();
-        }
-      } );
     }
   }
 
@@ -2573,9 +2525,6 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
       p()->buff.thunderfist->trigger( thunderfist_stacks );
     }
 
-    if ( p()->talent.windwalker.rushing_jade_wind.ok() )
-      p()->trigger_mark_of_the_crane( s );
-
     if ( p()->talent.windwalker.gale_force.ok() )
       get_td( s->target )->debuff.gale_force->trigger();
   }
@@ -2627,17 +2576,10 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
 
     p()->buff.tigers_ferocity->trigger();
 
-    if ( p()->talent.windwalker.darting_hurricane.ok() && !p()->is_ptr() )
-      p()->buff.darting_hurricane->increment(
-          as<int>( p()->talent.windwalker.darting_hurricane->effectN( 2 )
-                       .base_value() ) );  // increment is used to not incur the rppm cooldown
-
-    if ( p()->buff.heart_of_the_jade_serpent->up() || p()->is_ptr() )
+    if ( p()->buff.heart_of_the_jade_serpent->up() )
     {
       p()->buff.heart_of_the_jade_serpent_cdr->trigger();
       p()->buff.inner_compass_serpent_stance->trigger();
-      if ( !p()->is_ptr() )
-        p()->buff.heart_of_the_jade_serpent->decrement();
     }
   }
 };
@@ -3430,14 +3372,11 @@ struct crackling_jade_lightning_t : public monk_spell_t
       trigger_jadefire_stomp = true;
       sef_ability            = actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING_AOE;
 
-      // reduction for secondary targets
-      if ( player->is_ptr() )
-      {
-        if ( player->talent.windwalker.power_of_the_thunder_king->ok() )
-          base_td_multiplier *= player->talent.windwalker.power_of_the_thunder_king->effectN( 4 ).percent();
-        if ( player->talent.mistweaver.jade_empowerment->ok() )
-          base_td_multiplier *= player->buff.jade_empowerment->data().effectN( 4 ).percent();
-      }
+     // reduction for secondary targets
+     if ( player->talent.windwalker.power_of_the_thunder_king->ok() )
+       base_td_multiplier *= player->talent.windwalker.power_of_the_thunder_king->effectN( 4 ).percent();
+     if ( player->talent.mistweaver.jade_empowerment->ok() )
+       base_td_multiplier *= player->buff.jade_empowerment->data().effectN( 4 ).percent();
 
       parse_effects( player->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
       parse_effects( player->buff.the_emperors_capacitor );
@@ -6130,23 +6069,6 @@ monk_td_t::monk_td_t( player_t *target, monk_t *p ) : actor_target_data_t( targe
   debuff.gale_force =
       make_buff( *this, "gale_force", p->find_spell( 451582 ) )->set_trigger_spell( p->talent.windwalker.gale_force );
 
-  debuff.mark_of_the_crane = make_buff( *this, "mark_of_the_crane", p->passives.mark_of_the_crane )
-                                 ->set_stack_change_callback( [ p ]( buff_t *, int, int new_ ) {
-                                   if ( p->user_options.motc_override == 0 )
-                                   {
-                                     if ( new_ )
-                                       p->buff.cyclone_strikes->trigger();
-                                   }
-                                 } )
-                                 ->set_expire_callback( [ p ]( buff_t *, int, timespan_t remaining_duration ) {
-                                   if ( remaining_duration == 0_s && p->user_options.motc_override == 0 )
-                                     p->buff.cyclone_strikes->decrement();
-                                 } )
-                                 ->set_max_stack( 1 )
-                                 ->set_trigger_spell( p->baseline.windwalker.mark_of_the_crane )
-                                 ->set_default_value( p->passives.cyclone_strikes->effectN( 1 ).percent() )
-                                 ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-
   debuff.touch_of_karma = make_buff( *this, "touch_of_karma_debuff", p->baseline.windwalker.touch_of_karma )
                               // set the percent of the max hp as the default value.
                               ->set_default_value_from_effect( 3 );
@@ -6519,98 +6441,6 @@ void monk_t::trigger_celestial_fortune( action_state_t *s )
   }
 }
 
-void monk_t::trigger_mark_of_the_crane( action_state_t *s )
-{
-  if ( is_ptr() )
-    return;
-
-  if ( !baseline.windwalker.mark_of_the_crane->ok() )
-    return;
-
-  if ( !action_t::result_is_hit( s->result ) )
-    return;
-
-  if ( get_target_data( s->target )->debuff.mark_of_the_crane->up() || !buff.cyclone_strikes->at_max_stacks() )
-    get_target_data( s->target )->debuff.mark_of_the_crane->trigger();
-}
-
-player_t *monk_t::next_mark_of_the_crane_target( action_state_t *state )
-{
-  std::vector<player_t *> targets = state->action->target_list();
-  if ( is_ptr() )
-    return nullptr;
-  if ( targets.empty() )
-  {
-    return nullptr;
-  }
-  if ( targets.size() > 1 )
-  {
-    // Have the SEF converge onto the the cleave target if there are only 2 targets
-    if ( targets.size() == 2 )
-      return targets[ 1 ];
-    // SEF do not change targets if they are unfixated and there's only 3 targets.
-    if ( targets.size() == 3 )
-      return state->target;
-
-    // First of all find targets that do not have the cyclone strike debuff applied and send the SEF to those targets
-    for ( player_t *target : targets )
-    {
-      if ( !get_target_data( target )->debuff.mark_of_the_crane->check() &&
-           !get_target_data( target )->debuff.storm_earth_and_fire->check() )
-      {
-        // remove the current target as having an SEF on it
-        get_target_data( state->target )->debuff.storm_earth_and_fire->expire();
-        // make the new target show that a SEF is on the target
-        get_target_data( target )->debuff.storm_earth_and_fire->trigger();
-        return target;
-      }
-    }
-
-    // If all targets have the debuff, find the lowest duration of cyclone strike debuff as well as not have a SEF
-    // debuff (indicating that an SEF is not already on the target and send the SEF to that new target.
-    player_t *lowest_duration = targets[ 0 ];
-
-    // They should never attack the player target
-    for ( player_t *target : targets )
-    {
-      if ( !get_target_data( target )->debuff.storm_earth_and_fire->check() )
-      {
-        if ( get_target_data( target )->debuff.mark_of_the_crane->remains() <
-             get_target_data( lowest_duration )->debuff.mark_of_the_crane->remains() )
-          lowest_duration = target;
-      }
-    }
-    // remove the current target as having an SEF on it
-    get_target_data( state->target )->debuff.storm_earth_and_fire->expire();
-    // make the new target show that a SEF is on the target
-    get_target_data( lowest_duration )->debuff.storm_earth_and_fire->trigger();
-
-    return lowest_duration;
-  }
-  // otherwise, target the same as the player
-  return targets.front();
-}
-
-// Currently at maximum stacks for target count
-bool monk_t::mark_of_the_crane_max()
-{
-  if ( is_ptr() )
-    return true;
-  if ( !baseline.windwalker.mark_of_the_crane->ok() )
-    return true;
-
-  if ( user_options.motc_override > 0 )
-    return true;
-
-  int count   = buff.cyclone_strikes->current_stack;
-  int targets = as<int>( sim->target_non_sleeping_list.data().size() );
-
-  if ( count == 0 || ( ( targets - count ) > 0 && !buff.cyclone_strikes->at_max_stacks() ) )
-    return false;
-
-  return true;
-}
-
 // monk_t::activate =========================================================
 
 void monk_t::activate()
@@ -6777,7 +6607,6 @@ void monk_t::init_spells()
     baseline.windwalker.combat_conditioning       = find_specialization_spell( "Combat Conditioning" );
     baseline.windwalker.empowered_tiger_lightning = find_specialization_spell( "Empowered Tiger Lightning" );
     baseline.windwalker.flying_serpent_kick       = find_specialization_spell( "Flying Serpent Kick" );
-    baseline.windwalker.mark_of_the_crane         = find_specialization_spell( "Mark of the Crane" );
     baseline.windwalker.touch_of_death_rank_3     = find_spell( 344361 );
     baseline.windwalker.touch_of_karma            = find_specialization_spell( "Touch of Karma" );
   }
@@ -7093,7 +6922,6 @@ void monk_t::init_spells()
     talent.windwalker.jadefire_harmony               = _ST( "Jadefire Harmony" );
     talent.windwalker.jadefire_brand_dmg             = find_spell( 395414 );
     talent.windwalker.jadefire_brand_heal            = find_spell( 395413 );
-    talent.windwalker.darting_hurricane              = _ST( "Darting Hurricane" );
     talent.windwalker.slicing_winds                  = _ST( "Slicing Winds" );
     talent.windwalker.slicing_winds_damage           = find_spell( 1217411 );
   }
@@ -7221,7 +7049,6 @@ void monk_t::init_spells()
   passives.chi_explosion                    = find_spell( 393056 );
   passives.crackling_tiger_lightning        = find_spell( 123996 );
   passives.crackling_tiger_lightning_driver = find_spell( 123999 );
-  passives.cyclone_strikes                  = find_spell( 220358 );
   passives.dance_of_chiji                   = find_spell( 325202 );
   passives.dual_threat_kick                 = find_spell( 451839 );
   passives.dizzying_kicks                   = find_spell( 196723 );
@@ -7235,7 +7062,6 @@ void monk_t::init_spells()
   passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
   passives.hit_combo                        = find_spell( 196741 );
   passives.improved_touch_of_death          = find_spell( 322113 );
-  passives.mark_of_the_crane                = find_spell( 228287 );
   passives.summon_white_tiger_statue        = find_spell( 388686 );
   passives.thunderfist                      = find_spell( 393565 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
@@ -7804,10 +7630,6 @@ void monk_t::create_buffs()
                                    ->set_duration( timespan_t::from_seconds( 1.5 ) )
                                    ->set_quiet( true );
 
-  buff.darting_hurricane = make_buff_fallback( talent.windwalker.darting_hurricane->ok(), this, "darting_hurricane",
-                                               talent.windwalker.darting_hurricane->effectN( 1 ).trigger() )
-                               ->set_default_value_from_effect( 1 );
-
   buff.dual_threat =
       make_buff_fallback( talent.windwalker.dual_threat->ok(), this, "dual_threat", find_spell( 451833 ) )
           ->set_trigger_spell( talent.windwalker.dual_threat )
@@ -7858,18 +7680,6 @@ void monk_t::create_buffs()
   buff.invoke_xuen = make_buff<buffs::invoke_xuen_the_white_tiger_buff_t>(
       this, "invoke_xuen_the_white_tiger", talent.windwalker.invoke_xuen_the_white_tiger );
 
-  buff.cyclone_strikes = make_buff_fallback( baseline.windwalker.mark_of_the_crane->ok(), this, "cyclone_strikes",
-                                             passives.cyclone_strikes )
-                             ->set_period( 0_ms )
-                             ->set_duration( timespan_t::zero() )
-                             ->set_default_value_from_effect( 1 )
-                             ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-
-  if ( user_options.motc_override > 0 )
-  {
-    buff.cyclone_strikes->set_initial_stack( user_options.motc_override )->set_freeze_stacks( true );
-  }
-
   buff.martial_mixture = make_buff_fallback( talent.windwalker.martial_mixture->ok(), this, "martial_mixure",
                                              talent.windwalker.martial_mixture->effectN( 1 ).trigger() )
                              ->set_trigger_spell( talent.windwalker.martial_mixture );
@@ -7900,13 +7710,10 @@ void monk_t::create_buffs()
       make_buff_fallback( talent.windwalker.storm_earth_and_fire->ok(), this, "storm_earth_and_fire",
                           talent.windwalker.storm_earth_and_fire )
           ->set_stack_change_callback( [ & ]( buff_t *, int old_, int new_ ) {
-            if ( is_ptr() )
-            {
-              if ( new_ )
-                buff.ordered_elements->trigger();
-              else if ( old_ )
-                buff.ordered_elements->expire();
-            }
+            if ( new_ )
+              buff.ordered_elements->trigger();
+            else if ( old_ )
+              buff.ordered_elements->expire();
           } )
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
           ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
@@ -7960,11 +7767,8 @@ void monk_t::create_buffs()
                           "heart_of_the_jade_serpent_cdr_celestial", find_spell( 443616 ) );
   // ->apply_affecting_aura( baseline.windwalker.aura_3 );
 
-  if ( is_ptr() )
-  {
-    buff.heart_of_the_jade_serpent_cdr->apply_affecting_aura( baseline.windwalker.aura_3 );
-    buff.heart_of_the_jade_serpent_cdr_celestial->apply_affecting_aura( baseline.windwalker.aura_3 );
-  }
+  buff.heart_of_the_jade_serpent_cdr->apply_affecting_aura( baseline.windwalker.aura_3 );
+  buff.heart_of_the_jade_serpent_cdr_celestial->apply_affecting_aura( baseline.windwalker.aura_3 );
 
   buff.heart_of_the_jade_serpent_stack_mw =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
@@ -8443,22 +8247,6 @@ void monk_t::init_special_effects()
   }
 
   // ======================================
-  // Darting Hurricane ( Windwalker Talent )
-  // ======================================
-
-  if ( talent.windwalker.darting_hurricane.ok() )
-    create_proc_callback( talent.windwalker.darting_hurricane.spell(), []( monk_t *p, action_state_t *state ) {
-      if ( p->is_ptr() )
-        return false;
-      if ( state->action->id == p->talent.windwalker.strike_of_the_windlord->id() ||
-           state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger_spell_id() ||
-           state->action->id == p->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger_spell_id() ||
-           state->action->id == p->passives.dual_threat_kick->id() )
-        return false;
-      return true;
-    } );
-
-  // ======================================
   // Veteran's Eye ( Shado-pan Talent )
   // ======================================
 
@@ -8682,51 +8470,14 @@ std::vector<player_t *> monk_t::create_storm_earth_and_fire_target_list() const
   // Make a copy of the non sleeping target list
   std::vector<player_t *> l = sim->target_non_sleeping_list.data();
 
-  // Sort the list by selecting non-cyclone striked targets first, followed by ascending order of
-  // the debuff remaining duration
+  // Sort the list by ascending order of the actor index
   range::sort( l, [ this ]( const player_t *l, const player_t *r ) {
-    auto td_left  = find_target_data( l );
-    auto td_right = find_target_data( r );
-    bool lcs      = td_left ? td_left->debuff.mark_of_the_crane->check() : false;
-    bool rcs      = td_right ? td_right->debuff.mark_of_the_crane->check() : false;
-    // Mark of the Crane is removed on 11.1, so just sort by the actor index.
-    if ( is_ptr() )
-      return l->actor_index < r->actor_index;
-
-    // Neither has cyclone strike
-    if ( !lcs && !rcs )
-    {
-      return false;
-    }
-    // Left side does not have cyclone strike, right side does
-    else if ( !lcs && rcs )
-    {
-      return true;
-    }
-    // Left side has cyclone strike, right side does not
-    else if ( lcs && !rcs )
-    {
-      return false;
-    }
-
-    // Both have cyclone strike, order by remaining duration, use actor index as a tiebreaker
-    timespan_t lv = td_left ? td_left->debuff.mark_of_the_crane->remains() : 0_ms;
-    timespan_t rv = td_right ? td_right->debuff.mark_of_the_crane->remains() : 0_ms;
-    if ( lv == rv )
-    {
-      return l->actor_index < r->actor_index;
-    }
-
-    return lv < rv;
+    return l->actor_index < r->actor_index;
   } );
 
   if ( sim->debug )
   {
     sim->out_debug.print( "{} storm_earth_and_fire target list, n_targets={}", *this, l.size() );
-    range::for_each( l, [ this ]( player_t *t ) {
-      auto td = find_target_data( t );
-      sim->out_debug.print( "{} cs={}", *t, td ? td->debuff.mark_of_the_crane->remains().total_seconds() : 0.0 );
-    } );
   }
 
   return l;
@@ -8754,13 +8505,6 @@ void monk_t::retarget_storm_earth_and_fire( pet_t *pet, std::vector<player_t *> 
     pet->target = pet->owner->target;
   else
   {
-    // Clones will now only re-target when you use an ability that applies Mark of the Crane, and their current target
-    // already has Mark of the Crane. https://us.battle.net/forums/en/wow/topic/20752377961?page=29#post-573
-    auto td = find_target_data( pet->target );
-
-    if ( !td || !td->debuff.mark_of_the_crane->check() || is_ptr() )
-      return;
-
     for ( auto it = targets.begin(); it != targets.end(); ++it )
     {
       player_t *candidate_target = *it;
@@ -8987,10 +8731,6 @@ void monk_t::combat_begin()
   // Trigger Ferociousness precombat
   if ( talent.windwalker.ferociousness->ok() )
     buff.ferociousness->trigger();
-
-  // Mark of the Crane Override
-  if ( user_options.motc_override > 0 )
-    buff.cyclone_strikes->trigger();
 
   base_t::combat_begin();
 
@@ -9346,13 +9086,6 @@ void monk_t::trigger_empowered_tiger_lightning( action_state_t *s )
 std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
 {
   auto splits = util::string_split<util::string_view>( name_str, "." );
-  if ( splits.size() == 2 && splits[ 0 ] == "spinning_crane_kick" && !is_ptr() )
-  {
-    if ( splits[ 1 ] == "count" )
-      return make_fn_expr( name_str, [ this ] { return buff.cyclone_strikes->current_stack; } );
-    else if ( splits[ 1 ] == "max" )
-      return make_fn_expr( name_str, [ this ] { return mark_of_the_crane_max(); } );
-  }
 
   return base_t::create_expression( name_str );
 }

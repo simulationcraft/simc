@@ -661,13 +661,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       return am;
     }
-
-    void impact( action_state_t *state ) override
-    {
-      sef_melee_attack_t::impact( state );
-
-      o()->trigger_mark_of_the_crane( state );
-    }
   };
 
   struct sef_blackout_kick_totm_proc_t : public sef_melee_attack_t
@@ -678,13 +671,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       background = dual = true;
       trigger_gcd       = timespan_t::zero();
-    }
-
-    void impact( action_state_t *state ) override
-    {
-      sef_melee_attack_t::impact( state );
-
-      o()->trigger_mark_of_the_crane( state );
     }
   };
 
@@ -713,14 +699,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
         am /= 1.0 + p()->o()->talent.windwalker.courageous_impulse->effectN( 1 ).percent();
 
       return am;
-    }
-
-    void impact( action_state_t *state ) override
-    {
-      sef_melee_attack_t::impact( state );
-
-      if ( result_is_hit( state->result ) )
-        o()->trigger_mark_of_the_crane( state );
     }
   };
 
@@ -758,8 +736,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       if ( o()->baseline.windwalker.combat_conditioning->ok() )
         state->target->debuffs.mortal_wounds->trigger();
-
-      o()->trigger_mark_of_the_crane( state );
     }
   };
 
