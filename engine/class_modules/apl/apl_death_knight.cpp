@@ -506,28 +506,14 @@ void unholy( player_t* p )
 
   san_fishing->add_action( "antimagic_shell,if=death_knight.ams_absorb_percent>0&runic_power<40", "San'layn Fishing" );
   san_fishing->add_action( "any_dnd,if=!buff.death_and_decay.up&!buff.vampiric_strike.react" );
-  if ( p->is_ptr() )
-    san_fishing->add_action(
-        "death_coil,if=buff.sudden_doom.react&talent.doomed_bidding|set_bonus.tww2_4pc&buff.essence_of_the_blood_queen."
-        "at_max_stacks&talent.frenzied_bloodthirst&!buff.vampiric_strike.react" );
-  else
-    san_fishing->add_action( "death_coil,if=buff.sudden_doom.react&talent.doomed_bidding" );
+  san_fishing->add_action( "death_coil,if=buff.sudden_doom.react&talent.doomed_bidding|set_bonus.tww2_4pc&buff.essence_of_the_blood_queen.at_max_stacks&talent.frenzied_bloodthirst&!buff.vampiric_strike.react" );
   san_fishing->add_action( "soul_reaper,if=target.health.pct<=35&fight_remains>5" );
   san_fishing->add_action( "death_coil,if=!buff.vampiric_strike.react" );
   san_fishing->add_action( "wound_spender,if=(debuff.festering_wound.stack>=3-pet.abomination.active&cooldown.apocalypse.remains>variable.apoc_timing)|buff.vampiric_strike.react" );
   san_fishing->add_action( "festering_strike,if=debuff.festering_wound.stack<3-pet.abomination.active" );
 
   san_st->add_action( "any_dnd,if=!death_and_decay.ticking&talent.unholy_ground&cooldown.dark_transformation.remains<5", "Single Target San'layn" );
-  if ( p->is_ptr() )
-    san_st->add_action(
-        "death_coil,if=buff.sudden_doom.react&buff.gift_of_the_sanlayn.remains&(talent.doomed_bidding|talent.rotten_"
-        "touch)|rune<3&!buff.runic_corruption.up|set_bonus.tww2_4pc&runic_power>80|buff.gift_of_the_sanlayn.up&buff."
-        "essence_of_the_blood_queen.at_max_stacks&talent.frenzied_bloodthirst&set_bonus.tww2_4pc&buff.winning_streak."
-        "at_max_stacks&rune<=3&buff.essence_of_the_blood_queen.remains>3" );
-  else
-    san_st->add_action(
-        "death_coil,if=buff.sudden_doom.react&buff.gift_of_the_sanlayn.remains&(talent.doomed_bidding|talent.rotten_"
-        "touch)|rune<3&!buff.runic_corruption.up" );
+  san_st->add_action( "death_coil,if=buff.sudden_doom.react&buff.gift_of_the_sanlayn.remains&(talent.doomed_bidding|talent.rotten_touch)|rune<3&!buff.runic_corruption.up|set_bonus.tww2_4pc&runic_power>80|buff.gift_of_the_sanlayn.up&buff.essence_of_the_blood_queen.at_max_stacks&talent.frenzied_bloodthirst&set_bonus.tww2_4pc&buff.winning_streak.at_max_stacks&rune<=3&buff.essence_of_the_blood_queen.remains>3" );
   san_st->add_action( "wound_spender,if=buff.gift_of_the_sanlayn.up&buff.vampiric_strike.react|talent.gift_of_the_sanlayn&buff.dark_transformation.up&buff.dark_transformation.remains<gcd" );
   san_st->add_action( "soul_reaper,if=target.health.pct<=35&!buff.gift_of_the_sanlayn.up&fight_remains>5" );
   san_st->add_action( "wound_spender,if=buff.vampiric_strike.react&debuff.festering_wound.stack>=1" );
