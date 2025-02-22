@@ -2964,7 +2964,7 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     death_knight_pet_t::arise();
     double dist    = precombat_spawn ? 0 : rng().range( -spawn_radius, spawn_radius );
     spawn_distance = std::max( 0.0, dk()->base.distance + dist );
-    if ( name_str == "army_ghoul" || !dk()->is_ptr() )
+    if ( name_str == "army_ghoul" )
     {
       trigger_summon_stun( stun_duration );
     }
@@ -3254,10 +3254,7 @@ struct army_ghoul_pet_t final : public base_ghoul_pet_t
 
     if ( name_str == "apoc_ghoul" )
     {
-      // Currently has a 1.29948x modifier as of 12-18-2024, also not in spell data
-      owner_coeff.ap_from_ap *= 1.29948;
-      if ( dk()->is_ptr() )
-        owner_coeff.ap_from_ap *= 1.25;
+      owner_coeff.ap_from_ap *= 1.62435;
     }
   }
 
@@ -3638,7 +3635,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     death_strike_t( std::string_view n, dancing_rune_weapon_pet_t* p )
       : drw_action_t<melee_attack_t>( p, n, p->dk()->talent.death_strike ), tww2_blood_4pc_cleave_targets( 0 )
     {
-      if ( dk()->is_ptr() && dk()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW2, B4 ) )
+      if ( dk()->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW2, B4 ) )
       {
         tww2_blood_4pc_cleave_targets =
             data().effectN( 1 ).chain_target() + as<int>( dk()->spell.luck_of_the_draw->effectN( 4 ).base_value() );
@@ -3996,9 +3993,7 @@ struct magus_pet_t : public death_knight_pet_t
     // Shares a value with Army of the Dead/Apocalypse, stored in death_knight_pet_t
     // Ensures parity between all pets that share this ap_from_ap mod.
     owner_coeff.ap_from_ap = army_ghoul_ap_mod;
-    owner_coeff.ap_from_ap *= 0.85;
-    if ( dk()->is_ptr() )
-      owner_coeff.ap_from_ap *= 1.5525;
+    owner_coeff.ap_from_ap *= 1.319625;
   }
 
   void init_action_list() override
@@ -4221,9 +4216,7 @@ struct horseman_pet_t : public death_knight_pet_t
     : death_knight_pet_t( owner, name, guardian, true, dynamic ), rp_spent( 0 ), current_pool( 0 )
   {
     main_hand_weapon.type  = WEAPON_BEAST_2H;
-    owner_coeff.ap_from_ap = 0.85;
-    if ( owner->is_ptr() )
-      owner_coeff.ap_from_ap *= 1.1;
+    owner_coeff.ap_from_ap = 0.935;
     resource_regeneration  = regen_type::DISABLED;
     auto_attack_multiplier = 1.25;
   }
@@ -7971,7 +7964,7 @@ struct dark_transformation_t final : public death_knight_spell_t
       p()->background_actions.unholy_blight->execute();
     }
 
-    if ( p()->is_ptr() && p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW2, B4 ) )
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW2, B4 ) )
     {
       p()->buffs.winning_streak_unholy->trigger( winning_streak_stacks );
     }
@@ -8398,7 +8391,7 @@ struct death_coil_t final : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
-    if ( p()->is_ptr() && p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW2, B2 ) &&
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW2, B2 ) &&
          !p()->buffs.dark_transformation->check() && rng().roll( p()->spell.winning_streak_unholy->proc_chance() ) )
     {
       p()->buffs.winning_streak_unholy->expire();
@@ -8536,7 +8529,7 @@ struct death_strike_t final : public death_knight_melee_attack_t
             p->talent.improved_death_strike->effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
     }
 
-    if ( p->is_ptr() && p->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW2, B4 ) )
+    if ( p->sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW2, B4 ) )
     {
       tww2_blood_4pc_cleave_targets =
           data().effectN( 1 ).chain_target() + as<int>( p->spell.luck_of_the_draw->effectN( 4 ).base_value() );
@@ -8808,7 +8801,7 @@ struct epidemic_t final : public death_knight_spell_t
       p()->trigger_vampiric_strike_proc( target );
     }
 
-    if ( p()->is_ptr() && p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW2, B2 ) &&
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW2, B2 ) &&
          !p()->buffs.dark_transformation->check() && rng().roll( p()->spell.winning_streak_unholy->proc_chance() ) )
     {
       p()->buffs.winning_streak_unholy->expire();
@@ -9313,14 +9306,14 @@ struct frost_strike_t final : public death_knight_melee_attack_t
       }
     }
 
-    if ( p()->is_ptr() && p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ) &&
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ) &&
          p()->rng().roll( p()->sets->set( DEATH_KNIGHT_FROST, TWW2, B4 )->effectN( 2 ).percent() *
                           p()->buffs.winning_streak_frost->check() ) )
     {
       p()->background_actions.frostscythe_proc->execute();
     }
 
-    if ( p()->is_ptr() && p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ) &&
+    if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ) &&
          rng().roll( p()->sets->set( DEATH_KNIGHT_FROST, TWW2, B2 )->effectN( 1 ).percent() ) )
     {
       p()->buffs.winning_streak_frost->expire();
@@ -9379,13 +9372,13 @@ struct glacial_advance_damage_t final : public death_knight_spell_t
         p()->buffs.icy_vigor->trigger();
       }
 
-      if ( p()->is_ptr() && p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ) &&
+      if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ) &&
            rng().roll( p()->sets->set( DEATH_KNIGHT_FROST, TWW2, B2 )->effectN( 1 ).percent() ) )
       {
         p()->buffs.winning_streak_frost->expire();
       }
 
-      if ( p()->is_ptr() && p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ) &&
+      if ( p()->sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ) &&
            p()->rng().roll( p()->sets->set( DEATH_KNIGHT_FROST, TWW2, B4 )->effectN( 2 ).percent() *
                             p()->buffs.winning_streak_frost->check() ) )
       {
@@ -12688,7 +12681,7 @@ void death_knight_t::create_actions()
       background_actions.chill_streak_damage = get_action<chill_streak_damage_t>( "chill_streak_damage", this );
     }
 
-    if ( is_ptr() && sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ) )
+    if ( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ) )
     {
       background_actions.frostscythe_proc = get_action<frostscythe_proc_t>( "frostscythe_proc", this );
     }
@@ -13581,7 +13574,7 @@ void death_knight_t::spell_lookups()
   spell.unbroken_tww1_2pc    = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B2 ), 457473 );
   spell.piledriver_tww1_4pc  = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW1, B4 ), 457506 );
   spell.luck_of_the_draw =
-      conditional_spell_lookup( is_ptr() && sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW2, B2 ), 1218601 );
+      conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW2, B2 ), 1218601 );
 
   // Frost
   spell.murderous_efficiency_gain   = conditional_spell_lookup( talent.frost.murderous_efficiency.ok(), 207062 );
@@ -13622,9 +13615,9 @@ void death_knight_t::spell_lookups()
   // Tier Sets
   spell.icy_vigor = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ), 457189 );
   spell.winning_streak_frost =
-      conditional_spell_lookup( is_ptr() && sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ), 1217897 );
+      conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ), 1217897 );
   spell.murderous_frenzy =
-      conditional_spell_lookup( is_ptr() && sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ), 1222698 );
+      conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ), 1222698 );
 
   // Unholy
   spell.runic_corruption_chance        = conditional_spell_lookup( spec.unholy_death_knight->ok(), 51462 );
@@ -13657,7 +13650,7 @@ void death_knight_t::spell_lookups()
   // Set Bonuses
   spell.unholy_commander = conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ), 456698 );
   spell.winning_streak_unholy =
-      conditional_spell_lookup( is_ptr() && sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW2, B2 ), 1216813 );
+      conditional_spell_lookup( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW2, B2 ), 1216813 );
 
   // Rider of the Apocalypse Spells
   spell.a_feast_of_souls_buff = conditional_spell_lookup( talent.rider.a_feast_of_souls.ok(), 440861 );
@@ -14420,7 +14413,7 @@ void death_knight_t::create_buffs()
       make_fallback( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW1, B4 ), this, "icy_vigor", spell.icy_vigor );
 
   buffs.winning_streak_frost =
-      make_fallback( is_ptr() && sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ), this, "winning_streak",
+      make_fallback( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ), this, "winning_streak",
                      spell.winning_streak_frost )
           ->set_chance( 1.01 )
           ->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -14435,7 +14428,7 @@ void death_knight_t::create_buffs()
             }
           } );
 
-  buffs.murderous_frenzy = make_fallback( is_ptr() && sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ), this,
+  buffs.murderous_frenzy = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B4 ), this,
                                           "murderous_frenzy", spell.murderous_frenzy )
                                ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
                                ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
@@ -14500,7 +14493,7 @@ void death_knight_t::create_buffs()
   buffs.unholy_commander = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW1, B4 ), this,
                                           "unholy_commander", spell.unholy_commander );
 
-  buffs.winning_streak_unholy = make_fallback( is_ptr() && sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW2, B2 ), this,
+  buffs.winning_streak_unholy = make_fallback( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW2, B2 ), this,
                                                "winning_streak", spell.winning_streak_unholy )
                                     ->set_chance( 1.01 );
 }
@@ -14633,7 +14626,7 @@ void death_knight_t::init_special_effects()
     new death_knight_proc_callback_t( *bloodworms );
   }
 
-  if ( is_ptr() && sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW2, B2 ) )
+  if ( sets->has_set_bonus( DEATH_KNIGHT_BLOOD, TWW2, B2 ) )
   {
     const spell_data_t* set_data = sets->set( DEATH_KNIGHT_BLOOD, TWW2, B2 );
     auto set                     = new special_effect_t( this );
@@ -14646,7 +14639,7 @@ void death_knight_t::init_special_effects()
     tww2_blood_2pc( *set );
   }
 
-  if ( is_ptr() && sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW2, B2 ) )
+  if ( sets->has_set_bonus( DEATH_KNIGHT_UNHOLY, TWW2, B2 ) )
   {
     const spell_data_t* set_data = sets->set( DEATH_KNIGHT_UNHOLY, TWW2, B2 );
     auto set                     = new special_effect_t( this );
@@ -14659,7 +14652,7 @@ void death_knight_t::init_special_effects()
     new death_knight_proc_callback_t( *set );
   }
 
-  if ( is_ptr() && sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ) )
+  if ( sets->has_set_bonus( DEATH_KNIGHT_FROST, TWW2, B2 ) )
   {
     const spell_data_t* set_data = sets->set( DEATH_KNIGHT_FROST, TWW2, B2 );
     auto set                     = new special_effect_t( this );
