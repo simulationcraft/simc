@@ -254269,6 +254269,7 @@ Name             : Blaze of Glory (id=472030)
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
+Cooldown         : 1 seconds
 Labels           : 292
                  : 3959: Item Effects
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186)

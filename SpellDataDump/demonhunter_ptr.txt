@@ -11670,9 +11670,10 @@ Effects          :
                    Affected Spells: Immolation Aura (258921), Immolation Aura (258922), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916)
                    Family Flags: 49, 61
 #2 (id=1154950)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Immolation Aura (258921), Immolation Aura (258922), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916)
                    Family Flags: 49, 61
+Hotfixed         : Base Value (30 -> 50)
 #3 (id=1213307)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Radius (6)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 6 | Misc Value 2: 4666 (Label) | Target: Self (1)
                    Affected Spells (Label): Ragefire (390197)

@@ -3370,9 +3370,10 @@ Effects          :
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506)
                    Family Flags: 0
 #15 (id=1046968) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 0 | Target: Self (1)
+                   Base Value: 38 | Scaled Value: 38 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506)
                    Family Flags: 0
+Hotfixed         : Base Value (18 -> 38)
 #16 (id=1174952) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445474)
@@ -4481,7 +4482,8 @@ Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Ch
 Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13), Damage Channel Duration (14)
 Effects          :
 #1 (id=291909)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2.5 | SP Coefficient: 0.464064 | PvP Coefficient: 1.69 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 2.5 | SP Coefficient: 0.556877 | PvP Coefficient: 1.40833 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.464064 -> 0.556877), PvP Coefficient (1.69 -> 1.40833)
 #2 (id=355424)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5
 #3 (id=734824)   : Dummy (3)
@@ -4689,7 +4691,8 @@ Effects          :
 #2 (id=734059)   : Server Side Script (77)
                    Base Value: 8 | Scaled Value: 8 | Radius: 3 - 60 yards | Target: Unknown(49) -> At Enemy in Area (16)
 #3 (id=734060)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 45)
 #4 (id=734780)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : Summons a Darkglare from the Twisting Nether that extends the duration of your damage over time effects on all enemies by $s2 sec.
@@ -4743,7 +4746,8 @@ Family Flags     : 90
 Attributes       : Bouncy Chain Missiles (146), Treat as Area Effect (175), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=302984)   : School Damage (2): shadow | Attributes: Add Target (Dest) Combat Reach to AOE (11)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.715821 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.00215 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.715821 -> 1.00215)
 Description      : Fires an eye beam that deals $s1 Shadow damage.
 
 Name             : Phantom Singularity (id=205246) [Spell Family (5)] 
@@ -7470,7 +7474,8 @@ Effects          :
 #1 (id=800325)   : Dummy (3)
                    Base Value: 3447 | Scaled Value: 3447 | Target: Enemy (6)
 #2 (id=800326)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.532666 | PvP Coefficient: 1.625 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.692466 | PvP Coefficient: 1.25 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.532666 -> 0.692466), PvP Coefficient (1.625 -> 1.25)
 #3 (id=800327)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
 #4 (id=1087592)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
@@ -12097,7 +12102,8 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1043910)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.4 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.25 | Misc Value: 1 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 40), PvP Coefficient (0.4 -> 0.25)
 Description      : Malefic Rapture deals $s1% increased damage to targets suffering from Unstable Affliction.
 
 Name             : Chosen Identity (desc=Racial) (id=403617) [Hidden] 
@@ -17156,7 +17162,8 @@ Effects          :
 #1 (id=1204454)  : Dummy (3)
                    Base Value: 3447 | Scaled Value: 3447 | Target: Enemy (6)
 #2 (id=1204455)  : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.532666 | PvP Coefficient: 0.8125 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.692466 | PvP Coefficient: 0.625 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.532666 -> 0.692466), PvP Coefficient (0.8125 -> 0.625)
 #3 (id=1204456)  : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
 #4 (id=1204457)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
