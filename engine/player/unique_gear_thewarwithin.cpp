@@ -8452,7 +8452,7 @@ void gigazaps_zapcap( special_effect_t& effect )
 
 void capos_molten_knuckles( special_effect_t& effect )
 {
-  effect.execute_action = create_proc_action<generic_proc_t>( "capos_molten_knuckles", effect, effect.driver() );
+  effect.execute_action = create_proc_action<generic_proc_t>( "capos_molten_knuckles", effect, effect.player->find_spell( 473626 ) );
   effect.execute_action->base_dd_min = effect.execute_action->base_dd_max =
       effect.driver()->effectN( 1 ).average( effect.item );
   effect.execute_action->base_multiplier *= role_mult( effect );
