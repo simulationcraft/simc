@@ -232127,9 +232127,11 @@ Effects          :
 #1 (id=1139837)  : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1144323)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 24363.33 (coefficient=9.525258) | PvP Coefficient: 0.5
+                   Base Value: 0 | Scaled Value: 35952.4 (coefficient=14.0562) | PvP Coefficient: 0.5
+Hotfixed         : Coefficient (9.525258 -> 14.0562)
 #3 (id=1159181)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 20883.67 (coefficient=8.164825) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 30816.42 (coefficient=12.0482) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (8.164825 -> 12.0482)
 Description      : Your spells and abilities have a chance to bring the power of the Light to bear against your foes. A Spark of Beledar judges them, dealing $s2 Radiant damage while marking them. Your next Spark against them will consume the mark to deal an additional $s3 Radiant damage.
 
 Name             : Blessed Weapon Grip (id=443743) [Passive] 
@@ -232159,7 +232161,8 @@ Effects          :
 #1 (id=1139861)  : Apply Aura (6) | Proc Trigger Spell (42): Deepening Darkness
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 446743 | Target: Self (1)
 #2 (id=1144473)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 155288.5 (coefficient=60.71266)
+                   Base Value: 0 | Scaled Value: 155884.5 (coefficient=60.9457)
+Hotfixed         : Coefficient (60.712662 -> 60.945702)
 #3 (id=1146125)  : Apply Aura (6) | Dummy (4)
                    Base Value: -15 | Scaled Value: -15 | Trigger Spell: 446836 | Target: Self (1)
 Description      : Dealing damage has a chance to grant you a stack of Deepening Darkness. The Darkness erupts at 5 stacks, dealing ${$<rolemult>*$s2} Shadow damage split among all nearby enemies. Damage increases per target, up to 5. Afterwards, the shadows weigh you down and lower your movement speed by $s3% for $446836d.
@@ -235700,7 +235703,8 @@ Triggered By     : Authority of Radiant Power (448623)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1147364)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 138610 (coefficient=54.19193) | Trigger Spell: 448623 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 170450 (coefficient=66.6403) | Trigger Spell: 448623 | Target: Self (1)
+Hotfixed         : Coefficient (54.191929 -> 66.640297)
 #2 (id=1149589)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 1559.999 (coefficient=0.40742) | Trigger Spell: 448623 | Target: Self (1)
 Description      : $@spelldesc445339
@@ -235720,7 +235724,8 @@ Triggered By     : Authority of Radiant Power (448623)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1147371)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 168310 (coefficient=65.80364) | Trigger Spell: 448623 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 206975 (coefficient=80.9204) | Trigger Spell: 448623 | Target: Self (1)
+Hotfixed         : Coefficient (65.803642 -> 80.920403)
 #2 (id=1149590)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 1894.999 (coefficient=0.494911) | Trigger Spell: 448623 | Target: Self (1)
 Description      : $@spelldesc445339
@@ -235740,7 +235745,8 @@ Triggered By     : Authority of Radiant Power (448623)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1147374)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 198015 (coefficient=77.41732) | Trigger Spell: 448623 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 243500.1 (coefficient=95.2005) | Trigger Spell: 448623 | Target: Self (1)
+Hotfixed         : Coefficient (77.41732 -> 95.2005)
 #2 (id=1149591)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 2230 (coefficient=0.582402) | Trigger Spell: 448623 | Target: Self (1)
 Description      : $@spelldesc445339
@@ -235795,7 +235801,8 @@ Triggered By     : Authority of Air (448833)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1147546)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 82475 (coefficient=32.245) | Trigger Spell: 448833 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 204141 (coefficient=79.8124) | Trigger Spell: 448833 | Target: Self (1)
+Hotfixed         : Coefficient (32.244999 -> 79.812401)
 Description      : $@spelldesc445331
 
 Name             : Authority of Air (id=448831) [Passive] 
@@ -235813,7 +235820,8 @@ Triggered By     : Authority of Air (448833)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1147547)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 117820 (coefficient=46.06373) | Trigger Spell: 448833 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 247885.4 (coefficient=96.915) | Trigger Spell: 448833 | Target: Self (1)
+Hotfixed         : Coefficient (46.063728 -> 96.915001)
 Description      : $@spelldesc445331
 
 Name             : Authority of Air (id=448832) [Passive] 
@@ -235831,7 +235839,8 @@ Triggered By     : Authority of Air (448833)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1147548)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 145815 (coefficient=57.00885) | Trigger Spell: 448833 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 291631 (coefficient=114.0181) | Trigger Spell: 448833 | Target: Self (1)
+Hotfixed         : Coefficient (57.008846 -> 114.018082)
 Description      : $@spelldesc445331
 
 Name             : Authority of Air (id=448833) [Passive] 
@@ -235981,7 +235990,8 @@ Triggered By     : Authority of Storms (449022), Authority of Storms (449023)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1147871)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 141135 (coefficient=55.17912) | Trigger Spell: 449022 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 204184.5 (coefficient=79.8294) | Trigger Spell: 449022 | Target: Self (1)
+Hotfixed         : Coefficient (55.179119 -> 79.829399)
 Description      : $@spelldesc445336
 
 Name             : Authority of Storms (id=449019) [Passive] 
@@ -235999,7 +236009,8 @@ Triggered By     : Authority of Storms (449022), Authority of Storms (449023)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1147872)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 201625 (coefficient=78.82871) | Trigger Spell: 449022 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 247938.3 (coefficient=96.9357) | Trigger Spell: 449022 | Target: Self (1)
+Hotfixed         : Coefficient (78.828712 -> 96.935699)
 Description      : $@spelldesc445336
 
 Name             : Authority of Storms (id=449020) [Passive] 
@@ -236017,7 +236028,8 @@ Triggered By     : Authority of Storms (449022), Authority of Storms (449023)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1147873)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 237200 (coefficient=92.73736) | Trigger Spell: 449022 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 291692.2 (coefficient=114.042) | Trigger Spell: 449022 | Target: Self (1)
+Hotfixed         : Coefficient (92.737358 -> 114.042)
 Description      : $@spelldesc445336
 
 Name             : Authority of Storms (id=449022) [Passive] 
@@ -236584,7 +236596,8 @@ Triggered By     : Authority of Fiery Resolve (449210)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1148181)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 103130 (coefficient=40.32042) | Trigger Spell: 449210 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 126823 (coefficient=49.5836) | Trigger Spell: 449210 | Target: Self (1)
+Hotfixed         : Coefficient (40.320419 -> 49.583599)
 Description      : $@spelldesc445331
 
 Name             : Authority of Fiery Resolve (id=449212) [Passive] 
@@ -236602,7 +236615,8 @@ Triggered By     : Authority of Fiery Resolve (449210)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1148182)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 87665 (coefficient=34.27412) | Trigger Spell: 449210 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 107799.4 (coefficient=42.146) | Trigger Spell: 449210 | Target: Self (1)
+Hotfixed         : Coefficient (34.274117 -> 42.146)
 Description      : $@spelldesc445403
 
 Name             : Authority of Fiery Resolve (id=449213) [Passive] 
@@ -236620,7 +236634,8 @@ Triggered By     : Authority of Fiery Resolve (449210)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1148183)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 62365 (coefficient=24.38265) | Trigger Spell: 449210 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 88775.79 (coefficient=34.7084) | Trigger Spell: 449210 | Target: Self (1)
+Hotfixed         : Coefficient (24.382652 -> 34.708401)
 Description      : $@spelldesc445403
 
 Name             : Suffocating Darkness (id=449217) 
@@ -236682,7 +236697,8 @@ Triggered By     : Authority of the Depths (449218)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1148197)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 14115 (coefficient=5.518498) | Trigger Spell: 449218 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 24502.15 (coefficient=9.57953) | Trigger Spell: 449218 | Target: Self (1)
+Hotfixed         : Coefficient (5.518498 -> 9.57953)
 Description      : $@spelldesc445341
 
 Name             : Authority of the Depths (id=449222) [Passive] 
@@ -236699,7 +236715,8 @@ Triggered By     : Authority of the Depths (449218)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1148198)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 23720 (coefficient=9.273737) | Trigger Spell: 449218 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 35002.96 (coefficient=13.685) | Trigger Spell: 449218 | Target: Self (1)
+Hotfixed         : Coefficient (9.273737 -> 13.685)
 Description      : $@spelldesc445341
 
 Name             : Authority of the Depths (id=449223) [Passive] 
@@ -236716,7 +236733,8 @@ Triggered By     : Authority of the Depths (449218)
 Attributes       : Passive (6)
 Effects          :
 #1 (id=1148199)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 20160 (coefficient=7.881894) | Trigger Spell: 449218 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 29752.64 (coefficient=11.6323) | Trigger Spell: 449218 | Target: Self (1)
+Hotfixed         : Coefficient (7.881894 -> 11.6323)
 Description      : $@spelldesc445341
 
 Name             : Entropic Reclamation (id=449254) 
@@ -238734,7 +238752,8 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1152697)  : Apply Aura (6) | Proc Trigger Spell (42): Oil of Deep Toxins | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 6415 (coefficient=2.508053) | Trigger Spell: 451905 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 9469.01 (coefficient=3.70207) | Trigger Spell: 451905 | Target: Self (1)
+Hotfixed         : Coefficient (2.508053 -> 3.70207)
 
 Name             : Oil of Deep Toxins (id=451905) 
 School           : Nature
@@ -238760,7 +238779,8 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1152702)  : Apply Aura (6) | Proc Trigger Spell (42): Oil of Deep Toxins | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 7794.999 (coefficient=3.047587) | Trigger Spell: 451910 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 11499 (coefficient=4.49573) | Trigger Spell: 451910 | Target: Self (1)
+Hotfixed         : Coefficient (3.047587 -> 4.49573)
 
 Name             : Oil of Deep Toxins (id=451910) 
 School           : Nature
@@ -238798,7 +238818,8 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1152705)  : Apply Aura (6) | Proc Trigger Spell (42): Oil of Deep Toxins | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 9170 (coefficient=3.585167) | Trigger Spell: 451911 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 13528 (coefficient=5.289) | Trigger Spell: 451911 | Target: Self (1)
+Hotfixed         : Coefficient (3.585167 -> 5.289)
 
 Name             : Well Fed (id=451916) 
 School           : Physical
@@ -238958,7 +238979,8 @@ Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1152732)  : Apply Aura (6) | Proc Trigger Spell (42): Beledar's Grace | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 14150 (coefficient=5.532183) | Trigger Spell: 451929 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 47346.97 (coefficient=18.5111) | Trigger Spell: 451929 | Target: Self (1)
+Hotfixed         : Coefficient (5.532183 -> 18.511101)
 
 Name             : Beledar's Grace (id=451929) 
 School           : Holy
@@ -239008,7 +239030,8 @@ Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1152736)  : Apply Aura (6) | Proc Trigger Spell (42): Beledar's Grace | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 20215 (coefficient=7.903397) | Trigger Spell: 451931 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 67638.96 (coefficient=26.4446) | Trigger Spell: 451931 | Target: Self (1)
+Hotfixed         : Coefficient (7.903397 -> 26.444599)
 
 Name             : Oil of Beledar's Grace (id=451933) [Passive, Hidden] 
 School           : Shadow
@@ -239022,7 +239045,8 @@ Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1152737)  : Apply Aura (6) | Proc Trigger Spell (42): Beledar's Grace | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 17185 (coefficient=6.718767) | Trigger Spell: 451930 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 57493.1 (coefficient=22.4779) | Trigger Spell: 451930 | Target: Self (1)
+Hotfixed         : Coefficient (6.718767 -> 22.4779)
 
 Name             : Azerite Surge: III (id=451934) 
 Race             : Earthen (0x60000)
@@ -240801,7 +240825,8 @@ Labels           : 2856
 Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Log Passive (317), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
 Effects          :
 #1 (id=1155426)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 32812.48 (coefficient=12.82859) | Trigger Spell: 453508 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 42800.55 (coefficient=16.7336) | Trigger Spell: 453508 | Target: Self (1)
+Hotfixed         : Coefficient (12.828595 -> 16.733601)
 Description      : Your damaging spells and abilities have a chance to toss a stashed pocket grenade, dealing ${$<rolemult>*$s1} Fire damage split between all enemies caught in the blast.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -240817,7 +240842,8 @@ Triggered By     : Pouch of Pocket Grenades (453503)
 Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Entering Arena (149), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Log Passive (317), Allow While Stunned By Horror Mechanic (342), Scales with Casting Item's Level (354), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444), Unknown (452)
 Effects          :
 #1 (id=1155435)  : Apply Aura (6) | Trigger Spell with Value (231) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 32812.48 (coefficient=12.82859) | Trigger Spell: 453510 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 42800.42 (coefficient=16.73355) | Trigger Spell: 453510 | Target: Self (1)
+Hotfixed         : Coefficient (12.828595 -> 16.733551)
 Description      : $@spelldesc453503
 
 Name             : Pocket Grenade (id=453510) 
@@ -240868,7 +240894,8 @@ Effects          :
 #1 (id=1155528)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 49559.66 (coefficient=19.37619) | Target: Self (1)
 #2 (id=1164381)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 100019.5 (coefficient=39.10433) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 107390.4 (coefficient=41.9861) | Target: Self (1)
+Hotfixed         : Coefficient (39.104328 -> 41.986099)
 #3 (id=1164714)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 458630 | Target: Self (1)
 #4 (id=1179443)  : Apply Aura (6) | Dummy (4)
@@ -240953,7 +240980,8 @@ Effects          :
 #2 (id=1155869)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #3 (id=1155870)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 8 | Scaled Value: 177966.6 (coefficient=69.57907) | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 222466.1 (coefficient=86.9769) | Target: Self (1)
+Hotfixed         : Coefficient (69.579071 -> 86.976898)
 #4 (id=1155871)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 #5 (id=1155872)  : Apply Aura (6) | Dummy (4)
@@ -249279,7 +249307,8 @@ Labels           : 2860
 Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29), No Aura Cancel (31), No Threat (42), Not an Action (92), Not a Proc (105), Aura Is Buff (140), Allow Entering Arena (149), Not an Attack (194), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=1168262)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 168952.6 (coefficient=66.05486) | Trigger Spell: 460527 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 720789.8 (coefficient=281.805) | Trigger Spell: 460527 | Target: Self (1)
+Hotfixed         : Coefficient (66.054863 -> 281.804993)
 #2 (id=1168263)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #3 (id=1168264)  : Apply Aura (6) | Dummy (4)
