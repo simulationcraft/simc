@@ -1,5 +1,5 @@
-// Permanent item enchants, wow build 11.0.7.59302
-static const std::array<permanent_enchant_entry_t, 954> __permanent_enchant_data { {
+// Permanent item enchants, wow build 11.1.0.59324
+static const std::array<permanent_enchant_entry_t, 957> __permanent_enchant_data { {
   { 6614,  1,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6615,  2,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
   { 6616,  3,  4, 0x00100020, 0x0000001f, "accelerated_agility"               },
@@ -133,6 +133,9 @@ static const std::array<permanent_enchant_entry_t, 954> __permanent_enchant_data
   { 7401,  1,  4, 0x00010000, 0x0000001f, "chant_of_winged_grace"             },
   { 7402,  2,  4, 0x00010000, 0x0000001f, "chant_of_winged_grace"             },
   { 7403,  3,  4, 0x00010000, 0x0000001f, "chant_of_winged_grace"             },
+  { 7652,  1,  4, 0x00000080, 0x0000001e, "charged_armor_kit"                 },
+  { 7653,  2,  4, 0x00000080, 0x0000001e, "charged_armor_kit"                 },
+  { 7654,  3,  4, 0x00000080, 0x0000001e, "charged_armor_kit"                 },
   { 4127,  0,  4, 0x00000080, 0x0000001f, "charscale_leg_armor"               },
   { 3011,  0,  4, 0x00000080, 0x0000001f, "clefthide_leg_armor"               },
   { 5946,  0,  2, 0x00000000, 0x000ebfff, "coastal_surge"                     },

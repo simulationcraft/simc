@@ -1,5 +1,5 @@
-// Active class spells, wow build 11.0.7.59302
-static const std::array<active_class_spell_t, 311> __active_spells_data { {
+// Active class spells, wow build 11.1.0.59324
+static const std::array<active_class_spell_t, 315> __active_spells_data { {
   {  1,    0,     100,       0, "Charge"                             },
   {  1,    0,     355,       0, "Taunt"                              },
   {  1,    0,    1464,       0, "Slam"                               },
@@ -63,7 +63,6 @@ static const std::array<active_class_spell_t, 311> __active_spells_data { {
   {  3,    0,    1543,       0, "Flare"                              },
   {  3,    0,    2641,       0, "Dismiss Pet"                        },
   {  3,    0,    5384,       0, "Feign Death"                        },
-  {  3,    0,    6197,       0, "Eagle Eye"                          },
   {  3,    0,    6991,       0, "Feed Pet"                           },
   {  3,    0,   56641,       0, "Steady Shot"                        },
   {  3,    0,  109304,       0, "Exhilaration"                       },
@@ -75,9 +74,13 @@ static const std::array<active_class_spell_t, 311> __active_spells_data { {
   {  3,    0,  195645,       0, "Wing Clip"                          },
   {  3,    0,  257284,       0, "Hunter's Mark"                      },
   {  3,    0,  272651,       0, "Command Pet"                        },
-  {  3,    0,  321297,       0, "Eyes of the Beast"                  },
+  {  3,  253,  321297,       0, "Eyes of the Beast"                  },
+  {  3,  254,    6197,       0, "Eagle Eye"                          },
+  {  3,  254,  257620,       0, "Multi-Shot"                         },
+  {  3,  254,  466904,       0, "Harrier's Cry"                      },
   {  3,  255,  186289,       0, "Aspect of the Eagle"                },
   {  3,  255,  190925,       0, "Harpoon"                            },
+  {  3,  255,  321297,       0, "Eyes of the Beast"                  },
   {  4,    0,     408,       0, "Kidney Shot"                        },
   {  4,    0,     921,       0, "Pick Pocket"                        },
   {  4,    0,    1725,       0, "Distract"                           },
@@ -176,9 +179,11 @@ static const std::array<active_class_spell_t, 311> __active_spells_data { {
   {  7,    0,  318038,       0, "Flametongue Weapon"                 },
   {  7,    0,  462854,       0, "Skyfury"                            },
   {  7,    0,  470411,       0, "Flame Shock"                        },
+  {  7,  263,   17364,   73899, "Stormstrike"                        },
   {  7,  263,  196884,       0, "Feral Lunge"                        },
   {  7,  264,   52127,       0, "Water Shield"                       },
   {  7,  264,   77130,  440012, "Purify Spirit"                      },
+  {  7,  264,   77472,       0, "Healing Wave"                       },
   {  7,  264,  212048,       0, "Ancestral Vision"                   },
   {  7,  264,  440012,       0, "Cleanse Spirit"                     },
   {  8,    0,      66,       0, "Invisibility"                       },
@@ -265,7 +270,6 @@ static const std::array<active_class_spell_t, 311> __active_spells_data { {
   { 11,    0,   33917,       0, "Mangle"                             },
   { 11,    0,   50769,       0, "Revive"                             },
   { 11,    0,  213764,       0, "Swipe"                              },
-  { 11,  102,   24858,       0, "Moonkin Form"                       },
   { 11,  102,  190984,    5176, "Wrath"                              },
   { 11,  102,  191034,       0, "Starfall"                           },
   { 11,  105,   18562,       0, "Swiftmend"                          },
@@ -313,7 +317,7 @@ static const std::array<active_class_spell_t, 311> __active_spells_data { {
   { 13, 1473,  361021,       0, "Sense Power"                        },
 } };
 
-// Pet active spells, wow build 11.0.7.59302
+// Pet active spells, wow build 11.1.0.59324
 static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  3,    2649, "Growl"                              },
   {  3,   16827, "Claw"                               },

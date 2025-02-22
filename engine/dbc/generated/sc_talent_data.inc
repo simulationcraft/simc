@@ -1,8 +1,7 @@
-// 565 talents, wow build 11.0.7.59302
-static std::array<talent_data_t, 565> __talent_data { {
+// 562 talents, wow build 11.1.0.59324
+static std::array<talent_data_t, 562> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
-  { "War Machine"                       , 15760, 0x00, 0x0001,   73,   0,   0,  316733,       0,  0 },
   { "Devastator"                        , 15774, 0x00, 0x0001,   73,   2,   0,  236279,   20243,  0 },
   { "Slipstream"                        , 16025, 0x00, 0x0080,   62,   2,   1,  236457,       0,  0 },
   { "Siegebreaker"                      , 16037, 0x00, 0x0001,   72,   2,   6,  280772,       0,  0 },
@@ -150,7 +149,7 @@ static std::array<talent_data_t, 565> __talent_data { {
   { "Unleashed Power"                   , 21869, 0x00, 0x0800,  577,   0,   5,  206477,       0,  0 },
   { "Master of the Glaive"              , 21870, 0x00, 0x0800,  577,   1,   5,  203556,       0,  0 },
   { "Demonic"                           , 21900, 0x00, 0x0800,  577,   0,   6,  213410,       0,  0 },
-  { "Momentum"                          , 21901, 0x00, 0x0800,  577,   1,   6,  206476,       0,  0 },
+  { "Exergy"                            , 21901, 0x00, 0x0800,  577,   1,   6,  206476,       0,  0 },
   { "Bulk Extraction"                   , 21902, 0x00, 0x0800,  581,   2,   6,  320341,       0,  0 },
   { "Surge of Earth"                    , 21963, 0x00, 0x0040,  264,   2,   1,  320746,       0,  0 },
   { "Wind Rush Totem"                   , 21966, 0x00, 0x0040,    0,   2,   4,  192077,       0,  0 },
@@ -331,7 +330,6 @@ static std::array<talent_data_t, 565> __talent_data { {
   { "Guardian of Elune"                 , 22390, 0x00, 0x0400,  104,   2,   5,  155578,       0,  0 },
   { "Warbreaker"                        , 22391, 0x00, 0x0001,   71,   1,   4,  262161,       0,  0 },
   { "Collateral Damage"                 , 22392, 0x00, 0x0001,   71,   0,   4,  334779,       0,  0 },
-  { "Frothing Berserker"                , 22393, 0x00, 0x0001,   72,   1,   4,  215571,       0,  0 },
   { "In For The Kill"                   , 22394, 0x00, 0x0001,   71,   0,   5,  248621,       0,  0 },
   { "Into the Fray"                     , 22395, 0x00, 0x0001,   73,   0,   5,  202603,       0,  0 },
   { "Meat Cleaver"                      , 22396, 0x00, 0x0001,   72,   0,   5,  280392,       0,  0 },
@@ -462,7 +460,6 @@ static std::array<talent_data_t, 565> __talent_data { {
   { "Bounding Stride"                   , 22627, 0x00, 0x0001,    0,   1,   3,  202163,       0,  0 },
   { "Rumbling Earth"                    , 22629, 0x00, 0x0001,   73,   1,   1,  275339,       0,  0 },
   { "Indomitable"                       , 22631, 0x00, 0x0001,   73,   1,   4,  202095,       0,  0 },
-  { "War Machine"                       , 22632, 0x00, 0x0001,   72,   0,   0,  346002,       0,  0 },
   { "Sudden Death"                      , 22633, 0x00, 0x0001,   72,   1,   0,  280721,       0,  0 },
   { "Final Reckoning"                   , 22634, 0x00, 0x0002,   70,   2,   6,  343721,       0,  0 },
   { "Stormflurry"                       , 22636, 0x00, 0x0040,  263,   0,   1,  344357,       0,  0 },

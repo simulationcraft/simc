@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 11.0.7.59302
-static const std::array<item_name_description_t, 939> __item_name_description_data { {
+// Item name descriptions, wow build 11.1.0.59324
+static const std::array<item_name_description_t, 949> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -915,8 +915,10 @@ static const std::array<item_name_description_t, 939> __item_name_description_da
   { 14183, "Tier 8"                                      },
   { 14185, "Singing Thunder Citrine"                     },
   { 14186, "Darkmoon Fortune Deck"                       },
+  { 14187, "The War Within Season 2"                     },
   { 14189, "Singing Sea Citrine"                         },
   { 14190, "Singing Wind Citrine"                        },
+  { 14192, "Fortune Crafted"                             },
   { 14195, "Dragonflight Season 1 Elite"                 },
   { 14196, "Dragonflight Season 2 Elite"                 },
   { 14197, "Dragonflight Season 3 Elite"                 },
@@ -934,10 +936,18 @@ static const std::array<item_name_description_t, 939> __item_name_description_da
   { 14212, "Timewalking Vendor - Green"                  },
   { 14213, "Dungeons - Green"                            },
   { 14214, "Rare Monsters"                               },
+  { 14215, "|nGallytech Limited Edition"                 },
+  { 14216, "Gallytech Limited Edition"                   },
   { 14220, "Snapdragon Treat"                            },
   { 14222, "Timewalking Vendor - Black"                  },
   { 14223, "Timewalking Vendor - Red"                    },
   { 14224, "Timewalking Vendor - Dark"                   },
   { 14225, "Timewalking Vendor - Orange"                 },
+  { 14226, "Pearl"                                       },
+  { 14227, "Luck"                                        },
+  { 14229, "C.H.E.T.T. List"                             },
+  { 14230, "Timewalking Vendor - Yellow"                 },
+  { 14246, "Priceless?"                                  },
+  { 14256, "The War Within Season 1"                     },
 } };
 
