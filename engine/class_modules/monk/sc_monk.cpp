@@ -6182,7 +6182,6 @@ monk_t::monk_t( sim_t *sim, util::string_view name, race_e r )
   user_options.initial_chi =
       talent.windwalker.combat_wisdom.ok() ? (int)talent.windwalker.combat_wisdom->effectN( 1 ).base_value() : 0;
   user_options.chi_burst_healing_targets = 8;
-  user_options.motc_override             = 0;
   user_options.squirm_frequency          = 15;
 }
 
@@ -8624,7 +8623,6 @@ void monk_t::create_options()
 
   add_option( opt_int( "monk.initial_chi", user_options.initial_chi, 0, 6 ) );
   add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
-  add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
   add_option( opt_float( "monk.squirm_frequency", user_options.squirm_frequency, 0, 30 ) );
 
   // shado-pan options
