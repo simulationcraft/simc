@@ -18178,7 +18178,8 @@ Effects          :
 Description      : $@spelldesc321290
 Tooltip          : Wildfire Bomb initial damage increased by $s1%.
 
-Name             : Bear Summon (id=1225858) [Spell Family (9)] 
+Name             : Bear Summon (id=1225858) [Spell Family (9), Hidden] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -18189,6 +18190,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
                  : 4690: Beast Mastery Hunter (137015 effect#9), Lead From the Front (472743 effect#3)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Unknown (467)
 Effects          :
 #1 (id=1215326)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Friendly (21)
