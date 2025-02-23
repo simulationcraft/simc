@@ -2177,7 +2177,7 @@ struct eye_beam_t : public warlock_pet_spell_t
   {
     double m = warlock_pet_spell_t::composite_target_multiplier( target );
 
-    double dots = p()->o()->get_target_data( target )->count_affliction_dots();
+    double dots = p()->o()->get_target_data( target )->count_affliction_dots( !p()->o()->bugs );
 
     double dot_multiplier = p()->o()->talents.summon_darkglare->effectN( 3 ).percent();
 

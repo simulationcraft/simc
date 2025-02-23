@@ -47,6 +47,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_vile_taint;
   propagate_const<dot_t*> dots_drain_life_aoe; // Soul Rot effect
   propagate_const<dot_t*> dots_soul_rot;
+  propagate_const<dot_t*> dots_jackpot_ua; // TWW 11.1 4pc version of Unstable Affliction
 
   propagate_const<buff_t*> debuffs_haunt;
   propagate_const<buff_t*> debuffs_shadow_embrace;
@@ -90,6 +91,7 @@ struct warlock_td_t : public actor_target_data_t
   void target_demise();
 
   int count_affliction_dots() const;
+  int count_affliction_dots( bool ) const;
 };
 
 struct warlock_t : public player_t

@@ -25,6 +25,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots_phantom_singularity = target->get_dot( "phantom_singularity", &p );
   dots_seed_of_corruption = target->get_dot( "seed_of_corruption", &p );
   dots_unstable_affliction = target->get_dot( "unstable_affliction", &p );
+  dots_jackpot_ua = target->get_dot( "jackpot_ua", &p );
   dots_vile_taint = target->get_dot( "vile_taint_dot", &p );
   dots_soul_rot = target->get_dot( "soul_rot", &p );
 
@@ -139,6 +140,13 @@ void warlock_td_t::target_demise()
     warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.talents.unstable_affliction_2->effectN( 1 ).base_value(), warlock.gains.unstable_affliction_refund );
   }
 
+  if ( dots_jackpot_ua->is_ticking() )
+  {
+    warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Unstable Affliction.", target->name(), warlock.name() );
+
+    warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.talents.unstable_affliction_2->effectN( 1 ).base_value(), warlock.gains.unstable_affliction_refund );
+  }
+
   if ( dots_drain_soul->is_ticking() )
   {
     warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Drain Soul.", target->name(), warlock.name() );
@@ -218,6 +226,19 @@ int warlock_td_t::count_affliction_dots() const
     count++;
 
   if ( dots_wither->is_ticking() )
+    count++;
+
+  return count;
+}
+
+int warlock_td_t::count_affliction_dots( bool include_tier_ua ) const
+{
+  int count = count_affliction_dots();
+
+  if ( !include_tier_ua )
+    return count;
+
+  if ( dots_jackpot_ua->is_ticking() )
     count++;
 
   return count;

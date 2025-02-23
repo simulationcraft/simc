@@ -1099,7 +1099,7 @@ using namespace helpers;
       double m = warlock_spell_t::composite_target_multiplier( t );
 
       if ( p()->talents.withering_bolt.ok() )
-        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)( p()->talents.withering_bolt->effectN( 2 ).base_value() ), p()->get_target_data( t )->count_affliction_dots() );
+        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)( p()->talents.withering_bolt->effectN( 2 ).base_value() ), p()->get_target_data( t )->count_affliction_dots( !p()->bugs ) );
 
       return m;
     }
@@ -1616,9 +1616,9 @@ using namespace helpers;
       {
         double m = warlock_spell_t::composite_da_multiplier( s );
 
-        m *= td( s->target )->count_affliction_dots();
+        m *= td( s->target )->count_affliction_dots( true );
 
-        if ( p()->talents.focused_malignancy.ok() && td( s->target )->dots_unstable_affliction->is_ticking() )
+        if ( p()->talents.focused_malignancy.ok() && ( td( s->target )->dots_unstable_affliction->is_ticking() || td( s->target )->dots_jackpot_ua->is_ticking() ) )
           m *= 1.0 + p()->talents.focused_malignancy->effectN( 1 ).percent();
 
         if ( p()->talents.cull_the_weak.ok() )
@@ -1635,7 +1635,7 @@ using namespace helpers;
 
       void execute() override
       {
-        int d = td( target )->count_affliction_dots() - 1;
+        int d = td( target )->count_affliction_dots( true ) - 1;
         assert( d < as<int>( p()->procs.malefic_rapture.size() ) && "The procs.malefic_rapture array needs to be expanded." );
 
         if ( d >= 0 && d < as<int>( p()->procs.malefic_rapture.size() ) )
@@ -1658,6 +1658,7 @@ using namespace helpers;
           tdata->dots_phantom_singularity->adjust_duration( extension );
           tdata->dots_vile_taint->adjust_duration( extension );
           tdata->dots_unstable_affliction->adjust_duration( extension );
+          tdata->dots_jackpot_ua->adjust_duration( extension );
           tdata->dots_soul_rot->adjust_duration( extension );
           tdata->debuffs_haunt->extend_duration( p(), extension );
           tdata->dots_wither->adjust_duration( extension );
@@ -1669,6 +1670,10 @@ using namespace helpers;
         if ( soul_harvester() && p()->buffs.succulent_soul->check() )
         {
           bool fervor = td( s->target )->dots_unstable_affliction->is_ticking();
+
+          if ( !p()->bugs )
+            fervor |= td( s->target )->dots_jackpot_ua->is_ticking();
+
           debug_cast<demonic_soul_t*>( p()->proc_actions.demonic_soul )->demoniacs_fervor = fervor;
           p()->proc_actions.demonic_soul->execute_on_target( s->target );
         }
@@ -1763,7 +1768,7 @@ using namespace helpers;
     {
       warlock_spell_t::available_targets( tl );
 
-      range::erase_remove( tl, [ this ]( player_t* t ){ return td( t )->count_affliction_dots() == 0; } );
+      range::erase_remove( tl, [ this ]( player_t* t ){ return td( t )->count_affliction_dots( true ) == 0; } );
 
       return tl.size();
     }
@@ -2200,7 +2205,7 @@ using namespace helpers;
         m *= 1.0 + p()->talents.drain_soul_dot->effectN( 2 ).percent();
 
       if ( p()->talents.withering_bolt.ok() )
-        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)( p()->talents.withering_bolt->effectN( 2 ).base_value() ), td( t )->count_affliction_dots() );
+        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)( p()->talents.withering_bolt->effectN( 2 ).base_value() ), td( t )->count_affliction_dots( !p()->bugs ) );
 
       return m;
     }
@@ -2405,10 +2410,14 @@ using namespace helpers;
         td->dots_phantom_singularity->adjust_duration( darkglare_extension );
         td->dots_vile_taint->adjust_duration( darkglare_extension );
         td->dots_unstable_affliction->adjust_duration( darkglare_extension );
+
+        if ( !p()->bugs )
+          td->dots_jackpot_ua->adjust_duration( darkglare_extension );
+
         td->dots_soul_rot->adjust_duration( darkglare_extension );
         td->dots_wither->adjust_duration( darkglare_extension );
 
-        if ( p()->talents.malevolent_visionary.ok() && td->count_affliction_dots() > 0 )
+        if ( p()->talents.malevolent_visionary.ok() && td->count_affliction_dots( !p()->bugs ) > 0 )
           mal_vis->execute_on_target( target );
       }
     }
@@ -2469,7 +2478,7 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_ta_multiplier( s );
 
-      m *= 1.0 + std::min( td( s->target )->count_affliction_dots(), as<int>( p()->talents.oblivion->effectN( 3 ).base_value() ) ) * p()->talents.oblivion->effectN( 2 ).percent();
+      m *= 1.0 + std::min( td( s->target )->count_affliction_dots( !p()->bugs ), as<int>( p()->talents.oblivion->effectN( 3 ).base_value() ) ) * p()->talents.oblivion->effectN( 2 ).percent();
 
       return m;
     }
