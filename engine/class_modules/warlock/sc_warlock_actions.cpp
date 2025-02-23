@@ -301,7 +301,7 @@ using namespace helpers;
         if ( success )
         {
           p()->procs.jackpot_affliction->occur();
-
+          helpers::trigger_jackpot_ua( p() );
         }
       }
 
@@ -1868,9 +1868,6 @@ using namespace helpers;
       // TOCHECK: Ravenous Afflictions, Death's Embrace
     }
 
-    double execute_time_pct_multiplier() const override
-    { return 0.0; }
-
     double composite_ta_multiplier( const action_state_t* s ) const override
     {
       double m = warlock_spell_t::composite_ta_multiplier( s );
@@ -2428,8 +2425,10 @@ using namespace helpers;
 
       if ( active_2pc( TWW2 ) )
       {
-        p()->buffs.jackpot_affliction->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+        p()->buffs.jackpot_affliction->execute();
+        p()->buffs.jackpot_affliction->predict();
         p()->procs.jackpot_affliction->occur();
+        helpers::trigger_jackpot_ua( p() );
       }
     }
 
@@ -4695,6 +4694,27 @@ using namespace helpers;
 
     if ( stack_gained )
       p->cooldowns.blackened_soul->start();
+  }
+
+  void helpers::trigger_jackpot_ua( warlock_t* p )
+  {
+    int remaining_triggers = as<int>( p->tier.spliced_aff_4pc->effectN( 2 ).base_value() );
+
+    for ( const auto target : p->sim->target_non_sleeping_list )
+    {
+      warlock_td_t* tdata = p->get_target_data( target );
+      if ( !tdata )
+        continue;
+
+      if ( tdata->dots_unstable_affliction->is_ticking() || tdata->dots_jackpot_ua->is_ticking() )
+        continue;
+
+      p->proc_actions.jackpot_ua->execute_on_target( target );
+      remaining_triggers--;
+
+      if ( remaining_triggers <= 0 )
+        return;
+    }
   }
 
   // Event for spawning Wild Imps for Demonology

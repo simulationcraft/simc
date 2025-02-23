@@ -969,5 +969,6 @@ namespace helpers
 
   void trigger_blackened_soul( warlock_t* p, bool malevolence );
 
+  void trigger_jackpot_ua( warlock_t* p );
 }
 }  // namespace warlock
