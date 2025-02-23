@@ -1832,6 +1832,16 @@ using namespace helpers;
 
       p()->ua_target = nullptr;
     }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_ta_multiplier( s );
+
+      if ( active_4pc( TWW2 ) && p()->buffs.jackpot_affliction->check() )
+        m *= 1.0 + p()->tier.spliced_aff_4pc->effectN( 1 ).percent();
+
+      return m;
+    }
   };
 
   struct volatile_agony_t : public warlock_spell_t
