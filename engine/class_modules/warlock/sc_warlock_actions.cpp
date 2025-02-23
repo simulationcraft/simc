@@ -1818,6 +1818,9 @@ using namespace helpers;
       if ( p()->ua_target && p()->ua_target != target )
         td( p()->ua_target )->dots_unstable_affliction->cancel();
 
+      if ( active_4pc( TWW2 ) && td( target )->dots_jackpot_ua->is_ticking() )
+        td( target )->dots_jackpot_ua->cancel();
+
       p()->ua_target = target;
 
       warlock_spell_t::execute();
@@ -2422,6 +2425,12 @@ using namespace helpers;
       darkglare_extension_helper( darkglare_extension );
 
       p()->buffs.soul_rot->extend_duration( p(), darkglare_extension ); // This dummy buff is active while Soul Rot is ticking
+
+      if ( active_2pc( TWW2 ) )
+      {
+        p()->buffs.jackpot_affliction->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+        p()->procs.jackpot_affliction->occur();
+      }
     }
 
     void darkglare_extension_helper( timespan_t darkglare_extension )
