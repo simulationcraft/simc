@@ -573,6 +573,7 @@ public:
     action_t* shared_fate;
     action_t* wicked_reaping;
     action_t* demonfire_infusion;
+    action_t* jackpot_ua;
   } proc_actions;
 
   struct tier_sets_t
@@ -584,6 +585,7 @@ public:
     const spell_data_t* spliced_aff_2pc;
     const spell_data_t* spliced_aff_4pc;
     const spell_data_t* spliced_aff_jackpot;
+    const spell_data_t* jackpot_ua;
 
     // Demonology
     const spell_data_t* hexflame_demo_2pc;

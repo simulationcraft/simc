@@ -25,7 +25,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots_phantom_singularity = target->get_dot( "phantom_singularity", &p );
   dots_seed_of_corruption = target->get_dot( "seed_of_corruption", &p );
   dots_unstable_affliction = target->get_dot( "unstable_affliction", &p );
-  dots_jackpot_ua = target->get_dot( "jackpot_ua", &p );
+  dots_jackpot_ua = target->get_dot( "unstable_affliction_jackpot", &p );
   dots_vile_taint = target->get_dot( "vile_taint_dot", &p );
   dots_soul_rot = target->get_dot( "soul_rot", &p );
 

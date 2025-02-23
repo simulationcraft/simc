@@ -1852,6 +1852,33 @@ using namespace helpers;
     }
   };
 
+  struct jackpot_unstable_affliction_t : public warlock_spell_t
+  {
+    jackpot_unstable_affliction_t( warlock_t* p )
+      : warlock_spell_t( "Unstable Affliction (Jackpot!)", p, p->tier.jackpot_ua )
+    {
+      background = dual = true;
+
+      base_dd_multiplier *= 1.0 + p->talents.xavius_gambit->effectN( 2 ).percent();
+      base_td_multiplier *= 1.0 + p->talents.xavius_gambit->effectN( 1 ).percent();
+
+      // TOCHECK: Ravenous Afflictions, Death's Embrace
+    }
+
+    double execute_time_pct_multiplier() const override
+    { return 0.0; }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_ta_multiplier( s );
+
+      if ( active_4pc( TWW2 ) && p()->buffs.jackpot_affliction->check() )
+        m *= 1.0 + p()->tier.spliced_aff_4pc->effectN( 1 ).percent();
+
+      return m;
+    }
+  };
+
   struct volatile_agony_t : public warlock_spell_t
   {
     volatile_agony_t( warlock_t* p )
@@ -4905,7 +4932,9 @@ using namespace helpers;
   }
 
   void warlock_t::create_affliction_proc_actions()
-  { }
+  {
+    proc_actions.jackpot_ua = new jackpot_unstable_affliction_t( this );
+  }
 
   void warlock_t::create_demonology_proc_actions()
   {

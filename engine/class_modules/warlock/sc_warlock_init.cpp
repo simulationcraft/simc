@@ -193,6 +193,7 @@ namespace warlock
     tier.spliced_aff_2pc = sets->set( WARLOCK_AFFLICTION, TWW2, B2 ); // Should be ID 1215678
     tier.spliced_aff_4pc = sets->set( WARLOCK_AFFLICTION, TWW2, B4 ); // Should be ID 1215683
     tier.spliced_aff_jackpot = find_spell( 1219034 );
+    tier.jackpot_ua = find_spell( 1219045 );
   }
 
   void warlock_t::init_spells_demonology()
