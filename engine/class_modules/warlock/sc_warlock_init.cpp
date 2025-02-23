@@ -188,6 +188,11 @@ namespace warlock
     tier.hexflame_aff_2pc = sets->set( WARLOCK_AFFLICTION, TWW1, B2 ); // Should be ID 453643
     tier.hexflame_aff_4pc = sets->set( WARLOCK_AFFLICTION, TWW1, B4 ); // Should be ID 453642
     tier.umbral_lattice = find_spell( 455679 );
+
+    // Liberation of Undermine
+    tier.spliced_aff_2pc = sets->set( WARLOCK_AFFLICTION, TWW2, B2 ); // Should be ID 1215678
+    tier.spliced_aff_4pc = sets->set( WARLOCK_AFFLICTION, TWW2, B4 ); // Should be ID 1215683
+    tier.spliced_aff_jackpot = find_spell( 1219034 );
   }
 
   void warlock_t::init_spells_demonology()
@@ -684,6 +689,11 @@ namespace warlock
 
     buffs.umbral_lattice = make_buff( this, "umbral_lattice", tier.umbral_lattice )
                                ->set_chance( rng_settings.umbral_lattice.setting_value );
+
+    buffs.jackpot_affliction = make_buff( this, "jackpot_affliction", tier.spliced_aff_jackpot )
+                                   ->set_default_value_from_effect( 1 )
+                                   ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                   ->set_rppm( RPPM_HASTE, tier.spliced_aff_2pc->real_ppm() );
   }
 
   void warlock_t::create_buffs_demonology()
@@ -981,6 +991,7 @@ namespace warlock
     procs.tormented_crescendo = get_proc( "tormented_crescendo" );
     procs.ravenous_afflictions = get_proc( "ravenous_afflictions" );
     procs.umbral_lattice = get_proc( "umbral_lattice" );
+    procs.jackpot_affliction = get_proc( "jackpot_affliction" );
 
     for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
     {

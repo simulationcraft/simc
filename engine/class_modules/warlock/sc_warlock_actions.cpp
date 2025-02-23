@@ -69,6 +69,7 @@ using namespace helpers;
 
       // Affliction
       bool ravenous_afflictions = false;
+      bool jackpot_affliction = false;
 
       // Demonology
       bool shadow_invocation = false;
@@ -263,6 +264,14 @@ using namespace helpers;
 
       if ( p()->talents.rolling_havoc.ok() && use_havoc() )
         p()->buffs.rolling_havoc->trigger();
+
+      if ( affliction() && active_2pc( TWW2 ) && triggers.jackpot_affliction )
+      {
+        bool success = p()->buffs.jackpot_affliction->trigger();
+
+        if ( success )
+          p()->procs.jackpot_affliction->occur();
+      }
 
       if ( diabolist() && triggers.demonic_art )
       {
@@ -932,6 +941,7 @@ using namespace helpers;
       {
         spell_power_mod.direct = data().effectN( 3 ).sp_coeff();
         base_execute_time *= 1.0 + p->warlock_base.xavian_teachings->effectN( 1 ).percent();
+        triggers.jackpot_affliction = true;
       }
 
       base_dd_multiplier *= 1.0 + p->talents.siphon_life->effectN( 1 ).percent();
@@ -965,6 +975,7 @@ using namespace helpers;
     {
       affected_by.sacrificed_souls = true;
       triggers.shadow_invocation = true;
+      triggers.jackpot_affliction = true;
 
       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.dark_virtuosity->effectN( 1 ).percent();
@@ -1345,6 +1356,8 @@ using namespace helpers;
       if ( affliction() )
       {
         affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
+
+        triggers.jackpot_affliction = true;
 
         base_dd_multiplier *= 1.0 + p->talents.siphon_life->effectN( 1 ).percent();
         base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 2 ).percent();
@@ -2289,7 +2302,11 @@ using namespace helpers;
   {
     haunt_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Haunt", p, p->talents.haunt, options_str )
-    { base_dd_multiplier *= 1.0 + p->talents.improved_haunt->effectN( 1 ).percent(); }
+    {
+      triggers.jackpot_affliction = true;
+
+      base_dd_multiplier *= 1.0 + p->talents.improved_haunt->effectN( 1 ).percent();
+    }
 
     double execute_time_pct_multiplier() const override
     {
