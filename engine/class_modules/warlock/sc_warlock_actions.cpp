@@ -265,14 +265,6 @@ using namespace helpers;
       if ( p()->talents.rolling_havoc.ok() && use_havoc() )
         p()->buffs.rolling_havoc->trigger();
 
-      if ( affliction() && active_2pc( TWW2 ) && triggers.jackpot_affliction )
-      {
-        bool success = p()->buffs.jackpot_affliction->trigger();
-
-        if ( success )
-          p()->procs.jackpot_affliction->occur();
-      }
-
       if ( diabolist() && triggers.demonic_art )
       {
         // Force event sequencing in a manner that lets Rain of Fire pick up the persistent multiplier for Touch of Rancora
@@ -299,6 +291,17 @@ using namespace helpers;
           {
             p()->procs.mayhem->occur();
           }
+        }
+      }
+
+      if ( affliction() && active_2pc( TWW2 ) && triggers.jackpot_affliction )
+      {
+        bool success = p()->buffs.jackpot_affliction->trigger();
+
+        if ( success )
+        {
+          p()->procs.jackpot_affliction->occur();
+
         }
       }
 
