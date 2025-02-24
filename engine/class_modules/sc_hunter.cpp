@@ -8422,7 +8422,7 @@ void hunter_t::init_spells()
 
   // Cooldowns
   cooldowns.target_acquisition->duration = talents.target_acquisition->internal_cooldown();
-  cooldowns.salvo->duration = talents.volley->cooldown();
+  cooldowns.salvo->duration = talents.volley->duration();
 
   cooldowns.ruthless_marauder->duration = talents.ruthless_marauder->internal_cooldown();
 

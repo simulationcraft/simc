@@ -1994,7 +1994,7 @@ struct entropic_rift_damage_t final : public priest_spell_t
     : priest_spell_t( "entropic_rift", p, p.talents.voidweaver.entropic_rift_damage ),
       base_radius( p.talents.voidweaver.entropic_rift_object->effectN( 1 ).radius_max() / 2 )
   {
-    aoe        = -1;
+    aoe        = p.options.entropic_rift_miss_target_cap > 0 ? p.options.entropic_rift_miss_target_cap : -1;
     background = dual = true;
     radius            = base_radius;
 
@@ -2007,13 +2007,9 @@ struct entropic_rift_damage_t final : public priest_spell_t
 
     if ( priest().options.entropic_rift_miss_percent > 0.0 )
     {
-      // Double miss_percent when fighting more than 2 targets
-      double miss_percent = priest().options.entropic_rift_miss_percent;
-      if ( target_list().size() > 2 )
-      {
-        miss_percent = miss_percent * 2;
-      }
-
+      // Use Secondary miss chance on non primary target.
+      double miss_percent = t == target ? priest().options.entropic_rift_miss_percent : priest().options.entropic_rift_miss_percent_secondary;
+      
       sim->print_debug( "entropic_rift_damage sets miss_chance to {} with target count: {}", miss_percent,
                         target_list().size() );
 
@@ -4367,8 +4363,9 @@ void priest_t::create_options()
   add_option( opt_int( "priest.cauterizing_shadows_allies", options.cauterizing_shadows_allies, 0, 3 ) );
   add_option( opt_bool( "priest.force_devour_matter", options.force_devour_matter ) );
   add_option( opt_float( "priest.entropic_rift_miss_percent", options.entropic_rift_miss_percent, 0.0, 1.0 ) );
-  add_option(
-      opt_float( "priest.crystalline_reflection_damage_mult", options.crystalline_reflection_damage_mult, 0.0, 1.0 ) );
+  add_option( opt_float( "priest.entropic_rift_miss_percent_secondary", options.entropic_rift_miss_percent_secondary, 0.0, 1.0 ) );
+  add_option( opt_int( "priest.entropic_rift_miss_target_cap", options.entropic_rift_miss_target_cap, 0, 100 ) );
+  add_option( opt_float( "priest.crystalline_reflection_damage_mult", options.crystalline_reflection_damage_mult, 0.0, 1.0 ) );
   add_option( opt_bool( "priest.no_channel_macro_mfi", options.no_channel_macro_mfi ) );
   add_option( opt_bool( "priest.discipline_in_raid", options.discipline_in_raid ) );
   add_option( opt_bool( "priest.shadow_tww2_4pc_insanity", options.shadow_tww2_4pc_insanity ) );

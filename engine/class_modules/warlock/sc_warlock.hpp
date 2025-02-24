@@ -47,6 +47,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_vile_taint;
   propagate_const<dot_t*> dots_drain_life_aoe; // Soul Rot effect
   propagate_const<dot_t*> dots_soul_rot;
+  propagate_const<dot_t*> dots_jackpot_ua; // TWW 11.1 4pc version of Unstable Affliction
 
   propagate_const<buff_t*> debuffs_haunt;
   propagate_const<buff_t*> debuffs_shadow_embrace;
@@ -90,6 +91,7 @@ struct warlock_td_t : public actor_target_data_t
   void target_demise();
 
   int count_affliction_dots() const;
+  int count_affliction_dots( bool ) const;
 };
 
 struct warlock_t : public player_t
@@ -157,6 +159,7 @@ public:
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
     spawner::pet_spawner_t<pets::demonology::doomguard_t, warlock_t> doomguards;
+    spawner::pet_spawner_t<pets::demonology::greater_dreadstalker_t, warlock_t> greater_dreadstalkers;
 
     spawner::pet_spawner_t<pets::destruction::shadowy_tear_t, warlock_t> shadow_rifts;
     spawner::pet_spawner_t<pets::destruction::unstable_tear_t, warlock_t> unstable_rifts;
@@ -571,6 +574,7 @@ public:
     action_t* shared_fate;
     action_t* wicked_reaping;
     action_t* demonfire_infusion;
+    action_t* jackpot_ua;
   } proc_actions;
 
   struct tier_sets_t
@@ -579,18 +583,19 @@ public:
     const spell_data_t* hexflame_aff_2pc;
     const spell_data_t* hexflame_aff_4pc;
     const spell_data_t* umbral_lattice;
-    //const spell_data_t* spliced_aff_2pc;
-    //const spell_data_t* spliced_aff_4pc;
-    //const spell_data_t* spliced_aff_jackpot;
+    const spell_data_t* spliced_aff_2pc;
+    const spell_data_t* spliced_aff_4pc;
+    const spell_data_t* spliced_aff_jackpot;
+    const spell_data_t* jackpot_ua;
 
     // Demonology
     const spell_data_t* hexflame_demo_2pc;
     const spell_data_t* hexflame_demo_4pc;
     const spell_data_t* empowered_legion_strike;
-    //const spell_data_t* spliced_demo_2pc;
-    //const spell_data_t* spliced_demo_4pc;
-    //const spell_data_t* spliced_demo_jackpot;
-    //const spell_data_t* demonic_hunger; // Applied to Dreadstalker when empowered by Jackpot
+    const spell_data_t* spliced_demo_2pc;
+    const spell_data_t* spliced_demo_4pc;
+    const spell_data_t* greater_dreadstalker;
+    const spell_data_t* demonic_hunger; // Applied to Dreadstalker when empowered by Jackpot
 
     // Destruction
     const spell_data_t* hexflame_destro_2pc;
@@ -631,6 +636,7 @@ public:
     propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
     propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
     propagate_const<buff_t*> umbral_lattice; // TWW1 4pc
+    propagate_const<buff_t*> jackpot_affliction;
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_core;
@@ -727,6 +733,7 @@ public:
     proc_t* tormented_crescendo;
     proc_t* ravenous_afflictions;
     proc_t* umbral_lattice;
+    proc_t* jackpot_affliction;
 
     // Demonology
     proc_t* demonic_calling;
@@ -742,6 +749,7 @@ public:
     proc_t* doom_eternal;
     proc_t* pact_of_the_eredruin;
     proc_t* empowered_legion_strike; // TWW1 4pc buff
+    proc_t* jackpot_demonology; // TWW2 2pc proc
 
     // Destruction
     proc_t* reverse_entropy;
@@ -816,6 +824,7 @@ public:
   bool normalize_destruction_mastery;
   shuffled_rng_t* rain_of_chaos_rng;
   real_ppm_t* ravenous_afflictions_rng;
+  real_ppm_t* jackpot_demonology_rng;
   const spell_data_t* version_11_1_0_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
@@ -963,5 +972,6 @@ namespace helpers
 
   void trigger_blackened_soul( warlock_t* p, bool malevolence );
 
+  void trigger_jackpot_ua( warlock_t* p );
 }
 }  // namespace warlock

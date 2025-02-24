@@ -16,7 +16,7 @@ def->add_action( "potion,if=!buff.prowl.up&!buff.shadowmeld.up" );
 def->add_action( "run_action_list,name=cat,if=talent.rake.enabled" );
 def->add_action( "cat_form,if=talent.rake.enabled" );
 def->add_action( "convoke_the_spirits,if=(buff.heart_of_the_wild.up|cooldown.heart_of_the_wild.remains>60-30*talent.cenarius_guidance.enabled|!talent.heart_of_the_wild.enabled)" );
-def->add_action( "sunfire,target_if=refreshable&target.time_to_die>5&talent.improved_sunfire.enabled" );
+def->add_action( "sunfire,target_if=refreshable&target.time_to_die>5" );
 def->add_action( "moonfire,target_if=refreshable&time_to_die>12" );
 def->add_action( "starsurge,if=active_enemies<8" );
 def->add_action( "sunfire,target_if=refreshable&target.time_to_die>7&active_enemies<7" );
@@ -31,7 +31,7 @@ cat->add_action( "convoke_the_spirits,if=(buff.cat_form.up)&(buff.heart_of_the_w
 cat->add_action( "rip,target_if=((refreshable|energy>90&remains<=10)&(combo_points=5&time_to_die>remains+24|(remains+combo_points*4<time_to_die&remains+4+combo_points*4>time_to_die))|!ticking&combo_points>1)" );
 cat->add_action( "pool_resource,for_next=1" );
 cat->add_action( "thrash_cat,target_if=refreshable&target.time_to_die>5&spell_targets.thrash_cat>4" );
-cat->add_action( "sunfire,target_if=(refreshable&target.time_to_die>5)&!prev_gcd.1.cat_form&(active_enemies=1|talent.improved_sunfire.enabled)" );
+cat->add_action( "sunfire,target_if=(refreshable&target.time_to_die>5)&!prev_gcd.1.cat_form" );
 cat->add_action( "rake,target_if=(refreshable&time_to_die>8&!ticking)" );
 cat->add_action( "cat_form,if=!buff.cat_form.up&energy>60&(cooldown.healing.remains>(gcd.max*2)|!druid.time_spend_healing)" );
 cat->add_action( "moonfire,target_if=(refreshable&time_to_die>12&!ticking|(prev_gcd.1.sunfire&remains<duration*0.8&spell_targets.sunfire=1))&!prev_gcd.1.cat_form&spell_targets.swipe_cat<6" );
@@ -44,7 +44,6 @@ cat->add_action( "ferocious_bite,target_if=(combo_points>3&target.time_to_die<3)
 cat->add_action( "thrash_cat,target_if=refreshable&target.time_to_die>5&spell_targets.thrash_cat>2" );
 cat->add_action( "rake,target_if=refreshable&time_to_die>10" );
 cat->add_action( "swipe_cat,if=active_enemies>2&combo_points<5" );
-cat->add_action( "sunfire,target_if=refreshable&target.time_to_die>5&active_enemies<7&!talent.improved_sunfire.enabled" );
 cat->add_action( "thrash_cat,target_if=refreshable&target.time_to_die>5" );
 cat->add_action( "pool_resource,for_next=1" );
 cat->add_action( "shred,if=energy>60&combo_points<5" );

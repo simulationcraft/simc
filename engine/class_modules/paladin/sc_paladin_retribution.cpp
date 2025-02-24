@@ -1253,7 +1253,7 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     paladin_melee_attack_t::execute();
 
     paladin_t* pal = p();
-    if ( pal->dbc->ptr && pal->talents.templar.hammerfall->ok() && pal->cooldowns.hammerfall_icd->up() )
+    if ( pal->talents.templar.hammerfall->ok() && pal->cooldowns.hammerfall_icd->up() )
     {
       int additionalTargets = 0;
       if ( pal->buffs.templar.shake_the_heavens->up() )
@@ -1646,53 +1646,16 @@ void paladin_t::create_buffs_retribution()
                           ->set_trigger_spell( talents.empyrean_power );
   buffs.judge_jury_and_executioner = make_buff( this, "judge_jury_and_executioner", find_spell( 453433 ) );
   buffs.divine_hammer = make_buff( this, "divine_hammer", talents.divine_hammer )
-    ->set_tick_on_application( dbc->ptr )
-    ->set_partial_tick( dbc->ptr )
+    ->set_tick_on_application( true )
+    ->set_partial_tick( true )
     ->set_max_stack( 1 )
     ->set_default_value( 1.0 )
-    ->set_period( timespan_t::from_millis( dbc->ptr ? 2000 : 2200 ) )
+    ->set_period( timespan_t::from_millis( 2000 ) )
     ->set_freeze_stacks( true )
     ->set_tick_callback([this](buff_t* b, int, const timespan_t&) {
-      if ( !dbc->ptr && !resource_available( RESOURCE_HOLY_POWER, 1.0 ) ) {
-        b->expire();
-      } else {
-        active.divine_hammer_tick->schedule_execute();
-      }
+      active.divine_hammer_tick->schedule_execute();
     })
-    ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
-      if ( dbc->ptr ) return;
-      for ( size_t i = 2; i < 5; i++ )
-      {
-        double recharge_mult = 1.0 / ( 1.0 + b->data().effectN( i ).percent() );
-        spelleffect_data_t label = b->data().effectN( i );
-        for ( auto a : action_list )
-        {
-          if ( a->cooldown->duration != 0_ms &&
-               ( a->data().affected_by( label ) || a->data().affected_by_category( label ) ) )
-          {
-            if ( new_ == 1 )
-              a->dynamic_recharge_rate_multiplier *= recharge_mult;
-            else
-              a->dynamic_recharge_rate_multiplier /= recharge_mult;
-
-            if ( a->cooldown->action == a )
-              a->cooldown->adjust_recharge_multiplier();
-
-            if ( a->internal_cooldown->action == a )
-              a->internal_cooldown->adjust_recharge_multiplier();
-          }
-        }
-      }
-    }
-  );
-  if ( dbc->ptr )
-    buffs.divine_hammer->set_tick_time_behavior( buff_tick_time_behavior::HASTED );
-  else
-    buffs.divine_hammer->set_tick_time_callback([](const buff_t* b, unsigned) -> timespan_t {
-      auto res = timespan_t::from_millis( 2200 );
-      res *= 1.0 / b->current_value;
-      return res;
-    });
+    ->set_tick_time_behavior( buff_tick_time_behavior::HASTED );
 
   // legendaries
   buffs.empyrean_legacy = make_buff( this, "empyrean_legacy", find_spell( 387178 ) );

@@ -530,9 +530,7 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
 
 struct druid_t final : public parse_player_effects_t
 {
-private:
   form_e form = form_e::NO_FORM;  // Active druid form
-public:
   eclipse_handler_t eclipse_handler;
   std::vector<std::unique_ptr<snapshot_counter_t>> counters;  // counters for snapshot tracking
   std::unique_ptr<convoke_counter_t> convoke_counter;
@@ -545,6 +543,7 @@ public:
   moon_stage_e moon_stage;
   std::vector<event_t*> persistent_event_delay;
   event_t* astral_power_decay;
+  buff_t* lycaras_meditation_buff;
   struct dot_list_t
   {
     std::vector<dot_t*> moonfire;
@@ -884,6 +883,7 @@ public:
     player_talent_t killer_instinct;
     player_talent_t lingering_healing;
     player_talent_t lore_of_the_grove;
+    player_talent_t lycaras_meditation;
     player_talent_t lycaras_teachings;
     player_talent_t maim;
     player_talent_t matted_fur;
@@ -1360,8 +1360,6 @@ public:
   void moving() override;
 
   // utility functions
-  form_e get_form() const { return form; }
-  void shapeshift( form_e );
   void init_beast_weapon( weapon_t&, double );
   void adjust_health_pct( double, bool );
   const spell_data_t* apply_override( const spell_data_t*, const spell_data_t* ) const;
@@ -1799,7 +1797,7 @@ public:
       if ( ab::sim->debug )
       {
         ab::sim->print_debug( "{} ready() failed due to wrong form. form={:#010x} form_mask={:#010x}", ab::name(),
-                              static_cast<unsigned int>( p()->get_form() ), form_mask );
+                              static_cast<unsigned int>( p()->form ), form_mask );
       }
 
       return false;
@@ -1956,7 +1954,7 @@ public:
   // Swiftness
   virtual bool check_form_restriction()
   {
-    if ( !form_mask || ( form_mask & p()->get_form() ) == p()->get_form() )
+    if ( !form_mask || ( form_mask & p()->form ) == p()->form )
       return true;
 
     return false;
@@ -3121,7 +3119,7 @@ struct bear_form_buff_t final : public druid_buff_t, public swap_melee_t
     p()->buff.rage_of_the_sleeper->expire();
 
     make_event( *sim, [ this ] {
-      if ( p()->talent.wildshape_mastery.ok() && p()->get_form() == CAT_FORM )
+      if ( p()->talent.wildshape_mastery.ok() && p()->form == CAT_FORM )
         p()->buff.wildshape_mastery->trigger();
       else
         p()->buff.ironfur->expire();
@@ -3611,9 +3609,13 @@ struct druid_interrupt_t : public druid_spell_t
 // Form Spells ==============================================================
 struct druid_form_t : public druid_spell_t
 {
+  buff_t* form_buff = nullptr;
+  buff_t* lycara_buff = nullptr;
+  timespan_t meditation_dur;
   form_e form = NO_FORM;
 
-  druid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f ) : druid_spell_t( n, p, s, f )
+  druid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
+    : druid_spell_t( n, p, s, f ), meditation_dur( p->talent.lycaras_meditation->effectN( 1 ).time_value() )
   {
     harmful = reset_melee_swing = false;
     ignore_false_positive = true;
@@ -3626,13 +3628,79 @@ struct druid_form_t : public druid_spell_t
   {
     form = f;
     form_mask = ANY_FORM & ~form;
+    form_buff = get_form_buff( form );
+
+    if ( p()->talent.lycaras_teachings.ok() )
+      lycara_buff = get_lycara_buff( form );
   }
 
   void execute() override
   {
     druid_spell_t::execute();
 
-    p()->shapeshift( form );
+    shapeshift();
+  }
+
+  buff_t* get_form_buff( form_e f )
+  {
+    switch ( f )
+    {
+      case BEAR_FORM:    return p()->buff.bear_form;
+      case CAT_FORM:     return p()->buff.cat_form;
+      case MOONKIN_FORM: return p()->buff.moonkin_form;
+      case NO_FORM:      return nullptr;
+    }
+  }
+
+  buff_t* get_lycara_buff( form_e f )
+  {
+    switch ( f )
+    {
+      case BEAR_FORM:    return p()->buff.lycaras_teachings_vers;
+      case CAT_FORM:     return p()->buff.lycaras_teachings_crit;
+      case MOONKIN_FORM: return p()->buff.lycaras_teachings_mast;
+      case NO_FORM:      return p()->buff.lycaras_teachings_haste;
+      default:           assert( false ); return nullptr;
+    }
+  }
+
+  void shapeshift()
+  {
+    auto old_form = p()->form;
+    if ( old_form == form )
+      return;
+
+    if ( auto old_buff = get_form_buff( old_form ) )
+      old_buff->expire();
+
+    if ( p()->talent.lycaras_teachings.ok() )
+    {
+      if ( old_form != NO_FORM && meditation_dur > 0_ms )
+      {
+        // remove old lycaras meditation
+        if ( p()->lycaras_meditation_buff )
+        {
+          p()->lycaras_meditation_buff->expire();
+          p()->lycaras_meditation_buff = nullptr;
+        }
+
+        // apply new lycaras meditation
+        p()->lycaras_meditation_buff = get_lycara_buff( old_form );
+        p()->lycaras_meditation_buff->trigger( meditation_dur );
+      }
+      else
+      {
+        get_lycara_buff( old_form )->expire();
+      }
+    }
+
+    p()->form = form;
+
+    if ( form_buff )
+      form_buff->trigger();
+
+    if ( lycara_buff )
+      lycara_buff->trigger();
   }
 };
 
@@ -8366,9 +8434,9 @@ struct starfire_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
           .set_value( eff.base_value() )
           .set_eff( &eff );
       }
-
-      touch_pct = p->talent.touch_the_cosmos->effectN( 2 ).percent();
     }
+
+    touch_pct = p->talent.touch_the_cosmos->effectN( 2 ).percent();
 
     // parse this last as it's percent bonus
     m_data->parse_effects( p->buff.warrior_of_elune );
@@ -8382,7 +8450,7 @@ struct starfire_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
     {
       const auto& eff = p->talent.master_shapeshifter->effectN( 2 );
       add_parse_entry( da_multiplier_effects )
-        .set_func( [ p = p ] { return p->get_form() == NO_FORM; } )
+        .set_func( [ p = p ] { return p->form == NO_FORM; } )
         .set_value( eff.percent() )
         .set_eff( &eff );
     }
@@ -8481,7 +8549,7 @@ struct starsurge_offspec_t final : public trigger_call_of_the_elder_druid_t<drui
     {
       const auto& eff = p->talent.master_shapeshifter->effectN( 2 );
       add_parse_entry( da_multiplier_effects )
-        .set_func( [ p = p ] { return p->get_form() == NO_FORM; } )
+        .set_func( [ p = p ] { return p->form == NO_FORM; } )
         .set_value( eff.percent() )
         .set_eff( &eff );
     }
@@ -8733,16 +8801,6 @@ struct wild_charge_t final : public druid_spell_t
     trigger_gcd = 0_ms;
   }
 
-  void schedule_execute( action_state_t* state ) override
-  {
-    druid_spell_t::schedule_execute( state );
-
-    // Since Cat/Bear charge is limited to moving towards a target, cancel form if the druid wants to move away. Other
-    // forms can already move in any direction they want so they're fine.
-    if ( p()->current.movement_direction == movement_direction_type::AWAY )
-      p()->shapeshift( NO_FORM );
-  }
-
   void execute() override
   {
     auto dur = timespan_t::from_seconds( p()->current.distance_to_move / p()->composite_movement_speed() );
@@ -8762,7 +8820,7 @@ struct wild_charge_t final : public druid_spell_t
 
   void update_ready( timespan_t cd ) override
   {
-    if ( p()->talent.elunes_grace.ok() && ( p()->get_form() == BEAR_FORM || p()->get_form() == MOONKIN_FORM ) )
+    if ( p()->talent.elunes_grace.ok() && ( p()->form == BEAR_FORM || p()->form == MOONKIN_FORM ) )
       cd = cooldown_duration() - 3_s;
 
     druid_spell_t::update_ready( cd );
@@ -8909,7 +8967,7 @@ struct wrath_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
     {
       const auto& eff = p->talent.master_shapeshifter->effectN( 2 );
       add_parse_entry( da_multiplier_effects )
-        .set_func( [ p = p ] { return p->get_form() == NO_FORM; } )
+        .set_func( [ p = p ] { return p->form == NO_FORM; } )
         .set_value( eff.percent() )
         .set_eff( &eff );
     }
@@ -10037,6 +10095,7 @@ void druid_t::init_spells()
   talent.killer_instinct                = CT( "Killer Instinct" );
   talent.lingering_healing              = CT( "Lingering Healing" );
   talent.lore_of_the_grove              = CT( "Lore of the Grove" );
+  talent.lycaras_meditation             = CT( "Lycara's Meditation" );
   talent.lycaras_teachings              = CT( "Lycara's Teachings" );
   talent.maim                           = CT( "Maim" );
   talent.mass_entanglement              = CT( "Mass Entanglement" );
@@ -10608,7 +10667,7 @@ void druid_t::create_buffs()
   {
     buff.heart_of_the_wild->set_tick_callback(
       [ g = get_gain( "Heart of the Wild" ), this ]( buff_t*, int, timespan_t ) {
-        if ( get_form() == CAT_FORM )
+        if ( form == CAT_FORM )
           resource_gain( RESOURCE_COMBO_POINT, 1, g );
       } );
   }
@@ -12170,7 +12229,7 @@ void druid_t::init_special_effects()
 
       void trigger( action_t* a, action_state_t* s ) override
       {
-        if ( p()->get_form() != BEAR_FORM || !s->result_amount )
+        if ( p()->form != BEAR_FORM || !s->result_amount )
           return;
 
         // Elune's Favored heals off both arcane & nature damage
@@ -12406,6 +12465,7 @@ void druid_t::reset()
   moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
   persistent_event_delay.clear();
   astral_power_decay = nullptr;
+  lycaras_meditation_buff = nullptr;
   dot_lists.moonfire.clear();
   dot_lists.sunfire.clear();
   dot_lists.thrash_bear.clear();
@@ -13393,44 +13453,6 @@ druid_td_t* druid_t::get_target_data( player_t* t ) const
 // ==========================================================================
 // druid_t utility functions
 // ==========================================================================
-
-void druid_t::shapeshift( form_e f )
-{
-  if ( get_form() == f )
-    return;
-
-  buff.bear_form->expire();
-  buff.cat_form->expire();
-  buff.moonkin_form->expire();
-
-  switch ( f )
-  {
-    case BEAR_FORM:    buff.bear_form->trigger();    break;
-    case CAT_FORM:     buff.cat_form->trigger();     break;
-    case MOONKIN_FORM: buff.moonkin_form->trigger(); break;
-    case NO_FORM:                                    break;
-    default: assert( false ); break;
-  }
-
-  form = f;
-
-  if ( talent.lycaras_teachings.ok() )
-  {
-    buff.lycaras_teachings_haste->expire();
-    buff.lycaras_teachings_crit->expire();
-    buff.lycaras_teachings_vers->expire();
-    buff.lycaras_teachings_mast->expire();
-
-    switch ( f )
-    {
-      case BEAR_FORM:    buff.lycaras_teachings_vers->trigger();  break;
-      case CAT_FORM:     buff.lycaras_teachings_crit->trigger();  break;
-      case MOONKIN_FORM: buff.lycaras_teachings_mast->trigger();  break;
-      default:           buff.lycaras_teachings_haste->trigger(); break;
-    }
-  }
-}
-
 void druid_t::init_beast_weapon( weapon_t& w, double swing_time )
 {
   // use main hand weapon as base

@@ -103,7 +103,7 @@ waist=coinoperated_girdle,id=228886,bonus_id=11996/10356/6652/12176/1527/10255/1
 legs=galvanized_oxxein_legguards,id=178800,bonus_id=9026/3280/1641,enchant=stormbound_armor_kit_3
 feet=cauldron_champions_greatboots,id=229255,bonus_id=11996/10356/6652/1527/10255,enchant=defenders_march_3
 finger1=the_jastor_diamond,id=231265,bonus_id=6652/10394/10392/10356/11996/1527/10255/10879,gem_id=213494/213494,enchant=radiant_haste_3
-finger2=miniature_roulette_wheel,id=228843,bonus_id=10356/1527/8781/8948/8950,gem_id=213494/213494,enchant=radiant_mastery_3
+finger2=cyrces_circlet,id=228411,gem_id=228638/228639/228646,bonus_id=12025/1511,enchant=radiant_haste_3
 trinket1=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255
 trinket2=house_of_cards,id=230027,bonus_id=6652/10356/11996/1527/10255
 main_hand=bestinslots,id=232526,bonus_id=6652/10356/11996/9418/1527/10255,enchant=rune_of_the_fallen_crusader
@@ -130,7 +130,7 @@ waist=coinoperated_girdle,id=228886,bonus_id=11996/10356/6652/12176/1527/10255/1
 legs=galvanized_oxxein_legguards,id=178800,bonus_id=9026/3280/1641,enchant=stormbound_armor_kit_3
 feet=cauldron_champions_greatboots,id=229255,bonus_id=11996/10356/6652/1527/10255,enchant=defenders_march_3
 finger1=the_jastor_diamond,id=231265,bonus_id=6652/10394/10392/10356/11996/1527/10255/10879,gem_id=213497/213497,enchant=radiant_haste_3
-finger2=miniature_roulette_wheel,id=228843,bonus_id=10356/1527/8781/8948/8950,gem_id=213497/213497,enchant=radiant_mastery_3
+finger2=cyrces_circlet,id=228411,gem_id=228638/228639/228646,bonus_id=12025/1511,enchant=radiant_haste_3
 trinket1=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255
 trinket2=house_of_cards,id=230027,bonus_id=6652/10356/11996/1527/10255
 main_hand=bestinslots,id=232526,bonus_id=6652/10356/11996/9418/1527/10255,enchant=rune_of_the_fallen_crusader

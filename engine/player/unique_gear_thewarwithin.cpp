@@ -7781,7 +7781,36 @@ void machine_gobs_iron_grin( special_effect_t& effect )
   new machine_gobs_iron_grin_cb_t( effect );
 }
 
+void capos_molten_knuckles( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<generic_proc_t>( "capos_molten_knuckles", effect, effect.player->find_spell( 473626 ) );
+  effect.execute_action->base_dd_min = effect.execute_action->base_dd_max =
+    effect.driver()->effectN( 1 ).average( effect.item );
+  effect.execute_action->base_multiplier *= role_mult( effect );
+
+  const spell_data_t* dot_spell = effect.driver()->effectN( 1 ).trigger()->effectN( 2 ).trigger();
+  effect.execute_action->execute_action = create_proc_action<generic_proc_t>( "molten_gold", effect, dot_spell );
+
+  effect.execute_action->execute_action->tick_action =
+    create_proc_action<generic_proc_t>( "molten_gold_tick", effect, effect.player->find_spell( 473704 ) );
+  double tick_count = dot_spell->duration() / dot_spell->effectN( 1 ).period();
+
+  effect.execute_action->execute_action->tick_action->base_dd_min =
+    effect.execute_action->execute_action->tick_action->base_dd_max =
+    effect.driver()->effectN( 2 ).average( effect.item );
+  effect.execute_action->execute_action->tick_action->base_multiplier *= role_mult( effect );
+
+  effect.execute_action->execute_action->tick_action->aoe = -1;
+  // Not in spell data, needs to be tested.
+  effect.execute_action->execute_action->tick_action->reduced_aoe_targets = 8.0;
+
+  effect.execute_action->add_child( effect.execute_action->execute_action );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Armor
+
 // 457815 driver
 // 457918 nature damage driver
 // 457925 counter
@@ -8448,34 +8477,6 @@ void gigazaps_zapcap( special_effect_t& effect )
         zap->execute();
     } );
   } );
-}
-
-void capos_molten_knuckles( special_effect_t& effect )
-{
-  effect.execute_action = create_proc_action<generic_proc_t>( "capos_molten_knuckles", effect, effect.player->find_spell( 473626 ) );
-  effect.execute_action->base_dd_min = effect.execute_action->base_dd_max =
-      effect.driver()->effectN( 1 ).average( effect.item );
-  effect.execute_action->base_multiplier *= role_mult( effect );
-
-  const spell_data_t* dot_spell         = effect.driver()->effectN( 1 ).trigger()->effectN( 2 ).trigger();
-  effect.execute_action->execute_action = create_proc_action<generic_proc_t>( "molten_gold", effect, dot_spell );
-
-  effect.execute_action->execute_action->tick_action =
-      create_proc_action<generic_proc_t>( "molten_gold_tick", effect, effect.player->find_spell( 473704 ) );
-  double tick_count = dot_spell->duration() / dot_spell->effectN( 1 ).period();
-
-  effect.execute_action->execute_action->tick_action->base_dd_min =
-      effect.execute_action->execute_action->tick_action->base_dd_max =
-          effect.driver()->effectN( 2 ).average( effect.item );
-  effect.execute_action->execute_action->tick_action->base_multiplier *= role_mult( effect );
-
-  // Not in spell data, needs to be tested.
-  effect.execute_action->execute_action->aoe = -1;
-  effect.execute_action->execute_action->reduced_aoe_targets = 8.0;
-
-  effect.execute_action->add_child( effect.execute_action->execute_action );
-
-  new dbc_proc_callback_t( effect.player, effect );
 }
 
 }  // namespace items
@@ -10128,7 +10129,6 @@ void register_special_effects()
   register_special_effect( 1219102, items::ringing_ritual_mud );
   register_special_effect( 1221145, DISABLED_EFFECT );
   register_special_effect( 1219103, items::gigazaps_zapcap );
-  register_special_effect( 467774, items::capos_molten_knuckles );
 
   // Weapons
   register_special_effect( 443384, items::fateweaved_needle );
@@ -10142,6 +10142,7 @@ void register_special_effects()
   register_special_effect( { 473400, 473401 }, items::best_in_slots );
   register_special_effect( 471063, DISABLED_EFFECT );  // best in slots equip driver
   register_special_effect( 1218442, items::machine_gobs_iron_grin );
+  register_special_effect( 467774, items::capos_molten_knuckles );
 
   // Armor
   register_special_effect( 457815, items::seal_of_the_poisoned_pact );

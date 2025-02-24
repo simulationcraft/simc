@@ -1,4 +1,31 @@
-priest="TWW2_Priest_Shadow"
+priest="TWW2_Priest_Shadow_Voidweaver"
+level=80
+race=maghar_orc
+spec=shadow
+role=spell
+position=ranged_back
+talents=CIQAAAAAAAAAAAAAAAAAAAAAAAmxYAAAAAAAAAAAAMMbmxMzswMzMjxMzsMY2YmZmxsxAjxwsY2mamBLwMzMAQAmtZbJY2YBA
+
+head=confessors_unshakable_halo,id=229334,ilevel=678,gem_id=213743
+neck=semicharmed_amulet,id=228841,ilevel=678,gem_id=213482/213458
+shoulders=confessors_unshakable_radiance,id=229332,ilevel=678
+back=test_pilots_gopack,id=228844,ilevel=678
+chest=confessors_unshakable_vestment,id=229337,ilevel=678,enchant=crystalline_radiance_3
+wrists=consecrated_cuffs,id=222815,bonus_id=8793/11109,ilevel=675,gem_id=213497
+hands=confessors_unshakable_mitts,id=229335,ilevel=678
+waist=refiners_conveyor_belt,id=228882,ilevel=678,gem_id=213470
+legs=pit_doctors_petticoat,id=228865,ilevel=678,enchant=sunset_spellthread_3
+feet=cemented_murlocswimmers,id=228879,ilevel=678
+finger1=the_jastor_diamond,id=231265,ilevel=678,enchant=radiant_mastery_3,gem_id=213494/213494
+finger2=,id=228411,gem_id=228638/228639/228646,bonus_id=12025/1511,enchant=radiant_mastery_3
+trinket1=mugs_moxie_jug,id=230192,ilevel=678
+trinket2=eye_of_kezan,id=230198,ilevel=678
+main_hand=big_earners_bludgeon,id=228901,ilevel=678,enchant=authority_of_the_depths_3
+off_hand=vagabonds_torch,id=222566,ilevel=675,bonus_id=11300/8793
+
+save=TWW2_Priest_Shadow.simc
+
+priest="TWW2_Priest_Shadow_Archon"
 level=80
 race=maghar_orc
 spec=shadow
@@ -17,12 +44,10 @@ waist=refiners_conveyor_belt,id=228882,ilevel=678,gem_id=213470
 legs=pit_doctors_petticoat,id=228865,ilevel=678,enchant=sunset_spellthread_3
 feet=cemented_murlocswimmers,id=228879,ilevel=678
 finger1=the_jastor_diamond,id=231265,ilevel=678,enchant=radiant_mastery_3,gem_id=213494/213494
-# TBD on rules if we continue to use this
-# finger2=footbomb_championship_ring,id=159462,ilevel=678,enchant=radiant_mastery_3,gem_id=213494/213494
 finger2=,id=228411,gem_id=228638/228639/228646,bonus_id=12025/1511,enchant=radiant_mastery_3
 trinket1=mugs_moxie_jug,id=230192,ilevel=678
 trinket2=eye_of_kezan,id=230198,ilevel=678
-main_hand=big_earners_bludgeon,id=228901,ilevel=678,enchant=stormriders_fury_3
+main_hand=big_earners_bludgeon,id=228901,ilevel=678,enchant=authority_of_the_depths_3
 off_hand=vagabonds_torch,id=222566,ilevel=675,bonus_id=11300/8793
 
-save=TWW2_Priest_Shadow.simc
+save=TWW2_Priest_Shadow_Archon.simc

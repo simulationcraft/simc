@@ -3182,15 +3182,11 @@ struct fel_desolation_t : public demonsurge_trigger_t<demonsurge_ability::FEL_DE
   fel_desolation_t( demon_hunter_t* p, util::string_view options_str )
     : base_t( "fel_desolation", p, p->hero_spec.fel_desolation, options_str )
   {
+    cooldown = p->cooldown.fel_devastation;
     // 2024-07-07 -- Fel Desolation doesn't benefit from DGB CDR
-    // 2024-07-07 -- Fel Desolation doesn't share a cooldown with Fel Devastation
     if ( p->bugs )
     {
       benefits_from_dgb_cdr = false;
-    }
-    else
-    {
-      cooldown = p->cooldown.fel_devastation;
     }
   }
 
@@ -5830,7 +5826,7 @@ struct felblade_t : public inertia_trigger_t<demon_hunter_attack_t>
       event_t::cancel( p()->soul_fragment_pick_up );
       p()->consume_soul_fragments( soul_fragment::ANY, false, max_fragments_consumed );
     }
-      p()->buff.unbound_chaos->expire();
+    p()->buff.unbound_chaos->expire();
   }
 
   bool ready() override
@@ -6704,7 +6700,8 @@ struct preemptive_strike_t : public demon_hunter_ranged_attack_t
   preemptive_strike_t( util::string_view name, demon_hunter_t* p )
     : demon_hunter_ranged_attack_t( name, p, p->talent.aldrachi_reaver.preemptive_strike->effectN( 1 ).trigger() )
   {
-    background = dual = aoe = true;
+    background = dual = true;
+    aoe = -1;
   }
 
   // 2025-02-19 -- Preemptive Strike does not hit the primary target
@@ -7322,6 +7319,11 @@ struct wounded_quarry_cb_t : public demon_hunter_proc_callback_t
       : demon_hunter_attack_t( name, p, p->hero_spec.wounded_quarry_damage )
     {
       chance = p->hero_spec.wounded_quarry_proc_rate;
+      // 2025-02-23 -- WQ seems to proc things like Chaotic Disposition
+      if ( p->bugs )
+      {
+        allow_class_ability_procs = true;
+      }
     }
 
     void impact( action_state_t* s ) override

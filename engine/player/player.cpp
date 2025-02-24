@@ -9480,6 +9480,9 @@ struct use_item_t : public action_t
       return false;
     }
 
+    if ( if_expr && !if_expr->success() )
+      return false;
+
     return action_t::ready();
   }
 
@@ -9538,6 +9541,48 @@ struct use_item_t : public action_t
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
     auto split = util::string_split<util::string_view>( name, "." );
+
+    if ( split.size() > 1 && split[ 0 ] == "other_trinket" )
+    {
+      auto tail = name.substr( 14 );
+      slot_e s = util::parse_slot_type( item_slot );
+      
+      if ( s == SLOT_TRINKET_1 )
+        return unique_gear::create_expression( *player, fmt::format("trinket.2.{}", tail ) );
+      
+      if ( s == SLOT_TRINKET_2 )
+        return unique_gear::create_expression( *player, fmt::format("trinket.1.{}", tail ) );
+
+      throw std::invalid_argument( fmt::format( "Unsupported expression 'other_trinket' for '{}' slot", item_slot ) );
+    }
+
+    if ( split.size() > 1 && split[ 0 ] == "this_trinket" )
+    {
+      auto tail = name.substr( 13 );
+      slot_e s = util::parse_slot_type( item_slot );
+      
+      if ( s == SLOT_TRINKET_1 )
+        return unique_gear::create_expression( *player, fmt::format("trinket.1.{}", tail ) );
+      
+      if ( s == SLOT_TRINKET_2 )
+        return unique_gear::create_expression( *player, fmt::format("trinket.2.{}", tail ) );
+
+      throw std::invalid_argument( fmt::format( "Unsupported expression 'this_trinket' for '{}' slot", item_slot ) );
+    }
+
+    if ( split.size() == 1 && split[ 0 ] == "this_trinket_slot" )
+    {
+      slot_e s = util::parse_slot_type( item_slot );
+      
+      if ( s == SLOT_TRINKET_1 )
+        return std::make_unique<const_expr_t>( name, 1 );
+      
+      if ( s == SLOT_TRINKET_2 )
+        return std::make_unique<const_expr_t>( name, 2 );
+
+      throw std::invalid_argument( fmt::format( "Unsupported expression 'this_trinket_slot' for '{}' slot", item_slot ) );
+    }
+
     if ( auto e = create_special_effect_expr( split ) )
     {
       return e;
@@ -9614,6 +9659,7 @@ struct use_items_t : public action_t
   void init() override
   {
     create_use_subactions();
+    option.if_expr_str = "";
 
     // No use_item sub-actions created here, so this action does not need to execute ever. The
     // parent init() call below will filter it out from the "foreground action list".
@@ -9799,7 +9845,9 @@ struct use_items_t : public action_t
                                item.full_name().c_str(), item.slot_name() );
       }
 
-      use_actions.push_back( new use_item_t( player, std::string( "slot=" ) + item.slot_name() ) );
+      auto use_action = new use_item_t( player, std::string( "slot=" ) + item.slot_name() );
+      use_action->option.if_expr_str = option.if_expr_str;
+      use_actions.push_back( use_action );
 
       auto action = use_actions.back();
       // The use_item action is not triggered by the actor (through the APL), so background it

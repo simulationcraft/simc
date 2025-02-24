@@ -1,197 +1,198 @@
-# mage="TWW2_Mage_Arcane_Spellslinger"
-# spec=arcane
-# level=80
-# race=mechagnome
-# role=spell
-# position=back
-# talents=C4DAAAAAAAAAAAAAAAAAAAAAAYMMbzCmxMmFPAjZGGTzMmBAAAAAgBAABMzstssMzELAAAAAAAglhhZmZmxMMzYMzMmZmxYGD
+mage="TWW2_Mage_Arcane_Spellslinger"
+spec=arcane
+level=80
+race=void_elf
+role=spell
+position=back
+talents=C4DAAAAAAAAAAAAAAAAAAAAAAYMMbzCmxMmFPAjZGGTzMmBAAAAAgBAABMzstssMzELAAAAAAAglhhZmZmxMMzYMzMmZmxYGD
 
-# potion=tempered_potion_3
-# flask=flask_of_alchemical_chaos_3
-# food=feast_of_the_midnight_masquerade
-# augmentation=crystallized
-# temporary_enchant=main_hand:algari_mana_oil_3
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=feast_of_the_midnight_masquerade
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3
 
-# head=cocoonsilk_cowl,id=178693,ilevel=639,gem_id=213743
-# neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213494/213455
-# shoulder=beacons_of_violet_rebirth,id=212090,ilevel=639
-# back=ward_of_violet_rebirth,id=212087,ilevel=639,enchant_id=7415
-# chest=runecoat_of_violet_rebirth,id=212095,ilevel=639,enchant_id=7364
-# wrist=consecrated_cuffs,id=222815,ilevel=636,gem_id=213470,enchant_id=7397,bonus_id=11109,crafted_stats=36/49
-# hands=jeweled_gauntlets_of_violet_rebirth,id=212093,ilevel=639
-# waist=shattered_eye_cincture,id=212430,ilevel=639,gem_id=213494
-# legs=coattails_of_violet_rebirth,id=212091,ilevel=639,enchant_id=7534
-# feet=tainted_earthshard_walkers,id=221082,ilevel=639,enchant_id=7424
-# finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213482/213482,enchant_id=7340
-# finger2=,id=228411,gem_id=228634/228639/228646,bonus_id=12025/1511,enchant_id=7340
-# trinket2=treacherous_transmitter,id=221023,ilevel=639
-# trinket1=spymasters_web,id=220202,ilevel=639
-# main_hand=sovereigns_disdain,id=212394,enchant_id=7460,ilevel=639
-# off_hand=vagabonds_torch,id=222566,ilevel=636,bonus_id=11300,crafted_stats=36/49
+head=aspectral_emissarys_crystalline_cowl,id=229343,ilevel=678,gem_id=213743
+neck=semicharmed_amulet,id=228841,ilevel=678,gem_id=213494/213455
+shoulder=aspectral_emissarys_arcane_vents,id=229341,ilevel=678
+back=,id=168970,ilevel=678,enchant_id=7415
+chest=petticoat_of_the_selfstylized_azerite_baron,id=235420,ilevel=678,enchant_id=7364
+wrist=consecrated_cuffs,id=222815,ilevel=675,gem_id=213470,enchant_id=7397,bonus_id=10520:8960,crafted_stats=36/40
+hands=aspectral_emissarys_hardened_grasp,id=229344,ilevel=678
+waist=ringmasters_cummerbund,id=168958,ilevel=678,gem_id=213485
+legs=aspectral_emissarys_trousers,id=229342,ilevel=678,enchant_id=7531
+feet=consecrated_slippers,id=222814,ilevel=675,enchant_id=7424,bonus_id=10520:8960,crafted_stats=36/40
+finger1=the_jastor_diamond,id=231265,ilevel=678,gem_id=213485/213485,enchant_id=7352
+finger2=miniature_roulette_wheel,id=228843,ilevel=678,gem_id=213485/213470,enchant_id=7352,crafted_stats=40/36
+trinket2=eye_of_kezan,id=230198,ilevel=678
+trinket1=mugs_moxie_jug,id=230192,ilevel=678
+main_hand=neural_synapse_enhancer,id=168973,ilevel=678,enchant_id=7460
+off_hand=
 
-# save=TWW2_Mage_Arcane.simc
+save=TWW2_Mage_Arcane.simc
 
-# mage="TWW2_Mage_Arcane_Sunfury"
-# spec=arcane
-# level=80
-# race=mechagnome
-# role=spell
-# position=back
-# talents=C4DAAAAAAAAAAAAAAAAAAAAAAYMMbzCmxDMmFDjZGGTzMmBAAAAAgBAMzMtMLbzAAxGAAAAAAAYZGDmZmZMDzMGzMjZmZMmxA
+mage="TWW2_Mage_Arcane_Sunfury"
+spec=arcane
+level=80
+race=void_elf
+role=spell
+position=back
+talents=C4DAAAAAAAAAAAAAAAAAAAAAAYMMbzCmxDMmFDjZGGTzMmBAAAAAgBAMzMtMbLzAAxGAAAAAAAYhBzsMLzDMzYmZGzMzMzYYMG
 
-# potion=tempered_potion_3
-# flask=flask_of_alchemical_chaos_3
-# food=feast_of_the_midnight_masquerade
-# augmentation=crystallized
-# temporary_enchant=main_hand:algari_mana_oil_3
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=feast_of_the_midnight_masquerade
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3
 
-# head=cocoonsilk_cowl,id=178693,ilevel=639,gem_id=213743
-# neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213494/213455
-# shoulder=beacons_of_violet_rebirth,id=212090,ilevel=639
-# back=ward_of_violet_rebirth,id=212087,ilevel=639,enchant_id=7415
-# chest=runecoat_of_violet_rebirth,id=212095,ilevel=639,enchant_id=7364
-# wrist=consecrated_cuffs,id=222815,ilevel=636,gem_id=213470,enchant_id=7397,bonus_id=11109,crafted_stats=36/49
-# hands=jeweled_gauntlets_of_violet_rebirth,id=212093,ilevel=639
-# waist=shattered_eye_cincture,id=212430,ilevel=639,gem_id=213494
-# legs=coattails_of_violet_rebirth,id=212091,ilevel=639,enchant_id=7534
-# feet=tainted_earthshard_walkers,id=221082,ilevel=639,enchant_id=7424
-# finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213482/213482,enchant_id=7340
-# finger2=,id=228411,gem_id=228634/228639/228646,bonus_id=12025/1511,enchant_id=7340
-# trinket2=treacherous_transmitter,id=221023,ilevel=639
-# trinket1=spymasters_web,id=220202,ilevel=639
-# main_hand=sovereigns_disdain,id=212394,enchant_id=7460,ilevel=639
-# off_hand=vagabonds_torch,id=222566,ilevel=636,bonus_id=11300,crafted_stats=36/49
+head=aspectral_emissarys_crystalline_cowl,id=229343,ilevel=678,gem_id=213743
+neck=semicharmed_amulet,id=228841,ilevel=678,gem_id=213485/213485
+shoulder=underbosss_tailored_mantle,id=228870,ilevel=678
+back=trashmasters_mantle,id=168970,ilevel=678,enchant_id=7415
+chest=aspectral_emissarys_primal_robes,id=229346,ilevel=678,enchant_id=7364
+wrist=consecrated_cuffs,id=222815,bonus_id=11109,ilevel=675,gem_id=213470,enchant_id=7397,crafted_stats=36/40
+hands=aspectral_emissarys_hardened_grasp,id=229344,ilevel=678
+waist=tuneup_toolbelt,id=228861,ilevel=678,gem_id=213494
+legs=aspectral_emissarys_trousers,id=229342,ilevel=678,enchant_id=7534
+feet=hyperthread_boots,id=168964,ilevel=678
+finger1=the_jastor_diamond,id=231265,ilevel=678,gem_id=213455/213485,enchant_id=7340
+finger2=miniature_roulette_wheel,id=228843,ilevel=678,gem_id=213470/213470,enchant_id=7352,crafted_stats=40/36
+trinket1=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255
+trinket2=spymasters_web,id=220202,ilevel=639
+main_hand=fleshcrafters_knife,id=178789,ilevel=678,enchant_id=7460
+off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/9627/10222/11300/8960/8792/11144,ilevel=675,crafted_stats=40/32
 
-# save=TWW2_Mage_Arcane_Sunfury.simc
+save=TWW2_Mage_Arcane_Sunfury.simc
 
-# mage="TWW2_Mage_Fire_Sunfury"
-# spec=fire
-# level=80
-# race=dwarf
-# role=spell
-# position=ranged_back
-# talents=C8DAAAAAAAAAAAAAAAAAAAAAAYGYxCmhZmFDjZGmGzMmZAAAAAAMQAzMTLzyyMAAbGzgxMjZGWMLjZMzwMbzYZmlhBAAAAAAA
+mage="TWW2_Mage_Fire_Sunfury"
+spec=fire
+level=80
+race=dwarf
+role=spell
+position=ranged_back
+talents=C8DAAAAAAAAAAAAAAAAAAAAAAYGYxCmhZmFDjZGmGzMmZAAAAAAMQAzMTLzyyMAAbGzgxMjZGWMLjZMzwMbzYZmlhBAAAAAAA
 
-# potion=tempered_potion_3
-# flask=flask_of_alchemical_chaos_3
-# food=feast_of_the_divine_day
-# augmentation=crystallized
-# temporary_enchant=main_hand:algari_mana_oil_3
+potion=tempered_potion_3
+flask=flask_of_tempered_swiftness_3
+food=the_sushi_special
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3
 
-# head=cocoonsilk_cowl,id=178693,bonus_id=10835,ilevel=639,gem_id=213743
-# neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213455/213494
-# shoulder=beacons_of_violet_rebirth,id=212090,ilevel=639
-# back=anvilhide_cape,id=221088,ilevel=639,enchant_id=7403
-# chest=runecoat_of_violet_rebirth,id=212095,ilevel=639,enchant_id=7364
-# wrist=consecrated_cuffs,id=222815,bonus_id=11109,ilevel=636,gem_id=213470,enchant_id=7385,crafted_stats=36/40
-# hands=jeweled_gauntlets_of_violet_rebirth,id=212093,ilevel=639
-# waist=cord_of_the_pious_warder,id=159245,ilevel=639,gem_id=213485
-# legs=coattails_of_violet_rebirth,id=212091,ilevel=639,enchant_id=7534
-# feet=tainted_earthshard_walkers,id=221082,ilevel=639,enchant_id=7418
-# finger1=key_to_the_unseeming,id=212447,bonus_id=10836,ilevel=639,gem_id=213494/213470,enchant_id=7340
-# finger2=stitchfleshs_misplaced_signet,id=178736,bonus_id=10836,ilevel=639,gem_id=213485/213455,enchant_id=7340
-# trinket1=treacherous_transmitter,id=221023,ilevel=639
-# trinket2=spymasters_web,id=220202,ilevel=639
-# main_hand=sovereigns_disdain,id=212394,ilevel=639,enchant_id=7460
-# off_hand=vagabonds_torch,id=222566,bonus_id=11300,ilevel=636,crafted_stats=36/49
+head=,id=229343,bonus_id=11996/10356/11960/6652/12176/1579/10255,gem_id=213743,ilevel=678
+neck=semicharmed_amulet,id=228841,ilevel=678,gem_id=213494/213455
+shoulder=,id=229341,bonus_id=11996/10356/11962/6652/1579/10255,ilevel=678
+feet=,id=229345,bonus_id=11996/10356/6652/1579/10255,ilevel=678
+back=consecrated_cloak,id=222817,bonus_id=11109/8960,enchant_id=7403,crafted_stats=36/40,ilevel=675
+chest=,id=229346,enchant_id=7364,bonus_id=11996/10356/11958/6652/1579/10255,ilevel=678
+wrist=,id=168989,gem_id=213485,ilevel=678
+hands=punctured_apiary_gloves,id=221067,ilevel=678
+waist=ringmasters_cummerbund,id=168958,ilevel=678,gem_id=213485
+legs=,id=229342,enchant_id=7534,bonus_id=11996/10356/11961/6652/1579/10255,ilevel=678
+feet=,id=229345,bonus_id=11996/10356/6652/1579/10255,ilevel=678
+finger1=,id=228843,crafted_stats=36/49,enchant_id=7340,gem_id=213485/213470,ilevel=678
+finger2=wicks_golden_loop,id=221099,enchant_id=7340,gem_id=213485/213485,ilevel=678
+trinket1=,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
+trinket2=,id=230192,bonus_id=6652/10356/11996/1527/10255,ilevel=678
+main_hand=fleshcrafters_knife,id=178789,enchant_id=7460,ilevel=678
+off_hand=,id=222566,bonus_id=10421/9633/8902/9627/10222/11300/8960/8792/11144,crafted_stats=40/32,crafting_quality=5,ilevel=675
 
-# save=TWW2_Mage_Fire_Sunfury.simc
+save=TWW2_Mage_Fire_Sunfury.simc
 
-# mage="TWW2_Mage_Fire_Frostfire"
-# spec=fire
-# level=80
-# race=dwarf
-# role=spell
-# position=ranged_back
-# talents=C8DAAAAAAAAAAAAAAAAAAAAAAYGYzCmxMmFDjZGmGzMmZAAAAAAMzyMNzsMLQAAALGzgZmZMzMWMLjxMPAmZZGMLMDAAAAAAA
+mage="TWW2_Mage_Fire_Frostfire"
+spec=fire
+level=80
+race=dwarf
+role=spell
+position=ranged_back
+talents=C8DAAAAAAAAAAAAAAAAAAAAAAYGMbzCmxDMmNDjZGmGzMmBAAAAAgZWmpZmlZBCAAYxYGMzMjZmZWMLjxMPAmZbGMLYAAAAAAAA
 
-# potion=tempered_potion_3
-# flask=flask_of_alchemical_chaos_3
-# food=feast_of_the_divine_day
-# augmentation=crystallized
-# temporary_enchant=main_hand:algari_mana_oil_3
+potion=tempered_potion_3
+flask=flask_of_tempered_swiftness_3
+food=the_sushi_special
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3
 
-# head=cocoonsilk_cowl,id=178693,bonus_id=10835,ilevel=639,gem_id=213743
-# neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213455/213494
-# shoulder=beacons_of_violet_rebirth,id=212090,ilevel=639
-# back=anvilhide_cape,id=221088,ilevel=639,enchant_id=7403
-# chest=runecoat_of_violet_rebirth,id=212095,ilevel=639,enchant_id=7364
-# wrist=consecrated_cuffs,id=222815,bonus_id=11109,ilevel=636,gem_id=213470,enchant_id=7385,crafted_stats=36/40
-# hands=jeweled_gauntlets_of_violet_rebirth,id=212093,ilevel=639
-# waist=cord_of_the_pious_warder,id=159245,ilevel=639,gem_id=213485
-# legs=coattails_of_violet_rebirth,id=212091,ilevel=639,enchant_id=7534
-# feet=tainted_earthshard_walkers,id=221082,ilevel=639,enchant_id=7418
-# finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=10836,ilevel=639,gem_id=213485/213470,enchant_id=7340
-# finger2=experiment_08752s_band,id=221189,bonus_id=3131/10299/10376/8781,gem_id=213494/213455,enchant_id=7340
-# trinket1=candle_confidant,id=225648,ilevel=626
-# trinket2=spymasters_web,id=220202,ilevel=639
-# main_hand=sovereigns_disdain,id=212394,ilevel=639,enchant_id=7460
-# off_hand=vagabonds_torch,id=222566,bonus_id=11300/8792,ilevel=636,crafted_stats=36/49
+head=aspectral_emissarys_crystalline_cowl,id=229343,bonus_id=11996/10356/11960/6652/12176/1579/10255,gem_id=213743,ilevel=678
+neck=amulet_of_earthen_craftsmanship,id=215136,bonus_id=10421/10520/9633/8902/10879/10396/9627/10222/8792,ilevel=675,gem_id=213455/213485
+shoulder=aspectral_emissarys_arcane_vents,id=229341,bonus_id=11996/10356/11962/6652/1579/10255,ilevel=678
+back=consecrated_cloak,id=222817,bonus_id=11304/8960,ilevel=675,enchant_id=7403,crafted_stats=36/40
+chest=aspectral_emissarys_primal_robes,id=229346,bonus_id=11996/10356/11958/6652/1579/10255,enchant_id=7364,ilevel=678
+wrist=,id=168989,gem_id=213485,ilevel=678
+hands=punctured_apiary_gloves,id=221067,ilevel=678
+waist=ringmasters_cummerbund,id=168958,ilevel=678,gem_id=213485
+legs=aspectral_emissarys_trousers,id=229342,bonus_id=11996/10356/11961/6652/1579/10255,enchant_id=7534,ilevel=678
+feet=aspectral_emissarys_slippers,id=229345,bonus_id=11996/10356/6652/1579/10255,ilevel=678
+finger1=miniature_roulette_wheel,id=228843,ilevel=678,gem_id=213485/213470,enchant_id=7340,crafted_stats=40/36
+finger2=wicks_golden_loop,id=221099,ilevel=678,gem_id=213485/213485,enchant_id=7340
+trinket1=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
+trinket2=mugs_moxie_jug,id=230192,bonus_id=6652/10356/11996/1527/10255,ilevel=678
+main_hand=neural_synapse_enhancer,id=168973,ilevel=678,enchant_id=7460
+off_hand=null
 
-# save=TWW2_Mage_Fire.simc
+save=TWW2_Mage_Fire.simc
 
-# mage="TWW2_Mage_Frost_Spellslinger"
-# spec=frost
-# level=80
-# race=mechagnome
-# role=spell
-# position=ranged_back
-# talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGbmtZBzYGzmBmZ0YMzYGGmZmZYMzMzYmZmZmZMYGIAAwMz2yyyMTbAAAAAAYAAAAAAAAA
+mage="TWW2_Mage_Frost_Spellslinger"
+spec=frost
+level=80
+race=tauren
+role=spell
+position=ranged_back
+talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGbmtZBzwYWMYmZ0YMzYGGmxMMzMzMzYmZmZmZmBzABAAmZ2WWWmZaDAAAAAADAAAAAAAA
 
-# potion=tempered_potion_3
-# flask=flask_of_alchemical_chaos_3
-# food=feast_of_the_midnight_masquerade
-# augmentation=crystallized
-# temporary_enchant=main_hand:algari_mana_oil_3
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=feast_of_the_midnight_masquerade
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3
 
-# head=hood_of_violet_rebirth,id=212092,ilevel=639,gem_id=213743
-# neck=sureki_zealots_insignia,id=225577,bonus_id=8781,ilevel=639,gem_id=213461/213461
-# shoulders=beacons_of_violet_rebirth,id=212090,ilevel=639
-# back=wings_of_shattered_sorrow,id=225574,bonus_id=1540/10299/10376,enchant_id=7415
-# chest=shadowed_orators_tunic,id=221095,bonus_id=4786/3131/10299,enchant_id=7364
-# wrists=consecrated_cuffs,id=222815,bonus_id=11109,ilevel=636,gem_id=213479,enchant_id=7397,crafted_stats=32/36
-# hands=jeweled_gauntlets_of_violet_rebirth,id=212093,ilevel=639
-# waist=sigil_of_violet_rebirth,id=212089,bonus_id=4800/4786/1540/10299/523,ilevel=639,gem_id=213494
-# legs=coattails_of_violet_rebirth,id=212091,ilevel=639,enchant_id=7534
-# feet=tainted_earthshard_walkers,id=221082,bonus_id=4786/3131/10299,ilevel=639,enchant_id=7418
-# finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213473/213509,enchant_id=7340
-# finger2=cyrces_circlet,id=228411,ilevel=658,gem_id=228646/228634/228639,enchant_id=7340
-# trinket1=treacherous_transmitter,id=221023,ilevel=639
-# trinket2=spymasters_web,id=220202,ilevel=639
-# main_hand=unceremonious_bloodletter,id=221165,bonus_id=4786/3131/10299,enchant_id=7460
-# off_hand=vagabonds_torch,id=222566,bonus_id=11300/8795,ilevel=636,crafted_stats=32/36
+head=inventors_ingenious_trifocals,id=235226,bonus_id=3170/11996/11964/1808,ilevel=678,gem_id=213743
+neck=flickering_glowtorc,id=221103,bonus_id=3170/11996/11964/8781,ilevel=678,gem_id=213461/213485
+shoulder=aspectral_emissarys_arcane_vents,id=229341,bonus_id=11996/10356/11962/6652/1579/10255,ilevel=678
+back=undercircuit_racing_flag,id=228839,bonus_id=1527/11996/11964,enchant_id=7403
+chest=aspectral_emissarys_primal_robes,id=229346,bonus_id=11996/10356/11958/6652/1579/10255,ilevel=678,enchant_id=7364
+wrist=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12043/12040/1485/11109/8960/1808/8792,gem_id=213497,enchant_id=7385,crafted_stats=32/36
+hands=aspectral_emissarys_hardened_grasp,id=229344,bonus_id=1579/11996,ilevel=678
+waist=tuneup_toolbelt,id=228861,bonus_id=1527/11996/11964/1808,ilevel=678,gem_id=213485
+legs=aspectral_emissarys_trousers,id=229342,bonus_id=11996/10356/11961/6652/1579/10255,ilevel=678,enchant_id=7534
+feet=nonconductive_killosocks,id=234497,bonus_id=4786/1527/11996,ilevel=678,enchant_id=7424
+finger1=wicks_golden_loop,id=221099,bonus_id=8781,ilevel=678,gem_id=213470/213455,enchant_id=7340
+finger2=the_jastor_diamond,id=231265,bonus_id=4800/4786/1527/11996/8781,ilevel=678,gem_id=213485/213485,enchant_id=7340
+trinket1=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
+trinket2=synergistic_brewterializer,id=219299,bonus_id=3170/11996/11964
+main_hand=blastfurious_machete,id=231268,bonus_id=1527/11996/11964,enchant_id=7460
+off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/9627/10222/11300/8960/8795/11144,ilevel=675,crafted_stats=40/32
 
-# save=TWW2_Mage_Frost.simc
+save=TWW2_Mage_Frost.simc
 
-# mage="TWW2_Mage_Frost_Frostfire"
-# spec=frost
-# level=80
-# race=dwarf
-# role=spell
-# position=ranged_back
-# talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGbmtZBzYGzmBmZ0YMzYGmZGzMDPwMzMDzMzMzMzMwMLz0Mz2sAAAgWAAAAAAwAAAAAAAAA
+mage="TWW2_Mage_Frost_Frostfire"
+spec=frost
+level=80
+race=tauren
+role=spell
+position=ranged_back
+talents=CAEAAAAAAAAAAAAAAAAAAAAAAYGbmtZBzwYWMYmZ0YMzYGmZGmhZmZmZGzMzMzYmBzMLz0MzysAAAgWAAAAAAwAAAAAAAAA
 
-# potion=tempered_potion_3
-# flask=flask_of_alchemical_chaos_3
-# food=feast_of_the_midnight_masquerade
-# augmentation=crystallized
-# temporary_enchant=main_hand:algari_mana_oil_3
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=feast_of_the_midnight_masquerade
+augmentation=crystallized
+temporary_enchant=main_hand:algari_mana_oil_3
 
-# head=hood_of_violet_rebirth,id=212092,ilevel=639,gem_id=213743
-# neck=sureki_zealots_insignia,id=225577,bonus_id=8781,ilevel=639,gem_id=213461/213461
-# shoulders=beacons_of_violet_rebirth,id=212090,ilevel=639
-# back=wings_of_shattered_sorrow,id=225574,bonus_id=1540/10299/10376,enchant_id=7415
-# chest=shadowed_orators_tunic,id=221095,bonus_id=4786/3131/10299,enchant_id=7364
-# wrists=consecrated_cuffs,id=222815,bonus_id=11109,ilevel=636,gem_id=213479,enchant_id=7397,crafted_stats=32/36
-# hands=jeweled_gauntlets_of_violet_rebirth,id=212093,ilevel=639
-# waist=sigil_of_violet_rebirth,id=212089,bonus_id=4800/4786/1540/10299/523,ilevel=639,gem_id=213494
-# legs=coattails_of_violet_rebirth,id=212091,ilevel=639,enchant_id=7534
-# feet=tainted_earthshard_walkers,id=221082,bonus_id=4786/3131/10299,ilevel=639,enchant_id=7418
-# finger1=seal_of_the_poisoned_pact,id=225578,ilevel=639,gem_id=213473/213509,enchant_id=7340
-# finger2=cyrces_circlet,id=228411,ilevel=658,gem_id=228646/228634/228636,enchant_id=7340
-# trinket1=candle_confidant,id=225648,bonus_id=40/6652/10256/3155/10255
-# trinket2=spymasters_web,id=220202,ilevel=639
-# main_hand=unceremonious_bloodletter,id=221165,bonus_id=4786/3131/10299,enchant_id=7460
-# off_hand=vagabonds_torch,id=222566,bonus_id=11300/8795,ilevel=636,crafted_stats=32/36
+head=inventors_ingenious_trifocals,id=235226,bonus_id=3170/11996/11964/1808,ilevel=678,gem_id=213743
+neck=flickering_glowtorc,id=221103,bonus_id=3170/11996/11964/8781,ilevel=678,gem_id=213485/213455
+shoulder=aspectral_emissarys_arcane_vents,id=229341,bonus_id=11996/10356/11962/6652/1579/10255,ilevel=678
+back=candlebearers_shroud,id=221109,bonus_id=3170/11996/11964,enchant_id=7403
+chest=aspectral_emissarys_primal_robes,id=229346,bonus_id=11996/10356/11958/6652/1579/10255,ilevel=678,enchant_id=7364
+wrist=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12043/12040/1485/11109/8960/8792,gem_id=213497,enchant_id=7385,crafted_stats=32/36
+hands=aspectral_emissarys_hardened_grasp,id=229344,bonus_id=1579/11996,ilevel=678
+waist=tuneup_toolbelt,id=228861,bonus_id=1527/11996/11964/1808,ilevel=678,gem_id=213467
+legs=aspectral_emissarys_trousers,id=229342,bonus_id=11996/10356/11961/6652/1579/10255,ilevel=678,enchant_id=7534
+feet=nonconductive_killosocks,id=234497,bonus_id=4786/1527/11996,ilevel=678,enchant_id=7424
+finger1=wicks_golden_loop,id=221099,bonus_id=8781,ilevel=678,gem_id=213467/213467,enchant_id=7352
+finger2=bloodoath_signet,id=178871,bonus_id=4786/9987/11996/8781,gem_id=213467/213467,enchant_id=7352
+trinket1=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
+trinket2=synergistic_brewterializer,id=219299,bonus_id=3170/11996/11964
+main_hand=blastfurious_machete,id=231268,bonus_id=1527/11996/11964,enchant_id=7460
+off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/9627/10222/11300/8960/11144/8792,ilevel=675,crafted_stats=40/32
 
-# save=TWW2_Mage_Frost_Frostfire.simc
+save=TWW2_Mage_Frost_Frostfire.simc

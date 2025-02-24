@@ -9923,10 +9923,6 @@ private:
   mage_t& p;
 };
 
-namespace live_mage {
-#include "class_modules/sc_mage_live.inc"
-}
-
 // MAGE MODULE INTERFACE ====================================================
 
 struct mage_module_t final : public module_t
@@ -9938,19 +9934,9 @@ public:
 
   player_t* create_player( sim_t* sim, std::string_view name, race_e r = RACE_NONE ) const override
   {
-    // TODO: Remove PTR check and the live mage file
-    if ( sim->dbc->ptr )
-    {
-      auto p = new mage_t( sim, name, r );
-      p->report_extension = std::make_unique<mage_report_t>( *p );
-      return p;
-    }
-    else
-    {
-      auto p = new live_mage::mage_t( sim, name, r );
-      p->report_extension = std::make_unique<live_mage::mage_report_t>( *p );
-      return p;
-    }
+    auto p = new mage_t( sim, name, r );
+    p->report_extension = std::make_unique<mage_report_t>( *p );
+    return p;
   }
 
   void register_hotfixes() const override

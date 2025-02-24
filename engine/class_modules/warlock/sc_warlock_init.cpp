@@ -188,6 +188,12 @@ namespace warlock
     tier.hexflame_aff_2pc = sets->set( WARLOCK_AFFLICTION, TWW1, B2 ); // Should be ID 453643
     tier.hexflame_aff_4pc = sets->set( WARLOCK_AFFLICTION, TWW1, B4 ); // Should be ID 453642
     tier.umbral_lattice = find_spell( 455679 );
+
+    // Liberation of Undermine
+    tier.spliced_aff_2pc = sets->set( WARLOCK_AFFLICTION, TWW2, B2 ); // Should be ID 1215678
+    tier.spliced_aff_4pc = sets->set( WARLOCK_AFFLICTION, TWW2, B4 ); // Should be ID 1215683
+    tier.spliced_aff_jackpot = find_spell( 1219034 );
+    tier.jackpot_ua = find_spell( 1219045 );
   }
 
   void warlock_t::init_spells_demonology()
@@ -330,12 +336,20 @@ namespace warlock
     tier.hexflame_demo_4pc = sets->set( WARLOCK_DEMONOLOGY, TWW1, B4 ); // Should be ID 453645
     tier.empowered_legion_strike = find_spell( 455647 );
 
+    // Liberation of Undermine
+    tier.spliced_demo_2pc = sets->set( WARLOCK_DEMONOLOGY, TWW2, B2 ); // Should be ID 1215679
+    tier.spliced_demo_4pc = sets->set( WARLOCK_DEMONOLOGY, TWW2, B4 ); // Should be ID 1215682
+    tier.greater_dreadstalker = find_spell( 1217615 );
+    tier.demonic_hunger = find_spell( 1217617 );
+
     // Initialize some default values for pet spawners
     warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
 
     warlock_pet_list.dreadstalkers.set_default_duration( talents.call_dreadstalkers_2->duration() );
 
     warlock_pet_list.doomguards.set_default_duration( talents.doomguard->duration() );
+
+    warlock_pet_list.greater_dreadstalkers.set_default_duration( tier.greater_dreadstalker->duration() );
   }
 
   void warlock_t::init_spells_destruction()
@@ -684,6 +698,11 @@ namespace warlock
 
     buffs.umbral_lattice = make_buff( this, "umbral_lattice", tier.umbral_lattice )
                                ->set_chance( rng_settings.umbral_lattice.setting_value );
+
+    buffs.jackpot_affliction = make_buff( this, "jackpot_affliction", tier.spliced_aff_jackpot )
+                                   ->set_default_value_from_effect( 1 )
+                                   ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                   ->set_rppm( RPPM_HASTE, tier.spliced_aff_2pc->real_ppm() );
   }
 
   void warlock_t::create_buffs_demonology()
@@ -981,6 +1000,7 @@ namespace warlock
     procs.tormented_crescendo = get_proc( "tormented_crescendo" );
     procs.ravenous_afflictions = get_proc( "ravenous_afflictions" );
     procs.umbral_lattice = get_proc( "umbral_lattice" );
+    procs.jackpot_affliction = get_proc( "jackpot_affliction" );
 
     for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
     {
@@ -1001,6 +1021,7 @@ namespace warlock
     procs.doom_eternal = get_proc( "doom_eternal" );
     procs.pact_of_the_eredruin = get_proc( "pact_of_the_eredruin" );
     procs.empowered_legion_strike = get_proc( "empowered_legion_strike" );
+    procs.jackpot_demonology = get_proc( "jackpot_demonology" );
 
     for ( size_t i = 0; i < procs.hand_of_guldan_shards.size(); i++ )
     {
@@ -1059,7 +1080,9 @@ namespace warlock
   }
 
   void warlock_t::init_rng_demonology()
-  { }
+  {
+    jackpot_demonology_rng = get_rppm( "jackpot_demonology", tier.spliced_demo_2pc );
+  }
 
   void warlock_t::init_rng_destruction()
   {
