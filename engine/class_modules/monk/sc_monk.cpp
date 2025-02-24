@@ -2576,11 +2576,8 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
 
     p()->buff.tigers_ferocity->trigger();
 
-    if ( p()->buff.heart_of_the_jade_serpent->up() )
-    {
-      p()->buff.heart_of_the_jade_serpent_cdr->trigger();
-      p()->buff.inner_compass_serpent_stance->trigger();
-    }
+    p()->buff.heart_of_the_jade_serpent_cdr->trigger();
+    p()->buff.inner_compass_serpent_stance->trigger();
   }
 };
 
@@ -3372,11 +3369,11 @@ struct crackling_jade_lightning_t : public monk_spell_t
       trigger_jadefire_stomp = true;
       sef_ability            = actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING_AOE;
 
-     // reduction for secondary targets
-     if ( player->talent.windwalker.power_of_the_thunder_king->ok() )
-       base_td_multiplier *= player->talent.windwalker.power_of_the_thunder_king->effectN( 4 ).percent();
-     if ( player->talent.mistweaver.jade_empowerment->ok() )
-       base_td_multiplier *= player->buff.jade_empowerment->data().effectN( 4 ).percent();
+      // reduction for secondary targets
+      if ( player->talent.windwalker.power_of_the_thunder_king->ok() )
+        base_td_multiplier *= player->talent.windwalker.power_of_the_thunder_king->effectN( 4 ).percent();
+      if ( player->talent.mistweaver.jade_empowerment->ok() )
+        base_td_multiplier *= player->buff.jade_empowerment->data().effectN( 4 ).percent();
 
       parse_effects( player->talent.windwalker.power_of_the_thunder_king, effect_mask_t( true ).disable( 1 ) );
       parse_effects( player->buff.the_emperors_capacitor );
@@ -7758,16 +7755,13 @@ void monk_t::create_buffs()
 
   buff.heart_of_the_jade_serpent_cdr =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
-                          "heart_of_the_jade_serpent_cdr", find_spell( 443421 ) );
-  // ->apply_affecting_aura( baseline.windwalker.aura_3 );
+                          "heart_of_the_jade_serpent_cdr", find_spell( 443421 ) )
+          ->apply_affecting_aura( baseline.windwalker.aura_3 );
 
   buff.heart_of_the_jade_serpent_cdr_celestial =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
-                          "heart_of_the_jade_serpent_cdr_celestial", find_spell( 443616 ) );
-  // ->apply_affecting_aura( baseline.windwalker.aura_3 );
-
-  buff.heart_of_the_jade_serpent_cdr->apply_affecting_aura( baseline.windwalker.aura_3 );
-  buff.heart_of_the_jade_serpent_cdr_celestial->apply_affecting_aura( baseline.windwalker.aura_3 );
+                          "heart_of_the_jade_serpent_cdr_celestial", find_spell( 443616 ) )
+          ->apply_affecting_aura( baseline.windwalker.aura_3 );
 
   buff.heart_of_the_jade_serpent_stack_mw =
       make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
@@ -7776,18 +7770,6 @@ void monk_t::create_buffs()
           ->set_stack_change_callback( [ this ]( buff_t *buff_, int, int new_ ) {
             if ( new_ == buff_->max_stack() )
               buff.heart_of_the_jade_serpent_cdr->trigger();
-          } )
-          ->set_expire_at_max_stack( true );
-
-  buff.heart_of_the_jade_serpent = make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(),
-                                                       this, "heart_of_the_jade_serpent", find_spell( 456368 ) );
-
-  buff.heart_of_the_jade_serpent_stack_ww =
-      make_buff_fallback( talent.conduit_of_the_celestials.heart_of_the_jade_serpent->ok(), this,
-                          "heart_of_the_jade_serpent_stack_ww", find_spell( 443424 ) )
-          ->set_stack_change_callback( [ this ]( buff_t *buff_, int, int new_ ) {
-            if ( new_ >= buff_->max_stack() )
-              buff.heart_of_the_jade_serpent->trigger();
           } )
           ->set_expire_at_max_stack( true );
 
@@ -8470,9 +8452,7 @@ std::vector<player_t *> monk_t::create_storm_earth_and_fire_target_list() const
   std::vector<player_t *> l = sim->target_non_sleeping_list.data();
 
   // Sort the list by ascending order of the actor index
-  range::sort( l, [ this ]( const player_t *l, const player_t *r ) {
-    return l->actor_index < r->actor_index;
-  } );
+  range::sort( l, [ this ]( const player_t *l, const player_t *r ) { return l->actor_index < r->actor_index; } );
 
   if ( sim->debug )
   {

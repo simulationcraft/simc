@@ -660,8 +660,6 @@ public:
     propagate_const<buff_t *> courage_of_the_white_tiger;
     propagate_const<buff_t *> flight_of_the_red_crane;
     propagate_const<buff_t *> heart_of_the_jade_serpent_stack_mw;
-    propagate_const<buff_t *> heart_of_the_jade_serpent_stack_ww;
-    propagate_const<buff_t *> heart_of_the_jade_serpent;
     propagate_const<buff_t *> heart_of_the_jade_serpent_cdr_celestial;
     propagate_const<buff_t *> heart_of_the_jade_serpent_cdr;
     propagate_const<buff_t *> inner_compass_crane_stance;
