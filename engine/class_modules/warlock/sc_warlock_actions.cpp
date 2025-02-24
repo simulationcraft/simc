@@ -4259,7 +4259,7 @@ using namespace helpers;
         dot_duration *= 1.0 + p->talents.demonfire_mastery->effectN( 3 ).percent();
       }
 
-      if ( p->talents.raging_demonfire.ok() )
+      if ( p->talents.channel_demonfire.ok() && p->talents.raging_demonfire.ok() )
       {
         int num_ticks = as<int>( dot_duration / base_tick_time + p->talents.raging_demonfire->effectN( 1 ).base_value() );
         base_tick_time *= 1.0 + p->talents.raging_demonfire->effectN( 3 ).percent();
