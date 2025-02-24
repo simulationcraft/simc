@@ -106,30 +106,29 @@
 
 # save=TWW2_Rogue_Outlaw.simc
 
-# rogue="TWW2_Rogue_Subtlety"
-# level=80
-# race=orc
-# role=attack
-# position=back
-# spec=subtlety
-# talents=CUQAAAAAAAAAAAAAAAAAAAAAAAAM2mBAAAAAgZZMWmmZGzMGGDDzMzMjxsNMzYbbmZmZmZAjlZbAAAAYGMsZWmxsNDjFGWmZZahWmFYA
+rogue="TWW2_Rogue_Subtlety"
+level=80
+race=maghar_orc
+role=attack
+position=back
+spec=subtlety
+talents=CUQAAAAAAAAAAAAAAAAAAAAAAAAM2mBAAAAAALjZWmGzYmxMGjZYmZmhxsNMzM2mZGzMzYALz2AAAAYmBDgxsZYgBmFtQL2gB
 
-# head=whispering_mask,id=221163,bonus_id=657/11143/5878/7981/10299,gem_id=213497
-# neck=silken_advisors_favor,id=225575,bonus_id=1540/10299,gem_id=213743/213497
-# shoulder=kareshi_phantoms_shoulderpads,id=212036,bonus_id=1540/10299
-# back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960,crafted_stats=49/40
-# chest=kareshi_phantoms_nexus_wraps,id=212041,bonus_id=1540/10299,enchant_id=7364,enchant=crystalline_radiance_3
-# wrist=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/11144/10222/1485/1808,gem_id=213497,crafted_stats=49/40
-# hands=kareshi_phantoms_grips,id=212039,bonus_id=1540/10299
-# waist=devourers_taut_innards,id=212425,bonus_id=1540/10299,gem_id=213467
-# legs=kareshi_phantoms_leggings,id=212037,bonus_id=1540/10299,enchant_id=7601,enchant=stormbound_armor_kit_3
-# feet=fleeting_massacre_footpads,id=225591,bonus_id=1540/10299
-# finger1=ring_of_earthen_craftsmanship,id=215135,bonus_id=10421/9633/8902/11144/10222/1485/8781/10520/8960,enchant_id=7346,,enchant=cursed_mastery_3,gem_id=213497,crafted_stats=49/40
-# finger2=high_nerubian_signet,id=221141,bonus_id=657/11143/5878/7981/10299,enchant_id=7346,enchant=cursed_mastery_3,gem_id=213497/213497
-# trinket1=void_reapers_contract,id=212456,bonus_id=1540/10299
-# trinket2=treacherous_transmitter,id=221023,bonus_id=1540/10299
-# main_hand=stitchfleshs_scalpel,id=178743,bonus_id=657/11143/5878/7981/10299,enchant_id=7460,enchant=authority_of_the_depths_3
-# off_hand=everforged_stabber,id=222438,bonus_id=10421/9633/8902/11144/10222/1485,enchant_id=7460,enchant=authority_of_the_depths_3,crafted_stats=49/40
+head=spectral_gamblers_damned_visage,id=229289,bonus_id=1808,ilevel=678,gem_id=213743
+neck=flickering_glowtorc,id=221103,bonus_id=8781,ilevel=678,gem_id=213461/213461
+shoulders=spectral_gamblers_bladed_mantle,id=229287,ilevel=678
+back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/8794/10520/8960,ilevel=675
+chest=spectral_gamblers_vest,id=229292,ilevel=678,enchant_id=7364
+wrists=hustlers_anteuppers,id=228885,bonus_id=1808,ilevel=678,gem_id=213473
+hands=enforcers_sticky_fingers,id=228863,ilevel=678
+waist=competitors_battle_cord,id=228856,bonus_id=1808,ilevel=678,gem_id=213473
+legs=spectral_gamblers_pantaloons,id=229288,ilevel=678,enchant_id=7601
+feet=runebranded_kickers,id=219327,bonus_id=10421/9633/8902/8794/10520/8960,ilevel=675
+finger1=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213473/213473,enchant_id=7352
+finger2=ritual_bone_band,id=178870,bonus_id=8781,ilevel=678,gem_id=213497/213497,enchant_id=7352
+trinket1=eye_of_kezan,id=230198,ilevel=678
+trinket2=house_of_cards,id=230027,ilevel=678
+main_hand=pyrotechnic_needledropper,id=228897,ilevel=678,enchant_id=7460
+off_hand=pyrotechnic_needledropper,id=228897,ilevel=678,enchant_id=7460
 
-
-# save=TWW2_Rogue_Subtlety.simc
+save=TWW2_Rogue_Subtlety.simc
