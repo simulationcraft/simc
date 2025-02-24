@@ -8442,7 +8442,7 @@ std::vector<player_t *> monk_t::create_storm_earth_and_fire_target_list() const
   std::vector<player_t *> l = sim->target_non_sleeping_list.data();
 
   // Sort the list by ascending order of the actor index
-  range::sort( l, [ this ]( const player_t *l, const player_t *r ) { return l->actor_index < r->actor_index; } );
+  range::sort( l, []( const player_t *l, const player_t *r ) { return l->actor_index < r->actor_index; } );
 
   if ( sim->debug )
   {
