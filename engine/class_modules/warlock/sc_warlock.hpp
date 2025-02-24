@@ -159,6 +159,7 @@ public:
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
     spawner::pet_spawner_t<pets::demonology::doomguard_t, warlock_t> doomguards;
+    spawner::pet_spawner_t<pets::demonology::greater_dreadstalker_t, warlock_t> greater_dreadstalkers;
 
     spawner::pet_spawner_t<pets::destruction::shadowy_tear_t, warlock_t> shadow_rifts;
     spawner::pet_spawner_t<pets::destruction::unstable_tear_t, warlock_t> unstable_rifts;
@@ -591,10 +592,10 @@ public:
     const spell_data_t* hexflame_demo_2pc;
     const spell_data_t* hexflame_demo_4pc;
     const spell_data_t* empowered_legion_strike;
-    //const spell_data_t* spliced_demo_2pc;
-    //const spell_data_t* spliced_demo_4pc;
-    //const spell_data_t* spliced_demo_jackpot;
-    //const spell_data_t* demonic_hunger; // Applied to Dreadstalker when empowered by Jackpot
+    const spell_data_t* spliced_demo_2pc;
+    const spell_data_t* spliced_demo_4pc;
+    const spell_data_t* greater_dreadstalker;
+    const spell_data_t* demonic_hunger; // Applied to Dreadstalker when empowered by Jackpot
 
     // Destruction
     const spell_data_t* hexflame_destro_2pc;
@@ -748,6 +749,7 @@ public:
     proc_t* doom_eternal;
     proc_t* pact_of_the_eredruin;
     proc_t* empowered_legion_strike; // TWW1 4pc buff
+    proc_t* jackpot_demonology; // TWW2 2pc proc
 
     // Destruction
     proc_t* reverse_entropy;
@@ -822,6 +824,7 @@ public:
   bool normalize_destruction_mastery;
   shuffled_rng_t* rain_of_chaos_rng;
   real_ppm_t* ravenous_afflictions_rng;
+  real_ppm_t* jackpot_demonology_rng;
   const spell_data_t* version_11_1_0_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );

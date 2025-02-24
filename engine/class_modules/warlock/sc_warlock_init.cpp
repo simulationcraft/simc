@@ -336,12 +336,20 @@ namespace warlock
     tier.hexflame_demo_4pc = sets->set( WARLOCK_DEMONOLOGY, TWW1, B4 ); // Should be ID 453645
     tier.empowered_legion_strike = find_spell( 455647 );
 
+    // Liberation of Undermine
+    tier.spliced_demo_2pc = sets->set( WARLOCK_DEMONOLOGY, TWW2, B2 ); // Should be ID 1215679
+    tier.spliced_demo_4pc = sets->set( WARLOCK_DEMONOLOGY, TWW2, B4 ); // Should be ID 1215682
+    tier.greater_dreadstalker = find_spell( 1217615 );
+    tier.demonic_hunger = find_spell( 121617 );
+
     // Initialize some default values for pet spawners
     warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
 
     warlock_pet_list.dreadstalkers.set_default_duration( talents.call_dreadstalkers_2->duration() );
 
     warlock_pet_list.doomguards.set_default_duration( talents.doomguard->duration() );
+
+    warlock_pet_list.greater_dreadstalkers.set_default_duration( tier.greater_dreadstalker->duration() );
   }
 
   void warlock_t::init_spells_destruction()
@@ -1013,6 +1021,7 @@ namespace warlock
     procs.doom_eternal = get_proc( "doom_eternal" );
     procs.pact_of_the_eredruin = get_proc( "pact_of_the_eredruin" );
     procs.empowered_legion_strike = get_proc( "empowered_legion_strike" );
+    procs.jackpot_demonology = get_proc( "jackpot_demonology" );
 
     for ( size_t i = 0; i < procs.hand_of_guldan_shards.size(); i++ )
     {
@@ -1071,7 +1080,9 @@ namespace warlock
   }
 
   void warlock_t::init_rng_demonology()
-  { }
+  {
+    jackpot_demonology_rng = get_rppm( "jackpot_demonology", tier.spliced_demo_2pc );
+  }
 
   void warlock_t::init_rng_destruction()
   {

@@ -73,6 +73,7 @@ using namespace helpers;
 
       // Demonology
       bool shadow_invocation = false;
+      bool jackpot_demonology = false;
 
       // Destruction
       bool decimation = false;
@@ -302,6 +303,15 @@ using namespace helpers;
         {
           p()->procs.jackpot_affliction->occur();
           helpers::trigger_jackpot_ua( p() );
+        }
+      }
+
+      if ( demonology() && active_2pc( TWW2 ) && triggers.jackpot_demonology )
+      {
+        if ( p()->jackpot_demonology_rng->trigger() )
+        {
+          p()->warlock_pet_list.greater_dreadstalkers.spawn( p()->tier.greater_dreadstalker->duration(), 1u );
+          p()->procs.jackpot_demonology->occur();
         }
       }
 
@@ -979,6 +989,7 @@ using namespace helpers;
       affected_by.sacrificed_souls = true;
       triggers.shadow_invocation = true;
       triggers.jackpot_affliction = true;
+      triggers.jackpot_demonology = true;
 
       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.dark_virtuosity->effectN( 1 ).percent();
@@ -2642,6 +2653,7 @@ using namespace helpers;
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
       triggers.diabolic_ritual = p->hero.diabolic_ritual.ok();
+      triggers.jackpot_demonology = true;
 
       add_child( impact_spell );
     }
@@ -2744,6 +2756,7 @@ using namespace helpers;
 
       affected_by.sacrificed_souls = true;
       triggers.shadow_invocation = true;
+      triggers.jackpot_demonology = true;
     }
 
     action_state_t* new_state() override
@@ -3221,6 +3234,12 @@ using namespace helpers;
     void execute() override
     {
       warlock_spell_t::execute();
+
+      if ( active_2pc( TWW2 ) )
+      {
+        p()->warlock_pet_list.greater_dreadstalkers.spawn( p()->tier.greater_dreadstalker->duration(), 1u );
+        p()->procs.jackpot_demonology->occur();
+      }
       
       // Last tested 2021-07-13
       // There is a chance for tyrant to get an extra cast off before reaching the required haste breakpoint.
@@ -4423,6 +4442,8 @@ using namespace helpers;
       affected_by.havoc = true;
       affected_by.ashen_remains = p->talents.ashen_remains.ok();
 
+      triggers.jackpot_demonology = true;
+
       if ( demonology() )
       {
         base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
@@ -4543,6 +4564,8 @@ using namespace helpers;
     ruination_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Ruination", p, p->hero.ruination_cast, options_str )
     {
+      triggers.jackpot_demonology = true;
+
       impact_action = new ruination_impact_t( p );
       add_child( impact_action );
     }

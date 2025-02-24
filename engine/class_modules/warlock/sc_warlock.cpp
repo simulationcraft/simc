@@ -1028,6 +1028,7 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     grimoire_felguards( "grimoire_felguard", w ),
     wild_imps( "wild_imp", w ),
     doomguards( "Doomguard", w ),
+    greater_dreadstalkers( "greater_dreadstalker", w ),
     shadow_rifts( "shadowy_tear", w ),
     unstable_rifts( "unstable_tear", w ),
     chaos_rifts( "chaos_tear", w ),
