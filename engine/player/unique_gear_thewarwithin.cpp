@@ -8903,8 +8903,8 @@ struct stat_buff_current_value_t : stat_buff_t
       amount *= skipper_mult;
     // Windsingers Mastery proc doesnt seem to be affected by this... for reasons?
     if (  is_proc &&
-	      ( ( data().id() == 465963 && util::highest_stat( source, secondary_ratings ) != STAT_MASTERY_RATING ) ||
-          data().id() != 465963 ) )
+      ( ( data().id() == 465963 && util::highest_stat( source, secondary_ratings ) != STAT_MASTERY_RATING ) ||
+        data().id() != 465963 ) )
     {
       amount *= proc_mult;
     }
