@@ -6937,6 +6937,7 @@ void monk_t::init_spells()
     talent.conduit_of_the_celestials.courage_of_the_white_tiger_damage = find_spell( 457917 );
     talent.conduit_of_the_celestials.courage_of_the_white_tiger_heal   = find_spell( 443106 );
     talent.conduit_of_the_celestials.restore_balance                   = _HT( "Restore Balance" );
+    talent.conduit_of_the_celestials.yulons_knowledge                  = _HT( "Yu'lon's Knowledge" );
     // Row 3
     talent.conduit_of_the_celestials.heart_of_the_jade_serpent              = _HT( "Heart of the Jade Serpent" );
     talent.conduit_of_the_celestials.strength_of_the_black_ox               = _HT( "Strength of the Black Ox" );
