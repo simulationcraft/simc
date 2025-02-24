@@ -204,6 +204,18 @@ struct brews_t
   void insert_cooldown( action_t *action );
   void adjust( timespan_t reduction );
 };
+
+namespace attacks
+{
+struct flight_of_the_red_crane_t
+{
+  action_t *base;
+  action_t *celestial;
+
+  flight_of_the_red_crane_t();
+  void init( monk_t *player );
+};
+}  // namespace attacks
 }  // namespace actions
 
 namespace buffs
@@ -434,10 +446,7 @@ public:
 
     // Conduit of the Celestials
     propagate_const<action_t *> courage_of_the_white_tiger;
-    propagate_const<action_t *> flight_of_the_red_crane_damage;
-    propagate_const<action_t *> flight_of_the_red_crane_heal;
-    propagate_const<action_t *> flight_of_the_red_crane_celestial_damage;
-    propagate_const<action_t *> flight_of_the_red_crane_celestial_heal;
+    actions::attacks::flight_of_the_red_crane_t flight_of_the_red_crane;
     propagate_const<action_t *> strength_of_the_black_ox_dmg;
     propagate_const<action_t *> strength_of_the_black_ox_absorb;
 
