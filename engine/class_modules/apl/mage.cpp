@@ -182,7 +182,7 @@ void fire( player_t* p )
   action_priority_list_t* sf_combustion_phase = p->get_action_priority_list( "sf_combustion_phase" );
   action_priority_list_t* sf_standard_rotation = p->get_action_priority_list( "sf_standard_rotation" );
 
-  precombat->add_action( "arcane_intellect", );
+  precombat->add_action( "arcane_intellect" );
   precombat->add_action( "variable,name=hot_streak_flamestrike,if=variable.hot_streak_flamestrike=0,value=5*(talent.quickflame|talent.flame_patch)+6*talent.firefall+999*(!talent.flame_patch&!talent.quickflame)", "APL Variable Option: This variable specifies the number of targets at which Hot Streak Flamestrikes outside of Combustion should be used." );
   precombat->add_action( "variable,name=hard_cast_flamestrike,if=variable.hard_cast_flamestrike=0,value=999", "APL Variable Option: This variable specifies the number of targets at which Hard Cast Flamestrikes outside of Combustion should be used as filler." );
   precombat->add_action( "variable,name=combustion_flamestrike,if=variable.combustion_flamestrike=0,value=5*(talent.quickflame|talent.flame_patch)+6*talent.firefall+999*(!talent.flame_patch&!talent.quickflame)", "APL Variable Option: This variable specifies the number of targets at which Hot Streak Flamestrikes are used during Combustion." );
