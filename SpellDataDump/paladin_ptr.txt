@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59324 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59347 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -3856,7 +3856,7 @@ Talent Entry     : Holy [tree=spec, row=8, col=1, max_rank=1, req_points=20, sel
 Class            : Paladin
 School           : Holy
 Spell Type       : None
-Resource         : 4.5% Base Mana (0) (id=11456)[Hotfixed: Percent Cost (5 -> 4.5)]
+Resource         : 4.5% Base Mana (0) (id=11456)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -10452,7 +10452,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Denounce (2812), Divine Storm (53385), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Ancient Fury (86704), Eternal Flame (156322), Justicar's Vengeance (215661), Templar's Verdict (224266), Light of Dawn (225311), Final Verdict (336872), Final Verdict (383328), Radiant Decree (383469), Afterimage (391309), Shield of the Righteous (415091), Hammer of Light (427453), Hammer of Light (429826), Eternal Flame (461432)
                    Family Flags: 29, 44, 49, 52, 78, 82, 88, 89, 112
-Hotfixed         : Affects Spells
 Description      : Your next Holy Power spending ability deals $s1% additional increased damage and healing. This effect stacks.
 Tooltip          : Your next Holy Power spending ability deals $s1% additional increased damage and healing.
 
@@ -13118,7 +13117,6 @@ Effects          :
 Description      : When any party or raid member within $a1 yards dies, you gain Avenging Wrath for $s1 sec.
 
 Name             : Consecrated Blade (id=404834) [Spell Family (10), Passive] 
-Hotfixed         : Attributes
 Class            : Retribution Paladin
 School           : Holy
 Spell Type       : None
@@ -19373,7 +19371,6 @@ Effects          :
 Description      : Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r increasing the damage of your Templar's Verdict and Divine Storm by $1216828s1% stacking up to $1216828u times. Spending Holy Power on damaging abilities has a $1216828s2% chance to remove |cFFFFFFFFWinning Streak!|r
 
 Name             : Paladin Retribution 11.1 Class Set 4pc (id=1215709) [Spell Family (10), Passive, Hidden] 
-Hotfixed         : Description
 Class            : Paladin
 School           : Physical
 Spell Type       : None

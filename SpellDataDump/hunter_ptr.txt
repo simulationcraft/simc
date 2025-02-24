@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59324 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59347 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -18054,7 +18054,6 @@ Attributes       : Do Not Display Range (126)
 Effects          :
 #1 (id=1202494)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.362814 | PvP Coefficient: 0.5 | Radius: 0 - 10 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (1.03661 -> 0.362814)
 #2 (id=1202496)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : $@spelldesc1215644
@@ -18188,7 +18187,6 @@ Description      : $@spelldesc321290
 Tooltip          : Wildfire Bomb initial damage increased by $s1%.
 
 Name             : Bear Summon (id=1225858) [Spell Family (9), Hidden] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee

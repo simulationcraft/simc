@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59324 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59347 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -10990,7 +10990,6 @@ Effects          :
 Description      : $@spelldesc442502
 
 Name             : Reaver's Mark (id=442624) [Spell Family (107)] 
-Hotfixed         : Proc Flags 1 (8 -> 0)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
@@ -11192,7 +11191,6 @@ Description      : $@spelldesc442736
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Wounded Quarry (id=442806) [Spell Family (107), Passive] 
-Hotfixed         : Description
 Talent Entry     : Aldrachi Reaver (Havoc, Vengeance) [tree=hero, row=3, col=3, max_rank=1, req_points=1]
 Class            : Demon Hunter
 School           : Physical
@@ -11673,7 +11671,6 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Immolation Aura (258921), Immolation Aura (258922), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916)
                    Family Flags: 49, 61
-Hotfixed         : Base Value (30 -> 50)
 #3 (id=1213307)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Radius (6)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 6 | Misc Value 2: 4666 (Label) | Target: Self (1)
                    Affected Spells (Label): Ragefire (390197)

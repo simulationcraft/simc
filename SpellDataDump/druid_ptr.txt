@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59324 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59347 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -3997,7 +3997,6 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Entangling Roots (339), Regrowth (8936), Rebirth (20484), Incarnation: Tree of Life (33891)
                    Family Flags: 6, 9, 28, 48
-Hotfixed         : Affects Spells
 #2 (id=170812)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.6 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
@@ -16228,7 +16227,6 @@ Attributes       : Allow Cast While Casting (135), Allow Cast While Channeling (
 Effects          :
 #1 (id=1077507)  : Energize Power (30) | Scaling Class: -2
                    Base Value: 0 | Scaled Value: 30625.88 (coefficient=0.011667) | Resource: mana | Target: Self (1)
-Hotfixed         : Coefficient (0.016667 -> 0.011667)
 Description      : $@spelldesc289237
 
 Name             : Master Shapeshifter (id=411267) [Spell Family (7)] 
