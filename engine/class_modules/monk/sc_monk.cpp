@@ -1853,7 +1853,7 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
       }
     }
 
-    if ( p()->specialization() == MONK_WINDWALKER )
+    if ( p()->specialization() == MONK_WINDWALKER && p()->buff.strength_of_the_black_ox->check() )
     {
       p()->buff.strength_of_the_black_ox->expire();
       p()->buff.inner_compass_ox_stance->trigger();
@@ -1958,7 +1958,7 @@ void flight_of_the_red_crane_t::init( monk_t *player )
       base = new flight_of_the_red_crane::impact_t<monk_spell_t, flight_of_the_red_crane::TRIGGER_BUFF,
                                                    flight_of_the_red_crane::BASE>(
           player, "flight_of_the_red_crane_dmg", player->talent.conduit_of_the_celestials.flight_of_the_red_crane_dmg );
-      celestial = new flight_of_the_red_crane::impact_t<monk_spell_t, flight_of_the_red_crane::TRIGGER_BUFF,
+      celestial = new flight_of_the_red_crane::impact_t<monk_spell_t, flight_of_the_red_crane::NO_TRIGGER_BUFF,
                                                         flight_of_the_red_crane::CELESTIAL>(
           player, "flight_of_the_red_crane_dmg_celestial",
           player->talent.conduit_of_the_celestials.flight_of_the_red_crane_celestial_dmg );
@@ -7188,7 +7188,6 @@ void monk_t::init_base_stats()
   {
     case MONK_BREWMASTER:
     {
-      // base_gcd += spec.brewmaster_monk->effectN( 14 ).time_value();  // Saved as -500 milliseconds
       base.attack_power_per_agility                      = 1.0;
       resources.base[ RESOURCE_ENERGY ]                  = 100;
       resources.base[ RESOURCE_MANA ]                    = 0;
@@ -7209,7 +7208,6 @@ void monk_t::init_base_stats()
     {
       if ( base.distance < 1 )
         base.distance = 5;
-      // base_gcd += baseline.windwalker.aura->effectN( 14 ).time_value();  // Saved as -500 milliseconds
       base.attack_power_per_agility     = 1.0;
       resources.base[ RESOURCE_ENERGY ] = 100;
       resources.base[ RESOURCE_ENERGY ] += talent.windwalker.ascension->effectN( 3 ).base_value();
@@ -7218,8 +7216,7 @@ void monk_t::init_base_stats()
       resources.base[ RESOURCE_CHI ]  = 4;
       resources.base[ RESOURCE_CHI ] += baseline.windwalker.aura->effectN( 10 ).base_value();
       resources.base[ RESOURCE_CHI ] += talent.windwalker.ascension->effectN( 1 ).base_value();
-      resources.base_regen_per_second[ RESOURCE_ENERGY ] =
-          10.0 * ( 1 + talent.windwalker.ascension->effectN( 2 ).percent() );
+      resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.windwalker.ascension->effectN( 2 ).percent();
       resources.base_regen_per_second[ RESOURCE_MANA ] = 0;
       break;
     }
@@ -8551,6 +8548,16 @@ double monk_t::composite_player_target_armor( player_t *target ) const
   armor *= ( 1.0f - talent.shado_pan.martial_precision->effectN( 1 ).percent() );
 
   return armor;
+}
+
+double monk_t::resource_regen_per_second( resource_e resource ) const
+{
+  double regen = base_t::resource_regen_per_second( resource );
+
+  if ( resource == RESOURCE_ENERGY && buff.flight_of_the_red_crane->check() )
+    regen *= 1.0 + buff.flight_of_the_red_crane->data().effectN( 1 ).percent();
+
+  return regen;
 }
 
 // monk_t::invalidate_cache ==============================================

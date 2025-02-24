@@ -1397,6 +1397,7 @@ public:
   double composite_dodge() const override;
   double non_stacking_movement_modifier() const override;
   double composite_player_target_armor( player_t *target ) const override;
+  double resource_regen_per_second( resource_e ) const override;
   void create_pets() override;
   void init_spells() override;
   void init_background_actions() override;
