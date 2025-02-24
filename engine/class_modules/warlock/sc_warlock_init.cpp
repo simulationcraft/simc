@@ -340,7 +340,7 @@ namespace warlock
     tier.spliced_demo_2pc = sets->set( WARLOCK_DEMONOLOGY, TWW2, B2 ); // Should be ID 1215679
     tier.spliced_demo_4pc = sets->set( WARLOCK_DEMONOLOGY, TWW2, B4 ); // Should be ID 1215682
     tier.greater_dreadstalker = find_spell( 1217615 );
-    tier.demonic_hunger = find_spell( 121617 );
+    tier.demonic_hunger = find_spell( 1217617 );
 
     // Initialize some default values for pet spawners
     warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );

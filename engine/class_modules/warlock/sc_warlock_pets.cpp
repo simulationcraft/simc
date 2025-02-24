@@ -65,7 +65,9 @@ void warlock_pet_t::create_buffs()
   buffs.empowered_legion_strike = make_buff( this, "empowered_legion_strike", o()->tier.empowered_legion_strike );
 
   buffs.demonic_hunger = make_buff( this, "demonic_hunger", o()->tier.demonic_hunger )
-                             ->set_default_value_from_effect( 1 );
+                             ->set_default_value( o()->tier.demonic_hunger->effectN( 1 ).percent() )
+                             ->set_rppm( RPPM_DISABLE )
+                             ->set_chance( 1.0 );
 
   buffs.spliced_4pc = make_buff( this, "spliced_fiendtraders_influence_4pc" )
                           ->set_chance( 1.0 );
@@ -1795,7 +1797,7 @@ double greater_dreadstalker_t::composite_player_multiplier( school_e school ) co
 {
   double m = warlock_pet_t::composite_player_multiplier( school );
 
-  m *= 1.0 + buffs.demonic_hunger->check_value();
+  m *= buffs.demonic_hunger->check_value();
 
   return m;
 }
