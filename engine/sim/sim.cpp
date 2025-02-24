@@ -1184,8 +1184,10 @@ struct bloodlust_check_t : public event_t
     {
       if ( !sim.single_actor_batch )
       {
-        for ( auto* p : sim.player_non_sleeping_list )
+        // use indices since it's possible to spawn new actors when bloodlust is triggered
+        for ( size_t i = 0; i < sim.player_non_sleeping_list.size(); i++ )
         {
+          auto* p = sim.player_non_sleeping_list[ i ];
           if ( p->is_pet() || p->buffs.exhaustion->check() )
             continue;
 
@@ -1560,6 +1562,7 @@ sim_t::sim_t()
     work_queue( new work_queue_t() ),
     spell_query(),
     spell_query_level( MAX_LEVEL ),
+    spell_query_wrap( 0 ),
     pause_mutex( nullptr ),
     paused( false ),
     chart_show_relative_difference( false ),
@@ -2758,6 +2761,7 @@ void sim_t::init()
                                ->add_invalidate( CACHE_INTELLECT );
 
   auras.battle_shout = make_buff( this, "battle_shout", dbc::find_spell( this, 6673 ) )
+                           ->set_cooldown( 0_ms )
                            ->set_default_value_from_effect( 1 )
                            ->add_invalidate( CACHE_ATTACK_POWER );
 
@@ -3863,6 +3867,7 @@ void sim_t::create_options()
   add_option( opt_float( "scaling_normalized", scaling_normalized ) );
   add_option( opt_bool( "merge_enemy_priority_dmg", merge_enemy_priority_dmg ) );
   add_option( opt_int( "decorated_tooltips", decorated_tooltips ) );
+  add_option( opt_uint( "spell_query_wrap", spell_query_wrap ) );
   // Charts
   add_option( opt_bool( "chart_show_relative_difference", chart_show_relative_difference ) );
   add_option( opt_string( "relative_difference_base", relative_difference_base ) );

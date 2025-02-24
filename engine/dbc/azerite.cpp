@@ -77,7 +77,7 @@ azerite_essence_power_entry_t::find_by_spell_id( unsigned spell_id, bool ptr )
            e.spell_id_upgrade[ 0 ] == spell_id || e.spell_id_upgrade[ 1 ] == spell_id;
   } );
 
-  if ( it != __data.cend() && it -> id != 0 )
+  if ( it != __data.end() && it -> id != 0 )
   {
     return *it;
   }

@@ -63,6 +63,8 @@ struct power_word_radiance_t final : public priest_heal_t
 
     rng().shuffle( target_list.begin() + 1, target_list.end() );*/
 
+
+    // Don't include pets for the ease of writing APLs
     if ( as<int>( sim->healing_no_pet_list.size() ) <= n_targets() )
     {
       for ( auto t : sim->healing_no_pet_list )
@@ -73,7 +75,7 @@ struct power_word_radiance_t final : public priest_heal_t
 
       for ( auto t : sim->healing_pet_list )
       {
-        if ( t != target && ( t->is_active() || ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
+        if ( t != target && ( ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
           target_list.push_back( t );
       }
 
@@ -150,23 +152,53 @@ struct pain_suppression_t final : public priest_spell_t
   }
 };
 
-struct evangelism_t final : public priest_spell_t
+struct evangelism_t final : public priest_heal_t
 {
   timespan_t atonement_extend;
   evangelism_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "evangelism", p, p.talents.discipline.evangelism ),
+    : priest_heal_t( "evangelism", p, p.talents.discipline.evangelism ),
       atonement_extend( timespan_t::from_seconds( p.talents.discipline.evangelism->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
 
     target = &p;
 
-    harmful = false;
+    harmful          = false;
+    split_aoe_damage = 1;
+    aoe              = -1;
+  }
+
+  
+  int num_targets() const override
+  {
+    return std::max( 1, as<int>( p().allies_with_atonement.size() ) );
+  }
+
+  size_t available_targets( std::vector<player_t*>& target_list ) const override
+  {
+    target_list.clear();
+
+    for ( auto t : p().allies_with_atonement )
+    {
+      target_list.push_back( t );
+    }
+
+    if ( target_list.size() == 0 )
+      target_list.push_back( player );
+
+    return target_list.size();
+  }
+
+  void activate() override
+  {
+    priest_heal_t::activate();
+
+    priest().allies_with_atonement.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
   }
 
   void execute() override
   {
-    priest_spell_t::execute();
+    priest_heal_t::execute();
 
     target->buffs.pain_suppression->trigger();
 
@@ -222,6 +254,8 @@ struct purge_the_wicked_t final : public priest_spell_t
 
     void impact( action_state_t* s ) override
     {
+      priest_spell_t::impact( s );
+
       // Trigger Cauterizing Shadows if you refreshed with less than 5 seconds
       if ( priest().talents.cauterizing_shadows.enabled() )
       {
@@ -276,7 +310,7 @@ struct purge_the_wicked_t final : public priest_spell_t
 // ==========================================================================
 
 // Penance channeled spell
-struct penance_channel_t final : public priest_spell_t
+struct penance_base_t : public priest_spell_t
 {
 protected:
   struct penance_data
@@ -340,28 +374,72 @@ protected:
 private:
   propagate_const<penance_damage_t*> damage;
   timespan_t void_summoner_cdr;
+  timespan_t heavens_wrath_cdr;
   unsigned max_spread_targets;
   double default_bolts;
 
 public:
-  penance_channel_t( priest_t& p, util::string_view n, const spell_data_t* s, const spell_data_t* s_tick )
-    : priest_spell_t( n, p, s ),
-      damage( new penance_damage_t( p, std::string( n ) + "_tick", s_tick ) ),
+  penance_base_t( priest_t& p, util::string_view name, const spell_data_t* s, const spell_data_t* s_channel,
+                  const spell_data_t* s_tick )
+    : priest_spell_t( name, p, s ),
+      damage( new penance_damage_t( p, std::string( name ) + "_tick", s_tick ) ),
       void_summoner_cdr(
           priest()
               .talents.discipline.void_summoner->effectN( priest().talents.shared.mindbender.enabled() ? 2 : 1 )
               .time_value() ),
-      max_spread_targets( as<unsigned>( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() ) )
+      heavens_wrath_cdr(
+          timespan_t::from_seconds( -priest().talents.discipline.heavens_wrath->effectN( 1 ).base_value() ) ),
+      max_spread_targets( as<unsigned>( 1 + priest().talents.discipline.revel_in_purity->effectN( 2 ).base_value() +
+                                        priest().talents.discipline.revel_in_darkness->effectN( 2 ).base_value() ) )
   {
+    cooldown = p.cooldowns.penance;
+    if ( cooldown->duration != timespan_t::zero() )
+    {
+      if ( s->charge_cooldown() > timespan_t::zero() )
+        cooldown->duration = s->charge_cooldown();
+    }
+    else
+    {
+      cooldown->duration = p.specs.penance->cooldown();
+    }
+
     channeled = true;
-    dual      = false;
+
     may_miss = may_crit = false;
     tick_zero           = true;
 
-    cooldown->duration = 0_s;
     add_child( damage );
 
-    apply_affecting_aura( priest().talents.discipline.castigation );
+    id              = s_channel->id();
+    min_travel_time = s_channel->missile_min_duration();
+
+    if ( s_channel->flags( spell_attribute::SX_FIXED_TRAVEL_TIME ) )
+      travel_delay = s_channel->missile_speed();
+    else
+      travel_speed = s_channel->missile_speed();
+
+    // Setup Channel Flags.
+    hasted_ticks =
+        s_channel->flags( spell_attribute::SX_DOT_HASTED ) || s_channel->flags( spell_attribute::SX_DOT_HASTED_MELEE );
+    tick_on_application       = s_channel->flags( spell_attribute::SX_TICK_ON_APPLICATION );
+    hasted_dot_duration       = s_channel->flags( spell_attribute::SX_DURATION_HASTED );
+    rolling_periodic          = s_channel->flags( spell_attribute::SX_ROLLING_PERIODIC );
+    treat_as_periodic         = s_channel->flags( spell_attribute::SX_TREAT_AS_PERIODIC );
+    allow_class_ability_procs = s_channel->flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS );
+    not_a_proc                = s_channel->flags( spell_attribute::SX_NOT_A_PROC );
+
+    if ( s_channel->flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
+      dot_behavior = dot_behavior_e::DOT_REFRESH_PANDEMIC;
+
+    for ( const spelleffect_data_t& ed : s_channel->effects() )
+    {
+      parse_effect_data( ed );
+    }
+
+    if ( priest().talents.discipline.castigation.ok() )
+    {
+      base_tick_time *= 1 + priest().talents.discipline.castigation->effectN( 1 ).percent();
+    }
 
     // One is always tick zero
     default_bolts = floor( dot_duration / base_tick_time );
@@ -402,7 +480,7 @@ public:
   {
     timespan_t t = ab::tick_time( s );
 
-    sim->print_debug( "{} default bolts {} state bolts", default_bolts, cast_state( s )->bolts );
+    sim->print_debug( "{} default bolts {} state bolts", default_bolts + 1, cast_state( s )->bolts + 1 );
 
     t *= default_bolts / cast_state( s )->bolts;
 
@@ -419,6 +497,13 @@ public:
       {
         priest().buffs.weal_and_woe->trigger();
       }
+
+      if ( priest().talents.discipline.heavens_wrath.enabled() )
+      {
+        priest().cooldowns.ultimate_penitence->adjust( heavens_wrath_cdr );
+      }
+
+      priest().expand_entropic_rift();
 
       state_t* state       = damage->cast_state( damage->get_state() );
       state->target        = d->state->target;
@@ -449,6 +534,63 @@ public:
     range::transform( actors, std::back_inserter( tmp ), transform_fn );
 
     return tmp.size() ? util::string_join( tmp, delim ) : "none";
+  }
+
+  void spread_shadow_word_pain( const action_state_t* state, priest_t& p ) const
+  {
+    // Exit if PTW isn't ticking
+    if ( !td( state->target )->dots.shadow_word_pain->is_ticking() )
+    {
+      return;
+    }
+    // Exit if there 1 or fewer targets
+    if ( target_list().size() <= 1 )
+    {
+      return;
+    }
+    // Targets to spread PTW to
+    std::vector<player_t*> targets;
+
+    // Targets without PTW
+    std::vector<player_t*> no_swp_targets,
+        // Targets that already have PTW
+        has_swp_targets;
+
+    // Categorize all available targets (within 8 yards of the main target) based on presence of PTW
+    range::for_each( target_list(), [ & ]( player_t* t ) {
+      // Ignore main target
+      if ( t == state->target )
+      {
+        return;
+      }
+
+      if ( !td( t )->dots.shadow_word_pain->is_ticking() )
+      {
+        no_swp_targets.push_back( t );
+      }
+      else if ( td( t )->dots.shadow_word_pain->is_ticking() )
+      {
+        has_swp_targets.push_back( t );
+      }
+    } );
+
+    // 1) Randomly select targets without PTW, unless there already are the maximum number of targets with PTW up.
+    while ( no_swp_targets.size() > 0 && targets.size() < max_spread_targets )
+    {
+      move_random_target( no_swp_targets, targets );
+    }
+
+    // 2) Randomly select targets that already have PTW on them
+    while ( has_swp_targets.size() > 0 && targets.size() < max_spread_targets )
+    {
+      move_random_target( has_swp_targets, targets );
+    }
+
+    sim->print_debug( "{} purge_the_wicked spread selected targets={{ {} }}", player->name(),
+                      actor_list_str( targets ) );
+
+    range::for_each(
+        targets, [ & ]( player_t* target ) { p.background_actions.purge_the_wicked->execute_on_target( target ); } );
   }
 
   void spread_purge_the_wicked( const action_state_t* state, priest_t& p ) const
@@ -520,53 +662,56 @@ public:
     priest().buffs.power_of_the_dark_side->expire();
 
     priest().buffs.harsh_discipline->expire();
+
+    if ( p().sets->has_set_bonus( PRIEST_DISCIPLINE, TWW1, B4 ) )
+      priest().buffs.darkness_from_light->trigger();
   }
 
   void impact( action_state_t* state ) override
   {
     priest_spell_t::impact( state );
 
-    if ( p().talents.discipline.purge_the_wicked.enabled() )
+    if ( p().talents.discipline.encroaching_shadows.enabled() )
     {
-      spread_purge_the_wicked( state, p() );
+      spread_shadow_word_pain( state, p() );
     }
 
     priest().trigger_inescapable_torment( state->target );
   }
 };
 
-// Main penance action spell
-struct penance_t : public priest_spell_t
+struct penance_t : public penance_base_t
 {
-private:
-  propagate_const<action_t*> channel;
-  propagate_const<action_t*> shadow_covenant_channel;
-
-public:
   penance_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "penance_cast", p, p.specs.penance ),
-      channel( new penance_channel_t( p, "penance", p.specs.penance_channel, p.specs.penance_tick ) ),
-      shadow_covenant_channel( new penance_channel_t( p, "dark_reprimand", p.talents.discipline.dark_reprimand,
-                                                      p.talents.discipline.dark_reprimand->effectN( 2 ).trigger() ) )
+    : penance_base_t( p, "penance", p.specs.penance, p.specs.penance_channel, p.specs.penance_tick )
   {
     parse_options( options_str );
-    cooldown           = p.cooldowns.penance;
-    cooldown->duration = p.specs.penance->cooldown();
-    school             = SCHOOL_NONE;
   }
 
-  void execute() override
+  bool action_ready() override
   {
-    priest_spell_t::execute();
+    if ( p().buffs.shadow_covenant->check() )
+      return false;
 
-    if ( p().buffs.shadow_covenant->up() )
-    {
-      shadow_covenant_channel->execute();
-    }
-    else
-    {
-      channel->execute();
-    }
+    return penance_base_t::action_ready();
+  }
+};
+
+struct dark_reprimand_t : public penance_base_t
+{
+  dark_reprimand_t( priest_t& p, util::string_view options_str )
+    : penance_base_t( p, "dark_reprimand", p.find_spell( 400169 ), p.talents.discipline.dark_reprimand,
+                      p.talents.discipline.dark_reprimand->effectN( 2 ).trigger() )
+  {
+    parse_options( options_str );
+  }
+
+  bool action_ready() override
+  {
+    if ( !p().buffs.shadow_covenant->check() )
+      return false;
+
+    return penance_base_t::action_ready();
   }
 };
 
@@ -583,6 +728,14 @@ protected:
       dot_extension      = priest().talents.discipline.painful_punishment->effectN( 1 ).time_value();
       triggers_atonement = true;
     }
+
+    void impact( action_state_t* s ) override
+    {
+      priest_spell_t::impact( s );
+      priest_td_t& td = get_td( s->target );
+      td.dots.shadow_word_pain->adjust_duration( dot_extension );
+      td.dots.purge_the_wicked->adjust_duration( dot_extension );
+    }
   };
 
   struct ultimate_penitence_channel_t : public priest_spell_t
@@ -590,12 +743,15 @@ protected:
     // ultimate_penitence_damage_t
     propagate_const<ultimate_penitence_damage_t*> damage;
 
-    ultimate_penitence_channel_t( priest_t& p )
+    ultimate_penitence_channel_t( priest_t& p, stats_t* parent_stats )
       : priest_spell_t( "ultimate_penitence_channel", p, p.find_spell( 421434 ) )
     {
       damage    = new ultimate_penitence_damage_t( p );
+      dual      = true;
       channeled = true;
       tick_zero = true;
+      stats     = parent_stats;
+      stats->action_list.push_back( this );
     }
 
     void tick( dot_t* d ) override
@@ -606,6 +762,13 @@ protected:
       {
         damage->execute_on_target( d->target );
       }
+
+      if ( priest().talents.discipline.weal_and_woe.enabled() )
+      {
+        priest().buffs.weal_and_woe->trigger();
+      }
+
+      priest().expand_entropic_rift();
     }
   };
 
@@ -619,7 +782,8 @@ public:
     // Channel = 421434
     // Damage bolt = 421543
 
-    channel = new ultimate_penitence_channel_t( p );
+    channel        = new ultimate_penitence_channel_t( p, stats );
+    add_child( channel->damage );
   }
 
   void execute() override
@@ -652,7 +816,7 @@ void priest_t::create_buffs_discipline()
   {
     double scov_amp          = 0;
     timespan_t scov_duration = 15_s;
-    if ( talents.shared.mindbender.enabled() )
+    if ( talents.shared.mindbender.enabled() && !talents.voidweaver.voidwraith.enabled() )
     {
       scov_amp      = 0.1;
       scov_duration = talents.shared.mindbender->duration();
@@ -664,6 +828,15 @@ void priest_t::create_buffs_discipline()
     }
     buffs.shadow_covenant->set_default_value( scov_amp );
     buffs.shadow_covenant->set_duration( scov_duration );
+  }
+
+  buffs.rapture =
+      make_buff_fallback( talents.discipline.rapture.enabled(), this, "rapture", talents.discipline.rapture );
+
+  if ( talents.discipline.rapture.enabled() )
+  {
+    buffs.rapture->set_cooldown( 0_s );
+    buffs.rapture->set_reverse( true );
   }
 
   // 280391 has the correct 40% damage increase value, but does not apply it to any spells.
@@ -695,6 +868,8 @@ void priest_t::create_buffs_discipline()
 
   // Discipline T29 2-piece bonus
   buffs.light_weaving = make_buff( this, "light_weaving", find_spell( 394609 ) );
+
+  buffs.darkness_from_light = make_buff( this, "darkness_from_light", find_spell( 455033 ) );
 }
 
 void priest_t::init_rng_discipline()
@@ -740,27 +915,32 @@ void priest_t::init_spells_discipline()
   talents.discipline.malicious_intent      = ST( "Malicious Intent" );
   // Row 5
   talents.discipline.purge_the_wicked     = ST( "Purge the Wicked" );
+  talents.discipline.encroaching_shadows  = ST( "Encroaching Shadows" );
+  talents.discipline.evangelism           = ST( "Evangelism" );
   talents.discipline.rapture              = ST( "Rapture" );
   talents.discipline.shadow_covenant      = ST( "Shadow Covenant" );
   talents.discipline.shadow_covenant_buff = find_spell( 322105 );
   talents.discipline.dark_reprimand       = find_spell( 373129 );
   // Row 6
   talents.discipline.revel_in_purity     = ST( "Revel in Purity" );
+  talents.discipline.revel_in_darkness   = ST( "Revel in Darkness" );
   talents.discipline.contrition          = ST( "Contrition" );
+  talents.discipline.divine_procession   = ST( "Divine Procession" );
   talents.discipline.exaltation          = ST( "Exaltation" );
   talents.discipline.indemnity           = ST( "Indemnity" );
   talents.discipline.pain_and_suffering  = ST( "Pain and Suffering" );
   talents.discipline.twilight_corruption = ST( "Twilight Corruption" );  // 373065
   // Row
-  talents.discipline.borrowed_time   = ST( "Borrowed Time" );
-  talents.discipline.castigation     = ST( "Castigation" );
-  talents.discipline.abyssal_reverie = ST( "Abyssal Reverie" );
-  // Row 8
-  talents.discipline.train_of_thought = ST( "Train of Thought" );
+  talents.discipline.borrowed_time    = ST( "Borrowed Time" );
   talents.discipline.ultimate_penance = ST( "Ultimate Penitence" );
-  talents.discipline.lenience         = ST( "Lenience" );
-  talents.discipline.evangelism       = ST( "Evangelism" );
-  talents.discipline.void_summoner    = ST( "Void Summoner" );
+  talents.discipline.abyssal_reverie  = ST( "Abyssal Reverie" );
+  // Row 8
+  talents.discipline.train_of_thought      = ST( "Train of Thought" );
+  talents.discipline.inner_focus           = ST( "Inner Focus" );
+  talents.discipline.castigation           = ST( "Castigation" );
+  talents.discipline.overloaded_with_light = ST( "Overloded with Light" );
+  talents.discipline.lenience              = ST( "Lenience" );
+  talents.discipline.void_summoner         = ST( "Void Summoner" );
   // Row 9
   talents.discipline.divine_aegis          = ST( "Divine Aegis" );
   talents.discipline.divine_aegis_buff     = find_spell( 47753 );
@@ -772,9 +952,9 @@ void priest_t::init_spells_discipline()
   // talents.discipline.inescapable_torment   = ST( "Inescapable Torment" ); - Shared Talent
   // Row 10
   talents.discipline.aegis_of_wrath                  = ST( "Aegis of Wrath" );
+  talents.discipline.eternal_barrier                 = ST( "Eternal Barrier" );
   talents.discipline.weal_and_woe                    = ST( "Weal and Woe" );
   talents.discipline.weal_and_woe_buff               = find_spell( 390787 );
-  talents.discipline.overloaded_with_light           = ST( "Overloded with Light" );
   talents.discipline.twilight_equilibrium            = ST( "Twilight Equilibrium" );
   talents.discipline.twilight_equilibrium_holy_amp   = find_spell( 390706 );
   talents.discipline.twilight_equilibrium_shadow_amp = find_spell( 390707 );
@@ -803,6 +983,10 @@ action_t* priest_t::create_action_discipline( util::string_view name, util::stri
   if ( name == "penance" )
   {
     return new penance_t( *this, options_str );
+  }
+  if ( name == "dark_reprimand" )
+  {
+    return new dark_reprimand_t( *this, options_str );
   }
   if ( name == "purge_the_wicked" )
   {

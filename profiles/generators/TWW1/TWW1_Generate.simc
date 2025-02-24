@@ -18,6 +18,8 @@
 # * No Tertiary Stats.
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, or the item no longer exists in-game).
 # * Must use enchant name (ex: ",enchant=devotion_of_haste_3") instead of ids/hardcoded stats if possible. Rank 3 enchants are permitted.
+# * Cyrce's Circlet is permitted up to the item level cap (658). ["bonus_id=12025/1511"]
+# * Cyrce's Circlet may only contain one of each Singing Thunder Citrine, Singing Wind Citrine, and Singing Sea Citrine.
 
 # Death Knight
 TWW1_Generate_Death_Knight.simc

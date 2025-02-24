@@ -22,10 +22,7 @@ temporary_enchant=main_hand:algari_mana_oil_3
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask
-actions.precombat+=/food
-actions.precombat+=/augmentation
-actions.precombat+=/summon_pet
+actions.precombat=summon_pet
 actions.precombat+=/variable,name=cleave_apl,default=0,op=reset
 # Used to set Trinket in slot 1 as Buff Trinkets for the automatic logic
 actions.precombat+=/variable,name=trinket_1_buffs,value=trinket.1.has_use_buff

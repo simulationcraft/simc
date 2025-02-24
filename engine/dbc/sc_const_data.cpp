@@ -265,6 +265,9 @@ bool dbc::valid_gem_color( unsigned color )
     case SOCKET_COLOR_TINKER:
     case SOCKET_COLOR_PRIMORDIAL:
     case SOCKET_COLOR_FRAGRANCE:
+    case SOCKET_COLOR_THUNDER_CITRINE:
+    case SOCKET_COLOR_SEA_CITRINE:
+    case SOCKET_COLOR_WIND_CITRINE:
       return true;
     default:
       return false;
@@ -1014,12 +1017,12 @@ bool dbc_t::replace_id( uint32_t id_spell, uint32_t replaced_by_id )
 util::span<const effect_subtype_t> dbc::effect_category_subtypes()
 {
   static constexpr effect_subtype_t subtypes[] = {
+    A_MOD_CHARGE_RECHARGE_RATE,
     A_MODIFY_CATEGORY_COOLDOWN,
-    A_MOD_MAX_CHARGES,
     A_MOD_RECHARGE_TIME_CATEGORY,
     A_MOD_RECHARGE_TIME_PCT_CATEGORY,
+    A_MOD_MAX_CHARGES,
     A_HASTED_CATEGORY,
-    A_MOD_CHARGE_RECHARGE_RATE,
   };
   return util::make_span( subtypes );
 }
@@ -1177,7 +1180,9 @@ double dbc_t::spell_scaling( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
 
-  assert( class_id < dbc_t::class_max_size() + 7 && level > 0 && level <= MAX_SCALING_LEVEL );
+  // "9" is the number of scaling class columns in sc_scale_data.inc from SpellScaling.txt
+  // Adjust this if more tables are added to the scale generator in dbc_extract.py
+  assert( class_id < dbc_t::class_max_size() + 9 && level > 0 && level <= MAX_SCALING_LEVEL );
 #if SC_USE_PTR
   return ptr ? _ptr__spell_scaling[ class_id ][ level - 1 ]
              : __spell_scaling[ class_id ][ level - 1 ];

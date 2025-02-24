@@ -69,9 +69,11 @@ using namespace helpers;
 
       // Affliction
       bool ravenous_afflictions = false;
+      bool jackpot_affliction = false;
 
       // Demonology
       bool shadow_invocation = false;
+      bool jackpot_demonology = false;
 
       // Destruction
       bool decimation = false;
@@ -80,6 +82,7 @@ using namespace helpers;
       // Diabolist
       bool diabolic_ritual = false;
       bool demonic_art = false;
+      bool rancora_cb_bonus = false;
     } triggers;
 
     warlock_spell_t( util::string_view token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() )
@@ -192,13 +195,22 @@ using namespace helpers;
 
         if ( diabolist() && triggers.diabolic_ritual )
         {
-          timespan_t adjustment = -timespan_t::from_seconds( p()->hero.diabolic_ritual->effectN( 1 ).base_value() ) * shards_used;
+          timespan_t adjustment = 0_ms;
+
+          if ( demonology() )
+            adjustment = -timespan_t::from_seconds( p()->hero.diabolic_ritual->effectN( 1 ).base_value() ) * shards_used;
+
+          if ( destruction() )
+            adjustment = -timespan_t::from_seconds( p()->hero.diabolic_ritual->effectN( 2 ).base_value() );
 
           if ( demonology() && p()->hero.infernal_machine.ok() && p()->warlock_pet_list.demonic_tyrants.n_active_pets() > 0 )
             adjustment += -p()->hero.infernal_machine->effectN( 1 ).time_value();
 
           if ( destruction() && p()->hero.infernal_machine.ok() && p()->warlock_pet_list.infernals.n_active_pets() > 0 )
             adjustment += -p()->hero.infernal_machine->effectN( 1 ).time_value();
+
+          if ( destruction() && p()->hero.touch_of_rancora.ok() && triggers.rancora_cb_bonus )
+            adjustment += -timespan_t::from_seconds( p()->hero.touch_of_rancora->effectN( 3 ).base_value() );
 
           switch( p()->diabolic_ritual )
           {
@@ -283,6 +295,26 @@ using namespace helpers;
         }
       }
 
+      if ( affliction() && active_2pc( TWW2 ) && triggers.jackpot_affliction )
+      {
+        bool success = p()->buffs.jackpot_affliction->trigger();
+
+        if ( success )
+        {
+          p()->procs.jackpot_affliction->occur();
+          helpers::trigger_jackpot_ua( p() );
+        }
+      }
+
+      if ( demonology() && active_2pc( TWW2 ) && triggers.jackpot_demonology )
+      {
+        if ( p()->jackpot_demonology_rng->trigger() )
+        {
+          p()->warlock_pet_list.greater_dreadstalkers.spawn( p()->tier.greater_dreadstalker->duration(), 1u );
+          p()->procs.jackpot_demonology->occur();
+        }
+      }
+
       if ( p()->talents.shadow_invocation.ok() && triggers.shadow_invocation && rng().roll( p()->rng_settings.shadow_invocation.setting_value ) )
       {
         p()->proc_actions.bilescourge_bombers_proc->execute_on_target( s->target );
@@ -302,7 +334,7 @@ using namespace helpers;
         p()->procs.decimation->occur();
       }
 
-      if ( destruction() && triggers.dimension_ripper && rng().roll( p()->rng_settings.dimension_ripper.setting_value ) )
+      if ( destruction() && triggers.dimension_ripper && !p()->min_version_check( VERSION_11_1_0 ) && rng().roll( p()->rng_settings.dimension_ripper.setting_value )  )
       {
         if ( p()->talents.dimensional_rift.ok() )
         {
@@ -346,6 +378,28 @@ using namespace helpers;
       {
         if ( p()->buffs.reverse_entropy->trigger() )
           p()->procs.reverse_entropy->occur();
+      }
+
+      if ( destruction() && triggers.dimension_ripper && p()->min_version_check( VERSION_11_1_0 ) && rng().roll( p()->talents.dimension_ripper->effectN( 1 ).percent() ) )
+      {
+        int rift = rng().range( 3 );
+
+        switch ( rift )
+        {
+        case 0:
+          p()->warlock_pet_list.shadow_rifts.spawn( p()->talents.shadowy_tear_summon->duration() );
+          break;
+        case 1:
+          p()->warlock_pet_list.unstable_rifts.spawn( p()->talents.unstable_tear_summon->duration() );
+          break;
+        case 2:
+          p()->warlock_pet_list.chaos_rifts.spawn( p()->talents.chaos_tear_summon->duration() );
+          break;
+        default:
+          break;
+        }
+
+        p()->procs.dimension_ripper->occur();
       }
     }
 
@@ -435,7 +489,8 @@ using namespace helpers;
     {
       double m = spell_t::composite_persistent_multiplier( s );
 
-      if ( diabolist() && affected_by.touch_of_rancora )
+      // Demonology only has Hand of Gul'dan affected by Touch of Rancora, which requires special handling
+      if ( diabolist() && destruction() && affected_by.touch_of_rancora )
       {
         if ( p()->buffs.art_overlord->check() )
           m *= 1.0 + p()->hero.touch_of_rancora->effectN( 1 ).percent();
@@ -899,6 +954,7 @@ using namespace helpers;
       {
         spell_power_mod.direct = data().effectN( 3 ).sp_coeff();
         base_execute_time *= 1.0 + p->warlock_base.xavian_teachings->effectN( 1 ).percent();
+        triggers.jackpot_affliction = true;
       }
 
       base_dd_multiplier *= 1.0 + p->talents.siphon_life->effectN( 1 ).percent();
@@ -932,6 +988,8 @@ using namespace helpers;
     {
       affected_by.sacrificed_souls = true;
       triggers.shadow_invocation = true;
+      triggers.jackpot_affliction = true;
+      triggers.jackpot_demonology = true;
 
       base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
       base_dd_multiplier *= 1.0 + p->talents.dark_virtuosity->effectN( 1 ).percent();
@@ -1052,7 +1110,7 @@ using namespace helpers;
       double m = warlock_spell_t::composite_target_multiplier( t );
 
       if ( p()->talents.withering_bolt.ok() )
-        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)( p()->talents.withering_bolt->effectN( 2 ).base_value() ), p()->get_target_data( t )->count_affliction_dots() );
+        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)( p()->talents.withering_bolt->effectN( 2 ).base_value() ), p()->get_target_data( t )->count_affliction_dots( !p()->bugs ) );
 
       return m;
     }
@@ -1208,6 +1266,8 @@ using namespace helpers;
 
         affected_by.chaotic_energies = destruction();
 
+        triggers.dimension_ripper = p->talents.dimension_ripper.ok();
+
         base_td_multiplier *= 1.0 + p->hero.hatefury_rituals->effectN( 1 ).percent();
         base_td_multiplier *= 1.0 + p->hero.bleakheart_tactics->effectN( 2 ).percent();
 
@@ -1262,6 +1322,12 @@ using namespace helpers;
 
           if ( p()->talents.flashpoint.ok() && d->state->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
             p()->buffs.flashpoint->trigger();
+
+          if ( p()->talents.demonfire_infusion.ok() && p()->rng().roll( p()->talents.demonfire_infusion->effectN( 1 ).percent() ) )
+          {
+            p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
+            p()->procs.demonfire_infusion_dot->occur();
+          }
         }
 
         if ( d->state->result == RESULT_CRIT && p()->hero.mark_of_perotharn.ok() && rng().roll( p()->rng_settings.mark_of_perotharn.setting_value ) )
@@ -1305,10 +1371,15 @@ using namespace helpers;
       {
         affected_by.deaths_embrace = p->talents.deaths_embrace.ok();
 
+        triggers.jackpot_affliction = true;
+
         base_dd_multiplier *= 1.0 + p->talents.siphon_life->effectN( 1 ).percent();
         base_dd_multiplier *= 1.0 + p->talents.kindled_malice->effectN( 2 ).percent();
       }
     }
+
+    wither_t(warlock_t* p, bool havoc, util::string_view options_str ) : wither_t( p, options_str )
+    { affected_by.havoc = havoc; }
 
     dot_t* get_dot( player_t* t ) override
     { return impact_action->get_dot( t ); }
@@ -1556,9 +1627,9 @@ using namespace helpers;
       {
         double m = warlock_spell_t::composite_da_multiplier( s );
 
-        m *= td( s->target )->count_affliction_dots();
+        m *= td( s->target )->count_affliction_dots( true );
 
-        if ( p()->talents.focused_malignancy.ok() && td( s->target )->dots_unstable_affliction->is_ticking() )
+        if ( p()->talents.focused_malignancy.ok() && ( td( s->target )->dots_unstable_affliction->is_ticking() || td( s->target )->dots_jackpot_ua->is_ticking() ) )
           m *= 1.0 + p()->talents.focused_malignancy->effectN( 1 ).percent();
 
         if ( p()->talents.cull_the_weak.ok() )
@@ -1575,7 +1646,7 @@ using namespace helpers;
 
       void execute() override
       {
-        int d = td( target )->count_affliction_dots() - 1;
+        int d = td( target )->count_affliction_dots( true ) - 1;
         assert( d < as<int>( p()->procs.malefic_rapture.size() ) && "The procs.malefic_rapture array needs to be expanded." );
 
         if ( d >= 0 && d < as<int>( p()->procs.malefic_rapture.size() ) )
@@ -1598,6 +1669,7 @@ using namespace helpers;
           tdata->dots_phantom_singularity->adjust_duration( extension );
           tdata->dots_vile_taint->adjust_duration( extension );
           tdata->dots_unstable_affliction->adjust_duration( extension );
+          tdata->dots_jackpot_ua->adjust_duration( extension );
           tdata->dots_soul_rot->adjust_duration( extension );
           tdata->debuffs_haunt->extend_duration( p(), extension );
           tdata->dots_wither->adjust_duration( extension );
@@ -1609,6 +1681,10 @@ using namespace helpers;
         if ( soul_harvester() && p()->buffs.succulent_soul->check() )
         {
           bool fervor = td( s->target )->dots_unstable_affliction->is_ticking();
+
+          if ( !p()->bugs )
+            fervor |= td( s->target )->dots_jackpot_ua->is_ticking();
+
           debug_cast<demonic_soul_t*>( p()->proc_actions.demonic_soul )->demoniacs_fervor = fervor;
           p()->proc_actions.demonic_soul->execute_on_target( s->target );
         }
@@ -1703,7 +1779,7 @@ using namespace helpers;
     {
       warlock_spell_t::available_targets( tl );
 
-      range::erase_remove( tl, [ this ]( player_t* t ){ return td( t )->count_affliction_dots() == 0; } );
+      range::erase_remove( tl, [ this ]( player_t* t ){ return td( t )->count_affliction_dots( true ) == 0; } );
 
       return tl.size();
     }
@@ -1753,6 +1829,9 @@ using namespace helpers;
       if ( p()->ua_target && p()->ua_target != target )
         td( p()->ua_target )->dots_unstable_affliction->cancel();
 
+      if ( active_4pc( TWW2 ) && td( target )->dots_jackpot_ua->is_ticking() )
+        td( target )->dots_jackpot_ua->cancel();
+
       p()->ua_target = target;
 
       warlock_spell_t::execute();
@@ -1774,6 +1853,40 @@ using namespace helpers;
       warlock_spell_t::last_tick( d );
 
       p()->ua_target = nullptr;
+    }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_ta_multiplier( s );
+
+      if ( active_4pc( TWW2 ) && p()->buffs.jackpot_affliction->check() )
+        m *= 1.0 + p()->tier.spliced_aff_4pc->effectN( 1 ).percent();
+
+      return m;
+    }
+  };
+
+  struct jackpot_unstable_affliction_t : public warlock_spell_t
+  {
+    jackpot_unstable_affliction_t( warlock_t* p )
+      : warlock_spell_t( "Unstable Affliction (Jackpot!)", p, p->tier.jackpot_ua )
+    {
+      background = dual = true;
+
+      base_dd_multiplier *= 1.0 + p->talents.xavius_gambit->effectN( 2 ).percent();
+      base_td_multiplier *= 1.0 + p->talents.xavius_gambit->effectN( 1 ).percent();
+
+      // TOCHECK: Ravenous Afflictions, Death's Embrace
+    }
+
+    double composite_ta_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_ta_multiplier( s );
+
+      if ( active_4pc( TWW2 ) && p()->buffs.jackpot_affliction->check() )
+        m *= 1.0 + p()->tier.spliced_aff_4pc->effectN( 1 ).percent();
+
+      return m;
     }
   };
 
@@ -2130,7 +2243,7 @@ using namespace helpers;
         m *= 1.0 + p()->talents.drain_soul_dot->effectN( 2 ).percent();
 
       if ( p()->talents.withering_bolt.ok() )
-        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)( p()->talents.withering_bolt->effectN( 2 ).base_value() ), td( t )->count_affliction_dots() );
+        m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)( p()->talents.withering_bolt->effectN( 2 ).base_value() ), td( t )->count_affliction_dots( !p()->bugs ) );
 
       return m;
     }
@@ -2245,7 +2358,11 @@ using namespace helpers;
   {
     haunt_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Haunt", p, p->talents.haunt, options_str )
-    { base_dd_multiplier *= 1.0 + p->talents.improved_haunt->effectN( 1 ).percent(); }
+    {
+      triggers.jackpot_affliction = true;
+
+      base_dd_multiplier *= 1.0 + p->talents.improved_haunt->effectN( 1 ).percent();
+    }
 
     double execute_time_pct_multiplier() const override
     {
@@ -2316,6 +2433,14 @@ using namespace helpers;
       darkglare_extension_helper( darkglare_extension );
 
       p()->buffs.soul_rot->extend_duration( p(), darkglare_extension ); // This dummy buff is active while Soul Rot is ticking
+
+      if ( active_2pc( TWW2 ) )
+      {
+        p()->buffs.jackpot_affliction->execute();
+        p()->buffs.jackpot_affliction->predict();
+        p()->procs.jackpot_affliction->occur();
+        helpers::trigger_jackpot_ua( p() );
+      }
     }
 
     void darkglare_extension_helper( timespan_t darkglare_extension )
@@ -2331,10 +2456,14 @@ using namespace helpers;
         td->dots_phantom_singularity->adjust_duration( darkglare_extension );
         td->dots_vile_taint->adjust_duration( darkglare_extension );
         td->dots_unstable_affliction->adjust_duration( darkglare_extension );
+
+        if ( !p()->bugs )
+          td->dots_jackpot_ua->adjust_duration( darkglare_extension );
+
         td->dots_soul_rot->adjust_duration( darkglare_extension );
         td->dots_wither->adjust_duration( darkglare_extension );
 
-        if ( p()->talents.malevolent_visionary.ok() && td->count_affliction_dots() > 0 )
+        if ( p()->talents.malevolent_visionary.ok() && td->count_affliction_dots( !p()->bugs ) > 0 )
           mal_vis->execute_on_target( target );
       }
     }
@@ -2350,7 +2479,8 @@ using namespace helpers;
     {
       warlock_spell_t::execute();
 
-      p()->buffs.soul_rot->trigger();
+      if ( !p()->min_version_check( VERSION_11_1_0 ) )
+        p()->buffs.soul_rot->trigger();
 
       if ( p()->talents.malign_omen.ok() )
         p()->buffs.malign_omen->trigger( as<int>( p()->talents.malign_omen->effectN( 2 ).base_value() ) );
@@ -2394,7 +2524,7 @@ using namespace helpers;
     {
       double m = warlock_spell_t::composite_ta_multiplier( s );
 
-      m *= 1.0 + std::min( td( s->target )->count_affliction_dots(), as<int>( p()->talents.oblivion->effectN( 3 ).base_value() ) ) * p()->talents.oblivion->effectN( 2 ).percent();
+      m *= 1.0 + std::min( td( s->target )->count_affliction_dots( !p()->bugs ), as<int>( p()->talents.oblivion->effectN( 3 ).base_value() ) ) * p()->talents.oblivion->effectN( 2 ).percent();
 
       return m;
     }
@@ -2449,13 +2579,28 @@ using namespace helpers;
       {
         double m = warlock_spell_t::action_multiplier();
 
-        m *= shards_used;
+        double gloom = 0.0;
 
         if ( p()->hero.gloom_of_nathreza.ok() )
-          m *= 1.0 + shards_used * p()->hero.gloom_of_nathreza->effectN( 1 ).percent();
+           gloom = shards_used * p()->hero.gloom_of_nathreza->effectN( 1 ).percent();
+
+        m *= shards_used * ( 1.0 + gloom );
 
         if ( soul_harvester() && p()->buffs.succulent_soul->check() )
           m *= 1.0 + p()->hero.succulent_soul->effectN( 3 ).percent();
+
+        // NOTE: Touch of Rancora is a +100% ADDITION to the MULTIPLIER, we currently believe this must be done at the end of calculation
+        if ( diabolist() && affected_by.touch_of_rancora )
+        {
+          if ( p()->buffs.art_overlord->check() )
+            m += p()->hero.touch_of_rancora->effectN( 1 ).percent();
+
+          if ( p()->buffs.art_mother->check() )
+            m += p()->hero.touch_of_rancora->effectN( 1 ).percent();
+
+          if ( p()->buffs.art_pit_lord->check() )
+            m += p()->hero.touch_of_rancora->effectN( 1 ).percent();
+        }
 
         return m;
       }
@@ -2508,6 +2653,7 @@ using namespace helpers;
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
       triggers.diabolic_ritual = p->hero.diabolic_ritual.ok();
+      triggers.jackpot_demonology = true;
 
       add_child( impact_spell );
     }
@@ -2535,6 +2681,38 @@ using namespace helpers;
 
       if ( p()->talents.dread_calling.ok() )
         p()->buffs.dread_calling->trigger( shards_used );
+
+      if ( p()->talents.doom.ok() && p()->min_version_check( VERSION_11_1_0 ) )
+      {
+        for ( const auto t : p()->sim->target_non_sleeping_list )
+        {
+          if ( td( t )->debuffs_doom->check() )
+            td( t )->debuffs_doom->extend_duration( p(), -p()->talents.doom->effectN( 1 ).time_value() * shards_used );
+        }
+      }
+
+      if ( active_4pc( TWW2 ) )
+      {
+        double mult = p()->tier.spliced_demo_4pc->effectN( 1 ).percent() + p()->tier.spliced_demo_4pc->effectN( 2 ).percent() * shards_used;
+
+        for ( auto dog : p()->warlock_pet_list.dreadstalkers )
+        {
+          if ( !dog->is_sleeping() )
+          {
+            dog->buffs.spliced_4pc->trigger( 1, mult );
+            dog->queue_dreadbite();
+          }
+        }
+
+        for ( auto big_dog : p()->warlock_pet_list.greater_dreadstalkers )
+        {
+          if ( !big_dog->is_sleeping() )
+          {
+            big_dog->buffs.spliced_4pc->trigger( 1, mult );
+            big_dog->queue_dreadbite();
+          }
+        }
+      }
     }
 
     void consume_resource() override
@@ -2601,6 +2779,7 @@ using namespace helpers;
 
       affected_by.sacrificed_souls = true;
       triggers.shadow_invocation = true;
+      triggers.jackpot_demonology = true;
     }
 
     action_state_t* new_state() override
@@ -2644,7 +2823,7 @@ using namespace helpers;
             debug_cast<pets::demonology::felguard_pet_t*>( active_pet )->hatred_proc->execute_on_target( execute_state->target );
         }
 
-        if ( p()->talents.doom.ok() )
+        if ( p()->talents.doom.ok() && !p()->min_version_check( VERSION_11_1_0 ) )
         {
           for ( const auto t : p()->sim->target_non_sleeping_list )
           {
@@ -3078,6 +3257,12 @@ using namespace helpers;
     void execute() override
     {
       warlock_spell_t::execute();
+
+      if ( active_2pc( TWW2 ) )
+      {
+        p()->warlock_pet_list.greater_dreadstalkers.spawn( p()->tier.greater_dreadstalker->duration(), 1u );
+        p()->procs.jackpot_demonology->occur();
+      }
       
       // Last tested 2021-07-13
       // There is a chance for tyrant to get an extra cast off before reaching the required haste breakpoint.
@@ -3260,6 +3445,14 @@ using namespace helpers;
 
       if ( p()->talents.impending_doom.ok() )
         p()->warlock_pet_list.wild_imps.spawn( as<int>( p()->talents.impending_doom->effectN( 2 ).base_value() ) );
+
+      if ( p()->talents.doom_eternal.ok() && p()->min_version_check( VERSION_11_1_0 ) )
+      {
+        bool success = p()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), p()->talents.doom_eternal->effectN( 1 ).percent() );
+
+        if ( success )
+          p()->procs.doom_eternal->occur();
+      }
     }
   };
 
@@ -3398,6 +3591,12 @@ using namespace helpers;
       if ( p()->talents.fire_and_brimstone.ok() )
         fnb_action->execute_on_target( target );
 
+      if ( p()->talents.demonfire_infusion.ok() && p()->rng().roll( p()->talents.demonfire_infusion->effectN( 2 ).percent() ) )
+      {
+        p()->proc_actions.demonfire_infusion->execute_on_target( target );
+        p()->procs.demonfire_infusion_inc->occur();
+      }
+
       p()->buffs.backdraft->decrement();
       p()->buffs.burn_to_ashes->decrement(); // Must do after Fire and Brimstone execute so that child picks up buff
     }
@@ -3451,6 +3650,8 @@ using namespace helpers;
 
         affected_by.chaotic_energies = true;
 
+        triggers.dimension_ripper = p->talents.dimension_ripper.ok();
+
         dot_duration += p->talents.scalding_flames->effectN( 3 ).time_value();
 
         base_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
@@ -3468,6 +3669,12 @@ using namespace helpers;
 
         if ( p()->talents.flashpoint.ok() && d->state->target->health_percentage() >= p()->talents.flashpoint->effectN( 2 ).base_value() )
           p()->buffs.flashpoint->trigger();
+
+        if ( p()->talents.demonfire_infusion.ok() && p()->rng().roll( p()->talents.demonfire_infusion->effectN( 1 ).percent() ) )
+        {
+          p()->proc_actions.demonfire_infusion->execute_on_target( d->target );
+          p()->procs.demonfire_infusion_dot->occur();
+        }
       }
     };
 
@@ -3485,6 +3692,9 @@ using namespace helpers;
 
       triggers.decimation = p->talents.decimation.ok() && !dual;
     }
+
+    immolate_t( warlock_t* p, bool havoc, util::string_view options_str ) : immolate_t( p, options_str )
+    { affected_by.havoc = havoc; }
 
     dot_t* get_dot( player_t* t ) override
     { return impact_action->get_dot( t ); }
@@ -3549,6 +3759,7 @@ using namespace helpers;
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
       triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
+      triggers.rancora_cb_bonus = true;
 
       base_dd_multiplier *= 1.0 + p->talents.improved_chaos_bolt->effectN( 1 ).percent();
 
@@ -3869,9 +4080,9 @@ using namespace helpers;
       affected_by.chaotic_energies = true;
 
       if ( p->hero.wither.ok() )
-        applied_dot = new wither_t( p, "" );
+        applied_dot = new wither_t( p, false, "" );
       else
-        applied_dot = new immolate_t( p, "" );
+        applied_dot = new immolate_t( p, false, "" );
 
       applied_dot->background = true;
       applied_dot->dual = true;
@@ -3975,49 +4186,60 @@ using namespace helpers;
     }
   };
 
+  struct channel_demonfire_tick_t : public warlock_spell_t
+  {
+    bool demonfire_infusion;
+
+    channel_demonfire_tick_t( warlock_t* p )
+      : warlock_spell_t( "Channel Demonfire (tick)", p, p->talents.channel_demonfire_tick )
+    {
+      background = dual = true;
+      may_miss = false;
+      aoe = -1;
+      travel_speed = p->talents.channel_demonfire_travel->missile_speed();
+
+      demonfire_infusion = false;
+
+      affected_by.chaotic_energies = true;
+
+      triggers.decimation = false;
+
+      spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
+
+      base_dd_multiplier *= 1.0 + p->talents.demonfire_mastery->effectN( 1 ).percent();
+    }
+
+    channel_demonfire_tick_t( warlock_t* p, bool dfi )
+      : channel_demonfire_tick_t( p )
+    { demonfire_infusion = dfi; }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
+        td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+
+      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_wither->is_ticking() )
+        td( s->target )->dots_wither->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_da_multiplier( s );
+
+      if ( s->chain_target != 0 )
+        m *= p()->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p()->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
+
+      if ( ( s->chain_target == 0 || !p()->bugs ) && demonfire_infusion )
+        m *= 1.0 + p()->talents.demonfire_infusion->effectN( 3 ).percent();
+
+      return m;
+    }
+  };
+
   struct channel_demonfire_t : public warlock_spell_t
   {
-    struct channel_demonfire_tick_t : public warlock_spell_t
-    {
-      channel_demonfire_tick_t( warlock_t* p )
-        : warlock_spell_t( "Channel Demonfire (tick)", p, p->talents.channel_demonfire_tick )
-      {
-        background = dual = true;
-        may_miss = false;
-        aoe = -1;
-        travel_speed = p->talents.channel_demonfire_travel->missile_speed();
-
-        affected_by.chaotic_energies = true;
-
-        triggers.decimation = false;
-
-        spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
-
-        base_dd_multiplier *= 1.0 + p->talents.demonfire_mastery->effectN( 1 ).percent();
-      }
-
-      void impact( action_state_t* s ) override
-      {
-        warlock_spell_t::impact( s );
-
-        if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
-          td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
-
-        if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_wither->is_ticking() )
-          td( s->target )->dots_wither->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
-      }
-
-      double composite_da_multiplier( const action_state_t* s ) const override
-      {
-        double m = warlock_spell_t::composite_da_multiplier( s );
-
-        if ( s->chain_target != 0 )
-          m *= p()->talents.channel_demonfire_tick->effectN( 2 ).sp_coeff() / p()->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
-
-        return m;
-      }
-    };
-
     channel_demonfire_tick_t* channel_demonfire_tick;
 
     channel_demonfire_t( warlock_t* p, util::string_view options_str )
@@ -4243,6 +4465,8 @@ using namespace helpers;
       affected_by.havoc = true;
       affected_by.ashen_remains = p->talents.ashen_remains.ok();
 
+      triggers.jackpot_demonology = true;
+
       if ( demonology() )
       {
         base_dd_multiplier *= 1.0 + p->talents.sargerei_technique->effectN( 1 ).percent();
@@ -4281,6 +4505,12 @@ using namespace helpers;
 
       if ( p()->talents.demonic_calling.ok() )
         p()->buffs.demonic_calling->trigger();
+
+      if ( p()->talents.demonfire_infusion.ok() && p()->rng().roll( p()->talents.demonfire_infusion->effectN( 2 ).percent() ) )
+      {
+        p()->proc_actions.demonfire_infusion->execute_on_target( target );
+        p()->procs.demonfire_infusion_inc->occur();
+      }
 
       p()->buffs.burn_to_ashes->decrement();
       p()->buffs.infernal_bolt->decrement();
@@ -4357,6 +4587,8 @@ using namespace helpers;
     ruination_t( warlock_t* p, util::string_view options_str )
       : warlock_spell_t( "Ruination", p, p->hero.ruination_cast, options_str )
     {
+      triggers.jackpot_demonology = true;
+
       impact_action = new ruination_impact_t( p );
       add_child( impact_action );
     }
@@ -4508,6 +4740,27 @@ using namespace helpers;
 
     if ( stack_gained )
       p->cooldowns.blackened_soul->start();
+  }
+
+  void helpers::trigger_jackpot_ua( warlock_t* p )
+  {
+    int remaining_triggers = as<int>( p->tier.spliced_aff_4pc->effectN( 2 ).base_value() );
+
+    for ( const auto target : p->sim->target_non_sleeping_list )
+    {
+      warlock_td_t* tdata = p->get_target_data( target );
+      if ( !tdata )
+        continue;
+
+      if ( tdata->dots_unstable_affliction->is_ticking() || tdata->dots_jackpot_ua->is_ticking() )
+        continue;
+
+      p->proc_actions.jackpot_ua->execute_on_target( target );
+      remaining_triggers--;
+
+      if ( remaining_triggers <= 0 )
+        return;
+    }
   }
 
   // Event for spawning Wild Imps for Demonology
@@ -4754,7 +5007,9 @@ using namespace helpers;
   }
 
   void warlock_t::create_affliction_proc_actions()
-  { }
+  {
+    proc_actions.jackpot_ua = new jackpot_unstable_affliction_t( this );
+  }
 
   void warlock_t::create_demonology_proc_actions()
   {
@@ -4763,7 +5018,9 @@ using namespace helpers;
   }
 
   void warlock_t::create_destruction_proc_actions()
-  { }
+  {
+    proc_actions.demonfire_infusion = new channel_demonfire_tick_t( this, true );
+  }
 
   void warlock_t::create_diabolist_proc_actions()
   { }

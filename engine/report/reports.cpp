@@ -162,37 +162,37 @@ void print_profiles(sim_t* sim)
 
 // report::print_spell_query ================================================
 
-void print_spell_query(std::ostream& out, const sim_t& sim, const spell_data_expr_t& sq, unsigned level)
+void print_spell_query( std::ostream& out, const sim_t& sim, const spell_data_expr_t& sq, unsigned level )
 {
   expr_data_e data_type = sq.data_type;
   for ( unsigned int id : sq.result_spell_list )
   {
-    switch (data_type)
+    switch ( data_type )
     {
-    case DATA_TALENT:
-      out << spell_info::talent_to_str( *sim.dbc, trait_data_t::find( id, sim.dbc->ptr ), level );
-      break;
-    case DATA_EFFECT:
-    {
-      std::ostringstream sqs;
-      const spelleffect_data_t* base_effect = sim.dbc->effect(id);
-      if ( const spell_data_t* spell = dbc::find_spell( &(sim), base_effect->spell() ) )
+      case DATA_TALENT:
+        out << spell_info::talent_to_str( *sim.dbc, trait_data_t::find( id, sim.dbc->ptr ), level );
+        break;
+      case DATA_EFFECT:
       {
-        const auto spell_effects = spell->effects();
-        auto effect = range::find( spell_effects, base_effect->id(), &spelleffect_data_t::id );
-        if ( effect != spell_effects.end() )
+        std::ostringstream sqs;
+        const spelleffect_data_t* base_effect = sim.dbc->effect( id );
+        if ( const spell_data_t* spell = dbc::find_spell( &( sim ), base_effect->spell() ) )
         {
-          spell_info::effect_to_str( *sim.dbc, spell, &( *effect ), sqs, level );
-          out << sqs.str();
+          const auto spell_effects = spell->effects();
+          auto effect = range::find( spell_effects, base_effect->id(), &spelleffect_data_t::id );
+          if ( effect != spell_effects.end() )
+          {
+            spell_info::effect_to_str( *sim.dbc, spell, &( *effect ), sqs, level, sim.spell_query_wrap );
+            out << sqs.str();
+          }
         }
       }
-    }
-    break;
-    default:
-    {
-      const spell_data_t* spell = dbc::find_spell(&(sim), sim.dbc->spell(id));
-      out << spell_info::to_str(*sim.dbc, spell, level);
-    }
+      break;
+      default:
+      {
+        const spell_data_t* spell = dbc::find_spell( &( sim ), sim.dbc->spell( id ) );
+        out << spell_info::to_str( *sim.dbc, spell, level, sim.spell_query_wrap );
+      }
     }
   }
 }

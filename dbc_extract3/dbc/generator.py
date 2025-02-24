@@ -1494,7 +1494,7 @@ class SpellDataGenerator(DataGenerator):
          # 11.0 The War Within ================================================
          451916, 451917, 451918, 451920, 451921, # earthen racial well fed buff
          206150, 461904, 461910, 462661, # new M+ affixes
-         462513, # severed strands weekly raid buff
+         462513, 462517, # severed strands weekly raid buff
          443585, # fateweaved needle
          452279, # aberrant spellforge
          448621, 448643, # void reaper's chime
@@ -1517,11 +1517,23 @@ class SpellDataGenerator(DataGenerator):
          457630, 455523, 457628, # Woven Dusk Tailoring Set
          463059, # Darkmoon Deck: Ascension
          463232, # Darkmoon Sigil: Symbiosis
+         454979, 454862, 454980, 454977, 454978, 454976, 454975, 454982, # Darkmoon Deck: Vivacity
          441508, 441507, 441430, # Nerubian Phearomone Secreter
          455441, 455454, 455455, 455456, #Unstable Power Core Mastery Crit Haste Vers
          455521, 455522, 457627, # Woven Dawn Tailoring Set
          449441, # Fury of the Stormrook Set
          469917, 469920, # golem gearbox
+         # 11.1
+         1217431, 1217432, 1217427, 1217638, 1217665, 1217675, 1217676, 1217723, 1217719, # Zee's Thug Hotline
+         1214823, 1214826, # The Jastor Diamond
+         1219662, # Junkmaestro's Mega Magnet
+         1220419, 1220415, # Gigazap's Zap-Cap
+         1218471, 1218442, 1218463, 1218469, # Machine Gob's Iron Grin
+         1214787, 1214806, 1214807, 1214808, 1214810, # Mechano-core Amplifier
+         1219299, # Garbagemancer's Last Resort
+         1213433, 1213434, # Funhouse Lens
+         1218715, # Maybe Stop Blowing Up (Improvised Seaforium Pacemaker)
+         1219662, # Junkmaestro's Mega Magnet
         ),
 
         # Warrior:
@@ -1665,12 +1677,16 @@ class SpellDataGenerator(DataGenerator):
           ( 164273, 2 ), # Lone Wolf buff
           ( 361736, 5 ), # Coordinated Assault (pet buff)
           ( 219199, 1 ), # Dire Beast (summon)
-          ( 426703, 5), # Dire Beast Kill Command
-          ( 459834, 3), # Sulfur-Lined Pockets (Explosive Shot buff)
+          ( 426703, 5 ), # Dire Beast Kill Command
+          ( 459834, 3 ), # Sulfur-Lined Pockets (Explosive Shot buff)
           # Hero Talents
-          ( 444354, 0), # Shadow Lash
-          ( 444269, 0), # Shadow Surge
-          ( 442419, 0), # Shadow Hounds
+          ( 444354, 0 ), # Shadow Lash
+          ( 444269, 0 ), # Shadow Surge
+          ( 442419, 0 ), # Shadow Hounds
+          ( 468037, 0 ), # Withering Fire secondary Black Arrows
+          ( 474293, 2 ), # Moving Target buff
+          ( 471947, 0 ), ( 472020, 0 ), # Boar Charge (Pack Leader)
+          ( 1225858, 0 ), # Bear Summon (Pack Leader)
         ),
 
         # Rogue:
@@ -1764,6 +1780,7 @@ class SpellDataGenerator(DataGenerator):
             ( 457236, 0 ),          # Singular Focus damage spell
             ( 459002, 0 ),          # Outlaw 11.0 Set Bonus damage spell
             ( 467059, 0 ),          # Outlaw Crackshot Dispatch clone damage spell
+            ( 1219264, 0 ),         # Assassination TWW2 4pc set bonus buff spell
         ),
 
         # Priest:
@@ -1801,6 +1818,8 @@ class SpellDataGenerator(DataGenerator):
             ( 391232, 0 ),          # Maddening Touch Insanity
             ( 409502, 0 ),          # DF Season 2 4pc
             ( 148859, 0 ),          # Shadowy Apparitions Travel Spell
+            ( 1215702, 0 ),         # Priest Shadow 11.1 Class Set 2pc
+            ( 1215703, 0 ),         # Priest Shadow 11.1 Class Set 4pc
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
@@ -2002,7 +2021,11 @@ class SpellDataGenerator(DataGenerator):
           ( 451137, 0 ), ( 450511, 0 ), ( 451031, 0 ),  # Call of the Ancestors spells
           ( 447419, 0 ),                                # Call of the Ancestor Lava Burst
           ( 447427, 0 ),                                # Call of the Ancestor Elemental Blast
+          ( 465717, 0 ),                                # Call of the Ancestor Elemental Blast NEW
           ( 447425, 0 ),                                # Call of the Ancestor Chain Lightning
+          ( 470058, 0 ),                                # Voltaic Blaze override buff
+          ( 467283, 0 ),                                # Reactivity proc
+          ( 408390, 0 ),                                # Elemental Weapons actual
         ),
 
         # Mage:
@@ -2070,6 +2093,8 @@ class SpellDataGenerator(DataGenerator):
           ( 453326, 0 ),                            # Arcane Surge (Arcane Phoenix)
           ( 450421, 0 ),                            # Greater Pyroblast (Arcane Phoenix)
           ( 455137, 0 ),                            # Blessing of the Phoenix missile speed
+          ( 1216988, 0 ),                           # Recently damaged by Blizzard (Freezing Winds talent)
+          ( 1223801, 0 ),                           # Arcane Rebound
         ),
 
         # Warlock:
@@ -3412,7 +3437,7 @@ class SpellDataGenerator(DataGenerator):
             spell = self.db('SpellName')[id]
 
             # Unused hotfix IDs: 1, 2, 5, 6, 7
-            # MAX hotfix id: 56
+            # MAX hotfix id: 58
             hotfix = HotfixDataRecord()
             power_count = 0
 
@@ -3467,8 +3492,8 @@ class SpellDataGenerator(DataGenerator):
             category = spell.child('SpellCategories')
             category_data = category.ref('id_charge_category')
 
-            fields += category_data.field('charges', 'charge_cooldown')
-            hotfix.add(category_data, ('charges', 16), ('charge_cooldown', 17))
+            fields += category_data.field('flags', 'charges', 'charge_cooldown', 'type_mask')
+            hotfix.add(category_data, ('flags', 57), ('charges', 16), ('charge_cooldown', 17), ('type_mask', 58))
             if category.id_charge_category > 0: # Note, some spells have both cooldown and charge categories
                 fields += category.field('id_charge_category')
                 hotfix.add(category, ('id_charge_category', 18))
@@ -4052,6 +4077,11 @@ class SetBonusListGenerator(DataGenerator):
             'name'   : 'woven_dawn',
             'bonuses': [ 1683 ],
             'tier'   : 'TWW_WDawn'
+        },
+        {
+            'name'   : 'thewarwithin_season_2',
+            'bonuses': [ 1867, 1868, 1869, 1870, 1871, 1872, 1873, 1874, 1875, 1876, 1877, 1878, 1879 ],
+            'tier'   : 'TWW2'
         },
     ]
 

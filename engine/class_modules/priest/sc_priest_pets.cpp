@@ -216,20 +216,42 @@ struct priest_pet_melee_t : public melee_attack_t
   {
     return static_cast<priest_pet_t&>( *player );
   }
+
+  virtual double composite_atonement_multiplier( action_state_t* s )
+  {
+    double mul = p().o().talents.discipline.atonement->effectN( 1 ).percent();
+
+    if ( !p().o().options.discipline_in_raid )
+      mul *= 1 + p().o().talents.discipline.atonement->effectN( 3 ).percent();
+
+    // TODO: Check if applies
+    //if ( p().o().talents.discipline.abyssal_reverie.enabled() &&
+    //     ( dbc::get_school_mask( s->action->school ) & SCHOOL_SHADOW ) != SCHOOL_SHADOW )
+    //  mul *= 1 + p().o().talents.discipline.abyssal_reverie->effectN( 1 ).percent();
+
+    if ( p().o().talents.voidweaver.voidheart.enabled() && p().o().buffs.voidheart->check() )
+      mul *= 1.0 + p().o().talents.voidweaver.voidheart->effectN( 2 ).percent();
+
+    return mul;
+  }
 };
 
 struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
 {
   bool affected_by_shadow_weaving;
+  bool affected_by_reveries;
   bool triggers_atonement;
 
   priest_pet_spell_t( util::string_view token, priest_pet_t& p, const spell_data_t* s )
-    : ab( token, &p, s ), affected_by_shadow_weaving( false ), triggers_atonement( false )
+    : ab( token, &p, s ), affected_by_shadow_weaving( false ), triggers_atonement( false ), affected_by_reveries( true )
   {
     may_crit = true;
 
     if ( data().ok() )
     {
+      apply_affecting_aura( p.o().specs.shadow_priest );
+      apply_affecting_aura( p.o().specs.discipline_priest );
+
       apply_buff_effects();
       apply_debuffs_effects();
     }
@@ -349,6 +371,23 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
     return ttm;
   }
 
+  virtual double composite_atonement_multiplier( action_state_t* s )
+  {
+    double mul = p().o().talents.discipline.atonement->effectN( 1 ).percent();
+
+    if ( !p().o().options.discipline_in_raid )
+      mul *= 1 + p().o().talents.discipline.atonement->effectN( 3 ).percent();
+
+    if ( p().o().talents.discipline.abyssal_reverie.enabled() &&
+         ( dbc::get_school_mask( s->action->school ) & SCHOOL_SHADOW ) != SCHOOL_SHADOW && affected_by_reveries )
+      mul *= 1 + p().o().talents.discipline.abyssal_reverie->effectN( 1 ).percent();
+
+    if ( p().o().talents.voidweaver.voidheart.enabled() && p().o().buffs.voidheart->check() )
+      mul *= 1.0 + p().o().talents.voidweaver.voidheart->effectN( 2 ).percent();
+
+    return mul;
+  }
+
   void impact( action_state_t* s ) override
   {
     ab::impact( s );
@@ -356,7 +395,7 @@ struct priest_pet_spell_t : public parse_action_effects_t<spell_t>
     if ( result_is_hit( s->result ) )
     {
       if ( triggers_atonement && s->chain_target == 0 )
-        p().o().trigger_atonement( s );
+        p().o().trigger_atonement( s, composite_atonement_multiplier( s ) );
     }
   }
 
@@ -404,6 +443,14 @@ struct base_fiend_pet_t : public priest_pet_t
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
 
     owner_coeff.health = 0.3;
+  }
+
+  void init_base_stats() override
+  {
+    priest_pet_t::init_base_stats();
+
+    owner_coeff.ap_from_sp = direct_power_mod;
+    owner_coeff.sp_from_sp = direct_power_mod;
   }
 
   virtual double mana_return_percent() const = 0;
@@ -508,6 +555,7 @@ struct void_flay_t final : public priest_pet_spell_t
     trigger_gcd = 1.5_s;
 
     damage_mul = data().effectN( 2 ).percent();
+    affected_by_reveries = false;
   }
 
   void init() override
@@ -521,8 +569,11 @@ struct void_flay_t final : public priest_pet_spell_t
   {
     auto m = player->composite_player_target_multiplier( target, get_school() );
 
-    m *= 1.0 + damage_mul * target->resources.pct( RESOURCE_HEALTH );
+    double health_percent = ( target->health_percentage() / 100 );
 
+    m *= 1.0 + damage_mul * health_percent;
+
+    sim->print_debug( "void_flay damage_mul: {} health_percent: {}, m: {}", damage_mul, health_percent, m );
     return m;
   }
 
@@ -532,7 +583,7 @@ struct void_flay_t final : public priest_pet_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      p().o().trigger_atonement( s );
+      p().o().trigger_atonement( s, composite_atonement_multiplier( s ) );
 
       p().o().trigger_essence_devourer();
 
@@ -685,7 +736,7 @@ struct fiend_melee_t : public priest_pet_melee_t
     weapon_multiplier       = 0.0;
     base_dd_min             = weapon->min_dmg;
     base_dd_max             = weapon->max_dmg;
-    attack_power_mod.direct = p.direct_power_mod;
+    attack_power_mod.direct = 1.0;
   }
 
   base_fiend_pet_t& p()
@@ -730,7 +781,7 @@ struct fiend_melee_t : public priest_pet_melee_t
         p().o().trigger_shadow_weaving( s );
       }
 
-      p().o().trigger_atonement( s );
+      p().o().trigger_atonement( s, composite_atonement_multiplier( s ) );
 
       p().o().trigger_essence_devourer();
 
@@ -772,15 +823,13 @@ struct inescapable_torment_damage_t final : public priest_pet_spell_t
 
     // This is hard coded in the spell
     // spcoeff * $?a137032[${0.326139}][${0.442}]
-    spell_power_mod.direct *= p.direct_power_mod;
+    // spell_power_mod.direct *= p.direct_power_mod;
 
     // Negative modifier used for point scaling
     // Effect#4 [op=set, values=(-50, 0)]
     spell_power_mod.direct *= ( 1 + p.o().talents.shared.inescapable_torment->effectN( 3 ).percent() );
 
     // Tuning modifier effect
-    apply_affecting_aura( p.o().specs.shadow_priest );
-    apply_affecting_aura( p.o().specs.discipline_priest );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override

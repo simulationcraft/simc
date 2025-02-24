@@ -78,6 +78,8 @@ struct essence_devourer_t;
 struct atonement_t;
 struct divine_aegis_t;
 struct cauterizing_shadows_t;
+struct crystalline_reflection_heal_t;
+struct crystalline_reflection_damage_t;
 }  // namespace actions::heals
 
 /**
@@ -200,6 +202,7 @@ public:
     propagate_const<buff_t*> train_of_thought;
     propagate_const<buff_t*> wrath_unleashed;
     propagate_const<buff_t*> weal_and_woe;
+    propagate_const<buff_t*> rapture;
 
     // Holy
     propagate_const<buff_t*> apotheosis;
@@ -246,6 +249,7 @@ public:
     propagate_const<buff_t*> darkflame_shroud;
     propagate_const<buff_t*> deaths_torment;
     propagate_const<buff_t*> devouring_chorus;
+    propagate_const<buff_t*> darkness_from_light;
 
     // Archon
     propagate_const<buff_t*> power_surge;
@@ -256,7 +260,6 @@ public:
     propagate_const<buff_t*> entropic_rift;
     propagate_const<buff_t*> darkening_horizon;
     propagate_const<buff_t*> collapsing_void;
-    propagate_const<buff_t*> void_empowerment;
   } buffs;
 
   // Talents
@@ -453,26 +456,31 @@ public:
       player_talent_t malicious_intent;
       // Row 5
       player_talent_t purge_the_wicked;
+      player_talent_t encroaching_shadows;
+      player_talent_t evangelism;
       player_talent_t rapture;
       player_talent_t shadow_covenant;
       const spell_data_t* shadow_covenant_buff;
       const spell_data_t* dark_reprimand;
       // Row 6
       player_talent_t revel_in_purity;
+      player_talent_t revel_in_darkness;
       player_talent_t contrition;
+      player_talent_t divine_procession;
       player_talent_t exaltation;
       player_talent_t indemnity;
       player_talent_t pain_and_suffering;
       player_talent_t twilight_corruption;
       // Row
       player_talent_t borrowed_time;
-      player_talent_t castigation;
+      player_talent_t ultimate_penance;
       player_talent_t abyssal_reverie;
       // Row 8
       player_talent_t train_of_thought;
-      player_talent_t ultimate_penance;
+      player_talent_t inner_focus;
+      player_talent_t castigation;
+      player_talent_t overloaded_with_light;
       player_talent_t lenience;
-      player_talent_t evangelism;
       player_talent_t void_summoner;
       // Row 9
       player_talent_t divine_aegis;
@@ -485,9 +493,9 @@ public:
       // player_talent_t inescapable_torment; - Shared
       // Row 10
       player_talent_t aegis_of_wrath;
+      player_talent_t eternal_barrier;
       player_talent_t weal_and_woe;
       const spell_data_t* weal_and_woe_buff;
-      player_talent_t overloaded_with_light;
       player_talent_t twilight_equilibrium;
       const spell_data_t* twilight_equilibrium_holy_amp;
       const spell_data_t* twilight_equilibrium_shadow_amp;
@@ -553,14 +561,16 @@ public:
       player_talent_t waste_no_time;
       player_talent_t miraculous_recovery;
       player_talent_t assured_safety;
-      player_talent_t prompt_deliverance;
       player_talent_t divine_feathers;
+      player_talent_t save_the_day;
       player_talent_t forseen_circumstances;
+      player_talent_t prophets_will;
+      player_talent_t desperate_measures;
+      player_talent_t divine_providence;
+      player_talent_t twinsight;
+      player_talent_t fatebender;
       player_talent_t perfect_vision;
       player_talent_t clairvoyance;
-      player_talent_t narrowed_visions;
-      player_talent_t fatebender;
-      player_talent_t grand_reveal;
     } oracle;
 
     struct
@@ -574,6 +584,7 @@ public:
       player_talent_t dark_energy;
       player_talent_t void_blast;
       const spell_data_t* void_blast_shadow;
+      const spell_data_t* void_blast_disc;
       player_talent_t inner_quietus;
       player_talent_t devour_matter;
       player_talent_t void_empowerment;
@@ -673,6 +684,7 @@ public:
 
     // Discipline
     propagate_const<cooldown_t*> penance;
+    propagate_const<cooldown_t*> ultimate_penitence;
 
     // Holy
     propagate_const<cooldown_t*> holy_fire;
@@ -710,6 +722,7 @@ public:
     propagate_const<gain_t*> insanity_maddening_touch;
     propagate_const<gain_t*> insanity_t30_2pc;
     propagate_const<gain_t*> cauterizing_shadows_health;
+    propagate_const<gain_t*> shield_discipline;
   } gains;
 
   // Benefits
@@ -781,6 +794,8 @@ public:
     propagate_const<actions::spells::collapsing_void_damage_t*> collapsing_void;
     propagate_const<actions::spells::halo_t*> halo;
     propagate_const<actions::heals::cauterizing_shadows_t*> cauterizing_shadows;
+    propagate_const<actions::heals::crystalline_reflection_heal_t*> crystalline_reflection_heal;
+    propagate_const<actions::heals::crystalline_reflection_damage_t*> crystalline_reflection_damage;
   } background_actions;
 
   // Items
@@ -827,8 +842,6 @@ public:
     // Only takes into account if you have not overriden initial_resource=insanity=X to something greater than 0
     bool init_insanity = true;
 
-    int disc_minimum_allies = 5;
-
     // Forces Idol of Y'Shaarj to give a particular buff for every cast
     // default, pride, anger, despair, fear (NYI), violence
     std::string forced_yshaarj_type = "default";
@@ -845,10 +858,20 @@ public:
 
     // Chance for Entropic Rift ticks to miss all targets and deal no damage
     // Can be used to account for boss movement
-    double entropic_rift_miss_percent = 0.00;
+    double entropic_rift_miss_percent           = 0.05;
+    // Can be used to account for add movement
+    double entropic_rift_miss_percent_secondary = 0.1;
+    // Can be used to limit the number of enemies hit
+    int entropic_rift_miss_target_cap           = 0;
 
     // Additional Crystalline Reflection Damage Multiplier (Because its bugged and doesnt always do full damage)
     double crystalline_reflection_damage_mult = 0.5;
+    bool no_channel_macro_mfi = false;
+
+    // Controls whether Discipline is "in a raid" or not.
+    bool discipline_in_raid = false;
+
+    bool shadow_tww2_4pc_insanity = true;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );
@@ -858,6 +881,7 @@ public:
   void init_resources( bool force ) override;
   void init_spells() override;
   void init_special_effects() override;
+  void init_special_effects_shadow();
   void create_buffs() override;
   void init_scaling() override;
   void init_finished() override;
@@ -941,7 +965,7 @@ public:
   void trigger_inescapable_torment( player_t* target, bool echo = false, double mod = 1.0 );
   void trigger_idol_of_yshaarj( player_t* target );
   void trigger_idol_of_cthun( action_state_t* );
-  void trigger_atonement( action_state_t* );
+  void trigger_atonement( action_state_t*, double );
   void trigger_divine_aegis( action_state_t* );
   void spawn_idol_of_cthun( action_state_t* );
   void trigger_shadowy_apparitions( proc_t* proc, bool gets_crit_mod );
@@ -961,6 +985,33 @@ public:
   void extend_entropic_rift();
   void expand_entropic_rift();
   void trigger_cauterizing_shadows();
+
+  std::vector<action_t*> secondary_action_list;
+
+  template <typename T, typename... Ts>
+  std::pair<T*, bool> get_secondary_action_pair( std::string_view n, Ts&&... args )
+  {
+    auto it = range::find( secondary_action_list, n, &action_t::name_str );
+    if ( it != secondary_action_list.cend() )
+      return { dynamic_cast<T*>( *it ), false };
+
+    auto a        = new T( *this, std::forward<Ts>( args )... );
+    a->background = true;
+    secondary_action_list.push_back( a );
+    return { a, true };
+  }
+  template <typename T, typename... Ts>
+  T* get_secondary_action( std::string_view n, Ts&&... args )
+  {
+    auto it = range::find( secondary_action_list, n, &action_t::name_str );
+    if ( it != secondary_action_list.cend() )
+      return dynamic_cast<T*>( *it );
+
+    auto a        = new T( *this, std::forward<Ts>( args )... );
+    a->background = true;
+    secondary_action_list.push_back( a );
+    return a;
+  }
 
   unsigned int specialization_aura_id()
   {
@@ -1190,6 +1241,11 @@ public:
       {
         parse_effects( p().buffs.devouring_chorus );
       }
+
+      if ( p().sets->has_set_bonus( PRIEST_SHADOW, TWW2, B4 ) )
+      {
+        parse_effects( ab::player->buffs.power_infusion, p().sets->set( PRIEST_SHADOW, TWW2, B4 ) );
+      }
     }
 
     // DISCIPLINE BUFF EFFECTS
@@ -1204,6 +1260,15 @@ public:
       parse_effects( p().buffs.twilight_equilibrium_holy_amp );
       parse_effects( p().buffs.light_weaving );
       parse_effects( p().buffs.weal_and_woe );
+
+      if ( p().sets->has_set_bonus( PRIEST_DISCIPLINE, TWW1, B4 ) )
+      {
+        parse_effects( p().buffs.darkness_from_light );
+      }
+      if ( p().talents.discipline.rapture.enabled() )
+      {
+        parse_effects( p().buffs.rapture );
+      }
     }
 
     // HOLY BUFF EFFECTS
@@ -1355,9 +1420,10 @@ public:
         target_list.push_back( t );
     }
 
+    // Remove non Healing Enemy pets from valid target list
     for ( const auto& t : sim->healing_pet_list )
     {
-      if ( t != target && ( t->is_active() || ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
+      if ( t != target && ( ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
         target_list.push_back( t );
     }
 
@@ -1368,9 +1434,10 @@ public:
 struct priest_heal_t : public priest_action_t<heal_t>
 {
   bool disc_mastery;
+  bool divine_aegis;
 
   priest_heal_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s ), disc_mastery( false )
+    : base_t( name, player, s ), disc_mastery( false ), divine_aegis( true )
   {
     target = &player;
   }
@@ -1412,9 +1479,10 @@ struct priest_heal_t : public priest_action_t<heal_t>
         target_list.push_back( t );
     }
 
+    // Remove non Healing Enemy pets from valid target list
     for ( const auto& t : sim->healing_pet_list )
     {
-      if ( t != target && ( t->is_active() || ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
+      if ( t != target && ( ( t->type == HEALING_ENEMY && !t->is_sleeping() ) ) )
         target_list.push_back( t );
     }
 
@@ -1436,7 +1504,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
         priest().buffs.twist_of_fate->trigger();
       }
 
-      if ( s->result == RESULT_CRIT && p().talents.discipline.divine_aegis.enabled() )
+      if ( s->result == RESULT_CRIT && divine_aegis && p().talents.discipline.divine_aegis.enabled() )
       {
         p().trigger_divine_aegis( s );
       }
@@ -1481,6 +1549,23 @@ struct priest_spell_t : public priest_action_t<spell_t>
     base_t::last_tick( d );
   }
 
+  virtual double composite_atonement_multiplier( action_state_t* s )
+  {
+    double mul = p().talents.discipline.atonement->effectN( 1 ).percent();
+
+    if ( !p().options.discipline_in_raid )
+      mul *= 1 + p().talents.discipline.atonement->effectN( 3 ).percent();
+
+    if ( p().talents.discipline.abyssal_reverie.enabled() &&
+         ( dbc::get_school_mask( s->action->school ) & SCHOOL_SHADOW ) != SCHOOL_SHADOW )
+      mul *= 1 + p().talents.discipline.abyssal_reverie->effectN( 1 ).percent();
+
+    if ( p().talents.voidweaver.voidheart.enabled() && p().buffs.voidheart->check() )
+      mul *= 1.0 + p().talents.voidweaver.voidheart->effectN( 2 ).percent();
+
+    return mul;
+  }
+
   void execute() override
   {
     base_t::execute();
@@ -1518,8 +1603,8 @@ struct priest_spell_t : public priest_action_t<spell_t>
         priest().buffs.twist_of_fate->trigger();
       }
 
-      if ( triggers_atonement && s->chain_target == 0 )
-        p().trigger_atonement( s );
+      if ( triggers_atonement && ( s->chain_target == 0 || split_aoe_damage ) )
+        p().trigger_atonement( s, composite_atonement_multiplier( s ) );
     }
   }
 
@@ -1529,7 +1614,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( triggers_atonement && result_is_hit( d->state->result ) )
     {
-      p().trigger_atonement( d->state );
+      p().trigger_atonement( d->state, composite_atonement_multiplier( d->state ) );
     }
   }
 
@@ -1640,6 +1725,11 @@ public:
   priest_buff_t( priest_td_t& td, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
                  const item_t* item = nullptr )
     : Base( td, name, s, item )
+  {
+  }
+  priest_buff_t( actor_pair_t q, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
+                 const item_t* item = nullptr )
+    : Base( q, name, s, item )
   {
   }
 

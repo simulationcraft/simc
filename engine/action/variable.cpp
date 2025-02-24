@@ -360,7 +360,7 @@ void variable_t::execute()
     // Only spit out prints in main thread
     if (sim->parent == nullptr)
     {
-      sim -> out_log.print( "actor={} time={} iterations={} variable={} value={}\n",
+      sim -> out_log.print( "actor={} time={} iterations={} variable={} value={}",
                             player->name_str, sim->current_time(), sim->current_iteration,
                             var->name_, var->current_value_ );
     }

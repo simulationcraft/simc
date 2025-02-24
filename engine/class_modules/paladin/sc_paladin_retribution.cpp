@@ -22,8 +22,7 @@ namespace buffs {
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
     // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
     //  values
-    if ( p->talents.avenging_wrath->ok() )
-      damage_modifier = data().effectN( 1 ).percent() / 10.0;
+    damage_modifier = data().effectN( 1 ).percent() / 10.0;
     haste_bonus = data().effectN( 3 ).percent() / 10.0;
 
     auto* paladin = static_cast<paladin_t*>( p );
@@ -45,10 +44,30 @@ namespace buffs {
 // Crusade
 struct crusade_t : public paladin_spell_t
 {
+  struct state_t : public action_state_t
+  {
+    using action_state_t::action_state_t;
+
+    proc_types2 cast_proc_type2() const override
+    {
+      // This spell can trigger on-cast procs even if it is backgrounded
+      return PROC2_CAST_GENERIC;
+    }
+  };
+
+  bool is_proc_background;
+
+  crusade_t( paladin_t* p ) : paladin_spell_t( "crusade", p, p->find_spell( 454373 ) )
+  {
+    is_proc_background = true;
+  }
+
   crusade_t( paladin_t* p, util::string_view options_str ) :
     paladin_spell_t( "crusade", p, p->spells.crusade )
   {
     parse_options( options_str );
+
+    is_proc_background = false;
 
     if ( ! ( p->talents.crusade->ok() ) )
       background = true;
@@ -56,9 +75,17 @@ struct crusade_t : public paladin_spell_t
       background = true;
   }
 
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
   void execute() override
   {
     paladin_spell_t::execute();
+
+    if ( is_proc_background )
+      return;
 
     // If Visions already procced the buff and this spell is used, all stacks are reset to 1
     // The duration is also set to its default value, there's no extending or pandemic
@@ -955,7 +982,7 @@ struct judgment_ret_t : public judgment_t
 
     if ( rng().roll( mastery_chance ) )
     {
-      p()->active.highlords_judgment->set_target( target );
+      p()->active.highlords_judgment->set_target( s->target );
       p()->active.highlords_judgment->execute();
     }
   }
@@ -1160,11 +1187,19 @@ struct wake_of_ashes_t : public paladin_spell_t
       bool do_avatar = p()->talents.herald_of_the_sun.suns_avatar->ok() && !( p()->buffs.avenging_wrath->up() || p()->buffs.crusade->up() );
       if ( p()->talents.crusade->ok() )
       {
+        if ( !p()->buffs.crusade->up() )
+        {
+          p()->active.background_crusade->execute_on_target( p() );
+        }
         // TODO: get this from spell data
         p()->buffs.crusade->extend_duration_or_trigger( timespan_t::from_seconds( 10 ) );
       }
       else if ( p()->talents.avenging_wrath->ok() )
       {
+        if ( !p()->buffs.avenging_wrath->up() )
+        {
+          p()->active.background_avenging_wrath->execute_on_target( p() );
+        }
         p()->buffs.avenging_wrath->extend_duration_or_trigger( timespan_t::from_seconds( 8 ) );
       }
 
@@ -1212,17 +1247,35 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     background  = true;
     may_crit    = true;
   }
+
+  void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    paladin_t* pal = p();
+    if ( pal->talents.templar.hammerfall->ok() && pal->cooldowns.hammerfall_icd->up() )
+    {
+      int additionalTargets = 0;
+      if ( pal->buffs.templar.shake_the_heavens->up() )
+        additionalTargets += 1; // Disappeared from spell data
+      pal->trigger_empyrean_hammer(
+          nullptr, 1 + additionalTargets,
+          timespan_t::from_millis( pal->talents.templar.hammerfall->effectN( 1 ).base_value() ),
+          true );
+      pal->cooldowns.hammerfall_icd->start();
+    }
+  }
 };
 
-struct divine_hammer_t : public paladin_spell_t
+struct divine_hammer_t : public holy_power_consumer_t<paladin_spell_t>
 {
-  divine_hammer_t( paladin_t* p ) : paladin_spell_t( "divine_hammer", p, p->talents.divine_hammer )
+  divine_hammer_t( paladin_t* p ) : holy_power_consumer_t<paladin_spell_t>( "divine_hammer", p, p->talents.divine_hammer )
   {
     background = true;
   }
 
   divine_hammer_t( paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( "divine_hammer", p, p->talents.divine_hammer )
+    : holy_power_consumer_t<paladin_spell_t>( "divine_hammer", p, p->talents.divine_hammer )
   {
     parse_options( options_str );
 
@@ -1232,7 +1285,7 @@ struct divine_hammer_t : public paladin_spell_t
 
   void execute() override
   {
-    paladin_spell_t::execute();
+    holy_power_consumer_t<paladin_spell_t>::execute();
 
     p()->buffs.divine_hammer->trigger();
   }
@@ -1401,7 +1454,7 @@ struct templar_slash_t : public base_templar_strike_t
 
     dot->target = s->target;
     // TODO: figure out where this formula comes from
-    double mult = p()->bugs ? 1.0 : 0.5;
+    double mult = 0.5;
     dot->base_td = ( s->result_total * mult ) / 4;
     dot->execute();
   }
@@ -1487,6 +1540,11 @@ void paladin_t::trigger_es_explosion( player_t* target )
 
 void paladin_t::create_ret_actions()
 {
+  if ( talents.crusade->ok() )
+  {
+    active.background_crusade = new crusade_t( this );
+  }
+
   if ( talents.empyrean_legacy->ok() )
   {
     double empyrean_legacy_mult = 1.0 + talents.empyrean_legacy->effectN( 2 ).percent();
@@ -1588,48 +1646,16 @@ void paladin_t::create_buffs_retribution()
                           ->set_trigger_spell( talents.empyrean_power );
   buffs.judge_jury_and_executioner = make_buff( this, "judge_jury_and_executioner", find_spell( 453433 ) );
   buffs.divine_hammer = make_buff( this, "divine_hammer", talents.divine_hammer )
+    ->set_tick_on_application( true )
+    ->set_partial_tick( true )
     ->set_max_stack( 1 )
     ->set_default_value( 1.0 )
-    ->set_period( timespan_t::from_millis( 2200 ) )
+    ->set_period( timespan_t::from_millis( 2000 ) )
     ->set_freeze_stacks( true )
-    ->set_tick_time_callback([](const buff_t* b, unsigned) -> timespan_t {
-      auto res = timespan_t::from_millis( 2200 );
-      res *= 1.0 / b->current_value;
-      return res;
-    })
     ->set_tick_callback([this](buff_t* b, int, const timespan_t&) {
-      // consume a holy power, if one isn't available then buff ends
-      if ( !resource_available( RESOURCE_HOLY_POWER, 1.0 ) ) {
-        b->expire();
-      } else {
-        active.divine_hammer_tick->schedule_execute();
-      }
+      active.divine_hammer_tick->schedule_execute();
     })
-    ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
-      for ( size_t i = 2; i < 5; i++ )
-      {
-        double recharge_mult = 1.0 / ( 1.0 + b->data().effectN( i ).percent() );
-        spelleffect_data_t label = b->data().effectN( i );
-        for ( auto a : action_list )
-        {
-          if ( a->cooldown->duration != 0_ms &&
-               ( a->data().affected_by( label ) || a->data().affected_by_category( label ) ) )
-          {
-            if ( new_ == 1 )
-              a->dynamic_recharge_rate_multiplier *= recharge_mult;
-            else
-              a->dynamic_recharge_rate_multiplier /= recharge_mult;
-
-            if ( a->cooldown->action == a )
-              a->cooldown->adjust_recharge_multiplier();
-
-            if ( a->internal_cooldown->action == a )
-              a->internal_cooldown->adjust_recharge_multiplier();
-          }
-        }
-      }
-    }
-  );
+    ->set_tick_time_behavior( buff_tick_time_behavior::HASTED );
 
   // legendaries
   buffs.empyrean_legacy = make_buff( this, "empyrean_legacy", find_spell( 387178 ) );
@@ -1638,12 +1664,13 @@ void paladin_t::create_buffs_retribution()
   buffs.echoes_of_wrath = make_buff( this, "echoes_of_wrath", find_spell( 423590 ) );
 
   buffs.rise_from_ash = make_buff( this, "rise_from_ash", find_spell( 454693 ) );
+  buffs.winning_streak = make_buff( this, "winning_streak", find_spell( 1216828 ) )
+    ->set_default_value_from_effect( 1 );
+  buffs.all_in = make_buff( this, "all_in", find_spell( 1216837 ) );
 }
 
 void paladin_t::init_rng_retribution()
 {
-  // TODO(mserrano): is this right? It looks right-ish from logs, but it's hard to say
-  rppm.radiant_glory = get_rppm( "radiant_glory", 1.0 );
   rppm.judge_jury_and_executioner = get_rppm( "judge_jury_and_executioner", talents.judge_jury_and_executioner );
 }
 
@@ -1663,7 +1690,6 @@ void paladin_t::init_spells_retribution()
   talents.crusade                     = find_talent_spell( talent_tree::SPECIALIZATION, "Crusade" );
   talents.radiant_glory               = find_talent_spell( talent_tree::SPECIALIZATION, "Radiant Glory" );
   talents.empyrean_power              = find_talent_spell( talent_tree::SPECIALIZATION, "Empyrean Power" );
-  talents.consecrated_ground_ret      = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Ground", PALADIN_RETRIBUTION );
   talents.tempest_of_the_lightbringer = find_talent_spell( talent_tree::SPECIALIZATION, "Tempest of the Lightbringer" );
   talents.justicars_vengeance         = find_talent_spell( talent_tree::SPECIALIZATION, "Justicar's Vengeance" );
   talents.execution_sentence          = find_talent_spell( talent_tree::SPECIALIZATION, "Execution Sentence" );
@@ -1705,6 +1731,26 @@ void paladin_t::init_spells_retribution()
   talents.burn_to_ash                 = find_talent_spell( talent_tree::SPECIALIZATION, "Burn to Ash" );
 
   talents.vengeful_wrath = find_talent_spell( talent_tree::CLASS, "Vengeful Wrath" );
+  // for some reason find_talent_spell does not seem to work for vengeful wrath.
+  // do the lookup manually, similarly to rogues with Ghostly Strike.
+  if ( specialization() == PALADIN_RETRIBUTION && !talents.vengeful_wrath->ok() )
+  {
+    uint32_t class_idx, spec_idx;
+    dbc->spec_idx( PALADIN_RETRIBUTION, class_idx, spec_idx );
+    auto traits = trait_data_t::find_by_spell( talent_tree::CLASS, 406835, class_idx, PALADIN_RETRIBUTION, dbc->ptr );
+    for ( auto trait : traits )
+    {
+      auto it = range::find_if( player_traits, [ trait ]( const auto& entry ) {
+        return std::get<1>( entry ) == trait->id_trait_node_entry;
+      });
+
+      if ( it != player_traits.end() && std::get<2>( *it ) != 0U )
+      {
+        talents.vengeful_wrath = find_talent_spell( trait->id_trait_node_entry );
+      }
+    }
+  }
+  talents.healing_hands  = find_talent_spell( talent_tree::CLASS, "Healing Hands" );
   // Spec passives and useful spells
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
   spec.retribution_paladin_2 = find_spell( 412314 );
@@ -1724,6 +1770,9 @@ void paladin_t::init_spells_retribution()
 
   spells.crusade = find_spell( 231895 );
   spells.highlords_judgment_hidden = find_spell( 449198 );
+
+  spells.winning_streak = find_spell( 1216828 );
+  spells.all_in = find_spell( 1216837 );
 }
 
 // Action Priority List Generation

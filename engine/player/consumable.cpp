@@ -307,11 +307,9 @@ struct health_stone_t : public heal_t
 
 struct flask_base_t : public dbc_consumable_base_t
 {
-  flask_base_t( player_t* p, util::string_view name, util::string_view options_str ) : dbc_consumable_base_t( p, name )
+  flask_base_t( player_t* p, std::string_view name, std::string_view options_str = "" ) : dbc_consumable_base_t(p, name)
   {
-    // Backwards compatibility reasons
     parse_options( options_str );
-
     type = ITEM_SUBCLASS_FLASK;
   }
 
@@ -400,12 +398,12 @@ struct flask_base_t : public dbc_consumable_base_t
 
 struct flask_t : public flask_base_t
 {
-  flask_t( player_t* p, util::string_view options_str ) : flask_base_t( p, "flask", options_str ) {}
+  flask_t( player_t* p ) : flask_base_t( p, "flask" ) {}
 };
 
 struct oralius_whispering_crystal_t : public flask_base_t
 {
-  oralius_whispering_crystal_t( player_t* p, util::string_view options_str )
+  oralius_whispering_crystal_t( player_t* p, std::string_view options_str )
     : flask_base_t( p, "oralius_whispering_crystal", options_str )
   {}
 
@@ -417,7 +415,7 @@ struct oralius_whispering_crystal_t : public flask_base_t
 
 struct crystal_of_insanity_t : public flask_base_t
 {
-  crystal_of_insanity_t( player_t* p, util::string_view options_str )
+  crystal_of_insanity_t( player_t* p, std::string_view options_str  )
     : flask_base_t( p, "crystal_of_insanity", options_str )
   {}
 
@@ -596,10 +594,8 @@ struct potion_t : public dbc_consumable_base_t
 
 struct augmentation_t : public dbc_consumable_base_t
 {
-  augmentation_t( player_t* p, util::string_view options_str ) : dbc_consumable_base_t( p, "augmentation" )
+  augmentation_t( player_t* p ) : dbc_consumable_base_t(p, "augmentation")
   {
-    parse_options( options_str );
-
     type = ITEM_SUBCLASS_CONSUMABLE_OTHER;
   }
 
@@ -676,10 +672,8 @@ static constexpr auto __manual_food_map = util::make_static_map<util::string_vie
 
 struct food_t : public dbc_consumable_base_t
 {
-  food_t( player_t* p, util::string_view options_str ) : dbc_consumable_base_t( p, "food" )
+  food_t( player_t* p ) : dbc_consumable_base_t( p, "food" )
   {
-    parse_options( options_str );
-
     type = ITEM_SUBCLASS_FOOD;
   }
 
@@ -1020,20 +1014,58 @@ bool dbc_consumable_base_t::ready()
 // ==========================================================================
 // consumable_t::create_action
 // ==========================================================================
-
-action_t* consumable::create_action( player_t* p, std::string_view name, std::string_view options_str )
+namespace consumable
 {
-  if ( name == "potion"                   ) return new       potion_t( p, options_str );
-  if ( name == "flask" || name == "phial" ) return new        flask_t( p, options_str );
-  if ( name == "elixir"                   ) return new       elixir_t( p, options_str );
-  if ( name == "food"                     ) return new         food_t( p, options_str );
-  if ( name == "health_stone"             ) return new health_stone_t( p, options_str );
-  if ( name == "mana_potion"              ) return new  mana_potion_t( p, options_str );
-  if ( name == "augmentation"             ) return new augmentation_t( p, options_str );
+action_t* create_action( player_t* p, std::string_view name, std::string_view options_str )
+{
+  if ( name == "flask" || name == "phial" )
+  {
+    p->sim->error( "Flask Action has been depreciated and is no longer needed in the Precombat APL\n" );
+    // Since the buff was already triggered early in player_t::arise(), its safe to return the action here
+    // as flask_t::ready() checks if the buff is already active. This prevents the sim from erroring out
+    // due to failing to "create" the action.
+    return p->consumables.flask_action;
+  }
+  if ( name == "food" )
+  {
+    p->sim->error( "Food Action has been depreciated and is no longer needed in the Precombat APL\n" );
+    // Since the buff was already triggered early in player_t::arise(), its safe to return the action here
+    // as food_t::ready() checks if the buff is already active. This prevents the sim from erroring out
+    // due to failing to "create" the action.
+    return p->consumables.food_action;
+  }
+  if ( name == "augmentation" )
+  {
+    p->sim->error( "Augmentation Rune Action has been depreciated and is no longer needed in the Precombat APL\n" );
+    // Since the buff was already triggered early in player_t::arise(), its safe to return the action here
+    // as augmentation_t::ready() checks if the buff is already active. This prevents the sim from erroring out
+    // due to failing to "create" the action.
+    return p->consumables.augmentation_action;
+  }
+
+  if ( name == "potion" )
+    return new potion_t( p, options_str );
+  if ( name == "elixir" )
+    return new elixir_t( p, options_str );
+  if ( name == "health_stone" )
+    return new health_stone_t( p, options_str );
+  if ( name == "mana_potion" )
+    return new mana_potion_t( p, options_str );
 
   // Misc consumables
-  if ( name == "oralius_whispering_crystal" ) return new oralius_whispering_crystal_t( p, options_str );
-  if ( name == "crystal_of_insanity"        ) return new        crystal_of_insanity_t( p, options_str );
+  if ( name == "oralius_whispering_crystal" )
+    return new oralius_whispering_crystal_t( p, options_str );
+  if ( name == "crystal_of_insanity" )
+    return new crystal_of_insanity_t( p, options_str );
 
   return nullptr;
 }
+
+void create_consumeable_actions( player_t* p )
+{
+  // Create consumable actions for effects without APL actions
+  p->consumables.food_action = new food_t( p );
+  p->consumables.flask_action = new flask_t( p );
+  p->consumables.augmentation_action = new augmentation_t( p );
+}
+}  // namespace consumable

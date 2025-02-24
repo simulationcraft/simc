@@ -1,0 +1,156 @@
+# hunter="TWW2_Hunter_Beast_Mastery_Dark_Ranger"
+# level=80
+# race=dwarf
+# role=attack
+# position=ranged_back
+# spec=beast_mastery
+# talents=C0PAAAAAAAAAAAAAAAAAAAAAAYstMwAGwswWgxCAAAAAAGAAAAAAAzYYWmZMMzYmZMDzyMjxMzMZGGzMzMzYmxMMGmZgBzyMDb
+
+# head=,id=212020,bonus_id=1808,gem_id=213743,ilevel=639
+# neck=,id=225577,bonus_id=8781,gem_id=213479/213470,ilevel=639
+# shoulder=,id=212018,bonus_id=4795,ilevel=639
+# back=,id=225574,enchant_id=7403,ilevel=639
+# chest=,id=212023,bonus_id=4795,enchant_id=7364,ilevel=639
+# wrist=,id=219342,bonus_id=1808/11303/8960/8790,enchant_id=7385,gem_id=213494,ilevel=636
+# hands=,id=219341,bonus_id=11303/8960/8790,ilevel=636
+# waist=,id=212017,bonus_id=1808,gem_id=213455,ilevel=639
+# legs=,id=212019,bonus_id=4795,enchant_id=7601,ilevel=639
+# feet=,id=212022,bonus_id=4795,enchant_id=7418,ilevel=639
+# finger1=,id=225578,bonus_id=8781,enchant_id=7340,gem_id=213455/213455,ilevel=639
+# finger2=,id=212447,bonus_id=8781,enchant_id=7340,gem_id=213455/213455,ilevel=639
+# trinket1=,id=133282,ilevel=639
+# trinket2=,id=212454,bonus_id=1540/10299/10376
+# main_hand=,id=212400,bonus_id=1540/10299,enchant_id=7460
+
+# save=TWW2_Hunter_Beast_Mastery_Dark_Ranger.simc
+
+# hunter="TWW2_Hunter_Beast_Mastery_Pack_Leader"
+# level=80
+# race=dwarf
+# role=attack
+# position=ranged_back
+# spec=beast_mastery
+# talents=C0PAAAAAAAAAAAAAAAAAAAAAAAMmxGDsAbDDNsBAAAAAgBAAAAAAYGLDzyMjhxYmZMMjZGjZmZyMMmxMjxMjZYMMzwsMDWmZYD
+
+# head=,id=212020,bonus_id=1808,gem_id=213743,ilevel=639
+# neck=,id=225577,bonus_id=8781,gem_id=213467/213491,ilevel=639
+# shoulder=,id=212018,bonus_id=4795,ilevel=639
+# back=,id=212446,enchant_id=7403,ilevel=639
+# chest=,id=212023,bonus_id=4795,enchant_id=7364,ilevel=639
+# wrist=,id=219342,bonus_id=1808/11303/8960/8791,enchant_id=7385,gem_id=213491,ilevel=636
+# hands=,id=219341,bonus_id=11303/8960/8791,ilevel=636
+# waist=,id=221075,bonus_id=1808,gem_id=213491,ilevel=639
+# legs=,id=212019,bonus_id=4795,enchant_id=7601,ilevel=639
+# feet=,id=225586,enchant_id=7418,ilevel=639
+# finger1=,id=225578,bonus_id=8781,enchant_id=7334,gem_id=213491/213491,ilevel=639
+# finger2=,id=221136,bonus_id=8781,enchant_id=7334,gem_id=213479/213455,ilevel=639
+# trinket1=,id=133282,ilevel=639
+# trinket2=,id=212454,bonus_id=1540/10299/10376
+# main_hand=,id=212400,bonus_id=1540/10299,enchant_id=7460
+
+# save=TWW2_Hunter_Beast_Mastery.simc
+
+# hunter="TWW2_Hunter_Marksmanship_Sentinel"
+# level=80
+# race=dwarf
+# spec=marksmanship
+# role=attack
+# position=ranged_back
+# talents=C4PAAAAAAAAAAAAAAAAAAAAAAwADsMGN2GAzG2AAAAAAAzYmZmhZmhZmZYmZGjZ2mZAAAAAAAAmhxMzMzMmRzMGDzMwMmxMjB
+
+# head=,id=178738,bonus_id=1808,gem_id=213743,ilevel=639
+# neck=,id=212448,bonus_id=8781,gem_id=213467/213491,ilevel=639
+# shoulder=,id=212018,bonus_id=4795,ilevel=639
+# back=,id=222817,bonus_id=8791/11303/8960,enchant_id=7403,ilevel=636
+# chest=,id=212023,bonus_id=4795,enchant_id=7364,ilevel=639
+# wrist=,id=219342,bonus_id=1808/11303/8960/8791,enchant_id=7385,gem_id=213479,ilevel=636
+# hands=,id=212021,bonus_id=4795,ilevel=639
+# waist=,id=225580,bonus_id=1808,gem_id=213458,ilevel=639
+# legs=,id=212019,bonus_id=4795,enchant_id=7601,ilevel=639
+# feet=,id=225586,enchant_id=7418,ilevel=639
+# finger1=,id=225578,bonus_id=8781,enchant_id=7334,gem_id=213458/213458,ilevel=639
+# finger2=,id=162542,bonus_id=8781,enchant_id=7334,gem_id=213458/213458,ilevel=639
+# trinket1=,id=212456,ilevel=639
+# trinket2=,id=212454,ilevel=639
+# main_hand=,id=212399,enchant_id=7463,ilevel=639
+
+# save=TWW2_Hunter_Marksmanship.simc
+
+# hunter="TWW2_Hunter_Marksmanship_Dark_Ranger"
+# level=80
+# race=dwarf
+# spec=marksmanship
+# role=attack
+# position=ranged_back
+# talents=C4PAAAAAAAAAAAAAAAAAAAAAAYstNwAGwswWgZBAAAAAAMjZmZGmZGmZmhZmZMmZbmBAAAAAAAYGGzMzMzYGNzYMMzAzYGzMG
+
+# head=,id=133285,bonus_id=1808,gem_id=213743,ilevel=639
+# neck=,id=212448,bonus_id=8781,gem_id=213455/213455,ilevel=639
+# shoulder=,id=212018,bonus_id=4795,ilevel=639
+# back=,id=225574,enchant_id=7403,ilevel=639
+# chest=,id=212023,bonus_id=4795,enchant_id=7364,ilevel=639
+# wrist=,id=219342,bonus_id=1808/11303/8960/8790,enchant_id=7385,gem_id=213455,ilevel=636
+# hands=,id=212021,bonus_id=4795,ilevel=639
+# waist=,id=212017,bonus_id=1808,gem_id=213455,ilevel=639
+# legs=,id=212019,bonus_id=4795,enchant_id=7601,ilevel=639
+# feet=,id=225586,enchant_id=7424,ilevel=639
+# finger1=,id=225578,bonus_id=8781,enchant_id=7346,gem_id=213455/213455,ilevel=639
+# finger2=,id=221136,bonus_id=8781,enchant_id=7340,gem_id=213455/213455,ilevel=639
+# trinket1=,id=212454,bonus_id=1540/10299/10376
+# trinket2=,id=133282,ilevel=639
+# main_hand=,id=212399,bonus_id=1540/10299/10376,enchant_id=7460
+
+# save=TWW2_Hunter_Marksmanship_Dark_Ranger.simc
+
+# hunter="TWW2_Hunter_Survival_Sentinel"
+# level=80
+# race=maghar_orc
+# spec=survival
+# role=attack
+# position=back
+# talents=C8PAAAAAAAAAAAAAAAAAAAAAAMGYgtxox2AY2AbzM2mxMzYMjxwMDzMzMzMDAAAAAAAAAAAAAANDjZmZmZMzYGGDzMwMmxMYB
+
+# head=lightless_scavengers_skull,id=212020,bonus_id=1808,ilevel=639,gem_id=213743
+# neck=trailspinner_pendant,id=178707,bonus_id=9948/10299/8781,gem_id=213473/213473
+# shoulders=lightless_scavengers_taxidermy,id=212018,bonus_id=4795,ilevel=639
+# back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960,enchant_id=7409,crafted_stats=32/49
+# chest=lightless_scavengers_tunic,id=212023,bonus_id=4795,ilevel=639,enchant_id=7364
+# wrists=vambraces_of_deepening_darkness,id=219501,bonus_id=1808,ilevel=636,gem_id=213473,enchant_id=7391
+# hands=lightless_scavengers_mitts,id=212021,bonus_id=4795,ilevel=639
+# waist=clasp_of_waning_shadow,id=178700,bonus_id=9948/10299/1808,gem_id=213473
+# legs=unstoppable_zealots_legplates,id=159367,bonus_id=10047/10299,enchant_id=7601
+# feet=surefoot_sabatons,id=159379,bonus_id=10047/10299,enchant_id=7424
+# finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=8781,ilevel=639,gem_id=213473/213482,enchant_id=7346
+# finger2=writhing_ringworm,id=225576,bonus_id=8781,ilevel=639,gem_id=213458/213491,enchant_id=7346
+# trinket1=skardyns_grace,id=133282,bonus_id=11342/10299
+# trinket2=void_reapers_contract,id=212456,ilevel=639
+# main_hand=harvesters_interdiction,id=221159,bonus_id=3131/10299,enchant_id=7463
+
+# save=TWW2_Hunter_Survival_Sentinel.simc
+
+
+# hunter="TWW2_Hunter_Survival_Pack_Leader"
+# level=80
+# race=maghar_orc
+# spec=survival
+# role=attack
+# position=back
+# talents=C8PAAAAAAAAAAAAAAAAAAAAAAMGMzMWWmZ0ssMsNMzWDWmZsNjZmZGzYMYmxMzMjZGAAAAAAAAAAAAAAaGGzMmZGzMmhxwMDMjZWmBL
+
+# head=,id=212020,bonus_id=6652/10397/10390/10371/10256/1527/10255,gem_id=213743,ilevel=639
+# neck=,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213458/213473
+# shoulder=,id=212429,bonus_id=1540/10299/10376
+# back=,id=225574,bonus_id=6652/10380/10356/10299/1540/10255,enchant_id=7409
+# chest=,id=212023,bonus_id=10355/10373/6652/10261/1524/10255,enchant_id=7364,ilevel=639
+# wrist=,id=219342,bonus_id=10421/9633/8902/11144/10222/1485/1808/11303/8960,enchant_id=7391,gem_id=213491,crafted_stats=32/49
+# hands=,id=212021,bonus_id=10356/10372/6652/10298/1537/10255,ilevel=639
+# waist=,id=212017,bonus_id=10397/10298/1537,gem_id=213491,ilevel=639
+# legs=,id=212019,bonus_id=6652/10390/10370/10256/1527/10255,enchant_id=7601,ilevel=639
+# feet=,id=219335,bonus_id=10421/9633/8902/9627/11143/8791/10222/11303/8960,enchant_id=7424,ilevel=636,crafted_stats=32/36
+# finger1=,id=225578,bonus_id=1540/10299/10376/8781,enchant_id=7346,gem_id=213491/213491
+# finger2=,id=133286,bonus_id=11342/10299/10376/8781,enchant_id=7346,gem_id=213491/213482
+# trinket1=,id=212454,bonus_id=1540/10299/10376
+# trinket2=,id=133282,bonus_id=10390/6652/10383/10256/10056/10255,ilevel=639
+# main_hand=,id=221159,bonus_id=3131/10299/10376,enchant_id=7463
+
+# save=TWW2_Hunter_Survival.simc

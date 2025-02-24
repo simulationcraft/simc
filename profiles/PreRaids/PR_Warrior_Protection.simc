@@ -21,10 +21,7 @@ temporary_enchant=main_hand:ironclaw_whetstone_3
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask
-actions.precombat+=/food
-actions.precombat+=/augmentation
-actions.precombat+=/snapshot_stats
+actions.precombat=snapshot_stats
 actions.precombat+=/battle_stance,toggle=on
 
 # Executed every time the actor is available.

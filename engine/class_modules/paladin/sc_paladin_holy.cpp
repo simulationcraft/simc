@@ -610,15 +610,6 @@ void paladin_t::generate_action_prio_list_holy_dps()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
-  // Flask
-  precombat->add_action( "flask" );
-
-  // Food
-  precombat->add_action( "food" );
-
-  // Augmentation
-  precombat->add_action( "augmentation" );
-
   // Snapshot stats
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
@@ -685,15 +676,6 @@ void paladin_t::generate_action_prio_list_holy()
 
   // precombat first
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-
-  // Flask
-  precombat->add_action( "flask" );
-
-  // Food
-  precombat->add_action( "food" );
-
-  // Augmentation
-  precombat->add_action( "augmentation" );
 
   precombat->add_action( this, "Beacon of Light", "target=healing_target" );
   // Beacon probably goes somewhere here?

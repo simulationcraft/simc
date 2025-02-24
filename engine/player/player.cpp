@@ -2,7 +2,6 @@
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
-
 #include "player.hpp"
 
 #include "action/action.hpp"
@@ -1841,6 +1840,11 @@ void player_t::init_items()
         items[ slot ].options_str = fmt::format( ",id={},ilevel={}", equipment.id_item,
                                                  character_loadout_data_t::default_item_level( is_ptr() ) );
       }
+
+      // TODO: temporary hack since fury only gets a single weapon
+      if ( specialization() == WARRIOR_FURY && items[ SLOT_OFF_HAND ].options_str.empty() )
+        items[ SLOT_OFF_HAND ].options_str = items[ SLOT_MAIN_HAND ].options_str;
+
     }
 
     // Legendary Shadoweave Shirt used as base item for enable_all_item_effects
@@ -3107,6 +3111,7 @@ void player_t::init_spells()
   racials.awakened              = find_racial_spell( "Awakened" );
   racials.azerite_surge         = find_racial_spell( "Azerite Surge" );
   racials.titanwrought_frame    = find_racial_spell( "Titan-Wrought Frame" );
+  racials.holy_providence       = find_racial_spell( "Holy Providence" );
 
   if ( is_player() )
   {
@@ -3376,6 +3381,9 @@ void player_t::init_background_actions()
 
 void player_t::create_actions()
 {
+  if( is_player() && !is_enemy() && !is_pet() )
+    consumable::create_consumeable_actions( this );
+
   if ( action_list_str.empty() )
     no_action_list_provided = true;
 
@@ -5002,6 +5010,9 @@ double player_t::composite_player_multiplier( school_e school ) const
   if ( buffs.coldhearted && buffs.coldhearted->check() )
     m *= 1.0 + buffs.coldhearted->check_value();
 
+  if ( buffs.entropic_embrace && buffs.entropic_embrace->check() )
+    m *= 1.0 + buffs.entropic_embrace->data().effectN( 1 ).percent();
+
   return m;
 }
 
@@ -5063,8 +5074,13 @@ double player_t::composite_player_heal_multiplier( const action_state_t* ) const
 {
   double m = 1.0;
 
+  m *= 1.0 + racials.holy_providence->effectN( 2 ).percent();
+
   if ( buffs.blessing_of_spring->check() )
     m *= 1.0 + buffs.blessing_of_spring->data().effectN( 1 ).percent();
+
+  if ( buffs.entropic_embrace && buffs.entropic_embrace->check() )
+    m *= 1.0 + buffs.entropic_embrace->data().effectN( 3 ).percent();
 
   return m;
 }
@@ -5076,7 +5092,12 @@ double player_t::composite_player_th_multiplier( school_e /* school */ ) const
 
 double player_t::composite_player_absorb_multiplier( const action_state_t* ) const
 {
-  return 1.0;
+  double m = 1.0;
+
+  if ( buffs.entropic_embrace && buffs.entropic_embrace->check() )
+    m *= 1.0 + buffs.entropic_embrace->data().effectN( 4 ).percent();
+
+  return m;
 }
 
 double player_t::composite_player_target_crit_chance( player_t* t ) const
@@ -5145,9 +5166,6 @@ double player_t::non_stacking_movement_modifier() const
 
   if ( !is_enemy() && !is_pet() && type != HEALING_ENEMY )
   {
-    if ( buffs.darkflight->check() )
-      speed = std::max( buffs.darkflight->data().effectN( 1 ).percent(), speed );
-
     if ( buffs.nitro_boosts && buffs.nitro_boosts->check() )
       speed = std::max( buffs.nitro_boosts->data().effectN( 1 ).percent(), speed );
 
@@ -5193,6 +5211,9 @@ double player_t::stacking_movement_modifier() const
 
   if ( buffs.elemental_chaos_air )
     speed += buffs.elemental_chaos_air->check_value();
+
+  if ( buffs.darkflight && buffs.darkflight->check() )
+    speed += buffs.darkflight->data().effectN( 1 ).percent();
 
   return speed;
 }
@@ -6584,6 +6605,13 @@ void player_t::arise()
   }
 
   current_auto_attack_speed = cache.auto_attack_speed();
+
+  if ( consumables.flask && consumables.flask_action )
+    consumables.flask_action->execute();
+  if ( consumables.food && consumables.food_action )
+    consumables.food_action->execute();
+  if ( consumables.augmentation && consumables.augmentation_action )
+    consumables.augmentation_action->execute();
 
   // Requires index-based lookup since on-arise callbacks may
   // insert new on-arise callbacks to the vector.
@@ -8004,6 +8032,8 @@ void player_t::assess_heal( school_e, result_amount_type, action_state_t* s )
   if ( buffs.blessing_of_spring->up() )
     s->result_total *= 1.0 + buffs.blessing_of_spring->data().effectN( 2 ).percent();
 
+  s->result_total *= 1.0 + composite_player_healing_received_multiplier();
+
   // process heal
   s->result_amount = resource_gain( RESOURCE_HEALTH, s->result_total, nullptr, s->action );
 
@@ -8697,9 +8727,10 @@ struct lights_judgment_t : public racial_spell_t
     {
       background = may_crit = true;
       aoe                   = -1;
+      reduced_aoe_targets   = 8;
       // these are sadly hardcoded in the tooltip
-      attack_power_mod.direct = 3.0;
-      spell_power_mod.direct = 3.0;
+      attack_power_mod.direct = 4.2;
+      spell_power_mod.direct = 4.2;
     }
 
     double attack_direct_power_coefficient( const action_state_t* s ) const override
@@ -8782,8 +8813,8 @@ struct arcane_pulse_t : public racial_spell_t
     may_crit = true;
     aoe      = -1;
     // these are sadly hardcoded in the tooltip
-    attack_power_mod.direct = 0.5;
-    spell_power_mod.direct = 0.25;
+    attack_power_mod.direct = 1.5;
+    spell_power_mod.direct = 0.75;
   }
 
   double attack_direct_power_coefficient( const action_state_t* s ) const override
@@ -8840,8 +8871,12 @@ struct ancestral_call_t : public racial_spell_t
   {
     racial_spell_t::execute();
 
+    std::array<std::pair<buff_t*, double>, std::tuple_size_v<decltype( player->buffs.ancestral_call )>> stat_values;
     auto& buffs = player->buffs.ancestral_call;
-    buffs[ rng().range( buffs.size() ) ] -> trigger();
+    for ( int i = 0; i < buffs.size(); i++ )
+      stat_values[ i ] = { buffs[ i ], util::stat_value( player, debug_cast<stat_buff_t*>( buffs[ i ] )->stats.front().stat ) };
+    std::sort( stat_values.begin(), stat_values.end(), [] ( auto& a, auto& b ) { return a.second > b.second; } );
+    stat_values[ rng().range( 2 ) ].first->trigger();
   }
 };
 
@@ -8918,8 +8953,8 @@ struct bag_of_tricks_t : public racial_spell_t
     }
     else
     {
-      attack_power_mod.direct = 1.8;
-      spell_power_mod.direct  = 1.8;
+      attack_power_mod.direct = 2.52;
+      spell_power_mod.direct  = 2.52;
     }
 
     may_crit = true;
@@ -9445,6 +9480,9 @@ struct use_item_t : public action_t
       return false;
     }
 
+    if ( if_expr && !if_expr->success() )
+      return false;
+
     return action_t::ready();
   }
 
@@ -9503,6 +9541,48 @@ struct use_item_t : public action_t
   std::unique_ptr<expr_t> create_expression( util::string_view name ) override
   {
     auto split = util::string_split<util::string_view>( name, "." );
+
+    if ( split.size() > 1 && split[ 0 ] == "other_trinket" )
+    {
+      auto tail = name.substr( 14 );
+      slot_e s = util::parse_slot_type( item_slot );
+      
+      if ( s == SLOT_TRINKET_1 )
+        return unique_gear::create_expression( *player, fmt::format("trinket.2.{}", tail ) );
+      
+      if ( s == SLOT_TRINKET_2 )
+        return unique_gear::create_expression( *player, fmt::format("trinket.1.{}", tail ) );
+
+      throw std::invalid_argument( fmt::format( "Unsupported expression 'other_trinket' for '{}' slot", item_slot ) );
+    }
+
+    if ( split.size() > 1 && split[ 0 ] == "this_trinket" )
+    {
+      auto tail = name.substr( 13 );
+      slot_e s = util::parse_slot_type( item_slot );
+      
+      if ( s == SLOT_TRINKET_1 )
+        return unique_gear::create_expression( *player, fmt::format("trinket.1.{}", tail ) );
+      
+      if ( s == SLOT_TRINKET_2 )
+        return unique_gear::create_expression( *player, fmt::format("trinket.2.{}", tail ) );
+
+      throw std::invalid_argument( fmt::format( "Unsupported expression 'this_trinket' for '{}' slot", item_slot ) );
+    }
+
+    if ( split.size() == 1 && split[ 0 ] == "this_trinket_slot" )
+    {
+      slot_e s = util::parse_slot_type( item_slot );
+      
+      if ( s == SLOT_TRINKET_1 )
+        return std::make_unique<const_expr_t>( name, 1 );
+      
+      if ( s == SLOT_TRINKET_2 )
+        return std::make_unique<const_expr_t>( name, 2 );
+
+      throw std::invalid_argument( fmt::format( "Unsupported expression 'this_trinket_slot' for '{}' slot", item_slot ) );
+    }
+
     if ( auto e = create_special_effect_expr( split ) )
     {
       return e;
@@ -9579,6 +9659,7 @@ struct use_items_t : public action_t
   void init() override
   {
     create_use_subactions();
+    option.if_expr_str = "";
 
     // No use_item sub-actions created here, so this action does not need to execute ever. The
     // parent init() call below will filter it out from the "foreground action list".
@@ -9764,7 +9845,9 @@ struct use_items_t : public action_t
                                item.full_name().c_str(), item.slot_name() );
       }
 
-      use_actions.push_back( new use_item_t( player, std::string( "slot=" ) + item.slot_name() ) );
+      auto use_action = new use_item_t( player, std::string( "slot=" ) + item.slot_name() );
+      use_action->option.if_expr_str = option.if_expr_str;
+      use_actions.push_back( use_action );
 
       auto action = use_actions.back();
       // The use_item action is not triggered by the actor (through the APL), so background it
@@ -12816,6 +12899,17 @@ void player_t::create_options()
                          thewarwithin_opts.mereldars_toll_ally_trigger_chance, 0, 1 ) );
   add_option( opt_float( "thewarwithin.sureki_zealots_insignia_rppm_multiplier",
                          thewarwithin_opts.sureki_zealots_insignia_rppm_multiplier, 0, 1 ) );
+  add_option( opt_string( "thewarwithin.windsingers_passive_stat", thewarwithin_opts.windsingers_passive_stat ) );
+  add_option( opt_bool( "thewarwithin.force_estimate_skippers_group_benefit",
+                        thewarwithin_opts.force_estimate_skippers_group_benefit ) );
+  add_option( opt_bool( "thewarwithin.personal_estimate_skippers_group_benefit", 
+                        thewarwithin_opts.personal_estimate_skippers_group_benefit ) );
+  add_option( opt_bool( "thewarwithin.estimate_skippers_group_benefit", 
+                        thewarwithin_opts.estimate_skippers_group_benefit ) );
+  add_option( opt_float( "thewarwithin.estimate_skippers_group_members",
+                         thewarwithin_opts.estimate_skippers_group_members, 0, 999 ) );
+  add_option( opt_string( "thewarwithin.mister_locknstalk_mode", thewarwithin_opts.mister_locknstalk_mode ) );
+  add_option( opt_string( "thewarwithin.jastor_diamond_ally_stat", thewarwithin_opts.jastor_diamond_ally_stat ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

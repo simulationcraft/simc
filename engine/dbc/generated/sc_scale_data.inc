@@ -1,4 +1,4 @@
-// Hit points per stamina for level 1 - 80, wow build 11.0.2.56819
+// Hit points per stamina for level 1 - 80, wow build 11.0.7.59302
 static constexpr double __hp_per_sta[80] = {
     2,	2,	2,	2,	2,	//    5
     2,	2,	2,	2,	2,	//   10
@@ -18,7 +18,7 @@ static constexpr double __hp_per_sta[80] = {
     20,	20,	20,	20,	20,	//   80
 };
 
-// Spell scaling multipliers for levels 1 - 80, wow build 11.0.2.56819
+// Spell scaling multipliers for levels 1 - 80, wow build 11.0.7.59302
 static constexpr double __spell_scaling[][80] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -418,9 +418,47 @@ static constexpr double __spell_scaling[][80] = {
     216.207311,	274.7847539,	349.0121862,	443.0242885,	562.0381729,	//   75
     712.6346074,	903.1118359,	1143.93063,	2308.597425,	2557.760973,	//   80
   },
+  // DamageSecondary
+  {
+    0.089531472,	0.104453384,	0.119375296,	0.134297208,	0.14921912,	//    5
+    0.179239362,	0.210403694,	0.251704854,	0.297495127,	0.342413594,	//   10
+    0.422980762,	0.511219606,	0.607365781,	0.721756072,	0.844993244,	//   15
+    0.990128427,	1.301150348,	1.441138364,	1.580498954,	1.740264646,	//   20
+    1.903931241,	2.103921224,	2.306989497,	2.55239784,	2.800660099,	//   25
+    3.103176822,	3.408195865,	3.782807797,	4.159409609,	4.625410298,	//   30
+    4.972991145,	5.414431085,	5.836396804,	6.375279408,	6.890214672,	//   35
+    7.55129125,	8.182971356,	8.9980054,	9.776988757,	10.78693263,	//   40
+    11.83764519,	12.91510891,	14.32169365,	15.66827444,	17.43395174,	//   45
+    19.12601002,	21.35421351,	23.49202808,	26.31900186,	29.03490653,	//   50
+    32.83413202,	36.53200504,	41.43924278,	46.21963554,	52.5915851,	//   55
+    58.80518314,	67.12318052,	75.24403546,	86.16080421,	96.83292476,	//   60
+    105.5239654,	111.0255786,	118.0074363,	124.1598895,	131.9677,	//   65
+    138.8479876,	147.579461,	155.2736857,	164.3405983,	170.5088878,	//   70
+    216.207311,	274.7847539,	349.0121862,	443.0242885,	562.0381729,	//   75
+    712.6346074,	903.1118359,	1143.93063,	2308.597425,	2557.760973,	//   80
+  },
+  // Mana Consumable
+  {
+    150,	150,	150,	150,	150,	//    5
+    250,	250,	250,	250,	250,	//   10
+    700,	700,	700,	700,	700,	//   15
+    1500,	1500,	1500,	1500,	1500,	//   20
+    2500,	2500,	2500,	2500,	2500,	//   25
+    4000,	4000,	4000,	4000,	4000,	//   30
+    5500,	5500,	5500,	5500,	5500,	//   35
+    8500,	8500,	8500,	8500,	8500,	//   40
+    15000,	15000,	15000,	15000,	15000,	//   45
+    20000,	20000,	20000,	20000,	20000,	//   50
+    45000,	45000,	45000,	45000,	45000,	//   55
+    90000,	90000,	90000,	90000,	90000,	//   60
+    90000,	90000,	90000,	90000,	150000,	//   65
+    150000,	150000,	150000,	150000,	150000,	//   70
+    150000,	150000,	150000,	150000,	1000000,	//   75
+    1000000,	1000000,	1000000,	1000000,	2625000,	//   80
+  },
 };
 
-// Base mana points for levels 1 - 80, wow build 11.0.2.56819
+// Base mana points for levels 1 - 80, wow build 11.0.7.59302
 static constexpr double __base_mp[][80] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -689,7 +727,7 @@ static constexpr double __base_mp[][80] = {
   },
 };
 
-// Combat rating values for level 1 - 80, wow build 11.0.2.56819
+// Combat rating values for level 1 - 80, wow build 11.0.7.59302
 static constexpr double __combat_ratings[][80] = {
   // Dodge
   {
@@ -1149,7 +1187,7 @@ static constexpr double __combat_ratings[][80] = {
   },
 };
 
-// Combat rating multipliers for item level 1 - 1300, wow build 11.0.2.56819
+// Combat rating multipliers for item level 1 - 1300, wow build 11.0.7.59302
 static constexpr double __combat_ratings_mult_by_ilvl[][1300] = {
   // Armor Multiplier
   {
@@ -2205,7 +2243,7 @@ static constexpr double __combat_ratings_mult_by_ilvl[][1300] = {
   },
 };
 
-// Item level translation for item level 1 - 1300, wow build 11.0.2.56819
+// Item level translation for item level 1 - 1300, wow build 11.0.7.59302
 static constexpr double __item_level_squish[1300] = {
     1,	1,	2,	2,	2,	//    5
     3,	3,	4,	4,	5,	//   10
@@ -2469,7 +2507,7 @@ static constexpr double __item_level_squish[1300] = {
     951,	952,	953,	954,	955,	// 1300
 };
 
-// Item socket costs for item levels 1 - 1300, wow build 11.0.2.56819
+// Item socket costs for item levels 1 - 1300, wow build 11.0.7.59302
 static constexpr double __item_socket_cost_per_level[1300] = {
     0,	0,	0,	0,	0,	//    5
     0,	0,	0,	0,	0,	//   10
@@ -2673,7 +2711,7 @@ static constexpr double __item_socket_cost_per_level[1300] = {
     8,	8,	8,	8,	8,	// 1000
     };
 
-// Stamina multipliers for item level 1 - 1300, wow build 11.0.2.56819
+// Stamina multipliers for item level 1 - 1300, wow build 11.0.7.59302
 static constexpr double __stamina_mult_by_ilvl[][1300] = {
   // Armor Multiplier
   {
@@ -3729,7 +3767,7 @@ static constexpr double __stamina_mult_by_ilvl[][1300] = {
   },
 };
 
-// Azerite level to item level 1 - 300, wow build 11.0.2.56819
+// Azerite level to item level 1 - 300, wow build 11.0.7.59302
 static constexpr unsigned __azerite_level_to_item_level[300] = {
     1,	2,	3,	4,	5,	//    5
     6,	7,	9,	11,	13,	//   10

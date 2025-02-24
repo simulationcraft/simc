@@ -27,32 +27,21 @@ absorb_t::absorb_t( util::string_view name, player_t* p, const spell_data_t* s )
   stats->type = STATS_ABSORB;
 }
 
-absorb_buff_t* absorb_t::create_buff(const action_state_t* s)
+absorb_buff_t* absorb_t::create_buff( const action_state_t* s )
 {
-  buff_t* b = buff_t::find(s->target, name_str);
-  if (b)
-    return debug_cast<absorb_buff_t*>(b);
+  buff_t* b = buff_t::find( s->target, name_str, player );
+  if ( b )
+    return debug_cast<absorb_buff_t*>( b );
 
-  std::string stats_obj_name = name_str;
-  if (s->target != player)
-    stats_obj_name += "_" + player->name_str;
-  stats_t* stats_obj = player->get_stats(stats_obj_name, this);
-  if (stats != stats_obj)
-  {
-    // Add absorb target stats as a child to the main stats object for reporting
-    stats->add_child(stats_obj);
-  }
-  auto buff = make_buff<absorb_buff_t>(s->target, name_str, &data());
-  buff->set_absorb_source(stats_obj);
+  auto buff = make_buff<absorb_buff_t>( actor_pair_t( s->target, player ), name_str, &data() );
+  buff->set_absorb_source( stats );
 
   return buff;
 }
 
 void absorb_t::activate()
 {
-  sim->player_non_sleeping_list.register_callback([this](player_t*) {
-    target_cache.is_valid = false;
-    });
+  sim->player_non_sleeping_list.register_callback( [ this ]( player_t* ) { target_cache.is_valid = false; } );
 }
 
 void absorb_t::impact(action_state_t* s)
@@ -116,15 +105,16 @@ double absorb_t::composite_versatility(const action_state_t* state) const
   return spell_base_t::composite_versatility(state) + player->cache.heal_versatility();
 }
 
-size_t absorb_t::available_targets(std::vector<player_t*>& target_list) const
+size_t absorb_t::available_targets( std::vector<player_t*>& target_list ) const
 {
   target_list.clear();
-  target_list.push_back(target);
+  if ( !target->is_sleeping() )
+    target_list.push_back( target );
 
-  for (const auto& t : sim->player_non_sleeping_list)
+  for ( const auto& t : sim->player_non_sleeping_list )
   {
-    if (t != target)
-      target_list.push_back(t);
+    if ( t != target )
+      target_list.push_back( t );
   }
 
   return target_list.size();

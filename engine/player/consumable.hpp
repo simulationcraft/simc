@@ -72,4 +72,5 @@ struct consumable_buff_t : public BASE, public consumable_buff_item_data_t
 namespace consumable
 {
 action_t* create_action( player_t*, std::string_view name, std::string_view options );
+void create_consumeable_actions( player_t* );
 }  // namespace consumable

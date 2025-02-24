@@ -200,7 +200,7 @@ public:
   pet_spawner_t<T, O>& add_expression( const std::string& name, const expr_fn_t& fn );
 
   /// Sets the replacement strategy of spawned pets if maximum is reached
-  pet_spawner_t<T, O>&  set_replacement_strategy( pet_replacement_strategy new_ );
+  pet_spawner_t<T, O>& set_replacement_strategy( pet_replacement_strategy new_ );
 
   // Access
 

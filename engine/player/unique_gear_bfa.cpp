@@ -156,6 +156,7 @@ void gladiators_maledict( special_effect_t& );
 void getiikku_cut_of_death( special_effect_t& );
 void bilestained_crawg_tusks( special_effect_t& );
 void wraps_of_electrostatic_potential( special_effect_t& );
+void ingenious_mana_battery( special_effect_t& );
 // 8.2.0 - Rise of Azshara Punchcards
 void yellow_punchcard( special_effect_t& );
 void subroutine_overclock( special_effect_t& );
@@ -4507,6 +4508,405 @@ void items::wraps_of_electrostatic_potential( special_effect_t& effect )
   effect.cooldown_group_duration_override = effect.driver()->gcd();
 }
 
+void items::ingenious_mana_battery( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs( effect,
+                                           { "ingenious_mana_battery_stored", "ingenious_mana_battery_versatility",
+                                             "ingenious_mana_battery_recovery" } ) )
+    return;
+
+  if ( !effect.player->resources.active_resource[ RESOURCE_MANA ] )
+    return;
+
+  struct ingenious_mana_battery_versatility_buff_t : public stat_buff_t
+  {
+    buff_t* mana_storage_buff;
+    buff_t* mana_recovery_buff;
+
+    const double mana_threshold;
+    const double percent_increase;
+    const double max_stored;
+
+    ingenious_mana_battery_versatility_buff_t( special_effect_t& effect )
+      : stat_buff_t( effect.player, "ingenious_mana_battery_versatility", effect.player->find_spell( 300970 ) ),
+        mana_storage_buff( nullptr ),
+        mana_recovery_buff( nullptr ),
+        mana_threshold( effect.player->find_spell( 300969 )->effectN( 1 ).percent() ),
+        percent_increase( data().effectN( 3 ).percent() ),
+        max_stored( effect.player->find_spell( 300968 )->effectN( 2 ).average( effect ) )
+    {
+      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { _tick_callback(); } );
+      set_default_value( effect.player->find_spell( 300969 )->effectN( 3 ).average( effect ) );
+    }
+
+    double get_buff_size()
+    {
+      double amount = default_value;
+
+      if ( mana_storage_buff && mana_storage_buff->check() )
+      {
+        amount *= 1 + mana_storage_buff->check_value() * percent_increase / max_stored;
+      }
+
+      return amount;
+    }
+
+    void _tick_callback()
+    {
+      if ( player->resources.pct( RESOURCE_MANA ) < mana_threshold )
+      {
+        make_event( player->sim, 0_s, [ this ] {
+          cancel();
+          mana_recovery_buff->trigger();
+        } );
+      }
+    }
+
+    void force_recalculate()
+    {
+      double value = get_buff_size();
+      for ( auto& buff_stat : stats )
+      {
+        if ( buff_stat.check_func && !buff_stat.check_func( *this ) )
+          continue;
+
+        buff_stat.amount = value;
+
+        double delta = buff_stat_stack_amount( buff_stat, current_stack ) - buff_stat.current_value;
+        if ( delta > 0 )
+        {
+          player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
+        }
+        else if ( delta < 0 )
+        {
+          player->stat_loss( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr,
+                             buff_duration() > timespan_t::zero() );
+        }
+
+        buff_stat.current_value += delta;
+      }
+    }
+
+    void start( int stacks, double, timespan_t duration ) override
+    {
+      buff_t::start( stacks, get_buff_size(), duration );
+    }
+
+    void bump( int stacks, double value ) override
+    {
+      buff_t::bump( stacks, value );
+      force_recalculate();
+    }
+  };
+
+  struct ingenious_mana_battery_stored_mana_buff_t : public buff_t
+  {
+    ingenious_mana_battery_versatility_buff_t* versatility_buff;
+    const double max_stored;
+
+    ingenious_mana_battery_stored_mana_buff_t( special_effect_t& effect )
+      : buff_t( effect.player, "ingenious_mana_battery_stored", effect.player->find_spell( 300989 ) ),
+        versatility_buff( nullptr ),
+        max_stored( effect.player->find_spell( 300968 )->effectN( 2 ).average( effect ) )
+    {
+      set_default_value( 0.0 );
+    }
+
+    bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+    {
+      if ( value == DEFAULT_VALUE() && default_value != DEFAULT_VALUE() )
+        value = default_value;
+
+      if ( check() )
+        value = std::min( max_stored, current_value + value );
+
+      value = std::max( 0.0, value );
+
+      auto return_value = buff_t::trigger( stacks, value, chance, duration );
+
+      update_versatility_buff();
+      return return_value;
+    };
+
+    void update_versatility_buff()
+    {
+      versatility_buff->force_recalculate();
+    }
+  };
+
+  struct ingenious_mana_battery_recovery_buff_t : public buff_t
+  {
+    buff_t* versatility_buff;
+    buff_t* mana_storage_buff;
+    event_t* check_event;
+
+    const double drain_amount;
+    const double mana_threshold;
+
+    ingenious_mana_battery_recovery_buff_t( special_effect_t& effect )
+      : buff_t( effect.player, "ingenious_mana_battery_recovery", effect.player->find_spell( 300971 ) ),
+        versatility_buff( nullptr ),
+        mana_storage_buff( nullptr ),
+        check_event( nullptr ),
+        drain_amount( data().effectN( 2 ).average( effect ) ),
+        mana_threshold( effect.player->find_spell( 300969 )->effectN( 1 ).percent() )
+    {
+      set_tick_callback( [ this ]( buff_t*, int, timespan_t ) { _tick_callback(); } );
+    }
+
+    void wait_for_resource()
+    {
+      event_t::cancel( check_event );
+
+      if ( player->resources.pct( RESOURCE_MANA ) >= mana_threshold )
+      {
+        versatility_buff->trigger();
+      }
+      else
+      {
+        check_event = make_event( player->sim, 1_s, [ this ] { wait_for_resource(); } );
+      }
+    }
+
+    void reset() override
+    {
+      buff_t::reset();
+      event_t::cancel( check_event );
+    }
+
+    void _tick_callback()
+    {
+      if ( player->resources.pct( RESOURCE_MANA ) >= mana_threshold )
+      {
+        make_event( player->sim, 0_s, [ this ] {
+          cancel();
+          versatility_buff->trigger();
+        } );
+      }
+
+      if ( !mana_storage_buff || !mana_storage_buff->check() )
+        wait_for_resource();
+
+      auto mana_to_add = std::min( drain_amount, mana_storage_buff->current_value );
+
+      player->resource_gain( RESOURCE_MANA, mana_to_add );
+      mana_storage_buff->trigger( -1, -mana_to_add );
+
+      if ( player->resources.pct( RESOURCE_MANA ) >= mana_threshold )
+      {
+        make_event( player->sim, 0_s, [ this ] {
+          cancel();
+          versatility_buff->trigger();
+        } );
+
+        return;
+      }
+
+      if ( mana_storage_buff->current_value <= 0 )
+      {
+        wait_for_resource();
+        make_event( player->sim, 0_s, [ this ] { cancel(); } );
+      }
+    }
+  };
+
+  struct ingenious_mana_battery_channel_t : public proc_spell_t
+  {
+    action_t* use_action;  // if this exists, then we're prechanneling via the APL
+    ingenious_mana_battery_versatility_buff_t* vers_buff;
+    ingenious_mana_battery_stored_mana_buff_t* mana_buff;
+    ingenious_mana_battery_recovery_buff_t* recovery_buff;
+    const special_effect_t* driver_effect;
+
+    ingenious_mana_battery_channel_t( const special_effect_t& e, ingenious_mana_battery_versatility_buff_t* vers_buff,
+                                      ingenious_mana_battery_stored_mana_buff_t* mana_buff,
+                                      ingenious_mana_battery_recovery_buff_t* recovery_buff )
+      : proc_spell_t( "ingenious_mana_battery_channel", e.player, e.driver(), e.item ),
+        use_action( nullptr ),
+        vers_buff( vers_buff ),
+        mana_buff( mana_buff ),
+        recovery_buff( recovery_buff ),
+        driver_effect( &e )
+    {
+      background            = true;
+      channeled             = true;
+      tick_zero             = false;
+      hasted_ticks          = false;
+      target_cache.is_valid = false;
+      energize_amount       = data().effectN( 1 ).average( e );
+      energize_type         = action_energize::PER_TICK;
+      energize_resource     = RESOURCE_MANA;
+      harmful               = false;
+
+      for ( auto a : player->action_list )
+      {
+        if ( a->action_list && a->action_list->name_str == "precombat" && a->name_str == "use_item_" + item->name_str )
+        {
+          a->harmful = harmful;  // pass down harmful to allow action_t::init() precombat check bypass
+          use_action = a;
+          use_action->base_execute_time = 8_s;
+          break;
+        }
+      }
+    }
+
+    void tick( dot_t* d ) override
+    {
+      auto mana_before = player->resources.current[ RESOURCE_MANA ];
+      proc_spell_t::tick( d );
+
+      auto mana_drained = mana_before - player->resources.current[ RESOURCE_MANA ];
+
+      mana_buff->trigger( -1, mana_drained, -1.0, timespan_t::min() );
+
+      if ( mana_buff->current_value = mana_buff->max_stored )
+        cancel();
+    }
+
+    void execute() override
+    {
+      if ( !player->in_combat )  // if precombat...
+      {
+        if ( use_action )  // ...and use_item exists in the precombat apl
+        {
+          precombat_execute();
+        }
+      }
+      else
+      {
+        proc_spell_t::execute();
+        event_t::cancel( player->readying );
+        player->delay_ranged_auto_attacks( composite_dot_duration( execute_state ) );
+      }
+    }
+
+    void precombat_execute() const
+    {
+      timespan_t time = 0_s;
+
+      // shared cd (other trinkets & on-use items)
+      auto cdgrp = player->get_cooldown( driver_effect->cooldown_group_name() );
+
+      if ( time == 0_ms )  // No hardcoded override, so dynamically calculate timing via the precombat APL
+      {
+        time            = 8_s;  // base 2s cast
+        const auto& apl = player->precombat_action_list;
+
+        auto it = range::find( apl, use_action );
+        if ( it == apl.end() )
+        {
+          sim->print_debug(
+              "WARNING: Precombat /use_item for Ingenious Mana Battery exists but not found in precombat APL!" );
+          return;
+        }
+
+        cdgrp->start( 1_ms );  // tap the shared group cd so we can get accurate action_ready() checks
+
+        // add cast time or gcd for any following precombat action
+        std::for_each( it + 1, apl.end(), [ &time, this ]( action_t* a ) {
+          if ( a->action_ready() )
+          {
+            timespan_t delta =
+                std::max( std::max( a->base_execute_time.value(), a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+            sim->print_debug( "PRECOMBAT: Ingenious Mana Battery precast timing pushed by {} for {}", delta,
+                              a->name() );
+            time += delta;
+
+            return a->harmful;  // stop processing after first valid harmful spell
+          }
+          return false;
+        } );
+      }
+      else if ( time < 8_s )  // If APL variable can't set to less than cast time
+      {
+        time = 8_s;
+      }
+
+      // how long you cast for
+      auto cast = 8_s;
+      // cooldown on effect/trinket at start of combat
+      auto cd_dur = cooldown->duration + cast - time;
+      // shared cooldown at start of combat
+      auto cdgrp_dur = std::max( 0_ms, driver_effect->cooldown_group_duration() + cast - time );
+
+      if ( use_action )  // from the apl, so cooldowns will be started by use_item_t. adjust. we are still in precombat.
+      {
+        make_event( *sim, [ this, cast, time, cdgrp ] {  // make an event so we adjust after cooldowns are started
+          cooldown->adjust( cast - time );
+
+          if ( use_action )
+            use_action->cooldown->adjust( cast - time );
+
+          cdgrp->adjust( cast - time );
+        } );
+      }
+      else  // via bfa. option override, start cooldowns. we are in-combat.
+      {
+        cooldown->start( cd_dur );
+
+        if ( use_action )
+          use_action->cooldown->start( cd_dur );
+
+        if ( cdgrp_dur > 0_ms )
+          cdgrp->start( cdgrp_dur );
+      }
+
+      double total_ticks      = static_cast<int>( dot_duration / base_tick_time );
+      double max_mana_drained = total_ticks * -energize_amount;
+      double actual_drained   = std::min( max_mana_drained, player->resources.current[ RESOURCE_MANA ] );
+
+      sim->print_debug( "{} {} precombat usage stats: ticks {}, drain_per: {}, total_drain: {}", *player, *this,
+                        total_ticks, -energize_amount, actual_drained );
+
+      player->resource_loss( RESOURCE_MANA, actual_drained );
+      mana_buff->trigger( -1, actual_drained, -1.0, timespan_t::min() );
+    }
+    
+    bool ready() override
+    {
+      if ( mana_buff->check() && mana_buff->check_value() >= mana_buff->max_stored )
+        return false;
+
+      return proc_spell_t::ready();
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      bool was_channeling = player->channeling == this;
+
+      proc_spell_t::last_tick( d );
+
+      if ( was_channeling && !player->readying )
+        player->schedule_ready( rng().gauss( sim->channel_lag ) );
+    }
+  };
+
+  auto vers_buff         = make_buff<ingenious_mana_battery_versatility_buff_t>( effect );
+  auto mana_storage_buff = make_buff<ingenious_mana_battery_stored_mana_buff_t>( effect );
+  auto recovery_buff     = make_buff<ingenious_mana_battery_recovery_buff_t>( effect );
+
+  vers_buff->mana_storage_buff  = mana_storage_buff;
+  vers_buff->mana_recovery_buff = recovery_buff;
+
+  mana_storage_buff->versatility_buff = vers_buff;
+
+  recovery_buff->versatility_buff  = vers_buff;
+  recovery_buff->mana_storage_buff = mana_storage_buff;
+
+  effect.player->register_precombat_begin( [ vers_buff, mana_storage_buff, recovery_buff ]( player_t* p ) {
+    mana_storage_buff->trigger( -1, 0, -1.0, timespan_t::min() );
+    if ( p->resources.pct( RESOURCE_MANA ) >= vers_buff->mana_threshold )
+    {
+      vers_buff->trigger();
+    }
+    else
+    {
+      recovery_buff->wait_for_resource();
+    }
+  } );
+  effect.execute_action = new ingenious_mana_battery_channel_t( effect, vers_buff, mana_storage_buff, recovery_buff );
+}
+
 // Punchcard stuff ========================================================
 
 item_t init_punchcard( const special_effect_t& effect )
@@ -5351,6 +5751,11 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
             return make_fn_expr( name, [ this, a ] { return tracked_first_remains( a ); } );
           }
         }
+        else
+        {
+          sim->error( "No action found for 'hyperthread_wristwraps' action expression: '{}'", splits[ 1 ] );
+          return expr_t::create_constant( name, 0 );
+        }
       }
 
       return proc_spell_t::create_expression( name );
@@ -5885,6 +6290,8 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 281712, items::getiikku_cut_of_death );
   register_special_effect( 281720, items::bilestained_crawg_tusks );
   register_special_effect( 300145, items::wraps_of_electrostatic_potential );
+  register_special_effect( 300968, items::ingenious_mana_battery, true );
+  register_special_effect( 300969, DISABLED_EFFECT ); // Mana Battery Passive. We handle everything in on use.
   // 8.2 Mechagon combo rings
   register_special_effect( 300124, items::logic_loop_of_division );
   register_special_effect( 300125, items::logic_loop_of_recursion );

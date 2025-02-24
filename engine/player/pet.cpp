@@ -212,7 +212,6 @@ void pet_t::summon( timespan_t summon_duration )
   }
 
   arise();
-  update_stats();
   owner->trigger_ready();
 }
 
@@ -277,6 +276,12 @@ void pet_t::dismiss( bool expired )
   duration = timespan_t::zero();
 
   demise();
+}
+
+void pet_t::arise()
+{
+  player_t::arise();
+  update_stats();
 }
 
 void pet_t::demise()

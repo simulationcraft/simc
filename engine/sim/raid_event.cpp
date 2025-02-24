@@ -386,7 +386,7 @@ struct pull_event_t final : raid_event_t
 
     timespan_t time_to_percent( double percent ) const override
     {
-      double target_hp = resources.initial[ RESOURCE_HEALTH ] * percent;
+      double target_hp = resources.initial[ RESOURCE_HEALTH ] * (percent / 100);
       if ( target_hp >= resources.current[ RESOURCE_HEALTH ])
         return timespan_t::zero();
 
@@ -1995,7 +1995,7 @@ void raid_event_t::schedule()
       raid_event->start();
 
       timespan_t ct = raid_event->timestamps.empty() ? raid_event->cooldown_time()
-                      : raid_event->num_starts < as<int>( raid_event->timestamps.size() )
+                      : raid_event->num_starts < raid_event->timestamps.size()
                         ? raid_event->timestamps.at( raid_event->num_starts )
                         : 0_ms;
 
@@ -2461,6 +2461,19 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
 
     throw std::invalid_argument(
         fmt::format( "Invalid filter expression '{}' for non-adds raid event '{}'.", filter, type_or_name ) );
+  }
+
+  if ( filter == "has_boss" )
+  {
+    if ( e->type == "pull" )
+      if ( auto pull_event = dynamic_cast<pull_event_t*>( e ) )
+        return pull_event->has_boss;
+
+    if ( e->type == "adds" )
+      return false;
+
+    throw std::invalid_argument(
+        fmt::format( "Invalid filter expression '{}' for non-pull raid event '{}'.", filter, type_or_name ) );
   }
 
   // if we have no idea what filter they've specified, return 0

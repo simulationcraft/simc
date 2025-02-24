@@ -14,9 +14,6 @@
  */
 void player_stat_cache_t::invalidate_all()
 {
-  if ( !active )
-    return;
-
   range::fill( valid, false );
   range::fill( spell_power_valid, false );
   range::fill( player_mult_valid, false );

@@ -64,6 +64,14 @@ void warlock_pet_t::create_buffs()
 
   buffs.empowered_legion_strike = make_buff( this, "empowered_legion_strike", o()->tier.empowered_legion_strike );
 
+  buffs.demonic_hunger = make_buff( this, "demonic_hunger", o()->tier.demonic_hunger )
+                             ->set_default_value( o()->tier.demonic_hunger->effectN( 1 ).percent() )
+                             ->set_rppm( RPPM_DISABLE )
+                             ->set_chance( 1.0 );
+
+  buffs.spliced_4pc = make_buff( this, "spliced_fiendtraders_influence_4pc" )
+                          ->set_chance( 1.0 );
+
   // Destruction
   buffs.embers = make_buff( this, "embers", o()->talents.embers )
                      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -93,6 +101,8 @@ void warlock_pet_t::create_buffs()
   buffs.embers->quiet = true;
   buffs.demonic_power->quiet = true;
   buffs.the_expendables->quiet = true;
+  buffs.demonic_hunger->quiet = true;
+  buffs.spliced_4pc->quiet = true;
 }
 
 void warlock_pet_t::init_base_stats()
@@ -576,6 +586,16 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
 
     return m;
   }
+
+  double cost_pct_multiplier() const override
+  {
+    double c = warlock_pet_melee_attack_t::cost_pct_multiplier();
+
+    if ( !main_pet && p()->buffs.demonic_power->check() && p()->bugs )
+      c *= 1.0 + p()->o()->talents.demonic_power_buff->effectN( 4 ).percent();
+
+    return c;
+  }
 };
 
 struct immutable_hatred_t : public warlock_pet_melee_attack_t
@@ -880,8 +900,8 @@ void felguard_pet_t::init_base_stats()
   melee_attack = new felguard_melee_t( this, 1.0, "melee" );
 
   // 2023-09-20: Validated coefficients
-  owner_coeff.ap_from_sp = 0.862;
-  owner_coeff.sp_from_sp = 1.322;
+  owner_coeff.ap_from_sp = 0.9487;
+  owner_coeff.sp_from_sp = 1.4519;
 
   melee_attack->base_dd_multiplier *= 1.42;
 
@@ -1059,8 +1079,8 @@ void grimoire_felguard_pet_t::init_base_stats()
   main_hand_weapon.type = WEAPON_AXE_2H;
   melee_attack = new warlock_pet_melee_t( this );
 
-  // 2023-09-20: Validated coefficients
-  owner_coeff.ap_from_sp = 0.741;
+  // 2023-09-20: Validated coefficients.
+  owner_coeff.ap_from_sp = 0.9487;
 
   melee_attack->base_dd_multiplier *= 1.42;
 }
@@ -1264,13 +1284,25 @@ dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "drea
   action_list_str = "leap/dreadbite";
   resource_regeneration  = regen_type::DISABLED;
 
-  // 2023-09-20: Coefficient updated
-  owner_coeff.ap_from_sp = 0.686;
+  // 2024-11-16: Coefficient updated
+  owner_coeff.ap_from_sp = 0.825;
 
   owner_coeff.health = 0.4;
 
   melee_on_summon = false; // Dreadstalkers leap from the player location to target, which has a non-negligible travel time
   server_action_delay = 0_ms; // Will be set when spawning Dreadstalkers to ensure pets are synced on delay
+}
+
+dreadstalker_t::dreadstalker_t( warlock_t* owner, util::string_view pet_name, pet_e pet_type )
+  : warlock_pet_t( owner, pet_name, pet_type, true )
+{
+  action_list_str = "leap/dreadbite";
+  resource_regeneration  = regen_type::DISABLED;
+
+  // 2024-11-16: Coefficient updated
+  owner_coeff.ap_from_sp = 0.825;
+
+  owner_coeff.health = 0.4;
 }
 
 struct dreadbite_t : public warlock_pet_melee_attack_t
@@ -1301,6 +1333,7 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   {
     warlock_pet_melee_attack_t::execute();
 
+    p()->buffs.spliced_4pc->expire();
     debug_cast< dreadstalker_t* >( p() )->dreadbite_executes--;
   }
 
@@ -1310,6 +1343,16 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
 
     if ( p()->o()->talents.wicked_maw.ok() )
       owner_td( s->target )->debuffs_wicked_maw->trigger();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = warlock_pet_melee_attack_t::composite_da_multiplier( s );
+
+    if ( p()->buffs.spliced_4pc->check() )
+      m *= p()->buffs.spliced_4pc->check_value();
+
+    return m;
   }
 };
 
@@ -1336,6 +1379,20 @@ struct dreadstalker_melee_t : warlock_pet_melee_t
     }
   }
 };
+
+void dreadstalker_t::queue_dreadbite()
+{
+  dreadbite_executes++;
+
+  if ( !readying && !channeling && !executing )
+    schedule_ready();
+
+  if ( readying )
+  {
+    event_t::cancel( readying );
+    schedule_ready();
+  }
+}
 
 struct dreadstalker_leap_t : warlock_pet_t::travel_t
 {
@@ -1712,6 +1769,46 @@ void doomguard_t::arise()
 }
 
 /// Doomguard End
+
+/// Greater Dreadstalker Begin
+
+greater_dreadstalker_t::greater_dreadstalker_t( warlock_t* owner )
+  : dreadstalker_t( owner, "greater_dreadstalker", PET_FELHUNTER )
+{
+  action_list_str = "dreadbite";
+
+  owner_coeff.ap_from_sp = 0.825;
+  owner_coeff.health = 0.4;
+}
+
+void greater_dreadstalker_t::arise()
+{
+  warlock_pet_t::arise();
+
+  dreadbite_executes = 1;
+
+  buffs.demonic_hunger->trigger();
+}
+
+void greater_dreadstalker_t::demise()
+{ warlock_pet_t::demise(); }
+
+double greater_dreadstalker_t::composite_player_multiplier( school_e school ) const
+{
+  double m = warlock_pet_t::composite_player_multiplier( school );
+
+  m *= buffs.demonic_hunger->check_value();
+
+  return m;
+}
+
+double greater_dreadstalker_t::composite_melee_crit_chance() const
+{ return warlock_pet_t::composite_melee_crit_chance(); }
+
+double greater_dreadstalker_t::composite_spell_crit_chance() const
+{ return warlock_pet_t::composite_spell_crit_chance(); }
+
+/// Greater Dreadstalker End
 
 }  // namespace demonology
 
@@ -2167,7 +2264,7 @@ struct eye_beam_t : public warlock_pet_spell_t
   {
     double m = warlock_pet_spell_t::composite_target_multiplier( target );
 
-    double dots = p()->o()->get_target_data( target )->count_affliction_dots();
+    double dots = p()->o()->get_target_data( target )->count_affliction_dots( !p()->o()->bugs );
 
     double dot_multiplier = p()->o()->talents.summon_darkglare->effectN( 3 ).percent();
 

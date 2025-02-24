@@ -15,7 +15,7 @@ if [ -d $PROFDIR ]; then
 else
   echo 'Skipped PreRaids, directory not found.'
 fi
-for season in TWW1
+for season in TWW1 TWW2
 do
   PROFDIR="$season"
   echo "---$PROFDIR---"

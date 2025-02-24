@@ -32,6 +32,7 @@ parser.add_option( '--classic', action = 'store_true', dest = 'classic', default
 parser.add_option( '--locale', action = 'store', dest = 'locale', default = 'en_US', help = 'Extraction locale [default en_US, only used for --cdn]' )
 parser.add_option( '--ribbit', action = 'store_true', dest = 'ribbit', default = False, help = 'Use Ribbit for configuration information')
 parser.add_option( '--bgdl', action = 'store_true', dest = 'bgdl', default = False, help = 'Download background downloader files' )
+parser.add_option( '--custom', type='string', dest = 'custom_build', default = None, help = 'Use a custom Build Config')
 
 if __name__ == '__main__':
 	(opts, args) = parser.parse_args()

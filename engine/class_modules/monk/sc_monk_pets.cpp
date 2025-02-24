@@ -53,9 +53,12 @@ struct pet_action_base_t : public BASE
     : BASE( n, p, data ), merge_report( true )
   {
     // No costs are needed either
-    this->base_costs[ RESOURCE_ENERGY ] = 0;
-    this->base_costs[ RESOURCE_CHI ]    = 0;
-    this->base_costs[ RESOURCE_MANA ]   = 0;
+    super_t::base_costs[ RESOURCE_ENERGY ]          = 0;
+    super_t::base_costs[ RESOURCE_CHI ]             = 0;
+    super_t::base_costs[ RESOURCE_MANA ]            = 0;
+    super_t::base_costs_per_tick[ RESOURCE_ENERGY ] = 0;
+    super_t::base_costs_per_tick[ RESOURCE_CHI ]    = 0;
+    super_t::base_costs_per_tick[ RESOURCE_MANA ]   = 0;
   }
 
   void init() override
@@ -92,13 +95,6 @@ struct pet_action_base_t : public BASE
   PET_TYPE *p()
   {
     return debug_cast<PET_TYPE *>( this->player );
-  }
-
-  void execute() override
-  {
-    this->target = this->player->target;
-
-    super_t::execute();
   }
 
   void impact( action_state_t *s ) override
@@ -349,20 +345,6 @@ public:
     return p().o();
   };
 };
-
-// ===============================================================================
-// Tier 28 Primordial Power Buff
-// ===============================================================================
-
-struct primordial_power_buff_t : public monk_pet_buff_t<buff_t>
-{
-  primordial_power_buff_t( monk_pet_t &p, util::string_view n, const spell_data_t *s ) : monk_pet_buff_t( p, n, s )
-  {
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    set_reverse( true );
-    set_reverse_stack_count( s->max_stacks() );
-  }
-};
 }  // namespace buffs
 
 // ==========================================================================
@@ -380,12 +362,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     using base_t  = sef_action_base_t<BASE>;
 
     const action_t *source_action;
-
-    // Windwalker Tier 28 4-piece info
-    // Currently Primordial Power is only a visual buff and not tied to any direct damage buff
-    // the buff is pulled from the player
-    // Currently the buff appears if SEF is summoned before Primordial Potential becomes Primordial Power
-    // buff does not appear if SEF is summoned after Primordial Power is active.
 
     sef_action_base_t( util::string_view n, storm_earth_and_fire_pet_t *p,
                        const spell_data_t *data = spell_data_t::nil() )
@@ -413,14 +389,13 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       // spell-data driven ability with 1:1 mapping of name/spell id will
       // always be chosen as the source action. In some cases this needs to be
       // overridden (see sef_zen_sphere_t for example).
-      for ( const action_t *a : this->o()->action_list )
-      {
-        if ( ( this->id > 0 && this->id == a->id ) || util::str_compare_ci( this->name_str, a->name_str ) )
-        {
-          source_action = a;
-          break;
-        }
-      }
+      if ( !source_action )
+        for ( const action_t *a : this->o()->action_list )
+          if ( ( this->id > 0 && this->id == a->id ) || util::str_compare_ci( this->name_str, a->name_str ) )
+          {
+            source_action = a;
+            break;
+          }
 
       if ( source_action )
       {
@@ -496,6 +471,18 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
         state->target_armor = source_action->composite_target_armor( state->target );
     }
 
+    // added so cjl channel time is sane, mults are correct and extra ticks don't get added
+    timespan_t composite_dot_duration( const action_state_t *state ) const override
+    {
+      return source_action->composite_dot_duration( state );
+    }
+
+    // added so cjl channel time is sane, mults are correct and extra ticks don't get added
+    timespan_t tick_time( const action_state_t *state ) const override
+    {
+      return source_action->tick_time( state );
+    }
+
     double total_crit_bonus( const action_state_t *state ) const override
     {
       return source_action->total_crit_bonus( state );
@@ -504,6 +491,14 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     timespan_t travel_time() const override
     {
       return source_action->travel_time();
+    }
+
+    void execute() override
+    {
+      if ( !source_action->background )
+        super_t::target = super_t::player->target;
+
+      super_t::execute();
     }
   };
 
@@ -662,17 +657,9 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       double am = sef_melee_attack_t::action_multiplier();
 
-      if ( p()->o()->buff.tigers_ferocity->check() )
-        am /= 1.0 + p()->o()->buff.tigers_ferocity->check_stack_value();
+      am /= 1.0 + p()->o()->buff.tigers_ferocity->check_stack_value();
 
       return am;
-    }
-
-    void impact( action_state_t *state ) override
-    {
-      sef_melee_attack_t::impact( state );
-
-      o()->trigger_mark_of_the_crane( state );
     }
   };
 
@@ -684,13 +671,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       background = dual = true;
       trigger_gcd       = timespan_t::zero();
-    }
-
-    void impact( action_state_t *state ) override
-    {
-      sef_melee_attack_t::impact( state );
-
-      o()->trigger_mark_of_the_crane( state );
     }
   };
 
@@ -711,16 +691,14 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       }
     }
 
-    void impact( action_state_t *state ) override
+    double action_multiplier() const override
     {
-      sef_melee_attack_t::impact( state );
+      double am = sef_melee_attack_t::action_multiplier();
 
-      if ( result_is_hit( state->result ) )
-      {
-        o()->trigger_mark_of_the_crane( state );
+      if ( p()->o()->talent.windwalker.courageous_impulse->ok() && p()->o()->buff.bok_proc->check() )
+        am /= 1.0 + p()->o()->talent.windwalker.courageous_impulse->effectN( 1 ).percent();
 
-        p()->buff.bok_proc_sef->expire();
-      }
+      return am;
     }
   };
 
@@ -758,8 +736,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       if ( o()->baseline.windwalker.combat_conditioning->ok() )
         state->target->debuffs.mortal_wounds->trigger();
-
-      o()->trigger_mark_of_the_crane( state );
     }
   };
 
@@ -1035,56 +1011,26 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     struct sef_crackling_jade_lightning_aoe_t : public sef_spell_t
     {
       sef_crackling_jade_lightning_aoe_t( storm_earth_and_fire_pet_t *player )
-        : sef_spell_t( "crackling_jade_lightning_sef_aoe", player, player->o()->baseline.monk.crackling_jade_lightning )
+        : sef_spell_t( "crackling_jade_lightning_aoe", player, player->o()->baseline.monk.crackling_jade_lightning )
       {
         dual = background = true;
       }
 
-      double cost_per_tick( resource_e ) const override
+      void init() override
       {
-        return 0.0;
+        // has same id as standard cjl, so we need to look up the correct action
+        // independently of auto action resolution
+        source_action = o()->find_action( "crackling_jade_lightning_aoe" );
+
+        sef_spell_t::init();
       }
     };
 
-    sef_crackling_jade_lightning_aoe_t *aoe_dot;
-
     sef_crackling_jade_lightning_t( storm_earth_and_fire_pet_t *player )
-      : sef_spell_t( "crackling_jade_lightning_sef", player, player->o()->baseline.monk.crackling_jade_lightning ),
-        aoe_dot( new sef_crackling_jade_lightning_aoe_t( player ) )
+      : sef_spell_t( "crackling_jade_lightning", player, player->o()->baseline.monk.crackling_jade_lightning )
     {
       interrupt_auto_attack = true;
       channeled             = true;
-
-      add_child( aoe_dot );
-    }
-
-    double cost_per_tick( resource_e ) const override
-    {
-      return 0;
-    }
-
-    void execute() override
-    {
-      sef_spell_t::execute();
-
-      if ( p()->o()->talent.windwalker.power_of_the_thunder_king->ok() )
-      {
-        const auto &tl = target_list();
-        double count   = 0;
-
-        for ( auto &t : tl )
-        {
-          // Don't apply AoE version to primary target
-          if ( t == target )
-            continue;
-
-          if ( count < p()->o()->talent.windwalker.power_of_the_thunder_king->effectN( 1 ).base_value() )
-          {
-            aoe_dot->execute_on_target( t );
-            count++;
-          }
-        }
-      }
     }
   };
 
@@ -1118,35 +1064,13 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
   // Storm, Earth, and Fire abilities end ===================================
 
-  std::vector<sef_melee_attack_t *> attacks;
-  std::vector<sef_spell_t *> spells;
+  std::map<actions::sef_ability_e, action_t *> actions;
 
 public:
-  // SEF applies the Cyclone Strike debuff as well
-
   bool sticky_target;  // When enabled, SEF pets will stick to the target they have
 
-  struct
-  {
-    action_t *rushing_jade_wind_sef = nullptr;
-  } active_actions;
-
-  struct
-  {
-    propagate_const<buff_t *> bok_proc_sef          = nullptr;
-    propagate_const<buff_t *> pressure_point_sef    = nullptr;
-    propagate_const<buff_t *> rushing_jade_wind_sef = nullptr;
-    // Tier 28 Buff
-    propagate_const<buff_t *> primordial_power = nullptr;
-  } buff;
-
   storm_earth_and_fire_pet_t( util::string_view name, monk_t *owner, bool dual_wield, weapon_e weapon_type )
-    : monk_pet_t( owner, name, PET_NONE, true, true ),
-      attacks( (int)actions::sef_ability_e::SEF_ATTACK_MAX ),
-      spells( (int)actions::sef_ability_e::SEF_SPELL_MAX - (int)actions::sef_ability_e::SEF_SPELL_MIN ),
-      sticky_target( false ),
-      active_actions(),
-      buff()
+    : monk_pet_t( owner, name, PET_NONE, true, true ), actions(), sticky_target( false )
   {
     // Storm, Earth, and Fire pets have to become "Windwalkers", so we can get
     // around some sanity checks in the action execution code, that prevents
@@ -1187,24 +1111,35 @@ public:
   {
     monk_pet_t::init_spells();
 
-    attacks.at( (int)actions::sef_ability_e::SEF_TIGER_PALM )             = new sef_tiger_palm_t( this );
-    attacks.at( (int)actions::sef_ability_e::SEF_BLACKOUT_KICK )          = new sef_blackout_kick_t( this );
-    attacks.at( (int)actions::sef_ability_e::SEF_BLACKOUT_KICK_TOTM )     = new sef_blackout_kick_totm_proc_t( this );
-    attacks.at( (int)actions::sef_ability_e::SEF_RISING_SUN_KICK )        = new sef_rising_sun_kick_t( this );
-    attacks.at( (int)actions::sef_ability_e::SEF_GLORY_OF_THE_DAWN )      = new sef_glory_of_the_dawn_t( this );
-    attacks.at( (int)actions::sef_ability_e::SEF_FISTS_OF_FURY )          = new sef_fists_of_fury_t( this );
-    attacks.at( (int)actions::sef_ability_e::SEF_SPINNING_CRANE_KICK )    = new sef_spinning_crane_kick_t( this );
-    attacks.at( (int)actions::sef_ability_e::SEF_WHIRLING_DRAGON_PUNCH )  = new sef_whirling_dragon_punch_t( this );
-    attacks.at( (int)actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD ) = new sef_strike_of_the_windlord_t( this );
-    attacks.at( (int)actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH ) =
-        new sef_strike_of_the_windlord_oh_t( this );
-    attacks.at( (int)actions::sef_ability_e::SEF_CELESTIAL_CONDUIT ) = new sef_celestial_conduit_t( this );
+    actions.emplace( std::make_pair( actions::sef_ability_e::SEF_TIGER_PALM, new sef_tiger_palm_t( this ) ) );
+    actions.emplace( std::make_pair( actions::sef_ability_e::SEF_TIGER_PALM, new sef_tiger_palm_t( this ) ) );
+    actions.emplace( std::make_pair( actions::sef_ability_e::SEF_BLACKOUT_KICK, new sef_blackout_kick_t( this ) ) );
+    actions.emplace(
+        std::make_pair( actions::sef_ability_e::SEF_BLACKOUT_KICK_TOTM, new sef_blackout_kick_totm_proc_t( this ) ) );
+    actions.emplace( std::make_pair( actions::sef_ability_e::SEF_RISING_SUN_KICK, new sef_rising_sun_kick_t( this ) ) );
+    actions.emplace(
+        std::make_pair( actions::sef_ability_e::SEF_GLORY_OF_THE_DAWN, new sef_glory_of_the_dawn_t( this ) ) );
+    actions.emplace( std::make_pair( actions::sef_ability_e::SEF_FISTS_OF_FURY, new sef_fists_of_fury_t( this ) ) );
+    actions.emplace(
+        std::make_pair( actions::sef_ability_e::SEF_SPINNING_CRANE_KICK, new sef_spinning_crane_kick_t( this ) ) );
+    actions.emplace(
+        std::make_pair( actions::sef_ability_e::SEF_WHIRLING_DRAGON_PUNCH, new sef_whirling_dragon_punch_t( this ) ) );
+    actions.emplace( std::make_pair( actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD,
+                                     new sef_strike_of_the_windlord_t( this ) ) );
+    actions.emplace( std::make_pair( actions::sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH,
+                                     new sef_strike_of_the_windlord_oh_t( this ) ) );
+    actions.emplace(
+        std::make_pair( actions::sef_ability_e::SEF_CELESTIAL_CONDUIT, new sef_celestial_conduit_t( this ) ) );
+    actions.emplace( std::make_pair( actions::sef_ability_e::SEF_RJW_TICK, new sef_rushing_jade_wind_tick_t( this ) ) );
+    actions.emplace( std::make_pair( actions::sef_ability_e::SEF_CHI_WAVE, new sef_chi_wave_damage_t( this ) ) );
+    actions.emplace( std::make_pair( actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING,
+                                     new sef_crackling_jade_lightning_t( this ) ) );
+    actions.emplace( std::make_pair( actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING_AOE,
+                                     new sef_crackling_jade_lightning_t::sef_crackling_jade_lightning_aoe_t( this ) ) );
 
-    spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CHI_WAVE ) ) = new sef_chi_wave_damage_t( this );
-    spells.at( sef_spell_index( (int)actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING ) ) =
-        new sef_crackling_jade_lightning_t( this );
-
-    active_actions.rushing_jade_wind_sef = new sef_rushing_jade_wind_tick_t( this );
+    if ( o()->talent.windwalker.power_of_the_thunder_king->ok() )
+      actions[ actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING ]->add_child(
+          actions[ actions::sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING_AOE ] );
   }
 
   void init_action_list() override
@@ -1228,12 +1163,6 @@ public:
 
     o()->buff.storm_earth_and_fire->trigger( 1, buff_t::DEFAULT_VALUE(), 1, duration );
 
-    if ( o()->buff.bok_proc->up() )
-      buff.bok_proc_sef->trigger( 1, buff_t::DEFAULT_VALUE(), 1, o()->buff.bok_proc->remains() );
-
-    if ( o()->buff.rushing_jade_wind->up() )
-      buff.rushing_jade_wind_sef->trigger( 1, buff_t::DEFAULT_VALUE(), 1, o()->buff.rushing_jade_wind->remains() );
-
     sticky_target = false;
   }
 
@@ -1244,60 +1173,17 @@ public:
     o()->buff.storm_earth_and_fire->decrement();
   }
 
-  void create_buffs() override
-  {
-    monk_pet_t::create_buffs();
-
-    buff.bok_proc_sef =
-        make_buff( this, "bok_proc_sef", o()->passives.bok_proc )
-            ->set_trigger_spell( o()->baseline.windwalker.combo_breaker )
-            ->set_quiet( true );  // In-game does not show this buff but I would like to use it for background stuff;
-
-    buff.rushing_jade_wind_sef = make_buff( this, "rushing_jade_wind_sef", o()->passives.rushing_jade_wind )
-                                     ->set_can_cancel( true )
-                                     ->set_tick_zero( true )
-                                     ->set_cooldown( timespan_t::zero() )
-                                     ->set_period( o()->passives.rushing_jade_wind->effectN( 1 ).period() )
-                                     ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-                                     ->set_duration( sim->expected_iteration_time * 2 )
-                                     ->set_tick_behavior( buff_tick_behavior::CLIP )
-                                     ->set_tick_callback( [ this ]( buff_t *d, int, timespan_t ) {
-                                       if ( o()->buff.rushing_jade_wind->up() )
-                                         active_actions.rushing_jade_wind_sef->execute();
-                                       else
-                                         d->expire( timespan_t::from_millis( 1 ) );
-                                     } );
-  }
-
   void trigger_attack( actions::sef_ability_e ability, const action_t *source_action, bool combo_strike = false )
   {
-    if ( channeling )
-    {
-      // the only time we're not cancellign is if we use something instant
-      // and we're channeling spinning crane kick
-      if ( dynamic_cast<sef_spinning_crane_kick_t *>( channeling ) == nullptr ||
-           ability == actions::sef_ability_e::SEF_FISTS_OF_FURY ||
-           ability == actions::sef_ability_e::SEF_SPINNING_CRANE_KICK ||
-           ability == actions::sef_ability_e::SEF_CELESTIAL_CONDUIT )
-      {
-        channeling->cancel();
-      }
-    }
+    if ( channeling && !source_action->background )
+      channeling->cancel();
 
-    if ( (int)ability >= (int)actions::sef_ability_e::SEF_SPELL_MIN )
-    {
-      auto spell_index = sef_spell_index( (int)ability );
-      assert( spells[ spell_index ] );
+    action_t *action = actions[ ability ];
 
-      spells[ spell_index ]->source_action = source_action;
-      spells[ spell_index ]->execute();
-    }
-    else
-    {
-      assert( attacks[ (int)ability ] );
-      attacks[ (int)ability ]->source_action = source_action;
-      attacks[ (int)ability ]->execute();
-    }
+    if ( source_action->background )
+      action->set_target( source_action->target );
+
+    action->execute();
 
     if ( combo_strike )
       trigger_combo_strikes();
@@ -1309,7 +1195,7 @@ public:
 
     // Currently Xuen's Bond is triggering from SEF combo strikes, tooltip has been updated, assuming this is no longer
     // a bug.
-    if ( o()->talent.windwalker.xuens_bond->ok() )
+    if ( o()->talent.windwalker.xuens_bond->ok() && !o()->is_ptr() )
       o()->cooldown.invoke_xuen->adjust( o()->talent.windwalker.xuens_bond->effectN( 2 ).time_value(),
                                          true );  // Saved as -100
   }
@@ -1757,10 +1643,11 @@ void monk_t::trigger_storm_earth_and_fire( const action_t *a, actions::sef_abili
   if ( specialization() != MONK_WINDWALKER )
     return;
 
-  if ( !talent.windwalker.storm_earth_and_fire->ok() )
+  // if action has no SEF counterpart...
+  if ( !( sef_ability > actions::sef_ability_e::SEF_MIN ) )
     return;
 
-  if ( sef_ability == actions::sef_ability_e::SEF_NONE )
+  if ( !talent.windwalker.storm_earth_and_fire->ok() )
     return;
 
   if ( !buff.storm_earth_and_fire->up() )
@@ -1782,37 +1669,25 @@ void monk_t::trigger_storm_earth_and_fire( const action_t *a, actions::sef_abili
 
 void monk_t::storm_earth_and_fire_fixate( player_t *target )
 {
-  sim->print_debug( "{} storm_earth_and_fire sticky target {} to {} (old={})", *this,
-                    *pets.sef[ (int)pets::sef_pet_e::SEF_EARTH ], *target,
-                    *pets.sef[ (int)pets::sef_pet_e::SEF_EARTH ]->target );
+  auto fixate = [ & ]( pets::sef_pet_e pet ) {
+    sim->print_debug( "{} storm_earth_and_fire sticky target {} to {} (old={})", *this, *pets.sef[ (int)pet ], *target,
+                      *pets.sef[ (int)pet ]->target );
+    pets.sef[ (int)pet ]->target        = target;
+    pets.sef[ (int)pet ]->sticky_target = true;
+  };
 
-  pets.sef[ (int)pets::sef_pet_e::SEF_EARTH ]->target        = target;
-  pets.sef[ (int)pets::sef_pet_e::SEF_EARTH ]->sticky_target = true;
-
-  sim->print_debug( "{} storm_earth_and_fire sticky target {} to {} (old={})", *this,
-                    *pets.sef[ (int)pets::sef_pet_e::SEF_FIRE ], *target,
-                    *pets.sef[ (int)pets::sef_pet_e::SEF_FIRE ]->target );
-
-  pets.sef[ (int)pets::sef_pet_e::SEF_FIRE ]->target        = target;
-  pets.sef[ (int)pets::sef_pet_e::SEF_FIRE ]->sticky_target = true;
+  fixate( pets::sef_pet_e::SEF_EARTH );
+  fixate( pets::sef_pet_e::SEF_FIRE );
 }
 
 bool monk_t::storm_earth_and_fire_fixate_ready( player_t *target )
 {
   if ( buff.storm_earth_and_fire->check() )
-  {
     if ( pets.sef[ (int)pets::sef_pet_e::SEF_EARTH ]->sticky_target ||
          pets.sef[ (int)pets::sef_pet_e::SEF_FIRE ]->sticky_target )
-    {
-      if ( pets.sef[ (int)pets::sef_pet_e::SEF_EARTH ]->target != target )
+      if ( pets.sef[ (int)pets::sef_pet_e::SEF_EARTH ]->target != target ||
+           pets.sef[ (int)pets::sef_pet_e::SEF_FIRE ]->target != target )
         return true;
-      else if ( pets.sef[ (int)pets::sef_pet_e::SEF_FIRE ]->target != target )
-        return true;
-    }
-    else if ( !pets.sef[ (int)pets::sef_pet_e::SEF_EARTH ]->sticky_target ||
-              !pets.sef[ (int)pets::sef_pet_e::SEF_FIRE ]->sticky_target )
-      return true;
-  }
   return false;
 }
 
@@ -1840,9 +1715,7 @@ void monk_t::summon_storm_earth_and_fire( timespan_t duration )
 void monk_t::retarget_storm_earth_and_fire_pets() const
 {
   if ( pets.sef[ (int)pets::sef_pet_e::SEF_EARTH ]->sticky_target )
-  {
     return;
-  }
 
   auto targets = create_storm_earth_and_fire_target_list();
   retarget_storm_earth_and_fire( pets.sef[ (int)pets::sef_pet_e::SEF_EARTH ], targets );
@@ -1855,9 +1728,7 @@ void sef_despawn_cb_t::operator()( player_t * )
 {
   // No pets up, don't do anything
   if ( !monk->buff.storm_earth_and_fire->check() )
-  {
     return;
-  }
 
   auto targets = monk->create_storm_earth_and_fire_target_list();
 
@@ -1880,17 +1751,11 @@ void sef_despawn_cb_t::operator()( player_t * )
     }
   } );
 }
-void monk_t::trigger_storm_earth_and_fire_bok_proc( pets::sef_pet_e sef_pet )
-{
-  pets.sef[ (int)sef_pet ]->buff.bok_proc_sef->trigger();
-}
 
 player_t *monk_t::storm_earth_and_fire_fixate_target( pets::sef_pet_e sef_pet )
 {
   if ( pets.sef[ (int)sef_pet ]->sticky_target )
-  {
     return pets.sef[ (int)sef_pet ]->target;
-  }
 
   return nullptr;
 }

@@ -25,6 +25,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots_phantom_singularity = target->get_dot( "phantom_singularity", &p );
   dots_seed_of_corruption = target->get_dot( "seed_of_corruption", &p );
   dots_unstable_affliction = target->get_dot( "unstable_affliction", &p );
+  dots_jackpot_ua = target->get_dot( "unstable_affliction_jackpot", &p );
   dots_vile_taint = target->get_dot( "vile_taint_dot", &p );
   dots_soul_rot = target->get_dot( "soul_rot", &p );
 
@@ -139,6 +140,13 @@ void warlock_td_t::target_demise()
     warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.talents.unstable_affliction_2->effectN( 1 ).base_value(), warlock.gains.unstable_affliction_refund );
   }
 
+  if ( dots_jackpot_ua->is_ticking() )
+  {
+    warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Unstable Affliction.", target->name(), warlock.name() );
+
+    warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.talents.unstable_affliction_2->effectN( 1 ).base_value(), warlock.gains.unstable_affliction_refund );
+  }
+
   if ( dots_drain_soul->is_ticking() )
   {
     warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Drain Soul.", target->name(), warlock.name() );
@@ -218,6 +226,19 @@ int warlock_td_t::count_affliction_dots() const
     count++;
 
   if ( dots_wither->is_ticking() )
+    count++;
+
+  return count;
+}
+
+int warlock_td_t::count_affliction_dots( bool include_tier_ua ) const
+{
+  int count = count_affliction_dots();
+
+  if ( !include_tier_ua )
+    return count;
+
+  if ( dots_jackpot_ua->is_ticking() )
     count++;
 
   return count;
@@ -363,11 +384,17 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
       m *= 1.0 + talents.summoners_embrace->effectN( 2 ).percent();
   }
 
-  if ( hero.flames_of_xoroth.ok() && !guardian )
-    m *= 1.0 + hero.flames_of_xoroth->effectN( 3 ).percent();
+  if ( hero.flames_of_xoroth.ok() )
+    m *= 1.0 + hero.flames_of_xoroth->effectN( guardian ? 3 : 4 ).percent();
 
   if ( hero.abyssal_dominion.ok() && buffs.abyssal_dominion->check() )
     m *= 1.0 + hero.abyssal_dominion_buff->effectN( guardian ? 1 : 2 ).percent();
+
+  if ( hero.xalans_ferocity.ok() )
+    m *= 1.0 + hero.xalans_ferocity->effectN( guardian ? 7 : 3 ).percent();
+
+  if ( hero.xalans_cruelty.ok() )
+    m *= 1.0 + hero.xalans_cruelty->effectN( guardian ? 6 : 5 ).percent();
 
   return m;
 }
@@ -585,6 +612,8 @@ bool warlock_t::min_version_check( version_check_e version ) const
   {
     case VERSION_PTR:
       return is_ptr();
+    case VERSION_11_1_0:
+      return !( version_11_1_0_data == spell_data_t::not_found() );
     case VERSION_ANY:
       return true;
   }
@@ -999,6 +1028,7 @@ warlock::warlock_t::pets_t::pets_t( warlock_t* w )
     grimoire_felguards( "grimoire_felguard", w ),
     wild_imps( "wild_imp", w ),
     doomguards( "Doomguard", w ),
+    greater_dreadstalkers( "greater_dreadstalker", w ),
     shadow_rifts( "shadowy_tear", w ),
     unstable_rifts( "unstable_tear", w ),
     chaos_rifts( "chaos_tear", w ),

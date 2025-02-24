@@ -13,12 +13,15 @@
 #include "buff/buff.hpp"
 #include "dbc/dbc.hpp"
 #include "item/special_effect.hpp"
+#include "player/action_priority_list.hpp"
 #include "player/player.hpp"
+#include "player/pet.hpp"
 #include "player/special_effect_db_item.hpp"
 #include "player/unique_gear.hpp"
 #include "player/wrapper_callback.hpp"
 #include "util/scoped_callback.hpp"
 #include "sim/sim.hpp"
+#include "stats.hpp"
 
 #include <type_traits>
 #include <utility>
@@ -533,6 +536,10 @@ struct base_generic_proc_t : public BASE
   base_generic_proc_t( const special_effect_t& effect, ::util::string_view name, const spell_data_t* s )
     : BASE( name, effect.player, s, effect.item )
   { }
+  
+  base_generic_proc_t( player_t* p, ::util::string_view name, const spell_data_t* s, const item_t* i = nullptr )
+    : BASE( name, p, s, i )
+  { }
 };
 
 template <typename BASE = proc_spell_t>
@@ -559,6 +566,14 @@ struct base_generic_aoe_proc_t : public base_generic_proc_t<BASE>
     this->split_aoe_damage = true;
   }
 
+  base_generic_aoe_proc_t( player_t* p, ::util::string_view name, const spell_data_t* s, const item_t* i = nullptr,
+                           bool aoe_damage_increase_ = false )
+    : base_generic_proc_t<BASE>( p, name, s, i ), aoe_damage_increase( aoe_damage_increase_ ), max_scaling_targets( 5 )
+  {
+    this->aoe              = -1;
+    this->split_aoe_damage = true;
+  }
+
   double composite_aoe_multiplier( const action_state_t* state ) const override
   {
     double am = base_generic_proc_t<BASE>::composite_aoe_multiplier( state );
@@ -569,7 +584,7 @@ struct base_generic_aoe_proc_t : public base_generic_proc_t<BASE>
     {
       // For some reason, using std::min here barfs Visual Studio 2017, so use clamp
       // instead which seems to work.
-      am *= 1.0 + 0.15 * clamp( state->n_targets - 1u, 0u, max_scaling_targets );
+      am *= 1.0 + 0.3 * clamp( state->n_targets - 1u, 0u, max_scaling_targets );
     }
 
     return am;
@@ -627,4 +642,105 @@ BUFF* create_buff( player_t* p, const spell_data_t* s, ARGS&&... args )
 {
   return create_buff<BUFF>( p, util::tokenize_fn( s->name_cstr() ), s, std::forward<ARGS>( args )... );
 }
+
+struct unique_gear_pet_t : public pet_t
+{
+protected:
+  using base_t = unique_gear_pet_t;
+
+public:
+  bool use_auto_attack;
+  const special_effect_t& effect;
+  action_t* parent_action;
+
+  unique_gear_pet_t( std::string_view name, const special_effect_t& e, const spell_data_t* summon_spell = nullptr )
+    : pet_t( e.player->sim, e.player, name, true, true ), use_auto_attack( false ), effect( e ), parent_action( nullptr )
+  {
+    if ( summon_spell )
+      npc_id = summon_spell->effectN( 1 ).misc_value1();
+  }
+
+  resource_e primary_resource() const override
+  { return RESOURCE_NONE; }
+
+  virtual attack_t* create_auto_attack()
+  { return nullptr; }
+
+  double composite_owner_pet_damage_multiplier( const action_state_t* s ) const override
+  {
+    return 1.0;
+  }
+
+  double composite_owner_pet_target_damage_multiplier( player_t* t ) const override
+  {
+    return 1.0;
+  }
+
+  struct auto_attack_t final : public melee_attack_t
+  {
+    auto_attack_t( unique_gear_pet_t* p ) : melee_attack_t( "main_hand", p )
+    {
+      assert( p->main_hand_weapon.type != WEAPON_NONE );
+      p->main_hand_attack                    = p->create_auto_attack();
+      p->main_hand_attack->weapon            = &( p->main_hand_weapon );
+      p->main_hand_attack->base_execute_time = p->main_hand_weapon.swing_time;
+
+      ignore_false_positive = true;
+      trigger_gcd           = 0_ms;
+      school                = SCHOOL_PHYSICAL;
+    }
+
+    void execute() override
+    {
+      player->main_hand_attack->schedule_execute();
+    }
+
+    bool ready() override
+    {
+      if ( player->is_moving() )
+        return false;
+
+      return ( player->main_hand_attack->execute_event == nullptr );
+    }
+  };
+
+  void create_buffs() override
+  {
+    pet_t::create_buffs();
+
+    buffs.movement->set_quiet( true );
+  }
+
+  void arise() override
+  {
+    pet_t::arise();
+
+    if ( parent_action )
+      parent_action->stats->add_execute( 0_ms, owner );
+
+    if ( use_auto_attack && owner->base.distance > 8 )
+    {
+      trigger_movement( owner->base.distance, movement_direction_type::TOWARDS );
+      auto dur = time_to_move();
+      make_event( *sim, dur, [ this, dur ] { update_movement( dur ); } );
+    }
+  }
+
+  action_t* create_action( std::string_view name, std::string_view options_str ) override
+  {
+    if ( name == "auto_attack" )
+      return new auto_attack_t( this );
+
+    return pet_t::create_action( name, options_str );
+  }
+
+  void init_action_list() override
+  {
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    if ( use_auto_attack )
+      def->add_action( "auto_attack" );
+
+    pet_t::init_action_list();
+  }
+};
 } // unique_gear

@@ -3338,80 +3338,18 @@ void racial::touch_of_the_grave( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-struct entropic_embrace_damage_t : public spell_t
-{
-  entropic_embrace_damage_t( const special_effect_t& effect ) :
-    spell_t( "entropic_embrace", effect.player, effect.player -> find_spell( 259756 ) )
-  {
-    background = true;
-    may_miss = callbacks = false;
-  }
-
-  void init() override
-  {
-    spell_t::init();
-
-    snapshot_flags = update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA;
-  }
-};
-
-struct entropic_embrace_damage_cb_t : public dbc_proc_callback_t
-{
-  double coeff;
-  entropic_embrace_damage_cb_t( const special_effect_t* effect, double c )
-    : dbc_proc_callback_t( effect->player, *effect ), coeff( c )
-  {}
-
-  void trigger( action_t* a, action_state_t* state ) override
-  {
-    if ( state->result_amount <= 0 )
-    {
-      return;
-    }
-
-    dbc_proc_callback_t::trigger( a, state );
-  }
-
-  void execute( action_t* /* a */, action_state_t* state ) override
-  {
-    proc_action->base_dd_min = state->result_amount * coeff;
-    proc_action->base_dd_max = proc_action->base_dd_min;
-
-    proc_action->set_target( state->target );
-    proc_action->execute();
-  }
-};
-
 void racial::entropic_embrace( special_effect_t& effect )
 {
-  special_effect_t* effect_driver = new special_effect_t( effect.player );
-  effect_driver->source = SPECIAL_EFFECT_SOURCE_RACE;
-  effect_driver->type = SPECIAL_EFFECT_EQUIP;
-  // TODO: healing proc NYI
-  effect_driver->proc_flags_ = effect.trigger()->proc_flags() & ~( PF_NONE_HEAL | PF_MAGIC_HEAL | PF_HELPFUL_PERIODIC );
-  effect_driver->proc_flags2_ = PF2_ALL_HIT;
-  effect_driver->name_str = "entropic_embrace_damage_driver";
-  effect_driver->spell_id = effect.trigger()->id();
-  effect_driver->execute_action = create_proc_action<entropic_embrace_damage_t>( "entropic_embrace", effect );
-  effect.player->special_effects.push_back( effect_driver );
-
-  auto proc = new entropic_embrace_damage_cb_t( effect_driver, effect.trigger()->effectN( 1 ).percent() );
-  proc->deactivate();
-
   buff_t* base_buff = buff_t::find( effect.player, "entropic_embrace" );
   if ( base_buff == nullptr )
   {
     base_buff = make_buff( effect.player, "entropic_embrace", effect.trigger() )
-      ->set_stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
-        if ( new_ > 0 )
-          proc->activate();
-        else
-          proc->deactivate();
-      } );
+      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+      ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+    effect.player->buffs.entropic_embrace = base_buff;
   }
 
   effect.custom_buff = base_buff;
-
   new dbc_proc_callback_t( effect.player, effect );
 }
 
@@ -4245,7 +4183,7 @@ struct item_cast_time_expr_t : public item_effect_expr_t
         }
         else
         {
-          v = e->execute_action->execute_time().total_seconds();
+          v = e->execute_action->base_execute_time.value().total_seconds();
         }
         break;
       }
@@ -5303,6 +5241,27 @@ void unique_gear::sort_special_effects()
   range::sort( __fallback_effect_db, cmp_special_effect );
 }
 
+bool unique_gear::has_role_mult( player_t* player, const spell_data_t* s_data )
+{
+  // Failsafe if driver is spell_data_t::nil() or spell_data_t::not_found()
+  if ( !s_data->ok() )
+    return false;
+
+  auto vars = player->dbc->spell_desc_vars( s_data->id() ).desc_vars();
+  if( !vars )
+    return false;
+
+  std::cmatch m;
+  std::regex get_var( R"(\$(?:healing)?rolemult=\$(.*))" );
+
+  return std::regex_search( vars, m, get_var );
+}
+
+bool unique_gear::has_role_mult( const special_effect_t& effect )
+{
+  return has_role_mult( effect.player, effect.driver() );
+}
+
 double unique_gear::role_mult( player_t* player, const spell_data_t* s_data )
 {
   static constexpr const char* role_mult_str =
@@ -5316,7 +5275,7 @@ double unique_gear::role_mult( player_t* player, const spell_data_t* s_data )
   if ( vars )
   {
     std::cmatch m;
-    std::regex get_var( R"(\$rolemult=\$(.*))" );  // find the $rolemult= variable
+    std::regex get_var( R"(\$(?:healing)?rolemult=\$(.*))" );  // find the $rolemult= variable
     if ( std::regex_search( vars, m, get_var ) )
     {
       const auto var = m.str( 1 );

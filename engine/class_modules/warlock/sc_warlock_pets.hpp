@@ -44,6 +44,8 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> wrathful_minion; // Damage buff triggered by filling a Soul Shard
     propagate_const<buff_t*> demonic_power;
     propagate_const<buff_t*> empowered_legion_strike; // TWW1 Demonology 4pc buff
+    propagate_const<buff_t*> demonic_hunger; // TWW2 Demonology 2pc buff
+    propagate_const<buff_t*> spliced_4pc; // TWW2 Demonology 4pc dummy buff
   } buffs;
 
   bool is_main_pet = false;
@@ -409,6 +411,7 @@ struct dreadstalker_t : public warlock_pet_t
   timespan_t server_action_delay;
 
   dreadstalker_t( warlock_t* );
+  dreadstalker_t( warlock_t*, util::string_view, pet_e );
   void init_base_stats() override;
   void arise() override;
   void demise() override;
@@ -417,6 +420,7 @@ struct dreadstalker_t : public warlock_pet_t
   double composite_player_multiplier( school_e ) const override;
   double composite_melee_crit_chance() const override;
   double composite_spell_crit_chance() const override;
+  void queue_dreadbite();
 };
 
 struct vilefiend_t : public warlock_simple_pet_t
@@ -449,6 +453,16 @@ struct doomguard_t : public warlock_simple_pet_t
   void init_base_stats() override;
   action_t* create_action( util::string_view, util::string_view ) override;
   void arise() override;
+};
+
+struct greater_dreadstalker_t : public dreadstalker_t
+{
+  greater_dreadstalker_t( warlock_t* );
+  void arise() override;
+  void demise() override;
+  double composite_player_multiplier( school_e ) const override;
+  double composite_melee_crit_chance() const override;
+  double composite_spell_crit_chance() const override;
 };
 }  // namespace demonology
 

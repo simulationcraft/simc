@@ -85,6 +85,8 @@ void initialize_racial_effects( player_t* );
 std::unique_ptr<expr_t> create_expression( player_t& player, util::string_view name_str );
 
 // Role-base multipliers parsed from description variables
+bool has_role_mult( player_t*, const spell_data_t* spell = nullptr );
+bool has_role_mult( const special_effect_t& );
 double role_mult( player_t*, const spell_data_t* spell = nullptr );
 double role_mult( const special_effect_t& );
 }  // namespace unique_gear

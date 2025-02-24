@@ -619,28 +619,38 @@ const char* util::player_type_string( player_e type )
 {
   switch ( type )
   {
-    case PLAYER_NONE:     return "none";
-    case DEATH_KNIGHT:    return "deathknight";
-    case DEMON_HUNTER:    return "demonhunter";
-    case DRUID:           return "druid";
-    case EVOKER:          return "evoker";
-    case HUNTER:          return "hunter";
-    case MAGE:            return "mage";
-    case MONK:            return "monk";
-    case PALADIN:         return "paladin";
-    case PRIEST:          return "priest";
-    case ROGUE:           return "rogue";
-    case SHAMAN:          return "shaman";
-    case WARLOCK:         return "warlock";
-    case WARRIOR:         return "warrior";
-    case PLAYER_SIMPLIFIED:         return "player_simplified";
-    case PLAYER_PET:      return "pet";
-    case PLAYER_GUARDIAN: return "guardian";
-    case ENEMY:           return "enemy";
-    case ENEMY_ADD:       return "add";
-    case ENEMY_ADD_BOSS:  return "add_boss";
-    case TANK_DUMMY:      return "tank_dummy";
-    default:              return "unknown";
+    case PLAYER_NONE:             return "none";
+    case DEATH_KNIGHT:            return "deathknight";
+    case DEMON_HUNTER:            return "demonhunter";
+    case DRUID:                   return "druid";
+    case EVOKER:                  return "evoker";
+    case HUNTER:                  return "hunter";
+    case MAGE:                    return "mage";
+    case MONK:                    return "monk";
+    case PALADIN:                 return "paladin";
+    case PRIEST:                  return "priest";
+    case ROGUE:                   return "rogue";
+    case SHAMAN:                  return "shaman";
+    case WARLOCK:                 return "warlock";
+    case WARRIOR:                 return "warrior";
+    case PLAYER_SIMPLIFIED:       return "player_simplified";
+    case PLAYER_PET:              return "pet";
+    case PLAYER_GUARDIAN:         return "guardian";
+    case ENEMY:                   return "enemy";
+    case ENEMY_ADD:               return "add";
+    case ENEMY_ADD_BOSS:          return "add_boss";
+    case TANK_DUMMY:              return "tank_dummy";
+    case PLAYER_SPECIAL_SCALE:    return "PLAYER_SPECIAL_SCALE";
+    case PLAYER_SPECIAL_SCALE2:   return "PLAYER_SPECIAL_SCALE2";
+    case PLAYER_SPECIAL_SCALE3:   return "PLAYER_SPECIAL_SCALE3";
+    case PLAYER_SPECIAL_SCALE4:   return "PLAYER_SPECIAL_SCALE4";
+    case PLAYER_SPECIAL_SCALE5:   return "PLAYER_SPECIAL_SCALE5";
+    case PLAYER_SPECIAL_SCALE6:   return "PLAYER_SPECIAL_SCALE6";
+    case PLAYER_SPECIAL_SCALE7:   return "PLAYER_SPECIAL_SCALE7";
+    case PLAYER_SPECIAL_SCALE8:   return "PLAYER_SPECIAL_SCALE8";
+    case PLAYER_SPECIAL_SCALE9:   return "PLAYER_SPECIAL_SCALE9";
+    case PLAYER_SPECIAL_SCALE10:  return "PLAYER_SPECIAL_SCALE10";
+    default:                      return "unknown";
   }
 }
 
@@ -2002,7 +2012,8 @@ int util::class_id( player_e type )
     case PLAYER_SPECIAL_SCALE6: return 19;
     case PLAYER_SPECIAL_SCALE7: return 14;
     case PLAYER_SPECIAL_SCALE8: return 20;
-    case PLAYER_SPECIAL_SCALE9: return 20;
+    case PLAYER_SPECIAL_SCALE9: return 21;
+    case PLAYER_SPECIAL_SCALE10: return 22;
     default:           return 0;
   }
 }

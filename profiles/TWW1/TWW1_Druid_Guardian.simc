@@ -6,7 +6,7 @@ race=night_elf
 timeofday=night
 role=tank
 position=front
-talents=CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmxMzMzsMPwYGzwMW8ADzYxyAYAzMmMNzYMzMjlZYjBAAAAAAMmZAAAAQNz2sMzsMAAWYmB
+talents=CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzYmxMzy8ADjZYGLmhZmFLDgBMzYy0MzMmZmhBbMAAAAAAgxMDAAAAqZ2mlZmlBAwCzMDA
 
 # Default consumables
 potion=tempered_potion_3
@@ -24,11 +24,8 @@ temporary_enchant=main_hand:ironclaw_whetstone_3
 # Guardian APL can be found at https://www.dreamgrove.gg/sims/bear/guardian.txt
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask
-actions.precombat+=/food
-actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
-actions.precombat+=/snapshot_stats
+actions.precombat=snapshot_stats
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat+=/variable,name=If_build,value=1,value_else=0,if=talent.thorns_of_iron.enabled&talent.reinforced_fur.enabled
 actions.precombat+=/variable,name=ripweaving,value=1,value_else=0,if=talent.primal_fury.enabled&talent.fluid_form.enabled&talent.wildpower_surge.enabled

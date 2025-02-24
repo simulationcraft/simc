@@ -427,7 +427,8 @@ int heal_t::num_targets() const
 size_t heal_t::available_targets( std::vector<player_t*>& target_list ) const
 {
   target_list.clear();
-  target_list.push_back( target );
+  if ( !target->is_sleeping() )
+    target_list.push_back( target );
 
   for ( const auto& t : sim->player_non_sleeping_list )
   {

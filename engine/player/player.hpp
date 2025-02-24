@@ -434,6 +434,10 @@ struct player_t : public actor_t
     stat_buff_t* battle_elixir;
     buff_t* food;
     buff_t* augmentation;
+
+    action_t* flask_action;
+    action_t* food_action;
+    action_t* augmentation_action;
   } consumables;
 
   struct buffs_t
@@ -671,6 +675,7 @@ struct player_t : public actor_t
     const spell_data_t* awakened;
     const spell_data_t* azerite_surge;
     const spell_data_t* titanwrought_frame;
+    const spell_data_t* holy_providence;
   } racials;
 
   struct antumbra_t
@@ -863,18 +868,26 @@ struct player_t : public actor_t
     // Nerubian Phearomone Secreter number of phearomones
     int nerubian_pheromone_secreter_pheromones = 1;
     // Allied Binding of Binding on you
-    int binding_of_binding_on_you = 0;
+    int binding_of_binding_on_you                 = 0;
     double binding_of_binding_ally_trigger_chance = 0.8;
     // Concoction: Kiss of Death buff remaining time before you re-use for antidote
     timespan_t concoction_kiss_of_death_buff_remaining_min = 1_s;
     timespan_t concoction_kiss_of_death_buff_remaining_max = 2_s;
     // time to pick up Fury of the Stormrook lightning orb
-    timespan_t fury_of_the_stormrook_pickup_delay = 3_s;
+    timespan_t fury_of_the_stormrook_pickup_delay  = 3_s;
     timespan_t fury_of_the_stormrook_pickup_stddev = 0.75_s;
     // Chance that an ally is ignored for Mereldar's Toll Evaluation. This is set high becauee pets exist and its
     // currently bugged to trigger on them.
-    double mereldars_toll_ally_trigger_chance = 0.7;
-    double sureki_zealots_insignia_rppm_multiplier = 0.9;
+    double mereldars_toll_ally_trigger_chance             = 0.7;
+    double sureki_zealots_insignia_rppm_multiplier        = 0.9;
+    player_option_t<std::string> windsingers_passive_stat = "";
+    bool force_estimate_skippers_group_benefit            = false;
+    bool personal_estimate_skippers_group_benefit         = false;
+    bool estimate_skippers_group_benefit                  = true;
+    double estimate_skippers_group_members                = 4;
+    // Mister Lock-n-Stalk mode of operation
+    player_option_t<std::string> mister_locknstalk_mode = "dynamic";
+    player_option_t<std::string> jastor_diamond_ally_stat = "none";
   } thewarwithin_opts;
 
 private:
@@ -1198,6 +1211,8 @@ public:
   virtual double composite_player_critical_damage_multiplier( const action_state_t* s ) const;
   virtual double composite_player_critical_healing_multiplier() const;
   virtual double composite_player_target_armor( player_t* ) const;
+  virtual double composite_player_healing_received_multiplier() const
+  { return 1.0; }
   virtual double composite_mitigation_multiplier( school_e ) const;
   virtual double non_stacking_movement_modifier() const;
   virtual double stacking_movement_modifier() const;

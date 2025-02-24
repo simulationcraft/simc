@@ -15,9 +15,6 @@ void retribution( player_t* p )
   action_priority_list_t* finishers = p->get_action_priority_list( "finishers" );
   action_priority_list_t* generators = p->get_action_priority_list( "generators" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "shield_of_vengeance" );
   precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_buff.strength|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit" );
@@ -81,13 +78,10 @@ void protection( player_t* p )
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
   action_priority_list_t* cooldowns = p->get_action_priority_list( "cooldowns" );
+  action_priority_list_t* defensives = p->get_action_priority_list( "defensives" );
   action_priority_list_t* standard = p->get_action_priority_list( "standard" );
-  action_priority_list_t* hammer_of_light = p->get_action_priority_list( "hammer_of_light" );
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
   precombat->add_action( "rite_of_sanctification" );
   precombat->add_action( "rite_of_adjuration" );
   precombat->add_action( "snapshot_stats" );
@@ -100,6 +94,7 @@ void protection( player_t* p )
 
   default_->add_action( "auto_attack" );
   default_->add_action( "call_action_list,name=cooldowns" );
+  default_->add_action( "call_action_list,name=defensives" );
   default_->add_action( "call_action_list,name=trinkets" );
   default_->add_action( "call_action_list,name=standard" );
 
@@ -112,44 +107,44 @@ void protection( player_t* p )
   cooldowns->add_action( "invoke_external_buff,name=power_infusion,if=buff.avenging_wrath.up" );
   cooldowns->add_action( "fireblood,if=buff.avenging_wrath.remains>8" );
 
-  standard->add_action( "call_action_list,name=hammer_of_light,if=talent.lights_guidance.enabled&(cooldown.eye_of_tyr.remains<2|buff.hammer_of_light_ready.up)&(!talent.redoubt.enabled|buff.redoubt.stack>=2|!talent.bastion_of_light.enabled)" );
-  standard->add_action( "hammer_of_light,if=(!talent.redoubt.enabled|buff.redoubt.stack=3)&(buff.blessing_of_dawn.stack>=1|!talent.of_dusk_and_dawn.enabled)" );
-  standard->add_action( "shield_of_the_righteous,if=(((!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&holy_power>2)|buff.bastion_of_light.up|buff.divine_purpose.up)&!((buff.hammer_of_light_ready.up|buff.hammer_of_light_free.up))" );
-  standard->add_action( "holy_armaments,if=next_armament=sacred_weapon&(!buff.sacred_weapon.up|(buff.sacred_weapon.remains<6&!buff.avenging_wrath.up&cooldown.avenging_wrath.remains<=30))" );
+  defensives->add_action( "ardent_defender" );
+
+  standard->add_action( "judgment,target_if=charges>=2|full_recharge_time<=gcd.max" );
+  standard->add_action( "hammer_of_light,if=buff.hammer_of_light_free.remains<2|buff.shake_the_heavens.remains<1|!buff.shake_the_heavens.up|cooldown.eye_of_tyr.remains<1.5|fight_remains<2" );
+  standard->add_action( "eye_of_tyr,if=(hpg_to_2dawn=5|!talent.of_dusk_and_dawn.enabled)&talent.lights_guidance.enabled" );
+  standard->add_action( "eye_of_tyr,if=(hpg_to_2dawn=1|buff.blessing_of_dawn.stack>0)&talent.lights_guidance.enabled" );
+  standard->add_action( "shield_of_the_righteous,if=(!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&!buff.hammer_of_light_ready.up" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=spell_targets.shield_of_the_righteous>3&buff.bulwark_of_righteous_fury.stack>=3&holy_power<3" );
-  standard->add_action( "avengers_shield,if=!buff.bulwark_of_righteous_fury.up&talent.bulwark_of_righteous_fury.enabled&spell_targets.shield_of_the_righteous>=3", "The following line has been edited for your own sanity, it is technically a dps gain to only use AS to refresh barricade of faith and strength in adversary as templar in large aoe However, it is very cursed, and nobody should actually do this, but if you REALLY wanted to, uncomment this line and comment out the next avenger's shield line. actions.standard+=/avengers_shield,if=!buff.bulwark_of_righteous_fury.up&talent.bulwark_of_righteous_fury.enabled&spell_targets.shield_of_the_righteous>=3&!((talent.lights_guidance.enabled&spell_targets.shield_of_the_righteous>=10)|!buff.barricade_of_faith.up)" );
-  standard->add_action( "hammer_of_wrath" );
+  standard->add_action( "avengers_shield,if=!buff.bulwark_of_righteous_fury.up&talent.bulwark_of_righteous_fury.enabled&spell_targets.shield_of_the_righteous>=3" );
+  standard->add_action( "hammer_of_the_righteous,if=buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<3&!buff.avenging_wrath.up" );
+  standard->add_action( "blessed_hammer,if=buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<3&!buff.avenging_wrath.up" );
+  standard->add_action( "crusader_strike,if=buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<2&!buff.avenging_wrath.up" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=charges>=2|full_recharge_time<=gcd.max" );
-  standard->add_action( "holy_armaments,if=next_armament=holy_bulwark&charges=2" );
+  standard->add_action( "consecration,if=buff.divine_guidance.stack=5" );
+  standard->add_action( "holy_armaments,if=next_armament=sacred_weapon&(!buff.sacred_weapon.up|(buff.sacred_weapon.remains<6&!buff.avenging_wrath.up&cooldown.avenging_wrath.remains<=30))" );
+  standard->add_action( "hammer_of_wrath" );
   standard->add_action( "divine_toll,if=(!raid_event.adds.exists|raid_event.adds.in>10)" );
+  standard->add_action( "avengers_shield,if=talent.refining_fire.enabled&talent.lights_guidance.enabled" );
+  standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=(buff.avenging_wrath.up&talent.hammer_and_anvil.enabled)" );
+  standard->add_action( "holy_armaments,if=next_armament=holy_bulwark&charges=2" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains" );
-  standard->add_action( "blessed_hammer,if=buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<3" );
-  standard->add_action( "hammer_of_the_righteous,if=buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<3" );
-  standard->add_action( "crusader_strike,if=buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<2" );
-  standard->add_action( "avengers_shield,if=!talent.lights_guidance.enabled", "In single target, Templar should prioritize maintaining Shake the Heavens by casting spells listed in Higher Calling." );
+  standard->add_action( "avengers_shield,if=!buff.shake_the_heavens.up&talent.shake_the_heavens.enabled" );
+  standard->add_action( "hammer_of_the_righteous,if=(buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<3)|buff.shake_the_heavens.up" );
+  standard->add_action( "blessed_hammer,if=(buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<3)|buff.shake_the_heavens.up" );
+  standard->add_action( "crusader_strike,if=(buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<2)|buff.shake_the_heavens.up" );
+  standard->add_action( "avengers_shield,if=!talent.lights_guidance.enabled" );
   standard->add_action( "consecration,if=!consecration.up" );
   standard->add_action( "eye_of_tyr,if=(talent.inmost_light.enabled&raid_event.adds.in>=45|spell_targets.shield_of_the_righteous>=3)&!talent.lights_deliverance.enabled" );
   standard->add_action( "holy_armaments,if=next_armament=holy_bulwark" );
   standard->add_action( "blessed_hammer" );
   standard->add_action( "hammer_of_the_righteous" );
   standard->add_action( "crusader_strike" );
-  standard->add_action( "word_of_glory,if=buff.shining_light_free.up&talent.lights_guidance.enabled&cooldown.hammerfall_icd.remains=0" );
+  standard->add_action( "word_of_glory,if=buff.shining_light_free.up&(talent.blessed_assurance.enabled|(talent.lights_guidance.enabled&cooldown.hammerfall_icd.remains=0))" );
   standard->add_action( "avengers_shield" );
   standard->add_action( "eye_of_tyr,if=!talent.lights_deliverance.enabled" );
   standard->add_action( "word_of_glory,if=buff.shining_light_free.up" );
   standard->add_action( "arcane_torrent,if=holy_power<5" );
   standard->add_action( "consecration" );
-
-  hammer_of_light->add_action( "hammer_of_light,if=(buff.blessing_of_dawn.stack>0|!talent.of_dusk_and_dawn.enabled)|spell_targets.shield_of_the_righteous>=5" );
-  hammer_of_light->add_action( "eye_of_tyr,if=hpg_to_2dawn=5|!talent.of_dusk_and_dawn.enabled" );
-  hammer_of_light->add_action( "shield_of_the_righteous,if=hpg_to_2dawn=4" );
-  hammer_of_light->add_action( "eye_of_tyr,if=hpg_to_2dawn=1|buff.blessing_of_dawn.stack>0" );
-  hammer_of_light->add_action( "hammer_of_wrath" );
-  hammer_of_light->add_action( "judgment" );
-  hammer_of_light->add_action( "blessed_hammer" );
-  hammer_of_light->add_action( "hammer_of_the_righteous" );
-  hammer_of_light->add_action( "crusader_strike" );
-  hammer_of_light->add_action( "divine_toll" );
 
   trinkets->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)" );
   trinkets->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)" );
