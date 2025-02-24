@@ -67,6 +67,9 @@ void warlock_pet_t::create_buffs()
   buffs.demonic_hunger = make_buff( this, "demonic_hunger", o()->tier.demonic_hunger )
                              ->set_default_value_from_effect( 1 );
 
+  buffs.spliced_4pc = make_buff( this, "spliced_fiendtraders_influence_4pc" )
+                          ->set_chance( 1.0 );
+
   // Destruction
   buffs.embers = make_buff( this, "embers", o()->talents.embers )
                      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -97,6 +100,7 @@ void warlock_pet_t::create_buffs()
   buffs.demonic_power->quiet = true;
   buffs.the_expendables->quiet = true;
   buffs.demonic_hunger->quiet = true;
+  buffs.spliced_4pc->quiet = true;
 }
 
 void warlock_pet_t::init_base_stats()
@@ -1327,6 +1331,7 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   {
     warlock_pet_melee_attack_t::execute();
 
+    p()->buffs.spliced_4pc->expire();
     debug_cast< dreadstalker_t* >( p() )->dreadbite_executes--;
   }
 
@@ -1336,6 +1341,16 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
 
     if ( p()->o()->talents.wicked_maw.ok() )
       owner_td( s->target )->debuffs_wicked_maw->trigger();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = warlock_pet_melee_attack_t::composite_da_multiplier( s );
+
+    if ( p()->buffs.spliced_4pc->check() )
+      m *= p()->buffs.spliced_4pc->check_value();
+
+    return m;
   }
 };
 
@@ -1362,6 +1377,20 @@ struct dreadstalker_melee_t : warlock_pet_melee_t
     }
   }
 };
+
+void dreadstalker_t::queue_dreadbite()
+{
+  dreadbite_executes++;
+
+  if ( !readying && !channeling && !executing )
+    schedule_ready();
+
+  if ( readying )
+  {
+    event_t::cancel( readying );
+    schedule_ready();
+  }
+}
 
 struct dreadstalker_leap_t : warlock_pet_t::travel_t
 {
@@ -1754,7 +1783,7 @@ void greater_dreadstalker_t::arise()
 {
   warlock_pet_t::arise();
 
-  dreadbite_executes = 0;
+  dreadbite_executes = 1;
 
   buffs.demonic_hunger->trigger();
 }

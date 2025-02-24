@@ -2690,6 +2690,29 @@ using namespace helpers;
             td( t )->debuffs_doom->extend_duration( p(), -p()->talents.doom->effectN( 1 ).time_value() * shards_used );
         }
       }
+
+      if ( active_4pc( TWW2 ) )
+      {
+        double mult = p()->tier.spliced_demo_4pc->effectN( 1 ).percent() + p()->tier.spliced_demo_4pc->effectN( 2 ).percent() * shards_used;
+
+        for ( auto dog : p()->warlock_pet_list.dreadstalkers )
+        {
+          if ( !dog->is_sleeping() )
+          {
+            dog->buffs.spliced_4pc->trigger( 1, mult );
+            dog->queue_dreadbite();
+          }
+        }
+
+        for ( auto big_dog : p()->warlock_pet_list.greater_dreadstalkers )
+        {
+          if ( !big_dog->is_sleeping() )
+          {
+            big_dog->buffs.spliced_4pc->trigger( 1, mult );
+            big_dog->queue_dreadbite();
+          }
+        }
+      }
     }
 
     void consume_resource() override
