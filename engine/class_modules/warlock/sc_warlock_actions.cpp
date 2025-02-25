@@ -310,8 +310,16 @@ using namespace helpers;
       {
         if ( p()->jackpot_demonology_rng->trigger() )
         {
-          p()->warlock_pet_list.greater_dreadstalkers.spawn( p()->tier.greater_dreadstalker->duration(), 1u );
+          auto dogs = p()->warlock_pet_list.greater_dreadstalkers.spawn( p()->tier.greater_dreadstalker->duration(), 1u );
+
+          for ( auto d : dogs )
+          {
+            if ( d->is_active() && p()->talents.dread_calling.ok() && !d->buffs.dread_calling->check() )
+              d->buffs.dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
+          }
+
           p()->procs.jackpot_demonology->occur();
+          p()->buffs.dread_calling->expire();
         }
       }
 
@@ -3260,8 +3268,16 @@ using namespace helpers;
 
       if ( active_2pc( TWW2 ) )
       {
-        p()->warlock_pet_list.greater_dreadstalkers.spawn( p()->tier.greater_dreadstalker->duration(), 1u );
+        auto dogs = p()->warlock_pet_list.greater_dreadstalkers.spawn( p()->tier.greater_dreadstalker->duration(), 1u );
+
+        for ( auto d : dogs )
+        {
+          if ( d->is_active() && p()->talents.dread_calling.ok() && !d->buffs.dread_calling->check() )
+            d->buffs.dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
+        }
+
         p()->procs.jackpot_demonology->occur();
+        p()->buffs.dread_calling->expire();
       }
       
       // Last tested 2021-07-13

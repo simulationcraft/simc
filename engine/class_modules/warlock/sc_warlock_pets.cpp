@@ -163,7 +163,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + buffs.grimoire_of_service->check_value();
 
-  if ( pet_type == PET_DREADSTALKER && o()->talents.dread_calling.ok() )
+  if ( ( pet_type == PET_DREADSTALKER || pet_type == PET_FELHUNTER ) && o()->talents.dread_calling.ok() )
     m *= 1.0 + buffs.dread_calling->check_value();
 
   if ( o()->talents.the_expendables.ok() )
