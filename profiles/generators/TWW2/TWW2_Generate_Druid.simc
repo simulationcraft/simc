@@ -31,9 +31,9 @@
 druid="TWW2_Druid_Feral"
 level=80
 race=night_elf
-region=us
-server=malganis
+timeofday=night
 role=attack
+position=back
 spec=feral
 talents=CcGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmZb2MzCzYmZb2YsNzMjZmBAAAAAYJYWgxMjaGzyYZmZMmxMAAAAAAAYAAAAEAMbzs0sNzyGYGAWMDG
 
