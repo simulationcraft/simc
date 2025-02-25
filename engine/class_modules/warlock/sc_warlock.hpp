@@ -601,10 +601,10 @@ public:
     const spell_data_t* hexflame_destro_2pc;
     const spell_data_t* hexflame_destro_4pc;
     const spell_data_t* echo_of_the_azjaqir;
-    //const spell_data_t* spliced_destro_2pc;
-    //const spell_data_t* spliced_destro_4pc;
-    //const spell_data_t* spliced_destro_jackpot;
-    //const spell_data_t* demonfire_flurry; // Procs Demonfire bolts on Jackpot proc
+    const spell_data_t* spliced_destro_2pc;
+    const spell_data_t* spliced_destro_4pc;
+    const spell_data_t* spliced_destro_jackpot;
+    const spell_data_t* demonfire_flurry; // Procs Demonfire bolts on Jackpot proc
 
   } tier;
 
@@ -666,6 +666,7 @@ public:
     propagate_const<buff_t*> decimation;
     propagate_const<buff_t*> summon_overfiend;
     propagate_const<buff_t*> echo_of_the_azjaqir;
+    propagate_const<buff_t*> demonfire_flurry_trigger;
 
     // Diabolist Buffs
     propagate_const<buff_t*> ritual_overlord;

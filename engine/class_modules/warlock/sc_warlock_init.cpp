@@ -502,6 +502,12 @@ namespace warlock
     tier.hexflame_destro_4pc = sets->set( WARLOCK_DESTRUCTION, TWW1, B4 ); // Should be ID 453646
     tier.echo_of_the_azjaqir = find_spell( 455674 );
 
+    // Liberation of Undermine
+    tier.spliced_destro_2pc = sets->set( WARLOCK_DESTRUCTION, TWW2, B2 ); // Should be ID 1215680
+    tier.spliced_destro_4pc = sets->set( WARLOCK_DESTRUCTION, TWW2, B4 ); // Should be ID 1215681
+    tier.spliced_destro_jackpot = find_spell( 1217798 );
+    tier.demonfire_flurry = find_spell( 1217731 );
+
     // Initialize some default values for pet spawners
     warlock_pet_list.infernals.set_default_duration( talents.summon_infernal_main->duration() );
     warlock_pet_list.overfiends.set_default_duration( talents.summon_overfiend->duration() );
@@ -802,6 +808,33 @@ namespace warlock
                                    { resource_gain( RESOURCE_SOUL_SHARD, talents.overfiend_buff->effectN( 1 ).base_value() / 10.0, gains.summon_overfiend ); } );
 
     buffs.echo_of_the_azjaqir = make_buff( this, "echo_of_the_azjaqir", tier.echo_of_the_azjaqir );
+
+    buffs.demonfire_flurry_trigger = make_buff( this, "demonfire_flurry_trigger", tier.demonfire_flurry )
+                                         ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
+                                         ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                                         ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ){
+                                           
+                                           } );
+
+    timespan_t tick_time = tier.demonfire_flurry->effectN( 1 ).period();
+    timespan_t duration = tier.demonfire_flurry->duration();
+
+    if ( talents.demonfire_mastery.ok() )
+    {
+      tick_time *= 1.0 + talents.demonfire_mastery->effectN( 2 ).percent();
+      duration *= 1.0 + talents.demonfire_mastery->effectN( 3 ).percent();
+    }
+
+    int ticks = duration / tick_time;
+    if ( talents.raging_demonfire.ok() )
+    {
+      ticks += as<int>( talents.raging_demonfire->effectN( 1 ).base_value() );
+      tick_time *= 1.0 + talents.raging_demonfire->effectN( 3 ).percent();
+    }
+    duration = ticks * tick_time;
+
+    buffs.demonfire_flurry_trigger->set_period( tick_time );
+    buffs.demonfire_flurry_trigger->set_duration( duration );
   }
 
   void warlock_t::create_buffs_diabolist()
