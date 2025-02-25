@@ -27,34 +27,34 @@
 
 # save=TWW2_Warlock_Affliction.simc
 
-# warlock="TWW2_Warlock_Affliction_Hellcaller"
-# spec=affliction
-# level=80
-# race=orc
-# role=spell
-# position=back
-# professions=alchemy=100/jewelcrafting=100
-# talents=CkQAAAAAAAAAAAAAAAAAAAAAAAmZmZmZEzmBmtZmZY2GAAAwMzMziZmxyMzMLmxMDAYGLwAziRjZAZWALzAAAAAAAAAGzGA
-# default_pet=sayaad
+warlock="TWW2_Warlock_Affliction_Hellcaller"
+spec=affliction
+level=80
+race=orc
+role=spell
+position=back
+professions=alchemy=100/jewelcrafting=100
+talents=CkQAAAAAAAAAAAAAAAAAAAAAAAzMzMzMjYYYMbzMzwsNAAAgZGzsYmZsMzMzmZMzAAmxCMwsY0YGQmFwyMAAAAAAAAwY2A
+default_pet=sayaad
 
-# head=devotees_discarded_headdress,id=212440,bonus_id=1540/10299/523,ilevel=639,gem_id=213743
-# neck=trailspinner_pendant,id=178707,bonus_id=9948/10299/10376/8781,gem_id=213473/213473
-# shoulders=hexflame_covens_altar,id=212072,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-# back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant_id=7409
-# chest=hexflame_covens_ritual_harness,id=212077,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7364
-# wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960/1808/8795,gem_id=213461,enchant_id=7397,crafted_stats=32/36
-# hands=hexflame_covens_sleeves,id=212075,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-# waist=burrowers_cinch,id=221158,bonus_id=4786/3131/10299/523,ilevel=639,gem_id=213461
-# legs=hexflame_covens_leggings,id=212073,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7534
-# feet=assimilated_eggshell_slippers,id=225582,bonus_id=1540/10299/10376,enchant_id=7418
-# finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10395/8781,ilevel=639,gem_id=213461/213461,enchant_id=7340
-# finger2=umbriss_band,id=133286,bonus_id=11342/10299/10376/8781,gem_id=213473/213473,enchant_id=7340
-# trinket1=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
-# trinket2=mad_queens_mandate,id=212454,bonus_id=1540/10299/10376
-# main_hand=flawless_phase_blade,id=212405,bonus_id=1540/10299/10376,enchant_id=7460
-# off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960/8792,crafted_stats=32/36
+head=spliced_fiendtraders_transcendence,id=229325,bonus_id=1808,ilevel=678,gem_id=213743
+neck=semicharmed_amulet,id=228841,bonus_id=8781,ilevel=678,gem_id=213470/213491
+shoulders=spliced_fiendtraders_loyal_servants,id=229323,bonus_id=1527/11996
+back=test_pilots_gopack,id=228844,bonus_id=1527/11996/11964,enchant_id=7409
+chest=spliced_fiendtraders_surgical_gown,id=229328,ilevel=678,enchant_id=7364
+wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/9627/10222/11144/11307/11109/8960/8791,ilevel=675,gem_id=213467,enchant_id=7397,crafted_stats=36/32
+hands=golden_handshakers,id=228872,bonus_id=1527/11996/11964
+waist=honorbound_retainers_sash,id=221121,bonus_id=3170/11996/11964/1808,gem_id=213458
+legs=spliced_fiendtraders_skin_tights,id=229324,bonus_id=11996/10356/11961/6652/1579/10255,ilevel=678,enchant_id=7534
+feet=cloudstrider_soles,id=221043,ilevel=678,enchant_id=7424
+finger1=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213461/213461,enchant_id=7346
+finger2=cyrces_circlet,id=228411,bonus_id=12014/1498,ilevel=658,gem_id=228639/228638/228646,enchant_id=7346
+trinket1=house_of_cards,id=230027,ilevel=678
+trinket2=mugs_moxie_jug,id=230192,bonus_id=1527/11996/11964
+main_hand=scalding_queenmakers_shiv,id=221062,bonus_id=3170/11996/11964,enchant_id=7460
+off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12043/12040/1485/11300/8960,crafted_stats=32/49
 
-# save=TWW2_Warlock_Affliction_Hellcaller.simc
+save=TWW2_Warlock_Affliction_Hellcaller.simc
 
 
 # warlock="TWW2_Warlock_Demonology_Soul_Harvester"
