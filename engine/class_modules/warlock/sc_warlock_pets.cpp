@@ -1795,7 +1795,7 @@ void greater_dreadstalker_t::demise()
 
 double greater_dreadstalker_t::composite_player_multiplier( school_e school ) const
 {
-  double m = warlock_pet_t::composite_player_multiplier( school );
+  double m = dreadstalker_t::composite_player_multiplier( school );
 
   m *= buffs.demonic_hunger->check_value();
 
