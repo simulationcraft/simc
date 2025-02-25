@@ -378,6 +378,9 @@ using namespace helpers;
         {
           p()->buffs.demonfire_flurry_trigger->trigger();
           p()->procs.jackpot_destruction->occur();
+
+          if ( active_4pc( TWW2 ) )
+            p()->buffs.jackpot_destruction->trigger();
         }
       }
     }
@@ -492,6 +495,10 @@ using namespace helpers;
       if ( destruction() && affected_by.chaotic_energies )
       {
         double min_percentage = affected_by.chaos_incarnate ? p()->talents.chaos_incarnate->effectN( 1 ).percent() : 0.5;
+
+        if ( p()->buffs.jackpot_destruction->check() )
+          min_percentage = 1.0;
+
         double chaotic_energies_rng = rng().range( min_percentage , 1.0 );
 
         if ( p()->normalize_destruction_mastery )
@@ -4441,6 +4448,9 @@ using namespace helpers;
       {
         p()->buffs.demonfire_flurry_trigger->trigger();
         p()->procs.jackpot_destruction->occur();
+
+        if ( active_4pc( TWW2 ) )
+          p()->buffs.jackpot_destruction->trigger();
       }
     }
   };

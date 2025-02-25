@@ -844,6 +844,10 @@ namespace warlock
     buffs.demonfire_flurry_trigger->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
     // TODO: Supposedly this is a hasted effect. Not sure if buff_t has a case for this having periodic ticks *and* hasted duration
     //buffs.demonfire_flurry_trigger->set_tick_time_behavior( buff_tick_time_behavior::HASTED );
+
+    buffs.jackpot_destruction = make_buff( this, "jackpot_destruction", tier.spliced_destro_jackpot )
+                                    ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+                                    ->set_default_value_from_effect( 1 );
   }
 
   void warlock_t::create_buffs_diabolist()

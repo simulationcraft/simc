@@ -668,6 +668,7 @@ public:
     propagate_const<buff_t*> summon_overfiend;
     propagate_const<buff_t*> echo_of_the_azjaqir;
     propagate_const<buff_t*> demonfire_flurry_trigger;
+    propagate_const<buff_t*> jackpot_destruction;
 
     // Diabolist Buffs
     propagate_const<buff_t*> ritual_overlord;
