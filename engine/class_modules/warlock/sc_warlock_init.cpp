@@ -1121,6 +1121,7 @@ namespace warlock
   {
     // TOCHECK: Presumed to use deck of cards at 3 out of 20. Long sample test needed to reconfirm in TWW
     rain_of_chaos_rng = get_shuffled_rng( "rain_of_chaos", 3, 20 );
+    jackpot_destruction_rng = get_rppm( "jackpot_destruction", tier.spliced_destro_2pc );
   }
 
   void warlock_t::init_rng_diabolist()

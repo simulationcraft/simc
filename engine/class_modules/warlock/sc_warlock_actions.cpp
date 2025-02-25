@@ -78,6 +78,7 @@ using namespace helpers;
       // Destruction
       bool decimation = false;
       bool dimension_ripper = false;
+      bool jackpot_destruction = false;
 
       // Diabolist
       bool diabolic_ritual = false;
@@ -1369,6 +1370,7 @@ using namespace helpers;
       if ( destruction() )
       {
         triggers.decimation = p->talents.decimation.ok() && !dual;
+        triggers.jackpot_destruction = true;
 
         base_dd_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 3 ).percent();
         base_dd_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 1 ).percent();
@@ -3577,6 +3579,7 @@ using namespace helpers;
       affected_by.ashen_remains = p->talents.ashen_remains.ok();
 
       triggers.dimension_ripper = p->talents.dimension_ripper.ok();
+      triggers.jackpot_destruction = true;
 
       add_child( fnb_action );
 
@@ -3700,6 +3703,8 @@ using namespace helpers;
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
 
+      triggers.jackpot_destruction = true;
+
       impact_action = new immolate_dot_t( p );
       add_child( impact_action );
 
@@ -3776,6 +3781,7 @@ using namespace helpers;
 
       triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
       triggers.rancora_cb_bonus = true;
+      triggers.jackpot_destruction = true;
 
       base_dd_multiplier *= 1.0 + p->talents.improved_chaos_bolt->effectN( 1 ).percent();
 
@@ -3890,6 +3896,8 @@ using namespace helpers;
     {
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
+
+      triggers.jackpot_destruction = true;
 
       energize_type = action_energize::PER_HIT;
       energize_resource = RESOURCE_SOUL_SHARD;
@@ -4129,6 +4137,7 @@ using namespace helpers;
       affected_by.touch_of_rancora = p->hero.touch_of_rancora.ok();
 
       triggers.diabolic_ritual = triggers.demonic_art = p->hero.diabolic_ritual.ok();
+      triggers.jackpot_destruction = true;
 
       base_dd_multiplier *= 1.0 + p->talents.blistering_atrophy->effectN( 1 ).percent();
     }
@@ -4205,6 +4214,7 @@ using namespace helpers;
   struct channel_demonfire_tick_t : public warlock_spell_t
   {
     bool demonfire_infusion;
+    bool jackpot;
 
     channel_demonfire_tick_t( warlock_t* p )
       : warlock_spell_t( "Channel Demonfire (tick)", p, p->talents.channel_demonfire_tick )
@@ -4215,10 +4225,12 @@ using namespace helpers;
       travel_speed = p->talents.channel_demonfire_travel->missile_speed();
 
       demonfire_infusion = false;
+      jackpot = false;
 
       affected_by.chaotic_energies = true;
 
       triggers.decimation = false;
+      triggers.jackpot_destruction = true;
 
       spell_power_mod.direct = p->talents.channel_demonfire_tick->effectN( 1 ).sp_coeff();
 
@@ -4229,14 +4241,18 @@ using namespace helpers;
       : channel_demonfire_tick_t( p )
     { demonfire_infusion = dfi; }
 
+    channel_demonfire_tick_t( warlock_t* p, bool dfi, bool jp )
+      : channel_demonfire_tick_t( p, dfi )
+    { jackpot = jp; }
+
     void impact( action_state_t* s ) override
     {
       warlock_spell_t::impact( s );
 
-      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
+      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() && !jackpot )
         td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
 
-      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_wither->is_ticking() )
+      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_wither->is_ticking() && !jackpot )
         td( s->target )->dots_wither->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
     }
 
@@ -4425,6 +4441,8 @@ using namespace helpers;
       affected_by.chaotic_energies = true;
       affected_by.havoc = true;
 
+      triggers.jackpot_destruction = true;
+
       if ( p->hero.wither.ok() )
         applied_dot = new wither_t( p, "" );
       else
@@ -4482,6 +4500,7 @@ using namespace helpers;
       affected_by.ashen_remains = p->talents.ashen_remains.ok();
 
       triggers.jackpot_demonology = true;
+      triggers.jackpot_destruction = true;
 
       if ( demonology() )
       {
@@ -4604,6 +4623,7 @@ using namespace helpers;
       : warlock_spell_t( "Ruination", p, p->hero.ruination_cast, options_str )
     {
       triggers.jackpot_demonology = true;
+      triggers.jackpot_destruction = true;
 
       impact_action = new ruination_impact_t( p );
       add_child( impact_action );

@@ -826,6 +826,7 @@ public:
   shuffled_rng_t* rain_of_chaos_rng;
   real_ppm_t* ravenous_afflictions_rng;
   real_ppm_t* jackpot_demonology_rng;
+  real_ppm_t* jackpot_destruction_rng;
   const spell_data_t* version_11_1_0_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
