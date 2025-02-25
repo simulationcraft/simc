@@ -146,7 +146,10 @@ actions.items+=/use_item,slot=trinket2,if=(variable.cds_active)&(variable.trinke
 actions.items+=/use_item,name=time_thiefs_gambit,if=variable.cds_active|fight_remains<15|((trinket.1.cooldown.duration<cooldown.summon_darkglare.remains_expected+5)&active_enemies=1)|(active_enemies>1&havoc_active)
 actions.items+=/use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&(!variable.trinket_1_buffs&(trinket.2.cooldown.remains|!variable.trinket_2_buffs)|talent.summon_darkglare&cooldown.summon_darkglare.remains_expected>20|!talent.summon_darkglare)
 actions.items+=/use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&(!variable.trinket_2_buffs&(trinket.1.cooldown.remains|!variable.trinket_1_buffs)|talent.summon_darkglare&cooldown.summon_darkglare.remains_expected>20|!talent.summon_darkglare)
-actions.items+=/use_item,use_off_gcd=1,slot=main_hand
+actions.items+=/use_item,use_off_gcd=1,slot=main_hand,name=!neural_synapse_enhancer
+actions.items+=/use_item,use_off_gcd=1,slot=main_hand,name=neural_synapse_enhancer,if=(prev_gcd.1.soul_rot|fight_remains<=15)&!variable.trinket_1_buffs&!variable.trinket_2_buffs
+actions.items+=/use_item,use_off_gcd=1,slot=main_hand,name=neural_synapse_enhancer,if=(prev_gcd.1.soul_rot|fight_remains<=15|cooldown.soul_rot.remains>=45)&trinket.2.cooldown.remains&variable.trinket_2_buffs
+actions.items+=/use_item,use_off_gcd=1,slot=main_hand,name=neural_synapse_enhancer,if=(prev_gcd.1.soul_rot|fight_remains<=15|cooldown.soul_rot.remains>=45)&trinket.1.cooldown.remains&variable.trinket_1_buffs
 
 actions.ogcd=potion,if=variable.cds_active|fight_remains<32|prev_gcd.1.soul_rot&time<20
 actions.ogcd+=/berserking,if=variable.cds_active|fight_remains<14|prev_gcd.1.soul_rot&time<20
