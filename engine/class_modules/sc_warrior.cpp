@@ -1203,10 +1203,12 @@ public:
 
       // TWW2 Tier
       // TWW2 Tier
+      // Effect 1 is dd buff, 2pc
       // effect 2 is enabled by 4pc
       // effect 3 is handled manually.  Shield Charge cooldown
-      // effect 4 seems to be a crit multiplier that is disabled
-      parse_effects( p()->buff.luck_of_the_draw, effect_mask_t( true ).disable( 2, 3, 4 ) );
+      // effect 4 is dt buff, 2pc
+      // effect 5 is melee damage, 2pc
+      parse_effects( p()->buff.luck_of_the_draw, effect_mask_t( true ).disable( 2, 3 ) );
       if ( p()->sets->has_set_bonus( WARRIOR_PROTECTION, TWW2, B4 ) )
         parse_effects( p()->buff.luck_of_the_draw, effect_mask_t( false ).enable( 2 ), p()->sets->set( WARRIOR_PROTECTION, TWW2, B4 ) );
     }
