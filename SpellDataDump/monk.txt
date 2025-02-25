@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59324 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59347 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1140,7 +1140,6 @@ Channel Interrupt: Action (2), Interacting (10), Looting (11), Attacking (12), U
 Effects          :
 #1 (id=129048)   : Apply Aura (6) | Periodic Energize Power (24): every 0.5 seconds | Scaling Class: -2
                    Base Value: 3 | Scaled Value: 44625 (coefficient=0.017) | Target: Self (1)
-Hotfixed         : Coefficient (0.02 -> 0.017)
 #2 (id=1095450)  : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -40 | Scaled Value: -40 | Target: Self (1)
 Description      : Consumes 1 stack of Mana Tea per $t1 sec to restore $s1 Mana and reduces the Mana cost of your spells by $197908s1% for ${$115869s3/1000}.2 sec per stack of Mana Tea consumed after drinking.
@@ -1865,14 +1864,12 @@ Attributes       : Passive (6), Do Not Log (8), Can Proc From Procs (122), Maste
 Effects          :
 #1 (id=134001)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 6.93 | Misc Value: 24 | Target: Self (1)
-Hotfixed         : SP Coefficient (7.7 -> 6.93)
 #2 (id=287388)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=305755)   : Apply Aura (6) | Add Flat Modifier (107): Spell Power (24)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.0693 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Gust of Mists (191894), Gust of Mists (328748), Gust of Mists (343819)
                    Family Flags: 110
-Hotfixed         : SP Coefficient (0.077 -> 0.0693)
 Description      : Renewing Mist, Enveloping Mist, Rising Sun Kick,$?s322104[ Expel Harm,][]$?s115310[ Revival,][]$?s388615[ Restoral,][]$?s399491[ Sheilun's Gift,][]$?s388193[ Jadefire Stomp][] and Vivify cause a gust of healing mists, instantly healing the primary target for $191894s1.$?a388020[
 
 Gust of Mists has a $388020s2% chance to do $388020s1% more healing.][]
@@ -7139,7 +7136,6 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Radius: 8 yards | Target: At Enemy in Area (16)
 #3 (id=815256)   : Apply Aura (6) | Modify Hit% (54) | Attributes: Players Only (14)
                    Base Value: -99 | Scaled Value: -99 | Radius: 8 yards | Target: At Enemy in Area (16)
-Hotfixed         : Base Value (-100 -> -99)
 #4 (id=1024392)  : Apply Aura (6) | Proc Trigger Spell (42): Exploding Keg
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.2 | Trigger Spell: 388867 | Target: Self (1)
 Description      : Hurls a flaming keg at the target location, dealing $s1 Fire damage to nearby enemies, causing your attacks against them to deal $388867s1 additional Fire damage, and causing their melee attacks to deal $s2% reduced damage for the next $d.
@@ -10354,7 +10350,6 @@ Attributes       : Passive (6), Not In Spellbook (143)
 Effects          :
 #1 (id=1023483)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Misc Value 2: 0x471 | Target: Self (1)
-Hotfixed         : Base Value (40 -> 20)
 #2 (id=1023484)  : Apply Aura (6) | Dummy (4)
                    Base Value: 4000 | Scaled Value: 4000 | Target: Self (1)
 #3 (id=1147040)  : Apply Aura (6) | Dummy (4)
@@ -18955,7 +18950,6 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renewing Mist (115151), Renewing Mist (119611), Renewing Mist (448430)
                    Family Flags: 23
-Hotfixed         : Base Value (100 -> 150)
 Description      : $@spelldesc467307
 Tooltip          : Renewing Mist healing increased by $w1%.
 
@@ -19389,7 +19383,6 @@ Description      : $@spelldesc1215997
 Tooltip          : Damage and healing increased by $s1%
 
 Name             : Opportunistic Strike (id=1217999) [Spell Family (53)] 
-Hotfixed         : Internal Cooldown (0 -> 100)
 Class            : Monk
 School           : Physical
 Spell Type       : None

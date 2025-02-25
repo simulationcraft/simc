@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59324 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59347 Live
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -12580,7 +12580,6 @@ Effects          :
 Description      : $@spelldesc153595
 
 Name             : Excess Frost (id=438611) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -12601,7 +12600,6 @@ Description      : $@spelldesc438600
 Tooltip          : Your next $?c2[Phoenix Flames]?c3[Flurry][] also casts Ice Nova at $s1% effectiveness.
 
 Name             : Excess Fire (id=438624) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -16478,7 +16476,6 @@ Description      : Deals $s1 Arcane damage to enemies within $A1 yards.
 Tooltip          : Deals $s1 Arcane damage to enemies within $A1 yards.
 
 Name             : Invisibility (id=1228321) [Spell Family (3)] 
-Hotfixed         : NEW SPELL
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -16494,13 +16491,10 @@ Aura Interrupt   : Action (2), Interacting (10), Looting (11), Attacking (12), U
 Effects          :
 #1 (id=1219288)  : Unknown(176)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #2 (id=1219289)  : Apply Aura (6) | Invisibility (18)
                    Base Value: 340 | Scaled Value: 740 | Points Per Level: 5 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #3 (id=1219290)  : Apply Aura (6) | Unknown(335)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc66
 Tooltip          : Invisible$?$w3=0[][ and moving $87833s1% faster].
 

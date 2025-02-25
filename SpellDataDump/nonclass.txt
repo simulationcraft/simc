@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59324 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59347 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -126529,7 +126529,7 @@ Labels           : 292
                  : 411
 Proc Chance      : 100%
 Proc Flags       : White Melee
-Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effect#2), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4, #5)
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effect#2), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4)
 Triggered By     : Reckless Flurry (279632)
 Family Flags     : 9
 Attributes       : No Attack Miss (249), Aura Points On Client (268)
@@ -143270,10 +143270,8 @@ Channel Interrupt: Action (2), Moving (3), Interacting (10), Attacking (12), Use
 Effects          :
 #1 (id=774720)   : Apply Aura (6) | Periodic Energize Power (24): every 2 seconds | Scaling Class: -10
                    Base Value: -5 | Scaled Value: -50428.88 (coefficient=-0.019211) | Target: Self (1)
-Hotfixed         : Coefficient (-13.170383 -> -0.019211), Scaling Class (-1 -> -10)
 #2 (id=774721)   : Apply Aura (6) | Dummy (4) | Scaling Class: -10
                    Base Value: 25000 | Scaled Value: 201715.5 (coefficient=0.076844) | Target: Self (1)
-Hotfixed         : Coefficient (52.681797 -> 0.076844), Scaling Class (-1 -> -10)
 Description      : Channel to store ${-1*$s1} mana in the Ingenious Mana Battery, up to a max of $s2.
 
 Name             : Ingenious Mana Battery (id=300969) [Passive, Hidden] 
@@ -143290,7 +143288,6 @@ Effects          :
 Description      : While your mana is above $s1%, gain $s3 Versatility, increased by up to $300970s3% by the mana stored in the battery. While your mana is under $s2%, siphon $300971s2 mana every $300971t1 sec from the Ingenious Mana Battery into your mana pool.
 
 Name             : Ingenious Mana Battery (id=300970) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -143331,7 +143328,6 @@ Description      : Empowers creatures formed from Mardivas's Arcane Coffer with 
 Tooltip          : Empowers creatures formed from Mardivas's Arcane Coffer with the power of arcane.
 
 Name             : Ingenious Mana Battery (id=300989) 
-Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -173961,7 +173957,7 @@ Labels           : 25: Warrior Spells
                  : 931
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effect#2), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4, #5)
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effect#2), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4)
 Family Flags     : 9
 Attributes       : DoT Stacking Rule (103), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Do Not Display Range (126), Periodic Can Crit (265), Aura Points On Client (268)
 Effects          :
@@ -192850,7 +192846,7 @@ Labels           : 16: Class Spells
                  : 881
 Stacks           : 1 maximum
 Proc Chance      : 100%
-Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effects: #1, #3), Glory (325787 effect#1), Cruelty (335070 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effect#2), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4, #5)
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effects: #1, #3), Glory (325787 effect#1), Cruelty (335070 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effect#2), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4)
 Triggered By     : Annihilator (383916)
 Family Flags     : 9, 101
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Can Proc From Procs (122), Aura Points On Client (268), Allow Class Ability Procs (416)
@@ -221606,7 +221602,8 @@ Effects          :
 #2 (id=1109683)  : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1109684)  : Dummy (3)
-                   Base Value: 250 | Scaled Value: 250
+                   Base Value: 0 | Scaled Value: 0
+Hotfixed         : Base Value (250 -> 0)
 Description      : Combine $M2 Fractured Sparks of Omens with $M3 Valorstones to create a Spark of Omens.
 
 Name             : Divine Prayer Beads (id=428768) 
@@ -232128,10 +232125,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1144323)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 35952.4 (coefficient=14.0562) | PvP Coefficient: 0.5
-Hotfixed         : Coefficient (9.525258 -> 14.0562)
 #3 (id=1159181)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 30816.42 (coefficient=12.0482) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (8.164825 -> 12.0482)
 Description      : Your spells and abilities have a chance to bring the power of the Light to bear against your foes. A Spark of Beledar judges them, dealing $s2 Radiant damage while marking them. Your next Spark against them will consume the mark to deal an additional $s3 Radiant damage.
 
 Name             : Blessed Weapon Grip (id=443743) [Passive] 
@@ -232162,7 +232157,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 446743 | Target: Self (1)
 #2 (id=1144473)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 155884.5 (coefficient=60.9457)
-Hotfixed         : Coefficient (60.712662 -> 60.945702)
 #3 (id=1146125)  : Apply Aura (6) | Dummy (4)
                    Base Value: -15 | Scaled Value: -15 | Trigger Spell: 446836 | Target: Self (1)
 Description      : Dealing damage has a chance to grant you a stack of Deepening Darkness. The Darkness erupts at 5 stacks, dealing ${$<rolemult>*$s2} Shadow damage split among all nearby enemies. Damage increases per target, up to 5. Afterwards, the shadows weigh you down and lower your movement speed by $s3% for $446836d.
@@ -233018,10 +233012,8 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1141651)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 50.75682 (coefficient=0.013256) | PvP Coefficient: 0.4 | Target: Self (1)
-Hotfixed         : Coefficient (0.014709 -> 0.013256)
 #2 (id=1141652)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 463.0832 (coefficient=0.120942) | PvP Coefficient: 0.4 | Target: Self (1)
-Hotfixed         : Coefficient (0.134389 -> 0.120942)
 #3 (id=1151807)  : Apply Aura (6) | Proc Trigger Spell (42): Spymaster's Report
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 451199 | Target: Self (1)
 Description      : Your damaging spells dispatch a spider to spy on your foes, increasing your Intellect by $s1 per report received. Stacks up to $451199u times. This effect may only occur every $proccooldown sec.
@@ -234545,7 +234537,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1143477)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 8562.882 (coefficient=2.236341) | PvP Coefficient: 0.4 | Target: Self (1)
-Hotfixed         : Coefficient (2.354015 -> 2.236341)
 
 Name             : Spark of Beledar (id=446224) 
 School           : Holyfire
@@ -235704,7 +235695,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1147364)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 170450 (coefficient=66.6403) | Trigger Spell: 448623 | Target: Self (1)
-Hotfixed         : Coefficient (54.191929 -> 66.640297)
 #2 (id=1149589)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 1559.999 (coefficient=0.40742) | Trigger Spell: 448623 | Target: Self (1)
 Description      : $@spelldesc445339
@@ -235725,7 +235715,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1147371)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 206975 (coefficient=80.9204) | Trigger Spell: 448623 | Target: Self (1)
-Hotfixed         : Coefficient (65.803642 -> 80.920403)
 #2 (id=1149590)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 1894.999 (coefficient=0.494911) | Trigger Spell: 448623 | Target: Self (1)
 Description      : $@spelldesc445339
@@ -235746,7 +235735,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1147374)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 243500.1 (coefficient=95.2005) | Trigger Spell: 448623 | Target: Self (1)
-Hotfixed         : Coefficient (77.41732 -> 95.2005)
 #2 (id=1149591)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 2230 (coefficient=0.582402) | Trigger Spell: 448623 | Target: Self (1)
 Description      : $@spelldesc445339
@@ -235802,7 +235790,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1147546)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 204141 (coefficient=79.8124) | PvP Coefficient: 0.4 | Trigger Spell: 448833 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.4)
 Description      : $@spelldesc445331
 
 Name             : Authority of Air (id=448831) [Passive] 
@@ -235821,7 +235808,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1147547)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 247885.4 (coefficient=96.915) | PvP Coefficient: 0.48 | Trigger Spell: 448833 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.48)
 Description      : $@spelldesc445331
 
 Name             : Authority of Air (id=448832) [Passive] 
@@ -235840,7 +235826,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1147548)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 291631 (coefficient=114.0181) | PvP Coefficient: 0.5 | Trigger Spell: 448833 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc445331
 
 Name             : Authority of Air (id=448833) [Passive] 
@@ -235991,7 +235976,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1147871)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 204184.5 (coefficient=79.8294) | Trigger Spell: 449022 | Target: Self (1)
-Hotfixed         : Coefficient (55.179119 -> 79.829399)
 Description      : $@spelldesc445336
 
 Name             : Authority of Storms (id=449019) [Passive] 
@@ -236010,7 +235994,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1147872)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 247938.3 (coefficient=96.9357) | Trigger Spell: 449022 | Target: Self (1)
-Hotfixed         : Coefficient (78.828712 -> 96.935699)
 Description      : $@spelldesc445336
 
 Name             : Authority of Storms (id=449020) [Passive] 
@@ -236029,7 +236012,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1147873)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 291692.2 (coefficient=114.042) | Trigger Spell: 449022 | Target: Self (1)
-Hotfixed         : Coefficient (92.737358 -> 114.042)
 Description      : $@spelldesc445336
 
 Name             : Authority of Storms (id=449022) [Passive] 
@@ -236597,7 +236579,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1148181)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 126823 (coefficient=49.5836) | Trigger Spell: 449210 | Target: Self (1)
-Hotfixed         : Coefficient (40.320419 -> 49.583599)
 Description      : $@spelldesc445331
 
 Name             : Authority of Fiery Resolve (id=449212) [Passive] 
@@ -236616,7 +236597,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1148182)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 107799.4 (coefficient=42.146) | Trigger Spell: 449210 | Target: Self (1)
-Hotfixed         : Coefficient (34.274117 -> 42.146)
 Description      : $@spelldesc445403
 
 Name             : Authority of Fiery Resolve (id=449213) [Passive] 
@@ -236635,7 +236615,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1148183)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 88775.79 (coefficient=34.7084) | Trigger Spell: 449210 | Target: Self (1)
-Hotfixed         : Coefficient (24.382652 -> 34.708401)
 Description      : $@spelldesc445403
 
 Name             : Suffocating Darkness (id=449217) 
@@ -236698,7 +236677,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1148197)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 24502.15 (coefficient=9.57953) | PvP Coefficient: 0.58 | Trigger Spell: 449218 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.58)
 Description      : $@spelldesc445341
 
 Name             : Authority of the Depths (id=449222) [Passive] 
@@ -236716,7 +236694,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1148198)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 35002.96 (coefficient=13.685) | PvP Coefficient: 0.68 | Trigger Spell: 449218 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.68)
 Description      : $@spelldesc445341
 
 Name             : Authority of the Depths (id=449223) [Passive] 
@@ -236734,7 +236711,6 @@ Attributes       : Passive (6)
 Effects          :
 #1 (id=1148199)  : Apply Aura (6) | Unknown(285) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 29752.64 (coefficient=11.6323) | PvP Coefficient: 0.68 | Trigger Spell: 449218 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.68)
 Description      : $@spelldesc445341
 
 Name             : Entropic Reclamation (id=449254) 
@@ -238753,7 +238729,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1152697)  : Apply Aura (6) | Proc Trigger Spell (42): Oil of Deep Toxins | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 9469.01 (coefficient=3.70207) | Trigger Spell: 451905 | Target: Self (1)
-Hotfixed         : Coefficient (2.508053 -> 3.70207)
 
 Name             : Oil of Deep Toxins (id=451905) 
 School           : Nature
@@ -238780,7 +238755,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1152702)  : Apply Aura (6) | Proc Trigger Spell (42): Oil of Deep Toxins | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 11499 (coefficient=4.49573) | Trigger Spell: 451910 | Target: Self (1)
-Hotfixed         : Coefficient (3.047587 -> 4.49573)
 
 Name             : Oil of Deep Toxins (id=451910) 
 School           : Nature
@@ -238819,7 +238793,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1152705)  : Apply Aura (6) | Proc Trigger Spell (42): Oil of Deep Toxins | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 13528 (coefficient=5.289) | Trigger Spell: 451911 | Target: Self (1)
-Hotfixed         : Coefficient (3.585167 -> 5.289)
 
 Name             : Well Fed (id=451916) 
 School           : Physical
@@ -238980,7 +238953,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1152732)  : Apply Aura (6) | Proc Trigger Spell (42): Beledar's Grace | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 47346.97 (coefficient=18.5111) | Trigger Spell: 451929 | Target: Self (1)
-Hotfixed         : Coefficient (5.532183 -> 18.511101)
 
 Name             : Beledar's Grace (id=451929) 
 School           : Holy
@@ -239031,7 +239003,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1152736)  : Apply Aura (6) | Proc Trigger Spell (42): Beledar's Grace | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 67638.96 (coefficient=26.4446) | Trigger Spell: 451931 | Target: Self (1)
-Hotfixed         : Coefficient (7.903397 -> 26.444599)
 
 Name             : Oil of Beledar's Grace (id=451933) [Passive, Hidden] 
 School           : Shadow
@@ -239046,7 +239017,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1152737)  : Apply Aura (6) | Proc Trigger Spell (42): Beledar's Grace | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 57493.1 (coefficient=22.4779) | Trigger Spell: 451930 | Target: Self (1)
-Hotfixed         : Coefficient (6.718767 -> 22.4779)
 
 Name             : Azerite Surge: III (id=451934) 
 Race             : Earthen (0x60000)
@@ -240826,7 +240796,6 @@ Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted 
 Effects          :
 #1 (id=1155426)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 42800.55 (coefficient=16.7336) | Trigger Spell: 453508 | Target: Self (1)
-Hotfixed         : Coefficient (12.828595 -> 16.733601)
 Description      : Your damaging spells and abilities have a chance to toss a stashed pocket grenade, dealing ${$<rolemult>*$s1} Fire damage split between all enemies caught in the blast.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -240843,7 +240812,6 @@ Attributes       : Passive (6), Allow Cast While Dead (23), Allow While Mounted 
 Effects          :
 #1 (id=1155435)  : Apply Aura (6) | Trigger Spell with Value (231) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 42800.42 (coefficient=16.73355) | Trigger Spell: 453510 | Target: Self (1)
-Hotfixed         : Coefficient (12.828595 -> 16.733551)
 Description      : $@spelldesc453503
 
 Name             : Pocket Grenade (id=453510) 
@@ -240895,7 +240863,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 49559.66 (coefficient=19.37619) | Target: Self (1)
 #2 (id=1164381)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 107390.4 (coefficient=41.9861) | Target: Self (1)
-Hotfixed         : Coefficient (39.104328 -> 41.986099)
 #3 (id=1164714)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 458630 | Target: Self (1)
 #4 (id=1179443)  : Apply Aura (6) | Dummy (4)
@@ -240981,7 +240948,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #3 (id=1155870)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 8 | Scaled Value: 222466.1 (coefficient=86.9769) | Target: Self (1)
-Hotfixed         : Coefficient (69.579071 -> 86.976898)
 #4 (id=1155871)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 #5 (id=1155872)  : Apply Aura (6) | Dummy (4)
@@ -249308,7 +249274,6 @@ Attributes       : Passive (6), Allow Item Spell In PvP (13), No Immunities (29)
 Effects          :
 #1 (id=1168262)  : Apply Aura (6) | Unknown(285) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 720789.8 (coefficient=281.805) | PvP Coefficient: 0.23 | Trigger Spell: 460527 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.23)
 #2 (id=1168263)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #3 (id=1168264)  : Apply Aura (6) | Dummy (4)
@@ -251046,7 +251011,7 @@ Labels           : 3922
                  : 3959: Item Effects
                  : 4030
 Proc Chance      : 101%
-Real PPM         : 1 (Haste multiplier)
+Real PPM         : 0.8 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Update Passives on Apply/Remove (344), Scales with Casting Item's Level (354)
 Effects          :
@@ -252731,7 +252696,6 @@ Effects          :
 Description      : Recalibrate for $?a467492[$@spellname467497]?a467497[$@spellname467492][$@spellname467497].
 
 Name             : Precision Blasting (id=467492) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -252745,7 +252709,6 @@ Description      : Your spells and abilities have a high chance to lase your tar
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Mass Destruction (id=467497) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -252782,7 +252745,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1181086)  : Apply Aura (6) | Proc Trigger Spell (42): Wayward Vrykul's Lantern | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 4595.173 (coefficient=1.200107) | Trigger Spell: 472360 | Target: Self (1)
-Hotfixed         : Coefficient (1.500333 -> 1.200107)
 Description      : Casting a major class cooldown imbues you with the ferocity of vrykul spirits, granting $s1 Critical Strike for $472360d.
 
 This effect's duration is increased by up to ${$472360d*5} sec based on when you were last imbued.
@@ -254131,7 +254093,6 @@ Description      : Become the pinnacle of Gallagio service excellence and dole o
 Tooltip          : Bottle service! Doling out Kaja'Cola Mega-Lite to injured allies every $t1 sec.
 
 Name             : Vile Contamination (id=471316) [Passive] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -254143,14 +254104,12 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1187560)  : Apply Aura (6) | Proc Trigger Spell (42): Vile Contamination | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 427.7983 (coefficient=0.167255) | PvP Coefficient: 0.5 | Trigger Spell: 473602 | Target: Self (1)
-Hotfixed         : Coefficient (0.089445 -> 0.167255)
 #2 (id=1196678)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20000 | Scaled Value: 20000 | Target: Self (1)
 Description      : Your attacks have a very high chance to contaminate your target with industrial runoff up to $473602u times, dealing ${$s1*$<rolemult>} Shadow damage per stack every $473602t1 sec until their demise.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Test Pilot's Go-Pack (id=471383) 
-Hotfixed         : Cooldown (20000 -> 0), Category Cooldown (20000 -> 0)
 School           : Physical
 Spell Type       : None
 Duration         : 1 seconds
@@ -255266,7 +255225,6 @@ Description      : Place down the Scrambler, luring the Nemesis to its location.
 Only usable after activating the Restoration Stone inside of a Delve.
 
 Name             : Reconfiguring for Spell Casting (id=473400) 
-Hotfixed         : Cooldown (0 -> 20000), Category Cooldown (0 -> 20000)
 School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
@@ -255283,7 +255241,6 @@ Effects          :
 Description      : Cheat to immediately gain ${$471063s1*(1+$471063s2/100)} of your highest secondary stat for $473402d. While out of combat, reconfigure for spell casting instead.
 
 Name             : Reconfiguring for Melee Combat (id=473401) 
-Hotfixed         : Cooldown (0 -> 20000), Category Cooldown (0 -> 20000)
 School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
@@ -255357,7 +255314,6 @@ Description      : $@spelldesc471063
 Tooltip          : $?e0[Critical Strike]?e1[Haste]?e2[Mastery]?e3[Versatility][Highest secondary stat] increased by $?e0[$w1]?e1[$w2]?e2[$w3]?e3[$w4][$471063s1].
 
 Name             : Vile Contamination (id=473602) 
-Hotfixed         : Attributes
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
@@ -257015,7 +256971,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1196163)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 93.84422 (coefficient=0.024509) | PvP Coefficient: 0.2 | Target: Self (1)
-Hotfixed         : Coefficient (0.048536 -> 0.024509)
 #2 (id=1197545)  : Dummy (3) | Scaling Class: -7
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #3 (id=1197697)  : Dummy (3) | Scaling Class: -7
@@ -257971,7 +257926,6 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), Allow Whi
 Effects          :
 #1 (id=1198074)  : School Damage (2): physical
                    Base Value: 10 | Scaled Value: 10 (delta=0.05) | Radius: 0 - 20 yards | Target: Unknown(87) -> At Enemy in Area (16)
-Hotfixed         : Base Value (20 -> 10)
 #2 (id=1198075)  : Knock Back (98)
                    Base Value: 100 | Scaled Value: 100 | Misc Value 2: 0x12c | Radius: 0 - 10 yards | Mechanic: Knockback | Target: Unknown(87) -> At Enemy in Area (16)
 Description      : $@spelldesc456498
@@ -259203,7 +259157,6 @@ Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client
 Effects          :
 #1 (id=1200176)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 1072.564 (coefficient=0.419337) | Target: Self (1)
-Hotfixed         : Coefficient (0.389649 -> 0.419337)
 #2 (id=1200182)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 157.5632 (coefficient=0.061602) | Target: Self (1)
 #3 (id=1200183)  : Apply Aura (6) | Dummy (4)
@@ -259458,19 +259411,14 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1201371)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 29062.11 (coefficient=11.36233) | Target: Self (1)
-Hotfixed         : Coefficient (10.82127 -> 11.362326)
 #2 (id=1201372)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 29062.11 (coefficient=11.36233) | Target: Self (1)
-Hotfixed         : Coefficient (10.82127 -> 11.362326)
 #3 (id=1201373)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 36327.84 (coefficient=14.20298) | Target: Self (1)
-Hotfixed         : Coefficient (13.581027 -> 14.202983)
 #4 (id=1202597)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 6054.576 (coefficient=2.367139) | Target: Self (1)
-Hotfixed         : Coefficient (2.254445 -> 2.367139)
 #5 (id=1202687)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 3633.049 (coefficient=1.420402) | Target: Self (1)
-Hotfixed         : Coefficient (1.352667 -> 1.420402)
 Description      : Your abilities have a chance to call a member of the Goon Squad to attack your target for $1217427d. Gaining Bloodlust or a similar effect summons the whole crew.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
@@ -260316,7 +260264,6 @@ Effects          :
 Description      : Attempt to throw the NEW Goblin Hot Potato to a friendly player. If they have free room in their pack they will catch it... assuming you manage to throw it safely!
 
 Name             : Party Crashing Rocket (id=1223124) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
