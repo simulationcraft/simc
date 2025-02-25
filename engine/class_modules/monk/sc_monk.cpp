@@ -1269,7 +1269,7 @@ struct tiger_palm_t : public overwhelming_force_t<monk_melee_attack_t>
       p()->proc.counterstrike_tp->occur();
 
     if ( p()->buff.courage_of_the_white_tiger->up() )
-      p()->active_actions.courage_of_the_white_tiger->base->execute();
+      p()->active_actions.courage_of_the_white_tiger.base->execute();
 
     base_t::execute();
 
@@ -1855,7 +1855,7 @@ struct blackout_kick_t : overwhelming_force_t<charred_passions_t<monk_melee_atta
     }
 
     if ( p()->specialization() == MONK_WINDWALKER && p()->buff.strength_of_the_black_ox->check() )
-      p()->active_actions.strength_of_the_black_ox->base->execute();
+      p()->active_actions.strength_of_the_black_ox.base->execute();
   }
 
   void impact( action_state_t *s ) override
@@ -7173,13 +7173,13 @@ void monk_t::init_background_actions()
   bool sbt = talent.conduit_of_the_celestials.strength_of_the_black_ox->ok() || uw;
 
   if ( cwt )
-    active_actions.courage_of_the_white_tiger = new actions::courage_of_the_white_tiger_t( this );
+    active_actions.courage_of_the_white_tiger = actions::courage_of_the_white_tiger_t( this );
 
   if ( frc )
-    active_actions.flight_of_the_red_crane = new actions::attacks::flight_of_the_red_crane_t( this );
+    active_actions.flight_of_the_red_crane = actions::attacks::flight_of_the_red_crane_t( this );
 
   if ( sbt )
-    active_actions.strength_of_the_black_ox = new actions::spells::strength_of_the_black_ox_t( this );
+    active_actions.strength_of_the_black_ox = actions::spells::strength_of_the_black_ox_t( this );
 
   // Shado-Pan
   if ( talent.shado_pan.flurry_strikes->ok() )
@@ -7875,9 +7875,9 @@ void monk_t::create_buffs()
                                           find_spell( 443592 ) )
                           ->set_expire_callback( [ this ]( buff_t *, double, timespan_t ) {
                             buff.jade_sanctuary->trigger();
-                            active_actions.flight_of_the_red_crane->celestial->execute();
-                            active_actions.strength_of_the_black_ox->celestial->execute();
-                            active_actions.courage_of_the_white_tiger->celestial->execute();
+                            active_actions.flight_of_the_red_crane.celestial->execute();
+                            active_actions.strength_of_the_black_ox.celestial->execute();
+                            active_actions.courage_of_the_white_tiger.celestial->execute();
 
                             buff.heart_of_the_jade_serpent_cdr_celestial->trigger();
                           } );
@@ -8347,7 +8347,7 @@ void monk_t::init_special_effects()
     callbacks.register_callback_execute_function(
         talent.conduit_of_the_celestials.courage_of_the_white_tiger.spell()->id(),
         [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-          active_actions.courage_of_the_white_tiger->base->execute_on_target( state->target );
+          active_actions.courage_of_the_white_tiger.base->execute_on_target( state->target );
         } );
   }
 
@@ -8371,7 +8371,7 @@ void monk_t::init_special_effects()
     callbacks.register_callback_execute_function(
         talent.conduit_of_the_celestials.flight_of_the_red_crane.spell()->id(),
         [ this ]( const dbc_proc_callback_t *, action_t *, action_state_t *state ) {
-          active_actions.flight_of_the_red_crane->base->execute_on_target( state->target );
+          active_actions.flight_of_the_red_crane.base->execute_on_target( state->target );
         } );
   }
 

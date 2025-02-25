@@ -212,6 +212,10 @@ struct conduit_of_the_celestials_container_t
   action_t *base;
   action_t *celestial;
 
+  conduit_of_the_celestials_container_t() : base( nullptr ), celestial( nullptr )
+  {
+  }
+
   conduit_of_the_celestials_container_t( monk_t * ) : base( nullptr ), celestial( nullptr )
   {
   }
@@ -446,9 +450,9 @@ public:
     propagate_const<action_t *> chi_wave;
 
     // Conduit of the Celestials
-    actions::attacks::conduit_of_the_celestials_container_t *courage_of_the_white_tiger;
-    actions::attacks::conduit_of_the_celestials_container_t *flight_of_the_red_crane;
-    actions::attacks::conduit_of_the_celestials_container_t *strength_of_the_black_ox;
+    actions::attacks::conduit_of_the_celestials_container_t courage_of_the_white_tiger;
+    actions::attacks::conduit_of_the_celestials_container_t flight_of_the_red_crane;
+    actions::attacks::conduit_of_the_celestials_container_t strength_of_the_black_ox;
 
     // Shado-Pan
     propagate_const<action_t *> flurry_strikes;
