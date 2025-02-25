@@ -1802,12 +1802,6 @@ double greater_dreadstalker_t::composite_player_multiplier( school_e school ) co
   return m;
 }
 
-double greater_dreadstalker_t::composite_melee_crit_chance() const
-{ return warlock_pet_t::composite_melee_crit_chance(); }
-
-double greater_dreadstalker_t::composite_spell_crit_chance() const
-{ return warlock_pet_t::composite_spell_crit_chance(); }
-
 /// Greater Dreadstalker End
 
 }  // namespace demonology

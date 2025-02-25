@@ -461,8 +461,6 @@ struct greater_dreadstalker_t : public dreadstalker_t
   void arise() override;
   void demise() override;
   double composite_player_multiplier( school_e ) const override;
-  double composite_melee_crit_chance() const override;
-  double composite_spell_crit_chance() const override;
 };
 }  // namespace demonology
 
