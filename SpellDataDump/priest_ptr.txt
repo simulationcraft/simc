@@ -542,7 +542,6 @@ Labels           : 16: Class Spells
                  : 292
                  : 1383
 Stance Mask      : 0x80000000
-Affecting Spells : Priest Shadow 11.1 Class Set 4pc (1215703 effect#2)
 Family Flags     : 61
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Always Cast Log (255), Aura Points On Client (268), Log Passive (317), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Raid Encounter End or M+ Start (41)
@@ -15770,10 +15769,9 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198801)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 0.5 | Target: Self (1)
-#2 (id=1200612)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Power Infusion (10060)
-                   Family Flags: 61
+#2 (id=1200612)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Hotfixed         : Sub Type (107 -> 4), Misc Value (12 -> 0), Affects Spells
 Description      : Hitting a |cFFFFFFFFJackpot!|r grants you ${$s1/1000}.1 seconds of Power Infusion. Mind Blast$?a450405[, Void Blast,][] and Void Bolt deal $s2% increased damage while Power Infusion is active.
 
 Name             : Divinity (id=1216314) [Spell Family (6)] 
