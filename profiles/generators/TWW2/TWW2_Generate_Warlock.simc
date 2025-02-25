@@ -30,7 +30,7 @@
 warlock="TWW2_Warlock_Affliction_Hellcaller"
 spec=affliction
 level=80
-race=orc
+race=maghar_orc
 role=spell
 position=back
 professions=alchemy=100/jewelcrafting=100
