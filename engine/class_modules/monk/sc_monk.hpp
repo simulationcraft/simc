@@ -207,13 +207,14 @@ struct brews_t
 
 namespace attacks
 {
-struct flight_of_the_red_crane_t
+struct conduit_of_the_celestials_container_t
 {
   action_t *base;
   action_t *celestial;
 
-  flight_of_the_red_crane_t();
-  void init( monk_t *player );
+  conduit_of_the_celestials_container_t( monk_t * ) : base( nullptr ), celestial( nullptr )
+  {
+  }
 };
 }  // namespace attacks
 }  // namespace actions
@@ -445,10 +446,9 @@ public:
     propagate_const<action_t *> chi_wave;
 
     // Conduit of the Celestials
-    propagate_const<action_t *> courage_of_the_white_tiger;
-    actions::attacks::flight_of_the_red_crane_t flight_of_the_red_crane;
-    propagate_const<action_t *> strength_of_the_black_ox_dmg;
-    propagate_const<action_t *> strength_of_the_black_ox_absorb;
+    actions::attacks::conduit_of_the_celestials_container_t *courage_of_the_white_tiger;
+    actions::attacks::conduit_of_the_celestials_container_t *flight_of_the_red_crane;
+    actions::attacks::conduit_of_the_celestials_container_t *strength_of_the_black_ox;
 
     // Shado-Pan
     propagate_const<action_t *> flurry_strikes;
