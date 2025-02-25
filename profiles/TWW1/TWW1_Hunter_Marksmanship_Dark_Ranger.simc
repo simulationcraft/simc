@@ -21,20 +21,17 @@ temporary_enchant=main_hand:algari_mana_oil_3
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=summon_pet,if=!talent.lone_wolf
-actions.precombat+=/snapshot_stats
+actions.precombat=snapshot_stats
 # Determine the stronger trinket to sync with cooldowns. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times.
-actions.precombat+=/variable,name=trinket_1_stronger,value=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|!trinket.1.is.mirror_of_fractured_tomorrows&(trinket.2.is.mirror_of_fractured_tomorrows|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))
-actions.precombat+=/variable,name=trinket_2_stronger,value=!variable.trinket_1_stronger
-actions.precombat+=/salvo,precast_time=10
-# Precast Aimed Shot on one or two targets unless we could cleave it with Volley on two targets.
-actions.precombat+=/aimed_shot,if=active_enemies<3&(!talent.volley|active_enemies<2)
-# Otherwise precast Steady Shot on two targets if we are saving Aimed Shot to cleave with Volley, otherwise on three or more targets.
-actions.precombat+=/steady_shot,if=active_enemies>2|talent.volley&active_enemies=2
+actions.precombat+=/variable,name=stronger_trinket_slot,op=setif,value=1,value_else=2,condition=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration)|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))
+actions.precombat+=/summon_pet,if=talent.unbreakable_bond
+# Precast Aimed Shot on one target or two if we can't cleave it with Volley, otherwise precast Steady Shot.
+actions.precombat+=/aimed_shot,if=active_enemies=1|active_enemies=2&!talent.volley
+actions.precombat+=/steady_shot
 
 # Executed every time the actor is available.
 # Determine if it is a good time to use Trueshot. Raid event optimization takes priority so usage is saved for multiple targets as long as it won't delay over half its duration. Otherwise allow for small delays to line up buff effect trinkets, and when using Bullseye, delay the last usage of the fight for max stacks.
-actions=variable,name=trueshot_ready,value=cooldown.trueshot.ready&(!raid_event.adds.exists&(!talent.bullseye|fight_remains>cooldown.trueshot.duration_guess+buff.trueshot.duration%2|buff.bullseye.stack=buff.bullseye.max_stack)&(!trinket.1.has_use_buff|trinket.1.cooldown.remains>30|trinket.1.cooldown.ready)&(!trinket.2.has_use_buff|trinket.2.cooldown.remains>30|trinket.2.cooldown.ready)|raid_event.adds.exists&(!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<25|raid_event.adds.in>60)|raid_event.adds.up&raid_event.adds.remains>10)|fight_remains<25)
+actions=variable,name=trueshot_ready,value=cooldown.trueshot.ready&(!raid_event.adds.exists&(!talent.bullseye|fight_remains>cooldown.trueshot.duration_guess+buff.trueshot.duration%2|buff.bullseye.stack=buff.bullseye.max_stack)&(!trinket.1.has_use_buff|trinket.1.cooldown.remains>5|trinket.1.cooldown.ready|trinket.2.has_use_buff&trinket.2.cooldown.ready)&(!trinket.2.has_use_buff|trinket.2.cooldown.remains>5|trinket.2.cooldown.ready|trinket.1.has_use_buff&trinket.1.cooldown.ready)|raid_event.adds.exists&(!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<25|raid_event.adds.in>60)|raid_event.adds.up&raid_event.adds.remains>10)|fight_remains<25)
 actions+=/auto_shot
 actions+=/call_action_list,name=cds
 actions+=/call_action_list,name=trinkets
@@ -49,59 +46,47 @@ actions.cds+=/ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fi
 actions.cds+=/fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9
 actions.cds+=/lights_judgment,if=buff.trueshot.down
 actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<31
-actions.cds+=/salvo,if=active_enemies>2|cooldown.volley.remains<10
 
-actions.st=black_arrow,if=buff.trueshot.down
-actions.st+=/kill_shot,if=buff.razor_fragments.up
-actions.st+=/steady_shot,if=talent.steady_focus&buff.steady_focus.remains<execute_time&buff.trueshot.down
-actions.st+=/volley,if=active_enemies>1|buff.salvo.up
-actions.st+=/explosive_shot,if=active_enemies>1&buff.trick_shots.down
-# TODO: figure out why this is such a big gain for aoe builds in ST
-actions.st+=/trueshot,if=variable.trueshot_ready&talent.multishot
-# Trigger Salvo if Volley isn't being used to trigger it.
-actions.st+=/multishot,if=buff.salvo.up&!talent.volley
-# As a Dark Ranger with Readiness, Aimed Shot over Rapid Fire in Trueshot to get more Deathblows.
-actions.st+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=talent.black_arrow&talent.readiness&buff.trueshot.up
-# Hold Rapid Fire for up to 8s to proc Lunar Storm. Ignore Lunar Storm if Rapid Fire's cooldown can be reset with Wailing Arrow. Ignore all of this in Trueshot or as a Dark Ranger.
-actions.st+=/rapid_fire,if=!talent.lunar_storm|(!cooldown.lunar_storm.remains|cooldown.lunar_storm.remains>8|(action.wailing_arrow.ready&talent.readiness)|buff.trueshot.up)
-# With Wailing Arrow and Aimed Shot, target enemies without Serpent Sting or the enemy with the lowest remaining Serpent Sting.
-actions.st+=/wailing_arrow,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99
-actions.st+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99
-actions.st+=/black_arrow
-actions.st+=/kill_shot
-actions.st+=/multishot,if=buff.precise_shots.up&active_enemies>1&(talent.symphonic_arsenal|talent.small_game_hunter)
-actions.st+=/arcane_shot,if=buff.precise_shots.up
+actions.st=volley,if=!talent.double_tap
+actions.st+=/rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_ready.up|talent.bulletstorm&buff.bulletstorm.down
 actions.st+=/trueshot,if=variable.trueshot_ready
-actions.st+=/volley
-actions.st+=/explosive_shot
+actions.st+=/volley,if=talent.double_tap&buff.double_tap.down
+actions.st+=/black_arrow,if=talent.headshot&buff.precise_shots.up|!talent.headshot&buff.razor_fragments.up
+actions.st+=/kill_shot,if=talent.headshot&buff.precise_shots.up|!talent.headshot&buff.razor_fragments.up
+actions.st+=/arcane_shot,if=buff.precise_shots.up
+actions.st+=/rapid_fire,if=!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3
+actions.st+=/explosive_shot,if=talent.precision_detonation&buff.precise_shots.down
+actions.st+=/aimed_shot,if=buff.precise_shots.down
+actions.st+=/explosive_shot,if=talent.precision_detonation|active_enemies>1|buff.trueshot.down
+actions.st+=/black_arrow,if=!talent.headshot
+actions.st+=/kill_shot,if=!talent.headshot
 actions.st+=/steady_shot
 
-actions.trickshots=black_arrow,if=buff.trick_shots.remains>execute_time&buff.razor_fragments.up
-actions.trickshots+=/steady_shot,if=talent.steady_focus&buff.steady_focus.remains<execute_time&buff.trueshot.down
-actions.trickshots+=/explosive_shot
-actions.trickshots+=/volley
-actions.trickshots+=/black_arrow,if=!talent.razor_fragments&buff.trick_shots.remains>execute_time
-actions.trickshots+=/kill_shot,if=buff.razor_fragments.up
+actions.trickshots=volley,if=!talent.double_tap
 actions.trickshots+=/trueshot,if=variable.trueshot_ready
-actions.trickshots+=/barrage,if=talent.rapid_fire_barrage&buff.trick_shots.remains>execute_time
-# Hold Rapid Fire for up to 5s to proc Lunar Storm. Ignore Lunar Storm if Rapid Fire's cooldown can be reset with Wailing Arrow. Ignore all of this in Trueshot or as a Dark Ranger.
-actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(!talent.lunar_storm|(!cooldown.lunar_storm.remains|cooldown.lunar_storm.remains>5|(action.wailing_arrow.ready&talent.readiness)|buff.trueshot.up))
-# With Wailing Arrow and Aimed Shot, target enemies without Serpent Sting or the enemy with the lowest remaining Serpent Sting.
-actions.trickshots+=/wailing_arrow,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99
-actions.trickshots+=/aimed_shot,target_if=min:dot.serpent_sting.remains+action.serpent_sting.in_flight_to_target*99,if=buff.trick_shots.remains>execute_time&buff.precise_shots.down
+actions.trickshots+=/volley,if=talent.double_tap&buff.double_tap.down
+actions.trickshots+=/black_arrow,if=buff.withering_fire.up&buff.trick_shots.up
 actions.trickshots+=/multishot,if=buff.precise_shots.up|buff.trick_shots.down
-actions.trickshots+=/bag_of_tricks,if=buff.trueshot.down
+actions.trickshots+=/rapid_fire,if=buff.trick_shots.up&(!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3|buff.lunar_storm_ready.up)
+actions.trickshots+=/explosive_shot,if=talent.precision_detonation&buff.precise_shots.down&buff.trick_shots.up
+actions.trickshots+=/aimed_shot,if=buff.precise_shots.down&buff.trick_shots.up
+actions.trickshots+=/explosive_shot
+actions.trickshots+=/black_arrow
+actions.trickshots+=/kill_shot
 actions.trickshots+=/steady_shot
 
 # True if effects that are desirable to sync a trinket buff with are ready.
-actions.trinkets=variable,name=sync_ready,value=variable.trueshot_ready
-# True if effecs that are desirable to sync a trinket buff with are active.
-actions.trinkets+=/variable,name=sync_active,value=buff.trueshot.up
+actions.trinkets=variable,name=buff_sync_ready,value=cooldown.trueshot.ready
 # Time until the effects that are desirable to sync a trinket buff with will be ready.
-actions.trinkets+=/variable,name=sync_remains,value=cooldown.trueshot.remains_guess
+actions.trinkets+=/variable,name=buff_sync_remains,value=cooldown.trueshot.remains
+# True if effects that are desirable to sync a trinket buff with are active.
+actions.trinkets+=/variable,name=buff_sync_active,value=buff.trueshot.up
+# True if effects that are desirable to sync trinket damage with are active.
+actions.trinkets+=/variable,name=damage_sync_active,value=buff.trueshot.up
+# Time until the effects that are desirable to sync trinket damage with will be ready.
+actions.trinkets+=/variable,name=damage_sync_remains,value=cooldown.trueshot.remains
 # Uses buff effect trinkets with cooldowns and is willing to delay usage up to half the trinket cooldown if it won't lose a usage in the fight. Fills in downtime with weaker buff effects if they won't also be saved for later cooldowns (happens if it won't delay over half the trinket cooldown and a stronger trinket won't be up in time) or damage effects if they won't inferfere with any buff effect usage. Intended to be slot-agnostic so that any order of the same trinket pair should result in the same usage.
-actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket1,if=trinket.1.has_use_buff&(variable.sync_ready&(variable.trinket_1_stronger|trinket.2.cooldown.remains)|!variable.sync_ready&(variable.trinket_1_stronger&(variable.sync_remains>trinket.1.cooldown.duration%3&fight_remains>trinket.1.cooldown.duration+20|trinket.2.has_use_buff&trinket.2.cooldown.remains>variable.sync_remains-15&trinket.2.cooldown.remains-5<variable.sync_remains&variable.sync_remains+45>fight_remains)|variable.trinket_2_stronger&(trinket.2.cooldown.remains&(trinket.2.cooldown.remains-5<variable.sync_remains&variable.sync_remains>=20|trinket.2.cooldown.remains-5>=variable.sync_remains&(variable.sync_remains>trinket.1.cooldown.duration%3|trinket.1.cooldown.duration<fight_remains&(variable.sync_remains+trinket.1.cooldown.duration>fight_remains)))|trinket.2.cooldown.ready&variable.sync_remains>20&variable.sync_remains<trinket.2.cooldown.duration%3)))|!trinket.1.has_use_buff&(trinket.1.cast_time=0|!variable.sync_active)&(!trinket.2.has_use_buff&(variable.trinket_1_stronger|trinket.2.cooldown.remains)|trinket.2.has_use_buff&(variable.sync_remains>20|trinket.2.cooldown.remains>20))|fight_remains<25&(variable.trinket_1_stronger|trinket.2.cooldown.remains)
-actions.trinkets+=/use_item,use_off_gcd=1,slot=trinket2,if=trinket.2.has_use_buff&(variable.sync_ready&(variable.trinket_2_stronger|trinket.1.cooldown.remains)|!variable.sync_ready&(variable.trinket_2_stronger&(variable.sync_remains>trinket.2.cooldown.duration%3&fight_remains>trinket.2.cooldown.duration+20|trinket.1.has_use_buff&trinket.1.cooldown.remains>variable.sync_remains-15&trinket.1.cooldown.remains-5<variable.sync_remains&variable.sync_remains+45>fight_remains)|variable.trinket_1_stronger&(trinket.1.cooldown.remains&(trinket.1.cooldown.remains-5<variable.sync_remains&variable.sync_remains>=20|trinket.1.cooldown.remains-5>=variable.sync_remains&(variable.sync_remains>trinket.2.cooldown.duration%3|trinket.2.cooldown.duration<fight_remains&(variable.sync_remains+trinket.2.cooldown.duration>fight_remains)))|trinket.1.cooldown.ready&variable.sync_remains>20&variable.sync_remains<trinket.1.cooldown.duration%3)))|!trinket.2.has_use_buff&(trinket.2.cast_time=0|!variable.sync_active)&(!trinket.1.has_use_buff&(variable.trinket_2_stronger|trinket.1.cooldown.remains)|trinket.1.has_use_buff&(variable.sync_remains>20|trinket.1.cooldown.remains>20))|fight_remains<25&(variable.trinket_2_stronger|trinket.1.cooldown.remains)
+actions.trinkets+=/use_items,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(variable.buff_sync_active&(variable.stronger_trinket_slot=this_trinket_slot|other_trinket.cooldown.remains)|!variable.buff_sync_active&(variable.stronger_trinket_slot=this_trinket_slot&(variable.buff_sync_remains>this_trinket.cooldown.duration%3&fight_remains>this_trinket.cooldown.duration+20|other_trinket.has_use_buff&other_trinket.cooldown.remains>variable.buff_sync_remains-15&other_trinket.cooldown.remains-5<variable.buff_sync_remains&variable.buff_sync_remains+45>fight_remains)|variable.stronger_trinket_slot!=this_trinket_slot&(other_trinket.cooldown.remains&(other_trinket.cooldown.remains-5<variable.buff_sync_remains&variable.buff_sync_remains>=20|other_trinket.cooldown.remains-5>=variable.buff_sync_remains&(variable.buff_sync_remains>this_trinket.cooldown.duration%3|this_trinket.cooldown.duration<fight_remains&(variable.buff_sync_remains+this_trinket.cooldown.duration>fight_remains)))|other_trinket.cooldown.ready&variable.buff_sync_remains>20&variable.buff_sync_remains<other_trinket.cooldown.duration%3)))|!this_trinket.has_use_buff&(this_trinket.cast_time=0|!variable.buff_sync_active)&(!this_trinket.is.junkmaestros_mega_magnet|buff.junkmaestros_mega_magnet.stack>10)&(!other_trinket.has_cooldown&(variable.damage_sync_active|this_trinket.is.junkmaestros_mega_magnet&buff.junkmaestros_mega_magnet.stack>29|!this_trinket.is.junkmaestros_mega_magnet&variable.damage_sync_remains>this_trinket.cooldown.duration%3)|other_trinket.has_cooldown&(!other_trinket.has_use_buff&(variable.stronger_trinket_slot=this_trinket_slot|other_trinket.cooldown.remains)&(variable.damage_sync_active|this_trinket.is.junkmaestros_mega_magnet&buff.junkmaestros_mega_magnet.stack>25|variable.damage_sync_remains>this_trinket.cooldown.duration%3&!this_trinket.is.junkmaestros_mega_magnet|other_trinket.cooldown.remains-5<variable.damage_sync_remains&variable.damage_sync_remains>=20)|other_trinket.has_use_buff&(variable.damage_sync_active|this_trinket.is.junkmaestros_mega_magnet&buff.junkmaestros_mega_magnet.stack>29|!this_trinket.is.junkmaestros_mega_magnet&variable.damage_sync_remains>this_trinket.cooldown.duration%3)&(other_trinket.cooldown.remains>20|other_trinket.cooldown.remains-5>variable.buff_sync_remains)))|fight_remains<25&(variable.stronger_trinket_slot=this_trinket_slot|other_trinket.cooldown.remains)
 
 head=wildhammer_riding_helm,id=133285,bonus_id=1808,ilevel=639,gem_id=213743
 neck=locket_of_broken_memories,id=212448,bonus_id=8781,ilevel=639,gem_id=213455/213455

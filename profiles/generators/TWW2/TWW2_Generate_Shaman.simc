@@ -27,34 +27,33 @@
 
 # save=TWW2_Shaman_Elemental.simc
 
-# shaman="TWW2_Shaman_Elemental_Farseer"
-# level=80
-# race=tauren
-# spec=elemental
-# role=spell
-# position=ranged_back
+shaman="TWW2_Shaman_Elemental_Farseer"
+level=80
+race=tauren
+spec=elemental
+role=spell
+position=ranged_back
 
-# # Farseer
-# talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAMbzyyMjZGzysMGMYmZAAAAAwiZ2gBMgZjJkZBAMbTzA2WMzMNMzMjhtZmZwsMYZMzYmhZ2YA
+# Farseer
+talents=CYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAMbzyyMjZGzysMGjxYmBAAAAwiZ2gBMgZjJkZBAMbTzMM2WYmphZmZMsNzMDGDWmZmZYYmNA
 
-# head=,id=212011,bonus_id=10299/1808/1540,gem_id=213743
-# neck=,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213470/213491
-# shoulder=,id=212009,ilevel=639
-# back=,id=225574,bonus_id=1540/10299/10376,enchant=chant_of_winged_grace_3
-# chest=,id=212421,bonus_id=1540/10299/10376,enchant=crystalline_radiance_3
-# wrist=,id=219342,bonus_id=10421/9633/8902/11144/10222/1485/1808/8793/11109/8960,enchant=chant_of_armored_avoidance_3,gem_id=213482,crafted_stats=36/40
-# hands=,id=212012,ilevel=639
-# waist=,id=221075,bonus_id=3131/10299/10376/1808,gem_id=213458
-# legs=,id=212010,ilevel=639,enchant=sunset_spellthread_3
-# feet=,id=212013,bonus_id=1540/10299,enchant=defenders_march_3
-# finger1=,id=225578,bonus_id=1540/10299/10376/8781,enchant=radiant_mastery_3,gem_id=213494/213494
-# finger2=,id=225576,bonus_id=1540/10299/10376/8781,enchant=radiant_mastery_3,gem_id=213494/213494
-# trinket1=,id=220202,ilevel=639
-# trinket2=,id=219314,ilevel=639
-# main_hand=,id=222445,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960,enchant=authority_of_the_depths_3,crafted_stats=49/36
-# off_hand=,id=178712,bonus_id=9948/10299/10376
+head=,id=229262,bonus_id=4800/4786/1527/11996/523,gem_id=213743
+neck=,id=228841,bonus_id=4800/4786/1527/11996/8781,gem_id=213470/213470
+shoulder=,id=229260,bonus_id=4800/4786/1527/11996
+back=,id=222817,bonus_id=10421/9633/8902/12043/12040/1485/10520/8960,enchant_id=7403,crafted_stats=40/36
+chest=,id=229265,bonus_id=4800/4786/1527/11996,enchant_id=7364,enchant=crystalline_radiance_3
+wrist=,id=219342,bonus_id=10421/9633/8902/12043/12040/1485/1808/10520/8960,enchant_id=7385,gem_id=213470,crafted_stats=40/36
+hands=,id=229263,bonus_id=4800/4786/1527/11996
+waist=,id=228845,bonus_id=4800/4786/1527/11996/1808,gem_id=213470
+legs=,id=158341,bonus_id=4786/11359/11996,enchant_id=7534,enchant=sunset_spellthread_3
+feet=,id=168982,bonus_id=10067/11996/11964,enchant_id=7424
+finger1=,id=231265,bonus_id=4800/4786/1527/11996/8781,enchant_id=7352,enchant=radiant_mastery_3,gem_id=213470/213497
+finger2=,id=228411,bonus_id=1511/11988/11964,enchant_id=7352,gem_id=228639/228638/228646
+trinket1=,id=230027,bonus_id=4800/4786/1527/11996
+trinket2=,id=230198,bonus_id=4800/4786/1527/11996
+main_hand=,id=232805,bonus_id=4800/4786/1527/11996,enchant_id=7460,enchant=authority_of_the_depths_3
 
-# save=TWW2_Shaman_Elemental_Farseer.simc
+save=TWW2_Shaman_Elemental_Farseer.simc
 
 # shaman="TWW2_Shaman_Enhancement_Totemic"
 # level=80

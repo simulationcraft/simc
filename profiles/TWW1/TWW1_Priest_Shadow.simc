@@ -21,7 +21,6 @@ temporary_enchant=main_hand:algari_mana_oil_3
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat=snapshot_stats
 actions.precombat+=/shadowform,if=!buff.shadowform.up
 actions.precombat+=/variable,name=dr_force_prio,default=0,op=reset
@@ -29,6 +28,7 @@ actions.precombat+=/variable,name=me_force_prio,default=1,op=reset
 actions.precombat+=/variable,name=max_vts,default=12,op=reset
 actions.precombat+=/variable,name=is_vt_possible,default=0,op=reset
 actions.precombat+=/variable,name=pooling_mindblasts,default=0,op=reset
+actions.precombat+=/use_item,name=ingenious_mana_battery
 actions.precombat+=/arcane_torrent
 actions.precombat+=/use_item,name=aberrant_spellforge
 actions.precombat+=/halo,if=!fight_style.dungeonroute&!fight_style.dungeonslice&active_enemies<=4&(fight_remains>=120|active_enemies<=2)
@@ -56,20 +56,21 @@ actions.aoe_variables+=/variable,name=holding_crash,op=set,value=(variable.max_v
 actions.aoe_variables+=/variable,name=manual_vts_applied,op=set,value=(active_dot.vampiric_touch+8*!variable.holding_crash)>=variable.max_vts|!variable.is_vt_possible
 
 # TODO: Check VE/DA enter conditions based on dots
-actions.cds=potion,if=(buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up&(fight_remains<=cooldown.power_infusion.remains+15))&(fight_remains>=320|time_to_bloodlust>=320|buff.bloodlust.react)|fight_remains<=30
-actions.cds+=/fireblood,if=buff.power_infusion.up|fight_remains<=8
-actions.cds+=/berserking,if=buff.power_infusion.up|fight_remains<=12
-actions.cds+=/blood_fury,if=buff.power_infusion.up|fight_remains<=15
-actions.cds+=/ancestral_call,if=buff.power_infusion.up|fight_remains<=15
-# Sync Power Infusion with Voidform or Dark Ascension
-actions.cds+=/power_infusion,if=(buff.voidform.up|buff.dark_ascension.up&(fight_remains<=80|fight_remains>=140)|active_allied_augmentations)
+actions.cds=potion,if=(buff.voidform.up&buff.power_infusion.up|buff.dark_ascension.up&(fight_remains<=cooldown.power_infusion.remains+15))&(fight_remains>=320|time_to_bloodlust>=320|buff.bloodlust.react)|fight_remains<=30
+actions.cds+=/fireblood,if=buff.power_infusion.up&(buff.voidform.up|buff.dark_ascension.up)|fight_remains<=8
+actions.cds+=/berserking,if=buff.power_infusion.up&(buff.voidform.up|buff.dark_ascension.up)|fight_remains<=12
+actions.cds+=/blood_fury,if=buff.power_infusion.up&(buff.voidform.up|buff.dark_ascension.up)|fight_remains<=15
+actions.cds+=/ancestral_call,if=buff.power_infusion.up&(buff.voidform.up|buff.dark_ascension.up)|fight_remains<=15
 # Use <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a> while <a href='https://www.wowhead.com/spell=194249/voidform'>Voidform</a> or <a href='https://www.wowhead.com/spell=391109/dark-ascension'>Dark Ascension</a> is active. Chain directly after your own <a href='https://www.wowhead.com/spell=10060/power-infusion'>Power Infusion</a>.
-actions.cds+=/invoke_external_buff,name=power_infusion,if=(buff.voidform.up|buff.dark_ascension.up)&!buff.power_infusion.up
+actions.cds+=/cancel_buff,name=power_infusion,if=cooldown.invoke_power_infusion_0.up&cooldown.invoke_power_infusion_0.duration>0&set_bonus.tww2_4pc&buff.power_infusion.remains<=2
+actions.cds+=/invoke_external_buff,name=power_infusion,if=(buff.voidform.up|buff.dark_ascension.up|set_bonus.tww2_4pc)&!buff.power_infusion.up
 actions.cds+=/invoke_external_buff,name=bloodlust,if=buff.power_infusion.up&fight_remains<120|fight_remains<=40
+# Sync Power Infusion with Voidform or Dark Ascension
+actions.cds+=/power_infusion,if=(buff.voidform.up|buff.dark_ascension.up&(fight_remains<=80|fight_remains>=140)|active_allied_augmentations)&(!buff.power_infusion.up|set_bonus.tww2_4pc&buff.power_infusion.remains<=15)&(cooldown.invoke_power_infusion_0.remains>=10|!set_bonus.tier31_4pc|cooldown.invoke_power_infusion_0.duration=0)
 # Make sure Mindbender is active before popping Dark Ascension unless you have insignificant talent points or too many targets
-actions.cds+=/halo,if=talent.power_surge&(pet.fiend.active&cooldown.fiend.remains>=4&talent.mindbender|!talent.mindbender&!cooldown.fiend.up|active_enemies>2&!talent.inescapable_torment|!talent.dark_ascension)&(cooldown.mind_blast.charges=0|!talent.void_eruption|cooldown.void_eruption.remains>=gcd.max*4)
+actions.cds+=/halo,if=talent.power_surge&(pet.fiend.active&cooldown.fiend.remains>=4&talent.mindbender|!talent.mindbender&!cooldown.fiend.up|active_enemies>2&!talent.inescapable_torment|!talent.dark_ascension)&(cooldown.mind_blast.charges=0|!talent.void_eruption|cooldown.void_eruption.remains>=gcd.max*4|buff.mind_devourer.up&talent.mind_devourer)
 # Make sure Mindbender is active before popping Void Eruption and dump charges of Mind Blast before casting
-actions.cds+=/void_eruption,if=(pet.fiend.active&cooldown.fiend.remains>=4|!talent.mindbender&!cooldown.fiend.up|active_enemies>2&!talent.inescapable_torment)&(cooldown.mind_blast.charges=0|time>15)
+actions.cds+=/void_eruption,if=(pet.fiend.active&cooldown.fiend.remains>=4|!talent.mindbender&!cooldown.fiend.up|active_enemies>2&!talent.inescapable_torment)&(cooldown.mind_blast.charges=0|time>15|buff.mind_devourer.up&talent.mind_devourer)
 actions.cds+=/dark_ascension,if=(pet.fiend.active&cooldown.fiend.remains>=4|!talent.mindbender&!cooldown.fiend.up|active_enemies>2&!talent.inescapable_torment)&(active_dot.devouring_plague>=1|insanity>=(15+5*!talent.minds_eye+5*talent.distorted_reality-pet.fiend.active*6))
 actions.cds+=/call_action_list,name=trinkets
 # Use Desperate Prayer to heal up should Shadow Word: Death or other damage bring you below 75%
@@ -83,11 +84,13 @@ actions.filler=call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff
 # Use PWS with CR talented to trigger TOF if there are no better alternatives available to do this as we still get insanity for a PWS cast.
 actions.filler+=/power_word_shield,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up&talent.crystalline_reflection
 # Consume empowered fillers
-actions.filler+=/call_action_list,name=empowered_filler,if=dot.devouring_plague.remains>action.mind_spike.cast_time|!talent.mind_spike
+actions.filler+=/call_action_list,name=empowered_filler
 # Cast Vampiric Touch to proc Unfurling Darkness
 actions.filler+=/vampiric_touch,target_if=min:remains,if=talent.unfurling_darkness&buff.unfurling_darkness_cd.remains<execute_time&talent.inner_quietus
 actions.filler+=/shadow_word_death,target_if=target.health.pct<20|(buff.deathspeaker.up|set_bonus.tier31_2pc)&dot.devouring_plague.ticking
 actions.filler+=/shadow_word_death,target_if=min:target.time_to_die,if=talent.inescapable_torment&pet.fiend.active
+# Its literally a random number over 1.5 but less than 2
+actions.filler+=/mind_flay,target_if=max:dot.devouring_plague.remains,if=bugs&buff.voidform.up&cooldown.void_bolt.remains<=gcd.max*1.65738,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.remains>=gcd.max&gcd.remains<=0,interrupt_global=1
 actions.filler+=/devouring_plague,if=talent.empowered_surges&buff.surge_of_insanity.up|buff.voidform.up&talent.void_eruption
 actions.filler+=/vampiric_touch,target_if=min:remains,if=talent.unfurling_darkness&buff.unfurling_darkness_cd.remains<execute_time
 # Save up to 20s if adds are coming soon.
@@ -96,6 +99,7 @@ actions.filler+=/halo,if=spell_targets>1
 actions.filler+=/power_word_life,if=!buff.twist_of_fate.up&buff.twist_of_fate_can_trigger_on_ally_heal.up
 actions.filler+=/call_action_list,name=empowered_filler
 actions.filler+=/call_action_list,name=heal_for_tof,if=equipped.rashoks_molten_heart&(active_allies-(10-buff.molten_radiance.value))>=10&buff.molten_radiance.up,line_cd=5
+actions.filler+=/shadow_crash,if=!variable.holding_crash&talent.void_eruption&talent.perfected_form
 actions.filler+=/mind_spike,target_if=max:dot.devouring_plague.remains
 actions.filler+=/mind_flay,target_if=max:dot.devouring_plague.remains,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2,interrupt_global=1
 actions.filler+=/divine_star
@@ -118,13 +122,14 @@ actions.heal_for_tof+=/divine_star
 actions.heal_for_tof+=/holy_nova,if=buff.rhapsody.stack=20&talent.rhapsody
 
 actions.main=variable,name=dots_up,op=set,value=active_dot.vampiric_touch=active_enemies|action.shadow_crash.in_flight&talent.whispering_shadows,if=active_enemies<3
+actions.main+=/void_bolt,target_if=max:target.time_to_die,only_cwc=1
 # Are we pooling mindblasts? Currently only used for Voidweaver.
-actions.main+=/variable,name=pooling_mindblasts,op=setif,value=1,value_else=0,condition=(cooldown.void_torrent.remains<?(variable.holding_crash*raid_event.adds.in))<=gcd.max*(1+talent.mind_melt*1),if=talent.void_blast
-actions.main+=/call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_crash|active_enemies>2)
+actions.main+=/variable,name=pooling_mindblasts,op=setif,value=1,value_else=0,condition=(cooldown.void_torrent.remains<?(variable.holding_crash*raid_event.adds.in))<=gcd.max*(2+talent.mind_melt*2),if=talent.void_blast
 # High priority action to consume Unfurling Darkness during the opener with Voidweaver
 actions.main+=/vampiric_touch,target_if=min:remains,if=buff.unfurling_darkness.up&talent.unfurling_darkness&talent.mind_melt&talent.void_blast&buff.mind_melt.stack<2&cooldown.mindbender.up&cooldown.dark_ascension.up&time<=4
-# High priority action to Mind Spike to get to enough Insanity during the opener with Voidweaver
-actions.main+=/mind_spike,if=talent.mind_melt&talent.void_blast&(buff.mind_melt.stack<(1*talent.distorted_reality+1-talent.unfurling_darkness-talent.minds_eye*1)&talent.halo|!talent.halo&buff.mind_melt.stack<2)&cooldown.mindbender.up&cooldown.dark_ascension.up&time<=4&insanity<=20
+# High priority action to Mind Spike to get to enough Insanity during the opener with Voidweaver. Do not need to do this with the 4pc.
+actions.main+=/mind_spike,if=talent.mind_melt&talent.void_blast&(buff.mind_melt.stack<(1*talent.distorted_reality+1-talent.unfurling_darkness-talent.minds_eye*1)&talent.halo|!talent.halo&buff.mind_melt.stack<2)&cooldown.mindbender.up&cooldown.dark_ascension.up&time<=4&insanity<=20&!set_bonus.tww2_4pc
+actions.main+=/call_action_list,name=cds,if=fight_remains<30|target.time_to_die>15&(!variable.holding_crash|active_enemies>2)
 # Use Shadowfiend and Mindbender on cooldown as long as Vampiric Touch and Shadow Word: Pain are active and sync with Dark Ascension
 actions.main+=/mindbender,if=(dot.shadow_word_pain.ticking&variable.dots_up|action.shadow_crash.in_flight&talent.whispering_shadows)&(fight_remains<30|target.time_to_die>15)&(!talent.dark_ascension|cooldown.dark_ascension.remains<gcd.max|fight_remains<15)
 # High Priority Shadow Word: Death when you are forcing the bonus from Devour Matter
@@ -137,18 +142,12 @@ actions.main+=/wait,sec=cooldown.mind_blast.recharge_time,if=cooldown.mind_blast
 # Complicated do not overcap mindblast and use it to protect against void bolt cd desync
 actions.main+=/mind_blast,if=talent.void_eruption&buff.voidform.up&full_recharge_time<=gcd.max&(!talent.insidious_ire|dot.devouring_plague.remains>=execute_time)&(cooldown.void_bolt.remains%gcd.max-cooldown.void_bolt.remains%%gcd.max)*gcd.max<=0.25&(cooldown.void_bolt.remains%gcd.max-cooldown.void_bolt.remains%%gcd.max)>=0.01
 # Use Voidbolt on the enemy with the largest time to die. We do no care about dots because Voidbolt is only accessible inside voidform which guarantees maximum effect
-actions.main+=/void_bolt,target_if=max:target.time_to_die,if=insanity.deficit>16&cooldown.void_bolt.remains<=0.1
+actions.main+=/void_bolt,target_if=max:target.time_to_die,if=insanity.deficit>16&cooldown.void_bolt.remains%gcd.max<=0.1
 # Do not overcap on insanity
 actions.main+=/devouring_plague,target_if=max:target.time_to_die*(dot.devouring_plague.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=active_dot.devouring_plague<=1&dot.devouring_plague.remains<=gcd.max&(!talent.void_eruption|cooldown.void_eruption.remains>=gcd.max*3)|insanity.deficit<=16
 # Cast Void Torrent at very high priority if Voidweaver
 actions.main+=/void_torrent,target_if=max:(dot.devouring_plague.remains*1000+target.time_to_die),if=(dot.devouring_plague.ticking|talent.void_eruption&cooldown.void_eruption.up)&talent.entropic_rift&!variable.holding_crash
-# Snipe SWDs with Depth of Shadows to spawn pets. Prefer targets with Devouring Plague on them.
-actions.main+=/shadow_word_death,target_if=max:(target.health.pct<=20)*100+dot.devouring_plague.ticking,if=talent.depth_of_shadows&(target.health.pct<=20|buff.deathspeaker.up&talent.deathspeaker)&talent.inescapable_torment
-# Use Mind Blasts if using Inescapable Torment and you are capping charges or it will expire soon. Do not use if pooling Mindblast.
-actions.main+=/mind_blast,target_if=max:dot.devouring_plague.remains,if=(cooldown.mind_blast.full_recharge_time<=gcd.max+execute_time|pet.fiend.remains<=execute_time+gcd.max)&pet.fiend.active&talent.inescapable_torment&pet.fiend.remains>=execute_time&active_enemies<=7&(!buff.mind_devourer.up|!talent.mind_devourer)&dot.devouring_plague.remains>execute_time&!variable.pooling_mindblasts&variable.dots_up
-# High Priority Shadow Word: Death is Mindbender is expiring in less than a gcd plus wiggle room
-actions.main+=/shadow_word_death,target_if=max:dot.devouring_plague.remains,if=pet.fiend.remains<=(gcd.max+1)&pet.fiend.active&talent.inescapable_torment&active_enemies<=7
-# Use Voidbolt on the enemy with the largest time to die. Force a cooldown check here to make sure SimC doesn't wait too long (i.e. weird MF:I desync with GCD)
+# # Snipe SWDs with Depth of Shadows to spawn pets. Prefer targets with Devouring Plague on them.  actions.main+=/shadow_word_death,target_if=max:(target.health.pct<=20)*100+dot.devouring_plague.ticking,if=talent.depth_of_shadows&(target.health.pct<=20|buff.deathspeaker.up&talent.deathspeaker)&talent.inescapable_torment  # Use Mind Blasts if using Inescapable Torment and you are capping charges or it will expire soon. Do not use if pooling Mindblast.  actions.main+=/mind_blast,target_if=max:dot.devouring_plague.remains,if=(cooldown.mind_blast.full_recharge_time<=gcd.max+execute_time|pet.fiend.remains<=execute_time+gcd.max)&pet.fiend.active&talent.inescapable_torment&pet.fiend.remains>=execute_time&active_enemies<=7&(!buff.mind_devourer.up|!talent.mind_devourer)&dot.devouring_plague.remains>execute_time&!variable.pooling_mindblasts&variable.dots_up  # High Priority Shadow Word: Death is Mindbender is expiring in less than a gcd plus wiggle room  actions.main+=/shadow_word_death,target_if=max:dot.devouring_plague.remains,if=pet.fiend.remains<=(gcd.max+1)&pet.fiend.active&talent.inescapable_torment&active_enemies<=7  Use Voidbolt on the enemy with the largest time to die. Force a cooldown check here to make sure SimC doesn't wait too long (i.e. weird MF:I desync with GCD)
 actions.main+=/void_bolt,target_if=max:target.time_to_die,if=cooldown.void_bolt.remains<=0.1
 # Spend UFD as a high priority action
 actions.main+=/vampiric_touch,target_if=min:remains,if=buff.unfurling_darkness.up&active_dot.vampiric_touch<=5
@@ -159,24 +158,27 @@ actions.main+=/call_action_list,name=heal_for_tof,if=!buff.twist_of_fate.up&buff
 # Spend your Insanity on Devouring Plague at will if the fight will end in less than 10s
 actions.main+=/devouring_plague,if=fight_remains<=duration+4
 # Use Devouring Plague to maximize uptime. Short circuit if you are capping on Insanity within 35 With Distorted Reality can maintain more than one at a time in multi-target.
-actions.main+=/devouring_plague,target_if=max:target.time_to_die*(dot.devouring_plague.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=insanity.deficit<=35&talent.distorted_reality|buff.mind_devourer.up&cooldown.mind_blast.up&(cooldown.void_eruption.remains>=3*gcd.max|!talent.void_eruption)&talent.mind_devourer|buff.entropic_rift.up|buff.voidform.up&talent.perfected_form&talent.void_eruption
+actions.main+=/devouring_plague,target_if=max:target.time_to_die*(dot.devouring_plague.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=insanity.deficit<=35&talent.distorted_reality|buff.mind_devourer.up&cooldown.mind_blast.up&(cooldown.void_eruption.remains>=3*gcd.max|!talent.void_eruption)&talent.mind_devourer|buff.entropic_rift.up
 # Use Void Torrent if it will get near full Mastery Value and you have Cthun and Void Eruption. Prune this action for Entropic Rift Builds.
-actions.main+=/void_torrent,target_if=max:(dot.devouring_plague.remains*1000+target.time_to_die),if=!variable.holding_crash&!talent.entropic_rift,target_if=dot.devouring_plague.remains>=2.5
+actions.main+=/void_torrent,target_if=max:(dot.devouring_plague.remains*1000+target.time_to_die),if=!variable.holding_crash&!talent.entropic_rift&(cooldown.mind_blast.full_recharge_time>=2&(!buff.voidform.up|!bugs)|(cooldown.mind_blast.full_recharge_time>=2|cooldown.void_bolt.remains<=2*gcd.max)&buff.voidform.up&bugs&cooldown.void_bolt.remains<=3-gcd.max),target_if=dot.devouring_plague.remains>=2.5
 # Use Shadow Crash as long as you are not holding for adds and Vampiric Touch is within pandemic range
 actions.main+=/shadow_crash,target_if=dot.vampiric_touch.refreshable,if=!variable.holding_crash
 # Acquire UFD
 actions.main+=/vampiric_touch,target_if=min:remains,if=buff.unfurling_darkness_cd.remains<execute_time&talent.unfurling_darkness&!buff.dark_ascension.up&talent.inner_quietus&active_dot.vampiric_touch<=5
 # Put out Vampiric Touch on enemies that will live at least 12s and Shadow Crash is not available soon
 actions.main+=/vampiric_touch,target_if=max:(refreshable*10000+target.time_to_die)*(dot.vampiric_touch.ticking|!variable.dots_up),if=refreshable&target.time_to_die>12&(dot.vampiric_touch.ticking|!variable.dots_up)&(variable.max_vts>0|active_enemies=1)&(cooldown.shadow_crash.remains>=dot.vampiric_touch.remains|variable.holding_crash|!talent.whispering_shadows)&(!action.shadow_crash.in_flight|!talent.whispering_shadows)
-# Spend Deathspeaker Procs
-actions.main+=/shadow_word_death,target_if=max:dot.devouring_plague.remains,if=variable.dots_up&buff.deathspeaker.up
 # Use all charges of Mind Blast if Vampiric Touch and Shadow Word: Pain are active and Mind Devourer is not active or you are prepping Void Eruption
 actions.main+=/mind_blast,target_if=max:dot.devouring_plague.remains,if=(!buff.mind_devourer.up|!talent.mind_devourer|cooldown.void_eruption.up&talent.void_eruption)&!variable.pooling_mindblasts
+actions.main+=/devouring_plague,target_if=max:target.time_to_die*(dot.devouring_plague.remains<=gcd.max|variable.dr_force_prio|!talent.distorted_reality&variable.me_force_prio),if=buff.voidform.up&talent.perfected_form&talent.void_eruption
+# # Spend Deathspeaker Procs  actions.main+=/shadow_word_death,target_if=max:dot.devouring_plague.remains,if=variable.dots_up&buff.deathspeaker.up|pet.fiend.active&talent.inescapable_torment
 actions.main+=/call_action_list,name=filler
 
 actions.trinkets=use_item,use_off_gcd=1,name=aberrant_spellforge,if=gcd.remains>0&buff.aberrant_spellforge.stack<=4
-actions.trinkets+=/use_item,name=spymasters_web,if=(buff.power_infusion.up&buff.spymasters_report.stack>=40&fight_remains>240)|(buff.power_infusion.up&buff.bloodlust.up&buff.spymasters_report.stack>=10)|buff.power_infusion.up&(fight_remains<120)|(fight_remains<=20|buff.dark_ascension.up&fight_remains<=60|buff.entropic_rift.up&talent.entropic_rift&fight_remains<=30)&!buff.spymasters_web.up
-actions.trinkets+=/use_items,if=(buff.voidform.up|buff.power_infusion.up|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60))|fight_remains<20
+actions.trinkets+=/use_item,use_off_gcd=1,name=neural_synapse_enhancer,if=(buff.power_surge.up|buff.entropic_rift.up)&(buff.voidform.up|cooldown.void_eruption.remains>=40|buff.dark_ascension.up)
+actions.trinkets+=/use_item,use_off_gcd=1,name=flarendos_pilot_light,if=gcd.remains>0&(buff.voidform.up|buff.power_infusion.remains>=10|buff.dark_ascension.up)|fight_remains<20
+actions.trinkets+=/use_item,use_off_gcd=1,name=geargrinders_spare_keys,if=gcd.remains>0
+actions.trinkets+=/use_item,name=spymasters_web,if=(buff.power_infusion.remains>=10&buff.spymasters_report.stack>=36&fight_remains>240)&(buff.voidform.up|buff.dark_ascension.up|!talent.dark_ascension&!talent.void_eruption)|((buff.power_infusion.remains>=10&buff.bloodlust.up&buff.spymasters_report.stack>=10)|buff.power_infusion.remains>=10&(fight_remains<120))&(buff.voidform.up|buff.dark_ascension.up|!talent.dark_ascension&!talent.void_eruption)|(fight_remains<=20|buff.dark_ascension.up&fight_remains<=60|buff.entropic_rift.up&talent.entropic_rift&fight_remains<=30)&!buff.spymasters_web.up
+actions.trinkets+=/use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60))|fight_remains<20
 
 head=living_lusters_semblance,id=212083,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213482/213458
@@ -197,8 +199,8 @@ off_hand=vagabonds_torch,id=222566,bonus_id=11300/8793,ilevel=636
 
 # Gear Summary
 # gear_ilvl=639.81
-# gear_stamina=240524
-# gear_intellect=45357
+# gear_stamina=241189
+# gear_intellect=45540
 # gear_crit_rating=9031
 # gear_haste_rating=12918
 # gear_mastery_rating=11232

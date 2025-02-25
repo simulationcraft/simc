@@ -172,7 +172,7 @@ actions.san_trinkets+=/use_item,slot=trinket1,if=variable.trinket_1_buffs&(buff.
 actions.san_trinkets+=/use_item,slot=trinket2,if=variable.trinket_2_buffs&(buff.dark_transformation.up&buff.dark_transformation.remains<variable.trinket_2_duration*0.73&(variable.trinket_priority=2|trinket.1.cooldown.remains|!trinket.1.has_cooldown))|variable.trinket_2_duration>=fight_remains
 actions.san_trinkets+=/use_item,slot=trinket1,if=!variable.trinket_1_buffs&(trinket.1.cast_time>0&!buff.gift_of_the_sanlayn.up|!trinket.1.cast_time>0)&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains|!trinket.2.has_cooldown|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination|!talent.summon_gargoyle&talent.army_of_the_dead&(!talent.raise_abomination&cooldown.army_of_the_dead.remains>20|talent.raise_abomination&cooldown.raise_abomination.remains>20)|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination&cooldown.dark_transformation.remains>20|talent.summon_gargoyle&cooldown.summon_gargoyle.remains>20&!pet.gargoyle.active)|fight_remains<15
 actions.san_trinkets+=/use_item,slot=trinket2,if=!variable.trinket_2_buffs&(trinket.2.cast_time>0&!buff.gift_of_the_sanlayn.up|!trinket.2.cast_time>0)&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains|!trinket.1.has_cooldown|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination|!talent.summon_gargoyle&talent.army_of_the_dead&(!talent.raise_abomination&cooldown.army_of_the_dead.remains>20|talent.raise_abomination&cooldown.raise_abomination.remains>20)|!talent.summon_gargoyle&!talent.army_of_the_dead&!talent.raise_abomination&cooldown.dark_transformation.remains>20|talent.summon_gargoyle&cooldown.summon_gargoyle.remains>20&!pet.gargoyle.active)|fight_remains<15
-actions.san_trinkets+=/use_item,slot=main_hand,if=(!variable.trinket_1_buffs&!variable.trinket_2_buffs|trinket.1.cooldown.remains>20&!variable.trinket_2_buffs|trinket.2.cooldown.remains>20&!variable.trinket_1_buffs|trinket.1.cooldown.remains>20&trinket.2.cooldown.remains>20)&(buff.dark_transformation.up)&(!talent.raise_abomination&!talent.army_of_the_dead|!talent.raise_abomination&talent.army_of_the_dead&pet.army_ghoul.active|talent.raise_abomination&pet.abomination.active|(variable.trinket_1_buffs|variable.trinket_2_buffs|fight_remains<15))
+actions.san_trinkets+=/use_item,slot=main_hand,if=(!variable.trinket_1_buffs&!variable.trinket_2_buffs|trinket.1.cooldown.remains>20&!variable.trinket_2_buffs|trinket.2.cooldown.remains>20&!variable.trinket_1_buffs|trinket.1.cooldown.remains>20&trinket.2.cooldown.remains>20)&(buff.dark_transformation.up&buff.dark_transformation.remains>10)&(!talent.raise_abomination&!talent.army_of_the_dead|!talent.raise_abomination&talent.army_of_the_dead&pet.army_ghoul.active|talent.raise_abomination&pet.abomination.active|(variable.trinket_1_buffs|variable.trinket_2_buffs|fight_remains<15))
 
 # Single Taget Non-San'layn
 actions.st=soul_reaper,if=target.health.pct<=35&fight_remains>5
@@ -213,18 +213,18 @@ waist=coinoperated_girdle,id=228886,bonus_id=11996/10356/6652/12176/1527/10255/1
 legs=galvanized_oxxein_legguards,id=178800,bonus_id=9026/3280/1641,enchant=stormbound_armor_kit_3
 feet=cauldron_champions_greatboots,id=229255,bonus_id=11996/10356/6652/1527/10255,enchant=defenders_march_3
 finger1=the_jastor_diamond,id=231265,bonus_id=6652/10394/10392/10356/11996/1527/10255/10879,gem_id=213494/213494,enchant=radiant_haste_3
-finger2=miniature_roulette_wheel,id=228843,bonus_id=10356/1527/8781/8948/8950,gem_id=213494/213494,enchant=radiant_mastery_3
+finger2=cyrces_circlet,id=228411,bonus_id=12025/1511,gem_id=228638/228639/228646,enchant=radiant_haste_3
 trinket1=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255
 trinket2=house_of_cards,id=230027,bonus_id=6652/10356/11996/1527/10255
 main_hand=bestinslots,id=232526,bonus_id=6652/10356/11996/9418/1527/10255,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=677.60
+# gear_ilvl=676.27
 # gear_strength=51214
-# gear_stamina=392419
+# gear_stamina=387381
 # gear_crit_rating=1586
-# gear_haste_rating=22705
-# gear_mastery_rating=19657
+# gear_haste_rating=16249
+# gear_mastery_rating=17936
 # gear_versatility_rating=699
 # gear_armor=72548
 # set_bonus=thewarwithin_season_2_2pc=1
