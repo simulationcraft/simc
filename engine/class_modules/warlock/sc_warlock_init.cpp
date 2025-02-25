@@ -831,7 +831,7 @@ namespace warlock
       duration *= 1.0 + talents.demonfire_mastery->effectN( 3 ).percent();
     }
 
-    int ticks = (int)( duration / tick_time );
+    int ticks = floor(( duration / tick_time ));
     if ( talents.raging_demonfire.ok() )
     {
       ticks += as<int>( talents.raging_demonfire->effectN( 1 ).base_value() );
