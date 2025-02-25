@@ -575,6 +575,7 @@ public:
     action_t* wicked_reaping;
     action_t* demonfire_infusion;
     action_t* jackpot_ua;
+    action_t* jackpot_cdf;
   } proc_actions;
 
   struct tier_sets_t
@@ -765,6 +766,7 @@ public:
     proc_t* decimation;
     proc_t* dimension_ripper;
     proc_t* echo_of_the_azjaqir;
+    proc_t* jackpot_destruction;
 
     // Diabolist
 

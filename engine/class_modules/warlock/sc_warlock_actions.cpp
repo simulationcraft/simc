@@ -371,6 +371,15 @@ using namespace helpers;
 
         p()->procs.dimension_ripper->occur();
       }
+
+      if ( destruction() && active_2pc( TWW2 ) && triggers.jackpot_destruction )
+      {
+        if ( p()->jackpot_destruction_rng->trigger() )
+        {
+          p()->buffs.demonfire_flurry_trigger->trigger();
+          p()->procs.jackpot_destruction->occur();
+        }
+      }
     }
 
     void tick( dot_t* d ) override
@@ -4266,6 +4275,9 @@ using namespace helpers;
       if ( ( s->chain_target == 0 || !p()->bugs ) && demonfire_infusion )
         m *= 1.0 + p()->talents.demonfire_infusion->effectN( 3 ).percent();
 
+      if ( jackpot )
+        m *= 1.0 + p()->tier.spliced_destro_2pc->effectN( 1 ).percent();
+
       return m;
     }
   };
@@ -4423,6 +4435,12 @@ using namespace helpers;
         p()->buffs.ritual_overlord->extend_duration( p(), reduction );
         p()->buffs.ritual_mother->extend_duration( p(), reduction );
         p()->buffs.ritual_pit_lord->extend_duration( p(), reduction );
+      }
+
+      if ( active_2pc( TWW2 ) )
+      {
+        p()->buffs.demonfire_flurry_trigger->trigger();
+        p()->procs.jackpot_destruction->occur();
       }
     }
   };
@@ -5056,6 +5074,7 @@ using namespace helpers;
   void warlock_t::create_destruction_proc_actions()
   {
     proc_actions.demonfire_infusion = new channel_demonfire_tick_t( this, true );
+    proc_actions.jackpot_cdf = new channel_demonfire_tick_t( this, false, true );
   }
 
   void warlock_t::create_diabolist_proc_actions()

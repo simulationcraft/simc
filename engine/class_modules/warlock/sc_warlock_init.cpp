@@ -810,10 +810,16 @@ namespace warlock
     buffs.echo_of_the_azjaqir = make_buff( this, "echo_of_the_azjaqir", tier.echo_of_the_azjaqir );
 
     buffs.demonfire_flurry_trigger = make_buff( this, "demonfire_flurry_trigger", tier.demonfire_flurry )
-                                         ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
                                          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
                                          ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ){
-                                           
+                                             proc_actions.jackpot_cdf->target_cache.is_valid = false;
+                                             const auto& tl = proc_actions.jackpot_cdf->target_list();
+
+                                             if ( !tl.empty() )
+                                             {
+                                               proc_actions.jackpot_cdf->set_target( tl[ rng().range( size_t(), tl.size() ) ] );
+                                               proc_actions.jackpot_cdf->execute();
+                                             }
                                            } );
 
     timespan_t tick_time = tier.demonfire_flurry->effectN( 1 ).period();
@@ -825,7 +831,7 @@ namespace warlock
       duration *= 1.0 + talents.demonfire_mastery->effectN( 3 ).percent();
     }
 
-    int ticks = duration / tick_time;
+    int ticks = as<int>( duration / tick_time );
     if ( talents.raging_demonfire.ok() )
     {
       ticks += as<int>( talents.raging_demonfire->effectN( 1 ).base_value() );
@@ -835,6 +841,9 @@ namespace warlock
 
     buffs.demonfire_flurry_trigger->set_period( tick_time );
     buffs.demonfire_flurry_trigger->set_duration( duration );
+    buffs.demonfire_flurry_trigger->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
+    // TODO: Supposedly this is a hasted effect. Not sure if buff_t has a case for this having periodic ticks *and* hasted duration
+    //buffs.demonfire_flurry_trigger->set_tick_time_behavior( buff_tick_time_behavior::HASTED );
   }
 
   void warlock_t::create_buffs_diabolist()
@@ -1071,6 +1080,7 @@ namespace warlock
     procs.decimation = get_proc( "decimation" );
     procs.dimension_ripper = get_proc( "dimension_ripper" );
     procs.echo_of_the_azjaqir = get_proc( "echo_of_the_azjaqir" );
+    procs.jackpot_destruction = get_proc( "jackpot_destruction" );
   }
 
   void warlock_t::init_procs_diabolist()
