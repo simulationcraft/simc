@@ -1927,11 +1927,6 @@ struct flight_of_the_red_crane_t : conduit_of_the_celestials_container_t
 
       if constexpr ( std::is_same_v<monk_heal_t, base_action_t> )
         base_action_t::target = player;
-
-      if ( source == CELESTIAL )
-        if ( const auto &effect = player->talent.conduit_of_the_celestials.unity_within_dmg_mult->effectN( 1 );
-             effect.ok() )
-          add_parse_entry( base_action_t::da_multiplier_effects ).set_value( effect.percent() ).set_eff( &effect );
     }
 
     void execute() override
