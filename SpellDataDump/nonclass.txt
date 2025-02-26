@@ -241109,7 +241109,8 @@ Cast Time        : 3 seconds
 Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1156726)  : Create Item (157)
-                   Base Value: 1 | Scaled Value: 1 (delta=0.25) | Misc Value: 125524 | Misc Value 2: 0x68 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 125524 | Misc Value 2: 0x42 | Target: Self (1)
+Hotfixed         : Delta (0.25 -> 0), Misc Value 2 (104 -> 66)
 Description      : Create Boots for your class.
 
 Name             : Cursed Pickaxe (id=454396) 
@@ -241129,7 +241130,8 @@ Cast Time        : 3 seconds
 Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1156921)  : Create Item (157)
-                   Base Value: 1 | Scaled Value: 1 (delta=0.25) | Misc Value: 125539 | Misc Value 2: 0x68 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 125539 | Misc Value 2: 0x42 | Target: Self (1)
+Hotfixed         : Delta (0.25 -> 0), Misc Value 2 (104 -> 66)
 Description      : Create a Chestpiece for your class.
 
 Name             : Create Hand (id=454409) 
@@ -241139,7 +241141,8 @@ Cast Time        : 3 seconds
 Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1156922)  : Create Item (157)
-                   Base Value: 1 | Scaled Value: 1 (delta=0.25) | Misc Value: 125540 | Misc Value 2: 0x68 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 125540 | Misc Value 2: 0x42 | Target: Self (1)
+Hotfixed         : Delta (0.25 -> 0), Misc Value 2 (104 -> 66)
 Description      : Create Gloves for your class.
 
 Name             : Create Head (id=454410) 
@@ -241149,7 +241152,8 @@ Cast Time        : 3 seconds
 Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1156925)  : Create Item (157)
-                   Base Value: 1 | Scaled Value: 1 (delta=0.25) | Misc Value: 125541 | Misc Value 2: 0x68 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 125541 | Misc Value 2: 0x42 | Target: Self (1)
+Hotfixed         : Delta (0.25 -> 0), Misc Value 2 (104 -> 66)
 Description      : Create a Headpiece for your class.
 
 Name             : Create Legs (id=454411) 
@@ -241159,7 +241163,8 @@ Cast Time        : 3 seconds
 Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1156926)  : Create Item (157)
-                   Base Value: 1 | Scaled Value: 1 (delta=0.25) | Misc Value: 125542 | Misc Value 2: 0x68 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 125542 | Misc Value 2: 0x42 | Target: Self (1)
+Hotfixed         : Delta (0.25 -> 0), Misc Value 2 (104 -> 66)
 Description      : Create Legs for your class.
 
 Name             : Create Shoulder (id=454412) 
@@ -241169,7 +241174,8 @@ Cast Time        : 3 seconds
 Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1156927)  : Create Item (157)
-                   Base Value: 1 | Scaled Value: 1 (delta=0.25) | Misc Value: 125543 | Misc Value 2: 0x68 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 125543 | Misc Value 2: 0x42 | Target: Self (1)
+Hotfixed         : Delta (0.25 -> 0), Misc Value 2 (104 -> 66)
 Description      : Create Shoulders for your class.
 
 Name             : Create Waist (id=454413) 
@@ -241179,7 +241185,8 @@ Cast Time        : 3 seconds
 Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1156928)  : Create Item (157)
-                   Base Value: 1 | Scaled Value: 1 (delta=0.25) | Misc Value: 125545 | Misc Value 2: 0x68 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 125545 | Misc Value 2: 0x42 | Target: Self (1)
+Hotfixed         : Delta (0.25 -> 0), Misc Value 2 (104 -> 66)
 Description      : Create a Belt for your class.
 
 Name             : Create Wrist (id=454414) 
@@ -241189,7 +241196,8 @@ Cast Time        : 3 seconds
 Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1156929)  : Create Item (157)
-                   Base Value: 1 | Scaled Value: 1 (delta=0.25) | Misc Value: 125544 | Misc Value 2: 0x68 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 125544 | Misc Value 2: 0x42 | Target: Self (1)
+Hotfixed         : Delta (0.25 -> 0), Misc Value 2 (104 -> 66)
 Description      : Create Bracers for your class.
 
 Name             : Blame Redirection Device (id=454450) [Hidden] 
