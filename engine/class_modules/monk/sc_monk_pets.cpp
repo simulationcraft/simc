@@ -1184,6 +1184,7 @@ public:
       action->set_target( source_action->target );
 
     action->execute();
+  }
 };
 
 // ==========================================================================
