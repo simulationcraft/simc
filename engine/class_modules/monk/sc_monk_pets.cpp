@@ -1184,15 +1184,6 @@ public:
       action->set_target( source_action->target );
 
     action->execute();
-
-  //  if ( combo_strike )
-  //   trigger_combo_strikes();
-  }
-
-  // void trigger_combo_strikes()
-  // {
-  // TODO: Test Meridian Strikes
-  // }
 };
 
 // ==========================================================================
