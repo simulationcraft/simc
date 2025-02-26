@@ -112,33 +112,34 @@ off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12043/12040/1485/879
 
 save=TWW2_Warlock_Demonology_Diabolist.simc
 
-# warlock="TWW2_Warlock_Destruction_Diabolist"
-# spec=destruction
-# level=80
-# race=Dwarf
-# role=spell
-# position=ranged_back
-# talents=CsQAAAAAAAAAAAAAAAAAAAAAAghZmZmZEzmhxsZmZY2mFzwMzsY2MWMzAAAAAjZmZZmZmBMmxwCZgthNasgBAAAAAAwMGzAA
-# default_pet=sayaad
+warlock="TWW2_Warlock_Destruction_Diabolist"
+spec=destruction
+level=80
+race=Dwarf
+role=spell
+position=ranged_back
+talents=CsQAAAAAAAAAAAAAAAAAAAAAAghZmZmZEzmhxsZmZY2mFzwMzsY2MWMzAAAAAjZmtlZmlZAjZMsQGYbYjGLYAAAAAAAMjxMAA
+default_pet=sayaad
 
-# head=hexflame_covens_allseeing_eye,id=212074,bonus_id=1540/10299/1808,gem_id=213743
-# neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213467/213491
-# shoulders=hexflame_covens_altar,id=212072,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-# back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant_id=7409
-# chest=hexflame_covens_ritual_harness,id=212077,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7364
-# wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960/1808/8791,gem_id=213458,enchant_id=7397,crafted_stats=32/36
-# hands=hexflame_covens_sleeves,id=212075,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-# waist=burrowers_cinch,id=221158,bonus_id=4786/3131/10299/523,ilevel=639,gem_id=213458
-# legs=e.d.n.a._stabilizers,id=221076,bonus_id=3131/10299/10376,enchant_id=7534
-# feet=assimilated_eggshell_slippers,id=225582,bonus_id=1540/10299/10376,enchant_id=7418
-# finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=6652/10354/10268/1514/10255/10395/8781,ilevel=639,gem_id=213458/213458,enchant_id=7334
-# finger2=key_to_the_unseeming,id=212447,bonus_id=10256/11086/6652/1514/10255/10395/8781,ilevel=639,gem_id=213458/213482,enchant_id=7334
-# trinket1=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
-# trinket2=arakara_sacbrood,id=219314,bonus_id=3131/10299/10376
-# main_hand=sovereigns_disdain,id=212394,bonus_id=1540/10299/10376,enchant_id=7460
-# off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960/8791,crafted_stats=32/36
+head=spliced_fiendtraders_transcendence,id=229325,bonus_id=1527/11996/1808,gem_id=213743
+neck=semicharmed_amulet,id=228841,bonus_id=8781,ilevel=678,gem_id=213485/213467
+shoulders=spliced_fiendtraders_loyal_servants,id=229323,bonus_id=1527/11996
+back=undercircuit_racing_flag,id=228839,bonus_id=1527/11996/11964
+chest=spliced_fiendtraders_surgical_gown,id=229328,ilevel=678,enchant_id=7364
+wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/9627/10222/11144/11307/11109/8960/8793,ilevel=675,gem_id=213458,enchant_id=7397,crafted_stats=36/32
+hands=golden_handshakers,id=228872,bonus_id=1527/11996/11964
+waist=honorbound_retainers_sash,id=221121,bonus_id=3170/11996/11964/1808,gem_id=213491
+legs=spliced_fiendtraders_skin_tights,id=229324,bonus_id=11996/10356/11961/6652/1579/10255,ilevel=678,enchant_id=7534
+feet=deranged_alchemists_slippers,id=159235,bonus_id=11359/11996/11964,enchant_id=7421
+finger1=cyrces_circlet,id=228411,bonus_id=12014/1498,ilevel=658,gem_id=228639/228638/228646,enchant_id=7340
+finger2=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213491/213491,enchant_id=7340
+trinket1=eye_of_kezan,id=230198,ilevel=678
+trinket2=mugs_moxie_jug,id=230192,bonus_id=1527/11996/11964
+main_hand=scalding_queenmakers_shiv,id=221062,bonus_id=3170/11996/11964,enchant_id=7460
+off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12043/12040/1485/8795/11300/8960,crafted_stats=40/36
 
-# save=TWW2_Warlock_Destruction.simc
+
+save=TWW2_Warlock_Destruction.simc
 
 # warlock="TWW2_Warlock_Destruction_Hellcaller"
 # spec=destruction
