@@ -1185,8 +1185,8 @@ public:
 
     action->execute();
 
-    if ( combo_strike )
-      trigger_combo_strikes();
+  //  if ( combo_strike )
+  //   trigger_combo_strikes();
   }
 
   // void trigger_combo_strikes()
