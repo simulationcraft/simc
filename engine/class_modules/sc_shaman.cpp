@@ -13661,7 +13661,7 @@ void shaman_t::create_buffs()
           ->set_default_value_from_effect( 1 )
           ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, TWW1, B4 ) );
 
-  buff.jackpot = make_buff( this, "jackpot!", find_spell( 1218612 ) );
+  buff.jackpot = make_buff( this, "jackpot", find_spell( 1218612 ) );
       
 
   rppm.jackpot = get_rppm( "jackpot", find_spell( 1215675 ) );
