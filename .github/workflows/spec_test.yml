@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_branch }}
+          ref: refs/pull/${{ github.event.workflow_run.pull_requests[0].id }}/merge
 
       - uses: actions/cache@v4
         env: { ccache-prefix: 'ubuntu-clang++-15-cpp-17-ccache-0' }
