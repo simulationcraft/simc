@@ -122,17 +122,17 @@ talents=CsQAAAAAAAAAAAAAAAAAAAAAAghZmZmZEzmhxsZmZY2mFzwMzsY2MWMzAAAAAjZmtlZmlZAj
 default_pet=sayaad
 
 head=spliced_fiendtraders_transcendence,id=229325,bonus_id=1527/11996/1808,gem_id=213743
-neck=semicharmed_amulet,id=228841,bonus_id=8781,ilevel=678,gem_id=213485/213467
+neck=semicharmed_amulet,id=228841,bonus_id=8781,ilevel=678,gem_id=213470/213494
 shoulders=spliced_fiendtraders_loyal_servants,id=229323,bonus_id=1527/11996
-back=undercircuit_racing_flag,id=228839,bonus_id=1527/11996/11964
+back=chef_chewies_towel,id=221054,bonus_id=3170/11996/11964
 chest=spliced_fiendtraders_surgical_gown,id=229328,ilevel=678,enchant_id=7364
-wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/9627/10222/11144/11307/11109/8960/8793,ilevel=675,gem_id=213458,enchant_id=7397,crafted_stats=36/32
-hands=golden_handshakers,id=228872,bonus_id=1527/11996/11964
-waist=honorbound_retainers_sash,id=221121,bonus_id=3170/11996/11964/1808,gem_id=213491
+wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/9627/10222/11144/11307/11109/8960/8791,ilevel=675,gem_id=213479,enchant_id=7397,crafted_stats=36/32
+hands=mine_rats_handwarmers,id=159231,bonus_id=11359/11996/11964
+waist=refiners_conveyor_belt,id=228882,bonus_id=1527/11996/11964/1808,gem_id=213479
 legs=spliced_fiendtraders_skin_tights,id=229324,bonus_id=11996/10356/11961/6652/1579/10255,ilevel=678,enchant_id=7534
-feet=deranged_alchemists_slippers,id=159235,bonus_id=11359/11996/11964,enchant_id=7421
+feet=cloudstrider_soles,id=221043,bonus_id=3170/11996/11964,enchant_id=7421
 finger1=cyrces_circlet,id=228411,bonus_id=12014/1498,ilevel=658,gem_id=228639/228638/228646,enchant_id=7340
-finger2=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213491/213491,enchant_id=7340
+finger2=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213479/213455,enchant_id=7340
 trinket1=eye_of_kezan,id=230198,ilevel=678
 trinket2=mugs_moxie_jug,id=230192,bonus_id=1527/11996/11964
 main_hand=scalding_queenmakers_shiv,id=221062,bonus_id=3170/11996/11964,enchant_id=7460
