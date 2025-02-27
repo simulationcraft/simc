@@ -188,7 +188,7 @@ legs=aspectral_emissarys_trousers,id=229342,bonus_id=11996/10356/11961/6652/1579
 feet=nonconductive_killosocks,id=234497,bonus_id=4786/1527/11996,ilevel=678,enchant_id=7424
 finger1=wicks_golden_loop,id=221099,bonus_id=8781,ilevel=678,gem_id=213467/213467,enchant_id=7352
 finger2=bloodoath_signet,id=178871,bonus_id=4786/9987/11996/8781,gem_id=213467/213467,enchant_id=7352
-trinket1=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
+trinket1=candle_confidant,id=225648,bonus_id=3194/11990
 trinket2=synergistic_brewterializer,id=219299,bonus_id=3170/11996/11964
 main_hand=blastfurious_machete,id=231268,bonus_id=1527/11996/11964,enchant_id=7460
 off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/9627/10222/11300/8960/11144/8792,ilevel=675,crafted_stats=40/32
