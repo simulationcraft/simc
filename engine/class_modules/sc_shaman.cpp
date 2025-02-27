@@ -4181,11 +4181,6 @@ struct storm_elemental_t : public primal_elemental_t
     {
       stormfury_cd->reset( false );
     }
-
-    if ( variant == elemental_variant::GREATER )
-    {
-      o()->buff.wind_gust->reset();
-    }
   }
 
   void dismiss( bool expired ) override
