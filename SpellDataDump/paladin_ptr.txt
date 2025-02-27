@@ -6483,6 +6483,7 @@ Divine Toll's Judgment deals $326011s1% increased damage.][]
 Name             : Unbound Freedom (id=305394) [Spell Family (10), Passive, Hidden] 
 Talent Entry     : Retribution [tree=class, row=5, col=3, max_rank=1, req_points=8]
                  : Protection [tree=class, row=5, col=3, max_rank=1, req_points=8]
+                 : Holy [tree=class, row=5, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -11075,7 +11076,7 @@ Description      : $@spelldesc387791
 Tooltip          : Armor increased by $s1%.
 
 Name             : Echoing Blessings (id=387801) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=class, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=class, row=5, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Paladin
 School           : Physical
 Spell Type       : None

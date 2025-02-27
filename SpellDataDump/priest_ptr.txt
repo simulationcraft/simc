@@ -1072,6 +1072,7 @@ Category         : 1417 (Type 0x0)
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
+                 : 4749
 Category Cooldown: 180 seconds
 Stance Mask      : 0x08000000
 Affecting Spells : Voidform (250844 effect#3), Shadowflame Prism (336143 effect#1), Void Summoner (390770 effect#1), Dark Ascension (391109 effect#1)
@@ -3262,9 +3263,10 @@ Effects          :
                    Affected Spells: Mind Blast (8092), Void Blast (450983)
                    Family Flags: 13
 #10 (id=260941)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.4 | Target: Self (1)
+                   Base Value: 38 | Scaled Value: 38 | PvP Coefficient: 0.4 | Target: Self (1)
                    Affected Spells: Collapsing Void (448405)
                    Family Flags: 30
+Hotfixed         : Base Value (20 -> 38)
 #11 (id=1040379) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 9 | Scaled Value: 9 | Misc Value 2: 4004 (Label) | Target: Self (1)
                    Affected Spells (Label): Divine Star (122128), Divine Star (390845)
@@ -13728,17 +13730,19 @@ Triggered By     : Discipline Priest (137032), Shadow Priest (137033)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1146665)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914)
                    Family Flags: 15, 42
+Hotfixed         : Base Value (25 -> 35)
 #2 (id=1151713)  : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 2 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
 #3 (id=1158795)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914)
                    Family Flags: 15, 42
+Hotfixed         : Base Value (25 -> 35)
 Description      : $?c3[Vampiric Touch and Shadow Word: Pain deal $s1% additional damage.][Power Word: Shield absorbs $s2% additional damage.]
 
 Name             : Voidwound (id=448279) [Spell Family (6)] 
@@ -14079,7 +14083,8 @@ Family Flags     : 13, 57, 72
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1151263)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.68 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.1 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (1.68 -> 2.1)
 #2 (id=1151264)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Sends a blast of cosmic void energy at the enemy, causing $s1 Shadow damage.$?c3[
@@ -14165,13 +14170,14 @@ $@spellicon451235$@spellname451235
 $@spelldesc451235
 
 Name             : Voidwraith (id=451235) [Spell Family (6)] 
+Hotfixed         : Cooldown (120000 -> 180000)
 Class            : Priest
 School           : Physical
 Spell Type       : None
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Cooldown         : 120 seconds
+Cooldown         : 180 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292

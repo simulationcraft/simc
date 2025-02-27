@@ -12956,9 +12956,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1205622)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
-                   Base Value: -20 | Scaled Value: -20 | Misc Value: 19 | Target: Self (1)
+                   Base Value: -25 | Scaled Value: -25 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Disintegrate (356995)
                    Family Flags: 6
+Hotfixed         : Base Value (-20 -> -25)
 #2 (id=1205623)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Disintegrate (356995)

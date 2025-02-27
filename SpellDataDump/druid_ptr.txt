@@ -7549,6 +7549,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
                  : 1219
+                 : 4743: Luck of the Draw! (1218553 effect#4)
 Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Threat (42), Can't Crit (93), Suppress Target Procs (113), Do Not Display Range (126), Allow Cast While Casting (135), Not In Spellbook (143), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=326922)   : School Damage (2): nature
@@ -20962,6 +20963,10 @@ Effects          :
                    Family Flags: 18, 77, 98
 #3 (id=1215742)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
+#4 (id=1218385)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value 2: 4743 (Label) | Target: Self (1)
+                   Affected Spells (Label): Rage of the Sleeper (219432)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1215986
 Tooltip          : Damage increased by $s1%
 
