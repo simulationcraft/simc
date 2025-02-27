@@ -5473,8 +5473,9 @@ Proc Chance      : 5%
 Proc Flags       : White Melee
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=297542)   : Apply Aura (6) | Proc Trigger Spell (42): Hot Hand
+#1 (id=297542)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 215785 | Target: Self (1)
+Hotfixed         : Sub Type (42 -> 4)
 #2 (id=1027011)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Misc Value 2: 1935 (Label)
                    Affected Spells (Label): Hot Hand (215785)
@@ -15186,7 +15187,8 @@ Proc Flags       : Cast Successful
 Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=1155235)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 8000 | Scaled Value: 8000 | Target: Self (1)
+                   Base Value: 6000 | Scaled Value: 6000 | Target: Self (1)
+Hotfixed         : Base Value (8000 -> 6000)
 Description      : Your next Lava Lash or Fire Nova grants you Hot Hand for ${$s1/1000} sec.
 Tooltip          : Your next Lava Lash or Fire Nova grants you Hot Hands for ${$s1/1000} sec.
 

@@ -233017,9 +233017,11 @@ Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell, Per
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354), Can Proc from Suppressed Caster Procs (385)
 Effects          :
 #1 (id=1141651)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 50.75682 (coefficient=0.013256) | PvP Coefficient: 0.4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 45.19716 (coefficient=0.011804) | PvP Coefficient: 0.4 | Target: Self (1)
+Hotfixed         : Coefficient (0.013256 -> 0.011804)
 #2 (id=1141652)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 463.0832 (coefficient=0.120942) | PvP Coefficient: 0.4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 416.4962 (coefficient=0.108775) | PvP Coefficient: 0.4 | Target: Self (1)
+Hotfixed         : Coefficient (0.120942 -> 0.108775)
 #3 (id=1151807)  : Apply Aura (6) | Proc Trigger Spell (42): Spymaster's Report
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 451199 | Target: Self (1)
 Description      : Your damaging spells dispatch a spider to spy on your foes, increasing your Intellect by $s1 per report received. Stacks up to $451199u times. This effect may only occur every $proccooldown sec.
@@ -252592,13 +252594,14 @@ Effects          :
 Description      : Create a piece of Prized Gladiator's equipment appropriate for your loot specialization ($@lootspec).
 
 Name             : Mister Pick-Me-Up (id=467250) [Passive] 
+Hotfixed         : Proc Flags 1 (17424 -> 2114576)
 School           : Physical
 Spell Type       : None
 Labels           : 292
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2.5 (Haste multiplier)
-Proc Flags       : Yellow Melee, Generic Heal, Magic Heal
+Proc Flags       : Yellow Melee, Generic Heal, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1180273)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
@@ -252710,26 +252713,28 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Recalibrate for $?a467492[$@spellname467497]?a467497[$@spellname467492][$@spellname467497].
 
-Name             : Precision Blasting (id=467492) [Hidden] 
+Name             : Precision Blasting (id=467492) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 292
                  : 3959: Item Effects
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Allow Aura While Dead (116)
+Attributes       : No Aura Cancel (31), Allow Aura While Dead (116)
 Effects          :
 #1 (id=1180680)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Your spells and abilities have a high chance to lase your target for $@spellname467492, calling in Mister Lock-N-Stalk to deal ${$467469s1*$<rolemult>} Physical damage to your target. 
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
-Name             : Mass Destruction (id=467497) [Hidden] 
+Name             : Mass Destruction (id=467497) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 292
                  : 3959: Item Effects
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Allow Aura While Dead (116)
+Attributes       : No Aura Cancel (31), Allow Aura While Dead (116)
 Effects          :
 #1 (id=1180685)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -253216,7 +253221,8 @@ Triggered By     : Vigor of Kezan (1216594)
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1184546)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 174.9303 (coefficient=0.045686) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 166.1811 (coefficient=0.043401) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (0.045686 -> 0.043401)
 #2 (id=1200098)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 23624.88 (coefficient=9.236547) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1200099)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
@@ -254083,7 +254089,8 @@ Labels           : 292
 Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1187329)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 227890.7 (coefficient=89.09773) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 478569.9 (coefficient=187.105) | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : Coefficient (89.097733 -> 187.104996), PvP Coefficient (0.5 -> 0.25)
 #2 (id=1187331)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 852.4915 (coefficient=0.333296) | Target: Self (1)
 
@@ -254167,13 +254174,14 @@ Description      : $@spelldesc469936
 Tooltip          : Versatility increased by $w1.
 
 Name             : Mug's Moxie Jug (id=471548) [Passive] 
+Hotfixed         : Proc Flags 1 (87312 -> 2446608)
 School           : Physical
 Spell Type       : None
 Labels           : 292
                  : 3959: Item Effects
 Proc Chance      : 101%
 Real PPM         : 2
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1189149)  : Apply Aura (6) | Proc Trigger Spell (42): Mug's Moxie Jug | Scaling Class: -7
@@ -255566,12 +255574,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 35766 | Target: Unknown(87) -> At Enemy in Area (16)
 
 Name             : Mug's Moxie Jug (id=474376) 
+Hotfixed         : Internal Cooldown (1000 -> 750)
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds
 Labels           : 292
                  : 3959: Item Effects
-Internal Cooldown: 1 seconds
+Internal Cooldown: 0.75 seconds
 Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Mug's Moxie Jug (471548)
