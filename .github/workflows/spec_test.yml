@@ -33,8 +33,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: refs/remotes/pull/${{ github.event.workflow_run.pull_requests[1].id }}/merge
+        run: git pull origin pull/1/head
 
       - uses: actions/cache@v4
         env: { ccache-prefix: 'ubuntu-clang++-15-cpp-17-ccache-0' }
