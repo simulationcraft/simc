@@ -17,12 +17,12 @@ TWW1_Druid_Guardian.simc
 
 TWW1_Evoker_Devastation.simc
 
-TWW1_Hunter_Beast_Mastery.simc
-TWW1_Hunter_Marksmanship.simc
-TWW1_Hunter_Survival.simc
-TWW1_Hunter_Beast_Mastery_Dark_Ranger.simc
-TWW1_Hunter_Marksmanship_Dark_Ranger.simc
-TWW1_Hunter_Survival_Sentinel.simc
+# TWW1_Hunter_Beast_Mastery.simc
+# TWW1_Hunter_Marksmanship.simc
+# TWW1_Hunter_Survival.simc
+# TWW1_Hunter_Beast_Mastery_Dark_Ranger.simc
+# TWW1_Hunter_Marksmanship_Dark_Ranger.simc
+# TWW1_Hunter_Survival_Sentinel.simc
 
 TWW1_Mage_Arcane.simc
 TWW1_Mage_Arcane_Sunfury.simc
