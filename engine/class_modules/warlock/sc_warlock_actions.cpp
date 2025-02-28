@@ -1732,6 +1732,8 @@ using namespace helpers;
     {
       aoe = -1;
 
+      triggers.jackpot_affliction = true;
+
       impact_action = new malefic_rapture_damage_t( p );
       add_child( impact_action );
     }
