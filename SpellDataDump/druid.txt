@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59347 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59466 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -4193,12 +4193,10 @@ Effects          :
                    Base Value: 139 | Scaled Value: 139 | Target: Self (1)
                    Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254), Lunar Beam (414613), Ravage (441605), Dreadful Wound (451177)
                    Family Flags: 77
-Hotfixed         : Base Value (128 -> 139)
 #2 (id=191158)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 139 | Scaled Value: 139 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Maul (6807), Mangle (33917), Thrash (77758), Pulverize (80313), Thrash (192090), Brambles (203958), Lunar Beam (204069), Brambles (213709), Swipe (213771), Architect's Aligner (363789), Thorns of Iron (400223), Raze (400254), Lunar Beam (414613), Ravage (441605), Dreadful Wound (451177)
                    Family Flags: 77
-Hotfixed         : Base Value (128 -> 139)
 #3 (id=191159)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 75 | Scaled Value: 75 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
@@ -4257,12 +4255,10 @@ Hotfixed         : Base Value (128 -> 139)
                    Base Value: 46 | Scaled Value: 46 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
                    Family Flags: 21, 92
-Hotfixed         : Base Value (22 -> 46)
 #20 (id=1091201) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 46 | Scaled Value: 46 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
                    Family Flags: 21, 92
-Hotfixed         : Base Value (22 -> 46)
 #21 (id=1176394) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -70 | Scaled Value: -70 | Misc Value 2: 3880 (Label) | Target: Self (1)
                    Affected Spells (Label): Boundless Moonlight (428682)
@@ -4275,7 +4271,6 @@ Hotfixed         : Base Value (22 -> 46)
 #24 (id=1220204) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 80 | Scaled Value: 80 | Misc Value 2: 4781 (Label) | Target: Self (1)
                    Affected Spells (Label): Fury of Elune (211545), Boundless Moonlight (428682)
-Hotfixed         : NEW EFFECT
 
 Name             : Feral Druid (id=137011) [Spell Family (7), Passive, Hidden] 
 Class            : Feral Druid
@@ -4341,7 +4336,6 @@ Effects          :
                    Affected Spells (Label): Harmonious Constitution (440116)
 #17 (id=1177947) : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 62 | Scaled Value: 62 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 62)
 
 Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
 Class            : Restoration Druid
@@ -13480,7 +13474,6 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=1029658)  : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.44 | Target: Any Target (25)
-Hotfixed         : SP Coefficient (0.36 -> 0.44)
 #2 (id=1029659)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271) | Attributes: Suppress Points Stacking (6)
                    Base Value: 25 | Scaled Value: 25 | Target: Any Target (25)
                    Affected Spells: Entangling Roots (339), Rip (1079), Rake (1822), Mass Entanglement (102359), Thrash (106830), Moonfire (155625), Rake (155722), Moonfire (164812), Sunfire (164815), Thrash (192090), Feral Frenzy (274837), Feral Frenzy (274838), Thrash (405233)
@@ -18421,7 +18414,6 @@ Attributes       : Ignore Line of Sight (66), Do Not Display Range (126), Always
 Effects          :
 #1 (id=1133810)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.2 | Radius: 0 - 10 yards | Target: Unknown(87) -> At Enemy in Area (16)
-Hotfixed         : AP Coefficient (1 -> 1.2)
 Description      : $@spelldesc440120
 
 Name             : Ravage (id=441583) [Spell Family (7), Passive] 
@@ -20870,7 +20862,6 @@ Effects          :
                    Family Flags: 9, 12, 22, 40, 66, 85, 92, 94, 120, 126, 127
 #2 (id=1201189)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 11 | PvP Coefficient: 0.5 | Target: Enemy (6)
-Hotfixed         : AP Coefficient (8 -> 11)
 #3 (id=1201190)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Misc Value: 22 | Misc Value 2: 2403 (Label) | Target: Self (1)
                    Affected Spells (Label): Frenzied Assault (391140)
@@ -20915,10 +20906,8 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Heroic Leap (362043), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Thunderous Roar (384318), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Rend (394062), Rend (394063), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Thunderous Roar (397364), Max A FX Testing Warrior Spear - (2) Damage (409404), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174)
                    Family Flags: 9
-Hotfixed         : Misc Value (7 -> 22)
 #5 (id=1215741)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Sub Type (108 -> 344), Misc Value (22 -> 0), Affects Spells
 Description      : $@spelldesc1215994
 Tooltip          : Damage increased by $w1%$?$w2>0[. Shield Slam critical strike chance increased by $w2% and its critical strikes reduce the cooldown of Shield Charge by ${$w3/1000}.1 sec.][]
 
@@ -20966,7 +20955,6 @@ Effects          :
 #4 (id=1218385)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Misc Value 2: 4743 (Label) | Target: Self (1)
                    Affected Spells (Label): Rage of the Sleeper (219432)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1215986
 Tooltip          : Damage increased by $s1%
 

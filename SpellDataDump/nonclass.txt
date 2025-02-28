@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59347 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59466 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -141675,7 +141675,6 @@ Attributes       : Aura Points On Client (268), Scales with Casting Item's Level
 Effects          :
 #1 (id=772930)   : Apply Aura (6) | Increase Armor (465) | Scaling Class: -7
                    Base Value: 4 | Scaled Value: 12673.89 (coefficient=3.31) | Target: Self (1)
-Hotfixed         : Coefficient (0.349752 -> 3.31), Scaling Class (-1 -> -7)
 #2 (id=772940)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Gain $u stacks of Platinum Plating for $d, increasing your Armor by $s1. Receiving more than $s2% of your health from a Physical damage effect will remove one stack of Platinum Plating.
@@ -221604,7 +221603,6 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2
 #3 (id=1109684)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
-Hotfixed         : Base Value (250 -> 0)
 Description      : Combine $M2 Fractured Sparks of Omens with $M3 Valorstones to create a Spark of Omens.
 
 Name             : Divine Prayer Beads (id=428768) 
@@ -231715,10 +231713,8 @@ Attributes       : Passive (6), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1139501)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 980.982 (coefficient=0.2562) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (0.222817 -> 0.2562)
 #2 (id=1139502)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 167341.5 (coefficient=65.425) | Target: Self (1)
-Hotfixed         : Coefficient (43.616501 -> 65.425003)
 Description      : Your abilities have a chance to call the Darkness to you, increasing your $pri by $s1, up to ${$s1*$451369u}.
 
 Upon reaching full power, the Darkness is unleashed, inflicting ${$<rolemult>*$s2*$451602d/$451602t1} Shadow damage split between nearby enemies over $451602d before fading back into the remnant.
@@ -231750,7 +231746,6 @@ Description      : Raise your signet to the Light, increasing your highest secon
 Tooltip          : $?e2[Critical Strike]?e3[Haste]?e4[Mastery]?e5[Versatility][Highest secondary stat] increased by $w1.
 
 Name             : Tome of Light's Devotion (id=443533) [Passive] 
-Hotfixed         : Internal Cooldown (750 -> 500)
 School           : Physical
 Spell Type       : None
 Labels           : 3959: Item Effects
@@ -231766,10 +231761,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 3590.455 (coefficient=0.937708) | Target: Self (1)
 #3 (id=1144413)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 156133.4 (coefficient=61.043) | Target: Self (1)
-Hotfixed         : Coefficient (67.825104 -> 61.042999)
 #4 (id=1144414)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 4142.945 (coefficient=1.082) | Target: Self (1)
-Hotfixed         : Coefficient (0.7725 -> 1.082)
 #5 (id=1144420)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 379033.1 (coefficient=148.1894) | Target: Self (1)
 Description      : $?a443534[Advance to the $s1 Verses of Inner Radiance, reading as you are attacked.
@@ -233018,10 +233011,8 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1141651)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 45.19716 (coefficient=0.011804) | PvP Coefficient: 0.4 | Target: Self (1)
-Hotfixed         : Coefficient (0.013256 -> 0.011804)
 #2 (id=1141652)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 416.4962 (coefficient=0.108775) | PvP Coefficient: 0.4 | Target: Self (1)
-Hotfixed         : Coefficient (0.120942 -> 0.108775)
 #3 (id=1151807)  : Apply Aura (6) | Proc Trigger Spell (42): Spymaster's Report
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 451199 | Target: Self (1)
 Description      : Your damaging spells dispatch a spider to spy on your foes, increasing your Intellect by $s1 per report received. Stacks up to $451199u times. This effect may only occur every $proccooldown sec.
@@ -234637,7 +234628,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1313.337 (coefficient=0.343) | PvP Coefficient: 0.5
 #5 (id=1145345)  : Dummy (3) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 548125.6 (coefficient=214.299) | PvP Coefficient: 0.5
-Hotfixed         : Coefficient (194.817001 -> 214.298996)
 Description      : Occasionally share a drink with allies who assist you in combat, granting them $s2 of their primary stat for $443381d and absorbing $s3 damage. You take a sip as well, granting $s4 $pri and absorbing $s5 damage.
 
 When you fall below $s1% health, you take an emergency sip. This may only occur once every $450610d.$?(a137048|a137028|a137023|a137010|a212613|a137008)[][
@@ -241119,7 +241109,6 @@ Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster
 Effects          :
 #1 (id=1156726)  : Create Item (157)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 125524 | Misc Value 2: 0x42 | Target: Self (1)
-Hotfixed         : Delta (0.25 -> 0), Misc Value 2 (104 -> 66)
 Description      : Create Boots for your class.
 
 Name             : Cursed Pickaxe (id=454396) 
@@ -241140,7 +241129,6 @@ Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster
 Effects          :
 #1 (id=1156921)  : Create Item (157)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 125539 | Misc Value 2: 0x42 | Target: Self (1)
-Hotfixed         : Delta (0.25 -> 0), Misc Value 2 (104 -> 66)
 Description      : Create a Chestpiece for your class.
 
 Name             : Create Hand (id=454409) 
@@ -241151,7 +241139,6 @@ Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster
 Effects          :
 #1 (id=1156922)  : Create Item (157)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 125540 | Misc Value 2: 0x42 | Target: Self (1)
-Hotfixed         : Delta (0.25 -> 0), Misc Value 2 (104 -> 66)
 Description      : Create Gloves for your class.
 
 Name             : Create Head (id=454410) 
@@ -241162,7 +241149,6 @@ Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster
 Effects          :
 #1 (id=1156925)  : Create Item (157)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 125541 | Misc Value 2: 0x42 | Target: Self (1)
-Hotfixed         : Delta (0.25 -> 0), Misc Value 2 (104 -> 66)
 Description      : Create a Headpiece for your class.
 
 Name             : Create Legs (id=454411) 
@@ -241173,7 +241159,6 @@ Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster
 Effects          :
 #1 (id=1156926)  : Create Item (157)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 125542 | Misc Value 2: 0x42 | Target: Self (1)
-Hotfixed         : Delta (0.25 -> 0), Misc Value 2 (104 -> 66)
 Description      : Create Legs for your class.
 
 Name             : Create Shoulder (id=454412) 
@@ -241184,7 +241169,6 @@ Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster
 Effects          :
 #1 (id=1156927)  : Create Item (157)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 125543 | Misc Value 2: 0x42 | Target: Self (1)
-Hotfixed         : Delta (0.25 -> 0), Misc Value 2 (104 -> 66)
 Description      : Create Shoulders for your class.
 
 Name             : Create Waist (id=454413) 
@@ -241195,7 +241179,6 @@ Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster
 Effects          :
 #1 (id=1156928)  : Create Item (157)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 125545 | Misc Value 2: 0x42 | Target: Self (1)
-Hotfixed         : Delta (0.25 -> 0), Misc Value 2 (104 -> 66)
 Description      : Create a Belt for your class.
 
 Name             : Create Wrist (id=454414) 
@@ -241206,7 +241189,6 @@ Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster
 Effects          :
 #1 (id=1156929)  : Create Item (157)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 125544 | Misc Value 2: 0x42 | Target: Self (1)
-Hotfixed         : Delta (0.25 -> 0), Misc Value 2 (104 -> 66)
 Description      : Create Bracers for your class.
 
 Name             : Blame Redirection Device (id=454450) [Hidden] 
@@ -252594,7 +252576,6 @@ Effects          :
 Description      : Create a piece of Prized Gladiator's equipment appropriate for your loot specialization ($@lootspec).
 
 Name             : Mister Pick-Me-Up (id=467250) [Passive] 
-Hotfixed         : Proc Flags 1 (17424 -> 2114576)
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -252714,7 +252695,6 @@ Effects          :
 Description      : Recalibrate for $?a467492[$@spellname467497]?a467497[$@spellname467492][$@spellname467497].
 
 Name             : Precision Blasting (id=467492) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -252728,7 +252708,6 @@ Description      : Your spells and abilities have a high chance to lase your tar
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Mass Destruction (id=467497) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -253222,7 +253201,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1184546)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 166.1811 (coefficient=0.043401) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (0.045686 -> 0.043401)
 #2 (id=1200098)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 23624.88 (coefficient=9.236547) | PvP Coefficient: 0.5 | Target: Self (1)
 #3 (id=1200099)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
@@ -254090,7 +254068,6 @@ Attributes       : Passive (6), No Aura Icon (60), No Aura Log (202), Aura Point
 Effects          :
 #1 (id=1187329)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 478569.9 (coefficient=187.105) | PvP Coefficient: 0.25 | Target: Self (1)
-Hotfixed         : Coefficient (89.097733 -> 187.104996), PvP Coefficient (0.5 -> 0.25)
 #2 (id=1187331)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 852.4915 (coefficient=0.333296) | Target: Self (1)
 
@@ -254174,7 +254151,6 @@ Description      : $@spelldesc469936
 Tooltip          : Versatility increased by $w1.
 
 Name             : Mug's Moxie Jug (id=471548) [Passive] 
-Hotfixed         : Proc Flags 1 (87312 -> 2446608)
 School           : Physical
 Spell Type       : None
 Labels           : 292
@@ -255574,7 +255550,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 35766 | Target: Unknown(87) -> At Enemy in Area (16)
 
 Name             : Mug's Moxie Jug (id=474376) 
-Hotfixed         : Internal Cooldown (1000 -> 750)
 School           : Physical
 Spell Type       : None
 Duration         : 15 seconds

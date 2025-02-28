@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59347 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59466 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -603,12 +603,10 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.6923 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), FX Poison Wave Test - SK [DNT] (439253), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657)
                    Family Flags: 0
-Hotfixed         : Base Value (18 -> 25)
 #2 (id=910332)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.6923 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452), Eruption (395160), Upheaval (396288), Eruption (424428), Eruption (438653), FX Poison Wave Test - SK [DNT] (439253), Melt Armor (441172), Engulf (443329), Fire Breath (444249), Firestorm (456657)
                    Family Flags: 0
-Hotfixed         : Base Value (18 -> 25)
 #3 (id=910333)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #4 (id=910446)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -7290,12 +7288,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Ebon Might (395152), Ebon Might (395296), Temporal Wound (409560), Ebon Might (426404)
                    Family Flags: 56
-Hotfixed         : Base Value (25 -> 10)
 #2 (id=1097602)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 5 (33)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Ebon Might (395152), Ebon Might (395296), Temporal Wound (409560), Ebon Might (426404)
                    Family Flags: 56
-Hotfixed         : Base Value (25 -> 10)
 Description      : $@spellname395152 and $@spellname403631 are $s1% more effective when not in a raid.
 
 Name             : Augmentation Evoker (id=396186) [Spell Family (224), Passive, Hidden] 
@@ -8122,7 +8118,6 @@ Attributes       : Passive (6), Can Proc From Procs (122), Mastery Affects Point
 Effects          :
 #1 (id=1055273)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.272 | Target: Self (1)
-Hotfixed         : SP Coefficient (0.34 -> 0.272)
 #2 (id=1082679)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.5 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Blistering Scales (360827), Obsidian Scales (363916), Source of Magic (369459), Twin Guardian (370889), Leaping Flames (370901), Zephyr (374227), Renewing Blaze (374348), Time Spiral (375234), Essence Burst (392268), Ebon Might (395152), Ebon Might (395296), Nourishing Sands (406043), Spatial Paradox (406732), Spatial Paradox (406789), Bronze Aspect's Favor (407244), Black Aspect's Favor (407254), Momentum Shift (408005), Prescience (409311), Temporal Wound (409560), Chrono Ward (409678), Prescience (410089), Reactive Hide (410256), Inferno's Blessing (410263), Molten Blood (410651), Symbiotic Bloom (410686), Timelessness (412710), Shifting Sands (413984), Ebon Might (426404), Perilous Fate (439606)
@@ -8724,7 +8719,6 @@ Attributes       : Aura Is Debuff (26), Can Proc From Procs (122), Do Not Displa
 Effects          :
 #1 (id=1074514)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.5 | Radius: 3 - 6 yards | Target: Unknown(78) -> At Enemy in Area (16)
-Hotfixed         : Base Value (10 -> 8)
 #2 (id=1075735)  : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 409990 | Radius: 6 yards | Target: At Enemy in Area (16)
 Description      : $@spelldesc403631
@@ -9732,7 +9726,6 @@ Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38
 Effects          :
 #1 (id=1082678)  : Apply Aura (6) | Modify Stat With Support Triggers (540) | Attributes: Compute Points Only At Cast Time (15)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.272 | Misc Value: 6 | Radius: 0 - 100 yards | Target: At Self (18) -> At Friendly in Area (31)
-Hotfixed         : SP Coefficient (0.34 -> 0.272)
 #2 (id=1082696)  : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 100 yards | Target: At Self (18) -> At Friendly in Area (31)
 Description      : $@spelldesc406380
@@ -12959,7 +12952,6 @@ Effects          :
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 19 | Target: Self (1)
                    Affected Spells: Disintegrate (356995)
                    Family Flags: 6
-Hotfixed         : Base Value (-20 -> -25)
 #2 (id=1205623)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Disintegrate (356995)

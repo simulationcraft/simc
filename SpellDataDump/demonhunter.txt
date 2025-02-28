@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59347 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59466 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -11210,7 +11210,6 @@ Description      : Expose weaknesses in the target of your $@spellname442624, ca
 
 
 Name             : Wounded Quarry (id=442808) [Spell Family (107)] 
-Hotfixed         : Affecting Spells
 Class            : Demon Hunter
 School           : Chromatic
 Spell Type       : Melee

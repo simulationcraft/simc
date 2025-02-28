@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59347 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59466 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -3266,7 +3266,6 @@ Effects          :
                    Base Value: 38 | Scaled Value: 38 | PvP Coefficient: 0.4 | Target: Self (1)
                    Affected Spells: Collapsing Void (448405)
                    Family Flags: 30
-Hotfixed         : Base Value (20 -> 38)
 #11 (id=1040379) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 9 | Scaled Value: 9 | Misc Value 2: 4004 (Label) | Target: Self (1)
                    Affected Spells (Label): Divine Star (122128), Divine Star (390845)
@@ -13733,7 +13732,6 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914)
                    Family Flags: 15, 42
-Hotfixed         : Base Value (25 -> 35)
 #2 (id=1151713)  : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 2 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
@@ -13742,7 +13740,6 @@ Hotfixed         : Base Value (25 -> 35)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914)
                    Family Flags: 15, 42
-Hotfixed         : Base Value (25 -> 35)
 Description      : $?c3[Vampiric Touch and Shadow Word: Pain deal $s1% additional damage.][Power Word: Shield absorbs $s2% additional damage.]
 
 Name             : Voidwound (id=448279) [Spell Family (6)] 
@@ -14084,7 +14081,6 @@ Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1151263)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.1 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (1.68 -> 2.1)
 #2 (id=1151264)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Sends a blast of cosmic void energy at the enemy, causing $s1 Shadow damage.$?c3[
@@ -14170,7 +14166,6 @@ $@spellicon451235$@spellname451235
 $@spelldesc451235
 
 Name             : Voidwraith (id=451235) [Spell Family (6)] 
-Hotfixed         : Cooldown (120000 -> 180000)
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -15777,7 +15772,6 @@ Effects          :
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1200612)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Hotfixed         : Sub Type (107 -> 4), Misc Value (12 -> 0), Affects Spells
 Description      : Hitting a |cFFFFFFFFJackpot!|r grants you ${$s1/1000}.1 seconds of Power Infusion. Mind Blast$?a450405[, Void Blast,][] and Void Bolt deal $s2% increased damage while Power Infusion is active.
 
 Name             : Divinity (id=1216314) [Spell Family (6)] 
