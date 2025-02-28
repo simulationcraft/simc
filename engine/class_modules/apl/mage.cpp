@@ -397,7 +397,7 @@ void frost( player_t* p )
   cleave_ff->add_action( "blizzard,if=buff.freezing_rain.up&talent.ice_caller" );
   cleave_ff->add_action( "glacial_spike,if=buff.icicles.react=5" );
   cleave_ff->add_action( "ray_of_frost,target_if=max:debuff.winters_chill.stack,if=remaining_winters_chill=1" );
-  cleave_ff->add_action( "frostfire_bolt,if=buff.frostfire_empowerment.react&!buff.excess_frost.up&!buff.excess_fire.up" );
+  cleave_ff->add_action( "frostfire_bolt,if=buff.frostfire_empowerment.react&!buff.excess_fire.up" );
   cleave_ff->add_action( "shifting_power,if=cooldown.icy_veins.remains>10&cooldown.frozen_orb.remains>10&(!talent.comet_storm|cooldown.comet_storm.remains>10)&(!talent.ray_of_frost|cooldown.ray_of_frost.remains>10)" );
   cleave_ff->add_action( "ice_lance,target_if=max:debuff.winters_chill.stack,if=buff.fingers_of_frost.react|remaining_winters_chill" );
   cleave_ff->add_action( "frostfire_bolt" );
