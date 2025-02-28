@@ -1125,7 +1125,8 @@ Family Flags     : 66
 Attributes       : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49), Require All Targets (58), Always Line of Sight (185), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=45900)    : Dummy (3)
-                   Base Value: 54216 | Scaled Value: 54216 | Target: Friendly (21)
+                   Base Value: 54216 | Scaled Value: 54216 | Target: Self (1)
+Hotfixed         : Target 1 (21 -> 1)
 #2 (id=45901)    : Server Side Script (77)
                    Base Value: 56651 | Scaled Value: 56651 | Target: Self (1)
 Description      : Your pet removes all root and movement impairing effects from itself and a friendly target, and grants immunity to all such effects for $54216d.
