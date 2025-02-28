@@ -1,29 +1,30 @@
-# monk="TWW2_Monk_Brewmaster"
-# source=default
-# spec=brewmaster
-# level=80
-# race=tauren
-# role=tank
-# position=front
-# talents=CwQAqCjoPBi1F5zHY9mx8hvRaCAAAAGjxMwsMjtZmZGDAAAAAAwyCGxMDMDjNDsNzMDzyYmx2sYab5B2mtZmhZBAA2mlplZbmlBAoZbWamZmFmBL
+monk="TWW2_Monk_Brewmaster"
+source=default
+spec=brewmaster
+level=80
+race=tauren
+role=tank
+position=front
+talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAAjxYGGWmx2MzMDAAAAAAALLgYmBmhBGjtZmZYWGzM2mlZabb2sNzMMLAAwGCAAgZbWamZmFmhFA
 
-# head=gatecrashers_horns,id=212047,bonus_id=1540/10299/1808,gem_id=213743
-# neck=silken_advisors_favor,id=225575,bonus_id=1540/10299/10376/8781,gem_id=213467/213497
-# shoulder=gatecrashers_enduring_effigy,id=212045,bonus_id=1540/10299
-# back=wings_of_shattered_sorrow,id=225574,bonus_id=1540/10299/10376,enchant=chant_of_leeching_fangs_3
-# chest=gatecrashers_gi,id=212050,bonus_id=1540/10299,enchant=crystalline_radiance_3
-# wrist=sanguine_experiments_bandages,id=225588,bonus_id=1540/10299/10376/1808,enchant=chant_of_armored_leech_3,gem_id=213479
-# hands=runebranded_grasps,id=219333,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960,crafted_stats=32/40
-# waist=runebranded_waistband,id=219331,bonus_id=10421/9633/8902/11144/10222/1485/10520/8960/1808,gem_id=213461,crafted_stats=32/40
-# legs=gatecrashers_kilt,id=212046,bonus_id=1540/10299,enchant=defenders_armor_kit_3
-# feet=besiegers_deckstalkers,id=159320,bonus_id=10047/10299/10376,enchant=defenders_march_3
-# finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=1540/10299/10376/8781,enchant=cursed_critical_strike_3,gem_id=213461/213461
-# finger2=ritual_commanders_ring,id=178781,bonus_id=9948/10299/10376/8781,enchant=cursed_critical_strike_3,gem_id=213461/213461
-# trinket1=void_reapers_contract,id=212456,bonus_id=1540/10299/10376
-# trinket2=mad_queens_mandate,id=212454,bonus_id=1540/10299/10376
-# main_hand=harvesters_interdiction,id=221159,bonus_id=3131/10299/10376,enchant=authority_of_the_depths_3
+head=ageless_serpents_mane,id=229298,bonus_id=7981/12042/5878/11996/1808,gem_id=213743
+neck=flickering_glowtorc,id=221103,bonus_id=657/12042/5878/7981/11996/10376/8781,gem_id=213467/213497
+shoulders=ageless_serpents_shoulderpads,id=229296,bonus_id=7981/12042/5878/11996
+back=trashmasters_mantle,id=199921,bonus_id=657/12042/5878/7981/11996,enchant=chant_of_leeching_fangs_3
+chest=venture_co._plenipotentiary_vest,id=235417,bonus_id=657/12042/5878/7981/11996,enchant=crystalline_radiance_3
+wrists=runebranded_armbands,id=219334,bonus_id=12040/9627/12043/8795/11109/1808,gem_id=213479,enchant=chant_of_armored_leech_3
+hands=ageless_serpents_handguards,id=229299,bonus_id=7981/12042/5878/11996
+waist=adrenal_surge_clasp,id=219502,bonus_id=12040/9627/12043/1808,gem_id=213461
+legs=ageless_serpents_leggings,id=229297,bonus_id=7981/12042/5878/11996,enchant=stormbound_armor_kit_3
+feet=ageless_serpents_ankleweights,id=229300,bonus_id=7981/12042/5878/11996,enchant=defenders_march_3
+finger1=the_jastor_diamond,id=231265,bonus_id=7981/12042/5878/11996/10376/8781,gem_id=213461/213461,enchant=cursed_critical_strike_3
+finger2=miniature_roulette_wheel,id=228843,bonus_id=11139/8949/7981/12042/5878/11996/10376/8781,gem_id=213461/213461,enchant=cursed_critical_strike_3
+trinket1=tome_of_lights_devotion,id=219309,bonus_id=657/12042/5878/7981/11996
+trinket2=grim_codex,id=178811,bonus_id=657/12042/5878/7981/11996
+main_hand=capos_molten_knuckles,id=232804,bonus_id=7981/12042/5878/11996,enchant=authority_of_the_depths_3
+off_hand=gallywixs_iron_thumb,id=228899,bonus_id=7981/12042/5878/11996,enchant=authority_of_the_depths_3
 
-# save=TWW2_Monk_Brewmaster.simc
+save=TWW2_Monk_Brewmaster.simc
 
 # monk="TWW2_Monk_Windwalker"
 # spec=windwalker
