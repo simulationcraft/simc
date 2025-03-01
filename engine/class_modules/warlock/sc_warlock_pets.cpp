@@ -193,7 +193,7 @@ double warlock_pet_t::composite_spell_haste() const
   if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
     m *= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
-  if ( pet_type == PET_DREADSTALKER && o()->talents.flametouched.ok() )
+  if ( ( pet_type == PET_DREADSTALKER || pet_type == PET_FELHUNTER ) && o()->talents.flametouched.ok() )
     m *= 1.0 + o()->talents.flametouched->effectN( 1 ).percent();
 
   return m;
@@ -206,7 +206,7 @@ double warlock_pet_t::composite_spell_cast_speed() const
   if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
       m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
-  if ( pet_type == PET_DREADSTALKER && o()->talents.flametouched.ok() )
+  if ( ( pet_type == PET_DREADSTALKER || pet_type == PET_FELHUNTER ) && o()->talents.flametouched.ok() )
     m /= 1.0 + o()->talents.flametouched->effectN( 1 ).percent();
 
   return m;
@@ -219,7 +219,7 @@ double warlock_pet_t::composite_melee_auto_attack_speed() const
   if ( is_main_pet && o()->talents.demonic_inspiration.ok() )
     m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
-  if ( pet_type == PET_DREADSTALKER && o()->talents.flametouched.ok() )
+  if ( ( pet_type == PET_DREADSTALKER || pet_type == PET_FELHUNTER ) && o()->talents.flametouched.ok() )
     m /= 1.0 + o()->talents.flametouched->effectN( 1 ).percent();
 
   return m;
