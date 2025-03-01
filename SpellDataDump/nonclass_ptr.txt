@@ -238590,11 +238590,12 @@ Effects          :
 Description      : $@spelldesc445619
 
 Name             : Algari Mana Oil (id=451869) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Miscellaneous, Dagger, Spear, Crossbow, Wand, One Hand, Unknown, Two-Hand, Main Hand, Off Hand, Ranged
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Held Item Only (9), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1152648)  : Unknown(54)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7493
@@ -238603,11 +238604,12 @@ Effects          :
 Description      : Coat your weapon in Algari Mana Oil, increasing your Critical Strike and Haste by $ec1 for $M2 min.
 
 Name             : Algari Mana Oil (id=451873) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Miscellaneous, Dagger, Spear, Crossbow, Wand, One Hand, Unknown, Two-Hand, Main Hand, Off Hand, Ranged
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Held Item Only (9), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1152653)  : Unknown(54)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7494
@@ -238616,11 +238618,12 @@ Effects          :
 Description      : Coat your weapon in Algari Mana Oil, increasing your Critical Strike and Haste by $ec1 for $M2 min.
 
 Name             : Algari Mana Oil (id=451874) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Miscellaneous, Dagger, Spear, Crossbow, Wand, One Hand, Unknown, Two-Hand, Main Hand, Off Hand, Ranged
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Held Item Only (9), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1152654)  : Unknown(54)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7495
@@ -238629,12 +238632,13 @@ Effects          :
 Description      : Coat your weapon in Algari Mana Oil, increasing your Critical Strike and Haste by $ec1 for $M2 min.
 
 Name             : Oil of Deep Toxins (id=451882) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Miscellaneous, Dagger, Spear, Crossbow, Wand, One Hand, Unknown, Two-Hand, Main Hand, Off Hand, Ranged
 Labels           : 3959: Item Effects
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Held Item Only (9), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1152663)  : Unknown(54)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7496
@@ -238677,12 +238681,13 @@ Effects          :
 Description      : $@spelldesc436344
 
 Name             : Oil of Deep Toxins (id=451901) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Miscellaneous, Dagger, Spear, Crossbow, Wand, One Hand, Unknown, Two-Hand, Main Hand, Off Hand, Ranged
 Labels           : 3959: Item Effects
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Held Item Only (9), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1152692)  : Unknown(54)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7497
@@ -238695,12 +238700,13 @@ Lasts $M2 min.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Oil of Deep Toxins (id=451902) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Miscellaneous, Dagger, Spear, Crossbow, Wand, One Hand, Unknown, Two-Hand, Main Hand, Off Hand, Ranged
 Labels           : 3959: Item Effects
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Held Item Only (9), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1152694)  : Unknown(54)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7498
@@ -238900,12 +238906,13 @@ Description      : $@spelldesc443529
 Tooltip          : Absorbs $s2% of damage taken, up to $w1.
 
 Name             : Oil of Beledar's Grace (id=451925) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Miscellaneous, Dagger, Spear, Crossbow, Wand, One Hand, Unknown, Two-Hand, Main Hand, Off Hand, Ranged
 Labels           : 3959: Item Effects
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Held Item Only (9), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1152725)  : Unknown(54)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7501
@@ -238916,12 +238923,13 @@ Description      : Coat your weapon in an oil that emits a warm light. The oil h
 Lasts $M2 min.
 
 Name             : Oil of Beledar's Grace (id=451926) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Miscellaneous, Dagger, Spear, Crossbow, Wand, One Hand, Unknown, Two-Hand, Main Hand, Off Hand, Ranged
 Labels           : 3959: Item Effects
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Held Item Only (9), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1152727)  : Unknown(54)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7500
@@ -238933,12 +238941,13 @@ Lasts $M2 min.
 
 
 Name             : Oil of Beledar's Grace (id=451927) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, Bow, Gun, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Exotic, Exotic (2), Fist Weapon, Miscellaneous, Dagger, Spear, Crossbow, Wand, One Hand, Unknown, Two-Hand, Main Hand, Off Hand, Ranged
 Labels           : 3959: Item Effects
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Held Item Only (9), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Enchant own item only (77), Visible only to caster (conversations only) (343)
 Effects          :
 #1 (id=1152729)  : Unknown(54)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7502
