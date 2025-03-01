@@ -260281,10 +260281,12 @@ Range            : 100 yards
 Triggered By     : Party Crashing Rocket (1223124)
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Not an Action (92), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Charmed (261), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
 Effects          :
-#1 (id=1210862)  : School Damage (2): fire
-                   Base Value: 30 | Scaled Value: 30 (delta=0.1) | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
-#2 (id=1210863)  : Unknown(144)
-                   Base Value: 50 | Scaled Value: 50 (delta=0.1) | Misc Value: 75 | Misc Value 2: 0x2ee | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
+#1 (id=1222349)  : School Damage (2): fire
+                   Base Value: 50 | Scaled Value: 50 (delta=0.099404) | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
+Hotfixed         : NEW EFFECT
+#2 (id=1222350)  : Unknown(144)
+                   Base Value: 50 | Scaled Value: 50 (delta=0.1) | Misc Value: 75 | Misc Value 2: 0x2ee | Radius: 0 - 4 yards | Target: Unknown(87) -> At Enemy in Area (16)
+Hotfixed         : NEW EFFECT
 Description      : Arrive just in time to be the life of the show knocking back and inflicting $1223126s1 Fire damage to enemies within $1223126A1 yards upon impact. Cool.
 
 Name             : FIRE!!! (id=1224131) [Hidden] 
