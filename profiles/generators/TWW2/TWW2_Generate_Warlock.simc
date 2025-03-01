@@ -103,8 +103,8 @@ hands=spliced_fiendtraders_demonic_grasp,id=229326,ilevel=678
 waist=excavators_safety_belt,id=159226,bonus_id=1808,ilevel=678,gem_id=213491
 legs=spliced_fiendtraders_skin_tights,id=229324,bonus_id=11996/10356/11961/6652/1579/10255,ilevel=678,enchant_id=7534
 feet=cloudstrider_soles,id=221043,ilevel=678,enchant_id=7424
-finger1=cyrces_circlet,id=228411,bonus_id=12014/1498,ilevel=658,gem_id=228639/228638/228646,enchant_id=7334
-finger2=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213482/213458,enchant_id=7334
+finger1=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213482/213458,enchant_id=7334
+finger2=miniature_roulette_wheel,id=228843,bonus_id=1527/11996/11964/8781,gem_id=213458/213458,enchant_id=7340,crafted_stats=40/36
 trinket1=eye_of_kezan,id=230198,ilevel=678
 trinket2=house_of_cards,id=230027,ilevel=678
 main_hand=scalding_queenmakers_shiv,id=221062,bonus_id=3170/11996/11964,enchant_id=7460
