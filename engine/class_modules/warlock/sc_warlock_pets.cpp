@@ -1791,7 +1791,11 @@ void greater_dreadstalker_t::arise()
 }
 
 void greater_dreadstalker_t::demise()
-{ warlock_pet_t::demise(); }
+{ warlock_pet_t::demise(); 
+
+   if ( o()->talents.demonic_core_spell.ok() )
+     o()->buffs.demonic_core->trigger();
+ }
 
 double greater_dreadstalker_t::composite_player_multiplier( school_e school ) const
 {
