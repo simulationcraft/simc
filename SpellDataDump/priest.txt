@@ -4643,6 +4643,7 @@ Effects          :
 Description      : $@spelldesc205385
 
 Name             : Void Bolt (id=205448) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -4658,7 +4659,7 @@ Labels           : 16: Class Spells
 Category Cooldown: 6 seconds
 Affecting Spells : Power Infusion (10060 effect#2), Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Priest (137030 effect#1), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Sins of the Many (280398 effects: #1, #2), Dissonant Echoes (338342 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 72, 106
-Attributes       : Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=303382)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 234746 | Target: Enemy (6)
