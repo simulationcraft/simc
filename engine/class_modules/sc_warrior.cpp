@@ -1194,7 +1194,7 @@ public:
       parse_effects( p()->buff.violent_outburst, effect_mask_t( false ).enable( 1 ) );
 
       parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 7 ) );
-      if ( p()->talents.warrior.unstoppable_force )
+      if ( p()->talents.warrior.unstoppable_force->ok() )
         parse_effects( p()->talents.warrior.avatar, effect_mask_t( false ).enable( 11, 12 ) );
 
       // TWW1 Tier
