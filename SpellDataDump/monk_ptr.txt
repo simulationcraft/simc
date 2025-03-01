@@ -19313,6 +19313,7 @@ Description      : $@spelldesc1215717
 Tooltip          : The damage of your next Fists of Fury is increased by $w1%.
 
 Name             : Slicing Winds (id=1217411) [Spell Family (53)] 
+Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -19323,7 +19324,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Tear of Morning (337993 effect#2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Keefer's Skyreach (358759 effect#1), Primordial Power (363924 effects: #1, #2), Primordial Power (368685 effect#1), Weapons of Order (387179 effect#1), Tear of Morning (387995 effect#2), Skytouch (393047 effect#1), Skyreach (393048 effect#1), Brewmaster's Rhythm (394797 effects: #1, #3), Jadefire Brand (395414 effect#1), Press the Advantage (418361 effect#1), Lighter Than Air (449609 effect#3), Aspect of Harmony (450763 effect#2), Fatal Touch (450832 effects: #1, #2), Wisdom of the Wall (452684 effect#1), Flow of Battle (457257 effect#1), Luck of the Draw! (1217990 effects: #1, #2)
 Family Flags     : 69, 103
-Attributes       : Not a Proc (105), Do Not Display Range (126), Do Not Display Cast Time (441)
+Attributes       : Not a Proc (105), Do Not Display Range (126), Treat as Area Effect (175), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1201472)  : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 8 | PvP Coefficient: 1.5 | Target: Any Target (25)
