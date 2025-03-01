@@ -747,8 +747,8 @@ public:
   struct mastery_t
   {
     // Havoc
-    const spell_data_t* demonic_presence;
     const spell_data_t* a_fire_inside;
+    const spell_data_t* demonic_presence;
     // Vengeance
     const spell_data_t* fel_blood;
     const spell_data_t* fel_blood_rank_2;
@@ -1576,8 +1576,9 @@ public:
   struct
   {
     // Havoc
-    affect_flags demonic_presence;
     affect_flags a_fire_inside;
+    affect_flags demonic_presence;
+    affect_flags demon_hide;
     bool chaos_theory = false;
   } affected_by;
 
@@ -1633,7 +1634,6 @@ public:
     ab::apply_affecting_aura( p->talent.havoc.insatiable_hunger );
     ab::apply_affecting_aura( p->talent.havoc.improved_fel_rush );
     ab::apply_affecting_aura( p->talent.havoc.improved_chaos_strike );
-    ab::apply_affecting_aura( p->talent.havoc.demon_hide );
     ab::apply_affecting_aura( p->talent.havoc.blind_fury );
     ab::apply_affecting_aura( p->talent.havoc.looks_can_kill );
     ab::apply_affecting_aura( p->talent.havoc.tactical_retreat );
@@ -1666,8 +1666,9 @@ public:
       ab::apply_affecting_aura( p->set_bonuses.tww1_havoc_4pc );
 
       // Affect Flags
-      parse_affect_flags( p->mastery.demonic_presence, affected_by.demonic_presence );
       parse_affect_flags( p->mastery.a_fire_inside, affected_by.a_fire_inside );
+      parse_affect_flags( p->mastery.demonic_presence, affected_by.demonic_presence );
+      parse_affect_flags( p->talent.havoc.demon_hide, affected_by.demon_hide );
 
       if ( p->talent.havoc.chaos_theory->ok() )
       {
@@ -1846,6 +1847,11 @@ public:
       m *= 1.0 + p()->cache.mastery_value();
     }
 
+    if ( affected_by.demon_hide.direct )
+    {
+      m *= 1.0 + p()->talent.havoc.demon_hide->effectN( 1 ).percent();
+    }
+
     return m;
   }
 
@@ -1861,6 +1867,11 @@ public:
     if ( affected_by.a_fire_inside.periodic )
     {
       m *= 1.0 + p()->cache.mastery_value();
+    }
+
+    if ( affected_by.demon_hide.periodic )
+    {
+      m *= 1.0 + p()->talent.havoc.demon_hide->effectN( 3 ).percent();
     }
 
     return m;
@@ -7266,11 +7277,19 @@ struct wounded_quarry_cb_t : public demon_hunter_proc_callback_t
       : demon_hunter_attack_t( name, p, p->hero_spec.wounded_quarry_damage )
     {
       chance = p->hero_spec.wounded_quarry_proc_rate;
-      // 2025-02-23 -- WQ seems to proc things like Chaotic Disposition
       if ( p->bugs )
       {
+        // 2025-02-23 -- WQ seems to proc things like Chaotic Disposition
         allow_class_ability_procs = true;
       }
+
+      // WQ is affected by mastery
+      affected_by.demonic_presence.direct = true;
+      affected_by.demonic_presence.periodic = true;
+
+      // WQ is affected by Demon Hide
+      affected_by.demon_hide.direct = true;
+      affected_by.demon_hide.periodic = true;
     }
 
     void impact( action_state_t* s ) override
