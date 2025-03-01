@@ -181,7 +181,7 @@ double warlock_pet_t::composite_player_critical_damage_multiplier( const action_
 {
   double m = pet_t::composite_player_critical_damage_multiplier( s );
 
-  m += o()->talents.demonic_brutality->effectN( 1 ).percent() / 2.0;
+  m += o()->talents.demonic_brutality->effectN( 1 ).percent();
 
   return m;
 }
