@@ -1,56 +1,30 @@
-# rogue="TWW2_Rogue_Assassination_Deathstalker"
-# level=80
-# race=orc
-# role=attack
-# position=back
-# spec=assassination
-# talents=CMQAAAAAAAAAAAAAAAAAAAAAAMjZmhZmhZAAAAAAY2glZAAAAAAottZmhZmxYmZWmlZGjZwwMzMmZz2YGgNzyADYJYZYCMsA
+rogue="TWW2_Rogue_Assassination"
+source=default
+spec=assassination
+level=80
+race=orc
+role=attack
+position=back
+talents=CMQAAAAAAAAAAAAAAAAAAAAAAMzMzMMmx2MAAAAAAMbwyMAAAAAA022MzgZGjZmZZ2mZmxAjZmZGzsZbMDwmZZgBsEsMMBGWA
 
-# head=kareshi_phantoms_emptiness,id=212038,bonus_id=1808,ilevel=639,gem_id=213743
-# neck=sureki_zealots_insignia,id=225577,bonus_id=8781,ilevel=639,gem_id=213467/213491
-# shoulders=kareshi_phantoms_shoulderpads,id=212036,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-# back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant=chant_of_leeching_fangs_3
-# chest=visceralathered_coat,id=221188,ilevel=639,enchant=crystalline_radiance_3
-# wrists=unbreakable_beetlebane_bindings,id=221157,bonus_id=1808,ilevel=639,gem_id=213491,enchant=chant_of_armored_leech_3
-# hands=kareshi_phantoms_grips,id=212039,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-# waist=runebranded_waistband,id=219331,bonus_id=10421/9633/8902/10222/11144/1485/1808/11109/8960,gem_id=213491,crafted_stats=32/49
-# legs=kareshi_phantoms_leggings,id=212037,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant=stormbound_armor_kit_3
-# feet=fleeting_massacre_footpads,id=225591,ilevel=639,enchant=defenders_march_3
-# finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=8781,ilevel=639,gem_id=213491/213491,enchant=radiant_mastery_3
-# finger2=seal_of_the_city_watch,id=162542,bonus_id=8781,ilevel=639,gem_id=213479/213458,enchant=radiant_mastery_3
-# trinket1=arakara_sacbrood,id=219314,ilevel=639
-# trinket2=skardyns_grace,id=133282,ilevel=639
-# main_hand=regicide,id=225636,ilevel=639,enchant=authority_of_the_depths_3
-# off_hand=everforged_stabber,id=222438,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960,enchant=authority_of_the_depths_3,crafted_stats=32/49
+head=spectral_gamblers_damned_visage,id=229289,bonus_id=1808,ilevel=678,gem_id=213743
+neck=flickering_glowtorc,id=221103,bonus_id=8781,ilevel=678,gem_id=213467/213491
+shoulders=spectral_gamblers_bladed_mantle,id=229287,ilevel=678
+back=electricians_siphoning_filter,id=234507,ilevel=678,enchant_id=7403
+chest=spectral_gamblers_vest,id=229292,ilevel=678,enchant_id=7364
+wrists=disturbed_kelp_wraps,id=234499,bonus_id=1808,ilevel=678,gem_id=213479,enchant_id=7385
+hands=spectral_gamblers_gloves,id=229290,ilevel=678
+waist=gleamkeepers_buckle,id=221107,bonus_id=1808,ilevel=678,gem_id=213458
+legs=spectral_gamblers_pantaloons,id=229288,ilevel=678,enchant_id=7601
+feet=runebranded_kickers,id=219327,bonus_id=10421/9633/8902/12043/12040/1485/11109/8960,enchant_id=7418,crafted_stats=32/49
+finger1=cyrces_circlet,id=228411,ilevel=658,gem_id=228639/228638/228640,enchant_id=7346
+finger2=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213458/213458,enchant_id=7346
+trinket1=improvised_seaforium_pacemaker,id=232541,ilevel=678
+trinket2=house_of_cards,id=230027,ilevel=678
+main_hand=random_number_perforator,id=231266,ilevel=678,enchant_id=7460
+off_hand=everforged_stabber,id=222438,bonus_id=10421/9633/8902/12043/12040/1485/11300/8960,enchant_id=7460,crafted_stats=32/49
 
-# save=TWW2_Rogue_Assassination.simc
-
-# rogue="TWW2_Rogue_Assassination_Fatebound"
-# level=80
-# race=orc
-# role=attack
-# position=back
-# spec=assassination
-# talents=CMQAAAAAAAAAAAAAAAAAAAAAAMzMzMMmBDAAAAAAzGsMDAAAAAAttNzMmZmxYmZWmtxYMYmZmZmxMb2GzAYgFYGjGzGIbDYD
-
-# head=kareshi_phantoms_emptiness,id=212038,bonus_id=1808,ilevel=639,gem_id=213743
-# neck=sureki_zealots_insignia,id=225577,bonus_id=8781,ilevel=639,gem_id=213467/213494
-# shoulders=kareshi_phantoms_shoulderpads,id=212036,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-# back=wings_of_shattered_sorrow,id=225574,ilevel=639,enchant=chant_of_leeching_fangs_3
-# chest=freshly_embalmed_jerkin,id=178744,ilevel=639,enchant=crystalline_radiance_3
-# wrists=sanguine_experiments_bandages,id=225588,bonus_id=1808,ilevel=639,gem_id=213491,enchant=chant_of_armored_leech_3
-# hands=kareshi_phantoms_grips,id=212039,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-# waist=runebranded_waistband,id=219331,bonus_id=10421/9633/8902/10222/11144/1485/1808/11109/8960,gem_id=213491,crafted_stats=32/49
-# legs=kareshi_phantoms_leggings,id=212037,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant=stormbound_armor_kit_3
-# feet=whisperers_echoing_steps,id=221169,ilevel=639,enchant=defenders_march_3
-# finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=8781,ilevel=639,gem_id=213491/213491,enchant=radiant_mastery_3
-# finger2=seal_of_the_city_watch,id=162542,bonus_id=8781,ilevel=639,gem_id=213479/213458,enchant=radiant_critical_strike_3
-# trinket1=arakara_sacbrood,id=219314,ilevel=639
-# trinket2=skardyns_grace,id=133282,ilevel=639
-# main_hand=regicide,id=225636,ilevel=639,enchant=authority_of_the_depths_3
-# off_hand=everforged_stabber,id=222438,bonus_id=10421/9633/8902/11144/10222/1485/11300/8960,enchant=authority_of_the_depths_3,crafted_stats=32/49
-
-# save=TWW2_Rogue_Assassination_Fatebound.simc
+save=TWW2_Rogue_Assassination.simc
 
 # rogue="TWW2_Rogue_Outlaw_HO"
 # level=80
