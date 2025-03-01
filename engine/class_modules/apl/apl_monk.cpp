@@ -477,6 +477,16 @@ void windwalker_live( player_t *p )
   // Fallback
   def->add_action( "call_action_list,name=fallback" );
 
+  // irrelevant racials
+  def->add_action( "arcane_torrent,if=chi<chi.max&energy<55" );
+  def->add_action( "bag_of_tricks,if=buff.storm_earth_and_fire.down" );
+  def->add_action( "lights_judgment,if=buff.storm_earth_and_fire.down" );
+  def->add_action( "haymaker,if=buff.storm_earth_and_fire.down" );
+  def->add_action( "rocket_barrage,if=buff.storm_earth_and_fire.down" );
+  // earthen racial not implemented yet
+  // def->add_action( "azerite_surge,if=buff.storm_earth_and_fire.down" );
+  def->add_action( "arcane_pulse,if=buff.storm_earth_and_fire.down" );
+
   // Trinkets
   for ( const auto &item : p->items )
   {
@@ -509,36 +519,11 @@ void windwalker_live( player_t *p )
       "storm_earth_and_fire,target_if=max:target.time_to_die,if=variable.sef_condition&!fight_style.dungeonroute|"
       "variable.sef_dungeonroute_condition&fight_style.dungeonroute" );
   cooldowns->add_action( "touch_of_karma" );
-
-  // Racials
-  for ( const auto &racial_action : racial_actions )
-  {
-    if ( racial_action != "arcane_torrent" )
-    {
-      if ( racial_action == "ancestral_call" )
-        cooldowns->add_action( racial_action + ",if=buff.invokers_delight.remains>15|fight_remains<20" );
-      else if ( racial_action == "blood_fury" )
-        cooldowns->add_action( racial_action + ",if=buff.invokers_delight.remains>15|fight_remains<20" );
-      else if ( racial_action == "fireblood" )
-        cooldowns->add_action( racial_action + ",if=buff.invokers_delight.remains>15|fight_remains<10" );
-      else if ( racial_action == "berserking" )
-        cooldowns->add_action( racial_action + ",if=buff.invokers_delight.remains>15|fight_remains<15" );
-      else if ( racial_action == "bag_of_tricks" )
-        def->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
-      else if ( racial_action == "lights_judgment" )
-        def->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
-      else if ( racial_action == "haymaker" )
-        def->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
-      else if ( racial_action == "rocket_barrage" )
-        def->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
-      else if ( racial_action == "azerite_surge" )
-        def->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
-      else if ( racial_action == "arcane_pulse" )
-        def->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
-      else
-        def->add_action( racial_action );
-    }
-  }
+  //CD relevant racials
+  cooldowns->add_action( "ancestral_call,if=buff.invokers_delight.remains>15|fight_remains<20" );
+  cooldowns->add_action( "blood_fury,if=buff.invokers_delight.remains>15|fight_remains<20" );
+  cooldowns->add_action( "fireblood,if=buff.invokers_delight.remains>15|fight_remains<10" );
+  cooldowns->add_action( "berserking,if=buff.invokers_delight.remains>15|fight_remains<15" );
 
   // AoE Opener
   aoe_opener->add_action( "slicing_winds", "aoe opener" );
