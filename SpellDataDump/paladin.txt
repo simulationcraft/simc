@@ -236,7 +236,7 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Protection Paladin (137028 effects: #4, #5), Holy Paladin (137029 effects: #3, #4), Consecration (188370 effect#3), Judgment (197277 effect#1), Avenger's Valor (197561 effect#1), Divine Purpose (223819 effects: #1, #2, #5), Avenger's Valor (290495 effect#1), The Magistrate's Judgment (337682 effect#1), Bulwark of Righteous Fury (337848 effects: #1, #2), Final Reckoning (343721 effect#4), Reckoning (343724 effect#2), Blessing of Dawn (385127 effect#1), Bulwark of Righteous Fury (386652 effects: #1, #2), Divine Purpose (408458 effects: #1, #2), Gleaming Rays (431481 effect#1), Paladin Protection 11.0 Class Set 2pc (453657 effect#1), Sacred Strength (469337 effect#1)
+Affecting Spells : Protection Paladin (137028 effects: #4, #5), Holy Paladin (137029 effects: #3, #4), Consecration (188370 effect#3), Judgment (197277 effect#1), Avenger's Valor (197561 effect#1), Divine Purpose (223819 effects: #1, #2, #5, #6), Avenger's Valor (290495 effect#1), The Magistrate's Judgment (337682 effect#1), Bulwark of Righteous Fury (337848 effects: #1, #2), Final Reckoning (343721 effect#4), Reckoning (343724 effect#2), Blessing of Dawn (385127 effect#1), Bulwark of Righteous Fury (386652 effects: #1, #2), Divine Purpose (408458 effects: #1, #2), Gleaming Rays (431481 effect#1), Paladin Protection 11.0 Class Set 2pc (453657 effect#1), Sacred Strength (469337 effect#1)
 Family Flags     : 52
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
@@ -1043,7 +1043,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 760
                  : 881
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2, #4, #5), Holy Paladin (137029 effects: #3, #4, #9, #31), Consecration (188370 effect#3), Judgment (197277 effect#1), Avenger's Valor (197561 effect#1), Divine Purpose (223819 effects: #1, #2, #5), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Avenger's Valor (290495 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Bulwark of Righteous Fury (337848 effects: #1, #2), Final Reckoning (343721 effect#4), Reckoning (343724 effect#2), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effect#1), Bulwark of Righteous Fury (386652 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Gleaming Rays (431481 effect#1), Paladin Protection 11.0 Class Set 2pc (453657 effect#1), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), Luck of the Draw! (1218114 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2, #4, #5), Holy Paladin (137029 effects: #3, #4, #9, #31), Consecration (188370 effect#3), Judgment (197277 effect#1), Avenger's Valor (197561 effect#1), Divine Purpose (223819 effects: #1, #2, #5, #6), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Avenger's Valor (290495 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Bulwark of Righteous Fury (337848 effects: #1, #2), Final Reckoning (343721 effect#4), Reckoning (343724 effect#2), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effect#1), Bulwark of Righteous Fury (386652 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Gleaming Rays (431481 effect#1), Paladin Protection 11.0 Class Set 2pc (453657 effect#1), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), Luck of the Draw! (1218114 effects: #1, #2)
 Family Flags     : 27, 52, 65
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Always Line of Sight (185), No Cooldown On Tooltip (192), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
@@ -1530,7 +1530,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 2706: Spatial Paradox (406732 effect#11), Spatial Paradox (406789 effect#10)
-Affecting Spells : Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#4), Holy Paladin (137029 effect#3), Rule of Law (214202 effect#2), Divine Purpose (223819 effects: #1, #2, #5), Sacred Dawn (243174 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Enkindled Spirit (341741 effect#1), Dawn Will Come (364306 effect#2), Blessing of Dawn (385127 effect#1), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Unending Light (394709 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Luminosity (431402 effect#1), Gleaming Rays (431481 effect#1), Pure Light (454653 effect#1), Sacred Strength (469337 effect#1)
+Affecting Spells : Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#4), Holy Paladin (137029 effect#3), Rule of Law (214202 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Enkindled Spirit (341741 effect#1), Dawn Will Come (364306 effect#2), Blessing of Dawn (385127 effect#1), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Unending Light (394709 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Luminosity (431402 effect#1), Gleaming Rays (431481 effect#1), Pure Light (454653 effect#1), Sacred Strength (469337 effect#1)
 Family Flags     : 82
 Attributes       : Not Shapeshifted (16), Always Line of Sight (185), Allow Class Ability Procs (416)
 Effects          :
@@ -1605,7 +1605,7 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#15), Protection Paladin (137028 effect#17), Holy Paladin (137029 effects: #1, #2, #14), Beacon of Faith (156910 effect#3), Consecration (188370 effect#3), Fires of Justice (209785 effect#1), Rule of Law (214202 effect#1), Divine Purpose (223819 effects: #1, #2, #5), Righteous Conviction (287126 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Royal Decree (340147 effect#1), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #2, #11), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), All in! (1216837 effect#1)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#15), Protection Paladin (137028 effect#17), Holy Paladin (137029 effects: #1, #2, #14), Beacon of Faith (156910 effect#3), Consecration (188370 effect#3), Fires of Justice (209785 effect#1), Rule of Law (214202 effect#1), Divine Purpose (223819 effects: #1, #2, #5, #6), Righteous Conviction (287126 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Royal Decree (340147 effect#1), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #2, #11), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), All in! (1216837 effect#1)
 Family Flags     : 46, 78
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
@@ -2014,7 +2014,8 @@ Effects          :
 #1 (id=128371)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.32 | Target: Enemy (6)
 #2 (id=128372)   : Direct Heal (10) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.15 | Radius: 0 - 30 yards | Target: At Enemy (53) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.78 | Radius: 0 - 30 yards | Target: At Enemy (53) -> At Friendly in Area (31)
+Hotfixed         : SP Coefficient (3.15 -> 3.78)
 #3 (id=128388)   : Server Side Script (77) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 30 yards | Target: At Enemy (53) -> To Area (8)
 Description      : $@spelldesc114165
@@ -2838,7 +2839,7 @@ Duration         : 16 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Holy Paladin (137029 effects: #1, #2, #14), Beacon of Faith (156910 effect#3), Consecration (188370 effect#3), Divine Purpose (223819 effects: #1, #2, #5), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effects: #10, #11, #13), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #6, #7), Gleaming Rays (431481 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), All in! (1216837 effect#1)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Holy Paladin (137029 effects: #1, #2, #14), Beacon of Faith (156910 effect#3), Consecration (188370 effect#3), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effects: #10, #11, #13), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #6, #7), Gleaming Rays (431481 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), All in! (1216837 effect#1)
 Family Flags     : 41, 46, 89, 115
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -5069,6 +5070,11 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 34 | Target: Self (1)
                    Affected Spells: Denounce (2812), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Eternal Flame (156322), Light of Dawn (225311), Afterimage (391309), Shield of the Righteous (415091), Eternal Flame (461432)
                    Family Flags: 52, 78, 82, 89
+#6 (id=1222178)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost 3 (39)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 39 | Target: Self (1)
+                   Affected Spells: Denounce (2812), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Eternal Flame (156322), Light of Dawn (225311), Afterimage (391309), Shield of the Righteous (415091), Eternal Flame (461432)
+                   Family Flags: 52, 78, 82, 89
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc223817
 Tooltip          : Your next Holy Power spending ability is free and deals $s2% increased damage and healing.
 
@@ -5122,7 +5128,7 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#4), Holy Paladin (137029 effects: #1, #2, #3), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#2), Divine Purpose (223819 effects: #1, #2, #5), Sacred Dawn (243174 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Enkindled Spirit (341741 effect#1), Dawn Will Come (364306 effect#2), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Unending Light (394709 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Luminosity (431402 effect#1), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #2, #11), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Beacon of Light (53563 effect#3), Protection Paladin (137028 effect#4), Holy Paladin (137029 effects: #1, #2, #3), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#2), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Breaking Dawn (278594 effect#3), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Enkindled Spirit (341741 effect#1), Dawn Will Come (364306 effect#2), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Luminous Force (394550 effect#1), Unending Light (394709 effect#1), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Luminosity (431402 effect#1), Gleaming Rays (431481 effect#1), Avenging Wrath (454351 effects: #2, #11), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1)
 Family Flags     : 46, 82
 Attributes       : Not a Proc (105), Allow Class Ability Procs (416)
 Effects          :
@@ -11668,7 +11674,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#15), Protection Paladin (137028 effect#17), Holy Paladin (137029 effect#14), Consecration (188370 effect#3), Fires of Justice (209785 effect#1), Rule of Law (214202 effect#1), Divine Purpose (223819 effects: #1, #2, #5), Righteous Conviction (287126 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Royal Decree (340147 effect#1), Blessing of Dawn (385127 effect#1), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Gleaming Rays (431481 effect#1), Pure Light (454653 effect#1), Sacred Strength (469337 effect#1), All in! (1216837 effect#1)
+Affecting Spells : Sanctuary (105805 effect#5), Retribution Paladin (137027 effect#15), Protection Paladin (137028 effect#17), Holy Paladin (137029 effect#14), Consecration (188370 effect#3), Fires of Justice (209785 effect#1), Rule of Law (214202 effect#1), Divine Purpose (223819 effects: #1, #2, #5, #6), Righteous Conviction (287126 effect#1), Shining Light (327510 effect#1), The Magistrate's Judgment (337682 effect#1), Royal Decree (340147 effect#1), Blessing of Dawn (385127 effect#1), Paladin Holy Class Set 4pc (393672 effects: #2, #3), Divine Purpose (408458 effects: #1, #2), Shining Righteousness (414445 effect#1), Gleaming Rays (431481 effect#1), Pure Light (454653 effect#1), Sacred Strength (469337 effect#1), All in! (1216837 effect#1)
 Family Flags     : 78
 Attributes       : Do Not Log (8), Allow While Sitting (27), Not an Action (92), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
@@ -12306,6 +12312,7 @@ Description      : $@spelldesc393672
 Tooltip          : Your next Holy Shock deals $s1% additional damage or healing.
 
 Name             : Unending Light (id=394709) [Spell Family (10)] 
+Hotfixed         : Proc Flags 1 (16384 -> 0), Internal Cooldown (0 -> 500), Attributes, Proc Flags 2 (0 -> 4)
 Class            : Paladin
 School           : Physical
 Spell Type       : Magic
@@ -12313,10 +12320,11 @@ Duration         : 30 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
+Internal Cooldown: 0.5 seconds
 Stacks           : 9 maximum
 Proc Chance      : 101%
-Proc Flags       : Magic Heal
-Attributes       : Combo on Block (Mainline: Dispel All Stacks) (62), Aura Is Buff (140), Aura Points On Client (268)
+Proc Flags       : Cast Successful
+Attributes       : Combo on Block (Mainline: Dispel All Stacks) (62), Aura Is Buff (140), Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
 Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1034628)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -14868,7 +14876,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 760
                  : 881
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2, #4, #5), Holy Paladin (137029 effects: #3, #4, #9, #31), Consecration (188370 effect#3), Judgment (197277 effect#1), Avenger's Valor (197561 effect#1), Divine Purpose (223819 effects: #1, #2, #5), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Avenger's Valor (290495 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Bulwark of Righteous Fury (337848 effects: #1, #2), Final Reckoning (343721 effect#4), Reckoning (343724 effect#2), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effect#1), Bulwark of Righteous Fury (386652 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Gleaming Rays (431481 effect#1), Paladin Protection 11.0 Class Set 2pc (453657 effect#1), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), Luck of the Draw! (1218114 effects: #1, #2)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2, #4, #5), Holy Paladin (137029 effects: #3, #4, #9, #31), Consecration (188370 effect#3), Judgment (197277 effect#1), Avenger's Valor (197561 effect#1), Divine Purpose (223819 effects: #1, #2, #5, #6), Crusade (231895 effects: #1, #2), Mastery: Highlord's Judgment (267316 effects: #1, #2), Avenger's Valor (290495 effect#1), The Magistrate's Judgment (337682 effect#1), Blessing of Dawn (337747 effects: #1, #2), Bulwark of Righteous Fury (337848 effects: #1, #2), Final Reckoning (343721 effect#4), Reckoning (343724 effect#2), Radiant Decree (383469 effect#3), Blessing of Dawn (385127 effect#1), Bulwark of Righteous Fury (386652 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effects: #14, #15), Initial Paladin (417383 effects: #1, #2), Gleaming Rays (431481 effect#1), Paladin Protection 11.0 Class Set 2pc (453657 effect#1), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Sacred Strength (469337 effect#1), Luck of the Draw! (1218114 effects: #1, #2)
 Family Flags     : 27, 52, 65
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Always Line of Sight (185), No Cooldown On Tooltip (192), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
@@ -18185,6 +18193,7 @@ Wake of Ashes activates $?s384392[Crusade for $454373d][Avenging Wrath for $4543
 Each Holy Power spent has a chance to activate $?s384392[Crusade for ${$454373d/2} sec][Avenging Wrath for ${$454351d/2} sec].
 
 Name             : Divine Favor (id=460422) [Spell Family (10), Passive] 
+Hotfixed         : Proc Flags 1 (0 -> 16384), Proc Flags 2 (4 -> 0)
 Talent Entry     : Holy [tree=spec, row=6, col=2, max_rank=1, req_points=8, select_idx=100]
 Class            : Paladin
 School           : Physical
@@ -18194,7 +18203,7 @@ Labels           : 16: Class Spells
                  : 292
 Internal Cooldown: 1 seconds
 Proc Chance      : 100%
-Proc Flags       : Cast Successful
+Proc Flags       : Magic Heal
 Attributes       : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1168039)  : Apply Aura (6) | Proc Trigger Spell (42): Divine Favor
@@ -18393,7 +18402,7 @@ Duration         : 16 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Holy Paladin (137029 effects: #1, #2, #14), Beacon of Faith (156910 effect#3), Consecration (188370 effect#3), Divine Purpose (223819 effects: #1, #2, #5), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effects: #10, #11, #13), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #6, #7), Gleaming Rays (431481 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), All in! (1216837 effect#1)
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Sanctuary (105805 effect#5), Holy Paladin (137029 effects: #1, #2, #14), Beacon of Faith (156910 effect#3), Consecration (188370 effect#3), Divine Purpose (223819 effects: #1, #2, #5, #6), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Blessing of Dawn (385127 effect#1), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Divine Purpose (408458 effects: #1, #2), Retribution Paladin (412314 effects: #10, #11, #13), Shining Righteousness (414445 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effects: #6, #7), Gleaming Rays (431481 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Pure Light (454653 effect#1), Heightened Wrath (456759 effects: #1, #2), All in! (1216837 effect#1)
 Family Flags     : 41, 46, 89, 115
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), DoT Stacking Rule (103), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
