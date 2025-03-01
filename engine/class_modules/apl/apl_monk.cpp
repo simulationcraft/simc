@@ -516,13 +516,13 @@ void windwalker_live( player_t *p )
     if ( racial_action != "arcane_torrent" )
     {
       if ( racial_action == "ancestral_call" )
-        cooldowns->add_action( racial_action + ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|fight_remains<20" );
+        cooldowns->add_action( racial_action + ",if=buff.invokers_delight.remains>15|fight_remains<20" );
       else if ( racial_action == "blood_fury" )
-        cooldowns->add_action( racial_action + ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|fight_remains<20" );
+        cooldowns->add_action( racial_action + ",if=buff.invokers_delight.remains>15|fight_remains<20" );
       else if ( racial_action == "fireblood" )
-        cooldowns->add_action( racial_action + ",if=cooldown.invoke_xuen_the_white_tiger.remains>30|fight_remains<10" );
+        cooldowns->add_action( racial_action + ",if=buff.invokers_delight.remains>15|fight_remains<10" );
       else if ( racial_action == "berserking" )
-        cooldowns->add_action( racial_action + ",if=cooldown.invoke_xuen_the_white_tiger.remains>60|fight_remains<15" );
+        cooldowns->add_action( racial_action + ",if=buff.invokers_delight.remains>15|fight_remains<15" );
       else if ( racial_action == "bag_of_tricks" )
         def->add_action( racial_action + ",if=buff.storm_earth_and_fire.down" );
       else if ( racial_action == "lights_judgment" )
