@@ -1195,7 +1195,7 @@ public:
 
       parse_effects( p()->talents.warrior.barbaric_training, effect_mask_t( false ).enable( 7 ) );
       if ( p()->talents.warrior.unstoppable_force->ok() )
-        parse_effects( p()->talents.warrior.avatar, effect_mask_t( false ).enable( 11, 12 ) );
+        parse_effects( p()->buff.avatar, effect_mask_t( false ).enable( 11, 12 ) );
 
       // TWW1 Tier
       parse_effects( p()->buff.expert_strategist );   // Prot 2pc
