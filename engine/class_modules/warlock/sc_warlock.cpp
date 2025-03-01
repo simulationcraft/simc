@@ -280,6 +280,9 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   resource_regeneration = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ] = true;
   regen_caches[ CACHE_SPELL_HASTE ] = true;
+
+  if ( talents.demonic_brutality.ok() )
+   base.crit_damage_multiplier = talents.demonic_brutality->effectN( 1 ).percent();
 }
 
 void warlock_t::invalidate_cache( cache_e c )
