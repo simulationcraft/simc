@@ -390,7 +390,7 @@ void windwalker_live( player_t *p )
   def->add_action(
       "potion,if=talent.invoke_xuen_the_white_tiger&pet.xuen_the_white_tiger.active&buff.storm_earth_and_fire.up",
       "Potion" );
-  def->add_action( "potion,if=buff.storm_earth_and_fire.up" );
+  def->add_action( "potion,if=!talent.invoke_xuen_the_white_tiger&buff.storm_earth_and_fire.up" );
   def->add_action( "potion,if=fight_remains<=30" );
 
   // Enable PI if available
