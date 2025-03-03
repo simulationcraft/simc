@@ -1,32 +1,30 @@
-# druid="TWW2_Druid_Balance"
-# source=default
-# spec=balance
-# level=80
-# race=night_elf
-# timeofday=night
-# role=spell
-# position=back
-# professions=alchemy=1/engineering=1
-# talents=CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALUYmZGGmZAzMMzYAbzMLsMz2M2YmZMzsYWmZMzM2AbMAjltZ222mZZ2mpZmlZCAAAwiZGDA
+druid="TWW2_Druid_Balance"
+source=default
+spec=balance
+level=80
+race=night_elf
+timeofday=night
+role=spell
+position=back
+talents=CYGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALjys1wYmBGzCLzMjZgZbsMz2MWYmZGzyMmZMjxG2YAGgttxCmmZWGBAAAYjZMDYzAD
 
-# head=whispering_mask,id=221163,bonus_id=8780,ilevel=639,gem_id=213497
-# neck=sureki_zealots_insignia,id=225577,bonus_id=1540/10299/10376/8781,gem_id=213497/213497
-# shoulders=maw_of_the_greatlynx,id=212054,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-# back=royal_emblem_of_nerubar,id=212446,ilevel=639,enchant_id=7403
-# chest=hide_of_the_greatlynx,id=212059,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7364
-# wrists=polluted_spectres_wraps,id=212438,bonus_id=8780,ilevel=639,gem_id=213497,enchant_id=7385
-# hands=eviscerators_of_the_greatlynx,id=212057,ilevel=639
-# waist=runebranded_waistband,id=219331,bonus_id=10222/8780/11109/8960/8791,ilevel=636,gem_id=213497
-# legs=leggings_of_the_greatlynx,id=212055,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant_id=7531
-# feet=chitinspiked_jackboots,id=212445,ilevel=639,enchant_id=7424
-# finger1=writhing_ringworm,id=225576,bonus_id=8781,ilevel=639,gem_id=213497/213497,enchant_id=7346
-# finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=8781,ilevel=639,gem_id=213497/213497,enchant_id=7346
-# trinket1=spymasters_web,id=220202,bonus_id=6652/10354/10269/1511/10255,ilevel=639
-# trinket2=unbound_changeling,id=178708,bonus_id=7214/6652/1501/5884/6646/6918,ilevel=639
-# main_hand=scithewood_scepter,id=178709,ilevel=639,enchant_id=7460
-# off_hand=vagabonds_torch,id=222566,bonus_id=10421/1515/11300/8960/8791
+head=branches_of_reclaiming_blight,id=229307,bonus_id=1527/11996/1808,gem_id=213746
+neck=strapped_rescuekeg,id=221060,bonus_id=4795/8781,ilevel=678,gem_id=213473/213473
+shoulder=jaws_of_reclaiming_blight,id=229305,bonus_id=1527/11996
+back=test_pilots_gopack,id=228844,bonus_id=6652/10356/11996/1527/10255,enchant_id=7403
+chest=robes_of_reclaiming_blight,id=229310,bonus_id=1527/11996,enchant_id=7364
+wrist=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/9627/8793/10222/11307/12043/12040/10520/8960,ilevel=675,gem_id=213473,enchant_id=7385,crafted_stats=36/32
+hands=shimmering_glimclaws,id=221102,bonus_id=4795,ilevel=678
+waist=runebranded_waistband,id=219331,bonus_id=10421/9633/8902/9627/8793/10222/11307/12040/12043/10520/8960,ilevel=675,gem_id=213473,crafted_stats=36/32
+legs=moccasins_of_reclaiming_blight,id=229306,bonus_id=1527/11996,enchant_id=7534
+feet=stalwart_guardians_boots,id=221120,bonus_id=4795,ilevel=678,enchant_id=7424
+finger1=cyrces_circlet,id=228411,bonus_id=12025/1502,ilevel=658,gem_id=228639/228638/228646,enchant_id=7346
+finger2=the_jastor_diamond,id=231265,bonus_id=6652/10394/10392/10356/11996/1527/10255/8781,gem_id=213473/213473,enchant_id=7346
+trinket1=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
+trinket2=house_of_cards,id=230027,bonus_id=4795,ilevel=678
+main_hand=bestinslots,id=232805,bonus_id=6652/10356/11996/9418/1527/10255,enchant_id=7460
 
-# save=TWW2_Druid_Balance.simc
+save=TWW2_Druid_Balance.simc
 
 druid="TWW2_Druid_Feral"
 level=80
