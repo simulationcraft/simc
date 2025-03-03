@@ -3714,6 +3714,7 @@ Description      : $@spelldesc31935
 Tooltip          : The effects of your next Shield of the Righteous are increased by $s1%.
 
 Name             : Divine Hammer (id=198034) [Spell Family (10)] 
+Hotfixed         : Proc Flags 1 (4116 -> 4112), Internal Cooldown (1000 -> 0), Attributes
 Talent Entry     : Retribution [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
@@ -3727,12 +3728,11 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 117
                  : 292
-Internal Cooldown: 1 seconds
 Proc Chance      : 101%
-Proc Flags       : White Melee, Yellow Melee, Generic Hostile Spell
+Proc Flags       : Yellow Melee, Generic Hostile Spell
 Affecting Spells : Retribution Paladin (137027 effect#4), Protection Paladin (137028 effects: #4, #5), Holy Paladin (137029 effects: #3, #4), Divine Purpose (408458 effect#1), All in! (1216837 effect#1)
 Family Flags     : 108
-Attributes       : Is Ability (4), Do Not Sheath (18), Can Proc From Procs (122), Extra Initial Period (169), Melee Haste Affects Periodic (278), Nameplate Personal Buffs/Debuffs (423)
+Attributes       : Is Ability (4), Do Not Sheath (18), Can Proc From Procs (122), Extra Initial Period (169), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=291057)   : Apply Aura (6) | Periodic Trigger Spell (23): Divine Hammer every 2 seconds
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 198137 | Target: Self (1)
