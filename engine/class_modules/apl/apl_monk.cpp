@@ -290,7 +290,7 @@ void windwalker_live( player_t *p )
         // name_str -> APL
         { "imperfect_ascendancy_serum", ",use_off_gcd=1,if=pet.xuen_the_white_tiger.active" },
         { "mad_queens_mandate",
-          ",target_if=min:time_to_die,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|"
+          ",target_if=min:target.health,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|"
           "trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>30" },
         { "treacherous_transmitter",
           ",if=!fight_style.dungeonslice&(cooldown.invoke_xuen_the_white_tiger.remains<4|talent.xuens_bond&pet.xuen_"
