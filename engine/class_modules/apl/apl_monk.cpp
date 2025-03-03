@@ -288,25 +288,6 @@ void windwalker_live( player_t *p )
     //-------------------------------------------
     const static std::unordered_map<std::string, std::string> sef_trinkets{
         // name_str -> APL
-        // DF Trinkets
-        { "algethar_puzzle_box",
-          ",if=(pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger)&!buff.storm_earth_"
-          "and_fire.up|fight_remains<25" },
-        { "erupting_spear_fragment", ",if=buff.storm_earth_and_fire.up" },
-        { "manic_grieftorch",
-          ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&!buff.storm_earth_and_fire.up&!pet.xuen_"
-          "the_white_tiger.active|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger."
-          "remains>30|fight_remains<5" },
-        { "beacon_to_the_beyond",
-          ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff&!buff.storm_earth_and_fire.up&!pet.xuen_"
-          "the_white_tiger.active|(trinket.1.has_use_buff|trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger."
-          "remains>30|fight_remains<10" },
-        { "djaruun_pillar_of_the_elder_flame",
-          ",if=cooldown.fists_of_fury.remains<2&cooldown.invoke_xuen_the_white_tiger.remains>10|fight_remains<12" },
-        { "dragonfire_bomb_dispenser",
-          ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|trinket.2.has_use_buff)&"
-          "cooldown.invoke_xuen_the_white_tiger.remains>10|fight_remains<10" },
-        // TWW Trinkets
         { "imperfect_ascendancy_serum", ",use_off_gcd=1,if=pet.xuen_the_white_tiger.active" },
         { "mad_queens_mandate",
           ",target_if=min:time_to_die,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|"
