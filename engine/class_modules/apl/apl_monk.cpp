@@ -279,8 +279,6 @@ void mistweaver( player_t *p )
 
 void windwalker_live( player_t *p )
 {
-  auto monk = debug_cast<monk::monk_t *>( p );
-
   //============================================================================
   // On-use Items
   //============================================================================
@@ -369,26 +367,19 @@ void windwalker_live( player_t *p )
     return concat;
   };
 
-  //============================================================================
+  action_priority_list_t *pre            = p->get_action_priority_list( "precombat" );
+  action_priority_list_t *def            = p->get_action_priority_list( "default" );
+  action_priority_list_t *trinkets       = p->get_action_priority_list( "trinkets" );
+  action_priority_list_t *aoe_opener     = p->get_action_priority_list( "aoe_opener" );
+  action_priority_list_t *normal_opener  = p->get_action_priority_list( "normal_opener" );
+  action_priority_list_t *cooldowns      = p->get_action_priority_list( "cooldowns" );
+  action_priority_list_t *default_aoe    = p->get_action_priority_list( "default_aoe" );
+  action_priority_list_t *default_cleave = p->get_action_priority_list( "default_cleave" );
+  action_priority_list_t *default_st     = p->get_action_priority_list( "default_st" );
+  action_priority_list_t *fallback       = p->get_action_priority_list( "fallback" );
 
-  action_priority_list_t *pre = p->get_action_priority_list( "precombat" );
-
-  // Snapshot stats
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
-  // Add Precombattrinkets
   pre->add_action( "use_item,name=imperfect_ascendancy_serum" );
-
-  std::vector<std::string> racial_actions = p->get_racial_actions();
-  action_priority_list_t *def             = p->get_action_priority_list( "default" );
-  action_priority_list_t *trinkets        = p->get_action_priority_list( "trinkets" );
-  action_priority_list_t *aoe_opener      = p->get_action_priority_list( "aoe_opener" );
-  action_priority_list_t *normal_opener   = p->get_action_priority_list( "normal_opener" );
-  action_priority_list_t *cooldowns       = p->get_action_priority_list( "cooldowns" );
-  action_priority_list_t *default_aoe     = p->get_action_priority_list( "default_aoe" );
-  action_priority_list_t *default_cleave  = p->get_action_priority_list( "default_cleave" );
-  action_priority_list_t *default_st      = p->get_action_priority_list( "default_st" );
-  action_priority_list_t *fallback        = p->get_action_priority_list( "fallback" );
 
   def->add_action( "auto_attack" );
   def->add_action( "roll,if=movement.distance>5", "Move to target" );
@@ -396,21 +387,17 @@ void windwalker_live( player_t *p )
   def->add_action( "flying_serpent_kick,if=movement.distance>5" );
   def->add_action( "spear_hand_strike,if=target.debuff.casting.react" );
 
-  // Potion
-  if ( p->sim->allow_potions )
-  {
-    if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
-      def->add_action( "potion,if=buff.storm_earth_and_fire.up&pet.xuen_the_white_tiger.active|fight_remains<=30",
-                       "Potion" );
-    else
-      def->add_action( "potion,if=buff.storm_earth_and_fire.up|fight_remains<=30", "Potion" );
-  }
+  def->add_action(
+      "potion,if=talent.invoke_xuen_the_white_tiger&pet.xuen_the_white_tiger.active&buff.storm_earth_and_fire.up",
+      "Potion" );
+  def->add_action( "potion,if=buff.storm_earth_and_fire.up" );
+  def->add_action( "potion,if=fight_remains<=30" );
 
   // Enable PI if available
   def->add_action( "variable,name=has_external_pi,value=cooldown.invoke_power_infusion_0.duration>0",
                    "Enable PI if available" );
 
-  // Define variables for CD Usage (No clue ask Kholer)
+  // Define variables for CD Usage
   def->add_action(
       "variable,name=sef_condition,value=target.time_to_die>6&(cooldown.rising_sun_kick.remains|active_enemies>2|!"
       "talent.ordered_elements)&(prev.invoke_xuen_the_white_tiger|(talent.celestial_conduit|!talent.last_emperors_"
@@ -519,7 +506,7 @@ void windwalker_live( player_t *p )
       "storm_earth_and_fire,target_if=max:target.time_to_die,if=variable.sef_condition&!fight_style.dungeonroute|"
       "variable.sef_dungeonroute_condition&fight_style.dungeonroute" );
   cooldowns->add_action( "touch_of_karma" );
-  //CD relevant racials
+  // CD relevant racials
   cooldowns->add_action( "ancestral_call,if=buff.invokers_delight.remains>15|fight_remains<20" );
   cooldowns->add_action( "blood_fury,if=buff.invokers_delight.remains>15|fight_remains<20" );
   cooldowns->add_action( "fireblood,if=buff.invokers_delight.remains>15|fight_remains<10" );
