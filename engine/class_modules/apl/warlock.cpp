@@ -491,7 +491,7 @@ void destruction( player_t* p )
   havoc->add_action( "wither,target_if=min:dot.wither.remains+100*debuff.havoc.remains,if=(((dot.wither.refreshable&variable.havoc_immo_time<5.4)&target.time_to_die>5)|((dot.wither.remains<2&dot.wither.remains<havoc_remains)|!dot.wither.ticking|variable.havoc_immo_time<2)&target.time_to_die>11)&soul_shard<4.5" );
   havoc->add_action( "shadowburn,if=active_enemies<=4&(cooldown.shadowburn.full_recharge_time<=gcd.max*3|debuff.eradication.remains<=gcd.max&talent.eradication&!action.chaos_bolt.in_flight&!talent.diabolic_ritual)&(talent.conflagration_of_chaos|talent.blistering_atrophy)" );
   havoc->add_action( "shadowburn,if=active_enemies<=4&havoc_remains<=gcd.max*3" );
-  havoc->add_action( "chaos_bolt,if=cast_time<havoc_remains&((!talent.improved_chaos_bolt&active_enemies<=2)|(talent.improved_chaos_bolt&((talent.wither&talent.inferno&active_enemies<=2)|(talent.wither&talent.cataclysm&active_enemies<=4)|(!talent.wither&talent.inferno&active_enemies<=3)|(!talent.wither&talent.cataclysm&active_enemies<=5))))" );
+  havoc->add_action( "chaos_bolt,if=cast_time<havoc_remains&((!talent.improved_chaos_bolt&active_enemies<=2)|(talent.improved_chaos_bolt&((talent.wither&talent.inferno&active_enemies<=2)|(((talent.wither&talent.cataclysm)|(!talent.wither&talent.inferno))&active_enemies<=3)|(!talent.wither&talent.cataclysm&active_enemies<=5))))" );
   havoc->add_action( "rain_of_fire,if=active_enemies>=3" );
   havoc->add_action( "channel_demonfire,if=soul_shard<4.5" );
   havoc->add_action( "conflagrate,if=!talent.backdraft" );
