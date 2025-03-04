@@ -238959,7 +238959,8 @@ Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1152732)  : Apply Aura (6) | Proc Trigger Spell (42): Beledar's Grace | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 47346.97 (coefficient=18.5111) | Trigger Spell: 451929 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 28408 (coefficient=11.10659) | Trigger Spell: 451929 | Target: Self (1)
+Hotfixed         : Coefficient (18.511101 -> 11.106589)
 
 Name             : Beledar's Grace (id=451929) 
 School           : Holy
@@ -239009,7 +239010,8 @@ Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1152736)  : Apply Aura (6) | Proc Trigger Spell (42): Beledar's Grace | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 67638.96 (coefficient=26.4446) | Trigger Spell: 451931 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 40583 (coefficient=15.86661) | Trigger Spell: 451931 | Target: Self (1)
+Hotfixed         : Coefficient (26.444599 -> 15.866611)
 
 Name             : Oil of Beledar's Grace (id=451933) [Passive, Hidden] 
 School           : Shadow
@@ -239023,7 +239025,8 @@ Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1152737)  : Apply Aura (6) | Proc Trigger Spell (42): Beledar's Grace | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 57493.1 (coefficient=22.4779) | Trigger Spell: 451930 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 34496 (coefficient=13.4868) | Trigger Spell: 451930 | Target: Self (1)
+Hotfixed         : Coefficient (22.4779 -> 13.486796)
 
 Name             : Azerite Surge: III (id=451934) 
 Race             : Earthen (0x60000)
