@@ -1,5 +1,5 @@
-// Spell text, wow build 11.1.0.59466
-static const std::array<spelltext_data_t, 27245> __spelltext_data { {
+// Spell text, wow build 11.1.0.59490
+static const std::array<spelltext_data_t, 27228> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -23640,7 +23640,6 @@ static const std::array<spelltext_data_t, 27245> __spelltext_data { {
   {  443330, "$@spelldesc443328", 0, "Red" },
   {  443337, "Hold out the feather for $?${$s2%10}>0[${$s2/10}.1][${$s2/10}] sec to strike with the power of the storm, crashing down on the target location and inflicting ${$<rolemult>*$s1} Nature damage split between nearby enemies.", 0, 0 },
   {  443371, "$@spelldesc430014", 0, 0 },
-  {  443374, "Perform a weaving ritual, spinning the webs of fate and fashioning them into a Fateweaved Weapon.\r\n", "$@spellicon443384 $@spellname443384:\r\n$@spelldesc443384.", 0 },
   {  443378, "Your abilities have a chance to call an earthen ally to your aid, supporting you in combat.", "Your abilities have a chance to call an earthen ally to your aid, supporting you in combat.", 0 },
   {  443380, "Your spells have a chance to destabilize the void energy, releasing a corrupted fragment. Retrieving a fragment briefly infuses you with its power, increasing your Intellect by $s1 for $11790d.", 0, 0 },
   {  443381, "$@spelldesc446648", "$pri increased by $w1.$?e1[\r\nAbsorbing $w2 damage.][]", 0 },
@@ -24971,7 +24970,6 @@ static const std::array<spelltext_data_t, 27245> __spelltext_data { {
   {  454214, "$@spelldesc444483", "$@auracaster's Splinters will deal additional damage to nearby enemies.", 0 },
   {  454286, "You have a chance equal to your critical strike chance to absorb $s1% of any damage taken, up to a maximum chance of $s2%.", 0, 0 },
   {  454300, "Leech increased by ${$s1/100}.1% for each time your Fatebound Coin has flipped the same face in a row.", 0, 0 },
-  {  454310, "Create Boots for your class.", 0, 0 },
   {  454351, "Call upon the Light to become an avatar of retribution, $?s53376&c2[causing Judgment to generate $53376s3 additional Holy Power, ]?s53376&c3[each Holy Power spent causing you to explode with Holy light for $326731s1 damage to nearby enemies, ]?s53376&c1[reducing Holy Shock's cooldown by $53376s2%, ][]$?s326730[allowing Hammer of Wrath to be used on any target, ][]$?s384442&s384376[increasing your damage, healing and critical strike chance by $s2% for $d.]?!s384442&s384376[increasing your damage and healing by $s1% for $d.]?!s384376&s384442[increasing your critical strike chance by $s3% for $d.][and activating all the effects learned for Avenging Wrath for $d.]", "$?$w2>0&$w3>0[Damage, healing and critical strike chance increased by $w2%.]?$w3==0&$w2>0[Damage and healing increased by $w2%.]?$w2==0&$w3>0[Critical strike chance increased by $w3%.][]$?a53376[ ][]$?a53376&a137029[Holy Shock's cooldown reduced by $w6%.]?a53376&a137028[Judgment generates $53376s3 additional Holy Power.]?a53376[Each Holy Power spent deals $326731s1 Holy damage to nearby enemies.][]", 0 },
   {  454353, "Wake of Ashes activates $?s384392[Crusade for $454373d][Avenging Wrath for $454351d].\r\n\r\nEach Holy Power spent has a chance to activate $?s384392[Crusade for ${$454373d/2} sec][Avenging Wrath for ${$454351d/2} sec].", 0, 0 },
   {  454371, "$@spelldesc450331", "Your spell damage is increased by $s1%.", 0 },
@@ -24986,13 +24984,6 @@ static const std::array<spelltext_data_t, 27245> __spelltext_data { {
   {  454393, "$@spelldesc444005", 0, 0 },
   {  454394, "$@spelldesc454391", "Haste increased by $s1%.", 0 },
   {  454396, "While this item is in your bags, equipped, or being used for transmog you will occasionally be consumed by the curse.", 0, 0 },
-  {  454408, "Create a Chestpiece for your class.", 0, 0 },
-  {  454409, "Create Gloves for your class.", 0, 0 },
-  {  454410, "Create a Headpiece for your class.", 0, 0 },
-  {  454411, "Create Legs for your class.", 0, 0 },
-  {  454412, "Create Shoulders for your class.", 0, 0 },
-  {  454413, "Create a Belt for your class.", 0, 0 },
-  {  454414, "Create Bracers for your class.", 0, 0 },
   {  454419, "$?a383281[Sinister Strike and Ambush generate]?a137036[Sinister Strike generates][Mutilate, Ambush, and Fan of Knives generate] $454421s1 additional combo point $?a383281[when they strike an additional time]?a137036[when it strikes an additional time][when they trigger Seal Fate].", 0, 0 },
   {  454421, "$@spelldesc454419", 0, 0 },
   {  454426, "Damage dealt when your Fatebound Coin flips tails is increased by $s1% if there are no other enemies near the target.\r\n\r\nEach additional nearby enemy reduces this bonus by $s2%.", 0, 0 },
@@ -25911,7 +25902,6 @@ static const std::array<spelltext_data_t, 27245> __spelltext_data { {
   {  460076, "$@spelldesc460074", "Healing for $w1 every $t seconds.\r\n\r\nGross.", 0 },
   {  460127, "$@spelldesc443087", "$?c2[Your next Vivify or Tiger Palm activates Courage of the White Tiger.][Your next Tiger Palm activates Courage of the White Tiger]", 0 },
   {  460198, "Mongoose Bite and Raptor Strike have a $s1% chance to reset Kill Command's cooldown.\r\n\r\nKill Command reduces the cooldown of Wildfire Bomb by ${$s2/1000}.1 sec.", 0, 0 },
-  {  460285, "Decipher the map, guaranteeing that you'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.", "You'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.", "Tier 1" },
   {  460422, "After casting Barrier of Faith or Holy Prism, the healing of your next Holy Light or Flash of Light is increased by $210294m1%, its cast time is reduced by $210294s2%, and its mana cost is reduced by $210294s3%.\r\n", 0, 0 },
   {  460448, "Dark Transformation surrounds your ghoul with a vile swarm of insects for $115989d, stinging all nearby enemies and infecting them with Virulent Plague and an unholy disease that deals $115994o1 damage over $115994d, stacking up to $115994u times.", 0, 0 },
   {  460469, "$@spelldesc443337", 0, 0 },
@@ -25941,13 +25931,6 @@ static const std::array<spelltext_data_t, 27245> __spelltext_data { {
   {  460720, "Turn Evil's cast time is reduced by $s1%.", 0, 0 },
   {  460805, "$@spelldesc457064", 0, 0 },
   {  460822, "$@spelldesc433106", "Your next Consecration will deal $?a137029[$<holy>][$<prot>] additional damage or healing.", 0 },
-  {  460823, "Decipher the map, guaranteeing that you'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.", "You'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.", "Tier 2" },
-  {  460824, "Decipher the map, guaranteeing that you'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.", "You'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.", "Tier 3" },
-  {  460825, "Decipher the map, guaranteeing that you'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.", "You'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.", "Tier 4" },
-  {  460826, "Decipher the map, guaranteeing that you'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.", "You'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.", "Tier 5" },
-  {  460829, "Decipher the map, guaranteeing that you'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.", "You'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.", "Tier 6" },
-  {  460830, "Decipher the map, guaranteeing that you'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.", "You'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.", "Tier 7" },
-  {  460831, "Decipher the map, guaranteeing that you'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.", "You'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.", "Tier 8" },
   {  460852, "$@spelldesc260285", "Your next Explosive Shot deals $s1% increased damage.", 0 },
   {  460909, "$@spelldesc421373", 0, 0 },
   {  460927, "$@spelldesc319606", 0, 0 },
@@ -26977,7 +26960,7 @@ static const std::array<spelltext_data_t, 27245> __spelltext_data { {
   { 1215722, "While Shadow Dance is active, you cannot lose|cFFFFFFFF Winning Streak!|r, gain an additional stack of|cFFFFFFFF Winning Streak!|r each time you would gain one, and deal an additional $s1% Shadow Damage per|cFFFFFFFF Winning Streak!|r stack.", 0, 0 },
   { 1215724, "When you would lose |cFFFFFFFF Winning Streak!|r, you have a chance to instead gain maximum stacks of |cFFFFFFFF Winning Streak!|r for 4s. These cannot be removed and have $s1% additional effect while immune to removal.", 0, 0 },
   { 1215725, "Roll the Bones has a $s1% increased chance of granting additional combat enhancements and also applies $m2 $Lstack:stacks; of |cFFFFFFFF Winning Streak!|r for each combat enhancement granted.\r\n\r\nStacks applied by Roll the Bones can exceed the normal |cFFFFFFFFWinning Streak!|r maximum of $1215720s2.", 0, 0 },
-  { 1215726, "Your spells and abilities have a chance to activate a |cFFFFFFFFWinning Streak!|r increasing the damage of your Death Coil and Epidemic by $s2%, stacking up to $1216813u times. Death Coil and Epidemic have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r", 0, 0 },
+  { 1215726, "Your spells and abilities have a chance to activate a |cFFFFFFFFWinning Streak!|r increasing the damage of your Death Coil and Epidemic by ${$s2/10}.1%, stacking up to $1216813u times. Death Coil and Epidemic have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r", 0, 0 },
   { 1215727, "Your spells and abilities have a chance to activate a|cFFFFFFFF Winning Streak!|r increasing the damage of your Frost Strike and Glacial Advance by $1217897s1% stacking up to $1217897u times. Frost Strike and Glacial Advance have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r", 0, 0 },
   { 1215728, "Casting Dark Transformation grants up to $1216813u stacks of |cFFFFFFFFWinning Streak!|r and while Dark Transformation is active, the effectiveness of |cFFFFFFFFWinning Streak!|r is increased by $s1% and it no longer has a chance to reset.", 0, 0 },
   { 1215729, "|cFFFFFFFFWinning Streak!|r causes Frost Strike and Glacial Advance to have a $s2% chance to cast Frostscythe per stack at $s1% effectiveness. Losing |cFFFFFFFFWinning Streak!|r sends you into a Murderous Frenzy, casting Frostscythe at $s3% effectiveness and gaining ${$1222698s1*$mastery}% Mastery for $1222698d. Additionally, Frostscythe deals $s4% more damage to the first target struck.", 0, 0 },
@@ -27079,7 +27062,7 @@ static const std::array<spelltext_data_t, 27245> __spelltext_data { {
   { 1216770, 0, "Increases Haste Rating by $w1.", 0 },
   { 1216772, 0, "Your next direct healing will increase the ally's haste by $1216773w2 for $1216774d1 seconds.", 0 },
   { 1216774, 0, "Increases Haste Rating by $w1.", 0 },
-  { 1216813, "$@spelldesc1215726", "On a|cFFFFFFFF Winning Streak!|r Death Coil and Epidemic damage increased by $w1%.", 0 },
+  { 1216813, "$@spelldesc1215726", "On a|cFFFFFFFF Winning Streak!|r Death Coil and Epidemic damage increased by ${$w1}.1%.", 0 },
   { 1216828, "$@spelldesc1215707", "The damage of Templar's Verdict and Divine Storm is increased by $w1%.", 0 },
   { 1216837, "$@spelldesc1215709", "You cannot lose Holy Power!\r\nHoly Power spenders deal $w1% increased damage.", 0 },
   { 1216874, "$@spelldesc1215730", "Wildfire Bomb damage increased by $w1%.", 0 },
@@ -27247,11 +27230,13 @@ static const std::array<spelltext_data_t, 27245> __spelltext_data { {
   { 1228321, "$@spelldesc66", "Invisible$?$w3=0[][ and moving $87833s1% faster].", 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.1.0.59466
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 11.1.0.59490
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelltext_hotfix_data { {
+  { 1215726,  0, "Your spells and abilities have a chance to activate a |cFFFFFFFFWinning Streak!|r increasing the damage of your Death Coil and Epidemic by $s2%, stacking up to $1216813u times. Death Coil and Epidemic have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r", "Your spells and abilities have a chance to activate a |cFFFFFFFFWinning Streak!|r increasing the damage of your Death Coil and Epidemic by ${$s2/10}.1%, stacking up to $1216813u times. Death Coil and Epidemic have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r" },
+  { 1216813,  1, "On a|cFFFFFFFF Winning Streak!|r Death Coil and Epidemic damage increased by $w1%.", "On a|cFFFFFFFF Winning Streak!|r Death Coil and Epidemic damage increased by ${$w1}.1%." },
 } };
 
-// Spell description variables, wow build 11.1.0.59466
+// Spell description variables, wow build 11.1.0.59490
 static const std::array<spelldesc_vars_data_t, 635> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -27890,7 +27875,7 @@ static const std::array<spelldesc_vars_data_t, 635> __spelldesc_vars_data { {
   { 1219410, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.1.0.59466
+// spelldesc_vars hotfix entries, wow build 11.1.0.59490
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
