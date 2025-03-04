@@ -1,54 +1,80 @@
-# paladin=TWW2_Paladin_Retribution_Herald
-# level=80
-# race=human
-# spec=retribution
-# role=attack
-# position=back
-# talents=CYEAAAAAAAAAAAAAAAAAAAAAAAAAAYAAastNzstsNGbjZ22mZDAAAAAAjmmhhZGbzgZbYWmlZYYwMmhlF2AAzysNzMbNIAAgFgBAjxMMD
+paladin=TWW2_Paladin_Retribution_Herald
+level=80
+race=human
+spec=retribution
+role=attack
+position=back
+talents=CYEAAAAAAAAAAAAAAAAAAAAAAAAAAYAAamltZmtltxYbMz22MbAAAAAAY00MMMzYbGMbDjZZGGGMjZYZhNAwsMbzMzWDCAAYBYAwYMDzA
 
-# head=entombed_seraphs_casque,id=211993,bonus_id=4800/4786/1540/10299/1808,gem_id=213743
-# neck=sureki_zealots_insignia,id=225577,bonus_id=4800/4786/1540/10299/8781,gem_id=213494/213494
-# shoulders=entombed_seraphs_plumes,id=211991,bonus_id=4800/4786/1540/10299
-# back=royal_emblem_of_nerubar,id=212446,bonus_id=4800/4786/1540/10299
-# chest=entombed_seraphs_breastplate,id=211996,bonus_id=4800/4786/1540/10299,enchant=crystalline_radiance_3
-# wrists=everforged_vambraces,id=222435,bonus_id=10421/1515/8791/523/11109/8960,gem_id=213494
-# hands=entombed_seraphs_castigation,id=211994,bonus_id=4800/4786/1540/10299
-# waist=girdle_of_somber_ploys,id=221133,bonus_id=4786/3131/10299/523,gem_id=213494
-# legs=legplates_of_broken_trust,id=221092,bonus_id=4786/3131/10299,enchant=stormbound_armor_kit_3
-# feet=boots_of_the_black_bulwark,id=225590,bonus_id=4800/4786/1540/10299
-# finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=4800/4786/1540/10299/8781,gem_id=213494/213458,enchant=radiant_mastery_3
-# finger2=writhing_ringworm,id=225576,bonus_id=4800/4786/1540/10299/8781,gem_id=213482/213473,enchant=radiant_mastery_3
-# trinket1=mark_of_khardros,id=133300,bonus_id=4786/11342/10299
-# trinket2=arakara_sacbrood,id=219314,bonus_id=4786/3131/10299
-# main_hand=everforged_greataxe,id=222443,bonus_id=10421/1515/11300/8960/8791,enchant=authority_of_the_depths_3
+head=aureate_sentrys_pledge,id=229244,bonus_id=1808,ilevel=678,gem_id=213743
+neck=strapped_rescuekeg,id=221060,bonus_id=8781,ilevel=678,gem_id=213491/213458
+shoulders=aureate_sentrys_roaring_will,id=229242,ilevel=678
+back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/12043/12040/1485/11303/8960/8791,ilevel=675
+chest=aureate_sentrys_encasement,id=229247,ilevel=678,enchant=crystalline_radiance_3
+wrists=everforged_vambraces,id=222435,bonus_id=10421/9633/8902/12043/12040/1485/11303/8960/523/8791,ilevel=675,gem_id=213482
+hands=gauntlets_of_absolute_authority,id=168980,ilevel=678
+waist=venture_contractors_floodlight,id=234505,bonus_id=1808,ilevel=678,gem_id=213482
+legs=aureate_sentrys_legguards,id=229243,ilevel=678,enchant=stormbound_armor_kit_3
+feet=cutthroat_competition_stompers,id=228887,ilevel=678
+finger1=faded_championship_ring,id=228840,bonus_id=8781,ilevel=678,gem_id=213482/213482,enchant=radiant_haste_3
+finger2=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213482/213473,enchant=radiant_haste_3
+trinket1=eye_of_kezan,id=230198,ilevel=678
+trinket2=improvised_seaforium_pacemaker,id=232541,ilevel=678
+main_hand=bestinslots,id=232526,ilevel=678,enchant=authority_of_the_depths_3
 
-# save=TWW2_Paladin_Retribution_Herald.simc
+save=TWW2_Paladin_Retribution_Herald.simc
 
-# paladin=TWW2_Paladin_Retribution_Templar
-# level=80
-# race=human
-# spec=retribution
-# role=attack
-# position=back
-# talents=CYEAAAAAAAAAAAAAAAAAAAAAAAAAAYAAassNzstsNGbjZ22mZDAAAAAAjmmhhZGbzgZbYWmlZYYwMmhlF2AAAIzMtNLz2MAgNgBAjxMMD
+paladin=TWW2_Paladin_Retribution
+level=80
+race=human
+spec=retribution
+role=attack
+position=back
+talents=CYEAAAAAAAAAAAAAAAAAAAAAAAAAAYAAamltZmtltxYbMz22MbAAAAAAY00MMMzYbGMbDzysNDDDmhhlF2AAAIzMtNLz2MAgNgBAjxMMD
 
-# head=entombed_seraphs_casque,id=211993,bonus_id=4800/4786/1540/10299/1808,gem_id=213743
-# neck=sureki_zealots_insignia,id=225577,bonus_id=4800/4786/1540/10299/8781,gem_id=213494/213494
-# shoulders=entombed_seraphs_plumes,id=211991,bonus_id=4800/4786/1540/10299
-# back=royal_emblem_of_nerubar,id=212446,bonus_id=4800/4786/1540/10299
-# chest=entombed_seraphs_breastplate,id=211996,bonus_id=4800/4786/1540/10299,enchant=crystalline_radiance_3
-# wrists=everforged_vambraces,id=222435,bonus_id=10421/1515/8793/523/11109/8960,gem_id=213494
-# hands=entombed_seraphs_castigation,id=211994,bonus_id=4800/4786/1540/10299
-# waist=crystalfissure_girdle,id=221079,bonus_id=4786/3131/10299/523,gem_id=213494
-# legs=legplates_of_broken_trust,id=221092,bonus_id=4786/3131/10299,enchant=stormbound_armor_kit_3
-# feet=entombed_seraphs_sabatons,id=211995,ilevel=639
-# finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=4800/4786/1540/10299/8781,gem_id=213494/213458,enchant=radiant_mastery_3
-# finger2=writhing_ringworm,id=225576,bonus_id=4800/4786/1540/10299/8781,gem_id=213482/213473,enchant=radiant_mastery_3
-# trinket1=mark_of_khardros,id=133300,bonus_id=4786/11342/10299
-# trinket2=arakara_sacbrood,id=219314,bonus_id=4786/3131/10299
-# main_hand=everforged_greataxe,id=222443,bonus_id=10421/1515/11300/8960/8791,enchant=authority_of_the_depths_3
+head=aureate_sentrys_pledge,id=229244,bonus_id=1808,ilevel=678,gem_id=213743
+neck=strapped_rescuekeg,id=221060,bonus_id=8781,ilevel=678,gem_id=213491/213458
+shoulders=aureate_sentrys_roaring_will,id=229242,ilevel=678
+back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/12043/12040/1485/11303/8960/8791,ilevel=675
+chest=aureate_sentrys_encasement,id=229247,ilevel=678,enchant=crystalline_radiance_3
+wrists=everforged_vambraces,id=222435,bonus_id=10421/9633/8902/12043/12040/1485/11303/8960/523/8791,ilevel=675,gem_id=213482
+hands=gauntlets_of_absolute_authority,id=168980,ilevel=678
+waist=venture_contractors_floodlight,id=234505,bonus_id=1808,ilevel=678,gem_id=213482
+legs=aureate_sentrys_legguards,id=229243,ilevel=678,enchant=stormbound_armor_kit_3
+feet=cutthroat_competition_stompers,id=228887,ilevel=678
+finger1=faded_championship_ring,id=228840,bonus_id=8781,ilevel=678,gem_id=213482/213482,enchant=radiant_haste_3
+finger2=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213482/213473,enchant=radiant_haste_3
+trinket1=house_of_cards,id=230027,ilevel=678
+trinket2=improvised_seaforium_pacemaker,id=232541,ilevel=678
+main_hand=capital_punisher,id=228891,ilevel=678,enchant=authority_of_the_depths_3
 
-# save=TWW2_Paladin_Retribution.simc
+save=TWW2_Paladin_Retribution.simc
+
+paladin=TWW2_Paladin_Retribution_Templar_BIS
+level=80
+race=human
+spec=retribution
+role=attack
+position=back
+talents=CYEAAAAAAAAAAAAAAAAAAAAAAAAAAYAAamltZmtltxYbMz22MbAAAAAAY00MMMzYbGMbDzysNDDDmhhlF2AAAIzMtNLz2MAgNgBAjxMMD
+
+head=aureate_sentrys_pledge,id=229244,bonus_id=1808,ilevel=678,gem_id=213743
+neck=strapped_rescuekeg,id=221060,bonus_id=8781,ilevel=678,gem_id=213491/213458
+shoulders=aureate_sentrys_roaring_will,id=229242,ilevel=678
+back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/12043/12040/1485/11303/8960/8791,ilevel=675
+chest=aureate_sentrys_encasement,id=229247,ilevel=678,enchant=crystalline_radiance_3
+wrists=everforged_vambraces,id=222435,bonus_id=10421/9633/8902/12043/12040/1485/11303/8960/523/8791,ilevel=675,gem_id=213482
+hands=gauntlets_of_absolute_authority,id=168980,ilevel=678
+waist=venture_contractors_floodlight,id=234505,bonus_id=1808,ilevel=678,gem_id=213482
+legs=aureate_sentrys_legguards,id=229243,ilevel=678,enchant=stormbound_armor_kit_3
+feet=cutthroat_competition_stompers,id=228887,ilevel=678
+finger1=faded_championship_ring,id=228840,bonus_id=8781,ilevel=678,gem_id=213482/213482,enchant=radiant_haste_3
+finger2=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213482/213473,enchant=radiant_haste_3
+trinket1=eye_of_kezan,id=230198,ilevel=678
+trinket2=improvised_seaforium_pacemaker,id=232541,ilevel=678
+main_hand=bestinslots,id=232526,ilevel=678,enchant=authority_of_the_depths_3
+
+save=TWW2_Paladin_Retribution_Templar_BIS.simc
 
 paladin=TWW2_Paladin_Protection_Lightsmith
 level=80
@@ -103,29 +129,3 @@ save=TWW2_Paladin_Protection.simc
 # off_hand=oldblood_hielaman,id=221177,bonus_id=4786/3131/10299
 
 # save=TWW2_Paladin_Protection_Templar.simc
-
-
-# paladin="TWW2_Paladin_Retribution"
-# spec=retribution
-# level=70
-# race=dark_iron_dwarf
-# role=attack
-# position=back
-# talents=120010
-# head=luminous_chevaliers_casque,id=188933,bonus_id=1498/7187/6935,gem_id=173128
-# neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
-# shoulders=luminous_chevaliers_epaulettes,id=188932,bonus_id=1505/7187
-# back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
-# chest=shadowghast_breastplate,id=171412,bonus_id=6649/6648/6758/7064/1588,enchant=eternal_stats
-# wrists=bracers_of_the_inscrutable_inventor,id=189805,bonus_id=1524/7187/6935,gem_id=173128
-# hands=luminous_chevaliers_gauntlets,id=188928,bonus_id=1505/7187,enchant=eternal_strength
-# waist=shadowghast_waistguard,id=171418,bonus_id=6650/6648/6758/8125/1588/6935,gem_id=173128
-# legs=luminous_chevaliers_robes,id=188931,bonus_id=1505/7187
-# feet=songmad_sabatons,id=189786,bonus_id=1524/7187
-# finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-# finger2=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-# trinket1=old_warriors_soul,id=186438,bonus_id=4800/4786/1498
-# trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
-# main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=1524/7187,enchant=sinful_revelatio
-
-# save=TWW2_Paladin_Retribution.simc
