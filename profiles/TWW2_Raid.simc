@@ -38,8 +38,9 @@ TWW2_Monk_Brewmaster.simc
 
 TWW2_Paladin_Protection.simc
 # TWW2_Paladin_Protection_Templar.simc
-# TWW2_Paladin_Retribution.simc
-# TWW2_Paladin_Retribution_Herald.simc
+TWW2_Paladin_Retribution.simc
+TWW2_Paladin_Retribution_Templar_BIS.simc
+TWW2_Paladin_Retribution_Herald.simc
 
 TWW2_Priest_Shadow.simc
 TWW2_Priest_Shadow_Archon.simc
