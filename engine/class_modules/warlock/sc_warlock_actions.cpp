@@ -33,7 +33,7 @@ using namespace helpers;
       bool sacrificed_souls = false;
       bool wicked_maw = false;
       bool soul_conduit_base_cost = false;
-      bool demonic_brutality = false;
+      bool demonic_brutality = true; // 2025-03-03 Spell data contains no whitelist, preserving flag in case exception is found
 
       // Destruction
       bool chaotic_energies = false;
@@ -109,7 +109,6 @@ using namespace helpers;
       affected_by.master_demonologist_dd = data().affected_by( p->warlock_base.master_demonologist->effectN( 2 ) );
       // TOCHECK: 2024-07-12 Despite the value of Effect 2 being 0 for Wicked Maw's debuff, the spells listed for it gain full value as if from Effect 1
       affected_by.wicked_maw = data().affected_by( p->talents.wicked_maw_debuff->effectN( 1 ) ) || data().affected_by( p->talents.wicked_maw_debuff->effectN( 2 ) );
-      affected_by.demonic_brutality = data().affected_by( p->talents.demonic_brutality->effectN( 1 ) );
 
       affected_by.backdraft = data().affected_by( p->talents.backdraft_buff->effectN( 1 ) );
       affected_by.roaring_blaze = p->talents.roaring_blaze.ok() && data().affected_by( p->talents.conflagrate_debuff->effectN( 1 ) );
@@ -450,15 +449,22 @@ using namespace helpers;
       return m;
     }
 
+    double composite_player_critical_multiplier( const action_state_t* s ) const override
+    {
+      double m = spell_t::composite_player_critical_multiplier( s );
+
+      if ( demonology() && affected_by.demonic_brutality )
+        m *= 1.0 + p()->talents.demonic_brutality->effectN( 1 ).percent();
+
+      return m;
+    }
+
     double composite_crit_damage_bonus_multiplier() const override
     {
       double m = spell_t::composite_crit_damage_bonus_multiplier();
 
       if ( affliction() && affected_by.contagion )
         m *= 1.0 + p()->talents.contagion->effectN( 1 ).percent();
-
-      if ( demonology() && affected_by.demonic_brutality )
-        m *= 1.0 + p()->talents.demonic_brutality->effectN( 1 ).percent();
 
       if ( destruction() && affected_by.ruin )
         m *= 1.0 + p()->talents.ruin->effectN( 1 ).percent();
