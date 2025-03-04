@@ -189890,7 +189890,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 292
-                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#10), Flow State (390148 effect#12), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
 Attributes       : Passive (6), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1012272)  : Apply Aura (6) | Dummy (4)
@@ -222444,7 +222444,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 292
-                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#10), Flow State (390148 effect#12), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1118135)  : Apply Aura (6) | Dummy (4)
@@ -234535,7 +234535,8 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1143477)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 8562.882 (coefficient=2.236341) | PvP Coefficient: 0.4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7706.942 (coefficient=2.012798) | PvP Coefficient: 0.4 | Target: Self (1)
+Hotfixed         : Coefficient (2.236341 -> 2.012798)
 
 Name             : Spark of Beledar (id=446224) 
 School           : Holyfire
@@ -257016,13 +257017,15 @@ Description      : $@spelldesc458943
 Tooltip          : $@spelldesc458943
 
 Name             : Kaja'Cola Carrier (id=1214434) 
+Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 4248
-Attributes       : Allow Cast While Dead (23), Aura Unique (43), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow Aura While Dead (116), Aura Points On Client (268)
+Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Aura Unique (43), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow Aura While Dead (116), Aura Points On Client (268)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1196622)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1) -> Friendly (21)
@@ -257117,13 +257120,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 247270.6 (coefficient=96.67462) | Target: Self (1)
 
 Name             : Kaja'Cola Carrier (id=1214698) 
+Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 4248
-Attributes       : Allow Cast While Dead (23), Cast When Learned (63), Allow Dead Target (64), Allow Aura While Dead (116), Aura Points On Client (268)
+Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Cast When Learned (63), Allow Dead Target (64), Allow Aura While Dead (116), Aura Points On Client (268)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1197083)  : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | Target: Self (1) -> Friendly (21)
@@ -257133,13 +257138,15 @@ Description      : $@spelldesc1214705
 Tooltip          : $@spelldesc1214705
 
 Name             : Kaja'Cola Carrier (id=1214699) 
+Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 4248
-Attributes       : Allow Cast While Dead (23), Cast When Learned (63), Allow Dead Target (64), Allow Aura While Dead (116), Aura Points On Client (268)
+Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Cast When Learned (63), Allow Dead Target (64), Allow Aura While Dead (116), Aura Points On Client (268)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1197085)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1) -> Friendly (21)
@@ -257149,6 +257156,7 @@ Description      : $@spelldesc1214703
 Tooltip          : $@spelldesc1214703
 
 Name             : Kaja'Cola Carrier (id=1214700) 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -257156,6 +257164,7 @@ Duration         : Aura (infinite)
 Labels           : 2916
                  : 4248
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1197087)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1) -> Friendly (21)

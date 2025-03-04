@@ -16347,7 +16347,7 @@ Range            : 100 yards
 Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 292
-                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#10), Flow State (390148 effect#12), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
 Attributes       : No Aura Cancel (31), No Aura Icon (60), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1120106)  : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
@@ -19433,6 +19433,7 @@ Effects          :
 Description      : While you have |cFFFFFFFF Luck of the Draw!|r Shield of the Righteous refunds $s1-$s2 Holy Power and extends the duration of |cFFFFFFFF Luck of the Draw!|r by ${$s3/1000}.1 sec, up to $1218114d.
 
 Name             : Winning Streak! (id=1216828) [Spell Family (10)] 
+Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -19446,6 +19447,7 @@ Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Triggered By     : Paladin Retribution 11.1 Class Set 2pc (1215707)
 Attributes       : Aura Points On Client (268), Do Not Consume Aura Stack On Proc (428)
+Aura Interrupt   : Change Specialization (38)
 Effects          :
 #1 (id=1200474)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 0.5 | Target: Self (1)

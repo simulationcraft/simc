@@ -7534,8 +7534,9 @@ Effects          :
 Description      : $@spelldesc370965
 
 Name             : The Hunt (id=370969) [Spell Family (107)] 
+Hotfixed         : School (8 -> 124)
 Class            : Demon Hunter
-School           : Nature
+School           : Chromatic
 Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
@@ -7548,7 +7549,7 @@ Triggered By     : The Hunt (370966)
 Family Flags     : 16, 43, 70, 87
 Attributes       : Spell Haste Affects Periodic (173), Always Line of Sight (185), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
-#1 (id=982586)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
+#1 (id=982586)   : Apply Aura (6) | Periodic Damage (3): chromatic every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.3 | Target: Enemy (6)
 Description      : $@spelldesc370965
 Tooltip          : Suffering $w1 $@spelldesc395042 damage every $t1 sec.
