@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59466 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59490 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -3106,6 +3106,10 @@ Effects          :
                    Base Value: 33 | Scaled Value: 33 | Target: Self (1)
                    Affected Spells: Immolation Aura (258921), Immolation Aura (258922), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916)
                    Family Flags: 49, 61
+#15 (id=1222470) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effects (8)
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 8 | Misc Value 2: 4821 (Label) | Target: Self (1)
+                   Affected Spells (Label): Reaver's Mark (442624)
+Hotfixed         : NEW EFFECT
 
 Name             : Vengeance Demon Hunter (id=212613) [Spell Family (107), Passive, Hidden] 
 Class            : Vengeance Demon Hunter
@@ -11001,6 +11005,7 @@ Labels           : 16: Class Spells
                  : 66: Demon Hunter Spells
                  : 292
                  : 3367: Thrill of the Fight (442688 effect#3), Thrill of the Fight (442688 effect#4), Thrill of the Fight (1227062 effect#3), Thrill of the Fight (1227062 effect#4)
+                 : 4821: Havoc Demon Hunter (212612 effect#15)
 Internal Cooldown: 0.1 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
@@ -11075,19 +11080,23 @@ Attributes       : Floating Combat Text On Cast (198), Aura Points On Client (26
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1138072)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Consume Soul (178963), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Consume Soul (202644), Consume Soul (203794), Demon Blades (203796), Sigil of Flame (204598), Consume Soul (210042), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Fel Devastation (212106), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Consume Soul (228532), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Consume Soul (328953), Fel Devastation (333110), Fel Devastation (333120), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Throw Glaive (393035), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Metamorphosis - Alex S Copy (418583), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177), Sigil of Doom (462030)
                    Family Flags: 16, 20, 80
+Hotfixed         : Base Value (20 -> 15)
 #2 (id=1178234)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Consume Soul (178963), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Consume Soul (202644), Consume Soul (203794), Demon Blades (203796), Sigil of Flame (204598), Consume Soul (210042), Death Sweep (210153), Death Sweep (210155), Fel Eruption (211881), Fel Devastation (212105), Fel Devastation (212106), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Consume Soul (228532), Essence Break (258860), Trail of Ruin (258883), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926), Unbound Chaos (275148), Elysian Decree (307046), Sinful Brand (317009), Infernal Armor (320334), The Hunt (323802), Consume Soul (328953), Fel Devastation (333110), Fel Devastation (333120), Throw Glaive (337819), Elysian Decree (339893), Elysian Decree (339894), Glaive Tempest (342857), Chaos Nova (344867), The Hunt (345335), Fel Devastation (346503), The Hunt (370966), The Hunt (370969), Sigil of Spite (389860), Inner Demon (390137), Burning Wound (391191), Blade Dance (391374), Blade Dance (391378), Throw Glaive (393035), Death Sweep (393054), Death Sweep (393055), Fel Devastation (393834), Metamorphosis - Alex S Copy (418583), Immolation Aura (427904), Immolation Aura (427905), Immolation Aura (427906), Immolation Aura (427907), Immolation Aura (427908), Immolation Aura (427910), Immolation Aura (427911), Immolation Aura (427916), Blazing Nova (436899), Blazing Nova (436964), Reaver's Glaive (442294), Demonsurge (451266), Demonsurge (452416), Burning Blades (453177), Sigil of Doom (462030)
                    Family Flags: 16, 20, 80
+Hotfixed         : Base Value (20 -> 15)
 #3 (id=1178284)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value 2: 3367 (Label) | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value 2: 3367 (Label) | Target: Self (1)
                    Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062)
+Hotfixed         : Base Value (20 -> 15)
 #4 (id=1178285)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Misc Value 2: 3367 (Label) | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Misc Value 2: 3367 (Label) | Target: Self (1)
                    Affected Spells (Label): Art of the Glaive (442290), Reaver's Glaive (442294), Keen Engagement (442497), Warblade's Hunger (442503), Warblade's Hunger (442507), Reaver's Mark (442624), Reaver's Mark (442679), Aldrachi Tactics (442683), Thrill of the Fight (442686), Thrill of the Fight (442688), Thrill of the Fight (442695), Army Unto Oneself (442714), Blade Ward (442715), Fury of the Aldrachi (442718), Incorruptible Spirit (442736), Incorruptible Spirit (442788), Wounded Quarry (442806), Art of the Glaive (444661), Reaver's Glaive (444686), Reaver's Glaive (444764), Fury of the Aldrachi (444806), Art of the Glaive (444810), Evasive Action (444926), Evasive Action (444929), Unhindered Assault (444931), Preemptive Strike (444979), Preemptive Strike (444997), Wounded Quarry (474339), Thrill of the Fight (1227062)
+Hotfixed         : Base Value (20 -> 15)
 Description      : $@spelldesc442686
 Tooltip          : Damage and healing increased by $w1%.
 
@@ -12717,7 +12726,7 @@ Labels           : 16: Class Spells
                  : 295
                  : 4720
 Proc Chance      : 100%
-Real PPM         : 12
+Real PPM         : 15
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :

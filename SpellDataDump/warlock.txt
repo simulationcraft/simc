@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59466 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59490 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -998,7 +998,7 @@ Spell Level      : 22
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-                 : 3843: Xalan's Ferocity (440044 effect#5)
+                 : 3843: Xalan's Ferocity (440044 effect#6)
 Triggered By     : Immolation (19483)
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
@@ -2022,7 +2022,8 @@ Family Flags     : 49, 86
 Attributes       : Allow Cast While Dead (23), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Not an Action (92), PvP Enabling (96), Not a Proc (105), Do Not Display Range (126), Owner Power Scaling (153), Do Not Display Duration (170), Always AOE Line of Sight (186), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=87492)    : School Damage (2): shadowflame | Attributes: Is Harmful (12), Area Effects Use Target Radius (17)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.464063 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.556876 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : SP Coefficient (0.464063 -> 0.556876)
 Description      : $@spelldesc105174
 
 Name             : Nethermancy (desc=Passive) (id=86091) [Passive, Hidden] 
@@ -2335,7 +2336,8 @@ Family Flags     : 12
 Attributes       : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=113740)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.091252 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.118628 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.091252 -> 0.118628)
 #2 (id=113741)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Deals $s1 Fire damage to a target.
@@ -3011,7 +3013,8 @@ Family Flags     : 45, 49, 118
 Attributes       : Not Shapeshifted (16), Discount Power On Miss (59), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=132079)   : School Damage (2): chromatic
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.88633 | PvP Coefficient: 2.34 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.4636 | PvP Coefficient: 2.34 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (2.88633 -> 3.4636)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
 #3 (id=283496)   : Energize Power% (137)
@@ -3478,19 +3481,24 @@ Effects          :
 #5 (id=191026)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=261057)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: -44 | Scaled Value: -44 | Misc Value 2: 3444 (Label) | Target: Self (1)
+                   Base Value: -24 | Scaled Value: -24 | Misc Value 2: 3444 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445468)
+Hotfixed         : Base Value (-44 -> -24)
 #7 (id=261058)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
-                   Base Value: -44 | Scaled Value: -44 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
+                   Base Value: -24 | Scaled Value: -24 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445474)
+Hotfixed         : Base Value (-44 -> -24)
 #8 (id=261059)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 45 | Scaled Value: 45 | Misc Value 2: 3456 (Label) | Target: Self (1)
+                   Base Value: 103 | Scaled Value: 103 | Misc Value 2: 3456 (Label) | Target: Self (1)
                    Affected Spells (Label): Blackened Soul (445736)
+Hotfixed         : Base Value (45 -> 103)
 #9 (id=261060)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 12 | Misc Value 2: 4045 (Label) | Target: Self (1)
                    Affected Spells (Label): Infernal Bolt (434506)
-#10 (id=261061)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#10 (id=261061)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 3 | Misc Value 2: 3344 (Label) | Target: Self (1)
+                   Affected Spells (Label): Xalan's Ferocity (440044)
+Hotfixed         : Sub Type (4 -> 219), Base Value (0 -> 2), Misc Value (0 -> 3), Misc Value 2 (0 -> 3344)
 #11 (id=261062)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #12 (id=476297)  : Apply Aura (6) | Dummy (4)
@@ -3509,6 +3517,38 @@ Effects          :
 #16 (id=1187049) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 79 | Scaled Value: 79 | PvP Coefficient: 0 | Misc Value: 22 | Misc Value 2: 3445 (Label) | Target: Self (1)
                    Affected Spells (Label): Wither (445474)
+#17 (id=1222482) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 12 | Misc Value 2: 3344 (Label) | Target: Self (1)
+                   Affected Spells (Label): Xalan's Ferocity (440044)
+Hotfixed         : NEW EFFECT
+#18 (id=1222483) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 23 | Misc Value 2: 3344 (Label) | Target: Self (1)
+                   Affected Spells (Label): Xalan's Ferocity (440044)
+Hotfixed         : NEW EFFECT
+#19 (id=1222484) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 5 (33)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 33 | Misc Value 2: 3344 (Label) | Target: Self (1)
+                   Affected Spells (Label): Xalan's Ferocity (440044)
+Hotfixed         : NEW EFFECT
+#20 (id=1222488) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 5 (33)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 33 | Misc Value 2: 3343 (Label) | Target: Self (1)
+                   Affected Spells (Label): Xalan's Cruelty (440040)
+Hotfixed         : NEW EFFECT
+#21 (id=1222489) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 4 (32)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 32 | Misc Value 2: 3343 (Label) | Target: Self (1)
+                   Affected Spells (Label): Xalan's Cruelty (440040)
+Hotfixed         : NEW EFFECT
+#22 (id=1222490) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 12 | Misc Value 2: 3343 (Label) | Target: Self (1)
+                   Affected Spells (Label): Xalan's Cruelty (440040)
+Hotfixed         : NEW EFFECT
+#23 (id=1222491) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 23 | Misc Value 2: 3343 (Label) | Target: Self (1)
+                   Affected Spells (Label): Xalan's Cruelty (440040)
+Hotfixed         : NEW EFFECT
+#24 (id=1222495) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Tick Time (19)
+                   Base Value: 1000 | Scaled Value: 1000 | Misc Value: 19 | Misc Value 2: 3445 (Label) | Target: Self (1)
+                   Affected Spells (Label): Wither (445474)
+Hotfixed         : NEW EFFECT
 
 Name             : Corruption (id=146739) [Spell Family (5)] 
 Class            : Warlock
@@ -11528,7 +11568,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 2879
-                 : 3845: Xalan's Ferocity (440044 effect#6)
+                 : 3845: Xalan's Ferocity (440044 effect#7)
 Affecting Spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 91
 Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416)
@@ -11954,7 +11994,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 2879
-                 : 3844: Xalan's Cruelty (440040 effect#2)
+                 : 3844: Xalan's Cruelty (440040 effect#6)
 Affecting Spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Triggered By     : Shadow Barrage (394237)
 Family Flags     : 49, 91
@@ -12003,7 +12043,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
                  : 2879
-                 : 3845: Xalan's Ferocity (440044 effect#6)
+                 : 3845: Xalan's Ferocity (440044 effect#7)
 Affecting Spells : Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Norgannon's Foresight (236431 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Relic of Demonic Synergy (337060 effects: #2, #3), Wrath of Consumption (337130 effect#1), Ruin (387103 effect#1), Warlock Destruction Class Set 4pc (393704 effect#1), Infirmity (409765 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Infirmity (458219 effect#1)
 Family Flags     : 49, 91
 Attributes       : Not Shapeshifted (16), Do Not Display Range (126), Allow Class Ability Procs (416)
@@ -14110,15 +14150,16 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-                 : 3343: Will of Xalan (441531 effect#2)
+                 : 3343: Destruction Warlock (137046 effect#20), Destruction Warlock (137046 effect#21), Destruction Warlock (137046 effect#22), Destruction Warlock (137046 effect#23), Will of Xalan (441531 effect#2)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1133699)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Grimoire of Sacrifice (196100), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Summon Darkglare (205180), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Oblivion (417537), Infernal Bolt (434506), Wither (445468), Wither (445474), Malefic Touch (458131), Unstable Affliction (1219045)
                    Family Flags: 0, 1, 3, 7, 8, 9, 10, 19, 23, 40, 43, 45, 47, 64, 72, 73, 84, 85, 88, 101, 112, 116
-#2 (id=1137484)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Misc Value 2: 3844 (Label) | Radius: 60 yards | Target: Self (1)
+#2 (id=1137484)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+Hotfixed         : Type (174 -> 6), Sub Type (218 -> 531), Base Value (10 -> 2), Misc Value (7 -> 0), Misc Value 2 (3844 -> 0)
 #3 (id=1166858)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
                    Affected Spells: Corruption (172), Shadow Bolt (686), Agony (980), Mortal Coil (6789), Shadowburn (17877), Seed of Corruption (27285), Unstable Affliction (30108), Unstable Affliction (31117), Seed of Corruption (43991), Haunt (48181), Siphon Life (63106), Chaos Bolt (116858), Corruption (146739), Unstable Affliction (196364), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Vile Taint (278350), Unstable Affliction (316099), Malefic Rapture (324540), Soul Rot (325640), Deliberate Corruption (367831), Vile Taint (386931), Soul Rot (386997), Soul Rot (386998), Infernal Bolt (434506), Wither (445468), Wither (445474), Malefic Touch (458131), Unstable Affliction (1219045)
@@ -14129,8 +14170,9 @@ Effects          :
                    Family Flags: 0, 1, 3, 7, 8, 10, 19, 23, 40, 43, 45, 47, 73, 84, 85, 101, 112
 #5 (id=1166860)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#6 (id=1190450)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+#6 (id=1190450)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Misc Value 2: 3844 (Label) | Radius: 60 yards | Target: Self (1)
+Hotfixed         : Type (6 -> 174), Sub Type (531 -> 218), Base Value (2 -> 10), Misc Value (0 -> 7), Misc Value 2 (0 -> 3844)
 Description      : Shadow damage dealt by your spells and abilities is increased by $s3% and your Shadow spells gain $s1% more critical strike chance from all sources.
 
 Name             : Blackened Soul (id=440043) [Spell Family (5), Passive, Hidden] 
@@ -14157,6 +14199,7 @@ Description      : Spending Soul Shards on damaging spells will further corrupt 
 Each time Wither gains a stack it has a chance to collapse, consuming a stack every $445731t1 sec to deal $445736s1 Shadowflame damage to its host until 1 stack remains.
 
 Name             : Xalan's Ferocity (id=440044) [Spell Family (5), Passive, Hidden] 
+Hotfixed         : Attributes
 Talent Entry     : Hellcaller (Affliction, Destruction) [tree=hero, row=2, col=1, max_rank=1, req_points=1]
 Class            : Warlock
 School           : Physical
@@ -14164,8 +14207,8 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-                 : 3344: Will of Xalan (441531 effect#1)
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+                 : 3344: Destruction Warlock (137046 effect#10), Destruction Warlock (137046 effect#17), Destruction Warlock (137046 effect#18), Destruction Warlock (137046 effect#19), Will of Xalan (441531 effect#1)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
 Effects          :
 #1 (id=1133703)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -14181,12 +14224,15 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Immolate (348), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Incinerate (29722), Rain of Fire (42223), Chaos Bolt (116858), Cataclysm (152108), Immolate (157736), Immolate (193540), Channel Demonfire (196448), Immolate (228312), Incinerate (244670), Malefic Rapture (324540), Channel Demonfire (409890), Infernal Bolt (434506), Wither (445468), Wither (445474), Malefic Touch (458131), Channel Demonfire (1217787)
                    Family Flags: 2, 4, 7, 15, 38, 45, 55, 65, 72, 73, 92
-#5 (id=1166683)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Misc Value 2: 3843 (Label) | Radius: 60 yards | Target: Self (1)
-#6 (id=1166684)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Misc Value 2: 3845 (Label) | Radius: 60 yards | Target: Self (1)
-#7 (id=1190448)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
+#5 (id=1166683)  : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+Hotfixed         : Type (174 -> 6), Sub Type (218 -> 531), Base Value (10 -> 2), Misc Value (7 -> 0), Misc Value 2 (3843 -> 0)
+#6 (id=1166684)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Misc Value 2: 3843 (Label) | Radius: 60 yards | Target: Self (1)
+Hotfixed         : Misc Value 2 (3845 -> 3843)
+#7 (id=1190448)  : Apply Aura Pet (174) | Apply Percent Modifier w/ Label (218): Spell Critical Chance (7)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Misc Value 2: 3845 (Label) | Radius: 60 yards | Target: Self (1)
+Hotfixed         : Type (6 -> 174), Sub Type (531 -> 218), Base Value (2 -> 10), Misc Value (0 -> 7), Misc Value 2 (0 -> 3845)
 Description      : Fire damage dealt by your spells and abilities is increased by $s1% and your Fire spells gain $s4% more critical strike chance from all sources.
 
 Name             : Mark of Peroth'arn (id=440045) [Spell Family (5), Passive, Hidden] 
@@ -14537,7 +14583,7 @@ Duration         : 18 seconds
 Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
-                 : 3445: Affliction Warlock (137043 effect#9), Affliction Warlock (137043 effect#16), Affliction Warlock (137043 effect#17), Destruction Warlock (137046 effect#7), Destruction Warlock (137046 effect#16), Hatefury Rituals (440048 effect#1), Hatefury Rituals (440048 effect#2), Bleakheart Tactics (440051 effect#2)
+                 : 3445: Affliction Warlock (137043 effect#9), Affliction Warlock (137043 effect#16), Affliction Warlock (137043 effect#17), Destruction Warlock (137046 effect#7), Destruction Warlock (137046 effect#16), Destruction Warlock (137046 effect#24), Hatefury Rituals (440048 effect#1), Hatefury Rituals (440048 effect#2), Bleakheart Tactics (440051 effect#2)
 Stacks           : 99 maximum
 Proc Chance      : 101%
 Affecting Spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2, #13), Epidemic (184922 effects: #1, #2), Flamelicked (185229 effect#1), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Norgannon's Foresight (236431 effect#1), Creeping Death (264000 effect#1), Conflagrate (265931 effect#1), Soul Fire (281440 effect#1), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Unstable Affliction (316099 effect#4), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1), Odr, Shawl of the Ymirjar (337164 effect#1), Ashen Remains (339892 effect#1), Combusting Engine (339986 effect#1), Sacrolash's Dark Strike (386986 effect#1), Ruin (387103 effect#1), Ashen Remains (387252 effect#1), Haunted Soul (387310 effect#1), Scalding Flames (388832 effects: #2, #3), Warlock Destruction Class Set 4pc (393704 effect#1), Kindled Malice (405330 effects: #2, #3), Socrethar's Guile (405936 effect#5), Umbrafire Embers (409652 effect#2), Infirmity (409765 effect#1), Flames of Xoroth (429657 effects: #1, #2), Xalan's Cruelty (440040 effects: #1, #3, #4), Xalan's Ferocity (440044 effects: #1, #2, #4), Mark of Peroth'arn (440045 effect#1), Mark of Xavius (440046 effect#2), Wither (445465 effect#1), Sataiel's Volition (449637 effect#1), Siphon Life (452999 effects: #1, #3), Malediction (453087 effect#1), Contagion (453096 effect#1), Summoner's Embrace (453105 effects: #1, #3), Devastation (454735 effect#1), Emberstorm (454744 effect#3), Echo of the Azj'Aqir (455674 effect#2), Umbral Lattice (455679 effects: #1, #2), Infirmity (458219 effect#1), Unstable Affliction (1219045 effect#4)
@@ -15492,7 +15538,8 @@ Family Flags     : 122
 Attributes       : Not Shapeshifted (16), Allow Harmful on Friendly (373), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1155611)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.59415 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.98327 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (2.59415 -> 2.98327)
 #2 (id=1155612)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=1155613)  : Dummy (3)
@@ -15881,7 +15928,8 @@ Triggered By     : Gloom Slash (455489)
 Attributes       : Spell Haste Affects Periodic (173), Periodic Can Crit (265)
 Effects          :
 #1 (id=1158960)  : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.244435 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.317766 | Target: Enemy (6)
+Hotfixed         : SP Coefficient (0.244435 -> 0.317766)
 Description      : $@spelldesc455489
 
 Name             : Foul Mouth (id=455502) [Spell Family (5), Passive, Hidden] 
@@ -16908,7 +16956,8 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hos
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198767)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Base Value (200 -> 100)
 #2 (id=1201894)  : Apply Aura (6) | Proc Trigger Spell (42): Demonfire Flurry
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1217731 | Target: Self (1)
 Description      : Your spells and abilities have a chance to hit a |cFFFFFFFFJackpot!|r that fires a flurry of ${$1217731d/$1217731t1} Demonfire bolts at $s1% effectiveness. Casting Summon Infernal always hits a |cFFFFFFFFJackpot!|r
@@ -16942,7 +16991,8 @@ Proc Flags       : Generic Hostile Spell, Magic Hostile Spell, Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198769)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Base Value (50 -> 20)
 #2 (id=1201796)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : Casting Hand of Gul'dan causes your active Dreadstalkers to cast Dreadbite at $s1% effectiveness. This damage is increased by $s2% for each Soul Shard spent on Hand of Gul'dan.

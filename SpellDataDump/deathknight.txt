@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59466 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59490 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1208,9 +1208,10 @@ Effects          :
 #4 (id=739365)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Target: Self (1)
 #5 (id=1203568)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 750 | Scaled Value: 750 | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | Target: Self (1)
                    Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
                    Family Flags: 126
+Hotfixed         : Base Value (750 -> 400)
 #6 (id=1203569)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
@@ -3228,6 +3229,14 @@ Effects          :
 #21 (id=1196316) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Misc Value 2: 4242 (Label) | Target: Self (1)
                    Affected Spells (Label): Vampiric Strike (433901)
+#22 (id=1222188) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0 | Misc Value: 12 | Misc Value 2: 4192 (Label) | Target: Self (1)
+                   Affected Spells (Label): Frenzied Bloodthirst (434075)
+Hotfixed         : NEW EFFECT
+#23 (id=1222189) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
+                   Base Value: -50 | Scaled Value: -50 | Misc Value: 12 | Misc Value 2: 4192 (Label) | Target: Self (1)
+                   Affected Spells (Label): Frenzied Bloodthirst (434075)
+Hotfixed         : NEW EFFECT
 
 Name             : Anti-Magic Zone (desc=PvP Talent) (id=145629) [Spell Family (15)] 
 Class            : Death Knight
@@ -13917,7 +13926,7 @@ Labels           : 16: Class Spells
                  : 27: Death Knight Spells
                  : 292
                  : 3022
-                 : 4192: Blood Death Knight (137008 effect#19)
+                 : 4192: Blood Death Knight (137008 effect#19), Blood Death Knight (137008 effect#22), Blood Death Knight (137008 effect#23)
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1123818)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Max Stacks (37)
@@ -17655,6 +17664,7 @@ Effects          :
 Description      : Reduces the cooldown of Reaper's Mark by ${$s1/-1000} sec, but the amount of $?a137008[Marrowrends][Obliterates] empowered by Exterminate is reduced by $s2.
 
 Name             : Death Knight Unholy 11.1 Class Set 2pc (id=1215726) [Spell Family (15), Passive, Hidden] 
+Hotfixed         : Description
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -17671,8 +17681,9 @@ Effects          :
 #1 (id=1198827)  : Apply Aura (6) | Proc Trigger Spell (42): Winning Streak!
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 1216813 | Target: Self (1)
 #2 (id=1216606)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.5 | Trigger Spell: 1216813 | Target: Self (1)
-Description      : Your spells and abilities have a chance to activate a |cFFFFFFFFWinning Streak!|r increasing the damage of your Death Coil and Epidemic by $s2%, stacking up to $1216813u times. Death Coil and Epidemic have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 0.5 | Trigger Spell: 1216813 | Target: Self (1)
+Hotfixed         : Base Value (3 -> 45)
+Description      : Your spells and abilities have a chance to activate a |cFFFFFFFFWinning Streak!|r increasing the damage of your Death Coil and Epidemic by ${$s2/10}.1%, stacking up to $1216813u times. Death Coil and Epidemic have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r
 
 Name             : Death Knight Frost 11.1 Class Set 2pc (id=1215727) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -17767,6 +17778,7 @@ Description      : |cFFFFFFFFLuck of the Draw!|r has ${$s1/1000} sec increased d
 While |cFFFFFFFFLuck of the Draw!|r is active, Death Strike costs ${-$1218601S5/10} less Runic Power and can strike up to $1218601m4 additional nearby $Lenemy:enemies;.
 
 Name             : Winning Streak! (id=1216813) [Spell Family (15)] 
+Hotfixed         : Tooltip
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -17785,11 +17797,12 @@ Attributes       : Can Proc From Procs (122), Aura Points On Client (268), Do No
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1200456)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 4.5 | Scaled Value: 4.5 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Epidemic (207317), Epidemic (212739), Epidemic (215969)
                    Family Flags: 64, 121
+Hotfixed         : Base Value (3 -> 45)
 Description      : $@spelldesc1215726
-Tooltip          : On a|cFFFFFFFF Winning Streak!|r Death Coil and Epidemic damage increased by $w1%.
+Tooltip          : On a|cFFFFFFFF Winning Streak!|r Death Coil and Epidemic damage increased by ${$w1}.1%.
 
 Name             : Winning Streak! (id=1217897) [Spell Family (15)] 
 Class            : Death Knight

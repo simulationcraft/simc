@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59466 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59490 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -13350,9 +13350,10 @@ Effects          :
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
 #3 (id=1170141)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Smite (585), Penance (47666), Holy Nova (132157), Penance (186724), Dark Reprimand (373130), Ultimate Penitence (421543), Smite (425529), Void Blast (450215)
                    Family Flags: 7, 47, 49
+Hotfixed         : Base Value (40 -> 20)
 #4 (id=1170142)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Smite (585), Holy Fire (14914), Holy Nova (132157), Encroaching Shadows (204215), Smite (425529), Void Blast (450215)
