@@ -6325,7 +6325,8 @@ struct ravager_tick_t : public warrior_attack_t
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
-    dual = ground_aoe = true;
+    dual = true;
+    background = true;
     rage_from_ravager = p->find_spell( 334934 )->effectN( 1 ).resource( RESOURCE_RAGE );
     rage_from_storm_of_steel += p->talents.fury.storm_of_steel->effectN( 5 ).resource( RESOURCE_RAGE );
     rage_from_storm_of_steel += p->talents.protection.storm_of_steel->effectN( 5 ).resource( RESOURCE_RAGE );
@@ -6358,6 +6359,9 @@ struct ravager_t : public warrior_attack_t
     parse_options( options_str );
     ignore_false_positive   = true;
     hasted_ticks            = true;
+    ground_aoe              = true;
+    base_tick_time = dot_duration = 0_ms;  // Handled by event
+    radius     = data().effectN( 2 ).radius_max();
     internal_cooldown->duration = 0_s; // allow Anger Management to reduce the cd properly due to having both charges and cooldown entries
     attack_power_mod.direct = attack_power_mod.tick = 0;
     add_child( ravager );
@@ -6381,6 +6385,14 @@ struct ravager_t : public warrior_attack_t
     }
   }
 
+  void init_finished() override
+  {
+    warrior_attack_t::init_finished();
+    // Merge stats with the damage object
+    ravager->stats = stats;
+    stats->action_list.push_back( ravager );
+  }
+
   void execute() override
   {
     warrior_attack_t::execute();
@@ -6389,45 +6401,63 @@ struct ravager_t : public warrior_attack_t
     if ( p()->talents.shared.dance_of_death->ok() && p()->buff.dance_of_death_ravager->check() )
       p()->buff.dance_of_death_ravager->expire();
 
-    if ( p()->talents.arms.merciless_bonegrinder->ok() )
-    {
-      // Set a 30s time for the buff, normally it would be either 12, or 15 seconds, but duration is hasted, expiry is tied to expiry of ravager
-      p()->buff.merciless_bonegrinder->trigger(30_s);
-    }
+    make_event<ground_aoe_event_t>(
+      *sim, p(),
+      ground_aoe_params_t()
+          .target( target )
+          .pulse_time( compute_tick_time() )
+          .action( ravager )
+          .n_pulses( 6 )
+          .hasted( ground_aoe_params_t::ATTACK_HASTE )
+          .x( target->x_position )
+          .y( target->y_position )
+          // Keep track of on-going events
+          .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+            switch ( type )
+            {
+              case ground_aoe_params_t::EVENT_STARTED:
+                if ( p()->talents.arms.merciless_bonegrinder->ok() )
+                {
+                  // Set a 30s time for the buff, normally it would be either 12, or 15 seconds, but duration is hasted, expiry is tied to expiry of ravager
+                  p()->buff.merciless_bonegrinder->trigger(30_s);
+                }
+                break;
+              case ground_aoe_params_t::EVENT_STOPPED:
+                p()->buff.merciless_bonegrinder->expire();
+                break;
+              case ground_aoe_params_t::EVENT_DESTRUCTED:
+                if ( ( mortal_strike || bloodthirst || bloodbath ) && ( event->current_pulse % 2 == 0 ) )
+                {
+                  auto t = p() -> target;
+                  if ( ! p() -> target || p() -> target->is_sleeping() )
+                    t = select_random_target();
+
+                  if ( t )
+                  {
+                    if ( mortal_strike )
+                      mortal_strike->execute_on_target( t );
+                    if ( bloodthirst || bloodbath )
+                    {
+                      if ( bloodbath && p()->talents.fury.reckless_abandon->ok() && p()->buff.recklessness->check() )
+                        bloodbath->execute_on_target( t );
+                      else
+                        bloodthirst->execute_on_target( t );
+                    }
+                  }
+                }
+                break;
+              default:
+                break;
+            }
+          } ),
+      false /* Immediate pulse */ );
   }
 
-  void tick( dot_t* d ) override
+  timespan_t compute_tick_time() const
   {
-    warrior_attack_t::tick( d );
-    ravager->execute();
+    auto base = data().effectN( 3 ).period();
 
-    // As of TWW Unhinged procs on the even ticks
-    if ( ( mortal_strike || bloodthirst || bloodbath ) && ( d->current_tick % 2 == 0 ) )
-    {
-      // Select main target for unhinged, if no target, or target is dead, select a random target
-      auto t = p() -> target;
-      if ( ! p() -> target || p() -> target->is_sleeping() )
-        t = select_random_target();
-
-      if ( t )
-      {
-        if ( mortal_strike )
-          mortal_strike->execute_on_target( t );
-        if ( bloodthirst || bloodbath )
-        {
-          if ( bloodbath && p()->talents.fury.reckless_abandon->ok() && p()->buff.recklessness->check() )
-            bloodbath->execute_on_target( t );
-          else
-            bloodthirst->execute_on_target( t );
-        }
-      }
-    }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    warrior_attack_t::last_tick( d );
-    p()->buff.merciless_bonegrinder->expire();
+    return base;
   }
 };
 
