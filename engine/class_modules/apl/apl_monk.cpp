@@ -288,7 +288,10 @@ void windwalker_live( player_t *p )
     //-------------------------------------------
     const static std::unordered_map<std::string, std::string> sef_trinkets{
         // name_str -> APL
-        { "imperfect_ascendancy_serum", ",use_off_gcd=1,if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&(cooldown.storm_earth_and_fire.ready&|!talent.storm_earth_and_fire)&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_windlord&cooldown.fists_of_fury.ready)|fight_remains<25" },
+        { "imperfect_ascendancy_serum",
+          ",use_off_gcd=1,if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&(cooldown.storm_earth_"
+          "and_fire.ready&|!talent.storm_earth_and_fire)&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_"
+          "windlord&cooldown.fists_of_fury.ready)|fight_remains<25" },
         { "mad_queens_mandate",
           ",target_if=min:target.health,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|"
           "trinket.2.has_use_buff)&cooldown.invoke_xuen_the_white_tiger.remains>30" },
@@ -302,7 +305,6 @@ void windwalker_live( player_t *p )
           "buff.invokers_delight.up" },
 
         // Defaults:
-        { "ITEM_STAT_BUFF", ",if=pet.xuen_the_white_tiger.active" },
         { "ITEM_STAT_BUFF", ",if=pet.xuen_the_white_tiger.active" },
         { "ITEM_DMG_BUFF",
           ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|trinket.2.has_use_buff)&"
@@ -489,10 +491,22 @@ void windwalker_live( player_t *p )
       "variable.sef_dungeonroute_condition&fight_style.dungeonroute" );
   cooldowns->add_action( "touch_of_karma" );
   // CD relevant racials
-  cooldowns->add_action( "ancestral_call,if=buff.invoke_xuen_the_white_tiger.remains>15|!talent.xuen_the_white_tiger&(!talent.storm_earth_and_fire&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_windlord&cooldown.fists_of_fury.ready)|buff.storm_earth_and_fire.remains>10)|fight_remains<20" );
-  cooldowns->add_action( "blood_fury,if=buff.invoke_xuen_the_white_tiger.remains>15|!talent.xuen_the_white_tiger&(!talent.storm_earth_and_fire&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_windlord&cooldown.fists_of_fury.ready)|buff.storm_earth_and_fire.remains>10)|fight_remains<20" );
-  cooldowns->add_action( "fireblood,if=buff.invoke_xuen_the_white_tiger.remains>15|!talent.xuen_the_white_tiger&(!talent.storm_earth_and_fire&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_windlord&cooldown.fists_of_fury.ready)|buff.storm_earth_and_fire.remains>10)|fight_remains<20" );
-  cooldowns->add_action( "berserking,if=buff.invoke_xuen_the_white_tiger.remains>15|!talent.xuen_the_white_tiger&(!talent.storm_earth_and_fire&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_windlord&cooldown.fists_of_fury.ready)|buff.storm_earth_and_fire.remains>10)|fight_remains<20" );
+  cooldowns->add_action(
+      "ancestral_call,if=buff.invoke_xuen_the_white_tiger.remains>15|!talent.xuen_the_white_tiger&(!talent.storm_earth_"
+      "and_fire&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_windlord&cooldown.fists_of_fury.ready)|"
+      "buff.storm_earth_and_fire.remains>10)|fight_remains<20" );
+  cooldowns->add_action(
+      "blood_fury,if=buff.invoke_xuen_the_white_tiger.remains>15|!talent.xuen_the_white_tiger&(!talent.storm_earth_and_"
+      "fire&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_windlord&cooldown.fists_of_fury.ready)|buff."
+      "storm_earth_and_fire.remains>10)|fight_remains<20" );
+  cooldowns->add_action(
+      "fireblood,if=buff.invoke_xuen_the_white_tiger.remains>15|!talent.xuen_the_white_tiger&(!talent.storm_earth_and_"
+      "fire&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_windlord&cooldown.fists_of_fury.ready)|buff."
+      "storm_earth_and_fire.remains>10)|fight_remains<20" );
+  cooldowns->add_action(
+      "berserking,if=buff.invoke_xuen_the_white_tiger.remains>15|!talent.xuen_the_white_tiger&(!talent.storm_earth_and_"
+      "fire&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_windlord&cooldown.fists_of_fury.ready)|buff."
+      "storm_earth_and_fire.remains>10)|fight_remains<20" );
 
   // AoE Opener
   aoe_opener->add_action( "slicing_winds", "aoe opener" );
@@ -526,7 +540,8 @@ void windwalker_live( player_t *p )
       "talent.xuens_bond&buff.invokers_delight.up)|fight_remains<15|fight_style.dungeonroute&buff.invokers_delight.up&"
       "cooldown.strike_of_the_windlord.remains&buff.storm_earth_and_fire.remains<8" );
   default_aoe->add_action(
-      "rising_sun_kick,target_if=max:target.time_to_die,if=cooldown.whirling_dragon_punch.remains<2&cooldown.fists_of_fury.remains>1&buff.dance_of_chiji.stack<2|!buff.storm_earth_and_fire.up&buff.pressure_point.up" );
+      "rising_sun_kick,target_if=max:target.time_to_die,if=cooldown.whirling_dragon_punch.remains<2&cooldown.fists_of_"
+      "fury.remains>1&buff.dance_of_chiji.stack<2|!buff.storm_earth_and_fire.up&buff.pressure_point.up" );
   default_aoe->add_action(
       "whirling_dragon_punch,target_if=max:target.time_to_die,if=!talent.revolving_whirl|talent.revolving_whirl&buff."
       "dance_of_chiji.stack<2&active_enemies>2" );
@@ -606,12 +621,13 @@ void windwalker_live( player_t *p )
   default_aoe->add_action( "tiger_palm,if=prev.tiger_palm&chi<3&!cooldown.fists_of_fury.remains" );
 
   // 2-4 targets
-  default_cleave->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.stack=2&combo_strike",
-      "2-4 targets" );
+  default_cleave->add_action( "spinning_crane_kick,if=buff.dance_of_chiji.stack=2&combo_strike", "2-4 targets" );
   default_cleave->add_action(
       "rising_sun_kick,target_if=max:target.time_to_die,if=buff.pressure_point.up&active_enemies<4&cooldown.fists_of_"
       "fury.remains>4" );
-  default_cleave->add_action( "rising_sun_kick,target_if=max:target.time_to_die,if=cooldown.whirling_dragon_punch.remains<2&cooldown.fists_of_fury.remains>1&buff.dance_of_chiji.stack<2" );
+  default_cleave->add_action(
+      "rising_sun_kick,target_if=max:target.time_to_die,if=cooldown.whirling_dragon_punch.remains<2&cooldown.fists_of_"
+      "fury.remains>1&buff.dance_of_chiji.stack<2" );
   default_cleave->add_action(
       "spinning_crane_kick,target_if=max:target.time_to_die,if=combo_strike&buff.dance_of_chiji.stack=2&active_enemies>"
       "3" );
@@ -634,7 +650,8 @@ void windwalker_live( player_t *p )
       "cooldown.strike_of_the_windlord.remains&buff.storm_earth_and_fire.remains<8" );
   default_cleave->add_action(
       "rising_sun_kick,target_if=max:target.time_to_die,if=!pet.xuen_the_white_tiger.active&prev.tiger_palm&time<5|"
-      "buff.heart_of_the_jade_serpent_cdr_celestial.up&buff.pressure_point.up&cooldown.fists_of_fury.remains&(talent.glory_of_the_dawn|active_enemies<3)" );
+      "buff.heart_of_the_jade_serpent_cdr_celestial.up&buff.pressure_point.up&cooldown.fists_of_fury.remains&(talent."
+      "glory_of_the_dawn|active_enemies<3)" );
   default_cleave->add_action(
       "fists_of_fury,target_if=max:target.time_to_die,if=buff.heart_of_the_jade_serpent_cdr_celestial.up" );
   default_cleave->add_action(
