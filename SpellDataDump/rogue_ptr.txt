@@ -7998,7 +7998,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 292
-                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#10), Flow State (390148 effect#12), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
 Proc Chance      : 101%
 Proc Flags       : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
