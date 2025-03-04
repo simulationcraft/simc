@@ -102,7 +102,7 @@ void fury( player_t* p )
   thane->add_action( "bloodbath" );
   thane->add_action( "onslaught,if=talent.tenderize" );
   thane->add_action( "rampage" );
-  thane->add_action( "bloodthirst,if=talent.vicious_contempt&target.health.pct<35&buff.bloodcraze.stack>=2|!dot.ravager.remains&buff.bloodcraze.stack>=3|active_enemies>=6" );
+  thane->add_action( "bloodthirst,if=talent.vicious_contempt&target.health.pct<35&buff.bloodcraze.stack>=2|!buff.ravager.up&buff.bloodcraze.stack>=3|active_enemies>=6" );
   thane->add_action( "raging_blow" );
   thane->add_action( "execute,if=talent.ashen_juggernaut" );
   thane->add_action( "thunder_blast" );
@@ -217,7 +217,7 @@ void arms( player_t* p )
   colossus_execute->add_action( "execute,if=buff.juggernaut.remains<=gcd&talent.juggernaut" );
   colossus_execute->add_action( "skullsplitter,if=rage<85" );
   colossus_execute->add_action( "demolish,if=debuff.colossus_smash.up" );
-  colossus_execute->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2&!dot.ravager.remains|!talent.executioners_precision" );
+  colossus_execute->add_action( "mortal_strike,if=debuff.executioners_precision.stack=2&!buff.ravager.up|!talent.executioners_precision" );
   colossus_execute->add_action( "overpower,if=rage<50" );
   colossus_execute->add_action( "execute,if=rage>=40&talent.executioners_precision" );
   colossus_execute->add_action( "overpower" );
