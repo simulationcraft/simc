@@ -156,7 +156,7 @@ std::string temporary_enchant( const player_t *p )
       break;
     case MONK_WINDWALKER:
       if ( p->true_level > 70 )
-        return "main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3";
+        return "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3";
       else if ( p->true_level > 60 )
         return "main_hand:howling_rune_3/off_hand:howling_rune_3";
       else if ( p->true_level > 50 )
