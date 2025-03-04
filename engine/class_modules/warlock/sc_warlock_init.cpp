@@ -1068,6 +1068,7 @@ namespace warlock
     procs.pact_of_the_eredruin = get_proc( "pact_of_the_eredruin" );
     procs.empowered_legion_strike = get_proc( "empowered_legion_strike" );
     procs.jackpot_demonology = get_proc( "jackpot_demonology" );
+    procs.demonic_core_big_dogs = get_proc( "demonic_core_greater_dreadstalkers" );
 
     for ( size_t i = 0; i < procs.hand_of_guldan_shards.size(); i++ )
     {

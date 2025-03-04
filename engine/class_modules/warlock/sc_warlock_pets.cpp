@@ -1791,7 +1791,16 @@ void greater_dreadstalker_t::arise()
 }
 
 void greater_dreadstalker_t::demise()
-{ warlock_pet_t::demise(); }
+{
+  if ( !current.sleeping && o()->talents.demoniac.ok() )
+  {
+    bool success = o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->talents.demonic_core_spell->effectN( 2 ).percent() );
+    if ( success )
+      o()->procs.demonic_core_big_dogs->occur();
+  }
+
+  warlock_pet_t::demise();
+}
 
 double greater_dreadstalker_t::composite_player_multiplier( school_e school ) const
 {

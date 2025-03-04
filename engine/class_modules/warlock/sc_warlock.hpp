@@ -753,6 +753,7 @@ public:
     proc_t* pact_of_the_eredruin;
     proc_t* empowered_legion_strike; // TWW1 4pc buff
     proc_t* jackpot_demonology; // TWW2 2pc proc
+    proc_t* demonic_core_big_dogs;
 
     // Destruction
     proc_t* reverse_entropy;
