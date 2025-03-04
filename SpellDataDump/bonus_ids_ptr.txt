@@ -6312,7 +6312,7 @@ bonus_id={ 11315 }, stats={ 100% Haste [0.3333] }
 bonus_id={ 11316 }, stats={ 100% Crit [0.3333] }
 bonus_id={ 11317 }, stats={ 100% Vers [0.3333] }
 bonus_id={ 11318 }, base_ilevel={ 545 }
-bonus_id={ 11319 }, desc={ Tier 1 }, effects={ Delver's Bounty (id=460285, index=0, type=use) }
+bonus_id={ 11319 }, desc={ Tier 1 }, effects={ Unknown Effect (id=188908) }
 bonus_id={ 11329 }, quality={ rare }, ilevel={ 10 @plvl 0 - 10 @plvl 1 }
 bonus_id={ 11330 }, base_ilevel={ 545 }
 bonus_id={ 11331 }, base_ilevel={ 561 }
