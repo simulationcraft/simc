@@ -26,56 +26,56 @@ off_hand=gallywixs_iron_thumb,id=228899,bonus_id=7981/12042/5878/11996,enchant=a
 
 save=TWW2_Monk_Brewmaster.simc
 
-# monk="TWW2_Monk_Windwalker"
-# spec=windwalker
-# level=80
-# race=mechagnome
-# role=attack
-# position=back
-# talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzsMzgxMjZZGADAAAAAAAAAAAWWwImZYMDDLjZsNzMDzywMYZmAAYbmZYmZmZbGAAbLzyysNzMNLzSzMzsAA
+monk="TWW2_Monk_Windwalker"
+spec=windwalker
+level=80
+race=troll
+role=attack
+position=back
+talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzYmBjZYWmZGzMAAAAAAAAAAAwyywImZYMYYzMjtZmZY2YmBLzEAALjZGmZMbzAAYZZWWmlZmJIAAA
 
-# head=hood_of_the_hidden_path,id=178691,bonus_id=4786/3293/10336/11307,ilevel=639,gem_id=213743
-# neck=sureki_zealots_insignia,id=225577,bonus_id=10256/11086/10837/10832/1514/10255,ilevel=639,gem_id=213485/213485
-# shoulders=gatecrashers_enduring_effigy,id=212045,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-# back=consecrated_cloak,id=222817,bonus_id=3524/11109/8960,ilevel=636,crafted_stats=40/36
-# chest=gatecrashers_gi,id=212050,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant=crystalline_radiance_3
-# wrists=risen_monstrosity_cuffs,id=178741,bonus_id=4786/3293/10336/11307,ilevel=639,gem_id=213470,enchant=chant_of_armored_avoidance_3
-# hands=gatecrashers_protectors,id=212048,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-# waist=sapgorger_belt,id=178699,bonus_id=4786/3293/10336/11307,ilevel=639,gem_id=213494
-# legs=gatecrashers_kilt,id=212046,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant=stormbound_armor_kit_3
-# feet=chitinspiked_jackboots,id=212445,bonus_id=10256/11086/10375/1514/10255,ilevel=639,enchant=defenders_march_3
-# finger1=key_to_the_unseeming,id=212447,bonus_id=4800/4786/1524/10260/10879,ilevel=639,gem_id=213485/213485,enchant=radiant_haste_3
-# finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=4800/4786/1540/10299/10879,ilevel=639,gem_id=213485/213455,enchant=radiant_haste_3
-# trinket1=treacherous_transmitter,id=221023,bonus_id=4800/4786/1530/10258,ilevel=639
-# trinket2=arakara_sacbrood,id=219314,bonus_id=4786/1557/10336,ilevel=639
-# main_hand=void_reapers_warp_blade,id=219877,bonus_id=4800/4786/1537/10298,ilevel=639,enchant=authority_of_the_depths_3
-# off_hand=charged_facesmasher,id=222446,bonus_id=3524/11300/8960,ilevel=636,enchant=authority_of_the_depths_3,crafted_stats=40/36
+head=ageless_serpents_mane,id=229298,bonus_id=1563/11307,ilevel=678,gem_id=213743
+neck=gobfathers_gifted_bling,id=228842,bonus_id=4822/4786/1494/11980/8781,ilevel=678,gem_id=213473/213458
+shoulders=ageless_serpents_shoulderpads,id=229296,bonus_id=1563,ilevel=678
+back=consecrated_cloak,id=222817,bonus_id=3524/10520/8960,ilevel=675,crafted_stats=36/49
+chest=ageless_serpents_inked_coils,id=229301,bonus_id=1563,ilevel=678,enchant=crystalline_radiance_3
+wrists=runebranded_armbands,id=219334,bonus_id=3524/10520/8960/11307,ilevel=675,gem_id=213494,enchant=chant_of_armored_avoidance_3,crafted_stats=36/49
+hands=ageless_serpents_handguards,id=229299,bonus_id=1563,ilevel=678
+waist=hitmans_holster,id=228880,bonus_id=4822/4786/1494/11980/11307,ilevel=678,gem_id=213482
+legs=flameseared_leggings,id=168968,bonus_id=4786/10067/11996,enchant=stormbound_armor_kit_3
+feet=backbreaking_bootstrappers,id=221071,bonus_id=4786/3170/11996,enchant=defenders_march_3
+finger1=the_jastor_diamond,id=231265,bonus_id=4822/4786/1501/11982/8781,ilevel=678,gem_id=213482/213482,enchant=radiant_haste_3
+finger2=cyrces_circlet,id=228411,bonus_id=1511/10376,gem_id=228639/228638/228640,enchant=radiant_haste_3
+trinket1=house_of_cards,id=230027,bonus_id=4822/4786/1491/11979,ilevel=678
+trinket2=mechanocore_amplifier,id=232485,bonus_id=657/12042/5865/11990
+main_hand=capos_molten_knuckles,id=232804,bonus_id=4822/4786/1504/11983,ilevel=678,enchant=authority_of_the_depths_3
+off_hand=gallywixs_iron_thumb,id=228899,bonus_id=4822/4786/1494/11980,ilevel=678,enchant=authority_of_the_depths_3
 
-# save=TWW2_Monk_Windwalker.simc
+save=TWW2_Monk_Windwalker.simc
 
-# monk="TWW2_Monk_Windwalker_Celestial"
-# spec=windwalker
-# level=80
-# race=mechagnome
-# role=attack
-# position=back
-# talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzsMzgxMjZZGADAAAAAAAAAAAWWwImZYMDDLjZsNzMDzywMYZmAAYbmZGzYmZbGAALLzyysMzMBBAA
+monk="TWW2_Monk_Windwalker_Shadopan"
+spec=windwalker
+level=80
+race=troll
+role=attack
+position=back
+talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzsMAmxMLzMjZGAAAAAAAAAAAYZZYEzMwMMsYmx2MzMMbDzglZCAglxMMzMsNDAgNAoZZWamZmFAzA
 
-# head=hood_of_the_hidden_path,id=178691,bonus_id=4786/3293/10336/11307,ilevel=639,gem_id=213743
-# neck=sureki_zealots_insignia,id=225577,bonus_id=10256/11086/10837/10832/1514/10255,ilevel=639,gem_id=213485/213485
-# shoulders=gatecrashers_enduring_effigy,id=212045,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-# back=consecrated_cloak,id=222817,bonus_id=3524/11109/8960,ilevel=636,crafted_stats=40/36
-# chest=gatecrashers_gi,id=212050,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant=crystalline_radiance_3
-# wrists=risen_monstrosity_cuffs,id=178741,bonus_id=4786/3293/10336/11307,ilevel=639,gem_id=213470,enchant=chant_of_armored_avoidance_3
-# hands=gatecrashers_protectors,id=212048,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639
-# waist=sapgorger_belt,id=178699,bonus_id=4786/3293/10336/11307,ilevel=639,gem_id=213494
-# legs=gatecrashers_kilt,id=212046,bonus_id=6652/10376/10354/10273/1498/10255,ilevel=639,enchant=stormbound_armor_kit_3
-# feet=chitinspiked_jackboots,id=212445,bonus_id=10256/11086/10375/1514/10255,ilevel=639,enchant=defenders_march_3
-# finger1=key_to_the_unseeming,id=212447,bonus_id=4800/4786/1524/10260/10879,ilevel=639,gem_id=213485/213485,enchant=radiant_haste_3
-# finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=4800/4786/1540/10299/10879,ilevel=639,gem_id=213485/213455,enchant=radiant_haste_3
-# trinket1=treacherous_transmitter,id=221023,bonus_id=4800/4786/1530/10258,ilevel=639
-# trinket2=mad_queens_mandate,id=212454,bonus_id=4800/4786/1533/10257,ilevel=639
-# main_hand=void_reapers_warp_blade,id=219877,bonus_id=4800/4786/1537/10298,ilevel=639,enchant=authority_of_the_depths_3
-# off_hand=charged_facesmasher,id=222446,bonus_id=3524/11300/8960,ilevel=636,enchant=authority_of_the_depths_3,crafted_stats=40/36
+head=ageless_serpents_mane,id=229298,bonus_id=1563/11307,ilevel=678,gem_id=213743
+neck=gobfathers_gifted_bling,id=228842,bonus_id=4822/4786/1494/11980/8781,ilevel=678,gem_id=213473/213458
+shoulders=ageless_serpents_shoulderpads,id=229296,bonus_id=1563,ilevel=678
+back=consecrated_cloak,id=222817,bonus_id=3524/10520/8960,ilevel=675,crafted_stats=36/49
+chest=ageless_serpents_inked_coils,id=229301,bonus_id=1563,ilevel=678,enchant=crystalline_radiance_3
+wrists=runebranded_armbands,id=219334,bonus_id=3524/10520/8960/11307,ilevel=675,gem_id=213494,enchant=chant_of_armored_avoidance_3,crafted_stats=36/49
+hands=ageless_serpents_handguards,id=229299,bonus_id=1563,ilevel=678
+waist=hitmans_holster,id=228880,bonus_id=4822/4786/1494/11980/11307,ilevel=678,gem_id=213482
+legs=flameseared_leggings,id=168968,bonus_id=4786/10067/11996,enchant=stormbound_armor_kit_3
+feet=backbreaking_bootstrappers,id=221071,bonus_id=4786/3170/11996,enchant=defenders_march_3
+finger1=the_jastor_diamond,id=231265,bonus_id=4822/4786/1501/11982/8781,ilevel=678,gem_id=213482/213482,enchant=radiant_haste_3
+finger2=cyrces_circlet,id=228411,bonus_id=1511/10376,gem_id=228639/228638/228640,enchant=radiant_haste_3
+trinket1=house_of_cards,id=230027,bonus_id=4822/4786/1491/11979,ilevel=678
+trinket2=mechanocore_amplifier,id=232485,bonus_id=657/12042/5865/11990
+main_hand=capos_molten_knuckles,id=232804,bonus_id=4822/4786/1504/11983,ilevel=678,enchant=authority_of_the_depths_3
+off_hand=gallywixs_iron_thumb,id=228899,bonus_id=4822/4786/1494/11980,ilevel=678,enchant=authority_of_the_depths_3
 
-# save=TWW2_Monk_Windwalker_Celestial.simc
+save=TWW2_Monk_Windwalker_Shadopan.simc
