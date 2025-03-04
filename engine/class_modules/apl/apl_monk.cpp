@@ -290,7 +290,7 @@ void windwalker_live( player_t *p )
         // name_str -> APL
         { "imperfect_ascendancy_serum",
           ",use_off_gcd=1,if=pet.xuen_the_white_tiger.active|!talent.invoke_xuen_the_white_tiger&(cooldown.storm_earth_"
-          "and_fire.ready&|!talent.storm_earth_and_fire)&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_"
+          "and_fire.ready|!talent.storm_earth_and_fire)&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_"
           "windlord&cooldown.fists_of_fury.ready)|fight_remains<25" },
         { "mad_queens_mandate",
           ",target_if=min:target.health,if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|"
