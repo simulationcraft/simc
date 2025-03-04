@@ -125,7 +125,6 @@ struct warrior_td_t : public actor_target_data_t
 {
   dot_t* dots_deep_wounds;
   dot_t* dots_gushing_wound;
-  dot_t* dots_ravager;
   dot_t* dots_rend;
   dot_t* dots_thunderous_roar;
   buff_t* debuffs_colossus_smash;
@@ -6335,6 +6334,7 @@ struct ravager_tick_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+
     if ( execute_state->n_targets > 0 )
     {
       p()->resource_gain( RESOURCE_RAGE, rage_from_ravager, p()->gain.ravager );
@@ -6396,6 +6396,8 @@ struct ravager_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+
+    p()->buff.ravager->trigger( p()->buff.ravager->data().duration() * p()->cache.attack_haste() );
 
     // Make sure the buff is expired on fresh cast
     if ( p()->talents.shared.dance_of_death->ok() && p()->buff.dance_of_death_ravager->check() )
@@ -9287,7 +9289,6 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 
   hit_by_fresh_meat = false;
   dots_deep_wounds = target->get_dot( "deep_wounds", &p );
-  dots_ravager     = target->get_dot( "ravager", &p );
   dots_rend        = target->get_dot( "rend", &p );
   dots_gushing_wound = target->get_dot( "gushing_wound", &p );
   dots_thunderous_roar = target->get_dot( "thunderous_roar_dot", &p );
@@ -9511,6 +9512,10 @@ void warrior_t::create_buffs()
     ->set_cooldown(timespan_t::zero());
 
   buff.ignore_pain = new ignore_pain_buff_t( this );
+
+  buff.ravager = make_buff( this, "ravager", find_spell( 228920 ) )
+                    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+                    ->set_cooldown( timespan_t::zero() );;
 
   buff.recklessness = make_buff( this, "recklessness", spell.recklessness_buff )
     ->set_cooldown( timespan_t::zero() )
