@@ -493,24 +493,20 @@ void windwalker_live( player_t *p )
   // CD relevant racials
   cooldowns->add_action(
       "ancestral_call,if=buff.invoke_xuen_the_white_tiger.remains>15|!talent.invoke_xuen_the_white_tiger&(!talent."
-      "storm_earth_"
-      "and_fire&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_windlord&cooldown.fists_of_fury.ready)|"
-      "buff.storm_earth_and_fire.remains>10)|fight_remains<20" );
+      "storm_earth_and_fire&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_windlord&cooldown.fists_of_"
+      "fury.ready)|buff.storm_earth_and_fire.remains>10)|fight_remains<20" );
   cooldowns->add_action(
       "blood_fury,if=buff.invoke_xuen_the_white_tiger.remains>15|!talent.invoke_xuen_the_white_tiger&(!talent.storm_"
-      "earth_and_"
-      "fire&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_windlord&cooldown.fists_of_fury.ready)|buff."
-      "storm_earth_and_fire.remains>10)|fight_remains<20" );
+      "earth_and_fire&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_windlord&cooldown.fists_of_fury."
+      "ready)|buff.storm_earth_and_fire.remains>10)|fight_remains<20" );
   cooldowns->add_action(
       "fireblood,if=buff.invoke_xuen_the_white_tiger.remains>15|!talent.invoke_xuen_the_white_tiger&(!talent.storm_"
-      "earth_and_"
-      "fire&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_windlord&cooldown.fists_of_fury.ready)|buff."
-      "storm_earth_and_fire.remains>10)|fight_remains<20" );
+      "earth_and_fire&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_windlord&cooldown.fists_of_fury."
+      "ready)|buff.storm_earth_and_fire.remains>10)|fight_remains<20" );
   cooldowns->add_action(
       "berserking,if=buff.invoke_xuen_the_white_tiger.remains>15|!talent.invoke_xuen_the_white_tiger&(!talent.storm_"
-      "earth_and_"
-      "fire&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_windlord&cooldown.fists_of_fury.ready)|buff."
-      "storm_earth_and_fire.remains>10)|fight_remains<20" );
+      "earth_and_fire&(cooldown.strike_of_the_windlord.ready|!talent.strike_of_the_windlord&cooldown.fists_of_fury."
+      "ready)|buff.storm_earth_and_fire.remains>10)|fight_remains<20" );
 
   // AoE Opener
   aoe_opener->add_action( "slicing_winds", "aoe opener" );
