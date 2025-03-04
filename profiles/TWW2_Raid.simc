@@ -33,8 +33,8 @@ TWW2_Mage_Frost.simc
 TWW2_Mage_Frost_Spellslinger.simc
 
 TWW2_Monk_Brewmaster.simc
-# TWW2_Monk_Windwalker.simc
-# TWW2_Monk_Windwalker_Celestial.simc
+TWW2_Monk_Windwalker.simc
+TWW2_Monk_Windwalker_Shadopan.simc
 
 TWW2_Paladin_Protection.simc
 # TWW2_Paladin_Protection_Templar.simc
