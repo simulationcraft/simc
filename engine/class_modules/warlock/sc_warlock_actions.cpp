@@ -1559,12 +1559,24 @@ using namespace helpers;
 
   struct shared_fate_t : public warlock_spell_t
   {
+    double tick_factor;
+
     shared_fate_t( warlock_t* p )
       : warlock_spell_t( "Shared Fate", p, p->hero.shared_fate_dmg )
     {
       background = dual = true;
       aoe = -1;
       reduced_aoe_targets = p->hero.shared_fate->effectN( 1 ).base_value();
+      tick_factor = 1.0;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_da_multiplier( s );
+
+      m *= tick_factor;
+
+      return m;
     }
   };
 
@@ -4823,6 +4835,9 @@ using namespace helpers;
         return;
     }
   }
+
+  void helpers::set_shared_fate_tick_factor( warlock_t* p, double f )
+  { debug_cast<shared_fate_t*>( p->proc_actions.shared_fate )->tick_factor = f; }
 
   // Event for spawning Wild Imps for Demonology
   imp_delay_event_t::imp_delay_event_t( warlock_t* p, double delay, double exp ) : player_event_t( *p, timespan_t::from_millis( delay ) )
