@@ -348,7 +348,7 @@ public:
     player_talent_t the_houndmasters_gambit;
     const spell_data_t* houndmasters_aura; // Contains actual referenced % increase
     player_talent_t improved_demonic_tactics;
-    player_talent_t demonic_brutality;  // TOCHECK: Currently only enabled for class spells and demon damage (i.e. no trinkets etc)
+    player_talent_t demonic_brutality;
 
     player_talent_t pact_of_the_eredruin;
     const spell_data_t* doomguard;
@@ -876,6 +876,7 @@ public:
   void invalidate_cache( cache_e ) override;
   double composite_spell_crit_chance() const override;
   double composite_melee_crit_chance() const override;
+  double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_rating_multiplier( rating_e ) const override;
   void combat_begin() override;
   void init_assessors() override;
