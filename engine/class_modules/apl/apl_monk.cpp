@@ -303,6 +303,9 @@ void windwalker_live( player_t *p )
           "enemies>2|debuff.acclamation.up|!talent.ordered_elements&time<5)&(chi>2&talent.ordered_elements|chi>5|chi>3&"
           "energy<50|energy<50&active_enemies=1|prev.tiger_palm&!talent.ordered_elements&time<5)|fight_remains<30)|"
           "buff.invokers_delight.up" },
+        { "junkmaestros_mega_magnet",
+          ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|trinket.2.has_use_buff)&"
+          "cooldown.invoke_xuen_the_white_tiger.remains>30|fight_remains<5"  },
 
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=pet.xuen_the_white_tiger.active" },
