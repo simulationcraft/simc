@@ -250826,6 +250826,7 @@ Spell Type       : None
 Labels           : 3922
                  : 3959: Item Effects
                  : 4030
+                 : 4079
 Proc Chance      : 101%
 Real PPM         : 0.8 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
