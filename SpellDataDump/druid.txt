@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59490 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59538 Live
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -1164,7 +1164,6 @@ Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables
 Effects          :
 #1 (id=12790)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.383 | PvP Coefficient: 0.9 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.9)
 #2 (id=12791)    : Power Burn (62)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 3 | Target: Self (1)
 Description      : Finishing move that causes Physical damage per combo point and consumes up to $?a102543[${$s2*(1+$102543s3/100)}][$s2] additional Energy to increase damage by up to 100%.
@@ -3496,15 +3495,12 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.3334 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830), Rampant Ferocity (391710), Adaptive Swarm (391889), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812)
                    Family Flags: 98
-Hotfixed         : PvP Coefficient (0.667 -> 0.3334)
 #4 (id=1149777)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.3334 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830), Rampant Ferocity (391710), Adaptive Swarm (391889), Thrash (405233), Bloodseeker Vines (439531), Bursting Growth (440122), Ravage (441591), Dreadful Wound (441812)
                    Family Flags: 98
-Hotfixed         : PvP Coefficient (0.667 -> 0.3334)
 #5 (id=1149778)  : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.334 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.667 -> 0.334)
 Description      : Go Berserk for $d. While Berserk:
 
 Generate $343216s1 combo $lpoint:points; every $t1 sec. Combo point generating abilities generate $s2 additional combo $lpoint:points;. Finishing moves restore up to $405189u combo points generated over the cap.
@@ -4344,12 +4340,10 @@ Effects          :
                    Base Value: -40 | Scaled Value: -40 | Target: Self (1)
                    Affected Spells: Sunfire (164815)
                    Family Flags: 127
-Hotfixed         : NEW EFFECT
 #19 (id=1222120) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Sunfire (164815)
                    Family Flags: 127
-Hotfixed         : NEW EFFECT
 
 Name             : Restoration Druid (id=137012) [Spell Family (7), Passive, Hidden] 
 Class            : Restoration Druid
@@ -20514,7 +20508,6 @@ Effects          :
                    Base Value: 5000 | Scaled Value: 5000 | Target: Self (1)
 #2 (id=1222964)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2900 | Scaled Value: 2900 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : You retain Lycara's Teachings' bonus from your most recent shapeshift form for ${$s1/1000} sec after shifting out of it.
 
 Name             : Symbiotic Relationship (id=474750) [Spell Family (7)] 

@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59490 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59538 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -3037,18 +3037,14 @@ Effects          :
                    Base Value: -9.7 | Scaled Value: -9.7 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ice Strike (342240), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest Strikes (428078), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Ice Strike (470194), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118)
                    Family Flags: 39
-Hotfixed         : Base Value (-14 -> -9.7)
 #2 (id=191042)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -9.7 | Scaled Value: -9.7 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Searing Bolt (3606), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Earthquake (77478), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Crash Lightning (187874), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Lightning Blast (191726), Chain Lightning (191732), Lightning Shield (192109), Crash Lightning (195592), Frost Shock (196840), Sundering (197214), Icefury (210714), Feral Lunge (215802), Icefury Overload (219271), Stormfury (269005), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556), Lava Burst (285452), Lava Burst Overload (285466), Tectonic Thunder (286967), Earthquake Overload (298765), Echoing Shock (320125), Chain Harvest (320752), Fae Transfusion (328928), Fire Nova (333977), Ice Strike (342240), Ascendance (344548), Acid Rain (378597), Earth Shock Overload (381725), Doom Winds (384352), Tempest Strikes (428078), Tempest (452201), Awakening Storms (455130), Tremor (455622), Searing Volley (458147), Surging Bolt (458267), Thunderstrike (462763), Tempest Overload (463351), Doom Winds (466772), Ascendance (467263), Sundering (467283), Flametongue Attack (467386), Flametongue Attack (467390), Doom Winds (469270), Voltaic Blaze (470057), Ice Strike (470194), Flame Shock (470411), Primordial Fire (1218113), Primordial Frost (1218116), Primordial Lightning (1218118)
                    Family Flags: 39
-Hotfixed         : Base Value (-14 -> -9.7)
 #3 (id=191043)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -9.7 | Scaled Value: -9.7 | Target: Self (1)
-Hotfixed         : Base Value (-14 -> -9.7)
 #4 (id=191044)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: -9.7 | Scaled Value: -9.7 | Target: Self (1)
-Hotfixed         : Base Value (-14 -> -9.7)
 #5 (id=191045)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 26 | Scaled Value: 26 | Target: Self (1)
                    Affected Spells: Earth Shield (379)
@@ -17852,7 +17848,6 @@ Attributes       : Passive (6), No Aura Cancel (31), No Aura Icon (60), Do Not D
 Effects          :
 #1 (id=1183588)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 4 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 6)
 Description      : Your damaging abilities have a $s1% chance to summon a Feral Spirit for $469329d.
 
 Name             : Feral Spirit (id=469322) [Spell Family (11)] 
@@ -18393,7 +18388,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198760)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Base Value (8000 -> 6000)
 Description      : Your spells and abilities have a chance to hit a |cFFFFFFFFJackpot!|r that summons a $?s192249[Storm][Fire] Elemental for ${$m1/1000}.1 sec. Casting Ascendance always hits a |cFFFFFFFFJackpot!|r
 
 Name             : Shaman Elemental 11.1 Class Set 4pc (id=1215676) [Spell Family (11), Passive, Hidden] 
@@ -18445,10 +18439,8 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1198813)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3000 | Scaled Value: 3000 | Target: Self (1)
-Hotfixed         : Base Value (4000 -> 3000)
 #2 (id=1204401)  : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 0.5 | Trigger Spell: 1223332 | Target: Self (1)
-Hotfixed         : Base Value (100 -> 75)
 Description      : When you lose your |cFFFFFFFFWinning Streak!|r the winds shift into Doom Winds for ${$s1/1000} sec. When Doom Winds deal damage, your next Crash Lightning deals ${$1223332s1}.1% increased damage, up to ${$1223332s1*$1223332u}.1%. This effect can be stored up to $1223410u stacks. Additionally, Crash Lightning deals $s2% more damage to your main target.
 
 Name             : Mana Tide (id=1217525) [Spell Family (11), Passive] 
@@ -18656,7 +18648,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Lava Burst (51505), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt (214815), Lightning Bolt Overload (214816), Lava Burst (285452), Lava Burst Overload (285466), Tempest (452201), Tempest Overload (463351)
                    Family Flags: 0, 1, 44, 63, 64, 86, 96, 107
-Hotfixed         : Base Value (20 -> 30)
 Description      : $@spelldesc1215676
 Tooltip          : Damage of $?s454009[Tempest, ][]Lightning Bolt, Chain Lightning, and Lava Burst increased by $s1%.
 
@@ -18832,7 +18823,6 @@ Effects          :
 #1 (id=1211182)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 0.6 | Misc Value 2: 1183 (Label) | Target: Self (1)
                    Affected Spells (Label): Crash Lightning (187874)
-Hotfixed         : Base Value (15 -> 12)
 Description      : $@spelldesc1215712
 Tooltip          : Crash Lightning damage increased by $w1%.
 

@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59490 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59538 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1211,7 +1211,6 @@ Effects          :
                    Base Value: 400 | Scaled Value: 400 | Target: Self (1)
                    Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
                    Family Flags: 126
-Hotfixed         : Base Value (750 -> 400)
 #6 (id=1203569)  : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Remorseless Winter (196771), Remorseless Winter (211793)
@@ -3232,11 +3231,9 @@ Effects          :
 #22 (id=1222188) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0 | Misc Value: 12 | Misc Value 2: 4192 (Label) | Target: Self (1)
                    Affected Spells (Label): Frenzied Bloodthirst (434075)
-Hotfixed         : NEW EFFECT
 #23 (id=1222189) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 12 | Misc Value 2: 4192 (Label) | Target: Self (1)
                    Affected Spells (Label): Frenzied Bloodthirst (434075)
-Hotfixed         : NEW EFFECT
 
 Name             : Anti-Magic Zone (desc=PvP Talent) (id=145629) [Spell Family (15)] 
 Class            : Death Knight
@@ -17664,7 +17661,6 @@ Effects          :
 Description      : Reduces the cooldown of Reaper's Mark by ${$s1/-1000} sec, but the amount of $?a137008[Marrowrends][Obliterates] empowered by Exterminate is reduced by $s2.
 
 Name             : Death Knight Unholy 11.1 Class Set 2pc (id=1215726) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Description
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -17682,7 +17678,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 1216813 | Target: Self (1)
 #2 (id=1216606)  : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 0.5 | Trigger Spell: 1216813 | Target: Self (1)
-Hotfixed         : Base Value (3 -> 45)
 Description      : Your spells and abilities have a chance to activate a |cFFFFFFFFWinning Streak!|r increasing the damage of your Death Coil and Epidemic by ${$s2/10}.1%, stacking up to $1216813u times. Death Coil and Epidemic have a $s1% chance to remove|cFFFFFFFF Winning Streak!|r
 
 Name             : Death Knight Frost 11.1 Class Set 2pc (id=1215727) [Spell Family (15), Passive, Hidden] 
@@ -17778,7 +17773,6 @@ Description      : |cFFFFFFFFLuck of the Draw!|r has ${$s1/1000} sec increased d
 While |cFFFFFFFFLuck of the Draw!|r is active, Death Strike costs ${-$1218601S5/10} less Runic Power and can strike up to $1218601m4 additional nearby $Lenemy:enemies;.
 
 Name             : Winning Streak! (id=1216813) [Spell Family (15)] 
-Hotfixed         : Tooltip
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -17800,7 +17794,6 @@ Effects          :
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 0.5 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Epidemic (207317), Epidemic (212739), Epidemic (215969)
                    Family Flags: 64, 121
-Hotfixed         : Base Value (3 -> 45)
 Description      : $@spelldesc1215726
 Tooltip          : On a|cFFFFFFFF Winning Streak!|r Death Coil and Epidemic damage increased by ${$w1}.1%.
 

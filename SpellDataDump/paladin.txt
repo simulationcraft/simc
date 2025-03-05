@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59490 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59538 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -2015,7 +2015,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.32 | Target: Enemy (6)
 #2 (id=128372)   : Direct Heal (10) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.78 | Radius: 0 - 30 yards | Target: At Enemy (53) -> At Friendly in Area (31)
-Hotfixed         : SP Coefficient (3.15 -> 3.78)
 #3 (id=128388)   : Server Side Script (77) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 30 yards | Target: At Enemy (53) -> To Area (8)
 Description      : $@spelldesc114165
@@ -3714,7 +3713,6 @@ Description      : $@spelldesc31935
 Tooltip          : The effects of your next Shield of the Righteous are increased by $s1%.
 
 Name             : Divine Hammer (id=198034) [Spell Family (10)] 
-Hotfixed         : Proc Flags 1 (4116 -> 4112), Internal Cooldown (1000 -> 0), Attributes
 Talent Entry     : Retribution [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
@@ -5074,7 +5072,6 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 39 | Target: Self (1)
                    Affected Spells: Denounce (2812), Shield of the Righteous (53600), Light of Dawn (85222), Word of Glory (85673), Eternal Flame (156322), Light of Dawn (225311), Afterimage (391309), Shield of the Righteous (415091), Eternal Flame (461432)
                    Family Flags: 52, 78, 82, 89
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc223817
 Tooltip          : Your next Holy Power spending ability is free and deals $s2% increased damage and healing.
 
@@ -12312,7 +12309,6 @@ Description      : $@spelldesc393672
 Tooltip          : Your next Holy Shock deals $s1% additional damage or healing.
 
 Name             : Unending Light (id=394709) [Spell Family (10)] 
-Hotfixed         : Proc Flags 1 (16384 -> 0), Internal Cooldown (0 -> 500), Attributes, Proc Flags 2 (0 -> 4)
 Class            : Paladin
 School           : Physical
 Spell Type       : Magic
@@ -18193,7 +18189,6 @@ Wake of Ashes activates $?s384392[Crusade for $454373d][Avenging Wrath for $4543
 Each Holy Power spent has a chance to activate $?s384392[Crusade for ${$454373d/2} sec][Avenging Wrath for ${$454351d/2} sec].
 
 Name             : Divine Favor (id=460422) [Spell Family (10), Passive] 
-Hotfixed         : Proc Flags 1 (0 -> 16384), Proc Flags 2 (4 -> 0)
 Talent Entry     : Holy [tree=spec, row=6, col=2, max_rank=1, req_points=8, select_idx=100]
 Class            : Paladin
 School           : Physical
@@ -19433,7 +19428,6 @@ Effects          :
 Description      : While you have |cFFFFFFFF Luck of the Draw!|r Shield of the Righteous refunds $s1-$s2 Holy Power and extends the duration of |cFFFFFFFF Luck of the Draw!|r by ${$s3/1000}.1 sec, up to $1218114d.
 
 Name             : Winning Streak! (id=1216828) [Spell Family (10)] 
-Hotfixed         : Aura Interrupt, Channel Interrupt
 Class            : Paladin
 School           : Physical
 Spell Type       : None

@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59490 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59538 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -234524,7 +234524,6 @@ Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No
 Effects          :
 #1 (id=1143477)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 7706.942 (coefficient=2.012798) | PvP Coefficient: 0.4 | Target: Self (1)
-Hotfixed         : Coefficient (2.236341 -> 2.012798)
 
 Name             : Spark of Beledar (id=446224) 
 School           : Holyfire
@@ -238569,7 +238568,6 @@ Effects          :
 Description      : $@spelldesc445619
 
 Name             : Algari Mana Oil (id=451869) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3 seconds
@@ -238583,7 +238581,6 @@ Effects          :
 Description      : Coat your weapon in Algari Mana Oil, increasing your Critical Strike and Haste by $ec1 for $M2 min.
 
 Name             : Algari Mana Oil (id=451873) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3 seconds
@@ -238597,7 +238594,6 @@ Effects          :
 Description      : Coat your weapon in Algari Mana Oil, increasing your Critical Strike and Haste by $ec1 for $M2 min.
 
 Name             : Algari Mana Oil (id=451874) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3 seconds
@@ -238611,7 +238607,6 @@ Effects          :
 Description      : Coat your weapon in Algari Mana Oil, increasing your Critical Strike and Haste by $ec1 for $M2 min.
 
 Name             : Oil of Deep Toxins (id=451882) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -238660,7 +238655,6 @@ Effects          :
 Description      : $@spelldesc436344
 
 Name             : Oil of Deep Toxins (id=451901) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -238679,7 +238673,6 @@ Lasts $M2 min.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Oil of Deep Toxins (id=451902) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -238885,7 +238878,6 @@ Description      : $@spelldesc443529
 Tooltip          : Absorbs $s2% of damage taken, up to $w1.
 
 Name             : Oil of Beledar's Grace (id=451925) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -238902,7 +238894,6 @@ Description      : Coat your weapon in an oil that emits a warm light. The oil h
 Lasts $M2 min.
 
 Name             : Oil of Beledar's Grace (id=451926) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -238920,7 +238911,6 @@ Lasts $M2 min.
 
 
 Name             : Oil of Beledar's Grace (id=451927) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -238950,7 +238940,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1152732)  : Apply Aura (6) | Proc Trigger Spell (42): Beledar's Grace | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 28408 (coefficient=11.10659) | Trigger Spell: 451929 | Target: Self (1)
-Hotfixed         : Coefficient (18.511101 -> 11.106589)
 
 Name             : Beledar's Grace (id=451929) 
 School           : Holy
@@ -239001,7 +238990,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1152736)  : Apply Aura (6) | Proc Trigger Spell (42): Beledar's Grace | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 40583 (coefficient=15.86661) | Trigger Spell: 451931 | Target: Self (1)
-Hotfixed         : Coefficient (26.444599 -> 15.866611)
 
 Name             : Oil of Beledar's Grace (id=451933) [Passive, Hidden] 
 School           : Shadow
@@ -239016,7 +239004,6 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1152737)  : Apply Aura (6) | Proc Trigger Spell (42): Beledar's Grace | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 34496 (coefficient=13.4868) | Trigger Spell: 451930 | Target: Self (1)
-Hotfixed         : Coefficient (22.4779 -> 13.486796)
 
 Name             : Azerite Surge: III (id=451934) 
 Race             : Earthen (0x60000)
@@ -250826,6 +250813,7 @@ Spell Type       : None
 Labels           : 3922
                  : 3959: Item Effects
                  : 4030
+                 : 4079
 Proc Chance      : 101%
 Real PPM         : 0.8 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -256824,7 +256812,6 @@ Description      : $@spelldesc458943
 Tooltip          : $@spelldesc458943
 
 Name             : Kaja'Cola Carrier (id=1214434) 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -256927,7 +256914,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 247270.6 (coefficient=96.67462) | Target: Self (1)
 
 Name             : Kaja'Cola Carrier (id=1214698) 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -256945,7 +256931,6 @@ Description      : $@spelldesc1214705
 Tooltip          : $@spelldesc1214705
 
 Name             : Kaja'Cola Carrier (id=1214699) 
-Hotfixed         : Attributes, Aura Interrupt, Channel Interrupt
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -256963,7 +256948,6 @@ Description      : $@spelldesc1214703
 Tooltip          : $@spelldesc1214703
 
 Name             : Kaja'Cola Carrier (id=1214700) 
-Hotfixed         : Aura Interrupt, Channel Interrupt
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -260108,10 +260092,8 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redire
 Effects          :
 #1 (id=1222349)  : School Damage (2): fire
                    Base Value: 50 | Scaled Value: 50 (delta=0.099404) | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
-Hotfixed         : NEW EFFECT
 #2 (id=1222350)  : Unknown(144)
                    Base Value: 50 | Scaled Value: 50 (delta=0.1) | Misc Value: 75 | Misc Value 2: 0x2ee | Radius: 0 - 4 yards | Target: Unknown(87) -> At Enemy in Area (16)
-Hotfixed         : NEW EFFECT
 Description      : Arrive just in time to be the life of the show knocking back and inflicting $1223126s1 Fire damage to enemies within $1223126A1 yards upon impact. Cool.
 
 Name             : FIRE!!! (id=1224131) [Hidden] 
