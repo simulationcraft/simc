@@ -1,4 +1,4 @@
-// 562 talents, wow build 11.1.0.59490
+// 562 talents, wow build 11.1.0.59538
 static std::array<talent_data_t, 562> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
