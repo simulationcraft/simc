@@ -1107,17 +1107,20 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
 
       return &attribute_multiplier_effects;
 
-    case A_MOD_BASE_STAT_PERCENT:
+    case A_MOD_BASE_STAT_PERCENTAGE:
       // Attribute types in misc_value1 here appear to be slightly different than in A_MOD_TOTAL_STAT_PERCENTAGE
-      // Utilizes -1 and -2 for all attributes in some effects. Might need to adjust parsing for these cases.
+      // Utilizes -1 and -2 for all attributes in some effects.
       // Due to this, doesnt match the typical attribute_e enum values.
       // Starts at Strength with 0, so we need to add 1 to get the correct attribute.
-      tmp.opt_enum = eff.misc_value1() + 1;
+      tmp.opt_enum = eff.misc_value1() == -2   ? ATTR_STR_AGI_INT
+                     : eff.misc_value1() == -1 ? ATTRIBUTE_STAT_ALL_MAX
+                                               : static_cast<attribute_e>( eff.misc_value1() + 1 );
       str          = opt_strings::attributes_invalidate( tmp );
       sim->error(
-          "{}, id={}, effect {} is only modifying the base stat percentage. This is likely unitended, please report this to "
-          "blizzard.",
-          eff.spell()->name_cstr(), eff.spell()->id(), eff.index() + 1 );
+          "{}, id={}, effect {} is only modifying the base stat percentage of {}. This is likely unitended, please "
+          "report this to blizzard.",
+          eff.spell()->name_cstr(), eff.spell()->id(), eff.index() + 1,
+          util::attribute_type_string( static_cast<attribute_e>( tmp.opt_enum ) ) );
       return &base_attribute_muiltiplier_effects;
 
     case A_MOD_RATING_MULTIPLIER:
