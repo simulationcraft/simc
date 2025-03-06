@@ -195,7 +195,7 @@ void fire( player_t* p )
   precombat->add_action( "variable,name=skb_duration,value=dbc.effect.1016075.base_value", "The duration of a Sun King's Blessing Combustion." );
   precombat->add_action( "variable,name=treacherous_transmitter_precombat_cast,value=12" );
   precombat->add_action( "use_item,name=treacherous_transmitter" );
-  precombat->add_action( "variable,name=combustion_on_use,value=equipped.gladiators_badge|equipped.treacherous_transmitter|equipped.moonlit_prism|equipped.irideus_fragment|equipped.spoils_of_neltharus|equipped.timebreaching_talon|equipped.horn_of_valor", "Whether a usable item used to buff Combustion is equipped." );
+  precombat->add_action( "variable,name=combustion_on_use,value=equipped.gladiators_badge|equipped.signet_of_the_priory|equipped.high_speakers_accretion|equipped.spymasters_web|equipped.treacherous_transmitter|equipped.imperfect_ascendancy_serum|equipped.quickwick_candlestick|equipped.soulletting_ruby|equipped.funhouse_lens|equipped.house_of_cards|equipped.flarendos_pilot_light|equipped.signet_of_the_priory", "Whether a usable item used to buff Combustion is equipped." );
   precombat->add_action( "variable,name=on_use_cutoff,value=20,if=variable.combustion_on_use", "How long before Combustion should trinkets that trigger a shared category cooldown on other trinkets not be used?" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "mirror_image" );
@@ -214,6 +214,13 @@ void fire( player_t* p )
   default_->add_action( "use_item,name=imperfect_ascendancy_serum,if=variable.time_to_combustion<3" );
   default_->add_action( "use_item,effect_name=gladiators_badge,if=variable.time_to_combustion>cooldown-5" );
   default_->add_action( "use_item,name=neural_synapse_enhancer,if=buff.combustion.remains>7|fight_remains<15", "The War Within S2 On-use items" );
+  default_->add_action( "use_item,name=flarendos_pilot_light,if=buff.combustion.remains>7|fight_remains<15" );
+  default_->add_action( "use_item,name=house_of_cards,if=buff.combustion.remains>7|fight_remains<15" );
+  default_->add_action( "use_item,name=flarendos_pilot_light,if=buff.combustion.remains>7|fight_remains<15" );
+  default_->add_action( "use_item,name=funhouse_lens,if=buff.combustion.remains>7|fight_remains<15" );
+  default_->add_action( "use_item,name=quickwick_candlestick,if=buff.combustion.remains>7|fight_remains<15" );
+  default_->add_action( "use_item,name=signet_of_the_priory,if=buff.combustion.remains>7|fight_remains<15" );
+  default_->add_action( "use_item,name=soulletting_ruby,if=buff.combustion.remains>7|fight_remains<15" );
   default_->add_action( "use_items,if=!variable.item_cutoff_active" );
   default_->add_action( "variable,use_off_gcd=1,use_while_casting=1,name=legacy_fire_blast_pooling,value=buff.combustion.down&action.fire_blast.charges_fractional+(variable.time_to_combustion+action.shifting_power.full_reduction*variable.shifting_power_before_combustion)%cooldown.fire_blast.duration-1<cooldown.fire_blast.max_charges+variable.overpool_fire_blasts%cooldown.fire_blast.duration-(buff.combustion.duration%cooldown.fire_blast.duration)%%1&variable.time_to_combustion<fight_remains", "Pool as many Fire Blasts as possible for Combustion.  This variable is no longer used, and a hardcoded value is assigned instead." );
   default_->add_action( "variable,use_off_gcd=1,use_while_casting=1,name=fire_blast_pooling,value=variable.time_to_combustion<=8", "Hardcoded value for fireblast pooling" );
