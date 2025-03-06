@@ -1838,8 +1838,8 @@ timespan_t buff_t::tick_time() const
   switch ( tick_time_behavior )
   {
     case buff_tick_time_behavior::HASTED:
-      assert( player );
-      return buff_period * player->cache.spell_cast_speed();
+      assert( source );
+      return buff_period * source->cache.spell_cast_speed();
     case buff_tick_time_behavior::CUSTOM:
       assert( tick_time_callback );
       return tick_time_callback( this, current_tick );
