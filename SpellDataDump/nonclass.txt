@@ -246171,7 +246171,8 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 25 yards | Target: At Self (18) -> At Friendly in Area (31)
 Tooltip          : Movement Speed increased by $w1%.
 
-Name             : Deployable Wind-Wrangling Spire (id=457916) 
+Name             : Deployable Wind-Wrangling Spire (id=457916) [Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
@@ -246179,7 +246180,7 @@ Duration         : 1 seconds
 Cooldown         : 3600 seconds
 Category         : 2306 (Type 0x0)
 Category Cooldown: 3600 seconds
-Attributes       : Only Outdoors (15), Not In Combat (Only Peaceful) (28)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Only Outdoors (15), Not In Combat (Only Peaceful) (28), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Not in Instances (363), Not in Mythic+ Mode (Challenge Mode) (368)
 Effects          :
 #1 (id=1163530)  : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 227482 | Misc Value 2: 0x40 | Radius: 2.5 yards | Target: Unknown(47)
@@ -246215,15 +246216,16 @@ Effects          :
 Description      : $@spelldesc457815
 Tooltip          : Deal Nature damage to your target upon reaching 5 stacks.
 
-Name             : Deployable Recovery Station (id=457926) 
+Name             : Deployable Recovery Station (id=457926) [Hidden] 
+Hotfixed         : Cooldown (86400000 -> 3600000), Category Cooldown (86400000 -> 3600000), Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
 Duration         : 1 seconds
-Cooldown         : 86400 seconds
+Cooldown         : 3600 seconds
 Category         : 2306 (Type 0x0)
-Category Cooldown: 86400 seconds
-Attributes       : Only Outdoors (15), Not In Combat (Only Peaceful) (28)
+Category Cooldown: 3600 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Only Outdoors (15), Not In Combat (Only Peaceful) (28), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Not in Instances (363), Not in Mythic+ Mode (Challenge Mode) (368)
 Effects          :
 #1 (id=1163546)  : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 227490 | Misc Value 2: 0x40 | Radius: 2.5 yards | Target: Unknown(47)
