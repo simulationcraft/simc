@@ -7246,6 +7246,9 @@ Effects          :
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (101546), Spinning Crane Kick (322729)
                    Family Flags: 63
+#2 (id=1222826)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
+                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc325201
 Tooltip          : Your next Spinning Crane Kick is free and deals an additional $325201s1% damage.
 
