@@ -1298,6 +1298,8 @@ using namespace helpers;
           base_td_multiplier *= 1.0 + p->talents.socrethars_guile->effectN( 5 ).percent();
           base_td_multiplier *= 1.0 + p->talents.scalding_flames->effectN( 2 ).percent();
           base_td_multiplier *= 1.0 + p->hero.mark_of_xavius->effectN( 2 ).percent();
+
+          base_tick_time += p->warlock_base.destruction_warlock->effectN( 24 ).time_value(); // Hotfixed 2025-03-04, not automatically parsed
         }
 
         dot_duration *= 1.0 + p->hero.hatefury_rituals->effectN( 2 ).percent();
