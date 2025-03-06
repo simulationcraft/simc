@@ -759,6 +759,19 @@ double parse_player_effects_t::composite_attribute_multiplier( attribute_e attr 
   return am;
 }
 
+double parse_player_effects_t::composite_attribute( attribute_e attr ) const
+{
+  auto a = player_t::composite_attribute( attr );
+
+  assert( attr != ATTRIBUTE_NONE && "ATTRIBUTE_NONE will be out of index" );
+
+  for ( const auto& i : base_attribute_muiltiplier_effects )
+    if ( i.opt_enum & ( 1 << ( attr - 1 ) ) )
+      a += base.stats.attribute[ attr ] * get_effect_value( i );
+
+  return a;
+}
+
 double parse_player_effects_t::composite_rating_multiplier( rating_e rating ) const
 {
   auto rm = player_t::composite_rating_multiplier( rating );
@@ -1094,9 +1107,22 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
 
       return &attribute_multiplier_effects;
 
+    case A_MOD_BASE_STAT_PERCENT:
+      // Attribute types in misc_value1 here appear to be slightly different than in A_MOD_TOTAL_STAT_PERCENTAGE
+      // Utilizes -1 and -2 for all attributes in some effects. Might need to adjust parsing for these cases.
+      // Due to this, doesnt match the typical attribute_e enum values.
+      // Starts at Strength with 0, so we need to add 1 to get the correct attribute.
+      tmp.opt_enum = eff.misc_value1() + 1;
+      str          = opt_strings::attributes_invalidate( tmp );
+      sim->error(
+          "{}, id={}, effect {} is only modifying the base stat percentage. This is likely unitended, please report this to "
+          "blizzard.",
+          eff.spell()->name_cstr(), eff.spell()->id(), eff.index() + 1 );
+      return &base_attribute_muiltiplier_effects;
+
     case A_MOD_RATING_MULTIPLIER:
       tmp.opt_enum = eff.misc_value1();
-      str = opt_strings::ratings_invalidate( tmp );
+      str          = opt_strings::ratings_invalidate( tmp );
       return &rating_multiplier_effects;
 
     case A_MOD_VERSATILITY_PCT:
@@ -1311,6 +1337,7 @@ void parse_player_effects_t::parsed_effects_html( report::sc_html_stream& os )
 
     print_parsed_type( os, auto_attack_speed_effects, "Auto Attack Speed" );
     print_parsed_type( os, attribute_multiplier_effects, "Attribute Multiplier", &opt_strings::attributes );
+    print_parsed_type( os, base_attribute_muiltiplier_effects, "Base Attribute Multiplier", &opt_strings::attributes );
     print_parsed_type( os, matching_armor_attribute_multiplier_effects, "Matching Armor", &opt_strings::attributes );
     print_parsed_type( os, rating_multiplier_effects, "Rating Multiplier", &opt_strings::ratings );
     print_parsed_type( os, versatility_effects, "Versatility" );
@@ -1344,6 +1371,7 @@ size_t parse_player_effects_t::total_effects_count()
 {
   return auto_attack_speed_effects.size() +
          attribute_multiplier_effects.size() +
+         base_attribute_muiltiplier_effects.size() +
          matching_armor_attribute_multiplier_effects.size() +
          rating_multiplier_effects.size() +
          versatility_effects.size() +

@@ -14208,7 +14208,7 @@ void death_knight_t::create_buffs()
             ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
     buffs.bloodied_blade_final = make_buff( this, "bloodied_blade_final", spell.bloodied_blade_final_buff )
-                                     ->set_default_value_from_effect_type( A_MOD_PERCENT_STAT )
+                                     ->set_default_value_from_effect_type( A_MOD_BASE_STAT_PERCENT )
                                      ->add_invalidate( CACHE_STRENGTH );
     // ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH );
 
@@ -14975,8 +14975,8 @@ double death_knight_t::composite_attribute( attribute_e attr ) const
     switch ( specialization() )
     {
       case DEATH_KNIGHT_BLOOD:
-        if ( buffs.bloodied_blade_final->check() )
-          a += base.stats.attribute[ attr ] * buffs.bloodied_blade_final->check_value();
+        // if ( buffs.bloodied_blade_final->check() )
+          // a += base.stats.attribute[ attr ] * buffs.bloodied_blade_final->check_value();
         break;
       case DEATH_KNIGHT_UNHOLY:
         break;
@@ -15337,6 +15337,7 @@ void death_knight_t::parse_player_effects()
     parse_effects( buffs.sanguine_ground, talent.blood.sanguine_ground );
     parse_effects( buffs.bone_shield, IGNORE_STACKS, talent.blood.improved_bone_shield, talent.blood.reinforced_bones );
     parse_effects( buffs.perseverance_of_the_ebon_blade );
+    parse_effects( buffs.bloodied_blade_final );
 
     // Tier Sets
     parse_effects( buffs.unbreakable_tww1_2pc, [ & ] { return buffs.bone_shield->check(); } );
