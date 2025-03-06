@@ -330,15 +330,15 @@ jobs:
   update-status:
     runs-on: ubuntu-22.04
     needs: [ubuntu-gcc-build, ubuntu-clang-build, spec-test, spec-test-ptr, update-generated-files, ubuntu-run, build-osx, windows-VS]
-    if: >
+    if: |
+      always() &&
       needs.ubuntu-gcc-build.result != 'failure' &&
       needs.ubuntu-clang-build.result != 'failure' &&
       needs.spec-test.result != 'failure' &&
       needs.update-generated-files.result != 'failure' &&
       needs.ubuntu-run.result != 'failure' &&
       needs.build-osx.result != 'failure' &&
-      needs.windows-VS.result != 'failure' &&
-      needs.spec-test-ptr.result == 'failure'
+      needs.windows-VS.result != 'failure'
     steps:
       - uses: myrotvorets/set-commit-status-action@master
         with:
