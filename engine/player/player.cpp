@@ -1379,7 +1379,7 @@ void player_t::init()
   // Validate current fight style is supported by the actor's module.
   if ( !validate_fight_style( sim->fight_style ) )
   {
-    sim->error( "{} does not support fight style {}, results may be unreliable.", *this,
+    sim->error( error_level_e::FIGHT_STYLE, "{} does not support fight style {}, results may be unreliable.", *this,
                 util::fight_style_string( sim->fight_style ) );
   }
 
@@ -2711,7 +2711,8 @@ static std::string generate_traits_hash( player_t* player )
 static void parse_traits_hash( const std::string& talents_str, player_t* player )
 {
   auto do_error = [ player, &talents_str ]( std::string_view msg = {} ) {
-    player->sim->error( "Player {} has invalid talent tree hash {}{}{}", player->name(), talents_str, msg.empty() ? "" : ": ", msg );
+    player->sim->error( error_level_e::TALENT_HASH, "Player {} has invalid talent tree hash {}{}{}", player->name(),
+                        talents_str, msg.empty() ? "" : ": ", msg );
   };
 
   if ( talents_str.find_first_not_of( base64_char ) != std::string::npos )

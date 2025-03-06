@@ -92,6 +92,7 @@ const char* action_energize_type_string( action_energize energize_type );
 const char* action_type_string( action_e type );
 const char* talent_tree_string( talent_tree type );
 const char* trait_definition_op_string( trait_definition_op op );
+const char* error_level_string( error_level_e level );
 
 std::string rppm_scaling_string       ( unsigned );
 std::string profile_source_string( profile_source );
