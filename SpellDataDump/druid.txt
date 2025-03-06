@@ -788,7 +788,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2510
 Stance Mask      : 0x00000010
-Affecting Spells : Berserk (50334 effects: #5, #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #5, #6, #7), Cat Form (106840 effects: #3, #4), Killer Instinct (108299 effects: #1, #2), Tooth and Claw (135286 effects: #1, #3), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Rage of the Sleeper (200851 effect#5), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Savage Combatant (340613 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Vicious Cycle (372015 effect#1), Vulnerable Flesh (372618 effect#1), Convoke the Spirits (391528 effects: #3, #4), Overpowering Aura (395944 effects: #1, #3), Druid Guardian 10.1 Class Set 4pc (405515 effect#1), Initial Druid (417382 effects: #1, #2), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Bestial Strength (441841 effect#3), Instincts of the Claw (449184 effect#1), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Luck of the Draw! (1218553 effects: #1, #2)
+Affecting Spells : Berserk (50334 effects: #5, #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #5, #6, #7), Cat Form (106840 effects: #3, #4), Killer Instinct (108299 effects: #1, #2), Tooth and Claw (135286 effects: #1, #3), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Rage of the Sleeper (200851 effect#5), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Savage Combatant (340613 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Vicious Cycle (372015 effect#1), Vulnerable Flesh (372618 effect#1), Convoke the Spirits (391528 effects: #3, #4), Overpowering Aura (395944 effects: #1, #3), Druid Guardian 10.1 Class Set 4pc (405515 effect#1), Initial Druid (417382 effects: #1, #2), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Ravage (441602 effect#1), Bestial Strength (441841 effect#3), Instincts of the Claw (449184 effect#1), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Luck of the Draw! (1218553 effects: #1, #2)
 Triggered By     : Berserk (50334), Incarnation: Guardian of Ursoc (102558), Vulnerable Flesh (372618)
 Family Flags     : 11, 77
 Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), No Level Up Toast (281), Allow Class Ability Procs (416)
@@ -1130,6 +1130,11 @@ Effects          :
 #3 (id=1137381)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+#4 (id=1223355)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -60 | Scaled Value: -60 | Target: Self (1)
+                   Affected Spells: Brutal Slash (202028)
+                   Family Flags: 99
+Hotfixed         : NEW EFFECT
 
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -5849,6 +5854,10 @@ Effects          :
                    Affected Spells (Label): Thorns of Iron (400222), Thorns of Iron (400223)
 #8 (id=1193181)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Range (5)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Misc Value 2: 4216 (Label) | Target: Self (1)
+#9 (id=1223359)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Range (5)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Misc Value 2: 4873 (Label) | Target: Self (1)
+                   Affected Spells (Label): Symbiotic Relationship (474750)
+Hotfixed         : NEW EFFECT
 Description      : Increases the range of all of your spells by $s1 yards.
 
 Name             : Moonkin Form (id=197625) [Spell Family (7)] 
@@ -6249,7 +6258,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
 Stance Mask      : 0x00000011
-Affecting Spells : Cat Form (768 effects: #8, #10), Rip (1079 effect#4), Tiger's Fury (5217 effects: #1, #3), Bear Form (5487 effect#7), Berserk (50334 effects: #6, #7), Savage Roar (62071 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effects: #3, #4, #5), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Cat Form (106840 effects: #3, #4), Berserk (106951 effects: #3, #4), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Clearcasting (135700 effects: #1, #3), Feral Druid (137011 effects: #1, #2), Rake (155722 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Ekowraith, Creator of Worlds (210667 effects: #1, #7), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Scent of Blood (285646 effect#1), Master Shapeshifter (290640 effect#1), Heart of the Wild (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Wild Slashes (390864 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Sharpened Claws (394465 effect#1), Circle of Life and Death (400320 effects: #1, #3), Initial Druid (417382 effects: #1, #2), Smoldering Frenzy (422751 effects: #1, #2), Liveliness (426702 effect#1), Root Network (439887 effects: #1, #2), Strategic Infusion (439891 effect#1), Empowered Shapeshifting (441689 effect#5), Ursine Potential (441698 effect#2), Strike for the Heart (441845 effects: #1, #2), Predator (449864 effect#1), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Luck of the Draw! (1218553 effects: #1, #2)
+Affecting Spells : Cat Form (768 effects: #8, #10), Rip (1079 effect#4), Tiger's Fury (5217 effects: #1, #3), Bear Form (5487 effect#7), Bear Form Passive 2 (21178 effect#4), Berserk (50334 effects: #6, #7), Savage Roar (62071 effects: #1, #2), Incarnation: Avatar of Ashamane (102543 effects: #3, #4, #5), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Cat Form (106840 effects: #3, #4), Berserk (106951 effects: #3, #4), Heart of the Wild (108292 effects: #1, #2), Killer Instinct (108299 effects: #1, #2), Clearcasting (135700 effects: #1, #3), Feral Druid (137011 effects: #1, #2), Rake (155722 effect#2), Starfall (191034 effect#2), Thrash (192090 effect#2), Ekowraith, Creator of Worlds (210667 effects: #1, #7), Ashamane's Frenzy (210723 effect#4), Untamed Ferocity (273338 effect#2), Scent of Blood (285646 effect#1), Master Shapeshifter (290640 effect#1), Heart of the Wild (319454 effects: #4, #5), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Wild Slashes (390864 effects: #1, #2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Sharpened Claws (394465 effect#1), Circle of Life and Death (400320 effects: #1, #3), Initial Druid (417382 effects: #1, #2), Smoldering Frenzy (422751 effects: #1, #2), Liveliness (426702 effect#1), Root Network (439887 effects: #1, #2), Strategic Infusion (439891 effect#1), Empowered Shapeshifting (441689 effect#5), Ursine Potential (441698 effect#2), Strike for the Heart (441845 effects: #1, #2), Predator (449864 effect#1), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Luck of the Draw! (1218553 effects: #1, #2)
 Family Flags     : 98, 99
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Treat as Area Effect (175), No Level Up Toast (281), Allow Class Ability Procs (416)
 Effects          :
@@ -7821,7 +7830,7 @@ Labels           : 16: Class Spells
                  : 118
                  : 292
 Stance Mask      : 0x00000010
-Affecting Spells : Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#5), Tooth and Claw (135286 effects: #1, #3), Druid (137009 effects: #3, #4), Starfall (191034 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2), Savage Combatant (340613 effect#1), Vicious Cycle (372015 effect#1), Vulnerable Flesh (372618 effect#1), Druid Guardian 10.1 Class Set 4pc (405515 effect#1), Bestial Strength (441841 effect#3), Instincts of the Claw (449184 effect#1)
+Affecting Spells : Berserk (50334 effect#5), Incarnation: Guardian of Ursoc (102558 effect#5), Tooth and Claw (135286 effects: #1, #3), Druid (137009 effects: #3, #4), Starfall (191034 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2), Savage Combatant (340613 effect#1), Vicious Cycle (372015 effect#1), Vulnerable Flesh (372618 effect#1), Druid Guardian 10.1 Class Set 4pc (405515 effect#1), Ravage (441602 effect#1), Bestial Strength (441841 effect#3), Instincts of the Claw (449184 effect#1)
 Family Flags     : 11
 Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Chain From Caster (76), Not In Spellbook Until Learned (269), No Level Up Toast (281), Allow Class Ability Procs (416)
 Effects          :
@@ -15476,7 +15485,7 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Affecting Spells : Berserk (50334 effects: #5, #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #5, #6, #7), Cat Form (106840 effects: #3, #4), Killer Instinct (108299 effects: #1, #2), Tooth and Claw (135286 effects: #1, #3), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Rage of the Sleeper (200851 effect#5), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Savage Combatant (340613 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Vicious Cycle (372015 effect#1), Vulnerable Flesh (372618 effect#1), Convoke the Spirits (391528 effects: #3, #4), Overpowering Aura (395944 effects: #1, #3), Druid Guardian 10.1 Class Set 4pc (405515 effect#1), Initial Druid (417382 effects: #1, #2), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Bestial Strength (441841 effect#3), Instincts of the Claw (449184 effect#1), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Luck of the Draw! (1218553 effects: #1, #2)
+Affecting Spells : Berserk (50334 effects: #5, #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #5, #6, #7), Cat Form (106840 effects: #3, #4), Killer Instinct (108299 effects: #1, #2), Tooth and Claw (135286 effects: #1, #3), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Rage of the Sleeper (200851 effect#5), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Savage Combatant (340613 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Vicious Cycle (372015 effect#1), Vulnerable Flesh (372618 effect#1), Convoke the Spirits (391528 effects: #3, #4), Overpowering Aura (395944 effects: #1, #3), Druid Guardian 10.1 Class Set 4pc (405515 effect#1), Initial Druid (417382 effects: #1, #2), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Ravage (441602 effect#1), Bestial Strength (441841 effect#3), Instincts of the Claw (449184 effect#1), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Luck of the Draw! (1218553 effects: #1, #2)
 Family Flags     : 11, 77
 Attributes       : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
@@ -18505,7 +18514,6 @@ Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-                 : 2510
                  : 3022
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
@@ -18514,9 +18522,10 @@ Attributes       : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66)
 Aura Interrupt   : Change Specialization (38), Change Talent (46)
 Effects          :
 #1 (id=1136165)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
-                   Base Value: 441605 | Scaled Value: 441605 | Misc Value: 6807 | Target: Self (1)
-#2 (id=1188920)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
-                   Base Value: 441605 | Scaled Value: 441605 | Misc Value: 400254 | Target: Self (1)
+                   Base Value: 441605 | Scaled Value: 441605 | Target: Self (1)
+                   Affected Spells: Maul (6807), Strength of the Wild (236716), Raze (400254), Ravage (441605)
+                   Family Flags: 11
+Hotfixed         : Misc Value (6807 -> 0), Affects Spells
 Description      : $@spelldesc441583
 Tooltip          : Your next Maul becomes Ravage.
 
@@ -18534,7 +18543,7 @@ Labels           : 16: Class Spells
                  : 3022
                  : 3339
 Stance Mask      : 0x00000010
-Affecting Spells : Berserk (50334 effects: #5, #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #5, #6, #7), Cat Form (106840 effects: #3, #4), Killer Instinct (108299 effects: #1, #2), Tooth and Claw (135286 effects: #1, #3), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Rage of the Sleeper (200851 effect#5), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Savage Combatant (340613 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Vicious Cycle (372015 effect#1), Vulnerable Flesh (372618 effect#1), Convoke the Spirits (391528 effects: #3, #4), Overpowering Aura (395944 effects: #1, #3), Druid Guardian 10.1 Class Set 4pc (405515 effect#1), Initial Druid (417382 effects: #1, #2), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Bestial Strength (441841 effect#3), Instincts of the Claw (449184 effect#1), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Luck of the Draw! (1218553 effects: #1, #2)
+Affecting Spells : Berserk (50334 effects: #5, #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #5, #6, #7), Cat Form (106840 effects: #3, #4), Killer Instinct (108299 effects: #1, #2), Tooth and Claw (135286 effects: #1, #3), Druid (137009 effects: #3, #4), Guardian Druid (137010 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Rage of the Sleeper (200851 effect#5), Ekowraith, Creator of Worlds (210667 effect#1), Guardian's Wrath (278511 effect#2), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Savage Combatant (340613 effect#1), Ravenous Frenzy (355315 effects: #1, #4), Vicious Cycle (372015 effect#1), Vulnerable Flesh (372618 effect#1), Convoke the Spirits (391528 effects: #3, #4), Overpowering Aura (395944 effects: #1, #3), Druid Guardian 10.1 Class Set 4pc (405515 effect#1), Initial Druid (417382 effects: #1, #2), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Ravage (441602 effect#1), Bestial Strength (441841 effect#3), Instincts of the Claw (449184 effect#1), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Wild (474530 effects: #1, #2, #3, #4), Luck of the Draw! (1218553 effects: #1, #2)
 Family Flags     : 11, 77
 Attributes       : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), No Level Up Toast (281), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
@@ -18742,9 +18751,10 @@ Effects          :
                    Affected Spells: Mangle (33917)
                    Family Flags: 38
 #2 (id=1137908)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Attributes: Suppress Points Stacking (6)
-                   Base Value: 75 | Scaled Value: 75 | Target: Self (1)
+                   Base Value: 300 | Scaled Value: 300 | Target: Self (1)
                    Affected Spells: Brutal Slash (202028), Swipe (213771)
                    Family Flags: 52, 99
+Hotfixed         : Base Value (75 -> 300)
 #3 (id=1164935)  : Apply Aura (6) | Proc Trigger Spell (42): Wildpower Surge
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 442562 | Target: Self (1)
 Description      : $@spelldesc441691
@@ -20524,6 +20534,7 @@ Duration         : 3600 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
+                 : 4873: Astral Influence (197524 effect#9)
 Attributes       : Not Shapeshifted (16), No AutoCast (AI) (49), Exclude Caster (51), Allow Low Level Buff (67), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Cannot Be Stolen (134), Limit N (165), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Always Require PvP Target Match (430)
 Aura Interrupt   : Change Specialization (38)
 Effects          :
