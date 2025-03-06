@@ -1687,7 +1687,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc, const spell_dat
     tokens.emplace_back( fmt::format( "Resource: {}", util::resource_type_string( util::translate_power_type(
                                                         static_cast<power_e>( e->misc_value1() ) ) ) ) );
   }
-  else if ( e->type() == E_APPLY_AURA && e->subtype() == A_MOD_STAT )
+  else if ( e->type() == E_APPLY_AURA && ( e->subtype() == A_MOD_STAT || e->subtype() == A_MOD_PERCENT_STAT ) )
   {
     auto misc1 = e->misc_value1();
     if ( misc1 < -2 || misc1 >= STAT_MAX )
