@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59538 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59570 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -246172,7 +246172,6 @@ Effects          :
 Tooltip          : Movement Speed increased by $w1%.
 
 Name             : Deployable Wind-Wrangling Spire (id=457916) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
@@ -246217,7 +246216,6 @@ Description      : $@spelldesc457815
 Tooltip          : Deal Nature damage to your target upon reaching 5 stacks.
 
 Name             : Deployable Recovery Station (id=457926) [Hidden] 
-Hotfixed         : Cooldown (86400000 -> 3600000), Category Cooldown (86400000 -> 3600000), Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds

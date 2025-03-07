@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59538 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59570 Live
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -14339,7 +14339,6 @@ Effects          :
 Description      : $@spelldesc436358
 
 Name             : Demolish (id=440888) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -14355,7 +14354,6 @@ Attributes       : Is Ability (4), Allow Dead Target (64), Always AOE Line of Si
 Effects          :
 #1 (id=1135047)  : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 9.65193 | Radius: 0 - 8 yards | Target: At Enemy in Area (16) -> At Enemy in Area (16)
-Hotfixed         : Attribute (0 -> 2048)
 Description      : $@spelldesc436358
 
 Name             : Colossal Might (id=440989) [Spell Family (4)] 

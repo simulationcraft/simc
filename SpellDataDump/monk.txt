@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59538 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59570 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -7248,7 +7248,6 @@ Effects          :
                    Family Flags: 63
 #2 (id=1222826)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc325201
 Tooltip          : Your next Spinning Crane Kick is free and deals an additional $325201s1% damage.
 

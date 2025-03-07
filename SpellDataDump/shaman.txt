@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59538 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59570 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -18399,10 +18399,13 @@ Labels           : 16: Class Spells
                  : 292
                  : 295
                  : 4720
+Proc Chance      : 101%
+Proc Flags       : Magic Heal
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1198761)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Target: Self (1)
+#1 (id=1198761)  : Apply Aura (6) | Proc Trigger Spell (42): Jackpot!
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Trigger Spell: 1218612 | Target: Self (1)
+Hotfixed         : Sub Type (4 -> 42), Trigger Spell (0 -> 1218612)
 Description      : When you summon or extend your $?s192249[Storm][Fire] Elemental, your Lightning Bolt, Chain Lightning, $?s454009[Tempest, ][]and Lava Burst deal $1218612s1% increased damage for $1218612d.
 
 Name             : Shaman Enhancement 11.1 Class Set 2pc (id=1215710) [Spell Family (11), Passive, Hidden] 
@@ -18643,6 +18646,7 @@ Labels           : 16: Class Spells
                  : 24: Shaman Spells
                  : 292
                  : 295
+Triggered By     : Shaman Elemental 11.1 Class Set 4pc (1215676)
 Effects          :
 #1 (id=1203586)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Target: Self (1)
