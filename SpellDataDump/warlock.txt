@@ -13759,6 +13759,7 @@ Effects          :
 Description      : $@spelldesc428514
 
 Name             : Demonic Art: Mother of Chaos (id=432794) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -13770,6 +13771,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Magic Hostile Spell
+Attributes       : No Aura Cancel (31)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1121740)  : Apply Aura (6) | Dummy (4)
