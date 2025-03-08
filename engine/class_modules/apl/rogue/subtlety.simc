@@ -10,8 +10,8 @@ actions=stealth
 # Variables
 actions+=/variable,name=stealth,value=buff.shadow_dance.up|buff.stealth.up|buff.vanish.up
 actions+=/variable,name=targets,value=spell_targets.shuriken_storm
-actions+=/variable,name=skip_rupture,value=buff.shadow_dance.up|!buff.slice_and_dice.up|buff.darkest_night.up|variable.targets>=8&!talent.replicating_shadows&talent.unseen_blade
-actions+=/variable,name=maintenance,value=(dot.rupture.ticking|variable.skip_rupture)&buff.slice_and_dice.up
+actions+=/variable,name=skip_rupture,value=buff.shadow_dance.up|buff.darkest_night.up|variable.targets>=8&!talent.replicating_shadows&talent.unseen_blade
+actions+=/variable,name=maintenance,value=(dot.rupture.ticking|variable.skip_rupture)
 actions+=/variable,name=secret,value=buff.shadow_dance.up|(cooldown.flagellation.remains<40&cooldown.flagellation.remains>20&talent.death_perception)
 actions+=/variable,name=racial_sync,value=(buff.shadow_blades.up&buff.shadow_dance.up)|!talent.shadow_blades&buff.symbols_of_death.up|fight_remains<20
 actions+=/variable,name=shd_cp,value=combo_points<=1|buff.darkest_night.up&combo_points>=7|effective_combo_points>=6&talent.unseen_blade
@@ -64,21 +64,23 @@ actions.finish+=/rupture,if=!variable.skip_rupture&(!dot.rupture.ticking|refresh
 actions.finish+=/rupture,cycle_targets=1,if=!variable.skip_rupture&!variable.priority_rotation&&target.time_to_die>=(2*combo_points)&refreshable&variable.targets>=2
 actions.finish+=/rupture,if=talent.unseen_blade&cooldown.flagellation.remains<10
 # Direct Damage Finisher
-actions.finish+=/coup_de_grace,if=debuff.fazed.up
-actions.finish+=/black_powder,if=!variable.priority_rotation&variable.maintenance&((variable.targets>=2&talent.deathstalkers_mark&(!buff.darkest_night.up|buff.shadow_dance.up&variable.targets>=5))|talent.unseen_blade&variable.targets>=7)
+actions.finish+=/coup_de_grace,if=debuff.fazed.up&cooldown.flagellation.remains>=20
+actions.finish+=/black_powder,if=!variable.priority_rotation&variable.maintenance&(((variable.targets>=2&talent.deathstalkers_mark&(!buff.darkest_night.up|buff.shadow_dance.up&variable.targets>=5))|talent.unseen_blade&variable.targets>=7)|action.coup_de_grace.ready)
 actions.finish+=/eviscerate
 
 # Combo Point Builder
-actions.build=shadowstrike,cycle_targets=1,if=debuff.find_weakness.remains<=2&variable.targets=2&talent.unseen_blade|!used_for_danse&!talent.premeditation
+actions.build=backstab,if=buff.shadow_dance.up&!used_for_danse|!variable.stealth&buff.shadow_blades.up
+actions.build+=/gloomblade,if=buff.shadow_dance.up&!used_for_danse|!variable.stealth&buff.shadow_blades.up
+actions.build+=/shadowstrike,cycle_targets=1,if=debuff.find_weakness.remains<=2&variable.targets=2&talent.unseen_blade|!used_for_danse&!talent.premeditation
 actions.build+=/shuriken_tornado,if=buff.lingering_darkness.up|talent.deathstalkers_mark&cooldown.shadow_blades.remains>=32&variable.targets>=3|talent.unseen_blade&buff.symbols_of_death.up&variable.targets>=4
-actions.build+=/shuriken_storm,if=buff.clear_the_witnesses.up&variable.targets>=2
+actions.build+=/shuriken_storm,if=buff.clear_the_witnesses.up&(variable.targets>=2|!buff.symbols_of_death.up)
 actions.build+=/shadowstrike,cycle_targets=1,if=talent.deathstalkers_mark&!debuff.deathstalkers_mark.up&variable.targets>=3&(buff.shadow_blades.up|buff.premeditation.up|talent.the_rotten)
-actions.build+=/shuriken_storm,if=talent.deathstalkers_mark&!buff.premeditation.up&variable.targets>=(2+3*buff.shadow_dance.up)|buff.clear_the_witnesses.up&!buff.symbols_of_death.up|buff.flawless_form.up&variable.targets>=3&!variable.stealth|talent.unseen_blade&buff.the_rotten.stack=1&variable.targets>=7&buff.shadow_dance.up
+actions.build+=/shuriken_storm,if=talent.deathstalkers_mark&variable.targets>=(2+3*buff.shadow_dance.up)
+actions.build+=/shuriken_storm,if=talent.unseen_blade&(buff.flawless_form.up&variable.targets>=3&!variable.stealth|buff.the_rotten.stack=1&variable.targets>=7&buff.shadow_dance.up)
 actions.build+=/shadowstrike
 actions.build+=/goremaws_bite,if=combo_points.deficit>=3
 actions.build+=/gloomblade
 actions.build+=/backstab
-
 # This list usually contains Cooldowns with neglectable impact that causes global cooldowns
 actions.fill=arcane_torrent,if=energy.deficit>=15+energy.regen
 actions.fill+=/arcane_pulse
