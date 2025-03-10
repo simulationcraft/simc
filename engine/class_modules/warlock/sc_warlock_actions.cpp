@@ -4292,7 +4292,7 @@ using namespace helpers;
         m *= 1.0 + p()->talents.demonfire_infusion->effectN( 3 ).percent();
 
       if ( jackpot )
-        m *= 1.0 + p()->tier.spliced_destro_2pc->effectN( 1 ).percent();
+        m *= p()->tier.spliced_destro_2pc->effectN( 1 ).percent();
 
       return m;
     }
