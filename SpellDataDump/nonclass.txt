@@ -253990,10 +253990,11 @@ Effects          :
 Description      : Your spells and abilities have a high chance to Hype you up, granting $s1 Haste up to $1216212u times. Upon reaching maximum Hype, amp it up by $s2% for $s3 sec before starting again.
 
 Name             : Combo Attack (id=471633) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Category         : 133 (Type 0x0)
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Do Not Display Range (126), No Cast Log (128), Allow Client Targeting (133), No Target Aura Icon (188), No Cooldown On Tooltip (192), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), No Attack Block (256), Skip Is Known Check (282), Trigger Cooldown On Spell Start (407), No Deflect (409), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Do Not Display Range (126), No Cast Log (128), Allow Client Targeting (133), No Target Aura Icon (188), No Cooldown On Tooltip (192), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), No Attack Block (256), Trigger Cooldown On Spell Start (407), No Deflect (409), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1189310)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
