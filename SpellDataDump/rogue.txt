@@ -12021,6 +12021,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 #2 (id=1097661)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Enemy (6)
+#3 (id=1224076)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 0.01 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+Hotfixed         : NEW EFFECT
+#4 (id=1224077)  : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 12 yards | Target: At Self (18) -> At Enemy in Area (16)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc421975
 
 Name             : Rogue Assassination 10.2 Class Set 2pc (id=422905) [Passive, Hidden] 
