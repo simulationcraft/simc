@@ -7284,13 +7284,19 @@ struct wounded_quarry_cb_t : public demon_hunter_proc_callback_t
         allow_class_ability_procs = true;
       }
 
-      // WQ is affected by mastery
-      affected_by.demonic_presence.direct   = true;
-      affected_by.demonic_presence.periodic = true;
+      // WQ is affected by Havoc mastery
+      if ( p->mastery.demonic_presence->ok() )
+      {
+        affected_by.demonic_presence.direct   = true;
+        affected_by.demonic_presence.periodic = true;
+      }
 
       // WQ is affected by Demon Hide
-      affected_by.demon_hide.direct   = true;
-      affected_by.demon_hide.periodic = true;
+      if ( p->talent.havoc.demon_hide->ok() )
+      {
+        affected_by.demon_hide.direct   = true;
+        affected_by.demon_hide.periodic = true;
+      }
     }
 
     void impact( action_state_t* s ) override
