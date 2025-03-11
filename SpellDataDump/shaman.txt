@@ -16344,6 +16344,7 @@ Effects          :
                    Affected Spells (Label): Item Effects (3959)
 
 Name             : Awakening Storms (id=462131) [Spell Family (11)] 
+Hotfixed         : Aura Interrupt
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -16357,7 +16358,7 @@ Labels           : 16: Class Spells
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Change Talent (46), Challenge Mode Start (54), Encounter Start (55)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40), Change Talent (46), Challenge Mode Start (54)
 Effects          :
 #1 (id=1171364)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)

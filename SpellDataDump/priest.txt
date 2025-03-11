@@ -10623,6 +10623,7 @@ Description      : Your Penance bolts increase the damage of your next Smite by 
 Stacks up to $390787U times.
 
 Name             : Weal and Woe (id=390787) [Spell Family (6)] 
+Hotfixed         : Proc Flags 1 (0 -> 81920), Proc Flags 2 (4 -> 0)
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -10632,7 +10633,7 @@ Labels           : 16: Class Spells
                  : 292
 Stacks           : 8 maximum
 Proc Chance      : 101%
-Proc Flags       : Cast Successful
+Proc Flags       : Magic Heal, Magic Hostile Spell
 Triggered By     : Weal and Woe (390786)
 Attributes       : Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Login (29), Change Specialization (38), Change Talent (46)

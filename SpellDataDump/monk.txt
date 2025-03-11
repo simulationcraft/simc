@@ -12258,6 +12258,7 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
+                 : 3023
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Triggered By     : Last Emperor's Capacitor (392989)
@@ -14551,6 +14552,7 @@ Description      : $@spelldesc442818
 Tooltip          : The $?c2[damage of your next Rising Sun Kick is increased by $s1% or the healing of your next Vivify is increased by by $s2%][damage of your next Rising Sun Kick is increased by $s1%].
 
 Name             : Celestial Conduit (id=443028) [Spell Family (53)] 
+Hotfixed         : Attributes
 Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Monk
 School           : Nature
@@ -14566,7 +14568,7 @@ Labels           : 16: Class Spells
                  : 3378: Jade Sanctuary (443059 effect#1), Jade Sanctuary (443059 effect#2), Chi-Ji's Swiftness (443566 effect#1)
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Attributes       : Not Shapeshifted (16), Is Self Channelled (38), Can Proc From Procs (122), Allow Actions During Channel (160), Extra Initial Period (169), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Allow Defense While Channeling (338), Unbreakable Channel (358), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Is Self Channelled (38), Can Proc From Procs (122), Allow Actions During Channel (160), Extra Initial Period (169), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Allow Defense While Channeling (338), Unbreakable Channel (358), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1138648)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
