@@ -156,7 +156,7 @@ std::string temporary_enchant( const player_t *p )
       break;
     case MONK_WINDWALKER:
       if ( p->true_level > 70 )
-        return "main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3";
+        return "main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3";
       else if ( p->true_level > 60 )
         return "main_hand:howling_rune_3/off_hand:howling_rune_3";
       else if ( p->true_level > 50 )
@@ -773,8 +773,7 @@ void windwalker_live( player_t *p )
       "inner_peace)&combo_strike&chi.max-chi>=2&buff.teachings_of_the_monastery.stack<buff.teachings_of_the_monastery."
       "max_stack&(talent.energy_burst&!buff.bok_proc.up|!talent.energy_burst)&!buff.ordered_elements.up|(talent.energy_"
       "burst&!buff.bok_proc.up|!talent.energy_burst)&!buff.ordered_elements.up&!cooldown.fists_of_fury.remains&chi<3|("
-      "prev.strike_of_the_windlord|cooldown.strike_of_the_windlord.remains)&cooldown.celestial_conduit.remains<2&buff."
-      "ordered_elements.up&chi<5&combo_strike|(!buff.heart_of_the_jade_serpent_cdr.up|!buff.heart_of_the_jade_serpent_"
+      "prev.strike_of_the_windlord|!buff.heart_of_the_jade_serpent_"
       "cdr_celestial.up)&combo_strike&chi.deficit>=2&!buff.ordered_elements.up" );
   default_st->add_action( "touch_of_death" );
   default_st->add_action(
@@ -813,16 +812,15 @@ void windwalker_live( player_t *p )
       "cooldown.invoke_xuen_the_white_tiger.remains>10" );
   default_st->add_action( "slicing_winds" );
   default_st->add_action(
-      "fists_of_fury,if=(talent.flurry_strikes|talent.xuens_battlegear|!talent.xuens_battlegear&(cooldown.strike_of_"
-      "the_windlord.remains>1|buff.heart_of_the_jade_serpent_cdr.up|buff.heart_of_the_jade_serpent_cdr_celestial.up)"
-      ")&(talent.flurry_strikes|talent.xuens_battlegear&cooldown.invoke_xuen_the_white_tiger.remains>5|cooldown.invoke_"
-      "xuen_the_white_tiger.remains>10)" );
+      "fists_of_fury,if=(talent.xuens_battlegear|!talent.xuens_battlegear&(cooldown.strike_of_the_windlord.remains>1|buff.heart_of_the_jade_serpent_cdr.up|buff.heart_of_the_jade_serpent_cdr_celestial.up))&(talent.xuens_battlegear&cooldown.invoke_xuen_the_white_tiger.remains>5|cooldown.invoke_xuen_the_white_tiger.remains>10)&(!buff.invokers_delight.up|buff.invokers_delight.up&cooldown.strike_of_the_windlord.remains>4&cooldown.celestial_conduit.remains)|fight_remains<5|talent.flurry_strikes" );
   default_st->add_action(
       "rising_sun_kick,if=chi>4|chi>2&energy>50|cooldown.fists_of_fury.remains>"
       "2" );
   default_st->add_action(
       "tiger_palm,if=combo_strike&energy.time_to_max<=gcd.max*3&talent."
       "flurry_strikes&buff.wisdom_of_the_wall_flurry.up" );
+  default_st->add_action( "blackout_kick,if=combo_strike&talent.energy_burst&buff.bok_proc.up&chi<5&(buff.heart_of_the_jade_serpent_cdr.up|buff.heart_of_the_jade_serpent_cdr_celestial.up)" );
+  default_st->add_action( "spinning_crane_kick,if=combo_strike&buff.bloodlust.up&buff.heart_of_the_jade_serpent_cdr.up&buff.dance_of_chiji.up" );
   default_st->add_action(
       "tiger_palm,if=combo_strike&chi.deficit>=2&energy.time_to_max<="
       "gcd.max*3" );
