@@ -259747,12 +259747,25 @@ Name             : Garbocalypse (id=1219299)
 School           : Physical
 Spell Type       : Ranged
 Range            : 50000 yards
+Triggered By     : Garbagemancer's Last Resort (1219301)
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
 #1 (id=1204945)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: At Enemy in Area (16)
 #2 (id=1204946)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219296
+
+Name             : Garbagemancer's Last Resort (id=1219301) [Hidden] 
+Hotfixed         : Velocity (4.5 -> 8), Attributes
+School           : Physical
+Spell Type       : None
+Range            : 50000 yards
+Velocity         : 8 yards/sec
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Aura Points On Client (268)
+Effects          :
+#1 (id=1204948)  : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219299 | Target: Unknown(87)
+Description      : Fashion nearby garbage into a sphere and launch into the sky. After $d of gathering momentum the sphere crashes into the targeted location dealing $1219296s1 Physical damage split between all enemies in the area.
 
 Name             : Garbagemancer's Last Resort (id=1219314) 
 School           : Physical
