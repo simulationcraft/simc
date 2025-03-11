@@ -582,11 +582,13 @@ Family Flags     : 1, 21
 Attributes       : Not a Proc (105), Do Not Display Range (126), Not In Spellbook (143), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=889437)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.384 | Radius: 30 yards | Target: Cone Friendly (59) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.384 | PvP Coefficient: 1.2 | Radius: 30 yards | Target: Cone Friendly (59) -> At Friendly in Area (31)
+Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=983057)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 #3 (id=1037451)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.768 | Radius: 30 yards | Target: Cone Friendly (59) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.768 | PvP Coefficient: 1.2 | Radius: 30 yards | Target: Cone Friendly (59) -> At Friendly in Area (31)
+Hotfixed         : PvP Coefficient (1 -> 1.2)
 Description      : $@spelldesc355936
 Tooltip          : Healing $w1 every $t1 sec.
 
@@ -5450,11 +5452,13 @@ Family Flags     : 1, 21
 Attributes       : Do Not Display Range (126), Not In Spellbook (143), Spell Haste Affects Periodic (173), Treat as Area Effect (175), Periodic Can Crit (265), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=1003976)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.384 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.384 | PvP Coefficient: 1.2 | Target: Friendly (21)
+Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=1037759)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1037768)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.768 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.768 | PvP Coefficient: 1.2 | Target: Friendly (21)
+Hotfixed         : PvP Coefficient (1 -> 1.2)
 Description      : $@spelldesc355936
 Tooltip          : Healing $w1 every $t1 sec.
 

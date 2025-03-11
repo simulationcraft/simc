@@ -4360,13 +4360,15 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179695)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 0.277 | Target: Self (1)
+                   Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 0.556 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Early Harvest (287255), Adaptive Swarm (325748), Renewing Bloom (364686), Ephemeral Profusion (367330), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Nourish (422090), Swiftmend (422094), Wild Growth (422382), Nourish (423618), Minor Cenarion Ward (429222), Dream Bloom (434141), Symbiotic Blooms (439530), Bursting Growth (440121), Reactive Resin (468152), Insurance! (1215515), Insurance! (1215518)
                    Family Flags: 118
+Hotfixed         : PvP Coefficient (0.277 -> 0.556)
 #2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 0.277 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 0.556 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Early Harvest (287255), Adaptive Swarm (325748), Renewing Bloom (364686), Ephemeral Profusion (367330), Grove Tending (383193), Adaptive Swarm (391891), Embrace of the Dream (392147), Invigorate (392160), Verdancy (392329), Nourish (422090), Swiftmend (422094), Wild Growth (422382), Nourish (423618), Minor Cenarion Ward (429222), Dream Bloom (434141), Symbiotic Blooms (439530), Bursting Growth (440121), Reactive Resin (468152), Insurance! (1215515), Insurance! (1215518)
                    Family Flags: 118
+Hotfixed         : PvP Coefficient (0.277 -> 0.556)
 #3 (id=191151)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #4 (id=191152)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
