@@ -1,5 +1,5 @@
 // Spell text, wow build 11.1.0.59570
-static const std::array<spelltext_data_t, 27229> __spelltext_data { {
+static const std::array<spelltext_data_t, 27230> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27171,6 +27171,7 @@ static const std::array<spelltext_data_t, 27229> __spelltext_data { {
   { 1219257, "$@spelldesc396286", 0, 0 },
   { 1219264, "$@spelldesc1215724", "|cFFFFFFFF Winning Streak!|r increased by $w1%. You cannot lose |cFFFFFFFF Winning Streak!|r", 0 },
   { 1219294, "Fashion nearby garbage into a sphere and launch it into the sky. After $1219296s2 sec of gathering momentum the sphere crashes into the targeted location dealing $1219296s1 Physical damage split between all enemies in the area.", 0, 0 },
+  { 1219301, "Fashion nearby garbage into a sphere and launch into the sky. After $d of gathering momentum the sphere crashes into the targeted location dealing $1219296s1 Physical damage split between all enemies in the area.", 0, 0 },
   { 1219304, "$@spelldesc405535", "Building up to Born of Flame.", 0 },
   { 1219305, "$@spelldesc405535", "Your next direct damage spell will grant Born of Flame.", 0 },
   { 1219307, "$@spelldesc405535", "Phoenix Flames refunds a charge on use and its damage is increased by $s1%.", 0 },
