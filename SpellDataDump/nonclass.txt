@@ -257035,7 +257035,8 @@ Effects          :
 #1 (id=1197231)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 962.4599 (coefficient=0.37629) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1197232)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 1277.965 (coefficient=0.499642) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1214.179 (coefficient=0.474704) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (0.499642 -> 0.474704)
 Description      : Your harmful abilities have a chance to power the amplifier, randomly increasing either your highest secondary stat by $s1 or your lowest secondary stat by $s2 for $1214806d.
 
 Name             : Pinged Augment Chip (id=1214796) [Hidden] 
@@ -259718,7 +259719,7 @@ School           : Physical
 Spell Type       : None
 Range            : 40 yards
 Velocity         : 50 yards/sec
-Duration         : 5 seconds
+Duration         : 2.5 seconds
 Cooldown         : 120 seconds
 Category         : 1141 (Type 0x0)
 Category Cooldown: 20 seconds
@@ -259739,7 +259740,8 @@ Effects          :
 #1 (id=1204940)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 575514.6 (coefficient=225.0072) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1205003)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+Hotfixed         : Base Value (10 -> 3)
 
 Name             : Garbocalypse (id=1219299) 
 School           : Physical
@@ -259756,7 +259758,7 @@ Name             : Garbagemancer's Last Resort (id=1219314)
 School           : Physical
 Spell Type       : None
 Range            : 40 yards
-Duration         : 10.1 seconds
+Duration         : 3.1 seconds
 Triggered By     : Garbagemancer's Last Resort (1219294)
 Effects          :
 #1 (id=1204983)  : Create Area Trigger (179)
