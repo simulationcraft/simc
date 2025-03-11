@@ -1,5 +1,5 @@
 // Talent tree specialization abilities, wow build 11.1.0.59570
-static const std::array<specialization_spell_entry_t, 518> __specialization_spell_data { {
+static const std::array<specialization_spell_entry_t, 519> __specialization_spell_data { {
   {  0,  535,  264656,      0, "Pathfinding"                       , 0 },
   {  0,  535,  264662,      0, "Endurance Training"                , 0 },
   {  0,  535,  264663,      0, "Predator's Thirst"                 , 0 },
@@ -256,6 +256,7 @@ static const std::array<specialization_spell_entry_t, 518> __specialization_spel
   {  7,  262,  378776,      0, "Inundate"                          , 0 },
   {  7,  262,  462106,      0, "Shaman"                            , 0 },
   {  7,  262,  462107,      0, "Elemental Shaman"                  , 0 },
+  {  7,  262, 1231772,      0, "Elemental Shaman"                  , 0 },
   {  7,  263,   17364,  73899, "Stormstrike"                       , 0 },
   {  7,  263,   77223,      0, "Mastery: Enhanced Elements"        , 0 },
   {  7,  263,   86099,      0, "Mail Specialization"               , 0 },
