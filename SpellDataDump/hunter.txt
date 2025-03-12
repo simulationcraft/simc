@@ -11368,10 +11368,9 @@ Effects          :
                    Family Flags: 106
 Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=1166697)  : Apply Aura (6) | Modify Crit Damage Done% from Caster's Spells (501)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Bloodshed (346396), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Killer Companion (378955), Spearhead (378957), Murloc Stampede (388719), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Greater Mrgrglhjorn (396968), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Lunar Storm (453398), Lunar Storm (457978), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Lunar Storm (1217459), Poisoned Barbs (1217549), Spearhead (1221386)
                    Family Flags: 106
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc360966
 Tooltip          : Suffering $s1 damage every $t1 sec.
 $@auracaster has a $s2% increased chance to critically strike this target$?s378962[ and their critical strikes deal $s3% increased damage.][.]
@@ -18129,6 +18128,7 @@ $@spellaura466872
 
 
 Name             : Spearhead (id=1221386) [Spell Family (9)] 
+Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -18141,7 +18141,7 @@ Labels           : 16: Class Spells
 Mechanic         : Bleed
 Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2)
 Family Flags     : 106
-Attributes       : DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Allow Class Ability Procs (416)
+Attributes       : DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Allow Class Ability Procs (416), Unknown (450)
 Effects          :
 #1 (id=1207896)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -18149,9 +18149,8 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Target: Enemy (6)
 Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=1207898)  : Apply Aura (6) | Modify Crit Damage Done% (163)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc360966
 Tooltip          : $@auracaster has a $s2% increased chance to critically strike this target$?s378962[ and their critical strikes deal $378962s2% increased damage.][.]
 
