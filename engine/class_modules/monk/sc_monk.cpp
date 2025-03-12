@@ -3449,7 +3449,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
       base_costs_per_tick[ RESOURCE_MANA ] = 0.0;
 
     if ( p()->buff.emperors_capacitor->up() )
-        base_costs_per_tick[ ENERGY ] = 20 + p()->buff.windwalker.emperors_capacitor->effectN( 2 ).base_value() * p()->buff.emperors_capacitor->check_stack_value();
+        base_costs_per_tick[ RESOURCE_ENERGY ] = 20 + p()->buff.windwalker.emperors_capacitor->effectN( 2 ).base_value() * p()->buff.emperors_capacitor->check_stack_value();
 
     if ( player->talent.windwalker.power_of_the_thunder_king->ok() || player->talent.mistweaver.jade_empowerment->ok() )
     {
