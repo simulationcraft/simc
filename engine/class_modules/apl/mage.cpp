@@ -325,8 +325,9 @@ void frost( player_t* p )
 
   precombat->add_action( "arcane_intellect" );
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "variable,name=treacherous_transmitter_precombat_cast,value=12" );
+  precombat->add_action( "variable,name=treacherous_transmitter_precombat_cast,value=12,if=equipped.treacherous_transmitter" );
   precombat->add_action( "use_item,name=treacherous_transmitter" );
+  precombat->add_action( "use_item,name=ingenious_mana_battery" );
   precombat->add_action( "blizzard,if=active_enemies>=3" );
   precombat->add_action( "frostbolt,if=active_enemies<=2" );
 
@@ -380,6 +381,7 @@ void frost( player_t* p )
   cds->add_action( "use_item,name=house_of_cards,if=buff.icy_veins.remains>9|fight_remains<20" );
   cds->add_action( "use_item,name=imperfect_ascendancy_serum,if=buff.icy_veins.remains>15|fight_remains<20" );
   cds->add_action( "use_item,name=burst_of_knowledge,if=buff.icy_veins.remains>15|fight_remains<20" );
+  cds->add_action( "use_item,name=ratfang_toxin,if=time>10" );
   cds->add_action( "potion,if=fight_remains<35|buff.icy_veins.remains>15" );
   cds->add_action( "icy_veins,if=buff.icy_veins.remains<1.5&(talent.frostfire_bolt|active_enemies>=3)" );
   cds->add_action( "frozen_orb,if=time=0&active_enemies>=3" );
