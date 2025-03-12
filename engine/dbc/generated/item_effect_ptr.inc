@@ -1,5 +1,5 @@
-// Item effects, wow build 11.1.5.59571
-static const std::array<item_effect_t, 10028> __ptr_item_effect_data { {
+// Item effects, wow build 11.1.5.59651
+static const std::array<item_effect_t, 10030> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -10028,9 +10028,11 @@ static const std::array<item_effect_t, 10028> __ptr_item_effect_data { {
   { 207772, 1224458, 237790,   0,   1,    0,      -1,      -1 }, // Draining Essence
   { 207399, 1223952, 238391,   0,   1,    0,      -1,      -1 }, // Devout
   { 207400, 1224902, 238391,   1,   1,    0,      -1,      -1 }, // Arathor Minister's Receptacle
+  { 209286, 1231936, 242260,   0,   0,    0,      -1,      -1 }, // Arsenal: Children's Stormwind Guard Weapon Set
+  { 209287, 1231938, 242265,   0,   0,    0,      -1,      -1 }, // Arsenal: Children's Orgrimmar Guard Weapon Set
 } };
 
-static const std::array<uint16_t, 10028> __ptr_item_effect_id_index { {
+static const std::array<uint16_t, 10030> __ptr_item_effect_id_index { {
     924,   925,   926,   927,   928,   929,   930,   933,
     934,   935,   936,   937,   938,   939,   940,   941,
     942,   943,   944,   945,   948,   949,   950,   951,
@@ -11284,6 +11286,6 @@ static const std::array<uint16_t, 10028> __ptr_item_effect_id_index { {
    9976,  9977,  9978,  9979,  9980,  9981, 10004,  9982,
    9983,  9984,  9985,  9986,  9987,  9988,  9989,  9990,
    9991,  9992,  9993,  9994,  9995,  9996,  9998,  9999,
-  10000, 10001, 10002, 10003,
+  10000, 10001, 10002, 10003, 10028, 10029,
 } };
 
