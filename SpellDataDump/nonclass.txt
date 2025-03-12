@@ -254052,9 +254052,11 @@ Effects          :
 #1 (id=1190003)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 138658.3 (coefficient=54.21082) | Target: Self (1)
 #2 (id=1190004)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 1765.794 (coefficient=0.461167) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3644.18 (coefficient=0.951739) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (0.461167 -> 0.951739), PvP Coefficient (1 -> 0.5)
 #3 (id=1190005)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 4127.951 (coefficient=1.078084) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 10224.03 (coefficient=2.670178) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (1.078084 -> 2.670178), PvP Coefficient (1 -> 0.5)
 #4 (id=1190006)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 1526.779 (coefficient=0.398744) | Target: Self (1)
 #5 (id=1190193)  : Apply Aura (6) | Dummy (4)

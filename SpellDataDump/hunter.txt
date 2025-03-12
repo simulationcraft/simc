@@ -16676,7 +16676,8 @@ Triggered By     : Bear Summon (471993)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Unknown (467)
 Effects          :
 #1 (id=1189797)  : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 234018 | Misc Value 2: 0x17ed | Radius: 20 yards | Target: At Target Radius (75)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 234018 | Misc Value 2: 0x17ed | Radius: 0 - 5 yards | Target: At Enemy (53) -> At Random (72)
+Hotfixed         : Target 1 (75 -> 53), Target 2 (0 -> 72)
 
 Name             : Bear Summon (id=471993) [Spell Family (9), Hidden] 
 Class            : Hunter
