@@ -387,6 +387,7 @@ void frost( player_t* p )
   cds->add_action( "frozen_orb,if=time=0&active_enemies>=3" );
   cds->add_action( "flurry,if=time=0&active_enemies<=2" );
   cds->add_action( "icy_veins,if=buff.icy_veins.remains<1.5&talent.splinterstorm" );
+  cds->add_action( "use_item,name=neural_synapse_enhancer,if=active_enemies<=2|prev_gcd.1.comet_storm|fight_remains<20" );
   cds->add_action( "use_items" );
   cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.power_infusion.down" );
   cds->add_action( "invoke_external_buff,name=blessing_of_summer,if=buff.blessing_of_summer.down" );
