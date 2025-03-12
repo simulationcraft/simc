@@ -3448,9 +3448,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
     if ( player->specialization() == MONK_MISTWEAVER )
       base_costs_per_tick[ RESOURCE_MANA ] = 0.0;
 
-    if ( p()->buff.emperors_capacitor->check() )
-      base_costs_per_tick[ RESOURCE_ENERGY ] = 20 + p()->buff.windwalker.emperors_capacitor->effectN( 2 ).percent() * p()->buff.emperors_capacitor->current_stack;
-
     if ( player->talent.windwalker.power_of_the_thunder_king->ok() || player->talent.mistweaver.jade_empowerment->ok() )
     {
       aoe_dot = new aoe_dot_t( player );
@@ -3529,6 +3526,28 @@ struct crackling_jade_lightning_t : public monk_spell_t
         player->off_hand_attack->schedule_execute();
       }
     }
+  }
+
+  double cost() const override
+  {
+    double cost = monk_spell_t::cost();
+
+    if ( current_resource() == RESOURCE_ENERGY && p()->buff.the_emperors_capacitor->check() )
+      cost *= 1.0 + p()->buff.the_emperors_capacitor->data().effectN( 2 ).percent() *
+                        p()->buff.the_emperors_capacitor->check();
+
+    return cost;
+  }
+
+  double cost_per_tick( resource_e resource ) const override
+  {
+    double cost = monk_spell_t::cost_per_tick( resource );
+
+    if ( resource == RESOURCE_ENERGY && p()->buff.the_emperors_capacitor->check() )
+      cost *= 1.0 + p()->buff.the_emperors_capacitor->data().effectN( 2 ).percent() *
+                        p()->buff.the_emperors_capacitor->check();
+
+    return cost;
   }
 };
 
