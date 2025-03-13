@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59570 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59679 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -253991,7 +253991,6 @@ Effects          :
 Description      : Your spells and abilities have a high chance to Hype you up, granting $s1 Haste up to $1216212u times. Upon reaching maximum Hype, amp it up by $s2% for $s3 sec before starting again.
 
 Name             : Combo Attack (id=471633) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Category         : 133 (Type 0x0)
@@ -256846,7 +256845,6 @@ Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Point
 Effects          :
 #1 (id=1196738)  : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-Hotfixed         : Base Value (20 -> 4)
 #2 (id=1196739)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -257038,7 +257036,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 962.4599 (coefficient=0.37629) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1197232)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 1214.179 (coefficient=0.474704) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (0.499642 -> 0.474704)
 Description      : Your harmful abilities have a chance to power the amplifier, randomly increasing either your highest secondary stat by $s1 or your lowest secondary stat by $s2 for $1214806d.
 
 Name             : Pinged Augment Chip (id=1214796) [Hidden] 
@@ -257054,7 +257051,6 @@ Effects          :
 Description      : $@spelldesc467037
 
 Name             : Pinged Augment Chip (id=1214802) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -257228,7 +257224,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 1214802 | Target: Any Target (25)
 #4 (id=1223920)  : Apply Aura (6) | Temporary Thread Reduction (103)
                    Base Value: -90000000 | Scaled Value: -9e+07 | Mechanic: Stun | Target: Any Target (25)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc467037
 Tooltip          : Stunned.
 
@@ -257285,7 +257280,6 @@ Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Point
 Effects          :
 #1 (id=1197450)  : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 6)
 #2 (id=1197451)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -257312,7 +257306,6 @@ Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Point
 Effects          :
 #1 (id=1197454)  : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
-Hotfixed         : Base Value (30 -> 8)
 #2 (id=1197455)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -257339,7 +257332,6 @@ Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Point
 Effects          :
 #1 (id=1197458)  : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Hotfixed         : Base Value (35 -> 10)
 #2 (id=1197459)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -259743,7 +259735,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 575514.6 (coefficient=225.0072) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1205003)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 3)
 
 Name             : Garbocalypse (id=1219299) 
 School           : Physical
@@ -259758,7 +259749,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219296
 
 Name             : Garbagemancer's Last Resort (id=1219301) [Hidden] 
-Hotfixed         : Velocity (4.5 -> 8), Attributes
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards

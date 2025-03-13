@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59570 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59679 Live
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -583,12 +583,10 @@ Attributes       : Not a Proc (105), Do Not Display Range (126), Not In Spellboo
 Effects          :
 #1 (id=889437)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.384 | PvP Coefficient: 1.2 | Radius: 30 yards | Target: Cone Friendly (59) -> At Friendly in Area (31)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=983057)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 #3 (id=1037451)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.768 | PvP Coefficient: 1.2 | Radius: 30 yards | Target: Cone Friendly (59) -> At Friendly in Area (31)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 Description      : $@spelldesc355936
 Tooltip          : Healing $w1 every $t1 sec.
 
@@ -5453,12 +5451,10 @@ Attributes       : Do Not Display Range (126), Not In Spellbook (143), Spell Has
 Effects          :
 #1 (id=1003976)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.384 | PvP Coefficient: 1.2 | Target: Friendly (21)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=1037759)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 #3 (id=1037768)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.768 | PvP Coefficient: 1.2 | Target: Friendly (21)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 Description      : $@spelldesc355936
 Tooltip          : Healing $w1 every $t1 sec.
 

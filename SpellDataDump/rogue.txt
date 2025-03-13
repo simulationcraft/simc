@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59570 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59679 Live
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -20,7 +20,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #2 (id=31)       : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.69 | PvP Coefficient: 1.74 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.45 -> 1.74)
 #3 (id=32)       : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
 #4 (id=297239)   : Dummy (3)
@@ -2583,7 +2582,6 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Stealt
 Effects          :
 #1 (id=150585)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.75 -> 0.5)
 #2 (id=150619)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Mutilate (1329), Gouge (1776), Cheap Shot (1833), Ambush (8676), Quaking Palm (107079), Shuriken Toss (114014), Sting Like a Bee (131511), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Sinister Strike (193315), Sinister Strike (197834), Gloomblade (200758), Stinging Vulnerability (255909), Flagellation (323654), Sinister Strike (341541), Shadowstrike (345121), Flagellation (384631), Ambush (385897), Ambush (430023)
@@ -2747,7 +2745,6 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 2.87 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Rupture (360826), Rupture (394031)
                    Family Flags: 20
-Hotfixed         : PvP Coefficient (1 -> 2.87)
 #10 (id=1165306) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -13 | Scaled Value: -13 | PvP Coefficient: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Rupture (360826), Rupture (394031)
@@ -3230,7 +3227,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Effects          :
 #1 (id=269259)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.815 | PvP Coefficient: 1.2 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=269260)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Resource: combo_points | Target: Self (1)
 Description      : Strike the target, dealing $s1 Physical damage.
@@ -3745,7 +3741,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=288959)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.28 | PvP Coefficient: 1.25 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.25)
 Description      : Finishing move that disembowels the target, causing damage per combo point.$?s382511[ Targets with Find Weakness suffer an additional $382511s1% damage as Shadow.][]
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -4212,7 +4207,6 @@ Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=295616)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.790759 | PvP Coefficient: 1.74 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1.45 -> 1.74)
 #2 (id=295617)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: combo_points | Target: Self (1)
 Description      : Punctures your target with your shadow-infused blade for $s1 Shadow damage, bypassing armor.$?s319949[ Critical strikes apply Find Weakness for $319949s1 sec.][]
@@ -5616,7 +5610,6 @@ Attributes       : Do Not Sheath (18), Do Not Display Range (126), No Attack Par
 Effects          :
 #1 (id=738432)   : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11), Area Effects Use Target Radius (17)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.19 | PvP Coefficient: 0.77 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : PvP Coefficient (0.7 -> 0.77)
 Description      : $@spelldesc280719
 
 Name             : Secret Technique (id=282438) [Spell Family (8), Hidden] 
@@ -6459,7 +6452,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=819933)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.28 | PvP Coefficient: 1.25 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.25)
 Description      : $@spelldesc196819
 
 Name             : Blindside (id=328085) [Spell Family (8), Passive] 
@@ -9912,10 +9904,8 @@ Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355
 Effects          :
 #1 (id=1013911)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1013912)  : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Eviscerate, Rupture, and Black Powder increase the damage of the next use of the same finishing move by $s1%.
 
 Name             : Danse Macabre (id=382528) [Spell Family (8), Passive] 
@@ -10770,12 +10760,10 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.334 | Target: Self (1)
                    Affected Spells: Backstab (53), Kidney Shot (408), Gouge (1776), Cheap Shot (1833), Rupture (1943), Slice and Dice (5171), Shiv (5938), Quaking Palm (107079), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Eviscerate (196819), Shuriken Storm (197835), Gloomblade (200758), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Slice and Dice (315496), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Shadowstrike (345121), Echoing Reprimand (354835), Echoing Reprimand (354838), Rupture (360826), Rupture (394031), Kidney Shot (426589), Coup de Grace (441776), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672)
                    Family Flags: 2, 3, 10, 17, 18, 20, 21, 29, 32, 44, 75, 82, 92, 104, 109, 118, 127
-Hotfixed         : PvP Coefficient (0.67 -> 0.334)
 #2 (id=1033246)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 0.334 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Kidney Shot (408), Gouge (1776), Cheap Shot (1833), Rupture (1943), Slice and Dice (5171), Shiv (5938), Quaking Palm (107079), Shuriken Toss (114014), Shadowstrike (185438), Poisoned Knife (185565), Eviscerate (196819), Shuriken Storm (197835), Gloomblade (200758), Eviscerate (245691), Secret Technique (280719), Secret Technique (280720), Secret Technique (282449), Secret Technique (282480), Slice and Dice (315496), Black Powder (319175), Black Powder (319190), Echoing Reprimand (323547), Echoing Reprimand (323558), Echoing Reprimand (323559), Echoing Reprimand (323560), Eviscerate (328082), Sepsis (328305), Sepsis (328306), Shadowstrike (345121), Echoing Reprimand (354835), Echoing Reprimand (354838), Rupture (360826), Rupture (394031), Kidney Shot (426589), Coup de Grace (441776), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248), Supercharge (470409), Supercharge (470412), Supercharge (470414), Supercharge (470415), Echoing Reprimand (470672)
                    Family Flags: 2, 3, 10, 17, 18, 20, 21, 29, 32, 44, 75, 82, 92, 104, 109, 118, 127
-Hotfixed         : PvP Coefficient (0.67 -> 0.334)
 Description      : $@spelldesc382528
 Tooltip          : Attacks that generate or spend combo points deal $w1% increased damage.
 
@@ -12035,10 +12023,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Enemy (6)
 #3 (id=1224076)  : Dummy (3) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 0.01 yards | Target: At Enemy (53) -> At Enemy in Area (16)
-Hotfixed         : NEW EFFECT
 #4 (id=1224077)  : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 12 yards | Target: At Self (18) -> At Enemy in Area (16)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc421975
 
 Name             : Rogue Assassination 10.2 Class Set 2pc (id=422905) [Passive, Hidden] 
@@ -14694,7 +14680,6 @@ Effects          :
                    Base Value: 18 | Scaled Value: 18 | PvP Coefficient: 0.56 | Target: Self (1)
                    Affected Spells: Envenom (32645), Eviscerate (196819), Eviscerate (245691), Black Powder (319175), Black Powder (319190), Eviscerate (328082), Coup de Grace (441776), Eviscerate (Coup de Grace) (462241), Eviscerate (Coup de Grace) (462242), Eviscerate (Coup de Grace) (462243), Eviscerate (Coup de Grace) (462244), Eviscerate (Coup de Grace) (462247), Eviscerate (Coup de Grace) (462248)
                    Family Flags: 17, 35, 44
-Hotfixed         : PvP Coefficient (1 -> 0.56)
 Description      : $@spelldesc457062
 Tooltip          : Damage of your next $?a137037 [Envenom][Eviscerate or Black Powder] is increased by $w1%.
 
@@ -14806,7 +14791,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Resource: energy | Target: Self (1)
 #2 (id=1162177)  : Apply Aura (6) | Dummy (4)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.17 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.3334 -> 0.17)
 #3 (id=1162178)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #4 (id=1162179)  : Apply Aura (6) | Dummy (4)
@@ -15268,7 +15252,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171851)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.07 | PvP Coefficient: 1.25 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.25)
 Description      : $@spelldesc441423
 
 Name             : Eviscerate (Coup de Grace) (id=462242) [Spell Family (8)] 
@@ -15288,7 +15271,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171852)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.07 | PvP Coefficient: 1.25 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.25)
 Description      : $@spelldesc441423
 
 Name             : Eviscerate (Coup de Grace) (id=462243) [Spell Family (8)] 
@@ -15308,7 +15290,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171853)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.14 | PvP Coefficient: 1.25 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.25)
 Description      : $@spelldesc441423
 
 Name             : Eviscerate (Coup de Grace) (id=462244) [Spell Family (8)] 
@@ -15328,7 +15309,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171854)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.07 | PvP Coefficient: 1.25 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.25)
 Description      : $@spelldesc196819
 
 Name             : Eviscerate (Coup de Grace) (id=462247) [Spell Family (8)] 
@@ -15348,7 +15328,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171857)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.07 | PvP Coefficient: 1.25 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.25)
 Description      : $@spelldesc196819
 
 Name             : Eviscerate (Coup de Grace) (id=462248) [Spell Family (8)] 
@@ -15368,7 +15347,6 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), In
 Effects          :
 #1 (id=1171858)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.14 | PvP Coefficient: 1.25 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 1.25)
 Description      : $@spelldesc196819
 
 Name             : Killing Spree (id=463781) [Spell Family (8)] 

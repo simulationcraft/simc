@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59570 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59679 Live
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -13759,7 +13759,6 @@ Effects          :
 Description      : $@spelldesc428514
 
 Name             : Demonic Art: Mother of Chaos (id=432794) [Spell Family (5)] 
-Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
