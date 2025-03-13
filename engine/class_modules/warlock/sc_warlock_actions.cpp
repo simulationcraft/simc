@@ -4274,10 +4274,10 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() && !jackpot )
+      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
         td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
 
-      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_wither->is_ticking() && !jackpot )
+      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_wither->is_ticking() )
         td( s->target )->dots_wither->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
     }
 
