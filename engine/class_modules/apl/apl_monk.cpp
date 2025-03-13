@@ -306,6 +306,9 @@ void windwalker_live( player_t *p )
         { "junkmaestros_mega_magnet",
           ",if=!trinket.1.has_use_buff&!trinket.2.has_use_buff|(trinket.1.has_use_buff|trinket.2.has_use_buff)&"
           "cooldown.invoke_xuen_the_white_tiger.remains>30|fight_remains<5" },
+        // Signet of the Priory is not properly detected as ITEM_STAT_BUFF
+        { "signet_of_the_priory",
+          ",if=pet.xuen_the_white_tiger.active|fight_remains<20" },
 
         // Defaults:
         { "ITEM_STAT_BUFF", ",if=pet.xuen_the_white_tiger.active" },
