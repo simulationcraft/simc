@@ -6736,6 +6736,9 @@ void player_t::enter_combat()
 
   for ( size_t i = 0; i < callbacks_on_combat_state.size(); ++i )
     callbacks_on_combat_state[ i ]( this, in_combat );
+
+  if ( race == RACE_NIGHT_ELF && buffs.shadowmeld->check() )
+    buffs.shadowmeld->expire();
 }
 
 void player_t::leave_combat()
@@ -8299,13 +8302,13 @@ gain_t* player_t::get_gain( util::string_view name )
   return g;
 }
 
-proc_t* player_t::get_proc( util::string_view name )
+proc_t* player_t::get_proc( util::string_view name, unsigned flags )
 {
   proc_t* p = find_proc( name );
 
   if ( !p )
   {
-    p = new proc_t( *sim, name );
+    p = new proc_t( *sim, name, flags );
 
     proc_list.push_back( p );
   }

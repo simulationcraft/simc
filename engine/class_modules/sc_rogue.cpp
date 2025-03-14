@@ -7253,9 +7253,6 @@ struct coup_de_grace_t : public rogue_attack_t
         bonus_attack->last_cp = cast_state( state )->get_combo_points();
         bonus_attack->execute_on_target( state->target );
       }
-
-      // 2025-03-01 -- All impacts of Coup de Grace have a chance to trigger set bonus removal
-      trigger_tww2_set_bonus_removal();
     }
 
     bool procs_main_gauche() const override
@@ -7323,15 +7320,6 @@ struct coup_de_grace_t : public rogue_attack_t
 
     rogue_attack_t::execute();
     
-    // ALPHA TOCHECK -- Consumption and triggering is a bit bugged on alpha servers
-    if ( p()->spec.finality_eviscerate_buff->ok() )
-    {
-      if ( p()->buffs.finality_eviscerate->check() )
-        p()->buffs.finality_eviscerate->expire();
-      else
-        p()->buffs.finality_eviscerate->trigger();
-    }
-
     if ( p()->talent.outlaw.summarily_dispatched->ok() )
     {
       int cp = cast_state( execute_state )->get_combo_points();
@@ -7348,11 +7336,29 @@ struct coup_de_grace_t : public rogue_attack_t
       p()->buffs.flawless_form->execute( as<int>( p()->talent.trickster.coup_de_grace->effectN( 2 ).base_value() ) );
     }
 
-    // 2024-10-17 -- On live, this does not work fully correctly, on PTR it uses snapshot_state() above
+    // Includes the adjusted bonus CP from snapshot_state above
     const int trigger_cp = cast_state( execute_state )->get_combo_points();
     attacks[ 0 ]->trigger_secondary_action( execute_state->target, trigger_cp );
     attacks[ 1 ]->trigger_secondary_action( execute_state->target, trigger_cp, 300_ms );
     attacks[ 2 ]->trigger_secondary_action( execute_state->target, trigger_cp, 1.2_s );
+
+    // 2025-03-11 -- Similar to the Black Powder shadow damage timing, Finality affects every CdG additional attack
+    //               The initial hit will reapply the buff, causing the 2nd and 3rd impacts to always have it
+    if ( p()->spec.finality_eviscerate_buff->ok() )
+    {
+      if ( !p()->buffs.finality_eviscerate->check() )
+      {
+        // Delay the application so it does not affect the first impact
+        make_event( *p()->sim, 1_ms, [ this ] {
+          p()->buffs.finality_eviscerate->trigger();
+        } );
+      }
+      else
+      {
+        // Delay the expiration so that it works on all three impacts
+        p()->buffs.finality_eviscerate->expire( 1.2_s );
+      }
+    }
 
     if ( !is_secondary_action() )
     {
@@ -7364,6 +7370,7 @@ struct coup_de_grace_t : public rogue_attack_t
     }
 
     trigger_count_the_odds( execute_state, p()->procs.count_the_odds_coup_de_grace );
+    trigger_tww2_set_bonus_removal();
 
     p()->buffs.escalating_blade->expire();
   }
@@ -8830,6 +8837,11 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
     double energy_gain = p()->spec.shadow_techniques_energize->effectN( 2 ).base_value() +
                          p()->talent.subtlety.improved_shadow_techniques->effectN( 1 ).base_value();
     p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, state->action );
+    // 2024-11-28 -- Shadowcraft's implementation appears to trigger the energize twice
+    if ( p()->bugs && p()->talent.subtlety.shadowcraft->ok() && p()->buffs.symbols_of_death->check() )
+    {
+      p()->resource_gain( RESOURCE_ENERGY, energy_gain, p()->gains.shadow_techniques, state->action );
+    }
     p()->buffs.shadow_techniques->trigger( 1 + shadowcraft_adjustment ); // Combo Point storage
   }
 }

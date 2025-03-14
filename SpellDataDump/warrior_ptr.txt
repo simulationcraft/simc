@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.59571 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.59651 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -8709,7 +8709,7 @@ Effects          :
 #4 (id=1002897)  : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.54375 | Radius: 5 yards | Target: At Enemy in Area (16)
 #5 (id=1171952)  : Apply Aura (6) | Modify Crit Damage Done% from Caster's Spells (501)
-                   Base Value: 25 | Scaled Value: 25 | Radius: 5 yards | Target: At Enemy in Area (16)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.6 | Radius: 5 yards | Target: At Enemy in Area (16)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Thunder Clap (6343), Revenge (6572), Overpower (7384), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Storm Bolt (107570), Bloodbath (113344), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Whirlwind Off-Hand (199851), Whirlwind (199852), Rampage (201363), Rampage (201364), Impending Victory (202168), Rampage (218617), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Seismic Wave (278497), Iron Fortress (279142), Siegebreaker (280772), Execute (280849), Reckless Flurry (283810), Gushing Wound (288091), Spear of Bastion (307871), Onslaught (315720), Dreadnaught (315961), Condemn (317483), Condemn (317488), Condemn Off-Hand (317489), Ancient Aftershock (325886), Ancient Aftershock (326062), Repulsive Pennant (333860), Bloodbath (335096), Crushing Blow (335098), Crushing Blow (335100), Mortal Strike (339385), Whirlwind (347360), Whirlwind Off-Hand (347362), Whirlwind (347363), Nature's Fury (354163), Champion's Spear (376080), Fatal Mark (383706), Annihilator (383915), Wrecking Throw (384110), Thunderous Roar (384318), Sidearm (384391), Gushing Wound (385042), Odyn's Fury (385059), Odyn's Fury (385060), Odyn's Fury Off-Hand (385061), Odyn's Fury (385062), Whirlwind (385228), Whirlwind (385233), Whirlwind Off-Hand (385234), Shield Charge (385954), Rend (388539), Rend (394062), Rend (394063), Shattering Throw (394352), Wrecking Throw (394354), Onslaught (396718), Thunderous Roar (397364), Earthen Smash (410219), Whirlwind (411547), Crushing Advance (411703), Thunder Blast (435222), Lightning Strike (435791), Demolish (440884), Demolish (440886), Demolish (440888), Slayer's Strike (445579), Reap the Storm (446005), Cleave (458459), Lightning Strike Ground Current (460670), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817), Revenge (1215174)
                    Family Flags: 9
 Description      : $@spelldesc376079
@@ -14022,9 +14022,9 @@ Labels           : 16: Class Spells
                  : 4825: Arms Warrior (137049 effect#17), Arms Warrior (137049 effect#18)
 Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#4), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2, #26), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Colossal Might (440989 effect#1), Overwhelmed (445836 effect#1), Wrecked (447513 effect#2), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4)
 Family Flags     : 9, 126
-Attributes       : Is Ability (4), Allow Dead Target (64), No Attack Parry (248), Allow Class Ability Procs (416)
+Attributes       : Is Ability (4), Allow Dead Target (64), Always AOE Line of Sight (186), No Attack Parry (248), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1135047)  : School Damage (2): physical
+#1 (id=1135047)  : School Damage (2): physical | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 9.65193 | Radius: 0 - 8 yards | Target: At Enemy in Area (16) -> At Enemy in Area (16)
 Description      : $@spelldesc436358
 

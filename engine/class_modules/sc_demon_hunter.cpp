@@ -703,7 +703,8 @@ public:
     const spell_data_t* warblades_hunger_damage;
     const spell_data_t* wounded_quarry_damage;
     const spell_data_t* thrill_of_the_fight_attack_speed_buff;
-    const spell_data_t* thrill_of_the_fight_damage_buff;
+    const spell_data_t* thrill_of_the_fight_damage_buff_havoc;
+    const spell_data_t* thrill_of_the_fight_damage_buff_vengeance;
     double wounded_quarry_proc_rate;
 
     // Fel-scarred
@@ -7284,13 +7285,19 @@ struct wounded_quarry_cb_t : public demon_hunter_proc_callback_t
         allow_class_ability_procs = true;
       }
 
-      // WQ is affected by mastery
-      affected_by.demonic_presence.direct   = true;
-      affected_by.demonic_presence.periodic = true;
+      // WQ is affected by Havoc mastery
+      if ( p->mastery.demonic_presence->ok() )
+      {
+        affected_by.demonic_presence.direct   = true;
+        affected_by.demonic_presence.periodic = true;
+      }
 
       // WQ is affected by Demon Hide
-      affected_by.demon_hide.direct   = true;
-      affected_by.demon_hide.periodic = true;
+      if ( p->talent.havoc.demon_hide->ok() )
+      {
+        affected_by.demon_hide.direct   = true;
+        affected_by.demon_hide.periodic = true;
+      }
     }
 
     void impact( action_state_t* s ) override
@@ -7772,7 +7779,9 @@ void demon_hunter_t::create_buffs()
           ->set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED )
           ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
   buff.thrill_of_the_fight_damage =
-      make_buff( this, "thrill_of_the_fight_damage", hero_spec.thrill_of_the_fight_damage_buff );
+      make_buff( this, "thrill_of_the_fight_damage",
+                 specialization() == DEMON_HUNTER_HAVOC ? hero_spec.thrill_of_the_fight_damage_buff_havoc
+                                                        : hero_spec.thrill_of_the_fight_damage_buff_vengeance );
   buff.art_of_the_glaive_first = make_buff( this, "art_of_the_glaive_first", talent.aldrachi_reaver.art_of_the_glaive )
                                      ->set_duration( buff.glaive_flurry->buff_duration() );
   buff.art_of_the_glaive_second_glaive_flurry =
@@ -8665,8 +8674,10 @@ void demon_hunter_t::init_spells()
       talent.aldrachi_reaver.wounded_quarry->ok() ? find_spell( 442808 ) : spell_data_t::not_found();
   hero_spec.thrill_of_the_fight_attack_speed_buff =
       talent.aldrachi_reaver.thrill_of_the_fight->ok() ? find_spell( 442695 ) : spell_data_t::not_found();
-  hero_spec.thrill_of_the_fight_damage_buff =
-      talent.aldrachi_reaver.thrill_of_the_fight->ok() ? find_spell( 442688 ) : spell_data_t::not_found();
+  hero_spec.thrill_of_the_fight_damage_buff_havoc =
+      conditional_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight->ok(), 442688 );
+  hero_spec.thrill_of_the_fight_damage_buff_vengeance =
+      conditional_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight->ok(), 1227062 );
   hero_spec.burning_blades_debuff =
       talent.felscarred.burning_blades->ok() ? find_spell( 453177 ) : spell_data_t::not_found();
   hero_spec.student_of_suffering_buff =

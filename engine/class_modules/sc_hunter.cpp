@@ -8641,7 +8641,7 @@ void hunter_t::create_buffs()
 
   buffs.beast_cleave = 
     make_buff( this, "beast_cleave", find_spell( 268877 ) )
-    -> apply_affecting_effect( talents.beast_cleave -> effectN( 2 ) );
+    -> set_duration( talents.beast_cleave -> effectN( 2 ).time_value() );
 
   buffs.serpentine_rhythm = 
     make_buff( this, "serpentine_rhythm", find_spell( 468703 ) )

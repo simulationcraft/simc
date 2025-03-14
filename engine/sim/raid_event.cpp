@@ -1262,6 +1262,7 @@ struct damage_event_t final : public raid_event_t
           school      = s;
           may_crit    = false;
           background  = true;
+          not_a_proc  = true;
           trigger_gcd = 0_ms;
         }
       };

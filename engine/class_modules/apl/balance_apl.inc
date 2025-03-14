@@ -6,8 +6,8 @@ action_priority_list_t* pre_cd = get_action_priority_list( "pre_cd" );
 
 precombat->add_action( "variable,name=no_cd_talent,value=!talent.celestial_alignment&!talent.incarnation_chosen_of_elune|druid.no_cds" );
 precombat->add_action( "variable,name=on_use_trinket,value=0" );
-precombat->add_action( "variable,name=on_use_trinket,op=add,value=trinket.1.has_use_buff&!trinket.1.is.ovinaxs_mercurial_egg" );
-precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.2.has_use_buff&!trinket.2.is.ovinaxs_mercurial_egg)*2" );
+precombat->add_action( "variable,name=on_use_trinket,op=add,value=trinket.1.has_use_buff&!trinket.1.is.ovinaxs_mercurial_egg&!trinket.1.is.spymasters_web" );
+precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.2.has_use_buff&!trinket.2.is.ovinaxs_mercurial_egg&!trinket.2.is.spymasters_web)*2" );
 precombat->add_action( "bear_form,if=talent.lycaras_meditation&talent.fluid_form" );
 precombat->add_action( "moonkin_form,if=!talent.lycaras_meditation|!talent.fluid_form" );
 precombat->add_action( "wrath" );
@@ -29,7 +29,7 @@ def->add_action( "use_item,name=soulletting_ruby,if=(variable.ca_effective_cd<3|
 def->add_action( "use_item,name=treacherous_transmitter,if=((cooldown.force_of_nature.remains<3&(trinket.1.is.spymasters_web|trinket.2.is.spymasters_web)&buff.spymasters_report.stack>=29)|(cooldown.convoke_the_spirits.remains<2&cooldown.ca_inc.ready&cooldown.force_of_nature.remains<3&buff.spymasters_report.stack<=29|fight_remains<20|fight_remains<variable.ca_effective_cd&(buff.harmony_of_the_grove.up|cooldown.convoke_the_spirits.ready)))" );
 def->add_action( "variable,name=generic_trinket_condition,value=variable.no_cd_talent|fight_remains<variable.ca_effective_cd&(buff.harmony_of_the_grove.up|cooldown.convoke_the_spirits.ready)|(buff.spymasters_report.stack+variable.ca_effective_cd%6)>29&variable.ca_effective_cd>20|variable.on_use_trinket=0" );
 def->add_action( "use_item,slot=trinket1,if=!trinket.1.is.spymasters_web&!trinket.1.is.imperfect_ascendancy_serum&!trinket.1.is.treacherous_transmitter&!trinket.1.is.soulletting_ruby&(variable.on_use_trinket!=1&variable.on_use_trinket!=3&trinket.2.cooldown.remains>20|fight_remains<(20+20*(trinket.2.has_use&trinket.2.cooldown.remains<25))|variable.generic_trinket_condition)" );
-def->add_action( "use_item,slot=trinket2,if=!trinket.2.is.spymasters_web&!trinket.2.is.imperfect_ascendancy_serum&!trinket.2.is.treacherous_transmitter&!trinket.2.is.soulletting_ruby&(variable.on_use_trinket!=2&trinket.1.cooldown.remains>20|fight_remains<(20+20*(trinket.1.has_use&trinket.1.cooldown.remains<25))|variable.generic_trinket_condition)" );
+def->add_action( "use_item,slot=trinket2,if=!trinket.2.is.spymasters_web&!trinket.2.is.imperfect_ascendancy_serum&!trinket.2.is.treacherous_transmitter&!trinket.2.is.soulletting_ruby&(variable.on_use_trinket<2&trinket.1.cooldown.remains>20|variable.on_use_trinket=3&trinket.1.cooldown.remains>20&(!hero_tree.keeper_of_the_grove|buff.harmony_of_the_grove.up|ceil((fight_remains-15)%trinket.2.cooldown.duration)>ceil((fight_remains-cooldown.force_of_nature.remains-15)%trinket.2.cooldown.duration))|fight_remains<(20+20*(trinket.1.has_use&trinket.1.cooldown.remains<25))|variable.generic_trinket_condition)" );
 def->add_action( "use_item,name=aberrant_spellforge" );
 def->add_action( "use_items" );
 def->add_action( "potion,if=fight_remains<=30" );

@@ -134,6 +134,7 @@ actions.direct+=/mutilate,if=variable.use_filler
 
 # Special Case Trinkets
 actions.items=variable,name=base_trinket_condition,value=dot.rupture.ticking&cooldown.deathmark.remains<2&!cooldown.deathmark.ready|dot.deathmark.ticking|fight_remains<=22
+actions.items+=/use_item,name=prized_gladiators_badge_of_ferocity,use_off_gcd=1,if=variable.base_trinket_condition|dot.kingsbane.ticking
 actions.items+=/use_item,name=ashes_of_the_embersoul,use_off_gcd=1,if=(dot.kingsbane.ticking&dot.kingsbane.remains<=11)|fight_remains<=22
 actions.items+=/use_item,name=signet_of_the_priory,use_off_gcd=1,if=variable.base_trinket_condition
 actions.items+=/use_item,name=algethar_puzzle_box,use_off_gcd=1,if=variable.base_trinket_condition

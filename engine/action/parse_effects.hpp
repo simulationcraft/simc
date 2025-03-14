@@ -20,6 +20,7 @@ enum parse_flag_e : uint16_t
   ALLOW_ZERO        = 0x0008,
   EXPIRE_BUFF       = 0x0010,
   DECREMENT_BUFF    = 0x0020,
+  ROUND_VALUE       = 0x0040,  // uses std::round (round to nearest integer, round half away from zero)
   // internal flags that should not be used in parse_effects()
   VALUE_OVERRIDE    = 0x0100,
   AFFECTED_OVERRIDE = 0x0200,
@@ -391,6 +392,12 @@ struct parse_base_t
         if ( ( mod == USE_DEFAULT || mod == USE_CURRENT ) && !( pack.data.type & VALUE_OVERRIDE ) )
         {
           pack.data.type &= ~( USE_DEFAULT | USE_CURRENT );
+          pack.data.type |= mod;
+          return;
+        }
+
+        if ( mod == ROUND_VALUE )
+        {
           pack.data.type |= mod;
           return;
         }

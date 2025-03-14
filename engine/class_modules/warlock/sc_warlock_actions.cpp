@@ -4274,10 +4274,10 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() && !jackpot )
+      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
         td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
 
-      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_wither->is_ticking() && !jackpot )
+      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_wither->is_ticking() )
         td( s->target )->dots_wither->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
     }
 
@@ -4292,7 +4292,7 @@ using namespace helpers;
         m *= 1.0 + p()->talents.demonfire_infusion->effectN( 3 ).percent();
 
       if ( jackpot )
-        m *= 1.0 + p()->tier.spliced_destro_2pc->effectN( 1 ).percent();
+        m *= p()->tier.spliced_destro_2pc->effectN( 1 ).percent();
 
       return m;
     }

@@ -400,6 +400,7 @@ void unholy( player_t* p )
   action_priority_list_t* cds = p->get_action_priority_list( "cds" );
   action_priority_list_t* cds_aoe = p->get_action_priority_list( "cds_aoe" );
   action_priority_list_t* cds_aoe_san = p->get_action_priority_list( "cds_aoe_san" );
+  action_priority_list_t* cds_cleave_san = p->get_action_priority_list( "cds_cleave_san" );
   action_priority_list_t* cds_san = p->get_action_priority_list( "cds_san" );
   action_priority_list_t* cds_shared = p->get_action_priority_list( "cds_shared" );
   action_priority_list_t* cleave = p->get_action_priority_list( "cleave" );
@@ -416,8 +417,8 @@ void unholy( player_t* p )
   precombat->add_action( "army_of_the_dead,precombat_time=2" );
   precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|trinket.1.is.treacherous_transmitter" );
   precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|trinket.2.is.treacherous_transmitter" );
-  precombat->add_action( "variable,name=trinket_1_duration,op=setif,value=15,value_else=trinket.1.proc.any_dps.duration,condition=trinket.1.is.treacherous_transmitter" );
-  precombat->add_action( "variable,name=trinket_2_duration,op=setif,value=15,value_else=trinket.2.proc.any_dps.duration,condition=trinket.2.is.treacherous_transmitter" );
+  precombat->add_action( "variable,name=trinket_1_duration,op=setif,value=trinket.1.is.treacherous_transmitter*15+trinket.1.is.funhouse_lens*15,value_else=trinket.1.proc.any_dps.duration,condition=trinket.1.is.treacherous_transmitter|trinket.1.is.funhouse_lens" );
+  precombat->add_action( "variable,name=trinket_2_duration,op=setif,value=trinket.2.is.treacherous_transmitter*15+trinket.2.is.funhouse_lens*15,value_else=trinket.2.proc.any_dps.duration,condition=trinket.2.is.treacherous_transmitter|trinket.2.is.funhouse_lens" );
   precombat->add_action( "variable,name=trinket_1_high_value,op=setif,value=2,value_else=1,condition=trinket.1.is.treacherous_transmitter" );
   precombat->add_action( "variable,name=trinket_2_high_value,op=setif,value=2,value_else=1,condition=trinket.2.is.treacherous_transmitter" );
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(talent.apocalypse&trinket.1.cooldown.duration%%cooldown.apocalypse.duration=0|talent.dark_transformation&trinket.1.cooldown.duration%%cooldown.dark_transformation.duration=0)|trinket.1.is.treacherous_transmitter" );
@@ -431,8 +432,9 @@ void unholy( player_t* p )
   default_->add_action( "call_action_list,name=trinkets,if=!talent.vampiric_strike" );
   default_->add_action( "call_action_list,name=racials" );
   default_->add_action( "call_action_list,name=cds_shared" );
-  default_->add_action( "call_action_list,name=cds_aoe_san,if=talent.vampiric_strike&active_enemies>=2" );
+  default_->add_action( "call_action_list,name=cds_aoe_san,if=talent.vampiric_strike&active_enemies>=3" );
   default_->add_action( "call_action_list,name=cds_aoe,if=!talent.vampiric_strike&active_enemies>=2" );
+  default_->add_action( "call_action_list,name=cds_cleave_san,if=talent.vampiric_strike&active_enemies=2" );
   default_->add_action( "call_action_list,name=cds_san,if=talent.vampiric_strike&active_enemies=1" );
   default_->add_action( "call_action_list,name=cds,if=!talent.vampiric_strike&active_enemies=1" );
   default_->add_action( "call_action_list,name=cleave,if=active_enemies=2" );
@@ -493,6 +495,12 @@ void unholy( player_t* p )
   cds_aoe_san->add_action( "apocalypse,target_if=max:debuff.festering_wound.stack,if=variable.adds_remain&rune<=3" );
   cds_aoe_san->add_action( "abomination_limb,if=variable.adds_remain" );
 
+  cds_cleave_san->add_action( "dark_transformation,if=buff.death_and_decay.up&(talent.apocalypse&pet.apoc_ghoul.active|!talent.apocalypse)|fight_remains<20|raid_event.adds.exists&raid_event.adds.remains<20", "San'layn Cleave Cooldowns" );
+  cds_cleave_san->add_action( "unholy_assault,if=buff.dark_transformation.up&buff.dark_transformation.remains<12|fight_remains<20|raid_event.adds.exists&raid_event.adds.remains<20" );
+  cds_cleave_san->add_action( "apocalypse,target_if=max:debuff.festering_wound.stack" );
+  cds_cleave_san->add_action( "outbreak,target_if=target.time_to_die>dot.virulent_plague.remains&dot.virulent_plague.ticks_remain<5,if=(dot.virulent_plague.refreshable|talent.morbidity&buff.infliction_of_sorrow.up&talent.superstrain&dot.frost_fever.refreshable&dot.blood_plague.refreshable)&(!talent.unholy_blight|talent.unholy_blight&cooldown.dark_transformation.remains>5)&(!talent.raise_abomination|talent.raise_abomination&cooldown.raise_abomination.remains>5)" );
+  cds_cleave_san->add_action( "abomination_limb,if=!buff.gift_of_the_sanlayn.up&!buff.sudden_doom.react&buff.festermight.up&debuff.festering_wound.stack<=2|!buff.gift_of_the_sanlayn.up&fight_remains<12" );
+
   cds_san->add_action( "dark_transformation,if=active_enemies>=1&variable.st_planning&(talent.apocalypse&pet.apoc_ghoul.active|!talent.apocalypse)|fight_remains<20", "San'layn Cooldowns" );
   cds_san->add_action( "unholy_assault,if=variable.st_planning&(buff.dark_transformation.up&buff.dark_transformation.remains<12)|fight_remains<20" );
   cds_san->add_action( "apocalypse,if=variable.st_planning|fight_remains<20" );
@@ -506,10 +514,12 @@ void unholy( player_t* p )
   cds_shared->add_action( "summon_gargoyle,use_off_gcd=1,if=(variable.st_planning|variable.adds_remain)&(buff.commander_of_the_dead.up|!talent.commander_of_the_dead&active_enemies>=1)|fight_remains<25" );
   cds_shared->add_action( "antimagic_shell,if=death_knight.ams_absorb_percent>0&runic_power<30&rune<2" );
 
-  cleave->add_action( "any_dnd,if=!death_and_decay.ticking", "Cleave" );
-  cleave->add_action( "death_coil,if=!variable.pooling_runic_power" );
-  cleave->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!variable.pop_wounds&debuff.festering_wound.stack<4|buff.festering_scythe.react" );
-  cleave->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=cooldown.apocalypse.remains<variable.apoc_timing&debuff.festering_wound.stack<4" );
+  cleave->add_action( "any_dnd,if=!death_and_decay.ticking&variable.adds_remain&(cooldown.apocalypse.remains|!talent.apocalypse)", "Cleave" );
+  cleave->add_action( "death_coil,if=!variable.pooling_runic_power&talent.improved_death_coil" );
+  cleave->add_action( "wound_spender,if=buff.vampiric_strike.react" );
+  cleave->add_action( "death_coil,if=!variable.pooling_runic_power&!talent.improved_death_coil" );
+  cleave->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!buff.vampiric_strike.react&!variable.pop_wounds&debuff.festering_wound.stack<2|buff.festering_scythe.react" );
+  cleave->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=!buff.vampiric_strike.react&cooldown.apocalypse.remains<variable.apoc_timing&debuff.festering_wound.stack<1" );
   cleave->add_action( "wound_spender,if=variable.pop_wounds" );
 
   racials->add_action( "arcane_torrent,if=runic_power<20&rune<2", "Racials" );

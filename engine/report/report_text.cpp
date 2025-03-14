@@ -549,7 +549,7 @@ void print_procs( std::ostream& os, const player_t& p )
 
   for ( auto& proc : proc_data )
   {
-    if ( proc->count.sum() > 0.0 )
+    if ( proc->count.sum() > 0.0 && proc->proc_report_flags & proc_report_e::REPORT_PROC_TEXT )
     {
       if ( first )
       {

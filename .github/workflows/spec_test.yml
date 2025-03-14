@@ -51,6 +51,7 @@ jobs:
             rogue_outlaw,
             rogue_subtlety,
             shaman_elemental,
+            shaman_enhancement,
             warlock_affliction,
             warlock_demonology,
             warlock_destruction,

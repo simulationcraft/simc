@@ -3668,13 +3668,19 @@ void priest_t::init_special_effects()
   {
     callbacks.register_callback_execute_function(
         443393, [ this ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
-          buffs.twist_of_fate->trigger();
+          if ( rng().roll( options.synergistic_brewterializer_tof_chance ) )
+          {
+            buffs.twist_of_fate->trigger();
+          }
 
-          cb->proc_action->set_target( cb->target( s ) );
-          auto proc_state    = cb->proc_action->get_state();
-          proc_state->target = cb->proc_action->target;
-          cb->proc_action->snapshot_state( proc_state, cb->proc_action->amount_type( proc_state ) );
-          cb->proc_action->schedule_execute( proc_state );
+          if ( rng().roll( options.synergistic_brewterializer_barrel_hit_chance ) )
+          {
+            cb->proc_action->set_target( cb->target( s ) );
+            auto proc_state    = cb->proc_action->get_state();
+            proc_state->target = cb->proc_action->target;
+            cb->proc_action->snapshot_state( proc_state, cb->proc_action->amount_type( proc_state ) );
+            cb->proc_action->schedule_execute( proc_state );
+          }
         } );
   }
 
@@ -4367,6 +4373,10 @@ void priest_t::create_options()
   add_option( opt_bool( "priest.no_channel_macro_mfi", options.no_channel_macro_mfi ) );
   add_option( opt_bool( "priest.discipline_in_raid", options.discipline_in_raid ) );
   add_option( opt_bool( "priest.shadow_tww2_4pc_insanity", options.shadow_tww2_4pc_insanity ) );
+  add_option( opt_float( "priest.synergistic_brewterializer_tof_chance", options.synergistic_brewterializer_tof_chance,
+                         0.0, 1.0 ) );
+  add_option( opt_float( "priest.synergistic_brewterializer_barrel_hit_chance",
+                         options.synergistic_brewterializer_barrel_hit_chance, 0.0, 1.0 ) );
 }
 
 std::string priest_t::create_profile( save_e type )

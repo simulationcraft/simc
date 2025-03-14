@@ -4365,7 +4365,7 @@ void print_html_proc_table( report::sc_html_stream& os, const player_t& p )
 
   for ( const auto& proc : proc_data )
   {
-    if ( proc->count.mean() > 0 )
+    if ( proc->count.mean() > 0 && proc->proc_report_flags & proc_report_e::REPORT_PROC_HTML )
     {
       bool show_count    = !proc->count.simple;
       bool show_interval = !proc->interval_sum.simple;

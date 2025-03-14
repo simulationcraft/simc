@@ -136,6 +136,7 @@ void assassination( player_t* p )
   direct->add_action( "mutilate,if=variable.use_filler", "Fallback Mutilate" );
 
   items->add_action( "variable,name=base_trinket_condition,value=dot.rupture.ticking&cooldown.deathmark.remains<2&!cooldown.deathmark.ready|dot.deathmark.ticking|fight_remains<=22", "Special Case Trinkets" );
+  items->add_action( "use_item,name=prized_gladiators_badge_of_ferocity,use_off_gcd=1,if=variable.base_trinket_condition|dot.kingsbane.ticking" );
   items->add_action( "use_item,name=ashes_of_the_embersoul,use_off_gcd=1,if=(dot.kingsbane.ticking&dot.kingsbane.remains<=11)|fight_remains<=22" );
   items->add_action( "use_item,name=signet_of_the_priory,use_off_gcd=1,if=variable.base_trinket_condition" );
   items->add_action( "use_item,name=algethar_puzzle_box,use_off_gcd=1,if=variable.base_trinket_condition" );

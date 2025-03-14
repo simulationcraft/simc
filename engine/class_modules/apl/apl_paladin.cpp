@@ -107,11 +107,13 @@ void protection( player_t* p )
 
   defensives->add_action( "ardent_defender" );
 
-  standard->add_action( "judgment,target_if=charges>=2|full_recharge_time<=gcd.max" );
+  standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=charges>=2|full_recharge_time<=gcd.max" );
   standard->add_action( "hammer_of_light,if=buff.hammer_of_light_free.remains<2|buff.shake_the_heavens.remains<1|!buff.shake_the_heavens.up|cooldown.eye_of_tyr.remains<1.5|fight_remains<2" );
   standard->add_action( "eye_of_tyr,if=(hpg_to_2dawn=5|!talent.of_dusk_and_dawn.enabled)&talent.lights_guidance.enabled" );
   standard->add_action( "eye_of_tyr,if=(hpg_to_2dawn=1|buff.blessing_of_dawn.stack>0)&talent.lights_guidance.enabled" );
-  standard->add_action( "shield_of_the_righteous,if=(!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&!buff.hammer_of_light_ready.up" );
+  standard->add_action( "shield_of_the_righteous,if=!buff.hammer_of_light_ready.up&(buff.luck_of_the_draw.up&((holy_power+judgment_holy_power>=5)|(!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)))", "during luck of the draw(TWW2 4P)spam sotr as much as possible without wasting icd where possible" );
+  standard->add_action( "shield_of_the_righteous,if=!buff.hammer_of_light_ready.up&set_bonus.thewarwithin_season_2_4pc&((holy_power+judgment_holy_power>5)|(holy_power+judgment_holy_power>=5&cooldown.righteous_protector_icd.remains=0))", "outside of luck of the draw, pool holy power as much as possible to be able to enter luck of the draw windows with more holy power" );
+  standard->add_action( "shield_of_the_righteous,if=!set_bonus.thewarwithin_season_2_4pc&(!talent.righteous_protector.enabled|cooldown.righteous_protector_icd.remains=0)&!buff.hammer_of_light_ready.up" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=spell_targets.shield_of_the_righteous>3&buff.bulwark_of_righteous_fury.stack>=3&holy_power<3" );
   standard->add_action( "avengers_shield,if=!buff.bulwark_of_righteous_fury.up&talent.bulwark_of_righteous_fury.enabled&spell_targets.shield_of_the_righteous>=3" );
   standard->add_action( "hammer_of_the_righteous,if=buff.blessed_assurance.up&spell_targets.shield_of_the_righteous<3&!buff.avenging_wrath.up" );
@@ -122,7 +124,7 @@ void protection( player_t* p )
   standard->add_action( "holy_armaments,if=next_armament=sacred_weapon&(!buff.sacred_weapon.up|(buff.sacred_weapon.remains<6&!buff.avenging_wrath.up&cooldown.avenging_wrath.remains<=30))" );
   standard->add_action( "hammer_of_wrath" );
   standard->add_action( "divine_toll,if=(!raid_event.adds.exists|raid_event.adds.in>10)" );
-  standard->add_action( "avengers_shield,if=talent.refining_fire.enabled&talent.lights_guidance.enabled" );
+  standard->add_action( "avengers_shield,if=talent.refining_fire.enabled" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains,if=(buff.avenging_wrath.up&talent.hammer_and_anvil.enabled)" );
   standard->add_action( "holy_armaments,if=next_armament=holy_bulwark&charges=2" );
   standard->add_action( "judgment,target_if=min:debuff.judgment.remains" );
@@ -144,6 +146,7 @@ void protection( player_t* p )
   standard->add_action( "arcane_torrent,if=holy_power<5" );
   standard->add_action( "consecration" );
 
+  trinkets->add_action( "use_item,name=tome_of_lights_devotion,if=buff.inner_resilience.up" );
   trinkets->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)" );
   trinkets->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.avenging_wrath.up|fight_remains<=40)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|!buff.avenging_wrath.up))|!variable.trinket_sync_slot)" );
 }

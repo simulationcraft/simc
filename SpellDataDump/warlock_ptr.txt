@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.59571 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.59651 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow

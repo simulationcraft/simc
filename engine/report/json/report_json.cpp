@@ -225,7 +225,8 @@ void procs_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
   range::for_each( p.proc_list, [ & ]( const proc_t* proc ) {
-    if ( proc->count.mean() == 0 )
+    if ( proc->count.mean() == 0 ||
+         ( ( proc->proc_report_flags & proc_report_e::REPORT_PROC_JSON ) == 0 ) )
     {
       return;
     }

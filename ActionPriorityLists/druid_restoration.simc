@@ -5,7 +5,7 @@
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
-# Restoration DPS APL can be found at https://www.dreamgrove.gg/sims/tree/restoration.txt
+# Restoration DPS APL can be found at https://github.com/dreamgrove/dreamgrove/blob/master/sims/tree/restoration.txt
 
 # Executed before combat begins. Accepts non-harmful actions only.
 # Snapshot raid buffed stats before combat begins and pre-potting is done.

@@ -157,6 +157,7 @@ void getiikku_cut_of_death( special_effect_t& );
 void bilestained_crawg_tusks( special_effect_t& );
 void wraps_of_electrostatic_potential( special_effect_t& );
 void ingenious_mana_battery( special_effect_t& );
+void goldcoated_superconductors( special_effect_t& effect );
 // 8.2.0 - Rise of Azshara Punchcards
 void yellow_punchcard( special_effect_t& );
 void subroutine_overclock( special_effect_t& );
@@ -4907,6 +4908,26 @@ void items::ingenious_mana_battery( special_effect_t& effect )
   effect.execute_action = new ingenious_mana_battery_channel_t( effect, vers_buff, mana_storage_buff, recovery_buff );
 }
 
+void items::goldcoated_superconductors( special_effect_t& effect )
+{
+  // Currently bugged and does not proc. Tested 13/03/2025.
+  if ( effect.player->bugs )
+    return;
+
+  auto buff = make_buff<stat_buff_t>( effect.player, "superconductive", effect.driver()->effectN( 1 ).trigger() );
+  buff->add_stat_from_effect( 1, effect.driver()->effectN( 1 ).average( effect ) );
+
+  effect.custom_buff = buff;
+
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ & ]( const dbc_proc_callback_t*, action_t* a, const action_state_t* ) {
+        return dbc::get_school_mask( a->get_school() ) & dbc::get_school_mask( SCHOOL_NATURE );
+      } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Punchcard stuff ========================================================
 
 item_t init_punchcard( const special_effect_t& effect )
@@ -6291,6 +6312,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 281720, items::bilestained_crawg_tusks );
   register_special_effect( 300145, items::wraps_of_electrostatic_potential );
   register_special_effect( 300968, items::ingenious_mana_battery, true );
+  register_special_effect( 300143, items::goldcoated_superconductors );
   register_special_effect( 300969, DISABLED_EFFECT ); // Mana Battery Passive. We handle everything in on use.
   // 8.2 Mechagon combo rings
   register_special_effect( 300124, items::logic_loop_of_division );

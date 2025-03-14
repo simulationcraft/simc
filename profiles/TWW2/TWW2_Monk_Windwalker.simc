@@ -12,7 +12,7 @@ potion=tempered_potion_3
 flask=flask_of_alchemical_chaos_3
 food=feast_of_the_midnight_masquerade
 augmentation=crystallized
-temporary_enchant=main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3
+temporary_enchant=main_hand:algari_mana_oil_3/off_hand:algari_mana_oil_3
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -173,7 +173,7 @@ actions.default_st+=/celestial_conduit,if=buff.storm_earth_and_fire.up&(!buff.he
 actions.default_st+=/slicing_winds,if=buff.heart_of_the_jade_serpent_cdr.up|buff.heart_of_the_jade_serpent_cdr_celestial.up
 actions.default_st+=/spinning_crane_kick,if=buff.dance_of_chiji.stack=2&combo_strike
 actions.default_st+=/rising_sun_kick,if=buff.pressure_point.up|buff.ordered_elements.remains<=gcd.max*3&buff.storm_earth_and_fire.up&talent.ordered_elements
-actions.default_st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=(energy>55&talent.inner_peace|energy>60&!talent.inner_peace)&combo_strike&chi.max-chi>=2&buff.teachings_of_the_monastery.stack<buff.teachings_of_the_monastery.max_stack&(talent.energy_burst&!buff.bok_proc.up|!talent.energy_burst)&!buff.ordered_elements.up|(talent.energy_burst&!buff.bok_proc.up|!talent.energy_burst)&!buff.ordered_elements.up&!cooldown.fists_of_fury.remains&chi<3|(prev.strike_of_the_windlord|cooldown.strike_of_the_windlord.remains)&cooldown.celestial_conduit.remains<2&buff.ordered_elements.up&chi<5&combo_strike|(!buff.heart_of_the_jade_serpent_cdr.up|!buff.heart_of_the_jade_serpent_cdr_celestial.up)&combo_strike&chi.deficit>=2&!buff.ordered_elements.up
+actions.default_st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=(energy>55&talent.inner_peace|energy>60&!talent.inner_peace)&combo_strike&chi.max-chi>=2&buff.teachings_of_the_monastery.stack<buff.teachings_of_the_monastery.max_stack&(talent.energy_burst&!buff.bok_proc.up|!talent.energy_burst)&!buff.ordered_elements.up|(talent.energy_burst&!buff.bok_proc.up|!talent.energy_burst)&!buff.ordered_elements.up&!cooldown.fists_of_fury.remains&chi<3|(prev.strike_of_the_windlord|!buff.heart_of_the_jade_serpent_cdr_celestial.up)&combo_strike&chi.deficit>=2&!buff.ordered_elements.up
 actions.default_st+=/touch_of_death
 actions.default_st+=/rising_sun_kick,if=buff.invokers_delight.up&!buff.storm_earth_and_fire.up&talent.ordered_elements
 actions.default_st+=/rising_sun_kick,if=!pet.xuen_the_white_tiger.active&prev.tiger_palm&time<5|buff.storm_earth_and_fire.up&talent.ordered_elements
@@ -190,9 +190,11 @@ actions.default_st+=/blackout_kick,if=buff.teachings_of_the_monastery.stack>4&co
 actions.default_st+=/whirling_dragon_punch,if=!buff.heart_of_the_jade_serpent_cdr_celestial.up&!buff.dance_of_chiji.stack=2|buff.ordered_elements.up|talent.knowledge_of_the_broken_temple
 actions.default_st+=/crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&!buff.heart_of_the_jade_serpent_cdr.up&!buff.heart_of_the_jade_serpent_cdr_celestial.up&combo_strike&(!fight_style.dungeonslice|target.time_to_die>20)&cooldown.invoke_xuen_the_white_tiger.remains>10
 actions.default_st+=/slicing_winds
-actions.default_st+=/fists_of_fury,if=(talent.flurry_strikes|talent.xuens_battlegear|!talent.xuens_battlegear&(cooldown.strike_of_the_windlord.remains>1|buff.heart_of_the_jade_serpent_cdr.up|buff.heart_of_the_jade_serpent_cdr_celestial.up))&(talent.flurry_strikes|talent.xuens_battlegear&cooldown.invoke_xuen_the_white_tiger.remains>5|cooldown.invoke_xuen_the_white_tiger.remains>10)
+actions.default_st+=/fists_of_fury,if=(talent.xuens_battlegear|!talent.xuens_battlegear&(cooldown.strike_of_the_windlord.remains>1|buff.heart_of_the_jade_serpent_cdr.up|buff.heart_of_the_jade_serpent_cdr_celestial.up))&(talent.xuens_battlegear&cooldown.invoke_xuen_the_white_tiger.remains>5|cooldown.invoke_xuen_the_white_tiger.remains>10)&(!buff.invokers_delight.up|buff.invokers_delight.up&cooldown.strike_of_the_windlord.remains>4&cooldown.celestial_conduit.remains)|fight_remains<5|talent.flurry_strikes
 actions.default_st+=/rising_sun_kick,if=chi>4|chi>2&energy>50|cooldown.fists_of_fury.remains>2
 actions.default_st+=/tiger_palm,if=combo_strike&energy.time_to_max<=gcd.max*3&talent.flurry_strikes&buff.wisdom_of_the_wall_flurry.up
+actions.default_st+=/blackout_kick,if=combo_strike&talent.energy_burst&buff.bok_proc.up&chi<5&(buff.heart_of_the_jade_serpent_cdr.up|buff.heart_of_the_jade_serpent_cdr_celestial.up)
+actions.default_st+=/spinning_crane_kick,if=combo_strike&buff.bloodlust.up&buff.heart_of_the_jade_serpent_cdr.up&buff.dance_of_chiji.up
 actions.default_st+=/tiger_palm,if=combo_strike&chi.deficit>=2&energy.time_to_max<=gcd.max*3
 actions.default_st+=/blackout_kick,if=buff.teachings_of_the_monastery.stack>7&talent.memory_of_the_monastery&!buff.memory_of_the_monastery.up&cooldown.fists_of_fury.remains
 actions.default_st+=/spinning_crane_kick,if=(buff.dance_of_chiji.stack=2|buff.dance_of_chiji.remains<2&buff.dance_of_chiji.up)&combo_strike&!buff.ordered_elements.up
@@ -247,9 +249,8 @@ off_hand=gallywixs_iron_thumb,id=228899,bonus_id=4822/4786/1494/11980,ilevel=678
 # gear_ilvl=675.56
 # gear_agility=55811
 # gear_stamina=387381
-# gear_attack_power=938
-# gear_crit_rating=3074
-# gear_haste_rating=12851
+# gear_crit_rating=3538
+# gear_haste_rating=13315
 # gear_mastery_rating=18857
 # gear_versatility_rating=717
 # gear_avoidance_rating=1090

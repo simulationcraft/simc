@@ -3362,21 +3362,8 @@ struct celestial_alignment_buff_t final : public druid_buff_t
 
     auto dur_ = remains();
 
-    // advance eclipse manually if refreshing as eclipse->stack_change_callback is not called
-    auto in_lunar = eclipse_handler.in_lunar();
-    auto in_solar = eclipse_handler.in_solar();
-
     p()->buff.eclipse_lunar->trigger( dur_ );
-    if ( in_lunar )
-      eclipse_handler.advance_eclipse<eclipse_e::LUNAR>( true );
-
     p()->buff.eclipse_solar->trigger( dur_ );
-    if ( in_solar )
-      eclipse_handler.advance_eclipse<eclipse_e::SOLAR>( true );
-
-    // harmony of the heavens counter resets only if eclipse was active before CA is triggered
-    if ( !p()->bugs || in_lunar || in_solar )
-      eclipse_handler.harmony_cur = 0.0;
 
     if ( p()->active.orbital_strike )
       p()->active.orbital_strike->execute_on_target( p()->target );
@@ -3421,6 +3408,41 @@ struct earthwarden_buff_t final : public druid_absorb_buff_t
     decrement();
 
     return amount;
+  }
+};
+
+// Eclipse ==================================================================
+template <eclipse_e E>
+struct eclipse_buff_t final : public druid_buff_t
+{
+  eclipse_buff_t( druid_t* p, std::string_view n, const spell_data_t* s ) : base_t( p, n, s )
+  {
+    set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  }
+
+  double check_value() const override
+  {
+    return current_value + p()->eclipse_handler.harmony_cur;
+  }
+
+  bool trigger( int s, double v, double c, timespan_t d ) override
+  {
+    auto ret = base_t::trigger( s, v, c, d );
+    if ( !ret )
+      return false;
+
+    p()->eclipse_handler.template advance_eclipse<E>( true );
+
+    return true;
+  }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    base_t::expire_override( s, d );
+
+    p()->eclipse_handler.template advance_eclipse<E>( false );
   }
 };
 
@@ -10940,21 +10962,11 @@ void druid_t::create_buffs()
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buff.dreamstate->set_initial_stack( buff.dreamstate->max_stack() );
 
-  buff.eclipse_lunar = make_fallback( talent.eclipse.ok(), this, "eclipse_lunar", spec.eclipse_lunar )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
-    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      eclipse_handler.advance_eclipse<eclipse_e::LUNAR>( new_ );
-    } );
+  buff.eclipse_lunar =
+    make_fallback<eclipse_buff_t<eclipse_e::LUNAR>>( talent.eclipse.ok(), this, "eclipse_lunar", spec.eclipse_lunar );
 
-  buff.eclipse_solar = make_fallback( talent.eclipse.ok(), this, "eclipse_solar", spec.eclipse_solar )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
-    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      eclipse_handler.advance_eclipse<eclipse_e::SOLAR>( new_ );
-    } );
+  buff.eclipse_solar =
+    make_fallback<eclipse_buff_t<eclipse_e::SOLAR>>( talent.eclipse.ok(), this, "eclipse_solar", spec.eclipse_solar );
 
   buff.fury_of_elune =
     make_fallback<fury_of_elune_buff_t>( talent.fury_of_elune.ok() || talent.the_light_of_elune.ok(),
@@ -11993,19 +12005,19 @@ void druid_t::init()
   {
     case DRUID_BALANCE:
       action_list_information +=
-        "\n# Balance APL can be found at https://www.dreamgrove.gg/sims/owl/balance.txt\n";
+        "\n# Balance APL can be found at https://github.com/dreamgrove/dreamgrove/blob/master/sims/owl/balance.txt\n";
       break;
     case DRUID_FERAL:
       action_list_information +=
-        "\n# Feral APL can be found at https://www.dreamgrove.gg/sims/cat/feral.txt\n";
+        "\n# Feral APL can be found at https://github.com/dreamgrove/dreamgrove/blob/master/sims/cat/feral.txt\n";
       break;
     case DRUID_GUARDIAN:
       action_list_information +=
-        "\n# Guardian APL can be found at https://www.dreamgrove.gg/sims/bear/guardian.txt\n";
+        "\n# Guardian APL can be found at https://github.com/dreamgrove/dreamgrove/blob/master/sims/bear/guardian.txt\n";
       break;
     case DRUID_RESTORATION:
       action_list_information +=
-        "\n# Restoration DPS APL can be found at https://www.dreamgrove.gg/sims/tree/restoration.txt\n";
+        "\n# Restoration DPS APL can be found at https://github.com/dreamgrove/dreamgrove/blob/master/sims/tree/restoration.txt\n";
       break;
     default:
       break;
@@ -13973,6 +13985,7 @@ void eclipse_handler_t::advance_eclipse( bool active )
   if ( active )
   {
     state |= E;
+    harmony_cur = 0.0;
 
     get_boat<E>()->trigger();
     p->buff.parting_skies->trigger();
@@ -13988,10 +14001,7 @@ void eclipse_handler_t::advance_eclipse( bool active )
 
     // only when completely leaving eclipse
     if ( !in_eclipse() )
-    {
-      harmony_cur = 0.0;
       p->buff.dreamstate->trigger();
-    }
   }
 
   if ( old_state ^ state )
@@ -14009,12 +14019,6 @@ void eclipse_handler_t::trigger_harmony()
     return;
 
   harmony_cur += harmony_val;
-
-  if ( in_lunar() )
-    p->buff.eclipse_lunar->current_value += harmony_val;
-
-  if ( in_solar() )
-    p->buff.eclipse_solar->current_value += harmony_val;
 }
 
 void eclipse_handler_t::reset_stacks()

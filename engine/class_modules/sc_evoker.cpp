@@ -363,7 +363,7 @@ struct simplified_player_t : public player_t
   // Options
   struct options_t
   {
-    int item_level = 639;
+    int item_level = 660;
     std::string variant = "default";
   } option;
   
@@ -5244,8 +5244,7 @@ struct pyre_t : public essence_spell_t
     damage->stats   = stats;
     damage->proc    = true;
 
-    firestorm = p->get_secondary_action<firestorm_t>( name_str + "_firestorm_ftf", name_str + "_firestorm_ftf", true );
-    add_child( firestorm );
+    firestorm = p->get_secondary_action<firestorm_t>( "firestorm_ftf", "firestorm_ftf", true );
   }
 
   action_state_t* new_state() override
@@ -5267,6 +5266,24 @@ struct pyre_t : public essence_spell_t
       if ( ( proc_spell_type & proc_spell_type_e::VOLATILITY ) == 0 )
         add_child( volatility );
     }
+
+    if ( ( proc_spell_type & ( proc_spell_type_e::VOLATILITY | proc_spell_type_e::DRAGONRAGE ) ) == 0 )
+      add_child( firestorm );
+  }
+
+  size_t available_targets( std::vector<player_t*>& target_list ) const override
+  {
+    target_list.clear();
+
+    for ( auto& t : sim->target_non_sleeping_list )
+    {
+      if ( t == target && ( proc_spell_type & proc_spell_type_e::VOLATILITY ) != 0 )
+        continue;
+
+      target_list.push_back( t );
+    }
+
+    return target_list.size();
   }
 
   bool has_amount_result() const override
@@ -5323,8 +5340,15 @@ struct pyre_t : public essence_spell_t
     // TODO: How many times can volatility chain?
     if ( volatility && rng().roll( p()->talent.volatility->effectN( 1 ).percent() ) )
     {
+      if ( volatility->target != s->target )
+      {
+        volatility->target                = s->target;
+        volatility->target_cache.is_valid = false;
+      }
+
       const auto& tl = volatility->target_list();
-      volatility->execute_on_target( tl[ rng().range( tl.size() ) ] );
+      if ( tl.size() > 0 )
+        volatility->execute_on_target( tl[ rng().range( tl.size() ) ] );
     }
   }
 };

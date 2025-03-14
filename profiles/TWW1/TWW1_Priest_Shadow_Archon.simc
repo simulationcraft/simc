@@ -23,6 +23,8 @@ temporary_enchant=main_hand:algari_mana_oil_3
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=snapshot_stats
 actions.precombat+=/shadowform,if=!buff.shadowform.up
+actions.precombat+=/variable,name=trinket_1_buffs,value=(trinket.1.has_buff.intellect|trinket.1.has_buff.mastery|trinket.1.has_buff.versatility|trinket.1.has_buff.haste|trinket.1.has_buff.crit|trinket.1.is.signet_of_the_priory)&(trinket.1.cooldown.duration>=20)
+actions.precombat+=/variable,name=trinket_2_buffs,value=(trinket.2.has_buff.intellect|trinket.2.has_buff.mastery|trinket.2.has_buff.versatility|trinket.2.has_buff.haste|trinket.2.has_buff.crit|trinket.2.is.signet_of_the_priory)&(trinket.2.cooldown.duration>=20)
 actions.precombat+=/variable,name=dr_force_prio,default=0,op=reset
 actions.precombat+=/variable,name=me_force_prio,default=1,op=reset
 actions.precombat+=/variable,name=max_vts,default=12,op=reset
@@ -173,11 +175,11 @@ actions.main+=/call_action_list,name=filler
 
 actions.trinkets=use_item,use_off_gcd=1,name=hyperthread_wristwraps,if=talent.void_blast&hyperthread_wristwraps.void_blast.count>=2&!cooldown.mind_blast.up|!talent.void_blast&((hyperthread_wristwraps.void_bolt.count>=1|!talent.void_eruption)&hyperthread_wristwraps.void_torrent.count>=1)
 actions.trinkets+=/use_item,use_off_gcd=1,name=aberrant_spellforge,if=gcd.remains>0&buff.aberrant_spellforge.stack<=4
-actions.trinkets+=/use_item,use_off_gcd=1,name=neural_synapse_enhancer,if=(buff.power_surge.up|buff.entropic_rift.up)&(buff.voidform.up|cooldown.void_eruption.remains>=40|buff.dark_ascension.up)
+actions.trinkets+=/use_item,use_off_gcd=1,name=neural_synapse_enhancer,if=(buff.power_surge.up|buff.entropic_rift.up|variable.trinket_1_buffs|variable.trinket_2_buffs)&(buff.voidform.up|cooldown.void_eruption.remains>=40|buff.dark_ascension.up)
 actions.trinkets+=/use_item,use_off_gcd=1,name=flarendos_pilot_light,if=gcd.remains>0&(buff.voidform.up|buff.power_infusion.remains>=10|buff.dark_ascension.up)|fight_remains<20
 actions.trinkets+=/use_item,use_off_gcd=1,name=geargrinders_spare_keys,if=gcd.remains>0
 actions.trinkets+=/use_item,name=spymasters_web,if=(buff.power_infusion.remains>=10&buff.spymasters_report.stack>=36&fight_remains>240)&(buff.voidform.up|buff.dark_ascension.up|!talent.dark_ascension&!talent.void_eruption)|((buff.power_infusion.remains>=10&buff.bloodlust.up&buff.spymasters_report.stack>=10)|buff.power_infusion.remains>=10&(fight_remains<120))&(buff.voidform.up|buff.dark_ascension.up|!talent.dark_ascension&!talent.void_eruption)|(fight_remains<=20|buff.dark_ascension.up&fight_remains<=60|buff.entropic_rift.up&talent.entropic_rift&fight_remains<=30)&!buff.spymasters_web.up
-actions.trinkets+=/use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60))|fight_remains<20
+actions.trinkets+=/use_items,if=(buff.voidform.up|buff.power_infusion.remains>=10|buff.dark_ascension.up|(cooldown.void_eruption.remains>10&trinket.cooldown.duration<=60)|equipped.neural_synapse_enhancer&buff.entropic_rift.up)|fight_remains<20
 
 head=living_lusters_semblance,id=212083,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,ilevel=639,gem_id=213482/213458

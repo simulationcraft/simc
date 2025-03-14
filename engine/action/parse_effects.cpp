@@ -618,6 +618,12 @@ bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
       return false;
   }
 
+  if constexpr ( is_detected_v<detect_type, U> )
+  {
+    if ( tmp.type & ROUND_VALUE )
+      val = std::round( val );
+  }
+
   val *= val_mul;
 
   std::string val_str = mastery ? fmt::format( "{:.5f}*mastery", val * 100 )
