@@ -52,7 +52,7 @@ off_hand=capital_punisher,id=228891,bonus_id=6652/10356/11996/12060/1527/10255,i
 
 save=TWW2_Warrior_Fury.simc
 
-warrior="TWW2_Warrior_Protection"
+warrior="TWW2_Warrior_Protection_Colossus"
 level=80
 race=mechagnome
 spec=protection
