@@ -254204,7 +254204,6 @@ School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
 Attributes       : No Aura Cancel (31), Allow Aura While Dead (116), Aura Is Buff (140), Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Enter World (22), Leave Combat (31), Seamless Transfer (48)
 Effects          :
 #1 (id=1190141)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
@@ -254222,7 +254221,6 @@ School           : Physical
 Spell Type       : None
 Duration         : 30 seconds
 Attributes       : No Aura Cancel (31), Allow Aura While Dead (116), Aura Is Buff (140), Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Enter World (22), Leave Combat (31), Seamless Transfer (48)
 Effects          :
 #1 (id=1190144)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
