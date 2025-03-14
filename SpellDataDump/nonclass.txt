@@ -234424,13 +234424,20 @@ Attributes       : No Aura Icon (60), Cast When Learned (63), No Aura Log (202)
 Effects          :
 #1 (id=1142603)  : Unknown(226)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1067210 | Target: Self (1)
-#2 (id=1190692)  : Apply Aura (6) | Modify Damage Done% (79)
+#2 (id=1190692)  : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -80 | Scaled Value: -80 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Hotfixed         : Sub Type (79 -> 87), Base Value (-25 -> -80)
+#3 (id=1216088)  : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
+                   Base Value: -6 | Scaled Value: -6 | Target: Self (1)
+Hotfixed         : Sub Type (10 -> 187), Base Value (-75 -> -6), Misc Value (127 -> 0)
+#4 (id=1216218)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#3 (id=1216088)  : Apply Aura (6) | Threat (10)
+Hotfixed         : Sub Type (187 -> 79), Base Value (-6 -> -25), Misc Value (0 -> 127)
+#5 (id=1225625)  : Apply Aura (6) | Threat (10)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Target: Self (1)
-#4 (id=1216218)  : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
-                   Base Value: -6 | Scaled Value: -6 | Target: Self (1)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc421373
 
 Name             : Arathi Demolition Charge (id=446015) [Hidden] 
