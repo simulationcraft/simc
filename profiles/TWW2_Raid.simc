@@ -1,7 +1,8 @@
 optimal_raid=1
 default_actions=1
 
-# TWW2_Death_Knight_Blood.simc
+TWW2_Death_Knight_Blood.simc
+TWW2_Death_Knight_Blood_Deathbringer.simc
 TWW2_Death_Knight_Frost.simc
 # TWW2_Death_Knight_Frost_Rider.simc
 TWW2_Death_Knight_Frost_Deathbringer.simc
