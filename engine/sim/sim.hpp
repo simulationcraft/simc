@@ -387,6 +387,9 @@ struct sim_t : private sc_thread_t
     // strings. Anything else will result in the item's bonus IDs being
     // used to determine which version the player is currently using.
     std::string unbound_changeling_stat_type = "default";
+    // Sets a fixed health percentage [between 0.0 and 1.0] for the target when using the Soulletting Ruby trinket
+    // The default value of -1.0 disables this option and uses the target's health percentage instead
+    double soulletting_ruby_fixed_percent_targethealth = -1.0;
     /// Chance player is getting overhealed by Gluttonous Spike proc.
     double gluttonous_spike_overheal_chance = 1.0;
     /// Anima Field Emitter buff duration distribution, defaults to full duration.

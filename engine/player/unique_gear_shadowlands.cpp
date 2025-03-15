@@ -958,12 +958,14 @@ void soulletting_ruby( special_effect_t& effect )
     stat_buff_t* buff;
     double base_crit_value;
     double max_crit_bonus;
+    double fixed_percentage_targethealth;
 
     soulletting_ruby_t( const special_effect_t& e, stat_buff_t* b ) :
       proc_spell_t( "soulletting_ruby", e.player, e.player->find_spell( 345802 ) ),
       buff( b ),
       base_crit_value( e.player->find_spell( 345807 )->effectN( 1 ).average( e.item ) ),
-      max_crit_bonus( e.player->find_spell( 345807 )->effectN( 2 ).average( e.item ) )
+      max_crit_bonus( e.player->find_spell( 345807 )->effectN( 2 ).average( e.item ) ),
+      fixed_percentage_targethealth( e.player->sim->shadowlands_opts.soulletting_ruby_fixed_percent_targethealth )
     {}
 
     void execute() override
@@ -971,7 +973,7 @@ void soulletting_ruby( special_effect_t& effect )
       proc_spell_t::execute();
 
       make_event( *sim, travel_time(), [ this, t = execute_state->target ] {
-        double bonus_mul = 1.0 - ( t->is_active() ? t->health_percentage() * 0.01 : 0.0 );
+        double bonus_mul = 1.0 - ( ( fixed_percentage_targethealth < 0.0 ) ? ( t->is_active() ? t->health_percentage() * 0.01 : 0.0 ) : ( fixed_percentage_targethealth ));
 
         buff->stats.back().amount = base_crit_value + max_crit_bonus * bonus_mul;
         buff->trigger();
