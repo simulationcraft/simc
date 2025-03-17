@@ -64,8 +64,8 @@ actions.cds+=/variable,name=buffs_above_pandemic,value=(buff.broadside.remains>3
 actions.cds+=/roll_the_bones,if=rtb_buffs=0
 # With TWW2 set, recast Roll the Bones if we will roll away between 0-1 buffs. If KIR was recently used on a natural 5 buff, then wait until all buffs are below around 41s remaining.
 actions.cds+=/roll_the_bones,if=set_bonus.tww2_4pc&rtb_buffs.will_lose<=1&(variable.buffs_above_pandemic<5|rtb_buffs.max_remains<42)
-# With TWW2 set, recast Roll the Bones with at most 2 buffs active regardless of duration, or if we will roll away between 0-4 buffs and all buffs are within 10s remaining.
-actions.cds+=/roll_the_bones,if=set_bonus.tww2_4pc&(rtb_buffs<=2|rtb_buffs.max_remains<11&rtb_buffs.will_lose<5)
+# With TWW2 set, recast Roll the Bones with at most 2 buffs active regardless of duration. Supercharger builds will also roll if we will lose between 0-4 buffs, but KIR Supercharger builds wait until they are all below 11s remaining. 
+actions.cds+=/roll_the_bones,if=set_bonus.tww2_4pc&(rtb_buffs<=2|(rtb_buffs.max_remains<11|!talent.keep_it_rolling)&rtb_buffs.will_lose<5&talent.supercharger)
 # Without TWW2 set or Sleight of Hand, recast Roll the Bones to override 1 buff into 2 buffs with Loaded Dice, or reroll any 2 buffs with Loaded Dice+Supercharger. Hidden Opportunity builds can also reroll 2 buffs with Loaded Dice to try for BS/RP/TB.
 actions.cds+=/roll_the_bones,if=!set_bonus.tww2_4pc&(rtb_buffs.will_lose<=buff.loaded_dice.up|talent.supercharger&buff.loaded_dice.up&rtb_buffs<=2|talent.hidden_opportunity&buff.loaded_dice.up&rtb_buffs<=2&!buff.broadside.up&!buff.ruthless_precision.up&!buff.true_bearing.up)
 actions.cds+=/ghostly_strike,if=combo_points<cp_max_spend
