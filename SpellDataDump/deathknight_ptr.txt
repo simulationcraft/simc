@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.59651 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.59735 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -103,7 +103,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
 Attributes       : Is Ability (4), No Immunities (29), No Threat (42), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=15977)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -50 | Scaled Value: -50 | SP Coefficient: 0.25 | Misc Value: 0x7f | Target: Self (1)
@@ -1100,7 +1100,7 @@ Labels           : 16: Class Spells
 Stance Mask      : 0x01000000
 Family Flags     : 80
 Attributes       : Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), No AutoCast (AI) (49), Allow While Not Shapeshifted (caster form) (83), Not In Arena or Rated Battleground (144), Not In Spellbook Until Learned (269), Not in Battleground (284), Visible only to caster (conversations only) (343), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #2 (id=296536)   : Unknown(90)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 98305 | Target: Self (1)
@@ -12026,7 +12026,7 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hea
 Affecting Spells : Everlasting Bond (377668 effect#2)
 Family Flags     : 30
 Attributes       : Initiates Combat (Enables Auto-Attack) (41), No Threat (42), No Aura Icon (60), No Proc Equip Requirement (97), Requires Main-Hand Weapon (106), Always Hit (114), Can Proc From Procs (122), No Aura Log (202), No Attack Miss (249), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1005638)  : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | Misc Value: 27893 | Misc Value 2: 0xcaa | Radius: 2 yards | Target: Unknown(151)
@@ -15743,7 +15743,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Exclude Caster (51), No Aura Icon (60), Include In Advanced Combat Log (72), DoT Stacking Rule (103), No Aura Log (202), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Ignore Target Absorb Modifiers (371), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1141298)  : Apply Aura (6) | Transfer Damage% (81)
                    Base Value: 5 | Scaled Value: 5 | Value Multiplier: 1 | Misc Value: 127 | Target: Friendly (21)
@@ -16357,7 +16357,7 @@ Stacks           : 4 maximum
 Proc Chance      : 101%
 Triggered By     : Pact of the Apocalypse (444726)
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Cancel (31), Exclude Caster (51), Include In Advanced Combat Log (72), Do Not Display Range (126), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Log Absorb (348), Ignore Caster Absorb Modifiers (370), Ignore Target Absorb Modifiers (371), Hide Damage Absorb UI (380), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1155803)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Value Multiplier: 1 | Target: Friendly (21)

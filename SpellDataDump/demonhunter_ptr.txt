@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.59651 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.59735 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -10849,7 +10849,7 @@ Labels           : 16: Class Spells
                  : 4215
 Affecting Spells : Demon Soul (163073 effects: #1, #2), Exergy (208628 effects: #1, #2), Mo'arg Bionic Stabilizers (208826 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3, #12, #13), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Frailty (247456 effect#4), Chaos Blades (247938 effects: #2, #3), Bouncing Glaives (320386 effect#1), Demon Soul (347765 effects: #1, #2), Serrated Glaive (390155 effect#1), Accelerated Blade (391275 effects: #1, #2), Seething Chaos (394934 effects: #1, #2), Fiery Resolve (425653 effects: #1, #2), Inertia (427641 effects: #1, #2), Champion of the Glaive (429211 effect#1), Reaver's Mark (442624 effect#1), Thrill of the Fight (442688 effects: #1, #2), Luck of the Draw! (1219012 effects: #1, #2), Thrill of the Fight (1227062 effects: #1, #2)
 Family Flags     : 5, 16, 32, 70
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Bouncy Chain Missiles (146), Treat as Area Effect (175), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Do Not Auto Select Target with Initiates Combat (220), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Interrupts Current Cast (419)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Bouncy Chain Missiles (146), Treat as Area Effect (175), Do Not Chain To Crowd-Controlled Targets (200), Show Mechanic as Combat Text (213), Do Not Auto Select Target with Initiates Combat (220), Enforce Facing on Primary Target Only (351), Allow Class Ability Procs (416), Interrupts Current Cast (419)
 Effects          :
 #1 (id=1137380)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.45 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
@@ -12749,7 +12749,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Real PPM         : 1.5
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=1199257)  : Apply Aura (6) | Proc Trigger Spell (42): Luck of the Draw!
                    Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 0.5 | Trigger Spell: 1219012 | Target: Self (1)

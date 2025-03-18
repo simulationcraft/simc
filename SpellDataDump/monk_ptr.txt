@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.59651 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.59735 PTR
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -338,7 +338,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
 Attributes       : Allow While Stealthed (37), No Threat (42), Can Cause Silence (236), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=55584)    : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 80 | Scaled Value: 80 | Target: Self (1)
@@ -11850,7 +11850,7 @@ Labels           : 16: Class Spells
                  : 22: Monk Spells
                  : 292
 Attributes       : Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22), Login (29), Leave Combat (31), Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Leave World (19), Enter World (22), Login (29), Leave Combat (31), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1026709)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -12254,7 +12254,7 @@ Spell Type       : None
 Duration         : Aura (infinite)
 Labels           : 16: Class Spells
                  : 22: Monk Spells
-                 : 4728
+                 : 3023
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Triggered By     : Last Emperor's Capacitor (392989)
@@ -13860,7 +13860,7 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Triggered By     : Press the Advantage (418359)
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40), Change Talent (46), Encounter Start (55)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1090593)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
@@ -14563,7 +14563,7 @@ Labels           : 16: Class Spells
                  : 3378: Jade Sanctuary (443059 effect#1), Jade Sanctuary (443059 effect#2), Chi-Ji's Swiftness (443566 effect#1)
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Attributes       : Not Shapeshifted (16), Is Self Channelled (38), Can Proc From Procs (122), Allow Actions During Channel (160), Extra Initial Period (169), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Allow Defense While Channeling (338), Unbreakable Channel (358), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Is Self Channelled (38), Can Proc From Procs (122), Allow Actions During Channel (160), Extra Initial Period (169), Spell Haste Affects Periodic (173), Aura Points On Client (268), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Allow Defense While Channeling (338), Unbreakable Channel (358), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1138648)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
@@ -19013,7 +19013,7 @@ Labels           : 16: Class Spells
 Stacks           : 300 maximum
 Proc Chance      : 101%
 Attributes       : No Aura Cancel (31), Do Not Display Duration (170), Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Encounter Start (55)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1186195)  : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)

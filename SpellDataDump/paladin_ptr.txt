@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.59651 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.59735 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -403,7 +403,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Light's Countenance (469325 effect#1)
 Family Flags     : 2
 Attributes       : Not Shapeshifted (16), Cancels Auto Attack Combat (20), No Threat (42), No AutoCast (AI) (49), Prevents Anim (50), Aura Stays After Combat (57), PvP Enabling (96), Suppress Caster Procs (112), Can Proc From Procs (122), Suppress Weapon Procs (151), Limit N (165), Show Mechanic as Combat Text (213), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Damage (Script) (27), Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Damage (Script) (27), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=11180)    : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Target: Enemy (6)
@@ -751,7 +751,7 @@ Category Cooldown: 120 seconds
 Affecting Spells : Sanctified Wrath (53376 effect#1), Retribution Paladin (137027 effect#21), Holy Paladin (137029 effects: #23, #24, #25), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Avenging Wrath: Might (384442 effects: #1, #2), Divine Wrath (406872 effect#1)
 Family Flags     : 40
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=21556)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0) | Scaling Class: -7
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -1856,6 +1856,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Interrupts spellcasting and prevents any spell in that school from being cast for $d.
 
+Name             : Dummy 5.0 Talent (id=102052) 
+Class            : Warrior, Paladin, Mage
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Effects          :
+#1 (id=110685)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
 Name             : Sanctuary (id=105805) [Spell Family (10), Passive, Hidden] 
 Class            : Protection Paladin
 School           : Physical
@@ -1892,7 +1901,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Attributes       : Not Shapeshifted (16), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=115804)   : Apply Aura (6) | Modify Resource Generation% (329)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 9 | Target: Self (1)
@@ -1933,7 +1942,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Rule of Law (214202 effect#1)
 Family Flags     : 67
 Attributes       : Not Shapeshifted (16), No Aura Icon (60), No Aura Log (202), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=127305)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 122773 | Radius: 10 yards | Target: Unknown(87)
@@ -2961,6 +2970,7 @@ Labels           : 16: Class Spells
                  : 52
                  : 292
 Attributes       : Aura Is Debuff (26), No Immunities (29), Ignore Line of Sight (66), Allow Class Ability Procs (416)
+Aura Interrupt   : Raid Encounter End or M+ Start (41)
 Effects          :
 #1 (id=218994)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
@@ -4667,7 +4677,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=318059)   : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 5 | Target: Self (1)
@@ -4752,7 +4762,7 @@ Proc Flags       : Yellow Melee, Generic Hostile Spell
 Affecting Spells : Sanctified Wrath (53376 effect#1), Divine Purpose (408458 effect#1)
 Family Flags     : 102
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=321878)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -5279,7 +5289,7 @@ Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostil
 Affecting Spells : Light's Decree (286231 effect#2), Sanctified Wrath (317866 effect#3), Avenging Wrath (317872 effect#1), Avenging Wrath (384376 effect#4), Divine Wrath (406872 effect#1)
 Family Flags     : 45
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=349842)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -7675,7 +7685,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Reign of Endless Kings (337850)
 Attributes       : No Aura Cancel (31), No Threat (42), No Aura Icon (60), Do Not Display Range (126), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=836079)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -11443,7 +11453,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Blessing of Summer (388007)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Aura On Level Scale (444)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1023444)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 388010 | Scaled Value: 388010 | Misc Value: 388007 | Misc Value 2: 0x3 | Target: Self (1)
@@ -11460,7 +11470,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Blessing of Autumn (388010)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Aura On Level Scale (444)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1023446)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 388011 | Scaled Value: 388011 | Misc Value: 388007 | Misc Value 2: 0x3 | Target: Self (1)
@@ -11477,7 +11487,7 @@ Labels           : 16: Class Spells
                  : 292
 Triggered By     : Blessing of Winter (388011), Blessing of Spring (388013)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Allow Aura On Level Scale (444)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1023448)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 388013 | Scaled Value: 388013 | Misc Value: 388007 | Misc Value 2: 0x3 | Target: Self (1)
@@ -13110,7 +13120,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2556: Aura Mastery (31821 effect#3)
 Attributes       : Aura Unique (43), Aura Is Buff (140), Aura Points On Client (268)
-Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter End or M+ Start (41), Enter Instance (43), Leave Arena or Battleground (45), Encounter Start (55), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Raid Encounter Start or M+ Start (40), Enter Instance (43), Leave Arena or Battleground (45)
 Effects          :
 #1 (id=1052902)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 0x7f | Radius: 50000 yards | Target: Raid in Area (56)
@@ -15346,7 +15356,7 @@ Stacks           : 10 maximum
 Proc Chance      : 50%
 Proc Flags       : White Melee, Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Can Proc From Procs (122), Aura Points On Client (268)
-Aura Interrupt   : Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1101749)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -17880,7 +17890,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Sanctified Wrath (53376 effect#1), Retribution Paladin (137027 effect#21), Holy Paladin (137029 effects: #23, #24, #25), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Avenging Wrath: Might (384442 effects: #1, #2), Divine Wrath (406872 effect#1)
 Family Flags     : 40
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1156816)  : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -17951,7 +17961,7 @@ Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostil
 Affecting Spells : Light's Decree (286231 effect#2), Sanctified Wrath (317866 effect#3), Avenging Wrath (317872 effect#1), Avenging Wrath (384376 effect#4), Divine Wrath (406872 effect#1)
 Family Flags     : 45
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1156860)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)

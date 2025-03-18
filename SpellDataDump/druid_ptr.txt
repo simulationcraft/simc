@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.59651 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.59735 PTR
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -1495,7 +1495,7 @@ Proc Chance      : 101%
 Affecting Spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Nature's Swiftness (132158 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Berserk (343223 effect#1), Orbital Strike (390378 effect#2), Berserk: Heart of the Lion (391174 effect#1), Whirling Stars (468743 effect#1)
 Family Flags     : 43, 48
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Immunity to Hostile & Friendly Effects (48), No shapeshift UI (65), Allow Entering Arena (149), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436), Allow Aura On Level Scale (444)
-Aura Interrupt   : Leave World (19), Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=23806)    : Apply Aura (6) | Shapeshift (36)
                    Base Value: 0 | Scaled Value: 0 (delta=0.25) | Misc Value: 2 | Misc Value 2: 0x9 | Target: Self (1)
@@ -3005,7 +3005,7 @@ Proc Chance      : 101%
 Affecting Spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Berserk (343223 effect#1), Orbital Strike (390378 effect#2), Berserk: Heart of the Lion (391174 effect#1), Whirling Stars (468743 effect#1)
 Family Flags     : 31, 43
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Immunity to Hostile & Friendly Effects (48), Allow Entering Arena (149), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Allow Aura On Level Scale (444)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=111355)   : Apply Aura (6) | Periodic Trigger Spell (23): Berserk every 1.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 343216 | Target: Self (1)
@@ -3262,7 +3262,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Ekowraith, Creator of Worlds (210667 effect#1)
 Family Flags     : 110
 Attributes       : Do Not Sheath (18), No Redirection (35), No Reflection (39), No Threat (42), No AutoCast (AI) (49), Requires Main-Hand Weapon (106), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=111705)   : Dummy (3)
                    Base Value: -50 | Scaled Value: -50 | Radius: 8 yards | Mechanic: Snare | Target: Unknown(87) -> At Enemy in Area (16)
@@ -3489,7 +3489,7 @@ Category Cooldown: 180 seconds
 Affecting Spells : Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Berserk (343223 effect#1), Berserk: Heart of the Lion (391174 effect#1)
 Family Flags     : 70
 Attributes       : Is Ability (4), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=117476)   : Apply Aura (6) | Periodic Trigger Spell (23): Berserk every 1.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 343216 | Target: Self (1)
@@ -3556,7 +3556,7 @@ Labels           : 16: Class Spells
                  : 292
 Category Cooldown: 300 seconds
 Attributes       : Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=119350)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -3589,7 +3589,7 @@ Internal Cooldown: 0.9 seconds
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=119354)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -3619,7 +3619,7 @@ Labels           : 16: Class Spells
                  : 292
 Category Cooldown: 300 seconds
 Attributes       : Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=119358)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self (1)
@@ -3648,7 +3648,7 @@ Labels           : 16: Class Spells
                  : 292
 Category Cooldown: 300 seconds
 Attributes       : Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=119361)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -3816,7 +3816,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
 Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
-Aura Interrupt   : Leave World (19), Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=133652)   : Apply Aura (6) | Ignore Spell Cooldown (383)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
@@ -3864,7 +3864,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic
 Attributes       : Allow Low Level Buff (67), Can Proc From Procs (122), Aura Points On Client (268), Reset cooldown upon ending an encounter (333)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=158318)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25 | Misc Value: 127 | Target: Self (1)
@@ -7902,7 +7902,7 @@ Affecting Spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshift
 Triggered By     : Incarnation: Avatar of Ashamane (102543)
 Family Flags     : 31
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Immunity to Hostile & Friendly Effects (48), Allow Entering Arena (149), Do Not Display Duration (170), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=471782)   : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 102547 | Scaled Value: 102547 | Target: Self (1)
@@ -8978,7 +8978,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
 Attributes       : Do Not Sheath (18), No Threat (42), Reset cooldown upon ending an encounter (333), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=805938)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
@@ -9061,7 +9061,7 @@ Stacks           : 99 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : No Aura Cancel (31), DoT Stacking Rule (103), Aura Points On Client (268), Not In Spellbook Until Learned (269), Reset cooldown upon ending an encounter (333), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Summon (30), Encounter Start (55)
+Aura Interrupt   : Leave World (19), Summon (30), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=812538)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
@@ -15225,7 +15225,7 @@ Duration         : 60 seconds
 Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
-Aura Interrupt   : Leave World (19), Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1035340)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -20801,7 +20801,7 @@ Labels           : 16: Class Spells
                  : 21: Druid Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1200581)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)

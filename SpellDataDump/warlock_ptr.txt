@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.59651 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.59735 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -202,7 +202,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Norgannon's Foresight (236431 effect#1)
 Family Flags     : 60
 Attributes       : Not Shapeshifted (16), Not In Combat (Only Peaceful) (28), Is Channelled (34), No AutoCast (AI) (49), No Aura Icon (60), Name in Channel Bar (61), Do Not Display Range (126), Not In Arena or Rated Battleground (144), Spell Haste Affects Periodic (173), Do Not Consume Resources (197), No Aura Log (202), Not In Arena (297), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Channel Interrupt: Damage (1), Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13)
 Effects          :
 #2 (id=341456)   : Apply Aura (6) | Dummy (4)
@@ -2846,7 +2846,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Norgannon's Foresight (236431 effect#1)
 Family Flags     : 108
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=126897)   : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 7 | Target: Self (1)
@@ -2869,7 +2869,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Norgannon's Foresight (236431 effect#1)
 Family Flags     : 108
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=126899)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25 | PvP Coefficient: 0.667 | Misc Value: 15 | Target: Self (1)
@@ -10794,7 +10794,7 @@ Labels           : 16: Class Spells
                  : 19: Warlock Spells
                  : 292
 Attributes       : Do Not Display Duration (170)
-Aura Interrupt   : Leave World (19), Raid Encounter End or M+ Start (41), Encounter End (56)
+Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1022007)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)

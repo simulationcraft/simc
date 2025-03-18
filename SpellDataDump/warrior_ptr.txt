@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.59651 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.59735 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -195,7 +195,7 @@ Proc Chance      : 101%
 Affecting Spells : Recklessness (1719 effect#9), Bladestorm (46924 effect#3), Warrior (137047 effect#2), Morale Killer (199023 effect#2), Booming Voice (202743 effects: #1, #2, #3), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Unnerving Focus (337155 effect#6), Unnerving Focus (384043 effect#6), Thunderlord (385840 effect#3), Strength of the Mountain (437068 effects: #2, #3), Bladestorm (446035 effect#3)
 Family Flags     : 8, 11, 17, 70
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Always Hit (114), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=423)      : Apply Aura (6) | Modify Damage Done% to Caster (269)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Radius: 0 - 10 yards | Target: At Self (22) -> Enemy in Area (15)
@@ -328,7 +328,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Warrior (137047 effect#2), Depths of Insanity (337162 effect#1), Depths of Insanity (383922 effect#1), Reckless Abandon (396749 effect#1)
 Family Flags     : 4, 8
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Enforce Shapeshift Requirements (434)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=524)      : Apply Aura (6) | Modify Rage Generated From Auto Attacks (213)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -1902,6 +1902,15 @@ Tooltip          : Health increased by $97462s1% of maximum.$?a424742[
 
 Movement speed increased by $424742s4%.][]
 
+Name             : Dummy 5.0 Talent (id=102052) 
+Class            : Warrior, Paladin, Mage
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Effects          :
+#1 (id=110685)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+
 Name             : Double Time (id=103827) [Spell Family (4), Passive] 
 Talent Entry     : Generic [tree=class, row=7, col=3, max_rank=1, req_points=8]
 Class            : Warrior
@@ -1994,7 +2003,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Recklessness (1719 effect#6), Warrior (137047 effect#2), Unnerving Focus (337155 effect#6), Outburst (364639 effects: #1, #2), Unnerving Focus (384043 effect#3), Spiteful Serenity (400314 effects: #1, #2, #3, #4)
 Family Flags     : 8, 32
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Immunity Purges Effect (47), Immunity to Hostile & Friendly Effects (48), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Prevent Jumping During Precast (448), Unknown (465)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=118390)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.75 | Target: Self (1)
@@ -3650,11 +3659,12 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : Is Ability (4), Can't Crit (93), Suppress Caster Procs (112), Not In Spellbook (143), Suppress Weapon Procs (151), Ignore Healing Modifiers (219), Do Not Log Full Overheal (323), Do Not Log on Learn (355), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Is Ability (4), Can't Crit (93), Suppress Caster Procs (112), Not In Spellbook (143), Suppress Weapon Procs (151), Ignore Healing Modifiers (219), Aura Points On Client (268), Do Not Log Full Overheal (323), Do Not Log on Learn (355), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
 Effects          :
 #1 (id=297920)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 Description      : $@spelldesc29838
+Tooltip          : Healing $w1% health every $t1 sec.
 
 Name             : Bounding Stride (id=202163) [Spell Family (4), Passive] 
 Talent Entry     : Generic [tree=class, row=4, col=4, max_rank=1, req_points=0]
@@ -8730,7 +8740,7 @@ Labels           : 16: Class Spells
                  : 1806: Champion's Might (386284 effect#2)
 Triggered By     : Champion's Spear (376079)
 Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1002898)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 25558 | Target: Unknown(87)
@@ -13702,7 +13712,7 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee
 Triggered By     : Burst of Power (437118)
 Attributes       : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Enter World (22), Change Specialization (38), Change Talent (46), Encounter Start (55)
+Aura Interrupt   : Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1128870)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13759,7 +13769,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Proc Flags       : Generic Heal
 Attributes       : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Can Proc From Procs (122), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Enter World (22), Change Specialization (38), Change Talent (46), Encounter Start (55)
+Aura Interrupt   : Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1128914)  : Apply Aura (6) | Unknown(145)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13804,7 +13814,7 @@ Labels           : 16: Class Spells
                  : 3022
 Triggered By     : Keep Your Feet on the Ground (438590)
 Attributes       : Do Not Sheath (18), No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Enter World (22), Change Specialization (38), Change Talent (46), Encounter Start (55)
+Aura Interrupt   : Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=1131294)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -8 | Scaled Value: -8 | Misc Value: 0x7f | Target: Self (1)

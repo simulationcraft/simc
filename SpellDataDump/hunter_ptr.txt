@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.59651 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.59735 PTR
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2298,7 +2298,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Mastery: Master of Beasts (76657 effect#3), Hunter (137014 effect#3), Mastery: Sniper Training (193468 effects: #1, #2, #4), Roar of the Seven Lions (207318 effect#1), The Mantle of Command (247993 effect#2), Eagletalon's True Focus (336851 effect#4), Unnatural Causes (459527 effect#4), Unnatural Causes (459529 effect#1), Banshee's Mark (467902 effect#1)
 Family Flags     : 1, 99, 121
 Attributes       : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Always Hit (114), Extra Initial Period (169), No Caster Aura Icon (187), No Aura Log (202), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=170310)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 60 | Scaled Value: 60 | Target: Enemy (6)
@@ -2810,7 +2810,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Threat (42), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=224202)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -3854,7 +3854,7 @@ Affecting Spells : Quickdraw (473380 effect#1)
 Triggered By     : Lock and Load (194595)
 Family Flags     : 112
 Attributes       : Is Ability (4), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Do Not Consume if Gained During Cast (79), Can Proc From Procs (122), Allow Cast While Casting (135), Not In Spellbook (143), No Cooldown On Tooltip (192), Floating Combat Text On Cast (198), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=285662)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | SP Coefficient: 0.25 | Misc Value: 10 | Target: Self (1)
@@ -4837,7 +4837,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Trailblazer (199921 effect#2)
 Family Flags     : 46
 Attributes       : No Aura Cancel (31), Not In Spellbook (143), Aura Points On Client (268), Do Not Log Aura Refresh (291)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=348988)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -6496,7 +6496,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
 Attributes       : Is Ability (4), No Immunities (29), No Threat (42), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=706879)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -50 | Scaled Value: -50 | SP Coefficient: 0.25 | Misc Value: 0x7f | Target: Self (1)
@@ -6518,7 +6518,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
 Attributes       : Is Ability (4), No Immunities (29), No Threat (42), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=706881)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -50 | Scaled Value: -50 | SP Coefficient: 0.25 | Misc Value: 0x7f | Target: Self (1)
@@ -6540,7 +6540,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Threat (42), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=706916)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -6561,7 +6561,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Threat (42), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=706924)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -6582,7 +6582,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Threat (42), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=706949)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -6719,7 +6719,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Aspect of the Beast (191384 effects: #1, #2)
 Family Flags     : 60
 Attributes       : Is Ability (4), Not Shapeshifted (16), No Threat (42), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=707721)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -10338,7 +10338,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Tip of the Spear (260286 effect#1), Call of the Wild (336742 effect#1), Deadly Tandem (341350 effect#1), Symbiotic Adrenaline (459875 effect#1)
 Family Flags     : 27
 Attributes       : No Aura Cancel (31), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Reset cooldown upon ending an encounter (333)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Encounter Start (55)
+Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46)
 Effects          :
 #1 (id=898368)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy (6)
@@ -11358,7 +11358,7 @@ Effects          :
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Bloodshed (346396), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Killer Companion (378955), Spearhead (378957), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Lunar Storm (453398), Lunar Storm (457978), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Lunar Storm (1217459), Poisoned Barbs (1217549), Spearhead (1221386)
                    Family Flags: 106
 #3 (id=1166697)  : Apply Aura (6) | Modify Crit Damage Done% from Caster's Spells (501)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Bloodshed (346396), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Killer Companion (378955), Spearhead (378957), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Lunar Storm (453398), Lunar Storm (457978), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Lunar Storm (1217459), Poisoned Barbs (1217549), Spearhead (1221386)
                    Family Flags: 106
 Description      : $@spelldesc360966
@@ -11638,7 +11638,7 @@ Labels           : 16: Class Spells
                  : 52
                  : 292
 Attributes       : Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46), Change Glyph (47), Encounter Start (55)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1021272)  : Apply Aura (6) | Dummy (4)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
@@ -12952,7 +12952,7 @@ Proc Chance      : 101%
 Proc Flags       : Yellow Melee
 Triggered By     : Hunter Survival 10.2 Class Set 2pc (422878)
 Attributes       : Ignore Line of Sight (66), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Do Not Fail if No Target (431)
-Aura Interrupt   : Enter World (22), Encounter Start (55)
+Aura Interrupt   : Enter World (22), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1103935)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Bonus Multiplier (15)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.5 | Misc Value: 15 | Target: Self (1)
@@ -12981,7 +12981,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 2848
 Attributes       : Allow Aura While Dead (116), Allow Entering Arena (149)
-Aura Interrupt   : Enter World (22), Encounter Start (55)
+Aura Interrupt   : Enter World (22), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1104728)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Misc Value: 23 | Target: Self (1)
@@ -13039,7 +13039,7 @@ Labels           : 16: Class Spells
                  : 2848
 Triggered By     : Hunter Survival 10.2 Class Set 4pc (422879)
 Attributes       : Allow Aura While Dead (116), Allow Entering Arena (149)
-Aura Interrupt   : Enter World (22), Encounter Start (55)
+Aura Interrupt   : Enter World (22), Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1109314)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Target: Self (1)
@@ -13222,7 +13222,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Attributes       : No Redirection (35), No Reflection (39), No Threat (42), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1137558)  : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 32744 | Radius: 1.5 yards | Target: Unknown(86)
@@ -13558,7 +13558,7 @@ Labels           : 16: Class Spells
 Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #2, #4), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2)
 Family Flags     : 74, 106
 Attributes       : Ignore Line of Sight (66), Not a Proc (105), Treat As Periodic (121), Not In Spellbook (143), Aura Points On Client (268)
-Aura Interrupt   : Raid Encounter End or M+ Start (41), Leave Arena or Battleground (45)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40), Leave Arena or Battleground (45)
 Effects          :
 #1 (id=1150295)  : School Damage (2): arcane | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.783 | Target: Enemy (6)
@@ -13830,7 +13830,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Attributes       : Aura Is Debuff (26), Hide In Raid Filter (110), Not In Spellbook (143)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1152551)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -13847,7 +13847,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3022
 Attributes       : Not In Spellbook (143), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1152555)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -14832,7 +14832,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Proc Flags       : Cast Successful
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Not In Spellbook (143), Spellcast Override In Spellbook (310), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1166885)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 392060 | Scaled Value: 392060 | Misc Value: 19434 | Target: Self (1)
@@ -14961,7 +14961,7 @@ Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
 Attributes       : Can Proc From Procs (122), Do Not Consume Aura Stack On Proc (428)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1166989)  : Apply Aura (6) | Add Flat Modifier (107): Spell Chain Target Range (35)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 35 | Target: Self (1)
@@ -15135,7 +15135,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268)
-Aura Interrupt   : Raid Encounter End or M+ Start (41)
+Aura Interrupt   : Raid Encounter Start or M+ Start (40)
 Effects          :
 #1 (id=1167180)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
@@ -15635,7 +15635,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 100%
 Proc Flags       : Yellow Ranged
 Attributes       : Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1179905)  : Apply Aura (6) | Dummy (4) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -15948,7 +15948,7 @@ Labels           : 16: Class Spells
                  : 3022
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1181535)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -15966,7 +15966,7 @@ Labels           : 16: Class Spells
                  : 3022
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1181536)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -15985,7 +15985,7 @@ Labels           : 16: Class Spells
 Stacks           : 5 maximum
 Proc Chance      : 101%
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1181738)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
@@ -16075,7 +16075,7 @@ Labels           : 16: Class Spells
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Attributes       : Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1182585)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
@@ -16094,7 +16094,7 @@ Labels           : 16: Class Spells
                  : 117
                  : 292
 Attributes       : Not In Spellbook (143), Do Not Log on Learn (355)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1182588)  : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
@@ -16198,7 +16198,7 @@ Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1184898)  : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
@@ -16217,7 +16217,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1185789)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16236,7 +16236,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1185799)  : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -1000 | Scaled Value: -1000 | Misc Value: 21 | Target: Self (1)
@@ -16511,7 +16511,7 @@ Labels           : 16: Class Spells
                  : 3022
                  : 4173: Better Together (472357 effect#3)
 Attributes       : No Aura Cancel (31)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1189658)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16530,7 +16530,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1189659)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16635,7 +16635,7 @@ Triggered By     : Bear Summon (471993)
 Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Unknown (467)
 Effects          :
 #1 (id=1189797)  : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 234018 | Misc Value 2: 0x17ed | Radius: 20 yards | Target: At Target Radius (75)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 234018 | Misc Value 2: 0x17ed | Radius: 0 - 5 yards | Target: At Enemy (53) -> At Random (72)
 
 Name             : Bear Summon (id=471993) [Spell Family (9), Hidden] 
 Class            : Hunter
@@ -16727,7 +16727,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1190377)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -16746,7 +16746,7 @@ Labels           : 16: Class Spells
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : Cast Successful
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1190378)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -17315,7 +17315,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : Yellow Ranged
 Attributes       : Is Ability (4), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), Do Not Consume if Gained During Cast (79), DoT Stacking Rule (103), Can Proc From Procs (122), Allow Cast While Casting (135), Not In Spellbook (143), No Cooldown On Tooltip (192), Allow Cast While Channeling (308), Allow Class Ability Procs (416), Do Not Consume Aura Stack On Proc (428), Unknown (467)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46), Encounter End (56)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1193672)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
@@ -17518,7 +17518,7 @@ Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
 Attributes       : Do Not Log (8), Not In Spellbook (143)
-Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Raid Encounter End or M+ Start (41), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
+Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Raid Encounter Start or M+ Start (40), Disconnect (42), Enter Instance (43), Leave Arena or Battleground (45), Change Talent (46)
 Effects          :
 #1 (id=1194595)  : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 10 | Scaled Value: 10 | Target: Friendly (21)
@@ -18097,14 +18097,14 @@ Labels           : 16: Class Spells
 Mechanic         : Bleed
 Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2)
 Family Flags     : 106
-Attributes       : DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Allow Class Ability Procs (416)
+Attributes       : DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Allow Class Ability Procs (416), Unknown (450)
 Effects          :
 #1 (id=1207896)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=1207897)  : Apply Aura (6) | Modify Crit Chance% from Caster (306)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.5 | Target: Enemy (6)
 #3 (id=1207898)  : Apply Aura (6) | Modify Crit Damage Done% (163)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 Description      : $@spelldesc360966
 Tooltip          : $@auracaster has a $s2% increased chance to critically strike this target$?s378962[ and their critical strikes deal $378962s2% increased damage.][.]
