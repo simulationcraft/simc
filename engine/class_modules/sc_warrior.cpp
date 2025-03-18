@@ -9353,12 +9353,21 @@ void warrior_td_t::target_demise()
 
   warrior_t* p = debug_cast<warrior_t*>( source );
 
-  if ( p -> talents.shared.dance_of_death.ok() && p -> buff.bladestorm -> up() )
+  if ( p->talents.shared.dance_of_death.ok() && p->buff.bladestorm->up() )
   {
-    if ( ! p -> buff.dance_of_death_bladestorm -> at_max_stacks() )
+    if ( !p->buff.dance_of_death_bladestorm->at_max_stacks() )
     {
-      p -> buff.dance_of_death_bladestorm -> trigger();
+      p->buff.dance_of_death_bladestorm->trigger();
     }
+  }
+
+  if ( p ->talents.shared.dance_of_death.ok() && p-> buff.ravager -> up() )
+  {
+    if ( !p->buff.dance_of_death_ravager->at_max_stacks() )
+    {
+      p->buff.dance_of_death_ravager->trigger();
+    }
+
   }
 
   if ( p -> talents.warrior.war_machine->ok() )
@@ -9515,7 +9524,8 @@ void warrior_t::create_buffs()
 
   buff.ravager = make_buff( this, "ravager", find_spell( 228920 ) )
                     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                    ->set_cooldown( timespan_t::zero() );;
+                    ->set_cooldown( timespan_t::zero() )
+                    ->set_tick_time_behavior( buff_tick_time_behavior::HASTED );
 
   buff.recklessness = make_buff( this, "recklessness", spell.recklessness_buff )
     ->set_cooldown( timespan_t::zero() )
@@ -9562,7 +9572,7 @@ void warrior_t::create_buffs()
   buff.in_for_the_kill = new in_for_the_kill_t( *this, "in_for_the_kill", find_spell( 248622 ) );
 
   buff.dance_of_death_ravager = make_buff( this, "dance_of_death_ravager", find_spell( 459567 ) )
-      ->set_duration( 0_s ) // Handled by the ravager action
+      ->set_duration( 20_s ) // Longer than the max extension
       ->set_max_stack( as<int>(spell.dance_of_death->effectN( 2 ).base_value()) );
 
   buff.dance_of_death_bladestorm = make_buff( this, "dance_of_death_bladestorm", spell.dance_of_death_bs_buff )
