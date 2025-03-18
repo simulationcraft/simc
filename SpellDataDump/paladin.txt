@@ -5272,6 +5272,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
+                 : 4941
 Category Cooldown: 120 seconds
 Stacks           : 10 maximum
 Proc Chance      : 100%
@@ -17945,6 +17946,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
                  : 3793: Divine Wrath (406872 effect#2)
+                 : 4941
 Stacks           : 10 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
