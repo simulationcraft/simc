@@ -1,5 +1,5 @@
-// Spell text, wow build 11.1.5.59651
-static const std::array<spelltext_data_t, 27295> __ptr_spelltext_data { {
+// Spell text, wow build 11.1.5.59735
+static const std::array<spelltext_data_t, 27310> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -3371,6 +3371,7 @@ static const std::array<spelltext_data_t, 27295> __ptr_spelltext_data { {
   {  109093, "Permanently attaches a mirrored scope to a ranged weapon, sometimes increases Critical Strike by $109092s1 for $109092d when dealing damage with ranged attacks.\r\n\r\nAttaching this scope to a ranged weapon causes it to become soulbound. Cannot be applied to items higher than level $ecix.", 0, 0 },
   {  109099, "Permanently attaches waterjets to your belt, allowing you to walk on water and swim quickly for $131459d.  (30 Sec Cooldown)", 0, 0 },
   {  109132, "Roll a short distance.", 0, 0 },
+  {  109142, "After damaging a target below $s1% health, you gain $123254s2% increased damage and healing for $123254d.", 0, 0 },
   {  109186, "Your healing spells and Smite have a $s1% chance to make your next Flash Heal instant and cost no mana. Stacks to $114255u.", 0, 0 },
   {  109215, "Disengage also frees you from all movement impairing effects and increases your movement speed by $s2% for $118922d.", 0, 0 },
   {  109248, "Fires a magical projectile, tethering the enemy and any other enemies within $s2 yds for $d, stunning them for $117526d if they move more than $s2 yds from the arrow.$?s321468[\r\n\r\nTargets stunned by Binding Shot deal $321469s1% less damage to you for $321469d after the effect ends.][]", 0, 0 },
@@ -3937,6 +3938,7 @@ static const std::array<spelltext_data_t, 27295> __ptr_spelltext_data { {
   {  122926, "Your melee and ranged attacks have a chance to grant $122921s1 haste for $122921d.", 0, 0 },
   {  123040, "Summons a Mindbender to attack the target for $d. \r\n\r\n|cFFFFFFFFGenerates ${$123051m1/100}.1% Mana each time the Mindbender attacks.|r", 0, 0 },
   {  123051, "The Mindbender's melee attacks siphon energy from the target, converting it into power for its master.", 0, 0 },
+  {  123254, "$@spelldesc109142", "Increases damage and healing by $s1%.", 0 },
   {  123333, "$@spelldesc117952", 0, 0 },
   {  123586, "$@spelldesc101545", "Movement speed reduced by $m2%.", 0 },
   {  123725, "$@spelldesc115181", "Burning for $w1 Fire damage every $t1 sec.  Dealing $w2% reduced damage to the Monk.", 0 },
@@ -6264,6 +6266,7 @@ static const std::array<spelltext_data_t, 27295> __ptr_spelltext_data { {
   {  193157, "Your Prayer of Mending has a $s1% chance to leave a Renew on each target it heals.", 0, 0 },
   {  193170, "Calls forth a Bloodstalker to fight by your side.", 0, 0 },
   {  193179, "Your attacks have a chance to call Bloodstalker worgs to your side.", 0, 0 },
+  {  193195, "$?s73510[Mind Spike][Mind Flay] and Mind Blast deal $s3% more damage$?a185916[ and generate $s1% more Insanity][].", 0, 0 },
   {  193315, "Viciously strike an enemy, causing ${$s1*$<mult>} Physical damage.$?s279876[\r\n\r\nHas a $s3% chance to hit an additional time, making your next Pistol Shot half cost and double damage.][]\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points; each time it strikes.|r", 0, 0 },
   {  193318, "$@spelldesc603", 0, 0 },
   {  193331, "$@spelldesc104316", 0, 0 },
@@ -6802,7 +6805,7 @@ static const std::array<spelltext_data_t, 27295> __ptr_spelltext_data { {
   {  202137, "Place a Sigil of Silence at the target location that activates after $d.\r\n\r\nSilences all enemies affected by the sigil for $204490d.", 0, 0 },
   {  202138, "Place a Sigil of Chains at the target location that activates after $d.\r\n\r\nAll enemies affected by the sigil are pulled to its center and are snared, reducing movement speed by $204843s1% for $204843d.", 0, 0 },
   {  202140, "Place a Sigil of Misery at your location that activates after $d.\r\n\r\nCauses all enemies affected by the sigil to cower in fear. Targets are disoriented for $207685d.", 0, 0 },
-  {  202147, "$@spelldesc29838", 0, 0 },
+  {  202147, "$@spelldesc29838", "Healing $w1% health every $t1 sec.", 0 },
   {  202155, "You gain:\r\n\r\n$@spellicon131768 $@spellname131768\r\n$@spelldesc131768\r\n\r\nYou also learn:\r\n\r\n$@spellicon1822 $@spellname1822\r\n$@spellicon1079 $@spellname1079\r\n$@spellicon22570 $@spellname22570\r\n\r\nYour energy regeneration is increased by $s2%.", 0, 0 },
   {  202163, "Reduces the cooldown of Heroic Leap by ${$m1/-1000} sec and Heroic Leap also increases your movement speed by $202164s1% for $202164d.", 0, 0 },
   {  202164, "$@spelldesc202163", "Movement speed increased by $s1%.", 0 },
@@ -6958,6 +6961,7 @@ static const std::array<spelltext_data_t, 27295> __ptr_spelltext_data { {
   {  204255, "$@spelldesc203794", "Consume to heal for $203794s2% of your maximum health.", 0 },
   {  204256, "$@spelldesc203794", "Consume to heal for $203794s1% of your maximum health.", 0 },
   {  204257, "$@spelldesc203783", 0, 0 },
+  {  204263, "Creates a burst of light around a friendly target, knocking away nearby enemies and slowing their movement speed by $s1% for $d.", "Movement speed reduced by $s1%.", 0 },
   {  204268, "Your Hex target is slowed by $378080s1% during Hex and for $378080d after it ends.\r\n\r\nReduces the cooldown of Hex by ${($m1/1000)*-1} sec.", 0, 0 },
   {  204301, "$@spelldesc204019", "Damage against $@auracaster reduced by $w2.", 0 },
   {  204304, "$@spelldesc53209", 0, 0 },
@@ -7022,6 +7026,7 @@ static const std::array<spelltext_data_t, 27295> __ptr_spelltext_data { {
   {  205292, "$@spelldesc198590", 0, 0 },
   {  205345, "$@spelldesc205023", 0, 0 },
   {  205364, "Controls a mind up to 1 level above yours for $d while still controlling your own mind. Does not work versus Demonic, Mechanical, or Undead beings$?a205477[][ or players]. This spell shares diminishing returns with other disorienting effects.", "Under the control of $@auracaster.", 0 },
+  {  205367, "You may also control your own character while Mind Control is active, but Mind Control has a $205364s3 min cooldown, and it may not be used against players.", 0, 0 },
   {  205385, "Aim a bolt of slow-moving Shadow energy at the destination, dealing $205386s1 Shadow damage to all enemies within $A1 yds.\r\n\r\n|cFFFFFFFFGenerates $/100;s2 Insanity.\r\n\r\nThis spell is cast at a selected location.|r", 0, 0 },
   {  205386, "$@spelldesc205385", 0, 0 },
   {  205406, "Draws in all nearby clouds of mist generated by |cFFFFCC99Sheilun|r, healing the target for $s1 per cloud absorbed.", 0, "Artifact" },
@@ -10118,6 +10123,8 @@ static const std::array<spelltext_data_t, 27295> __ptr_spelltext_data { {
   {  265238, "$@spelldesc17511", 0, 0 },
   {  265240, "$@spelldesc21159", 0, 0 },
   {  265255, "$@spelldesc22850", 0, 0 },
+  {  265258, "$@spelldesc265259", "Increases damage and healing by $s1%.", 0 },
+  {  265259, "After healing a target below $s1% health, you deal $265258s2% increased damage and $265258s1% increased healing for $265258d.", 0, 0 },
   {  265266, "$@spelldesc22863", 0, 0 },
   {  265269, "Sends a shadowy bolt at the enemy causing $s1 Shadow damage.", 0, 0 },
   {  265270, "$@spelldesc265269", 0, 0 },
@@ -15672,6 +15679,7 @@ static const std::array<spelltext_data_t, 27295> __ptr_spelltext_data { {
   {  341340, "Corrupts the ground targeted by the Death Knight, causing Shadow damage every sec that targets remain in the area for $43265d.", 0, 0 },
   {  341344, "Death's Due deals |cFFFFFFFF${$s1}.1%|r increased damage.", 0, 0 },
   {  341350, "Coordinated Assault's duration is increased by|cFFFFFFFF ${$s1/1000}.1 sec|r.", 0, 0 },
+  {  341374, "Instantly afflicts the target with Shadow Word: Pain, Vampiric Touch and Devouring Plague.", 0, 0 },
   {  341378, "Kindred Spirits's empowerment cooldown is reduced by |cFFFFFFFF${-$s1}.1%|r.", 0, 0 },
   {  341383, "Ravenous Frenzy increases your critical chance by |cFFFFFFFF${$s1/10}.2%|r per stack.", 0, 0 },
   {  341399, "$?s212436[Butchery][Carve] increases the damage of your next Wildfire Bomb explosion by|cFFFFFFFF ${$s1}.1%|r, stacks up to $341401u times.", 0, 0 },
@@ -15981,6 +15989,8 @@ static const std::array<spelltext_data_t, 27295> __ptr_spelltext_data { {
   {  345209, "$@spelldesc345208", "Movement speed slowed by $w1%.", 0 },
   {  345211, "Activate Soul Igniter, sacrificing up to $345214s1 health over $345211d to empower Blazing Surge.\r\n\r\nReactivate to cast Blazing Surge, dealing ${$345214s2*(1+$@versadmg)} Fire damage split between enemies in a $345215a1 yd cone, plus up to $345214s4% additional damage, based on how long Soul Igniter was active.\r\n\r\nDamage is increased per enemy struck, up to $s2 enemies. (1 min Cooldown)", "Reactivate Soul Igniter to cast Blazing Surge.", 0 },
   {  345215, "$@spelldesc345211", 0, 0 },
+  {  345218, "Void Bolt causes the target to become vulnerable to the void, increasing their damage taken from you by $345219m2% for $345219d. This effect may only be active on one target at a time.\r\n\r\nCasting Void Bolt on an enemy that is already vulnerable extends the duration of your Voidform by $m3 sec, or $m4 sec if Void Bolt critically strikes.", 0, 0 },
+  {  345219, "$@spelldesc345218", "Damage taken from the Priest increased by $w1%.", 0 },
   {  345228, "Increases primary stat by $s1 for $d.\r\n", "Primary stat increased by $w1.", 0 },
   {  345229, "Your spells and abilities have a chance to grant $345230s1 primary stat for $345230d.", 0, 0 },
   {  345230, "Increases primary stat by $s1 for $d.", "Increases primary stat by $w1.", 0 },
@@ -26750,7 +26760,7 @@ static const std::array<spelltext_data_t, 27295> __ptr_spelltext_data { {
   { 1213493, "Every $1213486t sec or $1219068d after entering combat, scan the environment highlighting Mislaid Curiosities and making enemies below $s1% health take $1213372s1% more damage for $1213372d.", "Every $1213486t sec or $1219068d after entering combat, scan the environment highlighting Mislaid Curiosities and making enemies below $w1% health take $1213372w1% more damage for $1213372d.", "Rank 4/4" },
   { 1213494, "Every $1213487t sec or $1219068d after entering combat, scan the environment highlighting Mislaid Curiosities and making enemies below $s1% health take $1213371s1% more damage for $1213371d.", "Every $1213487t sec or $1219068d after entering combat, scan the environment highlighting Mislaid Curiosities and making enemies below $w1% health take $1213371w1% more damage for $1213371d.", "Rank 3/4" },
   { 1213495, "Every $1213488t sec or $1219068d after entering combat, scan the environment highlighting Mislaid Curiosities and making enemies below $s1% health take $1213370s1% more damage for $1213370d.", "Every $1213488t sec or $1219068d after entering combat, scan the environment highlighting Mislaid Curiosities and making enemies below $w1% health take $1213370w1% more damage for $1213370d.", "Rank 2/4" },
-  { 1213551, "During combat a pilot is designated over $1215044d before airdropping the Pacifist Rig MK-$1215045s1 at their location, equipping them with it for $1215054d, and knocking back nearby enemies.", 0, "Rank 1/4" },
+  { 1213551, "During combat a pilot is designated over $1215044d before airdropping the Pacifist Rig MK-$1215045s1 at their location, making them immune, granting them control of the rig for $1215054d, and knocking back nearby enemies.", 0, "Rank 1/4" },
   { 1213554, "Brann's spells and abilities have a chance to drop $s1 footbombs on the field for $1214581d.\r\n\r\nRunning into a footbomb kicks it at your enemy target dealing significant Fire damage to all enemies in a $1214604a-yard radius.", 0, "Rank 1/4" },
   { 1213555, "$@spelldesc1215339", "$@spelldesc1215339", "Rank 1/4" },
   { 1213556, "Pistol Shot now uses the appearance of Ashvane when firing.", 0, 0 },
@@ -26984,9 +26994,9 @@ static const std::array<spelltext_data_t, 27295> __ptr_spelltext_data { {
   { 1215958, "$@spelldesc1215963", "$@spelldesc1215963", 0 },
   { 1215959, "$@spelldesc1215962", "$@spelldesc1215962", 0 },
   { 1215960, "$@spelldesc1215964", "$@spelldesc1215964", 0 },
-  { 1215962, "During combat a pilot is designated over $1215044d before airdropping the Pacifist Rig MK-$1215959s1 at their location, equipping them with it for $1215054d, and knocking back nearby enemies.", 0, "Rank 4/4" },
-  { 1215963, "During combat a pilot is designated over $1215044d before airdropping the Pacifist Rig MK-$1215958s1 at their location, equipping them with it for $1215054d, and knocking back nearby enemies.", 0, "Rank 3/4" },
-  { 1215964, "During combat a pilot is designated over $1215044d before airdropping the Pacifist Rig MK-$1215960s1 at their location, equipping them with it for $1215054d, and knocking back nearby enemies.", 0, "Rank 2/4" },
+  { 1215962, "During combat a pilot is designated over $1215044d before airdropping the Pacifist Rig MK-$1215959s1 at their location, making them immune, granting them control of the rig for $1215054d, and knocking back nearby enemies.", 0, "Rank 4/4" },
+  { 1215963, "During combat a pilot is designated over $1215044d before airdropping the Pacifist Rig MK-$1215958s1 at their location, making them immune, granting them control of the rig for $1215054d, and knocking back nearby enemies.", 0, "Rank 3/4" },
+  { 1215964, "During combat a pilot is designated over $1215044d before airdropping the Pacifist Rig MK-$1215960s1 at their location, making them immune, granting them control of the rig for $1215054d, and knocking back nearby enemies.", 0, "Rank 2/4" },
   { 1215986, "Each time you take damage you have a chance to activate|cFFFFFFFF Luck of the Draw!|r causing you to cast Survival Instincts for ${$s2/1000}.1 sec. Your damage done is increased by $1218553s1% for $1218553d after|cFFFFFFFF Luck of the Draw!|r activates.", 0, 0 },
   { 1215987, "Each time you take damage you have a chance to activate|cFFFFFFFF Luck of the Draw!|r causing you to cast Guardian of Ancient Kings for ${$s2/1000}.1 sec. Your damage done is increased by $1218114s1% for $1218114d after|cFFFFFFFF Luck of the Draw!|r activates.", 0, 0 },
   { 1215988, "After you gain |cFFFFFFFF Luck of the Draw!|r your next $1218537U Druid abilities cast another Druid ability at $s1% effectiveness.", 0, 0 },
@@ -27295,13 +27305,18 @@ static const std::array<spelltext_data_t, 27295> __ptr_spelltext_data { {
   { 1228321, "$@spelldesc66", "Invisible$?$w3=0[][ and moving $87833s1% faster].", 0 },
   { 1228455, "$@spelldesc433106", 0, 0 },
   { 1231772, "Elemental Shaman baseline passive", 0, 0 },
+  { 1232556, "$@spelldesc355312", "$@auracaster's animated remains.", 0 },
+  { 1232567, "$@spelldesc47540", 0, 0 },
+  { 1232571, "$@spelldesc47540", 0, 0 },
+  { 1232592, "$@spelldesc373129", 0, 0 },
+  { 1232615, "$@spelldesc400169", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.1.5.59651
+// spelltext hotfix entries, wow build 11.1.5.59735
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.1.5.59651
+// Spell description variables, wow build 11.1.5.59735
 static const std::array<spelldesc_vars_data_t, 641> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -27946,7 +27961,7 @@ static const std::array<spelldesc_vars_data_t, 641> __ptr_spelldesc_vars_data { 
   { 1227294, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.1.5.59651
+// spelldesc_vars hotfix entries, wow build 11.1.5.59735
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
