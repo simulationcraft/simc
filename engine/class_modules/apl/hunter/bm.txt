@@ -19,7 +19,7 @@ actions.cds+=/fireblood,if=buff.call_of_the_wild.up|talent.bloodshed&(prev_gcd.1
 actions.cds+=/potion,if=buff.call_of_the_wild.up|talent.bloodshed&(prev_gcd.1.bloodshed)|!talent.call_of_the_wild&!talent.bloodshed&buff.bestial_wrath.up|fight_remains<31
 
 actions.cleave=bestial_wrath,target_if=min:dot.barbed_shot.remains
-actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|pet.main.buff.frenzy.stack<3|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|cooldown.barbed_shot.charges_fractional>1.4&howl_summon_ready|full_recharge_time<gcd+0.25
+actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd|charges_fractional>=cooldown.kill_command.charges_fractional|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|howl_summon_ready&full_recharge_time<8
 actions.cleave+=/multishot,if=pet.main.buff.beast_cleave.remains<0.25+gcd&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)
 actions.cleave+=/black_arrow,if=buff.beast_cleave.remains
 actions.cleave+=/call_of_the_wild
@@ -27,7 +27,6 @@ actions.cleave+=/bloodshed
 actions.cleave+=/dire_beast,if=talent.shadow_hounds|talent.dire_cleave
 actions.cleave+=/explosive_shot,if=talent.thundering_hooves
 actions.cleave+=/kill_command,target_if=max:(target.health.pct<35|!talent.killer_instinct)*2+dot.a_murder_of_crows.refreshable
-actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=set_bonus.thewarwithin_season_2_2pc|charges_fractional>1.4|buff.call_of_the_wild.up|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|fight_remains<9
 actions.cleave+=/explosive_shot,if=talent.thundering_hooves
 actions.cleave+=/lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.cleave+=/cobra_shot,if=focus.time_to_max<gcd*2|buff.hogstrider.stack>3
@@ -36,15 +35,13 @@ actions.cleave+=/explosive_shot
 actions.cleave+=/bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.cleave+=/arcane_torrent,if=(focus+focus.regen+30)<focus.max
 
-actions.st=bestial_wrath
-actions.st+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|pet.main.buff.frenzy.stack<3|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|cooldown.barbed_shot.charges_fractional>1.4&howl_summon_ready|full_recharge_time<gcd+0.25
-actions.st+=/dire_beast,if=talent.huntmasters_call
-actions.st+=/kill_command,if=talent.call_of_the_wild&cooldown.call_of_the_wild.remains<gcd+0.25
+actions.st=/dire_beast,if=talent.huntmasters_call
+actions.st+=/bestial_wrath
+actions.st+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd|charges_fractional>=cooldown.kill_command.charges_fractional|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|howl_summon_ready&full_recharge_time<8
+actions.st+=/kill_command,if=charges_fractional>=cooldown.barbed_shot.charges_fractional
 actions.st+=/call_of_the_wild
 actions.st+=/bloodshed
 actions.st+=/black_arrow
-actions.st+=/kill_command
-actions.st+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=set_bonus.thewarwithin_season_2_2pc|charges_fractional>1.4|buff.call_of_the_wild.up|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|fight_remains<9
 actions.st+=/explosive_shot,if=talent.thundering_hooves
 actions.st+=/lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5
 actions.st+=/cobra_shot

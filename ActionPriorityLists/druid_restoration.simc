@@ -5,12 +5,12 @@
 # Feel free to edit, adapt and improve it to your own needs.
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
-# Restoration DPS APL can be found at https://www.dreamgrove.gg/sims/tree/restoration.txt
+# Restoration DPS APL can be found at https://github.com/dreamgrove/dreamgrove/blob/master/sims/tree/restoration.txt
 
 # Executed before combat begins. Accepts non-harmful actions only.
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat=snapshot_stats
-# Snapshot raid buffed stats before combat begins and pre-potting is done.
+# Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat+=/heart_of_the_wild
 actions.precombat+=/cat_form,if=talent.rake.enabled
 actions.precombat+=/prowl,if=talent.rake.enabled
@@ -19,7 +19,7 @@ actions.precombat+=/prowl,if=talent.rake.enabled
 # Executed every time the actor is available.
 actions=berserking
 actions+=/natures_vigil,if=!buff.prowl.up&!buff.shadowmeld.up
-actions+=/run_action_list,name=healing,if=!buff.prowl.up&!buff.shadowmeld.up,line_cd=14
+actions+=/run_action_list,name=healing,if=!buff.prowl.up&!buff.shadowmeld.up,line_cd=13
 actions+=/heart_of_the_wild,if=!buff.prowl.up&!buff.shadowmeld.up
 actions+=/use_items,if=!buff.prowl.up&!buff.shadowmeld.up
 actions+=/potion,if=!buff.prowl.up&!buff.shadowmeld.up
@@ -27,10 +27,10 @@ actions+=/run_action_list,name=cat,if=talent.rake.enabled
 actions+=/cat_form,if=talent.rake.enabled
 actions+=/convoke_the_spirits,if=(buff.heart_of_the_wild.up|cooldown.heart_of_the_wild.remains>60-30*talent.cenarius_guidance.enabled|!talent.heart_of_the_wild.enabled)
 actions+=/sunfire,target_if=refreshable&target.time_to_die>5
+actions+=/starfire,if=(talent.liveliness.enabled&(buff.heart_of_the_wild.up&spell_targets.starfire>4|spell_targets.starfire>6))|(talent.master_shapeshifter.enabled&(buff.heart_of_the_wild.up&spell_targets.starfire>1|spell_targets.starfire>4))|(buff.heart_of_the_wild.up&spell_targets.starfire>3|spell_targets.starfire>5)
 actions+=/moonfire,target_if=refreshable&time_to_die>12
 actions+=/starsurge,if=active_enemies<8
-actions+=/sunfire,target_if=refreshable&target.time_to_die>7&active_enemies<7
-actions+=/starfire,if=spell_targets.starfire>1
+actions+=/starfire,if=spell_targets.starfire>1|buff.heart_of_the_wild.up
 actions+=/wrath
 
 actions.cat=rake,if=buff.shadowmeld.up|buff.prowl.up|buff.sudden_ambush.up
@@ -42,20 +42,21 @@ actions.cat+=/rip,target_if=((refreshable|energy>90&remains<=10)&(combo_points=5
 actions.cat+=/pool_resource,for_next=1
 actions.cat+=/thrash_cat,target_if=refreshable&target.time_to_die>5&spell_targets.thrash_cat>4
 actions.cat+=/sunfire,target_if=(refreshable&target.time_to_die>5)&!prev_gcd.1.cat_form
-actions.cat+=/rake,target_if=(refreshable&time_to_die>8&!ticking)
-actions.cat+=/cat_form,if=!buff.cat_form.up&energy>60&(cooldown.healing.remains>(gcd.max*2)|!druid.time_spend_healing)
-actions.cat+=/moonfire,target_if=(refreshable&time_to_die>12&!ticking|(prev_gcd.1.sunfire&remains<duration*0.8&spell_targets.sunfire=1))&!prev_gcd.1.cat_form&spell_targets.swipe_cat<6
+actions.cat+=/rake,target_if=refreshable&(time_to_die>8&!ticking)|(active_dot.rake<1&talent.primal_fury.enabled&talent.master_shapeshifter.enabled&spell_targets.swipe_cat>4)
+actions.cat+=/cat_form,if=!buff.cat_form.up&energy>60&(cooldown.healing.remains>(gcd.max*2)|!druid.time_spend_healing)&!talent.fluid_form.enabled
+actions.cat+=/moonfire,target_if=(refreshable&time_to_die>12&!ticking|(prev_gcd.1.sunfire&remains<duration*0.8&spell_targets.sunfire=1))&!prev_gcd.1.cat_form&spell_targets.swipe_cat<4
 actions.cat+=/sunfire,if=prev_gcd.1.moonfire&remains<duration*0.8
 actions.cat+=/starfire,if=(talent.master_shapeshifter.enabled&(spell_targets.starfire>4|(buff.heart_of_the_wild.up&spell_targets.starfire>5))|(buff.heart_of_the_wild.up&spell_targets.starfire>7))
 actions.cat+=/starsurge,if=active_enemies=1|(active_enemies<8&!buff.cat_form.up)
-actions.cat+=/cat_form,if=!buff.cat_form.up&energy>50
+actions.cat+=/cat_form,if=!buff.cat_form.up&energy>50&!talent.fluid_form.enabled
 actions.cat+=/pool_resource,for_next=1
 actions.cat+=/ferocious_bite,target_if=(combo_points>3&target.time_to_die<3)|(combo_points=5&energy>=50&dot.rip.remains>10)&spell_targets.swipe_cat<4
 actions.cat+=/thrash_cat,target_if=refreshable&target.time_to_die>5&spell_targets.thrash_cat>2
-actions.cat+=/rake,target_if=refreshable&time_to_die>10
+actions.cat+=/rake,target_if=refreshable&time_to_die>10&(!talent.primal_fury.enabled|!talent.master_shapeshifter.enabled|!spell_targets.swipe_cat>4)
 actions.cat+=/swipe_cat,if=active_enemies>2&combo_points<5
 actions.cat+=/thrash_cat,target_if=refreshable&target.time_to_die>5
 actions.cat+=/pool_resource,for_next=1
 actions.cat+=/shred,if=energy>60&combo_points<5
+actions.cat+=/cat_form,if=!buff.cat_form.up
 
 actions.healing=strict_sequence,name=heal:regrowth:regrowth:regrowth:regrowth

@@ -5,7 +5,7 @@ level=80
 race=Dwarf
 role=spell
 position=ranged_back
-talents=CsQAAAAAAAAAAAAAAAAAAAAAAghZmZmZEzmhxsZmZY2mFzwMzsY2MWMzAAAAAjZmtlZmlZAjZMsQGYbYjGLYAAAAAAAMjxMAA
+talents=CsQAAAAAAAAAAAAAAAAAAAAAAghZmZmZEzmhxsZmZY2mFzwMzsY2MWMzAAAAAjZmtlZmlZAjZMsQGYbYhGLYAAAAAAAMjxMAA
 
 # Default consumables
 potion=tempered_potion_3
@@ -89,19 +89,19 @@ actions.aoe+=/malevolence,if=cooldown.summon_infernal.remains>=55&soul_shard<4.7
 actions.aoe+=/rain_of_fire,if=demonic_art
 actions.aoe+=/wait,sec=((buff.diabolic_ritual_mother_of_chaos.remains+buff.diabolic_ritual_overlord.remains+buff.diabolic_ritual_pit_lord.remains)),if=(diabolic_ritual&(buff.diabolic_ritual_mother_of_chaos.remains+buff.diabolic_ritual_overlord.remains+buff.diabolic_ritual_pit_lord.remains)<gcd.max*0.25)&soul_shard>2
 actions.aoe+=/incinerate,if=(diabolic_ritual&(buff.diabolic_ritual_mother_of_chaos.remains+buff.diabolic_ritual_overlord.remains+buff.diabolic_ritual_pit_lord.remains)<=action.incinerate.cast_time&(buff.diabolic_ritual_mother_of_chaos.remains+buff.diabolic_ritual_overlord.remains+buff.diabolic_ritual_pit_lord.remains)>gcd.max*0.25)
-actions.aoe+=/call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd.max&active_enemies<5&(!cooldown.summon_infernal.up|!talent.summon_infernal)
+actions.aoe+=/call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd.max&active_enemies<(5+!talent.wither)&(!cooldown.summon_infernal.up|!talent.summon_infernal)
 actions.aoe+=/dimensional_rift,if=soul_shard<4.7&(charges>2|fight_remains<cooldown.dimensional_rift.duration)
 actions.aoe+=/rain_of_fire,if=!talent.inferno&soul_shard>=(4.5-0.1*(active_dot.immolate+active_dot.wither))|soul_shard>=(3.5-0.1*(active_dot.immolate+active_dot.wither))|buff.ritual_of_ruin.up
 actions.aoe+=/wither,target_if=min:dot.wither.remains+99*debuff.havoc.remains+99*!dot.wither.ticking,if=dot.wither.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.wither.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains|time<5)&(active_dot.wither<=4|time>15)&target.time_to_die>18
 actions.aoe+=/channel_demonfire,if=dot.immolate.remains+dot.wither.remains>cast_time&talent.raging_demonfire
-actions.aoe+=/shadowburn,if=((buff.malevolence.up&((talent.cataclysm&talent.raging_demonfire&active_enemies<=10&fight_remains>=60)|(talent.cataclysm&!talent.raging_demonfire&active_enemies<=8&fight_remains>=60)|active_enemies<=5))|(!talent.wither&talent.cataclysm&active_enemies<=5)|active_enemies<=3)&((cooldown.shadowburn.full_recharge_time<=gcd.max*3|debuff.eradication.remains<=gcd.max&talent.eradication&!action.chaos_bolt.in_flight&!talent.diabolic_ritual)&(talent.conflagration_of_chaos|talent.blistering_atrophy)|fight_remains<=8)
-actions.aoe+=/shadowburn,target_if=min:time_to_die,if=((buff.malevolence.up&((talent.cataclysm&talent.raging_demonfire&active_enemies<=10&fight_remains>=60)|(talent.cataclysm&!talent.raging_demonfire&active_enemies<=8&fight_remains>=60)|active_enemies<=5))|(!talent.wither&talent.cataclysm&active_enemies<=5)|active_enemies<=3)&((cooldown.shadowburn.full_recharge_time<=gcd.max*3|debuff.eradication.remains<=gcd.max&talent.eradication&!action.chaos_bolt.in_flight&!talent.diabolic_ritual)&(talent.conflagration_of_chaos|talent.blistering_atrophy)&time_to_die<5|fight_remains<=8)
+actions.aoe+=/shadowburn,if=((buff.malevolence.up&((talent.cataclysm&active_enemies<=10)|(talent.inferno&active_enemies<=6)))|(talent.wither&talent.cataclysm&active_enemies<=6)|(!talent.wither&talent.cataclysm&active_enemies<=4)|active_enemies<=3)&((cooldown.shadowburn.full_recharge_time<=gcd.max*3|debuff.eradication.remains<=gcd.max&talent.eradication&!action.chaos_bolt.in_flight&!talent.diabolic_ritual)&(talent.conflagration_of_chaos|talent.blistering_atrophy)|fight_remains<=8)
+actions.aoe+=/shadowburn,target_if=min:time_to_die,if=((buff.malevolence.up&((talent.cataclysm&active_enemies<=10)|(talent.inferno&active_enemies<=6)))|(talent.wither&talent.cataclysm&active_enemies<=6)|(!talent.wither&talent.cataclysm&active_enemies<=4)|active_enemies<=3)&((cooldown.shadowburn.full_recharge_time<=gcd.max*3|debuff.eradication.remains<=gcd.max&talent.eradication&!action.chaos_bolt.in_flight&!talent.diabolic_ritual)&(talent.conflagration_of_chaos|talent.blistering_atrophy)&time_to_die<5|fight_remains<=8)
 actions.aoe+=/ruination
 actions.aoe+=/rain_of_fire,if=pet.infernal.active&talent.rain_of_chaos
 actions.aoe+=/soul_fire,target_if=min:dot.wither.remains+dot.immolate.remains-5*debuff.conflagrate.up+100*debuff.havoc.remains,if=(buff.decimation.up)&!talent.raging_demonfire&havoc_active
 actions.aoe+=/soul_fire,target_if=min:(dot.wither.remains+dot.immolate.remains-5*debuff.conflagrate.up+100*debuff.havoc.remains),if=buff.decimation.up&active_dot.immolate<=4
 actions.aoe+=/infernal_bolt,if=soul_shard<2.5
-actions.aoe+=/chaos_bolt,if=soul_shard>3.5-(0.1*active_enemies)&!talent.rain_of_fire
+actions.aoe+=/chaos_bolt,if=(soul_shard>3.5-(0.1*active_enemies)&!talent.rain_of_fire)|(!talent.wither&talent.cataclysm&active_enemies<=3)
 actions.aoe+=/cataclysm,if=raid_event.adds.in>15|talent.wither
 actions.aoe+=/havoc,target_if=min:((-target.time_to_die)<?-15)+dot.immolate.remains+99*(self.target=target),if=(!cooldown.summon_infernal.up|!talent.summon_infernal|(talent.inferno&active_enemies>4))&target.time_to_die>8&(cooldown.malevolence.remains>15|!talent.malevolence)|time<5
 actions.aoe+=/wither,target_if=min:dot.wither.remains+99*debuff.havoc.remains,if=dot.wither.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.wither.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains|time<5)&active_dot.wither<=active_enemies&target.time_to_die>18
@@ -157,9 +157,9 @@ actions.havoc+=/soul_fire,if=cast_time<havoc_remains&soul_shard<2.5
 actions.havoc+=/cataclysm,if=raid_event.adds.in>15|(talent.wither&dot.wither.remains<action.wither.duration*0.3)
 actions.havoc+=/immolate,target_if=min:dot.immolate.remains+100*debuff.havoc.remains,if=(((dot.immolate.refreshable&variable.havoc_immo_time<5.4)&target.time_to_die>5)|((dot.immolate.remains<2&dot.immolate.remains<havoc_remains)|!dot.immolate.ticking|variable.havoc_immo_time<2)&target.time_to_die>11)&soul_shard<4.5
 actions.havoc+=/wither,target_if=min:dot.wither.remains+100*debuff.havoc.remains,if=(((dot.wither.refreshable&variable.havoc_immo_time<5.4)&target.time_to_die>5)|((dot.wither.remains<2&dot.wither.remains<havoc_remains)|!dot.wither.ticking|variable.havoc_immo_time<2)&target.time_to_die>11)&soul_shard<4.5
-actions.havoc+=/shadowburn,if=(cooldown.shadowburn.full_recharge_time<=gcd.max*3|debuff.eradication.remains<=gcd.max&talent.eradication&!action.chaos_bolt.in_flight&!talent.diabolic_ritual)&(talent.conflagration_of_chaos|talent.blistering_atrophy)
-actions.havoc+=/shadowburn,if=havoc_remains<=gcd.max*3
-actions.havoc+=/chaos_bolt,if=cast_time<havoc_remains&((!talent.improved_chaos_bolt&active_enemies<=2)|(talent.improved_chaos_bolt&((talent.wither&talent.inferno&active_enemies<=2)|(((talent.wither&talent.cataclysm)|(!talent.wither&talent.inferno))&active_enemies<=3)|(!talent.wither&talent.cataclysm&active_enemies<=4))))
+actions.havoc+=/shadowburn,if=active_enemies<=4&(cooldown.shadowburn.full_recharge_time<=gcd.max*3|debuff.eradication.remains<=gcd.max&talent.eradication&!action.chaos_bolt.in_flight&!talent.diabolic_ritual)&(talent.conflagration_of_chaos|talent.blistering_atrophy)
+actions.havoc+=/shadowburn,if=active_enemies<=4&havoc_remains<=gcd.max*3
+actions.havoc+=/chaos_bolt,if=cast_time<havoc_remains&((!talent.improved_chaos_bolt&active_enemies<=2)|(talent.improved_chaos_bolt&((talent.wither&talent.inferno&active_enemies<=2)|(((talent.wither&talent.cataclysm)|(!talent.wither&talent.inferno))&active_enemies<=3)|(!talent.wither&talent.cataclysm&active_enemies<=5))))
 actions.havoc+=/rain_of_fire,if=active_enemies>=3
 actions.havoc+=/channel_demonfire,if=soul_shard<4.5
 actions.havoc+=/conflagrate,if=!talent.backdraft
@@ -189,30 +189,30 @@ actions.variables+=/variable,name=trinket_1_will_lose_cast,value=((floor((fight_
 actions.variables+=/variable,name=trinket_2_will_lose_cast,value=((floor((fight_remains%trinket.2.cooldown.duration)+1)!=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(floor((fight_remains%trinket.2.cooldown.duration)+1))!=(floor(((fight_remains-cooldown.summon_infernal.remains)%trinket.2.cooldown.duration)+1))|((floor((fight_remains%trinket.2.cooldown.duration)+1)=floor((fight_remains+(cooldown.summon_infernal.duration-cooldown.summon_infernal.remains))%cooldown.summon_infernal.duration))&(((fight_remains-cooldown.summon_infernal.remains%%trinket.2.cooldown.duration)-cooldown.summon_infernal.remains-variable.trinket_2_buff_duration)>0)))&cooldown.summon_infernal.remains>20
 
 head=spliced_fiendtraders_transcendence,id=229325,bonus_id=1527/11996/1808,gem_id=213743
-neck=semicharmed_amulet,id=228841,bonus_id=8781,ilevel=678,gem_id=213485/213467
+neck=semicharmed_amulet,id=228841,bonus_id=8781,ilevel=678,gem_id=213473/213479
 shoulders=spliced_fiendtraders_loyal_servants,id=229323,bonus_id=1527/11996
-back=undercircuit_racing_flag,id=228839,bonus_id=1527/11996/11964
+back=electricians_siphoning_filter,id=234507,bonus_id=1527/11996/11964
 chest=spliced_fiendtraders_surgical_gown,id=229328,ilevel=678,enchant_id=7364
-wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/9627/10222/11144/11307/11109/8960/8793,ilevel=675,gem_id=213458,enchant_id=7397,crafted_stats=36/32
-hands=golden_handshakers,id=228872,bonus_id=1527/11996/11964
-waist=honorbound_retainers_sash,id=221121,bonus_id=3170/11996/11964/1808,gem_id=213491
+wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/9627/10222/11144/11307/11109/8960/8791,ilevel=675,gem_id=213491,enchant_id=7397,crafted_stats=36/32
+hands=mine_rats_handwarmers,id=159231,bonus_id=11359/11996/11964
+waist=excavators_safety_belt,id=159226,bonus_id=11359/11996/11964/1808,gem_id=213479
 legs=spliced_fiendtraders_skin_tights,id=229324,bonus_id=11996/10356/11961/6652/1579/10255,ilevel=678,enchant_id=7534
-feet=deranged_alchemists_slippers,id=159235,bonus_id=11359/11996/11964,enchant_id=7421
-finger1=cyrces_circlet,id=228411,bonus_id=12014/1498,ilevel=658,gem_id=228639/228638/228646,enchant_id=7340
-finger2=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213491/213491,enchant_id=7340
+feet=hyperthread_boots,id=168964,bonus_id=10067/11996/11964,enchant_id=7421
+finger1=hoop_of_the_blighted,id=221197,bonus_id=3170/11996/11964/8781,gem_id=213467/213491,enchant_id=7346
+finger2=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213458/213482,enchant_id=7334
 trinket1=eye_of_kezan,id=230198,ilevel=678
 trinket2=mugs_moxie_jug,id=230192,bonus_id=1527/11996/11964
 main_hand=scalding_queenmakers_shiv,id=221062,bonus_id=3170/11996/11964,enchant_id=7460
 off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/12043/12040/1485/8795/11300/8960,crafted_stats=40/36
 
 # Gear Summary
-# gear_ilvl=676.38
-# gear_stamina=386578
+# gear_ilvl=677.63
+# gear_stamina=391616
 # gear_intellect=69873
-# gear_crit_rating=7720
-# gear_haste_rating=14564
-# gear_mastery_rating=15786
-# gear_versatility_rating=784
+# gear_crit_rating=13456
+# gear_haste_rating=13755
+# gear_mastery_rating=17421
+# gear_versatility_rating=2400
 # gear_speed_rating=1000
 # gear_armor=20744
 # set_bonus=thewarwithin_season_2_2pc=1

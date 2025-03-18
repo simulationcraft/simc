@@ -1,6 +1,3 @@
-# TODO: remove when 11.1 goes live
-ptr=1
-
 # TWW2
 # TWW Season 2
 # * Set pieces are permitted up to the item level cap (639). ["bonus_id=?/?"]
@@ -28,10 +25,10 @@ ptr=1
 TWW2_Generate_Death_Knight.simc
 
 # Demon Hunter
-# TWW2_Generate_Demon_Hunter.simc
+TWW2_Generate_Demon_Hunter.simc
 
 # Druid
-# TWW2_Generate_Druid.simc
+TWW2_Generate_Druid.simc
 
 # Evoker
 TWW2_Generate_Evoker.simc
@@ -43,10 +40,10 @@ TWW2_Generate_Evoker.simc
 TWW2_Generate_Mage.simc
 
 # Monk
-# TWW2_Generate_Monk.simc
+TWW2_Generate_Monk.simc
 
 # Paladin
-# TWW2_Generate_Paladin.simc
+TWW2_Generate_Paladin.simc
 
 # Priest
 TWW2_Generate_Priest.simc
@@ -61,4 +58,4 @@ TWW2_Generate_Shaman.simc
 TWW2_Generate_Warlock.simc
 
 # Warrior
-# TWW2_Generate_Warrior.simc
+TWW2_Generate_Warrior.simc

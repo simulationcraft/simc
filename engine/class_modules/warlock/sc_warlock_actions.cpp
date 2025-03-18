@@ -33,7 +33,6 @@ using namespace helpers;
       bool sacrificed_souls = false;
       bool wicked_maw = false;
       bool soul_conduit_base_cost = false;
-      bool demonic_brutality = false;
 
       // Destruction
       bool chaotic_energies = false;
@@ -109,7 +108,6 @@ using namespace helpers;
       affected_by.master_demonologist_dd = data().affected_by( p->warlock_base.master_demonologist->effectN( 2 ) );
       // TOCHECK: 2024-07-12 Despite the value of Effect 2 being 0 for Wicked Maw's debuff, the spells listed for it gain full value as if from Effect 1
       affected_by.wicked_maw = data().affected_by( p->talents.wicked_maw_debuff->effectN( 1 ) ) || data().affected_by( p->talents.wicked_maw_debuff->effectN( 2 ) );
-      affected_by.demonic_brutality = data().affected_by( p->talents.demonic_brutality->effectN( 1 ) );
 
       affected_by.backdraft = data().affected_by( p->talents.backdraft_buff->effectN( 1 ) );
       affected_by.roaring_blaze = p->talents.roaring_blaze.ok() && data().affected_by( p->talents.conflagrate_debuff->effectN( 1 ) );
@@ -456,9 +454,6 @@ using namespace helpers;
 
       if ( affliction() && affected_by.contagion )
         m *= 1.0 + p()->talents.contagion->effectN( 1 ).percent();
-
-      if ( demonology() && affected_by.demonic_brutality )
-        m *= 1.0 + p()->talents.demonic_brutality->effectN( 1 ).percent();
 
       if ( destruction() && affected_by.ruin )
         m *= 1.0 + p()->talents.ruin->effectN( 1 ).percent();
@@ -1564,12 +1559,24 @@ using namespace helpers;
 
   struct shared_fate_t : public warlock_spell_t
   {
+    double tick_factor;
+
     shared_fate_t( warlock_t* p )
       : warlock_spell_t( "Shared Fate", p, p->hero.shared_fate_dmg )
     {
       background = dual = true;
       aoe = -1;
       reduced_aoe_targets = p->hero.shared_fate->effectN( 1 ).base_value();
+      tick_factor = 1.0;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double m = warlock_spell_t::composite_da_multiplier( s );
+
+      m *= tick_factor;
+
+      return m;
     }
   };
 
@@ -4267,10 +4274,10 @@ using namespace helpers;
     {
       warlock_spell_t::impact( s );
 
-      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() && !jackpot )
+      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_immolate->is_ticking() )
         td( s->target )->dots_immolate->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
 
-      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_wither->is_ticking() && !jackpot )
+      if ( p()->talents.raging_demonfire.ok() && td( s->target )->dots_wither->is_ticking() )
         td( s->target )->dots_wither->adjust_duration( p()->talents.raging_demonfire->effectN( 2 ).time_value() );
     }
 
@@ -4285,7 +4292,7 @@ using namespace helpers;
         m *= 1.0 + p()->talents.demonfire_infusion->effectN( 3 ).percent();
 
       if ( jackpot )
-        m *= 1.0 + p()->tier.spliced_destro_2pc->effectN( 1 ).percent();
+        m *= p()->tier.spliced_destro_2pc->effectN( 1 ).percent();
 
       return m;
     }
@@ -4828,6 +4835,9 @@ using namespace helpers;
         return;
     }
   }
+
+  void helpers::set_shared_fate_tick_factor( warlock_t* p, double f )
+  { debug_cast<shared_fate_t*>( p->proc_actions.shared_fate )->tick_factor = f; }
 
   // Event for spawning Wild Imps for Demonology
   imp_delay_event_t::imp_delay_event_t( warlock_t* p, double delay, double exp ) : player_event_t( *p, timespan_t::from_millis( delay ) )

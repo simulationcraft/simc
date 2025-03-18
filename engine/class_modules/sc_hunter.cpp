@@ -996,7 +996,7 @@ public:
     events::tar_trap_aoe_t* tar_trap_aoe = nullptr;
     timespan_t tensile_bowstring_extension = 0_s;
     event_t* current_volley = nullptr;
-    action_t* traveling_explosive = nullptr;
+    event_t* precision_detonation_expiry = nullptr;
     timespan_t sentinel_watch_reduction = 0_s;
     howl_of_the_pack_leader_beast howl_of_the_pack_leader_next_beast = WYVERN;
     timespan_t fury_of_the_wyvern_extension = 0_s;
@@ -1667,7 +1667,7 @@ struct hunter_pet_t: public pet_t
     main_hand_weapon.swing_time = 2_s;
   }
 
-  void apply_affecting_auras( action_t& action )
+  void apply_affecting_auras( action_t& action ) override
   {
     pet_t::apply_affecting_auras( action );
 
@@ -1685,7 +1685,7 @@ struct hunter_pet_t: public pet_t
     pet_t::schedule_ready( delta_time, waiting );
   }
 
-  double composite_melee_attack_power() const
+  double composite_melee_attack_power() const override
   {
     double ap = pet_t::composite_melee_attack_power();
 
@@ -2163,7 +2163,7 @@ struct animal_companion_t final : public hunter_main_pet_base_t
     resource_regeneration = regen_type::DISABLED;
   }
 
-  double composite_player_target_multiplier( player_t* target, school_e school ) const
+  double composite_player_target_multiplier( player_t* target, school_e school ) const override
   {
     double m = hunter_main_pet_base_t::composite_player_target_multiplier( target, school );
 
@@ -2171,7 +2171,7 @@ struct animal_companion_t final : public hunter_main_pet_base_t
     if ( td->debuffs.bloodshed->check() && td->debuffs.bloodshed->has_common_school( school ) )
     {
       double bonus = td->debuffs.bloodshed->check_value();
-      if ( td->debuffs.bloodshed->data().affected_by( o()->talents.venomous_bite->effectN( 1 ) ) )
+      if ( td->debuffs.bloodshed->data().affected_by_label( o()->talents.venomous_bite->effectN( 1 ) ) )
         bonus *= 1 + o()->talents.venomous_bite->effectN( 1 ).percent();
 
       m *= 1 + bonus;
@@ -2293,8 +2293,8 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
 
     buffs.potent_mutagen = 
       make_buff( this, "potent_mutagen", o()->find_spell( 1218003 ) )
-        //2025-02-11 - For some reason the base value is still 1 (so the pet buff says 1 second reduction per hit) but the server script doing the reduction only reduces by 0.5s
-        ->set_default_value( o()->find_spell( 1218004 )->effectN( 2 ).base_value() / 2 );
+        //2025-03-07 - For some reason the base value is still 1, the pet buff says 0.5 seconds reduction per hit, but the server script doing the reduction only reduces by 0.25s
+        ->set_default_value( o()->find_spell( 1218004 )->effectN( 2 ).base_value() / 4 );
 
     buffs.solitary_companion = 
       make_buff( this, "solitary_companion", find_spell( 474751 ) )
@@ -2376,14 +2376,14 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
     return m;
   }
 
-  double composite_player_target_multiplier( player_t* target, school_e school ) const
+  double composite_player_target_multiplier( player_t* target, school_e school ) const override
   {
     double m = hunter_main_pet_base_t::composite_player_target_multiplier( target, school );
 
     if ( get_target_data( target )->dots.bloodshed->is_ticking() && o()->talents.bloodshed_dot->effectN( 2 ).has_common_school( school ) )
     {
       double bonus = o()->talents.bloodshed_dot->effectN( 2 ).percent();
-      if ( o()->talents.bloodshed_dot->affected_by( o()->talents.venomous_bite->effectN( 1 ) ) )
+      if ( o()->talents.bloodshed_dot->affected_by_label( o()->talents.venomous_bite->effectN( 1 ) ) )
         bonus *= 1 + o()->talents.venomous_bite->effectN( 1 ).percent();
 
       m *= 1 + bonus;
@@ -3257,7 +3257,7 @@ struct rend_flesh_t : public hunter_pet_attack_t<bear_t>
       envenomed_fangs = new envenomed_fangs_t( p );
   }
 
-  dot_t* get_dot( player_t* t )
+  dot_t* get_dot( player_t* t ) override
   {
     if ( !t )
       t = target;
@@ -3267,7 +3267,7 @@ struct rend_flesh_t : public hunter_pet_attack_t<bear_t>
     return p()->get_target_data( t )->dots.rend_flesh;
   }
 
-  void tick( dot_t* d )
+  void tick( dot_t* d ) override
   {
     hunter_pet_attack_t::tick( d );
 
@@ -4296,7 +4296,7 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
     snapshot_flags = STATE_MUL_PERSISTENT;
   }
 
-  virtual void update_state( action_state_t* s, result_amount_type rt )
+  void update_state( action_state_t* s, result_amount_type rt ) override
   {
     hunter_ranged_attack_t::update_state( s, rt );
 
@@ -4348,7 +4348,7 @@ struct explosive_shot_base_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::impact( s );
   }
 
-  void tick( dot_t* d ) override
+  void tick( dot_t* ) override
   {
     // Prevent tick() from updating state so it can be used to clear the effectiveness bonus.
   }
@@ -4420,20 +4420,6 @@ struct explosive_shot_t : public explosive_shot_base_t
       p()->buffs.tip_of_the_spear->decrement();
       p()->buffs.tip_of_the_spear_explosive->trigger();
     }
-  }
-
-  void schedule_travel( action_state_t* s ) override
-  {
-    explosive_shot_base_t::schedule_travel( s );
-
-    p()->state.traveling_explosive = this;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    explosive_shot_base_t::impact( s );
-
-    p()->state.traveling_explosive = nullptr;
   }
 };
 
@@ -5138,7 +5124,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
   {
     serpent_sting_t* poisoned_barbs_serpent_sting = nullptr;
 
-    poisoned_barbs_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( "poisoned_barbs", p, p->find_spell( 1217549 ) )
+    poisoned_barbs_t( util::string_view, hunter_t* p ) : hunter_ranged_attack_t( "poisoned_barbs", p, p->find_spell( 1217549 ) )
     {
       background = dual = true;
       aoe = -1;
@@ -5280,7 +5266,7 @@ struct laceration_t : public residual_bleed_base_t
 
 struct barbed_shot_tww_s2_bm_2pc_t : public barbed_shot_t
 {
-  barbed_shot_tww_s2_bm_2pc_t( util::string_view n, hunter_t* p ) : barbed_shot_t( p, "" )
+  barbed_shot_tww_s2_bm_2pc_t( util::string_view, hunter_t* p ) : barbed_shot_t( p, "" )
   {
     background = dual = proc = true;
   }
@@ -5513,39 +5499,18 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
     // timing of the hidden buff 474199. Pray for fixes and buff all for now.
     if ( p()->talents.precision_detonation->ok() )
     {
-      bool ticking = target_data->dots.explosive_shot->is_ticking();
-      if ( s->chain_target == 0 )
+      if ( target_data->dots.explosive_shot->is_ticking() )
       {
-        bool traveling = p()->state.traveling_explosive && p()->state.traveling_explosive->has_travel_events_for( s->target );
+        p()->buffs.precision_detonation_hidden->trigger();
 
-        if ( ticking || traveling )
-        {
-          p()->buffs.precision_detonation_hidden->trigger();
+        // Expire Precision Detonation after other possible impacts.
+        if ( !p()->state.precision_detonation_expiry )
+          p()->state.precision_detonation_expiry = make_event( p()->sim,
+            [ this ]() {
+              p()->buffs.precision_detonation_hidden->expire();
+              p()->state.precision_detonation_expiry = nullptr;
+            } );
 
-          // Precision Detonation will affect an Explosive Shot queued immediately after an Aimed Shot, which intuitively shouldn't work
-          // since they have the same travel time and the Aimed Shot should impact before the Explosive Shot, so it seems there's some
-          // fudging going on to make it work, once again probably related to the use and timing of the hidden buff 474199, so just 
-          // schedule the detonation to occur after the next Explosive Shot impact if there is one in flight.
-          if ( traveling )
-            make_event( p()->sim, p()->state.traveling_explosive->shortest_travel_event(), [ this, target_data ]()
-              {
-                p()->procs.precision_detonation->occur();
-                target_data->dots.explosive_shot->cancel();
-                p()->buffs.precision_detonation_hidden->expire();
-              } );
-          else
-            // Expire Precision Detonation after other possible impacts.
-            make_event( p()->sim, [ this ]() { p()->buffs.precision_detonation_hidden->expire(); } );
-        }
-        else
-        {
-          // Expire Precision Detonation after other possible impacts in case they trigger the buff.
-          make_event( p()->sim, [ this ]() { p()->buffs.precision_detonation_hidden->expire(); } );
-        }
-      }
-
-      if ( ticking )
-      {
         p()->procs.precision_detonation->occur();
         p()->buffs.precision_detonation_hidden->trigger();
         target_data->dots.explosive_shot->cancel();
@@ -5569,12 +5534,40 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
       }
     }
 
-    if ( target_data->debuffs.spotters_mark->check() || target_data->debuffs.ohnahran_winds->check() )
+    int target_spotters_marks = 0;
+
+    // from other players
+    if ( p()->bugs )
     {
-      target_data->debuffs.spotters_mark->expire();
-      target_data->debuffs.ohnahran_winds->expire();
-      
-      p()->buffs.on_target->trigger();
+      // use indices since it's possible to spawn new actors when bloodlust is triggered
+      for ( size_t i = 0; i < sim->player_non_sleeping_list.size(); i++ )
+      {
+        auto* p = sim->player_non_sleeping_list[ i ];
+        auto* h = dynamic_cast<hunter_t*>( p );
+        if ( h )
+        {
+          hunter_td_t* hunter_target_data = h->get_target_data( s->target );
+          if ( hunter_target_data->debuffs.spotters_mark->check() || hunter_target_data->debuffs.ohnahran_winds->check() )
+            target_spotters_marks++;
+        }
+      }
+    }
+
+    // from current player
+    if ( target_data->debuffs.spotters_mark->check() || target_data->debuffs.ohnahran_winds->check() )
+      target_spotters_marks++;
+
+    if ( target_spotters_marks > 0 )
+    {
+      if ( !p()->bugs || !p()->buffs.on_target->at_max_stacks() )
+      {
+        target_data->debuffs.spotters_mark->expire();
+        target_data->debuffs.ohnahran_winds->expire();
+      }
+
+      int increment = std::min( target_spotters_marks, p()->buffs.on_target->max_stack() - p()->buffs.on_target->check() );
+      if ( increment )
+        p()->buffs.on_target->trigger( increment );
       
       if ( p()->talents.target_acquisition.ok() && p()->cooldowns.target_acquisition->up() )
       {
@@ -5585,7 +5578,8 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
       p()->cooldowns.trueshot->adjust( -( p()->talents.calling_the_shots->effectN( 1 ).time_value() + p()->talents.unerring_vision->effectN( 3 ).time_value() ) );
     }
 
-    p()->cooldowns.volley->adjust( -p()->talents.bullet_hell->effectN( 2 ).time_value() );
+    // TODO 3/3/25: Aimed Shot hits are giving .3 second reduction rather than .5
+    p()->cooldowns.volley->adjust( -p()->talents.bullet_hell->effectN( 1 ).time_value() );
   }
 };
 
@@ -5742,8 +5736,20 @@ struct aimed_shot_t : public aimed_shot_base_t
       precise_shot_stacks++;
     p()->buffs.precise_shots->increment( precise_shot_stacks );
 
+    // TODO 3/3/25: If Deathblow triggers from an Aimed Shot that has a Kill Shot queued after it that would consume an existing Deathblow, the new Deathblow is saved.
     if ( rng().roll( deathblow.chance ) )
-      p()->trigger_deathblow();
+    {
+      if ( p()->buffs.deathblow->check() )
+      {
+        make_event( sim, sim->queue_lag.mean * 2, [ this ]() {
+          p()->trigger_deathblow();
+        } );
+      }
+      else
+      {
+        p()->trigger_deathblow();
+      }
+    }
 
     auto tl = target_list();
     if ( aspect_of_the_hydra && tl.size() > 1 )
@@ -6650,7 +6656,7 @@ struct summon_pet_t: public hunter_spell_t
 
   bool ready() override
   {
-    if ( opt_disabled || p() -> pets.main == pet || p()->specialization() == HUNTER_MARKSMANSHIP && !p()->talents.unbreakable_bond.ok() )
+    if ( opt_disabled || p() -> pets.main == pet || ( p()->specialization() == HUNTER_MARKSMANSHIP && !p()->talents.unbreakable_bond.ok() ) )
       return false;
 
     return hunter_spell_t::ready();
@@ -7356,9 +7362,11 @@ struct harriers_cry_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    for ( auto* p : sim->player_non_sleeping_list )
+    // use indices since it's possible to spawn new actors when bloodlust is triggered
+    for ( size_t i = 0; i < sim->player_non_sleeping_list.size(); i++ )
     {
-      if ( p->buffs.exhaustion->check() || p->is_pet() )
+      auto* p = sim->player_non_sleeping_list[ i ];
+      if ( p->is_pet() || p->buffs.exhaustion->check() )
         continue;
 
       p->buffs.bloodlust->trigger();
@@ -8661,7 +8669,7 @@ void hunter_t::create_buffs()
 
   buffs.beast_cleave = 
     make_buff( this, "beast_cleave", find_spell( 268877 ) )
-    -> apply_affecting_effect( talents.beast_cleave -> effectN( 2 ) );
+    -> set_duration( talents.beast_cleave -> effectN( 2 ).time_value() );
 
   buffs.serpentine_rhythm = 
     make_buff( this, "serpentine_rhythm", find_spell( 468703 ) )
@@ -8821,7 +8829,7 @@ void hunter_t::create_buffs()
   buffs.howl_of_the_pack_leader_wyvern = 
     make_buff( this, "howl_of_the_pack_leader_wyvern", talents.howl_of_the_pack_leader_wyvern_ready_buff )
       ->set_stack_change_callback(
-        [ this ]( buff_t* b, int, int cur ) {
+        [ this ]( buff_t*, int, int cur ) {
           if ( cur == 0 && !buffs.howl_of_the_pack_leader_cooldown->check() )
             buffs.howl_of_the_pack_leader_cooldown->trigger();
         } );
@@ -8829,7 +8837,7 @@ void hunter_t::create_buffs()
   buffs.howl_of_the_pack_leader_boar = 
     make_buff( this, "howl_of_the_pack_leader_boar", talents.howl_of_the_pack_leader_boar_ready_buff )
       ->set_stack_change_callback(
-        [ this ]( buff_t* b, int, int cur ) {
+        [ this ]( buff_t*, int, int cur ) {
           if ( cur == 0 && !buffs.howl_of_the_pack_leader_cooldown->check() )
             buffs.howl_of_the_pack_leader_cooldown->trigger();
         } );
@@ -8837,7 +8845,7 @@ void hunter_t::create_buffs()
   buffs.howl_of_the_pack_leader_bear = 
     make_buff( this, "howl_of_the_pack_leader_bear", talents.howl_of_the_pack_leader_bear_ready_buff )
       ->set_stack_change_callback(
-        [ this ]( buff_t* b, int, int cur ) {
+        [ this ]( buff_t*, int, int cur ) {
           if ( cur == 0 && !buffs.howl_of_the_pack_leader_cooldown->check() )
             buffs.howl_of_the_pack_leader_cooldown->trigger();
         } );
@@ -8846,7 +8854,7 @@ void hunter_t::create_buffs()
     make_buff( this, "howl_of_the_pack_leader_cooldown", talents.howl_of_the_pack_leader_cooldown_buff )
       ->apply_affecting_aura( talents.better_together )
       ->set_stack_change_callback(
-        [ this ]( buff_t* b, int, int cur ) {
+        [ this ]( buff_t*, int, int cur ) {
           if ( cur == 0 )
             trigger_howl_of_the_pack_leader();
         } );
@@ -8855,7 +8863,7 @@ void hunter_t::create_buffs()
     make_buff( this, "wyverns_cry", talents.howl_of_the_pack_leader_wyvern_buff )
       ->set_default_value_from_effect( 1 )
       ->set_stack_change_callback(
-        [ this ]( buff_t* b, int, int cur ) {
+        [ this ]( buff_t*, int, int cur ) {
           if ( cur == 0 )
             state.fury_of_the_wyvern_extension = 0_s;
         } );
@@ -8874,7 +8882,7 @@ void hunter_t::create_buffs()
   
   buffs.lunar_storm_cooldown = make_buff( this, "lunar_storm_cooldown", talents.lunar_storm_cooldown_buff )
     ->set_stack_change_callback(
-      [ this ]( buff_t* b, int, int cur ) {
+      [ this ]( buff_t*, int, int cur ) {
         if ( cur == 0 )
           buffs.lunar_storm_ready->trigger();
       } );

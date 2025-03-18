@@ -2028,16 +2028,16 @@ struct sck_tick_action_t : charred_passions_t<monk_melee_attack_t>
     parse_effects( p->talent.windwalker.crane_vortex );
 
     // dance of chiji is scripted
-    const auto add_docj_parse_entry = [ this, &p ]( auto talent ) {
-      if ( const auto &effect = talent->effectN( 1 ); effect.ok() )
+    const auto add_docj_parse_entry = [ this, &p ]( auto talent, size_t effectNum ) {
+      if ( const auto &effect = talent->effectN( effectNum ); effect.ok() )
         add_parse_entry( da_multiplier_effects )
             .set_func( [ &b = p->buff.dance_of_chiji_hidden ]() { return b->check(); } )
             .set_value( effect.percent() )
             .set_eff( &effect );
     };
 
-    add_docj_parse_entry( p->talent.mistweaver.dance_of_chiji );
-    add_docj_parse_entry( p->talent.windwalker.dance_of_chiji );
+    add_docj_parse_entry( p->talent.mistweaver.dance_of_chiji, 1 );
+    add_docj_parse_entry( p->passives.dance_of_chiji, 2 );
   }
 
   result_amount_type report_amount_type( const action_state_t * ) const override
@@ -3527,6 +3527,28 @@ struct crackling_jade_lightning_t : public monk_spell_t
       }
     }
   }
+
+  double cost() const override
+  {
+    double cost = monk_spell_t::cost();
+
+    if ( current_resource() == RESOURCE_ENERGY && p()->buff.the_emperors_capacitor->check() )
+      cost *= 1.0 + p()->buff.the_emperors_capacitor->data().effectN( 2 ).percent() *
+                        p()->buff.the_emperors_capacitor->check();
+
+    return cost;
+  }
+
+  double cost_per_tick( resource_e resource ) const override
+  {
+    double cost = monk_spell_t::cost_per_tick( resource );
+
+    if ( resource == RESOURCE_ENERGY && p()->buff.the_emperors_capacitor->check() )
+      cost *= 1.0 + p()->buff.the_emperors_capacitor->data().effectN( 2 ).percent() *
+                        p()->buff.the_emperors_capacitor->check();
+
+    return cost;
+  }
 };
 
 // ==========================================================================
@@ -4830,7 +4852,7 @@ struct sheiluns_gift_t : public monk_heal_t
   {
     base_t::execute();
 
-    double stacks = as<double>( p()->buff.sheiluns_gift->stack() );
+    auto stacks = p()->buff.sheiluns_gift->stack();
     p()->buff.sheiluns_gift->expire();
 
     p()->buff.heart_of_the_jade_serpent_stack_mw->increment( stacks );
@@ -4840,7 +4862,7 @@ struct sheiluns_gift_t : public monk_heal_t
       timespan_t max_duration =
           timespan_t::from_seconds( p()->talent.mistweaver.shaohaos_lessons->effectN( 1 ).base_value() );
       double max_stacks   = as<double>( p()->buff.sheiluns_gift->max_stack() );
-      timespan_t duration = max_duration * stacks / max_stacks;
+      timespan_t duration = max_duration * as<double>( stacks ) / max_stacks;
 
       switch ( shaohao_buff_e( shaohao_rng->trigger() ) )
       {

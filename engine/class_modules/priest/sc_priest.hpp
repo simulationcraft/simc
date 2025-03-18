@@ -872,6 +872,9 @@ public:
     bool discipline_in_raid = false;
 
     bool shadow_tww2_4pc_insanity = true;
+
+    double synergistic_brewterializer_tof_chance        = 1.0;
+    double synergistic_brewterializer_barrel_hit_chance = 1.0;
   } options;
 
   priest_t( sim_t* sim, util::string_view name, race_e r );

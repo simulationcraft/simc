@@ -632,9 +632,11 @@ struct pull_event_t final : raid_event_t
     {
       if ( !sim->single_actor_batch )
       {
-        for ( auto* p : sim->player_non_sleeping_list )
+        // use indices since it's possible to spawn new actors when bloodlust is triggered
+        for ( size_t i = 0; i < sim->player_non_sleeping_list.size(); i++ )
         {
-           if ( p->is_pet() )
+          auto* p = sim->player_non_sleeping_list[ i ];
+          if ( p->is_pet() )
             continue;
 
           p->buffs.bloodlust->trigger();
@@ -1260,6 +1262,7 @@ struct damage_event_t final : public raid_event_t
           school      = s;
           may_crit    = false;
           background  = true;
+          not_a_proc  = true;
           trigger_gcd = 0_ms;
         }
       };

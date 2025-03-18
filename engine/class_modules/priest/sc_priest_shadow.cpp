@@ -1241,8 +1241,7 @@ struct void_bolt_base_t : public priest_spell_t
     affected_by_shadow_weaving = true;
 
     auto rank2 = p.find_spell( 231688 );
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/1320
-    if ( rank2->ok() && ( p.talents.shadow.void_eruption->ok() || !p.bugs ) )
+    if ( rank2->ok() )
     {
       void_bolt_extension = new void_bolt_extension_t( p, rank2 );
     }

@@ -1,4 +1,4 @@
-# [SimulationCraft](https://www.simulationcraft.org/) [![CI](https://github.com/simulationcraft/simc/workflows/CI/badge.svg)](https://github.com/simulationcraft/simc/actions?query=workflow%3ACI) [![Live Test](https://github.com/simulationcraft/simc/workflows/spec-test/badge.svg)](https://github.com/simulationcraft/simc/actions?query=workflow%3Aspec-test)
+# [SimulationCraft](https://www.simulationcraft.org/) [![CI](https://github.com/simulationcraft/simc/workflows/CI/badge.svg)](https://github.com/simulationcraft/simc/actions?query=workflow%3ACI)
 ## Overview
 
 SimulationCraft is a tool to explore combat mechanics in the popular MMO RPG World of Warcraft (tm).

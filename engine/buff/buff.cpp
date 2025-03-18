@@ -463,6 +463,10 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
         return buff->current_value;
       } );
   }
+  else if ( type == "default_value" )
+  {
+    return make_buff_expr( "buff_default_value", []( buff_t* buff ) { return buff->default_value; } );
+  }
   else if ( type == "stack_value" )
   {
     return make_const_buff_expr( "buff_stack_value",
@@ -1834,8 +1838,8 @@ timespan_t buff_t::tick_time() const
   switch ( tick_time_behavior )
   {
     case buff_tick_time_behavior::HASTED:
-      assert( player );
-      return buff_period * player->cache.spell_cast_speed();
+      assert( source );
+      return buff_period * source->cache.spell_cast_speed();
     case buff_tick_time_behavior::CUSTOM:
       assert( tick_time_callback );
       return tick_time_callback( this, current_tick );

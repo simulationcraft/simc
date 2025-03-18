@@ -348,7 +348,7 @@ public:
     player_talent_t the_houndmasters_gambit;
     const spell_data_t* houndmasters_aura; // Contains actual referenced % increase
     player_talent_t improved_demonic_tactics;
-    player_talent_t demonic_brutality; // TOCHECK: Pets may not be properly benefitting from this in-game
+    player_talent_t demonic_brutality;
 
     player_talent_t pact_of_the_eredruin;
     const spell_data_t* doomguard;
@@ -753,6 +753,7 @@ public:
     proc_t* pact_of_the_eredruin;
     proc_t* empowered_legion_strike; // TWW1 4pc buff
     proc_t* jackpot_demonology; // TWW2 2pc proc
+    proc_t* demonic_core_big_dogs;
 
     // Destruction
     proc_t* reverse_entropy;
@@ -875,6 +876,7 @@ public:
   void invalidate_cache( cache_e ) override;
   double composite_spell_crit_chance() const override;
   double composite_melee_crit_chance() const override;
+  double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_rating_multiplier( rating_e ) const override;
   void combat_begin() override;
   void init_assessors() override;
@@ -978,5 +980,7 @@ namespace helpers
   void trigger_blackened_soul( warlock_t* p, bool malevolence );
 
   void trigger_jackpot_ua( warlock_t* p );
+
+  void set_shared_fate_tick_factor( warlock_t* p, double f );
 }
 }  // namespace warlock

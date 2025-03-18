@@ -64,9 +64,9 @@ actions.slayer+=/champions_spear,if=buff.enrage.up&(cooldown.bladestorm.remains>
 actions.slayer+=/bladestorm,if=buff.enrage.up&(talent.reckless_abandon&cooldown.avatar.remains>=24|talent.anger_management&cooldown.recklessness.remains>=24)
 actions.slayer+=/odyns_fury,if=(buff.enrage.up|talent.titanic_rage)&cooldown.avatar.remains
 actions.slayer+=/whirlwind,if=active_enemies>=2&talent.meat_cleaver&buff.meat_cleaver.stack=0
-actions.slayer+=/execute,if=buff.sudden_death.stack=2&buff.sudden_death.remains<7&variable.execute_phase
-actions.slayer+=/execute,if=buff.sudden_death.up&buff.sudden_death.remains<2&variable.execute_phase
-actions.slayer+=/execute,if=buff.sudden_death.up&buff.imminent_demise.stack<3&cooldown.bladestorm.remains<25&variable.execute_phase
+actions.slayer+=/execute,if=buff.sudden_death.stack=2&buff.sudden_death.remains<7
+actions.slayer+=/execute,if=buff.sudden_death.up&buff.sudden_death.remains<2
+actions.slayer+=/execute,if=buff.sudden_death.up&buff.imminent_demise.stack<3&cooldown.bladestorm.remains<25
 actions.slayer+=/onslaught,if=talent.tenderize
 actions.slayer+=/rampage,if=!buff.enrage.up|buff.slaughtering_strikes.stack>=4
 actions.slayer+=/crushing_blow,if=action.raging_blow.charges=2|buff.brutal_finish.up&(!debuff.champions_might.up|debuff.champions_might.up&debuff.champions_might.remains>gcd)

@@ -703,7 +703,8 @@ public:
     const spell_data_t* warblades_hunger_damage;
     const spell_data_t* wounded_quarry_damage;
     const spell_data_t* thrill_of_the_fight_attack_speed_buff;
-    const spell_data_t* thrill_of_the_fight_damage_buff;
+    const spell_data_t* thrill_of_the_fight_damage_buff_havoc;
+    const spell_data_t* thrill_of_the_fight_damage_buff_vengeance;
     double wounded_quarry_proc_rate;
 
     // Fel-scarred
@@ -747,8 +748,8 @@ public:
   struct mastery_t
   {
     // Havoc
-    const spell_data_t* demonic_presence;
     const spell_data_t* a_fire_inside;
+    const spell_data_t* demonic_presence;
     // Vengeance
     const spell_data_t* fel_blood;
     const spell_data_t* fel_blood_rank_2;
@@ -1576,8 +1577,9 @@ public:
   struct
   {
     // Havoc
-    affect_flags demonic_presence;
     affect_flags a_fire_inside;
+    affect_flags demonic_presence;
+    affect_flags demon_hide;
     bool chaos_theory = false;
   } affected_by;
 
@@ -1633,7 +1635,6 @@ public:
     ab::apply_affecting_aura( p->talent.havoc.insatiable_hunger );
     ab::apply_affecting_aura( p->talent.havoc.improved_fel_rush );
     ab::apply_affecting_aura( p->talent.havoc.improved_chaos_strike );
-    ab::apply_affecting_aura( p->talent.havoc.demon_hide );
     ab::apply_affecting_aura( p->talent.havoc.blind_fury );
     ab::apply_affecting_aura( p->talent.havoc.looks_can_kill );
     ab::apply_affecting_aura( p->talent.havoc.tactical_retreat );
@@ -1666,8 +1667,9 @@ public:
       ab::apply_affecting_aura( p->set_bonuses.tww1_havoc_4pc );
 
       // Affect Flags
-      parse_affect_flags( p->mastery.demonic_presence, affected_by.demonic_presence );
       parse_affect_flags( p->mastery.a_fire_inside, affected_by.a_fire_inside );
+      parse_affect_flags( p->mastery.demonic_presence, affected_by.demonic_presence );
+      parse_affect_flags( p->talent.havoc.demon_hide, affected_by.demon_hide );
 
       if ( p->talent.havoc.chaos_theory->ok() )
       {
@@ -1846,6 +1848,11 @@ public:
       m *= 1.0 + p()->cache.mastery_value();
     }
 
+    if ( affected_by.demon_hide.direct )
+    {
+      m *= 1.0 + p()->talent.havoc.demon_hide->effectN( 1 ).percent();
+    }
+
     return m;
   }
 
@@ -1861,6 +1868,11 @@ public:
     if ( affected_by.a_fire_inside.periodic )
     {
       m *= 1.0 + p()->cache.mastery_value();
+    }
+
+    if ( affected_by.demon_hide.periodic )
+    {
+      m *= 1.0 + p()->talent.havoc.demon_hide->effectN( 3 ).percent();
     }
 
     return m;
@@ -6445,8 +6457,7 @@ struct soulscar_t : public residual_action::residual_periodic_action_t<demon_hun
 };
 
 // Burning Blades ===========================================================
-struct burning_blades_t
-  : public residual_action::residual_periodic_action_t<demon_hunter_spell_t>
+struct burning_blades_t : public residual_action::residual_periodic_action_t<demon_hunter_spell_t>
 {
   burning_blades_t( util::string_view name, demon_hunter_t* p ) : base_t( name, p, p->hero_spec.burning_blades_debuff )
   {
@@ -6648,7 +6659,7 @@ struct preemptive_strike_t : public demon_hunter_ranged_attack_t
     : demon_hunter_ranged_attack_t( name, p, p->talent.aldrachi_reaver.preemptive_strike->effectN( 1 ).trigger() )
   {
     background = dual = true;
-    aoe = -1;
+    aoe               = -1;
   }
 
   // 2025-02-19 -- Preemptive Strike does not hit the primary target
@@ -6956,15 +6967,17 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
 
     p()->buff.inner_demon->trigger();
 
-    if ( p()->set_bonuses.tww2_havoc_4pc->ok() && p()->buff.winning_streak->up() )
+    if ( p()->set_bonuses.tww2_havoc_4pc->ok() &&
+         ( p()->buff.winning_streak->up() || p()->buff.winning_streak_residual->up() ) )
     {
       // 2025-02-08 -- Necessary Sacrifice will not be triggered if the number of stacks on Winning Streak! is less than
       //               the number of stacks on Necessary Sacrifice
 
-      int winning_streak_stacks      = p()->buff.winning_streak->stack();
+      int winning_streak_stacks      = p()->buff.winning_streak->stack() + p()->buff.winning_streak_residual->stack();
       int necessary_sacrifice_stacks = p()->buff.necessary_sacrifice->stack();
 
       p()->buff.winning_streak->expire();
+      p()->buff.winning_streak_residual->expire();
 
       if ( winning_streak_stacks >= necessary_sacrifice_stacks )
       {
@@ -7266,10 +7279,24 @@ struct wounded_quarry_cb_t : public demon_hunter_proc_callback_t
       : demon_hunter_attack_t( name, p, p->hero_spec.wounded_quarry_damage )
     {
       chance = p->hero_spec.wounded_quarry_proc_rate;
-      // 2025-02-23 -- WQ seems to proc things like Chaotic Disposition
       if ( p->bugs )
       {
+        // 2025-02-23 -- WQ seems to proc things like Chaotic Disposition
         allow_class_ability_procs = true;
+      }
+
+      // WQ is affected by Havoc mastery
+      if ( p->mastery.demonic_presence->ok() )
+      {
+        affected_by.demonic_presence.direct   = true;
+        affected_by.demonic_presence.periodic = true;
+      }
+
+      // WQ is affected by Demon Hide
+      if ( p->talent.havoc.demon_hide->ok() )
+      {
+        affected_by.demon_hide.direct   = true;
+        affected_by.demon_hide.periodic = true;
       }
     }
 
@@ -7752,7 +7779,9 @@ void demon_hunter_t::create_buffs()
           ->set_default_value_from_effect_type( A_MOD_RANGED_AND_MELEE_AUTO_ATTACK_SPEED )
           ->add_invalidate( CACHE_AUTO_ATTACK_SPEED );
   buff.thrill_of_the_fight_damage =
-      make_buff( this, "thrill_of_the_fight_damage", hero_spec.thrill_of_the_fight_damage_buff );
+      make_buff( this, "thrill_of_the_fight_damage",
+                 specialization() == DEMON_HUNTER_HAVOC ? hero_spec.thrill_of_the_fight_damage_buff_havoc
+                                                        : hero_spec.thrill_of_the_fight_damage_buff_vengeance );
   buff.art_of_the_glaive_first = make_buff( this, "art_of_the_glaive_first", talent.aldrachi_reaver.art_of_the_glaive )
                                      ->set_duration( buff.glaive_flurry->buff_duration() );
   buff.art_of_the_glaive_second_glaive_flurry =
@@ -8645,8 +8674,10 @@ void demon_hunter_t::init_spells()
       talent.aldrachi_reaver.wounded_quarry->ok() ? find_spell( 442808 ) : spell_data_t::not_found();
   hero_spec.thrill_of_the_fight_attack_speed_buff =
       talent.aldrachi_reaver.thrill_of_the_fight->ok() ? find_spell( 442695 ) : spell_data_t::not_found();
-  hero_spec.thrill_of_the_fight_damage_buff =
-      talent.aldrachi_reaver.thrill_of_the_fight->ok() ? find_spell( 442688 ) : spell_data_t::not_found();
+  hero_spec.thrill_of_the_fight_damage_buff_havoc =
+      conditional_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight->ok(), 442688 );
+  hero_spec.thrill_of_the_fight_damage_buff_vengeance =
+      conditional_spell_lookup( talent.aldrachi_reaver.thrill_of_the_fight->ok(), 1227062 );
   hero_spec.burning_blades_debuff =
       talent.felscarred.burning_blades->ok() ? find_spell( 453177 ) : spell_data_t::not_found();
   hero_spec.student_of_suffering_buff =

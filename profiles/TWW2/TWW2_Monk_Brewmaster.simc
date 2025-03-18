@@ -1,0 +1,95 @@
+monk="TWW2_Monk_Brewmaster"
+source=default
+spec=brewmaster
+level=80
+race=tauren
+role=tank
+position=front
+talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAAjxYGGWmx2MzMDAAAAAAALLgYmBmhBGjtZmZYWGzM2mlZabb2sNzMMLAAwGCAAgZbWamZmFmhFA
+
+# Default consumables
+potion=tempered_potion_3
+flask=flask_of_alchemical_chaos_3
+food=feast_of_the_midnight_masquerade
+augmentation=crystallized
+temporary_enchant=main_hand:ironclaw_whetstone_3/off_hand:ironclaw_whetstone_3
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/chi_burst
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/potion
+actions+=/call_action_list,name=race_actions
+actions+=/call_action_list,name=item_actions
+actions+=/black_ox_brew,if=energy<40
+actions+=/celestial_brew,if=(buff.aspect_of_harmony_accumulator.value>0.3*health.max&buff.weapons_of_order.up&!dot.aspect_of_harmony_damage.ticking)
+actions+=/celestial_brew,if=(buff.aspect_of_harmony_accumulator.value>0.3*health.max&!talent.weapons_of_order.enabled&!dot.aspect_of_harmony_damage.ticking)
+actions+=/celestial_brew,if=(target.time_to_die<20&target.time_to_die>14&buff.aspect_of_harmony_accumulator.value>0.2*health.max)
+actions+=/celestial_brew,if=(buff.aspect_of_harmony_accumulator.value>0.3*health.max&cooldown.weapons_of_order.remains>20&!dot.aspect_of_harmony_damage.ticking)
+actions+=/blackout_kick
+actions+=/chi_burst
+actions+=/weapons_of_order
+actions+=/rising_sun_kick,if=!talent.fluidity_of_motion.enabled
+actions+=/tiger_palm,if=buff.blackout_combo.up
+actions+=/keg_smash,if=talent.scalding_brew.enabled
+actions+=/spinning_crane_kick,if=talent.charred_passions.enabled&talent.scalding_brew.enabled&buff.charred_passions.up&buff.charred_passions.remains<3&dot.breath_of_fire.remains<9&active_enemies>4
+actions+=/rising_sun_kick,if=talent.fluidity_of_motion.enabled
+actions+=/purifying_brew,if=buff.blackout_combo.down
+actions+=/breath_of_fire,if=(buff.charred_passions.down&(!talent.scalding_brew.enabled|active_enemies<5))|!talent.charred_passions.enabled|(dot.breath_of_fire.remains<3&talent.scalding_brew.enabled)
+actions+=/exploding_keg
+actions+=/keg_smash
+actions+=/rushing_jade_wind
+actions+=/invoke_niuzao
+actions+=/tiger_palm,if=energy>40-cooldown.keg_smash.remains*energy.regen
+actions+=/spinning_crane_kick,if=energy>40-cooldown.keg_smash.remains*energy.regen
+
+actions.item_actions=use_item,slot=trinket1
+actions.item_actions+=/use_item,slot=trinket2
+
+actions.race_actions=blood_fury
+actions.race_actions+=/berserking
+actions.race_actions+=/arcane_torrent
+actions.race_actions+=/lights_judgment
+actions.race_actions+=/fireblood
+actions.race_actions+=/ancestral_call
+actions.race_actions+=/bag_of_tricks
+
+head=ageless_serpents_mane,id=229298,bonus_id=7981/12042/5878/11996/1808,gem_id=213743
+neck=flickering_glowtorc,id=221103,bonus_id=657/12042/5878/7981/11996/10376/8781,gem_id=213467/213497
+shoulders=ageless_serpents_shoulderpads,id=229296,bonus_id=7981/12042/5878/11996
+back=trashmasters_mantle,id=199921,bonus_id=657/12042/5878/7981/11996,enchant=chant_of_leeching_fangs_3
+chest=venture_co._plenipotentiary_vest,id=235417,bonus_id=657/12042/5878/7981/11996,enchant=crystalline_radiance_3
+wrists=runebranded_armbands,id=219334,bonus_id=12040/9627/12043/8795/11109/1808,gem_id=213479,enchant=chant_of_armored_leech_3
+hands=ageless_serpents_handguards,id=229299,bonus_id=7981/12042/5878/11996
+waist=adrenal_surge_clasp,id=219502,bonus_id=12040/9627/12043/1808,gem_id=213461
+legs=ageless_serpents_leggings,id=229297,bonus_id=7981/12042/5878/11996,enchant=stormbound_armor_kit_3
+feet=ageless_serpents_ankleweights,id=229300,bonus_id=7981/12042/5878/11996,enchant=defenders_march_3
+finger1=the_jastor_diamond,id=231265,bonus_id=7981/12042/5878/11996/10376/8781,gem_id=213461/213461,enchant=cursed_critical_strike_3
+finger2=miniature_roulette_wheel,id=228843,bonus_id=11139/8949/7981/12042/5878/11996/10376/8781,gem_id=213461/213461,enchant=cursed_critical_strike_3
+trinket1=tome_of_lights_devotion,id=219309,bonus_id=657/12042/5878/7981/11996
+trinket2=grim_codex,id=178811,bonus_id=657/12042/5878/7981/11996
+main_hand=capos_molten_knuckles,id=232804,bonus_id=7981/12042/5878/11996,enchant=authority_of_the_depths_3
+off_hand=gallywixs_iron_thumb,id=228899,bonus_id=7981/12042/5878/11996,enchant=authority_of_the_depths_3
+
+# Gear Summary
+# gear_ilvl=677.63
+# gear_agility=51187
+# gear_stamina=392147
+# gear_attack_power=938
+# gear_crit_rating=14062
+# gear_haste_rating=4449
+# gear_mastery_rating=9216
+# gear_versatility_rating=15862
+# gear_leech_rating=3060
+# gear_armor=33917
+# set_bonus=thewarwithin_season_2_2pc=1
+# set_bonus=thewarwithin_season_2_4pc=1

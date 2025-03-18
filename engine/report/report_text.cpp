@@ -537,9 +537,19 @@ void print_procs( std::ostream& os, const player_t& p )
 {
   bool first = true;
 
-  for ( auto& proc : p.proc_list )
+  std::vector<proc_t*> proc_data = p.proc_list;
+  std::sort( proc_data.begin(), proc_data.end(), []( const proc_t* a, const proc_t* b ) {
+    if ( a == b )
+    {
+      return false;
+    }
+
+    return a->name_str < b->name_str;
+  } );
+
+  for ( auto& proc : proc_data )
   {
-    if ( proc->count.sum() > 0.0 )
+    if ( proc->count.sum() > 0.0 && proc->proc_report_flags & proc_report_e::REPORT_PROC_TEXT )
     {
       if ( first )
       {

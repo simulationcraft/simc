@@ -20,6 +20,7 @@ enum parse_flag_e : uint16_t
   ALLOW_ZERO        = 0x0008,
   EXPIRE_BUFF       = 0x0010,
   DECREMENT_BUFF    = 0x0020,
+  ROUND_VALUE       = 0x0040,  // uses std::round (round to nearest integer, round half away from zero)
   // internal flags that should not be used in parse_effects()
   VALUE_OVERRIDE    = 0x0100,
   AFFECTED_OVERRIDE = 0x0200,
@@ -394,6 +395,12 @@ struct parse_base_t
           pack.data.type |= mod;
           return;
         }
+
+        if ( mod == ROUND_VALUE )
+        {
+          pack.data.type |= mod;
+          return;
+        }
       }
 
       if constexpr ( std::is_same_v<U, player_effect_t> )
@@ -727,6 +734,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   std::vector<player_effect_t> parry_rating_from_crit_effects;
   std::vector<player_effect_t> dodge_effects;
   std::vector<player_effect_t> absorb_multiplier_effects;
+  std::vector<player_effect_t> absorb_received_mult_effects;
   std::vector<player_effect_t> healing_received_effects;
   std::vector<target_effect_t> target_multiplier_effects;
   std::vector<target_effect_t> target_pet_multiplier_effects;
@@ -763,6 +771,7 @@ struct parse_player_effects_t : public player_t, public parse_effects_t
   double matching_gear_multiplier( attribute_e ) const override;
   double composite_player_absorb_multiplier( const action_state_t* s ) const override;
   double composite_player_healing_received_multiplier() const override;
+  double composite_player_absorb_received_multiplier() const override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_player_target_pet_damage_multiplier( player_t*, bool ) const override;
 

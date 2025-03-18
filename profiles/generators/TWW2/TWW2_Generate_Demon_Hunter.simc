@@ -1,29 +1,29 @@
-# demonhunter="TWW2_Demon_Hunter_Havoc"
-# level=80
-# race=blood_elf
-# spec=havoc
-# role=attack
-# position=back
-# talents=CEkAAAAAAAAAAAAAAAAAAAAAAYGMzMzYMzMjxMNzYGAAAAAAwsNMMMzYZmZ2mtZZMzwMLYZb2mZZWmZmZbb2mmmhZmxgN
+demonhunter="TWW2_Demon_Hunter_Havoc"
+level=80
+race=blood_elf
+spec=havoc
+role=attack
+position=back
+talents=CEkAAAAAAAAAAAAAAAAAAAAAAYGMzMzYMzMjZmJmZGAAAAAAwsNzMMwMbzMzmtZZMMzMMW2mtZwwYZjJZYmZGYB
 
-# head=impalers_of_the_hypogeal_nemesis,id=212065,bonus_id=1808,gem_id=213743,ilevel=639
-# neck=trailspinner_pendant,id=178707,bonus_id=8781,gem_id=213473/213491,ilevel=639
-# shoulder=warmantle_of_the_hypogeal_nemesis,id=212063,ilevel=639
-# back=wings_of_shattered_sorrow,id=225574,enchant_id=7403,ilevel=639
-# chest=chestguard_of_the_hypogeal_nemesis,id=212068,enchant_id=7364,ilevel=639
-# wrist=polluted_spectres_wraps,id=212438,bonus_id=8780,enchant_id=7385,gem_id=213479,ilevel=639
-# hands=runebranded_grasps,id=219333,bonus_id=10222/8791/11109/8960,ilevel=636
-# waist=shadow_congregants_belt,id=221134,bonus_id=8780,gem_id=213482,ilevel=639
-# legs=pantaloons_of_the_hypogeal_nemesis,id=212064,enchant_id=7601,ilevel=639
-# feet=whisperers_echoing_steps,id=221169,enchant_id=7424,ilevel=639
-# finger1=seal_of_the_city_watch,id=162542,bonus_id=8781,enchant_id=7346,gem_id=213482/213482,ilevel=639
-# finger2=seal_of_the_poisoned_pact,id=225578,bonus_id=8781,enchant_id=7346,gem_id=213482/213458,ilevel=639
-# trinket1=treacherous_transmitter,id=221023,ilevel=639
-# trinket2=mad_queens_mandate,id=212454,ilevel=639
-# main_hand=void_reapers_warp_blade,id=219877,enchant_id=7463,ilevel=639
-# off_hand=everforged_warglaive,id=222441,bonus_id=10222/11300/8960/8791,enchant_id=7463,ilevel=636
+head=feldealers_visor,id=229316,bonus_id=1808,ilevel=678,gem_id=213743
+neck=undermine_mercs_dog_tags,id=232663,bonus_id=8781,ilevel=678,gem_id=213479/213491
+shoulders=feldealers_recycled_reavers,id=229314,ilevel=678
+back=chef_chewies_towel,id=221054,ilevel=678,enchant_id=7403
+chest=feldealers_soul_engine,id=229319,ilevel=678,enchant_id=7364
+wrists=runebranded_armbands,id=219334,bonus_id=10222/11109/8960/8780/8791,ilevel=675,gem_id=213467,enchant_id=7385
+hands=tempestwind_handlers,id=221036,ilevel=678
+waist=feldealers_waistwrap,id=229313,bonus_id=1808,ilevel=678,gem_id=213455
+legs=feldealers_fur_kilt,id=229315,ilevel=678,enchant_id=7601
+feet=rushed_beta_launchers,id=228888,ilevel=678,enchant_id=7424
+finger1=the_jastor_diamond,id=231265,bonus_id=8781,ilevel=678,gem_id=213458/213458,enchant=radiant_critical_strike_3,enchant_id=7340
+finger2=ring_of_perpetual_conflict,id=178872,ilevel=678,gem_id=213491/213491,enchant_id=7340
+trinket1=improvised_seaforium_pacemaker,id=232541,ilevel=678
+trinket2=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255
+main_hand=capos_molten_knuckles,id=232804,ilevel=678,enchant_id=7439
+off_hand=everforged_warglaive,id=222441,bonus_id=10222/11300/8960/8791,ilevel=675,enchant=stormriders_fury_3,enchant_id=7445
 
-# save=TWW2_Demon_Hunter_Havoc.simc
+save=TWW2_Demon_Hunter_Havoc.simc
 
 # demonhunter="TWW2_Demon_Hunter_Vengeance"
 # level=80

@@ -1246,6 +1246,11 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
     direct_tick = true;
     background  = true;
     may_crit    = true;
+    if ( !p->bugs )
+    {
+      affected_by.judgment = false;
+      clears_judgment = false;
+    }
   }
 
   void execute() override
@@ -1264,6 +1269,21 @@ struct divine_hammer_tick_t : public paladin_melee_attack_t
           true );
       pal->cooldowns.hammerfall_icd->start();
     }
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double ctm = paladin_melee_attack_t::composite_target_multiplier( target );
+
+    paladin_td_t* td = this->td( target );
+    if ( p()->talents.burn_to_ash->ok() && td->dots.truths_wake->is_ticking() )
+    {
+      ctm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
+      if ( p()->bugs )
+        ctm *= 1.0 + p()->talents.burn_to_ash->effectN( 2 ).percent();
+    }
+
+    return ctm;
   }
 };
 
@@ -1286,16 +1306,7 @@ struct divine_hammer_t : public holy_power_consumer_t<paladin_spell_t>
   void execute() override
   {
     holy_power_consumer_t<paladin_spell_t>::execute();
-
-    if ( p()->bugs )
-    {
-      p()->sim->print_debug( "divine_hammer new buff duration: {} * {} = {}", p()->buffs.divine_hammer->buff_duration(), p()->cache.attack_haste(), p()->buffs.divine_hammer->buff_duration() * p()->cache.attack_haste() );
-      p()->buffs.divine_hammer->trigger( p()->buffs.divine_hammer->buff_duration() * p()->cache.attack_haste() );
-    }
-    else
-    {
-      p()->buffs.divine_hammer->trigger();
-    }
+    p()->buffs.divine_hammer->trigger();
   }
 };
 
@@ -1660,10 +1671,9 @@ void paladin_t::create_buffs_retribution()
     ->set_default_value( 1.0 )
     ->set_period( timespan_t::from_millis( 2000 ) )
     ->set_freeze_stacks( true )
-    ->set_tick_callback([this](buff_t* b, int, const timespan_t&) {
+    ->set_tick_callback([this](buff_t*, int, const timespan_t&) {
       active.divine_hammer_tick->schedule_execute();
-    })
-    ->set_tick_time_behavior( buff_tick_time_behavior::HASTED );
+    });
 
   // legendaries
   buffs.empyrean_legacy = make_buff( this, "empyrean_legacy", find_spell( 387178 ) );
@@ -1674,7 +1684,8 @@ void paladin_t::create_buffs_retribution()
   buffs.rise_from_ash = make_buff( this, "rise_from_ash", find_spell( 454693 ) );
   buffs.winning_streak = make_buff( this, "winning_streak", find_spell( 1216828 ) )
     ->set_default_value_from_effect( 1 );
-  buffs.all_in = make_buff( this, "all_in", find_spell( 1216837 ) );
+  buffs.all_in = make_buff( this, "all_in", find_spell( 1216837 ) )
+    ->set_default_value_from_effect( 1 );
 }
 
 void paladin_t::init_rng_retribution()

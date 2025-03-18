@@ -2,10 +2,10 @@ shaman="TWW2_Shaman_Enhancement_Totemic"
 source=default
 spec=enhancement
 level=80
-race=orc
+race=maghar_orc
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMjZGGDzMzMzMbzM2GAAAAAAAAAAgFYBmxiGbDgZC2AglpZmBLLmZmZYMzsNsMzMBGmlZGAgBA
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMjZGGDzMzMzMbzMWGAAAAAAAAAAgFYBmxiGbDgZC2AwsMZGYZZMzMDmZmNjlZmJbsMMmZAAGA
 
 # Default consumables
 potion=tempered_potion_3
@@ -57,16 +57,16 @@ actions+=/call_action_list,name=aoe_totemic,if=active_enemies>1&(rotation.standa
 actions+=/call_action_list,name=funnel,if=active_enemies>1&rotation.funnel
 
 # Multi target action priority list
-actions.aoe=run_action_list,name=aoe_open,if=time<15
-actions.aoe+=/feral_spirit
+actions.aoe=feral_spirit,if=talent.elemental_spirits.enabled|talent.alpha_wolf.enabled
+actions.aoe+=/run_action_list,name=aoe_open,if=time<15
 actions.aoe+=/flame_shock,if=talent.molten_assault.enabled&!ticking
 actions.aoe+=/ascendance,if=(dot.flame_shock.ticking|!talent.molten_assault.enabled)&ti_chain_lightning
 actions.aoe+=/tempest,target_if=min:debuff.lightning_rod.remains,if=!buff.arc_discharge.stack>=1&((buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&!talent.raging_maelstrom.enabled)|(buff.maelstrom_weapon.stack>=9))|(buff.maelstrom_weapon.stack>=5&(tempest_mael_count>30))
+actions.aoe+=/feral_spirit,if=(cooldown.doom_winds.remains>30|cooldown.doom_winds.remains<7)
 actions.aoe+=/doom_winds
 actions.aoe+=/primordial_wave,if=dot.flame_shock.ticking&(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)
 actions.aoe+=/primordial_storm,if=(buff.maelstrom_weapon.stack>=10)&(buff.doom_winds.up|cooldown.doom_winds.remains>15|buff.primordial_storm.remains<3)
-actions.aoe+=/voltaic_blaze,if=active_dot.flame_shock<5
-actions.aoe+=/crash_lightning,if=talent.converging_storms.enabled&buff.electrostatic_wager.stack>3
+actions.aoe+=/crash_lightning,if=talent.converging_storms.enabled&buff.electrostatic_wager.stack>6|!buff.crash_lightning.up
 actions.aoe+=/windstrike,target_if=min:debuff.lightning_rod.remains,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>0&ti_chain_lightning
 actions.aoe+=/crash_lightning,if=talent.converging_storms.enabled&talent.alpha_wolf.enabled
 actions.aoe+=/stormstrike,if=buff.converging_storms.stack=6&buff.stormblast.stack>0&buff.legacy_of_the_frost_witch.up&buff.maelstrom_weapon.stack<=8
@@ -84,7 +84,7 @@ actions.aoe+=/flame_shock,if=talent.molten_assault.enabled&!ticking
 actions.aoe+=/flame_shock,target_if=min:dot.flame_shock.remains,if=(talent.fire_nova.enabled|talent.primordial_wave.enabled)&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<6
 actions.aoe+=/fire_nova,if=active_dot.flame_shock>=3
 actions.aoe+=/stormstrike,if=buff.crash_lightning.up&(talent.deeply_rooted_elements.enabled|buff.converging_storms.stack=buff.converging_storms.max_stack)
-actions.aoe+=/crash_lightning,if=talent.crashing_storms.enabled&buff.cl_crash_lightning.up&active_enemies>=4
+actions.aoe+=/crash_lightning,if=talent.crashing_storms.enabled&buff.cl_crash_lightning.up
 actions.aoe+=/windstrike
 actions.aoe+=/stormstrike
 actions.aoe+=/ice_strike
@@ -100,7 +100,8 @@ actions.aoe_open=flame_shock,if=!ticking
 actions.aoe_open+=/crash_lightning,if=(buff.electrostatic_wager.stack>9&buff.doom_winds.up)|!buff.crash_lightning.up
 actions.aoe_open+=/voltaic_blaze,if=active_dot.flame_shock<3
 actions.aoe_open+=/lava_lash,if=talent.molten_assault.enabled&(talent.primordial_wave.enabled|talent.fire_nova.enabled)&dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies)&active_dot.flame_shock<3
-actions.aoe_open+=/primordial_wave,if=dot.flame_shock.ticking&(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)
+actions.aoe_open+=/primordial_wave,if=(buff.maelstrom_weapon.stack>=4)&dot.flame_shock.ticking&(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)
+actions.aoe_open+=/feral_spirit,if=buff.maelstrom_weapon.stack>=9
 actions.aoe_open+=/doom_winds,if=buff.maelstrom_weapon.stack>=9
 actions.aoe_open+=/ascendance,if=(dot.flame_shock.ticking|!talent.molten_assault.enabled)&ti_chain_lightning&(buff.legacy_of_the_frost_witch.up|!talent.legacy_of_the_frost_witch.enabled)&!buff.doom_winds.up
 actions.aoe_open+=/primordial_storm,if=(buff.maelstrom_weapon.stack>=9)&(buff.legacy_of_the_frost_witch.up|!talent.legacy_of_the_frost_witch.enabled)
@@ -120,20 +121,28 @@ actions.aoe_totemic+=/run_action_list,name=aoe_totemic_open,if=(cooldown.doom_wi
 actions.aoe_totemic+=/ascendance,if=ti_chain_lightning
 actions.aoe_totemic+=/flame_shock,if=!ticking&(talent.ashen_catalyst.enabled|talent.primordial_wave.enabled)
 actions.aoe_totemic+=/crash_lightning,if=talent.crashing_storms.enabled&(active_enemies>=15-5*talent.unruly_winds.enabled)
+actions.aoe_totemic+=/feral_spirit,if=((cooldown.doom_winds.remains>30|cooldown.doom_winds.remains<7)&(cooldown.primordial_wave.remains<2|buff.primordial_storm.up|!talent.primordial_storm.enabled))
 actions.aoe_totemic+=/doom_winds,if=!talent.elemental_spirits.enabled
 actions.aoe_totemic+=/primordial_storm,if=(buff.maelstrom_weapon.stack>=10)&(cooldown.doom_winds.remains>3)
 actions.aoe_totemic+=/primordial_wave,if=dot.flame_shock.ticking&(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)
 actions.aoe_totemic+=/windstrike
+actions.aoe_totemic+=/elemental_blast,if=(!talent.elemental_spirits.enabled|(talent.elemental_spirits.enabled&(charges=max_charges|feral_spirit.active>=2)))&buff.maelstrom_weapon.stack=buff.maelstrom_weapon.max_stack&(!talent.crashing_storms.enabled|active_enemies<=3)
 actions.aoe_totemic+=/lava_lash,if=buff.hot_hand.up
 actions.aoe_totemic+=/crash_lightning,if=buff.electrostatic_wager.stack>8
 actions.aoe_totemic+=/sundering,if=buff.doom_winds.up|talent.earthsurge.enabled&(buff.legacy_of_the_frost_witch.up|!talent.legacy_of_the_frost_witch.enabled)&pet.surging_totem.active
+actions.aoe_totemic+=/chain_lightning,if=buff.maelstrom_weapon.stack>=10&buff.electrostatic_wager.stack>4&!buff.cl_crash_lightning.up&buff.doom_winds.up
 actions.aoe_totemic+=/elemental_blast,if=(buff.maelstrom_weapon.stack>=10)
 actions.aoe_totemic+=/chain_lightning,if=buff.maelstrom_weapon.stack>=10&!buff.primordial_storm.up
-actions.aoe_totemic+=/feral_spirit
 actions.aoe_totemic+=/crash_lightning,if=buff.doom_winds.up|!buff.crash_lightning.up|(talent.alpha_wolf.enabled&feral_spirit.active&alpha_wolf_min_remains=0)
 actions.aoe_totemic+=/voltaic_blaze
-actions.aoe_totemic+=/crash_lightning,if=talent.crashing_storms.enabled
+actions.aoe_totemic+=/fire_nova,if=(dot.flame_shock.ticking&(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6))&pet.searing_totem.active
 actions.aoe_totemic+=/lava_lash,if=talent.molten_assault.enabled&dot.flame_shock.ticking
+actions.aoe_totemic+=/frost_shock,if=talent.hailstorm.enabled&buff.hailstorm.up&pet.searing_totem.active
+actions.aoe_totemic+=/crash_lightning,if=talent.crashing_storms.enabled
+actions.aoe_totemic+=/fire_nova,if=dot.flame_shock.ticking&(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)
+actions.aoe_totemic+=/frost_shock,if=talent.hailstorm.enabled&buff.hailstorm.up
+actions.aoe_totemic+=/crash_lightning
+actions.aoe_totemic+=/ice_strike,if=talent.hailstorm.enabled&!buff.ice_strike.up
 actions.aoe_totemic+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5&!buff.primordial_storm.up
 actions.aoe_totemic+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5&!buff.primordial_storm.up
 actions.aoe_totemic+=/stormstrike
@@ -153,7 +162,9 @@ actions.aoe_totemic+=/flame_shock,if=!ticking
 # Multi target opener priority list for the Totemic hero talent tree
 actions.aoe_totemic_open=surging_totem
 actions.aoe_totemic_open+=/flame_shock,if=!ticking
+actions.aoe_totemic_open+=/fire_nova,if=talent.swirling_maelstrom.enabled&dot.flame_shock.ticking&(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)
 actions.aoe_totemic_open+=/primordial_wave,if=dot.flame_shock.ticking&(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)
+actions.aoe_totemic_open+=/feral_spirit,if=buff.maelstrom_weapon.stack>=8
 actions.aoe_totemic_open+=/crash_lightning,if=(buff.electrostatic_wager.stack>9&buff.doom_winds.up)|!buff.crash_lightning.up
 actions.aoe_totemic_open+=/doom_winds,if=buff.maelstrom_weapon.stack>=8
 actions.aoe_totemic_open+=/primordial_storm,if=(buff.maelstrom_weapon.stack>=10)&buff.legacy_of_the_frost_witch.up
@@ -161,6 +172,9 @@ actions.aoe_totemic_open+=/lava_lash,if=buff.hot_hand.up|(buff.legacy_of_the_fro
 actions.aoe_totemic_open+=/sundering,if=buff.legacy_of_the_frost_witch.up
 actions.aoe_totemic_open+=/elemental_blast,if=buff.maelstrom_weapon.stack>=10
 actions.aoe_totemic_open+=/chain_lightning,if=buff.maelstrom_weapon.stack>=10
+actions.aoe_totemic_open+=/frost_shock,if=talent.hailstorm.enabled&buff.hailstorm.up&pet.searing_totem.active
+actions.aoe_totemic_open+=/fire_nova,if=pet.searing_totem.active&dot.flame_shock.ticking&(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)
+actions.aoe_totemic_open+=/ice_strike
 actions.aoe_totemic_open+=/stormstrike,if=buff.maelstrom_weapon.stack<10&!buff.legacy_of_the_frost_witch.up
 actions.aoe_totemic_open+=/lava_lash
 
@@ -208,23 +222,23 @@ actions.funnel+=/flame_shock,if=!ticking
 actions.funnel+=/frost_shock,if=!talent.hailstorm.enabled
 
 # Single target action priority list
-actions.single=feral_spirit,if=talent.elemental_spirits.enabled
+actions.single=run_action_list,name=single_open,if=time<15
 actions.single+=/primordial_storm,if=(buff.maelstrom_weapon.stack>=10|buff.primordial_storm.remains<=4&buff.maelstrom_weapon.stack>=5)
 actions.single+=/flame_shock,if=!ticking&(talent.ashen_catalyst.enabled|talent.primordial_wave.enabled|talent.lashing_flames.enabled)
-actions.single+=/doom_winds,if=raid_event.adds.in>=action.doom_winds.cooldown&buff.maelstrom_weapon.stack>=2
+actions.single+=/feral_spirit,if=(cooldown.doom_winds.remains>30|cooldown.doom_winds.remains<7)
+actions.single+=/windstrike,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>0&ti_lightning_bolt
+actions.single+=/doom_winds,if=buff.legacy_of_the_frost_witch.up&(cooldown.feral_spirit.remains>30|cooldown.feral_spirit.remains<2)
 actions.single+=/primordial_wave,if=dot.flame_shock.ticking&(raid_event.adds.in>action.primordial_wave.cooldown|raid_event.adds.in<6)
-actions.single+=/feral_spirit
-actions.single+=/ascendance,if=(dot.flame_shock.ticking|!talent.primordial_wave.enabled|!talent.ashen_catalyst.enabled)&buff.maelstrom_weapon.stack>=2
+actions.single+=/ascendance,if=(dot.flame_shock.ticking|!talent.primordial_wave.enabled|!talent.ashen_catalyst.enabled)
 actions.single+=/windstrike,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>0&ti_lightning_bolt
 actions.single+=/elemental_blast,if=((!talent.overflowing_maelstrom.enabled&buff.maelstrom_weapon.stack>=5)|(buff.maelstrom_weapon.stack>=9))&charges_fractional>=1.8
 actions.single+=/tempest,if=(buff.tempest.stack=buff.tempest.max_stack&(tempest_mael_count>30|buff.awakening_storms.stack=3)&buff.maelstrom_weapon.stack>=9)
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=9&!buff.primordial_storm.up&buff.arc_discharge.stack>0
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=9&!buff.primordial_storm.up&buff.arc_discharge.stack>1
 actions.single+=/elemental_blast,if=((!talent.overflowing_maelstrom.enabled&buff.maelstrom_weapon.stack>=5)|(buff.maelstrom_weapon.stack>=9))
 actions.single+=/tempest,if=buff.maelstrom_weapon.stack>=9
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=9
-actions.single+=/voltaic_blaze,if=dot.flame_shock.remains<=3
 actions.single+=/lava_lash,if=(buff.hot_hand.up&(buff.ashen_catalyst.stack=buff.ashen_catalyst.max_stack))|(dot.flame_shock.remains<=2&!talent.voltaic_blaze.enabled)|(talent.lashing_flames.enabled&(debuff.lashing_flames.down))
-actions.single+=/crash_lightning,if=buff.doom_winds.up&buff.electrostatic_wager.stack>1
+actions.single+=/crash_lightning,if=(buff.doom_winds.up&buff.electrostatic_wager.stack>1)|buff.electrostatic_wager.stack>8
 actions.single+=/stormstrike,if=buff.doom_winds.up|buff.stormblast.stack>0
 actions.single+=/crash_lightning,if=talent.unrelenting_storms.enabled&talent.alpha_wolf.enabled&alpha_wolf_min_remains=0
 actions.single+=/lava_lash,if=buff.hot_hand.up
@@ -243,24 +257,43 @@ actions.single+=/fire_nova,if=active_dot.flame_shock
 actions.single+=/earth_elemental
 actions.single+=/flame_shock
 
+# Single target opener priority list
+actions.single_open=flame_shock,if=!ticking
+actions.single_open+=/voltaic_blaze,if=active_dot.flame_shock<3&!buff.ascendance.up
+actions.single_open+=/primordial_wave,if=(buff.maelstrom_weapon.stack>=4)&dot.flame_shock.ticking&(active_dot.flame_shock=active_enemies|active_dot.flame_shock=6)
+actions.single_open+=/feral_spirit,if=buff.legacy_of_the_frost_witch.up
+actions.single_open+=/doom_winds,if=buff.legacy_of_the_frost_witch.up
+actions.single_open+=/ascendance,if=buff.legacy_of_the_frost_witch.up
+actions.single_open+=/primordial_storm,if=(buff.maelstrom_weapon.stack>=9)&(buff.legacy_of_the_frost_witch.up|!talent.legacy_of_the_frost_witch.enabled)
+actions.single_open+=/windstrike
+actions.single_open+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5
+actions.single_open+=/tempest,if=buff.maelstrom_weapon.stack>=5
+actions.single_open+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
+actions.single_open+=/stormstrike
+actions.single_open+=/crash_lightning,if=set_bonus.tww2_4pc
+actions.single_open+=/voltaic_blaze
+actions.single_open+=/lava_lash,if=talent.elemental_assault.enabled&talent.molten_assault.enabled&dot.flame_shock.ticking
+actions.single_open+=/ice_strike
+
 # Single target action priority list for the Totemic hero talent tree
-actions.single_totemic=surging_totem
+actions.single_totemic=run_action_list,name=single_totemic_open,if=time<20
+actions.single_totemic+=/surging_totem
 actions.single_totemic+=/ascendance,if=ti_lightning_bolt&pet.surging_totem.remains>4&(buff.totemic_rebound.stack>=3|buff.maelstrom_weapon.stack>0)
 actions.single_totemic+=/flame_shock,if=!ticking&(talent.ashen_catalyst.enabled|talent.primordial_wave.enabled)
-actions.single_totemic+=/doom_winds,if=raid_event.adds.in>=action.doom_winds.cooldown&!talent.elemental_spirits.enabled&buff.legacy_of_the_frost_witch.up&(cooldown.primordial_wave.remains>3|!talent.primordial_wave.enabled)
-actions.single_totemic+=/sundering,if=buff.ascendance.up&pet.surging_totem.active&talent.earthsurge.enabled&buff.legacy_of_the_frost_witch.up&buff.totemic_rebound.stack>=5&buff.earthen_weapon.stack>=2
 actions.single_totemic+=/lava_lash,if=buff.hot_hand.up
-actions.single_totemic+=/primordial_wave,if=dot.flame_shock.ticking&(raid_event.adds.in>action.primordial_wave.cooldown|raid_event.adds.in<6)&(cooldown.doom_winds.remains>3)
-actions.single_totemic+=/primordial_storm,if=(buff.maelstrom_weapon.stack>=10)&(buff.earthen_weapon.stack>=3|buff.doom_winds.remains<=3)&(buff.legacy_of_the_frost_witch.up|!talent.legacy_of_the_frost_witch.enabled)|(buff.primordial_storm.remains<=4&buff.maelstrom_weapon.stack>=7)
+actions.single_totemic+=/feral_spirit,if=((cooldown.doom_winds.remains>23|cooldown.doom_winds.remains<7)&(cooldown.primordial_wave.remains<20|buff.primordial_storm.up|!talent.primordial_storm.enabled))
+actions.single_totemic+=/primordial_wave,if=dot.flame_shock.ticking&(raid_event.adds.in>action.primordial_wave.cooldown)|raid_event.adds.in<6
+actions.single_totemic+=/doom_winds,if=buff.legacy_of_the_frost_witch.up
+actions.single_totemic+=/primordial_storm,if=(buff.maelstrom_weapon.stack>=10)&(buff.legacy_of_the_frost_witch.up|!talent.legacy_of_the_frost_witch.enabled)&(cooldown.doom_winds.remains>=15|buff.doom_winds.up)
+actions.single_totemic+=/sundering,if=buff.ascendance.up&pet.surging_totem.active&talent.earthsurge.enabled&buff.legacy_of_the_frost_witch.up&buff.totemic_rebound.stack>=5&buff.earthen_weapon.stack>=2
 actions.single_totemic+=/windstrike,if=talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>0&ti_lightning_bolt
 actions.single_totemic+=/sundering,if=buff.legacy_of_the_frost_witch.up&((cooldown.ascendance.remains>=10&talent.ascendance.enabled)|!talent.ascendance.enabled)&pet.surging_totem.active&buff.totemic_rebound.stack>=3&!buff.ascendance.up
-actions.single_totemic+=/feral_spirit
 actions.single_totemic+=/crash_lightning,if=talent.unrelenting_storms.enabled&talent.alpha_wolf.enabled&alpha_wolf_min_remains=0
-actions.single_totemic+=/lava_burst,if=!talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=5&buff.whirling_air.down
-actions.single_totemic+=/primordial_wave,if=dot.flame_shock.ticking&(raid_event.adds.in>action.primordial_wave.cooldown)|raid_event.adds.in<6
-actions.single_totemic+=/elemental_blast,if=(buff.maelstrom_weapon.stack>=10)&(buff.primordial_storm.down|buff.primordial_storm.remains>4)
 actions.single_totemic+=/lava_burst,if=!talent.thorims_invocation.enabled&buff.maelstrom_weapon.stack>=10&buff.whirling_air.down
+actions.single_totemic+=/elemental_blast,if=(buff.maelstrom_weapon.stack>=10)&(buff.primordial_storm.down|buff.primordial_storm.remains>4)
+actions.single_totemic+=/stormstrike,if=buff.doom_winds.up&buff.legacy_of_the_frost_witch.up
 actions.single_totemic+=/lightning_bolt,if=(buff.maelstrom_weapon.stack>=10)&(buff.primordial_storm.down|buff.primordial_storm.remains>4)
+actions.single_totemic+=/crash_lightning,if=buff.electrostatic_wager.stack>4
 actions.single_totemic+=/stormstrike,if=buff.doom_winds.up|buff.stormblast.stack>1
 actions.single_totemic+=/lava_lash,if=buff.whirling_fire.up|buff.ashen_catalyst.stack>=8
 actions.single_totemic+=/windstrike
@@ -276,31 +309,47 @@ actions.single_totemic+=/fire_nova,if=active_dot.flame_shock
 actions.single_totemic+=/earth_elemental
 actions.single_totemic+=/flame_shock,if=!talent.voltaic_blaze.enabled
 
+# Single target opener priority list for the Totemic hero talent tree
+actions.single_totemic_open=flame_shock,if=!ticking
+actions.single_totemic_open+=/lava_lash,if=!pet.surging_totem.active&talent.lashing_flames.enabled&debuff.lashing_flames.down
+actions.single_totemic_open+=/surging_totem
+actions.single_totemic_open+=/primordial_wave
+actions.single_totemic_open+=/feral_spirit,if=buff.legacy_of_the_frost_witch.up
+actions.single_totemic_open+=/doom_winds,if=buff.legacy_of_the_frost_witch.up
+actions.single_totemic_open+=/primordial_storm,if=(buff.maelstrom_weapon.stack>=10)&buff.legacy_of_the_frost_witch.up
+actions.single_totemic_open+=/lava_lash,if=buff.hot_hand.up
+actions.single_totemic_open+=/stormstrike,if=buff.doom_winds.up&buff.legacy_of_the_frost_witch.up
+actions.single_totemic_open+=/sundering,if=buff.legacy_of_the_frost_witch.up
+actions.single_totemic_open+=/elemental_blast,if=buff.maelstrom_weapon.stack=10
+actions.single_totemic_open+=/lightning_bolt,if=buff.maelstrom_weapon.stack=10
+actions.single_totemic_open+=/stormstrike
+actions.single_totemic_open+=/lava_lash
+
 head=gale_sovereigns_charged_hood,id=229262,ilevel=678,gem_id=213743
-neck=strapped_rescuekeg,id=221060,ilevel=678,gem_id=213491/213491
+neck=gobfathers_gifted_bling,id=228842,ilevel=678,gem_id=213491/213491
 shoulders=gale_sovereigns_zephyrs,id=229260,ilevel=678
 back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960,ilevel=675,crafted_stats=49/36
-chest=gale_sovereigns_clouded_hauberk,id=229265,ilevel=678,enchant_id=7364
-wrists=made_manacles,id=228878,ilevel=678,gem_id=213491,enchant_id=7385
+chest=gale_sovereigns_clouded_hauberk,id=229265,ilevel=678,enchant=crystalline_radiance_3
+wrists=made_manacles,id=228878,ilevel=678,gem_id=213491,enchant=chant_of_armored_avoidance_3
 hands=gale_sovereigns_grasps,id=229263,ilevel=678
 waist=gale_sovereigns_ritual_belt,id=229259,ilevel=678,gem_id=213491
-legs=chemical_blasters_legguards,id=158341,ilevel=678,enchant_id=7601
-feet=treads_of_the_galvanic_skysoarer,id=221035,ilevel=678,enchant_id=7424
-finger1=the_jastor_diamond,id=231265,ilevel=678,gem_id=213482/213482,enchant=radiant_haste_3,enchant_id=7334
-finger2=miniature_roulette_wheel,id=228843,bonus_id=11138/8949,ilevel=678,gem_id=213491/213491,enchant_id=7346
-trinket1=improvised_seaforium_pacemaker,id=232541,ilevel=678
+legs=gale_sovereigns_pantaloons,id=229261,ilevel=678,enchant=stormbound_armor_kit_3
+feet=dubious_tablerunners,id=228883,ilevel=678,enchant=defenders_march_3
+finger1=the_jastor_diamond,id=231265,ilevel=678,gem_id=213482/213482,enchant=radiant_haste_3
+finger2=miniature_roulette_wheel,id=228843,bonus_id=11138/8949,ilevel=678,gem_id=213491/213491,enchant=radiant_mastery_3
+trinket1=house_of_cards,id=230027,ilevel=678
 trinket2=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
-main_hand=gallywixs_iron_thumb,id=228899,ilevel=678,enchant_id=7445
-off_hand=everforged_mace,id=222442,bonus_id=10421/9633/8902/9627/8793/10222/11144/11300/8960,ilevel=675,enchant=stormriders_fury_3,enchant_id=7442,crafted_stats=36/32
+main_hand=gallywixs_iron_thumb,id=228899,ilevel=678,enchant=authority_of_the_depths_3
+off_hand=everforged_mace,id=222442,bonus_id=10421/9633/8902/9627/8793/10222/11144/11300/8960,ilevel=675,enchant=authority_of_the_depths_3,crafted_stats=36/32
 
 # Gear Summary
 # gear_ilvl=677.63
 # gear_agility=51224
 # gear_stamina=392511
-# gear_crit_rating=3148
-# gear_haste_rating=24174
-# gear_mastery_rating=18005
-# gear_versatility_rating=1238
+# gear_crit_rating=5308
+# gear_haste_rating=17642
+# gear_mastery_rating=21563
+# gear_versatility_rating=2055
 # gear_avoidance_rating=1090
 # gear_armor=49063
 # set_bonus=thewarwithin_season_2_2pc=1

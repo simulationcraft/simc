@@ -4324,7 +4324,7 @@ struct item_has_use_expr_t : public item_effect_expr_t
   {
     for ( auto e : effects )
     {
-      if ( e->cooldown() != 0_ms && e->rppm() == 0 )  // Technically, rppm doesn't have a cooldown.
+      if ( e->type == SPECIAL_EFFECT_USE )
       {
         has_use = true;
         break;

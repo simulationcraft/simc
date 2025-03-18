@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59347 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.59651 PTR
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -18,7 +18,7 @@ Labels           : 16: Class Spells
                  : 741
 Stance Mask      : 0x88000000
 Mechanic         : Shield
-Affecting Spells : Improved Power Word: Shield (24191 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effects: #3, #19, #22), Shadow Priest (137033 effects: #19, #28), Eternal Barrier (238135 effects: #1, #2), Voidform (250844 effect#3), Kam Xi'raff (281457 effect#1), Weal and Woe (390787 effect#2), Benevolence (415416 effect#3), Premonition of Piety (428930 effect#5), Preventive Measures (440662 effect#2), Inner Quietus (448278 effect#2), Darkness from Light (455033 effect#2)
+Affecting Spells : Improved Power Word: Shield (24191 effect#1), Priest (137030 effect#1), Holy Priest (137031 effect#3), Discipline Priest (137032 effects: #3, #19, #22), Shadow Priest (137033 effects: #19, #28), Eternal Barrier (238135 effects: #1, #2), Kam Xi'raff (281457 effect#1), Weal and Woe (390787 effect#2), Benevolence (415416 effect#3), Premonition of Piety (428930 effect#5), Preventive Measures (440662 effect#2), Inner Quietus (448278 effect#2), Darkness from Light (455033 effect#2)
 Family Flags     : 0
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Fail on all targets immune (85), Aura Points On Client (268)
 Effects          :
@@ -144,7 +144,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 954
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #18), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Muze's Unwavering Will (210632 effects: #1, #3), Mind Blast (214621 effect#1), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#4), Divine Conversation (363727 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Weal and Woe (390787 effect#1), Words of the Pious (390933 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #18, #30), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Muze's Unwavering Will (210632 effects: #1, #3), Mind Blast (214621 effect#1), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#4), Divine Conversation (363727 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Weal and Woe (390787 effect#1), Words of the Pious (390933 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 7, 72
 Attributes       : Not Shapeshifted (16), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Allow Class Ability Procs (416)
 Effects          :
@@ -200,7 +200,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
-Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #9, #10), Discipline Priest (137032 effects: #4, #5, #12, #13, #23, #24), Shadow Priest (137033 effects: #1, #2, #5, #6), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Voidform (250844 effects: #3, #9), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2, #3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2), Death's Torment (423726 effect#1), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Manipulation (459985 effect#1)
+Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #9, #10), Discipline Priest (137032 effects: #4, #5, #12, #13, #23, #24), Shadow Priest (137033 effects: #1, #2, #5, #6), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Misery (238558 effect#2), Death Throes (278659 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Throes of Pain (377422 effects: #1, #2), Pain and Suffering (390689 effects: #1, #2, #3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Screams of the Void (393919 effect#1), Priest Discipline 10.1 Class Set 2pc (405551 effects: #1, #3), Initial Priest (417191 effects: #1, #2), Death's Torment (423726 effect#1), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Manipulation (459985 effect#1)
 Family Flags     : 15, 72
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Aura Never Bounces (148), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -458,7 +458,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 4040: Shadow Priest (137033 effect#30)
-Affecting Spells : Power Infusion (10060 effect#2), Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #9, #23, #24), Shadow Priest (137033 effects: #1, #2, #9, #13, #22), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Mind Devourer (338332 effect#1), Dark Thought (341207 effect#2), Talbadar's Stratagem (342416 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Dark Indulgence (372972 effect#2), Insidious Ire (373213 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Shadowy Insight (375981 effects: #1, #2, #3), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Mind Melt (391092 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Darkness from Light (455033 effect#1)
+Affecting Spells : Power Infusion (10060 effect#2), Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #9, #23, #24), Shadow Priest (137033 effects: #1, #2, #9, #13, #22), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Mind Devourer (338332 effect#1), Dark Thought (341207 effect#2), Talbadar's Stratagem (342416 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Dark Indulgence (372972 effect#2), Insidious Ire (373213 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Shadowy Insight (375981 effects: #1, #2, #3), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Mind Melt (391092 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Darkness from Light (455033 effect#1)
 Family Flags     : 13, 72
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
 Effects          :
@@ -489,7 +489,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x08000000
 Mechanic         : Flee
 Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken, Helpful Periodic Taken
-Affecting Spells : Improved Psychic Scream (44297 effect#1), Petrifying Scream (55676 effect#1), Psychic Voice (196704 effect#1), Voidform (250844 effect#3)
+Affecting Spells : Improved Psychic Scream (44297 effect#1), Petrifying Scream (55676 effect#1), Psychic Voice (196704 effect#1)
 Family Flags     : 16
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Aura Interrupt   : Leave World (19), Enter World (22), Damage (Script) (27)
@@ -582,9 +582,9 @@ Family Flags     : 20, 72
 Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=6990)     : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.426 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.426 | PvP Coefficient: 1.3 | Target: Enemy (6)
 #2 (id=6991)     : Apply Aura (6) | Periodic Damage (3): holy every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.1884 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.1884 | PvP Coefficient: 1.3 | Target: Enemy (6)
 #3 (id=808675)   : Apply Aura (6) | Unknown(395)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 19526 | Target: Enemy (6)
 #4 (id=1167235)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
@@ -645,7 +645,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Stance Mask      : 0x08000000
-Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#7), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Mental Decay (375994 effect#3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Mastermind (391151 effects: #1, #2), Mind Flay: Insanity (391401 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#7), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Mental Decay (375994 effect#3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Mastermind (391151 effects: #1, #2), Mind Flay: Insanity (391401 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 70, 72
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Allow While Not Shapeshifted (caster form) (83), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13), Damage Channel Duration (14)
@@ -877,7 +877,7 @@ Labels           : 16: Class Spells
                  : 954
                  : 1387
 Stance Mask      : 0x88000000
-Affecting Spells : Voidform (250844 effect#3), Clear Mind (337707 effect#1), Mental Agility (341167 effects: #1, #5, #6)
+Affecting Spells : Clear Mind (337707 effect#1), Mental Agility (341167 effects: #1, #5, #6)
 Family Flags     : 39
 Attributes       : Not Shapeshifted (16), No Immunities (29), Allow While Not Shapeshifted (caster form) (83), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
@@ -958,7 +958,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1387
 Stance Mask      : 0x08000000
-Affecting Spells : Voidform (250844 effect#3), Clear Mind (337707 effect#1), Mental Agility (341167 effects: #1, #5, #6)
+Affecting Spells : Clear Mind (337707 effect#1), Mental Agility (341167 effects: #1, #5, #6)
 Triggered By     : Mass Dispel (32375)
 Family Flags     : 39
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Taps immediately (215), Allow Class Ability Procs (416)
@@ -1075,7 +1075,7 @@ Labels           : 16: Class Spells
                  : 4749
 Category Cooldown: 180 seconds
 Stance Mask      : 0x08000000
-Affecting Spells : Voidform (250844 effect#3), Shadowflame Prism (336143 effect#1), Void Summoner (390770 effect#1), Dark Ascension (391109 effect#1)
+Affecting Spells : Shadowflame Prism (336143 effect#1), Void Summoner (390770 effect#1), Dark Ascension (391109 effect#1)
 Family Flags     : 40
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Proc While Sitting (147), Taps immediately (215), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
@@ -1140,7 +1140,7 @@ Labels           : 16: Class Spells
                  : 292
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2, #5), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effects: #3, #9), Sins of the Many (280398 effects: #1, #2), Thought Harvester (288340 effect#2), Unfurling Darkness (341282 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Maddening Touch (391228 effect#1), Screams of the Void (393919 effect#1), Initial Priest (417191 effects: #1, #2), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2, #5), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Thought Harvester (288340 effect#2), Unfurling Darkness (341282 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Maddening Touch (391228 effect#1), Screams of the Void (393919 effect#1), Initial Priest (417191 effects: #1, #2), Inner Quietus (448278 effects: #1, #3), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 42, 72
 Attributes       : Not Shapeshifted (16), Include In Advanced Combat Log (72), Allow While Not Shapeshifted (caster form) (83), Can Proc From Procs (122), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Bypass Visibility Check (320), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -1333,9 +1333,9 @@ Family Flags     : 47, 72
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=39897)    : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.795 | Target: Channel Target (77)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.795 | PvP Coefficient: 0.9 | Target: Channel Target (77)
 #2 (id=1197305)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.795 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.795 | PvP Coefficient: 0.9 | Target: Enemy (6)
 Description      : $@spelldesc47540
 
 Name             : Penance (id=47750) [Spell Family (6)] 
@@ -1353,9 +1353,9 @@ Family Flags     : 48, 126
 Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial Threat (86), Not a Proc (105), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=39995)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.42 | Target: Channel Target (77)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.42 | PvP Coefficient: 0.9 | Target: Channel Target (77)
 #2 (id=1194619)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.42 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.42 | PvP Coefficient: 0.9 | Target: Friendly (21)
 Description      : $@spelldesc47540
 
 Name             : Divine Aegis (id=47753) [Spell Family (6)] 
@@ -1781,7 +1781,7 @@ Family Flags     : 66, 126
 Attributes       : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Active Threat (94), Not a Proc (105), Allow Cast While Casting (135), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=59165)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.8044 | PvP Coefficient: 1.3 | Radius: 0 - 40 yards | Target: At Self (22) -> Friendly in Area (30)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.8044 | PvP Coefficient: 2.34 | Radius: 0 - 40 yards | Target: At Self (22) -> Friendly in Area (30)
 #2 (id=59166)    : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 0x7f | Radius: 0 - 40 yards | Target: At Self (22) -> Friendly in Area (30)
                    Affected School(s): All
@@ -1934,7 +1934,7 @@ GCD              : 1.5 seconds
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Sins of the Many (280398 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Mental Decay (375994 effect#4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Mind Spike: Insanity (407468 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Mental Decay (375994 effect#4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Mind Spike: Insanity (407468 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 72, 80
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
 Effects          :
@@ -2755,8 +2755,8 @@ Labels           : 16: Class Spells
                  : 292
 Category Cooldown: 60 seconds
 Stance Mask      : 0x08000000
-Affecting Spells : Voidform (250844 effect#3), Shadowflame Prism (336143 effect#1), Void Summoner (390770 effect#1), Dark Ascension (391109 effect#1)
-Family Flags     : 19, 121
+Affecting Spells : Shadowflame Prism (336143 effect#1), Void Summoner (390770 effect#1), Dark Ascension (391109 effect#1)
+Family Flags     : 19
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Proc While Sitting (147), Taps immediately (215), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=155077)   : Summon (28)
@@ -2948,7 +2948,7 @@ Aura Interrupt   : Leave World (19)
 Effects          :
 #1 (id=171791)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=239967)   : Apply Aura (6) | Modify Absorb% Done (422)
+#2 (id=239967)   : Apply Aura (6) | Modify Absorb% Received (422)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=255562)   : Apply Aura (6) | Unknown(448)
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
@@ -3061,7 +3061,7 @@ Effects          :
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
 #18 (id=1079592) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 192 | Scaled Value: 192 | Target: Self (1)
+                   Base Value: 429 | Scaled Value: 429 | Target: Self (1)
                    Affected Spells: Smite (585), Smite (425529), Void Blast (450215)
                    Family Flags: 7
 #19 (id=1081584) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -3099,8 +3099,10 @@ Effects          :
                    Base Value: -42 | Scaled Value: -42 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
-#30 (id=1176319) : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#30 (id=1176319) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -45 | Scaled Value: -45 | PvP Coefficient: 0 | Target: Self (1)
+                   Affected Spells: Smite (585), Smite (425529), Void Blast (450215)
+                   Family Flags: 7
 #31 (id=1202480) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Power Word: Life (373481)
@@ -3140,8 +3142,10 @@ Effects          :
                    Base Value: 17 | Scaled Value: 17 | Target: Self (1)
 #7 (id=743448)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 17 | Scaled Value: 17 | Target: Self (1)
-#8 (id=744373)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#8 (id=744373)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Affected Spells: Void Blast (450215), Void Blast (450983)
+                   Family Flags: 57
 #9 (id=816833)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 80 | Scaled Value: 80 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Void Blast (450983)
@@ -3160,8 +3164,10 @@ Effects          :
                    Base Value: 104 | Scaled Value: 104 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
-#14 (id=876304)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#14 (id=876304)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -23 | Scaled Value: -23 | PvP Coefficient: 0 | Target: Self (1)
+                   Affected Spells: Void Blast (450215), Void Blast (450983)
+                   Family Flags: 57
 #15 (id=1032424) : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Focused Will (45242), Focused Will (426401)
@@ -3179,7 +3185,7 @@ Effects          :
                    Affected Spells: Renew (139)
                    Family Flags: 6
 #19 (id=1079597) : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
-                   Base Value: 73 | Scaled Value: 73 | Misc Value: 24 | Target: Self (1)
+                   Base Value: 90 | Scaled Value: 90 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
 #20 (id=1079598) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
@@ -3187,7 +3193,7 @@ Effects          :
 #21 (id=1081540) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 12 | Misc Value 2: 2672 (Label) | Target: Self (1)
 #22 (id=1081541) : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0 | Misc Value: 24 | Target: Self (1)
+                   Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 0 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
 #23 (id=1089477) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -3266,7 +3272,6 @@ Effects          :
                    Base Value: 38 | Scaled Value: 38 | PvP Coefficient: 0.4 | Target: Self (1)
                    Affected Spells: Collapsing Void (448405)
                    Family Flags: 30
-Hotfixed         : Base Value (20 -> 38)
 #11 (id=1040379) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 9 | Scaled Value: 9 | Misc Value 2: 4004 (Label) | Target: Self (1)
                    Affected Spells (Label): Divine Star (122128), Divine Star (390845)
@@ -3543,7 +3548,7 @@ Attributes       : Do Not Log (8), Aura Is Debuff (26), Allow While Sitting (27)
 Effects          :
 #1 (id=256841)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=256842)   : Apply Aura (6) | Modify Absorb% Done (422)
+#2 (id=256842)   : Apply Aura (6) | Modify Absorb% Received (422)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=256843)   : Apply Aura (6) | Unknown(448)
                    Base Value: -25 | Scaled Value: -25 | Target: Self (1)
@@ -3799,7 +3804,7 @@ Effects          :
 #1 (id=285534)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 #2 (id=298593)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.4048 | Radius: 0 - 40 yards | Target: At Friendly (132) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 5.4048 | PvP Coefficient: 0.9 | Radius: 0 - 40 yards | Target: At Friendly (132) -> At Friendly in Area (31)
 #3 (id=298594)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #4 (id=298595)   : Dummy (3)
@@ -4132,7 +4137,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=290753)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Evangelism (472433)
                    Family Flags: 46
 Description      : Evangelism healing increased by $s1%, and Evangelism increases your healing and absorption effects by $472433s3% for $472433d.
@@ -4315,8 +4320,8 @@ Labels           : 16: Class Spells
                  : 292
 Category Cooldown: 60 seconds
 Stance Mask      : 0x08000000
-Affecting Spells : Voidform (250844 effect#3), Shadowflame Prism (336143 effect#1), Void Summoner (390770 effect#1), Dark Ascension (391109 effect#1)
-Family Flags     : 19, 121
+Affecting Spells : Shadowflame Prism (336143 effect#1), Void Summoner (390770 effect#1), Dark Ascension (391109 effect#1)
+Family Flags     : 19
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Active Threat (94), Allow Proc While Sitting (147), Taps immediately (215), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=294666)   : Summon (28)
@@ -4608,7 +4613,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 117
                  : 292
-Affecting Spells : Voidform (250844 effect#3), Dark Ascension (391109 effect#1)
+Affecting Spells : Dark Ascension (391109 effect#1)
 Family Flags     : 31
 Attributes       : Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
@@ -4634,7 +4639,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 117
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Sins of the Many (280398 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Triggered By     : Shadow Crash (205385)
 Family Flags     : 31, 72
 Attributes       : Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
@@ -4644,7 +4649,6 @@ Effects          :
 Description      : $@spelldesc205385
 
 Name             : Void Bolt (id=205448) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -4658,7 +4662,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Category Cooldown: 6 seconds
-Affecting Spells : Power Infusion (10060 effect#2), Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Priest (137030 effect#1), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Sins of the Many (280398 effects: #1, #2), Dissonant Echoes (338342 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Power Infusion (10060 effect#2), Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Priest (137030 effect#1), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Dissonant Echoes (338342 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 72, 106
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
@@ -5084,7 +5088,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
 Stance Mask      : 0x08000000
-Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Voidform (194249 effect#7), Heart of the Void (248296 effect#1), Voidform (250844 effect#11), Dissonant Echoes (343144 effect#1), Dark Ascension (391109 effect#1)
+Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Voidform (194249 effect#7), Heart of the Void (248296 effect#1), Dissonant Echoes (343144 effect#1), Dark Ascension (391109 effect#1)
 Family Flags     : 36
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
@@ -5144,7 +5148,7 @@ Velocity         : 35 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3, #7), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Heart of the Void (248296 effect#1), Voidform (250844 effect#11), Sins of the Many (280398 effects: #1, #2), Dissonant Echoes (343144 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3, #7), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Heart of the Void (248296 effect#1), Sins of the Many (280398 effects: #1, #2), Dissonant Echoes (343144 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 36, 72
 Attributes       : Ignore Line of Sight (66), Do Not Display Range (126), Do Not Consume Resources (197), Do Not Display Power Cost (303), Allow Class Ability Procs (416)
 Effects          :
@@ -5162,7 +5166,7 @@ Velocity         : 40 yards/sec
 Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
-Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3, #7), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Heart of the Void (248296 effect#1), Voidform (250844 effect#11), Sins of the Many (280398 effects: #1, #2), Dissonant Echoes (343144 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3, #7), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Heart of the Void (248296 effect#1), Sins of the Many (280398 effects: #1, #2), Dissonant Echoes (343144 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 36, 72
 Attributes       : Ignore Line of Sight (66), Do Not Display Range (126), Do Not Consume Resources (197), Do Not Display Power Cost (303), Allow Class Ability Procs (416)
 Effects          :
@@ -5461,19 +5465,14 @@ Effects          :
 Description      : $@spelldesc33076
 Tooltip          : Heals the next time you take damage.
 
-Name             : Voidform (id=250844) [Spell Family (6)] 
+Name             : Voidform (id=250844) 
 Class            : Priest
 School           : Shadow
 Spell Type       : None
 Spell Level      : 10
 Duration         : Aura (infinite)
-Labels           : 16: Class Spells
-                 : 18: Priest Spells
-                 : 292
 Stacks           : 100 maximum
 Proc Chance      : 101%
-Affecting Spells : Iridi's Empowerment (224999 effects: #2, #3), Perfected Form (453917 effects: #1, #2)
-Family Flags     : 89
 Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Do Not Consume Resources (197), Allow While Riding Vehicle (204), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Do Not Display Power Cost (303), Spellcast Override In Spellbook (310), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Aura Interrupt   : Leave World (19), Enter World (22), Change Specialization (38), Change Talent (46), Change Glyph (47)
 Effects          :
@@ -5484,8 +5483,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #3 (id=469746)   : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21) | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Power Word: Shield (17), Shadow Word: Pain (589), Mind Blast (8092), Psychic Scream (8122), Mind Flay (15407), Mass Dispel (32375), Mass Dispel (32592), Shadowfiend (34433), Vampiric Touch (34914), Mind Spike (73510), Mindbender (123040), Mindbender (200174), Shadow Crash (205385), Shadow Crash (205386), Void Bolt (205448), Void Torrent (263165), Void Bolt (343355), Mind Flay: Insanity (391403), Mind Spike: Insanity (407466), Collapsing Void (448405), Void Blast (450983), Shadow Crash (457042), Shadow Crash (465522)
-                   Family Flags: 0, 13, 15, 16, 30, 31, 39, 40, 42, 51, 52, 70, 80, 106, 121
 #4 (id=469747)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds | Attributes: Suppress Points Stacking (6)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=469748)   : Apply Aura (6) | Modify Recharge Time (Category) (453) | Attributes: Suppress Points Stacking (6)
@@ -5498,14 +5495,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #9 (id=469752)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914)
-                   Family Flags: 15, 42
 #10 (id=469753)  : Unknown(203)
                    Base Value: 218413 | Scaled Value: 218413 | Trigger Spell: 218413 | Target: Self (1)
 #11 (id=469754)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332) | Attributes: Suppress Points Stacking (6)
                    Base Value: 205448 | Scaled Value: 205448 | Target: Self (1)
-                   Affected Spells: Void Eruption (228260), Void Eruption (228360), Void Eruption (228361)
-                   Family Flags: 36
 #12 (id=469755)  : Apply Aura (6) | Override Action Spell (Misc /w Base) (332) | Attributes: Suppress Points Stacking (6)
                    Base Value: 194249 | Scaled Value: 194249 | Misc Value: 232698 | Target: Self (1)
 #13 (id=469756)  : Apply Aura (6) | Unknown(235)
@@ -5705,7 +5698,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
 Stance Mask      : 0x08000000
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Sins of the Many (280398 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Insidious Ire (373213 effect#2), Malediction (373221 effect#1), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Initial Priest (417191 effects: #1, #2), Dark Energy (451018 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Insidious Ire (373213 effect#2), Malediction (373221 effect#1), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Initial Priest (417191 effects: #1, #2), Dark Energy (451018 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 51, 72
 Attributes       : Not Shapeshifted (16), Aura Is Debuff (26), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Allow While Not Shapeshifted (caster form) (83), Extra Initial Period (169), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Channel Interrupt: Action (2), Moving (3), Interacting (10), Looting (11), Attacking (12), Use Item (13), Damage Channel Duration (14)
@@ -7885,7 +7878,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 292
-                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#10), Flow State (390148 effect#12), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
 Proc Chance      : 101%
 Proc Flags       : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
@@ -10032,7 +10025,7 @@ Effects          :
                    Base Value: 0.5 | Scaled Value: 0.5 | Target: Self (1)
 #5 (id=1031390)  : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : $?s137032[Shadow Word: Pain and Purge the Wicked deal][Shadow Word: Pain deals] an additional $s1% damage. When an enemy dies while afflicted by your $?s137032[Shadow Word: Pain or Purge the Wicked][Shadow Word: Pain], you gain $?a137033[${$s3/100} Insanity.][${$s5/10}.1% Mana.]
+Description      : Shadow Word: Pain deals an additional $s1% damage. When an enemy dies while afflicted by your Shadow Word: Pain, you gain $?a137033[${$s3/100} Insanity.][${$s5/10}.1% Mana.]
 
 Name             : Throes of Pain (id=377427) [Spell Family (6)] 
 Class            : Priest
@@ -10131,7 +10124,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1027567)  : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : Each time Shadow Word: Pain$?a137032[ or Purge the Wicked]?a137031[ or Holy Fire][] deals damage, the healing of your next Flash Heal is increased by $s1%, up to a maximum of $?a137033&$?a134735[$390617s2][${$s1*$390617u}]%.
+Description      : Each time Shadow Word: Pain$?a137031[ or Holy Fire][] deals damage, the healing of your next Flash Heal is increased by $s1%, up to a maximum of $?a137033&$?a134735[$390617s2][${$s1*$390617u}]%.
 
 Name             : From Darkness Comes Light (id=390617) [Spell Family (6)] 
 Class            : Priest
@@ -11388,7 +11381,7 @@ Labels           : 16: Class Spells
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Proc Flags       : Cast Successful
-Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#7), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Mental Decay (375994 effect#3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Mastermind (391151 effects: #1, #2), Mind Flay: Insanity (391401 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#7), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Mental Decay (375994 effect#3), Twist of Fate (390978 effects: #1, #2), Dark Evangelism (391099 effect#1), Dark Ascension (391109 effects: #2, #4, #5), Mastermind (391151 effects: #1, #2), Mind Flay: Insanity (391401 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Triggered By     : Mind Flay: Insanity (391401)
 Family Flags     : 70, 72
 Attributes       : Not Shapeshifted (16), Is Channelled (34), Track Target in Channel (46), Name in Channel Bar (61), Allow While Not Shapeshifted (caster form) (83), Spell Haste Affects Periodic (173), No Caster Aura Icon (187), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Haste Affects Duration (273), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
@@ -12201,7 +12194,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3626: Empowered Surges (453799 effect#2), Empowered Surges (453799 effect#3)
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Sins of the Many (280398 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Mental Decay (375994 effect#4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Mind Spike: Insanity (407468 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Mental Decay (375994 effect#4), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Mind Spike: Insanity (407468 effect#1), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Triggered By     : Mind Spike: Insanity (407468)
 Family Flags     : 72, 80
 Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Allow Class Ability Procs (416)
@@ -12962,7 +12955,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 954
                  : 2952: Shadow Covenant (322105 effect#6)
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #18), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Muze's Unwavering Will (210632 effects: #1, #3), Mind Blast (214621 effect#1), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#4), Divine Conversation (363727 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Weal and Woe (390787 effect#1), Words of the Pious (390933 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #18, #30), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Muze's Unwavering Will (210632 effects: #1, #3), Mind Blast (214621 effect#1), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Boon of the Ascended (325013 effect#4), Divine Conversation (363727 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Weal and Woe (390787 effect#1), Words of the Pious (390933 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 7, 72
 Attributes       : Not Shapeshifted (16), Initiate Combat Post-Cast (Enables Auto-Attack) (84), Allow Class Ability Procs (416)
 Effects          :
@@ -13351,7 +13344,7 @@ Effects          :
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
 #3 (id=1170141)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Smite (585), Penance (47666), Holy Nova (132157), Penance (186724), Dark Reprimand (373130), Ultimate Penitence (421543), Smite (425529), Void Blast (450215)
                    Family Flags: 7, 47, 49
 #4 (id=1170142)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -13654,7 +13647,7 @@ Family Flags     : 4, 126
 Attributes       : Do Not Display Range (126), Aura Points On Client (268), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1139497)  : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 23.8 | PvP Coefficient: 0.85 | Misc Value: 0x7f | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 23.8 | PvP Coefficient: 0.64 | Misc Value: 0x7f | Target: Friendly (21)
                    Affected School(s): All
 #2 (id=1166490)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 0.667 | Misc Value: 0x7f | Target: Friendly (21)
@@ -13734,16 +13727,14 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914)
                    Family Flags: 15, 42
-Hotfixed         : Base Value (25 -> 35)
 #2 (id=1151713)  : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 2 | Misc Value: 24 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 2.5 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
                    Family Flags: 0
 #3 (id=1158795)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Vampiric Touch (34914)
                    Family Flags: 15, 42
-Hotfixed         : Base Value (25 -> 35)
 Description      : $?c3[Vampiric Touch and Shadow Word: Pain deal $s1% additional damage.][Power Word: Shield absorbs $s2% additional damage.]
 
 Name             : Voidwound (id=448279) [Spell Family (6)] 
@@ -13796,7 +13787,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3022
-Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24, #28), Shadow Priest (137033 effects: #1, #2, #10), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Mind Devourer (338332 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24, #28), Shadow Priest (137033 effects: #1, #2, #10), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Mind Devourer (338332 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 30, 72
 Attributes       : Ignore Line of Sight (66), Active Threat (94), Always AOE Line of Sight (186)
 Effects          :
@@ -13974,7 +13965,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3532
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #18), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2, #31), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Mind Blast (214621 effect#1), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Boon of the Ascended (325013 effect#4), Divine Conversation (363727 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Twilight Equilibrium (390707 effect#1), Weal and Woe (390787 effect#1), Words of the Pious (390933 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Void Infusion (450612 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5, #18, #30), Discipline Priest (137032 effects: #4, #5, #8, #14, #23, #24), Shadow Priest (137033 effects: #1, #2, #31), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effects: #1, #3), Mind Blast (214621 effect#1), Blaze of Light (215768 effect#1), Shadowform (232698 effects: #1, #3), Woe (273312 effect#1), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Boon of the Ascended (325013 effect#4), Divine Conversation (363727 effect#2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Unwavering Will (373456 effects: #1, #3), Twilight Equilibrium (390706 effect#1), Twilight Equilibrium (390707 effect#1), Weal and Woe (390787 effect#1), Words of the Pious (390933 effect#1), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #2, #4, #5), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Priest Discipline 10.2 Class Set 2pc (422899 effect#2), Preventive Measures (440662 effects: #3, #4), Void Infusion (450612 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Family Flags     : 7, 57, 72
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
@@ -14046,7 +14037,7 @@ Effects          :
                    Affected Spells: Void Blast (450215), Void Blast (450983)
                    Family Flags: 57
 #2 (id=1150626)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.6 | Target: Self (1)
 Description      : $?c1[Atonement healing with Void Blast is 100% more effective.][Void Blast generates 100% additional Insanity.]
 
 Name             : Premonition (id=450796) [Spell Family (6), Hidden] 
@@ -14079,13 +14070,12 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 292
                  : 3532
-Affecting Spells : Power Infusion (10060 effect#2), Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #9, #23, #24), Shadow Priest (137033 effects: #1, #2, #9, #13, #22, #31), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Mind Devourer (338332 effect#1), Dark Thought (341207 effect#2), Talbadar's Stratagem (342416 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Dark Indulgence (372972 effect#2), Insidious Ire (373213 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Shadowy Insight (375981 effects: #1, #2, #3), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Mind Melt (391092 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Void Infusion (450612 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Darkness from Light (455033 effect#1)
+Affecting Spells : Power Infusion (10060 effect#2), Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #8, #9, #14, #23, #24), Shadow Priest (137033 effects: #1, #2, #9, #13, #22, #31), Mental Fatigue (185104 effect#1), Voidform (194249 effects: #1, #2, #3), Light of T'uure (208065 effect#1), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Whispers of the Damned (275722 effect#2), Sins of the Many (280398 effects: #1, #2), Shadow Covenant (322105 effect#1), Mind Devourer (338332 effect#1), Dark Thought (341207 effect#2), Talbadar's Stratagem (342416 effect#1), Divine Favor: Chastise (372761 effects: #1, #2), Dark Indulgence (372972 effect#2), Insidious Ire (373213 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Shadowy Insight (375981 effects: #1, #2, #3), Twilight Equilibrium (390707 effect#1), Twist of Fate (390978 effects: #1, #2), Mind Melt (391092 effect#1), Dark Ascension (391109 effects: #1, #2, #4, #5), Mastermind (391151 effects: #1, #2), Light Weaving (394609 effect#1), Initial Priest (417191 effects: #1, #2), Void Infusion (450612 effect#1), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2), Darkness from Light (455033 effect#1)
 Family Flags     : 13, 57, 72
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1151263)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.1 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (1.68 -> 2.1)
 #2 (id=1151264)  : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Sends a blast of cosmic void energy at the enemy, causing $s1 Shadow damage.$?c3[
@@ -14171,7 +14161,6 @@ $@spellicon451235$@spellname451235
 $@spelldesc451235
 
 Name             : Voidwraith (id=451235) [Spell Family (6)] 
-Hotfixed         : Cooldown (120000 -> 180000)
 Class            : Priest
 School           : Physical
 Spell Type       : None
@@ -14788,11 +14777,11 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1156077)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Voidform (194249), Voidform (250844)
+                   Affected Spells: Voidform (194249)
                    Family Flags: 89
 #2 (id=1156171)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.5 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Voidform (194249), Voidform (250844)
+                   Affected Spells: Voidform (194249)
                    Family Flags: 89
 #3 (id=1156172)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Misc Value 2: 3635 (Label) | Target: Self (1)
@@ -14971,7 +14960,7 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 117
                  : 292
-Affecting Spells : Voidform (250844 effect#3), Dark Ascension (391109 effect#1)
+Affecting Spells : Dark Ascension (391109 effect#1)
 Family Flags     : 31
 Attributes       : Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
@@ -15230,12 +15219,12 @@ Labels           : 16: Class Spells
                  : 18: Priest Spells
                  : 117
                  : 292
-Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Voidform (250844 effect#3), Sins of the Many (280398 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
+Affecting Spells : Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #4, #5), Discipline Priest (137032 effects: #4, #5, #23, #24), Shadow Priest (137033 effects: #1, #2), Voidform (194249 effects: #1, #2, #3), Mind Blast (214621 effect#1), Shadowform (232698 effects: #1, #3), Sins of the Many (280398 effects: #1, #2), Divine Favor: Chastise (372761 effects: #1, #2), Devoured Pride (373316 effects: #1, #2), Devoured Fear (373319 effects: #1, #2), Twist of Fate (390978 effects: #1, #2), Dark Ascension (391109 effects: #1, #2, #4, #5), Initial Priest (417191 effects: #1, #2), Resonant Energy (453850 effect#1), Devouring Chorus (454638 effects: #1, #2)
 Triggered By     : Shadow Crash (457042)
 Family Flags     : 31, 72
 Attributes       : Allow Dead Target (64), Ignore Line of Sight (66), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1177516)  : School Damage (2): shadow | Attributes: Always AOE Line of Sight (5)
+#1 (id=1177516)  : School Damage (2): shadow | Attributes: Always AOE Line of Sight (5), Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.687926 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc205385
 
@@ -15778,7 +15767,6 @@ Effects          :
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1200612)  : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Hotfixed         : Sub Type (107 -> 4), Misc Value (12 -> 0), Affects Spells
 Description      : Hitting a |cFFFFFFFFJackpot!|r grants you ${$s1/1000}.1 seconds of Power Infusion. Mind Blast$?a450405[, Void Blast,][] and Void Bolt deal $s2% increased damage while Power Infusion is active.
 
 Name             : Divinity (id=1216314) [Spell Family (6)] 

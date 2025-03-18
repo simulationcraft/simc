@@ -5538,6 +5538,17 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect, const s
         }
         break;
 
+      case P_TICK_TIME:
+        base_tick_time += effect.time_value();
+        sim->print_debug( "{} base tick time modified by {} to {}", *this, effect.time_value(), base_tick_time );
+        value_ = effect.base_value();
+        if ( base_tick_time < 0_ms )
+        {
+          sim->print_debug( "WARNING: base tick time below 0ms!" );
+          base_tick_time = 0_ms;
+        }
+        break;
+
       default:
         break;
     }

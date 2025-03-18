@@ -3023,7 +3023,7 @@ struct ghoul_pet_t final : public base_ghoul_pet_t
       pet_melee_attack_t<ghoul_pet_t>::execute();
       if ( triggers_apocalypse && dk()->runeforge.rune_of_apocalypse && hit_any_target )
       {
-        int n = std::floor( pet()->rng().range( 0, runeforge_apocalypse::MAX ) );
+        int n = as<int>( std::floor( pet()->rng().range( 0, runeforge_apocalypse::MAX ) ) );
 
         death_knight_td_t* td = dk()->get_target_data( target );
 
@@ -5836,7 +5836,7 @@ struct ams_parent_buff_t : public death_knight_buff_base_t<absorb_buff_t>
     if ( option > 0 )
     {
       double ticks = buff_duration() / tick_time();
-      double pct   = option / ticks;
+      double pct   = p()->rng().gauss_ab( option, 0.3, 0.01, 1.0 ) / ticks;
       damage       = calc_absorb() * pct;
     }
   };
@@ -12957,9 +12957,7 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( std::string_view name
     if ( util::str_compare_ci( splits[ 1 ], "bp_ticking" ) && splits.size() == 2 )
       return make_fn_expr( "dancing_rune_weapon_blood_plague_ticking_expression", [ this ]() {
         return pets.dancing_rune_weapon_pet.active_pet() != nullptr &&
-               pets.dancing_rune_weapon_pet.active_pet()
-                   ->target->get_dot( "Blood Plague", pets.dancing_rune_weapon_pet.active_pet() )
-                   ->is_ticking();
+               pets.dancing_rune_weapon_pet.active_pet()->get_target_data( target )->dot.blood_plague->is_ticking();
       } );
   }
 
@@ -15235,6 +15233,7 @@ void death_knight_action_t<Base>::apply_action_effects()
   parse_effects( p()->buffs.plaguebringer, p()->talent.unholy.plaguebringer );
   parse_effects( p()->mastery.dreadblade );
   parse_effects( p()->buffs.winning_streak_unholy, [ & ]( double v ) {
+    v *= 0.1; // Divides by 10 in spell data
     if ( p()->buffs.dark_transformation->check() )
       v *= 1.0 + p()->sets->set( DEATH_KNIGHT_UNHOLY, TWW2, B4 )->effectN( 1 ).percent();
 
@@ -15313,7 +15312,7 @@ void death_knight_t::parse_player_effects()
   parse_effects( buffs.unholy_strength, talent.unholy_bond );
   parse_effects( buffs.unholy_ground, talent.unholy_ground );
   parse_effects( buffs.stoneskin_gargoyle, talent.unholy_bond );
-  parse_effects( talent.veteran_of_the_third_war, spec.blood_death_knight );
+  parse_effects( talent.veteran_of_the_third_war, spec.blood_death_knight, spec.frost_death_knight, spec.unholy_death_knight );
   parse_effects( talent.runic_protection );
   parse_effects( talent.gloom_ward );
   parse_effects( buffs.antimagic_shell, talent.osmosis );
@@ -15616,6 +15615,7 @@ struct death_knight_module_t : public module_t
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
   }
 
+  /*
   void register_hotfixes() const override
   {
     hotfix::register_effect( "Death Knight", "2025-2-28", "Winning Streak Buffed to 4.5%", 1200456,
@@ -15624,7 +15624,7 @@ struct death_knight_module_t : public module_t
         .operation( hotfix::HOTFIX_SET )
         .modifier( 4.5 )
         .verification_value( 3 );
-  }
+  }*/
 
   void init( player_t* ) const override
   {

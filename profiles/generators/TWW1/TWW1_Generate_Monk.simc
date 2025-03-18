@@ -5,7 +5,7 @@ level=80
 race=tauren
 role=tank
 position=front
-talents=CwQAqCjoPBi1F5zHY9mx8hvRaCAAAAGjxMwsMjtZmZGDAAAAAAwyCGxMDMDjNDsNzMDzyYmx2sYab5B2mtZmhZBAA2mlplZbmlBAoZbWamZmFmBL
+talents=CwQAAAAAAAAAAAAAAAAAAAAAAAAAAAjxYGGWmx2MzMDAAAAAAALLgYmBmhBGjtZmZYWGzM2mlZabb2sNzMMLAAwGCAAgZbWamZmFmhFA
 
 head=gatecrashers_horns,id=212047,bonus_id=1540/10299/1808,gem_id=213743
 neck=silken_advisors_favor,id=225575,bonus_id=1540/10299/10376/8781,gem_id=213467/213497
@@ -31,7 +31,7 @@ level=80
 race=mechagnome
 role=attack
 position=back
-talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzsMzgxMjZZGADAAAAAAAAAAAWWwImZYMDDLjZsNzMDzywMYZmAAYbmZYmZmZbGAAbLzyysNzMNLzSzMzsAA
+talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzsMAmxMLzMjZGAAAAAAAAAAAYZZYEzMwMMsYmx2MzMMbDzglZCAglxMMzMsNDAgNAoZZWamZmFAzA
 
 head=hood_of_the_hidden_path,id=178691,bonus_id=4786/3293/10336/11307,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,bonus_id=10256/11086/10837/10832/1514/10255,ilevel=639,gem_id=213485/213485
@@ -58,7 +58,7 @@ level=80
 race=mechagnome
 role=attack
 position=back
-talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzsMzgxMjZZGADAAAAAAAAAAAWWwImZYMDDLjZsNzMDzywMYZmAAYbmZGzYmZbGAALLzyysMzMBBAA
+talents=C0QAAAAAAAAAAAAAAAAAAAAAAMzYmBjZYWmZGzMAAAAAAAAAAAwyywImZYMYYzMjtZmZY2YmBLzEAALjZGmZMbzAAYZZWWmlZmJIAAA
 
 head=hood_of_the_hidden_path,id=178691,bonus_id=4786/3293/10336/11307,ilevel=639,gem_id=213743
 neck=sureki_zealots_insignia,id=225577,bonus_id=10256/11086/10837/10832/1514/10255,ilevel=639,gem_id=213485/213485

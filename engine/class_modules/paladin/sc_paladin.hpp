@@ -368,8 +368,6 @@ public:
     cooldown_t* endless_wrath_icd;   // Needed for many random hammer procs
     cooldown_t* hammerfall_icd;
     cooldown_t* art_of_war;
-
-    cooldown_t* divine_hammer_icd;
   } cooldowns;
 
   // Passives
@@ -791,7 +789,6 @@ public:
 
   int holy_power_generators_used;
   int melee_swing_count;
-  int last_hammer_of_light_dawn_stacks;
   // Helper variables to not always RNG the correct target
   player_t* random_weapon_target;
   player_t* random_bulwark_target;
@@ -1371,7 +1368,7 @@ public:
       p()->buffs.templar.shake_the_heavens->extend_duration( p(), extension );
     }
 
-    if ( had_winning_streak && ab::harmful )
+    if ( had_winning_streak && ab::harmful && !ab::background )
     {
       if ( ab::rng().roll( p()->buffs.winning_streak->data().effectN( 2 ).percent() ) )
       {
@@ -1875,11 +1872,16 @@ public:
       }
     }
 
-    if ( p->talents.divine_hammer->ok() && p->buffs.divine_hammer->up() && p->cooldowns.divine_hammer_icd->up() && ( num_hopo_spent > 0 || isFreeHoL ) )
+    if ( p->talents.divine_hammer->ok() && p->buffs.divine_hammer->up() && ( num_hopo_spent > 0 || isFreeHoL ) )
     {
-      unsigned base_cost = isFreeHoL ? hol_cost : as<int>( num_hopo_spent );
-      p->buffs.divine_hammer->extend_duration( p, timespan_t::from_millis( p->buffs.divine_hammer->data().effectN( 2 ).base_value() * base_cost ) );
-      p->cooldowns.divine_hammer_icd->start();
+      auto base_cost = isFreeHoL ? hol_cost : num_hopo_spent;
+      auto extra_time = timespan_t::from_millis( p->buffs.divine_hammer->data().effectN( 2 ).base_value() * base_cost );
+      auto new_duration = p->buffs.divine_hammer->remains() + extra_time;
+      if ( new_duration > p->buffs.divine_hammer->data().duration() )
+      {
+        extra_time = p->buffs.divine_hammer->data().duration() - p->buffs.divine_hammer->remains();
+      }
+      p->buffs.divine_hammer->extend_duration( p, extra_time );
     }
 
     if ( p->talents.relentless_inquisitor->ok() && !ab::background )
@@ -2034,12 +2036,6 @@ public:
       {
         p->buffs.faiths_armor->trigger();
       }
-    }
-
-    // If you use another spender than Hammer of Light, the bugged Dawn stacks are reset.
-    if ( p->buffs.blessing_of_dawn->up() && !is_hammer_of_light )
-    {
-      p->last_hammer_of_light_dawn_stacks = 0;
     }
 
     if ( p->buffs.blessing_of_dawn->up() && !is_hammer_of_light_driver )

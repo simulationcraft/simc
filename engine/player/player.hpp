@@ -18,6 +18,7 @@
 #include "player_stat_cache.hpp"
 #include "rating.hpp"
 #include "sc_enums.hpp"
+#include "sim/proc.hpp"
 #include "talent.hpp"
 #include "util/cache.hpp"
 #include "util/rng.hpp"
@@ -1065,7 +1066,7 @@ public:
 
   dot_t*      get_dot     ( util::string_view name, player_t* source );
   gain_t*     get_gain    ( util::string_view name );
-  proc_t*     get_proc    ( util::string_view name );
+  proc_t*     get_proc    ( util::string_view name, unsigned flags = proc_report_e::REPORT_PROC_ALL );
   stats_t*    get_stats   ( util::string_view name, action_t* action = nullptr );
   benefit_t*  get_benefit ( util::string_view name );
   uptime_t*   get_uptime  ( util::string_view name );
@@ -1208,6 +1209,8 @@ public:
   virtual double composite_player_critical_healing_multiplier() const;
   virtual double composite_player_target_armor( player_t* ) const;
   virtual double composite_player_healing_received_multiplier() const
+  { return 1.0; }
+  virtual double composite_player_absorb_received_multiplier() const
   { return 1.0; }
   virtual double composite_mitigation_multiplier( school_e ) const;
   virtual double non_stacking_movement_modifier() const;

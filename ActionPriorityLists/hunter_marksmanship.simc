@@ -8,7 +8,7 @@
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=snapshot_stats
 # Determine which trinket would make for the strongest cooldown sync. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times.
-actions.precombat+=/variable,name=stronger_trinket_slot,op=setif,value=1,value_else=2,condition=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration)|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))
+actions.precombat+=/variable,name=stronger_trinket_slot,op=setif,value=1,value_else=2,condition=!trinket.2.is.house_of_cards&(trinket.1.is.house_of_cards|!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration)|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration)))
 actions.precombat+=/summon_pet,if=talent.unbreakable_bond
 # Precast Aimed Shot on one target or two if we can't cleave it with Volley, otherwise precast Steady Shot.
 actions.precombat+=/aimed_shot,if=active_enemies=1|active_enemies=2&!talent.volley
@@ -44,7 +44,6 @@ actions.st+=/explosive_shot,if=talent.precision_detonation&set_bonus.thewarwithi
 actions.st+=/aimed_shot,if=buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up
 actions.st+=/explosive_shot,if=!set_bonus.thewarwithin_season_2_4pc
 actions.st+=/black_arrow,if=!talent.headshot
-actions.st+=/kill_shot,if=!talent.headshot
 actions.st+=/steady_shot
 
 actions.trickshots=volley,if=!talent.double_tap
@@ -57,8 +56,8 @@ actions.trickshots+=/explosive_shot,if=talent.precision_detonation&(buff.lock_an
 actions.trickshots+=/aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.trick_shots.up
 actions.trickshots+=/explosive_shot
 actions.trickshots+=/black_arrow
-actions.trickshots+=/kill_shot
-actions.trickshots+=/steady_shot
+actions.trickshots+=/steady_shot,if=focus+cast_regen<focus.max
+actions.trickshots+=/multishot
 
 # True if effects that are desirable to sync a trinket buff with are ready.
 actions.trinkets=variable,name=buff_sync_ready,value=cooldown.trueshot.ready

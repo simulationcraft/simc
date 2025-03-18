@@ -79,7 +79,7 @@ void beast_mastery( player_t* p )
   cds->add_action( "potion,if=buff.call_of_the_wild.up|talent.bloodshed&(prev_gcd.1.bloodshed)|!talent.call_of_the_wild&!talent.bloodshed&buff.bestial_wrath.up|fight_remains<31" );
 
   cleave->add_action( "bestial_wrath,target_if=min:dot.barbed_shot.remains" );
-  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|pet.main.buff.frenzy.stack<3|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|cooldown.barbed_shot.charges_fractional>1.4&howl_summon_ready|full_recharge_time<gcd+0.25" );
+  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd|charges_fractional>=cooldown.kill_command.charges_fractional|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|howl_summon_ready&full_recharge_time<8" );
   cleave->add_action( "multishot,if=pet.main.buff.beast_cleave.remains<0.25+gcd&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)" );
   cleave->add_action( "black_arrow,if=buff.beast_cleave.remains" );
   cleave->add_action( "call_of_the_wild" );
@@ -87,7 +87,6 @@ void beast_mastery( player_t* p )
   cleave->add_action( "dire_beast,if=talent.shadow_hounds|talent.dire_cleave" );
   cleave->add_action( "explosive_shot,if=talent.thundering_hooves" );
   cleave->add_action( "kill_command,target_if=max:(target.health.pct<35|!talent.killer_instinct)*2+dot.a_murder_of_crows.refreshable" );
-  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=set_bonus.thewarwithin_season_2_2pc|charges_fractional>1.4|buff.call_of_the_wild.up|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|fight_remains<9" );
   cleave->add_action( "explosive_shot,if=talent.thundering_hooves" );
   cleave->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
   cleave->add_action( "cobra_shot,if=focus.time_to_max<gcd*2|buff.hogstrider.stack>3" );
@@ -96,15 +95,13 @@ void beast_mastery( player_t* p )
   cleave->add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
   cleave->add_action( "arcane_torrent,if=(focus+focus.regen+30)<focus.max" );
 
-  st->add_action( "bestial_wrath" );
-  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|pet.main.buff.frenzy.stack<3|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|cooldown.barbed_shot.charges_fractional>1.4&howl_summon_ready|full_recharge_time<gcd+0.25" );
   st->add_action( "dire_beast,if=talent.huntmasters_call" );
-  st->add_action( "kill_command,if=talent.call_of_the_wild&cooldown.call_of_the_wild.remains<gcd+0.25" );
+  st->add_action( "bestial_wrath" );
+  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd|charges_fractional>=cooldown.kill_command.charges_fractional|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|howl_summon_ready&full_recharge_time<8" );
+  st->add_action( "kill_command,if=charges_fractional>=cooldown.barbed_shot.charges_fractional" );
   st->add_action( "call_of_the_wild" );
   st->add_action( "bloodshed" );
   st->add_action( "black_arrow" );
-  st->add_action( "kill_command" );
-  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=set_bonus.thewarwithin_season_2_2pc|charges_fractional>1.4|buff.call_of_the_wild.up|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|fight_remains<9" );
   st->add_action( "explosive_shot,if=talent.thundering_hooves" );
   st->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st->add_action( "cobra_shot" );
@@ -150,7 +147,7 @@ void beast_mastery_ptr( player_t* p )
   cds->add_action( "potion,if=buff.call_of_the_wild.up|talent.bloodshed&(prev_gcd.1.bloodshed)|!talent.call_of_the_wild&!talent.bloodshed&buff.bestial_wrath.up|fight_remains<31" );
 
   cleave->add_action( "bestial_wrath,target_if=min:dot.barbed_shot.remains" );
-  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|pet.main.buff.frenzy.stack<3|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|cooldown.barbed_shot.charges_fractional>1.4&howl_summon_ready|full_recharge_time<gcd+0.25" );
+  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd|charges_fractional>=cooldown.kill_command.charges_fractional|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|howl_summon_ready&full_recharge_time<8" );
   cleave->add_action( "multishot,if=pet.main.buff.beast_cleave.remains<0.25+gcd&(!talent.bloody_frenzy|cooldown.call_of_the_wild.remains)" );
   cleave->add_action( "black_arrow,if=buff.beast_cleave.remains" );
   cleave->add_action( "call_of_the_wild" );
@@ -158,7 +155,6 @@ void beast_mastery_ptr( player_t* p )
   cleave->add_action( "dire_beast,if=talent.shadow_hounds|talent.dire_cleave" );
   cleave->add_action( "explosive_shot,if=talent.thundering_hooves" );
   cleave->add_action( "kill_command,target_if=max:(target.health.pct<35|!talent.killer_instinct)*2+dot.a_murder_of_crows.refreshable" );
-  cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=set_bonus.thewarwithin_season_2_2pc|charges_fractional>1.4|buff.call_of_the_wild.up|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|fight_remains<9" );
   cleave->add_action( "explosive_shot,if=talent.thundering_hooves" );
   cleave->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
   cleave->add_action( "cobra_shot,if=focus.time_to_max<gcd*2|buff.hogstrider.stack>3" );
@@ -167,15 +163,13 @@ void beast_mastery_ptr( player_t* p )
   cleave->add_action( "bag_of_tricks,if=buff.bestial_wrath.down|target.time_to_die<5" );
   cleave->add_action( "arcane_torrent,if=(focus+focus.regen+30)<focus.max" );
 
-  st->add_action( "bestial_wrath" );
-  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd+0.25|pet.main.buff.frenzy.stack<3|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|cooldown.barbed_shot.charges_fractional>1.4&howl_summon_ready|full_recharge_time<gcd+0.25" );
   st->add_action( "dire_beast,if=talent.huntmasters_call" );
-  st->add_action( "kill_command,if=talent.call_of_the_wild&cooldown.call_of_the_wild.remains<gcd+0.25" );
+  st->add_action( "bestial_wrath" );
+  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=full_recharge_time<gcd|charges_fractional>=cooldown.kill_command.charges_fractional|talent.call_of_the_wild&cooldown.call_of_the_wild.ready|howl_summon_ready&full_recharge_time<8" );
+  st->add_action( "kill_command,if=charges_fractional>=cooldown.barbed_shot.charges_fractional" );
   st->add_action( "call_of_the_wild" );
   st->add_action( "bloodshed" );
   st->add_action( "black_arrow" );
-  st->add_action( "kill_command" );
-  st->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=set_bonus.thewarwithin_season_2_2pc|charges_fractional>1.4|buff.call_of_the_wild.up|talent.scent_of_blood&(cooldown.bestial_wrath.remains<12+gcd)|fight_remains<9" );
   st->add_action( "explosive_shot,if=talent.thundering_hooves" );
   st->add_action( "lights_judgment,if=buff.bestial_wrath.down|target.time_to_die<5" );
   st->add_action( "cobra_shot" );
@@ -204,7 +198,7 @@ void marksmanship( player_t* p )
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "variable,name=stronger_trinket_slot,op=setif,value=1,value_else=2,condition=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration)|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))", "Determine which trinket would make for the strongest cooldown sync. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times." );
+  precombat->add_action( "variable,name=stronger_trinket_slot,op=setif,value=1,value_else=2,condition=!trinket.2.is.house_of_cards&(trinket.1.is.house_of_cards|!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration)|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration)))", "Determine which trinket would make for the strongest cooldown sync. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times." );
   precombat->add_action( "summon_pet,if=talent.unbreakable_bond" );
   precombat->add_action( "aimed_shot,if=active_enemies=1|active_enemies=2&!talent.volley", "Precast Aimed Shot on one target or two if we can't cleave it with Volley, otherwise precast Steady Shot." );
   precombat->add_action( "steady_shot" );
@@ -236,7 +230,6 @@ void marksmanship( player_t* p )
   st->add_action( "aimed_shot,if=buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up" );
   st->add_action( "explosive_shot,if=!set_bonus.thewarwithin_season_2_4pc" );
   st->add_action( "black_arrow,if=!talent.headshot" );
-  st->add_action( "kill_shot,if=!talent.headshot" );
   st->add_action( "steady_shot" );
 
   trickshots->add_action( "volley,if=!talent.double_tap" );
@@ -249,8 +242,8 @@ void marksmanship( player_t* p )
   trickshots->add_action( "aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.trick_shots.up" );
   trickshots->add_action( "explosive_shot" );
   trickshots->add_action( "black_arrow" );
-  trickshots->add_action( "kill_shot" );
-  trickshots->add_action( "steady_shot" );
+  trickshots->add_action( "steady_shot,if=focus+cast_regen<focus.max" );
+  trickshots->add_action( "multishot" );
 
   trinkets->add_action( "variable,name=buff_sync_ready,value=cooldown.trueshot.ready", "True if effects that are desirable to sync a trinket buff with are ready." );
   trinkets->add_action( "variable,name=buff_sync_remains,value=cooldown.trueshot.remains", "Time until the effects that are desirable to sync a trinket buff with will be ready." );
@@ -272,7 +265,7 @@ void marksmanship_ptr( player_t* p )
   action_priority_list_t* trinkets = p->get_action_priority_list( "trinkets" );
 
   precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "variable,name=stronger_trinket_slot,op=setif,value=1,value_else=2,condition=!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration)|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration))", "Determine which trinket would make for the strongest cooldown sync. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times." );
+  precombat->add_action( "variable,name=stronger_trinket_slot,op=setif,value=1,value_else=2,condition=!trinket.2.is.house_of_cards&(trinket.1.is.house_of_cards|!trinket.2.has_cooldown|trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration)|!trinket.1.has_use_buff&(!trinket.2.has_use_buff&(trinket.2.cooldown.duration<trinket.1.cooldown.duration|trinket.2.cast_time<trinket.1.cast_time|trinket.2.cast_time=trinket.1.cast_time&trinket.2.cooldown.duration=trinket.1.cooldown.duration)))", "Determine which trinket would make for the strongest cooldown sync. In descending priority: buff effects > damage effects, longer > shorter cooldowns, longer > shorter cast times." );
   precombat->add_action( "summon_pet,if=talent.unbreakable_bond" );
   precombat->add_action( "aimed_shot,if=active_enemies=1|active_enemies=2&!talent.volley", "Precast Aimed Shot on one target or two if we can't cleave it with Volley, otherwise precast Steady Shot." );
   precombat->add_action( "steady_shot" );
@@ -304,7 +297,6 @@ void marksmanship_ptr( player_t* p )
   st->add_action( "aimed_shot,if=buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up" );
   st->add_action( "explosive_shot,if=!set_bonus.thewarwithin_season_2_4pc" );
   st->add_action( "black_arrow,if=!talent.headshot" );
-  st->add_action( "kill_shot,if=!talent.headshot" );
   st->add_action( "steady_shot" );
 
   trickshots->add_action( "volley,if=!talent.double_tap" );
@@ -317,8 +309,8 @@ void marksmanship_ptr( player_t* p )
   trickshots->add_action( "aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.trick_shots.up" );
   trickshots->add_action( "explosive_shot" );
   trickshots->add_action( "black_arrow" );
-  trickshots->add_action( "kill_shot" );
-  trickshots->add_action( "steady_shot" );
+  trickshots->add_action( "steady_shot,if=focus+cast_regen<focus.max" );
+  trickshots->add_action( "multishot" );
 
   trinkets->add_action( "variable,name=buff_sync_ready,value=cooldown.trueshot.ready", "True if effects that are desirable to sync a trinket buff with are ready." );
   trinkets->add_action( "variable,name=buff_sync_remains,value=cooldown.trueshot.remains", "Time until the effects that are desirable to sync a trinket buff with will be ready." );

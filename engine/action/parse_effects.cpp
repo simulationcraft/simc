@@ -618,6 +618,12 @@ bool parse_effects_t::parse_effect( pack_t<U>& pack, size_t i, bool force )
       return false;
   }
 
+  if constexpr ( is_detected_v<detect_type, U> )
+  {
+    if ( tmp.type & ROUND_VALUE )
+      val = std::round( val );
+  }
+
   val *= val_mul;
 
   std::string val_str = mastery ? fmt::format( "{:.5f}*mastery", val * 100 )
@@ -983,6 +989,14 @@ double parse_player_effects_t::composite_player_healing_received_multiplier() co
   return hr;
 }
 
+double parse_player_effects_t::composite_player_absorb_received_multiplier() const
+{
+  auto ar = player_t::composite_player_absorb_received_multiplier();
+  for ( const auto& i : absorb_received_mult_effects )
+    ar *= 1.0 + get_effect_value( i );
+  return ar;
+}
+
 double parse_player_effects_t::matching_gear_multiplier( attribute_e attr ) const
 {
   double mg = player_t::matching_gear_multiplier( attr );
@@ -1190,6 +1204,10 @@ std::vector<player_effect_t>* parse_player_effects_t::get_effect_vector( const s
       str = "healing received";
       return &healing_received_effects;
 
+    case A_MOD_ABSORB_RECEIVED_PERCENT:
+      str = "absorb received";
+      return &absorb_received_mult_effects;
+
     default:
       return nullptr;
   }
@@ -1318,6 +1336,7 @@ void parse_player_effects_t::parsed_effects_html( report::sc_html_stream& os )
     print_parsed_type( os, dodge_effects, "Dodge" );
     print_parsed_type( os, absorb_multiplier_effects, "Absorb Multiplier" );
     print_parsed_type( os, healing_received_effects, "Healing Received" );
+    print_parsed_type( os, absorb_received_mult_effects, "Absorb Received Multiplier" );
     print_parsed_type( os, target_multiplier_effects, "Target Multiplier", &opt_strings::school );
     print_parsed_type( os, target_pet_multiplier_effects, "Target Pet Multiplier", &opt_strings::pet_type );
     print_parsed_custom_type( os );
@@ -1349,7 +1368,8 @@ size_t parse_player_effects_t::total_effects_count()
          parry_rating_from_crit_effects.size() +
          dodge_effects.size() +
          absorb_multiplier_effects.size() +
-         healing_received_effects.size() +
+         healing_received_effects.size() + 
+         absorb_received_mult_effects.size() +
          target_multiplier_effects.size() +
          target_pet_multiplier_effects.size();
 }

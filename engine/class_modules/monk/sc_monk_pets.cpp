@@ -1173,7 +1173,7 @@ public:
     o()->buff.storm_earth_and_fire->decrement();
   }
 
-  void trigger_attack( actions::sef_ability_e ability, const action_t *source_action, bool combo_strike = false )
+  void trigger_attack( actions::sef_ability_e ability, const action_t *source_action, [[maybe_unused]] bool combo_strike = false )
   {
     if ( channeling && !source_action->background )
       channeling->cancel();

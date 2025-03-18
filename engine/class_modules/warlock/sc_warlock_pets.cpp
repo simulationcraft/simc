@@ -181,7 +181,7 @@ double warlock_pet_t::composite_player_critical_damage_multiplier( const action_
 {
   double m = pet_t::composite_player_critical_damage_multiplier( s );
 
-  m += o()->talents.demonic_brutality->effectN( 1 ).percent() / 2.0;
+  m += o()->talents.demonic_brutality->effectN( 1 ).percent();
 
   return m;
 }
@@ -193,7 +193,7 @@ double warlock_pet_t::composite_spell_haste() const
   if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
     m *= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
-  if ( pet_type == PET_DREADSTALKER && o()->talents.flametouched.ok() )
+  if ( ( pet_type == PET_DREADSTALKER || pet_type == PET_FELHUNTER ) && o()->talents.flametouched.ok() )
     m *= 1.0 + o()->talents.flametouched->effectN( 1 ).percent();
 
   return m;
@@ -206,7 +206,7 @@ double warlock_pet_t::composite_spell_cast_speed() const
   if ( is_main_pet &&  o()->talents.demonic_inspiration.ok() )
       m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
-  if ( pet_type == PET_DREADSTALKER && o()->talents.flametouched.ok() )
+  if ( ( pet_type == PET_DREADSTALKER || pet_type == PET_FELHUNTER ) && o()->talents.flametouched.ok() )
     m /= 1.0 + o()->talents.flametouched->effectN( 1 ).percent();
 
   return m;
@@ -219,7 +219,7 @@ double warlock_pet_t::composite_melee_auto_attack_speed() const
   if ( is_main_pet && o()->talents.demonic_inspiration.ok() )
     m /= 1.0 + o()->talents.demonic_inspiration->effectN( 1 ).percent();
 
-  if ( pet_type == PET_DREADSTALKER && o()->talents.flametouched.ok() )
+  if ( ( pet_type == PET_DREADSTALKER || pet_type == PET_FELHUNTER ) && o()->talents.flametouched.ok() )
     m /= 1.0 + o()->talents.flametouched->effectN( 1 ).percent();
 
   return m;
@@ -1791,7 +1791,16 @@ void greater_dreadstalker_t::arise()
 }
 
 void greater_dreadstalker_t::demise()
-{ warlock_pet_t::demise(); }
+{
+  if ( !current.sleeping && o()->talents.demoniac.ok() )
+  {
+    bool success = o()->buffs.demonic_core->trigger( 1, buff_t::DEFAULT_VALUE(), o()->talents.demonic_core_spell->effectN( 2 ).percent() );
+    if ( success )
+      o()->procs.demonic_core_big_dogs->occur();
+  }
+
+  warlock_pet_t::demise();
+}
 
 double greater_dreadstalker_t::composite_player_multiplier( school_e school ) const
 {

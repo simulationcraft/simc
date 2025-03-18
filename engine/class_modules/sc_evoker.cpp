@@ -185,7 +185,7 @@ static std::function<int( actor_target_data_t* )> d_fn( T d, bool stack = true )
 }
 
 template <typename T>
-static std::function<double( actor_target_data_t* )> d_value_fn( T d, bool stack = true )
+static std::function<double( actor_target_data_t* )> d_value_fn( T d, [[maybe_unused]] bool stack = true )
 {
   if constexpr ( std::is_invocable_v<T, evoker_td_t::debuffs_t> )
   {
@@ -363,7 +363,7 @@ struct simplified_player_t : public player_t
   // Options
   struct options_t
   {
-    int item_level = 639;
+    int item_level = 660;
     std::string variant = "default";
   } option;
   
@@ -3072,7 +3072,7 @@ public:
   {
     ab::execute();
 
-    if ( ( !ab::background || ab::not_a_proc && ab::id != 359077 ) && !ab::dual )
+    if ( ( !ab::background || ( ab::not_a_proc && ab::id != 359077 ) ) && !ab::dual )
     {
       // These happen after any secondary spells are executed, so we schedule as events
       if ( spell_color == SPELL_BLUE )
@@ -4010,6 +4010,56 @@ struct fire_breath_t : public empowered_charge_spell_t
 
     return t;
   }
+
+  std::unique_ptr<expr_t> create_expression( std::string_view expression_str ) override
+  {
+    auto splits = util::string_split<util::string_view>( expression_str, "." );
+
+    if ( splits.size() >= 2 )
+    {
+      if ( util::str_compare_ci( splits[ 0 ], "release" ) )
+      {
+        if ( util::str_compare_ci( splits[ 1 ], "dot_duration" ) )
+        {
+          class dot_duration_expr_t : public expr_t
+          {
+          public:
+            fire_breath_damage_t& action;
+            fire_breath_t& release;
+            evoker_action_state_t<empower_data_t>* state;
+
+            dot_duration_expr_t( std::string_view name, fire_breath_damage_t& a, fire_breath_t& release,
+                                 empower_e empower_level )
+              : expr_t( name ), action( a ), release( release ), state( a.cast_state( a.get_state() ) )
+            {
+              state->n_targets    = 1;
+              state->chain_target = 0;
+              state->empower      = empower_level;
+              state->result       = RESULT_HIT;
+            }
+
+            double evaluate() override
+            {
+              state->target = release.target;
+              action.snapshot_state( state, result_amount_type::DMG_OVER_TIME );
+              return coerce( action.composite_dot_duration( state ) );
+            }
+
+            ~dot_duration_expr_t() override
+            {
+              delete state;
+            }
+          };
+
+          return std::make_unique<dot_duration_expr_t>( expression_str,
+                                                        dynamic_cast<fire_breath_damage_t&>( *release_spell ), *this,
+                                                        static_cast<empower_e>( empower_to ) );
+        }
+      }
+    }
+
+    return base_t::create_expression( expression_str );
+  }
 };
 
 struct eternity_surge_t : public empowered_charge_spell_t
@@ -4400,7 +4450,7 @@ struct disintegrate_t : public essence_spell_t
     int targets_            = targets();
     targets_                = targets_ ? targets_ : 1;
 
-    int virtual_buff_stacks = num_ticks * targets_;
+    int virtual_buff_stacks = ( p()->bugs ? 4 : num_ticks ) * targets_;
 
     // trigger the buffs first so tick-zero can get buffed
     if ( p()->buff.essence_burst->check() )
@@ -5244,8 +5294,7 @@ struct pyre_t : public essence_spell_t
     damage->stats   = stats;
     damage->proc    = true;
 
-    firestorm = p->get_secondary_action<firestorm_t>( name_str + "_firestorm_ftf", name_str + "_firestorm_ftf", true );
-    add_child( firestorm );
+    firestorm = p->get_secondary_action<firestorm_t>( "firestorm_ftf", "firestorm_ftf", true );
   }
 
   action_state_t* new_state() override
@@ -5267,6 +5316,24 @@ struct pyre_t : public essence_spell_t
       if ( ( proc_spell_type & proc_spell_type_e::VOLATILITY ) == 0 )
         add_child( volatility );
     }
+
+    if ( ( proc_spell_type & ( proc_spell_type_e::VOLATILITY | proc_spell_type_e::DRAGONRAGE ) ) == 0 )
+      add_child( firestorm );
+  }
+
+  size_t available_targets( std::vector<player_t*>& target_list ) const override
+  {
+    target_list.clear();
+
+    for ( auto& t : sim->target_non_sleeping_list )
+    {
+      if ( t == target && ( proc_spell_type & proc_spell_type_e::VOLATILITY ) != 0 )
+        continue;
+
+      target_list.push_back( t );
+    }
+
+    return target_list.size();
   }
 
   bool has_amount_result() const override
@@ -5323,8 +5390,15 @@ struct pyre_t : public essence_spell_t
     // TODO: How many times can volatility chain?
     if ( volatility && rng().roll( p()->talent.volatility->effectN( 1 ).percent() ) )
     {
+      if ( volatility->target != s->target )
+      {
+        volatility->target                = s->target;
+        volatility->target_cache.is_valid = false;
+      }
+
       const auto& tl = volatility->target_list();
-      volatility->execute_on_target( tl[ rng().range( tl.size() ) ] );
+      if ( tl.size() > 0 )
+        volatility->execute_on_target( tl[ rng().range( tl.size() ) ] );
     }
   }
 };
@@ -6567,8 +6641,8 @@ struct engulf_t : public evoker_spell_t
             {
               base_t::sim->print_debug( "Consume Flame consumed {} seconds, dealing {}", consume_flame_time,
                                         dot_damage );
-              consume_flame->execute_on_target( s->target, dot_damage );
               source_effect->adjust_duration( -consume_flame_time );
+              consume_flame->execute_on_target( s->target, dot_damage );
             }
           }
         }
@@ -8574,7 +8648,7 @@ void evoker_t::init_special_effects()
        talent.essence_burst.enabled() )
   {
     callbacks.register_callback_execute_function(
-        443393, [ this ]( const dbc_proc_callback_t* cb, action_t* a, const action_state_t* s ) {
+        443393, [ this ]( const dbc_proc_callback_t* cb, action_t*, const action_state_t* s ) {
           // Only trigger this on Single Target (Pretending its a 2nd target)
           if ( sim->target_non_sleeping_list.size() == 1 &&
                rng().roll( talent.ruby_essence_burst->effectN( 1 ).percent() ) )
@@ -8635,7 +8709,7 @@ void evoker_t::init_special_effects()
     set_effect->spell_id     = set_spell->id();
     special_effects.push_back( set_effect );
 
-    auto cb = new augmentation_tww2_2pc( this, *set_effect );
+    new augmentation_tww2_2pc( this, *set_effect );
   }
 
   
@@ -8680,7 +8754,7 @@ void evoker_t::init_special_effects()
     set_effect->spell_id     = set_spell->id();
     special_effects.push_back( set_effect );
 
-    auto cb = new devastation_tww2_2pc( this, *set_effect );
+    new devastation_tww2_2pc( this, *set_effect );
   }
 }
 
@@ -9598,7 +9672,7 @@ void evoker_t::spawn_mote_of_possibility( player_t* prospective_player, mote_buf
           
           if ( it != helper.begin() )
           {
-            std::partition( helper.begin(), it, [ this ]( player_t* t ) {
+            std::partition( helper.begin(), it, []( player_t* t ) {
               return t->role != ROLE_HYBRID && t->role != ROLE_HEAL && t->role != ROLE_TANK &&
                      t->specialization() != EVOKER_AUGMENTATION;
             } );

@@ -1,109 +1,63 @@
 name: spec-test
 
-run-name: ${{ github.event.workflow_run.head_commit.message }}
-
 on:
-  workflow_run:
-    workflows: ['CI']
-    types: [completed]
+  workflow_call:
+    inputs:
+      cache-key:
+        type: string
+        required: true
+      cache-sha:
+        type: string
+        required: true
+      is-ptr:
+        type: boolean
+        required: true
 
 jobs:
-  check-binary:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    runs-on: ubuntu-22.04
-    outputs:
-      cache-hit: ${{ steps.restore-cache.outputs.cache-hit }}
-
-    steps:
-      - uses: actions/cache@v4
-        id: restore-cache
-        with:
-          path: |
-            ${{ runner.workspace }}/b/ninja/simc
-            profiles
-            tests
-            generate_profiles_ci.sh
-            .git
-          key: ubuntu-clang++-15-for_run-${{ github.event.workflow_run.head_sha }}-cpp-17
-
-  build-binary:
-    needs: [ check-binary ]
-    if: ${{ needs.check-binary.outputs.cache-hit != 'true' }}
-    runs-on: ubuntu-22.04
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_branch }}
-
-      - uses: actions/cache@v4
-        env: { ccache-prefix: 'ubuntu-clang++-15-cpp-17-ccache-0' }
-        with:
-          path: ${{ runner.workspace }}/.ccache
-          key: ${{ env.ccache-prefix }}-${{ github.event.workflow_run.head_sha }}
-          restore-keys: ${{ env.ccache-prefix }}-
-
-      - name: Install deps
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache clang-15 lld-15
-
-      - name: Configure
-        env:
-          UBSAN_STRIP_COUNT: "`echo \"${{ runner.workspace }}//\" | grep -o '/' - | wc -l`"
-        run: cmake -H. -B'${{ runner.workspace }}/b/ninja' -GNinja -DBUILD_GUI=OFF
-              -DCMAKE_BUILD_TYPE=Debug
-              -DCMAKE_CXX_COMPILER=clang++-15
-              -DCMAKE_CXX_FLAGS="-Og ${{ format('-ffile-prefix-map={0}/=/', runner.workspace) }}
-                -fno-omit-frame-pointer -fsanitize=address,undefined
-                -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
-              -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -fsanitize=address,undefined"
-              -DCMAKE_CXX_STANDARD=17
-              -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-
-      - name: Build
-        env:
-          CCACHE_BASEDIR: ${{ runner.workspace }}
-          CCACHE_DIR: ${{ runner.workspace }}/.ccache
-          CCACHE_MAXSIZE: 256M # full build consumes around ~124, ~2x that to be safe
-        run: |
-          ccache -z
-          ninja -C '${{ runner.workspace }}/b/ninja'
-          ccache -s
-
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ${{ runner.workspace }}/b/ninja/simc
-            profiles
-            tests
-            generate_profiles_ci.sh
-            .git
-          key: ubuntu-clang++-15-for_run-${{ github.event.workflow_run.head_sha }}-cpp-17
-
-
   spec-test:
     name: spec-test-${{ matrix.spec }}-${{ matrix.fightstyle }}
     runs-on: ubuntu-22.04
-    needs: [ check-binary, build-binary ]
+    continue-on-error: ${{ inputs.is-ptr }}
 
     strategy:
       fail-fast: false
       matrix:
-        spec: [
-            deathknight_blood, deathknight_unholy, deathknight_frost,
-            demonhunter_vengeance, demonhunter_havoc,
-            druid_balance, druid_feral, druid_guardian, druid_restoration,
-            evoker_devastation, evoker_augmentation,
-            hunter_beast_mastery, hunter_marksmanship, hunter_survival,
-            mage_arcane, mage_fire, mage_frost,
-            monk_brewmaster, monk_windwalker, monk_mistweaver,
-            paladin_protection, paladin_retribution,
+        spec:
+          [
+            deathknight_blood,
+            deathknight_unholy,
+            deathknight_frost,
+            demonhunter_vengeance,
+            demonhunter_havoc,
+            druid_balance,
+            druid_feral,
+            druid_guardian,
+            druid_restoration,
+            evoker_devastation,
+            evoker_augmentation,
+            hunter_beast_mastery,
+            hunter_marksmanship,
+            hunter_survival,
+            mage_arcane,
+            mage_fire,
+            mage_frost,
+            monk_brewmaster,
+            monk_windwalker,
+            monk_mistweaver,
+            paladin_protection,
+            paladin_retribution,
             priest_shadow,
-            rogue_assassination, rogue_outlaw, rogue_subtlety,
+            rogue_assassination,
+            rogue_outlaw,
+            rogue_subtlety,
             shaman_elemental,
-            warlock_affliction, warlock_demonology, warlock_destruction,
-            warrior_arms, warrior_fury, warrior_protection
+            shaman_enhancement,
+            warlock_affliction,
+            warlock_demonology,
+            warlock_destruction,
+            warrior_arms,
+            warrior_fury,
+            warrior_protection,
           ]
         fightstyle: [singletarget, multitarget, dungeonslice]
         include:
@@ -126,7 +80,7 @@ jobs:
             tests
             generate_profiles_ci.sh
             .git
-          key: ubuntu-clang++-15-for_run-${{ github.event.workflow_run.head_sha }}-cpp-17
+          key: ${{ inputs.cache-key }}
 
       - name: Setup
         id: setup
@@ -136,121 +90,124 @@ jobs:
           echo "CLASS_STR=${MATRIX_SPEC%%_*}" >> "$GITHUB_ENV"
           echo "SPEC_STR=${MATRIX_SPEC#*_}" >> "$GITHUB_ENV"
 
+      - name: Enable PTR
+        if: inputs.is-ptr
+        run: echo "PTR_ARG=ptr=1" >> "$GITHUB_ENV"
+
       - name: "Log Debug"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} log=1 debug=1 ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} log=1 debug=1 ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} log=1 debug=1 ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} log=1 debug=1 ${{ matrix.style_arg }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "HTML JSON"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} html=test.html json=test.json ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} html=test.html json=test.json ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} html=test.html json=test.json ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} html=test.html json=test.json ${{ matrix.style_arg }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, No Effects, No Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, No Effects, All Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, All Effects, No Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_item_effects=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "No Talents, All Effects, All Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "Starter Talents, No Effects, No Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
 
       - name: "Starter Talents, No Effects, All Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
 
       - name: "Starter Talents, All Effects, No Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_item_effects=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
 
       - name: "Starter Talents, All Effects, All Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} load_default_talents=1
 
       - name: "All Talents, No Effects, No Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_talents=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "All Talents, No Effects, All Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "All Talents, All Effects, No Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: "All Talents, All Effects, All Sets"
         if: always()
         run: |
-          ${{ runner.workspace }}/b/ninja/simc ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
+          ${{ runner.workspace }}/b/ninja/simc ${{ env.PTR_ARG }} ${{ env.SIMC_ARGS }} ${{ matrix.style_arg }} \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             ${{ env.CLASS_STR }}=${{ matrix.spec }} spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }}
 
       - name: Dump APL
         id: dump_apl
-        if: github.event_name == 'push' && matrix.fightstyle == 'singletarget' && !failure()
+        if: github.event_name == 'push' && matrix.fightstyle == 'singletarget' && !failure() && !inputs.is-ptr
         run: |
           ${{ runner.workspace }}/b/ninja/simc save_profiles=1 save_full_profile=0 \
             enable_all_talents=1 enable_all_item_effects=1 enable_all_sets=1 \
             allow_experimental_specializations=1  ${{ env.CLASS_STR }}=${{ matrix.spec }} \
             spec=${{ env.SPEC_STR }} ${{ env.PLAYER_ARGS }} save_actions=${{ matrix.spec }}.simc
 
-      #- name: Upload APL
-      #  if: steps.dump_apl.outcome == 'success'
-      #  continue-on-error: true
-      #  uses: actions/upload-artifact@v4
-      #  with:
-      #    name: apl-${{ github.event.workflow_run.head_sha }}-${{ matrix.spec }}
-      #    path: ${{ matrix.spec }}.simc
-      #    retention-days: 1
-
+      - name: Upload APL
+        if: steps.dump_apl.outcome == 'success'
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: apl-${{ inputs.cache-sha }}-${{ matrix.spec }}
+          path: ${{ matrix.spec }}.simc
+          retention-days: 1

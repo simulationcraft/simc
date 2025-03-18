@@ -32,4 +32,5 @@ struct absorb_t : public spell_base_t
   double composite_da_multiplier(const action_state_t* s) const override;
   double composite_ta_multiplier(const action_state_t* s) const override;
   double composite_versatility(const action_state_t* state) const override;
+  double composite_target_multiplier( player_t* target ) const override;
 };

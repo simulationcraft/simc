@@ -3343,12 +3343,13 @@ void darkmoon_deck_symbiosis( special_effect_t& effect )
       self_damage = create_proc_action<generic_proc_t>( "symbiosis_self", e, 455537 );
 
       // We don't want this counted towards our dps
+      // Might need to be changed.
       self_damage->stats->type = stats_e::STATS_NEUTRAL;
 
-      // TODO: determine if self damage procs anything
-      self_damage->callbacks = false;
-      self_damage->target    = player;
-      self_damage_pct        = self_damage->data().effectN( 1 ).percent();
+      self_damage->callbacks  = true;
+      self_damage->not_a_proc = true;
+      self_damage->target     = player;
+      self_damage_pct         = self_damage->data().effectN( 1 ).percent();
     }
 
     void start_symbiosis()
@@ -6344,6 +6345,8 @@ void funhouse_lens( special_effect_t& effect )
     }
   };
 
+  effect.stat = STAT_ANY_DPS;
+  effect.disable_buff();
   effect.execute_action = create_proc_action<funhouse_lens_t>( "funhouse_lens", effect, "funhouse_lens",
                                                                effect.player->find_spell( 1214603 ) );
 }
@@ -6359,7 +6362,7 @@ void suspicious_energy_drink( special_effect_t& effect )
     double hp_limit;
     double base_buff_value;
     suspicious_energy_drink_buff_t( player_t* p, util::string_view n, const special_effect_t& e, const spell_data_t* s )
-      : stat_buff_t( e.player, n, s ), bonus_value( 0 ), hp_limit( 0 )
+      : stat_buff_t( p, n, s ), bonus_value( 0 ), hp_limit( 0 )
     {
       base_buff_value = e.driver()->effectN( 1 ).average( e );
       set_stat_from_effect_type( A_MOD_RATING, base_buff_value );
@@ -6499,64 +6502,34 @@ void flarendos_pilot_light( special_effect_t& effect )
 // 472185 Primary Buff
 void amorphous_relic( special_effect_t& effect )
 {
-  struct amorphous_relic_event_t : public event_t
-  {
-    player_t* player;
-    buff_t* haste_buff;
-    buff_t* crit_buff;
-    timespan_t period;
-    event_t* next_event;
+  buff_t* haste_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 472184 ) )
+                           ->add_stat_from_effect( 2, effect.driver()->effectN( 4 ).average( effect ) )
+                           ->add_stat_from_effect( 3, effect.driver()->effectN( 3 ).average( effect ) )
+                           ->set_cooldown( 0_ms );
 
-    amorphous_relic_event_t( player_t* p, timespan_t time_to_execute, buff_t* haste, buff_t* crit )
-      : event_t( *p, time_to_execute ),
-        player( p ),
-        haste_buff( haste ),
-        crit_buff( crit ),
-        period( 0_ms ),
-        next_event( nullptr )
-    {
-      period = player->find_spell( 472195 )->effectN( 1 ).period();
-    }
+  buff_t* crit_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 472185 ) )
+                          ->add_stat_from_effect( 2, effect.driver()->effectN( 1 ).average( effect ) )
+                          ->add_stat_from_effect( 3, effect.driver()->effectN( 2 ).average( effect ) )
+                          ->set_cooldown( 0_ms );
 
-    const char* name() const override
-    {
-      return "amorphous_relic_event";
-    }
+  buff_t* periodic = create_buff<buff_t>( effect.player, effect.player->find_spell( 472195 ) )
+                         ->set_tick_on_application( true )
+                         ->set_cooldown( 60_s ) // Not in data, but the ticking aura doesnt reapply if re-entering combat before 60s has passed.
+                         ->set_tick_callback( [ haste_buff, crit_buff ]( buff_t* b, int, timespan_t ) {
+                           if ( b->source->in_combat )
+                           {
+                             if ( b->source->rng().roll( 0.5 ) )
+                               haste_buff->trigger();
+                             else
+                               crit_buff->trigger();
+                           }
+                         } );
 
-    void execute() override
-    {
-      if ( next_event == nullptr )
-        next_event = make_event<amorphous_relic_event_t>( sim(), player, period, haste_buff, crit_buff );
-      else
-      {
-        // Reset the timer if combat was started again and the event triggered before the next secheduled time.
-        event_t::cancel( next_event );
-        next_event = make_event<amorphous_relic_event_t>( sim(), player, period, haste_buff, crit_buff );
-      }
-
-      if ( player->in_combat )
-      {
-        if ( rng().roll( 0.5 ) )
-          haste_buff->trigger();
-        else
-          crit_buff->trigger();
-      }
-    }
-  };
-
-  auto haste_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 472184 ) )
-                        ->add_stat_from_effect( 2, effect.driver()->effectN( 4 ).average( effect ) )
-                        ->add_stat_from_effect( 3, effect.driver()->effectN( 3 ).average( effect ) );
-
-  auto crit_buff = create_buff<stat_buff_t>( effect.player, effect.player->find_spell( 472185 ) )
-                       ->add_stat_from_effect( 2, effect.driver()->effectN( 1 ).average( effect ) )
-                       ->add_stat_from_effect( 3, effect.driver()->effectN( 2 ).average( effect ) );
-
-  effect.player->register_on_combat_state_callback( [ haste_buff, crit_buff ]( player_t* p, bool c ) {
-    if ( c )
-    {
-      make_event<amorphous_relic_event_t>( *p->sim, p, 0_ms, haste_buff, crit_buff );
-    }
+  effect.player->register_on_combat_state_callback( [ haste_buff, crit_buff, periodic ]( player_t* p, bool c ) {
+    if ( !c )
+      periodic->expire();
+    else
+      periodic->trigger();
   } );
 }
 
@@ -6859,9 +6832,11 @@ void zees_thug_hotline( special_effect_t& effect )
       e.player->buffs.bloodlust->add_stack_change_callback( [ & ]( buff_t*, int, int new_ ) {
           if ( new_ )
           {
-            pocket_ace_spawner.spawn();
-            snake_eyes_spawner.spawn();
-            thwack_jack_spawner.spawn();
+            make_event( sim, [ this ] {
+              pocket_ace_spawner.spawn();
+              snake_eyes_spawner.spawn();
+              thwack_jack_spawner.spawn();
+            } );
           }
         } );
     }
@@ -6919,7 +6894,8 @@ void tome_of_lights_devotion( special_effect_t& effect )
     return;
 
   // Setup double value buff
-  auto radiance_buff = create_buff<buff_t>( effect.player, effect.player->find_spell( 443534 ) );
+  auto radiance_buff = create_buff<buff_t>( effect.player, "radiance_tome", effect.player->find_spell( 443534 ) )
+    ->set_name_reporting( "radiance" );
 
   struct inner_resilience_cb_t : public dbc_proc_callback_t
   {
@@ -6949,7 +6925,7 @@ void tome_of_lights_devotion( special_effect_t& effect )
       ward_of_devotion_buff = make_buff<ward_of_devotion_buff_t>( e, e.player->find_spell( 450719 ), data );
     }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( action_t*, action_state_t* ) override
     {
       if ( radiance_buff->check() )
         ward_of_devotion_buff->trigger(-1, ward_of_devotion_buff->DEFAULT_VALUE() * 2 );
@@ -7027,7 +7003,7 @@ void tome_of_lights_devotion( special_effect_t& effect )
 
         resilience_verses_tracker = create_buff<buff_t>( e.player, e.player->find_spell( 450696 ) );
         resilience_verses_tracker->expire_at_max_stack = true;
-        resilience_verses_tracker->set_expire_callback( [ this ]( buff_t* b, int, timespan_t ) {
+        resilience_verses_tracker->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
                                       resilience_phase = false;
                                       inner_resilience_buff->expire();
                                       inner_radiance_buff->trigger();
@@ -7036,7 +7012,7 @@ void tome_of_lights_devotion( special_effect_t& effect )
 
         radiance_verses_tracker = create_buff<buff_t>( e.player, e.player->find_spell( 450699 ) );
         radiance_verses_tracker->expire_at_max_stack = true;
-        radiance_verses_tracker->set_expire_callback( [ this ]( buff_t* b, int, timespan_t ) {
+        radiance_verses_tracker->set_expire_callback( [ this ]( buff_t*, int, timespan_t ) {
                                       resilience_phase = true;
                                       inner_radiance_buff->expire();
                                       inner_resilience_buff->trigger();
@@ -7067,7 +7043,7 @@ void tome_of_lights_devotion( special_effect_t& effect )
         inner_radiance_cb->activate_with_buff( radiance_verses_tracker, true );
       }
 
-    void execute( action_t*, action_state_t* s ) override
+    void execute( action_t*, action_state_t* ) override
     {
       if ( resilience_phase )
       {
@@ -8231,7 +8207,7 @@ void the_jastor_diamond( special_effect_t& effect )
   struct jastor_diamond_buff_base_t : public stat_buff_t
   {
     double current_total_value;
-    jastor_diamond_buff_base_t( player_t* p, std::string_view n, const spell_data_t* s )
+    jastor_diamond_buff_base_t( actor_pair_t p, std::string_view n, const spell_data_t* s )
       : stat_buff_t( p, n, s ), current_total_value( 0 )
     {
       set_default_value( 0 );
@@ -8322,10 +8298,10 @@ void the_jastor_diamond( special_effect_t& effect )
     int fake_stacks;
     int max_fake_stacks;
 
-    i_did_that_buff_t( player_t* p, std::string_view n, const spell_data_t* s )
+    i_did_that_buff_t( actor_pair_t p, std::string_view n, const spell_data_t* s )
       : jastor_diamond_buff_base_t( p, n, s ), fake_stacks( 0 ), max_fake_stacks( 0 )
     {
-      max_fake_stacks = as<int>( p->find_spell( 1214161 )->effectN( 2 ).base_value() );
+      max_fake_stacks = as<int>( source->find_spell( 1214161 )->effectN( 2 ).base_value() );
       set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
     }
 
@@ -8358,7 +8334,7 @@ void the_jastor_diamond( special_effect_t& effect )
 
   struct no_i_did_that_buff_t : public jastor_diamond_buff_base_t
   {
-    no_i_did_that_buff_t( player_t* p, std::string_view n, const spell_data_t* s )
+    no_i_did_that_buff_t( actor_pair_t p, std::string_view n, const spell_data_t* s )
       : jastor_diamond_buff_base_t( p, n, s )
     {
     }
@@ -8392,18 +8368,22 @@ void the_jastor_diamond( special_effect_t& effect )
 
       self_buff = create_buff<i_did_that_buff_t>( e.player, "i_did_that", e.player->find_spell( 1214823 ) );
 
-      e.player->register_precombat_begin( [ & ]( player_t* p ) {
-        if ( p->sim->player_no_pet_list.size() > 1 && !p->sim->single_actor_batch )
+      if ( e.player->sim->player_no_pet_list.size() > 1 && !e.player->sim->single_actor_batch )
+      {
+        ally_list = e.player->sim->player_no_pet_list;
+        ally_list.find_and_erase( e.player );
+        if ( ally_list.size() > 0 )
         {
-          ally_list = p->sim->player_no_pet_list;
-          ally_list.find_and_erase( p );
           for ( auto& ally : ally_list )
           {
-            auto ally_buff = create_buff<no_i_did_that_buff_t>( ally, "no_i_did_that", ally_buff_spell );
+            auto ally_buff =
+                make_buff<no_i_did_that_buff_t>( actor_pair_t{ ally, e.player }, "no_i_did_that", ally_buff_spell );
             ally_buffs.insert( { { ally }, { ally_buff } } );
           }
+
+          linked_player = rng().range( ally_list );
         }
-      } );
+      }
 
       // Currently bugged, and seems to get stuck on a single player, never changing.
       // To emulate this, give players the option to chose their allied players highest stat, or randomly roll one

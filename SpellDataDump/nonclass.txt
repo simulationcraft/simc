@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59466 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59570 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -55047,7 +55047,7 @@ Effects          :
                    Affected School(s): All
 #3 (id=245406)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: -30 | Scaled Value: -30 | Target: Enemy (6)
-#4 (id=257024)   : Apply Aura (6) | Modify Absorb% Done (422)
+#4 (id=257024)   : Apply Aura (6) | Modify Absorb% Received (422)
                    Base Value: -30 | Scaled Value: -30 | Target: Enemy (6)
 Description      : Dismount your target and reduce their combat effectiveness for $d.
 Tooltip          : Damage and healing reduced by $m1%.
@@ -81544,7 +81544,7 @@ Attributes       : No Immunities (29), Always Hit (114), Aura Expires Offline (1
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=331491)   : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: -1 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Stat: All | Target: Self (1)
 Description      : All stats increased by $s1%.
 Tooltip          : All stats increased by $s1%.
 
@@ -82345,11 +82345,11 @@ Cooldown         : 1 seconds
 Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), DoT Stacking Rule (103), Periodic Can Crit (265), Visible only to caster (conversations only) (343), Not In Proving Grounds (401)
 Effects          :
 #1 (id=334418)   : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 10 | Scaled Value: 10 | SP Coefficient: 2 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | SP Coefficient: 2 | Stat: Agi | Target: Self (1)
 #2 (id=334419)   : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 10 | Scaled Value: 10 | SP Coefficient: 2 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | SP Coefficient: 2 | Stat: Int | Target: Self (1)
 #3 (id=334420)   : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 10 | Scaled Value: 10 | SP Coefficient: 2 | Misc Value: 2 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | SP Coefficient: 2 | Stat: Sta | Target: Self (1)
 Description      : Agility, Stamina, and Intellect increased by $s1% for $d.
 
 Only usable on the Broken Isles and Argus.
@@ -87888,7 +87888,7 @@ Attributes       : No Immunities (29), Always Hit (114), Aura Expires Offline (1
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=347749)   : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: -1 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Stat: All | Target: Self (1)
 Description      : All stats increased by $s1%. Only works in the Broken Isles.
 Tooltip          : All stats increased by $s1%.
 
@@ -108746,7 +108746,7 @@ Attributes       : Do Not Log (8), Allow Item Spell In PvP (13), Allow While Sit
 Aura Interrupt   : Standing (18), Swimming (33)
 Effects          :
 #1 (id=719248)   : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: -5 | Scaled Value: -5 | Value Multiplier: 1 | Misc Value: 2 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Value Multiplier: 1 | Stat: Sta | Target: Self (1)
 Description      : Restores no health, and reduces Stamina by $s1% for $d.
 Tooltip          : Stamina reduced by $s1%.
 
@@ -131878,7 +131878,7 @@ Attributes       : Ignore Line of Sight (66), Not an Action (92), Not a Proc (10
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=757377)   : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 2 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Stat: Sta | Target: Self (1)
 #2 (id=764702)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Increases your size by $s2% and stamina by $s1% for $d. Only in Nazjatar.
@@ -162513,7 +162513,7 @@ Category Cooldown: 1 seconds
 Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Not In Proving Grounds (401)
 Effects          :
 #1 (id=830366)   : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Stat: Str | Target: Self (1)
 Description      : Increases your Strength by $s1 for $d.
 Tooltip          : You feel strong. Strength increase by $w1.
 
@@ -164210,7 +164210,7 @@ School           : Fire
 Spell Type       : Ranged
 Range            : 100 yards
 Labels           : 931
-Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2)
+Affecting Spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2, #14, #15, #16, #17), Lone Wolf (155228 effects: #1, #2), Bullseye (204090 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effects: #1, #2), Trueshot (288613 effect#5), Coordinated Assault (360952 effects: #2, #5), Bestial Pact (360955 effects: #3, #4), Spearhead (378957 effects: #2, #3), Fury Strikes (425830 effects: #1, #2), Outland Venom (459941 effect#1), Wyvern's Cry (471881 effects: #1, #2)
 Family Flags     : 106
 Attributes       : Do Not Display Range (126), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
@@ -166017,7 +166017,7 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Immuni
 Aura Interrupt   : Leave World (19), Raid Encounter Start or M+ Start (40), Encounter Start (55)
 Effects          :
 #1 (id=839547)   : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: -2 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | Stat: StrAgiInt | Target: Self (1)
 Description      : $@spelldesc339058
 Tooltip          : $pri increased by $w1%.
 
@@ -166577,9 +166577,9 @@ Cooldown         : 300 seconds
 Attributes       : Require All Targets (58), Only On Player (104), Aura Points On Client (268)
 Effects          :
 #1 (id=841805)   : Apply Aura (6) | Modify Attribute% (80) | Attributes: Players Only (14)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: -1 | Target: Friendly (21)
+                   Base Value: 5 | Scaled Value: 5 | Stat: All | Target: Friendly (21)
 #2 (id=841806)   : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: -1 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Stat: All | Target: Self (1)
 #3 (id=841807)   : Apply Aura (6) | Periodic Dummy (226): every 3 seconds
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Bond your soul with that of a nearby ally, increasing all primary stats of your ally and yourself by $s1%.
@@ -174598,7 +174598,7 @@ Effects          :
 #3 (id=889991)   : Apply Aura (6) | Modify Healing Received% (118) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 30.22972 (coefficient=0.007895) | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#4 (id=903050)   : Apply Aura (6) | Modify Absorb% Done (422) | Scaling Class: -1
+#4 (id=903050)   : Apply Aura (6) | Modify Absorb% Received (422) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 30.22972 (coefficient=0.007895) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $?pc96341[|CFF20ff20][|CFF808080]While in the Maw, incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R
 
@@ -175873,7 +175873,7 @@ Effects          :
 #3 (id=891267)   : Apply Aura (6) | Modify Healing Received% (118) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 37.78427 (coefficient=0.009868) | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#4 (id=903051)   : Apply Aura (6) | Modify Absorb% Done (422) | Scaling Class: -1
+#4 (id=903051)   : Apply Aura (6) | Modify Absorb% Received (422) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 37.78427 (coefficient=0.009868) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $?pc96341[|CFF20ff20][|CFF808080]While in the Maw, incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R
 
@@ -176009,7 +176009,7 @@ Effects          :
 #3 (id=891296)   : Apply Aura (6) | Modify Healing Received% (118) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 45.34266 (coefficient=0.011842) | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#4 (id=903052)   : Apply Aura (6) | Modify Absorb% Done (422) | Scaling Class: -1
+#4 (id=903052)   : Apply Aura (6) | Modify Absorb% Received (422) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 45.34266 (coefficient=0.011842) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $?pc96341[|CFF20ff20][|CFF808080]While in the Maw, incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R
 
@@ -176133,7 +176133,7 @@ Effects          :
 #3 (id=891316)   : Apply Aura (6) | Modify Healing Received% (118) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 52.90104 (coefficient=0.013816) | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#4 (id=903053)   : Apply Aura (6) | Modify Absorb% Done (422) | Scaling Class: -1
+#4 (id=903053)   : Apply Aura (6) | Modify Absorb% Received (422) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 52.90104 (coefficient=0.013816) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $?pc96341[|CFF20ff20][|CFF808080]While in the Maw, incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R
 
@@ -176270,7 +176270,7 @@ Effects          :
 #3 (id=891338)   : Apply Aura (6) | Modify Healing Received% (118) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 60.4556 (coefficient=0.015789) | PvP Coefficient: 0.5 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-#4 (id=903054)   : Apply Aura (6) | Modify Absorb% Done (422) | Scaling Class: -1
+#4 (id=903054)   : Apply Aura (6) | Modify Absorb% Received (422) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 60.4556 (coefficient=0.015789) | PvP Coefficient: 0.5 | Target: Self (1)
 Description      : $?pc96341[|CFF20ff20][|CFF808080]While in the Maw, incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R
 
@@ -176870,7 +176870,7 @@ Effects          :
                    Base Value: 6 | Scaled Value: 6 | Target: Any Target (25)
 #3 (id=892467)   : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: -2 | Scaled Value: -2 | Target: Enemy (6)
-#4 (id=893151)   : Apply Aura (6) | Modify Absorb% Done (422)
+#4 (id=893151)   : Apply Aura (6) | Modify Absorb% Received (422)
                    Base Value: -2 | Scaled Value: -2 | Target: Enemy (6)
 Description      : Damaging a target has a high chance to consume the target with creeping decay, dealing ${$<points>*$d/$t1} Physical damage over $d, and reducing healing and absorption received by $s3%, stacking up to $U times.
 
@@ -189890,7 +189890,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 292
-                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#10), Flow State (390148 effect#12), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
 Attributes       : Passive (6), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1012272)  : Apply Aura (6) | Dummy (4)
@@ -200551,7 +200551,7 @@ Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Not In 
 Aura Interrupt   : Raid Encounter Start or M+ Start (40), Enter Instance (43), Challenge Mode Start (54), Encounter Start (55)
 Effects          :
 #1 (id=1029192)  : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 2 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Stat: Sta | Target: Self (1)
 #2 (id=1037360)  : Trigger Spell (64): Fully Ruby Feasted
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396184 | Target: Self (1)
 #3 (id=1037361)  : Apply Aura (6) | Unknown(495)
@@ -200567,7 +200567,7 @@ Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Not In 
 Aura Interrupt   : Raid Encounter Start or M+ Start (40), Enter Instance (43), Challenge Mode Start (54), Encounter Start (55)
 Effects          :
 #1 (id=1029195)  : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: -2 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Stat: StrAgiInt | Target: Self (1)
 #2 (id=1037358)  : Trigger Spell (64): Fully Ruby Feasted
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396184 | Target: Self (1)
 #3 (id=1037359)  : Apply Aura (6) | Unknown(495)
@@ -200700,7 +200700,7 @@ Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Not In 
 Aura Interrupt   : Raid Encounter Start or M+ Start (40), Enter Instance (43), Challenge Mode Start (54), Encounter Start (55)
 Effects          :
 #1 (id=1029238)  : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: -1 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Stat: All | Target: Self (1)
 #2 (id=1037366)  : Trigger Spell (64): Fully Ruby Feasted
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 396184 | Target: Self (1)
 #3 (id=1037367)  : Apply Aura (6) | Unknown(495)
@@ -202282,7 +202282,7 @@ Triggered By     : Craft Creche Crowler (394197)
 Attributes       : Allow While Sitting (27), Allow While Stealthed (37), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not in Instances (363)
 Effects          :
 #1 (id=1033668)  : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: -1 | Trigger Spell: 394184 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Stat: All | Trigger Spell: 394184 | Target: Self (1)
 Description      : Gives Dracthyr that nostalgic taste of home, and allows non-Dracthyr to feel the wind beneath their very own wings!
 Tooltip          : Ahh! Reminds you of home, increasing All Stats by $s1%.
 
@@ -222444,7 +222444,7 @@ School           : Physical
 Spell Type       : None
 Labels           : 16: Class Spells
                  : 292
-                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#9), Flow State (390148 effect#11), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
+                 : 1216: Flow State (390148 effect#2), Flow State (390148 effect#10), Flow State (390148 effect#12), Time Skip (404977 effect#1), Interwoven Threads (412713 effect#1), Temporal Burst (431698 effect#3), Burning Adrenaline (444019 effect#1)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1118135)  : Apply Aura (6) | Dummy (4)
@@ -223801,6 +223801,7 @@ School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : Aura (infinite)
+Cooldown         : 30 seconds
 Triggered By     : Brann's Epic Egg (432647)
 Effects          :
 #1 (id=1121510)  : Summon (28)
@@ -231274,18 +231275,6 @@ Effects          :
 Description      : Hold out the feather for $?${$s2%10}>0[${$s2/10}.1][${$s2/10}] sec to strike with the power of the storm, crashing down on the target location and inflicting ${$<rolemult>*$s1} Nature damage split between nearby enemies.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
-Name             : Fate Weaver (id=443374) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 5 seconds
-Effects          :
-#1 (id=1139239)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Perform a weaving ritual, spinning the webs of fate and fashioning them into a Fateweaved Weapon.
-
-Tooltip          : $@spellicon443384 $@spellname443384:
-$@spelldesc443384.
-
 Name             : Sigil of Algari Concordance (id=443378) [Passive] 
 School           : Physical
 Spell Type       : None
@@ -234535,7 +234524,7 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Sp
 Attributes       : Passive (6), No Aura Icon (60), Can Proc From Procs (122), No Aura Log (202), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1143477)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 8562.882 (coefficient=2.236341) | PvP Coefficient: 0.4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7706.942 (coefficient=2.012798) | PvP Coefficient: 0.4 | Target: Self (1)
 
 Name             : Spark of Beledar (id=446224) 
 School           : Holyfire
@@ -238580,7 +238569,6 @@ Effects          :
 Description      : $@spelldesc445619
 
 Name             : Algari Mana Oil (id=451869) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3 seconds
@@ -238594,7 +238582,6 @@ Effects          :
 Description      : Coat your weapon in Algari Mana Oil, increasing your Critical Strike and Haste by $ec1 for $M2 min.
 
 Name             : Algari Mana Oil (id=451873) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3 seconds
@@ -238608,7 +238595,6 @@ Effects          :
 Description      : Coat your weapon in Algari Mana Oil, increasing your Critical Strike and Haste by $ec1 for $M2 min.
 
 Name             : Algari Mana Oil (id=451874) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 3 seconds
@@ -238622,7 +238608,6 @@ Effects          :
 Description      : Coat your weapon in Algari Mana Oil, increasing your Critical Strike and Haste by $ec1 for $M2 min.
 
 Name             : Oil of Deep Toxins (id=451882) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -238671,7 +238656,6 @@ Effects          :
 Description      : $@spelldesc436344
 
 Name             : Oil of Deep Toxins (id=451901) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -238690,7 +238674,6 @@ Lasts $M2 min.
 Variables        : $rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]
 
 Name             : Oil of Deep Toxins (id=451902) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -238896,7 +238879,6 @@ Description      : $@spelldesc443529
 Tooltip          : Absorbs $s2% of damage taken, up to $w1.
 
 Name             : Oil of Beledar's Grace (id=451925) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -238913,7 +238895,6 @@ Description      : Coat your weapon in an oil that emits a warm light. The oil h
 Lasts $M2 min.
 
 Name             : Oil of Beledar's Grace (id=451926) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -238931,7 +238912,6 @@ Lasts $M2 min.
 
 
 Name             : Oil of Beledar's Grace (id=451927) [Hidden] 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Cast Time        : 2 seconds
@@ -238960,7 +238940,7 @@ Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1152732)  : Apply Aura (6) | Proc Trigger Spell (42): Beledar's Grace | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 47346.97 (coefficient=18.5111) | Trigger Spell: 451929 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 28408 (coefficient=11.10659) | Trigger Spell: 451929 | Target: Self (1)
 
 Name             : Beledar's Grace (id=451929) 
 School           : Holy
@@ -239010,7 +238990,7 @@ Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1152736)  : Apply Aura (6) | Proc Trigger Spell (42): Beledar's Grace | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 67638.96 (coefficient=26.4446) | Trigger Spell: 451931 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 40583 (coefficient=15.86661) | Trigger Spell: 451931 | Target: Self (1)
 
 Name             : Oil of Beledar's Grace (id=451933) [Passive, Hidden] 
 School           : Shadow
@@ -239024,7 +239004,7 @@ Proc Flags       : Generic Heal, Magic Heal, Helpful Periodic
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1152737)  : Apply Aura (6) | Proc Trigger Spell (42): Beledar's Grace | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 57493.1 (coefficient=22.4779) | Trigger Spell: 451930 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 34496 (coefficient=13.4868) | Trigger Spell: 451930 | Target: Self (1)
 
 Name             : Azerite Surge: III (id=451934) 
 Race             : Earthen (0x60000)
@@ -241110,16 +241090,6 @@ Description      : $@spelldesc462174
 $@spellicon461960  $@spellname461960
 If you spend at least 10 seconds eating you will become $@spellname461960 and gain $456961s4 of your highest secondary stat for $461960d.
 
-Name             : Create Boots (id=454310) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 3 seconds
-Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster (conversations only) (343)
-Effects          :
-#1 (id=1156726)  : Create Item (157)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 125524 | Misc Value 2: 0x42 | Target: Self (1)
-Description      : Create Boots for your class.
-
 Name             : Cursed Pickaxe (id=454396) 
 School           : Shadow
 Spell Type       : None
@@ -241129,76 +241099,6 @@ Effects          :
 #1 (id=1156904)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 300 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : While this item is in your bags, equipped, or being used for transmog you will occasionally be consumed by the curse.
-
-Name             : Create Chest (id=454408) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 3 seconds
-Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster (conversations only) (343)
-Effects          :
-#1 (id=1156921)  : Create Item (157)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 125539 | Misc Value 2: 0x42 | Target: Self (1)
-Description      : Create a Chestpiece for your class.
-
-Name             : Create Hand (id=454409) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 3 seconds
-Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster (conversations only) (343)
-Effects          :
-#1 (id=1156922)  : Create Item (157)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 125540 | Misc Value 2: 0x42 | Target: Self (1)
-Description      : Create Gloves for your class.
-
-Name             : Create Head (id=454410) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 3 seconds
-Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster (conversations only) (343)
-Effects          :
-#1 (id=1156925)  : Create Item (157)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 125541 | Misc Value 2: 0x42 | Target: Self (1)
-Description      : Create a Headpiece for your class.
-
-Name             : Create Legs (id=454411) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 3 seconds
-Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster (conversations only) (343)
-Effects          :
-#1 (id=1156926)  : Create Item (157)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 125542 | Misc Value 2: 0x42 | Target: Self (1)
-Description      : Create Legs for your class.
-
-Name             : Create Shoulder (id=454412) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 3 seconds
-Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster (conversations only) (343)
-Effects          :
-#1 (id=1156927)  : Create Item (157)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 125543 | Misc Value 2: 0x42 | Target: Self (1)
-Description      : Create Shoulders for your class.
-
-Name             : Create Waist (id=454413) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 3 seconds
-Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster (conversations only) (343)
-Effects          :
-#1 (id=1156928)  : Create Item (157)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 125545 | Misc Value 2: 0x42 | Target: Self (1)
-Description      : Create a Belt for your class.
-
-Name             : Create Wrist (id=454414) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 3 seconds
-Attributes       : Not Shapeshifted (16), No Threat (42), Visible only to caster (conversations only) (343)
-Effects          :
-#1 (id=1156929)  : Create Item (157)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 125544 | Misc Value 2: 0x42 | Target: Self (1)
-Description      : Create Bracers for your class.
 
 Name             : Blame Redirection Device (id=454450) [Hidden] 
 School           : Physical
@@ -246272,7 +246172,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 25 yards | Target: At Self (18) -> At Friendly in Area (31)
 Tooltip          : Movement Speed increased by $w1%.
 
-Name             : Deployable Wind-Wrangling Spire (id=457916) 
+Name             : Deployable Wind-Wrangling Spire (id=457916) [Hidden] 
 School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
@@ -246280,7 +246180,7 @@ Duration         : 1 seconds
 Cooldown         : 3600 seconds
 Category         : 2306 (Type 0x0)
 Category Cooldown: 3600 seconds
-Attributes       : Only Outdoors (15), Not In Combat (Only Peaceful) (28)
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Only Outdoors (15), Not In Combat (Only Peaceful) (28), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Not in Instances (363), Not in Mythic+ Mode (Challenge Mode) (368)
 Effects          :
 #1 (id=1163530)  : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 227482 | Misc Value 2: 0x40 | Radius: 2.5 yards | Target: Unknown(47)
@@ -246316,15 +246216,15 @@ Effects          :
 Description      : $@spelldesc457815
 Tooltip          : Deal Nature damage to your target upon reaching 5 stacks.
 
-Name             : Deployable Recovery Station (id=457926) 
+Name             : Deployable Recovery Station (id=457926) [Hidden] 
 School           : Physical
 Spell Type       : None
 Cast Time        : 5 seconds
 Duration         : 1 seconds
-Cooldown         : 86400 seconds
+Cooldown         : 3600 seconds
 Category         : 2306 (Type 0x0)
-Category Cooldown: 86400 seconds
-Attributes       : Only Outdoors (15), Not In Combat (Only Peaceful) (28)
+Category Cooldown: 3600 seconds
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Only Outdoors (15), Not In Combat (Only Peaceful) (28), Not In Arena or Rated Battleground (144), Not In Raid Instances (203), Use Target's Level for Spell Scaling (264), Aura Points On Client (268), Not in Instances (363), Not in Mythic+ Mode (Challenge Mode) (368)
 Effects          :
 #1 (id=1163546)  : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 227490 | Misc Value 2: 0x40 | Radius: 2.5 yards | Target: Unknown(47)
@@ -249226,19 +249126,6 @@ Tooltip          : Healing for $w1 every $t seconds.
 
 Gross.
 
-Name             : Delver's Bounty (desc=Tier 1) (id=460285) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 2 seconds
-Duration         : Aura (infinite)
-Labels           : 3881
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Aura Icon Only For Caster (Limit 10) (212), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
-Effects          :
-#1 (id=1167740)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Decipher the map, guaranteeing that you'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.
-Tooltip          : You'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.
-
 Name             : Charged Stormrook Plume (id=460469) 
 School           : Nature
 Spell Type       : None
@@ -249329,97 +249216,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc460521
 Tooltip          : The power of your Captured Starlight has been depleted for a short time. You are unable to benefit from its shield.
-
-Name             : Delver's Bounty (desc=Tier 2) (id=460823) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 2 seconds
-Duration         : Aura (infinite)
-Labels           : 3881
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Aura Icon Only For Caster (Limit 10) (212), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
-Effects          :
-#1 (id=1168802)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-Description      : Decipher the map, guaranteeing that you'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.
-Tooltip          : You'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.
-
-Name             : Delver's Bounty (desc=Tier 3) (id=460824) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 2 seconds
-Duration         : Aura (infinite)
-Labels           : 3881
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Aura Icon Only For Caster (Limit 10) (212), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
-Effects          :
-#1 (id=1168803)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : Decipher the map, guaranteeing that you'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.
-Tooltip          : You'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.
-
-Name             : Delver's Bounty (desc=Tier 4) (id=460825) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 2 seconds
-Duration         : Aura (infinite)
-Labels           : 3881
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Aura Icon Only For Caster (Limit 10) (212), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
-Effects          :
-#1 (id=1168804)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-Description      : Decipher the map, guaranteeing that you'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.
-Tooltip          : You'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.
-
-Name             : Delver's Bounty (desc=Tier 5) (id=460826) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 2 seconds
-Duration         : Aura (infinite)
-Labels           : 3881
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Aura Icon Only For Caster (Limit 10) (212), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
-Effects          :
-#1 (id=1168805)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-Description      : Decipher the map, guaranteeing that you'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.
-Tooltip          : You'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.
-
-Name             : Delver's Bounty (desc=Tier 6) (id=460829) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 2 seconds
-Duration         : Aura (infinite)
-Labels           : 3881
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Aura Icon Only For Caster (Limit 10) (212), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
-Effects          :
-#1 (id=1168809)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
-Description      : Decipher the map, guaranteeing that you'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.
-Tooltip          : You'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.
-
-Name             : Delver's Bounty (desc=Tier 7) (id=460830) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 2 seconds
-Duration         : Aura (infinite)
-Labels           : 3881
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Aura Icon Only For Caster (Limit 10) (212), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
-Effects          :
-#1 (id=1168810)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
-Description      : Decipher the map, guaranteeing that you'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.
-Tooltip          : You'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.
-
-Name             : Delver's Bounty (desc=Tier 8) (id=460831) 
-School           : Physical
-Spell Type       : None
-Cast Time        : 2 seconds
-Duration         : Aura (infinite)
-Labels           : 3881
-Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Allow Dead Target (64), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Aura Icon Only For Caster (Limit 10) (212), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Do Not Cancel Area Aura on Spec Switch (389), Active Passive (393), Allow While Feared By Fear Mechanic (417), Allow Aura On Level Scale (444)
-Effects          :
-#1 (id=1168811)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
-Description      : Decipher the map, guaranteeing that you'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.
-Tooltip          : You'll find a Tier $s1 Hidden Trove at the end of the next Tier $s1 or higher Delve you complete.
 
 Name             : Dwarven Medicine (id=460909) [Hidden] 
 School           : Physical
@@ -251018,6 +250814,7 @@ Spell Type       : None
 Labels           : 3922
                  : 3959: Item Effects
                  : 4030
+                 : 4079
 Proc Chance      : 101%
 Real PPM         : 0.8 (Haste multiplier)
 Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -254194,10 +253991,11 @@ Effects          :
 Description      : Your spells and abilities have a high chance to Hype you up, granting $s1 Haste up to $1216212u times. Upon reaching maximum Hype, amp it up by $s2% for $s3 sec before starting again.
 
 Name             : Combo Attack (id=471633) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Category         : 133 (Type 0x0)
-Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Do Not Display Range (126), No Cast Log (128), Allow Client Targeting (133), No Target Aura Icon (188), No Cooldown On Tooltip (192), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), No Attack Block (256), Skip Is Known Check (282), Trigger Cooldown On Spell Start (407), No Deflect (409), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
+Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), Allow While Not Shapeshifted (caster form) (83), Can't Crit (93), Do Not Display Range (126), No Cast Log (128), Allow Client Targeting (133), No Target Aura Icon (188), No Cooldown On Tooltip (192), No Attack Dodge (247), No Attack Parry (248), No Attack Miss (249), No Attack Block (256), Trigger Cooldown On Spell Start (407), No Deflect (409), Allow Class Ability Procs (416), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1189310)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -254254,9 +254052,11 @@ Effects          :
 #1 (id=1190003)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
                    Base Value: 0 | Scaled Value: 138658.3 (coefficient=54.21082) | Target: Self (1)
 #2 (id=1190004)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 1765.794 (coefficient=0.461167) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3644.18 (coefficient=0.951739) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (0.461167 -> 0.951739), PvP Coefficient (1 -> 0.5)
 #3 (id=1190005)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 4127.951 (coefficient=1.078084) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 10224.03 (coefficient=2.670178) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (1.078084 -> 2.670178), PvP Coefficient (1 -> 0.5)
 #4 (id=1190006)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 1526.779 (coefficient=0.398744) | Target: Self (1)
 #5 (id=1190193)  : Apply Aura (6) | Dummy (4)
@@ -255167,7 +254967,7 @@ Effects          :
 #12 (id=1191885) : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #13 (id=1191886) : Apply Aura (6) | Modify Attribute% (80)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 2 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Stat: Sta | Target: Self (1)
 Tooltip          : Haste increased by $w9.
 
 Movement Speed decreased by $w12%.
@@ -257022,7 +256822,8 @@ Range            : 100 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 4248
-Attributes       : Allow Cast While Dead (23), Aura Unique (43), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow Aura While Dead (116), Aura Points On Client (268)
+Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Aura Unique (43), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow Aura While Dead (116), Aura Points On Client (268)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1196622)  : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1) -> Friendly (21)
@@ -257044,7 +256845,8 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1196738)  : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+Hotfixed         : Base Value (20 -> 4)
 #2 (id=1196739)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -257123,7 +256925,8 @@ Range            : 100 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 4248
-Attributes       : Allow Cast While Dead (23), Cast When Learned (63), Allow Dead Target (64), Allow Aura While Dead (116), Aura Points On Client (268)
+Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Cast When Learned (63), Allow Dead Target (64), Allow Aura While Dead (116), Aura Points On Client (268)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1197083)  : Apply Aura (6) | Dummy (4)
                    Base Value: 45 | Scaled Value: 45 | Target: Self (1) -> Friendly (21)
@@ -257139,7 +256942,8 @@ Range            : 100 yards
 Duration         : Aura (infinite)
 Labels           : 2916
                  : 4248
-Attributes       : Allow Cast While Dead (23), Cast When Learned (63), Allow Dead Target (64), Allow Aura While Dead (116), Aura Points On Client (268)
+Attributes       : Allow Cast While Dead (23), No Aura Cancel (31), Cast When Learned (63), Allow Dead Target (64), Allow Aura While Dead (116), Aura Points On Client (268)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1197085)  : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1) -> Friendly (21)
@@ -257156,6 +256960,7 @@ Duration         : Aura (infinite)
 Labels           : 2916
                  : 4248
 Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Aura Cancel (31), Allow While Stealthed (37), Cast When Learned (63), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow Aura While Dead (116), Allow Cast While Casting (135), Allow Proc While Sitting (147), Allow Actions During Channel (160), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow Equip While Casting (209), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow Defense While Casting (337), Allow Defense While Channeling (338), Allow Fatal Duel Damage (339), Allow While Stunned By Horror Mechanic (342), Visible only to caster (conversations only) (343), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417), Always Allow PvP Flagged Target (427), Unknown (452)
+Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=1197087)  : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1) -> Friendly (21)
@@ -257232,7 +257037,8 @@ Effects          :
 #1 (id=1197231)  : Apply Aura (6) | Proc Trigger Spell (42) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 962.4599 (coefficient=0.37629) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1197232)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 1277.965 (coefficient=0.499642) | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1214.179 (coefficient=0.474704) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : Coefficient (0.499642 -> 0.474704)
 Description      : Your harmful abilities have a chance to power the amplifier, randomly increasing either your highest secondary stat by $s1 or your lowest secondary stat by $s2 for $1214806d.
 
 Name             : Pinged Augment Chip (id=1214796) [Hidden] 
@@ -257248,13 +257054,14 @@ Effects          :
 Description      : $@spelldesc467037
 
 Name             : Pinged Augment Chip (id=1214802) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
 Duration         : 20 seconds
 Labels           : 3957: Spatial Paradox (406732 effect#5)
 Triggered By     : Concussion (1214893)
-Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204)
+Attributes       : Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Always Hit (114), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Nameplate Personal Buffs/Debuffs (423), Nameplate Enemy Debuffs (426), Unknown (465)
 Effects          :
 #1 (id=1197265)  : Apply Aura (6) | Unknown(128)
                    Base Value: 1 | Scaled Value: 1 | Target: Any Target (25)
@@ -257419,6 +257226,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Stun | Target: Any Target (25)
 #3 (id=1197423)  : Unknown(203)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 1214802 | Target: Any Target (25)
+#4 (id=1223920)  : Apply Aura (6) | Temporary Thread Reduction (103)
+                   Base Value: -90000000 | Scaled Value: -9e+07 | Mechanic: Stun | Target: Any Target (25)
+Hotfixed         : NEW EFFECT
 Description      : $@spelldesc467037
 Tooltip          : Stunned.
 
@@ -257474,7 +257284,8 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1197450)  : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+Hotfixed         : Base Value (25 -> 6)
 #2 (id=1197451)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -257500,7 +257311,8 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1197454)  : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+Hotfixed         : Base Value (30 -> 8)
 #2 (id=1197455)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -257526,7 +257338,8 @@ Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Gener
 Attributes       : Cast When Learned (63), Can Proc From Procs (122), Aura Points On Client (268)
 Effects          :
 #1 (id=1197458)  : Apply Aura (6) | Modify Max Health% (133)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Hotfixed         : Base Value (35 -> 10)
 #2 (id=1197459)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -259908,7 +259721,7 @@ School           : Physical
 Spell Type       : None
 Range            : 40 yards
 Velocity         : 50 yards/sec
-Duration         : 5 seconds
+Duration         : 2.5 seconds
 Cooldown         : 120 seconds
 Category         : 1141 (Type 0x0)
 Category Cooldown: 20 seconds
@@ -259929,12 +259742,14 @@ Effects          :
 #1 (id=1204940)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 575514.6 (coefficient=225.0072) | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1205003)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+Hotfixed         : Base Value (10 -> 3)
 
 Name             : Garbocalypse (id=1219299) 
 School           : Physical
 Spell Type       : Ranged
 Range            : 50000 yards
+Triggered By     : Garbagemancer's Last Resort (1219301)
 Attributes       : Always Line of Sight (185), Always AOE Line of Sight (186), Aura Points On Client (268)
 Effects          :
 #1 (id=1204945)  : School Damage (2): physical
@@ -259942,11 +259757,23 @@ Effects          :
 #2 (id=1204946)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219296
 
+Name             : Garbagemancer's Last Resort (id=1219301) [Hidden] 
+Hotfixed         : Velocity (4.5 -> 8), Attributes
+School           : Physical
+Spell Type       : None
+Range            : 50000 yards
+Velocity         : 8 yards/sec
+Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Aura Points On Client (268)
+Effects          :
+#1 (id=1204948)  : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1219299 | Target: Unknown(87)
+Description      : Fashion nearby garbage into a sphere and launch into the sky. After $d of gathering momentum the sphere crashes into the targeted location dealing $1219296s1 Physical damage split between all enemies in the area.
+
 Name             : Garbagemancer's Last Resort (id=1219314) 
 School           : Physical
 Spell Type       : None
 Range            : 40 yards
-Duration         : 10.1 seconds
+Duration         : 3.1 seconds
 Triggered By     : Garbagemancer's Last Resort (1219294)
 Effects          :
 #1 (id=1204983)  : Create Area Trigger (179)
@@ -260292,10 +260119,8 @@ Attributes       : Allow While Mounted (24), Allow While Sitting (27), No Redire
 Effects          :
 #1 (id=1222349)  : School Damage (2): fire
                    Base Value: 50 | Scaled Value: 50 (delta=0.099404) | Radius: 0 - 8 yards | Target: Unknown(87) -> At Enemy in Area (16)
-Hotfixed         : NEW EFFECT
 #2 (id=1222350)  : Unknown(144)
                    Base Value: 50 | Scaled Value: 50 (delta=0.1) | Misc Value: 75 | Misc Value 2: 0x2ee | Radius: 0 - 4 yards | Target: Unknown(87) -> At Enemy in Area (16)
-Hotfixed         : NEW EFFECT
 Description      : Arrive just in time to be the life of the show knocking back and inflicting $1223126s1 Fire damage to enemies within $1223126A1 yards upon impact. Cool.
 
 Name             : FIRE!!! (id=1224131) [Hidden] 

@@ -225,7 +225,6 @@ struct druid_action_data_t  // variables that need to be accessed from action_t*
   uint32_t action_flags = 0;
   // form spell to automatically cast
   action_t* autoshift = nullptr;
-  bool delayed_autoshift = false;
 
   bool has_flag( uint32_t f ) const { return action_flags & f; }
   bool is_flag( flag_e f ) const { return ( action_flags & f ) == f; }
@@ -1834,8 +1833,7 @@ public:
 
   void schedule_execute( action_state_t* s = nullptr ) override
   {
-    if ( !delayed_autoshift )
-      check_autoshift();
+    check_autoshift();
 
     ab::schedule_execute( s );
   }
@@ -1843,7 +1841,7 @@ public:
   void execute() override
   {
     // offgcd actions bypass schedule_execute so check for autoshift
-    if ( ab::use_off_gcd || delayed_autoshift )
+    if ( ab::use_off_gcd )
       check_autoshift();
 
     ab::execute();
@@ -2058,23 +2056,38 @@ struct use_dot_list_t : public BASE
   }
 };
 
-template <specialization_e S, typename BASE>
+template <form_e FORM, typename BASE>
 struct use_fluid_form_t : public BASE
 {
-  using base_t = use_fluid_form_t<S, BASE>;
+private:
+  bool delayed_shift = false;
+
+public:
+  using base_t = use_fluid_form_t<FORM, BASE>;
 
   use_fluid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f = flag_e::NONE )
     : BASE( n, p, s, f )
   {
     if ( p->talent.fluid_form.ok() && !BASE::has_flag( flag_e::FREE_PROCS ) )
     {
-      if constexpr ( S == DRUID_BALANCE )
-          BASE::autoshift = p->active.shift_to_moonkin;
-      else if constexpr ( S == DRUID_FERAL )
+      if constexpr ( FORM == MOONKIN_FORM )
+        delayed_shift = p->active.shift_to_moonkin ? true : false;
+      else if constexpr ( FORM == CAT_FORM )
         BASE::autoshift = p->active.shift_to_cat;
-      else if constexpr ( S == DRUID_GUARDIAN )
+      else if constexpr ( FORM == BEAR_FORM )
         BASE::autoshift = p->active.shift_to_bear;
     }
+  }
+
+  void execute() override
+  {
+    if constexpr ( FORM == MOONKIN_FORM )
+    {
+      if ( delayed_shift && BASE::p()->form != MOONKIN_FORM )
+        BASE::p()->active.shift_to_moonkin->execute();
+    }
+
+    BASE::execute();
   }
 };
 
@@ -3349,21 +3362,8 @@ struct celestial_alignment_buff_t final : public druid_buff_t
 
     auto dur_ = remains();
 
-    // advance eclipse manually if refreshing as eclipse->stack_change_callback is not called
-    auto in_lunar = eclipse_handler.in_lunar();
-    auto in_solar = eclipse_handler.in_solar();
-
     p()->buff.eclipse_lunar->trigger( dur_ );
-    if ( in_lunar )
-      eclipse_handler.advance_eclipse<eclipse_e::LUNAR>( true );
-
     p()->buff.eclipse_solar->trigger( dur_ );
-    if ( in_solar )
-      eclipse_handler.advance_eclipse<eclipse_e::SOLAR>( true );
-
-    // harmony of the heavens counter resets only if eclipse was active before CA is triggered
-    if ( !p()->bugs || in_lunar || in_solar )
-      eclipse_handler.harmony_cur = 0.0;
 
     if ( p()->active.orbital_strike )
       p()->active.orbital_strike->execute_on_target( p()->target );
@@ -3408,6 +3408,41 @@ struct earthwarden_buff_t final : public druid_absorb_buff_t
     decrement();
 
     return amount;
+  }
+};
+
+// Eclipse ==================================================================
+template <eclipse_e E>
+struct eclipse_buff_t final : public druid_buff_t
+{
+  eclipse_buff_t( druid_t* p, std::string_view n, const spell_data_t* s ) : base_t( p, n, s )
+  {
+    set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
+    set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  }
+
+  double check_value() const override
+  {
+    return current_value + p()->eclipse_handler.harmony_cur;
+  }
+
+  bool trigger( int s, double v, double c, timespan_t d ) override
+  {
+    auto ret = base_t::trigger( s, v, c, d );
+    if ( !ret )
+      return false;
+
+    p()->eclipse_handler.template advance_eclipse<E>( true );
+
+    return true;
+  }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    base_t::expire_override( s, d );
+
+    p()->eclipse_handler.template advance_eclipse<E>( false );
   }
 };
 
@@ -3618,10 +3653,13 @@ struct druid_form_t : public druid_spell_t
   buff_t* form_buff = nullptr;
   buff_t* lycara_buff = nullptr;
   timespan_t meditation_dur;
+  timespan_t meditation_required;
   form_e form = NO_FORM;
 
   druid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, flag_e f )
-    : druid_spell_t( n, p, s, f ), meditation_dur( p->talent.lycaras_meditation->effectN( 1 ).time_value() )
+    : druid_spell_t( n, p, s, f ),
+      meditation_dur( p->talent.lycaras_meditation->effectN( 1 ).time_value() ),
+      meditation_required( p->talent.lycaras_meditation->effectN( 2 ).time_value() )
   {
     harmful = reset_melee_swing = false;
     ignore_false_positive = true;
@@ -3677,12 +3715,16 @@ struct druid_form_t : public druid_spell_t
     if ( old_form == form )
       return;
 
-    if ( auto old_buff = get_form_buff( old_form ) )
+    auto old_buff = get_form_buff( old_form );
+    if ( old_buff )
       old_buff->expire();
 
     if ( p()->talent.lycaras_teachings.ok() )
     {
-      if ( old_form != NO_FORM && meditation_dur > 0_ms )
+      // TODO: confirm meditation required scales with spell haste
+      if ( old_buff && meditation_dur > 0_ms &&
+           ( sim->current_time() == 0_ms ||
+             old_buff->elapsed( sim->current_time() ) >= meditation_required * p()->cache.spell_haste() ) )
       {
         // remove old lycaras meditation
         if ( p()->lycaras_meditation_buff )
@@ -3712,25 +3754,25 @@ struct druid_form_t : public druid_spell_t
 };
 
 // Bear Form Spell ==========================================================
-struct bear_form_t final : public trigger_call_of_the_elder_druid_t<druid_form_t>
+struct bear_form_t final : public druid_form_t
 {
-  DRUID_ABILITY( bear_form_t, base_t, "bear_form", p->find_class_spell( "Bear Form" ) )
+  DRUID_ABILITY( bear_form_t, druid_form_t, "bear_form", p->find_class_spell( "Bear Form" ) )
   {
     set_form( BEAR_FORM );
   }
 
   void execute() override
   {
-    base_t::execute();
+    druid_form_t::execute();
 
     p()->buff.ursine_vigor->trigger();
   }
 };
 
 // Cat Form Spell ===========================================================
-struct cat_form_t final : public trigger_call_of_the_elder_druid_t<druid_form_t>
+struct cat_form_t final : public druid_form_t
 {
-  DRUID_ABILITY( cat_form_t, base_t, "cat_form", p->find_class_spell( "Cat Form" ) )
+  DRUID_ABILITY( cat_form_t, druid_form_t, "cat_form", p->find_class_spell( "Cat Form" ) )
   {
     set_form( CAT_FORM );
   }
@@ -4315,7 +4357,7 @@ struct adaptive_swarm_t final : public cat_attack_t
   {
     timespan_t g = cat_attack_t::gcd();
 
-    if ( p()->buff.cat_form->check() )
+    if ( p()->form == CAT_FORM )
       g += gcd_add;
 
     return g;
@@ -4447,12 +4489,12 @@ struct brutal_slash_t final : public trigger_claw_rampage_t<DRUID_FERAL,
 
   resource_e current_resource() const override
   {
-    return p()->buff.cat_form->check() ? RESOURCE_ENERGY : RESOURCE_NONE;
+    return p()->form == CAT_FORM ? RESOURCE_ENERGY : RESOURCE_NONE;
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
   {
-    return p()->buff.cat_form->check() ? base_t::composite_energize_amount( s ) : 0.0;
+    return p()->form == CAT_FORM ? base_t::composite_energize_amount( s ) : 0.0;
   }
 };
 
@@ -4839,7 +4881,7 @@ struct maim_t final : public cat_finisher_t
 };
 
 // Rake =====================================================================
-struct rake_t final : public use_fluid_form_t<DRUID_FERAL, cp_generator_t>
+struct rake_t final : public use_fluid_form_t<CAT_FORM, trigger_call_of_the_elder_druid_t<cp_generator_t>>
 {
   struct rake_bleed_t final : public trigger_thriving_growth_t<trigger_waning_twilight_t<cat_attack_t>>
   {
@@ -5087,10 +5129,10 @@ struct primal_wrath_t final : public cat_finisher_t
 };
 
 // Shred ====================================================================
-struct shred_t final : public use_fluid_form_t<DRUID_FERAL,
+struct shred_t final : public use_fluid_form_t<CAT_FORM,
                                 trigger_claw_rampage_t<DRUID_FERAL,
                                   trigger_wildpower_surge_t<DRUID_FERAL,
-                                    trigger_thrashing_claws_t<cp_generator_t>>>>
+                                    trigger_thrashing_claws_t<trigger_call_of_the_elder_druid_t<cp_generator_t>>>>>
 {
   double stealth_mul = 0.0;
 
@@ -5573,7 +5615,7 @@ struct lunar_beam_t final : public bear_attack_t
 };
 
 // Mangle ===================================================================
-struct mangle_t final : public use_fluid_form_t<DRUID_GUARDIAN,
+struct mangle_t final : public use_fluid_form_t<BEAR_FORM,
                                  trigger_claw_rampage_t<DRUID_GUARDIAN,
                                    trigger_aggravate_wounds_t<DRUID_GUARDIAN,
                                      trigger_wildpower_surge_t<DRUID_GUARDIAN, bear_attack_t>>>>
@@ -6316,7 +6358,7 @@ struct regrowth_t final : public druid_heal_t
   {
     timespan_t g = druid_heal_t::gcd();
 
-    if ( p()->buff.cat_form->check() )
+    if ( p()->form == CAT_FORM )
       g += gcd_add;
 
     return g;
@@ -6687,7 +6729,8 @@ struct yseras_gift_t final : public druid_heal_t
 
 // Frenzied Regeneration ====================================================
 // NOTE: this msut come after regrowth and rejuvenation due to reinvigoration
-struct frenzied_regeneration_t final : public bear_attacks::rage_spender_t<druid_heal_t>
+struct frenzied_regeneration_t final : public bear_attacks::rage_spender_t<
+                                                trigger_call_of_the_elder_druid_t<druid_heal_t>>
 {
   action_t* regrowth = nullptr;
   action_t* rejuvenation = nullptr;
@@ -6731,7 +6774,7 @@ struct frenzied_regeneration_t final : public bear_attacks::rage_spender_t<druid
 
   resource_e current_resource() const override
   {
-    if ( p()->talent.empowered_shapeshifting.ok() && p()->buff.cat_form->check() )
+    if ( p()->talent.empowered_shapeshifting.ok() && p()->form == CAT_FORM )
       return RESOURCE_ENERGY;
     else
       return base_t::current_resource();
@@ -6903,13 +6946,7 @@ public:
 
     base_costs[ RESOURCE_MANA ] = 0.0;  // remove mana cost so we don't need to enable mana regen
 
-    if ( p->talent.fluid_form && p->talent.moonkin_form )
-      form_mask = MOONKIN_FORM;
-    else
-      form_mask = NO_FORM | MOONKIN_FORM;
-
-    if ( !is_free() )
-      delayed_autoshift = true;
+    form_mask = NO_FORM | MOONKIN_FORM;
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -7297,7 +7334,7 @@ struct entangling_roots_t final : public druid_spell_t
   {
     timespan_t g = druid_spell_t::gcd();
 
-    if ( p()->buff.cat_form->check() )
+    if ( p()->form == CAT_FORM )
       g += gcd_add;
 
     return g;
@@ -8046,20 +8083,22 @@ struct swipe_proxy_t final : public druid_spell_t
 
   timespan_t gcd() const override
   {
-    if ( p()->buff.cat_form->check() )
-      return swipe_cat->gcd();
-    else if ( p()->buff.bear_form->check() )
-      return swipe_bear->gcd();
-
-    return druid_spell_t::gcd();
+    switch ( p()->form )
+    {
+      case BEAR_FORM: return swipe_bear->gcd();
+      case CAT_FORM:  return swipe_cat->gcd();
+      default:        return druid_spell_t::gcd();
+    }
   }
 
   void execute() override
   {
-    if ( p()->buff.cat_form->check() )
-      swipe_cat->execute();
-    else if ( p()->buff.bear_form->check() )
-      swipe_bear->execute();
+    switch ( p()->form )
+    {
+      case BEAR_FORM: swipe_bear->execute(); break;
+      case CAT_FORM:  swipe_cat->execute();  break;
+      default:        break;
+    }
 
     if ( pre_execute_state )
       action_state_t::release( pre_execute_state );
@@ -8067,42 +8106,42 @@ struct swipe_proxy_t final : public druid_spell_t
 
   bool action_ready() override
   {
-    if ( p()->buff.cat_form->check() )
-      return swipe_cat->action_ready();
-    else if ( p()->buff.bear_form->check() )
-      return swipe_bear->action_ready();
-
-    return false;
+    switch ( p()->form )
+    {
+      case BEAR_FORM: return swipe_bear->action_ready();
+      case CAT_FORM:  return swipe_cat->action_ready();
+      default:        return false;
+    }
   }
 
-  bool target_ready( player_t* candidate_target ) override
+  bool target_ready( player_t* t ) override
   {
-    if ( p()->buff.cat_form->check() )
-      return swipe_cat->target_ready( candidate_target );
-    else if ( p()->buff.bear_form->check() )
-      return swipe_bear->target_ready( candidate_target );
-
-    return false;
+    switch ( p()->form )
+    {
+      case BEAR_FORM: return swipe_bear->target_ready( t );
+      case CAT_FORM:  return swipe_cat->target_ready( t );
+      default:        return false;
+    }
   }
 
   bool ready() override
   {
-    if ( p()->buff.cat_form->check() )
-      return swipe_cat->ready();
-    else if ( p()->buff.bear_form->check() )
-      return swipe_bear->ready();
-
-    return false;
+    switch ( p()->form )
+    {
+      case BEAR_FORM: return swipe_bear->ready();
+      case CAT_FORM:  return swipe_cat->ready();
+      default:        return false;
+    }
   }
 
   double cost() const override
   {
-    if ( p()->buff.cat_form->check() )
-      return swipe_cat->cost();
-    else if ( p()->buff.bear_form->check() )
-      return swipe_bear->cost();
-
-    return 0;
+    switch ( p()->form )
+    {
+      case BEAR_FORM: return swipe_bear->cost();
+      case CAT_FORM:  return swipe_cat->cost();
+      default:        return 0.0;
+    }
   }
 };
 
@@ -8139,20 +8178,22 @@ struct thrash_proxy_t final : public druid_spell_t
 
   timespan_t gcd() const override
   {
-    if ( p()->buff.cat_form->check() )
-      return thrash_cat->gcd();
-    else if ( p()->buff.bear_form->check() )
-      return thrash_bear->gcd();
-
-    return druid_spell_t::gcd();
+    switch ( p()->form )
+    {
+      case BEAR_FORM: return thrash_bear->gcd();
+      case CAT_FORM:  return thrash_cat->gcd();
+      default:        return druid_spell_t::gcd();
+    }
   }
 
   void execute() override
   {
-    if ( p()->buff.cat_form->check() )
-      thrash_cat->execute();
-    else if ( p()->buff.bear_form->check() )
-      thrash_bear->execute();
+    switch ( p()->form )
+    {
+      case BEAR_FORM: thrash_bear->execute(); break;
+      case CAT_FORM:  thrash_cat->execute();  break;
+      default:        break;
+    }
 
     if ( pre_execute_state )
       action_state_t::release( pre_execute_state );
@@ -8160,52 +8201,52 @@ struct thrash_proxy_t final : public druid_spell_t
 
   bool action_ready() override
   {
-    if ( p()->buff.cat_form->check() )
-      return thrash_cat->action_ready();
-    else if ( p()->buff.bear_form->check() )
-      return thrash_bear->action_ready();
-
-    return false;
+    switch ( p()->form )
+    {
+      case BEAR_FORM: return thrash_bear->action_ready();
+      case CAT_FORM:  return thrash_cat->action_ready();
+      default:        return false;
+    }
   }
 
   dot_t* get_dot( player_t* t ) override
   {
-    if ( p()->buff.cat_form->check() )
-      return thrash_cat->get_dot( t );
-    else if ( p()->buff.bear_form->check() )
-      return thrash_bear->get_dot( t );
-
-    return nullptr;
+    switch ( p()->form )
+    {
+      case BEAR_FORM: return thrash_bear->get_dot( t );
+      case CAT_FORM:  return thrash_cat->get_dot( t );
+      default:        return nullptr;
+    }
   }
 
-  bool target_ready( player_t* candidate_target ) override
+  bool target_ready( player_t* t ) override
   {
-    if ( p()->buff.cat_form->check() )
-      return thrash_cat->target_ready( candidate_target );
-    else if ( p()->buff.bear_form->check() )
-      return thrash_bear->target_ready( candidate_target );
-
-    return false;
+    switch ( p()->form )
+    {
+      case BEAR_FORM: return thrash_bear->target_ready( t );
+      case CAT_FORM:  return thrash_cat->target_ready( t );
+      default:        return false;
+    }
   }
 
   bool ready() override
   {
-    if ( p()->buff.cat_form->check() )
-      return thrash_cat->ready();
-    else if ( p()->buff.bear_form->check() )
-      return thrash_bear->ready();
-
-    return false;
+    switch ( p()->form )
+    {
+      case BEAR_FORM: return thrash_bear->ready();
+      case CAT_FORM:  return thrash_cat->ready();
+      default:        return false;
+    }
   }
 
   double cost() const override
   {
-    if ( p()->buff.cat_form->check() )
-      return thrash_cat->cost();
-    else if ( p()->buff.bear_form->check() )
-      return thrash_bear->cost();
-
-    return 0;
+    switch ( p()->form )
+    {
+      case BEAR_FORM: return thrash_bear->cost();
+      case CAT_FORM:  return thrash_cat->cost();
+      default:        return 0.0;
+    }
   }
 };
 
@@ -8232,7 +8273,7 @@ struct shooting_stars_t final : public druid_spell_t
 };
 
 // Skull Bash ===============================================================
-struct skull_bash_t final : public use_fluid_form_t<DRUID_FERAL, druid_interrupt_t>
+struct skull_bash_t final : public use_fluid_form_t<CAT_FORM, druid_interrupt_t>
 {
   DRUID_ABILITY( skull_bash_t, base_t, "skull_bash", p->talent.skull_bash ) {}
 
@@ -8416,7 +8457,7 @@ struct starfall_t final : public ap_spender_t
 };
 
 // Starfire =============================================================
-struct starfire_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
+struct starfire_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
 {
   const modified_spelleffect_t* aoe_eff;
   double smolder_mul;
@@ -8473,7 +8514,7 @@ struct starfire_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
     {
       const auto& eff = p->talent.master_shapeshifter->effectN( 2 );
       add_parse_entry( da_multiplier_effects )
-        .set_func( [ p = p ] { return p->form == NO_FORM; } )
+        .set_func( [ p = p ] { return p->form == NO_FORM || p->form == MOONKIN_FORM; } )
         .set_value( eff.percent() )
         .set_eff( &eff );
     }
@@ -8565,14 +8606,14 @@ struct starsurge_offspec_t final : public trigger_call_of_the_elder_druid_t<drui
 {
   DRUID_ABILITY( starsurge_offspec_t, base_t, "starsurge", p->talent.starsurge )
   {
-    form_mask = NO_FORM;
+    form_mask = MOONKIN_FORM | NO_FORM;
     base_costs[ RESOURCE_MANA ] = 0.0;  // so we don't need to enable mana regen
 
     if ( p->talent.master_shapeshifter.ok() )
     {
       const auto& eff = p->talent.master_shapeshifter->effectN( 2 );
       add_parse_entry( da_multiplier_effects )
-        .set_func( [ p = p ] { return p->form == NO_FORM; } )
+        .set_func( [ p = p ] { return p->form == NO_FORM || p->form == MOONKIN_FORM; } )
         .set_value( eff.percent() )
         .set_eff( &eff );
     }
@@ -8949,7 +8990,7 @@ struct wild_mushroom_t final : public druid_spell_t
 };
 
 // Wrath ====================================================================
-struct wrath_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
+struct wrath_base_t : public use_fluid_form_t<MOONKIN_FORM, ap_generator_t>
 {
   double smolder_mul;
   unsigned count = 0;
@@ -8988,7 +9029,7 @@ struct wrath_base_t : public use_fluid_form_t<DRUID_BALANCE, ap_generator_t>
     {
       const auto& eff = p->talent.master_shapeshifter->effectN( 2 );
       add_parse_entry( da_multiplier_effects )
-        .set_func( [ p = p ] { return p->form == NO_FORM; } )
+        .set_func( [ p = p ] { return p->form == NO_FORM || p->form == MOONKIN_FORM; } )
         .set_value( eff.percent() )
         .set_eff( &eff );
     }
@@ -9200,7 +9241,7 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
     switch ( conv_type )
     {
       case CAST_MOONFIRE:
-        if ( p()->buff.cat_form->check() )
+        if ( p()->form == CAT_FORM )
           return actions.conv_lunar_inspiration;
         else
           return actions.conv_moonfire;
@@ -9487,12 +9528,13 @@ struct convoke_the_spirits_t final : public trigger_control_of_the_dream_t<druid
     main_count = 0;
 
     // form-specific execute setup
-    if ( p()->buff.bear_form->check() )
-      _execute_bear();
-    else if ( p()->buff.moonkin_form->check() )
-      _execute_moonkin();
-    else if ( p()->buff.cat_form->check() )
-      _execute_cat();
+    switch ( p()->form )
+    {
+      case BEAR_FORM:    _execute_bear();    break;
+      case CAT_FORM:     _execute_cat();     break;
+      case MOONKIN_FORM: _execute_moonkin(); break;
+      default:           break;
+    }
 
     cast_list.insert( cast_list.end(), max_ticks - cast_list.size(), CAST_SPEC );
   }
@@ -10407,7 +10449,7 @@ void druid_t::init_spells()
   sim->print_debug( "Initializing restoration talents..." );
   talent.abundance                      = ST( "Abundance" );
   talent.budding_leaves                 = ST( "Budding Leaves" );  // TODO: NYI
-  talent.call_of_the_elder_druid        = ST( "Call of the Elder Druid" );  // TODO: NYI
+  talent.call_of_the_elder_druid        = ST( "Call of the Elder Druid" );
   talent.cenarion_ward                  = ST( "Cenarion Ward" );
   talent.cenarius_guidance              = ST( "Cenarius' Guidance" );  // TODO: Incarn bonus NYI
   talent.cultivation                    = ST( "Cultivation" );
@@ -10839,7 +10881,8 @@ void druid_t::create_buffs()
 
   buff.lycaras_teachings_mast =
     make_fallback( talent.lycaras_teachings.ok(), this, "lycaras_teachings_mast", find_spell( 378992 ) )
-      ->set_default_value( talent.lycaras_teachings->effectN( 1 ).base_value() )
+      ->set_default_value( talent.lycaras_teachings->effectN( 1 ).base_value() *
+                           ( specialization() == DRUID_FERAL ? 0.34 : 1.0 ) )
       ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
       ->set_name_reporting( "Mastery" );
 
@@ -10919,21 +10962,11 @@ void druid_t::create_buffs()
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buff.dreamstate->set_initial_stack( buff.dreamstate->max_stack() );
 
-  buff.eclipse_lunar = make_fallback( talent.eclipse.ok(), this, "eclipse_lunar", spec.eclipse_lunar )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
-    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      eclipse_handler.advance_eclipse<eclipse_e::LUNAR>( new_ );
-    } );
+  buff.eclipse_lunar =
+    make_fallback<eclipse_buff_t<eclipse_e::LUNAR>>( talent.eclipse.ok(), this, "eclipse_lunar", spec.eclipse_lunar );
 
-  buff.eclipse_solar = make_fallback( talent.eclipse.ok(), this, "eclipse_solar", spec.eclipse_solar )
-    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
-    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-      eclipse_handler.advance_eclipse<eclipse_e::SOLAR>( new_ );
-    } );
+  buff.eclipse_solar =
+    make_fallback<eclipse_buff_t<eclipse_e::SOLAR>>( talent.eclipse.ok(), this, "eclipse_solar", spec.eclipse_solar );
 
   buff.fury_of_elune =
     make_fallback<fury_of_elune_buff_t>( talent.fury_of_elune.ok() || talent.the_light_of_elune.ok(),
@@ -11972,19 +12005,19 @@ void druid_t::init()
   {
     case DRUID_BALANCE:
       action_list_information +=
-        "\n# Balance APL can be found at https://www.dreamgrove.gg/sims/owl/balance.txt\n";
+        "\n# Balance APL can be found at https://github.com/dreamgrove/dreamgrove/blob/master/sims/owl/balance.txt\n";
       break;
     case DRUID_FERAL:
       action_list_information +=
-        "\n# Feral APL can be found at https://www.dreamgrove.gg/sims/cat/feral.txt\n";
+        "\n# Feral APL can be found at https://github.com/dreamgrove/dreamgrove/blob/master/sims/cat/feral.txt\n";
       break;
     case DRUID_GUARDIAN:
       action_list_information +=
-        "\n# Guardian APL can be found at https://www.dreamgrove.gg/sims/bear/guardian.txt\n";
+        "\n# Guardian APL can be found at https://github.com/dreamgrove/dreamgrove/blob/master/sims/bear/guardian.txt\n";
       break;
     case DRUID_RESTORATION:
       action_list_information +=
-        "\n# Restoration DPS APL can be found at https://www.dreamgrove.gg/sims/tree/restoration.txt\n";
+        "\n# Restoration DPS APL can be found at https://github.com/dreamgrove/dreamgrove/blob/master/sims/tree/restoration.txt\n";
       break;
     default:
       break;
@@ -12252,7 +12285,7 @@ void druid_t::init_special_effects()
         proc = p->get_proc( "Winning Streak" )->collect_count()->collect_interval();
       }
 
-      void execute( action_t*, action_state_t* s ) override
+      void execute( action_t*, action_state_t* ) override
       {
         p()->buff.winning_streak->trigger();
         proc->occur();
@@ -12721,7 +12754,7 @@ double druid_t::resource_regen_per_second( resource_e r ) const
 
   if ( r == RESOURCE_MANA )
   {
-    if ( specialization() == DRUID_BALANCE && buff.moonkin_form->check() )
+    if ( specialization() == DRUID_BALANCE && form == MOONKIN_FORM )
       reg *= ( 1.0 + buff.moonkin_form->data().effectN( 5 ).percent() ) / cache.spell_haste();
   }
   else if ( r == RESOURCE_ENERGY )
@@ -12972,9 +13005,9 @@ double druid_t::non_stacking_movement_modifier() const
 {
   double ms = player_t::non_stacking_movement_modifier();
 
-  if ( buff.dash->up() && buff.cat_form->check() )
+  if ( buff.dash->up() && form == CAT_FORM )
     ms = std::max( ms, buff.dash->check_value() );
-  else if ( buff.tiger_dash->up() && buff.cat_form->check() )
+  else if ( buff.tiger_dash->up() && form == CAT_FORM )
     ms = std::max( ms, buff.tiger_dash->check_value() );
 
   if ( buff.wild_charge_movement->check() )
@@ -12992,7 +13025,7 @@ double druid_t::stacking_movement_modifier() const
 
   ms += buff.forestwalk->check_value();
 
-  if ( buff.cat_form->check() )
+  if ( form == CAT_FORM )
     ms += spec.cat_form_speed->effectN( 1 ).percent();
 
   ms += talent.feline_swiftness->effectN( 1 ).percent();
@@ -13433,29 +13466,33 @@ void druid_t::target_mitigation( school_e school, result_amount_type rt, action_
 
   s->result_amount *= 1.0 + buff.guardians_tenacity->check_stack_value();
 
-  if ( spec.ursine_adept->ok() && buff.bear_form->check() )
+  if ( spec.ursine_adept->ok() && form == BEAR_FORM )
     s->result_amount *= 1.0 + spec.ursine_adept->effectN( 2 ).percent();
 
   // as this is run-time, we can't use find_effect. TODO: possibly cache these values somewhere
   if ( talent.glistening_fur.ok() )
   {
-    if ( buff.bear_form->check() )
+    switch ( form )
     {
-      if ( dbc::is_school( school, SCHOOL_ARCANE ) )
-        s->result_amount *= 1.0 + buff.bear_form->data().effectN( 14 ).percent();
-      else
-        s->result_amount *= 1.0 + buff.bear_form->data().effectN( 13 ).percent();
-    }
-    else if ( buff.moonkin_form->check() )
-    {
-      if ( dbc::is_school( school, SCHOOL_ARCANE ) )
-        s->result_amount *= 1.0 + buff.moonkin_form->data().effectN( 13 ).percent();
-      else
-        s->result_amount *= 1.0 + buff.moonkin_form->data().effectN( 12 ).percent();
+      case BEAR_FORM:
+        if ( dbc::is_school( school, SCHOOL_ARCANE ) )
+          s->result_amount *= 1.0 + buff.bear_form->data().effectN( 14 ).percent();
+        else
+          s->result_amount *= 1.0 + buff.bear_form->data().effectN( 13 ).percent();
+        break;
+
+      case MOONKIN_FORM:
+        if ( dbc::is_school( school, SCHOOL_ARCANE ) )
+          s->result_amount *= 1.0 + buff.moonkin_form->data().effectN( 13 ).percent();
+        else
+          s->result_amount *= 1.0 + buff.moonkin_form->data().effectN( 12 ).percent();
+        break;
+
+      default: break;
     }
   }
 
-  if ( talent.empowered_shapeshifting.ok() && buff.bear_form->check() &&
+  if ( talent.empowered_shapeshifting.ok() && form == BEAR_FORM &&
        spec.bear_form_passive_2->effectN( 3 ).has_common_school( school ) )
   {
     s->result_amount *= 1.0 + talent.empowered_shapeshifting->effectN( 4 ).percent();
@@ -13948,6 +13985,7 @@ void eclipse_handler_t::advance_eclipse( bool active )
   if ( active )
   {
     state |= E;
+    harmony_cur = 0.0;
 
     get_boat<E>()->trigger();
     p->buff.parting_skies->trigger();
@@ -13963,10 +14001,7 @@ void eclipse_handler_t::advance_eclipse( bool active )
 
     // only when completely leaving eclipse
     if ( !in_eclipse() )
-    {
-      harmony_cur = 0.0;
       p->buff.dreamstate->trigger();
-    }
   }
 
   if ( old_state ^ state )
@@ -13984,12 +14019,6 @@ void eclipse_handler_t::trigger_harmony()
     return;
 
   harmony_cur += harmony_val;
-
-  if ( in_lunar() )
-    p->buff.eclipse_lunar->current_value += harmony_val;
-
-  if ( in_solar() )
-    p->buff.eclipse_solar->current_value += harmony_val;
 }
 
 void eclipse_handler_t::reset_stacks()
@@ -14282,7 +14311,7 @@ void druid_t::parse_action_effects( action_t* action )
   // Class
   _a->parse_effects( buff.cat_form );
   _a->parse_effects( spec.cat_form_passive_2, talent.hunt_beneath_the_open_skies,
-                     [ this ] { return buff.cat_form->check(); } );
+                     [ this ] { return form == CAT_FORM; } );
   _a->parse_effects( buff.moonkin_form );
 
   auto hotw_mask = effect_mask_t( true );
@@ -14379,6 +14408,7 @@ void druid_t::parse_action_effects( action_t* action )
 
   // Guardian
   _a->parse_effects( buff.bear_form );
+  _a->parse_effects( spec.bear_form_passive_2, [ this ] { return form == BEAR_FORM; } );
 
   auto bear_mask = effect_mask_t( false ).enable( 1, 4, 5 );
   if ( talent.berserk_persistence.ok() )

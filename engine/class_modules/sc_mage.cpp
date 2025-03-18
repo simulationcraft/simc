@@ -3184,7 +3184,7 @@ struct frost_mage_spell_t : public mage_spell_t
       source->occur( FROZEN_NONE );
   }
 
-  virtual bool should_consume_winters_chill( const action_state_t* s, bool execute = false ) const
+  virtual bool should_consume_winters_chill( const action_state_t*, [[maybe_unused]] bool execute = false ) const
   { return consumes_winters_chill; }
 
   void execute() override
@@ -6696,9 +6696,11 @@ struct time_warp_t final : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    for ( player_t* p : sim->player_non_sleeping_list )
+    // use indices since it's possible to spawn new actors when bloodlust is triggered
+    for ( size_t i = 0; i < sim->player_non_sleeping_list.size(); i++ )
     {
-      if ( p->buffs.exhaustion->check() || p->is_pet() )
+      auto* p = sim->player_non_sleeping_list[ i ];
+      if ( p->is_pet() || p->buffs.exhaustion->check() )
         continue;
 
       p->buffs.bloodlust->trigger();
