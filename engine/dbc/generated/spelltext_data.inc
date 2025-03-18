@@ -1,5 +1,5 @@
 // Spell text, wow build 11.1.0.59679
-static const std::array<spelltext_data_t, 27234> __spelltext_data { {
+static const std::array<spelltext_data_t, 27236> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -27230,10 +27230,12 @@ static const std::array<spelltext_data_t, 27234> __spelltext_data { {
   { 1227062, "$@spelldesc442686", "Damage and healing increased by $w1%.", 0 },
   { 1228321, "$@spelldesc66", "Invisible$?$w3=0[][ and moving $87833s1% faster].", 0 },
   { 1231772, "Elemental Shaman baseline passive", 0, 0 },
+  { 1232556, "$@spelldesc355312", "$@auracaster's animated remains.", 0 },
   { 1232567, "$@spelldesc47540", 0, 0 },
   { 1232571, "$@spelldesc47540", 0, 0 },
   { 1232592, "$@spelldesc373129", 0, 0 },
   { 1232615, "$@spelldesc400169", 0, 0 },
+  { 1233162, "$@spelldesc1213551", "$@spelldesc1213551", 0 },
 } };
 
 // spelltext hotfix entries, wow build 11.1.0.59679
