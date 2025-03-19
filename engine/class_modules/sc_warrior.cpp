@@ -2804,7 +2804,7 @@ struct bloodthirst_t : public warrior_attack_t
     if ( !unhinged )
       p()->buff.meat_cleaver->decrement();
 
-    if ( result_is_hit( execute_state->result ) )
+    if ( execute_state && result_is_hit( execute_state->result ) )
     {
       if ( bloodthirst_heal )
       {
@@ -2816,7 +2816,7 @@ struct bloodthirst_t : public warrior_attack_t
         p()->enrage();
       }
     }
-    if( !td( execute_state->target )->hit_by_fresh_meat )
+    if( execute_state && !td( execute_state->target )->hit_by_fresh_meat )
     {
       p()->buff.enrage->trigger();
       td( execute_state->target )->hit_by_fresh_meat = true;
@@ -3116,7 +3116,7 @@ struct bloodbath_t : public warrior_attack_t
     if ( !unhinged )
       p()->buff.meat_cleaver->decrement();
 
-    if ( result_is_hit( execute_state->result ) )
+    if ( execute_state && result_is_hit( execute_state->result ) )
     {
       if ( bloodthirst_heal )
       {
@@ -3297,7 +3297,7 @@ struct mortal_strike_t : public warrior_attack_t
       p()->resource_gain(RESOURCE_RAGE, last_resource_cost * rage_from_frothing_berserker, p()->gain.frothing_berserker);
     }
 
-    if ( result_is_hit( execute_state->result ) )
+    if ( execute_state && result_is_hit( execute_state->result ) )
     {
       if ( !sim->overrides.mortal_wounds && execute_state->target->debuffs.mortal_wounds )
       {
