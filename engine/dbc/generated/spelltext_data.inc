@@ -16041,7 +16041,7 @@ static const std::array<spelltext_data_t, 27236> __spelltext_data { {
   {  345690, "$@spelldesc336616", 0, 0 },
   {  345695, "Bind a spectral essence to an enemy for $d, causing allied attacks to heal for $s2% of damage dealt, up to $s1 total healing.\r\n\r\nWhen the essence expires or is removed early, the remaining healing bursts, healing up to $s3 allies within $345704a1 yds.", "Attacks heal for $s2% of damage dealt, with $w1 healing remaining.\r\n\r\nIf the essence expires or is removed early, the remaining healing is split between $s3 allies within $345704a1 yds.", 0 },
   {  345697, "$@spelldesc345698", 0, 0 },
-  {  345698, "Your abilities have a very high chance to lash out with a Hateful Strike, dealing $s2 Physical damage to an enemy and healing you for $s1. These effects are increased by ${($s4*100)-100}% while you are below $s3% health.", 0, 0 },
+  {  345698, "Your abilities have a very high chance to lash out with a Hateful Strike, inflicting ${$s2*$<rolemult>} Physical damage to an enemy and healing you for $s1. These effects are increased by ${($s4*100)-100}% while you are below $s3% health.", 0, 0 },
   {  345701, "$@spelldesc345695", 0, 0 },
   {  345702, "$@spelldesc327439", "Busy busy now! Will help again soon, yes?", 0 },
   {  345703, "$@spelldesc327439", "Hoo! Very busy, lots to do-hoo! Will help more later, yes?", 0 },
@@ -27239,11 +27239,12 @@ static const std::array<spelltext_data_t, 27236> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 11.1.0.59679
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
+  {  345698,  0, "Your abilities have a very high chance to lash out with a Hateful Strike, dealing $s2 Physical damage to an enemy and healing you for $s1. These effects are increased by ${($s4*100)-100}% while you are below $s3% health.", "Your abilities have a very high chance to lash out with a Hateful Strike, inflicting ${$s2*$<rolemult>} Physical damage to an enemy and healing you for $s1. These effects are increased by ${($s4*100)-100}% while you are below $s3% health." },
 } };
 
 // Spell description variables, wow build 11.1.0.59679
-static const std::array<spelldesc_vars_data_t, 635> __spelldesc_vars_data { {
+static const std::array<spelldesc_vars_data_t, 636> __spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -27591,6 +27592,7 @@ static const std::array<spelldesc_vars_data_t, 635> __spelldesc_vars_data { {
   {  345545, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  345548, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  345549, "$phylacteryhealth=$s2*15" },
+  {  345698, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  346396, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$serrated=$?s389882[${1+($389882s1)/100}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*$<serrated>*(1+$@versadmg)*(1+($137015s1/100))}" },
   {  351093, "$shield=${$MHP*$s1/100}" },
   {  351094, "$pointsA=${$cond($gt($SP,$AP),$SP*0.48,$AP*0.48)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.72,$AP*0.72)*(1+$@versadmg)}" },
