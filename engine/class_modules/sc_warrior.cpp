@@ -444,6 +444,7 @@ public:
   struct spells_t
   {
     // Core Class Spells
+    const spell_data_t* avatar;
     const spell_data_t* battle_shout;
     const spell_data_t* berserker_rage;
     const spell_data_t* charge;
@@ -1779,7 +1780,7 @@ struct avatar_t : public warrior_spell_t
 
   // Background action version
   avatar_t( util::string_view name, warrior_t* p )
-    : warrior_spell_t( name, p, p->talents.warrior.avatar ),
+    : warrior_spell_t( name, p, p->spell.avatar ),
     warlords_torment_duration( 0_s ),
     berserkers_torment_duration( 0_s ),
     titans_torment_duration( 0_s ),
@@ -8441,6 +8442,7 @@ void warrior_t::init_spells()
   parse_player_effects_t::init_spells();
 
   // Core Class Spells
+  spell.avatar                  = find_spell( 107574 );
   spell.battle_shout            = find_class_spell( "Battle Shout" );
   spell.berserker_rage          = find_class_spell( "Berserker Rage" );
   spell.charge                  = find_class_spell( "Charge" );
@@ -9394,7 +9396,7 @@ void warrior_t::create_buffs()
       ->set_default_value( find_spell( 5302 )->effectN( 1 ).percent() )
       ->set_cooldown( spec.revenge_trigger -> internal_cooldown() );
 
-  buff.avatar = make_buff( this, "avatar", talents.warrior.avatar )
+  buff.avatar = make_buff( this, "avatar", spell.avatar )
       ->set_cooldown( timespan_t::zero() )
       ->apply_affecting_aura( talents.arms.spiteful_serenity )
       -> set_stack_change_callback(
@@ -9402,23 +9404,23 @@ void warrior_t::create_buffs()
             if ( old_ == 0 )  // Gained Avatar
             {
               if ( talents.warrior.blademasters_torment->ok() )
-                cooldown.cleave->duration += talents.warrior.avatar->effectN( 8 ).time_value();
+                cooldown.cleave->duration += spell.avatar->effectN( 8 ).time_value();
 
               if ( talents.warrior.titans_torment->ok() )
               {
-                cooldown.bloodthirst->duration += talents.warrior.avatar->effectN( 9 ).time_value();
-                cooldown.bloodbath->duration += talents.warrior.avatar->effectN( 9 ).time_value();
+                cooldown.bloodthirst->duration += spell.avatar->effectN( 9 ).time_value();
+                cooldown.bloodbath->duration += spell.avatar->effectN( 9 ).time_value();
               }
             }
             else if ( new_ == 0 )  // Lost Avatar
             {
               if ( talents.warrior.blademasters_torment->ok() )
-                cooldown.cleave->duration -= talents.warrior.avatar->effectN( 8 ).time_value();
+                cooldown.cleave->duration -= spell.avatar->effectN( 8 ).time_value();
 
               if ( talents.warrior.titans_torment->ok() )
               {
-                cooldown.bloodthirst->duration -= talents.warrior.avatar->effectN( 9 ).time_value();
-                cooldown.bloodbath->duration -= talents.warrior.avatar->effectN( 9 ).time_value();
+                cooldown.bloodthirst->duration -= spell.avatar->effectN( 9 ).time_value();
+                cooldown.bloodbath->duration -= spell.avatar->effectN( 9 ).time_value();
               }
             }
           }
