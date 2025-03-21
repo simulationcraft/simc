@@ -222886,12 +222886,13 @@ Effects          :
 Description      : Lasts $d and through death. Consuming an identical flask will add another $d.
 
 Name             : Flask of Tempered Aggression (id=431971) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
-Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
+Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Not in Battleground (284), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1120211)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 4307.02 (coefficient=1.124851) | Rating: Crit | Target: Self (1)
@@ -222901,12 +222902,13 @@ $@spelldesc431970
 Tooltip          : Critical Strike increased by $w1.
 
 Name             : Flask of Tempered Swiftness (id=431972) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
-Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
+Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Not in Battleground (284), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1120212)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 4307.02 (coefficient=1.124851) | Rating: Haste | Target: Self (1)
@@ -222916,12 +222918,13 @@ $@spelldesc431970
 Tooltip          : Haste increased by $w1.
 
 Name             : Flask of Tempered Versatility (id=431973) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
-Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
+Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Not in Battleground (284), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1120213)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 4307.02 (coefficient=1.124851) | Rating: Vers | Target: Self (1)
@@ -222931,12 +222934,13 @@ $@spelldesc431970
 Tooltip          : Versatility increased by $w1.
 
 Name             : Flask of Tempered Mastery (id=431974) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
-Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
+Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Aura Points On Client (268), Not in Battleground (284), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1120214)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 4307.02 (coefficient=1.124851) | Rating: Mastery | Target: Self (1)
@@ -223051,12 +223055,13 @@ Description      : Reduces your falling speed for $d.
 Tooltip          : Falling speed reduced.
 
 Name             : Flask of Alchemical Chaos (id=432021) 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
 Labels           : 2852
                  : 3063: Pausing Pylon (453003 effect#2)
-Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Extra Initial Period (169), Aura Points On Client (268), Don't Cancel When All Effects are Disabled (353), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
+Attributes       : Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), Allow Dead Target (64), Include In Advanced Combat Log (72), Retain Item Cast (95), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Not In Arena or Rated Battleground (144), Suppress Weapon Procs (151), Remove Entering Arena (162), Extra Initial Period (169), Aura Points On Client (268), Not in Battleground (284), Don't Cancel When All Effects are Disabled (353), Scales with Casting Item's Level (354), Allow Aura On Level Scale (444), Recompute Aura On Level Scale (446)
 Effects          :
 #1 (id=1120285)  : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | Rating: Crit | Target: Self (1)
