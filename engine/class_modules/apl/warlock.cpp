@@ -51,8 +51,8 @@ void affliction( player_t* p )
 
   precombat->add_action( "summon_pet" );
   precombat->add_action( "variable,name=cleave_apl,default=0,op=reset" );
-  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff", "Used to set Trinket in slot 1 as Buff Trinkets for the automatic logic" );
-  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff", "Used to set Trinkets in slot 2 as Buff Trinkets for the automatic logic" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|trinket.1.is.funhouse_lens", "Used to set Trinket in slot 1 as Buff Trinkets for the automatic logic" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|trinket.2.is.funhouse_lens", "Used to set Trinkets in slot 2 as Buff Trinkets for the automatic logic" );
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.soul_rot.duration=0|cooldown.soul_rot.duration%%trinket.1.cooldown.duration=0)", "Automatic Logic for Buff Trinkets in Trinket Slot 1" );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.soul_rot.duration=0|cooldown.soul_rot.duration%%trinket.2.cooldown.duration=0)", "Automatic Logic for Buff Trinkets in Trinket Slot 2" );
   precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.spymasters_web|trinket.1.is.aberrant_spellforge", " Sets a specific Trinkets in Slot 1 to follow an APL line and not the automatic logic" );
@@ -228,8 +228,8 @@ void demonology( player_t* p )
   precombat->add_action( "variable,name=first_tyrant_time,op=sub,value=action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time", "Accounts for Tyrant own Cast Time and an additional Shadowbolt cast time" );
   precombat->add_action( "variable,name=first_tyrant_time,op=min,value=10", "Sets an absolute minimum of 10s for the First Tyrant Setup" );
   precombat->add_action( "variable,name=in_opener,op=set,value=1" );
-  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff", "Defines if the the Trinket 1 is a buff Trinket in the trinket logic" );
-  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff", "Defines if the the Trinket 2 is a buff Trinket in the trinket logic" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|trinket.1.is.funhouse_lens", "Defines if the the Trinket 1 is a buff Trinket in the trinket logic" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|trinket.2.is.funhouse_lens", "Defines if the the Trinket 2 is a buff Trinket in the trinket logic" );
   precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell", "For On Use Trinkets on slot 1 with on use effects you dont want to use in combat" );
   precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell", "For On Use Trinkets on slot 2 with on use effects you dont want to use in combat" );
   precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.spymasters_web|trinket.1.is.imperfect_ascendancy_serum", "Sets a specific Trinkets in Slot 1 to follow an APL line and not the automatic logic" );
@@ -291,7 +291,7 @@ void demonology( player_t* p )
   items->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&((variable.damage_trinket_priority=1|trinket.2.cooldown.remains)&(trinket.1.cast_time>0&!pet.demonic_tyrant.active|!trinket.1.cast_time>0)|(time<20&variable.trinket_2_buffs)|cooldown.summon_demonic_tyrant.remains_expected>20)" );
   items->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&((variable.damage_trinket_priority=2|trinket.1.cooldown.remains)&(trinket.2.cast_time>0&!pet.demonic_tyrant.active|!trinket.2.cast_time>0)|(time<20&variable.trinket_1_buffs)|cooldown.summon_demonic_tyrant.remains_expected>20)" );
   items->add_action( "use_item,use_off_gcd=1,name=spymasters_web,if=pet.demonic_tyrant.active&fight_remains<=80&buff.spymasters_report.stack>=30&(!variable.trinket_1_buffs&trinket.2.is.spymasters_web|!variable.trinket_2_buffs&trinket.1.is.spymasters_web)|fight_remains<=20&(trinket.1.cooldown.remains&trinket.2.is.spymasters_web|trinket.2.cooldown.remains&trinket.1.is.spymasters_web|!variable.trinket_1_buffs|!variable.trinket_2_buffs)" );
-  items->add_action( "use_item,use_off_gcd=1,name=imperfect_ascendancy_serum,if=pet.demonic_tyrant.active&gcd.remains>0|fight_remains<=30" );
+  items->add_action( "use_item,use_off_gcd=1,name=imperfect_ascendancy_serum,if=pet.demonic_tyrant.active|fight_remains<=30" );
   items->add_action( "use_item,name=mirror_of_fractured_tomorrows,if=trinket.1.is.mirror_of_fractured_tomorrows&variable.trinket_priority=2|trinket.2.is.mirror_of_fractured_tomorrows&variable.trinket_priority=1" );
   items->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains)" );
   items->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains)" );
@@ -365,8 +365,8 @@ void destruction( player_t* p )
 
   precombat->add_action( "summon_pet" );
   precombat->add_action( "variable,name=cleave_apl,default=0,op=reset" );
-  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff", "Automatic Logic for Buff Trinkets in Trinket Slot 1" );
-  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff", "Automatic Logic for Buff Trinkets in Trinket Slot 2" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|trinket.1.is.funhouse_lens", "Automatic Logic for Buff Trinkets in Trinket Slot 1" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|trinket.2.is.funhouse_lens", "Automatic Logic for Buff Trinkets in Trinket Slot 2" );
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.summon_infernal.duration=0|cooldown.summon_infernal.duration%%trinket.1.cooldown.duration=0)" );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.summon_infernal.duration=0|cooldown.summon_infernal.duration%%trinket.2.cooldown.duration=0)" );
   precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.spymasters_web", "Sets a specific Trinkets in Slot 1 to follow an APL line and not the automatic logic" );
