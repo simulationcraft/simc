@@ -7372,7 +7372,7 @@ struct coup_de_grace_t : public rogue_attack_t
 
     // 2025-03-15 -- Currently the buff is not expired until the last impact
     //               This allows re-casting of Coup de Grace when Adrenaline Rush is up
-    p()->buffs.escalating_blade->expire( p()->bugs ? 1.2_s : 0_s );
+    p()->buffs.escalating_blade->expire( p()->bugs && p()->options.double_coup ? 1.2_s : 0_s );
   }
 
   bool ready() override
