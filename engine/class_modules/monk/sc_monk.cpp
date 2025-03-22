@@ -1419,6 +1419,11 @@ struct press_the_advantage_t : base_action_t
             base_action_t::p()->talent.brewmaster.face_palm->effectN( 3 ).time_value() );
       }
 
+      // Blackout Combo gets consumed by Keg Smash prior to the bonus attack, so if we make it here,
+      // we know it's a bonus Rising Sun Kick
+      if ( base_action_t::p()->buff.blackout_combo->up() )
+        base_action_t::p()->proc.blackout_combo_rising_sun_kick->occur();
+
       base_action_t::execute();
 
       base_action_t::p()->buff.blackout_combo->expire();
@@ -3644,13 +3649,16 @@ struct breath_of_fire_t : public monk_spell_t
     if ( no_bof_hit )
       return;
 
+    // Track BoC->BoF before the buff gets consumed by the dot application
+    if ( p()->buff.blackout_combo->up() )
+      p()->proc.blackout_combo_breath_of_fire->occur();
+
     monk_spell_t::execute();
     if ( dragonfire_brew )
       dragonfire_brew->execute();
 
-    if ( p()->buff.blackout_combo->up() )
-      p()->proc.blackout_combo_breath_of_fire->occur();
-    // defer boc consumption to be handled by bof dot
+    // If no targets are affected by the dot, then we need to consume BoC explicitly
+    p()->buff.blackout_combo->expire();
   }
 
   void impact( action_state_t *state ) override
