@@ -9347,6 +9347,9 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 
 void warrior_td_t::target_demise()
 {
+  if ( !target->is_enemy() )
+    return;
+
   // Don't pollute results at the end-of-iteration deaths of everyone
   if ( source->sim->event_mgr.canceled )
     return;
