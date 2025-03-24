@@ -231293,7 +231293,7 @@ Spell Type       : None
 Labels           : 3959: Item Effects
 Internal Cooldown: 15 seconds
 Proc Chance      : 101%
-Real PPM         : 0.5 (Haste multiplier)
+Real PPM         : 0.5
 Proc Flags       : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Helpful Periodic, Unknown 38
 Attributes       : Passive (6), Can Proc From Procs (122), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415)
 Effects          :
