@@ -1436,15 +1436,18 @@ using namespace helpers;
       affected_by.chaotic_energies = destruction();
 
       triggers.decimation = false;
+      
+      base_dd_multiplier *=1.0 + p->hero.seeds_of_their_demise->effectN( 3 ).percent();
+      
     }
-
+    
     double composite_target_multiplier( player_t* target ) const override
     {
       double m = warlock_spell_t::composite_target_multiplier( target );
 
       if ( p()->hero.mark_of_xavius.ok() )
         m *= 1.0 + td( target )->dots_wither->current_stack() * p()->hero.mark_of_xavius->effectN( 3 ).percent();
-
+      
       return m;
     }
 
