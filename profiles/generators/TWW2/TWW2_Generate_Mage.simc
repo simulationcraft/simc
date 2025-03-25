@@ -145,18 +145,18 @@ temporary_enchant=main_hand:algari_mana_oil_3
 
 head=inventors_ingenious_trifocals,id=235226,bonus_id=3170/11996/11964/1808,ilevel=678,gem_id=213743
 neck=flickering_glowtorc,id=221103,bonus_id=3170/11996/11964/8781,ilevel=678,gem_id=213461/213485
-shoulder=aspectral_emissarys_arcane_vents,id=229341,bonus_id=11996/10356/11962/6652/1579/10255,ilevel=678
+shoulders=aspectral_emissarys_arcane_vents,id=229341,bonus_id=11996/10356/11962/6652/1579/10255,ilevel=678
 back=undercircuit_racing_flag,id=228839,bonus_id=1527/11996/11964,enchant_id=7403
 chest=aspectral_emissarys_primal_robes,id=229346,bonus_id=11996/10356/11958/6652/1579/10255,ilevel=678,enchant_id=7364
-wrist=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12043/12040/1485/11109/8960/1808/8792,gem_id=213497,enchant_id=7385,crafted_stats=32/36
+wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12043/12040/1485/11109/8960/1808/8792,gem_id=213497,enchant_id=7385,crafted_stats=32/36
 hands=aspectral_emissarys_hardened_grasp,id=229344,bonus_id=1579/11996,ilevel=678
 waist=tuneup_toolbelt,id=228861,bonus_id=1527/11996/11964/1808,ilevel=678,gem_id=213485
 legs=aspectral_emissarys_trousers,id=229342,bonus_id=11996/10356/11961/6652/1579/10255,ilevel=678,enchant_id=7534
 feet=nonconductive_killosocks,id=234497,bonus_id=4786/1527/11996,ilevel=678,enchant_id=7424
 finger1=wicks_golden_loop,id=221099,bonus_id=8781,ilevel=678,gem_id=213470/213455,enchant_id=7340
 finger2=the_jastor_diamond,id=231265,bonus_id=4800/4786/1527/11996/8781,ilevel=678,gem_id=213485/213485,enchant_id=7340
-trinket1=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
-trinket2=synergistic_brewterializer,id=219299,bonus_id=3170/11996/11964
+trinket1=candle_confidant,id=225648,bonus_id=3194/11990
+trinket2=mister_locknstalk,id=230193,ilevel=678
 main_hand=blastfurious_machete,id=231268,bonus_id=1527/11996/11964,enchant_id=7460
 off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/9627/10222/11300/8960/8795/11144,ilevel=675,crafted_stats=40/32
 
@@ -178,18 +178,18 @@ temporary_enchant=main_hand:algari_mana_oil_3
 
 head=inventors_ingenious_trifocals,id=235226,bonus_id=3170/11996/11964/1808,ilevel=678,gem_id=213743
 neck=flickering_glowtorc,id=221103,bonus_id=3170/11996/11964/8781,ilevel=678,gem_id=213485/213455
-shoulder=aspectral_emissarys_arcane_vents,id=229341,bonus_id=11996/10356/11962/6652/1579/10255,ilevel=678
+shoulders=aspectral_emissarys_arcane_vents,id=229341,bonus_id=11996/10356/11962/6652/1579/10255,ilevel=678
 back=candlebearers_shroud,id=221109,bonus_id=3170/11996/11964,enchant_id=7403
 chest=aspectral_emissarys_primal_robes,id=229346,bonus_id=11996/10356/11958/6652/1579/10255,ilevel=678,enchant_id=7364
-wrist=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12043/12040/1485/11109/8960/8792,gem_id=213497,enchant_id=7385,crafted_stats=32/36
+wrists=consecrated_cuffs,id=222815,bonus_id=10421/9633/8902/12043/12040/1485/11109/8960/8792,gem_id=213497,enchant_id=7385,crafted_stats=32/36
 hands=aspectral_emissarys_hardened_grasp,id=229344,bonus_id=1579/11996,ilevel=678
 waist=tuneup_toolbelt,id=228861,bonus_id=1527/11996/11964/1808,ilevel=678,gem_id=213467
 legs=aspectral_emissarys_trousers,id=229342,bonus_id=11996/10356/11961/6652/1579/10255,ilevel=678,enchant_id=7534
 feet=nonconductive_killosocks,id=234497,bonus_id=4786/1527/11996,ilevel=678,enchant_id=7424
 finger1=wicks_golden_loop,id=221099,bonus_id=8781,ilevel=678,gem_id=213467/213467,enchant_id=7352
 finger2=bloodoath_signet,id=178871,bonus_id=4786/9987/11996/8781,gem_id=213467/213467,enchant_id=7352
-trinket1=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
-trinket2=synergistic_brewterializer,id=219299,bonus_id=3170/11996/11964
+trinket1=candle_confidant,id=225648,bonus_id=3194/11990
+trinket2=mister_locknstalk,id=230193,ilevel=678
 main_hand=blastfurious_machete,id=231268,bonus_id=1527/11996/11964,enchant_id=7460
 off_hand=vagabonds_torch,id=222566,bonus_id=10421/9633/8902/9627/10222/11300/8960/11144/8792,ilevel=675,crafted_stats=40/32
 
