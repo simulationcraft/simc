@@ -472,7 +472,7 @@ void survival_ptr( player_t* p )
   default_->add_action( "lights_judgment" );
 
   cds->add_action( "blood_fury,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault", "COOLDOWNS ACTIONLIST" );
-  cds->add_action( "invoke_external_buff,name=power_infusion,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault" );
+  cds->add_action( "invoke_external_buff,name=power_infusion,if=(buff.coordinated_assault.up&buff.coordinated_assault.remains>7&!buff.power_infusion.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault)" );
   cds->add_action( "harpoon,if=prev.kill_command" );
   cds->add_action( "ancestral_call,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault" );
   cds->add_action( "fireblood,if=buff.coordinated_assault.up|!talent.coordinated_assault&cooldown.spearhead.remains|!talent.spearhead&!talent.coordinated_assault" );
@@ -484,32 +484,29 @@ void survival_ptr( player_t* p )
   plcleave->add_action( "spearhead,if=cooldown.coordinated_assault.remains", "PACK LEADER | AOE ACTIONLIST" );
   plcleave->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains,if=buff.strike_it_rich.up&buff.strike_it_rich.remains<gcd|buff.hogstrider.remains" );
   plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1" );
-  plcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.7|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd|talent.butchery&cooldown.butchery.remains<gcd|howl_summon_ready" );
+  plcleave->add_action( "wildfire_bomb" );
+  plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)" );
   plcleave->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack=2|buff.tip_of_the_spear.stack=1" );
   plcleave->add_action( "butchery" );
-  plcleave->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
+  plcleave->add_action( "coordinated_assault" );
   plcleave->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0" );
-  plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
+  plcleave->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max|charges_fractional>1.5" );
   plcleave->add_action( "explosive_shot" );
-  plcleave->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0" );
   plcleave->add_action( "kill_shot,if=buff.deathblow.remains&talent.sic_em" );
   plcleave->add_action( "raptor_bite" );
 
-  plst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1)|howl_summon_ready&time_to_die<20", "PACK LEADER | SINGLE TARGET ACTIONLIST." );
-  plst->add_action( "explosive_shot,if=cooldown.coordinated_assault.remains&cooldown.coordinated_assault.remains<gcd" );
+  plst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1)|(buff.howl_of_the_pack_leader_wyvern.remains|buff.howl_of_the_pack_leader_boar.remains|buff.howl_of_the_pack_leader_bear.remains)", "PACK LEADER | SINGLE TARGET ACTIONLIST." );
   plst->add_action( "spearhead,if=cooldown.coordinated_assault.remains" );
+  plst->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack>0" );
   plst->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!dot.serpent_sting.ticking&target.time_to_die>12&(!talent.contagious_reagents|active_dot.serpent_sting=0)" );
   plst->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains,if=talent.contagious_reagents&active_dot.serpent_sting<active_enemies&dot.serpent_sting.remains" );
   plst->add_action( "butchery" );
   plst->add_action( "kill_command,if=buff.strike_it_rich.remains&buff.tip_of_the_spear.stack<1" );
   plst->add_action( "raptor_bite,if=buff.strike_it_rich.remains&buff.tip_of_the_spear.stack>0" );
-  plst->add_action( "flanking_strike,if=buff.tip_of_the_spear.stack=1|buff.tip_of_the_spear.stack=2" );
   plst->add_action( "fury_of_the_eagle,if=buff.tip_of_the_spear.stack>0&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>40)" );
-  plst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&cooldown.wildfire_bomb.charges_fractional>1.4|cooldown.wildfire_bomb.charges_fractional>1.9|cooldown.coordinated_assault.remains<2*gcd&talent.bombardier|howl_summon_ready" );
-  plst->add_action( "explosive_shot,if=cooldown.coordinated_assault.remains<gcd" );
   plst->add_action( "coordinated_assault,if=!talent.bombardier|talent.bombardier&cooldown.wildfire_bomb.charges_fractional<1" );
+  plst->add_action( "wildfire_bomb" );
   plst->add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&(!buff.relentless_primal_ferocity.up|(buff.relentless_primal_ferocity.up&buff.tip_of_the_spear.stack<1|focus<30))" );
-  plst->add_action( "wildfire_bomb,if=buff.tip_of_the_spear.stack>0&(!raid_event.adds.exists|raid_event.adds.exists&raid_event.adds.in>15)" );
   plst->add_action( "raptor_bite,target_if=min:dot.serpent_sting.remains,if=!talent.contagious_reagents" );
   plst->add_action( "raptor_bite,target_if=max:dot.serpent_sting.remains" );
   plst->add_action( "kill_shot" );
