@@ -134,31 +134,32 @@ actions.st+=/wild_mushroom,if=!prev_gcd.1.wild_mushroom&dot.fungal_growth.remain
 actions.st+=/starfire,if=talent.lunar_calling
 actions.st+=/wrath
 
-head=branches_of_reclaiming_blight,id=229307,bonus_id=1527/11996/1808,gem_id=213746
-neck=strapped_rescuekeg,id=221060,bonus_id=4795/8781,ilevel=678,gem_id=213473/213473
+head=branches_of_reclaiming_blight,id=229307,bonus_id=1527/11996/1808,gem_id=213743
+neck=gobfathers_gifted_bling,id=228842,bonus_id=4795/8781,ilevel=678,gem_id=213473/213482
 shoulders=jaws_of_reclaiming_blight,id=229305,bonus_id=1527/11996
-back=test_pilots_gopack,id=228844,bonus_id=6652/10356/11996/1527/10255,enchant_id=7403
+back=consecrated_cloak,id=222817,bonus_id=10421/9633/8902/12043/12040/1485/11304/8960,enchant_id=7403,crafted_stats=49/36
 chest=robes_of_reclaiming_blight,id=229310,bonus_id=1527/11996,enchant_id=7364
-wrists=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/9627/8793/10222/11307/12043/12040/10520/8960,ilevel=675,gem_id=213473,enchant_id=7385,crafted_stats=36/32
-hands=shimmering_glimclaws,id=221102,bonus_id=4795,ilevel=678
-waist=runebranded_waistband,id=219331,bonus_id=10421/9633/8902/9627/8793/10222/11307/12040/12043/10520/8960,ilevel=675,gem_id=213473,crafted_stats=36/32
+wrists=runebranded_armbands,id=219334,bonus_id=10421/9633/8902/9627/10222/11307/12043/12040/11303/8960/8791,ilevel=675,gem_id=213482,enchant_id=7385,crafted_stats=36/32
+hands=tempestwind_handlers,id=221036,bonus_id=4795,ilevel=678
+waist=competitors_battle_cord,id=228856,bonus_id=4795/1808,ilevel=678,gem_id=213482
 legs=moccasins_of_reclaiming_blight,id=229306,bonus_id=1527/11996,enchant_id=7534
-feet=stalwart_guardians_boots,id=221120,bonus_id=4795,ilevel=678,enchant_id=7424
-finger1=cyrces_circlet,id=228411,bonus_id=12025/1502,ilevel=658,gem_id=228639/228638/228646,enchant_id=7346
-finger2=the_jastor_diamond,id=231265,bonus_id=6652/10394/10392/10356/11996/1527/10255/8781,gem_id=213473/213473,enchant_id=7346
-trinket1=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
+feet=stalwart_guardians_boots,id=221120,bonus_id=4795,ilevel=678,enchant_id=7418
+finger1=cyrces_circlet,id=228411,bonus_id=12025/1502,ilevel=658,gem_id=228638/228639/228640,enchant_id=7340
+finger2=the_jastor_diamond,id=231265,bonus_id=6652/10394/10392/10356/11996/1527/10255/8781,gem_id=213458/213494,enchant_id=7340
+trinket1=mugs_moxie_jug,id=230192,bonus_id=4795,ilevel=678
 trinket2=house_of_cards,id=230027,bonus_id=4795,ilevel=678
 main_hand=bestinslots,id=232805,bonus_id=6652/10356/11996/9418/1527/10255,enchant_id=7460
 
 # Gear Summary
 # gear_ilvl=676.27
-# gear_stamina=387109
-# gear_intellect=69990
-# gear_crit_rating=2478
-# gear_haste_rating=13394
-# gear_mastery_rating=19713
-# gear_versatility_rating=882
+# gear_stamina=386486
+# gear_intellect=75206
+# gear_crit_rating=3950
+# gear_haste_rating=8124
+# gear_mastery_rating=21298
+# gear_versatility_rating=1402
+# gear_speed_rating=250
 # gear_avoidance_rating=1635
-# gear_armor=33917
+# gear_armor=33935
 # set_bonus=thewarwithin_season_2_2pc=1
 # set_bonus=thewarwithin_season_2_4pc=1
