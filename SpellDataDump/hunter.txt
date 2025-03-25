@@ -2567,15 +2567,15 @@ Hotfixed         : Base Value (0 -> 15)
                    Base Value: -25 | Scaled Value: -25 | Misc Value 2: 3988 (Label) | Target: Self (1)
                    Affected Spells (Label): Symphonic Arsenal (451194)
 #12 (id=1196242) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 57.5 | Scaled Value: 57.5 | PvP Coefficient: 0 | Target: Self (1)
+                   Base Value: 57.5 | Scaled Value: 57.5 | PvP Coefficient: 0.59 | Target: Self (1)
                    Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 91
-Hotfixed         : Base Value (5 -> 57.5)
+Hotfixed         : PvP Coefficient (0 -> 0.59)
 #13 (id=1196243) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 57.5 | Scaled Value: 57.5 | PvP Coefficient: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 57.5 | Scaled Value: 57.5 | PvP Coefficient: 0.59 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 91
-Hotfixed         : Base Value (5 -> 57.5)
+Hotfixed         : PvP Coefficient (0 -> 0.59)
 #14 (id=1196831) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Misc Value 2: 4251 (Label) | Target: Self (1)
                    Affected Spells (Label): Shadow Surge (444269)
@@ -17751,7 +17751,8 @@ Proc Flags       : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hos
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1198717)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 0.5 | Target: Self (1)
+                   Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 0.25 | Target: Self (1)
+Hotfixed         : PvP Coefficient (0.5 -> 0.25)
 Description      : Consuming Lock and Load also fires an Explosive Shot at $s1% effectiveness.
 
 Name             : Hunter Survival 11.1 Class Set 2pc (id=1215730) [Spell Family (9), Passive, Hidden] 

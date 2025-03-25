@@ -4412,9 +4412,10 @@ Effects          :
                    Affected Spells: Regrowth (8936)
                    Family Flags: 6
 #15 (id=1039259) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 110 | Scaled Value: 110 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 110 | Scaled Value: 110 | PvP Coefficient: 1.58 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Rejuvenation (Germination) (155777)
                    Family Flags: 4
+Hotfixed         : PvP Coefficient (1 -> 1.58)
 #16 (id=1039291) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -5 | Scaled Value: -5 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Adaptive Swarm (325733), Adaptive Swarm (325748), Adaptive Swarm (391889), Adaptive Swarm (391891)
