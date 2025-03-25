@@ -13942,6 +13942,7 @@ Thunder Clap damage increased by $s3%$?a137050[, and it generates ${$s4/10} Rage
 Seismic Reverberations$?a137048[ now affects][, Improved Whirlwind, Meat Cleaver, and Barbaric Training now affect] Thunder Clap in addition to Whirlwind.
 
 Name             : Thunder Clap (id=436792) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Physical
 Spell Type       : Melee
@@ -13949,13 +13950,14 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
-Attributes       : Ignore Line of Sight (66), Can't Crit (93), Treat As Periodic (121), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Not an Attack (194), Ignore Caster Damage Modifiers (221), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Attributes       : No Threat (42), Ignore Line of Sight (66), Can't Crit (93), Treat As Periodic (121), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1128339)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc382956
 
 Name             : Thunder Blast (id=436793) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Warrior
 School           : Stormstrike
 Spell Type       : Melee
@@ -13963,7 +13965,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
-Attributes       : Ignore Line of Sight (66), Can't Crit (93), Treat As Periodic (121), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Not an Attack (194), Ignore Caster Damage Modifiers (221), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Attributes       : No Threat (42), Ignore Line of Sight (66), Can't Crit (93), Treat As Periodic (121), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1128340)  : School Damage (2): stormstrike
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)

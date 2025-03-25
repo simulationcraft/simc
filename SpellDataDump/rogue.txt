@@ -5520,6 +5520,7 @@ Description      : $@spelldesc278681
 Tooltip          : Haste increased by $w1.
 
 Name             : Shadow Blades (id=279043) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -5529,7 +5530,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Deeper Daggers (341550 effect#1), Veiltouched (382017 effects: #1, #2), Dark Brew (382504 effects: #2, #3), Deeper Daggers (383405 effects: #1, #2), Winning Streak! (1218143 effects: #2, #3)
 Family Flags     : 78
-Attributes       : Ignore Line of Sight (66), Can't Crit (93), Treat As Periodic (121), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Not an Attack (194), Ignore Caster Damage Modifiers (221), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Attributes       : No Threat (42), Ignore Line of Sight (66), Can't Crit (93), Treat As Periodic (121), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=735178)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.1 | Target: Enemy (6)
@@ -5687,6 +5688,7 @@ Effects          :
 Description      : $@spelldesc280719
 
 Name             : Secret Technique (id=282449) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Shadow
 Spell Type       : Melee
@@ -5697,7 +5699,7 @@ Labels           : 16: Class Spells
                  : 2696: Veiltouched (382017 effect#3), Veiltouched (382017 effect#4), Dark Brew (382504 effect#4), Dark Brew (382504 effect#5), Deeper Daggers (383405 effect#3), Deeper Daggers (383405 effect#4), Winning Streak! (1218143 effect#4), Winning Streak! (1218143 effect#5)
 Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Mastery: Executioner (76808 effects: #1, #2), Nightstalker (130493 effect#1), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Marked for Death (137619 effect#1), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Deeper Stratagem (193531 effects: #1, #4, #5), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Tight Spender (381621 effect#1), Cold Blood (382245 effect#1), Danse Macabre (393969 effects: #1, #2), Secret Stratagem (394320 effects: #1, #4, #5), Devious Stratagem (394321 effects: #1, #4, #5), Goremaw's Bite (426593 effect#2), Fazed (441224 effects: #1, #5), Disorienting Strikes (441274 effect#1), Flawless Form (441326 effects: #1, #2), Fatebound Coin (Heads) (452923 effects: #1, #2), Poised Shadows (455573 effect#1), Sanguine Stratagem (457512 effects: #1, #4, #5), Master Assassin (470676 effect#1), Winning Streak! (1218143 effect#1)
 Family Flags     : 32, 54
-Attributes       : No Threat (42), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), No Initial Threat (86), Not an Action (92), Do Not Display Range (126), No Harmful Threat (132), Ignore Combat Timer (156), Not an Attack (194), Always Cast Log (255), Face Destination (395), Allow Class Ability Procs (416)
+Attributes       : No Threat (42), Ignore Line of Sight (66), Do Not Reset Combat Timers (81), No Initial Threat (86), Not an Action (92), Do Not Display Range (126), No Harmful Threat (132), Ignore Combat Timer (156), Always Cast Log (255), Face Destination (395), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=742089)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.19 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
@@ -7248,6 +7250,7 @@ Effects          :
 Description      : Serrated Bone Spike's bleed has a |cFFFFFFFF$s1%|r chance to deal its damage a second time.
 
 Name             : Serrated Bone Spike (desc=Necrolord) (id=341277) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -7259,7 +7262,7 @@ Labels           : 16: Class Spells
                  : 835
 Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Master Assassin (470676 effect#1)
 Family Flags     : 54
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Dead (23), Discount Power On Miss (59), Not an Action (92), Requires Main-Hand Weapon (106), Treat As Periodic (121), Do Not Display Range (126), No Helpful Threat (131), Not an Attack (194), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Dead (23), No Threat (42), Discount Power On Miss (59), Not an Action (92), Requires Main-Hand Weapon (106), Treat As Periodic (121), Do Not Display Range (126), No Helpful Threat (131), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=841582)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.1 | Mechanic: Bleed | Target: Enemy (6)
@@ -12191,6 +12194,7 @@ Description      : Bleed damage increased by $s1%.
 Targets below $s3% health instantly bleed out and take fatal damage when the remaining Bleed damage you would deal to them exceeds $s2% of their remaining health.
 
 Name             : Sanguine Blades (id=423193) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
@@ -12201,7 +12205,7 @@ Labels           : 16: Class Spells
                  : 1387
 Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Master Assassin (470676 effect#1)
 Family Flags     : 54
-Attributes       : Ignore Line of Sight (66), Include In Advanced Combat Log (72), Can't Crit (93), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Treat As Periodic (121), Allow Cast While Casting (135), Not an Attack (194), Ignore Caster Damage Modifiers (221), Allow Cast While Channeling (308), Ignore Positive Damage Taken Modifiers (321)
+Attributes       : No Threat (42), Ignore Line of Sight (66), Include In Advanced Combat Log (72), Can't Crit (93), Casting Cancels Autorepeat (Mainline: Do Not Trigger Target Stand) (118), Treat As Periodic (121), Allow Cast While Casting (135), Ignore Caster Damage Modifiers (221), Allow Cast While Channeling (308), Ignore Positive Damage Taken Modifiers (321)
 Effects          :
 #1 (id=1099022)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
@@ -14610,6 +14614,7 @@ Description      : $@spelldesc457052
 Tooltip          : Marked by $@auracaster, suffering additional Plague damage from their abilities.
 
 Name             : Corrupt the Blood (id=457133) [Spell Family (8)] 
+Hotfixed         : Attributes
 Class            : Rogue
 School           : Shadowstorm
 Spell Type       : Melee
@@ -14625,7 +14630,7 @@ Stacks           : 10 maximum
 Proc Chance      : 101%
 Affecting Spells : Master of Subtlety (31665 effects: #1, #2), Subtlety Rogue (137035 effects: #1, #2), Outlaw Rogue (137036 effects: #1, #2), Assassination Rogue (137037 effects: #1, #2, #20, #21), Shadow Dance (185313 effects: #4, #5), Ruthless Precision (193357 effect#1), Grand Melee (193358 effects: #1, #3), Elaborate Planning (193641 effects: #1, #2), Ghostly Strike (196937 effect#3), Symbols of Death (212283 effects: #1, #2), Master Assassin (256735 effect#1), Master Assassin's Mark (340094 effect#1), Deathly Shadows (341202 effects: #1, #2), Deathly Shadows (350964 effects: #1, #2), Fazed (441224 effect#1), Fatebound Coin (Heads) (452923 effects: #1, #2), Master Assassin (470676 effect#1)
 Family Flags     : 54
-Attributes       : Allow While Stealthed (37), Not an Action (92), DoT Stacking Rule (103), Treat As Periodic (121), Do Not Display Range (126), Not In Spellbook (143), Not an Attack (194), Aura Points On Client (268), Do Not Log on Learn (355)
+Attributes       : Allow While Stealthed (37), No Threat (42), Not an Action (92), DoT Stacking Rule (103), Treat As Periodic (121), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1161858)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03 | Target: Enemy (6)

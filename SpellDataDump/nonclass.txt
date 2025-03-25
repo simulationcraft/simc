@@ -43675,12 +43675,13 @@ Description      : Summon a flaming keg of Alerage's Reserve at the target locat
 Tooltip          : Suffering $s2 fire damage every $t2 sec.
 
 Name             : Touch of the Grave (desc=Racial Passive) (id=127802) 
+Hotfixed         : Attributes
 Race             : Undead (0x10)
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
 Triggered By     : Touch of the Grave (5227)
-Attributes       : Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Display Range (126), Not an Attack (194)
+Attributes       : Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Do Not Display Range (126)
 Effects          :
 #1 (id=162610)   : Health Leech (9)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Enemy (6)

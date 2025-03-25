@@ -8897,6 +8897,7 @@ Effects          :
 Description      : Frenzied Regeneration and Barkskin increase all healing received by $s1%.
 
 Name             : Thorns (id=305496) [Spell Family (7)] 
+Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -8909,7 +8910,7 @@ Labels           : 16: Class Spells
                  : 292
 Affecting Spells : Moonkin Form (24858 effects: #9, #10), Nurturing Instinct (33873 effects: #1, #2), Berserk (50334 effects: #6, #7), Incarnation: Guardian of Ursoc (102558 effects: #6, #7), Incarnation: Chosen of Elune (102560 effect#2), Cat Form (106840 effects: #3, #4), Heart of the Wild (108291 effects: #1, #2), Balance Druid (137013 effects: #1, #2), Starfall (191034 effect#2), Thrash (192090 effect#2), Moonkin Form (197625 effects: #7, #8), Ekowraith, Creator of Worlds (210667 effect#1), Heart of the Wild (319454 effects: #1, #2, #13, #15), Ravenous Frenzy (323546 effects: #1, #2, #6, #7), Convoke the Spirits (323764 effects: #3, #4), Lone Empowerment (338142 effects: #1, #2), Circle of Life and Death (338657 effects: #1, #3), Ravenous Frenzy (355315 effects: #1, #4), Incarnation: Chosen of Elune (390414 effect#2), Convoke the Spirits (391528 effects: #3, #4), Circle of Life and Death (391969 effects: #1, #3), Waning Twilight (393957 effect#1), Circle of Life and Death (400320 effects: #1, #3), Initial Druid (417382 effects: #1, #2), Liveliness (426702 effect#1), Harmony of the Grove (428735 effects: #1, #2), Atmospheric Exposure (430589 effect#1), Root Network (439887 effects: #1, #2), Guardian's Tenacity (455011 effects: #1, #2), Circle of the Heavens (474541 effects: #1, #2, #3, #4), Luck of the Draw! (1218553 effects: #1, #2)
 Family Flags     : 18
-Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Reflection (39), No Threat (42), No Initial Threat (86), Not an Action (92), Do Not Display Range (126), No Helpful Threat (131), No Harmful Threat (132), Allow Cast While Casting (135), Not In Spellbook (143), Ignore Combat Timer (156), Not an Attack (194), Allow Class Ability Procs (416)
+Attributes       : Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Reflection (39), No Threat (42), No Initial Threat (86), Not an Action (92), Do Not Display Range (126), No Helpful Threat (131), No Harmful Threat (132), Allow Cast While Casting (135), Not In Spellbook (143), Ignore Combat Timer (156), Allow Class Ability Procs (416)
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=782753)   : School Damage (2): nature

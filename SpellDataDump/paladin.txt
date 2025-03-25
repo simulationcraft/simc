@@ -2023,6 +2023,7 @@ Hotfixed         : SP Coefficient (3.78 -> 4.914)
 Description      : $@spelldesc114165
 
 Name             : Holy Prism (id=114871) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Earthen, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Holy
@@ -2040,7 +2041,7 @@ Labels           : 16: Class Spells
                  : 2607
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #1, #9, #31), Rule of Law (214202 effect#1), Crusade (231895 effects: #1, #2), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2)
 Family Flags     : 65, 90
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Not an Action (92), Active Threat (94), Not a Proc (105), Always AOE Line of Sight (186), Not an Attack (194), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Not an Action (92), Active Threat (94), Not a Proc (105), Always AOE Line of Sight (186), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=128396)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 11.34 | Target: Friendly (21)
