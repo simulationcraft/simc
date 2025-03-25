@@ -253982,8 +253982,8 @@ Triggered By     : Noggenfogger Utimate Deluxe (470675)
 Attributes       : Do Not Log (8), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Item Cast With Owner Skill (88), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Ignore Phase Shift (205), Allow Cast While Channeling (308), Bypass Visibility Check (320), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1188868)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 158069.3 (coefficient=61.79989) | Target: Self (1)
-Hotfixed         : Coefficient (51.5 -> 61.799889)
+                   Base Value: 0 | Scaled Value: 189869.6 (coefficient=74.23274) | Target: Self (1)
+Hotfixed         : Coefficient (61.799889 -> 74.232742)
 #2 (id=1188869)  : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 233767 | Misc Value 2: 0x17e7 | Target: Unknown(87)
 Description      : $@spelldesc470675
