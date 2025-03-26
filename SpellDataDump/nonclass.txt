@@ -255054,6 +255054,7 @@ School           : Physical
 Spell Type       : None
 Range            : 30 yards
 Duration         : 10 seconds
+Cooldown         : 3600 seconds
 Category         : 2353 (Type 0x0)
 Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), No Aura Log (202), Aura Points On Client (268)
 Effects          :
