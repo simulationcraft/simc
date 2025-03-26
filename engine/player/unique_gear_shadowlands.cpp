@@ -1927,6 +1927,34 @@ void spare_meat_hook( special_effect_t& effect )
   effect.execute_action = dot;
 }
 
+// id=345697 Driver
+// id=345698 Damage/Heal spell
+void viscera_of_coalesced_hatred( special_effect_t& effect )
+{
+  struct hateful_strike_t : public generic_proc_t
+  {
+    hateful_strike_t( const special_effect_t& e )
+      : generic_proc_t( e, "hateful_strike", 345698 )
+      {
+        base_multiplier *= role_mult( e.player, e.player->find_spell( 345698 ) );
+        base_dd_min = base_dd_max = e.player->find_spell( 345698 )->effectN( 2 ).average( e.item );
+      }
+
+      double composite_da_multiplier( const action_state_t* s ) const override
+      {
+        double v = generic_proc_t::composite_da_multiplier( s );
+
+        if ( player->health_percentage() < data().effectN( 3 ).base_value() )
+          v *= data().effectN( 4 ).base_value();
+
+        return v;
+      }
+  };
+
+  effect.execute_action = create_proc_action<hateful_strike_t>( "hateful_strike", effect );
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // 9.1 Trinkets
 
 // id=356029 buff
@@ -6073,6 +6101,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 348139, items::instructors_divine_bell );
     unique_gear::register_special_effect( 367896, items::instructors_divine_bell );
     unique_gear::register_special_effect( 345548, items::spare_meat_hook );
+    unique_gear::register_special_effect( 345697, items::viscera_of_coalesced_hatred );
 
     // 9.1 Trinkets
     unique_gear::register_special_effect( 353492, items::forbidden_necromantic_tome );
