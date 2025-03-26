@@ -11375,7 +11375,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 50 yards
-Duration         : 14 seconds
+Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
@@ -18164,7 +18164,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 50 yards
-Duration         : 14 seconds
+Duration         : 10 seconds
 Labels           : 16: Class Spells
                  : 23: Hunter Spells
                  : 292
