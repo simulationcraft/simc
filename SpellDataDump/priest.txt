@@ -13365,9 +13365,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1134692)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
+Hotfixed         : Base Value (25 -> 40)
 #2 (id=1134693)  : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.625 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
