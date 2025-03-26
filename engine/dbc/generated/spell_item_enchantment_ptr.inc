@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 11.1.5.59735
-static const std::array<item_enchantment_data_t, 5076> __ptr_spell_item_ench_data { {
+// Item enchantment data, wow build 11.1.5.59919
+static const std::array<item_enchantment_data_t, 5070> __ptr_spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 10, 320,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000f,  0.0000f,  0.0000f },       0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 10, 320,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637f,  0.0000f,  0.0000f },       0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 320,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720f,  0.0000f,  0.0000f },    2831, "Reinforced (+$k1 Armor)"           },
@@ -5058,23 +5058,17 @@ static const std::array<item_enchantment_data_t, 5076> __ptr_spell_item_ench_dat
   { 7652,      0, -7,   0,  70, 356, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      7,     71,      0 }, {  1.2397f,  1.2904f,  0.0000f }, 1216517, "+$k2 Agility/Strength/Intellect & +$k1 Stamina |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
   { 7653,      0, -7,   0,  70, 356, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      7,     71,      0 }, {  1.5088f,  1.5683f,  0.0000f }, 1216518, "+$k2 Agility/Strength/Intellect & +$k1 Stamina |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
   { 7654,      0, -7,   0,  70, 356, 0,   0,   0, {   5,   5,   0 }, {    0,    0,    0 }, {      7,     71,      0 }, {  1.7757f,  1.8463f,  0.0000f }, 1216519, "+$k2 Agility/Strength/Intellect & +$k1 Stamina |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
-  { 7912,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1225042,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Twilight Devastation |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
-  { 7913,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1225043,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Twilight Devastation |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
-  { 7914,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1225045,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Twilight Devastation |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
-  { 7915,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1225878,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Echoing Void |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
-  { 7916,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1225879,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Echoing Void |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
-  { 7917,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1225880,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Echoing Void |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
-  { 7922,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227210,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Infinite Stars |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
-  { 7923,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227212,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Infinite Stars |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
-  { 7924,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227211,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Infinite Stars |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
-  { 7925,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227289,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Gushing Wound |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
-  { 7926,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227290,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Gushing Wound |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
-  { 7927,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227291,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Gushing Wound |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
-  { 7928,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227295,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Twisted Appendage |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
-  { 7929,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227296,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Twisted Appendage |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
-  { 7930,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227297,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Twisted Appendage |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
-  { 7931,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227312,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Void Ritual |A:Professions-ChatIcon-Quality-Tier1:20:20|a" },
-  { 7932,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227313,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Void Ritual |A:Professions-ChatIcon-Quality-Tier2:20:20|a" },
-  { 7933,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227314,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f },       0, "Void Ritual |A:Professions-ChatIcon-Quality-Tier3:20:20|a" },
+  { 7912,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1225042,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1225074, "Lesser Twilight Devastation"       },
+  { 7914,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1225045,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1233223, "Greater Twilight Devastation"      },
+  { 7915,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1225878,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1233355, "Lesser Echoing Void"               },
+  { 7917,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1225880,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1225873, "Greater Echoing Void"              },
+  { 7922,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227210,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1233375, "Lesser Infinite Stars"             },
+  { 7924,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227211,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1227206, "Greater Infinite Stars"            },
+  { 7925,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227289,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1233385, "Lesser Gushing Wound"              },
+  { 7927,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227291,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1227288, "Greater Gushing Wound"             },
+  { 7928,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227295,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1233392, "Lesser Twisted Appendage"          },
+  { 7930,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227297,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1227294, "Greater Twisted Appendage"         },
+  { 7931,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227312,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1233394, "Lesser Void Ritual"                },
+  { 7933,      0,  0,   0,  70, 350, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 1227314,      0,      0 }, {  0.0000f,  0.0000f,  0.0000f }, 1227311, "Greater Void Ritual"               },
 } };
 

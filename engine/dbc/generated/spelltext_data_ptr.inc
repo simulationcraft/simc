@@ -1,5 +1,5 @@
-// Spell text, wow build 11.1.5.59735
-static const std::array<spelltext_data_t, 27311> __ptr_spelltext_data { {
+// Spell text, wow build 11.1.5.59919
+static const std::array<spelltext_data_t, 27312> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -7541,7 +7541,6 @@ static const std::array<spelltext_data_t, 27311> __ptr_spelltext_data { {
   {  214200, "$@spelldesc214198", 0, 0 },
   {  214202, "Increase the range of your heals by $s1% for $d.", "Range of heals increased by $s1%.", 0 },
   {  214203, "Pierce your target with a spear of light, dealing $s1 Holy damage.", 0, 0 },
-  {  214206, "$@spelldesc81749", "Healed whenever the Priest damages an enemy.", "PvP Talent" },
   {  214222, "$@spelldesc20271", "Taking $w1% increased damage from the Paladin's next Crusader Strike or Holy Shock.", 0 },
   {  214224, "Your damaging critical strikes reduce all damage the target deals by ${-$214229s1} for $214229d. Stacks up to $214229u times.", 0, 0 },
   {  214225, "Doom deals $s1% increased damage for each demon pet you have active.", 0, 0 },
@@ -16047,7 +16046,7 @@ static const std::array<spelltext_data_t, 27311> __ptr_spelltext_data { {
   {  345690, "$@spelldesc336616", 0, 0 },
   {  345695, "Bind a spectral essence to an enemy for $d, causing allied attacks to heal for $s2% of damage dealt, up to $s1 total healing.\r\n\r\nWhen the essence expires or is removed early, the remaining healing bursts, healing up to $s3 allies within $345704a1 yds.", "Attacks heal for $s2% of damage dealt, with $w1 healing remaining.\r\n\r\nIf the essence expires or is removed early, the remaining healing is split between $s3 allies within $345704a1 yds.", 0 },
   {  345697, "$@spelldesc345698", 0, 0 },
-  {  345698, "Your abilities have a very high chance to lash out with a Hateful Strike, dealing $s2 Physical damage to an enemy and healing you for $s1. These effects are increased by ${($s4*100)-100}% while you are below $s3% health.", 0, 0 },
+  {  345698, "Your abilities have a very high chance to lash out with a Hateful Strike, inflicting ${$s2*$<rolemult>} Physical damage to an enemy and healing you for $s1. These effects are increased by ${($s4*100)-100}% while you are below $s3% health.", 0, 0 },
   {  345701, "$@spelldesc345695", 0, 0 },
   {  345702, "$@spelldesc327439", "Busy busy now! Will help again soon, yes?", 0 },
   {  345703, "$@spelldesc327439", "Hoo! Very busy, lots to do-hoo! Will help more later, yes?", 0 },
@@ -26217,7 +26216,7 @@ static const std::array<spelltext_data_t, 27311> __ptr_spelltext_data { {
   {  466612, "$@spelldesc466607", "Versatility increased by $w1.", 0 },
   {  466652, "Summon Pitbot Geardo to assist you for $d, coating nearby enemies with rancid motor oil for additional threat. Geardo ensures you take the blame.\r\n\r\nGeardo departs explosively to deal $466646s1 Fire damage split between nearby enemies, increased by $466646s3% if recently oiled.", 0, 0 },
   {  466671, "Falling below $s3% health surrounds you with a protective vortex of junk, reducing damage taken by $466673s2% for $466673d or until $s1 damage is prevented. This effect may only occur every $472170d.\r\n\r\nAfter $472171d without activating while in combat, the Scrapfield overloads to energize you with $s2 Haste for $472167d.\r\n$?(a137048|a137028|a137023|a137010|a212613|a137008)[][|cnRED_FONT_COLOR:Valid only for tank specializations.|r]", 0, 0 },
-  {  466673, "$@spelldesc433770", "Protected by whirling junk, absorbing $s2% of incoming damage until $W1 damage is prevented.", 0 },
+  {  466673, "$@spelldesc466671", "Protected by whirling junk, absorbing $s2% of incoming damage until $W1 damage is prevented.", 0 },
   {  466681, "Deal yourself in, granting you ${$466680s1*(1-$466680s2/100)} to ${$466680s1*(1+$466680s2/100)} Mastery for $d and stacking the deck. Stacking the deck increases the minimum Mastery on future hands by ${$466680s1*($466680s2/100/3)} until you leave combat, up to $1219158u times.", "Mastery increased by $w1.", 0 },
   {  466772, "$@spelldesc384352\r\n", "Chance to activate Windfury Weapon increased to ${$319773h}.1%.\r\nDamage dealt by Windfury Weapon increased by $s2%.", 0 },
   {  466810, "Rapidly deploy the bomb suit to reduce damage taken by $s2% for $d or until $466693s1 damage has been prevented.\r\n\r\nUpon depletion, the bomb suit detonates to deal $466693s2 Fire damage split between nearby enemies.", "Absorbing $s2% of incoming damage until $w1 is prevented. The bomb suit will detonate upon removal.", 0 },
@@ -26545,7 +26544,7 @@ static const std::array<spelltext_data_t, 27311> __ptr_spelltext_data { {
   {  472120, "Upon entering combat, and every $472195t sec, gain either $@spellname472185 or $@spellname472184 for 30 sec.\r\n\r\n$@spellicon472184$@spellname472184\r\n$@spelldesc472184\r\n\r\n$@spellicon472185$@spellname472185\r\n$@spelldesc472185", 0, 0 },
   {  472125, "Your harmful spells and abilities have a chance to drain your target's electrical power, dealing ${$s1*$<rolemult>} Nature damage over $472127d. If the target dies while being drained, you gain $472350s1% movement speed for $472350d.", 0, 0 },
   {  472127, "$@spelldesc472125", "Inflicting $w1 damage every $t1 sec.", 0 },
-  {  472167, 0, "Haste increased by $w1.", 0 },
+  {  472167, "$@spelldesc466671", "Haste increased by $w1.", 0 },
   {  472170, 0, "The Scrapfield 9001 is recharging. Manufacturer's tip: \"Consider taking less damage.\"", 0 },
   {  472171, "$@spelldesc466671", "Unable to benefit from $@spellname472167.", 0 },
   {  472172, "$@spelldesc466671", "Gain $@spellname472167 upon expiration while in combat. Receiving the protection of $@spellname466673 resets this duration to $d.", 0 },
@@ -27241,24 +27240,21 @@ static const std::array<spelltext_data_t, 27311> __ptr_spelltext_data { {
   { 1224457, "Your first melee strike against an enemy slams them and nearby enemies with a quake of shadow magic dealing up to ${$s1*($s2/100)} Shadow damage split between them.", 0, 0 },
   { 1224458, "When a nearby enemy or devout ally falls, you siphon a portion of their soul to gain $s1 Intellect for $1228086d.", 0, 0 },
   { 1224459, "When an ally falls below $s2% health you shield them in darkness absorbing the next $s1 damage taken.\r\n\r\nThis effect can trigger once every $s3 sec and does not target devout allies.", 0, 0 },
-  { 1224463, "$?pc136497[|CFF20ff20Being one of the devout grants an additional $s1 $pri.|R][|CFF808080Being one of the devout grants an additional $s1 $pri.|R]", 0, 0 },
   { 1224775, "You are one of the devout. Increases the effectiveness of Sacred Flame's Ward by $s1%.\r\n\r\n$@spellicon1227124$@spellname1227124:\r\n$@spelldesc1227124", 0, 0 },
   { 1224902, "You are one of the devout. Up to $s2 allies within $a yd of you gain $s1 health every $t sec.", 0, 0 },
   { 1225038, "$@spelldesc1225074", 0, 0 },
   { 1225039, "$@spelldesc1225074", 0, 0 },
   { 1225042, "$@spelldesc1225074", 0, 0 },
-  { 1225043, "$@spelldesc1225074", 0, 0 },
   { 1225045, "$@spelldesc1225074", 0, 0 },
-  { 1225074, "|cnNORMAL_FONT_COLOR:Twilight Devastation|R\r\n\r\nPermanently enchants a weapon with Twilight Devastation. Your attacks have a chance to trigger a beam of Twilight Devastation, dealing up to ${$<rolemult>*$ec1s1*$s2} Shadow damage to enemies in front of you. Cannot be applied to items lower than level $ecim.", 0, 0 },
+  { 1225074, "Apply Lesser Rune of Twilight Devastation to a helm.\r\n\r\nAllows your attacks to have a chance to trigger a beam of Twilight Devastation, dealing up to ${$<rolemult>*$ec1s1*$s2} Shadow damage to enemies in front of you. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2. ", 0, 0 },
   { 1225126, "Flip to the next section.\r\n\r\n", 0, 0 },
   { 1225168, "$@spelldesc457066", "$@auracaster's Rupture corrupts your blood, dealing $s2 Plague damage.", 0 },
   { 1225232, "Every $1227578t sec spent in combat pulls the shadows closer to you, granting Dark Whispers. After reaching $1227564u whispers, the shadows manifest and rip a creature out of the Twisting Nether to assist you in combat.", 0, 0 },
   { 1225233, "Every $1227584t sec spent in combat sacrifices $s2 of your health to gain $s1 $pri. This effect can stack up to $1227565u times and lasts until combat ends.", 0, 0 },
   { 1225234, "Every $1227585t sec spent in combat lashes a nearby enemy dealing $s1 Shadow damage. This deals up to $s2% additional damage based on the enemy's missing health.", 0, 0 },
   { 1225790, "$@spelldesc386692", 0, 0 },
-  { 1225873, "|cnNORMAL_FONT_COLOR:Echoing Void|R\r\n\r\nPermanently enchants a weapon with Echoing Void. Your damaging abilities build the Echoing Void. Each time it builds, Echoing Void has a chance to collapse, dealing ${$<rolemult>*$ec1s1} Shadow damage to all nearby enemies every $1225887t1 sec until no stacks remain. Cannot be applied to items lower than level $ecim.", 0, 0 },
+  { 1225873, "Apply Greater Rune of the Echoing Void to a helm.\r\n\r\nYour damaging abilities build the Echoing Void. Each time it builds, Echoing Void has a chance to collapse, dealing ${$<rolemult>*$ec1s1} Shadow damage to all nearby enemies every $1225887t1 sec until no stacks remain. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.", 0, 0 },
   { 1225878, "$@spelldesc1225873", 0, 0 },
-  { 1225879, "$@spelldesc1225873", 0, 0 },
   { 1225880, "$@spelldesc1225873", 0, 0 },
   { 1225883, "$@spelldesc1225873", 0, 0 },
   { 1225886, "$@spelldesc1225873", "Echoing Void is coalescing...", 0 },
@@ -27272,28 +27268,24 @@ static const std::array<spelltext_data_t, 27311> __ptr_spelltext_data { {
   { 1227062, "$@spelldesc442686", "Damage and healing increased by $w1%.", 0 },
   { 1227124, "While in Khaz Algar, dealing damage has a high chance of burning the enemy with righteous fire dealing $1227162s1 Radiant damage. In addition, you take $s2% less damage.", "While in Khaz Algar, dealing damage has a high chance of burning the enemy with righteous fire dealing ${$1227162s1*$w1} Radiant damage. In addition, you take $w2% less damage.", 0 },
   { 1227162, "$@spelldesc1227124", 0, 0 },
-  { 1227206, "|cnNORMAL_FONT_COLOR:Infinite Stars|R\r\n\r\nPermanently enchants a weapon with Infinite Stars. Your spells and abilities have a chance to strike a nearby enemy with an Infinite Star, dealing ${$<rolemult>*$ec1s1} Arcane damage and increasing their damage taken from your Infinite Stars by ${$<rolemult>*$ec1s2}, stacking up to $1227218u times before resetting. Cannot be applied to items lower than level $ecim.", 0, 0 },
+  { 1227206, "Apply Greater Rune of Infinite Stars to a helm. \r\n\r\nYour spells and abilities have a chance to strike a nearby enemy with an Infinite Star, dealing ${$<rolemult>*$ec1s1} Arcane damage and increasing their damage taken from your Infinite Stars by ${$<rolemult>*$ec1s2}, stacking up to $1227218u times before resetting. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.", 0, 0 },
   { 1227210, "$@spelldesc1227206", 0, 0 },
   { 1227211, "$@spelldesc1227206", 0, 0 },
-  { 1227212, "$@spelldesc1227206", 0, 0 },
   { 1227215, "$@spelldesc1227206", 0, 0 },
   { 1227216, "$@spelldesc1227206", 0, 0 },
   { 1227218, "$@spelldesc1227206", "Damage taken from Infinite Stars increased by up to ${$1227314s2*$u}.", 0 },
-  { 1227288, "|cnNORMAL_FONT_COLOR:Gushing Wound|R\r\n\r\nPermanently enchants a weapon with Gushing Wound. Your damaging spells and abilities have a chance to cause your target to ooze blood for ${$<rolemult>*$ec1s1*$1227293d/$1227293t1} damage over $1227293d. Cannot be applied to items lower than level $ecim.", 0, 0 },
+  { 1227288, "Apply Greater Rune of Gushing Wound to a helm.\r\n\r\nYour damaging spells and abilities have a chance to cause your target to ooze blood for ${$<rolemult>*$ec1s1*$1227293d/$1227293t1} damage over $1227293d. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.", 0, 0 },
   { 1227289, "$@spelldesc1225873", 0, 0 },
-  { 1227290, "$@spelldesc1225873", 0, 0 },
   { 1227291, "$@spelldesc1225873", 0, 0 },
   { 1227292, "$@spelldesc1227288", 0, 0 },
   { 1227293, "$@spelldesc1227288", "Bleeding for $w1 damage every $t1 sec.", 0 },
-  { 1227294, "|cnNORMAL_FONT_COLOR:Twisted Appendage|R\r\n\r\nPermanently enchants a weapon with Twisted Appendage. Your attacks have a chance to spawn a tentacle which Mind Flays your target for ${$<rolemult>*$ec1s1} Shadow damage every second for $1227301d. Cannot be applied to items lower than level $ecim.", 0, 0 },
+  { 1227294, "Apply Greater Rune of the Twisted Appendage to a helm. \r\n\r\nYour attacks have a chance to spawn a tentacle which Mind Flays your target for ${$<rolemult>*$ec1s1} Shadow damage every second for $1227301d. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.", 0, 0 },
   { 1227295, "$@spelldesc1227294", 0, 0 },
-  { 1227296, "$@spelldesc1227294", 0, 0 },
   { 1227297, "$@spelldesc1227294", 0, 0 },
   { 1227300, "$@spelldesc1227294", 0, 0 },
   { 1227301, "$@spelldesc1227294", 0, 0 },
-  { 1227311, "|cnNORMAL_FONT_COLOR:Void Ritual|R\r\n\r\nPermanently enchants a weapon with Void Ritual. Gain Void Ritual, giving your spells and abilities a chance to increase all secondary stats by $ec1s1 every sec for $1227315s2 sec. Cannot be applied to items lower than level $ecim.", 0, 0 },
+  { 1227311, "Apply Greater Rune of the Void Ritual to a helm. \r\n\r\nGain Void Ritual, giving your spells and abilities a chance to increase all secondary stats by $ec1s1 every sec for $1227315s2 sec. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.", 0, 0 },
   { 1227312, "$@spelldesc1227311", 0, 0 },
-  { 1227313, "$@spelldesc1227311", 0, 0 },
   { 1227314, "$@spelldesc1227311", 0, 0 },
   { 1227315, "$@spelldesc1227311", "Participating in a Void Ritual.", 0 },
   { 1227316, "$@spelldesc1227311", "All secondary stats increased by $w1", 0 },
@@ -27311,14 +27303,23 @@ static const std::array<spelltext_data_t, 27311> __ptr_spelltext_data { {
   { 1232571, "$@spelldesc47540", 0, 0 },
   { 1232592, "$@spelldesc373129", 0, 0 },
   { 1232615, "$@spelldesc400169", 0, 0 },
+  { 1233162, "$@spelldesc1213551", "$@spelldesc1213551", 0 },
+  { 1233223, "Apply Greater Rune of Twilight Devastation to a helm. \r\n\r\nAllows your attacks to have a chance to trigger a beam of Twilight Devastation, dealing up to ${$<rolemult>*$ec1s1*$s2} Shadow damage to enemies in front of you. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2. ", 0, 0 },
+  { 1233355, "Apply Lesser Rune of the Echoing Void to a helm.\r\n\r\nYour damaging abilities build the Echoing Void. Each time it builds, Echoing Void has a chance to collapse, dealing ${$<rolemult>*$ec1s1} Shadow damage to all nearby enemies every $1225887t1 sec until no stacks remain. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.", 0, 0 },
+  { 1233375, "Apply Lesser Rune of Infinite Stars to a helm. \r\n\r\nYour spells and abilities have a chance to strike a nearby enemy with an Infinite Star, dealing ${$<rolemult>*$ec1s1} Arcane damage and increasing their damage taken from your Infinite Stars by ${$<rolemult>*$ec1s2}, stacking up to $1227218u times before resetting. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.", 0, 0 },
+  { 1233385, "Apply Lesser Rune of Gushing Wound to a helm.\r\n\r\nYour damaging spells and abilities have a chance to cause your target to ooze blood for ${$<rolemult>*$ec1s1*$1227293d/$1227293t1} damage over $1227293d. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.", 0, 0 },
+  { 1233392, "Apply Lesser Rune of the Twisted Appendage to a helm. \r\n\r\nYour attacks have a chance to spawn a tentacle which Mind Flays your target for ${$<rolemult>*$ec1s1} Shadow damage every second for $1227301d. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.", 0, 0 },
+  { 1233394, "Apply Lesser Rune of the Void Ritual to a helm. \r\n\r\nGain Void Ritual, giving your spells and abilities a chance to increase all secondary stats by $ec1s1 every sec for $1227315s2 sec. \r\n\r\nCannot be applied to items lower than level $ecim. This effect is fleeting and will only work during The War Within Season 2.", 0, 0 },
+  { 1234189, "A hammer slowly falls from the sky upon the target, after $d, they suffer $s2% of the damage taken from your abilities as Holy damage during that time.\r\n\r\n$?s406158 [|cFFFFFFFFGenerates $406158s1 Holy Power.][]", "Sentenced to suffer $s2% of the damage your abilities deal during its duration as Holy damage.", 0 },
+  { 1234212, "$?pc136497[|CFF20ff20Being one of the devout grants an additional $s1 $pri.|R][|CFF808080Being one of the devout grants an additional $s1 $pri.|R]", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.1.5.59735
+// spelltext hotfix entries, wow build 11.1.5.59919
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.1.5.59735
-static const std::array<spelldesc_vars_data_t, 641> __ptr_spelldesc_vars_data { {
+// Spell description variables, wow build 11.1.5.59919
+static const std::array<spelldesc_vars_data_t, 648> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {     122, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -27666,6 +27667,7 @@ static const std::array<spelldesc_vars_data_t, 641> __ptr_spelldesc_vars_data { 
   {  345545, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  345548, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  345549, "$phylacteryhealth=$s2*15" },
+  {  345698, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   {  346396, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$serrated=$?s389882[${1+($389882s1)/100}][${1}]\r\n$damage=${$ap*($s2/100)*($321538d/$321538t1)*$<bmMastery>*$<serrated>*(1+$@versadmg)*(1+($137015s1/100))}" },
   {  351093, "$shield=${$MHP*$s1/100}" },
   {  351094, "$pointsA=${$cond($gt($SP,$AP),$SP*0.48,$AP*0.48)}\r\n$pointsB=${$cond($gt($SP,$AP),$SP*0.72,$AP*0.72)*(1+$@versadmg)}" },
@@ -27960,9 +27962,15 @@ static const std::array<spelldesc_vars_data_t, 641> __ptr_spelldesc_vars_data { 
   { 1227288, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
   { 1227293, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
   { 1227294, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
+  { 1233223, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
+  { 1233355, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
+  { 1233375, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
+  { 1233385, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
+  { 1233392, "$rolemult=$?a137048|a137028|a137023|a137010|a212613|a137008|a137039|a137031|a137032|a137029|a137024|a137024|a356810|a137012[${0.66}.2][${1}]" },
+  { 1234189, "$Mastery=$?a267316[${1+$267316s1/100}][${1}]\r\n$DP=$?a223819[${1+$223819s2/100}][${1}]\r\n$mult=${$<Mastery>*$<DP>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.1.5.59735
+// spelldesc_vars hotfix entries, wow build 11.1.5.59919
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
