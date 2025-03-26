@@ -1,5 +1,5 @@
 // Spell text, wow build 11.1.0.59888
-static const std::array<spelltext_data_t, 27238> __spelltext_data { {
+static const std::array<spelltext_data_t, 27237> __spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {      56, "Stuns target for $d.", "Stunned.", 0 },
@@ -21926,7 +21926,6 @@ static const std::array<spelltext_data_t, 27238> __spelltext_data { {
   {  417543, "$@spelldesc417534", "Upon expiration, you will be frozen in time.", 0 },
   {  417587, "Freezes the target in time, making them unable to move or act.", "Stuck in a Paradox, and unable to move or act!", 0 },
   {  417591, "Plant a banner representing your successes against the Smoldering.", 0, 0 },
-  {  417775, "Add a Downy Liner and Crystal Ocular Lenses to the Thought Calculating Apparatus.", 0, 0 },
   {  417792, "$@spelldesc417534", 0, 0 },
   {  417855, "Holy Shock, Holy Light, and Flash of Light critical healing increased by $s1%.", 0, 0 },
   {  417875, "$@spelldesc324536", 0, 0 },
