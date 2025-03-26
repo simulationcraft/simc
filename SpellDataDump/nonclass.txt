@@ -217317,18 +217317,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 208477 | Misc Value 2: 0x40 | Radius: 2 yards | Target: Unknown(47)
 Description      : Plant a banner representing your successes against the Smoldering.
 
-Name             : Piecing It Together (id=417775) [Hidden] 
-School           : Physical
-Spell Type       : None
-Cast Time        : 1.5 seconds
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8)
-Effects          :
-#1 (id=1089617)  : Create Item (24)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=1093992)  : Trigger Spell (64): [DNT] Secret Complete
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 420215 | Target: Self (1)
-Description      : Add a Downy Liner and Crystal Ocular Lenses to the Thought Calculating Apparatus.
-
 Name             : Paradox (id=417792) [Hidden] 
 School           : Astral
 Spell Type       : None
@@ -218363,15 +218351,6 @@ Effects          :
 #1 (id=1093561)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Tooltip          : An echo of $w1 damage will be dealt upon expiration.
-
-Name             : [DNT] Secret Complete (id=420215) [Hidden] 
-School           : Physical
-Spell Type       : None
-Triggered By     : Piecing It Together (417775)
-Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8)
-Effects          :
-#1 (id=1093694)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Fyr'alath the Dreamrender (id=420248) [Passive, Hidden] 
 School           : Physical
@@ -255075,6 +255054,7 @@ School           : Physical
 Spell Type       : None
 Range            : 30 yards
 Duration         : 10 seconds
+Cooldown         : 3600 seconds
 Category         : 2353 (Type 0x0)
 Attributes       : Not Shapeshifted (16), Allow While Sitting (27), Not In Combat (Only Peaceful) (28), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), No Aura Log (202), Aura Points On Client (268)
 Effects          :
