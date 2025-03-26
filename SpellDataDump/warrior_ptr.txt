@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.59735 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.59919 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -966,7 +966,7 @@ Family Flags     : 8, 9, 18, 41, 52
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), No Aura Icon (60), Chain From Caster (76), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=14132)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.266 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.2027 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=155551)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Resource: rage | Target: Self (1)
 #3 (id=1013582)  : Energize Power (30)
@@ -1138,7 +1138,7 @@ Cooldown         : 60 seconds
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
-Affecting Spells : Recklessness (1719 effects: #7, #8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Fury Warrior (137050 effects: #6, #11, #17), Unnerving Focus (337155 effect#5), Storm of Steel (382953 effects: #1, #3)
+Affecting Spells : Recklessness (1719 effects: #7, #8), Warrior (137047 effect#2), Arms Warrior (137049 effects: #4, #19, #20), Fury Warrior (137050 effects: #6, #11, #17), Unnerving Focus (337155 effect#5), Storm of Steel (382953 effects: #1, #3)
 Family Flags     : 8, 46
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Immunity Purges Effect (47), Requires Main-Hand Weapon (106), Extra Initial Period (169), Spell Haste Affects Periodic (173), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -1197,7 +1197,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 3637: Storm of Steel (382953 effect#6)
 Proc Chance      : 100%
-Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #7, #8), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3, #4), Fury Warrior (137050 effects: #1, #2, #6, #11, #17), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#5), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Storm of Steel (382953 effects: #1, #3), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effect#2), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4)
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #7, #8), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3, #4, #19, #20), Fury Warrior (137050 effects: #1, #2, #6, #11, #17), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#5), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Storm of Steel (382953 effects: #1, #3), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effect#2), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4)
 Triggered By     : Bladestorm (46924), Bladestorm (227847), Bladestorm (446035)
 Family Flags     : 9, 46
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Not a Proc (105), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Treat as Area Effect (175), Allow Class Ability Procs (416)
@@ -1828,7 +1828,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
-Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #7, #8), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3, #4), Fury Warrior (137050 effects: #1, #2, #6, #11, #17), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#5), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Storm of Steel (382953 effects: #1, #3), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effect#2), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4)
+Affecting Spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #4, #7, #8), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #4), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3, #4, #19, #20), Fury Warrior (137050 effects: #1, #2, #6, #11, #17), Enrage (184362 effects: #4, #5), Colossus Smash (208086 effect#1), Deep Wounds (262115 effects: #2, #5), Siegebreaker (280773 effect#1), Glory (325787 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#5), Champion's Spear (376080 effect#5), One-Handed Weapon Specialization (382895 effects: #1, #2), Two-Handed Weapon Specialization (382896 effects: #1, #2), Dual Wield Specialization (382900 effects: #1, #2), Storm of Steel (382953 effects: #1, #3), Impale (383430 effect#1), Vanguard's Determination (394056 effects: #1, #3), Strike Vulnerabilities (394173 effects: #1, #2), Martial Expert (429638 effect#1), Mountain of Muscle and Scars (429642 effects: #1, #2), Overwhelmed (445836 effect#1), Wrecked (447513 effect#2), Dance of Death (459572 effect#1), Luck of the Draw! (1218163 effects: #1, #4)
 Triggered By     : Bladestorm (50622)
 Family Flags     : 9, 46
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Requires Off-Hand Weapon (120), Allow Cast While Casting (135), Not In Spellbook (143), Treat as Area Effect (175), Allow Class Ability Procs (416)
@@ -2686,6 +2686,9 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Spear of Bastion (307871), Champion's Spear (376080), Thunderous Roar (384318), Thunderous Roar (397364)
                    Family Flags: 57, 91
+#30 (id=1228325) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: -2 | Scaled Value: -2 | Misc Value: 3 | Misc Value 2: 4964 (Label) | Target: Self (1)
+                   Affected Spells (Label): One Against Many (429637)
 
 Name             : Arms Warrior (id=137049) [Spell Family (4), Passive, Hidden] 
 Class            : Arms Warrior
@@ -2732,7 +2735,7 @@ Effects          :
 #11 (id=261052)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 4243 (Label) | Target: Self (1)
 #12 (id=261053)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 14 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Sudden Death (440474), Sudden Death (440592), Sudden Death (440598), Sudden Death (440600), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 29
 #13 (id=261054)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
@@ -2751,11 +2754,19 @@ Effects          :
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280735), Execute (280849), Execute (281000), Condemn (317349), Condemn (317483), Condemn (317485), Condemn (317488), Condemn Off-Hand (317489), Condemn (330325), Condemn (330334), Sudden Death (440474), Sudden Death (440592), Sudden Death (440598), Sudden Death (440600), Arms Execute FX Test (463815), Fury Execute FX Test (463816), Fury Execute Off-Hand FX Test (463817)
                    Family Flags: 29
 #17 (id=1222694) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value 2: 4825 (Label) | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value 2: 4825 (Label) | Target: Self (1)
                    Affected Spells (Label): Demolish (440888)
 #18 (id=1222695) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: 43 | Scaled Value: 43 | PvP Coefficient: 0 | Misc Value 2: 4825 (Label) | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0 | Misc Value 2: 4825 (Label) | Target: Self (1)
                    Affected Spells (Label): Demolish (440888)
+#19 (id=1228492) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Bladestorm (446035)
+                   Family Flags: 46
+#20 (id=1228493) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -16 | Scaled Value: -16 | PvP Coefficient: 0 | Target: Self (1)
+                   Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847), Bladestorm (446035)
+                   Family Flags: 46
 
 Name             : Fury Warrior (id=137050) [Spell Family (4), Passive, Hidden] 
 Class            : Fury Warrior
@@ -4486,7 +4497,7 @@ Category         : 2270 (Type 0x1): Storm of Steel (382953 effect#7)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
-Affecting Spells : Recklessness (1719 effects: #7, #8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Fury Warrior (137050 effects: #6, #11, #17), Unnerving Focus (337155 effect#5), Storm of Steel (382953 effects: #1, #3)
+Affecting Spells : Recklessness (1719 effects: #7, #8), Warrior (137047 effect#2), Arms Warrior (137049 effects: #4, #19, #20), Fury Warrior (137050 effects: #6, #11, #17), Unnerving Focus (337155 effect#5), Storm of Steel (382953 effects: #1, #3)
 Family Flags     : 8, 46
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Immunity Purges Effect (47), Requires Main-Hand Weapon (106), Extra Initial Period (169), Spell Haste Affects Periodic (173), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
@@ -13130,6 +13141,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
+                 : 4964: Protection Warrior (137048 effect#30)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1114012)  : Apply Aura (6) | Dummy (4)
@@ -13247,7 +13259,7 @@ Effects          :
                    Affected Spells: Cleave (845), Mortal Strike (12294), Mortal Strike (339385), Cleave (458459)
                    Family Flags: 22, 25
 #2 (id=1184820)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Revenge (6572), Shield Slam (23922), Revenge (1215174)
                    Family Flags: 10, 41
 #3 (id=1210713)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
@@ -13643,7 +13655,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Not In Spellbook (143), Do Not Log on Learn (355)
 Effects          :
 #1 (id=1128785)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Shield Slam (23922)
                    Family Flags: 41
 #2 (id=1128786)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
@@ -14065,7 +14077,7 @@ Effects          :
                    Affected Spells: Overpower (7384), Dreadnaught (315961)
                    Family Flags: 2
 #4 (id=1184827)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
                    Affected Spells: Revenge (6572), Revenge (1215174)
                    Family Flags: 10
 Description      : $@spelldesc429634
@@ -14524,7 +14536,7 @@ Category         : 2270 (Type 0x1): Storm of Steel (382953 effect#7)
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
-Affecting Spells : Recklessness (1719 effects: #7, #8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Fury Warrior (137050 effects: #6, #11, #17), Unnerving Focus (337155 effect#5), Storm of Steel (382953 effects: #1, #3)
+Affecting Spells : Recklessness (1719 effects: #7, #8), Warrior (137047 effect#2), Arms Warrior (137049 effects: #4, #19, #20), Fury Warrior (137050 effects: #6, #11, #17), Unnerving Focus (337155 effect#5), Storm of Steel (382953 effects: #1, #3)
 Family Flags     : 8, 46
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Immunities (29), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), No Threat (42), Immunity Purges Effect (47), Requires Main-Hand Weapon (106), Extra Initial Period (169), Spell Haste Affects Periodic (173), Not In Spellbook Until Learned (269), Haste Affects Duration (273), Allow Defense While Channeling (338), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
