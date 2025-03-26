@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59679 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59888 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -9073,7 +9073,6 @@ Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc 
 Effects          :
 #1 (id=998151)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.795 | PvP Coefficient: 0.9 | Target: Channel Target (77)
-Hotfixed         : PvP Coefficient (1 -> 0.9)
 Description      : $@spelldesc373129
 
 Name             : Harsh Discipline (id=373180) [Spell Family (6), Passive, Hidden] 
@@ -10625,7 +10624,6 @@ Description      : Your Penance bolts increase the damage of your next Smite by 
 Stacks up to $390787U times.
 
 Name             : Weal and Woe (id=390787) [Spell Family (6)] 
-Hotfixed         : Proc Flags 1 (0 -> 81920), Proc Flags 2 (4 -> 0)
 Class            : Priest
 School           : Holy
 Spell Type       : None
@@ -11901,7 +11899,6 @@ Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial 
 Effects          :
 #1 (id=1044923)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.42 | PvP Coefficient: 0.9 | Target: Channel Target (77)
-Hotfixed         : PvP Coefficient (1 -> 0.9)
 Description      : $@spelldesc400169
 
 Name             : Burning Vehemence (id=400370) 
@@ -13365,9 +13362,10 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1134692)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
+Hotfixed         : Base Value (25 -> 40)
 #2 (id=1134693)  : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.625 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
@@ -15855,7 +15853,6 @@ Description      : $@spelldesc1215623
 Tooltip          : Healing increased by ${$W1}.1%.
 
 Name             : Penance (id=1232567) [Spell Family (6)] 
-Hotfixed         : NEW SPELL
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -15871,11 +15868,9 @@ Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial 
 Effects          :
 #1 (id=1225389)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.42 | PvP Coefficient: 0.9 | Target: Friendly (21)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc47540
 
 Name             : Penance (id=1232571) [Spell Family (6)] 
-Hotfixed         : NEW SPELL
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -15891,11 +15886,9 @@ Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc 
 Effects          :
 #1 (id=1225395)  : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.795 | PvP Coefficient: 0.9 | Target: Enemy (6)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc47540
 
 Name             : Dark Reprimand (id=1232592) [Spell Family (6)] 
-Hotfixed         : NEW SPELL
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -15910,11 +15903,9 @@ Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc 
 Effects          :
 #1 (id=1225453)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.795 | PvP Coefficient: 0.9 | Target: Enemy (6)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc373129
 
 Name             : Dark Reprimand (id=1232615) [Spell Family (6)] 
-Hotfixed         : NEW SPELL
 Class            : Priest
 School           : Shadow
 Spell Type       : Magic
@@ -15930,7 +15921,6 @@ Attributes       : Not Shapeshifted (16), Ignore Line of Sight (66), No Initial 
 Effects          :
 #1 (id=1225482)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.42 | PvP Coefficient: 0.9 | Target: Friendly (21)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc400169
 
 

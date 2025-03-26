@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59679 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59888 Live
 Name             : Stun (id=56) 
 School           : Physical
 Spell Type       : Magic
@@ -222893,7 +222893,6 @@ Effects          :
 Description      : Lasts $d and through death. Consuming an identical flask will add another $d.
 
 Name             : Flask of Tempered Aggression (id=431971) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
@@ -222909,7 +222908,6 @@ $@spelldesc431970
 Tooltip          : Critical Strike increased by $w1.
 
 Name             : Flask of Tempered Swiftness (id=431972) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
@@ -222925,7 +222923,6 @@ $@spelldesc431970
 Tooltip          : Haste increased by $w1.
 
 Name             : Flask of Tempered Versatility (id=431973) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
@@ -222941,7 +222938,6 @@ $@spelldesc431970
 Tooltip          : Versatility increased by $w1.
 
 Name             : Flask of Tempered Mastery (id=431974) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
@@ -223062,7 +223058,6 @@ Description      : Reduces your falling speed for $d.
 Tooltip          : Falling speed reduced.
 
 Name             : Flask of Alchemical Chaos (id=432021) 
-Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : 3600 seconds
@@ -234447,17 +234442,13 @@ Effects          :
 #2 (id=1190692)  : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -80 | Scaled Value: -80 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : Sub Type (79 -> 87), Base Value (-25 -> -80)
 #3 (id=1216088)  : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
-Hotfixed         : Sub Type (10 -> 187), Base Value (-75 -> -6), Misc Value (127 -> 0)
 #4 (id=1216218)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : Sub Type (187 -> 79), Base Value (-6 -> -25), Misc Value (0 -> 127)
 #5 (id=1225625)  : Apply Aura (6) | Threat (10)
                    Base Value: -75 | Scaled Value: -75 | Misc Value: 127 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc421373
 
 Name             : Arathi Demolition Charge (id=446015) [Hidden] 
@@ -253984,7 +253975,7 @@ Attributes       : Do Not Log (8), Allow While Mounted (24), Allow While Sitting
 Effects          :
 #1 (id=1188868)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
                    Base Value: 0 | Scaled Value: 189869.6 (coefficient=74.23274) | Target: Self (1)
-Hotfixed         : Coefficient (61.799889 -> 74.232742)
+Hotfixed         : Coefficient (51.5 -> 74.232742)
 #2 (id=1188869)  : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 233767 | Misc Value 2: 0x17e7 | Target: Unknown(87)
 Description      : $@spelldesc470675
@@ -254097,10 +254088,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 138658.3 (coefficient=54.21082) | Target: Self (1)
 #2 (id=1190004)  : Apply Aura (6) | Dummy (4) | Scaling Class: -1
                    Base Value: 0 | Scaled Value: 3644.18 (coefficient=0.951739) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (0.461167 -> 0.951739), PvP Coefficient (1 -> 0.5)
 #3 (id=1190005)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 10224.03 (coefficient=2.670178) | PvP Coefficient: 0.5 | Target: Self (1)
-Hotfixed         : Coefficient (1.078084 -> 2.670178), PvP Coefficient (1 -> 0.5)
 #4 (id=1190006)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
                    Base Value: 0 | Scaled Value: 1526.779 (coefficient=0.398744) | Target: Self (1)
 #5 (id=1190193)  : Apply Aura (6) | Dummy (4)
@@ -257532,12 +257521,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 #2 (id=1226422)  : Trigger Spell (64): Pacifist Rig
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7900 | Trigger Spell: 1233162 | Target: Friendly (21)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1213551
 Tooltip          : $@spelldesc1213551
 
 Name             : Pacifist Rig (id=1215045) 
-Hotfixed         : Internal Cooldown (0 -> 30000)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -258566,7 +258553,6 @@ $@spellicon453812 $@spellname453812
 $@spelldesc453812
 
 Name             : Pacifist Rig (id=1215958) 
-Hotfixed         : Internal Cooldown (0 -> 30000)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -258587,7 +258573,6 @@ Description      : $@spelldesc1215963
 Tooltip          : $@spelldesc1215963
 
 Name             : Pacifist Rig (id=1215959) 
-Hotfixed         : Internal Cooldown (0 -> 30000)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -258608,7 +258593,6 @@ Description      : $@spelldesc1215962
 Tooltip          : $@spelldesc1215962
 
 Name             : Pacifist Rig (id=1215960) 
-Hotfixed         : Internal Cooldown (0 -> 30000)
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -260222,7 +260206,6 @@ Description      : $@spelldesc421373
 Tooltip          : Heals $w2 every $t2 sec.
 
 Name             : Forbidden Necromancy (id=1232556) [Hidden] 
-Hotfixed         : NEW SPELL
 School           : Shadow
 Spell Type       : None
 Range            : 40 yards
@@ -260232,42 +260215,31 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow 
 Effects          :
 #2 (id=1225364)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #3 (id=1225365)  : Apply Aura (6) | Increase Speed% (31)
                    Base Value: -40 | Scaled Value: -40 | Target: Any Target (25)
-Hotfixed         : NEW EFFECT
 #4 (id=1225366)  : Apply Aura (6) | School Immunity (39)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Mechanic: Invulnerable | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : NEW EFFECT
 #5 (id=1225367)  : Apply Aura (6) | School Immunity (39)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Mechanic: Invulnerable | Target: Self (1)
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-Hotfixed         : NEW EFFECT
 #6 (id=1225368)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Mechanic: Invulnerable | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #7 (id=1225369)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 12 | Mechanic: Invulnerable | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #8 (id=1225370)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Mechanic: Invulnerable | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #9 (id=1225399)  : Apply Aura (6) | Invisibility (18)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #11 (id=1225434) : Apply Aura (6) | Pacify Silence (60)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Mechanic: Invulnerable | Target: Self (1)
-Hotfixed         : NEW EFFECT
 #12 (id=1225475) : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 0x7f | Mechanic: Invulnerable | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc355312
 Tooltip          : $@auracaster's animated remains.
 
 Name             : Pacifist Rig (id=1233162) 
-Hotfixed         : NEW SPELL
 School           : Shadow
 Spell Type       : None
 Range            : 100 yards
@@ -260278,7 +260250,6 @@ Attributes       : Allow Cast While Dead (23), Allow While Mounted (24), Allow W
 Effects          :
 #1 (id=1226406)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 80 | Points Per Level: 1 | Target: Any Target (25)
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc1213551
 Tooltip          : $@spelldesc1213551
 

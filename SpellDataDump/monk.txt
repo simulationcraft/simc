@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59679 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59888 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -14576,7 +14576,6 @@ Description      : $@spelldesc442818
 Tooltip          : The $?c2[damage of your next Rising Sun Kick is increased by $s1% or the healing of your next Vivify is increased by by $s2%][damage of your next Rising Sun Kick is increased by $s1%].
 
 Name             : Celestial Conduit (id=443028) [Spell Family (53)] 
-Hotfixed         : Attributes
 Talent Entry     : Conduit of the Celestials (Windwalker, Mistweaver) [tree=hero, row=1, col=1, max_rank=1, req_points=1]
 Class            : Monk
 School           : Nature

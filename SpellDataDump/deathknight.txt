@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59679 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59888 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -17182,7 +17182,6 @@ Effects          :
 Description      : $@spelldesc455398
 
 Name             : Incite Terror (id=458478) [Spell Family (15)] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Spell Type       : None

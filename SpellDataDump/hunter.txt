@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59679 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59888 Live
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -2570,12 +2570,12 @@ Hotfixed         : Base Value (0 -> 15)
                    Base Value: 57.5 | Scaled Value: 57.5 | PvP Coefficient: 0.59 | Target: Self (1)
                    Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 91
-Hotfixed         : PvP Coefficient (0 -> 0.59)
+Hotfixed         : Base Value (5 -> 57.5), PvP Coefficient (0 -> 0.59)
 #13 (id=1196243) : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 57.5 | Scaled Value: 57.5 | PvP Coefficient: 0.59 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Black Arrow (466930), Black Arrow (468037), Black Arrow (468572)
                    Family Flags: 91
-Hotfixed         : PvP Coefficient (0 -> 0.59)
+Hotfixed         : Base Value (5 -> 57.5), PvP Coefficient (0 -> 0.59)
 #14 (id=1196831) : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 50 | Scaled Value: 50 | Misc Value 2: 4251 (Label) | Target: Self (1)
                    Affected Spells (Label): Shadow Surge (444269)
@@ -11396,7 +11396,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Wind Arrow (191043), Cobra Shot (193455), Stomp (199530), Stampede (201594), Fury of the Eagle (203413), Butchery (212436), Explosive Shot (212680), Barbed Shot (217200), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Flanking Strike (259516), Scorching Wildfire (259587), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267617), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565), Resonating Arrow (308495), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Wildfire Cluster (336899), Chimaera Shot (344120), Chimaera Shot (344121), Bloodshed (346396), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Coordinated Assault (360969), Death Chakram (361756), Latent Poison (378016), Killer Companion (378955), Spearhead (378957), Murloc Stampede (388719), Wailing Arrow (392058), Wailing Arrow (392060), Wailing Arrow (392061), Greater Mrgrglhjorn (396968), Shadow Surge (444269), Sentinel (450412), Lunar Storm (450883), Symphonic Arsenal (451194), Lunar Storm (453398), Lunar Storm (457978), Spearhead (459690), Merciless Blow (459870), Rapid Fire (460496), Black Arrow (466930), Bleak Powder (467914), Black Arrow (468037), Boar Charge (471936), Boar Charge (471938), Rend Flesh (471999), Bleak Powder (472084), Merciless Blow (1217375), Lunar Storm (1217459), Poisoned Barbs (1217549), Spearhead (1221386)
                    Family Flags: 106
-Hotfixed         : PvP Coefficient (0.5 -> 1)
 Description      : $@spelldesc360966
 Tooltip          : Suffering $s1 damage every $t1 sec.
 $@auracaster has a $s2% increased chance to critically strike this target$?s378962[ and their critical strikes deal $s3% increased damage.][.]
@@ -16701,7 +16700,6 @@ Attributes       : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Unknow
 Effects          :
 #1 (id=1189797)  : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 234018 | Misc Value 2: 0x17ed | Radius: 0 - 5 yards | Target: At Enemy (53) -> At Random (72)
-Hotfixed         : Target 1 (75 -> 53), Target 2 (0 -> 72)
 
 Name             : Bear Summon (id=471993) [Spell Family (9), Hidden] 
 Class            : Hunter
@@ -18182,7 +18180,6 @@ Effects          :
 #3 (id=1207898)  : Apply Aura (6) | Modify Crit Damage Done% (163)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
-Hotfixed         : PvP Coefficient (0.5 -> 1)
 Description      : $@spelldesc360966
 Tooltip          : $@auracaster has a $s2% increased chance to critically strike this target$?s378962[ and their critical strikes deal $378962s2% increased damage.][.]
 

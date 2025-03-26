@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59679 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59888 Live
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -16353,7 +16353,6 @@ Effects          :
                    Affected Spells (Label): Item Effects (3959)
 
 Name             : Awakening Storms (id=462131) [Spell Family (11)] 
-Hotfixed         : Aura Interrupt
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -18920,7 +18919,6 @@ Effects          :
                    Base Value: -17 | Scaled Value: -17 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Frost Shock (196840)
                    Family Flags: 31
-Hotfixed         : Affects Spells, PvP Coefficient (1 -> 0)
 Description      : Elemental Shaman baseline passive
 
 
