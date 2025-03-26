@@ -3560,12 +3560,45 @@ struct crackling_jade_lightning_t : public monk_spell_t
 // ==========================================================================
 // Breath of Fire
 // ==========================================================================
-struct breath_of_fire_dot_t : public monk_spell_t
+struct breath_of_fire_state_t : public action_state_t
 {
   bool blackout_combo;
 
+  breath_of_fire_state_t( action_t* a, player_t* t )
+    : action_state_t( a, t ),
+      blackout_combo( false )
+  {
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s );
+    fmt::print( s, " blackout_combo={}", blackout_combo );
+    return s;
+  }
+
+  void initialize() override
+  {
+    action_state_t::initialize();
+    blackout_combo = false;
+  }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    action_state_t::copy_state( o );
+    auto other_sa_state = debug_cast<const breath_of_fire_state_t*>( o );
+    blackout_combo = other_sa_state->blackout_combo;
+  }
+};
+
+struct breath_of_fire_dot_t : public monk_spell_t
+{
+protected:
+  using state_t = breath_of_fire_state_t;
+
+public:
   breath_of_fire_dot_t( monk_t *p )
-    : monk_spell_t( p, "breath_of_fire_dot", p->talent.brewmaster.breath_of_fire_dot ), blackout_combo( false )
+    : monk_spell_t( p, "breath_of_fire_dot", p->talent.brewmaster.breath_of_fire_dot )
   {
     background    = true;
     tick_may_crit = may_crit = true;
@@ -3575,23 +3608,37 @@ struct breath_of_fire_dot_t : public monk_spell_t
   double composite_persistent_multiplier( const action_state_t *state ) const override
   {
     double cpm = monk_spell_t::composite_persistent_multiplier( state );
-    if ( blackout_combo )
+
+    const state_t* s = cast_state( state );
+
+    if ( s->blackout_combo )
       cpm *= 1.0 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
+
     return cpm;
   }
 
-  void execute() override
+  action_state_t* new_state() override
   {
-    // blackout combo buffs only one of the breath of fire dot applications from
-    // a single cast
-    monk_spell_t::execute();
-    blackout_combo = p()->buff.blackout_combo->up();
-    p()->buff.blackout_combo->expire();
+    return new state_t( this, target );
+  }
+
+  state_t* cast_state( action_state_t* s )
+  {
+    return static_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const state_t*>( s );
   }
 };
 
 struct breath_of_fire_t : public monk_spell_t
 {
+protected:
+  using state_t = breath_of_fire_state_t;
+
+public:
   struct dragonfire_brew_t : monk_spell_t
   {
     dragonfire_brew_t( monk_t *player )
@@ -3610,11 +3657,13 @@ struct breath_of_fire_t : public monk_spell_t
 
   dragonfire_brew_t *dragonfire_brew;
   bool no_bof_hit;
+  bool blackout_combo;
 
   breath_of_fire_t( monk_t *p, util::string_view options_str )
     : monk_spell_t( p, "breath_of_fire", p->talent.brewmaster.breath_of_fire ),
       dragonfire_brew( nullptr ),
-      no_bof_hit( false )
+      no_bof_hit( false ),
+      blackout_combo( false )
   {
     add_option( opt_bool( "no_bof_hit", no_bof_hit ) );
     parse_options( options_str );
@@ -3643,30 +3692,60 @@ struct breath_of_fire_t : public monk_spell_t
     return am;
   }
 
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  state_t* cast_state( action_state_t* s )
+  {
+    return static_cast<state_t*>( s );
+  }
+
+  const state_t* cast_state( const action_state_t* s ) const
+  {
+    return static_cast<const state_t*>( s );
+  }
+
   void execute() override
   {
     p()->buff.charred_passions->trigger();
     if ( no_bof_hit )
       return;
 
-    // Track BoC->BoF before the buff gets consumed by the dot application
-    if ( p()->buff.blackout_combo->up() )
-      p()->proc.blackout_combo_breath_of_fire->occur();
+    blackout_combo = p()->buff.blackout_combo->up();
 
-    monk_spell_t::execute();
+    if ( blackout_combo )
+    {
+      p()->proc.blackout_combo_breath_of_fire->occur();
+      p()->buff.blackout_combo->expire();
+    }
+
     if ( dragonfire_brew )
       dragonfire_brew->execute();
 
-    // If no targets are affected by the dot, then we need to consume BoC explicitly
-    p()->buff.blackout_combo->expire();
+    monk_spell_t::execute();
   }
 
-  void impact( action_state_t *state ) override
+  void impact( action_state_t *s ) override
   {
-    monk_spell_t::impact( state );
+    propagate_const<action_t *> dot = p()->active_actions.breath_of_fire;
 
-    if ( get_td( state->target )->debuff.keg_smash->up() )
-      p()->active_actions.breath_of_fire->execute_on_target( state->target );
+    state_t* dot_state = cast_state( dot->get_state() );
+    dot_state->target = s->target;
+
+    // blackout combo buffs only one of the breath of fire dot applications from
+    // a single cast
+    if ( get_td( dot_state->target )->debuff.keg_smash->up() && blackout_combo )
+    {
+      dot_state->blackout_combo = true;
+      blackout_combo = false;
+    }
+
+    dot->snapshot_state( dot_state, p()->active_actions.breath_of_fire->amount_type( dot_state ) );
+    dot->schedule_execute( dot_state );
+
+    monk_spell_t::impact( dot_state );
   }
 };
 
