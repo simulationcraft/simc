@@ -18940,6 +18940,7 @@ Effects          :
 Description      : $s1% of all healing done to you from other sources heals up to $s2 nearby allies, divided evenly among them.
 
 Name             : Lightbearer (id=469421) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -18947,10 +18948,11 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Attributes       : Do Not Sheath (18), No Aura Icon (60), Include In Advanced Combat Log (72), Can't Crit (93), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Aura Points On Client (268), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Do Not Sheath (18), No Aura Icon (60), Include In Advanced Combat Log (72), Can't Crit (93), Aura Points On Client (268)
 Effects          :
 #1 (id=1183775)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Target: At Self (18) -> At Friendly in Area (31)
+Hotfixed         : Target 1 (21 -> 18), Target 2 (0 -> 31)
 Description      : $@spelldesc469416
 
 Name             : Selfless Healer (id=469434) [Spell Family (10), Passive, Hidden] 
