@@ -1742,7 +1742,7 @@ void parse_action_base_t::parsed_effects_html( report::sc_html_stream& os )
     print_parsed_type( os, &VEC::crit_bonus_effects, "Critical Strike Bonus Damage" );
     print_parsed_type( os, &VEC::flat_execute_time_effects, "Flat Cast Time", nullptr, timespan_fn );
     print_parsed_type( os, &VEC::execute_time_effects, "Percent Cast Time" );
-    print_parsed_type( os, &VEC::gcd_effects, "GCD" );
+    print_parsed_type( os, &VEC::gcd_effects, "Percent GCD" );
     print_parsed_type( os, &VEC::flat_dot_duration_effects, "Flat Duration", nullptr, timespan_fn );
     print_parsed_type( os, &VEC::dot_duration_effects, "Percent Duration" );
     print_parsed_type( os, &VEC::flat_tick_time_effects, "Flat Tick Time", nullptr, timespan_fn );

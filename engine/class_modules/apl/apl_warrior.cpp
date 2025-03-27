@@ -184,15 +184,14 @@ void arms( player_t* p )
   colossus_aoe->add_action( "thunderous_roar" );
   colossus_aoe->add_action( "avatar" );
   colossus_aoe->add_action( "sweeping_strikes" );
-  colossus_aoe->add_action( "ravager" );
   colossus_aoe->add_action( "warbreaker" );
+  colossus_aoe->add_action( "ravager" );
   colossus_aoe->add_action( "champions_spear" );
   colossus_aoe->add_action( "colossus_smash" );
   colossus_aoe->add_action( "cleave" );
   colossus_aoe->add_action( "bladestorm,if=talent.unhinged|talent.merciless_bonegrinder" );
   colossus_aoe->add_action( "thunder_clap,if=dot.rend.remains<5" );
   colossus_aoe->add_action( "demolish,if=buff.colossal_might.stack=10&(debuff.colossus_smash.remains>=2|cooldown.colossus_smash.remains>=7)" );
-  colossus_aoe->add_action( "overpower,if=talent.dreadnaught" );
   colossus_aoe->add_action( "mortal_strike" );
   colossus_aoe->add_action( "overpower" );
   colossus_aoe->add_action( "thunder_clap" );

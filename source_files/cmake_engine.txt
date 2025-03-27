@@ -75,6 +75,7 @@ dbc/spelltext_data.hpp
 dbc/talent_data.hpp
 dbc/temporary_enchant.hpp
 dbc/trait_data.hpp
+dbc/wow_version.hpp
 interfaces/bcp_api.hpp
 interfaces/sc_http.hpp
 interfaces/sc_http_curl.hpp
@@ -288,6 +289,7 @@ dbc/spelltext_data.cpp
 dbc/talent_data.cpp
 dbc/temporary_enchant.cpp
 dbc/trait_data.cpp
+dbc/wow_version.cpp
 interfaces/bcp_api.cpp
 interfaces/sc_http.cpp
 interfaces/sc_http_curl.cpp

@@ -55,13 +55,13 @@ main_hand=,id=232805,bonus_id=4800/4786/1527/11996,enchant_id=7463,enchant=autho
 
 save=TWW2_Shaman_Elemental.simc
 
-shaman="TWW2_Shaman_Enhancement_Totemic"
+shaman="TWW2_Shaman_Enhancement"
 level=80
 race=maghar_orc
 spec=enhancement
 role=attack
 position=back
-talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMjZGGDzMzMzMbzMWGAAAAAAAAAAgFYBmxiGbDgZC2AwsMZGYZZMzMDmZmNjlZmJbsMMmZAAGA
+talents=CcQAAAAAAAAAAAAAAAAAAAAAAMzMjZGGDzMzMzMbzMWGAAAAAAAAAAgFYDmxiGbDgZC2AwsMZGYZZMzMDmZmNjlZmJbsMMmZAAGA
 
 head=gale_sovereigns_charged_hood,id=229262,ilevel=678,gem_id=213743
 neck=gobfathers_gifted_bling,id=228842,ilevel=678,gem_id=213491/213491
@@ -80,9 +80,9 @@ trinket2=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
 main_hand=gallywixs_iron_thumb,id=228899,ilevel=678,enchant=authority_of_the_depths_3
 off_hand=everforged_mace,id=222442,bonus_id=10421/9633/8902/9627/8793/10222/11144/11300/8960,ilevel=675,enchant=authority_of_the_depths_3,crafted_stats=36/32
 
-save=TWW2_Shaman_Enhancement_Totemic.simc
+save=TWW2_Shaman_Enhancement.simc
 
-shaman="TWW2_Shaman_Enhancement"
+shaman="TWW2_Shaman_Enhancement_Stormbringer"
 level=80
 race=maghar_orc
 spec=enhancement
@@ -107,7 +107,7 @@ trinket2=eye_of_kezan,id=230198,bonus_id=6652/10356/11996/1527/10255,ilevel=678
 main_hand=gallywixs_iron_thumb,id=228899,ilevel=678,enchant=authority_of_the_depths_3
 off_hand=everforged_mace,id=222442,bonus_id=10421/9633/8902/9627/8793/10222/11144/11300/8960,ilevel=675,enchant=authority_of_the_depths_3,crafted_stats=36/32
 
-save=TWW2_Shaman_Enhancement.simc
+save=TWW2_Shaman_Enhancement_Stormbringer.simc
 
 # # shaman="TWW2_Shaman_Restoration"
 # # level=70

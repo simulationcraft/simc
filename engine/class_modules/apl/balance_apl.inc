@@ -20,7 +20,7 @@ def->add_action( "variable,name=ca_effective_cd,value=cooldown.ca_inc.remains<?c
 def->add_action( "variable,name=cd_condition,value=(fight_remains<(15+5*talent.incarnation_chosen_of_elune)*(1-talent.whirling_stars*0.2)|target.time_to_die>10&(!hero_tree.keeper_of_the_grove|buff.harmony_of_the_grove.up)&(!talent.whirling_stars|!talent.convoke_the_spirits|cooldown.convoke_the_spirits.remains<gcd.max*2|fight_remains<cooldown.convoke_the_spirits.remains+3|cooldown.convoke_the_spirits.remains>cooldown.ca_inc.full_recharge_time))&cooldown.ca_inc.ready&!buff.ca_inc.up" );
 def->add_action( "variable,name=convoke_condition,value=fight_remains<5|(buff.ca_inc.up|cooldown.ca_inc.remains>40)&(!hero_tree.keeper_of_the_grove|buff.harmony_of_the_grove.up|cooldown.force_of_nature.remains>15)" );
 def->add_action( "variable,name=eclipse_remains,value=buff.eclipse_lunar.remains<?buff.eclipse_solar.remains" );
-def->add_action( "variable,name=enter_lunar,value=talent.lunar_calling|spell_targets.starfire>2-(talent.umbral_intensity.rank+talent.soul_of_the_forest>1)" );
+def->add_action( "variable,name=enter_lunar,value=talent.lunar_calling|spell_targets.starfire>3-(talent.umbral_intensity|talent.soul_of_the_forest)" );
 def->add_action( "variable,name=boat_stacks,value=buff.balance_of_all_things_arcane.stack+buff.balance_of_all_things_nature.stack" );
 def->add_action( "use_item,name=spymasters_web,if=fight_remains<20","ITEMS" );
 def->add_action( "use_item,name=imperfect_ascendancy_serum,if=dot.sunfire.remains>4&(dot.moonfire.remains>4|talent.treants_of_the_moon&(cooldown.force_of_nature.remains<3|buff.harmony_of_the_grove.up)&variable.ca_effective_cd<1|fight_remains<20|fight_remains<variable.ca_effective_cd&(buff.harmony_of_the_grove.up|cooldown.convoke_the_spirits.ready))&buff.spymasters_report.stack<=29" );
@@ -94,7 +94,7 @@ aoe->add_action( "half_moon" );
 aoe->add_action( "full_moon" );
 aoe->add_action( "wild_mushroom,if=!prev_gcd.1.wild_mushroom&!dot.fungal_growth.ticking" );
 aoe->add_action( "force_of_nature,if=!hero_tree.keeper_of_the_grove" );
-aoe->add_action( "starfire,if=talent.lunar_calling|buff.eclipse_lunar.up&spell_targets.starfire>1" );
+aoe->add_action( "starfire,if=talent.lunar_calling|buff.eclipse_lunar.up&spell_targets.starfire>3-(talent.umbral_intensity|talent.soul_of_the_forest)" );
 aoe->add_action( "wrath" );
 
 pre_cd->add_action( "use_item,name=spymasters_web,if=variable.cd_condition&(buff.spymasters_report.stack>29|fight_remains<cooldown.ca_inc.duration)","PRE_CD" );

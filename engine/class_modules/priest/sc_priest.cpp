@@ -4596,19 +4596,6 @@ struct priest_module_t final : public module_t
   }
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Priest", "2025-03-21", "Shadow Priest direct modifier reduced to 21%", 179717,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 21 )
-        .verification_value( 24 );
-
-    hotfix::register_effect( "Priest", "2025-03-21", "Shadow Priest periodic modifier reduced to 21%", 191068,
-                             hotfix::HOTFIX_FLAG_LIVE )
-        .field( "base_value" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 21 )
-        .verification_value( 24 );
   }
   void combat_begin( sim_t* ) const override
   {

@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59679 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.59888 Live
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Death Knight, Warrior, Hunter, Rogue, Monk, Demon Hunter
 School           : Physical
@@ -1724,7 +1724,8 @@ Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No
 Aura Interrupt   : Enter World (22)
 Effects          :
 #1 (id=300687)   : Apply Aura (6) | Modify Parry% (47)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Hotfixed         : Base Value (15 -> 10)
 #2 (id=300915)   : Apply Aura (6) | Modify Armor by Primary Stat% (268)
                    Base Value: 75 | Scaled Value: 75 | Misc Value: 1 | Target: Self (1)
 Description      : $@spelldesc203720
@@ -12746,7 +12747,6 @@ Description      : |cFFFFFFFFWinning Streak!|r persists for $1220706d after bein
 Entering demon form sacrifices all |cFFFFFFFFWinning Streak!|r stacks to gain $1217055s1% critical strike chance per stack consumed. Lasts $1217055d.
 
 Name             : Demon Hunter Vengeance 11.1 Class Set 2pc (id=1215990) [Spell Family (107), Passive, Hidden] 
-Hotfixed         : Attributes
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None

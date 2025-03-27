@@ -95,6 +95,7 @@ SRC += \
     dbc$(PATHSEP)talent_data.cpp \
     dbc$(PATHSEP)temporary_enchant.cpp \
     dbc$(PATHSEP)trait_data.cpp \
+    dbc$(PATHSEP)wow_version.cpp \
     interfaces$(PATHSEP)bcp_api.cpp \
     interfaces$(PATHSEP)sc_http.cpp \
     interfaces$(PATHSEP)sc_http_curl.cpp \

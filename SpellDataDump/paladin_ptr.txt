@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.59735 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.59919 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -50,7 +50,7 @@ Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Fa
 Aura Interrupt   : Leave World (19), Enter World (22)
 Effects          :
 #1 (id=211)      : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.5 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.75 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=1183800)  : Apply Aura (6) | Modify Healing Received% (118)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
@@ -1844,16 +1844,12 @@ Labels           : 16: Class Spells
                  : 2835: Spatial Paradox (406789 effect#13)
                  : 4252
 Category Cooldown: 15 seconds
-Proc Chance      : 101%
-Proc Flags       : Yellow Melee
 Affecting Spells : Protection Paladin (137028 effect#5), Holy Paladin (137029 effect#4)
 Family Flags     : 84
 Attributes       : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Discount Power On Miss (59), Completely Blocked (99), Taps immediately (215), No Attack Miss (249), Allow Class Ability Procs (416), Interrupts Current Cast (419)
 Effects          :
 #1 (id=102188)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Enemy (6)
-#2 (id=1070937)  : Apply Aura (6) | Proc Trigger Spell (42)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Interrupts spellcasting and prevents any spell in that school from being cast for $d.
 
 Name             : Dummy 5.0 Talent (id=102052) 
@@ -2021,9 +2017,9 @@ Family Flags     : 65, 90
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Active Threat (94), Not a Proc (105), No Cast Log (128), Always AOE Line of Sight (186), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=128371)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.32 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 6.48 | Target: Enemy (6)
 #2 (id=128372)   : Direct Heal (10) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 3.78 | Radius: 0 - 30 yards | Target: At Enemy (53) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.914 | Radius: 0 - 30 yards | Target: At Enemy (53) -> At Friendly in Area (31)
 #3 (id=128388)   : Server Side Script (77) | Attributes: Add Target (Dest) Combat Reach to AOE (11)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 30 yards | Target: At Enemy (53) -> To Area (8)
 Description      : $@spelldesc114165
@@ -2049,9 +2045,9 @@ Family Flags     : 65, 90
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Not an Action (92), Active Threat (94), Not a Proc (105), Always AOE Line of Sight (186), Not an Attack (194), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=128396)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 7.56 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 11.34 | Target: Friendly (21)
 #2 (id=128397)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.89 | Radius: 0 - 30 yards | Target: At Friendly (132) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.457 | Radius: 0 - 30 yards | Target: At Friendly (132) -> At Enemy in Area (16)
 #3 (id=128398)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 30 yards | Target: At Friendly (132) -> At Enemy in Area (16)
 Description      : $@spelldesc114165
@@ -2390,7 +2386,7 @@ Effects          :
                    Family Flags: 39, 47, 126
 #4 (id=191094)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Crusader Strike (35395), Divine Storm (53385), Templar's Verdict (85256), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198034), Eye for an Eye (205191), Eye for an Eye (205202), Judgment (214222), Justicar's Vengeance (215661), Templar's Verdict (224266), Zeal (269937), Judgment (275773), Judgment (275779), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Final Verdict (383328), Expurgation (383344), Highlord's Judgment (383921), Boundless Judgment (383970), Judgment (383991), Execution Sentence (387113), Execution Sentence (387200), Blade of Justice (404358), Crusading Strikes (408385)
+                   Affected Spells: Judgment (20271), Hammer of Wrath (24275), Crusader Strike (35395), Divine Storm (53385), Templar's Verdict (85256), Crusader Strike (132331), Blade of Justice (184575), Judgment (197277), Divine Hammer (198034), Eye for an Eye (205191), Eye for an Eye (205202), Judgment (214222), Justicar's Vengeance (215661), Templar's Verdict (224266), Zeal (269937), Judgment (275773), Judgment (275779), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Final Verdict (383328), Expurgation (383344), Highlord's Judgment (383921), Boundless Judgment (383970), Judgment (383991), Execution Sentence (387113), Execution Sentence (387200), Blade of Justice (404358), Crusading Strikes (408385), Execution Sentence (1234189)
                    Family Flags: 23, 31, 39, 47, 49, 54, 63, 77, 80, 88, 108, 126
 #5 (id=191095)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 1627 (Category) | Target: Self (1)
@@ -2472,16 +2468,16 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0 | Misc Value: 12 | Misc Value 2: 2627 (Label) | Target: Self (1)
                    Affected Spells (Label): Empyrean Legacy (387170)
 #29 (id=1077113) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0 | Misc Value: 12 | Misc Value 2: 2628 (Label) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0 | Misc Value: 12 | Misc Value 2: 2628 (Label) | Target: Self (1)
                    Affected Spells (Label): Avenging Wrath (384376)
 #30 (id=1077114) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 12 | Misc Value 2: 2628 (Label) | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 12 | Misc Value 2: 2628 (Label) | Target: Self (1)
                    Affected Spells (Label): Avenging Wrath (384376)
 #31 (id=1077116) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0 | Misc Value: 3 | Misc Value 2: 2629 (Label) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0 | Misc Value: 3 | Misc Value 2: 2629 (Label) | Target: Self (1)
                    Affected Spells (Label): Avenging Wrath: Might (384442)
 #32 (id=1077117) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 3 | Misc Value 2: 2629 (Label) | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 3 | Misc Value 2: 2629 (Label) | Target: Self (1)
                    Affected Spells (Label): Avenging Wrath: Might (384442)
 
 Name             : Protection Paladin (id=137028) [Spell Family (10), Passive, Hidden] 
@@ -2506,7 +2502,7 @@ Effects          :
                    Affected Spells (Category): Judgment (20271), Judgment (275773), Judgment (275779)
 #4 (id=191090)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Denounce (2812), Holy Shock (20473), Holy Shock (25912), Consecration (26573), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Light of Dawn (85222), Crusader Strike (132331), Blade of Justice (184575), Divine Hammer (198034), Light of Dawn (225311), Consecration (243597), Execution Sentence (343527), Final Reckoning (343721), Focused Enmity (378845), Expurgation (383344), Execution Sentence (387113), Execution Sentence (387200), Consecration (387881), Blade of Justice (404358), Shield of the Righteous (415091), Consecration (419810)
+                   Affected Spells: Denounce (2812), Holy Shock (20473), Holy Shock (25912), Consecration (26573), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Light of Dawn (85222), Crusader Strike (132331), Blade of Justice (184575), Divine Hammer (198034), Light of Dawn (225311), Consecration (243597), Execution Sentence (343527), Final Reckoning (343721), Focused Enmity (378845), Expurgation (383344), Execution Sentence (387113), Execution Sentence (387200), Consecration (387881), Blade of Justice (404358), Shield of the Righteous (415091), Consecration (419810), Execution Sentence (1234189)
                    Family Flags: 5, 14, 21, 31, 47, 50, 52, 57, 61, 82, 108, 125, 126
 #5 (id=191091)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 11 | Target: Self (1)
@@ -2589,16 +2585,16 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179713)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 4 | Scaled Value: 4
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Arcing Light (119952), Barrier of Faith (148039), Eternal Flame (156322), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Merciful Auras (210291), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Barrier of Faith (395180), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Seal of the Crusader (416771), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535)
                    Family Flags: 38, 46, 90
 #2 (id=191084)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 22
+                   Base Value: 4 | Scaled Value: 4 | Misc Value: 22
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Arcing Light (119952), Eternal Flame (156322), Merciful Auras (183415), Judgment of Light (183811), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Merciful Auras (210291), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214), Divine Toll (375576), Golden Path (377129), Light of the Titans (378412), Seal of Charity (384810), Recompense (384914), Barrier of Faith (395180), Lightforged Blessing (403460), Lightforged Blessing (407467), Glimmer of Light (416619), Seal of the Crusader (416771), Holy Reverberation (423377), Dawnlight (431381), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461529), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Insurance! (1215534), Insurance! (1215535)
                    Family Flags: 46
 #3 (id=191085)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Denounce (2812), Holy Shock (20473), Holy Shock (25912), Consecration (26573), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Light of Dawn (85222), Crusader Strike (132331), Blade of Justice (184575), Divine Hammer (198034), Light of Dawn (225311), Consecration (243597), Execution Sentence (343527), Final Reckoning (343721), Focused Enmity (378845), Expurgation (383344), Execution Sentence (387113), Execution Sentence (387200), Consecration (387881), Blade of Justice (404358), Shield of the Righteous (415091), Consecration (419810)
+                   Affected Spells: Denounce (2812), Holy Shock (20473), Holy Shock (25912), Consecration (26573), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Light of Dawn (85222), Crusader Strike (132331), Blade of Justice (184575), Divine Hammer (198034), Light of Dawn (225311), Consecration (243597), Execution Sentence (343527), Final Reckoning (343721), Focused Enmity (378845), Expurgation (383344), Execution Sentence (387113), Execution Sentence (387200), Consecration (387881), Blade of Justice (404358), Shield of the Righteous (415091), Consecration (419810), Execution Sentence (1234189)
                    Family Flags: 5, 14, 21, 31, 47, 50, 52, 57, 61, 82, 108, 125, 126
 #4 (id=191086)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25 | Misc Value: 11 | Target: Self (1)
@@ -2630,7 +2626,7 @@ Effects          :
 #13 (id=1032420) : Apply Aura (6) | Modify Guardian Damage Done% (531)
                    Base Value: 0 | Scaled Value: 0
 #14 (id=1032421) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 91 | Scaled Value: 91 | Target: Self (1)
+                   Base Value: 129 | Scaled Value: 129 | Target: Self (1)
                    Affected Spells: Word of Glory (85673), Eternal Flame (156322), Afterimage (391309), Eternal Flame (461432)
                    Family Flags: 78, 89
 #15 (id=1039315) : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
@@ -3365,7 +3361,7 @@ Family Flags     : 27, 65, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=267535)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.3311 | PvP Coefficient: 1.25 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.3311 | PvP Coefficient: 1.5 | Target: Enemy (6)
 #2 (id=267536)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Resource: holy_power | Target: Self (1)
 #3 (id=1051842)  : Trigger Spell (64): Blade of Justice
@@ -4504,7 +4500,7 @@ Attributes       : Do Not Sheath (18), No Immunities (29), Can't Crit (93), Aura
 Effects          :
 #1 (id=310496)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Word of Glory (85673), Justicar's Vengeance (215661), Templar's Verdict (224266), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Final Verdict (383328), Radiant Decree (383469), Execution Sentence (387113), Execution Sentence (387200), Intercession (391054), Afterimage (391309)
+                   Affected Spells: Divine Storm (53385), Templar's Verdict (85256), Word of Glory (85673), Justicar's Vengeance (215661), Templar's Verdict (224266), Final Verdict (336872), Execution Sentence (343527), Final Reckoning (343721), Final Verdict (383328), Radiant Decree (383469), Execution Sentence (387113), Execution Sentence (387200), Intercession (391054), Afterimage (391309), Execution Sentence (1234189)
                    Family Flags: 31, 49, 55, 77, 78, 88, 111
 #2 (id=314994)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 14 | Target: Self (1)
@@ -5140,7 +5136,7 @@ Family Flags     : 46, 82
 Attributes       : Not a Proc (105), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=337592)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.5456 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 1.85472 | Target: Friendly (21)
 Description      : $@spelldesc85222
 
 Name             : PvP Rules Enabled for Dummy (id=228695) [Hidden] 
@@ -5282,6 +5278,7 @@ Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
+                 : 4941
 Category Cooldown: 120 seconds
 Stacks           : 10 maximum
 Proc Chance      : 100%
@@ -5289,7 +5286,7 @@ Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostil
 Affecting Spells : Light's Decree (286231 effect#2), Sanctified Wrath (317866 effect#3), Avenging Wrath (317872 effect#1), Avenging Wrath (384376 effect#4), Divine Wrath (406872 effect#1)
 Family Flags     : 45
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=349842)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -8460,6 +8457,8 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.65 | Target: Enemy (6)
 #3 (id=1054911)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+#4 (id=1228426)  : Trigger Spell (64): Execution Sentence
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1234189 | Target: Enemy (6)
 Description      : A hammer slowly falls from the sky upon the target, after $d, they suffer $s2% of the damage taken from your abilities as Holy damage during that time.
 
 $?s406158 [|cFFFFFFFFGenerates $406158s1 Holy Power.][]
@@ -9826,7 +9825,7 @@ Family Flags     : 27, 44, 65, 77
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1015174)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.6139 | PvP Coefficient: 1.1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.93668 | PvP Coefficient: 1.1 | Target: Enemy (6)
 #2 (id=1015175)  : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Unleashes a powerful weapon strike that deals $s1 $?s403664[Holystrike][Holy] damage to an enemy target,
@@ -12985,7 +12984,7 @@ Family Flags     : 27, 65, 126
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), No Aura Log (202), Use Spell Base Level For Scaling (332), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1051843)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.17039 | PvP Coefficient: 1.25 | Radius: 0 - 6 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.17039 | PvP Coefficient: 1.5 | Radius: 0 - 6 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : Pierces enemies within 6 yds of your target with a blade of light, dealing $s1 Holy damage.
 
 Deals reduced damage beyond 5 targets.
@@ -13821,7 +13820,7 @@ Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log
 Effects          :
 #1 (id=1070071)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
                    Base Value: 4000 | Scaled Value: 4000 | Misc Value: 1 | Misc Value 2: 2578 (Label) | Target: Self (1)
-                   Affected Spells (Label): Execution Sentence (343527), Final Reckoning (343721)
+                   Affected Spells (Label): Execution Sentence (343527), Final Reckoning (343721), Execution Sentence (1234189)
 Description      : Final Reckoning and Execution Sentence's durations are increased by ${$s1/1000} sec. 
 
 Name             : Divine Arbiter (id=406975) [Spell Family (10)] 
@@ -14276,11 +14275,11 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0 | Misc Value: 3 | Misc Value 2: 2655 (Label) | Target: Self (1)
                    Affected Spells (Label): Blessing of Sacrifice (6940)
 #5 (id=1079865)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Divine Protection (498), Divine Protection (403876)
                    Family Flags: 72
 #6 (id=1079866)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 0 | Misc Value: 3 | Target: Self (1)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 0 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Divine Protection (498), Divine Protection (403876)
                    Family Flags: 72
 #7 (id=1080083)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -14849,7 +14848,7 @@ Family Flags     : 27, 52, 65
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Require All Targets (58), Always Line of Sight (185), No Cooldown On Tooltip (192), Aura Points On Client (268), Area Effects Use Target Radius (328), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1084762)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 0.79 | Radius: 6 yards | Target: Cone to Enemy (104)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | AP Coefficient: 1.027 | Radius: 6 yards | Target: Cone to Enemy (104)
 #2 (id=1084763)  : Trigger Spell w/ Value (142): Lightforged Blessing
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 403460
 #3 (id=1084764)  : Trigger Spell w/ Value (142): Lightforged Blessing
@@ -15423,7 +15422,7 @@ Name             : Hammer of Light (id=427441) [Spell Family (10)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
-Duration         : 12 seconds
+Duration         : 20 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
@@ -17955,13 +17954,14 @@ Labels           : 16: Class Spells
                  : 292
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
                  : 3793: Divine Wrath (406872 effect#2)
+                 : 4941
 Stacks           : 10 maximum
 Proc Chance      : 100%
 Proc Flags       : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic
 Affecting Spells : Light's Decree (286231 effect#2), Sanctified Wrath (317866 effect#3), Avenging Wrath (317872 effect#1), Avenging Wrath (384376 effect#4), Divine Wrath (406872 effect#1)
 Family Flags     : 45
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
-Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
+Aura Interrupt   : Change Specialization (38), Raid Encounter End or M+ Start (41), Change Talent (46), Change Glyph (47)
 Effects          :
 #1 (id=1156860)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -19501,5 +19501,30 @@ Effects          :
 #1 (id=1219472)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Unknown(87) -> To Area (8)
 Description      : $@spelldesc433106
+
+Name             : Execution Sentence (id=1234189) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : None
+Range            : 30 yards
+Duration         : 8 seconds
+Labels           : 16: Class Spells
+                 : 26: Paladin Spells
+                 : 292
+                 : 2578: Executioner's Will (406940 effect#1)
+Affecting Spells : Retribution Paladin (137027 effect#4), Protection Paladin (137028 effect#4), Holy Paladin (137029 effect#3), Fires of Justice (209785 effect#1), The Magistrate's Judgment (337682 effect#1)
+Triggered By     : Execution Sentence (343527)
+Family Flags     : 31
+Attributes       : Not In Spellbook (143)
+Effects          :
+#1 (id=1228427)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : A hammer slowly falls from the sky upon the target, after $d, they suffer $s2% of the damage taken from your abilities as Holy damage during that time.
+
+$?s406158 [|cFFFFFFFFGenerates $406158s1 Holy Power.][]
+Tooltip          : Sentenced to suffer $s2% of the damage your abilities deal during its duration as Holy damage.
+Variables        : $Mastery=$?a267316[${1+$267316s1/100}][${1}]
+$DP=$?a223819[${1+$223819s2/100}][${1}]
+$mult=${$<Mastery>*$<DP>}
 
 

@@ -9,6 +9,16 @@
 #include "generated/client_data_version_ptr.inc"
 #endif
 
+wowv_t dbc::client_data_version( bool ptr )
+{
+#if SC_USE_PTR == 1
+  return ptr ? __ptr_client_data_version : __client_data_version;
+#else
+  (void) ptr;
+  return __client_data_version;
+#endif /* SC_USE_PTR */
+}
+
 std::string dbc::client_data_version_str( bool ptr )
 {
 #if SC_USE_PTR == 1

@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.59735 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.59919 PTR
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -3414,21 +3414,21 @@ Labels           : 16: Class Spells
 Attributes       : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179728)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
                    Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Bilescourge Bombers (267213), Umbral Blaze (273526), Pandemic Invocation (289367), Conflagrate (290644), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072), Soul Rot (331623), Deliberate Corruption (367831), Implosion (370371), Vile Taint (386931), Soul Rot (386997), Chaos Barrage (387985), Shadow Bolt (394238), Chaos Bolt (394246), Umbral Blaze (405802), Channel Demonfire (409890), Oblivion (417537), Searing Bolt (423886), Wicked Cleave (432120), Chaos Salvo (432596), Felseeker (434404), Infernal Bolt (434506), Chaos Bolt (434589), Ruination (434636), Felseeker (438973), Wither (445468), Wither (445474), Blackened Soul (445736), Malevolence (446285), Demonic Soul (449801), Wicked Reaping (449826), Soul Anathema (450538), Shared Fate (450593), Shadowbolt Volley (453176), Doom (453567), Malefic Touch (458131), Perpetual Unstability (459461), Doom (460553), Doom (460555), Channel Demonfire (1217787), Unstable Affliction (1219045)
                    Family Flags: 49
 #2 (id=191027)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Immolate (348), Doom (603), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Bilescourge Bombers (267213), Umbral Blaze (273526), Pandemic Invocation (289367), Conflagrate (290644), Scouring Tithe (312321), Unstable Affliction (316099), Impending Catastrophe (322167), Impending Catastrophe (322170), Malefic Rapture (324540), Decimating Bolt (325289), Soul Rot (325640), Decimating Bolt (327059), Decimating Bolt (327070), Decimating Bolt (327072), Soul Rot (331623), Deliberate Corruption (367831), Implosion (370371), Vile Taint (386931), Soul Rot (386997), Chaos Barrage (387985), Shadow Bolt (394238), Chaos Bolt (394246), Umbral Blaze (405802), Channel Demonfire (409890), Oblivion (417537), Searing Bolt (423886), Wicked Cleave (432120), Chaos Salvo (432596), Felseeker (434404), Infernal Bolt (434506), Chaos Bolt (434589), Ruination (434636), Felseeker (438973), Wither (445468), Wither (445474), Blackened Soul (445736), Malevolence (446285), Demonic Soul (449801), Wicked Reaping (449826), Soul Anathema (450538), Shared Fate (450593), Shadowbolt Volley (453176), Doom (453567), Malefic Touch (458131), Perpetual Unstability (459461), Doom (460553), Doom (460555), Channel Demonfire (1217787), Unstable Affliction (1219045)
                    Family Flags: 49
 #3 (id=191028)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #4 (id=191029)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
                    Affected Spells: Shadow Bolt (686), Infernal Bolt (434506)
                    Family Flags: 0
 #5 (id=191030)   : Apply Aura (6) | Modify Guardian Damage Done% (531)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #6 (id=261067)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #7 (id=261068)   : Apply Aura (6) | Dummy (4)
@@ -16970,7 +16970,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Misc Value: 12 | Misc Value 2: 4368 (Label) | Target: Self (1)
                    Affected Spells (Label): Jackpot! (1219034)
 #2 (id=1204438)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.667 | Target: Self (1)
 #3 (id=1212956)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 3 (23)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.5 | Misc Value: 23 | Misc Value 2: 4368 (Label) | Target: Self (1)
                    Affected Spells (Label): Jackpot! (1219034)
@@ -17081,9 +17081,9 @@ Family Flags     : 15, 49
 Attributes       : Not a Proc (105), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1202104)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.39355 | PvP Coefficient: 0.5 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.39355 | Target: Enemy (6)
 #2 (id=1202105)  : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.195657 | PvP Coefficient: 0.5 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
+                   Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.195657 | Radius: 0 - 8 yards | Target: At Enemy (53) -> At Enemy in Area (16)
 Description      : $@spelldesc196447
 
 Name             : Jackpot! (id=1217798) [Spell Family (5)] 

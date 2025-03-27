@@ -73,27 +73,29 @@ static damage_affected_by parse_damage_affecting_aura( action_t* a, spell_data_p
     if ( effect.type() != E_APPLY_AURA )
       continue;
 
-    if ( ( effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && a->data().affected_by( effect ) ) ||
-         ( effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL && a->data().affected_by_label( effect ) ) )
+    if ( effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS && a->data().affected_by( effect ) ||
+      effect.subtype() == A_MOD_DAMAGE_FROM_CASTER_SPELLS_LABEL && a->data().affected_by_label( effect ) )
     {
       affected_by.direct = as<uint8_t>( effect.spell_effect_num() + 1 );
       affected_by.tick   = as<uint8_t>( effect.spell_effect_num() + 1 );
       print_affected_by( a, effect, "spell damage taken increase" );
+
       return affected_by;
     }
     
-    if ( effect.subtype() != A_ADD_PCT_MODIFIER || !a->data().affected_by( effect ) )
-      continue;
-
-    if ( effect.misc_value1() == P_GENERIC )
+    if ( effect.subtype() == A_ADD_PCT_MODIFIER && a->data().affected_by( effect ) ||
+      effect.subtype() == A_ADD_PCT_LABEL_MODIFIER && a->data().affected_by_label( effect ) )
     {
-      affected_by.direct = as<uint8_t>( effect.spell_effect_num() + 1 );
-      print_affected_by( a, effect, "direct damage increase" );
-    }
-    else if ( effect.misc_value1() == P_TICK_DAMAGE )
-    {
-      affected_by.tick = as<uint8_t>( effect.spell_effect_num() + 1 );
-      print_affected_by( a, effect, "tick damage increase" );
+      if ( effect.misc_value1() == P_GENERIC )
+      {
+        affected_by.direct = as<uint8_t>( effect.spell_effect_num() + 1 );
+        print_affected_by( a, effect, "direct damage increase" );
+      }
+      else if ( effect.misc_value1() == P_TICK_DAMAGE )
+      {
+        affected_by.tick = as<uint8_t>( effect.spell_effect_num() + 1 );
+        print_affected_by( a, effect, "tick damage increase" );
+      }
     }
   }
   return affected_by;
@@ -568,6 +570,7 @@ public:
     proc_t* wild_call;
     proc_t* wild_instincts;
     proc_t* dire_command;
+    proc_t* bear_without_lftf;
 
     proc_t* deathblow;
 
@@ -1000,6 +1003,7 @@ public:
     timespan_t sentinel_watch_reduction = 0_s;
     howl_of_the_pack_leader_beast howl_of_the_pack_leader_next_beast = WYVERN;
     timespan_t fury_of_the_wyvern_extension = 0_s;
+    ground_aoe_event_t* current_boar_charge = nullptr;
   } state;
 
   struct options_t {
@@ -1926,6 +1930,9 @@ struct bear_t final : public dire_critter_t
   {
     dire_critter_t::summon( duration );
     
+    if ( !o()->buffs.lead_from_the_front->check() )
+      o()->procs.bear_without_lftf->occur();
+
     buffs.bear_summon->trigger( -1, buffs.bear_summon->default_value + ( o()->buffs.lead_from_the_front->check() ? o()->talents.lead_from_the_front_buff->effectN( 3 ).percent() : 0 ) );
 
     if ( actions.rend_flesh )
@@ -1948,7 +1955,8 @@ struct bear_t final : public dire_critter_t
 
     buffs.bear_summon = make_buff( this, "bear_summon", o()->talents.howl_of_the_pack_leader_bear_buff )
       ->set_default_value_from_effect( 1 )
-      ->apply_affecting_aura( o()->specs.beast_mastery_hunter );
+      ->apply_affecting_aura( o()->specs.beast_mastery_hunter )
+      ->apply_affecting_aura( o()->specs.survival_hunter );
   }
 
   const bear_td_t* find_target_data( const player_t* target ) const override
@@ -2447,7 +2455,6 @@ struct hunter_main_pet_t final : public hunter_main_pet_base_t
                                                         resource_regen_per_second( RESOURCE_FOCUS ) );
     const auto time_to_cd = actions.basic_attack->cooldown->remains();
     const auto remains = std::max( time_to_cd, time_to_fc );
-    // 2018-07-23 - hunter pets seem to have a "generic" lag of about .6s on basic attack usage
     const auto delay_mean = o() -> options.pet_basic_attack_delay;
     const auto delay_stddev = 100_ms;
     const auto lag = o()->bugs ? rng().gauss( delay_mean, delay_stddev ) : 0_ms;
@@ -3832,12 +3839,27 @@ bool hunter_t::consume_howl_of_the_pack_leader( player_t* target )
   if ( buffs.howl_of_the_pack_leader_boar->check() )
   {
     up = true;
-    make_event<ground_aoe_event_t>( *sim, this, 
+    state.current_boar_charge = make_event<ground_aoe_event_t>( *sim, this, 
       ground_aoe_params_t()
         .target( target )
         .duration( talents.howl_of_the_pack_leader_boar_charge_trigger->duration() )
         .pulse_time( talents.howl_of_the_pack_leader_boar_charge_trigger->effectN( 2 ).period() )
-        .action( actions.boar_charge ),
+        .action( actions.boar_charge )
+        .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
+            switch ( type )
+              {
+                case ground_aoe_params_t::EVENT_CREATED:
+                  state.current_boar_charge = event;
+                  break;
+                case ground_aoe_params_t::EVENT_STOPPED:
+                {
+                  state.current_boar_charge = nullptr;
+                  break;
+                }
+                default:
+                  break;
+              }
+          } ),
       true );
     buffs.howl_of_the_pack_leader_boar->expire();
 
@@ -4480,14 +4502,11 @@ struct kill_shot_base_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    if ( !background )
-    {
-      p()->buffs.deathblow->cancel();
-      p()->buffs.razor_fragments->cancel();
+    p()->buffs.deathblow->cancel();
+    p()->buffs.razor_fragments->cancel();
 
-      if ( p()->talents.headshot.ok() )
-        p()->consume_precise_shots();
-    }
+    if ( p()->talents.headshot.ok() )
+      p()->consume_precise_shots();
   }
 
   void impact( action_state_t* s ) override
@@ -4626,7 +4645,7 @@ struct bursting_shot_t : public hunter_ranged_attack_t
 
 // Black Arrow (Dark Ranger) =========================================================
 
-struct black_arrow_base_t : public kill_shot_base_t
+struct black_arrow_t final : public kill_shot_base_t
 {
   struct black_arrow_dot_t : public hunter_ranged_attack_t
   {
@@ -4690,17 +4709,77 @@ struct black_arrow_base_t : public kill_shot_base_t
     }
   };
 
-  black_arrow_dot_t* black_arrow_dot = nullptr;
+  // Withering Fire (Dark Ranger) =========================================================
+  struct withering_fire_t final : hunter_ranged_attack_t
+  {
+    black_arrow_dot_t* dot;
+
+    withering_fire_t( util::string_view n, hunter_t* p ) : hunter_ranged_attack_t( n, p, p->talents.withering_fire_black_arrow ),
+      dot( p->get_background_action<black_arrow_dot_t>( "black_arrow_dot" ) )
+    {
+      background = dual = true;
+      impact_action = dot;
+    }
+  };
+
   bleak_powder_t* bleak_powder = nullptr;
   black_arrow_dot_t* dot;
 
-  black_arrow_base_t( util::string_view n, hunter_t* p, spell_data_ptr_t s ) : kill_shot_base_t( n, p, s ),
+  struct
+  {
+    int count = 0;
+    withering_fire_t* action = nullptr;
+  } withering_fire;
+
+  double lower_health_threshold_pct;
+  double upper_health_threshold_pct;
+
+  black_arrow_t( hunter_t* p, util::string_view options_str ) : kill_shot_base_t( "black_arrow", p, p->talents.black_arrow_spell ),
+    lower_health_threshold_pct( data().effectN( 2 ).base_value() ),
+    upper_health_threshold_pct( data().effectN( 3 ).base_value() ),
     dot( p->get_background_action<black_arrow_dot_t>( "black_arrow_dot" ) )
   {
+    parse_options( options_str );
+
     impact_action = dot;
+
+    add_child( dot );
+    if ( dot->shadow_surge )
+      add_child( dot->shadow_surge );
 
     if ( p->talents.bleak_powder.ok() )
       bleak_powder = p->get_background_action<bleak_powder_t>( "bleak_powder" );
+
+    if ( p->talents.withering_fire.ok() )
+    {
+      withering_fire.count = as<int>( p->talents.withering_fire->effectN( 3 ).base_value() + p->specs.beast_mastery_hunter->effectN( 13 ).base_value() );
+      withering_fire.action = p->get_background_action<withering_fire_t>( "black_arrow_withering_fire" );
+      add_child( withering_fire.action );
+    }
+  }
+
+  void execute() override
+  {
+    kill_shot_base_t::execute();
+
+    if ( rng().roll( p()->talents.ebon_bowstring->effectN( 1 ).percent() ) )
+      p()->trigger_deathblow( true );
+
+    if ( p()->buffs.withering_fire->up() )
+    {
+      auto tl = target_list();
+
+      // Prefer targets without Black Arrow ticking.
+      auto start = tl.begin();
+      std::partition( *start == target ? std::next( start ) : start, tl.end(), [ this ]( player_t* t ) {
+        return !td( t )->dots.black_arrow->is_ticking();
+      } );
+      target_cache.is_valid = false;
+
+      int t = 1;
+      while ( t <= withering_fire.count )
+        withering_fire.action->execute_on_target( tl[ t++ % tl.size() ] );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -4712,71 +4791,6 @@ struct black_arrow_base_t : public kill_shot_base_t
       bleak_powder->execute_on_target( s->target );
       p()->cooldowns.bleak_powder->start();
     }
-  }
-};
-
-struct black_arrow_t final : public black_arrow_base_t
-{
-  // Withering Fire (Dark Ranger) =========================================================
-  struct withering_fire_t final : black_arrow_base_t
-  {
-    withering_fire_t( util::string_view n, hunter_t* p ) : black_arrow_base_t( n, p, p->talents.withering_fire_black_arrow )
-    {
-      background = dual = true;
-    }
-
-    // Ignore Kill Shot target count mods
-    int n_targets() const override
-    {
-      return 1;
-    }
-  };
-
-  struct
-  {
-    int count = 0;
-    withering_fire_t* action = nullptr;
-  } withering_fire;
-
-  double lower_health_threshold_pct;
-  double upper_health_threshold_pct;
-
-  black_arrow_t( hunter_t* p, util::string_view options_str ) : black_arrow_base_t( "black_arrow", p, p->talents.black_arrow_spell ),
-    lower_health_threshold_pct( data().effectN( 2 ).base_value() ),
-    upper_health_threshold_pct( data().effectN( 3 ).base_value() )
-  {
-    parse_options( options_str );
-
-    add_child( dot );
-    if ( dot->shadow_surge )
-      add_child( dot->shadow_surge );
-
-    if ( p->talents.withering_fire.ok() )
-    {
-      withering_fire.count = as<int>( p->talents.withering_fire->effectN( 3 ).base_value() );
-      withering_fire.action = p->get_background_action<withering_fire_t>( "black_arrow_withering_fire" );
-      add_child( withering_fire.action );
-    }
-  }
-
-  void execute() override
-  {
-    black_arrow_base_t::execute();
-
-    if ( rng().roll( p()->talents.ebon_bowstring->effectN( 1 ).percent() ) )
-      p()->trigger_deathblow( true );
-
-    if ( p()->buffs.withering_fire->up() )
-    {
-      auto tl = target_list();
-      withering_fire.action->execute_on_target( tl[ tl.size() > 1 ? 1 : 0 ] );
-      withering_fire.action->execute_on_target( tl[ tl.size() > 2 ? 2 : 0 ] );
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    black_arrow_base_t::impact( s );
 
     // The chance is not in spell data and is hardcoded into the tooltip
     if ( p()->talents.banshees_mark.ok() && rng().roll( 0.25 ) && p()->cooldowns.banshees_mark->up() )
@@ -5518,7 +5532,7 @@ struct aimed_shot_base_t : public hunter_ranged_attack_t
 
     if ( p()->talents.phantom_pain.ok() )
     {
-      double replicate_amount = p()->talents.phantom_pain->effectN( 1 ).percent();
+      double replicate_amount = p()->talents.phantom_pain->effectN( 1 ).percent() + p()->specs.marksmanship_hunter->effectN( 15 ).percent();
       for ( player_t* t : sim->target_non_sleeping_list )
       {
         if ( t->is_enemy() && !t->demise_event && t != s->target )
@@ -7862,6 +7876,16 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
         } );
     }
   }
+  else if ( splits.size() == 2 && splits[ 0 ] == "boar_charge" )
+  {
+    if ( splits[ 1 ] == "remains" )
+      return make_fn_expr( expression_str,
+        [ this ]() -> timespan_t {
+          if ( !state.current_boar_charge )
+            return 0_s;
+          return state.current_boar_charge->remaining_time();
+        } );
+  }
   else if ( splits.size() >= 2 && splits[ 0 ] == "pet" && splits[ 1 ] == "main" &&
             !util::str_compare_ci( options.summon_pet_str, "disabled" ) )
   {
@@ -8240,7 +8264,7 @@ void hunter_t::init_spells()
     talents.quick_shot                        = find_talent_spell( talent_tree::SPECIALIZATION, "Quick Shot", HUNTER_SURVIVAL );
     talents.mongoose_bite                     = find_talent_spell( talent_tree::SPECIALIZATION, "Mongoose Bite", HUNTER_SURVIVAL );
     talents.mongoose_bite_eagle               = talents.mongoose_bite.ok() ? find_spell( 265888 ) : spell_data_t::not_found();
-    talents.mongoose_fury                     = talents.mongoose_bite.ok() ? find_spell( 259388 ) : spell_data_t::not_found();
+    talents.mongoose_fury                     = find_spell( 259388 );
     talents.flankers_advantage                = find_talent_spell( talent_tree::SPECIALIZATION, "Flanker's Advantage", HUNTER_SURVIVAL );
 
     talents.wildfire_infusion                 = find_talent_spell( talent_tree::SPECIALIZATION, "Wildfire Infusion", HUNTER_SURVIVAL );
@@ -8852,6 +8876,7 @@ void hunter_t::create_buffs()
   buffs.howl_of_the_pack_leader_cooldown = 
     make_buff( this, "howl_of_the_pack_leader_cooldown", talents.howl_of_the_pack_leader_cooldown_buff )
       ->apply_affecting_aura( talents.better_together )
+      ->apply_affecting_aura( specs.survival_hunter )
       ->set_stack_change_callback(
         [ this ]( buff_t*, int, int cur ) {
           if ( cur == 0 )
@@ -8943,6 +8968,9 @@ void hunter_t::init_procs()
 
   if ( talents.wild_call.ok() )
     procs.wild_call = get_proc( "Wild Call" );
+
+  if ( talents.lead_from_the_front.ok() )
+    procs.bear_without_lftf = get_proc( "Bear without Lead From the Front" );
   
   if ( talents.deathblow.ok() )
     procs.deathblow = get_proc( "Deathblow" );

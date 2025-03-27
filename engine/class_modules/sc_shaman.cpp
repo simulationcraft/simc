@@ -37,9 +37,6 @@
 #include <sstream>
 
 // TODO 11.1
-//
-// Enhancement
-// - Legacy of Frost Witch affects Primordial Frost twice (flags 24, 58) [bug?]
 
 namespace eff
 {
@@ -69,8 +66,7 @@ class effect_builder_base_t
     effect_builder_base_t( const spell_data_t& s ) : m_spell( &( s ) )
     { }
 
-    virtual ~effect_builder_base_t()
-    { }
+    virtual ~effect_builder_base_t() = default;
 
     const spell_data_t* target() const
     {
@@ -216,6 +212,8 @@ class effect_builder_base_t
       if ( m_value_fn )
       {
         pe.data.value_func = m_value_fn;
+        pe.data.type &= ~( USE_DEFAULT | USE_CURRENT | VALUE_OVERRIDE );
+        pe.data.type |= VALUE_FUNCTION;
       }
 
       pe.mask = m_mask;
@@ -261,7 +259,7 @@ public:
       {
         continue;
       }
- 
+
       // local copy of pack per effect
       auto tmp = pe;
 
@@ -305,8 +303,7 @@ public:
   const proc_t* proc() const
   { return m_proc; }
 
-  virtual ~proc_tracker_t()
-  { }
+  virtual ~proc_tracker_t() = default;
 
   void occur()
   {
@@ -395,8 +392,7 @@ public:
   proc_track_db_t( player_t* /* p */ )
   { }
 
-  virtual ~proc_track_db_t()
-  { }
+  virtual ~proc_track_db_t() = default;
 
   bool has_data() const
   {
@@ -437,7 +433,7 @@ public:
   {
     auto proc_it = range::find_if( m_db, [ proc ]( const auto& entry ) {
         return proc->id() == entry.proc_spell()->id();
-    } ); 
+    } );
 
     if ( proc_it == m_db.end() )
     {
@@ -543,7 +539,7 @@ public:
   }
 };
 } // Namespace stats ends
- 
+
 // ==========================================================================
 // Shaman
 // ==========================================================================
@@ -621,7 +617,6 @@ enum class strike_variant : unsigned
 {
   NORMAL = 0,
   STORMFLURRY,
-  WHIRLING_AIR
 };
 
 enum class ancestor_cast : unsigned
@@ -2343,8 +2338,6 @@ public:
   bool affected_by_stormkeeper_damage;
   bool affected_by_arc_discharge;
 
-  bool affected_by_enhanced_imbues_da;
-
   bool affected_by_storm_frenzy;
 
   bool affected_by_elemental_unity_fe_da;
@@ -2359,9 +2352,6 @@ public:
   bool affected_by_ele_tww1_4pc_cd;
 
   bool affected_by_ele_tww2_4pc_da;
-
-  bool affected_by_elemental_weapons_da;
-  bool affected_by_elemental_weapons_ta;
 
   bool may_proc_flowing_spirits;
   stats::proc_tracker_t* proc_fs;
@@ -2388,7 +2378,6 @@ public:
       affected_by_stormkeeper_cast_time( false ),
       affected_by_stormkeeper_damage( false ),
       affected_by_arc_discharge( false ),
-      affected_by_enhanced_imbues_da( false ), // Enhancement damage effects, Ele stuff is handled elsewhere
       affected_by_storm_frenzy( false ),
       affected_by_elemental_unity_fe_da( false ),
       affected_by_elemental_unity_fe_ta( false ),
@@ -2399,8 +2388,6 @@ public:
       affected_by_ele_tww1_4pc_cc( false ),
       affected_by_ele_tww1_4pc_cd( false ),
       affected_by_ele_tww2_4pc_da( false ),
-      affected_by_elemental_weapons_da( false ),
-      affected_by_elemental_weapons_ta( false ),
       may_proc_flowing_spirits( false ),
       proc_fs( nullptr ),
       affected_by_maelstrom_weapon( false ),
@@ -2450,8 +2437,6 @@ public:
 
     affected_by_arc_discharge = ab::data().affected_by( player->buff.arc_discharge->data().effectN( 1 ) );
 
-    affected_by_enhanced_imbues_da = ab::data().affected_by( player->talent.enhanced_imbues->effectN( 2 ) );
-
     affected_by_storm_frenzy = ab::data().affected_by( player->buff.storm_frenzy->data().effectN( 1 ) );
 
     affected_by_elemental_unity_fe_da = ab::data().affected_by( player->buff.fire_elemental->data().effectN( 4 ) ) ||
@@ -2472,11 +2457,6 @@ public:
       player->sets->set( SHAMAN_ELEMENTAL, TWW1, B4 )->effectN( 1 ).trigger()->effectN( 2 ) );
 
     affected_by_ele_tww2_4pc_da = ab::data().affected_by( player->buff.jackpot->data().effectN( 1 ) );
-
-    affected_by_elemental_weapons_da = p()->talent.elemental_weapons.ok() && ab::data().affected_by(
-      p()->spell.elemental_weapons->effectN( 1 ) );
-    affected_by_elemental_weapons_ta = p()->talent.elemental_weapons.ok() && ab::data().affected_by(
-      p()->spell.elemental_weapons->effectN( 2 ) );
 
     if ( this->data().ok() )
     {
@@ -2703,11 +2683,6 @@ public:
       m *= 1.0 + p()->buff.arc_discharge->value();
     }
 
-    if ( affected_by_enhanced_imbues_da )
-    {
-      m *= 1.0 + p()->talent.enhanced_imbues->effectN( 2 ).percent();
-    }
-
     if ( ( affected_by_elemental_unity_fe_da && p()->talent.elemental_unity.ok() &&
            p()->buff.fire_elemental->check() ) ||
          ( affected_by_elemental_unity_fe_da && p()->talent.elemental_unity.ok() &&
@@ -2738,13 +2713,6 @@ public:
       m *= 1.0 + p()->buff.jackpot->data().effectN( 1 ).percent();
     }
 
-    if ( affected_by_elemental_weapons_da )
-    {
-      unsigned n_imbues = ( p()->main_hand_weapon.buff_type != 0 ) +
-        ( p()->off_hand_weapon.buff_type != 0 );
-      m *= 1.0 + p()->talent.elemental_weapons->effectN( 1 ).percent() / 10.0 * n_imbues;
-    }
-
     return m;
   }
 
@@ -2770,13 +2738,6 @@ public:
         !p()->buff.storm_elemental->up() && !p()->buff.lesser_storm_elemental->up())
     {
       m *= 1.0 + p()->buff.fury_of_the_storms->data().effectN( 3 ).percent();
-    }
-
-    if ( affected_by_elemental_weapons_ta )
-    {
-      unsigned n_imbues = ( p()->main_hand_weapon.buff_type != 0 ) +
-        ( p()->off_hand_weapon.buff_type != 0 );
-      m *= 1.0 + p()->talent.elemental_weapons->effectN( 1 ).percent() / 10.0 * n_imbues;
     }
 
     return m;
@@ -4618,9 +4579,6 @@ struct stormblast_t : public shaman_attack_t
   {
     weapon = &( p->main_hand_weapon );
     background = may_crit = callbacks = false;
-
-    // Not handled by spell data
-    affected_by_elemental_weapons_da = true;
   }
 
   void init() override
@@ -4751,8 +4709,6 @@ struct windfury_attack_t : public shaman_attack_t
   {
     double m = shaman_attack_t::action_multiplier();
 
-    m *= 1.0 + p()->buff.forceful_winds->stack_value();
-
     if ( p()->talent.imbuement_mastery.ok() )
     {
      m *= 1.0 + p()->talent.imbuement_mastery->effectN( 2 ).percent();
@@ -4877,22 +4833,10 @@ struct stormstrike_attack_t : public shaman_attack_t
   {
     double m = shaman_attack_t::action_multiplier();
 
-    if ( p()->buff.converging_storms->up() )
-    {
-      m *= 1.0 + p()->buff.converging_storms->check_stack_value();
-    }
-
     if ( strike_type == strike_variant::STORMFLURRY )
     {
       m *= p()->talent.stormflurry->effectN( 2 ).percent();
     }
-
-    if ( strike_type == strike_variant::WHIRLING_AIR )
-    {
-      m *= p()->buff.whirling_air->data().effectN( 4 ).percent();
-    }
-
-    m *= 1.0 + p()->buff.whirling_air->stack_value();
 
     return m;
   }
@@ -5141,18 +5085,6 @@ struct thunderstrike_ward_damage_t : public shaman_spell_t
   {
 
     background = true;
-  }
-
-  double action_da_multiplier() const override
-  {
-    double m = shaman_spell_t::action_da_multiplier();
-
-    if ( p()->talent.enhanced_imbues->ok() )
-    {
-      m *= 1.0 + p()->talent.enhanced_imbues->effectN( 9 ).percent();
-    }
-
-    return m;
   }
 };
 
@@ -5782,7 +5714,6 @@ struct stormstrike_base_t : public shaman_attack_t
     switch ( strike_type )
     {
       case strike_variant::STORMFLURRY:
-      case strike_variant::WHIRLING_AIR:
         cooldown = player->get_cooldown( "__strike_secondary" );
         cooldown->duration = 0_ms;
 
@@ -9236,8 +9167,6 @@ struct frost_shock_t : public shaman_spell_t
 
     m *= 1.0 + p()->buff.icefury_dmg->value();
 
-    m *= 1.0 + p()->buff.hailstorm->stack_value();
-
     m *= 1.0 + p()->buff.ice_strike->stack_value();
 
     return m;
@@ -9987,9 +9916,6 @@ struct totem_pulse_action_t : public T
 
   bool affected_by_totemic_rebound_da;
 
-  bool affected_by_elemental_weapons_da;
-  bool affected_by_elemental_weapons_ta;
-
   totem_pulse_action_t( const std::string& token, shaman_totem_pet_t<T>* p, const spell_data_t* s )
     : T( token, p, s ), hasted_pulse( false ), pulse_multiplier( 1.0 ), totem( p ), pulse ( 0 )
   {
@@ -10008,11 +9934,6 @@ struct totem_pulse_action_t : public T
 
     affected_by_totemic_rebound_da = T::data().affected_by_all( o()->buff.totemic_rebound->data().effectN( 1 ) ) ||
                                      T::data().affected_by_all( o()->buff.totemic_rebound->data().effectN( 2 ) );
-
-    affected_by_elemental_weapons_da = o()->talent.elemental_weapons.ok() && T::data().affected_by(
-      o()->spell.elemental_weapons->effectN( 1 ) );
-    affected_by_elemental_weapons_ta = o()->talent.elemental_weapons.ok() && T::data().affected_by(
-      o()->spell.elemental_weapons->effectN( 2 ) );
 
     if ( T::data().ok() )
     {
@@ -10069,26 +9990,12 @@ struct totem_pulse_action_t : public T
       m *= 1.0 + o()->buff.totemic_rebound->stack_value();
     }
 
-    if ( affected_by_elemental_weapons_da )
-    {
-      unsigned n_imbues = ( o()->main_hand_weapon.buff_type != 0 ) +
-        ( o()->off_hand_weapon.buff_type != 0 );
-      m *= 1.0 + o()->talent.elemental_weapons->effectN( 1 ).percent() / 10.0 * n_imbues;
-    }
-
     return m;
   }
 
   double action_ta_multiplier() const override
   {
     double m = T::action_ta_multiplier();
-
-    if ( affected_by_elemental_weapons_ta )
-    {
-      unsigned n_imbues = ( o()->main_hand_weapon.buff_type != 0 ) +
-        ( o()->off_hand_weapon.buff_type != 0 );
-      m *= 1.0 + o()->talent.elemental_weapons->effectN( 1 ).percent() / 10.0 * n_imbues;
-    }
 
     return m;
   }
@@ -14120,12 +14027,9 @@ void shaman_t::create_buffs()
   buff.spirit_walk  = make_buff( this, "spirit_walk", talent.spirit_walk );
   buff.stormbringer = make_buff( this, "stormsurge", find_spell( 201846 ) );
   buff.maelstrom_weapon = new maelstrom_weapon_buff_t( this );
-  buff.hailstorm        = make_buff( this, "hailstorm", find_spell( 334196 ) )
-                            ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
-                            ->set_max_stack(
-                              talent.overflowing_maelstrom.ok()
-                              ? as<int>( talent.overflowing_maelstrom->effectN( 1 ).base_value() )
-                              : find_spell( 334196 )->max_stacks() );
+  buff.hailstorm = make_buff( this, "hailstorm", find_spell( 334196 ) )
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
+    ->apply_affecting_aura( talent.overflowing_maelstrom );
   buff.static_accumulation = make_buff( this, "static_accumulation", find_spell( 384437 ) )
     ->set_default_value( talent.static_accumulation->effectN( 1 ).base_value() )
     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
@@ -14518,8 +14422,29 @@ void shaman_t::apply_action_effects( parse_effects_t* a )
   eff::source_eff_builder_t( buff.icy_edge ).set_flag( USE_CURRENT, IGNORE_STACKS ).build( a );
   eff::source_eff_builder_t( buff.earthen_weapon ).set_flag( USE_CURRENT, IGNORE_STACKS ).build( a );
   eff::source_eff_builder_t( buff.doom_winds ).build( a );
+  eff::source_eff_builder_t( buff.hailstorm ).build( a );
+  eff::source_eff_builder_t( buff.forceful_winds ).build( a );
+  eff::source_eff_builder_t( buff.converging_storms ).build( a );
   eff::source_eff_builder_t( buff.legacy_of_the_frost_witch )
     .add_affecting_spell( talent.legacy_of_the_frost_witch )
+    .build( a );
+  eff::source_eff_builder_t( talent.enhanced_imbues )
+    .set_state_fn( [ this ] { return buff.flametongue_weapon->check(); } )
+    .set_effect_mask( effect_mask_t( false ).enable( 2 ) )
+    .add_affect_list( affect_list_t( 2 ).remove_spell( 10444, 318038, 319778, 467386, 467390 ))
+    .build( a );
+  eff::source_eff_builder_t( talent.enhanced_imbues )
+    .set_state_fn( [ this ] { return buff.windfury_weapon->check(); } )
+    .set_effect_mask( effect_mask_t( false ).enable( 2 ) )
+    .add_affect_list( affect_list_t( 2 ).remove_spell( 25504, 33750 ))
+    .build( a );
+  eff::source_eff_builder_t( spell.elemental_weapons )
+    .add_affect_list( affect_list_t( 1 ).add_spell( 390287 ) )  // Stormblast
+    .set_state_fn( [ this ] { return talent.elemental_weapons.ok(); } )
+    .set_value( [ this ]( double ) {
+      unsigned n_imbues = ( main_hand_weapon.buff_type != 0 ) + ( off_hand_weapon.buff_type != 0 );
+      return talent.elemental_weapons->effectN( 1 ).percent() * 0.1 * n_imbues;
+    } )
     .build( a );
 
   eff::source_eff_builder_t( buff.tww2_enh_2pc ).build( a );
@@ -14527,6 +14452,10 @@ void shaman_t::apply_action_effects( parse_effects_t* a )
 
   // Elemental
   eff::source_eff_builder_t( mastery.elemental_overload ).build( a );
+  eff::source_eff_builder_t( talent.enhanced_imbues )
+    .set_state_fn( [ this ] { return buff.thunderstrike_ward->check(); } )
+    .set_effect_mask( effect_mask_t( false ).enable( 9 ) )
+    .build( a );
 }
 
 // shaman_t::generate_bloodlust_options =====================================
@@ -14606,7 +14535,7 @@ std::string shaman_t::default_flask() const
 
 std::string shaman_t::default_food() const
 {
-  std::string enhancement_food = ( true_level >= 71 ) ? "feast_of_the_divine_day" :
+  std::string enhancement_food = ( true_level >= 71 ) ? "chippy_tea" :
                                  ( true_level >= 61 ) ? "fated_fortune_cookie" :
                                  ( true_level >= 51 ) ? "feast_of_gluttonous_hedonism" :
                                  ( true_level >= 45 ) ? "baked_port_tato" :

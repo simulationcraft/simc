@@ -9,6 +9,7 @@
 actions.precombat=apply_poison,nonlethal=none,lethal=instant
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/variable,name=double_coup,value=double_coup
 actions.precombat+=/use_item,name=imperfect_ascendancy_serum
 actions.precombat+=/stealth,precombat_seconds=2
 # Builds with Keep it Rolling+Loaded Dice prepull Adrenaline Rush before Roll the Bones to consume Loaded Dice immediately instead of on the next pandemic roll.
@@ -51,6 +52,8 @@ actions.build+=/sinister_strike
 
 # Cooldowns  Maintain Adrenaline Rush. Recast while already active if using Improved ADR and at low CPs.
 actions.cds=adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)|talent.improved_adrenaline_rush&combo_points<=2
+# Enable the possibility to chain cast Coup de Grace if the bug option is enabled, as a higher priority than other cooldowns except Adrenaline Rush
+actions.cds+=/coup_de_grace,if=variable.double_coup&prev_gcd.1.coup_de_grace
 # Sprint to further benefit from Scroll of Momentum trinket.
 actions.cds+=/sprint,if=(trinket.1.is.scroll_of_momentum|trinket.2.is.scroll_of_momentum)&buff.full_momentum.up
 # Maintain Blade Flurry on 2+ targets.
@@ -95,10 +98,11 @@ actions.cds+=/ancestral_call
 actions.cds+=/use_items,slots=trinket1,if=buff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20
 actions.cds+=/use_items,slots=trinket2,if=buff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20
 
-# Finishers Use Between the Eyes outside of Stealth to maintain the buff, or with Ruthless Precision active, or to proc Greenskins Wickers if not active. Trickster builds can also send BtE on cooldown.
-actions.finish=between_the_eyes,if=(buff.ruthless_precision.up|buff.between_the_eyes.remains<4|!talent.mean_streak)&(!buff.greenskins_wickers.up|!talent.greenskins_wickers)
+# Finishers
+actions.finish=coup_de_grace
+# Use Between the Eyes outside of Stealth to maintain the buff, or with Ruthless Precision active, or to proc Greenskins Wickers if not active. Trickster builds can also send BtE on cooldown.
+actions.finish+=/between_the_eyes,if=(buff.ruthless_precision.up|buff.between_the_eyes.remains<4|!talent.mean_streak)&(!buff.greenskins_wickers.up|!talent.greenskins_wickers)
 actions.finish+=/cold_blood
-actions.finish+=/coup_de_grace
 actions.finish+=/dispatch
 
 # Stealth

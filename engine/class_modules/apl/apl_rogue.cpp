@@ -125,14 +125,14 @@ void assassination( player_t* p )
   direct->add_action( "envenom,if=!buff.darkest_night.up&combo_points>=variable.effective_spend_cp&(variable.not_pooling|debuff.amplifying_poison.stack>=20|!variable.single_target)&!buff.vanish.up", "Direct Damage Abilities Envenom at applicable cp if not pooling, capped on amplifying poison stacks, on an animacharged CP, or in aoe." );
   direct->add_action( "envenom,if=buff.darkest_night.up&effective_combo_points>=cp_max_spend", "Special Envenom handling for Darkest Night" );
   direct->add_action( "variable,name=use_filler,value=combo_points<=variable.effective_spend_cp&!variable.cd_soon|variable.not_pooling|!variable.single_target", "Check if we should be using a filler" );
-  direct->add_action( "variable,name=use_caustic_filler,value=talent.caustic_spatter&dot.rupture.ticking&(!debuff.caustic_spatter.up|debuff.caustic_spatter.remains<=2)&combo_points.deficit>=1&!variable.single_target", "Maintain Caustic Spatter" );
+  direct->add_action( "variable,name=fok_target_count,value=(buff.clear_the_witnesses.up&(spell_targets.fan_of_knives>=2-(buff.lingering_darkness.up|!talent.vicious_venoms)))|(spell_targets.fan_of_knives>=3-(talent.momentum_of_despair&talent.thrown_precision)+talent.vicious_venoms+talent.blindside)" );
+  direct->add_action( "variable,name=use_caustic_filler,value=talent.caustic_spatter&dot.rupture.ticking&(!debuff.caustic_spatter.up|debuff.caustic_spatter.remains<=3)&combo_points.deficit>=1&!variable.single_target", "Maintain Caustic Spatter" );
   direct->add_action( "mutilate,if=variable.use_caustic_filler" );
   direct->add_action( "ambush,if=variable.use_caustic_filler" );
-  direct->add_action( "fan_of_knives,if=buff.darkest_night.up&combo_points=6", "Fan of Knives at 6cp for Darkest Night" );
-  direct->add_action( "fan_of_knives,if=variable.use_filler&!priority_rotation&(spell_targets.fan_of_knives>=3-(talent.momentum_of_despair&talent.thrown_precision)|buff.clear_the_witnesses.up&!talent.vicious_venoms)", "Fan of Knives at 3+ targets, accounting for various edge cases" );
-  direct->add_action( "fan_of_knives,target_if=!dot.deadly_poison_dot.ticking&(!priority_rotation|dot.garrote.ticking|dot.rupture.ticking),if=variable.use_filler&spell_targets.fan_of_knives>=3-(talent.momentum_of_despair&talent.thrown_precision)", "Fan of Knives to apply poisons if inactive on any target (or any bleeding targets with priority rotation) at 3T" );
+  direct->add_action( "fan_of_knives,if=buff.darkest_night.up&combo_points=6&(!talent.vicious_venoms|spell_targets.fan_of_knives>=2)", "Fan of Knives at 6cp for Darkest Night" );
+  direct->add_action( "fan_of_knives,if=variable.use_filler&!priority_rotation&variable.fok_target_count", "Fan of Knives at 3+ targets, accounting for various edge cases" );
   direct->add_action( "ambush,if=variable.use_filler&(buff.blindside.up|stealthed.rogue)&(!dot.kingsbane.ticking|debuff.deathmark.down|buff.blindside.up)", "Ambush on Blindside/Subterfuge. Do not use Ambush from stealth during Kingsbane & Deathmark." );
-  direct->add_action( "mutilate,target_if=!dot.deadly_poison_dot.ticking&!debuff.amplifying_poison.up,if=variable.use_filler&spell_targets.fan_of_knives=2", "Tab-Mutilate to apply Deadly Poison at 2 targets" );
+  direct->add_action( "mutilate,target_if=!dot.deadly_poison_dot.ticking&!debuff.amplifying_poison.up,if=variable.use_filler&spell_targets.fan_of_knives=2", "Tab-Mutilate to apply Deadly Poison at 2 targets if not using Fan of Knives" );
   direct->add_action( "mutilate,if=variable.use_filler", "Fallback Mutilate" );
 
   items->add_action( "variable,name=base_trinket_condition,value=dot.rupture.ticking&cooldown.deathmark.remains<2&!cooldown.deathmark.ready|dot.deathmark.ticking|fight_remains<=22", "Special Case Trinkets" );
@@ -197,6 +197,7 @@ void outlaw( player_t* p )
 
   precombat->add_action( "apply_poison,nonlethal=none,lethal=instant" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+  precombat->add_action( "variable,name=double_coup,value=double_coup" );
   precombat->add_action( "use_item,name=imperfect_ascendancy_serum" );
   precombat->add_action( "stealth,precombat_seconds=2" );
   precombat->add_action( "adrenaline_rush,precombat_seconds=1,if=talent.improved_adrenaline_rush&talent.keep_it_rolling&talent.loaded_dice", "Builds with Keep it Rolling+Loaded Dice prepull Adrenaline Rush before Roll the Bones to consume Loaded Dice immediately instead of on the next pandemic roll." );
@@ -226,6 +227,7 @@ void outlaw( player_t* p )
   build->add_action( "sinister_strike" );
 
   cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)|talent.improved_adrenaline_rush&combo_points<=2", "Cooldowns  Maintain Adrenaline Rush. Recast while already active if using Improved ADR and at low CPs." );
+  cds->add_action( "coup_de_grace,if=variable.double_coup&prev_gcd.1.coup_de_grace", "Enable the possibility to chain cast Coup de Grace if the bug option is enabled, as a higher priority than other cooldowns except Adrenaline Rush" );
   cds->add_action( "sprint,if=(trinket.1.is.scroll_of_momentum|trinket.2.is.scroll_of_momentum)&buff.full_momentum.up", "Sprint to further benefit from Scroll of Momentum trinket." );
   cds->add_action( "blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd", "Maintain Blade Flurry on 2+ targets." );
   cds->add_action( "blade_flurry,if=talent.deft_maneuvers&!variable.finish_condition&(spell_targets>=3&combo_points.deficit=spell_targets+buff.broadside.up|spell_targets>=5)", "With Deft Maneuvers, use Blade Flurry on cooldown at 5+ targets, or at 3-4 targets if missing combo points equal to the amount it would grant." );
@@ -253,9 +255,9 @@ void outlaw( player_t* p )
   cds->add_action( "use_items,slots=trinket1,if=buff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20", "Default conditions for usable items." );
   cds->add_action( "use_items,slots=trinket2,if=buff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20" );
 
-  finish->add_action( "between_the_eyes,if=(buff.ruthless_precision.up|buff.between_the_eyes.remains<4|!talent.mean_streak)&(!buff.greenskins_wickers.up|!talent.greenskins_wickers)", "Finishers Use Between the Eyes outside of Stealth to maintain the buff, or with Ruthless Precision active, or to proc Greenskins Wickers if not active. Trickster builds can also send BtE on cooldown." );
+  finish->add_action( "coup_de_grace", "Finishers" );
+  finish->add_action( "between_the_eyes,if=(buff.ruthless_precision.up|buff.between_the_eyes.remains<4|!talent.mean_streak)&(!buff.greenskins_wickers.up|!talent.greenskins_wickers)", "Use Between the Eyes outside of Stealth to maintain the buff, or with Ruthless Precision active, or to proc Greenskins Wickers if not active. Trickster builds can also send BtE on cooldown." );
   finish->add_action( "cold_blood" );
-  finish->add_action( "coup_de_grace" );
   finish->add_action( "dispatch" );
 
   stealth->add_action( "cold_blood,if=variable.finish_condition", "Stealth" );
@@ -295,15 +297,15 @@ void subtlety( player_t* p )
   precombat->add_action( "apply_poison" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "variable,name=priority_rotation,value=priority_rotation" );
-  precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.is.treacherous_transmitter|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)" );
-  precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)" );
+  precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.1.is.treacherous_transmitter|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)" );
+  precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_use_buff&(!trinket.1.has_use_buff|trinket.2.cooldown.duration>trinket.1.cooldown.duration)" );
   precombat->add_action( "stealth" );
 
   default_->add_action( "stealth" );
   default_->add_action( "variable,name=stealth,value=buff.shadow_dance.up|buff.stealth.up|buff.vanish.up", "Variables" );
   default_->add_action( "variable,name=targets,value=spell_targets.shuriken_storm" );
   default_->add_action( "variable,name=skip_rupture,value=buff.shadow_dance.up|buff.darkest_night.up|variable.targets>=8&!talent.replicating_shadows&talent.unseen_blade" );
-  default_->add_action( "variable,name=maintenance,value=(dot.rupture.ticking|variable.skip_rupture)" );
+  default_->add_action( "variable,name=maintenance,value=(dot.rupture.ticking|variable.skip_rupture)&(buff.slice_and_dice.up|variable.targets<=2)" );
   default_->add_action( "variable,name=secret,value=buff.shadow_dance.up|(cooldown.flagellation.remains<40&cooldown.flagellation.remains>20&talent.death_perception)" );
   default_->add_action( "variable,name=racial_sync,value=(buff.shadow_blades.up&buff.shadow_dance.up)|!talent.shadow_blades&buff.symbols_of_death.up|fight_remains<20" );
   default_->add_action( "variable,name=shd_cp,value=combo_points<=1|buff.darkest_night.up&combo_points>=7|effective_combo_points>=6&talent.unseen_blade" );
@@ -332,8 +334,8 @@ void subtlety( player_t* p )
   item->add_action( "do_treacherous_transmitter_task,if=buff.shadow_dance.up|fight_remains<=15" );
   item->add_action( "use_item,name=imperfect_ascendancy_serum,use_off_gcd=1,if=dot.rupture.ticking&buff.flagellation_buff.up" );
   item->add_action( "use_item,name=mad_queens_mandate,if=(!talent.lingering_darkness|buff.lingering_darkness.up|equipped.treacherous_transmitter)&(!equipped.treacherous_transmitter|trinket.treacherous_transmitter.cooldown.remains>20)|fight_remains<=15" );
-  item->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready&!buff.shadow_blades.up&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
-  item->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready&!buff.shadow_blades.up&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
+  item->add_action( "use_items,slots=trinket1,if=(variable.trinket_sync_slot=1&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
+  item->add_action( "use_items,slots=trinket2,if=(variable.trinket_sync_slot=2&(buff.shadow_blades.up|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready&cooldown.shadow_blades.remains>20))|!variable.trinket_sync_slot)" );
 
   stealth_cds->add_action( "shadow_dance,if=variable.shd_cp&variable.maintenance&cooldown.secret_technique.remains<=24&(buff.symbols_of_death.remains>=6|buff.shadow_blades.remains>=6)|fight_remains<=10", "Shadow Dance, Vanish, Shadowmeld" );
   stealth_cds->add_action( "vanish,if=energy>=40&!buff.subterfuge.up&effective_combo_points<=3" );
@@ -342,7 +344,7 @@ void subtlety( player_t* p )
   finish->add_action( "secret_technique,if=variable.secret" );
   finish->add_action( "rupture,if=!variable.skip_rupture&(!dot.rupture.ticking|refreshable)&target.time_to_die-remains>6", "Maintenance Finisher" );
   finish->add_action( "rupture,cycle_targets=1,if=!variable.skip_rupture&!variable.priority_rotation&&target.time_to_die>=(2*combo_points)&refreshable&variable.targets>=2" );
-  finish->add_action( "rupture,if=talent.unseen_blade&cooldown.flagellation.remains<10" );
+  finish->add_action( "rupture,if=talent.unseen_blade&cooldown.flagellation.remains<10&dot.rupture.remains<fight_remains" );
   finish->add_action( "coup_de_grace,if=debuff.fazed.up&cooldown.flagellation.remains>=20", "Direct Damage Finisher" );
   finish->add_action( "black_powder,if=!variable.priority_rotation&variable.maintenance&(((variable.targets>=2&talent.deathstalkers_mark&(!buff.darkest_night.up|buff.shadow_dance.up&variable.targets>=5))|talent.unseen_blade&variable.targets>=7)|action.coup_de_grace.ready)" );
   finish->add_action( "eviscerate" );

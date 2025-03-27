@@ -28,16 +28,17 @@ actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20
 actions.st=volley,if=!talent.double_tap
 actions.st+=/rapid_fire,if=hero_tree.sentinel&buff.lunar_storm_ready.up
 actions.st+=/trueshot,if=variable.trueshot_ready
-actions.st+=/explosive_shot,if=(talent.precision_detonation&set_bonus.thewarwithin_season_2_4pc&buff.precise_shots.down&buff.lock_and_load.up)|(!talent.precision_detonation&active_enemies>1)
-actions.st+=/aimed_shot,if=talent.precision_detonation&set_bonus.thewarwithin_season_2_4pc&buff.precise_shots.down&buff.lock_and_load.up
+actions.st+=/explosive_shot,if=talent.precision_detonation&set_bonus.thewarwithin_season_2_4pc&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.lock_and_load.up
+actions.st+=/aimed_shot,if=talent.precision_detonation&set_bonus.thewarwithin_season_2_4pc&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.lock_and_load.up
 actions.st+=/volley,if=talent.double_tap&buff.double_tap.down
 actions.st+=/black_arrow,if=talent.headshot&buff.precise_shots.up|!talent.headshot&buff.razor_fragments.up
 actions.st+=/kill_shot,if=talent.headshot&buff.precise_shots.up|!talent.headshot&buff.razor_fragments.up
 actions.st+=/multishot,if=active_enemies>1&!talent.aspect_of_the_hydra&(talent.symphonic_arsenal|talent.small_game_hunter)&buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)
 actions.st+=/arcane_shot,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)
+actions.st+=/aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&full_recharge_time<action.rapid_fire.execute_time+cast_time&buff.bulletstorm.up&talent.windrunner_quiver
 actions.st+=/rapid_fire,if=!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3
 actions.st+=/aimed_shot,if=buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up
-actions.st+=/explosive_shot,if=!set_bonus.thewarwithin_season_2_4pc
+actions.st+=/explosive_shot,if=(!set_bonus.thewarwithin_season_2_4pc|!talent.precision_detonation)&active_enemies>1
 actions.st+=/black_arrow,if=!talent.headshot
 actions.st+=/steady_shot
 
@@ -46,6 +47,7 @@ actions.trickshots+=/trueshot,if=variable.trueshot_ready
 actions.trickshots+=/multishot,if=buff.precise_shots.up&(debuff.spotters_mark.down|buff.moving_target.down)|buff.trick_shots.down
 actions.trickshots+=/volley,if=talent.double_tap&buff.double_tap.down
 actions.trickshots+=/black_arrow,if=buff.withering_fire.up&buff.trick_shots.up
+actions.trickshots+=/aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.trick_shots.up&buff.bulletstorm.up&full_recharge_time<gcd
 actions.trickshots+=/rapid_fire,if=buff.trick_shots.remains>execute_time&(!hero_tree.sentinel|buff.lunar_storm_cooldown.remains>cooldown%3|buff.lunar_storm_ready.up)
 actions.trickshots+=/explosive_shot,if=talent.precision_detonation&(buff.lock_and_load.up|!set_bonus.thewarwithin_season_2_4pc)&(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)
 actions.trickshots+=/aimed_shot,if=(buff.precise_shots.down|debuff.spotters_mark.up&buff.moving_target.up)&buff.trick_shots.up

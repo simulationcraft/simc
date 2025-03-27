@@ -1195,6 +1195,7 @@ public:
     int initial_supercharged_cp = 0;
     bool rogue_ready_trigger = true;
     bool priority_rotation = false;
+    bool double_coup = false;
   } options;
 
   rogue_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
@@ -7371,7 +7372,7 @@ struct coup_de_grace_t : public rogue_attack_t
 
     // 2025-03-15 -- Currently the buff is not expired until the last impact
     //               This allows re-casting of Coup de Grace when Adrenaline Rush is up
-    p()->buffs.escalating_blade->expire( p()->bugs ? 1.2_s : 0_s );
+    p()->buffs.escalating_blade->expire( p()->bugs && p()->options.double_coup ? 1.2_s : 0_s );
   }
 
   bool ready() override
@@ -10368,6 +10369,10 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
   {
     return expr_t::create_constant( name_str, options.priority_rotation );
   }
+  else if ( util::str_compare_ci( name_str, "double_coup" ) )
+  {
+    return expr_t::create_constant( name_str, options.double_coup );
+  }
 
   // Split expressions
 
@@ -12311,6 +12316,7 @@ void rogue_t::create_options()
   add_option( opt_func( "fixed_rtb", parse_fixed_rtb ) );
   add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
   add_option( opt_bool( "priority_rotation", options.priority_rotation ) );
+  add_option( opt_bool( "double_coup", options.double_coup ) );
 }
 
 // rogue_t::copy_from =======================================================
@@ -12340,6 +12346,7 @@ void rogue_t::copy_from( player_t* source )
   options.fixed_rtb_odds = rogue->options.fixed_rtb_odds;
   options.rogue_ready_trigger = rogue->options.rogue_ready_trigger;
   options.priority_rotation = rogue->options.priority_rotation;
+  options.double_coup = rogue->options.double_coup;
 }
 
 // rogue_t::create_profile  =================================================

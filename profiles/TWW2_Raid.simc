@@ -9,15 +9,16 @@ TWW2_Death_Knight_Frost_Deathbringer.simc
 TWW2_Death_Knight_Unholy.simc
 TWW2_Death_Knight_Unholy_Rider.simc
 
-# TWW2_Demon_Hunter_Havoc.simc
+TWW2_Demon_Hunter_Havoc.simc
 # TWW2_Demon_Hunter_Vengeance.simc
 
 TWW2_Druid_Balance.simc
 TWW2_Druid_Feral.simc
 # TWW2_Druid_Guardian.simc
 
+TWW2_Evoker_Devastation.simc
 TWW2_Evoker_Devastation_SC.simc
-TWW2_Evoker_Devastation_FS.simc
+# TWW2_Evoker_Devastation_FS.simc
 
 TWW2_Hunter_Beast_Mastery.simc
 TWW2_Hunter_Marksmanship.simc
@@ -53,7 +54,7 @@ TWW2_Rogue_Subtlety.simc
 # TWW2_Shaman_Elemental_Stormbringer.simc
 TWW2_Shaman_Elemental.simc
 TWW2_Shaman_Enhancement.simc
-TWW2_Shaman_Enhancement_Totemic.simc
+TWW2_Shaman_Enhancement_Stormbringer.simc
 
 # TWW2_Warlock_Affliction_Soul_Harvester.simc
 TWW2_Warlock_Affliction.simc

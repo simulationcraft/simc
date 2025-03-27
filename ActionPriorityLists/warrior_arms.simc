@@ -49,15 +49,14 @@ actions.colossus_aoe+=/thunder_clap,if=!dot.rend.remains
 actions.colossus_aoe+=/thunderous_roar
 actions.colossus_aoe+=/avatar
 actions.colossus_aoe+=/sweeping_strikes
-actions.colossus_aoe+=/ravager
 actions.colossus_aoe+=/warbreaker
+actions.colossus_aoe+=/ravager
 actions.colossus_aoe+=/champions_spear
 actions.colossus_aoe+=/colossus_smash
 actions.colossus_aoe+=/cleave
 actions.colossus_aoe+=/bladestorm,if=talent.unhinged|talent.merciless_bonegrinder
 actions.colossus_aoe+=/thunder_clap,if=dot.rend.remains<5
 actions.colossus_aoe+=/demolish,if=buff.colossal_might.stack=10&(debuff.colossus_smash.remains>=2|cooldown.colossus_smash.remains>=7)
-actions.colossus_aoe+=/overpower,if=talent.dreadnaught
 actions.colossus_aoe+=/mortal_strike
 actions.colossus_aoe+=/overpower
 actions.colossus_aoe+=/thunder_clap

@@ -1826,6 +1826,7 @@ class SpellDataGenerator(DataGenerator):
             ( 196810, 5 ),          # Searing Light (Divine Image legendary pet spell)
             ( 196811, 5 ),          # Searing Light (Divine Image talent pet spell)
             ( 196812, 5 ),          # Light Eruption (Divine Image legendary pet spell)
+            ( 464047, 5 ),          # Light Eruption (Divine Image legendary pet spell)
             ( 196813, 5 ),          # Blessed Light (Divine Image legendary pet spell)
             ( 196816, 5 ),          # Tranquil Light (Divine Image legendary pet spell)
             ( 325315, 0 ),          # Ascended Blast heal
@@ -4695,6 +4696,11 @@ class ClientDataVersionGenerator(DataGenerator):
             self.format_str('SIMC_WOW_VERSION').upper(),
             '{}{}{}'.format(self._options.build.expansion(), self._options.build.patch(),
                 self._options.build.minor())))
+
+        self._out.write('static const wowv_t __{} {{ {}, {}, {}, {} }};\n'.format(
+            self.format_str('client_data_version'),
+            self._options.build.expansion(), self._options.build.patch(),
+            self._options.build.minor(), self._options.build.build()))
 
         if self._options.hotfix_file:
             self._out.write('\n// Hotfix data versioning information\n\n')

@@ -1,11 +1,11 @@
-hunter="TWW2_Hunter_Marksmanship_Sentinel"
+hunter="TWW2_Hunter_Marksmanship_DarkRanger"
 source=default
 spec=marksmanship
 level=80
 race=maghar_orc
 role=attack
 position=ranged_back
-talents=C4PAAAAAAAAAAAAAAAAAAAAAAwADsMGN2GQmNsBAAAAAAAAAAAAAwMmxMzMzMmRmxYYmBGmZZmBzwshZzMmZmZZmZYMzMLLjxYZA
+talents=C4PAAAAAAAAAAAAAAAAAAAAAAYstNwAGwswWgZBAAAAAAAAAAAAAgZMjZmZmZMjMjxwMDMMzyMDmZMbY2MjZGzyMzwYmZW2GjxyA
 
 # Default consumables
 potion=tempered_potion_3
@@ -87,21 +87,21 @@ actions.trinkets+=/variable,name=damage_sync_remains,value=cooldown.trueshot.rem
 # Uses buff effect trinkets with cooldowns and is willing to delay usage up to 1/3 the trinket cooldown if it won't lose a usage in the fight. Fills in downtime with weaker buff effects if they won't also be saved for later cooldowns (happens if it won't delay over 1/3 the trinket cooldown and a stronger trinket won't be up in time) or damage effects if they won't inferfere with any buff effect usage.
 actions.trinkets+=/use_items,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(variable.buff_sync_ready&(variable.stronger_trinket_slot=this_trinket_slot|other_trinket.cooldown.remains)|!variable.buff_sync_ready&(variable.stronger_trinket_slot=this_trinket_slot&(variable.buff_sync_remains>this_trinket.cooldown.duration%3&fight_remains>this_trinket.cooldown.duration+20|other_trinket.has_use_buff&other_trinket.cooldown.remains>variable.buff_sync_remains-15&other_trinket.cooldown.remains-5<variable.buff_sync_remains&variable.buff_sync_remains+45>fight_remains)|variable.stronger_trinket_slot!=this_trinket_slot&(other_trinket.cooldown.remains&(other_trinket.cooldown.remains-5<variable.buff_sync_remains&variable.buff_sync_remains>=20|other_trinket.cooldown.remains-5>=variable.buff_sync_remains&(variable.buff_sync_remains>this_trinket.cooldown.duration%3|this_trinket.cooldown.duration<fight_remains&(variable.buff_sync_remains+this_trinket.cooldown.duration>fight_remains)))|other_trinket.cooldown.ready&variable.buff_sync_remains>20&variable.buff_sync_remains<other_trinket.cooldown.duration%3)))|!this_trinket.has_use_buff&(this_trinket.cast_time=0|!variable.buff_sync_active)&(!this_trinket.is.junkmaestros_mega_magnet|buff.junkmaestros_mega_magnet.stack>10)&(!other_trinket.has_cooldown&(variable.damage_sync_active|this_trinket.is.junkmaestros_mega_magnet&buff.junkmaestros_mega_magnet.stack>25|!this_trinket.is.junkmaestros_mega_magnet&variable.damage_sync_remains>this_trinket.cooldown.duration%3)|other_trinket.has_cooldown&(!other_trinket.has_use_buff&(variable.stronger_trinket_slot=this_trinket_slot|other_trinket.cooldown.remains)&(variable.damage_sync_active|this_trinket.is.junkmaestros_mega_magnet&buff.junkmaestros_mega_magnet.stack>25|variable.damage_sync_remains>this_trinket.cooldown.duration%3&!this_trinket.is.junkmaestros_mega_magnet|other_trinket.cooldown.remains-5<variable.damage_sync_remains&variable.damage_sync_remains>=20)|other_trinket.has_use_buff&(variable.damage_sync_active|this_trinket.is.junkmaestros_mega_magnet&buff.junkmaestros_mega_magnet.stack>25|!this_trinket.is.junkmaestros_mega_magnet&variable.damage_sync_remains>this_trinket.cooldown.duration%3)&(other_trinket.cooldown.remains>=20|other_trinket.cooldown.remains-5>variable.buff_sync_remains)))|fight_remains<25&(variable.stronger_trinket_slot=this_trinket_slot|other_trinket.cooldown.remains)
 
-head=tireless_collectors_chained_cowl,id=229271,bonus_id=4795/1808,ilevel=678,gem_id=213743
-neck=undermine_mercs_dog_tags,id=232663,bonus_id=4795/8781,ilevel=678,gem_id=213467/213491
-shoulders=crashguard_spaulders,id=235416,bonus_id=4795,ilevel=678
-back=consecrated_cloak,id=222817,bonus_id=8791/11303/8960,ilevel=675,enchant_id=7403
-chest=tireless_collectors_battlegear,id=229274,bonus_id=4795,ilevel=678,enchant_id=7364
-wrists=glyphetched_vambraces,id=219342,bonus_id=8791/1808/11303/8960,ilevel=675,gem_id=213479,enchant_id=7397
-hands=tireless_collectors_gauntlets,id=229272,bonus_id=4795,ilevel=678
-waist=dealers_covetous_chain,id=228877,bonus_id=1808/4795,ilevel=678,gem_id=213458
-legs=tireless_collectors_armored_breeches,id=229270,bonus_id=4795,ilevel=678,enchant_id=7601
-feet=shrapnelridden_sabatons,id=228862,bonus_id=4795,ilevel=678,enchant_id=7424
-finger1=faded_championship_ring,id=228840,bonus_id=4795/8781,ilevel=678,gem_id=213458/213458,enchant_id=7334
-finger2=the_jastor_diamond,id=231265,bonus_id=4795/8781,ilevel=678,gem_id=213458/213458,enchant_id=7334
-trinket1=mechanocore_amplifier,id=232485,ilevel=665
-trinket2=signet_of_the_priory,id=219308,bonus_id=4795,ilevel=678
-main_hand=tiny_pal,id=228893,ilevel=678,enchant_id=7463
+head=,id=229271,bonus_id=4795/1808,gem_id=213743,ilevel=678
+neck=,id=232663,bonus_id=4795/8781,gem_id=213467/213491,ilevel=678
+shoulder=,id=235416,bonus_id=4795,ilevel=678
+back=,id=222817,bonus_id=11303/8960/8790,enchant_id=7403,ilevel=675
+chest=,id=229274,bonus_id=4795,enchant_id=7364,ilevel=678
+wrist=,id=219342,bonus_id=1808/11303/8960/8790,enchant_id=7397,gem_id=213479,ilevel=675
+hands=,id=229272,bonus_id=4795,ilevel=678
+waist=,id=228877,bonus_id=1808/4795,gem_id=213455,ilevel=678
+legs=,id=229270,bonus_id=4795,enchant_id=7601,ilevel=678
+feet=,id=228862,bonus_id=4795,enchant_id=7418,ilevel=678
+finger1=,id=228840,bonus_id=4795/8781,enchant_id=7334,gem_id=213455/213455,ilevel=678
+finger2=,id=231265,bonus_id=4795/8781,enchant_id=7334,gem_id=213455/213455,ilevel=678
+trinket1=,id=234217,ilevel=665
+trinket2=,id=232541,bonus_id=4795,ilevel=678
+main_hand=,id=228893,enchant_id=7463,ilevel=678
 
 # Gear Summary
 # gear_ilvl=676.73

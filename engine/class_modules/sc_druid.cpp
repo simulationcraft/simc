@@ -7283,12 +7283,10 @@ struct incarnation_moonkin_t final : public celestial_alignment_base_t
 struct dash_t final : public druid_spell_t
 {
   buff_t* buff_on_cast;
-  double gcd_mul;
 
   DRUID_ABILITY( dash_t, druid_spell_t, "dash",
                  p->talent.tiger_dash.ok() ? p->talent.tiger_dash : p->find_class_spell( "Dash" ) ),
-    buff_on_cast( p->talent.tiger_dash.ok() ? p->buff.tiger_dash : p->buff.dash ),
-    gcd_mul( find_effect( p->buff.cat_form, this, A_ADD_PCT_MODIFIER, P_GCD ).percent() )
+    buff_on_cast( p->talent.tiger_dash.ok() ? p->buff.tiger_dash : p->buff.dash )
   {
     harmful = may_miss = false;
     ignore_false_positive = true;
@@ -14255,7 +14253,7 @@ void druid_t::apply_affecting_auras( action_t& a )
   a.apply_affecting_aura( talent.astral_insight );
   a.apply_affecting_aura( talent.bestial_strength );
   a.apply_affecting_aura( talent.early_spring );
-  a.apply_affecting_aura( talent.empowered_shapeshifting );
+  a.apply_affecting_aura( talent.empowered_shapeshifting, spec_spell );
   a.apply_affecting_aura( talent.groves_inspiration );
   a.apply_affecting_aura( talent.hunt_beneath_the_open_skies );
   a.apply_affecting_aura( talent.lunar_calling );

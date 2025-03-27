@@ -12258,8 +12258,12 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vam
         base_td->debuff.decomposition->extend_duration( target, extension );
       }
     }
+    if ( disease_remaining_damage > 0 )
+    {
+      background_actions.infliction_of_sorrow->execute_on_target( target, disease_remaining_damage * mod );
+    }
   }
-  else if ( buffs.infliction_of_sorrow->check() )
+  if ( buffs.infliction_of_sorrow->check() )
   {
     // The talent itself references 100% damage done, and it's stored in the below effect
     // mod = talent.sanlayn.infliction_of_sorrow->effectN( 1 ).percent();
@@ -12275,11 +12279,10 @@ void death_knight_t::trigger_infliction_of_sorrow( player_t* target, bool is_vam
         base_td->debuff.decomposition->expire();
       }
     }
-  }
-
-  if ( disease_remaining_damage > 0 )
-  {
-    background_actions.infliction_of_sorrow->execute_on_target( target, disease_remaining_damage * mod );
+    if ( disease_remaining_damage > 0 )
+    {
+      background_actions.infliction_of_sorrow->execute_on_target( target, disease_remaining_damage * mod );
+    }
   }
 }
 
@@ -15615,7 +15618,7 @@ struct death_knight_module_t : public module_t
     unique_gear::register_special_effect( 326982, runeforge::unending_thirst );
   }
 
-  
+  /*
   void register_hotfixes() const override
   {
     hotfix::register_effect( "Death Knight", "2025-3-21", "Frost Death Knight Direct Damage Buffed by 4%", 179689,
@@ -15645,7 +15648,7 @@ struct death_knight_module_t : public module_t
       .operation( hotfix::HOTFIX_SET )
       .modifier( 4 )
       .verification_value( 0 );
-  }
+  }*/
 
   void init( player_t* ) const override
   {

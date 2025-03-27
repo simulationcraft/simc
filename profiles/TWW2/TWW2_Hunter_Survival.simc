@@ -1,11 +1,11 @@
-hunter="TWW2_Hunter_Survival_Sentinel"
+hunter="TWW2_Hunter_Survival_PackLeader"
 source=default
 spec=survival
 level=80
 race=maghar_orc
 role=attack
 position=back
-talents=C8PAAAAAAAAAAAAAAAAAAAAAAMGYgtxox2AY2C2mZmtZMzMmZGDMGmZmZmZbAAAAAAAQzYGzMzMDzwMMGmZghZWmBbAAAAAADA
+talents=C8PAAAAAAAAAAAAAAAAAAAAAAMgxMG2ILwMM0glZmZZGzMjZmxYYMMzMzY2GAAAAAAA0MMmxMzMmhZYMMzwYGzYmhFAAAAAAA
 
 # Default consumables
 potion=tempered_potion_3
@@ -138,21 +138,21 @@ actions.trinkets+=/variable,name=damage_sync_remains,value=0
 # Uses buff effect trinkets with cooldowns and is willing to delay usage up to 1/3 the trinket cooldown if it won't lose a usage in the fight. Fills in downtime with weaker buff effects if they won't also be saved for later cooldowns (happens if it won't delay over 1/3 the trinket cooldown and a stronger trinket won't be up in time) or damage effects if they won't inferfere with any buff effect usage.
 actions.trinkets+=/use_items,slots=trinket1:trinket2,if=this_trinket.has_use_buff&(variable.buff_sync_ready&(variable.stronger_trinket_slot=this_trinket_slot|other_trinket.cooldown.remains)|!variable.buff_sync_ready&(variable.stronger_trinket_slot=this_trinket_slot&(variable.buff_sync_remains>this_trinket.cooldown.duration%3&fight_remains>this_trinket.cooldown.duration+20|other_trinket.has_use_buff&other_trinket.cooldown.remains>variable.buff_sync_remains-15&other_trinket.cooldown.remains-5<variable.buff_sync_remains&variable.buff_sync_remains+45>fight_remains)|variable.stronger_trinket_slot!=this_trinket_slot&(other_trinket.cooldown.remains&(other_trinket.cooldown.remains-5<variable.buff_sync_remains&variable.buff_sync_remains>=20|other_trinket.cooldown.remains-5>=variable.buff_sync_remains&(variable.buff_sync_remains>this_trinket.cooldown.duration%3|this_trinket.cooldown.duration<fight_remains&(variable.buff_sync_remains+this_trinket.cooldown.duration>fight_remains)))|other_trinket.cooldown.ready&variable.buff_sync_remains>20&variable.buff_sync_remains<other_trinket.cooldown.duration%3)))|!this_trinket.has_use_buff&(this_trinket.cast_time=0|!variable.buff_sync_active)&(!this_trinket.is.junkmaestros_mega_magnet|buff.junkmaestros_mega_magnet.stack>10)&(!other_trinket.has_cooldown&(variable.damage_sync_active|this_trinket.is.junkmaestros_mega_magnet&buff.junkmaestros_mega_magnet.stack>25|!this_trinket.is.junkmaestros_mega_magnet&variable.damage_sync_remains>this_trinket.cooldown.duration%3)|other_trinket.has_cooldown&(!other_trinket.has_use_buff&(variable.stronger_trinket_slot=this_trinket_slot|other_trinket.cooldown.remains)&(variable.damage_sync_active|this_trinket.is.junkmaestros_mega_magnet&buff.junkmaestros_mega_magnet.stack>25|variable.damage_sync_remains>this_trinket.cooldown.duration%3&!this_trinket.is.junkmaestros_mega_magnet|other_trinket.cooldown.remains-5<variable.damage_sync_remains&variable.damage_sync_remains>=20)|other_trinket.has_use_buff&(variable.damage_sync_active|this_trinket.is.junkmaestros_mega_magnet&buff.junkmaestros_mega_magnet.stack>25|!this_trinket.is.junkmaestros_mega_magnet&variable.damage_sync_remains>this_trinket.cooldown.duration%3)&(other_trinket.cooldown.remains>=20|other_trinket.cooldown.remains-5>variable.buff_sync_remains)))|fight_remains<25&(variable.stronger_trinket_slot=this_trinket_slot|other_trinket.cooldown.remains)
 
-head=tireless_collectors_chained_cowl,id=229271,bonus_id=4795/1808,ilevel=678,gem_id=213743
-neck=undermine_mercs_dog_tags,id=232663,bonus_id=4795/8781,ilevel=678,gem_id=213473/213473
-shoulders=amice_of_oblivion,id=221048,bonus_id=4795,ilevel=678
-back=consecrated_cloak,id=222817,bonus_id=8791/11303/8960,ilevel=675,enchant_id=7415
-chest=tireless_collectors_battlegear,id=229274,bonus_id=4795,ilevel=678,enchant_id=7364
-wrists=glyphetched_vambraces,id=219342,bonus_id=8791/1808/11303/8960,ilevel=675,gem_id=213473,enchant_id=7385
-hands=tireless_collectors_gauntlets,id=229272,bonus_id=4795,ilevel=678
-waist=tireless_collectors_first_kill,id=229268,bonus_id=4795/1808,ilevel=678,gem_id=213482
-legs=tireless_collectors_armored_breeches,id=229270,bonus_id=4795,ilevel=678,enchant_id=7601
-feet=treads_of_the_galvanic_skysoarer,id=221035,bonus_id=4795,ilevel=678,enchant_id=7418
-finger1=cyrces_circlet,id=228411,ilevel=658,gem_id=228639/228638/228640,enchant_id=7346
-finger2=the_jastor_diamond,id=231265,bonus_id=1527/11996/11964/8781,gem_id=213458/213491,enchant_id=7346
-trinket1=improvised_seaforium_pacemaker,id=232541,bonus_id=4795,ilevel=678
-trinket2=house_of_cards,id=230027,bonus_id=4795,ilevel=678
-main_hand=giga_bankbreaker,id=228905,bonus_id=1527/11996/11964,enchant_id=7463
+head=tireless_collectors_chained_cowl,id=229271,bonus_id=6652/12055/10390/11988/12178/11960/1507,ilevel=678,gem_id=213743
+neck=strapped_rescuekeg,id=221060,bonus_id=3170/11996/11964/8781,gem_id=213455/213467
+shoulders=glyphetched_epaulets,id=219338,bonus_id=10421/9633/8902/9627/12043/11303/8960/8791/12040,crafted_stats=40/36
+back=test_pilots_gopack,id=228844,bonus_id=6652/11967/10355/11990/1514/10255,ilevel=678,enchant_id=7409
+chest=tireless_collectors_battlegear,id=229274,bonus_id=6652/41/10390/12178/11958/11988/1507/10255,ilevel=678,enchant_id=7364
+wrists=consecrated_barons_bindings,id=221124,bonus_id=10390/6652/12055/11964/10383/11988/3150/10255,ilevel=678,gem_id=213491,enchant_id=7391
+hands=tireless_collectors_gauntlets,id=229272,bonus_id=10356/11959/6652/12179/11994/1520/10255,ilevel=678
+waist=portable_power_generator,id=234501,bonus_id=10390/41/12176/11964/10383/11988/1507/10255/1808,ilevel=678,gem_id=213479
+legs=tireless_collectors_armored_breeches,id=229270,bonus_id=11993/10356/11961/6652/12178/1517/10255,ilevel=678,enchant_id=7601
+feet=glyphetched_stompers,id=219335,bonus_id=10421/9633/8902/9627/12043/11303/8960/8791/12040,enchant_id=7424,crafted_stats=32/36
+finger1=cyrces_circlet,id=228411,bonus_id=12028/1511,gem_id=228639/228638/228640,enchant_id=7334
+finger2=the_jastor_diamond,id=231265,bonus_id=1527/11996/11964/8781,gem_id=213479/213482,enchant_id=7334
+trinket1=signet_of_the_priory,id=219308,bonus_id=10390/6652/10383/11990/3157/10255,ilevel=678
+trinket2=improvised_seaforium_pacemaker,id=232541,bonus_id=10390/6652/10383/11989/1498/10255,ilevel=678
+main_hand=sticky_stirring_stick,id=221057,bonus_id=3170/11996/11964,enchant_id=7445
 
 # Gear Summary
 # gear_ilvl=676.27

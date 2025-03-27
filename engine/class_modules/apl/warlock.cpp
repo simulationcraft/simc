@@ -51,16 +51,16 @@ void affliction( player_t* p )
 
   precombat->add_action( "summon_pet" );
   precombat->add_action( "variable,name=cleave_apl,default=0,op=reset" );
-  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff", "Used to set Trinket in slot 1 as Buff Trinkets for the automatic logic" );
-  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff", "Used to set Trinkets in slot 2 as Buff Trinkets for the automatic logic" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|trinket.1.is.funhouse_lens", "Used to set Trinket in slot 1 as Buff Trinkets for the automatic logic" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|trinket.2.is.funhouse_lens", "Used to set Trinkets in slot 2 as Buff Trinkets for the automatic logic" );
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.soul_rot.duration=0|cooldown.soul_rot.duration%%trinket.1.cooldown.duration=0)", "Automatic Logic for Buff Trinkets in Trinket Slot 1" );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.soul_rot.duration=0|cooldown.soul_rot.duration%%trinket.2.cooldown.duration=0)", "Automatic Logic for Buff Trinkets in Trinket Slot 2" );
   precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.spymasters_web|trinket.1.is.aberrant_spellforge", " Sets a specific Trinkets in Slot 1 to follow an APL line and not the automatic logic" );
   precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.spymasters_web|trinket.2.is.aberrant_spellforge", " Sets a specific Trinkets in Slot 2 to follow an APL line and not the automatic logic " );
   precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell", "For On Use Trinkets on slot 1 with on use effects you dont want to use in combat" );
   precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell", "For On Use Trinkets on Slot 2 with on use effects you don't want to use in combat" );
-  precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.mirror_of_fractured_tomorrows*20)", " Sets the duration of Trinket 1 in the automatic logic" );
-  precombat->add_action( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration+(trinket.2.is.mirror_of_fractured_tomorrows*20)", " Sets the duration of Trinket 2 in the automatic logic" );
+  precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.funhouse_lens*15)+(trinket.1.is.signet_of_the_priory*20)", " Sets the duration of Trinket 1 in the automatic logic" );
+  precombat->add_action( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration+(trinket.2.is.funhouse_lens*15)+(trinket.2.is.signet_of_the_priory*20)", " Sets the duration of Trinket 2 in the automatic logic" );
   precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_buff_duration)*(1+0.5*trinket.2.has_buff.intellect)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%variable.trinket_1_buff_duration)*(1+0.5*trinket.1.has_buff.intellect)*(variable.trinket_1_sync))", "Automatic Logic in case of 2 On Use Buff Trinkets" );
 
   precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
@@ -228,14 +228,14 @@ void demonology( player_t* p )
   precombat->add_action( "variable,name=first_tyrant_time,op=sub,value=action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time", "Accounts for Tyrant own Cast Time and an additional Shadowbolt cast time" );
   precombat->add_action( "variable,name=first_tyrant_time,op=min,value=10", "Sets an absolute minimum of 10s for the First Tyrant Setup" );
   precombat->add_action( "variable,name=in_opener,op=set,value=1" );
-  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff", "Defines if the the Trinket 1 is a buff Trinket in the trinket logic" );
-  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff", "Defines if the the Trinket 2 is a buff Trinket in the trinket logic" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|trinket.1.is.funhouse_lens", "Defines if the the Trinket 1 is a buff Trinket in the trinket logic" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|trinket.2.is.funhouse_lens", "Defines if the the Trinket 2 is a buff Trinket in the trinket logic" );
   precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.ruby_whelp_shell", "For On Use Trinkets on slot 1 with on use effects you dont want to use in combat" );
   precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.ruby_whelp_shell", "For On Use Trinkets on slot 2 with on use effects you dont want to use in combat" );
   precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.spymasters_web|trinket.1.is.imperfect_ascendancy_serum", "Sets a specific Trinkets in Slot 1 to follow an APL line and not the automatic logic" );
   precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.spymasters_web|trinket.2.is.imperfect_ascendancy_serum", "Sets a specific Trinkets in Slot 2 to follow an APL line and not the automatic logic" );
-  precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.mirror_of_fractured_tomorrows*20)", "Defines the Duration of the buff or an expected time for value of the trinket" );
-  precombat->add_action( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration+(trinket.2.is.mirror_of_fractured_tomorrows*20)", "Defines the Duration of the buff or an expected time for value of the trinket" );
+  precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.funhouse_lens*15)+(trinket.1.is.signet_of_the_priory*20)", "Defines the Duration of the buff or an expected time for value of the trinket" );
+  precombat->add_action( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration+(trinket.2.is.funhouse_lens*15)+(trinket.2.is.signet_of_the_priory*20)", "Defines the Duration of the buff or an expected time for value of the trinket" );
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.summon_demonic_tyrant.duration=0|cooldown.summon_demonic_tyrant.duration%%trinket.1.cooldown.duration=0)", "Trinket Automatic Logic for Trinket 1" );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.summon_demonic_tyrant.duration=0|cooldown.summon_demonic_tyrant.duration%%trinket.2.cooldown.duration=0)", "Trinket Automatic Logic for Trinket 2" );
   precombat->add_action( "variable,name=damage_trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&!variable.trinket_2_buffs&trinket.2.ilvl>trinket.1.ilvl", "Automatic Logic in case of 2 Buff Trinkets" );
@@ -291,7 +291,7 @@ void demonology( player_t* p )
   items->add_action( "use_item,use_off_gcd=1,slot=trinket1,if=!variable.trinket_1_buffs&!variable.trinket_1_manual&((variable.damage_trinket_priority=1|trinket.2.cooldown.remains)&(trinket.1.cast_time>0&!pet.demonic_tyrant.active|!trinket.1.cast_time>0)|(time<20&variable.trinket_2_buffs)|cooldown.summon_demonic_tyrant.remains_expected>20)" );
   items->add_action( "use_item,use_off_gcd=1,slot=trinket2,if=!variable.trinket_2_buffs&!variable.trinket_2_manual&((variable.damage_trinket_priority=2|trinket.1.cooldown.remains)&(trinket.2.cast_time>0&!pet.demonic_tyrant.active|!trinket.2.cast_time>0)|(time<20&variable.trinket_1_buffs)|cooldown.summon_demonic_tyrant.remains_expected>20)" );
   items->add_action( "use_item,use_off_gcd=1,name=spymasters_web,if=pet.demonic_tyrant.active&fight_remains<=80&buff.spymasters_report.stack>=30&(!variable.trinket_1_buffs&trinket.2.is.spymasters_web|!variable.trinket_2_buffs&trinket.1.is.spymasters_web)|fight_remains<=20&(trinket.1.cooldown.remains&trinket.2.is.spymasters_web|trinket.2.cooldown.remains&trinket.1.is.spymasters_web|!variable.trinket_1_buffs|!variable.trinket_2_buffs)" );
-  items->add_action( "use_item,use_off_gcd=1,name=imperfect_ascendancy_serum,if=pet.demonic_tyrant.active&gcd.remains>0|fight_remains<=30" );
+  items->add_action( "use_item,use_off_gcd=1,name=imperfect_ascendancy_serum,if=pet.demonic_tyrant.active|fight_remains<=30" );
   items->add_action( "use_item,name=mirror_of_fractured_tomorrows,if=trinket.1.is.mirror_of_fractured_tomorrows&variable.trinket_priority=2|trinket.2.is.mirror_of_fractured_tomorrows&variable.trinket_priority=1" );
   items->add_action( "use_item,slot=trinket1,if=!variable.trinket_1_buffs&(variable.damage_trinket_priority=1|trinket.2.cooldown.remains)" );
   items->add_action( "use_item,slot=trinket2,if=!variable.trinket_2_buffs&(variable.damage_trinket_priority=2|trinket.1.cooldown.remains)" );
@@ -365,16 +365,16 @@ void destruction( player_t* p )
 
   precombat->add_action( "summon_pet" );
   precombat->add_action( "variable,name=cleave_apl,default=0,op=reset" );
-  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff", "Automatic Logic for Buff Trinkets in Trinket Slot 1" );
-  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff", "Automatic Logic for Buff Trinkets in Trinket Slot 2" );
+  precombat->add_action( "variable,name=trinket_1_buffs,value=trinket.1.has_use_buff|trinket.1.is.funhouse_lens", "Automatic Logic for Buff Trinkets in Trinket Slot 1" );
+  precombat->add_action( "variable,name=trinket_2_buffs,value=trinket.2.has_use_buff|trinket.2.is.funhouse_lens", "Automatic Logic for Buff Trinkets in Trinket Slot 2" );
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_1_buffs&(trinket.1.cooldown.duration%%cooldown.summon_infernal.duration=0|cooldown.summon_infernal.duration%%trinket.1.cooldown.duration=0)" );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=variable.trinket_2_buffs&(trinket.2.cooldown.duration%%cooldown.summon_infernal.duration=0|cooldown.summon_infernal.duration%%trinket.2.cooldown.duration=0)" );
   precombat->add_action( "variable,name=trinket_1_manual,value=trinket.1.is.spymasters_web", "Sets a specific Trinkets in Slot 1 to follow an APL line and not the automatic logic" );
   precombat->add_action( "variable,name=trinket_2_manual,value=trinket.2.is.spymasters_web", "Sets a specific Trinkets in Slot 2 to follow an APL line and not the automatic logic" );
   precombat->add_action( "variable,name=trinket_1_exclude,value=trinket.1.is.whispering_incarnate_icon", "For On Use Trinkets on slot 1 with on use effects you dont want to use in combat" );
   precombat->add_action( "variable,name=trinket_2_exclude,value=trinket.2.is.whispering_incarnate_icon", "For On Use Trinkets on slot 2 with on use effects you dont want to use in combat" );
-  precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration", "Sets the duration of the trinket in the automatic logic" );
-  precombat->add_action( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration", "Sets the duration of the trinket in the automatic logic" );
+  precombat->add_action( "variable,name=trinket_1_buff_duration,value=trinket.1.proc.any_dps.duration+(trinket.1.is.funhouse_lens*15)+(trinket.1.is.signet_of_the_priory*20)", "Sets the duration of the trinket in the automatic logic" );
+  precombat->add_action( "variable,name=trinket_2_buff_duration,value=trinket.2.proc.any_dps.duration+(trinket.2.is.funhouse_lens*15)+(trinket.2.is.signet_of_the_priory*20)", "Sets the duration of the trinket in the automatic logic" );
   precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!variable.trinket_1_buffs&variable.trinket_2_buffs|variable.trinket_2_buffs&((trinket.2.cooldown.duration%variable.trinket_2_buff_duration)*(1+0.5*trinket.2.has_buff.intellect)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%variable.trinket_1_buff_duration)*(1+0.5*trinket.1.has_buff.intellect)*(variable.trinket_1_sync))", "Automatic Logic in case both Trinkets are on use buffs" );
   precombat->add_action( "variable,name=allow_rof_2t_spender,default=2,op=reset" );
   precombat->add_action( "variable,name=do_rof_2t,value=variable.allow_rof_2t_spender>1.99&!(talent.cataclysm&talent.improved_chaos_bolt),op=set" );
@@ -401,10 +401,10 @@ void destruction( player_t* p )
   default_->add_action( "shadowburn,if=(cooldown.summon_infernal.remains>=90&talent.rain_of_chaos)|buff.malevolence.up" );
   default_->add_action( "chaos_bolt,if=(cooldown.summon_infernal.remains>=90&talent.rain_of_chaos)|buff.malevolence.up" );
   default_->add_action( "ruination,if=(debuff.eradication.remains>=execute_time|!talent.eradication|!talent.shadowburn)" );
-  default_->add_action( "cataclysm,if=raid_event.adds.in>15&(dot.immolate.refreshable&!talent.wither|talent.wither&dot.wither.refreshable)" );
+  default_->add_action( "cataclysm,if=raid_event.adds.in>15&(talent.wither&dot.wither.refreshable)" );
   default_->add_action( "channel_demonfire,if=talent.raging_demonfire&(dot.immolate.remains+dot.wither.remains-5*(action.chaos_bolt.in_flight&talent.internal_combustion))>cast_time" );
   default_->add_action( "wither,if=!talent.internal_combustion&(((dot.wither.remains-5*(action.chaos_bolt.in_flight))<dot.wither.duration*0.3)|dot.wither.remains<3)&(!talent.cataclysm|cooldown.cataclysm.remains>dot.wither.remains)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>(dot.wither.remains))&target.time_to_die>8&!action.soul_fire.in_flight_to_target" );
-  default_->add_action( "immolate,if=(((dot.immolate.remains-5*(action.chaos_bolt.in_flight&talent.internal_combustion))<dot.immolate.duration*0.3)|dot.immolate.remains<3|(dot.immolate.remains-action.chaos_bolt.execute_time)<5&talent.internal_combustion&action.chaos_bolt.usable)&(!talent.cataclysm|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>(dot.immolate.remains-5*talent.internal_combustion))&target.time_to_die>8&!action.soul_fire.in_flight_to_target" );
+  default_->add_action( "immolate,if=(((dot.immolate.remains-5*(action.chaos_bolt.in_flight&talent.internal_combustion))<dot.immolate.duration*0.3)|dot.immolate.remains<3|(dot.immolate.remains-action.chaos_bolt.execute_time)<5&talent.internal_combustion&action.chaos_bolt.usable)&(!talent.soul_fire|cooldown.soul_fire.remains+action.soul_fire.cast_time>(dot.immolate.remains-5*talent.internal_combustion))&target.time_to_die>8&!action.soul_fire.in_flight_to_target" );
   default_->add_action( "summon_infernal" );
   default_->add_action( "incinerate,if=talent.diabolic_ritual&(diabolic_ritual&(buff.diabolic_ritual_mother_of_chaos.remains+buff.diabolic_ritual_overlord.remains+buff.diabolic_ritual_pit_lord.remains-2-!variable.disable_cb_2t*action.chaos_bolt.cast_time-variable.disable_cb_2t*gcd.max)<=0)" );
   default_->add_action( "chaos_bolt,if=variable.pooling_condition_cb&(cooldown.summon_infernal.remains>=gcd.max*3|soul_shard>4|!talent.rain_of_chaos)" );
@@ -424,7 +424,7 @@ void destruction( player_t* p )
   aoe->add_action( "call_action_list,name=havoc,if=havoc_active&havoc_remains>gcd.max&active_enemies<(5+!talent.wither)&(!cooldown.summon_infernal.up|!talent.summon_infernal)" );
   aoe->add_action( "dimensional_rift,if=soul_shard<4.7&(charges>2|fight_remains<cooldown.dimensional_rift.duration)" );
   aoe->add_action( "rain_of_fire,if=!talent.inferno&soul_shard>=(4.5-0.1*(active_dot.immolate+active_dot.wither))|soul_shard>=(3.5-0.1*(active_dot.immolate+active_dot.wither))|buff.ritual_of_ruin.up" );
-  aoe->add_action( "wither,target_if=min:dot.wither.remains+99*debuff.havoc.remains+99*!dot.wither.ticking,if=dot.wither.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.wither.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains|time<5)&(active_dot.wither<=4|time>15)&target.time_to_die>18" );
+  aoe->add_action( "wither,target_if=min:dot.wither.remains+99*debuff.havoc.remains+99*!dot.wither.ticking,if=dot.wither.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.wither.remains)&(!(talent.raging_demonfire&talent.channel_demonfire)|cooldown.channel_demonfire.remains>remains|time<5)&(active_dot.wither<=4|time>15)&target.time_to_die>18" );
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains+dot.wither.remains>cast_time&talent.raging_demonfire" );
   aoe->add_action( "shadowburn,if=((buff.malevolence.up&((talent.cataclysm&active_enemies<=10)|(talent.inferno&active_enemies<=6)))|(talent.wither&talent.cataclysm&active_enemies<=6)|(!talent.wither&talent.cataclysm&active_enemies<=4)|active_enemies<=3)&((cooldown.shadowburn.full_recharge_time<=gcd.max*3|debuff.eradication.remains<=gcd.max&talent.eradication&!action.chaos_bolt.in_flight&!talent.diabolic_ritual)&(talent.conflagration_of_chaos|talent.blistering_atrophy)|fight_remains<=8)" );
   aoe->add_action( "shadowburn,target_if=min:time_to_die,if=((buff.malevolence.up&((talent.cataclysm&active_enemies<=10)|(talent.inferno&active_enemies<=6)))|(talent.wither&talent.cataclysm&active_enemies<=6)|(!talent.wither&talent.cataclysm&active_enemies<=4)|active_enemies<=3)&((cooldown.shadowburn.full_recharge_time<=gcd.max*3|debuff.eradication.remains<=gcd.max&talent.eradication&!action.chaos_bolt.in_flight&!talent.diabolic_ritual)&(talent.conflagration_of_chaos|talent.blistering_atrophy)&time_to_die<5|fight_remains<=8)" );
@@ -433,11 +433,11 @@ void destruction( player_t* p )
   aoe->add_action( "soul_fire,target_if=min:dot.wither.remains+dot.immolate.remains-5*debuff.conflagrate.up+100*debuff.havoc.remains,if=(buff.decimation.up)&!talent.raging_demonfire&havoc_active" );
   aoe->add_action( "soul_fire,target_if=min:(dot.wither.remains+dot.immolate.remains-5*debuff.conflagrate.up+100*debuff.havoc.remains),if=buff.decimation.up&active_dot.immolate<=4" );
   aoe->add_action( "infernal_bolt,if=soul_shard<2.5" );
-  aoe->add_action( "chaos_bolt,if=(soul_shard>3.5-(0.1*active_enemies)&!talent.rain_of_fire)|(!talent.wither&talent.cataclysm&active_enemies<=3)" );
+  aoe->add_action( "chaos_bolt,if=((soul_shard>3.5-(0.1*active_enemies))&!action.rain_of_fire.enabled)|(!talent.wither&talent.cataclysm&active_enemies<=3)" );
   aoe->add_action( "cataclysm,if=raid_event.adds.in>15|talent.wither" );
   aoe->add_action( "havoc,target_if=min:((-target.time_to_die)<?-15)+dot.immolate.remains+99*(self.target=target),if=(!cooldown.summon_infernal.up|!talent.summon_infernal|(talent.inferno&active_enemies>4))&target.time_to_die>8&(cooldown.malevolence.remains>15|!talent.malevolence)|time<5" );
-  aoe->add_action( "wither,target_if=min:dot.wither.remains+99*debuff.havoc.remains,if=dot.wither.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.wither.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains|time<5)&active_dot.wither<=active_enemies&target.time_to_die>18" );
-  aoe->add_action( "immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=dot.immolate.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&(!talent.raging_demonfire|cooldown.channel_demonfire.remains>remains|time<5)&(active_dot.immolate<=6&!(talent.diabolic_ritual&talent.inferno)|active_dot.immolate<=4)&target.time_to_die>18" );
+  aoe->add_action( "wither,target_if=min:dot.wither.remains+99*debuff.havoc.remains,if=dot.wither.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.wither.remains)&(!(talent.raging_demonfire&talent.channel_demonfire)|cooldown.channel_demonfire.remains>remains|time<5)&active_dot.wither<=active_enemies&target.time_to_die>18" );
+  aoe->add_action( "immolate,target_if=min:dot.immolate.remains+99*debuff.havoc.remains,if=dot.immolate.refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>dot.immolate.remains)&(!(talent.raging_demonfire&talent.channel_demonfire)|cooldown.channel_demonfire.remains>remains|time<5)&(active_dot.immolate<=6&!(talent.diabolic_ritual&talent.inferno)|active_dot.immolate<=4)&target.time_to_die>18" );
   aoe->add_action( "call_action_list,name=ogcd" );
   aoe->add_action( "summon_infernal,if=cooldown.invoke_power_infusion_0.up|cooldown.invoke_power_infusion_0.duration=0|fight_remains>=120" );
   aoe->add_action( "rain_of_fire,if=debuff.pyrogenics.down&active_enemies<=4&!talent.diabolic_ritual" );

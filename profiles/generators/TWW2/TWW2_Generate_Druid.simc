@@ -54,29 +54,31 @@ main_hand=bestinslots,id=232526,enchant_id=7445,ilevel=678
 save=TWW2_Druid_Feral.simc
 
 
-# druid=TWW2_Druid_Guardian
-# level=80
-# race=night_elf
-# timeofday=night
-# role=tank
-# position=front
-# spec=guardian
-# talents=CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzYmxMzy8ADjZYGLmhZmFLDgBMzYy0MzMmZmhBbMAAAAAAgxMDAAAAqZ2mlZmlBAwCzMDA
+druid=TWW2_Druid_Guardian
+level=80
+race=night_elf
+timeofday=night
+role=tank
+position=front
+spec=guardian
+talents=CgGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzYmZmZWmhxMDGLmhZsYZAYMTTmmZmFz2MGjZYAAAAAAYMzAAAAgamtZZmZZAAsAjBYxMYA
 
-# head=mask_of_the_greatlynx,id=212056,bonus_id=4800/4786/10257/10298/1537/1808,gem_id=213743
-# neck=sureki_zealots_insignia,id=225577,bonus_id=4800/4786/1540/10299/8781,gem_id=213467/213491
-# shoulders=maw_of_the_greatlynx,id=212054,bonus_id=4800/4786/10259/10299/1540
-# back=wings_of_shattered_sorrow,id=225574,bonus_id=4800/4786/1540/10299,enchant_id=7409
-# chest=rainshadow_hauberk,id=178698,bonus_id=4786/9948/10299,enchant_id=7364
-# wrists=great_links_of_the_greatlynx,id=212052,bonus_id=1540/10299/1808,gem_id=213479,enchant_id=7391
-# hands=eviscerators_of_the_greatlynx,id=212057,bonus_id=4800/4786/10259/10299/1540
-# waist=adrenal_surge_clasp,id=219502,bonus_id=8960/10421/9633/8902/11144/10222/1485/1808,gem_id=213479,crafted_stats=32/36
-# legs=leggings_of_the_greatlynx,id=212055,bonus_id=4800/4786/10258/10299/1540,enchant_id=7595
-# feet=runebranded_kickers,id=219327,bonus_id=10421/9633/8902/11144/10222/1485/11109/8960,enchant_id=7418,crafted_stats=32/36
-# finger1=seal_of_the_poisoned_pact,id=225578,bonus_id=4800/4786/1540/10299/8781,gem_id=213479/213479,enchant_id=7340
-# finger2=key_to_the_unseeming,id=212447,bonus_id=4800/4786/10260/10299/1540/8781,gem_id=213479/213455,enchant_id=7340
-# trinket1=arakara_sacbrood,id=219314,bonus_id=4786/3131/10299
-# trinket2=bottled_flayedwing_toxin,id=178742,bonus_id=4786/9948/10299
-# main_hand=harvesters_interdiction,id=221159,bonus_id=3131/10299/10376,enchant_id=7460
 
-# save=TWW2_Druid_Guardian.simc
+head=branches_of_reclaiming_blight,id=229307,bonus_id=1527/11996/1808,gem_id=213743
+neck=semicharmed_amulet,id=228841,bonus_id=1527/11996/11964/8781,gem_id=213473/213485
+shoulder=mechanized_junkpads,id=234500,bonus_id=1527/11996/11964
+back=leaves_of_reclaiming_blight,id=229302,bonus_id=1527/11996,enchant_id=7409
+chest=robes_of_reclaiming_blight,id=229310,bonus_id=1527/11996,enchant_id=7364
+wrist=knots_of_reclaiming_blight,id=229303,bonus_id=1527/11996/1808,gem_id=213482,enchant_id=7391
+hands=grips_of_reclaiming_blight,id=229308,bonus_id=1527/11996
+waist=adrenal_surge_clasp,id=219502,bonus_id=8960/10421/9633/8902/10222/1485/1808/12043/12040,gem_id=213458,crafted_stats=32/36
+legs=moccasins_of_reclaiming_blight,id=229306,bonus_id=1527/11996,enchant_id=7601
+feet=runebranded_kickers,id=219327,bonus_id=10421/9633/8902/10222/1485/11109/8960/12043/12040,enchant_id=7418,crafted_stats=32/36
+finger1=the_jastor_diamond,id=231265,bonus_id=1527/11996/11964/8781,gem_id=213491/213491,enchant_id=7340
+finger2=wicks_golden_loop,id=221099,bonus_id=3170/11996/11964/8781,gem_id=213491/213479,enchant_id=7340
+trinket1=tome_of_lights_devotion,id=219309,bonus_id=3170/11996/11964
+trinket2=improvised_seaforium_pacemaker,id=232541,bonus_id=1514/11996/11964
+main_hand=bestinslots,id=232526,bonus_id=1527/11996/11964,enchant_id=7460
+
+
+save=TWW2_Druid_Guardian.simc
