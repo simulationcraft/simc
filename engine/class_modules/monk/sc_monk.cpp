@@ -3695,6 +3695,10 @@ public:
   double action_multiplier() const override
   {
     double am = monk_spell_t::action_multiplier();
+
+    if ( blackout_combo )
+      am *= 1.0 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
+
     // Currently the value is saved as 100% and each of the values is stagger_index / 3 * base_value
     double bof_stagger_bonus = p()->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent();
     am *= 1.0 + ( p()->find_stagger( "Stagger" )->level_index() / 3.0 ) * bof_stagger_bonus;
