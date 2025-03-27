@@ -1693,6 +1693,9 @@ struct charred_passions_t : base_action_t
   {
     base_action_t::execute();
 
+    if ( !base_action_t::p()->buff.charred_passions->up() )
+      return;
+
     if ( chp_cooldown->up() )
       chp_cooldown->start( chp_damage->data().effectN( 1 ).trigger()->internal_cooldown() );
   }
