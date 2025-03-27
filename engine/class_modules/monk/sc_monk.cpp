@@ -3739,6 +3739,8 @@ public:
 
   void impact( action_state_t *s ) override
   {
+    monk_spell_t::impact( s );
+
     propagate_const<action_t *> dot = p()->active_actions.breath_of_fire;
 
     state_t* dot_state = cast_state( dot->get_state() );
@@ -3752,10 +3754,8 @@ public:
       blackout_combo = false;
     }
 
-    dot->snapshot_state( dot_state, p()->active_actions.breath_of_fire->amount_type( dot_state ) );
+    dot->snapshot_state( dot_state, dot->amount_type( dot_state ) );
     dot->schedule_execute( dot_state );
-
-    monk_spell_t::impact( dot_state );
   }
 };
 
