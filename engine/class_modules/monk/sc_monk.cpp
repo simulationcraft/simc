@@ -1689,6 +1689,14 @@ struct charred_passions_t : base_action_t
     // base_action_t::add_child( damage );
   }
 
+  void execute() override
+  {
+    base_action_t::execute();
+
+    if ( chp_cooldown->up() )
+      chp_cooldown->start( chp_damage->data().effectN( 1 ).trigger()->internal_cooldown() );
+  }
+
   void impact( action_state_t *state ) override
   {
     base_action_t::impact( state );
@@ -1704,7 +1712,6 @@ struct charred_passions_t : base_action_t
          target_data && target_data->dot.breath_of_fire->is_ticking() && chp_cooldown->up() )
     {
       target_data->dot.breath_of_fire->refresh_duration();
-      chp_cooldown->start( chp_damage->data().effectN( 1 ).trigger()->internal_cooldown() );
     }
   }
 };
