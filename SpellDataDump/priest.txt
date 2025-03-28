@@ -4400,6 +4400,7 @@ Tooltip          : Effects that reduce Holy Word cooldowns increased by $s1%. Co
 All healing done increased by $w3%. ][]$?$w5>0[ Heal and Prayer of Healing are instant and heal for $s5% more.][]
 
 Name             : Holy Word: Chastise (id=200196) [Spell Family (6)] 
+Hotfixed         : Aura Interrupt
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -4416,7 +4417,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Apotheosis (200183 effect#6), Al'maiesh, the Cord of Hope (211443 effect#1), Divine Word (372760 effect#1), Inspired Word (409479 effect#1), Phantom Reach (459559 effect#4), Holy Celerity (1215275 effect#3)
 Family Flags     : 69
 Attributes       : Not Shapeshifted (16), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Leave World (19), Damage (Script) (27)
+Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=294708)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Disorient | Target: Enemy (6)
