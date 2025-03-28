@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.59919 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.60008 PTR
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -748,7 +748,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
 Category Cooldown: 120 seconds
-Affecting Spells : Sanctified Wrath (53376 effect#1), Retribution Paladin (137027 effect#21), Holy Paladin (137029 effects: #23, #24, #25), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Avenging Wrath: Might (384442 effects: #1, #2), Divine Wrath (406872 effect#1)
+Affecting Spells : Sanctified Wrath (53376 effect#1), Retribution Paladin (137027 effects: #21, #29, #30), Holy Paladin (137029 effects: #23, #24, #25), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Avenging Wrath: Might (384442 effects: #1, #2), Divine Wrath (406872 effect#1)
 Family Flags     : 40
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
@@ -2042,7 +2042,7 @@ Labels           : 16: Class Spells
                  : 2607
 Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2), Holy Paladin (137029 effects: #1, #9, #31), Rule of Law (214202 effect#1), Crusade (231895 effects: #1, #2), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Radiant Decree (383469 effect#3), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Adjudication (406157 effect#1), Initial Paladin (417383 effects: #1, #2), Avenging Wrath (454351 effects: #2, #11), Crusade (454373 effects: #1, #2), Rise From Ash (454693 effects: #1, #2), Heightened Wrath (456759 effects: #1, #2), Luck of the Draw! (1218114 effects: #1, #2)
 Family Flags     : 65, 90
-Attributes       : Not Shapeshifted (16), Do Not Sheath (18), Not an Action (92), Active Threat (94), Not a Proc (105), Always AOE Line of Sight (186), Not an Attack (194), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Not an Action (92), Active Threat (94), Not a Proc (105), Always AOE Line of Sight (186), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=128396)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 11.34 | Target: Friendly (21)
@@ -2467,12 +2467,14 @@ Effects          :
 #28 (id=1077087) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0 | Misc Value: 12 | Misc Value 2: 2627 (Label) | Target: Self (1)
                    Affected Spells (Label): Empyrean Legacy (387170)
-#29 (id=1077113) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0 | Misc Value: 12 | Misc Value 2: 2628 (Label) | Target: Self (1)
-                   Affected Spells (Label): Avenging Wrath (384376)
-#30 (id=1077114) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
-                   Base Value: -5 | Scaled Value: -5 | Misc Value: 12 | Misc Value 2: 2628 (Label) | Target: Self (1)
-                   Affected Spells (Label): Avenging Wrath (384376)
+#29 (id=1077113) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Avenging Wrath (31884), Avenging Wrath (454351)
+                   Family Flags: 40
+#30 (id=1077114) : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: -5 | Scaled Value: -5 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Avenging Wrath (31884), Avenging Wrath (454351)
+                   Family Flags: 40
 #31 (id=1077116) : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0 | Misc Value: 3 | Misc Value 2: 2629 (Label) | Target: Self (1)
                    Affected Spells (Label): Avenging Wrath: Might (384442)
@@ -5429,7 +5431,7 @@ Attributes       : Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
 #1 (id=369379)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 10 | Scaled Value: 10 | Target: Friendly (21)
-                   Affected Spells: Lay on Hands (633), Flash of Light (19750), Holy Shock (25914), Beacon of Light (53652), Holy Light (82326), Light of Dawn (85222), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Eternal Flame (156322), Judgment of Light (183811), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Merciful Auras (210291), Avenging Crusader (216371), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Avenging Crusader (281465), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Hallowed Discernment (340214), Bestow Faith (343618), Golden Path (377129), Resplendent Light (392903), Lightforged Blessing (403460), Lightforged Blessing (407467), Veneration (414407), Veneration (414408), Glimmer of Light (416619), Seal of the Crusader (416771), Holy Reverberation (423377), Dawnlight (431381), Dawnlight (431382), Sun Sear (431415), Sun's Avatar (431939), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461546), Sun's Avatar (463074), A Just Reward (469413), Lay on Hands (471195)
+                   Affected Spells: Lay on Hands (633), Flash of Light (19750), Holy Shock (25914), Beacon of Light (53652), Holy Light (82326), Light of Dawn (85222), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Eternal Flame (156322), Judgment of Light (183811), Light of the Martyr (183998), Holy Ritual (199423), Tyr's Deliverance (200654), Merciful Auras (210291), Avenging Crusader (216371), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Avenging Crusader (281465), Glimmer of Light (287286), Ashen Hallow (317223), Glimmer of Light (325983), Hallowed Discernment (340214), Bestow Faith (343618), Golden Path (377129), Resplendent Light (392903), Lightforged Blessing (403460), Lightforged Blessing (407467), Veneration (414407), Veneration (414408), Glimmer of Light (416619), Seal of the Crusader (416771), Holy Reverberation (423377), Sun Sear (431415), Rite of Adjuration (433682), Hammer and Anvil (433722), Divine Guidance (433807), Sacred Weapon (441590), Sacred Word (447246), Eternal Flame (461432), Truth Prevails (461546), A Just Reward (469413), Lay on Hands (471195)
                    Family Flags: 15, 30, 32, 41, 48, 74, 82, 90, 97, 100, 124
 Description      : $@spelldesc238132
 Tooltip          : Receiving $w1% increased healing from the Paladin.
@@ -10186,7 +10188,7 @@ Spell Type       : None
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-                 : 2628: Retribution Paladin (137027 effect#29), Retribution Paladin (137027 effect#30)
+                 : 2628
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook (143), Do Not Log on Learn (355), Hide Passive From Tooltip (451)
 Effects          :
 #1 (id=1016941)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
@@ -15624,7 +15626,9 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : Casting $?c1[Holy Prism or Barrier of Faith]?c3[Wake of Ashes][] causes your next $431522u Holy Power spending abilities to apply Dawnlight on your target, dealing $431380o1 Radiant damage or $431381o1 healing over $431380d.
 
-$431581s1% of Dawnlight's damage and healing radiates to nearby allies or enemies, reduced beyond $431581s2 targets.
+$431581s1% of Dawnlight's damage and healing radiates to nearby allies or enemies, reduced beyond $431581s2 targets.$?c1[
+
+Dawnlight's healing does not transfer to Beacon of Light.][]
 
 Name             : Dawnlight (id=431380) [Spell Family (10)] 
 Class            : Paladin
@@ -15660,12 +15664,12 @@ Duration         : 8 seconds
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effect#20), Sun's Avatar (431425 effect#1), Avenging Wrath (454351 effects: #2, #11), Heightened Wrath (456759 effects: #1, #2)
-Family Flags     : 1, 41, 46
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Holy Paladin (428076 effect#20), Sun's Avatar (431425 effect#1), Avenging Wrath (454351 effects: #2, #11), Heightened Wrath (456759 effects: #1, #2)
+Family Flags     : 1, 46
 Attributes       : Extra Initial Period (169), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268)
 Effects          :
 #1 (id=1119127)  : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.17 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.3455 | Target: Friendly (21)
 #2 (id=1119128)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
 #3 (id=1119194)  : Apply Aura (6) | Increase Speed% (31)
@@ -15683,8 +15687,6 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Affecting Spells : Sacred Dawn (243174 effect#1)
-Family Flags     : 41
 Attributes       : No Redirection (35), No Reflection (39), Can't Crit (93), Do Not Display Range (126), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1119129)  : Direct Heal (10)
@@ -15902,7 +15904,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : During $?s216331[Avenging Crusader][Avenging Wrath], you become linked to your Dawnlights, causing $431911s1 Radiant damage to enemies or $431939s1 healing to allies that pass through the beams, reduced beyond $s6 targets.
 
-Activating $?s216331[Avenging Crusader applies up to $s4 Dawnlights]?a458359&a137027[Radiant Glory applies up to $s7 Dawnlight]?s231895&a137027[Crusade applies up to $s3 Dawnlights]?a137029&s31884[Avenging Wrath applies up to $s3 Dawnlights]?a137027!s231895!458359[Avenging Wrath applies up to $s4 Dawnlights][Avenging Wrath applies up to $s3 Dawnlights] onto nearby allies or enemies and increases Dawnlight's duration by $s5%.
+Activating $?s216331[Avenging Crusader applies up to $s4 Dawnlights]?a458359&a137027[Radiant Glory applies up to $s7 Dawnlight]?s231895&a137027[Crusade applies up to $s3 Dawnlights]?a137029&s31884[Avenging Wrath applies up to $s3 Dawnlights]?a137027!s231895!458359[Avenging Wrath applies up to $s4 Dawnlights][Avenging Wrath applies up to $s3 Dawnlights] onto nearby allies or enemies and increases Dawnlight's duration by $s5%.$?c1[
+
+Sun's Avatar's healing does not transfer to Beacon of Light.][]
 
 Name             : Dawnlight (id=431460) [Spell Family (10), Passive, Hidden] 
 Class            : Paladin
@@ -16352,12 +16356,12 @@ Labels           : 16: Class Spells
                  : 3780: Retribution Paladin (412314 effect#12)
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #2, #11), Heightened Wrath (456759 effects: #1, #2)
-Family Flags     : 41, 46
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #2, #11), Heightened Wrath (456759 effects: #1, #2)
+Family Flags     : 46
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1120157)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.162 | Radius: 0 - 40 yards | Target: Unknown(87) -> Line to Friendly (133)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.1863 | Radius: 0 - 40 yards | Target: Unknown(87) -> Line to Friendly (133)
 Description      : $@spelldesc431425
 
 Name             : Holy Bulwark (id=432459) [Spell Family (10)] 
@@ -17886,7 +17890,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Benevolent Faerie Fermata (345453 effect#1), Haunted Mask (356968 effect#1)
                  : 3793: Divine Wrath (406872 effect#2)
-Affecting Spells : Sanctified Wrath (53376 effect#1), Retribution Paladin (137027 effect#21), Holy Paladin (137029 effects: #23, #24, #25), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Avenging Wrath: Might (384442 effects: #1, #2), Divine Wrath (406872 effect#1)
+Affecting Spells : Sanctified Wrath (53376 effect#1), Retribution Paladin (137027 effects: #21, #29, #30), Holy Paladin (137029 effects: #23, #24, #25), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Avenging Wrath: Might (384442 effects: #1, #2), Divine Wrath (406872 effect#1)
 Family Flags     : 40
 Attributes       : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Aura Interrupt   : Change Specialization (38), Raid Encounter Start or M+ Start (40), Change Talent (46), Change Glyph (47)
@@ -18636,12 +18640,12 @@ Labels           : 16: Class Spells
                  : 3780: Retribution Paladin (412314 effect#12)
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #2, #11), Heightened Wrath (456759 effects: #1, #2)
-Family Flags     : 41, 46
+Affecting Spells : Avenging Wrath (31884 effects: #1, #2), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Blessing of Dawn (337747 effects: #1, #2), Sentinel (389539 effects: #1, #2, #3), Luminous Force (394550 effect#1), Initial Paladin (417383 effects: #3, #4), Avenging Wrath (454351 effects: #2, #11), Heightened Wrath (456759 effects: #1, #2)
+Family Flags     : 46
 Attributes       : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1173453)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.162 | Radius: 0 - 5 yards | Target: At Self (18) -> At Friendly in Area (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.1863 | Radius: 0 - 5 yards | Target: At Self (18) -> At Friendly in Area (31)
 Description      : $@spelldesc431425
 
 Name             : Sun's Avatar (id=463075) [Spell Family (10)] 
@@ -18928,10 +18932,10 @@ Range            : 100 yards
 Labels           : 16: Class Spells
                  : 26: Paladin Spells
                  : 292
-Attributes       : Do Not Sheath (18), No Aura Icon (60), Include In Advanced Combat Log (72), Can't Crit (93), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Aura Points On Client (268), Always Allow Negative Healing Percent Modifiers (442)
+Attributes       : Do Not Sheath (18), No Aura Icon (60), Include In Advanced Combat Log (72), Can't Crit (93), Aura Points On Client (268)
 Effects          :
 #1 (id=1183775)  : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Target: At Self (18) -> At Friendly in Area (31)
 Description      : $@spelldesc469416
 
 Name             : Selfless Healer (id=469434) [Spell Family (10), Passive, Hidden] 

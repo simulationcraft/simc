@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.59919 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.60008 PTR
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -4539,7 +4539,7 @@ Proc Flags       : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Ye
 Affecting Spells : Apotheosis (200183 effect#6), Al'maiesh, the Cord of Hope (211443 effect#1), Divine Word (372760 effect#1), Inspired Word (409479 effect#1), Phantom Reach (459559 effect#4), Holy Celerity (1215275 effect#3)
 Family Flags     : 69
 Attributes       : Not Shapeshifted (16), Not In Spellbook (143), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
-Aura Interrupt   : Leave World (19), Damage (Script) (27)
+Aura Interrupt   : Damage (Script) (27)
 Effects          :
 #1 (id=294708)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Disorient | Target: Enemy (6)
@@ -13583,7 +13583,7 @@ Labels           : 16: Class Spells
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1134692)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
 #2 (id=1134693)  : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
@@ -14616,7 +14616,7 @@ Labels           : 16: Class Spells
                  : 292
                  : 1218
                  : 3022
-Attributes       : Not an Action (92), Can't Crit (93), Treat As Periodic (121), Ignore Damage Taken Modifiers (136), Not an Attack (194), Ignore Caster Damage Modifiers (221), Ignore Sanctuary (263), Cannot Kill Target (316)
+Attributes       : No Threat (42), Not an Action (92), Can't Crit (93), Treat As Periodic (121), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Ignore Sanctuary (263), Cannot Kill Target (316)
 Effects          :
 #1 (id=1152783)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | Target: Friendly (21)

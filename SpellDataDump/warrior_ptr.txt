@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.5.59919 PTR
+SimulationCraft 1100-02 for World of Warcraft 11.1.5.60008 PTR
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -13623,7 +13623,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
-Attributes       : Ignore Line of Sight (66), Can't Crit (93), Treat As Periodic (121), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Not an Attack (194), Ignore Caster Damage Modifiers (221), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Attributes       : No Threat (42), Ignore Line of Sight (66), Can't Crit (93), Treat As Periodic (121), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1128339)  : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
@@ -13637,7 +13637,7 @@ Range            : 50000 yards
 Labels           : 16: Class Spells
                  : 25: Warrior Spells
                  : 292
-Attributes       : Ignore Line of Sight (66), Can't Crit (93), Treat As Periodic (121), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Not an Attack (194), Ignore Caster Damage Modifiers (221), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Attributes       : No Threat (42), Ignore Line of Sight (66), Can't Crit (93), Treat As Periodic (121), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1128340)  : School Damage (2): stormstrike
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
