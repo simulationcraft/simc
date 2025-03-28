@@ -1,4 +1,4 @@
-// Spell text, wow build 11.1.5.59919
+// Spell text, wow build 11.1.5.60008
 static const std::array<spelltext_data_t, 27312> __ptr_spelltext_data { {
   {      17, "Shields an ally for $d, absorbing $s1 damage.", "Absorbs $w1 damage.", 0 },
   {      53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -22639,7 +22639,7 @@ static const std::array<spelltext_data_t, 27312> __ptr_spelltext_data { {
   {  431192, "$@spelldesc359073", 0, "Blue" },
   {  431250, "$@spelldesc429529", "The damage of your next Arcane ability is increased by $w1%.", 0 },
   {  431284, "Increases an Ally's Agility, Intellect and Strength by $s1 for $d, stacking up to 3 times.", "Agility, Intellect and Strength increased by $w1.", 0 },
-  {  431377, "Casting $?c1[Holy Prism or Barrier of Faith]?c3[Wake of Ashes][] causes your next $431522u Holy Power spending abilities to apply Dawnlight on your target, dealing $431380o1 Radiant damage or $431381o1 healing over $431380d.\r\n\r\n$431581s1% of Dawnlight's damage and healing radiates to nearby allies or enemies, reduced beyond $431581s2 targets.", 0, 0 },
+  {  431377, "Casting $?c1[Holy Prism or Barrier of Faith]?c3[Wake of Ashes][] causes your next $431522u Holy Power spending abilities to apply Dawnlight on your target, dealing $431380o1 Radiant damage or $431381o1 healing over $431380d.\r\n\r\n$431581s1% of Dawnlight's damage and healing radiates to nearby allies or enemies, reduced beyond $431581s2 targets.$?c1[\r\n\r\nDawnlight's healing does not transfer to Beacon of Light.][]", 0, 0 },
   {  431380, "$@spelldesc431377", "Dealing $w1 Radiant damage and radiating $431581s1% of this damage to nearby enemies every $t1 sec.$?e2[\r\n\r\nMovement speed reduced by $w3%.][]", 0 },
   {  431381, "$@spelldesc431377", "Healing $w1 and radiating $431581s1% of this healing to nearby allies every $t1 sec.$?e2[\r\n\r\nMovement speed increased by $w3%.][]", 0 },
   {  431382, "$@spelldesc431377", 0, 0 },
@@ -22658,7 +22658,7 @@ static const std::array<spelltext_data_t, 27312> __ptr_spelltext_data { {
   {  431422, "Elevate your focus to restore ${$M1*10} mana over $d, but you are defenseless until your focus is broken.", "Regenerate $w1 mana every second.", 0 },
   {  431423, "Dawnlight reduces the movement speed of enemies by $431380s3% and increases the movement speed of allies by $431381s3%.", 0, 0 },
   {  431424, "The imbiber gains invisibility for $M5-$d (based on crafting quality).", "Invisible.", 0 },
-  {  431425, "During $?s216331[Avenging Crusader][Avenging Wrath], you become linked to your Dawnlights, causing $431911s1 Radiant damage to enemies or $431939s1 healing to allies that pass through the beams, reduced beyond $s6 targets.\r\n\r\nActivating $?s216331[Avenging Crusader applies up to $s4 Dawnlights]?a458359&a137027[Radiant Glory applies up to $s7 Dawnlight]?s231895&a137027[Crusade applies up to $s3 Dawnlights]?a137029&s31884[Avenging Wrath applies up to $s3 Dawnlights]?a137027!s231895!458359[Avenging Wrath applies up to $s4 Dawnlights][Avenging Wrath applies up to $s3 Dawnlights] onto nearby allies or enemies and increases Dawnlight's duration by $s5%.", 0, 0 },
+  {  431425, "During $?s216331[Avenging Crusader][Avenging Wrath], you become linked to your Dawnlights, causing $431911s1 Radiant damage to enemies or $431939s1 healing to allies that pass through the beams, reduced beyond $s6 targets.\r\n\r\nActivating $?s216331[Avenging Crusader applies up to $s4 Dawnlights]?a458359&a137027[Radiant Glory applies up to $s7 Dawnlight]?s231895&a137027[Crusade applies up to $s3 Dawnlights]?a137029&s31884[Avenging Wrath applies up to $s3 Dawnlights]?a137027!s231895!458359[Avenging Wrath applies up to $s4 Dawnlights][Avenging Wrath applies up to $s3 Dawnlights] onto nearby allies or enemies and increases Dawnlight's duration by $s5%.$?c1[\r\n\r\nSun's Avatar's healing does not transfer to Beacon of Light.][]", 0, 0 },
   {  431432, "Gain increased stealth detection. Every $t1 sec, the light will attempt to smite a hidden foe within $M3 yds.\r\n\r\nLasts for $M4-$d (based on crafting quality).", "Stealth detection increased. Periodically revealing careless enemies.", 0 },
   {  431442, "Living Flame is enhanced with Bronze magic, repeating $?c2[$s1%][$s3%] of the damage or healing you dealt to the target in the last $s2 sec as Arcane, up to $<cap>.", 0, "Bronze" },
   {  431443, "Twist Chrono Flames toward your target, $?c2[healing an ally for $361509s1 or dealing $361500s1 Fire damage to an enemy.][dealing $361500s1 Fire damage to an enemy or healing an ally for $361509s1.]\r\n\r\nBronze magic repeats $?c2[$431442s1%][$431442s3%] of the damage or healing you dealt to the target in the last $431442s2 sec as Arcane, up to $<cap>.\r\n", 0, "Bronze" },
@@ -27314,11 +27314,11 @@ static const std::array<spelltext_data_t, 27312> __ptr_spelltext_data { {
   { 1234212, "$?pc136497[|CFF20ff20Being one of the devout grants an additional $s1 $pri.|R][|CFF808080Being one of the devout grants an additional $s1 $pri.|R]", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 11.1.5.59919
+// spelltext hotfix entries, wow build 11.1.5.60008
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 11.1.5.59919
+// Spell description variables, wow build 11.1.5.60008
 static const std::array<spelldesc_vars_data_t, 648> __ptr_spelldesc_vars_data { {
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -27970,7 +27970,7 @@ static const std::array<spelldesc_vars_data_t, 648> __ptr_spelldesc_vars_data { 
   { 1234189, "$Mastery=$?a267316[${1+$267316s1/100}][${1}]\r\n$DP=$?a223819[${1+$223819s2/100}][${1}]\r\n$mult=${$<Mastery>*$<DP>}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 11.1.5.59919
+// spelldesc_vars hotfix entries, wow build 11.1.5.60008
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
