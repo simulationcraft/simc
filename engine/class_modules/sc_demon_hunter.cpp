@@ -1445,12 +1445,10 @@ struct soul_fragment_t
     dh->buff.tww1_vengeance_4pc->trigger();
 
     // Warblade's hunger currently applies an additional stack on first buff application
-    if ( p->bugs )
+
+    if ( !dh->buff.warblades_hunger->up() )
     {
-      if ( !dh->buff.warblades_hunger->up() )
-      {
-        dh->buff.warblades_hunger->trigger();
-      }
+      dh->buff.warblades_hunger->trigger();
     }
     dh->buff.warblades_hunger->trigger();
 
