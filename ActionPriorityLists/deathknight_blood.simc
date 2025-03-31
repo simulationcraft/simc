@@ -65,7 +65,7 @@ actions.sanlayn+=/variable,name=bone_shield_refresh_value,value=7
 actions.sanlayn+=/variable,name=heart_strike_rp_drw,value=(21+spell_targets.heart_strike*talent.heartbreaker.enabled*2)
 actions.sanlayn+=/death_strike,if=buff.coagulopathy.remains<=gcd
 actions.sanlayn+=/deaths_caress,if=!buff.bone_shield.up
-actions.sanlayn+=/blood_boil,if=!dot.blood_plague.ticking|(dot.blood_plague.remains<10&buff.dancing_rune_weapon.up)
+actions.sanlayn+=/blood_boil,if=!dot.blood_plague.ticking|(pet.dancing_rune_weapon.active&!drw.bp_ticking)
 actions.sanlayn+=/potion,if=buff.dancing_rune_weapon.up
 actions.sanlayn+=/consumption,if=pet.dancing_rune_weapon.active&pet.dancing_rune_weapon.remains<=3
 actions.sanlayn+=/bonestorm,if=(buff.death_and_decay.up)&buff.bone_shield.stack>5&cooldown.dancing_rune_weapon.remains
