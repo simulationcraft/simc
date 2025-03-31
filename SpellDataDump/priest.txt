@@ -1,4 +1,4 @@
-SimulationCraft 1100-02 for World of Warcraft 11.1.0.59888 Live
+SimulationCraft 1100-02 for World of Warcraft 11.1.0.60037 Live
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -242,7 +242,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 98367 | Target: Friendly (21)
 #2 (id=105332)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 2.7909 | Radius: 0 - 40 yards | Target: At Friendly (132) -> At Friendly in Area (31)
-Hotfixed         : SP Coefficient (2.23272 -> 2.7909)
 #3 (id=1207850)  : None (0)
                    Base Value: 5 | Scaled Value: 5
 Description      : A powerful prayer that heals the target and the ${$s3-1} nearest allies within $A2 yards for $s2.
@@ -322,7 +321,6 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=611)      : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 15.9593 | PvP Coefficient: 1.512 | Target: Friendly (21)
-Hotfixed         : PvP Coefficient (1.4 -> 1.512)
 #2 (id=709474)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 Description      : Perform a miracle, healing an ally for $s1.$?s63733[
@@ -351,7 +349,6 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=612)      : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | Value Multiplier: 1 | SP Coefficient: 8.68626 | PvP Coefficient: 1.188 | Target: Friendly (21)
-Hotfixed         : PvP Coefficient (1.1 -> 1.188)
 Description      : An efficient spell that heals an ally for $s1.
 
 Name             : Flash Heal (id=2061) [Spell Family (6)] 
@@ -586,7 +583,6 @@ Attributes       : Not Shapeshifted (16), DoT Stacking Rule (103), Spell Haste A
 Effects          :
 #1 (id=6990)     : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.1112 | PvP Coefficient: 1.3 | Target: Enemy (6)
-Hotfixed         : SP Coefficient (3.426 -> 4.1112)
 #2 (id=6991)     : Apply Aura (6) | Periodic Damage (3): holy every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.1884 | PvP Coefficient: 1.3 | Target: Enemy (6)
 #3 (id=808675)   : Apply Aura (6) | Unknown(395)
@@ -1120,7 +1116,6 @@ Attributes       : Not Shapeshifted (16), Allow While Not Shapeshifted (caster f
 Effects          :
 #1 (id=24949)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 4.47412 | PvP Coefficient: 1.512 | Radius: 10 yards | Target: At Friendly in Area (31)
-Hotfixed         : PvP Coefficient (1.4 -> 1.512)
 #2 (id=288932)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 #3 (id=709475)   : Dummy (3)
@@ -2000,7 +1995,6 @@ Attributes       : Is Ability (4), Passive (6), Can Proc From Procs (122), Do No
 Effects          :
 #1 (id=135203)   : Apply Aura (6) | Dummy (4)
                    Base Value: 32 | Scaled Value: 32 | PvP Coefficient: 1.3945 | Target: Self (1)
-Hotfixed         : Base Value (35 -> 32), PvP Coefficient (1.275 -> 1.3945)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60
 #3 (id=1104540)  : Dummy (3)
@@ -3050,22 +3044,18 @@ Effects          :
                    Base Value: 70 | Scaled Value: 70 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Renew (139)
                    Family Flags: 6
-Hotfixed         : Base Value (6 -> 70)
 #15 (id=1040387) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 185 | Scaled Value: 185 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
-Hotfixed         : Base Value (120 -> 185)
 #16 (id=1040388) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -16 | Scaled Value: -16 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-Hotfixed         : Base Value (-9 -> -16)
 #17 (id=1074585) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 119 | Scaled Value: 119 | Target: Self (1)
                    Affected Spells: Flash Heal (2061)
                    Family Flags: 11
-Hotfixed         : Base Value (103 -> 119)
 #18 (id=1079592) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 429 | Scaled Value: 429 | Target: Self (1)
                    Affected Spells: Smite (585), Smite (425529), Void Blast (450215)
@@ -3105,7 +3095,6 @@ Hotfixed         : Base Value (103 -> 119)
                    Base Value: -46 | Scaled Value: -46 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
-Hotfixed         : Base Value (-42 -> -46)
 #30 (id=1176319) : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -45 | Scaled Value: -45 | PvP Coefficient: 0 | Target: Self (1)
                    Affected Spells: Smite (585), Smite (425529), Void Blast (450215)
@@ -3249,12 +3238,10 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Spike (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Crash (205386), Void Bolt (205448), Mind Blast (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Echoing Void (373304), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Mind Spike: Insanity (407466), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Shadow Crash (465522), Penance (1232571), Dark Reprimand (1232592)
                    Family Flags: 72
-Hotfixed         : Base Value (24 -> 20)
 #2 (id=191068)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Spike (73510), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Holy Nova (132157), Mind Flay (193473), Searing Light (196811), Light Eruption (196812), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Crash (205386), Void Bolt (205448), Mind Blast (214621), Void Eruption (228360), Void Eruption (228361), Void Torrent (263165), Mindgames (323673), Mindgames (323707), Ascended Nova (325020), Unholy Transfusion (325203), Ascended Blast (325283), Ascended Eruption (325326), Devouring Plague (335467), Void Bolt (343355), Mind Sear (344754), Shadow Weaving (346111), Ascended Eruption (347625), Torment Mind (363656), Torment Mind (366971), Dark Reprimand (373130), Void Spike (373279), Echoing Void (373304), Inescapable Torment (373427), Inescapable Torment (373442), Mindgames (375901), Mindgames (375905), Divine Star (390845), Halo (390964), Mind Flay: Insanity (391403), Mind Sear (394979), Mind Spike: Insanity (407466), Shadowy Apparition (413231), Ultimate Penitence (421543), Smite (425529), Entropic Rift (447448), Voidwound (448279), Collapsing Void (448405), Void Blast (450215), Void Blast (450983), Void Flay (451435), Shadow Crash (465522), Penance (1232571), Dark Reprimand (1232592)
                    Family Flags: 72
-Hotfixed         : Base Value (24 -> 20)
 #3 (id=191069)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=191070)   : Apply Aura (6) | Dummy (4)
@@ -3969,7 +3956,6 @@ Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=288947)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.42838 | Target: Friendly (21)
-Hotfixed         : SP Coefficient (1.19032 -> 1.42838)
 Description      : Heals the target for $s1.
 
 Name             : Dazzling Lights (id=196810) [Spell Family (6)] 
@@ -3987,7 +3973,6 @@ Attributes       : Do Not Display Range (126), Limit N (165), Allow Class Abilit
 Effects          :
 #1 (id=288949)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.188591 | Radius: 0 - 15 yards | Target: At Friendly (132) -> At Friendly in Area (31)
-Hotfixed         : SP Coefficient (0.157159 -> 0.188591)
 #2 (id=336109)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Heals up to $s2 nearby targets for $s1.
@@ -4007,7 +3992,6 @@ Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416), 
 Effects          :
 #1 (id=288950)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.751716 | Target: Any Target (25)
-Hotfixed         : SP Coefficient (0.62643 -> 0.751716)
 Description      : Blast the target with a beam of light, dealing $s1 damage.
 
 Name             : Light Eruption (id=196812) [Spell Family (6)] 
@@ -4024,7 +4008,6 @@ Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416), 
 Effects          :
 #1 (id=288951)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.342888 | Radius: 0 - 8 yards | Target: At Friendly (132) -> At Enemy in Area (16)
-Hotfixed         : SP Coefficient (0.28574 -> 0.342888)
 Description      : Emit a wave of light energy, dealing $s1 damage to all enemies within $A1 yards.
 
 Name             : Blessed Light (id=196813) [Spell Family (6)] 
@@ -4041,7 +4024,6 @@ Attributes       : Do Not Display Range (126), Bouncy Chain Missiles (146), Aura
 Effects          :
 #1 (id=288952)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.21412 | Chain Multiplier: 1 | Chain Targets: 5 | Target: Friendly (21)
-Hotfixed         : SP Coefficient (1.01177 -> 1.21412)
 Description      : Heals up to $x targets for $s1.
 
 Name             : Tranquil Light (id=196816) [Spell Family (6)] 
@@ -4059,7 +4041,6 @@ Attributes       : Do Not Display Range (126), Spell Haste Affects Periodic (173
 Effects          :
 #1 (id=288956)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.232114 | Target: Friendly (21)
-Hotfixed         : SP Coefficient (0.193428 -> 0.232114)
 Description      : Heals the target for $o over $d.
 Tooltip          : Healing for $w1 every $t sec.
 
@@ -4400,7 +4381,6 @@ Tooltip          : Effects that reduce Holy Word cooldowns increased by $s1%. Co
 All healing done increased by $w3%. ][]$?$w5>0[ Heal and Prayer of Healing are instant and heal for $s5% more.][]
 
 Name             : Holy Word: Chastise (id=200196) [Spell Family (6)] 
-Hotfixed         : Aura Interrupt
 Class            : Priest
 School           : Holy
 Spell Type       : Magic
@@ -5365,7 +5345,6 @@ Effects          :
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Atonement (194384), Atonement (214206), Lunar Purity (282786)
                    Family Flags: 94
-Hotfixed         : Base Value (-3 -> -2)
 Description      : Atonement reduces damage taken by $s1%.
 
 Name             : Angel's Mercy (id=238100) [Spell Family (6), Passive, Hidden] 
@@ -7701,7 +7680,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Renew (139)
                    Family Flags: 6
-Hotfixed         : Base Value (6 -> 10)
 Description      : Your healing on allies with your Renew is increased by $s1%.
 
 Name             : Wrathful Faerie (desc=Night Fae) (id=342132) [Spell Family (6)] 
@@ -8859,7 +8837,6 @@ Attributes       : Do Not Sheath (18), Allow While Sitting (27), No Threat (42),
 Effects          :
 #1 (id=997691)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.3985 | Target: Friendly (21)
-Hotfixed         : SP Coefficient (1.845 -> 2.3985)
 Description      : Launches a bolt of holy light at an ally, healing them for $s1.
 
 Name             : Malicious Intent (id=372969) [Spell Family (6), Passive, Hidden] 
@@ -11306,7 +11283,6 @@ Effects          :
                    Base Value: 6000 | Scaled Value: 6000 | Target: Self (1)
 #2 (id=1198120)  : Apply Aura (6) | Dummy (4)
                    Base Value: 120 | Scaled Value: 120 | Target: Self (1)
-Hotfixed         : Base Value (60 -> 120)
 #3 (id=1198121)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: 12000 | Scaled Value: 12000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Renew (139)
@@ -13366,7 +13342,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Prayer of Mending (33110)
                    Family Flags: 117
-Hotfixed         : Base Value (25 -> 40)
 #2 (id=1134693)  : Apply Aura (6) | Add Percent Modifier (108): Spell Power (24)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.625 | Misc Value: 24 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
@@ -13379,12 +13354,10 @@ Hotfixed         : Base Value (25 -> 40)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
                    Affected Spells: Smite (585), Holy Fire (14914), Holy Nova (132157), Encroaching Shadows (204215), Smite (425529), Void Blast (450215)
                    Family Flags: 7, 20, 49
-Hotfixed         : Base Value (25 -> 40)
 #5 (id=1170143)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Holy Fire (14914), Encroaching Shadows (204215)
                    Family Flags: 20
-Hotfixed         : Base Value (25 -> 40)
 Description      : $?a137032[Power Word: Shield absorbs $s2% additional damage.
 
 All damage dealt by Penance, Smite and Holy Nova increased by $s3%.][Increases the healing done by Prayer of Mending by $s1%.
@@ -13448,7 +13421,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Renew (139)
                    Family Flags: 6
-Hotfixed         : Base Value (25 -> 40)
 #3 (id=1176321)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Lightwell (372835), Lightwell Trigger (372845)
@@ -14393,7 +14365,6 @@ Effects          :
 Description      : Shadow Word: Death consumes absorb shields from your target, dealing up to $s1% extra damage to them and granting you $?c3[$s3 Insanity][$s2% mana] if a shield was present.
 
 Name             : Void Leech (id=451963) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Shadow
 Spell Type       : None
@@ -15237,7 +15208,6 @@ Attributes       : Do Not Display Range (126), Allow Class Ability Procs (416), 
 Effects          :
 #1 (id=1175109)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (delta=0.05) | SP Coefficient: 0.17712 | Radius: 0 - 8 yards | Target: At Friendly (132) -> At Friendly in Area (31)
-Hotfixed         : SP Coefficient (0.1476 -> 0.17712)
 Description      : Emit a wave of light energy, dealing $s1 damage to all enemies within $A1 yards.
 
 Name             : Shadow Crash (id=465521) [Spell Family (6), Hidden] 
@@ -15364,7 +15334,6 @@ Attributes       : Not Shapeshifted (16), No Threat (42), Ignore Line of Sight (
 Effects          :
 #1 (id=1190560)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 58 | PvP Coefficient: 0.75 | Radius: 0 - 60 yards | Target: At Self (18) -> At Friendly in Area (31)
-Hotfixed         : PvP Coefficient (1 -> 0.75)
 #2 (id=1190562)  : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 #3 (id=1199857)  : Apply Aura (6) | Modify Healing% Done (136)
@@ -15763,7 +15732,6 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.5 | Target: Self (1)
 #2 (id=1200754)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.2 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.5 -> 0.2)
 Description      : When your Power Word: Shield is completely absorbed on an ally, they are granted |cFFFFFFFFInsurance!|r at $s1% effectiveness. Allies with your |cFFFFFFFFInsurance!|r or absorption effects receive $s2% increased healing from you.
 
 Name             : Priest Holy 11.1 Class Set 4pc (id=1215623) [Spell Family (6), Passive, Hidden] 
