@@ -79,23 +79,19 @@ actions.sanlayn+=/variable,name=death_strike_pre_essence_dump_amount_low_hp,valu
 actions.sanlayn+=/variable,name=bone_shield_refresh_value,value=7
 actions.sanlayn+=/variable,name=heart_strike_rp_drw,value=(21+spell_targets.heart_strike*talent.heartbreaker.enabled*2)
 actions.sanlayn+=/death_strike,if=buff.coagulopathy.remains<=gcd
-actions.sanlayn+=/deaths_caress,if=!buff.bone_shield.up
-actions.sanlayn+=/blood_boil,if=!dot.blood_plague.ticking|(dot.blood_plague.remains<10&buff.dancing_rune_weapon.up)
-actions.sanlayn+=/potion,if=buff.dancing_rune_weapon.up
+actions.sanlayn+=/blood_boil,if=!dot.blood_plague.ticking|(pet.dancing_rune_weapon.active&!drw.bp_ticking)
 actions.sanlayn+=/consumption,if=pet.dancing_rune_weapon.active&pet.dancing_rune_weapon.remains<=3
 actions.sanlayn+=/bonestorm,if=(buff.death_and_decay.up)&buff.bone_shield.stack>5&cooldown.dancing_rune_weapon.remains
 actions.sanlayn+=/death_strike,if=runic_power>=108
 actions.sanlayn+=/heart_strike,if=buff.dancing_rune_weapon.up&rune>1
 actions.sanlayn+=/death_and_decay,if=!buff.death_and_decay.up
 actions.sanlayn+=/heart_strike,if=buff.infliction_of_sorrow.up&buff.death_and_decay.up
-actions.sanlayn+=/raise_dead
 actions.sanlayn+=/abomination_limb
 actions.sanlayn+=/tombstone,if=(!buff.dancing_rune_weapon.up&buff.death_and_decay.up)&buff.bone_shield.stack>5&runic_power.deficit>=30&cooldown.dancing_rune_weapon.remains>=25&buff.coagulopathy.remains>2*gcd
 actions.sanlayn+=/dancing_rune_weapon,if=buff.coagulopathy.remains>=2*gcd&(!buff.essence_of_the_blood_queen.up|buff.essence_of_the_blood_queen.remains>=3*gcd)&(!buff.dancing_rune_weapon.up|buff.dancing_rune_weapon.remains>=6*gcd)
 actions.sanlayn+=/death_strike,if=!buff.vampiric_strike.up&cooldown.dancing_rune_weapon.remains<=10&(target.health.pct<variable.death_strike_sang_low_hp&runic_power>variable.death_strike_pre_essence_dump_amount_low_hp)&buff.essence_of_the_blood_queen.stack>=3
 actions.sanlayn+=/death_strike,if=!buff.vampiric_strike.up&cooldown.dancing_rune_weapon.remains<=10&(target.health.pct>variable.death_strike_sang_low_hp&runic_power>variable.death_strike_pre_essence_dump_amount)&buff.essence_of_the_blood_queen.stack>=3
 actions.sanlayn+=/marrowrend,if=!dot.bonestorm.ticking&(buff.bone_shield.stack<variable.bone_shield_refresh_value&runic_power.deficit>20|buff.bone_shield.remains<=3)
-actions.sanlayn+=/marrowrend,if=!dot.bonestorm.ticking&(buff.bone_shield.stack<variable.bone_shield_refresh_value&runic_power.deficit>20&!cooldown.dancing_rune_weapon.up|buff.bone_shield.remains<=3)
 actions.sanlayn+=/soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>(dot.soul_reaper.remains+5)
 actions.sanlayn+=/death_strike,if=buff.dancing_rune_weapon.up&(buff.coagulopathy.remains<2*gcd|(target.health.pct<variable.death_strike_sang_low_hp&runic_power>50))
 actions.sanlayn+=/death_strike,if=buff.dancing_rune_weapon.up&(buff.coagulopathy.remains<2*gcd|(runic_power.deficit<=variable.heart_strike_rp_drw&debuff.incite_terror.stack>=3))
@@ -105,7 +101,6 @@ actions.sanlayn+=/death_strike,if=runic_power.deficit<=variable.heart_strike_rp_
 actions.sanlayn+=/blood_boil,if=charges>=2|(full_recharge_time<=gcd.max)
 actions.sanlayn+=/consumption,if=cooldown.dancing_rune_weapon.remains>20
 actions.sanlayn+=/heart_strike,if=rune>1
-actions.sanlayn+=/bonestorm,if=buff.death_and_decay.up&buff.bone_shield.stack>5&cooldown.dancing_rune_weapon.remains
 actions.sanlayn+=/tombstone,if=buff.death_and_decay.up&buff.bone_shield.stack>5&runic_power.deficit>=30&cooldown.dancing_rune_weapon.remains
 
 head=cauldron_champions_crown,id=229253,ilevel=678,gem_id=213485
