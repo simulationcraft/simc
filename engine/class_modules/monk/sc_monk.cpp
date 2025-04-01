@@ -1663,6 +1663,7 @@ struct charred_passions_t : base_action_t
       background = dual = proc = true;
       may_crit                 = false;
       base_multiplier          = data().effectN( 1 ).percent();
+      school                   = SCHOOL_FIRE;
     }
 
     void init() override
