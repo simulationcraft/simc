@@ -1780,9 +1780,14 @@ public:
     ab::apply_affecting_aura( p->talent.outlaw.dirty_tricks );
     ab::apply_affecting_aura( p->talent.outlaw.heavy_hitter );
     ab::apply_affecting_aura( p->talent.outlaw.devious_stratagem );
-    ab::apply_affecting_aura( p->talent.outlaw.deft_maneuvers );
     ab::apply_affecting_aura( p->talent.outlaw.underhanded_upper_hand );
     ab::apply_affecting_aura( p->talent.outlaw.precision_shot );
+
+    // 2025-04-01 -- Bonus damage is not applied to Blade Flurry
+    if ( !p->bugs )
+    {
+      ab::apply_affecting_aura( p->talent.outlaw.deft_maneuvers );
+    }
 
     ab::apply_affecting_aura( p->talent.subtlety.improved_backstab );
     ab::apply_affecting_aura( p->talent.subtlety.improved_shuriken_storm );
