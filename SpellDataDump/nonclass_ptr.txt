@@ -241908,7 +241908,8 @@ Triggered By     : Shining Arathor Insignia (455433), Shining Arathor Insignia (
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1158862)  : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 180734.7 (coefficient=70.66128) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 180734.7 (coefficient=70.66128) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : You are one of the devout. Your spells and abilities have a chance of burning a nearby enemy for $s1 Radiant damage and healing another devout ally for that amount.
 
 Name             : Shining Arathor Insignia (id=455433) 
@@ -242598,11 +242599,14 @@ Triggered By     : Shadowed Essence (455654), Dark Embrace (455656), Shadowed Es
 Attributes       : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1159258)  : Apply Aura (6) | Proc Trigger Spell (42): Shadowed Essence | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 20624.36 (coefficient=8.063442) | Trigger Spell: 455643 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 20624.36 (coefficient=8.063442) | PvP Coefficient: 0.5 | Trigger Spell: 455643 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1159831)  : Dummy (3) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 1372.563 (coefficient=0.358468)
+                   Base Value: 0 | Scaled Value: 1372.563 (coefficient=0.358468) | PvP Coefficient: 0.5
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #3 (id=1159832)  : Dummy (3) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 1372.15 (coefficient=0.35836)
+                   Base Value: 0 | Scaled Value: 1372.15 (coefficient=0.35836) | PvP Coefficient: 0.5
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Entering combat summons an orb of dark power to assist you.
 
 Name             : Shadowed Essence (id=455643) [Hidden] 
@@ -259960,7 +259964,8 @@ Triggered By     : Hallowed Tome of the Abbot (1223887)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1212176)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1212184)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 1223887
 Description      : You are one of the devout. Your spells and abilities have a chance to grant you $s1 Haste for $1223887d.
@@ -260009,7 +260014,8 @@ Triggered By     : Hallowed Tome of the Zealot (1223898)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1212198)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1212199)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 1223898
 Description      : You are one of the devout. Your spells and abilities have a chance to grant you $s1 Critical Strike for $1223887d.
@@ -260042,7 +260048,8 @@ Triggered By     : Hallowed Tome of the Crusader (1223901)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1212202)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1212203)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 1223901
 Description      : You are one of the devout. Your spells and abilities have a chance to grant you $s1 Versatility for $1223887d.
@@ -260075,7 +260082,8 @@ Triggered By     : Hallowed Tome of the Cleric (1223903)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1212205)  : Apply Aura (6) | Dummy (4) | Scaling Class: -7
-                   Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2547.624 (coefficient=0.665355) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1212206)  : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Trigger Spell: 1223903
 Description      : You are one of the devout. Your spells and abilities have a chance to grant you $s1 Mastery for $1223887d.
@@ -260108,7 +260116,8 @@ Proc Flags       : White Melee, White Ranged
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1213105)  : Apply Aura (6) | Proc Trigger Damage (43) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 770.3464 (coefficient=0.30118) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 770.3464 (coefficient=0.30118) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Your autoattacks do an additional $s1 Shadow damage.
 
 Name             : Shadow Quake (id=1224457) [Passive, Hidden] 
@@ -260120,7 +260129,8 @@ Triggered By     : Shadow Quake (1228149)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1213106)  : Apply Aura (6) | Proc Trigger Spell (42): Shadow Quake | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 27806.93 (coefficient=10.87159) | Trigger Spell: 1228149 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 27806.93 (coefficient=10.87159) | PvP Coefficient: 0.5 | Trigger Spell: 1228149 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1218956)  : Dummy (3)
                    Base Value: 250 | Scaled Value: 250
 Description      : Your first melee strike against an enemy slams them and nearby enemies with a quake of shadow magic dealing up to ${$s1*($s2/100)} Shadow damage split between them.
@@ -260128,14 +260138,12 @@ Description      : Your first melee strike against an enemy slams them and nearb
 Name             : Draining Essence (id=1224458) [Passive, Hidden] 
 School           : Physical
 Spell Type       : None
-Proc Chance      : 101%
-Real PPM         : 2
-Proc Flags       : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Triggered By     : Drained Essence (1228086)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Unique (43), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1213107)  : Apply Aura (6) | Unknown(395) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 213.4651 (coefficient=0.05575) | Misc Value: 37169 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 213.4651 (coefficient=0.05575) | PvP Coefficient: 0.5 | Misc Value: 37169 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : When a nearby enemy or devout ally falls, you siphon a portion of their soul to gain $s1 Intellect for $1228086d.
 
 Name             : Shadowalker's Aegis (id=1224459) [Passive, Hidden] 
@@ -260144,7 +260152,8 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1213108)  : Apply Aura (6) | Dummy (4) | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 50052.47 (coefficient=19.56886) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 50052.47 (coefficient=19.56886) | PvP Coefficient: 0.5 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1218364)  : Apply Party Aura (35) | Trigger Spell Based on Health% (468)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Trigger Spell: 1227803 | Radius: 40 yards | Target: Self (1)
 #3 (id=1218454)  : Dummy (3)
@@ -260171,7 +260180,8 @@ Spell Type       : None
 Attributes       : Passive (6), Aura Points On Client (268), Update Passives on Apply/Remove (344), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1213822)  : Apply Party Aura (35) | Periodic Heal (8): every 5 seconds | Scaling Class: -9
-                   Base Value: 0 | Scaled Value: 1795.454 (coefficient=0.701963) | Radius: 30 yards | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1795.454 (coefficient=0.701963) | PvP Coefficient: 0.5 | Radius: 30 yards | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1217985)  : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : You are one of the devout. Up to $s2 allies within $a yd of you gain $s1 health every $t sec.
@@ -260274,7 +260284,8 @@ Proc Flags       : Enter Combat
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1214287)  : Apply Aura (6) | Proc Trigger Spell (42): Malefic Excerpt | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 73631.71 (coefficient=28.78757) | Trigger Spell: 1227578 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 73631.71 (coefficient=28.78757) | PvP Coefficient: 0.5 | Trigger Spell: 1227578 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1214288)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 1227564
 Description      : Every $1227578t sec spent in combat pulls the shadows closer to you, granting Dark Whispers. After reaching $1227564u whispers, the shadows manifest and rip a creature out of the Twisting Nether to assist you in combat.
@@ -260288,7 +260299,8 @@ Triggered By     : Excerpt on Sacrificial Rituals (1227565)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1214289)  : Apply Aura (6) | Proc Trigger Spell (42): Malefic Excerpt | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 664.0314 (coefficient=0.173423) | Trigger Spell: 1227584 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 664.0314 (coefficient=0.173423) | PvP Coefficient: 0.5 | Trigger Spell: 1227584 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1214290)  : Dummy (3) | Scaling Class: -9
                    Base Value: 20 | Scaled Value: 1795.454 (coefficient=0.701963) | Trigger Spell: 1223887
 Description      : Every $1227584t sec spent in combat sacrifices $s2 of your health to gain $s1 $pri. This effect can stack up to $1227565u times and lasts until combat ends.
@@ -260302,7 +260314,8 @@ Triggered By     : Excerpt on Prophetic Death (1227551), Dark Whispers (1227564)
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1214291)  : Apply Aura (6) | Proc Trigger Spell (42): Malefic Excerpt | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 49831.75 (coefficient=19.48257) | Trigger Spell: 1227585 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 49831.75 (coefficient=19.48257) | PvP Coefficient: 0.5 | Trigger Spell: 1227585 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=1214292)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 1227551
 Description      : Every $1227585t sec spent in combat lashes a nearby enemy dealing $s1 Shadow damage. This deals up to $s2% additional damage based on the enemy's missing health.
@@ -261144,7 +261157,8 @@ Spell Type       : None
 Attributes       : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Aura Points On Client (268), Scales with Casting Item's Level (354)
 Effects          :
 #1 (id=1228462)  : Apply Aura (6) | Attribute (29) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 116.1173 (coefficient=0.030326) | Stat: StrAgiInt | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 116.1173 (coefficient=0.030326) | PvP Coefficient: 0.5 | Stat: StrAgiInt | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $?pc136497[|CFF20ff20Being one of the devout grants an additional $s1 $pri.|R][|CFF808080Being one of the devout grants an additional $s1 $pri.|R]
 
 
