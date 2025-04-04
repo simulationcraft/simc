@@ -45,7 +45,7 @@ hands=runebranded_grasps,id=219333,bonus_id=10421/9633/8902/9627/8791/10222/1204
 waist=hitmans_holster,id=228880,gem_id=213491,ilevel=678
 legs=moccasins_of_reclaiming_blight,id=229306,enchant_id=7601,ilevel=678
 feet=machinists_treasured_treads,id=168975,enchant_id=7424,ilevel=678
-finger1=cyrces_circlet,id=228411,bonus_id=12028/1511,enchant_id=7346,gem_id=228639/228638/228646
+finger1=cyrces_circlet,id=228411,bonus_id=12028/1511,enchant_id=7346,gem_id=228638/228639/228640
 finger2=the_jastor_diamond,id=231265,enchant_id=7346,gem_id=213491/213491,ilevel=678
 trinket1=house_of_cards,id=230027,ilevel=678
 trinket2=eye_of_kezan,id=230198,bonus_id=1527/11996/11964
