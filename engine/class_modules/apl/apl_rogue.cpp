@@ -219,19 +219,23 @@ void outlaw( player_t* p )
   default_->add_action( "bag_of_tricks" );
 
   build->add_action( "ambush,if=talent.hidden_opportunity&buff.audacity.up", "Builders   High priority Ambush for Hidden Opportunity builds." );
+  build->add_action( "sinister_strike,if=(variable.double_coup|!talent.hidden_opportunity)&buff.disorienting_strikes.up&!stealthed.all&(buff.escalating_blade.stack>2&buff.opportunity.stack<buff.opportunity.max_stack|!talent.hidden_opportunity)&buff.escalating_blade.stack<4", "Trickster builds should prioritize Sinister Strike during Disorienting Strikes. HO builds prefer to do this at 3 Escalating Blade stacks and not at max stacks of Opportunity." );
   build->add_action( "pistol_shot,if=talent.fan_the_hammer&talent.audacity&talent.hidden_opportunity&buff.opportunity.up&!buff.audacity.up", "With Audacity + Hidden Opportunity + Fan the Hammer, consume Opportunity to proc Audacity any time Ambush is not available." );
-  build->add_action( "pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&(buff.opportunity.stack>=buff.opportunity.max_stack|buff.opportunity.remains<2)", "With Fan the Hammer, consume Opportunity as a higher priority if at max stacks or if it will expire." );
+  build->add_action( "pistol_shot,if=talent.fan_the_hammer.rank=2&buff.opportunity.up&(buff.opportunity.stack>=buff.opportunity.max_stack|buff.opportunity.remains<2)", "With 2 ranks in Fan the Hammer, consume Opportunity as a higher priority if at max stacks or if it will expire." );
   build->add_action( "pistol_shot,if=talent.fan_the_hammer&buff.opportunity.up&(combo_points.deficit>=(1+(talent.quick_draw+buff.broadside.up)*(talent.fan_the_hammer.rank+1))|combo_points<=talent.ruthlessness)", "With Fan the Hammer, consume Opportunity if it will not overcap CPs, or with 1 CP at minimum." );
   build->add_action( "pistol_shot,if=!talent.fan_the_hammer&buff.opportunity.up&(energy.base_deficit>energy.regen*1.5|combo_points.deficit<=1+buff.broadside.up|talent.quick_draw.enabled|talent.audacity.enabled&!buff.audacity.up)", "If not using Fan the Hammer, then consume Opportunity based on energy, when it will exactly cap CPs, or when using Quick Draw." );
+  build->add_action( "coup_de_grace,if=!stealthed.all", "Use Coup de Grace at low CP if Sinister Strike would otherwise be used." );
   build->add_action( "pool_resource,for_next=1", "Fallback pooling just so Sinister Strike is never casted if Ambush is available for Hidden Opportunity builds." );
   build->add_action( "ambush,if=talent.hidden_opportunity" );
   build->add_action( "sinister_strike" );
 
-  cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)|talent.improved_adrenaline_rush&combo_points<=2", "Cooldowns  Maintain Adrenaline Rush. Recast while already active if using Improved ADR and at low CPs." );
-  cds->add_action( "coup_de_grace,if=variable.double_coup&prev_gcd.1.coup_de_grace", "Enable the possibility to chain cast Coup de Grace if the bug option is enabled, as a higher priority than other cooldowns except Adrenaline Rush" );
+  cds->add_action( "adrenaline_rush,if=!buff.adrenaline_rush.up&(!variable.finish_condition|!talent.improved_adrenaline_rush)", "Cooldowns  Maintain Adrenaline Rush if it is not active. Use at low CPs with Improved AR." );
+  cds->add_action( "adrenaline_rush,if=buff.adrenaline_rush.up&talent.improved_adrenaline_rush&combo_points<=2&(!buff.disorienting_strikes.up|stealthed.all|buff.escalating_blade.stack>=4)", "If using Improved AR, recast AR if it is already active at low CPs. Trickster builds should avoid recasting it during Disorienting Strikes with 0-3 stacks of Escalating Blade, unless stealth is active." );
+  cds->add_action( "ghostly_strike,if=combo_points<cp_max_spend|talent.fan_the_hammer.rank>1", "High priority Ghostly Strike as it is off-gcd. 1 FTH builds prefer to not use it at max CPs." );
+  cds->add_action( "coup_de_grace,if=variable.double_coup&prev_gcd.1.coup_de_grace", "Enable the possibility to chain cast Coup de Grace if the bug option is enabled, as a higher priority than most cooldowns" );
   cds->add_action( "sprint,if=(trinket.1.is.scroll_of_momentum|trinket.2.is.scroll_of_momentum)&buff.full_momentum.up", "Sprint to further benefit from Scroll of Momentum trinket." );
   cds->add_action( "blade_flurry,if=spell_targets>=2&buff.blade_flurry.remains<gcd", "Maintain Blade Flurry on 2+ targets." );
-  cds->add_action( "blade_flurry,if=talent.deft_maneuvers&!variable.finish_condition&(spell_targets>=3&combo_points.deficit=spell_targets+buff.broadside.up|spell_targets>=5)", "With Deft Maneuvers, use Blade Flurry on cooldown at 5+ targets, or at 3-4 targets if missing combo points equal to the amount it would grant." );
+  cds->add_action( "blade_flurry,if=talent.deft_maneuvers&!variable.finish_condition&spell_targets>=5&(!buff.disorienting_strikes.up|stealthed.all|buff.escalating_blade.stack>=4)", "With Deft Maneuvers, build CPs with Blade Flurry at 5+ targets. Trickster builds should avoid this during Disorienting Strikes with 0-3 stacks of Escalating Blade, unless stealth is active." );
   cds->add_action( "keep_it_rolling,if=rtb_buffs.normal>=5&rtb_buffs=6&rtb_buffs.max_remains<=30", "With a natural 5 buff roll, use Keep it Rolling when you obtain the remaining buff from Count the Odds and all buffs are within 30s remaining." );
   cds->add_action( "keep_it_rolling,if=rtb_buffs>=4&rtb_buffs.normal<=2", "Without a natural 5 buff roll, use Keep it Rolling at any 4+ buffs." );
   cds->add_action( "keep_it_rolling,if=rtb_buffs>=3&rtb_buffs.normal<=2&buff.broadside.up&buff.ruthless_precision.up&buff.true_bearing.up", "Without a natural 5 buff roll, use Keep it Rolling at 3 buffs if you have the combination of Ruthless Precision + Broadside + True Bearing." );
@@ -240,11 +244,11 @@ void outlaw( player_t* p )
   cds->add_action( "roll_the_bones,if=set_bonus.tww2_4pc&rtb_buffs.will_lose<=1&(variable.buffs_above_pandemic<5|rtb_buffs.max_remains<42)", "With TWW2 set, recast Roll the Bones if we will roll away between 0-1 buffs. If KIR was recently used on a natural 5 buff, then wait until all buffs are below around 41s remaining." );
   cds->add_action( "roll_the_bones,if=set_bonus.tww2_4pc&(rtb_buffs<=2|(rtb_buffs.max_remains<11|!talent.keep_it_rolling)&rtb_buffs.will_lose<5&talent.supercharger)", "With TWW2 set, recast Roll the Bones with at most 2 buffs active regardless of duration. Supercharger builds will also roll if we will lose between 0-4 buffs, but KIR Supercharger builds wait until they are all below 11s remaining." );
   cds->add_action( "roll_the_bones,if=!set_bonus.tww2_4pc&(rtb_buffs.will_lose<=buff.loaded_dice.up|talent.supercharger&buff.loaded_dice.up&rtb_buffs<=2|talent.hidden_opportunity&buff.loaded_dice.up&rtb_buffs<=2&!buff.broadside.up&!buff.ruthless_precision.up&!buff.true_bearing.up)", "Without TWW2 set or Sleight of Hand, recast Roll the Bones to override 1 buff into 2 buffs with Loaded Dice, or reroll any 2 buffs with Loaded Dice+Supercharger. Hidden Opportunity builds can also reroll 2 buffs with Loaded Dice to try for BS/RP/TB." );
-  cds->add_action( "ghostly_strike,if=combo_points<cp_max_spend" );
   cds->add_action( "use_item,name=imperfect_ascendancy_serum,if=!stealthed.all|fight_remains<=22", "Trinkets that should not be used during stealth and have higher priority than entering stealth." );
   cds->add_action( "use_item,name=mad_queens_mandate,if=!stealthed.all|fight_remains<=5" );
-  cds->add_action( "killing_spree,if=variable.finish_condition&!stealthed.all", "Killing Spree has higher priority than entering stealth." );
-  cds->add_action( "call_action_list,name=vanish_usage,if=!stealthed.all&talent.crackshot&talent.underhanded_upper_hand&talent.subterfuge&buff.escalating_blade.stack<4&buff.adrenaline_rush.up&variable.finish_condition", "Builds with Crackshot, Underhanded Upper Hand and Subterfuge use Vanish while Adrenaline Rush is active, the finisher condition is met, and not already in stealth. Trickster builds also consume Coup de Grace before Vanishing if it is ready." );
+  cds->add_action( "vanish,if=talent.underhanded_upper_hand&talent.subterfuge&buff.adrenaline_rush.up&!stealthed.all&buff.adrenaline_rush.remains<2&cooldown.adrenaline_rush.remains>30", "If necessary, standard builds prioritize using Vanish at any CP to prevent Adrenaline Rush downtime." );
+  cds->add_action( "run_action_list,name=finish,if=!stealthed.all&(cooldown.killing_spree.ready&talent.killing_spree|buff.escalating_blade.stack>=4)&variable.finish_condition", "If not at risk of losing Adrenaline Rush, run finishers to use Killing Spree or Coup de Grace as a higher priority than Vanish." );
+  cds->add_action( "call_action_list,name=vanish_usage,if=!stealthed.all&talent.crackshot&talent.underhanded_upper_hand&talent.subterfuge&buff.adrenaline_rush.up&variable.finish_condition&(buff.escalating_blade.stack!=3|!buff.disorienting_strikes.up)", "If not at risk of losing Adrenaline Rush, call flexible Vanish rules to be used at finisher CPs. Trickster builds attempt to hold Vanish if at 3 stacks of Escalating Blades with Disorienting Strikes active." );
   cds->add_action( "call_action_list,name=vanish_usage_off_meta,if=!stealthed.all&(!talent.underhanded_upper_hand|!talent.crackshot|!talent.subterfuge)" );
   cds->add_action( "shadowmeld,if=variable.finish_condition&!cooldown.vanish.ready", "Generic catch-all for Shadowmeld. Technically, usage in DungeonSlice or DungeonRoute sims could mirror Vanish usage on packs." );
   cds->add_action( "blade_rush,if=energy.base_time_to_max>4&!stealthed.all", "Use Blade Rush at minimal energy outside of stealth." );
@@ -253,10 +257,12 @@ void outlaw( player_t* p )
   cds->add_action( "berserking" );
   cds->add_action( "fireblood" );
   cds->add_action( "ancestral_call" );
+  cds->add_action( "use_item,name=junkmaestros_mega_magnet,if=buff.between_the_eyes.up&buff.junkmaestros_mega_magnet.stack>25|fight_remains<5", "Let the magnet trinket stack up just so it does not disrupt a 2nd on-use trinket." );
   cds->add_action( "use_items,slots=trinket1,if=buff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20", "Default conditions for usable items." );
   cds->add_action( "use_items,slots=trinket2,if=buff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20" );
 
-  finish->add_action( "coup_de_grace", "Finishers" );
+  finish->add_action( "killing_spree", "Finishers" );
+  finish->add_action( "coup_de_grace" );
   finish->add_action( "between_the_eyes,if=(buff.ruthless_precision.up|buff.between_the_eyes.remains<4|!talent.mean_streak)&(!buff.greenskins_wickers.up|!talent.greenskins_wickers)", "Use Between the Eyes outside of Stealth to maintain the buff, or with Ruthless Precision active, or to proc Greenskins Wickers if not active. Trickster builds can also send BtE on cooldown." );
   finish->add_action( "cold_blood" );
   finish->add_action( "dispatch" );
@@ -268,13 +274,12 @@ void outlaw( player_t* p )
   stealth->add_action( "pistol_shot,if=talent.crackshot&talent.fan_the_hammer.rank>=2&buff.opportunity.stack>=6&(buff.broadside.up&combo_points<=1|buff.greenskins_wickers.up)", "2 Fan the Hammer Crackshot builds can consume Opportunity in stealth with max stacks, Broadside, and 1 CP, or with Greenskins active." );
   stealth->add_action( "ambush,if=talent.hidden_opportunity" );
 
-  vanish_usage->add_action( "vanish,if=!talent.killing_spree&!cooldown.between_the_eyes.ready&buff.ruthless_precision.remains>4&(cooldown.keep_it_rolling.remains>150&rtb_buffs.normal>0|!talent.keep_it_rolling)", "Vanish usage for builds using Underhanded Upper Hand, Crackshot and Subterfuge.  Without Killing Spree, attempt to hold Vanish for when BtE is on cooldown and Ruthless Precision is active. Also with Keep it Rolling, hold Vanish if we haven't done the first roll after KIR yet." );
-  vanish_usage->add_action( "vanish,if=buff.adrenaline_rush.remains<3&cooldown.adrenaline_rush.remains>10", "Vanish to prevent Adrenaline Rush downtime." );
-  vanish_usage->add_action( "vanish,if=!talent.killing_spree&buff.supercharge_1.up", "Supercharger builds that do not use Killing Spree should Vanish if Supercharger is active." );
-  vanish_usage->add_action( "vanish,if=cooldown.killing_spree.remains>15", "Builds with Killing Spree can freely Vanish if KS is not up soon." );
+  vanish_usage->add_action( "vanish,if=!talent.killing_spree&!cooldown.between_the_eyes.ready&buff.ruthless_precision.remains>4&(cooldown.keep_it_rolling.remains>150&rtb_buffs.normal>0|!talent.keep_it_rolling)", "Flex Vanish usage for standard builds.  Without Killing Spree, attempt to hold Vanish for when BtE is on cooldown and Ruthless Precision is active. Also with Keep it Rolling, hold Vanish if we haven't done the first roll after KIR yet." );
+  vanish_usage->add_action( "vanish,if=!talent.killing_spree&buff.supercharge_1.up", "Supercharger builds that do not use Killing Spree should also Vanish if Supercharger becomes active." );
+  vanish_usage->add_action( "vanish,if=cooldown.killing_spree.remains>20", "Builds with Killing Spree can freely Vanish if KS is not up soon." );
   vanish_usage->add_action( "vanish,if=cooldown.vanish.full_recharge_time<15|fight_remains<8", "Vanish if about to cap on charges or sim duration is ending." );
 
-  vanish_usage_off_meta->add_action( "vanish,if=talent.underhanded_upper_hand&talent.subterfuge&!talent.crackshot&buff.adrenaline_rush.up&(variable.ambush_condition|!talent.hidden_opportunity)&(!cooldown.between_the_eyes.ready&buff.ruthless_precision.up|buff.ruthless_precision.down|buff.adrenaline_rush.remains<3)", "Vanish usage for builds lacking one of the mandatory talents Crackshot, Underhanded Upper Hand or Subterfuge. APL support for these builds is considered limited." );
+  vanish_usage_off_meta->add_action( "vanish,if=talent.underhanded_upper_hand&talent.subterfuge&!talent.crackshot&buff.adrenaline_rush.up&(variable.ambush_condition|!talent.hidden_opportunity)&(!cooldown.between_the_eyes.ready&buff.ruthless_precision.up|buff.ruthless_precision.down|buff.adrenaline_rush.remains<3)", "Flex Vanish usage for builds lacking one of the mandatory stealth talents. APL support for these builds is considered limited." );
   vanish_usage_off_meta->add_action( "vanish,if=!talent.underhanded_upper_hand&talent.crackshot&variable.finish_condition" );
   vanish_usage_off_meta->add_action( "vanish,if=!talent.underhanded_upper_hand&!talent.crackshot&talent.hidden_opportunity&!buff.audacity.up&buff.opportunity.stack<buff.opportunity.max_stack&variable.ambush_condition" );
   vanish_usage_off_meta->add_action( "vanish,if=!talent.underhanded_upper_hand&!talent.crackshot&!talent.hidden_opportunity&talent.fateful_ending&(!buff.fatebound_lucky_coin.up&(buff.fatebound_coin_tails.stack>=5|buff.fatebound_coin_heads.stack>=5)|buff.fatebound_lucky_coin.up&!cooldown.between_the_eyes.ready)" );
