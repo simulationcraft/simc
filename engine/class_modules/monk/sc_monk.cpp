@@ -3599,7 +3599,7 @@ struct breath_of_fire_state_t : public action_state_t
 struct breath_of_fire_dot_t : public monk_spell_t
 {
 protected:
-  using state_t = breath_of_fire_state_t;
+  using custom_state_t = breath_of_fire_state_t;
 
 public:
   breath_of_fire_dot_t( monk_t *p ) : monk_spell_t( p, "breath_of_fire_dot", p->talent.brewmaster.breath_of_fire_dot )
@@ -3613,9 +3613,7 @@ public:
   {
     double cpm = monk_spell_t::composite_persistent_multiplier( state );
 
-    const state_t *s = cast_state( state );
-
-    if ( s->blackout_combo )
+    if ( auto cs = debug_cast<const custom_state_t *>( state ); cs && cs->blackout_combo )
       cpm *= 1.0 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
 
     return cpm;
@@ -3623,24 +3621,14 @@ public:
 
   action_state_t *new_state() override
   {
-    return new state_t( this, target );
-  }
-
-  state_t *cast_state( action_state_t *s )
-  {
-    return static_cast<state_t *>( s );
-  }
-
-  const state_t *cast_state( const action_state_t *s ) const
-  {
-    return static_cast<const state_t *>( s );
+    return new custom_state_t( this, target );
   }
 };
 
 struct breath_of_fire_t : public monk_spell_t
 {
 protected:
-  using state_t = breath_of_fire_state_t;
+  using custom_state_t = breath_of_fire_state_t;
 
 public:
   struct dragonfire_brew_t : monk_spell_t
@@ -3663,8 +3651,8 @@ public:
   bool no_bof_hit;
   bool blackout_combo;
 
-  breath_of_fire_t( monk_t *p, util::string_view options_str )
-    : monk_spell_t( p, "breath_of_fire", p->talent.brewmaster.breath_of_fire ),
+  breath_of_fire_t( monk_t *player, util::string_view options_str )
+    : monk_spell_t( player, "breath_of_fire", player->talent.brewmaster.breath_of_fire ),
       dragonfire_brew( nullptr ),
       no_bof_hit( false ),
       blackout_combo( false )
@@ -3678,10 +3666,19 @@ public:
     full_amount_targets = 1;
     cast_during_sck     = true;
 
-    if ( p->talent.brewmaster.dragonfire_brew->ok() )
-      dragonfire_brew = new dragonfire_brew_t( p );
+    // TODO: Figure out why this asserts in stagger.find(...)
+    // if ( const auto &effect = player->talent.brewmaster.dragonfire_brew->effectN( 2 ); effect.ok() )
+    //   add_parse_entry( da_multiplier_effects )
+    //     .set_value_func( [ & ] ( double value ) {
+    //       return 1.0 + player->find_stagger( "Stagger" )->level_index() / 3.0 * value;
+    //     })
+    //     .set_value( player->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent() )
+    //     .set_eff( &effect );
 
-    add_child( p->active_actions.breath_of_fire );
+    if ( player->talent.brewmaster.dragonfire_brew->ok() )
+      dragonfire_brew = new dragonfire_brew_t( player );
+
+    add_child( player->active_actions.breath_of_fire );
     if ( dragonfire_brew )
       add_child( dragonfire_brew );
   }
@@ -3690,10 +3687,7 @@ public:
   {
     double am = monk_spell_t::action_multiplier();
 
-    if ( blackout_combo )
-      am *= 1.0 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
-
-    // Currently the value is saved as 100% and each of the values is stagger_index / 3 * base_value
+    // Currently the value is saved as 100 and each of the levels uses stagger_index / 3 * base_value
     double bof_stagger_bonus = p()->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent();
     am *= 1.0 + ( p()->find_stagger( "Stagger" )->level_index() / 3.0 ) * bof_stagger_bonus;
 
@@ -3702,22 +3696,13 @@ public:
 
   action_state_t *new_state() override
   {
-    return new state_t( this, target );
-  }
-
-  state_t *cast_state( action_state_t *s )
-  {
-    return static_cast<state_t *>( s );
-  }
-
-  const state_t *cast_state( const action_state_t *s ) const
-  {
-    return static_cast<const state_t *>( s );
+    return new custom_state_t( this, target );
   }
 
   void execute() override
   {
     p()->buff.charred_passions->trigger();
+
     if ( no_bof_hit )
       return;
 
@@ -3741,8 +3726,8 @@ public:
 
     propagate_const<action_t *> dot = p()->active_actions.breath_of_fire;
 
-    state_t *dot_state = cast_state( dot->get_state() );
-    dot_state->target  = s->target;
+    auto dot_state    = debug_cast<custom_state_t *>( dot->get_state() );
+    dot_state->target = s->target;
 
     // blackout combo buffs only one of the breath of fire dot applications from
     // a single cast
